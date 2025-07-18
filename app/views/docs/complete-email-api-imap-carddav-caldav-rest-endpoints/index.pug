@@ -1,0 +1,86 @@
+extends ../../layout
+
+block append scripts
+  script(
+    defer,
+    src=manifest("js/ekko-lightbox.js"),
+    integrity=manifest("js/ekko-lightbox.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
+block body
+  if !isBot(ctx.get('User-Agent'))
+    script(defer, nonce=nonce).
+      window.addEventListener(
+        "load",
+        function load() {
+          if (!window.jQuery) return setTimeout(load, 50);
+          $(function () {
+            $(document).on("click", '[data-toggle="lightbox"]', function (ev) {
+              ev.preventDefault();
+              $(this).ekkoLightbox();
+            });
+          });
+        },
+        false
+      );
+
+  //-.
+    .container.py-3.py-md-4.py-lg-5
+      .row
+        .col-12.text-center
+          h1!= meta.title.replace(striptags(config.metaTitleAffix).replace("&#124;", "|"), "")
+          include ../../_author
+  .container-fluid.py-3
+    .row
+      case locale
+        when 'ar'
+          include:md(hasSidebar="true", locale="ar") index-ar.md
+        when 'cs'
+          include:md(hasSidebar="true", locale="cs") index-cs.md
+        when 'da'
+          include:md(hasSidebar="true", locale="da") index-da.md
+        when 'de'
+          include:md(hasSidebar="true", locale="de") index-de.md
+        when 'es'
+          include:md(hasSidebar="true", locale="es") index-es.md
+        when 'fi'
+          include:md(hasSidebar="true", locale="fi") index-fi.md
+        when 'fr'
+          include:md(hasSidebar="true", locale="fr") index-fr.md
+        when 'he'
+          include:md(hasSidebar="true", locale="he") index-he.md
+        when 'hu'
+          include:md(hasSidebar="true", locale="hu") index-hu.md
+        when 'id'
+          include:md(hasSidebar="true", locale="id") index-id.md
+        when 'it'
+          include:md(hasSidebar="true", locale="it") index-it.md
+        when 'ja'
+          include:md(hasSidebar="true", locale="ja") index-ja.md
+        when 'ko'
+          include:md(hasSidebar="true", locale="ko") index-ko.md
+        when 'nl'
+          include:md(hasSidebar="true", locale="nl") index-nl.md
+        when 'no'
+          include:md(hasSidebar="true", locale="no") index-no.md
+        when 'pl'
+          include:md(hasSidebar="true", locale="pl") index-pl.md
+        when 'pt'
+          include:md(hasSidebar="true", locale="pt") index-pt.md
+        when 'ru'
+          include:md(hasSidebar="true", locale="ru") index-ru.md
+        when 'sv'
+          include:md(hasSidebar="true", locale="sv") index-sv.md
+        when 'th'
+          include:md(hasSidebar="true", locale="th") index-th.md
+        when 'tr'
+          include:md(hasSidebar="true", locale="tr") index-tr.md
+        when 'uk'
+          include:md(hasSidebar="true", locale="uk") index-uk.md
+        when 'vi'
+          include:md(hasSidebar="true", locale="vi") index-vi.md
+        when 'zh'
+          include:md(hasSidebar="true", locale="zh") index-zh.md
+        default
+          include:md(hasSidebar="true") index.md

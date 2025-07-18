@@ -309,14 +309,11 @@ async function json(ctx, message) {
     remote_address: message.remoteAddress
   };
 
-  // TODO: document that you can do this
   if (ctx.query.nodemailer !== 'false')
     object.nodemailer = convertToPureObject(data.nodemailer);
 
-  // TODO: document that you can do this
   if (ctx.query.attachments === 'false') delete object?.nodemailer?.attachments;
 
-  // TODO: document that you can do this
   if (ctx.query.raw !== 'false') object.raw = data.raw.toString();
 
   // keep this last
@@ -445,26 +442,54 @@ async function list(ctx) {
 
   // Search in headers
   if (isSANB(ctx.query.headers)) {
-    const regex =
-      '(?i)' + // case insensitive (PCRE_CASELESS)
-      _.escapeRegExp(ctx.query.headers);
+    //
+    // headers can be "headers=X-Priority"
+    // it can also be "headers=X-Priority:1"
+    //
+    if (ctx.query.headers.includes(':')) {
+      const [key, value] = ctx.query.headers.split(':', 2);
+      const regex =
+        '(?i)' + // case insensitive (PCRE_CASELESS)
+        _.escapeRegExp(value.toLowerCase().trim());
 
-    const sql = {
-      query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.value') REGEXP $p1;`,
-      values: { p1: regex }
-    };
+      const sql = {
+        query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.key') = $p1 and json_extract(value, '$.value') REGEXP $p2;`,
+        values: { p1: key.toLowerCase().trim(), p2: regex }
+      };
 
-    const ids = await ctx.instance.wsp.request({
-      action: 'stmt',
-      session: { user: ctx.state.session.user },
-      stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
-    });
+      const ids = await ctx.instance.wsp.request({
+        action: 'stmt',
+        session: { user: ctx.state.session.user },
+        stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
+      });
 
-    searchConditions.push({
-      _id: {
-        $in: ids.map((id) => id.toString())
-      }
-    });
+      searchConditions.push({
+        _id: {
+          $in: ids.map((id) => id.toString())
+        }
+      });
+    } else {
+      const regex =
+        '(?i)' + // case insensitive (PCRE_CASELESS)
+        _.escapeRegExp(ctx.query.headers);
+
+      const sql = {
+        query: `select _id from Messages, json_each(Messages.headers) where json_extract(value, '$.value') REGEXP $p1;`,
+        values: { p1: regex }
+      };
+
+      const ids = await ctx.instance.wsp.request({
+        action: 'stmt',
+        session: { user: ctx.state.session.user },
+        stmt: [['prepare', sql.query], ['pluck'], ['all', sql.values]]
+      });
+
+      searchConditions.push({
+        _id: {
+          $in: ids.map((id) => id.toString())
+        }
+      });
+    }
   }
 
   // Search in message ID
@@ -779,7 +804,6 @@ async function retrieve(ctx) {
   if (!message)
     throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
 
-  // TODO: support ?eml=true in API docs
   if (boolean(ctx.query.eml)) {
     // similar to 'rfc822' case in `helpers/get-query-response.js`
     // (value is a stream)
@@ -936,7 +960,6 @@ async function update(ctx) {
   if (!message)
     throw Boom.notFound(ctx.translateError('MESSAGE_DOES_NOT_EXIST'));
 
-  // TODO: support ?eml=true in API docs
   if (boolean(ctx.query.eml)) {
     // similar to 'rfc822' case in `helpers/get-query-response.js`
     // (value is a stream)

@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Velkommen til den omfattende API-dokumentasjonen for videresending av e-post. Denne API-en lar deg administrere videresending av e-post, domener, aliaser, utgående e-poster og mer programmatisk.\n\n## Viktige funksjoner\n* **Domeneadministrasjon:** Opprett, hent, oppdater, slett og verifiser domener.\n* **Aliasadministrasjon:** Administrer e-postaliaser, inkludert opprettelse, oppdateringer og mottakeradministrasjon.\n* **Utgående SMTP:** Send e-poster via SMTP, administrer grenser og spor sendte e-poster.\n* **Konto og logger:** Administrer kontodetaljene dine og last ned aktivitetslogger.\n* **Sikkerhet:** Krypter TXT-poster og administrer domenemedlemmer/invitasjoner.\n* **Kommer snart:** Funksjoner som CardDAV-kontakter, CalDAV-kalendere og IMAP/POP3-meldings-/mappeadministrasjon er planlagt.\n\n## Autentisering\nDe fleste endepunkter krever autentisering ved hjelp av **API-nøkkelen** din. Oppgi API-nøkkelen som `brukernavn` i overskriften for grunnleggende autentisering, og la passordet stå tomt.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Erstatt `API_TOKEN` med din faktiske nøkkel før Base64-koding)\n\nEndepunkter relatert til **Aliaskontakter, kalendere, meldinger og mapper** (for øyeblikket merket som \"Kommer snart\") vil bruke et generert aliasbrukernavn og passord for grunnleggende autentisering.\n\n## Feil\nAPI-et bruker standard HTTP-statuskoder for å indikere suksess eller mislykkethet. Feilsvar inkluderer en JSON-brødtekst med et `meldings`-felt som beskriver feilen.\n\n| Statuskode | Betydning |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Feil forespørsel |\n| 401 | Uautorisert |\n| 403 | Forbudt |\n| 404 | Ikke funnet |\n| 429 | For mange forespørsler |\n| 500 | Intern serverfeil |\n| 501 | Ikke implementert |\n| 502 | Dårlig gateway |\n| 503 | Tjenesten er ikke tilgjengelig |\n| 504 | Gateway-tidsavbrudd |\n\n*Hvis du støter på en `5xx`-feil, vennligst kontakt [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisering\nAPI-svar oversettes basert på brukerens oppdagede språk eller `Accept-Language`-headeren. Over 25 språk støttes.\n\n## Paginering\nEndepunkter som returnerer lister støtter paginering via spørreparametere.\n\n| Parameter | Type | Valgfritt | Beskrivelse | Standard | Begrensninger |\n|--------------|---------|----------|-----------------------------------------------------------------------|----------------------|\n| `side` | Heltall | Ja | Sidetall som skal hentes. | 1 | `>= 1` |\n| `grense` | Heltall | Ja | Antall resultater per side. | 10 | `>= 1`, `<= 50` |\n| `paginering` | Boolsk | Ja | Velg pagineringsatferd (påkrevd før 1. november 2024 for noen endepunkter). | usann | |\n\n**Pagineringsoverskrifter:**\n* `X-Page-Count`: Totalt antall sider.\n* `X-Page-Current`: Gjeldende sidetall.\n* `X-Page-Size`: Antall elementer på gjeldende side.\n\n* `X-Item-Count`: Totalt antall elementer på tvers av alle sider.\n\n* `Lenke`: Navigasjonslenker (forrige, neste, første, siste).\n\n**Eksempel:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Anbefalte biblioteker\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Vedlikeholdt av videresendt e-post)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Velkommen til den omfattende API-dokumentasjonen for videresending av e-post. Denne API-en lar deg administrere videresending av e-post, domener, aliaser, utgående e-poster og mer programmatisk.\n\n## Viktige funksjoner\n* **Domeneadministrasjon:** Opprett, hent, oppdater, slett og verifiser domener.\n* **Aliasadministrasjon:** Administrer e-postaliaser, inkludert opprettelse, oppdateringer og mottakeradministrasjon.\n* **Utgående SMTP:** Send e-poster via SMTP, administrer grenser og spor sendte e-poster.\n* **Konto og logger:** Administrer kontodetaljene dine og last ned aktivitetslogger.\n* **Sikkerhet:** Krypter TXT-poster og administrer domenemedlemmer/invitasjoner.\n* **CardDAV-kontakter:** Fullstendige CRUD-operasjoner for kontaktadministrasjon med vCard-støtte.\n* **CalDAV-kalendere:** Fullstendig kalenderadministrasjon med støtte for tidssone og farger.\n* **IMAP/POP3-meldinger:** Omfattende meldingsbehandling med avanserte søkemuligheter.\n\n* **IMAP/POP3-mapper:** Full mappebehandling, inkludert oppretting, omdøping og sletting.\n\n## Autentisering\nDe fleste endepunkter krever autentisering ved hjelp av din **API-nøkkel**. Oppgi API-nøkkelen som `brukernavn` i overskriften for grunnleggende autentisering, og la passordet stå tomt.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Erstatt `API_TOKEN` med din faktiske nøkkel før Base64-koding)\n\nEndepunkter relatert til **Aliaskontakter, kalendere, meldinger og mapper** krever et generert aliasbrukernavn og passord for grunnleggende autentisering.\n\n## Feil\nAPI-et bruker standard HTTP-statuskoder for å indikere suksess eller mislykkethet. Feilresponser inkluderer en JSON-innhold med et `meldings`-felt som beskriver feilen.\n\n| Statuskode | Betydning |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Feil forespørsel |\n| 401 | Uautorisert |\n| 403 | Forbudt |\n| 404 | Ikke funnet |\n| 409 | Konflikt |\n| 412 | Forutsetning mislyktes |\n| 429 | For mange forespørsler |\n| 500 | Intern serverfeil |\n| 501 | Ikke implementert |\n| 502 | Feil gateway |\n| 503 | Tjenesten er ikke tilgjengelig |\n| 504 | Gateway-tidsavbrudd |\n\n*Hvis du støter på en `5xx`-feil, vennligst kontakt [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisering\nAPI-svar oversettes basert på brukerens oppdagede språk eller `Accept-Language`-headeren. Over 25 språk støttes.\n\n## Paginering\nEndepunkter som returnerer lister støtter paginering via spørreparametere.\n\n| Parameter | Type | Valgfritt | Beskrivelse | Standard | Begrensninger |\n|--------------|---------|----------|-------------------------------------------------------------------------|---------|----------------------------------------|\n| `side` | Heltall | Ja | Sidetall som skal hentes. | 1 | `>= 1` |\n| `grense` | Heltall | Ja | Antall resultater per side. | 10 | `>= 1`, `<= 50` |\n| `paginering` | Boolsk | Ja | Velg pagineringsatferd (påkrevd før 1. november 2024 for noen endepunkter). | usann | |\n\n**Pagineringsoverskrifter:**\n* `X-Page-Count`: Totalt antall sider.\n* `X-Page-Current`: Gjeldende sidetall.\n* `X-Page-Size`: Antall elementer på gjeldende side.\n* `X-Item-Count`: Totalt antall elementer på tvers av alle sider.\n* `Link`: Navigasjonslenker (forrige, neste, første, siste).\n\n**Eksempel:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Anbefalte biblioteker\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Vedlikeholdt av videresendt e-post)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "Bruk det genererte **aliasbrukernavnet og passordet** for grunnleggende autentisering. Dette gjelder endepunkter under:\n* Aliaskontakter (CardDAV)\n* Aliaskalendere (CalDAV)\n* Aliasmeldinger (IMAP/POP3)\n* Aliasmapper (IMAP/POP3)\n\n*(Merk: Disse funksjonene er for øyeblikket merket som \"Kommer snart\")*\n\n**Eksempel:**\nHvis aliasbrukernavnet er `alias@domain.com` og passordet er `GENERATED_PASSWORD`, vil den Base64-kodede verdien være `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "Bruk det genererte **aliasbrukernavnet og passordet** for grunnleggende autentisering. Dette gjelder endepunkter under:\n* Aliaskontakter (CardDAV)\n* Aliaskalendere (CalDAV)\n* Aliasmeldinger (IMAP/POP3)\n* Aliasmapper (IMAP/POP3)\n\n**Eksempel:**\nHvis aliasbrukernavnet er `alias@domain.com` og passordet er `GENERATED_PASSWORD`, vil den Base64-kodede verdien være `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kontakt-ID (contact_id fra CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Kontakt UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kontaktens fulle navn"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard-innhold"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag for versjonering"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Om kontakten er en gruppe"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matrise med e-postadresser"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matrise med telefonnumre"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-innhold (hvis ikke oppgitt, vil det bli generert fra andre felt)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kontaktens fulle navn"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Tilpasset kontakt-ID (hvis ikke oppgitt, vil den bli generert automatisk)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Kontakt-UID (hvis ikke oppgitt, vil bli generert automatisk)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matrise med e-postadresser"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matrise med telefonnumre"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matrise med telefonnumre (alias for telefonnumre)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Adresserekke"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Om kontakten er en gruppe"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-innhold"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kontaktens fulle navn"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matrise med e-postadresser"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Rekke med telefonnumre"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matrise med telefonnumre (alias for telefonnumre)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Adresserekke"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Om kontakten er en gruppe"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kalender-ID (kalender-ID fra CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Kalendernavn"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeskrivelse"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderfarge (heksadesimalt format)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenderens tidssone"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Visningsrekkefølge for kalenderen"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalendernavn"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Tilpasset kalender-ID (hvis ikke oppgitt, vil den bli generert automatisk)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeskrivelse"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderfarge (heksadesimalt format genereres automatisk hvis ikke oppgitt)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenderens tidssone (standard er brukerens tidssone eller UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kalenderens visningsrekkefølge (standard er 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalendernavn"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeskrivelse"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderfarge (heksadesimalt format)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenderens tidssone"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Visningsrekkefølge for kalenderen"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Mappe-ID"
+          },
+          "path": {
+            "type": "string",
+            "description": "Fullstendig mappesti"
+          },
+          "name": {
+            "type": "string",
+            "description": "Mappenavn (siste del av banen)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sti til overordnet mappe"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID-gyldighet"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Neste UID-verdi"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Modifikasjonsindeks"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Om mappen abonnerer"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mappeflagg"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Oppbevaringsperiode for meldinger"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Spesiell bruksbetegnelse"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Mappebane/-navn"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ny mappesti/-navn"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Meldings-ID"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Rotmeldings-ID for tråding"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Mappe-ID som inneholder meldingen"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Mappebanen som inneholder meldingen"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Tråd-ID for samtalegruppering"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Verdi for meldings-ID-hode"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Om meldingen er ulest"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Om meldingen er flagget"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Om meldingen er slettet"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Om meldingen er et utkast"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Om meldingen er søppelpost"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Om meldingen er kopiert"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Om meldingen er søkbar"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Om meldingen er utløpt"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Om meldingen har vedlegg"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Oppbevaringsdato for melding"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Intern dato (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dato fra meldingsoverskrifter"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Emne for meldingen"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flagg"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Meldingsstørrelse i byte"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Modifikasjonssekvens"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Transaksjonstype"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Ekstern IP-adresse"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Parset meldingsobjekt (inkludert som standard, sett ?nodemailer=false for å ekskludere)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Rå meldingsinnhold (inkludert som standard, sett ?raw=false for å ekskludere)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Avsenderens e-postadresse"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Mottakerens e-postadresser"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "E-postadresser for CC-mottakere"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "BCC-mottakerens e-postadresser"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Emne for meldingen"
+          },
+          "text": {
+            "type": "string",
+            "description": "Vanlig tekstinnhold"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML-innhold"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Meldingsvedlegg (Nodemailer-format)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Målmappe (standard er INNBOKS)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "IMAP-flagg som skal settes på meldingen"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flagg som skal settes på meldingen"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Flytt meldingen til denne mappen"
+          }
         }
       },
       "Email": {
@@ -785,7 +1654,7 @@
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Om virusbeskyttelse fra Spam Scanner skal aktiveres på dette domenet"
+            "description": "Om Spam Scanner-virusbeskyttelse skal aktiveres på dette domenet"
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "ID-aliaser",
+        "description": "Alias-ID",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "E-post-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kontakt-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kalender-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Mappe-ID eller sti",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Meldings-ID",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Opprett konto",
-        "description": "Opprett en ny brukerkonto",
-        "tags": [
-          "Konto"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "E-postadresse"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Passord"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Hent konto",
-        "description": "Hent den nåværende brukerens kontoinformasjon",
         "tags": [
           "Konto"
         ],
+        "summary": "Hent konto",
+        "description": "Hent kontoinformasjonen din.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Oppdater konto",
-        "description": "Oppdater den nåværende brukerens kontoinformasjon",
         "tags": [
           "Konto"
         ],
+        "summary": "Oppdater konto",
+        "description": "Oppdater kontoinformasjonen din.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "E-postadresse"
+                    "description": "Visningsnavn"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Fornavn"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Etternavn"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Lenke til avatarbilde"
+                    "description": "Språkinnstilling"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Liste over kontakter",
+        "description": "Hent en liste over alle kontakter for det autentiserte aliaset. Dette endepunktet støtter paginering og returnerer kontakter i CardDAV-format.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Opprett kontakt",
+        "description": "Opprett en ny kontakt. Du kan enten oppgi vCard-innhold direkte eller individuelle kontaktfelt som konverteres til vCard-format. Hvis en kontakt med samme ID allerede finnes, returneres en konfliktfeil.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Hent kontakt",
+        "description": "Hent en spesifikk kontakt etter ID-en. Kontakten returneres i standard kontaktformat med vCard-innhold og analyserte felt.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Oppdater kontakt",
+        "description": "Oppdater en eksisterende kontakt. Du kan enten oppgi oppdatert vCard-innhold eller individuelle felt som skal oppdateres. Kontaktens vCard vil bli generert på nytt hvis individuelle felt oppgis.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Slett kontakt",
+        "description": "Slett en bestemt kontakt permanent. Denne handlingen kan ikke angres.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Kalendere"
+        ],
+        "summary": "Liste over kalendere",
+        "description": "Hent en liste over alle kalendere for det autentiserte aliaset. Dette endepunktet støtter paginering og returnerer kalendere i CalDAV-format.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kalendere"
+        ],
+        "summary": "Opprett kalender",
+        "description": "Opprett en ny kalender. Kalendernavnet er obligatorisk, mens andre egenskaper som farge, tidssone og beskrivelse er valgfrie. Hvis en kalender med samme navn allerede finnes, vil det returneres en konfliktfeil.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Kalendere"
+        ],
+        "summary": "Hent kalender",
+        "description": "Hent en spesifikk kalender etter ID-en. Kalenderen returneres med alle egenskapene, inkludert navn, beskrivelse, farge, tidssone og rekkefølge.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kalendere"
+        ],
+        "summary": "Oppdater kalenderen",
+        "description": "Oppdater en eksisterende kalender. Du kan oppdatere alle kalenderegenskapene, inkludert navn, beskrivelse, farge, tidssone og rekkefølge. Hvis du endrer navnet til et som allerede finnes, vil det returneres en konfliktfeil.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kalendere"
+        ],
+        "summary": "Slett kalenderen",
+        "description": "Slett en bestemt kalender permanent. Denne handlingen kan ikke angres og vil også slette alle hendelser i kalenderen.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Mapper"
+        ],
+        "summary": "Liste over mapper",
+        "description": "Hent en liste over alle IMAP-mapper/postbokser for det autentiserte aliaset. Dette endepunktet støtter paginering og filtrering etter abonnementsstatus.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Filtrer mapper etter abonnementsstatus",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mapper"
+        ],
+        "summary": "Opprett mappe",
+        "description": "Opprett en ny IMAP-mappe/postkasse. Mappbanen er obligatorisk og kan inkludere overordnede mapper (f.eks. «INNBOX/Undermappe»). Hvis overordnede mapper ikke finnes, opprettes de automatisk.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Mapper"
+        ],
+        "summary": "Hent mappe",
+        "description": "Hent en bestemt mappe etter ID eller bane. Du kan bruke enten mappens objekt-ID eller den fullstendige banen (f.eks. «INNBOX/Undermappe») som identifikator.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Mapper"
+        ],
+        "summary": "Oppdater mappen",
+        "description": "Oppdater/gi nytt navn til en eksisterende mappe. Denne operasjonen gir mappen nytt navn til den nye banen som er angitt i forespørselsteksten. Du kan bruke enten mappens objekt-ID eller den gjeldende banen som identifikator.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mapper"
+        ],
+        "summary": "Slett mappe",
+        "description": "Slett en bestemt mappe permanent. Denne handlingen kan ikke angres og vil også slette alle meldinger i mappen. Du kan bruke enten mappens objekt-ID eller banen som identifikator.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Meldinger"
+        ],
+        "summary": "Liste over og søk etter meldinger",
+        "description": "Hent en liste over meldinger med avanserte søke- og filtreringsfunksjoner. Dette endepunktet støtter paginering og omfattende søk på tvers av meldingsinnhold, overskrifter, flagg og metadata. Du kan søke etter mappe, flagg, innhold, overskrifter, datoperioder, størrelse og mer.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Filtrer meldinger etter mappebane",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Filtrer etter lesestatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Filtrer etter flagget status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Filtrer etter slettet status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Filtrer etter utkaststatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Filtrer etter søppelpoststatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Filtrer etter kopiert status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Filtrer etter søkbar status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Filtrer etter utløpt status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Filtrer etter tilstedeværelse av vedlegg",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Filtrer etter tilstedeværelse av vedlegg (alias for has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Søk i meldingsemnet",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Søk i meldingsteksten",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Søk i meldingsteksten (alias for brødtekst)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Søk i alle meldingsoverskrifter",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Søk etter meldings-ID-overskrift",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Generelt søk på tvers av overskrifter og tekst",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Generelt søk (alias for søk)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filtrer meldinger siden denne datoen (ISO 8601-format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Filtrer meldinger før denne datoen (ISO 8601-format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Filtrer meldinger med minimumsstørrelse i byte",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Filtrer meldinger med maksimal størrelse i byte",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Søk etter Fra-overskrift",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Søk etter Til-overskrift",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Søk etter CC-overskrift",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Søk etter blindkopi-overskrift",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Søk etter datooverskrift",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Søk etter Svar-til-overskrift",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Meldinger"
+        ],
+        "summary": "Opprett melding",
+        "description": "Opprett/legg til en ny melding i en mappe. Dette endepunktet godtar standard Nodemailer-meldingsformat og lar deg angi målmappen og startflagg. Hvis målmappen ikke finnes, opprettes den automatisk.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Meldinger"
+        ],
+        "summary": "Hent melding",
+        "description": "Hent en spesifikk melding etter ID-en. Som standard inkluderer svaret det analyserte Nodemailer-objektet og rått meldingsinnhold. Du kan kontrollere hva som inkluderes ved hjelp av spørreparametere.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Returner rått EML-format i stedet for JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Inkluder analysert Nodemailer-objekt",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Inkluder vedlegg i Nodemailer-objektet",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Inkluder rått meldingsinnhold",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Meldinger"
+        ],
+        "summary": "Oppdater melding",
+        "description": "Oppdater en eksisterende melding. Du kan endre meldingsflagg eller flytte den til en annen mappe. Hvis målmappen ikke finnes, opprettes den automatisk.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Returner rått EML-format i stedet for JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Meldinger"
+        ],
+        "summary": "Slett melding",
+        "description": "Slett en bestemt melding permanent. Denne handlingen kan ikke angres og vil fjerne meldingen permanent fra lagringen. I motsetning til IMAP-klienter som vanligvis flytter meldinger til papirkurven, utfører dette endepunktet en fullstendig sletting.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2221,7 +4443,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Domenenavnet det skal opprettes et fellespassord for"
+            "description": "Domenenavnet det generelle passordet skal opprettes for"
           }
         ],
         "requestBody": {
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Liste over kontakter",
-        "description": "List opp alle kontakter (CardDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Opprett kontakt",
-        "description": "Opprett en ny kontakt (CardDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kontakt-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hent kontakt",
-        "description": "Hent en spesifikk kontakt (CardDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Oppdater kontakt",
-        "description": "Oppdater en spesifikk kontakt (CardDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Slett kontakt",
-        "description": "Slett en bestemt kontakt (CardDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Liste over kalendere",
-        "description": "List opp alle kalendere (CalDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskalendere"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Opprett kalender",
-        "description": "Opprett en ny kalender (CalDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskalendere"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kalender-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hent kalender",
-        "description": "Hent en spesifikk kalender (CalDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskalendere"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Oppdater kalenderen",
-        "description": "Oppdater en spesifikk kalender (CalDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskalendere"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Slett kalenderen",
-        "description": "Slett en bestemt kalender (CalDAV). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliaskalendere"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Liste over og søk etter meldinger",
-        "description": "List opp og søk etter meldinger (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmeldinger"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Opprett melding",
-        "description": "Opprett en ny melding (IMAP/POP3). Dette vil IKKE sende en e-post – det vil bare legge meldingen til i postkassemappen din (ligner på IMAP APPEND-kommandoen). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmeldinger"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Meldings-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hent melding",
-        "description": "Hent en spesifikk melding (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmeldinger"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Oppdater melding",
-        "description": "Oppdater en spesifikk melding (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmeldinger"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Slett melding",
-        "description": "Slett en bestemt melding (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmeldinger"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Liste over mapper",
-        "description": "List opp alle mapper (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmapper"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Opprett mappe",
-        "description": "Opprett en ny mappe (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmapper"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Mappe-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hent mappe",
-        "description": "Hent en bestemt mappe (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmapper"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Oppdater mappen",
-        "description": "Oppdater en bestemt mappe (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmapper"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Slett mappe",
-        "description": "Slett en bestemt mappe (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmapper"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Mappe-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Kopier mappe",
-        "description": "Kopier en bestemt mappe (IMAP/POP3). Dette endepunktet kommer snart.",
-        "tags": [
-          "Aliasmapper"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "Krypteringsendepunkter"
     },
     {
-      "name": "Aliaskontakter",
-      "description": "Endepunkter for administrasjon av aliaskontakter (CardDAV)\n\n>[!NOTE]\n>I motsetning til andre API-endepunkter krever disse autentisering med \"brukernavn\" lik aliasbrukernavnet og \"passord\" lik det aliasgenererte passordet som overskrifter for grunnleggende autorisasjon.\n\n>[!WARNING]\n>Denne endepunktdelen er under utvikling og vil (forhåpentligvis) bli utgitt i 2025. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen \"Apper\" i navigasjonen på nettstedet vårt."
+      "name": "Kontakter",
+      "description": "Endepunkter for administrasjon av aliaskontakter (CardDAV)\n\n>[!NOTE]\n>I motsetning til andre API-endepunkter krever disse autentisering \"brukernavn\" lik aliasbrukernavnet og \"passord\" lik det aliasgenererte passordet som Basic Authorization-overskrifter.\n\n>[!TIP]\n>Disse endepunktene tilbyr full CRUD-operasjoner for kontaktadministrasjon med vCard-støtte, inkludert oppretting, henting, oppdatering og sletting av kontakter. Du kan enten oppgi vCard-innhold direkte eller individuelle kontaktfelt som konverteres til vCard-format."
     },
     {
-      "name": "Aliaskalendere",
-      "description": "Endepunkter for administrering av aliaskalendere (CalDAV)\n\n>[!NOTE]\n> I motsetning til andre API-endepunkter krever disse [Authentication](#description/authentication) \"username\" lik aliasbrukernavnet og \"password\" lik det aliasgenererte passordet som Basic Authorization-overskrifter.\n\n>[!WARNING]\n> Denne endepunktdelen er under utvikling og vil (forhåpentligvis) bli utgitt i 2025. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen \"Apper\" i navigasjonen på nettstedet vårt."
+      "name": "Kalendere",
+      "description": "Endepunkter for administrering av aliaskalendere (CalDAV)\n\n>[!NOTE]\n> I motsetning til andre API-endepunkter krever disse [Authentication](#description/authentication) \"username\" lik aliasbrukernavnet og \"password\" lik det aliasgenererte passordet som Basic Authorization-overskrifter.\n\n>[!TIP]\n> Disse endepunktene gir fullstendig kalenderadministrasjon med støtte for tidssone og farger, inkludert oppretting, henting, oppdatering og sletting av kalendere. Kalendernavn er obligatoriske, mens andre egenskaper som farge, tidssone og beskrivelse er valgfrie."
     },
     {
-      "name": "Aliasmeldinger",
-      "description": "Endepunkter for administrasjon av aliasmeldinger (IMAP/POP3)\n\n>[!NOTE]\n> I motsetning til andre API-endepunkter krever disse [Autentisering](#beskrivelse/autentisering) \"brukernavn\" lik aliasbrukernavnet og \"passord\" lik det aliasgenererte passordet som overskrifter for grunnleggende autorisasjon.\n\n> [!WARNING]\n> Denne endepunktdelen er under utvikling og vil bli utgitt (forhåpentligvis) i 2025. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen \"Apper\" i navigasjonen på nettstedet vårt.\n\nSørg for at du har fulgt konfigurasjonsinstruksjonene for domenet ditt.\nDisse instruksjonene finner du i FAQ-delen vår [Støtter dere mottak av e-post med IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Meldinger",
+      "description": "Endepunkter for administrasjon av aliasmeldinger (IMAP/POP3)\n\n>[!NOTE]\n> I motsetning til andre API-endepunkter krever disse [Autentisering](#beskrivelse/autentisering) \"brukernavn\" lik aliasbrukernavnet og \"passord\" lik det aliasgenererte passordet som Basic Authorization-overskrifter.\n\n>[!TIP]\n> Disse endepunktene gir omfattende meldingshåndtering med avanserte søkemuligheter. Du kan søke etter mappe, flagg, innhold, overskrifter, datoperioder, størrelse og mer. Meldinger kan opprettes ved hjelp av standard Nodemailer-format og støtter flytting mellom mapper og flagghåndtering.\n\nSørg for at du har fulgt konfigurasjonsinstruksjonene for domenet ditt.\n\nDisse instruksjonene finner du i vår FAQ-seksjon [Støtter dere mottak av e-post med IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Aliasmapper",
-      "description": "Endepunkter for administrasjon av aliasmapper (IMAP/POP3)\n\n>[!TIP]\n> Mappeendepunkter med en mappes sti <code>/v1/folders/:path</code> som endepunkt kan brukes om igjen med en mappes ID <code>:id</code>. Dette betyr at du kan referere til mappen med enten dens <code>path</code>- eller <code>id</code>-verdi.\n\n>[!WARNING]\n> Denne endepunktdelen er under utvikling og vil (forhåpentligvis) bli utgitt i 2025. I mellomtiden kan du bruke en IMAP-klient fra rullegardinmenyen \"Apper\" i navigasjonen på nettstedet vårt."
+      "name": "Mapper",
+      "description": "Endepunkter for administrasjon av aliasmapper (IMAP/POP3)\n\n>[!TIP]\n> Mappeendepunkter med en mappesti <code>/v1/folders/:path</code> som endepunkt kan brukes om igjen med en mappe-ID <code>:id</code>. Dette betyr at du kan referere til mappen med enten dens <code>path</code>- eller <code>id</code>-verdi.\n\n>[!NOTE]\n> I motsetning til andre API-endepunkter krever disse [Authentication](#description/authentication) \"username\" lik aliasbrukernavnet og \"password\" lik det aliasgenererte passordet som Basic Authorization-overskrifter.\n\n>[!TIP]\n> Disse endepunktene gir full mappeadministrasjon, inkludert oppretting, omdøping og sletting. Mappebaner kan inkludere overordnede mapper (f.eks. 'INNBOX/Undermappe'), og overordnede mapper opprettes automatisk hvis de ikke finnes."
     }
   ]
 }

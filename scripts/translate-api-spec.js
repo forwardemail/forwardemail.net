@@ -9,11 +9,13 @@ require('#config/env');
 const fs = require('node:fs');
 const path = require('node:path');
 
+const pMap = require('p-map');
 const { Translate } = require('@google-cloud/translate').v2;
 
 // Initialize Google Translate client
 const translate = new Translate();
 
+const config = require('#config');
 const locales = require('#config/locales');
 /*
 // All 25 locales
@@ -103,16 +105,20 @@ async function buildTagTranslationMapping(apiSpec, targetLocale) {
   if (apiSpec.tags && Array.isArray(apiSpec.tags)) {
     console.log(`Building tag translation mapping for ${targetLocale}...`);
 
-    for (const tag of apiSpec.tags) {
-      if (tag.name && typeof tag.name === 'string') {
-        const translatedName = await translateTextDynamically(
-          tag.name,
-          targetLocale
-        );
-        tagMapping.set(tag.name, translatedName);
-        console.log(`  Tag: "${tag.name}" -> "${translatedName}"`);
-      }
-    }
+    await pMap(
+      apiSpec.tags,
+      async (tag) => {
+        if (tag.name && typeof tag.name === 'string') {
+          const translatedName = await translateTextDynamically(
+            tag.name,
+            targetLocale
+          );
+          tagMapping.set(tag.name, translatedName);
+          console.log(`  Tag: "${tag.name}" -> "${translatedName}"`);
+        }
+      },
+      { concurrency: config.concurrency }
+    );
   }
 
   return tagMapping;
@@ -298,58 +304,65 @@ async function generateAllDynamicTranslations() {
 
   const results = [];
 
-  for (const locale of locales) {
-    console.log(`\\n=== Processing locale: ${locale} ===`);
+  await pMap(
+    locales,
+    async (locale) => {
+      console.log(`\\n=== Processing locale: ${locale} ===`);
 
-    // Step 1: Build tag translation mapping
-    const tagMapping = await buildTagTranslationMapping(
-      originalApiSpec,
-      locale
-    );
+      // Step 1: Build tag translation mapping
+      const tagMapping = await buildTagTranslationMapping(
+        originalApiSpec,
+        locale
+      );
 
-    // Step 2: Translate the entire API spec using Google Translate API
-    const translatedSpec = await translateObjectDynamically(
-      originalApiSpec,
-      locale,
-      tagMapping
-    );
+      // Step 2: Translate the entire API spec using Google Translate API
+      const translatedSpec = await translateObjectDynamically(
+        originalApiSpec,
+        locale,
+        tagMapping
+      );
 
-    // Step 3: Replace all tag references throughout the document with translated versions
-    const finalSpec = replaceTagReferences(translatedSpec, tagMapping);
+      // Step 3: Replace all tag references throughout the document with translated versions
+      const finalSpec = replaceTagReferences(translatedSpec, tagMapping);
 
-    // Save the translated file
-    const filename = path.join(
-      __dirname,
-      '..',
-      'assets',
-      `api-spec-${locale}.json`
-    );
-    fs.writeFileSync(filename, JSON.stringify(finalSpec, null, 2));
+      // Save the translated file
+      const filename = path.join(
+        __dirname,
+        '..',
+        'assets',
+        `api-spec-${locale}.json`
+      );
+      fs.writeFileSync(filename, JSON.stringify(finalSpec, null, 2));
 
-    // Verify translations
-    const { translated, total } = countTranslations(finalSpec, originalApiSpec);
-    const translatedSize = fs.statSync(filename).size;
-    const coverage = ((translated / total) * 100).toFixed(1);
+      // Verify translations
+      const { translated, total } = countTranslations(
+        finalSpec,
+        originalApiSpec
+      );
+      const translatedSize = fs.statSync(filename).size;
+      const coverage = ((translated / total) * 100).toFixed(1);
 
-    results.push({
-      locale,
-      filename,
-      translated,
-      total,
-      coverage: `${coverage}%`,
-      originalSize,
-      translatedSize,
-      sizeDifference: translatedSize - originalSize,
-      tagCount: tagMapping.size
-    });
+      results.push({
+        locale,
+        filename,
+        translated,
+        total,
+        coverage: `${coverage}%`,
+        originalSize,
+        translatedSize,
+        sizeDifference: translatedSize - originalSize,
+        tagCount: tagMapping.size
+      });
 
-    console.log(
-      `  ✅ ${filename}: ${translated}/${total} strings (${coverage}%) - ${translatedSize} bytes (+${
-        translatedSize - originalSize
-      })`
-    );
-    console.log(`  📝 Tags translated: ${tagMapping.size}`);
-  }
+      console.log(
+        `  ✅ ${filename}: ${translated}/${total} strings (${coverage}%) - ${translatedSize} bytes (+${
+          translatedSize - originalSize
+        })`
+      );
+      console.log(`  📝 Tags translated: ${tagMapping.size}`);
+    },
+    { concurrency: config.concurrency }
+  );
 
   // Generate comprehensive summary report
   console.log('\\n=== DYNAMIC TRANSLATION SUMMARY ===');

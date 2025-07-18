@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **Coming Soon:** Features like CardDAV contacts, CalDAV calendars, and IMAP/POP3 message/folder management are planned.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** (currently marked as \"Coming Soon\") will use a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 10      | `>= 1`, `<= 50`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welcome to the comprehensive API documentation for Forward Email. This API allows you to manage email forwarding, domains, aliases, outbound emails, and more programmatically.\n\n## Key Features\n*   **Domain Management:** Create, retrieve, update, delete, and verify domains.\n*   **Alias Management:** Manage email aliases, including creation, updates, and recipient management.\n*   **Outbound SMTP:** Send emails via SMTP, manage limits, and track sent emails.\n*   **Account & Logs:** Manage your account details and download activity logs.\n*   **Security:** Encrypt TXT records and manage domain members/invites.\n*   **CardDAV Contacts:** Full CRUD operations for contact management with vCard support.\n*   **CalDAV Calendars:** Complete calendar management with timezone and color support.\n*   **IMAP/POP3 Messages:** Comprehensive message management with advanced search capabilities.\n*   **IMAP/POP3 Folders:** Full folder management including creation, renaming, and deletion.\n\n## Authentication\nMost endpoints require authentication using your **API Key**. Provide the API Key as the `username` in the Basic Authentication header, leaving the password empty.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Replace `API_TOKEN` with your actual key before Base64 encoding)\n\nEndpoints related to **Alias Contacts, Calendars, Messages, and Folders** require a generated alias username and password for Basic Authentication.\n\n## Errors\nThe API uses standard HTTP status codes to indicate success or failure. Error responses include a JSON body with a `message` field detailing the error.\n\n| Status Code | Meaning             |\n|-------------|---------------------|\n| 200         | OK                  |\n| 400         | Bad Request         |\n| 401         | Unauthorized        |\n| 403         | Forbidden           |\n| 404         | Not Found           |\n| 409         | Conflict            |\n| 412         | Precondition Failed |\n| 429         | Too Many Requests   |\n| 500         | Internal Server Error|\n| 501         | Not Implemented     |\n| 502         | Bad Gateway         |\n| 503         | Service Unavailable |\n| 504         | Gateway Time-out    |\n\n*If you encounter a `5xx` error, please contact [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Localization\nAPI responses are translated based on the user's detected locale or the `Accept-Language` header. Over 25 languages are supported.\n\n## Pagination\nEndpoints returning lists support pagination via query parameters.\n\n| Parameter    | Type    | Optional | Description                                                                 | Default | Constraints        |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page`       | Integer | Yes      | Page number to retrieve.                                                    | 1       | `>= 1`             |\n| `limit`      | Integer | Yes      | Number of results per page.                                                 | 10      | `>= 1`, `<= 50`    |\n| `pagination` | Boolean | Yes      | Opt-in to pagination behavior (required before Nov 1st, 2024 for some endpoints). | false   |                    |\n\n**Pagination Headers:**\n*   `X-Page-Count`: Total page count.\n*   `X-Page-Current`: Current page number.\n*   `X-Page-Size`: Number of items on the current page.\n*   `X-Item-Count`: Total number of items across all pages.\n*   `Link`: Navigation links (prev, next, first, last).\n\n**Example:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n  -u API_TOKEN:\n```\n\n## Recommended Libraries\n*   **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n*   **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n*   **Java:** [OkHttp](https://square.github.io/okhttp/)\n*   **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n*   **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Maintained by Forward Email)\n*   **Go:** `net/http`\n*   **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,13 +26,15 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n*(Note: These features are currently marked as \"Coming Soon\")*\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nUse the generated **alias username and password** for Basic Authentication. This applies to endpoints under:\n*   Alias Contacts (CardDAV)\n*   Alias Calendars (CalDAV)\n*   Alias Messages (IMAP/POP3)\n*   Alias Folders (IMAP/POP3)\n\n**Example:**\nIf the alias username is `alias@domain.com` and password is `GENERATED_PASSWORD`, the Base64 encoded value would be `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
       "Error": {
         "type": "object",
-        "required": ["message"],
+        "required": [
+          "message"
+        ],
         "properties": {
           "message": {
             "type": "string",
@@ -42,7 +44,12 @@
       },
       "Account": {
         "type": "object",
-        "required": ["id", "email", "plan", "object"],
+        "required": [
+          "id",
+          "email",
+          "plan",
+          "object"
+        ],
         "properties": {
           "sessions": {
             "type": "array",
@@ -127,10 +134,844 @@
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
         }
-    },
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Contact ID (contact_id from CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Contact UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Contact's full name"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard content"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag for versioning"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Whether contact is a group"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of email addresses"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of phone numbers"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["contact"]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [{"value": "john@example.com", "type": "INTERNET"}],
+          "phone_numbers": [{"value": "+1234567890", "type": "CELL"}],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard content (if not provided, will be generated from other fields)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Contact's full name"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Custom contact ID (if not provided, will be auto-generated)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Contact UID (if not provided, will be auto-generated)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of email addresses"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of phone numbers"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of phone numbers (alias for phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Array of addresses"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Whether contact is a group"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard content"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Contact's full name"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of email addresses"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of phone numbers"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": ["value"]
+            },
+            "description": "Array of phone numbers (alias for phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Array of addresses"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Whether contact is a group"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Calendar ID (calendarId from CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Calendar name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Calendar description"
+          },
+          "color": {
+            "type": "string",
+            "description": "Calendar color (hex format)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Calendar timezone"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Calendar display order"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["calendar"]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": ["name"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Calendar name"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Custom calendar ID (if not provided, will be auto-generated)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Calendar description"
+          },
+          "color": {
+            "type": "string",
+            "description": "Calendar color (hex format, if not provided, will be auto-generated)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Calendar timezone (defaults to user's timezone or UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Calendar display order (defaults to 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Calendar name"
+          },
+          "description": {
+            "type": "string",
+            "description": "Calendar description"
+          },
+          "color": {
+            "type": "string",
+            "description": "Calendar color (hex format)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Calendar timezone"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Calendar display order"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Folder ID"
+          },
+          "path": {
+            "type": "string",
+            "description": "Full folder path"
+          },
+          "name": {
+            "type": "string",
+            "description": "Folder name (last part of path)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Parent folder path"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID validity"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Next UID value"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Modification index"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Whether folder is subscribed"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Folder flags"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Message retention period"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Special use designation"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["folder"]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Folder path/name"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": ["path"],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "New folder path/name"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Message ID"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Root message ID for threading"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Folder ID containing the message"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Folder path containing the message"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Thread ID for conversation grouping"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Message-ID header value"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Whether message is unread"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Whether message is flagged"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Whether message is deleted"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Whether message is a draft"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Whether message is junk/spam"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Whether message is copied"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Whether message is searchable"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Whether message is expired"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Whether message has attachments"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Message retention date"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Internal date (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Date from message headers"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Message subject"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP flags"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Message size in bytes"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Modification sequence"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Transaction type"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Remote IP address"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Parsed message object (included by default, set ?nodemailer=false to exclude)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Raw message content (included by default, set ?raw=false to exclude)"
+          },
+          "object": {
+            "type": "string",
+            "enum": ["message"]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": ["\\Seen"],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Sender email address"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Recipient email addresses"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "CC recipient email addresses"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "BCC recipient email addresses"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Message subject"
+          },
+          "text": {
+            "type": "string",
+            "description": "Plain text content"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML content"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Message attachments (Nodemailer format)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Target folder (defaults to INBOX)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "IMAP flags to set on the message"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP flags to set on the message"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Move message to this folder"
+          }
+        }
+      },
       "Email": {
         "type": "object",
-        "required": ["id", "object", "status", "alias", "domain", "user"],
+        "required": [
+          "id",
+          "object",
+          "status",
+          "alias",
+          "domain",
+          "user"
+        ],
         "properties": {
           "is_redacted": {
             "type": "boolean"
@@ -231,12 +1072,16 @@
           "is_locked": false,
           "envelope": {
             "from": "test@test.com",
-            "to": ["test@test1.com"]
+            "to": [
+              "test@test1.com"
+            ]
           },
           "messageId": "1a04fee3-5230-4a85-9111-a2c376835885@shaunwarman.com",
           "date": "2025-06-04T03:32:19.000Z",
           "subject": "testing",
-          "accepted": ["test@test1.com"],
+          "accepted": [
+            "test@test1.com"
+          ],
           "id": "683fbe4d5baef1b583a1xxxx",
           "object": "email",
           "created_at": "2025-06-04T03:32:29.138Z",
@@ -253,196 +1098,289 @@
       "SMTP": {
         "type": "object",
         "properties": {
-            "from": {
-              "type": "string",
-              "format": "email",
-              "description": "The email address of the sender (must exist as an alias of the domain)."
-            },
-            "to": {
-              "oneOf": [
-                { "type": "string" },
-                {
-                  "type": "array",
-                  "items": { "type": "string", "format": "email" }
-                }
-              ],
-              "description": "Comma-separated list or an array of recipients for the 'To' header."
-            },
-            "cc": {
-              "oneOf": [
-                { "type": "string" },
-                {
-                  "type": "array",
-                  "items": { "type": "string", "format": "email" }
-                }
-              ],
-              "description": "Comma-separated list or an array of recipients for the 'Cc' header."
-            },
-            "bcc": {
-              "oneOf": [
-                { "type": "string" },
-                {
-                  "type": "array",
-                  "items": { "type": "string", "format": "email" }
-                }
-              ],
-              "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
-            },
-            "subject": {
-              "type": "string",
-              "description": "The subject of the email."
-            },
-            "text": {
-              "type": "string",
-              "description": "The plaintext version of the message."
-            },
-            "html": {
-              "type": "string",
-              "description": "The HTML version of the message."
-            },
-            "attachments": {
-              "type": "array",
-              "items": {
-                "type": "object"
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "The email address of the sender (must exist as an alias of the domain)."
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
               },
-              "description": "An array of attachment objects (see Nodemailer's common fields)."
-            },
-            "sender": {
-              "type": "string",
-              "format": "email",
-              "description": "The email address for the 'Sender' header."
-            },
-            "replyTo": {
-              "type": "string",
-              "format": "email",
-              "description": "The email address for the 'Reply-To' header."
-            },
-            "inReplyTo": {
-              "type": "string",
-              "description": "The Message-ID the message is in reply to."
-            },
-            "references": {
-              "oneOf": [
-                { "type": "string" },
-                {
-                  "type": "array",
-                  "items": { "type": "string" }
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
                 }
-              ],
-              "description": "Space-separated list or an array of Message-IDs."
-            },
-            "attachDataUrls": {
-              "type": "boolean",
-              "description": "If true, converts data: images in the HTML content to embedded attachments."
-            },
-            "watchHtml": {
-              "type": "string",
-              "description": "Apple Watch specific HTML version of the message."
-            },
-            "amp": {
-              "type": "string",
-              "description": "AMP4EMAIL specific HTML version of the message."
-            },
-            "icalEvent": {
-              "type": "object",
-              "description": "An iCalendar event as an alternative message content."
-            },
-            "alternatives": {
-              "type": "array",
-              "items": { "type": "object" },
-              "description": "An array of alternative message content."
-            },
-            "encoding": {
-              "type": "string",
-              "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
-            },
-            "raw": {
-              "type": "string",
-              "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
-            },
-            "textEncoding": {
-              "type": "string",
-              "enum": ["quoted-printable", "base64"],
-              "description": "Encoding forced to be used for text values."
-            },
-            "priority": {
-              "type": "string",
-              "enum": ["high", "normal", "low"],
-              "description": "Priority level for the email."
-            },
-            "headers": {
-              "oneOf": [
-                {
-                  "type": "object",
-                  "additionalProperties": true
-                },
-                {
-                  "type": "array",
-                  "items": { "type": "object" }
+              }
+            ],
+            "description": "Comma-separated list or an array of recipients for the 'To' header."
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
                 }
-              ],
-              "description": "Object or array of additional header fields."
+              }
+            ],
+            "description": "Comma-separated list or an array of recipients for the 'Cc' header."
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Comma-separated list or an array of recipients for the 'Bcc' header."
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of the email."
+          },
+          "text": {
+            "type": "string",
+            "description": "The plaintext version of the message."
+          },
+          "html": {
+            "type": "string",
+            "description": "The HTML version of the message."
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
             },
-            "messageId": {
-              "type": "string",
-              "description": "Optional Message-ID for the 'Message-ID' header."
+            "description": "An array of attachment objects (see Nodemailer's common fields)."
+          },
+          "sender": {
+            "type": "string",
+            "format": "email",
+            "description": "The email address for the 'Sender' header."
+          },
+          "replyTo": {
+            "type": "string",
+            "format": "email",
+            "description": "The email address for the 'Reply-To' header."
+          },
+          "inReplyTo": {
+            "type": "string",
+            "description": "The Message-ID the message is in reply to."
+          },
+          "references": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Space-separated list or an array of Message-IDs."
+          },
+          "attachDataUrls": {
+            "type": "boolean",
+            "description": "If true, converts data: images in the HTML content to embedded attachments."
+          },
+          "watchHtml": {
+            "type": "string",
+            "description": "Apple Watch specific HTML version of the message."
+          },
+          "amp": {
+            "type": "string",
+            "description": "AMP4EMAIL specific HTML version of the message."
+          },
+          "icalEvent": {
+            "type": "object",
+            "description": "An iCalendar event as an alternative message content."
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "object"
             },
-            "date": {
-              "oneOf": [
-                { "type": "string", "format": "date-time" },
-                { "type": "string" }
-              ],
-              "description": "Optional Date header. Cannot be more than 30 days in the future."
-            },
-            "list": {
-              "type": "object",
-              "description": "Optional object of List-* headers."
-            }
+            "description": "An array of alternative message content."
+          },
+          "encoding": {
+            "type": "string",
+            "description": "Encoding for the text and HTML strings (e.g., 'utf-8', 'hex', 'base64')."
+          },
+          "raw": {
+            "type": "string",
+            "description": "Custom generated RFC822 formatted message (instead of using Nodemailer generation)."
+          },
+          "textEncoding": {
+            "type": "string",
+            "enum": [
+              "quoted-printable",
+              "base64"
+            ],
+            "description": "Encoding forced to be used for text values."
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "normal",
+              "low"
+            ],
+            "description": "Priority level for the email."
+          },
+          "headers": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            ],
+            "description": "Object or array of additional header fields."
+          },
+          "messageId": {
+            "type": "string",
+            "description": "Optional Message-ID for the 'Message-ID' header."
+          },
+          "date": {
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "string"
+              }
+            ],
+            "description": "Optional Date header. Cannot be more than 30 days in the future."
+          },
+          "list": {
+            "type": "object",
+            "description": "Optional object of List-* headers."
           }
+        }
       },
       "Domain": {
         "type": "object",
         "properties": {
-          "has_newsletter": { "type": "boolean" },
-          "ignore_mx_check": { "type": "boolean" },
-          "retention_days": { "type": "integer" },
-          "has_regex": { "type": "boolean" },
-          "has_catchall": { "type": "boolean" },
+          "has_newsletter": {
+            "type": "boolean"
+          },
+          "ignore_mx_check": {
+            "type": "boolean"
+          },
+          "retention_days": {
+            "type": "integer"
+          },
+          "has_regex": {
+            "type": "boolean"
+          },
+          "has_catchall": {
+            "type": "boolean"
+          },
           "allowlist": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
           "denylist": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
           "restricted_alias_names": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "has_adult_content_protection": { "type": "boolean" },
-          "has_phishing_protection": { "type": "boolean" },
-          "has_executable_protection": { "type": "boolean" },
-          "has_virus_protection": { "type": "boolean" },
-          "is_catchall_regex_disabled": { "type": "boolean" },
-          "has_smtp": { "type": "boolean" },
-          "is_smtp_suspended": { "type": "boolean" },
-          "plan": { "type": "string" },
-          "max_recipients_per_alias": { "type": "integer" },
-          "smtp_port": { "type": "string" },
-          "name": { "type": "string" },
-          "has_mx_record": { "type": "boolean" },
-          "has_txt_record": { "type": "boolean" },
-          "has_dkim_record": { "type": "boolean" },
-          "has_return_path_record": { "type": "boolean" },
-          "has_dmarc_record": { "type": "boolean" },
-          "has_recipient_verification": { "type": "boolean" },
-          "has_custom_verification": { "type": "boolean" },
-          "verification_record": { "type": "string" },
-          "id": { "type": "string" },
+          "has_adult_content_protection": {
+            "type": "boolean"
+          },
+          "has_phishing_protection": {
+            "type": "boolean"
+          },
+          "has_executable_protection": {
+            "type": "boolean"
+          },
+          "has_virus_protection": {
+            "type": "boolean"
+          },
+          "is_catchall_regex_disabled": {
+            "type": "boolean"
+          },
+          "has_smtp": {
+            "type": "boolean"
+          },
+          "is_smtp_suspended": {
+            "type": "boolean"
+          },
+          "plan": {
+            "type": "string"
+          },
+          "max_recipients_per_alias": {
+            "type": "integer"
+          },
+          "smtp_port": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "has_mx_record": {
+            "type": "boolean"
+          },
+          "has_txt_record": {
+            "type": "boolean"
+          },
+          "has_dkim_record": {
+            "type": "boolean"
+          },
+          "has_return_path_record": {
+            "type": "boolean"
+          },
+          "has_dmarc_record": {
+            "type": "boolean"
+          },
+          "has_recipient_verification": {
+            "type": "boolean"
+          },
+          "has_custom_verification": {
+            "type": "boolean"
+          },
+          "verification_record": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
           "object": {
             "type": "string",
-            "enum": ["domain"]
+            "enum": [
+              "domain"
+            ]
           },
           "created_at": {
             "type": "string",
@@ -452,31 +1390,49 @@
             "type": "string",
             "format": "date-time"
           },
-          "storage_used": { "type": "integer" },
-          "storage_used_by_aliases": { "type": "integer" },
-          "storage_quota": { "type": "integer" },
+          "storage_used": {
+            "type": "integer"
+          },
+          "storage_used_by_aliases": {
+            "type": "integer"
+          },
+          "storage_quota": {
+            "type": "integer"
+          },
           "smtp_dns_records": {
             "type": "object",
             "properties": {
               "dkim": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "value": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
                 }
               },
               "return_path": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "value": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
                 }
               },
               "dmarc": {
                 "type": "object",
                 "properties": {
-                  "name": { "type": "string" },
-                  "value": { "type": "string" }
+                  "name": {
+                    "type": "string"
+                  },
+                  "value": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -484,65 +1440,67 @@
           "link": {
             "type": "string",
             "format": "uri"
-        }
+          }
+        },
+        "example": [
+          {
+            "has_newsletter": false,
+            "ignore_mx_check": false,
+            "retention_days": 0,
+            "has_regex": false,
+            "has_catchall": true,
+            "allowlist": [],
+            "denylist": [],
+            "restricted_alias_names": [],
+            "has_adult_content_protection": true,
+            "has_phishing_protection": true,
+            "has_executable_protection": true,
+            "has_virus_protection": true,
+            "is_catchall_regex_disabled": false,
+            "has_smtp": false,
+            "is_smtp_suspended": false,
+            "plan": "team",
+            "max_recipients_per_alias": 10,
+            "smtp_port": "25",
+            "name": "test.com",
+            "has_mx_record": false,
+            "has_txt_record": false,
+            "has_dkim_record": false,
+            "has_return_path_record": false,
+            "has_dmarc_record": false,
+            "has_recipient_verification": false,
+            "has_custom_verification": false,
+            "verification_record": "kcjg6vrO8Q",
+            "id": "683f1172c4bad2524410b857",
+            "object": "domain",
+            "created_at": "2025-06-03T15:14:59.000Z",
+            "updated_at": "2025-06-03T15:14:59.254Z",
+            "storage_used": 0,
+            "storage_used_by_aliases": 0,
+            "storage_quota": 10737418240,
+            "smtp_dns_records": {
+              "dkim": {
+                "name": "fe-ebf3212716._domainkey",
+                "value": "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCcG+YBDPhyH8bLmyflmU9w1klYDeWpEufIlVqyWqly9lC+J/ntkKn4gum28EeE6vR+55x4JFCR8qSaw0YO1eCRwBgpFB0kKzbELHh2i2TKKwrqB3gPLXp4q4lbcGX2eD6fPCRwckTHqmiOzMhX8GD60zVlEvabok4LJ1i/BOyh6wIDAQAB;"
+              },
+              "return_path": {
+                "name": "fe-bounces",
+                "value": "forwardemail.net"
+              },
+              "dmarc": {
+                "name": "_dmarc",
+                "value": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-683f1172c4bad2524410b857@localhost;"
+              }
+            },
+            "link": "http://localhost:3000/my-account/domains/test.com"
+          }
+        ]
       },
-      "example": [
-        {
-          "has_newsletter": false,
-          "ignore_mx_check": false,
-          "retention_days": 0,
-          "has_regex": false,
-          "has_catchall": true,
-          "allowlist": [],
-          "denylist": [],
-          "restricted_alias_names": [],
-          "has_adult_content_protection": true,
-          "has_phishing_protection": true,
-          "has_executable_protection": true,
-          "has_virus_protection": true,
-          "is_catchall_regex_disabled": false,
-          "has_smtp": false,
-          "is_smtp_suspended": false,
-          "plan": "team",
-          "max_recipients_per_alias": 10,
-          "smtp_port": "25",
-          "name": "test.com",
-          "has_mx_record": false,
-          "has_txt_record": false,
-          "has_dkim_record": false,
-          "has_return_path_record": false,
-          "has_dmarc_record": false,
-          "has_recipient_verification": false,
-          "has_custom_verification": false,
-          "verification_record": "kcjg6vrO8Q",
-          "id": "683f1172c4bad2524410b857",
-          "object": "domain",
-          "created_at": "2025-06-03T15:14:59.000Z",
-          "updated_at": "2025-06-03T15:14:59.254Z",
-          "storage_used": 0,
-          "storage_used_by_aliases": 0,
-          "storage_quota": 10737418240,
-          "smtp_dns_records": {
-            "dkim": {
-              "name": "fe-ebf3212716._domainkey",
-              "value": "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCcG+YBDPhyH8bLmyflmU9w1klYDeWpEufIlVqyWqly9lC+J/ntkKn4gum28EeE6vR+55x4JFCR8qSaw0YO1eCRwBgpFB0kKzbELHh2i2TKKwrqB3gPLXp4q4lbcGX2eD6fPCRwckTHqmiOzMhX8GD60zVlEvabok4LJ1i/BOyh6wIDAQAB;"
-            },
-            "return_path": {
-              "name": "fe-bounces",
-              "value": "forwardemail.net"
-            },
-            "dmarc": {
-              "name": "_dmarc",
-              "value": "v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-683f1172c4bad2524410b857@localhost;"
-            }
-          },
-          "link": "http://localhost:3000/my-account/domains/test.com"
-        }
-      ]
-    },
-    "CreateDomainInput": {
+      "CreateDomainInput": {
         "type": "object",
-        "required": ["domain"],
+        "required": [
+          "domain"
+        ],
         "properties": {
           "domain": {
             "type": "string",
@@ -555,7 +1513,11 @@
           },
           "plan": {
             "type": "string",
-            "enum": ["free", "enhanced_protection", "team"],
+            "enum": [
+              "free",
+              "enhanced_protection",
+              "team"
+            ],
             "description": "Plan type (defaults to 'free' or the user's current paid plan)"
           },
           "catchall": {
@@ -609,7 +1571,9 @@
               },
               {
                 "type": "boolean",
-                "enum": [false],
+                "enum": [
+                  false
+                ],
                 "description": "Disable bounce webhook"
               }
             ]
@@ -625,8 +1589,12 @@
         "properties": {
           "smtp_port": {
             "oneOf": [
-              { "type": "string" },
-              { "type": "number" }
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
             ],
             "description": "Custom port to configure for SMTP forwarding (default is '25')"
           },
@@ -662,8 +1630,16 @@
           },
           "bounce_webhook": {
             "oneOf": [
-              { "type": "string", "format": "uri" },
-              { "type": "boolean", "enum": [false] }
+              {
+                "type": "string",
+                "format": "uri"
+              },
+              {
+                "type": "boolean",
+                "enum": [
+                  false
+                ]
+              }
             ],
             "description": "Webhook URL to receive bounce notifications, or false to disable"
           },
@@ -679,45 +1655,97 @@
           "user": {
             "type": "object",
             "properties": {
-              "email": { "type": "string", "format": "email" },
-              "display_name": { "type": "string" },
-              "id": { "type": "string" }
+              "email": {
+                "type": "string",
+                "format": "email"
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
             },
-            "required": ["email", "display_name", "id"]
+            "required": [
+              "email",
+              "display_name",
+              "id"
+            ]
           },
           "domain": {
             "type": "object",
             "properties": {
-              "name": { "type": "string" },
-              "id": { "type": "string" }
+              "name": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              }
             },
-            "required": ["name", "id"]
+            "required": [
+              "name",
+              "id"
+            ]
           },
-          "name": { "type": "string" },
+          "name": {
+            "type": "string"
+          },
           "labels": {
             "type": "array",
-            "items": { "type": "string" }
+            "items": {
+              "type": "string"
+            }
           },
-          "is_enabled": { "type": "boolean" },
-          "has_recipient_verification": { "type": "boolean" },
+          "is_enabled": {
+            "type": "boolean"
+          },
+          "has_recipient_verification": {
+            "type": "boolean"
+          },
           "verified_recipients": {
             "type": "array",
-            "items": { "type": "string", "format": "email" }
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
           },
           "pending_recipients": {
             "type": "array",
-            "items": { "type": "string", "format": "email" }
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
           },
           "recipients": {
             "type": "array",
-            "items": { "type": "string", "format": "email" }
+            "items": {
+              "type": "string",
+              "format": "email"
+            }
           },
-          "id": { "type": "string" },
-          "object": { "type": "string", "enum": ["alias"] },
-          "created_at": { "type": "string", "format": "date-time" },
-          "updated_at": { "type": "string", "format": "date-time" },
-          "storage_location": { "type": "string" },
-          "has_imap": { "type": "boolean" }
+          "id": {
+            "type": "string"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "alias"
+            ]
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "storage_location": {
+            "type": "string"
+          },
+          "has_imap": {
+            "type": "boolean"
+          }
         },
         "required": [
           "user",
@@ -778,7 +1806,10 @@
               },
               {
                 "type": "array",
-                "items": { "type": "string", "format": "email" },
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
                 "description": "Array of valid recipients"
               }
             ],
@@ -796,7 +1827,9 @@
               },
               {
                 "type": "array",
-                "items": { "type": "string" },
+                "items": {
+                  "type": "string"
+                },
                 "description": "Array of labels"
               }
             ]
@@ -811,7 +1844,11 @@
           },
           "error_code_if_disabled": {
             "type": "number",
-            "enum": [250, 421, 550],
+            "enum": [
+              250,
+              421,
+              550
+            ],
             "description": "Error code if alias is disabled. Defaults to 250"
           },
           "has_imap": {
@@ -867,7 +1904,10 @@
               },
               {
                 "type": "array",
-                "items": { "type": "string", "format": "email" },
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                },
                 "description": "Array of valid recipients"
               }
             ]
@@ -884,7 +1924,9 @@
               },
               {
                 "type": "array",
-                "items": { "type": "string" },
+                "items": {
+                  "type": "string"
+                },
                 "description": "Array of labels"
               }
             ]
@@ -899,7 +1941,11 @@
           },
           "error_code_if_disabled": {
             "type": "number",
-            "enum": [250, 421, 550],
+            "enum": [
+              250,
+              421,
+              550
+            ],
             "description": "Error code to use if alias is disabled (defaults to 250)"
           },
           "has_imap": {
@@ -1069,319 +2115,41 @@
         "schema": {
           "type": "string"
         }
-      }
-    },
-    "schemas": {
-      "Contact": {
-        "type": "object",
-        "required": ["id", "object"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Contact ID"
-          },
-          "fn": {
-            "type": "string",
-            "description": "Full name"
-          },
-          "given_name": {
-            "type": "string",
-            "description": "Given name"
-          },
-          "family_name": {
-            "type": "string",
-            "description": "Family name"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "description": "Email address"
-          },
-          "phone": {
-            "type": "string",
-            "description": "Phone number"
-          },
-          "organization": {
-            "type": "string",
-            "description": "Organization"
-          },
-          "title": {
-            "type": "string",
-            "description": "Job title"
-          },
-          "note": {
-            "type": "string",
-            "description": "Notes"
-          },
-          "etag": {
-            "type": "string",
-            "description": "ETag for caching and conflict detection"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          },
-          "object": {
-            "type": "string",
-            "example": "contact"
-          }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Contact ID",
+        "schema": {
+          "type": "string"
         }
       },
-      "Calendar": {
-        "type": "object",
-        "required": ["id", "name", "object"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Calendar ID"
-          },
-          "name": {
-            "type": "string",
-            "description": "Calendar name"
-          },
-          "description": {
-            "type": "string",
-            "description": "Calendar description"
-          },
-          "color": {
-            "type": "string",
-            "description": "Calendar color (hex code)",
-            "example": "#0066ff"
-          },
-          "timezone": {
-            "type": "string",
-            "description": "Calendar timezone",
-            "example": "UTC"
-          },
-          "order": {
-            "type": "integer",
-            "description": "Display order"
-          },
-          "etag": {
-            "type": "string",
-            "description": "ETag for caching and conflict detection"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          },
-          "object": {
-            "type": "string",
-            "example": "calendar"
-          }
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Calendar ID",
+        "schema": {
+          "type": "string"
         }
       },
-      "Message": {
-        "type": "object",
-        "required": ["id", "object"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Message ID"
-          },
-          "uid": {
-            "type": "integer",
-            "description": "Message UID"
-          },
-          "subject": {
-            "type": "string",
-            "description": "Message subject"
-          },
-          "from": {
-            "type": "object",
-            "description": "Sender information",
-            "properties": {
-              "address": {
-                "type": "string",
-                "format": "email"
-              },
-              "name": {
-                "type": "string"
-              }
-            }
-          },
-          "to": {
-            "type": "array",
-            "description": "Recipients",
-            "items": {
-              "type": "object",
-              "properties": {
-                "address": {
-                  "type": "string",
-                  "format": "email"
-                },
-                "name": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "cc": {
-            "type": "array",
-            "description": "CC recipients",
-            "items": {
-              "type": "object",
-              "properties": {
-                "address": {
-                  "type": "string",
-                  "format": "email"
-                },
-                "name": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "bcc": {
-            "type": "array",
-            "description": "BCC recipients",
-            "items": {
-              "type": "object",
-              "properties": {
-                "address": {
-                  "type": "string",
-                  "format": "email"
-                },
-                "name": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "date": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Message date"
-          },
-          "text": {
-            "type": "string",
-            "description": "Plain text content"
-          },
-          "html": {
-            "type": "string",
-            "description": "HTML content"
-          },
-          "attachments": {
-            "type": "array",
-            "description": "Message attachments",
-            "items": {
-              "type": "object",
-              "properties": {
-                "filename": {
-                  "type": "string"
-                },
-                "contentType": {
-                  "type": "string"
-                },
-                "size": {
-                  "type": "integer"
-                }
-              }
-            }
-          },
-          "flags": {
-            "type": "array",
-            "description": "Message flags",
-            "items": {
-              "type": "string"
-            }
-          },
-          "folder": {
-            "type": "string",
-            "description": "Folder/mailbox ID"
-          },
-          "etag": {
-            "type": "string",
-            "description": "ETag for caching and conflict detection"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          },
-          "object": {
-            "type": "string",
-            "example": "message"
-          }
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Folder ID or path",
+        "schema": {
+          "type": "string"
         }
       },
-      "Folder": {
-        "type": "object",
-        "required": ["id", "name", "path", "object"],
-        "properties": {
-          "id": {
-            "type": "string",
-            "description": "Folder ID"
-          },
-          "name": {
-            "type": "string",
-            "description": "Folder name"
-          },
-          "path": {
-            "type": "string",
-            "description": "Folder path"
-          },
-          "delimiter": {
-            "type": "string",
-            "description": "Path delimiter",
-            "example": "/"
-          },
-          "specialUse": {
-            "type": "string",
-            "description": "Special use flag",
-            "enum": ["\\Inbox", "\\Sent", "\\Drafts", "\\Trash", "\\Junk", "\\Archive"]
-          },
-          "subscribed": {
-            "type": "boolean",
-            "description": "Whether folder is subscribed"
-          },
-          "uidValidity": {
-            "type": "integer",
-            "description": "UID validity value"
-          },
-          "uidNext": {
-            "type": "integer",
-            "description": "Next UID value"
-          },
-          "modifyIndex": {
-            "type": "integer",
-            "description": "Modification index"
-          },
-          "etag": {
-            "type": "string",
-            "description": "ETag for caching and conflict detection"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Last update timestamp"
-          },
-          "object": {
-            "type": "string",
-            "example": "folder"
-          }
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Message ID",
+        "schema": {
+          "type": "string"
         }
       }
     },
@@ -1428,6 +2196,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1498,67 +2286,17 @@
       }
     }
   },
+
+
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Create account",
-        "description": "Create a new user account",
-        "tags": [
-          "Account"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "Email address"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Password"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Retrieve account",
-        "description": "Retrieve the current user's account information",
         "tags": [
           "Account"
         ],
+        "summary": "Retrieve account",
+        "description": "Retrieve your account information.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1575,50 +2313,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Update account",
-        "description": "Update the current user's account information",
         "tags": [
           "Account"
         ],
+        "summary": "Update account",
+        "description": "Update your account information.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "Email address"
+                    "description": "Display name"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "First name"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Last name"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Link to avatar image"
+                    "description": "Locale preference"
                   }
                 }
               }
@@ -1642,15 +2373,1373 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-             "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
     },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "List contacts",
+        "description": "Retrieve a list of all contacts for the authenticated alias. This endpoint supports pagination and returns contacts in CardDAV format.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Create contact",
+        "description": "Create a new contact. You can provide either vCard content directly or individual contact fields that will be converted to vCard format. If a contact with the same ID already exists, a conflict error will be returned.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Retrieve contact",
+        "description": "Retrieve a specific contact by its ID. The contact is returned in the standard Contact format with vCard content and parsed fields.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Update contact",
+        "description": "Update an existing contact. You can provide either updated vCard content or individual fields to update. The contact's vCard will be regenerated if individual fields are provided.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Delete contact",
+        "description": "Delete a specific contact permanently. This action cannot be undone.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "summary": "List calendars",
+        "description": "Retrieve a list of all calendars for the authenticated alias. This endpoint supports pagination and returns calendars in CalDAV format.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Calendars"
+        ],
+        "summary": "Create calendar",
+        "description": "Create a new calendar. The calendar name is required, while other properties like color, timezone, and description are optional. If a calendar with the same name already exists, a conflict error will be returned.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Calendars"
+        ],
+        "summary": "Retrieve calendar",
+        "description": "Retrieve a specific calendar by its ID. The calendar is returned with all its properties including name, description, color, timezone, and order.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Calendars"
+        ],
+        "summary": "Update calendar",
+        "description": "Update an existing calendar. You can update any of the calendar properties including name, description, color, timezone, and order. If you change the name to one that already exists, a conflict error will be returned.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Calendars"
+        ],
+        "summary": "Delete calendar",
+        "description": "Delete a specific calendar permanently. This action cannot be undone and will also delete all events within the calendar.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "List folders",
+        "description": "Retrieve a list of all IMAP folders/mailboxes for the authenticated alias. This endpoint supports pagination and filtering by subscription status.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Filter folders by subscription status",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Create folder",
+        "description": "Create a new IMAP folder/mailbox. The folder path is required and can include parent folders (e.g., 'INBOX/Subfolder'). If the parent folders don't exist, they will be created automatically.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Retrieve folder",
+        "description": "Retrieve a specific folder by its ID or path. You can use either the folder's ObjectID or its full path (e.g., 'INBOX/Subfolder') as the identifier.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Update folder",
+        "description": "Update/rename an existing folder. This operation renames the folder to the new path specified in the request body. You can use either the folder's ObjectID or its current path as the identifier.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Folders"
+        ],
+        "summary": "Delete folder",
+        "description": "Delete a specific folder permanently. This action cannot be undone and will also delete all messages within the folder. You can use either the folder's ObjectID or its path as the identifier.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "List and search messages",
+        "description": "Retrieve a list of messages with advanced search and filtering capabilities. This endpoint supports pagination and comprehensive search across message content, headers, flags, and metadata. You can search by folder, flags, content, headers, date ranges, size, and more.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Filter messages by folder path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Filter by read status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Filter by flagged status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Filter by deleted status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Filter by draft status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Filter by junk/spam status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Filter by copied status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Filter by searchable status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Filter by expired status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Filter by attachment presence",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Filter by attachment presence (alias for has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Search in message subject",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Search in message body/text",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Search in message text (alias for body)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Search in all message headers",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Search by Message-ID header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "General search across headers and text",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "General search (alias for search)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filter messages since this date (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Filter messages before this date (ISO 8601 format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Filter messages with minimum size in bytes",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Filter messages with maximum size in bytes",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Search by From header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Search by To header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Search by CC header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Search by BCC header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Search by Date header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Search by Reply-To header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Create message",
+        "description": "Create/append a new message to a folder. This endpoint accepts standard Nodemailer message format and allows you to specify the target folder and initial flags. If the target folder doesn't exist, it will be created automatically.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Retrieve message",
+        "description": "Retrieve a specific message by its ID. By default, the response includes the parsed Nodemailer object and raw message content. You can control what's included using query parameters.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Return raw EML format instead of JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Include parsed Nodemailer object",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Include attachments in Nodemailer object",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Include raw message content",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Update message",
+        "description": "Update an existing message. You can modify the message flags or move it to a different folder. If the target folder doesn't exist, it will be created automatically.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Return raw EML format instead of JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Messages"
+        ],
+        "summary": "Delete message",
+        "description": "Delete a specific message permanently. This action cannot be undone and will permanently remove the message from storage. Unlike IMAP clients which typically move messages to Trash, this endpoint performs a hard delete.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+
+
     "/v1/logs/download": {
       "get": {
         "summary": "Download logs",
@@ -2144,7 +4233,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2257,7 +4346,9 @@
         "summary": "Verify domain SMTP records",
         "description": "Verifies the SMTP-related DNS records for the specified domain.",
         "operationId": "verifySmtpRecords",
-        "tags": ["Domains"],
+        "tags": [
+          "Domains"
+        ],
         "parameters": [
           {
             "name": "domain_id",
@@ -2303,7 +4394,9 @@
       "post": {
         "summary": "Create domain-wide catch-all password",
         "description": "Creates a domain-wide catch-all password. If no password is provided, a secure random one will be generated.",
-        "tags": ["Domains"],
+        "tags": [
+          "Domains"
+        ],
         "parameters": [
           {
             "name": "domain_id",
@@ -2356,7 +4449,10 @@
                       "description": "Description of the catch-all password"
                     }
                   },
-                  "required": ["id", "description"]
+                  "required": [
+                    "id",
+                    "description"
+                  ]
                 },
                 "example": {
                   "id": "6841ec462bd583c73d0632dd",
@@ -2373,7 +4469,9 @@
         "summary": "List domain-wide catch-all passwords",
         "description": "Returns a list of domain-wide catch-all passwords that are currently configured for the specified domain.",
         "operationId": "listCatchAllPasswords",
-        "tags": ["Domains"],
+        "tags": [
+          "Domains"
+        ],
         "parameters": [
           {
             "name": "domain_id",
@@ -2412,7 +4510,10 @@
                         "example": "foo bar"
                       }
                     },
-                    "required": ["id", "description"]
+                    "required": [
+                      "id",
+                      "description"
+                    ]
                   },
                   "example": [
                     {
@@ -2444,7 +4545,9 @@
       "delete": {
         "summary": "Remove domain-wide catch-all password",
         "description": "Deletes a domain-wide catch-all password using the provided token ID.",
-        "tags": ["Domains"],
+        "tags": [
+          "Domains"
+        ],
         "parameters": [
           {
             "name": "domain_id",
@@ -2830,7 +4933,10 @@
                       "example": "some-generated-password"
                     }
                   },
-                  "required": ["username", "password"]
+                  "required": [
+                    "username",
+                    "password"
+                  ]
                 }
               }
             }
@@ -3172,876 +5278,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "List contacts",
-        "description": "List all contacts (CardDAV)",
-        "tags": [
-          "Alias Contacts"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/page"
-          },
-          {
-            "$ref": "#/components/parameters/limit"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of contacts",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Contact"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      },
-      "post": {
-        "summary": "Create contact",
-        "description": "Create a new contact (CardDAV)",
-        "tags": [
-          "Alias Contacts"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["fn"],
-                "properties": {
-                  "fn": {
-                    "type": "string",
-                    "description": "Full name"
-                  },
-                  "given_name": {
-                    "type": "string",
-                    "description": "Given name"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Family name"
-                  },
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "Email address"
-                  },
-                  "phone": {
-                    "type": "string",
-                    "description": "Phone number"
-                  },
-                  "organization": {
-                    "type": "string",
-                    "description": "Organization"
-                  },
-                  "title": {
-                    "type": "string",
-                    "description": "Job title"
-                  },
-                  "note": {
-                    "type": "string",
-                    "description": "Notes"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Contact created successfully",
-            "headers": {
-              "ETag": {
-                "description": "Entity tag for caching",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Contact"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "409": {
-            "$ref": "#/components/responses/Conflict"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Contact ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Retrieve contact",
-        "description": "Retrieve a specific contact (CardDAV). This endpoint is coming soon.",
-        "tags": [
-          "Alias Contacts"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update contact",
-        "description": "Update a specific contact (CardDAV). This endpoint is coming soon.",
-        "tags": [
-          "Alias Contacts"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete contact",
-        "description": "Delete a specific contact (CardDAV). This endpoint is coming soon.",
-        "tags": [
-          "Alias Contacts"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "List calendars",
-        "description": "List all calendars (CalDAV)",
-        "tags": [
-          "Alias Calendars"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/page"
-          },
-          {
-            "$ref": "#/components/parameters/limit"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of calendars",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Calendar"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          }
-        }
-      },
-      "post": {
-        "summary": "Create calendar",
-        "description": "Create a new calendar (CalDAV). This endpoint is coming soon.",
-        "tags": [
-          "Alias Calendars"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Calendar ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Retrieve calendar",
-        "description": "Retrieve a specific calendar (CalDAV). This endpoint is coming soon.",
-        "tags": [
-          "Alias Calendars"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update calendar",
-        "description": "Update a specific calendar (CalDAV). This endpoint is coming soon.",
-        "tags": [
-          "Alias Calendars"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete calendar",
-        "description": "Delete a specific calendar (CalDAV). This endpoint is coming soon.",
-        "tags": [
-          "Alias Calendars"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "List and search for messages",
-        "description": "List and search for messages (IMAP/POP3)",
-        "tags": [
-          "Alias Messages"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/page"
-          },
-          {
-            "$ref": "#/components/parameters/limit"
-          },
-          {
-            "name": "folder",
-            "in": "query",
-            "description": "Filter messages by folder path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "unread_only",
-            "in": "query",
-            "description": "Filter to only unread messages",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "flagged_only",
-            "in": "query",
-            "description": "Filter to only flagged messages",
-            "schema": {
-              "type": "boolean"
-            }
-          },
-          {
-            "name": "search",
-            "in": "query",
-            "description": "General search across subject, body, from, to fields",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "q",
-            "in": "query",
-            "description": "Alias for search parameter",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "subject",
-            "in": "query",
-            "description": "Search in message subject",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "body",
-            "in": "query",
-            "description": "Search in message body content",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "text",
-            "in": "query",
-            "description": "Search in message text content (alias for body)",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "from",
-            "in": "query",
-            "description": "Search in sender address or name",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "to",
-            "in": "query",
-            "description": "Search in recipient address or name",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cc",
-            "in": "query",
-            "description": "Search in CC recipient address or name",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "headers",
-            "in": "query",
-            "description": "Search in message headers",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "message_id",
-            "in": "query",
-            "description": "Search by message ID",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "since",
-            "in": "query",
-            "description": "Filter messages since this date (ISO 8601 format)",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "before",
-            "in": "query",
-            "description": "Filter messages before this date (ISO 8601 format)",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "min_size",
-            "in": "query",
-            "description": "Filter messages with minimum size in bytes",
-            "schema": {
-              "type": "integer",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "max_size",
-            "in": "query",
-            "description": "Filter messages with maximum size in bytes",
-            "schema": {
-              "type": "integer",
-              "minimum": 0
-            }
-          },
-          {
-            "name": "has_attachments",
-            "in": "query",
-            "description": "Filter messages by attachment presence",
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of messages",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Message"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          }
-        }
-      },
-      "post": {
-        "summary": "Create message",
-        "description": "Create a new message (IMAP/POP3). This will NOT send an email – it will only simply add the message to your mailbox folder (similar to the IMAP APPEND command). This endpoint is coming soon.",
-        "tags": [
-          "Alias Messages"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Message ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Retrieve message",
-        "description": "Retrieve a specific message (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Messages"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update message",
-        "description": "Update a specific message (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Messages"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete message",
-        "description": "Delete a specific message (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Messages"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "List folders",
-        "description": "List all folders (IMAP/POP3)",
-        "tags": [
-          "Alias Folders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/page"
-          },
-          {
-            "$ref": "#/components/parameters/limit"
-          },
-          {
-            "name": "subscribed_only",
-            "in": "query",
-            "description": "Filter to only subscribed folders",
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "List of folders",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Folder"
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          }
-        }
-      },
-      "post": {
-        "summary": "Create folder",
-        "description": "Create a new folder (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Folders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Folder ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Retrieve folder",
-        "description": "Retrieve a specific folder (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Folders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Update folder",
-        "description": "Update a specific folder (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Folders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete folder",
-        "description": "Delete a specific folder (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Folders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Folder ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Copy folder",
-        "description": "Copy a specific folder (IMAP/POP3). This endpoint is coming soon.",
-        "tags": [
-          "Alias Folders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -4078,20 +5314,21 @@
       "description": "Encryption endpoints"
     },
     {
-      "name": "Alias Contacts",
-      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!WARNING]\n>This endpoint section is a work in progress and will be released (hopefully) in 2025. In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website."
+      "name": "Contacts",
+      "description": "Alias contacts management endpoints (CardDAV)\n\n>[!NOTE]\n>Unlike other API endpoints, these require Authentication \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n>These endpoints provide full CRUD operations for contact management with vCard support, including creation, retrieval, updating, and deletion of contacts. You can provide either vCard content directly or individual contact fields that will be converted to vCard format."
     },
     {
-      "name": "Alias Calendars",
-      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!WARNING]\n> This endpoint section is a work in progress and will be released (hopefully) in 2025.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website."
+      "name": "Calendars",
+      "description": "Alias calendars management endpoints (CalDAV)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide complete calendar management with timezone and color support, including creation, retrieval, updating, and deletion of calendars. Calendar names are required, while other properties like color, timezone, and description are optional."
     },
     {
-      "name": "Alias Messages",
-      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n> [!WARNING]\n> This endpoint section is a work in progress and will be released (hopefully) in 2025.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website.\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Messages",
+      "description": "Alias messages management endpoints (IMAP/POP3)\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide comprehensive message management with advanced search capabilities. You can search by folder, flags, content, headers, date ranges, size, and more. Messages can be created using standard Nodemailer format and support moving between folders and flag management.\n\nPlease ensure that you have followed setup instructions for your domain.\nThese instructions can be found in our FAQ section [Do you support receiving email with IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Alias Folders",
-      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!WARNING]\n> This endpoint section is a work in progress and will be released (hopefully) in 2025.  In the interim please use an IMAP client from the \"Apps\" dropdown in the navigation of our website."
+      "name": "Folders",
+      "description": "Alias folders management endpoints (IMAP/POP3)\n\n>[!TIP]\n> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.\n\n>[!NOTE]\n> Unlike other API endpoints, these require [Authentication](#description/authentication) \"username\" equal to the alias username and \"password\" equal to the alias generated password as Basic Authorization headers.\n\n>[!TIP]\n> These endpoints provide full folder management including creation, renaming, and deletion. Folder paths can include parent folders (e.g., 'INBOX/Subfolder'), and parent folders will be created automatically if they don't exist."
     }
   ]
 }
+

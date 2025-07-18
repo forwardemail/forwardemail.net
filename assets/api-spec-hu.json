@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Üdvözöljük az Email továbbítása átfogó API dokumentációjában. Ez az API lehetővé teszi az e-mail továbbítás, domainek, aliasok, kimenő e-mailek és egyebek programozott kezelését.\n\n## Főbb jellemzők\n* **Domainkezelés:** Domainek létrehozása, lekérése, frissítése, törlése és ellenőrzése.\n* **Aliaskezelés:** E-mail aliasok kezelése, beleértve a létrehozást, a frissítéseket és a címzettek kezelését.\n* **Kimenő SMTP:** E-mailek küldése SMTP-n keresztül, korlátok kezelése és az elküldött e-mailek nyomon követése.\n* **Fiók és naplók:** Fiókadatok kezelése és tevékenységnaplók letöltése.\n* **Biztonság:** TXT rekordok titkosítása és domain tagok/meghívók kezelése.\n* **Hamarosan:** Tervben vannak olyan funkciók, mint a CardDAV névjegyek, a CalDAV naptárak és az IMAP/POP3 üzenet-/mappakezelés.\n\n## Hitelesítés\nA legtöbb végpont hitelesítést igényel az **API-kulccsal**. Adja meg az API-kulcsot `felhasználónév`-ként az alapvető hitelesítési fejlécben, a jelszó mezőt hagyja üresen.\n\n```http\nEngedélyezés: Alap QVBJX1RPS0VOOg==\n```\n(Cserélje ki az `API_TOKEN` részt a tényleges kulcsára a Base64 kódolás előtt)\n\nAz **Névjegyek, naptárak, üzenetek és mappák aliasai** (jelenleg \"Hamarosan\" jelölésűek) egy generált alias felhasználónevet és jelszót fognak használni az alapvető hitelesítéshez.\n\n## Hibák\nAz API szabványos HTTP állapotkódokat használ a siker vagy a sikertelenség jelzésére. A hibaválaszok egy JSON törzset tartalmaznak egy `üzenet` mezővel, amely részletezi a hibát.\n\n| Állapotkód | Jelentés |\n|-------------|--------------------|\n| 200 | OK |\n| 400 | Hibás kérés |\n| 401 | Jogosulatlan |\n| 403 | Tiltott |\n| 404 | Nem található |\n| 429 | Túl sok kérés |\n| 500 | Belső szerverhiba|\n| 501 | Nincs megvalósítva |\n| 502 | Hibás átjáró |\n| 503 | Szolgáltatás nem elérhető |\n| 504 | Átjáró időtúllépése |\n\n*Ha `5xx` hibát tapasztal, kérjük, vegye fel a kapcsolatot a [api@forwardemail.net] címen (mailto:api@forwardemail.net).*\n\n## Lokalizáció\nAz API-válaszok a felhasználó által észlelt területi beállítás vagy az `Accept-Language` fejléc alapján kerülnek lefordításra. Több mint 25 nyelv támogatott.\n\n## Lapozás\nA listákat visszaadó végpontok támogatják a lapozást lekérdezési paramétereken keresztül.\n\n| Paraméter | Típus | Opcionális | Leírás | Alapértelmezett | Korlátozások |\n|---------------|----------|-----------|----------------------------------------------------------------------|---------|------------------------|\n| `oldal` | Egész szám | Igen | Találatok száma oldalonként. | 10 | `>= 1`, `<= 50` |\n| `oldalszámozás` | Logikai érték | Igen | Oldalszámozási viselkedés engedélyezése (egyes végpontokhoz 2024. november 1. előtt kötelező). | false | |\n\n**Oldalszámozási fejlécek:**\n* `X-Page-Count`: Teljes oldalszám.\n* `X-Page-Current`: Aktuális oldalszám.\n* `X-Page-Size`: Elemek száma az aktuális oldalon.\n* `X-Item-Count`: Az összes oldalon található elemek teljes száma.\n* `Link`: Navigációs linkek (előző, következő, első, utolsó).\n\n**Példa:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Ajánlott függvénykönyvtárak\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Karbantartó: Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Üdvözöljük az Email továbbítása átfogó API dokumentációjában. Ez az API lehetővé teszi az e-mail továbbításának, domainek, aliasok, kimenő e-mailek és egyebek programozott kezelését.\n\n## Főbb jellemzők\n* **Domainkezelés:** Domainek létrehozása, lekérése, frissítése, törlése és ellenőrzése.\n* **Aliaskezelés:** E-mail aliasok kezelése, beleértve a létrehozást, a frissítéseket és a címzettek kezelését.\n* **Kimenő SMTP:** E-mailek küldése SMTP-n keresztül, korlátok kezelése és az elküldött e-mailek nyomon követése.\n* **Fiók és naplók:** Fiókadatok kezelése és tevékenységnaplók letöltése.\n* **Biztonság:** TXT rekordok titkosítása és domain tagok/meghívók kezelése.\n* **CardDAV névjegyek:** Teljes CRUD műveletek a névjegyek kezeléséhez vCard támogatással.\n* **CalDAV naptárak:** Teljes naptárkezelés időzóna- és színtámogatással.\n* **IMAP/POP3 üzenetek:** Átfogó üzenetkezelés fejlett keresési lehetőségekkel.\n* **IMAP/POP3 mappák:** Teljes mappakezelés, beleértve a létrehozást, átnevezést és törlést.\n\n## Hitelesítés\nA legtöbb végpont hitelesítést igényel az **API-kulccsal**. Adja meg az API-kulcsot `felhasználónév`-ként az Alapvető hitelesítés fejlécben, a jelszó mezőt hagyja üresen.\n\n```http\nEngedélyezés: Alap QVBJX1RPS0VOOg==\n```\n(Cserélje ki az `API_TOKEN`-t a tényleges kulcsára a Base64 kódolás előtt)\n\nAz **Névjegyek, Naptárak, Üzenetek és Mappák** aliasokhoz kapcsolódó végpontok generált alias felhasználónevet és jelszót igényelnek az Alapvető hitelesítéshez.\n\n## Hibák\nAz API szabványos HTTP állapotkódokat használ a siker vagy a sikertelenség jelzésére. A hibaválaszok egy JSON törzset tartalmaznak egy `üzenet` mezővel, amely részletezi a hibát.\n\n| Állapotkód | Jelentés |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Hibás kérés |\n| 401 | Jogosulatlan |\n| 403 | Tiltott |\n| 404 | Nem található |\n| 409 | Ütközés |\n| 412 | Előfeltétel sikertelen |\n| 429 | Túl sok kérés |\n| 500 | Belső szerverhiba|\n| 501 | Nincs megvalósítva |\n| 502 | Hibás átjáró |\n| 503 | Szolgáltatás nem érhető el |\n| 504 | Átjáró időtúllépése |\n\n*Ha `5xx` hibát tapasztal, kérjük, vegye fel a kapcsolatot a [api@forwardemail.net](mailto:api@forwardemail.net) címen.*\n\n## Lokalizáció\nAz API-válaszok a felhasználó által észlelt területi beállítás vagy az `Accept-Language` fejléc alapján kerülnek lefordításra. Több mint 25 nyelv támogatott.\n\n## Lapozás\nA listákat visszaadó végpontok támogatják a lapozást lekérdezési paramétereken keresztül.\n\n| Paraméter | Típus | Opcionális | Leírás | Alapértelmezett | Korlátozások |\n|---------------|----------|----------|------------------------------------------------------------------------|---------|-------------------------|\n| `oldal` | Egész szám | Igen | A lekérendő oldalszám. | 1 | `>= 1` |\n| `korlát` | Egész szám | Igen | Találatok száma oldalonként. | 10 | `>= 1`, `<= 50` |\n| `oldalszámozás` | Logikai érték | Igen | Oldalszámozási viselkedés engedélyezése (egyes végpontokhoz 2024. november 1. előtt kötelező). | false | |\n\n**Oldalszámozási fejlécek:**\n* `X-Page-Count`: Teljes oldalszám.\n* `X-Page-Current`: Aktuális oldalszám.\n* `X-Page-Size`: Az aktuális oldalon található elemek száma.\n* `X-Item-Count`: Az összes oldalon található elemek teljes száma.\n* `Link`: Navigációs linkek (előző, következő, első, utolsó).\n\n**Példa:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Ajánlott függvénykönyvtárak\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Karbantartó: Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nHasználja a létrehozott **alias felhasználónevet és jelszót** az alapvető hitelesítéshez. Ez a következő végpontokra vonatkozik:\n* Alias névjegyek (CardDAV)\n* Alias naptárak (CalDAV)\n* Alias üzenetek (IMAP/POP3)\n* Alias mappák (IMAP/POP3)\n\n*(Megjegyzés: Ezek a funkciók jelenleg „Hamarosan” jelöléssel vannak ellátva)*\n\n**Példa:**\nHa az alias felhasználónév `alias@domain.com` és a jelszó `GENERATED_PASSWORD`, akkor a Base64 kódolású érték `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64` lenne.\n\n```http\nEngedélyezés: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nHasználja a létrehozott **alias felhasználónevet és jelszót** az alapvető hitelesítéshez. Ez a következő végpontokra vonatkozik:\n* Alias névjegyek (CardDAV)\n* Alias naptárak (CalDAV)\n* Alias üzenetek (IMAP/POP3)\n* Alias mappák (IMAP/POP3)\n\n**Példa:**\nHa az alias felhasználónév `alias@domain.com` és a jelszó `GENERATED_PASSWORD`, akkor a Base64 kódolású érték `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64` lenne.\n\n```http\nEngedélyezés: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kapcsolattartó azonosítója (contact_id a CardDAV-ból)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Kapcsolattartó UID-ja"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kapcsolattartó teljes neve"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard-tartalom"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag a verziókezeléshez"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "A kontakt csoportos jellege"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "E-mail címek tömbje"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefonszámok tömbje"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard tartalom (ha nincs megadva, akkor más mezőkből generálódik)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kapcsolattartó teljes neve"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Egyéni kapcsolattartó azonosító (ha nincs megadva, automatikusan generálódik)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Kapcsolattartói UID (ha nincs megadva, automatikusan generálódik)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "E-mail címek tömbje"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefonszámok tömbje"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefonszámok tömbje (a phone_numbers aliasa)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Címek tömbje"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "A kontakt csoport-e"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-tartalom"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kapcsolattartó teljes neve"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "E-mail címek tömbje"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefonszámok tömbje"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefonszámok tömbje (a phone_numbers aliasa)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Címek tömbje"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "A kontakt csoportos jellege"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Naptárazonosító (calendarId a CalDAV-tól)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Naptár neve"
+          },
+          "description": {
+            "type": "string",
+            "description": "Naptár leírása"
+          },
+          "color": {
+            "type": "string",
+            "description": "Naptár színe (hex formátum)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Naptár időzónája"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Naptár megjelenítési sorrendje"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Naptár neve"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Egyéni naptár azonosító (ha nincs megadva, automatikusan generálódik)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Naptár leírása"
+          },
+          "color": {
+            "type": "string",
+            "description": "Naptár színe (hexadecimális formátum, ha nincs megadva, automatikusan generálódik)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Naptár időzónája (alapértelmezés szerint a felhasználó időzónája vagy UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Naptár megjelenítési sorrendje (alapértelmezett érték: 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Naptár neve"
+          },
+          "description": {
+            "type": "string",
+            "description": "Naptár leírása"
+          },
+          "color": {
+            "type": "string",
+            "description": "Naptár színe (hex formátum)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Naptár időzónája"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Naptár megjelenítési sorrendje"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Mappa azonosítója"
+          },
+          "path": {
+            "type": "string",
+            "description": "Teljes mappaútvonal"
+          },
+          "name": {
+            "type": "string",
+            "description": "Mappa neve (az elérési út utolsó része)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Szülőmappa elérési útja"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID érvényesség"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Következő UID érték"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Módosítási index"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "A mappa feliratkozása"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mappajelzők"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Üzenetmegőrzési időszak"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Különleges felhasználási megnevezés"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Mappa elérési útja/neve"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Új mappa elérési útja/neve"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Üzenetazonosító"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Szálkezelés gyökérüzenet-azonosítója"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Az üzenetet tartalmazó mappaazonosító"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Az üzenetet tartalmazó mappa elérési útja"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Beszélgetéscsoport szálazonosítója"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Üzenetazonosító fejlécérték"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Az üzenet olvasatlan-e"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Megjelölt üzenet"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Az üzenet törlődik-e"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Az üzenet vázlat-e"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Az üzenet levélszemét/spam-e"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Hogy az üzenet másolva van-e"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Az üzenet kereshető-e"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Az üzenet lejárt-e"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Hogy az üzenet tartalmaz-e mellékleteket"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Üzenetmegőrzési dátum"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Belső dátum (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Üzenetfejlécekből származó dátum"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Üzenet tárgya"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-jelzők"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Üzenet mérete bájtban"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Módosítási sorrend"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Tranzakció típusa"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Távoli IP-cím"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Elemzett üzenetobjektum (alapértelmezés szerint benne van, a kizáráshoz állítsa be a ?nodemailer=false értéket)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Nyers üzenettartalom (alapértelmezés szerint tartalmazza, a kizáráshoz állítsa be a ?raw=false értéket)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Feladó e-mail címe"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Címzett e-mail címei"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Másolatot kapó címzettek e-mail címei"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Titkos másolatot kapó címzett e-mail címei"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Üzenet tárgya"
+          },
+          "text": {
+            "type": "string",
+            "description": "Sima szöveges tartalom"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML-tartalom"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Üzenetmellékletek (Nodemailer formátum)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Célmappa (alapértelmezés szerint a BEJELENTKEZŐK mappa)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "IMAP-jelzők beállítása az üzenethez"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-jelzők beállítása az üzenethez"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Üzenet áthelyezése ebbe a mappába"
+          }
         }
       },
       "Email": {
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Azonosító álnevek",
+        "description": "Alias azonosító",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "E-mail azonosító",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kapcsolattartó azonosítója",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Naptár azonosítója",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Mappaazonosító vagy elérési út",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Üzenetazonosító",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Fiók létrehozása",
-        "description": "Új felhasználói fiók létrehozása",
-        "tags": [
-          "Fiók"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "E-mail cím"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Jelszó"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Fiók lekérése",
-        "description": "A jelenlegi felhasználó fiókadatainak lekérése",
         "tags": [
           "Fiók"
         ],
+        "summary": "Fiók lekérése",
+        "description": "Fiókadatok lekérése.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Fiók frissítése",
-        "description": "Frissítse a jelenlegi felhasználó fiókadatait",
         "tags": [
           "Fiók"
         ],
+        "summary": "Fiók frissítése",
+        "description": "Frissítse fiókadatait.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "E-mail cím"
+                    "description": "Megjelenített név"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Keresztnév"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Vezetéknév"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Link az avatar képhez"
+                    "description": "Helyi beállítás"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Kapcsolatok"
+        ],
+        "summary": "Kapcsolatok listázása",
+        "description": "A hitelesített aliashoz tartozó összes kapcsolattartó listájának lekérése. Ez a végpont támogatja a lapozást, és CardDAV formátumban adja vissza a kapcsolatokat.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kapcsolatok"
+        ],
+        "summary": "Kapcsolat létrehozása",
+        "description": "Hozzon létre egy új kapcsolattartót. Megadhatja közvetlenül a vCard tartalmat, vagy az egyes kapcsolattartói mezőket, amelyeket a rendszer vCard formátumba konvertál. Ha már létezik egy azonos azonosítójú kapcsolattartó, ütközési hiba jelenik meg.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Kapcsolatok"
+        ],
+        "summary": "Kapcsolatfelvétel",
+        "description": "Egy adott kapcsolat lekérése az azonosítója alapján. A kapcsolat a szabványos kapcsolatfelvételi formátumban, vCard tartalommal és elemzett mezőkkel kerül visszaadásra.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kapcsolatok"
+        ],
+        "summary": "Kapcsolat frissítése",
+        "description": "Meglévő kapcsolat frissítése. Megadhat frissített vCard-tartalmat vagy egyes mezőket a frissítéshez. A kapcsolat vCard-ja újragenerálódik, ha az egyes mezőket megadja.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kapcsolatok"
+        ],
+        "summary": "Kapcsolat törlése",
+        "description": "Egy adott kapcsolat végleges törlése. Ez a művelet nem vonható vissza.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Naptárak"
+        ],
+        "summary": "Naptárak listázása",
+        "description": "A hitelesített aliashoz tartozó összes naptár listájának lekérése. Ez a végpont támogatja a lapozást, és CalDAV formátumú naptárakat ad vissza.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Naptárak"
+        ],
+        "summary": "Naptár létrehozása",
+        "description": "Hozzon létre egy új naptárat. A naptár neve kötelező, míg a többi tulajdonság, például a szín, az időzóna és a leírás opcionális. Ha már létezik egy azonos nevű naptár, ütközési hiba jelenik meg.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Naptárak"
+        ],
+        "summary": "Naptár lekérése",
+        "description": "Egy adott naptár lekérése az azonosítója alapján. A naptár minden tulajdonságával együtt visszaadásra kerül, beleértve a nevet, leírást, színt, időzónát és sorrendet.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Naptárak"
+        ],
+        "summary": "Naptár frissítése",
+        "description": "Meglévő naptár frissítése. A naptár bármelyik tulajdonságát frissítheti, beleértve a nevet, a leírást, a színt, az időzónát és a sorrendet. Ha a nevet egy már létező névre módosítja, ütközési hiba keletkezik.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Naptárak"
+        ],
+        "summary": "Naptár törlése",
+        "description": "Egy adott naptár végleges törlése. Ez a művelet nem vonható vissza, és a naptárban található összes eseményt is törli.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Mappák"
+        ],
+        "summary": "Mappák listázása",
+        "description": "A hitelesített aliashoz tartozó összes IMAP-mappa/postafiók listájának lekérése. Ez a végpont támogatja a lapozást és a feliratkozási állapot szerinti szűrést.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Mappák szűrése előfizetési állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mappák"
+        ],
+        "summary": "Mappa létrehozása",
+        "description": "Hozzon létre egy új IMAP mappát/postafiókot. A mappa elérési útja kötelező, és tartalmazhat szülőmappákat (pl. „BEJELENTKEZŐK/Almappa”). Ha a szülőmappák nem léteznek, a rendszer automatikusan létrehozza őket.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Mappák"
+        ],
+        "summary": "Visszaállítási mappa",
+        "description": "Egy adott mappa lekérése azonosító vagy elérési út alapján. Azonosítóként használhatja a mappa objektumazonosítóját vagy teljes elérési útját (pl. „BEJELENTKEZŐ/Almappa”).",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Mappák"
+        ],
+        "summary": "Mappa frissítése",
+        "description": "Meglévő mappa frissítése/átnevezése. Ez a művelet átnevezi a mappát a kérés törzsében megadott új elérési útra. Azonosítóként használhatja a mappa objektumazonosítóját vagy az aktuális elérési útját.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mappák"
+        ],
+        "summary": "Mappa törlése",
+        "description": "Egy adott mappa végleges törlése. Ez a művelet nem vonható vissza, és a mappában található összes üzenetet is törli. Azonosítóként használhatja a mappa objektumazonosítóját vagy az elérési útját.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Üzenetek"
+        ],
+        "summary": "Üzenetek listázása és keresése",
+        "description": "Üzenetlista lekérése speciális keresési és szűrési képességekkel. Ez a végpont támogatja a lapozást és az átfogó keresést az üzenetek tartalmában, fejléceiben, jelzőiben és metaadataiban. Kereshet mappa, jelzők, tartalom, fejlécek, dátumtartományok, méret és egyebek szerint.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Üzenetek szűrése mappaútvonal szerint",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Szűrés olvasási állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Szűrés megjelölt állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Szűrés törölt állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Szűrés vázlat állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Szűrés levélszemét/spam állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Szűrés másolt állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Szűrés kereshető állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Szűrés lejárt állapot szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Szűrés melléklet jelenléte szerint",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Szűrés melléklet jelenléte szerint (alias a has_attachments-hez)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Keresés az üzenet tárgyában",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Keresés az üzenet szövegében/törzsében",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Keresés az üzenet szövegében (szövegtörzs aliasa)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Keresés az összes üzenetfejlécben",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Keresés üzenetazonosító fejléc alapján",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Általános keresés fejlécekben és szövegben",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Általános keresés (keresés alias)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Üzenetek szűrése ettől a dátumtól (ISO 8601 formátum)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Üzenetek szűrése ezen dátum előtt (ISO 8601 formátum)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Üzenetek szűrése minimális bájtméretűre",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Üzenetek szűrése maximális bájtméretűre",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Keresés a Feladó fejléc alapján",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Keresés Címzett fejléc szerint",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Keresés CC fejléc alapján",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Keresés BCC fejléc alapján",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Keresés dátum alapján fejléc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Keresés válaszcím fejléc alapján",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Üzenetek"
+        ],
+        "summary": "Üzenet létrehozása",
+        "description": "Új üzenet létrehozása/hozzáfűzése egy mappához. Ez a végpont elfogadja a szabványos Nodemailer üzenetformátumot, és lehetővé teszi a célmappa és a kezdeti jelzők megadását. Ha a célmappa nem létezik, automatikusan létrejön.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Üzenetek"
+        ],
+        "summary": "Üzenet lekérése",
+        "description": "Egy adott üzenet lekérése az azonosítója alapján. Alapértelmezés szerint a válasz tartalmazza az elemzett Nodemailer objektumot és a nyers üzenet tartalmát. A tartalmat lekérdezési paraméterek segítségével szabályozhatja.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Nyers EML formátumot ad vissza JSON helyett",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Elemzett Nodemailer objektum belefoglalása",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Mellékletek beillesztése a Nodemailer objektumba",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Nyers üzenettartalom belefoglalása",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Üzenetek"
+        ],
+        "summary": "Üzenet frissítése",
+        "description": "Meglévő üzenet frissítése. Módosíthatja az üzenet jelzőit, vagy áthelyezheti az üzenetet egy másik mappába. Ha a célmappa nem létezik, a rendszer automatikusan létrehozza.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Nyers EML formátumot ad vissza JSON helyett",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Üzenetek"
+        ],
+        "summary": "Üzenet törlése",
+        "description": "Egy adott üzenet végleges törlése. Ez a művelet nem vonható vissza, és véglegesen eltávolítja az üzenetet a tárhelyről. Az IMAP-kliensekkel ellentétben, amelyek jellemzően a Kukába helyezik az üzeneteket, ez a végpont végleges törlést hajt végre.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1715,7 +3937,7 @@
       },
       "post": {
         "summary": "Kimenő SMTP e-mail létrehozása",
-        "description": "Az e-mailek létrehozására szolgáló API-nkat a Nodemailer üzenetbeállítás-konfigurációja ihlette és hasznosítja. Kérjük, az alábbi törzsparaméterek esetében a [Nodemailer üzenetkonfigurációját](https://nodemailer.com/message/) használja.\n\nVegye figyelembe, hogy az `envelope` és a `dkim` kivételével (mivel ezeket automatikusan beállítjuk Önnek) az összes Nodemailer-beállítást támogatjuk. Biztonsági okokból a `disableFileAccess` és a `disableUrlAccess` opciókat automatikusan `true` értékre állítjuk.\n\nVagy a `raw` egyetlen opciót kell átadnia a nyers teljes e-mailhez, beleértve a fejléceket is, vagy az alábbi törzsparaméter-beállításokat külön kell megadnia.\n\nEz az API-végpont automatikusan kódolja az emojikat, ha azok megtalálhatók a fejlécekben (pl. a `Subject: 🤓 Hello` tárgysor automatikusan `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`-ra konvertálódik). Célunk egy rendkívül fejlesztőbarát és ál-biztos e-mail API létrehozása volt.",
+        "description": "Az e-mailek létrehozására szolgáló API-nkat a Nodemailer üzenetbeállítás-konfigurációja ihlette és hasznosítja. Kérjük, az alábbi törzsparaméterek esetében a [Nodemailer üzenetkonfigurációját](https://nodemailer.com/message/) használja.\n\nFontos megjegyezni, hogy az `envelope` és a `dkim` kivételével (mivel ezeket automatikusan beállítjuk) az összes Nodemailer-beállítást támogatjuk. Biztonsági okokból a `disableFileAccess` és a `disableUrlAccess` opciókat automatikusan `true` értékre állítjuk.\n\nVagy a `raw` egyetlen opciót kell átadni a nyers teljes e-mailhez, beleértve a fejléceket is, vagy az alábbi törzsparaméter-beállításokat külön kell megadni.\n\nEz az API-végpont automatikusan kódolja az emojikat, ha azok megtalálhatók a fejlécekben (pl. a `Subject: 🤓 Hello` tárgysor automatikusan `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`-ra konvertálódik). Célunk egy rendkívül fejlesztőbarát és ál-biztos e-mail API létrehozása volt.",
         "tags": [
           "E-mailek"
         ],
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2209,7 +4431,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Hozzon létre egy domain szintű, mindent lefedő jelszót",
-        "description": "Létrehoz egy domain szintű, gyűjtőjelszót. Ha nem ad meg jelszót, akkor egy biztonságos, véletlenszerű jelszó generálódik.",
+        "description": "Létrehoz egy domain szintű, mindent lefedő jelszót. Ha nem ad meg jelszót, akkor egy biztonságos, véletlenszerű jelszó generálódik.",
         "tags": [
           "Domainek"
         ],
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Kapcsolatok listázása",
-        "description": "Az összes kapcsolattartó listázása (CardDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias-kapcsolatok"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Kapcsolat létrehozása",
-        "description": "Hozz létre egy új kontaktust (CardDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias-kapcsolatok"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kapcsolattartó azonosító",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Kapcsolatfelvétel",
-        "description": "Egy adott kapcsolattartó lekérése (CardDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias-kapcsolatok"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Kapcsolat frissítése",
-        "description": "Egy adott kapcsolattartó frissítése (CardDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias-kapcsolatok"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Kapcsolat törlése",
-        "description": "Egy adott névjegy törlése (CardDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias-kapcsolatok"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Naptárak listázása",
-        "description": "Az összes naptár listázása (CalDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias naptárak"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Naptár létrehozása",
-        "description": "Hozz létre egy új naptárat (CalDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias naptárak"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Naptár azonosítója",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Naptár lekérése",
-        "description": "Egy adott naptár (CalDAV) lekérése. Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias naptárak"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Naptár frissítése",
-        "description": "Egy adott naptár frissítése (CalDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias naptárak"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Naptár törlése",
-        "description": "Egy adott naptár törlése (CalDAV). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias naptárak"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Üzenetek listázása és keresése",
-        "description": "Üzenetek listázása és keresése (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias üzenetek"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Üzenet létrehozása",
-        "description": "Hozz létre egy új üzenetet (IMAP/POP3). Ez NEM fog e-mailt küldeni – csak egyszerűen hozzáadja az üzenetet a postaláda mappádhoz (hasonlóan az IMAP APPEND parancshoz). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias üzenetek"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Üzenetazonosító",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Üzenet lekérése",
-        "description": "Egy adott üzenet lekérése (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias üzenetek"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Üzenet frissítése",
-        "description": "Egy adott üzenet frissítése (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias üzenetek"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Üzenet törlése",
-        "description": "Egy adott üzenet törlése (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias üzenetek"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Mappák listázása",
-        "description": "Az összes mappa listázása (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias mappák"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Mappa létrehozása",
-        "description": "Hozz létre egy új mappát (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias mappák"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Mappa azonosítója",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Visszaállítási mappa",
-        "description": "Egy adott mappa lekérése (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias mappák"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Mappa frissítése",
-        "description": "Egy adott mappa frissítése (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias mappák"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Mappa törlése",
-        "description": "Egy adott mappa törlése (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias mappák"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Mappa azonosítója",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Mappa másolása",
-        "description": "Másoljon egy adott mappát (IMAP/POP3). Ez a végpont hamarosan elérhető lesz.",
-        "tags": [
-          "Alias mappák"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "Titkosítási végpontok"
     },
     {
-      "name": "Alias-kapcsolatok",
-      "description": "Alias-kapcsolatok kezelési végpontjai (CardDAV)\n\n>[!NOTE]\n>Más API-végpontokkal ellentétben ezekhez alapvető hitelesítési fejlécként a következő hitelesítési paramétereket kell megadni: „felhasználónév”, amely megegyezik az alias felhasználónevével, és a „jelszó”, amely megegyezik az alias által generált jelszóval.\n\n>[!WARNING]\n>Ez a végpontokkal foglalkozó rész még fejlesztés alatt áll, és (remélhetőleg) 2025-ben kerül kiadásra. Addig is kérjük, használjon egy IMAP-klienst a weboldalunk navigációjában található „Alkalmazások” legördülő menüből."
+      "name": "Kapcsolatok",
+      "description": "Alias-kapcsolatok kezelési végpontjai (CardDAV)\n\n>[!NOTE]\n>Más API-végpontokkal ellentétben ezekhez alapvető hitelesítési fejlécként a következő hitelesítési paramétereket kell megadni: „felhasználónév”, amely megegyezik az alias felhasználónevével, és „jelszó”, amely megegyezik az alias által generált jelszóval.\n\n>[!TIP]\n>Ezek a végpontok teljes körű CRUD-műveleteket biztosítanak a kapcsolatkezeléshez vCard-támogatással, beleértve a kapcsolatok létrehozását, lekérését, frissítését és törlését. Megadhatja közvetlenül a vCard-tartalmat, vagy az egyes kapcsolattartó mezőket, amelyek vCard-formátumba konvertálódnak."
     },
     {
-      "name": "Alias naptárak",
-      "description": "Alias naptárak kezelési végpontjai (CalDAV)\n\n>[!NOTE]\n> Más API végpontokkal ellentétben ezekhez alapvető hitelesítési fejlécként a [Authentication](#description/authentication) „username” (felhasználónév) és az alias által generált jelszó megadására van szükség.\n\n>[!WARNING]\n> Ez a végpontokkal foglalkozó rész még fejlesztés alatt áll, és (remélhetőleg) 2025-ben kerül kiadásra. Addig is kérjük, használjon egy IMAP klienst a weboldalunk navigációjában található „Alkalmazások” legördülő menüből."
+      "name": "Naptárak",
+      "description": "Alias naptárak kezelési végpontjai (CalDAV)\n\n>[!NOTE]\n> Más API végpontokkal ellentétben ezekhez alapvető hitelesítési fejlécként a [Authentication](#description/authentication) „username” (felhasználónév) és az alias által generált jelszó megadása szükséges.\n\n>[!TIP]\n> Ezek a végpontok teljes körű naptárkezelést biztosítanak időzóna és színtámogatással, beleértve a naptárak létrehozását, lekérését, frissítését és törlését. A naptárnevek megadása kötelező, míg más tulajdonságok, például a szín, az időzóna és a leírás opcionálisak."
     },
     {
-      "name": "Alias üzenetek",
-      "description": "Alias üzenetkezelési végpontok (IMAP/POP3)\n\n>[!NOTE]\n> Más API végpontokkal ellentétben ezekhez alapvető hitelesítési fejlécként [Authentication](#description/authentication) a felhasználónévvel megegyező „username” és az alias által generált jelszóval megegyező „password” szükséges.\n\n> [!WARNING]\n> Ez a végpontokkal foglalkozó rész még fejlesztés alatt áll, és (remélhetőleg) 2025-ben jelenik meg. Addig is kérjük, használjon egy IMAP klienst a weboldalunk navigációjában található „Alkalmazások” legördülő menüből.\n\nKérjük, győződjön meg arról, hogy követte a domainjéhez tartozó beállítási utasításokat.\n\nEzek az utasítások a GYIK részben találhatók [Támogatja az e-mailek fogadását IMAP-on keresztül?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Üzenetek",
+      "description": "Alias üzenetkezelési végpontok (IMAP/POP3)\n\n>[!NOTE]\n> Más API végpontokkal ellentétben ezekhez alapvető hitelesítési fejlécként a [Authentication](#description/authentication) „username” (felhasználónév) és az alias által generált jelszó szerinti „password” (jelszó) szükséges.\n\n>[!TIP]\n> Ezek a végpontok átfogó üzenetkezelést biztosítanak fejlett keresési lehetőségekkel. Kereshet mappa, jelzők, tartalom, fejlécek, dátumtartományok, méret és egyebek szerint. Az üzenetek létrehozhatók szabványos Nodemailer formátumban, és támogatják a mappák közötti mozgást és a jelzők kezelését.\n\nKérjük, győződjön meg arról, hogy követte a domainjére vonatkozó beállítási utasításokat.\n\nEzek az utasítások a GYIK részben találhatók [Támogatja az e-mailek fogadását IMAP-on keresztül?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Alias mappák",
-      "description": "Alias mappakezelési végpontok (IMAP/POP3)\n\n>[!TIP]\n> A mappa elérési útjával (<code>/v1/folders/:path</code>) rendelkező mappavégpontok felcserélhetők a mappa azonosítójával (<code>:id</code>). Ez azt jelenti, hogy a mappára a <code>path</code> vagy a <code>id</code> értékével is hivatkozhat.\n\n>[!WARNING]\n> Ez a végpontokkal foglalkozó rész még fejlesztés alatt áll, és (remélhetőleg) 2025-ben kerül kiadásra. Addig is kérjük, használjon egy IMAP klienst a weboldalunk navigációjában található \"Alkalmazások\" legördülő menüből."
+      "name": "Mappák",
+      "description": "Alias mappakezelési végpontok (IMAP/POP3)\n\n>[!TIP]\n> A mappa elérési útját <code>/v1/folders/:path</code> végpontként használó mappavégpontok felcserélhetők a mappa azonosítójával <code>:id</code>. Ez azt jelenti, hogy a mappára a <code>path</code> vagy a <code>id</code> értékével is hivatkozhat.\n\n>[!NOTE]\n> Más API végpontokkal ellentétben ezekhez az [Authentication](#description/authentication) \"username\" (felhasználónév) értéke megegyezik az alias felhasználónevével, valamint a \"password\" (jelszó) értéke megegyezik az alias által generált jelszóval, mint alapvető hitelesítési fejlécek.\n\n>[!TIP]\n> Ezek a végpontok teljes mappakezelést biztosítanak, beleértve a létrehozást, átnevezést és törlést. A mappaelérési utak tartalmazhatnak szülőmappákat (pl. „BEJELENTKEZETT E-MAPOK/Almappa”), és a szülőmappák automatikusan létrejönnek, ha nem léteznek."
     }
   ]
 }

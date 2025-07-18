@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Forward Email için kapsamlı API belgelerine hoş geldiniz. Bu API, e-posta yönlendirmeyi, etki alanlarını, takma adları, giden e-postaları ve daha fazlasını programatik olarak yönetmenizi sağlar.\n\n## Temel Özellikler\n* **Alan Yönetimi:** Etki alanlarını oluşturun, alın, güncelleyin, silin ve doğrulayın.\n* **Takma Ad Yönetimi:** Oluşturma, güncelleme ve alıcı yönetimi dahil olmak üzere e-posta takma adlarını yönetin.\n* **Giden SMTP:** SMTP üzerinden e-posta gönderin, limitleri yönetin ve gönderilen e-postaları takip edin.\n* **Hesap ve Günlükler:** Hesap ayrıntılarınızı yönetin ve etkinlik günlüklerini indirin.\n* **Güvenlik:** TXT kayıtlarını şifreleyin ve etki alanı üyelerini/davetlerini yönetin. * **Yakında:** CardDAV kişileri, CalDAV takvimleri ve IMAP/POP3 mesaj/klasör yönetimi gibi özellikler planlanıyor.\n\n## Kimlik Doğrulama\nÇoğu uç nokta, **API Anahtarınızı** kullanarak kimlik doğrulaması gerektirir. Temel Kimlik Doğrulama başlığında `kullanıcı adı` olarak API Anahtarını sağlayın ve parolayı boş bırakın.\n\n```http\nYetkilendirme: Temel QVBJX1RPS0VOOg==\n```\n(`API_TOKEN`'ı Base64 kodlamasından önce gerçek anahtarınızla değiştirin)\n\n**Takma Adlı Kişiler, Takvimler, Mesajlar ve Klasörler** ile ilgili uç noktalar (şu anda \"Yakında\" olarak işaretlenmiştir) Temel Kimlik Doğrulama için oluşturulmuş bir takma ad kullanıcı adı ve parola kullanacaktır.\n\n## Hatalar\nAPI, başarıyı veya başarısızlığı belirtmek için standart HTTP durum kodlarını kullanır. Hata yanıtları, hatayı ayrıntılı olarak açıklayan bir `mesaj` alanı içeren bir JSON gövdesi içerir.\n\n| Durum Kodu | Anlam |\n|-------------|----------------------|\n| 200 | Tamam |\n| 400 | Kötü İstek |\n| 401 | Yetkisiz |\n| 403 | Yasak |\n| 404 | Bulunamadı |\n| 429 | Çok Fazla İstek |\n| 500 | Dahili Sunucu Hatası |\n| 501 | Uygulanmadı |\n| 502 | Kötü Ağ Geçidi |\n| 503 | Hizmet Kullanılamıyor |\n| 504 | Ağ Geçidi Zaman Aşımı |\n\n*Bir `5xx` hatasıyla karşılaşırsanız lütfen [api@forwardemail.net](mailto:api@forwardemail.net) ile iletişime geçin.*\n\n## Yerelleştirme\nAPI yanıtları kullanıcının algılanan yerel ayarına veya `Accept-Language` başlığına göre çevrilir. 25'ten fazla dil desteklenmektedir.\n\n## Sayfalandırma\nListeleri döndüren uç noktalar, sorgu parametreleri aracılığıyla sayfalandırmayı destekler.\n\n| Parametre | Tür | İsteğe bağlı | Açıklama | Varsayılan | Kısıtlamalar |\n|-------------|----------|------------|----------------------------------------------------------------------------------------------------|---------------------|\n| `page` | Tam sayı | Evet | Alınacak sayfa numarası. | 1 | `>= 1` |\n| `limit` | Tam sayı | Evet | Sayfa başına sonuç sayısı. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | Evet | Sayfalandırma davranışına katılım (bazı uç noktalar için 1 Kasım 2024'ten önce gereklidir). | false | |\n\n**Sayfalandırma Başlıkları:**\n* `X-Page-Count`: Toplam sayfa sayısı.\n* `X-Page-Current`: Geçerli sayfa numarası.\n* `X-Page-Size`: Geçerli sayfadaki öğe sayısı.\n* `X-Item-Count`: Tüm sayfalardaki toplam öğe sayısı.\n* `Link`: Gezinme bağlantıları (önceki, sonraki, ilk, son).\n\n**Örnek:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Önerilen Kütüphaneler\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Forward Email tarafından yönetilir)\n* **Git:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Forward Email için kapsamlı API belgelerine hoş geldiniz. Bu API, e-posta yönlendirmeyi, alan adlarını, takma adları, giden e-postaları ve daha fazlasını programatik olarak yönetmenizi sağlar.\n\n## Temel Özellikler\n* **Alan Adı Yönetimi:** Alan adlarını oluşturun, alın, güncelleyin, silin ve doğrulayın.\n* **Takma Ad Yönetimi:** Oluşturma, güncelleme ve alıcı yönetimi dahil olmak üzere e-posta takma adlarını yönetin.\n* **Giden SMTP:** SMTP üzerinden e-posta gönderin, limitleri yönetin ve gönderilen e-postaları takip edin.\n* **Hesap ve Günlükler:** Hesap bilgilerinizi yönetin ve etkinlik günlüklerini indirin.\n* **Güvenlik:** TXT kayıtlarını şifreleyin ve alan adı üyelerini/davetlerini yönetin.\n* **CardDAV Kişileri:** vCard desteğiyle kişi yönetimi için tam CRUD işlemleri. * **CalDAV Takvimleri:** Saat dilimi ve renk desteğiyle eksiksiz takvim yönetimi.\n* **IMAP/POP3 Mesajları:** Gelişmiş arama özelliklerine sahip kapsamlı mesaj yönetimi.\n* **IMAP/POP3 Klasörleri:** Oluşturma, yeniden adlandırma ve silme dahil olmak üzere tam klasör yönetimi.\n\n## Kimlik Doğrulama\nÇoğu uç nokta, **API Anahtarınızı** kullanarak kimlik doğrulaması gerektirir. Temel Kimlik Doğrulama başlığında `kullanıcı adı` olarak API Anahtarını girin, parolayı boş bırakın.\n\n```http\nYetkilendirme: Temel QVBJX1RPS0VOOg==\n```\n(`API_TOKEN` ifadesini Base64 kodlamasından önce gerçek anahtarınızla değiştirin)\n\n**Takma Adlı Kişiler, Takvimler, Mesajlar ve Klasörler** ile ilgili uç noktalar, Temel Kimlik Doğrulama için oluşturulmuş bir takma ad kullanıcı adı ve parolası gerektirir.\n\n## Hatalar\nAPI, başarı veya başarısızlığı belirtmek için standart HTTP durum kodlarını kullanır. Hata yanıtları, hatayı ayrıntılı olarak açıklayan bir `mesaj` alanı içeren bir JSON gövdesi içerir.\n\n| Durum Kodu | Anlamı |\n|-------------|----------------------|\n| 200 | Tamam |\n| 400 | Hatalı İstek |\n| 401 | Yetkisiz |\n| 403 | Yasak |\n| 404 | Bulunamadı |\n| 409 | Çakışma |\n| 412 | Ön Koşul Başarısız |\n| 429 | Çok Fazla İstek |\n| 500 | Dahili Sunucu Hatası |\n| 501 | Uygulanmadı |\n| 502 | Hatalı Ağ Geçidi |\n| 503 | Hizmet Kullanılamıyor |\n| 504 | Ağ Geçidi Zaman Aşımı |\n\n*`5xx` hatasıyla karşılaşırsanız, lütfen [api@forwardemail.net](mailto:api@forwardemail.net) ile iletişime geçin.*\n\n## Yerelleştirme\nAPI yanıtları, kullanıcının algıladığı yerel ayarlara veya `Accept-Language` başlığına göre çevrilir. 25'ten fazla dil desteklenmektedir.\n\n## Sayfalandırma\nListe döndüren uç noktalar, sorgu parametreleri aracılığıyla sayfalandırmayı destekler.\n\n| Parametre | Tür | İsteğe Bağlı | Açıklama | Varsayılan | Kısıtlamalar |\n|--------------|----------|---------------------------------------------------------------------------------------------|----------|-----------------------|\n| `page` | Integer | Evet | Alınacak sayfa numarası. | 1 | `>= 1` |\n| `limit` | Integer | Evet | Sayfa başına sonuç sayısı. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | Evet | Sayfalandırma davranışına katılım (bazı uç noktalar için 1 Kasım 2024'ten önce gereklidir). | false | |\n\n**Sayfalandırma Başlıkları:**\n* `X-Page-Count`: Toplam sayfa sayısı.\n* `X-Page-Current`: Geçerli sayfa numarası.\n* `X-Page-Size`: Geçerli sayfadaki öğe sayısı.\n* `X-Item-Count`: Tüm sayfalardaki toplam öğe sayısı.\n* `Link`: Gezinme bağlantıları (önceki, sonraki, ilk, son).\n\n**Örnek:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Önerilen Kütüphaneler\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Forward Email tarafından yönetilir)\n* **Git:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nTemel Kimlik Doğrulama için **kullanıcı adı** olarak API Anahtarınızı kullanın. Parola alanını boş bırakın.\n\n**Örnek:**\nAPI Anahtarınız `YOUR_API_KEY` ise, `Authorization` başlığı için Base64 kodlu değer `echo -n \"YOUR_API_KEY:\" | base64` olur.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "\nTemel Kimlik Doğrulama için **kullanıcı adı** olarak API Anahtarınızı kullanın. Parola alanını boş bırakın.\n\n**Örnek:**\nAPI Anahtarınız `YOUR_API_KEY` ise, `Authorization` başlığı için Base64 kodlu değer `echo -n \"YOUR_API_KEY:\" | base64` olacaktır.\n\n```http\nYetkilendirme: Temel WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nTemel Kimlik Doğrulaması için oluşturulan **takma ad kullanıcı adı ve parolasını** kullanın. Bu, aşağıdaki uç noktalar için geçerlidir:\n* Takma Ad Kişiler (CardDAV)\n* Takma Ad Takvimler (CalDAV)\n* Takma Ad Mesajlar (IMAP/POP3)\n* Takma Ad Klasörler (IMAP/POP3)\n\n*(Not: Bu özellikler şu anda \"Yakında Geliyor\" olarak işaretlenmiştir)*\n\n**Örnek:**\nTakma ad kullanıcı adı `alias@domain.com` ve parola `GENERATED_PASSWORD` ise, Base64 kodlu değer `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64` olur.\n\n```http\nYetkilendirme: Temel YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nTemel Kimlik Doğrulama için oluşturulan **takma ad kullanıcı adı ve parolasını** kullanın. Bu, aşağıdaki uç noktalar için geçerlidir:\n* Takma Ad Kişiler (CardDAV)\n* Takma Ad Takvimler (CalDAV)\n* Takma Ad Mesajlar (IMAP/POP3)\n* Takma Ad Klasörler (IMAP/POP3)\n\n**Örnek:**\nTakma ad kullanıcı adı `alias@domain.com` ve parola `GENERATED_PASSWORD` ise, Base64 kodlu değer `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64` olur.\n\n```http\nYetkilendirme: Temel YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "İletişim Kimliği (CardDAV'dan contact_id)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "UID ile iletişime geçin"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kişinin tam adı"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard içeriği"
+          },
+          "etag": {
+            "type": "string",
+            "description": "Sürümleme için ETag"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "İletişimin bir grup olup olmadığı"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "E-posta adresleri dizisi"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefon numaraları dizisi"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard içeriği (sağlanmazsa, diğer alanlardan oluşturulacaktır)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kişinin tam adı"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Özel iletişim kimliği (sağlanmazsa otomatik olarak oluşturulacaktır)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "İletişim UID'si (sağlanmazsa otomatik olarak oluşturulacaktır)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "E-posta adresleri dizisi"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefon numaraları dizisi"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefon numaraları dizisi (phone_numbers için takma ad)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Adres dizisi"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "İletişimin bir grup olup olmadığı"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard içeriği"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kişinin tam adı"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "E-posta adresleri dizisi"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefon numaraları dizisi"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Telefon numaraları dizisi (phone_numbers için takma ad)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Adres dizisi"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "İletişimin bir grup olup olmadığı"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Takvim Kimliği (CalDAV'dan takvim kimliği)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Takvim adı"
+          },
+          "description": {
+            "type": "string",
+            "description": "Takvim açıklaması"
+          },
+          "color": {
+            "type": "string",
+            "description": "Takvim rengi (onaltılık biçim)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Takvim saat dilimi"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Takvim görüntüleme sırası"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Takvim adı"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Özel takvim kimliği (sağlanmazsa otomatik olarak oluşturulacaktır)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Takvim açıklaması"
+          },
+          "color": {
+            "type": "string",
+            "description": "Takvim rengi (hex formatı sağlanmazsa otomatik olarak oluşturulacaktır)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Takvim saat dilimi (varsayılan olarak kullanıcının saat dilimi veya UTC'dir)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Takvim görüntüleme sırası (varsayılan 0'dır)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Takvim adı"
+          },
+          "description": {
+            "type": "string",
+            "description": "Takvim açıklaması"
+          },
+          "color": {
+            "type": "string",
+            "description": "Takvim rengi (onaltılık biçim)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Takvim saat dilimi"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Takvim görüntüleme sırası"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Klasör Kimliği"
+          },
+          "path": {
+            "type": "string",
+            "description": "Tam klasör yolu"
+          },
+          "name": {
+            "type": "string",
+            "description": "Klasör adı (yolun son kısmı)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Üst klasör yolu"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID geçerliliği"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Sonraki UID değeri"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Değişiklik endeksi"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Klasöre abone olunup olunmadığı"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Klasör bayrakları"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Mesaj saklama süresi"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Özel kullanım tanımı"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Klasör yolu/adı"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Yeni klasör yolu/adı"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Mesaj Kimliği"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "İş parçacığı için kök ileti kimliği"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Mesajı içeren klasör kimliği"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Mesajı içeren klasör yolu"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Konuşma gruplandırması için konu başlığı kimliği"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "İleti Kimliği başlık değeri"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Mesaj okunmamış mı?"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Mesajın işaretlenip işaretlenmediği"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Mesaj silinir mi?"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Mesajın taslak olup olmadığı"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Mesajın önemsiz/spam olup olmadığı"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Mesajın kopyalanıp kopyalanmadığı"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Mesajın aranabilir olup olmadığı"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Mesajın süresi doldu mu?"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Mesajın ekleri var mı?"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Mesaj saklama tarihi"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Dahili tarih (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Mesaj başlıklarından tarih"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Mesaj konusu"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP bayrakları"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Mesaj boyutu (bayt cinsinden)"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Modifikasyon dizisi"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "İşlem türü"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Uzak IP adresi"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Ayrıştırılmış ileti nesnesi (varsayılan olarak dahil edilir, hariç tutmak için ?nodemailer=false değerini ayarlayın)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Ham ileti içeriği (varsayılan olarak dahil edilir, hariç tutmak için ?raw=false değerini ayarlayın)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Gönderen e-posta adresi"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Alıcı e-posta adresleri"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "CC alıcı e-posta adresleri"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "BCC alıcı e-posta adresleri"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Mesaj konusu"
+          },
+          "text": {
+            "type": "string",
+            "description": "Düz metin içeriği"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML içeriği"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Mesaj ekleri (Nodemailer biçimi)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Hedef klasör (varsayılan olarak GİRİŞ KUTUSU)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Mesajda ayarlanacak IMAP bayrakları"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mesajda ayarlanacak IMAP bayrakları"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Mesajı bu klasöre taşı"
+          }
         }
       },
       "Email": {
@@ -348,7 +1217,7 @@
           "replyTo": {
             "type": "string",
             "format": "email",
-            "description": "'Cevapla' başlığı için e-posta adresi."
+            "description": "'Yanıtla' başlığı için e-posta adresi."
           },
           "inReplyTo": {
             "type": "string",
@@ -378,18 +1247,18 @@
           },
           "amp": {
             "type": "string",
-            "description": "AMP4EMAIL'e özel mesajın HTML versiyonu."
+            "description": "Mesajın AMP4EMAIL'e özgü HTML sürümü."
           },
           "icalEvent": {
             "type": "object",
-            "description": "Alternatif mesaj içeriği olarak iCalendar etkinliği."
+            "description": "Alternatif mesaj içeriği olarak bir iCalendar etkinliği."
           },
           "alternatives": {
             "type": "array",
             "items": {
               "type": "object"
             },
-            "description": "Alternatif mesaj içeriklerinin dizisi."
+            "description": "Alternatif mesaj içeriklerinin bir dizisi."
           },
           "encoding": {
             "type": "string",
@@ -433,7 +1302,7 @@
           },
           "messageId": {
             "type": "string",
-            "description": "'Mesaj Kimliği' başlığı için isteğe bağlı Mesaj Kimliği."
+            "description": "'Message-ID' başlığı için isteğe bağlı Message-ID."
           },
           "date": {
             "oneOf": [
@@ -445,7 +1314,7 @@
                 "type": "string"
               }
             ],
-            "description": "İsteğe bağlı Tarih başlığı. 30 günden daha ileride olamaz."
+            "description": "İsteğe bağlı Tarih başlığı. 30 günden daha ileri bir tarih olamaz."
           },
           "list": {
             "type": "object",
@@ -682,7 +1551,7 @@
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Başka bir etki alanından aynı takıma atayın; bir etki alanı kimliği veya FQDN olabilir. Açıkça devre dışı bırakmak için \"hiçbiri\" kullanın."
+            "description": "Başka bir etki alanından aynı takıma atayın; etki alanı kimliği veya tam alan adı (FQDN) olabilir. Açıkça devre dışı bırakmak için \"none\" kullanın."
           },
           "plan": {
             "type": "string",
@@ -691,7 +1560,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Plan türü (varsayılan olarak 'ücretsiz' veya kullanıcının mevcut ücretli planı)"
+            "description": "Plan türü (varsayılan olarak 'ücretsiz' veya kullanıcının mevcut ücretli planıdır)"
           },
           "catchall": {
             "oneOf": [
@@ -711,11 +1580,11 @@
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Spam Tarayıcısı kimlik avı korumasını etkinleştirin"
+            "description": "Spam Tarayıcısının kimlik avı korumasını etkinleştirin"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Spam Tarayıcısı yürütülebilir korumasını etkinleştir"
+            "description": "Spam Tarayıcısı yürütülebilir korumasını etkinleştirin"
           },
           "has_virus_protection": {
             "type": "boolean",
@@ -740,7 +1609,7 @@
               {
                 "type": "string",
                 "format": "uri",
-                "description": "Geri tepme olaylarını almak için Webhook URL'si"
+                "description": "Geri dönme olaylarını almak için Webhook URL'si"
               },
               {
                 "type": "boolean",
@@ -773,11 +1642,11 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Bu etki alanında Spam Tarayıcısının yetişkin içerik korumasının etkinleştirilip etkinleştirilmeyeceği"
+            "description": "Bu etki alanında Spam Tarayıcısının yetişkinlere yönelik içerik korumasının etkinleştirilip etkinleştirilmeyeceği"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Bu etki alanında Spam Tarayıcısı kimlik avı korumasının etkinleştirilip etkinleştirilmeyeceği"
+            "description": "Bu etki alanında Spam Tarayıcı kimlik avı korumasının etkinleştirilip etkinleştirilmeyeceği"
           },
           "has_executable_protection": {
             "type": "boolean",
@@ -789,11 +1658,11 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "E-postaların akması için takma ad alıcılarının bir e-posta doğrulama bağlantısına tıklamasını gerektirip gerektirmeyeceğine ilişkin küresel etki alanı varsayılanı"
+            "description": "E-postaların iletilmesi için takma ad alıcılarının bir e-posta doğrulama bağlantısına tıklamasını zorunlu kılmak için küresel etki alanı varsayılanı"
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Alandaki MX kayıt denetiminin doğrulama için göz ardı edilip edilmeyeceği (çoğunlukla gelişmiş MX yönlendirme kurulumları için)"
+            "description": "Alan adındaki MX kayıt denetiminin doğrulama için göz ardı edilip edilmeyeceği (çoğunlukla gelişmiş MX yönlendirme kurulumları için)"
           },
           "retention_days": {
             "type": "integer",
@@ -814,11 +1683,11 @@
                 ]
               }
             ],
-            "description": "Geri tepme bildirimlerini almak için Webhook URL'sini veya devre dışı bırakmak için false değerini kullanın"
+            "description": "Geri dönme bildirimlerini almak için Webhook URL'sini veya devre dışı bırakmak için false değerini kullanın"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Takma ad başına depolama kotası (örneğin '1 GB', baytlara ayrıştırılır)"
+            "description": "Takma ad başına depolama kotası (örneğin, '1 GB', baytlara ayrıştırılır)"
           }
         }
       },
@@ -975,7 +1844,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "Geçerli e-posta adresleri, FQDN'ler, IP'ler veya webhook URL'lerinin satır sonu/boşluk/virgülle ayrılmış dizesi"
+                "description": "Geçerli e-posta adresleri, tam alan adları (FQDN), IP'ler veya webhook URL'lerinin satır sonu/boşluk/virgülle ayrılmış dizesi"
               },
               {
                 "type": "array",
@@ -986,7 +1855,7 @@
                 "description": "Geçerli alıcıların dizisi"
               }
             ],
-            "description": "Alıcıların listesi. Sağlanmamışsa veya boşsa, varsayılan olarak talep edenin e-postası"
+            "description": "Alıcı listesi. Sağlanmamışsa veya boşsa, varsayılan olarak talep edenin e-posta adresi kullanılır."
           },
           "description": {
             "type": "string",
@@ -1013,7 +1882,7 @@
           },
           "is_enabled": {
             "type": "boolean",
-            "description": "Bu takma adın etkinleştirilmesi veya devre dışı bırakılması gerekip gerekmediği"
+            "description": "Bu takma adın etkinleştirilmesi mi yoksa devre dışı bırakılması mı gerektiği"
           },
           "error_code_if_disabled": {
             "type": "number",
@@ -1022,7 +1891,7 @@
               421,
               550
             ],
-            "description": "Takma ad devre dışıysa hata kodu. Varsayılanı 250'dir"
+            "description": "Takma ad devre dışıysa hata kodu. Varsayılan değer 250'dir"
           },
           "has_imap": {
             "type": "boolean",
@@ -1038,7 +1907,7 @@
           },
           "max_quota": {
             "type": "string",
-            "description": "Depolama maksimum kotası (örn. '1 GB')"
+            "description": "Depolama maksimum kotası (örneğin '1 GB')"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
@@ -1050,7 +1919,7 @@
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Tatil yanıtlayıcısı için bitiş tarihi (örn. 'YYYY-AA-GG')"
+            "description": "Tatil yanıtlayıcısı için bitiş tarihi (örneğin 'YYYY-AA-GG')"
           },
           "vacation_responder_subject": {
             "type": "string",
@@ -1073,7 +1942,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "Geçerli e-posta adresleri, FQDN'ler, IP'ler veya webhook URL'lerinin satır sonu/boşluk/virgülle ayrılmış dizesi"
+                "description": "Geçerli e-posta adresleri, tam alan adları (FQDN), IP'ler veya webhook URL'lerinden oluşan satır sonu/boşluk/virgülle ayrılmış dize"
               },
               {
                 "type": "array",
@@ -1123,7 +1992,7 @@
           },
           "has_imap": {
             "type": "boolean",
-            "description": "IMAP depolamayı etkinleştirin veya devre dışı bırakın"
+            "description": "IMAP depolama alanını etkinleştirin veya devre dışı bırakın"
           },
           "has_pgp": {
             "type": "boolean",
@@ -1143,11 +2012,11 @@
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Tatil yanıtlayıcı başlangıç tarihi (örn. YYYY-AA-GG)"
+            "description": "Tatil yanıtlayıcısının başlangıç tarihi (örneğin YYYY-AA-GG)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Tatil yanıtlayıcı bitiş tarihi (örn. YYYY-AA-GG)"
+            "description": "Tatil yanıtlayıcısının bitiş tarihi (örneğin YYYY-AA-GG)"
           },
           "vacation_responder_subject": {
             "type": "string",
@@ -1168,7 +2037,7 @@
           },
           "password": {
             "type": "string",
-            "description": "Posta kutusu depolamasını silmeden değiştirmek için takma adın mevcut parolası"
+            "description": "Posta kutusu depolama alanını silmeden değiştirmek için takma adın mevcut parolası"
           },
           "is_override": {
             "type": "boolean",
@@ -1227,7 +2096,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Döndürülecek sonuç sayfası. Belirtilmezse, değer 1 olacaktır. 1'den büyük veya ona eşit bir sayı olmalıdır.",
+        "description": "Döndürülecek sonuçların sayfası. Belirtilmezse, değer 1 olacaktır. 1'den büyük veya ona eşit bir sayı olmalıdır.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1237,7 +2106,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Sayfa başına döndürülecek sonuç sayısı. Belirtilmezse varsayılan olarak 10'dur. 1'den büyük veya ona eşit ve 50'den küçük veya ona eşit bir sayı olmalıdır.",
+        "description": "Sayfa başına döndürülecek sonuç sayısı. Belirtilmediği takdirde varsayılan değer 10'dur. 1'den büyük veya ona eşit ve 50'den küçük veya ona eşit bir sayı olmalıdır.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1257,7 +2126,7 @@
         "name": "domain_id",
         "in": "path",
         "required": true,
-        "description": "Alan adı kimliği",
+        "description": "Alan Adı Kimliği",
         "schema": {
           "type": "string"
         }
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Kimlik Takma Adları",
+        "description": "Takma ad kimliği",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "E-posta kimliği",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "İletişim Kimliği",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Takvim Kimliği",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Klasör kimliği veya yolu",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Mesaj Kimliği",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Hesap oluşturmak",
-        "description": "Yeni bir kullanıcı hesabı oluşturun",
-        "tags": [
-          "Hesap"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "E-posta adresi"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Şifre"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Hesabı geri al",
-        "description": "Mevcut kullanıcının hesap bilgilerini alın",
         "tags": [
           "Hesap"
         ],
+        "summary": "Hesabı al",
+        "description": "Hesap bilgilerinizi alın.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Hesabı güncelle",
-        "description": "Mevcut kullanıcının hesap bilgilerini güncelle",
         "tags": [
           "Hesap"
         ],
+        "summary": "Hesabı güncelle",
+        "description": "Hesap bilgilerinizi güncelleyin.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "E-posta adresi"
+                    "description": "Ekran adı"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "İlk adı"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Soy isim"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Avatar resmine bağlantı"
+                    "description": "Yerel tercih"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "İletişim"
+        ],
+        "summary": "Kişileri listele",
+        "description": "Kimliği doğrulanmış takma ad için tüm kişilerin listesini alın. Bu uç nokta, sayfalandırmayı destekler ve kişileri CardDAV biçiminde döndürür.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "İletişim"
+        ],
+        "summary": "İletişim oluştur",
+        "description": "Yeni bir kişi oluşturun. Doğrudan vCard içeriği sağlayabilir veya vCard formatına dönüştürülecek ayrı kişi alanları sağlayabilirsiniz. Aynı kimliğe sahip bir kişi zaten mevcutsa, bir çakışma hatası döndürülür.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "İletişim"
+        ],
+        "summary": "İletişim bilgilerini al",
+        "description": "Belirli bir kişiyi kimliğine göre alın. Kişi, vCard içeriği ve ayrıştırılmış alanlarla standart Kişi biçiminde döndürülür.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "İletişim"
+        ],
+        "summary": "İletişim bilgilerini güncelle",
+        "description": "Mevcut bir kişiyi güncelleyin. Güncellenmiş vCard içeriği veya güncellenecek ayrı alanlar sağlayabilirsiniz. Ayrı alanlar sağlanırsa, kişinin vCard'ı yeniden oluşturulur.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "İletişim"
+        ],
+        "summary": "Kişiyi sil",
+        "description": "Belirli bir kişiyi kalıcı olarak silin. Bu işlem geri alınamaz.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Takvimler"
+        ],
+        "summary": "Liste takvimleri",
+        "description": "Kimliği doğrulanmış takma ad için tüm takvimlerin listesini alın. Bu uç nokta, sayfalandırmayı destekler ve takvimleri CalDAV biçiminde döndürür.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Takvimler"
+        ],
+        "summary": "Takvim oluştur",
+        "description": "Yeni bir takvim oluşturun. Takvim adı zorunludur; renk, saat dilimi ve açıklama gibi diğer özellikler ise isteğe bağlıdır. Aynı ada sahip bir takvim zaten mevcutsa, çakışma hatası döndürülür.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Takvimler"
+        ],
+        "summary": "Takvimi al",
+        "description": "Belirli bir takvimi kimliğine göre alın. Takvim, adı, açıklaması, rengi, saat dilimi ve sırası dahil olmak üzere tüm özellikleriyle birlikte döndürülür.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Takvimler"
+        ],
+        "summary": "Takvimi güncelle",
+        "description": "Mevcut bir takvimi güncelleyin. Ad, açıklama, renk, saat dilimi ve sıra dahil olmak üzere takvim özelliklerinin herhangi birini güncelleyebilirsiniz. Adı zaten mevcut olan bir adla değiştirirseniz, çakışma hatası döndürülür.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Takvimler"
+        ],
+        "summary": "Takvimi sil",
+        "description": "Belirli bir takvimi kalıcı olarak silin. Bu işlem geri alınamaz ve takvimdeki tüm etkinlikleri de siler.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Klasörler"
+        ],
+        "summary": "Klasörleri listele",
+        "description": "Kimliği doğrulanmış takma ad için tüm IMAP klasörlerinin/posta kutularının listesini alın. Bu uç nokta, abonelik durumuna göre sayfalandırma ve filtrelemeyi destekler.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Klasörleri abonelik durumuna göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Klasörler"
+        ],
+        "summary": "Klasör oluştur",
+        "description": "Yeni bir IMAP klasörü/posta kutusu oluşturun. Klasör yolu gereklidir ve üst klasörleri içerebilir (örneğin, 'GİRİŞ KUTUSU/Alt Klasör'). Üst klasörler mevcut değilse, otomatik olarak oluşturulurlar.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Klasörler"
+        ],
+        "summary": "Klasörü al",
+        "description": "Belirli bir klasörü kimliğine veya yoluna göre alın. Tanımlayıcı olarak klasörün ObjectID'sini veya tam yolunu (örneğin, 'GİRİŞ KUTUSU/Alt Klasör') kullanabilirsiniz.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Klasörler"
+        ],
+        "summary": "Güncelleme klasörü",
+        "description": "Mevcut bir klasörü güncelleyin/yeniden adlandırın. Bu işlem, klasörü istek gövdesinde belirtilen yeni yola yeniden adlandırır. Tanımlayıcı olarak klasörün ObjectID'sini veya geçerli yolunu kullanabilirsiniz.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Klasörler"
+        ],
+        "summary": "Klasörü sil",
+        "description": "Belirli bir klasörü kalıcı olarak silin. Bu işlem geri alınamaz ve klasördeki tüm iletileri de siler. Tanımlayıcı olarak klasörün ObjectID'sini veya yolunu kullanabilirsiniz.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Mesajlar"
+        ],
+        "summary": "Mesajları listele ve ara",
+        "description": "Gelişmiş arama ve filtreleme özellikleriyle mesajların bir listesini alın. Bu uç nokta, mesaj içeriği, başlıklar, işaretler ve meta veriler arasında sayfalama ve kapsamlı aramayı destekler. Klasöre, işaretlere, içeriğe, başlıklara, tarih aralıklarına, boyuta ve daha fazlasına göre arama yapabilirsiniz.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "İletileri klasör yoluna göre filtrele",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Okunma durumuna göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "İşaretli duruma göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Silinen durumuna göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Taslak durumuna göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Önemsiz/spam durumuna göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Kopyalanan duruma göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Aranabilir duruma göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Süresi dolmuş durumuna göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Ek varlığına göre filtrele",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Ek varlığına göre filtrele (has_attachments için takma ad)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Mesaj konusuna göre ara",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Mesaj gövdesinde/metninde ara",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Mesaj metninde arama (gövde için takma ad)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Tüm mesaj başlıklarında ara",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Mesaj Kimliği başlığına göre arama",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Başlıklar ve metinler arasında genel arama",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Genel arama (arama takma adı)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Bu tarihten itibaren iletileri filtrele (ISO 8601 formatı)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Bu tarihten önceki mesajları filtrele (ISO 8601 formatı)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Minimum bayt boyutundaki iletileri filtrele",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Maksimum bayt boyutundaki mesajları filtrele",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Başlığa göre ara",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Başlığa göre ara",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "CC başlığına göre arama",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "BCC başlığına göre arama",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Tarih başlığına göre arama",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Yanıtla-Başlığına Göre Arama",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mesajlar"
+        ],
+        "summary": "Mesaj oluştur",
+        "description": "Bir klasöre yeni bir mesaj oluşturun/ekleyin. Bu uç nokta, standart Nodemailer mesaj biçimini kabul eder ve hedef klasörü ve başlangıç işaretlerini belirtmenize olanak tanır. Hedef klasör mevcut değilse, otomatik olarak oluşturulur.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Mesajlar"
+        ],
+        "summary": "Mesajı al",
+        "description": "Belirli bir mesajı kimliğine göre alın. Varsayılan olarak, yanıt ayrıştırılmış Nodemailer nesnesini ve ham mesaj içeriğini içerir. Sorgu parametrelerini kullanarak nelerin dahil edileceğini kontrol edebilirsiniz.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "JSON yerine ham EML biçimini döndür",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Ayrıştırılmış Nodemailer nesnesini dahil et",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Nodemailer nesnesine ekleri dahil et",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Ham mesaj içeriğini ekle",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Mesajlar"
+        ],
+        "summary": "Güncelleme mesajı",
+        "description": "Mevcut bir mesajı güncelleyin. Mesaj işaretlerini değiştirebilir veya farklı bir klasöre taşıyabilirsiniz. Hedef klasör mevcut değilse, otomatik olarak oluşturulur.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "JSON yerine ham EML biçimini döndür",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mesajlar"
+        ],
+        "summary": "Mesajı sil",
+        "description": "Belirli bir mesajı kalıcı olarak silin. Bu işlem geri alınamaz ve mesajı depolama alanından kalıcı olarak kaldırır. Mesajları genellikle Çöp Kutusu'na taşıyan IMAP istemcilerinin aksine, bu uç nokta kalıcı silme işlemi gerçekleştirir.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1559,7 +3781,7 @@
     "/v1/logs/download": {
       "get": {
         "summary": "Günlükleri indirin",
-        "description": "**Günlükleri indirin**\n\nAçıklama: API'miz, hesabınız için günlükleri programatik olarak indirmenize olanak tanır. Bu uç noktaya bir istek gönderdiğinizde, hesabınız için tüm günlükler işlenir ve tamamlandığında bir ek (Gzip sıkıştırılmış CSV elektronik tablo dosyası) olarak size e-postayla gönderilir.\n\nBu, istediğiniz zaman günlükleri almak için bir Cron işi veya Node.js iş planlama yazılımı Bree'yi kullanarak arka plan işleri oluşturmanıza olanak tanır. Bu uç noktanın günde `10` istekle sınırlı olduğunu unutmayın.\n\nEk, `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`nin küçük harfli biçimidir ve e-postanın kendisi alınan günlüklerin kısa bir özetini içerir.",
+        "description": "**Günlükleri İndir**\n\nAçıklama: API'miz, hesabınız için günlükleri programatik olarak indirmenize olanak tanır. Bu uç noktaya bir istek gönderdiğinizde, hesabınızdaki tüm günlükler işlenir ve tamamlandığında ek olarak (Gzip sıkıştırılmış CSV elektronik tablo dosyası) size e-postayla gönderilir.\n\nBu, bir Cron işi ile arka plan işleri oluşturmanıza veya istediğiniz zaman günlükleri almak için Node.js iş planlama yazılımı Bree'yi kullanmanıza olanak tanır. Bu uç noktanın günlük `10` istekle sınırlı olduğunu unutmayın.\n\nEk, `email-deliverability-logs-YYYY-AA-GG-s-dd-A-z.csv.gz` dosyasının küçük harfli biçimidir ve e-postanın kendisi, alınan günlüklerin kısa bir özetini içerir.",
         "tags": [
           "Günlükler"
         ],
@@ -1572,7 +3794,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Günlükleri tam nitelikli etki alanına (\"FQDN\") göre filtreleyin. Sağlanmazsa, tüm etki alanlarındaki tüm günlükler alınacaktır.",
+            "description": "Günlükleri tam nitelikli etki alanına (\"FQDN\") göre filtreleyin. Belirtilmezse, tüm etki alanlarındaki tüm günlükler alınacaktır.",
             "schema": {
               "type": "string"
             }
@@ -1636,8 +3858,8 @@
     },
     "/v1/emails": {
       "get": {
-        "summary": "Giden SMTP e-postalarını listele",
-        "description": "**Giden SMTP e-postalarını listele**\n\nBu uç noktanın bir e-postanın `message`, `headers` veya `rejectedErrors` için özellik değerlerini döndürmediğini unutmayın.\n\nBu özellikleri ve değerlerini döndürmek için lütfen bir e-posta kimliğiyle [E-postayı al](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) uç noktasını kullanın.",
+        "summary": "Giden SMTP e-postalarını listeleyin",
+        "description": "**Giden SMTP e-postalarını listele**\n\nBu uç noktanın, bir e-postanın `message`, `headers` veya `rejectedErrors` için özellik değerleri döndürmediğini unutmayın.\n\nBu özellikleri ve değerlerini döndürmek için lütfen bir e-posta kimliğiyle [E-postayı al](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) uç noktasını kullanın.",
         "tags": [
           "E-postalar"
         ],
@@ -1666,7 +3888,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Belirli bir alana göre sırala (tek bir tire ile önek - o alanın ters yönünde sıralamak için). Ayarlanmamışsa varsayılan olarak created_at olur.",
+            "description": "Belirli bir alana göre sırala (tek bir tire ile önek ekle - o alanın ters yönünde sıralamak için). Ayarlanmamışsa varsayılan olarak created_at olur.",
             "schema": {
               "type": "string"
             }
@@ -1714,8 +3936,8 @@
         }
       },
       "post": {
-        "summary": "Giden SMTP e-postası oluştur",
-        "description": "E-posta oluşturmak için kullandığımız API, Nodemailer'ın mesaj seçeneği yapılandırmasından esinlenmiştir ve bu yapılandırmayı kullanır. Lütfen aşağıdaki tüm gövde parametreleri için [Nodemailer mesaj yapılandırmasına](https://nodemailer.com/message/) bakın.\n\n`envelope` ve `dkim` hariç (bunları sizin için otomatik olarak ayarladığımız için), tüm Nodemailer seçeneklerini desteklediğimizi unutmayın. Güvenlik amaçlı olarak `disableFileAccess` ve `disableUrlAccess` seçeneklerini otomatik olarak `true` olarak ayarladık.\n\nBaşlıklar dahil olmak üzere ham tam e-postanızla birlikte `raw` seçeneğini tek başına iletmeli veya aşağıdaki bireysel gövde parametresi seçeneklerini iletmelisiniz.\n\nBu API uç noktası, başlıklarda bulunan emojileri sizin için otomatik olarak kodlayacaktır (örneğin, `Konu: 🤓 Merhaba` konu satırı otomatik olarak `Konu: =?UTF-8?Q?=F0=9F=A4=93?= Merhaba`ya dönüştürülür). Amacımız son derece geliştirici dostu ve aptallara karşı dayanıklı bir e-posta API'si yapmaktı.",
+        "summary": "Giden SMTP e-postası oluşturun",
+        "description": "E-posta oluşturma API'miz, Nodemailer'ın mesaj seçeneği yapılandırmasından esinlenmiştir ve bu yapılandırmayı kullanır. Lütfen aşağıdaki tüm gövde parametreleri için [Nodemailer mesaj yapılandırmasına](https://nodemailer.com/message/) bakın.\n\n`Envelope` ve `dkim` hariç (bunları sizin için otomatik olarak ayarladığımız için), tüm Nodemailer seçeneklerini desteklediğimizi unutmayın. Güvenlik amacıyla `disableFileAccess` ve `disableUrlAccess` seçeneklerini otomatik olarak `true` olarak ayarlıyoruz.\n\nBaşlıklar dahil olmak üzere ham e-postanızla birlikte `raw` seçeneğini tek başına iletmeli veya aşağıdaki gövde parametresi seçeneklerini ayrı ayrı iletmelisiniz.\n\nBu API uç noktası, başlıklarda bulunan emojileri sizin için otomatik olarak kodlayacaktır (örneğin, `Konu: 🤓 Merhaba` şeklinde bir konu satırı otomatik olarak `Konu: =?UTF-8?Q?=F0=9F=A4=93?= Merhaba` şeklinde dönüştürülür). Amacımız, son derece geliştirici dostu ve sahte metinlere karşı dayanıklı bir e-posta API'si oluşturmaktı.",
         "tags": [
           "E-postalar"
         ],
@@ -1764,8 +3986,8 @@
     },
     "/v1/emails/limit": {
       "get": {
-        "summary": "Giden SMTP e-posta limitini al",
-        "description": "Bu, hesap bazında günlük SMTP giden mesajlarının sayısını içeren `count` ve `limit` değerlerini döndüren basit bir uç noktadır.",
+        "summary": "Giden SMTP e-posta sınırını alın",
+        "description": "Bu, hesap bazında günlük SMTP giden mesajlarının sayısını içeren `count` ve `limit` değerlerini içeren bir JSON nesnesi döndüren basit bir uç noktadır.",
         "tags": [
           "E-postalar"
         ],
@@ -1802,7 +4024,7 @@
       ],
       "get": {
         "summary": "Giden SMTP e-postasını al",
-        "description": "Belirli bir giden SMTP e-postasını al.",
+        "description": "Belirli bir giden SMTP e-postasını alın.",
         "tags": [
           "E-postalar"
         ],
@@ -1835,7 +4057,7 @@
       },
       "delete": {
         "summary": "Giden SMTP e-postasını sil",
-        "description": "E-posta silme, yalnızca geçerli durum ``bekleyen'', ``sıraya alınmış'' veya ``ertelenmiş'' ise durumu ``reddedildi'' olarak ayarlar (ve daha sonra kuyrukta işlemez). E-postaları oluşturulduktan ve/veya gönderildikten 30 gün sonra otomatik olarak temizleyebiliriz; bu nedenle istemcinizde, veritabanınızda veya uygulamanızda giden SMTP e-postalarının bir kopyasını saklamalısınız. İsterseniz veritabanınızda e-posta kimliği değerimize başvurabilirsiniz; bu değer hem [E-posta oluştur](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) hem de [E-posta al](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) uç noktalarından döndürülür.",
+        "description": "E-posta silme işlemi, yalnızca mevcut durum ``bekliyor``, ``sırada`` veya ``ertelenmiş`` ise durumu ``reddedildi`` olarak ayarlar (ve daha sonra kuyrukta işlemez). E-postaları oluşturulduktan ve/veya gönderildikten 30 gün sonra otomatik olarak temizleyebiliriz; bu nedenle, giden SMTP e-postalarının bir kopyasını istemcinizde, veritabanınızda veya uygulamanızda saklamalısınız. İsterseniz veritabanınızda e-posta kimliği değerimize başvurabilirsiniz; bu değer hem [E-posta oluştur](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) hem de [E-posta al](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) uç noktalarından döndürülür.",
         "tags": [
           "E-postalar"
         ],
@@ -1876,7 +4098,7 @@
     "/v1/domains": {
       "get": {
         "summary": "Alan adlarını listele",
-        "description": "> [!NOTE]\n>1 Kasım 2024 itibarıyla, Liste etki alanları ve Liste etki alanı takma adları için API uç noktaları, sayfa başına maksimum `1000` sonuç olarak varsayılan olacaktır. Bu davranışı erkenden etkinleştirmek isterseniz, uç nokta sorgusu için URL'ye ek bir sorgu dizesi parametresi olarak `?paginate=true` geçirebilirsiniz. Daha fazla bilgi için Sayfalandırma'ya bakın.",
+        "description": "> [!NOTE]\n>1 Kasım 2024 itibarıyla, Liste alan adları ve Liste alan adı takma adları için API uç noktaları, sayfa başına maksimum `1000` sonuç içerecektir. Bu davranışı erkenden etkinleştirmek isterseniz, uç nokta sorgusu için URL'ye ek bir sorgu dizesi parametresi olarak `?paginate=true` değerini iletebilirsiniz. Daha fazla bilgi için Sayfalandırma bölümüne bakın.",
         "tags": [
           "Alan Adları"
         ],
@@ -1905,7 +4127,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Belirli bir alana göre sırala (tek bir tire ile önek - o alanın ters yönünde sıralamak için). Ayarlanmamışsa varsayılan olarak created_at olur.",
+            "description": "Belirli bir alana göre sırala (tek bir tire ile önek ekle - o alanın ters yönünde sıralamak için). Ayarlanmamışsa varsayılan olarak created_at olur.",
             "schema": {
               "type": "string"
             }
@@ -1951,7 +4173,7 @@
       },
       "post": {
         "summary": "Alan adı oluştur",
-        "description": "Sistemde yeni bir etki alanı oluşturur. Bu uç nokta, platformla birlikte kullanılmak üzere tam nitelikli bir etki alanı adı (FQDN) veya IP adresi kaydetmenize olanak tanır.\n\nİsteğe bağlı yapılandırma seçenekleri arasında etki alanını mevcut bir ekibe atamak, bir plan türü (örneğin, ücretsiz, gelişmiş koruma veya ekip) belirlemek ve spam filtreleme, virüs taraması ve alıcı doğrulaması gibi gelişmiş korumaları yapılandırmak yer alır. Ayrıca, varsayılan olarak bir genel takma adın oluşturulup oluşturulmayacağını yapılandırabilir, SMTP arızaları için özel bir geri dönüş web kancası URL'si ayarlayabilir ve bu etki alanındaki e-posta takma adları için depolama kotası sınırları tanımlayabilirsiniz. Bu uç nokta, etki alanı düzeyinde doğrulama ve sağlama gerçekleştirir. `ignore_mx_check` seçeneği etkinleştirilirse, MX kaydı doğrulaması atlanır (yalnızca gelişmiş yönlendirme kurulumları için önerilir). Yanıt, yapılandırma için gereken DNS kayıtları dahil olmak üzere oluşturulan etki alanı nesnesinin tüm ayrıntılarını içerecektir.",
+        "description": "Sistemde yeni bir alan adı oluşturur. Bu uç nokta, platformla kullanılmak üzere tam nitelikli bir alan adı (FQDN) veya IP adresi kaydetmenize olanak tanır.\n\nİsteğe bağlı yapılandırma seçenekleri arasında alan adını mevcut bir ekibe atamak, bir plan türü belirlemek (örneğin, ücretsiz, gelişmiş koruma veya ekip) ve spam filtreleme, virüs tarama ve alıcı doğrulama gibi gelişmiş korumaları yapılandırmak bulunur. Ayrıca, varsayılan olarak her şeyi kapsayan bir takma ad oluşturulup oluşturulmayacağını yapılandırabilir, SMTP hataları için özel bir geri dönüş webhook URL'si ayarlayabilir ve bu alan adındaki e-posta takma adları için depolama kotası sınırları tanımlayabilirsiniz. Bu uç nokta, alan adı düzeyinde doğrulama ve sağlama gerçekleştirir. `ignore_mx_check` seçeneği etkinleştirilirse, MX kaydı doğrulaması atlanır (yalnızca gelişmiş yönlendirme kurulumları için önerilir). Yanıt, yapılandırma için gereken DNS kayıtları da dahil olmak üzere oluşturulan alan adı nesnesinin tüm ayrıntılarını içerir.",
         "tags": [
           "Alan Adları"
         ],
@@ -2003,7 +4225,7 @@
       ],
       "get": {
         "summary": "Alan adını al",
-        "description": "Belirli bir etki alanını al",
+        "description": "Belirli bir etki alanını alın",
         "tags": [
           "Alan Adları"
         ],
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2208,8 +4430,8 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Alan genelinde herkesi kapsayan parola oluşturun",
-        "description": "Alan çapında bir genel parola oluşturur. Parola sağlanmazsa, güvenli bir rastgele parola oluşturulur.",
+        "summary": "Alan adı genelinde kapsayıcı parola oluşturun",
+        "description": "Alan adı genelinde geçerli bir parola oluşturur. Parola girilmezse, güvenli ve rastgele bir parola oluşturulur.",
         "tags": [
           "Alan Adları"
         ],
@@ -2221,7 +4443,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Genel parolayı oluşturmak için alan adı"
+            "description": "Her şeyi kapsayan parolanın oluşturulacağı alan adı"
           }
         ],
         "requestBody": {
@@ -2233,7 +4455,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Alan genelindeki genel parola için kullanılacak özel yeni parolanız. Güçlü bir parola oluşturmak için boş bırakın."
+                    "description": "Alan adı genelinde geçerli parola için kullanacağınız özel yeni parolanız. Güçlü bir parola oluşturmak için boş bırakın."
                   },
                   "description": {
                     "type": "string",
@@ -2283,7 +4505,7 @@
       },
       "get": {
         "summary": "Alan adı genelindeki tüm parolaları listele",
-        "description": "Belirtilen etki alanı için şu anda yapılandırılmış olan etki alanı genelindeki genel parolaların listesini döndürür.",
+        "description": "Belirtilen etki alanı için şu anda yapılandırılmış olan etki alanı genelindeki tüm parolaların listesini döndürür.",
         "operationId": "listCatchAllPasswords",
         "tags": [
           "Alan Adları"
@@ -2360,7 +4582,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
         "summary": "Alan adı genelinde geçerli olan genel parolayı kaldırın",
-        "description": "Sağlanan belirteç kimliğini kullanarak alan adı genelinde geçerli bir parolayı siler.",
+        "description": "Sağlanan belirteç kimliğini kullanarak etki alanı genelindeki genel parolayı siler.",
         "tags": [
           "Alan Adları"
         ],
@@ -2471,7 +4693,7 @@
       },
       "post": {
         "summary": "Alan adı daveti oluştur",
-        "description": ">[!IMPORTANT]\n>Davet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir etki alanının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir.",
+        "description": ">[!IMPORTANT]\n>Davet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir alan adının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir.",
         "tags": [
           "Davetler"
         ],
@@ -2492,12 +4714,12 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Alan adı üyeleri listesine davet etmek için e-posta adresi"
+                    "description": "Alan adı üyeleri listesine davet edilecek e-posta adresi"
                   },
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Kullanıcının etki alanı üyeliğine ekleneceği grup (`\"admin\"` veya `\"user\"`'dan biri olabilir)"
+                    "description": "Kullanıcının etki alanı üyeliğine ekleneceği grup (`\"admin\"` veya `\"user\"` olabilir)"
                   }
                 }
               }
@@ -2533,8 +4755,8 @@
         }
       },
       "delete": {
-        "summary": "Alan adı davetini kaldır",
-        "description": "Bir alan adına ait daveti kaldırın.",
+        "summary": "Alan davetini kaldır",
+        "description": "Bir alan adına gelen daveti kaldırın.",
         "tags": [
           "Davetler"
         ],
@@ -2774,7 +4996,7 @@
       ],
       "get": {
         "summary": "Alan adı takma adlarını listeleyin",
-        "description": ">[!NOTE]\n>1 Kasım 2024 itibarıyla `List domains` ve `List domain aliases` için API uç noktaları varsayılan olarak sayfa başına maksimum `1000` sonuç olacaktır. Bu davranışı erkenden etkinleştirmek isterseniz, uç nokta sorgusu için URL'ye ek bir sorgu dizesi parametresi olarak `?paginate=true` geçirebilirsiniz. Daha fazla bilgi için Sayfalandırma'ya bakın.",
+        "description": ">__ÇEVİRİ_NOTU__\n>1 Kasım 2024 itibarıyla, ``Alan Adlarını Listele`` ve ``Alan Adı Takma Adlarını Listele`` API uç noktaları, sayfa başına maksimum ``1000`` sonuç içerecektir. Bu davranışı erkenden etkinleştirmek isterseniz, uç nokta sorgusu için URL'ye ek bir sorgu dizesi parametresi olarak `?paginate=true` değerini iletebilirsiniz. Daha fazla bilgi için Sayfalandırma bölümüne bakın.",
         "tags": [
           "Takma adlar"
         ],
@@ -2796,7 +5018,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Bir alandaki takma adları adına göre arayın (RegExp desteklenir)",
+            "description": "Bir etki alanındaki takma adları adına göre arayın (RegExp desteklenir)",
             "required": false,
             "schema": {
               "type": "string"
@@ -2814,7 +5036,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Belirli bir alana göre sırala (ters sıralama için tek tireli önek). Varsayılanı created_at'dir.",
+            "description": "Belirli bir alana göre sırala (ters sıralama için önek olarak tek tire kullanın). Varsayılan olarak created_at'dir.",
             "required": false,
             "schema": {
               "type": "string"
@@ -2853,7 +5075,7 @@
         }
       },
       "post": {
-        "summary": "Yeni alan adı takma adı oluştur",
+        "summary": "Yeni alan adı oluşturun",
         "description": "Belirli bir alan adı için yeni bir takma ad oluşturun.",
         "tags": [
           "Takma adlar"
@@ -2945,7 +5167,7 @@
       },
       "put": {
         "summary": "Alan adı takma adını güncelle",
-        "description": "Belirli bir alan adına ait takma adı güncelleyin.",
+        "description": "Belirli bir alan adı için belirli bir takma adı güncelleyin.",
         "tags": [
           "Takma adlar"
         ],
@@ -3031,7 +5253,7 @@
     "/v1/encrypt": {
       "post": {
         "summary": "TXT Kaydını Şifrele",
-        "description": "Ücretsiz planda bile kayıtları hiçbir maliyet olmadan şifrelemenize izin veriyoruz. Gizlilik bir özellik olmamalı, bir ürünün tüm yönlerine doğal olarak entegre edilmelidir. [Gizlilik Kılavuzları tartışmasında](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ve [GitHub sorunlarımızda](https://github.com/forwardemail/forwardemail.net/issues/254) çokça talep edildiği üzere bunu ekledik.",
+        "description": "Ücretsiz planda bile kayıtlarınızı ücretsiz olarak şifrelemenize olanak tanıyoruz. Gizlilik bir özellik olmamalı, ürünün tüm yönlerine entegre edilmelidir. [Gizlilik Kılavuzları tartışmasında](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ve [GitHub sorunlarımızda](https://github.com/forwardemail/forwardemail.net/issues/254) yoğun talep üzerine bunu ekledik.",
         "tags": [
           "Şifrele"
         ],
@@ -3052,7 +5274,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Herhangi bir geçerli Forward Email düz metin TXT kaydı"
+                    "description": "Herhangi bir geçerli Yönlendirilmiş E-posta düz metin TXT kaydı"
                   }
                 }
               }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Kişileri listele",
-        "description": "Tüm kişileri listele (CardDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Kişiler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "İletişim oluştur",
-        "description": "Yeni bir kişi oluşturun (CardDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Kişiler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "İletişim Kimliği",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "İletişimi al",
-        "description": "Belirli bir kişiyi alın (CardDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Kişiler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "İletişim bilgilerini güncelle",
-        "description": "Belirli bir kişiyi güncelleyin (CardDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Kişiler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Kişiyi sil",
-        "description": "Belirli bir kişiyi silin (CardDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Kişiler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Takvimleri listele",
-        "description": "Tüm takvimleri listele (CalDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Takvimler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Takvim oluştur",
-        "description": "Yeni bir takvim oluşturun (CalDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Takvimler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Takvim Kimliği",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Takvimi al",
-        "description": "Belirli bir takvimi (CalDAV) alın. Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Takvimler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Takvimi güncelle",
-        "description": "Belirli bir takvimi güncelleyin (CalDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Takvimler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Takvimi sil",
-        "description": "Belirli bir takvimi silin (CalDAV). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Adlı Takvimler"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Mesajları listele ve ara",
-        "description": "Mesajları listele ve ara (IMAP/POP3). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Mesajları"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Mesaj oluştur",
-        "description": "Yeni bir mesaj oluşturun (IMAP/POP3). Bu bir e-posta GÖNDERMEYECEK - yalnızca mesajı posta kutusu klasörünüze ekleyecektir (IMAP APPEND komutuna benzer). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Mesajları"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Mesaj Kimliği",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Mesajı al",
-        "description": "Belirli bir mesajı alın (IMAP/POP3). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Mesajları"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Mesajı güncelle",
-        "description": "Belirli bir mesajı güncelleyin (IMAP/POP3). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Mesajları"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Mesajı sil",
-        "description": "Belirli bir mesajı silin (IMAP/POP3). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Mesajları"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Klasörleri listele",
-        "description": "Tüm klasörleri listele (IMAP/POP3). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Klasörleri"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Klasör oluştur",
-        "description": "Yeni bir klasör oluşturun (IMAP/POP3). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Klasörleri"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Klasör Kimliği",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Klasörü al",
-        "description": "Belirli bir klasörü (IMAP/POP3) alın. Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Klasörleri"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Klasörü güncelle",
-        "description": "Belirli bir klasörü (IMAP/POP3) güncelleyin. Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Klasörleri"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Klasörü sil",
-        "description": "Belirli bir klasörü silin (IMAP/POP3). Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Klasörleri"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Klasör Kimliği",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Klasörü kopyala",
-        "description": "Belirli bir klasörü (IMAP/POP3) kopyalayın. Bu uç nokta yakında geliyor.",
-        "tags": [
-          "Takma Ad Klasörleri"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3688,7 +5333,7 @@
     },
     {
       "name": "Alan Adları",
-      "description": "> [!TIP]\n> Bir alan adının <code>/v1/domains/:domain\\_name</code> uç noktası olarak kullanıldığı alan uç noktaları, bir alan kimliğinin <code>:domain\\_id</code> ile değiştirilebilir. Bu, alana <code>name</code> veya <code>id</code> değeriyle başvurabileceğiniz anlamına gelir."
+      "description": "> [!TIP]\n> Uç noktası olarak alan adı <code>/v1/domains/:domain\\_name</code> olan alan adı uç noktaları, alan adı kimliği <code>:domain\\_id</code> ile değiştirilebilir. Bu, alan adına <code>name</code> veya <code>id</code> değeriyle başvurabileceğiniz anlamına gelir."
     },
     {
       "name": "Davetler",
@@ -3707,20 +5352,20 @@
       "description": "Şifreleme uç noktaları"
     },
     {
-      "name": "Takma Adlı Kişiler",
-      "description": "Takma ad kişileri yönetimi uç noktaları (CardDAV)\n\n>[!NOTE]\n>Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak takma ad kullanıcı adına eşit \"kullanıcı adı\" ve takma ad tarafından oluşturulan parolaya eşit \"şifre\" gerektirir.\n\n>[!WARNING]\n>Bu uç nokta bölümü devam eden bir çalışmadır ve (umarız) 2025'te yayınlanacaktır. Bu arada lütfen web sitemizin gezinme bölümündeki \"Uygulamalar\" açılır menüsünden bir IMAP istemcisi kullanın."
+      "name": "İletişim",
+      "description": "Takma ad kişileri yönetimi uç noktaları (CardDAV)\n\n>[!NOTE]\n>Diğer API uç noktalarının aksine, bunlar Temel Yetkilendirme başlıkları olarak takma ad kullanıcı adına eşit \"kullanıcı adı\" ve takma ad tarafından oluşturulan parolaya eşit \"şifre\" gerektirir.\n\n>[!TIP]\n>Bu uç noktalar, vCard desteğiyle kişi yönetimi için kişilerin oluşturulması, alınması, güncellenmesi ve silinmesi dahil olmak üzere tam CRUD işlemleri sağlar. Doğrudan vCard içeriği sağlayabilir veya vCard formatına dönüştürülecek bireysel kişi alanları sağlayabilirsiniz."
     },
     {
-      "name": "Takma Adlı Takvimler",
-      "description": "Takma ad takvimleri yönetim uç noktaları (CalDAV)\n\n>[!NOTE]\n> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak takma ad kullanıcı adına eşit [Authentication](#description/authentication) \"kullanıcı adı\" ve takma ad tarafından oluşturulan parolaya eşit \"şifre\" gerektirir.\n\n>[!WARNING]\n> Bu uç nokta bölümü devam eden bir çalışmadır ve (umarız) 2025'te yayınlanacaktır. Bu arada lütfen web sitemizin gezinme bölümündeki \"Uygulamalar\" açılır menüsünden bir IMAP istemcisi kullanın."
+      "name": "Takvimler",
+      "description": "Takma ad takvimleri yönetim uç noktaları (CalDAV)\n\n>[!NOTE]\n> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak takma ad kullanıcı adına eşit [Authentication](#description/authentication) \"kullanıcı adı\" ve takma ad tarafından oluşturulan parolaya eşit \"parola\" gerektirir.\n\n>[!TIP]\n> Bu uç noktalar, takvimlerin oluşturulması, alınması, güncellenmesi ve silinmesi dahil olmak üzere saat dilimi ve renk desteğiyle eksiksiz takvim yönetimi sağlar. Takvim adları zorunludur, renk, saat dilimi ve açıklama gibi diğer özellikler ise isteğe bağlıdır."
     },
     {
-      "name": "Takma Ad Mesajları",
-      "description": "Takma ad iletileri yönetim uç noktaları (IMAP/POP3)\n\n>[!NOTE]\n> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak takma ad kullanıcı adına eşit [Authentication](#description/authentication) \"kullanıcı adı\" ve takma ad tarafından oluşturulan parolaya eşit \"şifre\" gerektirir.\n\n> [!WARNING]\n> Bu uç nokta bölümü devam eden bir çalışmadır ve (umarız) 2025'te yayınlanacaktır. Bu arada lütfen web sitemizin gezinme bölümündeki \"Uygulamalar\" açılır menüsünden bir IMAP istemcisi kullanın.\nLütfen alan adınız için kurulum talimatlarını izlediğinizden emin olun.\nBu talimatlar SSS bölümümüzde [IMAP ile e-posta almayı destekliyor musunuz?](/faq#do-you-support-receiving-email-with-imap) bulunabilir."
+      "name": "Mesajlar",
+      "description": "Takma ad ileti yönetimi uç noktaları (IMAP/POP3)\n\n>[!NOTE]\n> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak takma ad kullanıcı adına eşit [Authentication](#description/authentication) \"kullanıcı adı\" ve takma ad tarafından oluşturulan parolaya eşit \"şifre\" gerektirir.\n\n>[!TIP]\n> Bu uç noktalar, gelişmiş arama özellikleriyle kapsamlı ileti yönetimi sağlar. Klasöre, bayraklara, içeriğe, başlıklara, tarih aralıklarına, boyuta ve daha fazlasına göre arama yapabilirsiniz. İletiler standart Nodemailer biçimi kullanılarak oluşturulabilir ve klasörler arasında geçiş ve bayrak yönetimi desteklenir.\n\nLütfen alan adınız için kurulum talimatlarını izlediğinizden emin olun.\nBu talimatlar SSS bölümümüzde [IMAP ile e-posta almayı destekliyor musunuz?](/faq#do-you-support-receiving-email-with-imap) bulunabilir."
     },
     {
-      "name": "Takma Ad Klasörleri",
-      "description": "Takma ad klasör yönetimi uç noktaları (IMAP/POP3)\n\n>[!TIP]\n> Uç noktası olarak bir klasörün yolu <code>/v1/folders/:path</code> olan klasör uç noktaları, bir klasörün kimliği <code>:id</code> ile değiştirilebilir. Bu, klasöre <code>path</code> veya <code>id</code> değeriyle başvurabileceğiniz anlamına gelir.\n\n>[!WARNING]\n> Bu uç nokta bölümü devam eden bir çalışmadır ve (umarız) 2025'te yayınlanacaktır. Bu arada lütfen web sitemizin gezinme bölümündeki \"Uygulamalar\" açılır menüsünden bir IMAP istemcisi kullanın."
+      "name": "Klasörler",
+      "description": "Takma ad klasör yönetimi uç noktaları (IMAP/POP3)\n\n>[!TIP]\n> Uç noktası olarak bir klasörün yolunu <code>/v1/folders/:path</code> kullanan klasör uç noktaları, klasörün kimliği <code>:id</code> ile değiştirilebilir. Bu, klasöre <code>path</code> veya <code>id</code> değeriyle başvurabileceğiniz anlamına gelir.\n\n>[!NOTE]\n> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak takma ad kullanıcı adına eşit [Authentication](#description/authentication) \"kullanıcı adı\" ve takma ad tarafından oluşturulan parolaya eşit \"parola\" gerektirir.\n\n>[!TIP]\n> Bu uç noktalar, oluşturma, yeniden adlandırma ve silme dahil olmak üzere tam klasör yönetimi sağlar. Klasör yolları üst klasörleri (örneğin, 'GİRİŞ KUTUSU/Alt Klasör') içerebilir ve üst klasörler mevcut değilse otomatik olarak oluşturulur."
     }
   ]
 }

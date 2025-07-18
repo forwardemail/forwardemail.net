@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Vítejte v komplexní dokumentaci k API pro funkci Forward Email. Toto API vám umožňuje programově spravovat přesměrování e-mailů, domény, aliasy, odchozí e-maily a další.\n\n## Klíčové funkce\n* **Správa domén:** Vytvářejte, načítávejte, aktualizujte, mazejte a ověřujte domény.\n* **Správa aliasů:** Správa e-mailových aliasů, včetně vytváření, aktualizací a správy příjemců.\n* **Odchozí SMTP:** Odesílejte e-maily přes SMTP, spravujte limity a sledujte odeslané e-maily.\n* **Účet a protokoly:** Spravujte podrobnosti o svém účtu a stahujte protokoly aktivit.\n* **Zabezpečení:** Šifrujte záznamy TXT a spravujte členy/pozvánky domény.\n* **Brzy:** Plánují se funkce jako kontakty CardDAV, kalendáře CalDAV a správa zpráv/složek IMAP/POP3.\n\n## Ověřování\nVětšina koncových bodů vyžaduje ověřování pomocí vašeho **klíče API**. V záhlaví základního ověřování zadejte klíč API jako `uživatelské_jméno` a pole pro heslo nechte prázdné.\n\n```http\nAutorizace: Basic QVBJX1RPS0VOOg==\n```\n(Nahraďte `API_TOKEN` skutečným klíčem před kódováním Base64)\n\nKoncové body související s **aliasovými kontakty, kalendáři, zprávami a složkami** (aktuálně označené jako \"Již brzy\") budou pro základní ověřování používat vygenerované aliasové uživatelské jméno a heslo.\n\n## Chyby\nRozhraní API používá standardní stavové kódy HTTP k označení úspěchu nebo neúspěchu. Chybové odpovědi obsahují tělo JSON s polem `message` s podrobnostmi o chybě.\n\n| Stavový kód | Význam |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Špatný požadavek |\n| 401 | Neoprávněné |\n| 403 | Zakázáno |\n| 404 | Nenalezeno |\n| 429 | Příliš mnoho požadavků |\n| 500 | Interní chyba serveru|\n| 501 | Není implementováno |\n| 502 | Špatná brána |\n| 503 | Služba není dostupná |\n| 504 | Časový limit brány |\n\n*Pokud narazíte na chybu `5xx`, kontaktujte prosím [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalizace\nOdpovědi API jsou překládány na základě zjištěného národního prostředí uživatele nebo záhlaví `Accept-Language`. Je podporováno více než 25 jazyků.\n\n## Stránkování\nSeznamy vracející koncové body podporují stránkování pomocí parametrů dotazu.\n\n| Parametr | Typ | Volitelné | Popis | Výchozí | Omezení |\n|--------------|----------|-----------|--------------------------------------------------------------------------------------|----------|---------------------|\n| `page` | Integer | Ano | Číslo stránky, která se má načíst. | 1 | `>= 1` |\n| `limit` | Integer | Ano | Počet výsledků na stránku. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | Ano | Přihlásit se k stránkování (vyžadováno před 1. listopadem 2024 pro některé koncové body). | false | |\n\n**Záhlaví stránkování:**\n* `X-Page-Count`: Celkový počet stránek.\n* `X-Page-Current`: Aktuální číslo stránky.\n* `X-Page-Size`: Počet položek na aktuální stránce.\n\n* `X-Item-Count`: Celkový počet položek na všech stránkách.\n* `Link`: Navigační odkazy (předchozí, další, první, poslední).\n\n**Příklad:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Doporučené knihovny\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Spravováno službou Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Vítejte v komplexní dokumentaci k API pro funkci Forward Email. Toto API vám umožňuje programově spravovat přesměrování e-mailů, domény, aliasy, odchozí e-maily a další.\n\n## Klíčové funkce\n* **Správa domén:** Vytváření, načítání, aktualizace, mazání a ověřování domén.\n* **Správa aliasů:** Správa e-mailových aliasů, včetně vytváření, aktualizací a správy příjemců.\n* **Odchozí SMTP:** Odesílání e-mailů přes SMTP, správa limitů a sledování odeslaných e-mailů.\n* **Účet a protokoly:** Správa údajů o vašem účtu a stahování protokolů aktivit.\n* **Zabezpečení:** Šifrování záznamů TXT a správa členů/pozvánek domény.\n* **Kontakty CardDAV:** Úplné operace CRUD pro správu kontaktů s podporou vCard.\n* **Kalendáře CalDAV:** Kompletní správa kalendářů s podporou časových pásem a barev.\n* **Zprávy IMAP/POP3:** Komplexní správa zpráv s pokročilými funkcemi vyhledávání.\n* **Složky IMAP/POP3:** Úplná správa složek včetně vytváření, přejmenování a mazání.\n\n## Ověřování\nVětšina koncových bodů vyžaduje ověřování pomocí vašeho **klíče API**. Zadejte klíč API jako `uživatelské_jméno` v záhlaví základního ověřování a heslo ponechte prázdné.\n\n```http\nAutorizace: Basic QVBJX1RPS0VOOg==\n```\n(Nahraďte `API_TOKEN` svým skutečným klíčem před kódováním Base64)\n\nKoncové body související s **aliasem kontaktů, kalendářů, zpráv a složek** vyžadují pro základní ověřování vygenerované uživatelské jméno a heslo aliasu.\n\n## Chyby\nRozhraní API používá standardní stavové kódy HTTP k indikaci úspěchu nebo neúspěchu. Chybové odpovědi zahrnují tělo JSON s polem `message` s podrobnostmi o chybě.\n\n| Stavový kód | Význam |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Špatný požadavek |\n| 401 | Neoprávněné |\n| 403 | Zakázáno |\n| 404 | Nenalezen |\n| 409 | Konflikt |\n| 412 | Předběžná podmínka selhala |\n| 429 | Příliš mnoho požadavků |\n| 500 | Interní chyba serveru|\n| 501 | Není implementováno |\n| 502 | Špatná brána |\n| 503 | Služba není dostupná |\n| 504 | Časový limit brány |\n\n*Pokud narazíte na chybu `5xx`, kontaktujte prosím [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalizace\nOdpovědi API jsou překládány na základě zjištěného národního prostředí uživatele nebo záhlaví `Accept-Language`. Je podporováno více než 25 jazyků.\n\n## Stránkování\nSeznamy vracející koncové body podporují stránkování pomocí parametrů dotazu.\n\n| Parametr | Typ | Volitelné | Popis | Výchozí | Omezení |\n|--------------|----------|-----------|-----------|-------------------------------------------------------------------------------------|---------|---------------------|\n| `page` | Integer | Ano | Číslo stránky, která se má načíst. | 1 | `>= 1` |\n| `limit` | Integer | Ano | Počet výsledků na stránku. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | Ano | Přihlásit se k stránkování (vyžadováno před 1. listopadem 2024 pro některé koncové body). | false | |\n\n**Záhlaví stránkování:**\n* `X-Page-Count`: Celkový počet stránek.\n* `X-Page-Current`: Aktuální číslo stránky.\n\n* `X-Page-Size`: Počet položek na aktuální stránce.\n* `X-Item-Count`: Celkový počet položek na všech stránkách.\n* `Link`: Navigační odkazy (předchozí, další, první, poslední).\n\n**Příklad:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Doporučené knihovny\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Spravováno službou Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nPro základní ověřování použijte vygenerované **alias uživatelské jméno a heslo**. Toto platí pro koncové body v rámci:\n* Alias kontaktů (CardDAV)\n* Alias kalendářů (CalDAV)\n* Alias zpráv (IMAP/POP3)\n* Alias složek (IMAP/POP3)\n\n*(Poznámka: Tyto funkce jsou aktuálně označeny jako „Brzy k dispozici“)*\n\n**Příklad:**\nPokud je alias uživatelské jméno `alias@domain.com` a heslo `GENERATED_PASSWORD`, hodnota kódovaná Base64 by byla `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAutorizace: Základní YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nPro základní ověřování použijte vygenerované **alias uživatelské jméno a heslo**. Toto platí pro koncové body v rámci:\n* Alias kontaktů (CardDAV)\n* Alias kalendářů (CalDAV)\n* Alias zpráv (IMAP/POP3)\n* Alias složek (IMAP/POP3)\n\n**Příklad:**\nPokud je alias uživatelské jméno `alias@domain.com` a heslo `GENERATED_PASSWORD`, hodnota kódovaná Base64 by byla `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAutorizace: Základní YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID kontaktu (contact_id z CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "UID kontaktu"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Celé jméno kontaktní osoby"
+          },
+          "content": {
+            "type": "string",
+            "description": "Obsah vCard"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag pro verzování"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Zda je kontakt skupinou"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole e-mailových adres"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole telefonních čísel"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Obsah vCard (pokud není poskytnut, bude vygenerován z jiných polí)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Celé jméno kontaktní osoby"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Vlastní kontaktní ID (pokud není poskytnuto, bude vygenerováno automaticky)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "UID kontaktu (pokud není poskytnuto, bude vygenerováno automaticky)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole e-mailových adres"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole telefonních čísel"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole telefonních čísel (alias pro phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Pole adres"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Zda je kontakt skupinou"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Obsah vCard"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Celé jméno kontaktní osoby"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole e-mailových adres"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole telefonních čísel"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Pole telefonních čísel (alias pro phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Pole adres"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Zda je kontakt skupinou"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID kalendáře (calendarId z CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Název kalendáře"
+          },
+          "description": {
+            "type": "string",
+            "description": "Popis kalendáře"
+          },
+          "color": {
+            "type": "string",
+            "description": "Barva kalendáře (hexadecimální formát)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Časové pásmo kalendáře"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Pořadí zobrazení v kalendáři"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Název kalendáře"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "ID vlastního kalendáře (pokud není zadáno, bude vygenerováno automaticky)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Popis kalendáře"
+          },
+          "color": {
+            "type": "string",
+            "description": "Barva kalendáře (hexadecimální formát, pokud není poskytnut, bude automaticky vygenerován)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Časové pásmo kalendáře (výchozí nastavení je časové pásmo uživatele nebo UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Pořadí zobrazení v kalendáři (výchozí nastavení je 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Název kalendáře"
+          },
+          "description": {
+            "type": "string",
+            "description": "Popis kalendáře"
+          },
+          "color": {
+            "type": "string",
+            "description": "Barva kalendáře (hex formát)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Časové pásmo kalendáře"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Pořadí zobrazení v kalendáři"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID složky"
+          },
+          "path": {
+            "type": "string",
+            "description": "Úplná cesta ke složce"
+          },
+          "name": {
+            "type": "string",
+            "description": "Název složky (poslední část cesty)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Cesta k nadřazené složce"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "Platnost UID IMAP"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Další hodnota UID"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Index modifikací"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Zda je složka odebírána"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Příznaky složek"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Doba uchovávání zpráv"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Označení pro zvláštní použití"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Cesta/název složky"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Nová cesta/název složky"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID zprávy"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "ID kořenové zprávy pro vlákno"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "ID složky obsahující zprávu"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Cesta ke složce obsahující zprávu"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "ID vlákna pro seskupení konverzací"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Hodnota záhlaví Message-ID"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Zda je zpráva nepřečtená"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Zda je zpráva označena příznakem"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Zda je zpráva smazána"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Zda je zpráva koncept"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Zda je zpráva spam/nevyžádaná pošta"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Zda je zpráva zkopírována"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Zda je zpráva vyhledatelná"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Zda platnost zprávy vypršela"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Zda zpráva obsahuje přílohy"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Datum uchování zprávy"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Interní datum (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Datum ze záhlaví zpráv"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Předmět zprávy"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Příznaky IMAP"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Velikost zprávy v bajtech"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "UID IMAP"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Modifikační sekvence"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Typ transakce"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Vzdálená IP adresa"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Analyzovaný objekt zprávy (standardně zahrnutý, nastavením ?nodemailer=false jej vyloučíte)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Nezpracovaný obsah zprávy (standardně zahrnutý, nastavením ?raw=false jej vyloučíte)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mailová adresa odesílatele"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "E-mailové adresy příjemců"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "E-mailové adresy příjemců kopie"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "E-mailové adresy příjemců skryté kopie"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Předmět zprávy"
+          },
+          "text": {
+            "type": "string",
+            "description": "Prostý textový obsah"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML obsah"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Přílohy zpráv (formát Nodemailer)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Cílová složka (výchozí nastavení je Doručená pošta)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Příznaky IMAP, které se mají nastavit pro zprávu"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Příznaky IMAP, které se mají nastavit pro zprávu"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Přesunout zprávu do této složky"
+          }
         }
       },
       "Email": {
@@ -799,7 +1668,7 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Počet dní pro ukládání odchozích e-mailů SMTP (0 = okamžitě smazat)"
+            "description": "Počet dní pro ukládání odchozích SMTP e-mailů (0 = okamžitě smazat)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Aliasy ID",
+        "description": "ID aliasu",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "ID e-mailu",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID kontaktu",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID kalendáře",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID složky nebo cesta",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID zprávy",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Vytvořit účet",
-        "description": "Vytvořte nový uživatelský účet",
-        "tags": [
-          "Účet"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "E-mailová adresa"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Heslo"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Obnovit účet",
-        "description": "Načíst informace o účtu aktuálního uživatele",
         "tags": [
           "Účet"
         ],
+        "summary": "Obnovit účet",
+        "description": "Získejte informace o svém účtu.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Aktualizovat účet",
-        "description": "Aktualizovat informace o účtu aktuálního uživatele",
         "tags": [
           "Účet"
         ],
+        "summary": "Aktualizovat účet",
+        "description": "Aktualizujte informace o svém účtu.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "E-mailová adresa"
+                    "description": "Zobrazovaný název"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Křestní jméno"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Příjmení"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Odkaz na obrázek avatara"
+                    "description": "Předvolba místního nastavení"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Kontakty"
+        ],
+        "summary": "Seznam kontaktů",
+        "description": "Načte seznam všech kontaktů pro ověřený alias. Tento koncový bod podporuje stránkování a vrací kontakty ve formátu CardDAV.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kontakty"
+        ],
+        "summary": "Vytvořit kontakt",
+        "description": "Vytvořte nový kontakt. Můžete zadat buď přímo obsah vCard, nebo jednotlivá pole kontaktu, která budou převedena do formátu vCard. Pokud kontakt se stejným ID již existuje, bude vrácena chyba konfliktu.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Kontakty"
+        ],
+        "summary": "Načíst kontakt",
+        "description": "Načte konkrétní kontakt podle jeho ID. Kontakt je vrácen ve standardním formátu kontaktu s obsahem vCard a analyzovanými poli.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kontakty"
+        ],
+        "summary": "Aktualizovat kontakt",
+        "description": "Aktualizujte existující kontakt. Můžete zadat buď aktualizovaný obsah vCard, nebo jednotlivá pole k aktualizaci. VCard kontaktu bude znovu vygenerována, pokud jsou jednotlivá pole zadána.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kontakty"
+        ],
+        "summary": "Smazat kontakt",
+        "description": "Trvale smazat konkrétní kontakt. Tuto akci nelze vrátit zpět.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Kalendáře"
+        ],
+        "summary": "Seznam kalendářů",
+        "description": "Načte seznam všech kalendářů pro ověřený alias. Tento koncový bod podporuje stránkování a vrací kalendáře ve formátu CalDAV.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kalendáře"
+        ],
+        "summary": "Vytvořit kalendář",
+        "description": "Vytvořte nový kalendář. Název kalendáře je povinný, zatímco další vlastnosti, jako je barva, časové pásmo a popis, jsou volitelné. Pokud již kalendář se stejným názvem existuje, bude vrácena chyba konfliktu.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Kalendáře"
+        ],
+        "summary": "Načíst kalendář",
+        "description": "Načte konkrétní kalendář podle jeho ID. Kalendář je vrácen se všemi svými vlastnostmi, včetně názvu, popisu, barvy, časového pásma a pořadí.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kalendáře"
+        ],
+        "summary": "Aktualizovat kalendář",
+        "description": "Aktualizace existujícího kalendáře. Můžete aktualizovat libovolné vlastnosti kalendáře, včetně názvu, popisu, barvy, časového pásma a pořadí. Pokud změníte název na již existující, bude vrácena chyba konfliktu.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kalendáře"
+        ],
+        "summary": "Smazat kalendář",
+        "description": "Trvale smazat konkrétní kalendář. Tuto akci nelze vrátit zpět a zároveň smaže všechny události v kalendáři.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Složky"
+        ],
+        "summary": "Seznam složek",
+        "description": "Načte seznam všech složek/poštovních schránek IMAP pro ověřený alias. Tento koncový bod podporuje stránkování a filtrování podle stavu předplatného.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Filtrovat složky podle stavu předplatného",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Složky"
+        ],
+        "summary": "Vytvořit složku",
+        "description": "Vytvořte novou složku/schránku IMAP. Cesta ke složce je povinná a může zahrnovat nadřazené složky (např. „DORUČENÁ POŠTA/Podsložka“). Pokud nadřazené složky neexistují, budou vytvořeny automaticky.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Složky"
+        ],
+        "summary": "Načíst složku",
+        "description": "Načte konkrétní složku podle jejího ID nebo cesty. Jako identifikátor můžete použít buď ID objektu složky, nebo její úplnou cestu (např. „DORUČENÁ POŠTA/Podsložka“).",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Složky"
+        ],
+        "summary": "Aktualizovat složku",
+        "description": "Aktualizace/přejmenování existující složky. Tato operace přejmenuje složku na novou cestu uvedenou v těle požadavku. Jako identifikátor můžete použít buď ID objektu složky, nebo její aktuální cestu.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Složky"
+        ],
+        "summary": "Smazat složku",
+        "description": "Trvale smazat konkrétní složku. Tuto akci nelze vrátit zpět a smaže také všechny zprávy ve složce. Jako identifikátor můžete použít buď ID objektu složky, nebo její cestu.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Zprávy"
+        ],
+        "summary": "Seznam a vyhledávání zpráv",
+        "description": "Načte seznam zpráv s pokročilými možnostmi vyhledávání a filtrování. Tento koncový bod podporuje stránkování a komplexní vyhledávání napříč obsahem zpráv, záhlavími, příznaky a metadaty. Můžete vyhledávat podle složky, příznaků, obsahu, záhlaví, rozsahů dat, velikosti a dalších parametrů.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Filtrovat zprávy podle cesty ke složce",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Filtrovat podle stavu přečtení",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Filtrovat podle stavu označení",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Filtrovat podle stavu smazání",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Filtrovat podle stavu konceptu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Filtrovat podle stavu nevyžádané pošty/spamu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Filtrovat podle stavu kopírování",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Filtrovat podle stavu vyhledávání",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Filtrovat podle vypršeného stavu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Filtrovat podle přítomnosti přílohy",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Filtrovat podle přítomnosti přílohy (alias pro has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Hledat v předmětu zprávy",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Hledat v těle/textu zprávy",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Hledat v textu zprávy (alias pro tělo)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Hledat ve všech záhlavích zpráv",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Hledat podle záhlaví Message-ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Obecné vyhledávání v záhlavích a textu",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Obecné vyhledávání (alias pro vyhledávání)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filtrovat zprávy od tohoto data (formát ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Filtrovat zprávy před tímto datem (formát ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Filtrovat zprávy s minimální velikostí v bajtech",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Filtrovat zprávy podle maximální velikosti v bajtech",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Hledat podle záhlaví Od",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Hledat podle záhlaví Komu",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Hledat podle záhlaví CC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Hledat podle záhlaví Skrytá kopie",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Hledat podle data v záhlaví",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Hledat podle záhlaví Odpovědět",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Zprávy"
+        ],
+        "summary": "Vytvořit zprávu",
+        "description": "Vytvořit/přidat novou zprávu do složky. Tento koncový bod akceptuje standardní formát zpráv Nodemailer a umožňuje zadat cílovou složku a počáteční příznaky. Pokud cílová složka neexistuje, bude vytvořena automaticky.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Zprávy"
+        ],
+        "summary": "Načíst zprávu",
+        "description": "Načte konkrétní zprávu podle jejího ID. Ve výchozím nastavení odpověď obsahuje analyzovaný objekt Nodemailer a nezpracovaný obsah zprávy. Obsah můžete ovládat pomocí parametrů dotazu.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Vrátit nezpracovaný formát EML místo JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Zahrnout analyzovaný objekt Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Zahrnout přílohy do objektu Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Zahrnout nezpracovaný obsah zprávy",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Zprávy"
+        ],
+        "summary": "Aktualizační zpráva",
+        "description": "Aktualizujte existující zprávu. Můžete upravit příznaky zprávy nebo ji přesunout do jiné složky. Pokud cílová složka neexistuje, bude automaticky vytvořena.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Vrátit nezpracovaný formát EML místo JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Zprávy"
+        ],
+        "summary": "Smazat zprávu",
+        "description": "Trvale smazat konkrétní zprávu. Tuto akci nelze vrátit zpět a zpráva bude trvale odstraněna z úložiště. Na rozdíl od klientů IMAP, kteří obvykle přesouvají zprávy do koše, tento koncový bod provádí trvalé smazání.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1834,7 +4056,7 @@
         }
       },
       "delete": {
-        "summary": "Smazat odchozí e-maily SMTP",
+        "summary": "Smazat odchozí SMTP e-maily",
         "description": "Smazání e-mailu nastaví stav na „odmítnuto“ (a následně jej nezpracuje ve frontě) pouze tehdy, když je aktuální stav „čeká na vyřízení“, „zařazeno do fronty“ nebo „odloženo“. E-maily můžeme automaticky smazat po 30 dnech od jejich vytvoření a/nebo odeslání – proto byste si měli uchovávat kopii odchozích SMTP e-mailů ve svém klientovi, databázi nebo aplikaci. V případě potřeby můžete ve své databázi odkazovat na hodnotu ID našeho e-mailu – tato hodnota je vrácena z koncových bodů [Vytvořit e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) i [Načíst e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
         "tags": [
           "E-maily"
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2381,7 +4603,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID tokenu pro heslo pro celou doménu, které se má odstranit."
+            "description": "ID tokenu pro celodoménové heslo, které se má odstranit."
           }
         ],
         "responses": {
@@ -2471,7 +4693,7 @@
       },
       "post": {
         "summary": "Vytvořit pozvánku do domény",
-        "description": ">[!IMPORTANT]\n>Pokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je i administrátor, který ho zve, pak se pozvánka automaticky přijme a e-mail se neodešle.",
+        "description": ">[!IMPORTANT]\n>Pokud je pozvaný uživatel již přijatým členem jakékoli jiné domény, jejímž členem je i administrátor, který ho pozvánku posílá, pozvánka bude automaticky přijata a e-mail nebude odeslán.",
         "tags": [
           "Pozvánky"
         ],
@@ -2814,7 +5036,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Seřadit podle konkrétního pole (předpona s jednou pomlčkou – pro obrácené řazení). Výchozí nastavení je created_at.",
+            "description": "Seřadit podle konkrétního pole (předpona s jednou pomlčkou – pro obrácené řazení). Výchozí hodnota je created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Seznam kontaktů",
-        "description": "Zobrazit všechny kontakty (CardDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Vytvořit kontakt",
-        "description": "Vytvořte nový kontakt (CardDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID kontaktu",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Načíst kontakt",
-        "description": "Načíst konkrétní kontakt (CardDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizovat kontakt",
-        "description": "Aktualizovat konkrétní kontakt (CardDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Smazat kontakt",
-        "description": "Smazat konkrétní kontakt (CardDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Seznam kalendářů",
-        "description": "Zobrazit všechny kalendáře (CalDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kalendáře"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Vytvořit kalendář",
-        "description": "Vytvořte nový kalendář (CalDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kalendáře"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID kalendáře",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Načíst kalendář",
-        "description": "Načíst konkrétní kalendář (CalDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kalendáře"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizovat kalendář",
-        "description": "Aktualizovat konkrétní kalendář (CalDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kalendáře"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Smazat kalendář",
-        "description": "Smazat konkrétní kalendář (CalDAV). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové kalendáře"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Seznam a vyhledávání zpráv",
-        "description": "Zobrazení a vyhledávání zpráv (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové zprávy"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Vytvořit zprávu",
-        "description": "Vytvořte novou zprávu (IMAP/POP3). Tím se e-mail NEODEŠLE – zpráva se pouze přidá do složky vaší poštovní schránky (podobně jako příkaz IMAP APPEND). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové zprávy"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID zprávy",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Načíst zprávu",
-        "description": "Načíst konkrétní zprávu (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové zprávy"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizační zpráva",
-        "description": "Aktualizovat konkrétní zprávu (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové zprávy"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Smazat zprávu",
-        "description": "Smazat konkrétní zprávu (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Aliasové zprávy"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Seznam složek",
-        "description": "Zobrazit všechny složky (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Složky aliasů"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Vytvořit složku",
-        "description": "Vytvořte novou složku (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Složky aliasů"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID složky",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Načíst složku",
-        "description": "Načíst konkrétní složku (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Složky aliasů"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizovat složku",
-        "description": "Aktualizovat konkrétní složku (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Složky aliasů"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Smazat složku",
-        "description": "Smazat konkrétní složku (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Složky aliasů"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "ID složky",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Kopírovat složku",
-        "description": "Kopírování konkrétní složky (IMAP/POP3). Tento koncový bod bude brzy k dispozici.",
-        "tags": [
-          "Složky aliasů"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "Šifrovací koncové body"
     },
     {
-      "name": "Aliasové kontakty",
-      "description": "Koncové body pro správu kontaktů s aliasem (CardDAV)\n\n>[!NOTE]\n>Na rozdíl od jiných koncových bodů API tyto vyžadují jako hlavičky základní autorizace ověřovací „uživatelské jméno“ shodné s uživatelským jménem aliasu a „heslo“ shodné s heslem vygenerovaným aliasem.\n\n>[!WARNING]\n>Tato sekce koncových bodů je ve vývoji a bude (doufejme) vydána v roce 2025. Mezitím prosím používejte klienta IMAP z rozbalovací nabídky „Aplikace“ v navigaci na našich webových stránkách."
+      "name": "Kontakty",
+      "description": "Koncové body pro správu kontaktů s aliasem (CardDAV)\n\n>[!NOTE]\n>Na rozdíl od jiných koncových bodů API tyto vyžadují jako hlavičky základní autorizace ověřovací pole „uživatelské jméno“ shodné s uživatelským jménem aliasu a „heslo“ shodné s heslem vygenerovaným aliasem.\n\n>[!TIP]\n>Tyto koncové body poskytují kompletní operace CRUD pro správu kontaktů s podporou vCard, včetně vytváření, načítání, aktualizace a mazání kontaktů. Můžete poskytnout buď přímo obsah vCard, nebo jednotlivá pole kontaktu, která budou převedena do formátu vCard."
     },
     {
-      "name": "Aliasové kalendáře",
-      "description": "Koncové body správy kalendářů aliasů (CalDAV)\n\n>[!NOTE]\n> Na rozdíl od jiných koncových bodů API tyto vyžadují jako hlavičky základní autorizace [Authentication](#description/authentication) „username“ shodné s aliasovým uživatelským jménem a „password“ shodné s aliasovým vygenerovaným heslem.\n\n>[!WARNING]\n> Tato sekce koncových bodů je ve vývoji a bude (doufejme) vydána v roce 2025. Mezitím prosím používejte klienta IMAP z rozbalovací nabídky „Aplikace“ v navigaci na našich webových stránkách."
+      "name": "Kalendáře",
+      "description": "Koncové body pro správu aliasových kalendářů (CalDAV)\n\n>[!NOTE]\n> Na rozdíl od jiných koncových bodů API tyto vyžadují jako hlavičky základní autorizace [Authentication](#description/authentication) „username“ shodné s aliasovým uživatelským jménem a „password“ shodné s aliasovým vygenerovaným heslem.\n\n>[!TIP]\n> Tyto koncové body poskytují kompletní správu kalendářů s podporou časových pásem a barev, včetně vytváření, načítání, aktualizace a mazání kalendářů. Názvy kalendářů jsou povinné, zatímco další vlastnosti, jako je barva, časové pásmo a popis, jsou volitelné."
     },
     {
-      "name": "Aliasové zprávy",
-      "description": "Koncové body pro správu aliasových zpráv (IMAP/POP3)\n\n>[!NOTE]\n> Na rozdíl od jiných koncových bodů API tyto vyžadují jako hlavičky základní autorizace [Authentication](#description/authentication) „username“ shodné s aliasovým uživatelským jménem a „password“ shodné s aliasovým vygenerovaným heslem.\n\n> [!WARNING]\n> Tato sekce koncových bodů je ve vývoji a bude (doufejme) vydána v roce 2025. Mezitím prosím používejte klienta IMAP z rozbalovací nabídky „Aplikace“ v navigaci na našich webových stránkách.\nUjistěte se prosím, že jste dodrželi pokyny k nastavení vaší domény.\nTyto pokyny naleznete v naší sekci Často kladených otázek [Podporujete příjem e-mailů přes IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Zprávy",
+      "description": "Koncové body pro správu aliasových zpráv (IMAP/POP3)\n\n>[!NOTE]\n> Na rozdíl od jiných koncových bodů API tyto vyžadují jako hlavičky základní autorizace [Authentication](#description/authentication) „username“ shodné s aliasovým uživatelským jménem a „password“ shodné s aliasovým vygenerovaným heslem.\n\n>[!TIP]\n> Tyto koncové body poskytují komplexní správu zpráv s pokročilými možnostmi vyhledávání. Můžete vyhledávat podle složky, příznaků, obsahu, záhlaví, rozsahů dat, velikosti a dalších parametrů. Zprávy lze vytvářet pomocí standardního formátu Nodemailer a podporují přesun mezi složkami a správu příznaků.\n\nUjistěte se prosím, že jste dodrželi pokyny k nastavení vaší domény.\nTyto pokyny naleznete v naší sekci Často kladených otázek [Podporujete příjem e-mailů přes IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Složky aliasů",
-      "description": "Koncové body správy aliasů složek (IMAP/POP3)\n\n>[!TIP]\n> Koncové body složek s cestou ke složce <code>/v1/folders/:path</code> jako koncovým bodem jsou zaměnitelné s ID složky <code>:id</code>. To znamená, že na složku se můžete odkazovat buď pomocí její hodnoty <code>path</code>, nebo <code>id</code>.\n\n>[!WARNING]\n> Tato sekce koncových bodů je ve vývoji a bude (doufejme) vydána v roce 2025. Mezitím prosím používejte klienta IMAP z rozbalovací nabídky „Aplikace“ v navigaci na našem webu."
+      "name": "Složky",
+      "description": "Koncové body správy aliasových složek (IMAP/POP3)\n\n>[!TIP]\n> Koncové body složek s cestou ke složce <code>/v1/folders/:path</code> jako koncovým bodem jsou zaměnitelné s ID složky <code>:id</code>. To znamená, že na složku se můžete odkazovat buď pomocí její hodnoty <code>path</code>, nebo <code>id</code>.\n\n>[!NOTE]\n> Na rozdíl od jiných koncových bodů API tyto vyžadují jako záhlaví základní autorizace [Authentication](#description/authentication) „username“ shodné s aliasovým uživatelským jménem a „password“ shodné s aliasovým vygenerovaným heslem.\n\n>[!TIP]\n> Tyto koncové body poskytují plnou správu složek včetně vytváření, přejmenování a mazání. Cesty ke složkám mohou zahrnovat nadřazené složky (např. „INBOX/Podsložka“) a nadřazené složky budou vytvořeny automaticky, pokud neexistují."
     }
   ]
 }

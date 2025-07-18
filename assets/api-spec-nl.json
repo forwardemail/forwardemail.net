@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welkom bij de uitgebreide API-documentatie voor Forward Email. Met deze API kunt u e-maildoorsturing, domeinen, aliassen, uitgaande e-mails en meer programmatisch beheren.\n\n## Belangrijkste functies\n* **Domeinbeheer:** Domeinen aanmaken, ophalen, bijwerken, verwijderen en verifiëren.\n* **Aliasbeheer:** E-mailaliassen beheren, inclusief aanmaken, bijwerken en ontvangersbeheer.\n* **Uitgaande SMTP:** E-mails verzenden via SMTP, limieten beheren en verzonden e-mails volgen.\n* **Account & Logs:** Uw accountgegevens beheren en activiteitenlogs downloaden.\n* **Beveiliging:** TXT-records versleutelen en domeinleden/uitnodigingen beheren.\n* **Binnenkort beschikbaar:** Functies zoals CardDAV-contacten, CalDAV-agenda's en IMAP/POP3-berichten-/mapbeheer staan gepland.\n\n## Authenticatie\nDe meeste eindpunten vereisen authenticatie met uw **API-sleutel**. Geef de API-sleutel op als `gebruikersnaam` in de header van de basisauthenticatie en laat het wachtwoord leeg.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Vervang `API_TOKEN` door uw daadwerkelijke sleutel vóór Base64-codering)\n\nEindpunten gerelateerd aan **Alias Contacten, Agenda's, Berichten en Mappen** (momenteel gemarkeerd als \"Binnenkort beschikbaar\") gebruiken een gegenereerde aliasgebruikersnaam en -wachtwoord voor basisauthenticatie.\n\n## Fouten\nDe API gebruikt standaard HTTP-statuscodes om succes of mislukking aan te geven. Foutreacties bevatten een JSON-body met een `bericht`-veld waarin de fout wordt beschreven.\n\n| Statuscode | Betekenis |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Foutverzoek |\n| 401 | Ongeautoriseerd |\n| 403 | Verboden |\n| 404 | Niet gevonden |\n| 429 | Te veel verzoeken |\n| 500 | Interne serverfout |\n| 501 | Niet geïmplementeerd |\n| 502 | Ongeldige gateway |\n| 503 | Service niet beschikbaar |\n| 504 | Gateway-time-out |\n\n*Als u een `5xx`-fout tegenkomt, neem dan contact op met [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisatie\nAPI-reacties worden vertaald op basis van de gedetecteerde landinstellingen van de gebruiker of de `Accept-Language`-header. Er worden meer dan 25 talen ondersteund.\n\n## Paginering\nEindpunten die lijsten retourneren, ondersteunen paginering via queryparameters.\n\n| Parameter | Type | Optioneel | Beschrijving | Standaard | Beperkingen |\n|--------------|---------|----------|--------------------------------------------------------------|---------|--------------------|\n| `page` | Geheel getal | Ja | Op te halen paginanummer. | 1 | `>= 1` |\n| `limit` | Geheel getal | Ja | Aantal resultaten per pagina. | 10 | `>= 1`, `<= 50` |\n| `paginering` | Booleaans | Ja | Opt-in voor paginering (vereist vóór 1 november 2024 voor sommige eindpunten). | false | |\n\n**Paginatieheaders:**\n* `X-Page-Count`: Totaal aantal pagina's.\n* `X-Page-Current`: Huidig paginanummer.\n* `X-Page-Size`: Aantal items op de huidige pagina. * `X-Item-Count`: Totaal aantal items op alle pagina's.\n* `Link`: Navigatielinks (vorige, volgende, eerste, laatste).\n\n**Voorbeeld:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Aanbevolen bibliotheken\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Onderhouden door Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Welkom bij de uitgebreide API-documentatie voor het doorsturen van e-mail. Met deze API kunt u e-maildoorsturing, domeinen, aliassen, uitgaande e-mails en meer programmatisch beheren.\n\n## Belangrijkste functies\n* **Domeinbeheer:** Domeinen aanmaken, ophalen, bijwerken, verwijderen en verifiëren.\n* **Aliasbeheer:** E-mailaliassen beheren, inclusief aanmaken, bijwerken en ontvangersbeheer.\n* **Uitgaande SMTP:** E-mails verzenden via SMTP, limieten beheren en verzonden e-mails volgen.\n* **Account & Logs:** Uw accountgegevens beheren en activiteitenlogs downloaden.\n* **Beveiliging:** TXT-records versleutelen en domeinleden/uitnodigingen beheren.\n* **CardDAV-contacten:** Volledige CRUD-functies voor contactbeheer met vCard-ondersteuning.\n* **CalDAV-agenda's:** Volledig agendabeheer met tijdzone- en kleurondersteuning.\n* **IMAP/POP3-berichten:** Uitgebreid berichtenbeheer met geavanceerde zoekmogelijkheden.\n* **IMAP/POP3-mappen:** Volledig mappenbeheer, inclusief aanmaken, hernoemen en verwijderen.\n\n## Authenticatie\nDe meeste eindpunten vereisen authenticatie met uw **API-sleutel**. Geef de API-sleutel op als `gebruikersnaam` in de header van de basisauthenticatie en laat het wachtwoord leeg.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Vervang `API_TOKEN` door uw daadwerkelijke sleutel vóór Base64-codering)\n\nEindpunten gerelateerd aan **Alias-contacten, agenda's, berichten en mappen** vereisen een gegenereerde alias-gebruikersnaam en -wachtwoord voor basisauthenticatie.\n\n## Fouten\nDe API gebruikt standaard HTTP-statuscodes om succes of mislukking aan te geven. Foutreacties bevatten een JSON-body met een `bericht`-veld waarin de fout wordt beschreven.\n\n| Statuscode | Betekenis |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Ongeldige aanvraag |\n| 401 | Ongeautoriseerd |\n| 403 | Verboden |\n| 404 | Niet gevonden |\n| 409 | Conflict |\n| 412 | Voorwaarde mislukt |\n| 429 | Te veel aanvragen |\n| 500 | Interne serverfout |\n| 501 | Niet geïmplementeerd |\n| 502 | Ongeldige gateway |\n| 503 | Service niet beschikbaar |\n| 504 | Gateway-time-out |\n\n*Als u een `5xx`-fout tegenkomt, neem dan contact op met [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisatie\nAPI-reacties worden vertaald op basis van de gedetecteerde landinstellingen van de gebruiker of de header `Accept-Language`. Er worden meer dan 25 talen ondersteund.\n\n## Paginering\nEindpunten die lijsten retourneren, ondersteunen paginering via queryparameters.\n\n| Parameter | Type | Optioneel | Beschrijving | Standaard | Beperkingen |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|---------------------|\n| `page` | Geheel getal | Ja | Op te halen paginanummer. | 1 | `>= 1` |\n| `limit` | Geheel getal | Ja | Aantal resultaten per pagina. | 10 | `>= 1`, `<= 50` |\n| `paginering` | Booleaans | Ja | Opt-in voor paginering (vereist vóór 1 november 2024 voor sommige eindpunten). | false | |\n\n**Paginatieheaders:**\n* `X-Page-Count`: Totaal aantal pagina's.\n* `X-Page-Current`: Huidig paginanummer.\n* `X-Page-Size`: Aantal items op de huidige pagina.\n* `X-Item-Count`: Totaal aantal items op alle pagina's.\n* `Link`: Navigatielinks (vorige, volgende, eerste, laatste).\n\n**Voorbeeld:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Aanbevolen bibliotheken\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Onderhouden door Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "Gebruik de gegenereerde **alias gebruikersnaam en wachtwoord** voor basisverificatie. Dit geldt voor eindpunten onder:\n* Alias Contacten (CardDAV)\n* Alias Agenda's (CalDAV)\n* Alias Berichten (IMAP/POP3)\n* Alias Mappen (IMAP/POP3)\n\n*(Opmerking: Deze functies zijn momenteel gemarkeerd als \"Binnenkort beschikbaar\")*\n\n**Voorbeeld:**\nAls de alias gebruikersnaam `alias@domein.com` is en het wachtwoord `GENERATED_PASSWORD`, dan is de Base64-gecodeerde waarde `echo -n \"alias@domein.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAutorisatie: Basis YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nGebruik de gegenereerde **alias gebruikersnaam en wachtwoord** voor basisverificatie. Dit geldt voor eindpunten onder:\n* Alias Contacten (CardDAV)\n* Alias Agenda's (CalDAV)\n* Alias Berichten (IMAP/POP3)\n* Alias Mappen (IMAP/POP3)\n\n**Voorbeeld:**\nAls de alias gebruikersnaam `alias@domein.com` is en het wachtwoord `GENERATED_PASSWORD`, dan is de Base64-gecodeerde waarde `echo -n \"alias@domein.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAutorisatie: Basis YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Contact-ID (contact_id van CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Contact-UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Volledige naam van de contactpersoon"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard-inhoud"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag voor versiebeheer"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Of contact een groep is"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van e-mailadressen"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van telefoonnummers"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-inhoud (indien niet opgegeven, wordt gegenereerd vanuit andere velden)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Volledige naam van de contactpersoon"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Aangepaste contact-ID (indien niet opgegeven, wordt deze automatisch gegenereerd)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Contact-UID (indien niet opgegeven, wordt automatisch gegenereerd)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van e-mailadressen"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van telefoonnummers"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van telefoonnummers (alias voor phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Array van adressen"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Of contact een groep is"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-inhoud"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Volledige naam van de contactpersoon"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van e-mailadressen"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van telefoonnummers"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Array van telefoonnummers (alias voor phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Array van adressen"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Of contact een groep is"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Agenda-ID (calendarId van CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Kalendernaam"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeschrijving"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderkleur (hex-formaat)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalendertijdzone"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Weergavevolgorde van de kalender"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalendernaam"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Aangepaste kalender-ID (indien niet opgegeven, wordt deze automatisch gegenereerd)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeschrijving"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderkleur (hex-formaat, indien niet opgegeven, wordt automatisch gegenereerd)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Tijdzone van de kalender (standaard de tijdzone van de gebruiker of UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Weergavevolgorde van de kalender (standaard 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalendernaam"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeschrijving"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderkleur (hex-formaat)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalendertijdzone"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Weergavevolgorde van de kalender"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Map-ID"
+          },
+          "path": {
+            "type": "string",
+            "description": "Volledig mappad"
+          },
+          "name": {
+            "type": "string",
+            "description": "Mapnaam (laatste deel van het pad)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Pad van bovenliggende map"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID-geldigheid"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Volgende UID-waarde"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Wijzigingsindex"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Of de map geabonneerd is"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mapvlaggen"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Bewaartermijn van berichten"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Speciale gebruiksaanduiding"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Pad/naam van map"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Nieuw mappad/naam"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Bericht-ID"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Root-bericht-ID voor threading"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Map-ID die het bericht bevat"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Mappad met het bericht"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Thread-ID voor conversatiegroepering"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Bericht-ID-headerwaarde"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Of het bericht ongelezen is"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Of het bericht is gemarkeerd"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Of het bericht is verwijderd"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Of het bericht een concept is"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Of het bericht ongewenst/spam is"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Of het bericht gekopieerd is"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Of het bericht doorzoekbaar is"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Of het bericht verlopen is"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Of het bericht bijlagen heeft"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Bewaartermijn van berichten"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Interne datum (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Datum uit berichtkoppen"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Onderwerp van het bericht"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-vlaggen"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Berichtgrootte in bytes"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP-UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Wijzigingsvolgorde"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Transactietype"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Extern IP-adres"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Geparseerd berichtobject (standaard inbegrepen, stel ?nodemailer=false in om uit te sluiten)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Onbewerkte berichtinhoud (standaard inbegrepen, stel ?raw=false in om uit te sluiten)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "E-mailadres van de afzender"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "E-mailadressen van ontvangers"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "E-mailadressen van CC-ontvangers"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "E-mailadressen van BCC-ontvangers"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Onderwerp van het bericht"
+          },
+          "text": {
+            "type": "string",
+            "description": "Inhoud in platte tekst"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML-inhoud"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Berichtbijlagen (Nodemailer-indeling)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Doelmap (standaard INBOX)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "IMAP-vlaggen die op het bericht moeten worden ingesteld"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-vlaggen die op het bericht moeten worden ingesteld"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Bericht naar deze map verplaatsen"
+          }
         }
       },
       "Email": {
@@ -1155,7 +2024,7 @@
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Tekstbericht van de vakantiebeantwoorder"
+            "description": "Duidelijke tekst van de vakantiebeantwoorder"
           }
         }
       },
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "ID-aliassen",
+        "description": "Alias-ID",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "E-mailadres",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Contact-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kalender-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Map-ID of pad",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Bericht-ID",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Account aanmaken",
-        "description": "Een nieuw gebruikersaccount aanmaken",
-        "tags": [
-          "Rekening"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "E-mailadres"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Wachtwoord"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Account ophalen",
-        "description": "De accountgegevens van de huidige gebruiker ophalen",
         "tags": [
           "Rekening"
         ],
+        "summary": "Account ophalen",
+        "description": "Haal uw accountgegevens op.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Account bijwerken",
-        "description": "De accountgegevens van de huidige gebruiker bijwerken",
         "tags": [
           "Rekening"
         ],
+        "summary": "Account bijwerken",
+        "description": "Werk uw accountgegevens bij.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "E-mailadres"
+                    "description": "Weergavenaam"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Voornaam"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Achternaam"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Link naar avatarafbeelding"
+                    "description": "Lokale voorkeur"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Contacten"
+        ],
+        "summary": "Contactenlijst",
+        "description": "Haal een lijst op met alle contacten voor de geverifieerde alias. Dit eindpunt ondersteunt paginering en retourneert contacten in CardDAV-formaat.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacten"
+        ],
+        "summary": "Contactpersoon aanmaken",
+        "description": "Maak een nieuw contact aan. U kunt vCard-inhoud rechtstreeks opgeven of individuele contactvelden die naar vCard-formaat worden geconverteerd. Als er al een contact met dezelfde ID bestaat, wordt er een conflictfout weergegeven.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Contacten"
+        ],
+        "summary": "Contactpersoon ophalen",
+        "description": "Haal een specifiek contact op via de ID. Het contact wordt geretourneerd in het standaard Contact-formaat met vCard-inhoud en geparseerde velden.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Contacten"
+        ],
+        "summary": "Contactpersoon bijwerken",
+        "description": "Werk een bestaand contact bij. U kunt bijgewerkte vCard-inhoud of afzonderlijke velden opgeven. De vCard van het contact wordt opnieuw gegenereerd als er afzonderlijke velden worden opgegeven.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contacten"
+        ],
+        "summary": "Contactpersoon verwijderen",
+        "description": "Verwijder een specifiek contact permanent. Deze actie kan niet ongedaan worden gemaakt.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Kalenders"
+        ],
+        "summary": "Lijstkalenders",
+        "description": "Haal een lijst op met alle agenda's voor de geverifieerde alias. Dit eindpunt ondersteunt paginering en retourneert agenda's in CalDAV-formaat.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kalenders"
+        ],
+        "summary": "Kalender maken",
+        "description": "Maak een nieuwe agenda. De agendanaam is verplicht, terwijl andere eigenschappen zoals kleur, tijdzone en beschrijving optioneel zijn. Als er al een agenda met dezelfde naam bestaat, wordt er een conflictfout weergegeven.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Kalenders"
+        ],
+        "summary": "Kalender ophalen",
+        "description": "Haal een specifieke kalender op via de ID. De kalender wordt geretourneerd met al zijn eigenschappen, inclusief naam, beschrijving, kleur, tijdzone en volgorde.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kalenders"
+        ],
+        "summary": "Kalender bijwerken",
+        "description": "Een bestaande agenda bijwerken. U kunt alle agenda-eigenschappen bijwerken, waaronder naam, beschrijving, kleur, tijdzone en volgorde. Als u de naam wijzigt naar een bestaande naam, wordt er een conflictfout weergegeven.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kalenders"
+        ],
+        "summary": "Kalender verwijderen",
+        "description": "Verwijder een specifieke agenda permanent. Deze actie kan niet ongedaan worden gemaakt en verwijdert ook alle evenementen in de agenda.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Mappen"
+        ],
+        "summary": "Lijst mappen",
+        "description": "Haal een lijst op met alle IMAP-mappen/mailboxen voor de geverifieerde alias. Dit eindpunt ondersteunt paginering en filtering op abonnementsstatus.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Filter mappen op abonnementsstatus",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mappen"
+        ],
+        "summary": "Map maken",
+        "description": "Maak een nieuwe IMAP-map/mailbox aan. Het pad naar de map is vereist en kan bovenliggende mappen bevatten (bijvoorbeeld 'INBOX/Submap'). Als de bovenliggende mappen niet bestaan, worden ze automatisch aangemaakt.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Mappen"
+        ],
+        "summary": "Map ophalen",
+        "description": "Haal een specifieke map op via de ID of het pad. U kunt de ObjectID van de map of het volledige pad (bijvoorbeeld 'INBOX/Submap') als identificatie gebruiken.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Mappen"
+        ],
+        "summary": "Map bijwerken",
+        "description": "Een bestaande map bijwerken/hernoemen. Met deze bewerking wordt de map hernoemd naar het nieuwe pad dat is opgegeven in de aanvraagbody. U kunt de ObjectID van de map of het huidige pad als identificatie gebruiken.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mappen"
+        ],
+        "summary": "Map verwijderen",
+        "description": "Verwijder een specifieke map permanent. Deze actie kan niet ongedaan worden gemaakt en verwijdert ook alle berichten in de map. U kunt de ObjectID of het pad van de map als identificatie gebruiken.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Berichten"
+        ],
+        "summary": "Berichten weergeven en zoeken",
+        "description": "Haal een lijst met berichten op met geavanceerde zoek- en filtermogelijkheden. Dit eindpunt ondersteunt paginering en uitgebreid zoeken in berichtinhoud, headers, vlaggen en metadata. U kunt zoeken op map, vlaggen, inhoud, headers, datumbereik, grootte en meer.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Berichten filteren op mappad",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Filter op leesstatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Filter op gemarkeerde status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Filter op verwijderde status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Filteren op conceptstatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Filteren op junk-/spamstatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Filteren op gekopieerde status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Filter op doorzoekbare status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Filter op verlopen status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Filter op aanwezigheid van bijlage",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Filteren op aanwezigheid van bijlage (alias voor has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Zoeken in berichtonderwerp",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Zoeken in berichttekst",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Zoeken in berichttekst (alias voor hoofdtekst)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Zoeken in alle berichtkoppen",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Zoeken op bericht-ID-header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Algemeen zoeken in kopteksten en tekst",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Algemeen zoeken (alias voor zoeken)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Berichten sinds deze datum filteren (ISO 8601-formaat)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Berichten filteren vóór deze datum (ISO 8601-formaat)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Filter berichten met minimale grootte in bytes",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Filter berichten met maximale grootte in bytes",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Zoeken op Van header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Zoeken op Naar koptekst",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Zoeken op CC-header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Zoeken op BCC-header",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Zoeken op datumkoptekst",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Zoeken op Reply-To-header",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Berichten"
+        ],
+        "summary": "Bericht maken",
+        "description": "Maak/voeg een nieuw bericht toe aan een map. Dit eindpunt accepteert de standaard Nodemailer-berichtindeling en biedt u de mogelijkheid om de doelmap en de beginvlaggen op te geven. Als de doelmap niet bestaat, wordt deze automatisch aangemaakt.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Berichten"
+        ],
+        "summary": "Bericht ophalen",
+        "description": "Haal een specifiek bericht op via de ID. Standaard bevat het antwoord het geparseerde Nodemailer-object en de onbewerkte inhoud van het bericht. U kunt bepalen wat er wordt opgenomen met behulp van queryparameters.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Geef het ruwe EML-formaat terug in plaats van JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Inclusief geparseerd Nodemailer-object",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Bijlagen toevoegen aan Nodemailer-object",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Voeg onbewerkte berichtinhoud toe",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Berichten"
+        ],
+        "summary": "Bericht bijwerken",
+        "description": "Een bestaand bericht bijwerken. U kunt de berichtvlaggen aanpassen of het bericht naar een andere map verplaatsen. Als de doelmap niet bestaat, wordt deze automatisch aangemaakt.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Geef het ruwe EML-formaat terug in plaats van JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Berichten"
+        ],
+        "summary": "Bericht verwijderen",
+        "description": "Verwijder een specifiek bericht permanent. Deze actie kan niet ongedaan worden gemaakt en verwijdert het bericht permanent uit de opslag. In tegenstelling tot IMAP-clients, die berichten doorgaans naar de Prullenbak verplaatsen, voert dit eindpunt een definitieve verwijdering uit.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1596,7 +3818,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Zoek naar logs met een specifieke foutresponscode (bijv. 421 of 550).",
+            "description": "Zoek naar logs op basis van een specifieke foutresponscode (bijv. 421 of 550).",
             "schema": {
               "type": "integer"
             }
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Contactenlijst",
-        "description": "Toon alle contacten (CardDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-contacten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Contactpersoon aanmaken",
-        "description": "Maak een nieuw contact aan (CardDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-contacten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Contact-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Contactpersoon ophalen",
-        "description": "Haal een specifiek contact op (CardDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-contacten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Contactpersoon bijwerken",
-        "description": "Werk een specifiek contact bij (CardDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-contacten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Contactpersoon verwijderen",
-        "description": "Verwijder een specifiek contact (CardDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-contacten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Lijstkalenders",
-        "description": "Toon alle agenda's (CalDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-kalenders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Kalender maken",
-        "description": "Maak een nieuwe agenda (CalDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-kalenders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kalender-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Kalender ophalen",
-        "description": "Haal een specifieke agenda op (CalDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-kalenders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Kalender bijwerken",
-        "description": "Werk een specifieke agenda bij (CalDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-kalenders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Kalender verwijderen",
-        "description": "Verwijder een specifieke agenda (CalDAV). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-kalenders"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Berichten weergeven en zoeken",
-        "description": "Berichten weergeven en zoeken (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Aliasberichten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Bericht maken",
-        "description": "Maak een nieuw bericht (IMAP/POP3). Hiermee wordt GEEN e-mail verzonden, maar wordt het bericht alleen toegevoegd aan uw mailbox (vergelijkbaar met de opdracht IMAP APPEND). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Aliasberichten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Bericht-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Bericht ophalen",
-        "description": "Haal een specifiek bericht op (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Aliasberichten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Bericht bijwerken",
-        "description": "Werk een specifiek bericht bij (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Aliasberichten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Bericht verwijderen",
-        "description": "Verwijder een specifiek bericht (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Aliasberichten"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Lijst mappen",
-        "description": "Geef een overzicht van alle mappen (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-mappen"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Map maken",
-        "description": "Maak een nieuwe map aan (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-mappen"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Map-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Map ophalen",
-        "description": "Haal een specifieke map op (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-mappen"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Map bijwerken",
-        "description": "Werk een specifieke map bij (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-mappen"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Map verwijderen",
-        "description": "Verwijder een specifieke map (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-mappen"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Map-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Kopieer map",
-        "description": "Kopieer een specifieke map (IMAP/POP3). Dit eindpunt is binnenkort beschikbaar.",
-        "tags": [
-          "Alias-mappen"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "Encryptie-eindpunten"
     },
     {
-      "name": "Alias-contacten",
-      "description": "Alias-contactbeheer-eindpunten (CardDAV)\n\n>[!NOTE]\n>In tegenstelling tot andere API-eindpunten vereisen deze een authenticatie-\"gebruikersnaam\" die gelijk is aan de aliasgebruikersnaam en een \"wachtwoord\" dat gelijk is aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!WARNING]\n>Deze sectie met eindpunten is nog in ontwikkeling en zal (hopelijk) in 2025 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown \"Apps\" in de navigatiebalk van onze website."
+      "name": "Contacten",
+      "description": "Alias-contactbeheer-eindpunten (CardDAV)\n\n>[!NOTE]\n>In tegenstelling tot andere API-eindpunten vereisen deze een authenticatie-\"gebruikersnaam\" die gelijk is aan de aliasgebruikersnaam en een \"wachtwoord\" dat gelijk is aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n>Deze eindpunten bieden volledige CRUD-bewerkingen voor contactbeheer met vCard-ondersteuning, inclusief het aanmaken, ophalen, bijwerken en verwijderen van contacten. U kunt vCard-inhoud rechtstreeks aanleveren of individuele contactvelden die naar vCard-formaat worden geconverteerd."
     },
     {
-      "name": "Alias-kalenders",
-      "description": "Alias-agendabeheer-eindpunten (CalDAV)\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!WARNING]\n> Deze eindpuntsectie is nog in ontwikkeling en zal (hopelijk) in 2025 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown \"Apps\" in de navigatiebalk van onze website."
+      "name": "Kalenders",
+      "description": "Eindpunten voor aliasagendabeheer (CalDAV)\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n> Deze eindpunten bieden volledig agendabeheer met ondersteuning voor tijdzones en kleuren, inclusief het aanmaken, ophalen, bijwerken en verwijderen van agenda's. Agendanamen zijn verplicht, terwijl andere eigenschappen zoals kleur, tijdzone en beschrijving optioneel zijn."
     },
     {
-      "name": "Aliasberichten",
-      "description": "Eindpunten voor aliasberichtenbeheer (IMAP/POP3)\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n> [!WARNING]\n> Deze sectie over eindpunten is nog in ontwikkeling en zal (hopelijk) in 2025 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown \"Apps\" in de navigatiebalk van onze website.\nZorg ervoor dat u de installatie-instructies voor uw domein hebt gevolgd.\nDeze instructies vindt u in onze FAQ-sectie [Ondersteunt u het ontvangen van e-mail met IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Berichten",
+      "description": "Eindpunten voor aliasberichtenbeheer (IMAP/POP3)\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n> Deze eindpunten bieden uitgebreid berichtenbeheer met geavanceerde zoekmogelijkheden. U kunt zoeken op map, vlaggen, inhoud, headers, datumbereiken, grootte en meer. Berichten kunnen worden aangemaakt in de standaard Nodemailer-indeling en ondersteunen het verplaatsen tussen mappen en vlagbeheer.\n\nZorg ervoor dat u de installatie-instructies voor uw domein hebt gevolgd.\nDeze instructies vindt u in onze FAQ-sectie [Ondersteunt u het ontvangen van e-mail met IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Alias-mappen",
-      "description": "Eindpunten voor aliasbeheer van mappen (IMAP/POP3)\n\n>[!TIP]\n> Eindpunten van mappen met het pad <code>/v1/folders/:path</code> als eindpunt zijn uitwisselbaar met de ID <code>:id</code> van een map. Dit betekent dat u naar de map kunt verwijzen met de waarde <code>path</code> of <code>id</code>.\n\n>[!WARNING]\n> Deze sectie over eindpunten is nog in ontwikkeling en zal (hopelijk) in 2025 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown 'Apps' in de navigatiebalk van onze website."
+      "name": "Mappen",
+      "description": "Eindpunten voor aliasbeheer van mappen (IMAP/POP3)\n\n>[!TIP]\n> Eindpunten van mappen met het pad <code>/v1/folders/:path</code> van een map als eindpunt zijn uitwisselbaar met de ID <code>:id</code> van een map. Dit betekent dat u naar de map kunt verwijzen met de waarde <code>path</code> of <code>id</code>.\n\n>[!NOTE]\n> In tegenstelling tot andere API-eindpunten vereisen deze [Authentication](#description/authentication) \"gebruikersnaam\" gelijk aan de aliasgebruikersnaam en \"wachtwoord\" gelijk aan het door de alias gegenereerde wachtwoord als basisautorisatieheaders.\n\n>[!TIP]\n> Deze eindpunten bieden volledig mapbeheer, inclusief het aanmaken, hernoemen en verwijderen. Mappaden kunnen bovenliggende mappen bevatten (bijvoorbeeld 'INBOX/Submap'). Bovenliggende mappen worden automatisch aangemaakt als ze nog niet bestaan."
     }
   ]
 }

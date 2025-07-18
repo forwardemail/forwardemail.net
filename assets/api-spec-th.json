@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />ยินดีต้อนรับสู่เอกสาร API ที่ครอบคลุมสำหรับการส่งต่ออีเมล API นี้ช่วยให้คุณจัดการการส่งต่ออีเมล โดเมน นามแฝง อีเมลขาออก และอื่นๆ ด้วยโปรแกรม\n\n## คุณสมบัติหลัก\n* **การจัดการโดเมน:** สร้าง เรียกค้น อัปเดต ลบ และตรวจสอบโดเมน\n* **การจัดการนามแฝง:** จัดการนามแฝงอีเมล รวมถึงการสร้าง อัปเดต และการจัดการผู้รับ\n* **SMTP ขาออก:** ส่งอีเมลผ่าน SMTP จัดการขีดจำกัด และติดตามอีเมลที่ส่ง\n* **บัญชีและบันทึก:** จัดการรายละเอียดบัญชีของคุณและดาวน์โหลดบันทึกกิจกรรม\n* **ความปลอดภัย:** เข้ารหัสบันทึก TXT และจัดการสมาชิก/คำเชิญของโดเมน\n* **เร็วๆ นี้:** มีการวางแผนคุณสมบัติ เช่น รายชื่อติดต่อ CardDAV ปฏิทิน CalDAV และการจัดการข้อความ/โฟลเดอร์ IMAP/POP3\n\n## การตรวจสอบสิทธิ์\nจุดปลายทางส่วนใหญ่ต้องการการตรวจสอบสิทธิ์โดยใช้ **รหัส API** ของคุณ ให้ใส่รหัส API เป็น `ชื่อผู้ใช้` ในส่วนหัวการตรวจสอบสิทธิ์พื้นฐาน โดยเว้นรหัสผ่านว่างไว้\n\n```http\nการอนุญาต: QVBJX1RPS0VOOg== พื้นฐาน\n```\n(แทนที่ `API_TOKEN` ด้วยคีย์จริงของคุณก่อนการเข้ารหัส Base64)\n\nจุดปลายทางที่เกี่ยวข้องกับ **รายชื่อผู้ติดต่อ ปฏิทิน ข้อความ และโฟลเดอร์นามแฝง** (ปัจจุบันทำเครื่องหมายว่า \"เร็วๆ นี้\") จะใช้ชื่อผู้ใช้และรหัสผ่านนามแฝงที่สร้างขึ้นสำหรับการตรวจสอบสิทธิ์พื้นฐาน\n\n## ข้อผิดพลาด\nAPI ใช้รหัสสถานะ HTTP มาตรฐานเพื่อระบุความสำเร็จหรือความล้มเหลว การตอบสนองข้อผิดพลาดรวมถึงเนื้อหา JSON พร้อมฟิลด์ `ข้อความ` ที่ให้รายละเอียดข้อผิดพลาด\n\n| รหัสสถานะ | ความหมาย |\n|------------|--------------------|\n| 200 | ตกลง |\n| 400 | คำขอไม่ถูกต้อง |\n| 401 | ไม่ได้รับอนุญาต |\n| 403 | ห้าม |\n| 404 | ไม่พบ |\n| 429 | คำขอมากเกินไป |\n| 500 | ข้อผิดพลาดเซิร์ฟเวอร์ภายใน|\n| 501 | ไม่ได้ใช้งาน |\n| 502 | เกตเวย์ไม่ดี |\n| 503 | บริการไม่พร้อมใช้งาน |\n| 504 | เกตเวย์หมดเวลา |\n\n*หากคุณพบข้อผิดพลาด `5xx` โปรดติดต่อ [api@forwardemail.net](mailto:api@forwardemail.net)*\n\n## การแปล\nการตอบสนองของ API จะถูกแปลตามตำแหน่งที่ตรวจพบของผู้ใช้หรือส่วนหัว `Accept-Language` รองรับมากกว่า 25 ภาษา\n\n## การแบ่งหน้า\nรายการปลายทางที่ส่งคืนรองรับการแบ่งหน้าผ่านพารามิเตอร์การค้นหา\n\n| พารามิเตอร์ | ประเภท | ตัวเลือก | คำอธิบาย | ค่าเริ่มต้น | ข้อจำกัด |\n|--------------|----------|--------------------------|--------------------------------------------------------------------------|---------|--------------------|\n| `page` | Integer | Yes | Page number to retrieve | 1 | `>= 1` |\n| `limit` | Integer | Yes | Number of results per page. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | Yes | Opt-in to pagination behavior (required before November 1st, 2024 for some endpoints). | false | |\n\n**Pagination Headers:**\n* `X-Page-Count`: Total page count.\n* `X-Page-Current`: Current page number.\n* `X-Page-Size`: Number of items on the current page.\n* `X-Item-Count`: Total item-Count across all pages. * `ลิงก์`: ลิงก์การนำทาง (ก่อนหน้า, ถัดไป, แรก, ท้าย)\n**ตัวอย่าง:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## ไลบรารีที่แนะนำ\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (ดูแลโดย Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />ยินดีต้อนรับสู่เอกสารประกอบ API ที่ครอบคลุมสำหรับการส่งต่ออีเมล API นี้ช่วยให้คุณจัดการการส่งต่ออีเมล โดเมน นามแฝง อีเมลขาออก และอื่นๆ ได้ด้วยโปรแกรม\n\n## คุณสมบัติหลัก\n* **การจัดการโดเมน:** สร้าง ดึงข้อมูล อัปเดต ลบ และตรวจสอบโดเมน\n* **การจัดการนามแฝง:** จัดการนามแฝงอีเมล รวมถึงการสร้าง อัปเดต และการจัดการผู้รับ\n* **SMTP ขาออก:** ส่งอีเมลผ่าน SMTP จัดการขีดจำกัด และติดตามอีเมลที่ส่ง\n* **บัญชีและบันทึก:** จัดการรายละเอียดบัญชีของคุณและบันทึกกิจกรรมการดาวน์โหลด\n* **ความปลอดภัย:** เข้ารหัสบันทึก TXT และจัดการสมาชิก/คำเชิญในโดเมน\n* **ผู้ติดต่อ CardDAV:** การดำเนินการ CRUD เต็มรูปแบบสำหรับการจัดการผู้ติดต่อพร้อมการรองรับ vCard\n* **ปฏิทิน CalDAV:** การจัดการปฏิทินอย่างเต็มรูปแบบพร้อมการรองรับเขตเวลาและสี\n* **ข้อความ IMAP/POP3:** การจัดการข้อความที่ครอบคลุมพร้อมความสามารถในการค้นหาขั้นสูง\n* **โฟลเดอร์ IMAP/POP3:** การจัดการโฟลเดอร์ทั้งหมด รวมถึงการสร้าง การเปลี่ยนชื่อ และการลบ\n\n## การตรวจสอบสิทธิ์\nอุปกรณ์ปลายทางส่วนใหญ่ต้องการการตรวจสอบสิทธิ์โดยใช้ **คีย์ API** ของคุณ ระบุคีย์ API เป็น `ชื่อผู้ใช้` ในส่วนหัวการตรวจสอบสิทธิ์พื้นฐาน โดยเว้นรหัสผ่านว่างไว้\n\n```http\nการอนุญาต: พื้นฐาน QVBJX1RPS0VOOg==\n```\n(แทนที่ `API_TOKEN` ด้วยคีย์จริงของคุณก่อนการเข้ารหัส Base64)\n\nอุปกรณ์ปลายทางที่เกี่ยวข้องกับ **นามแฝง รายชื่อ ปฏิทิน ข้อความ และโฟลเดอร์** ต้องใช้ชื่อผู้ใช้และรหัสผ่านนามแฝงที่สร้างขึ้นสำหรับการตรวจสอบสิทธิ์พื้นฐาน\n\n## ข้อผิดพลาด\nAPI ใช้รหัสสถานะ HTTP มาตรฐานเพื่อระบุความสำเร็จหรือความล้มเหลว การตอบสนองข้อผิดพลาดประกอบด้วยเนื้อหา JSON พร้อมฟิลด์ `ข้อความ` ที่ระบุรายละเอียดของข้อผิดพลาด\n\n| รหัสสถานะ | ความหมาย |\n|-----------|---------------------|\n| 200 | ตกลง |\n| 400 | คำขอไม่ถูกต้อง |\n| 401 | ไม่ได้รับอนุญาต |\n| 403 | ไม่ได้รับอนุญาต |\n| 404 | ไม่พบ |\n| 409 | ขัดแย้ง |\n| 412 | เงื่อนไขเบื้องต้นล้มเหลว |\n| 429 | คำขอมากเกินไป |\n| 500 | ข้อผิดพลาดภายในเซิร์ฟเวอร์ |\n| 501 | ไม่ได้ใช้งาน |\n| 502 | เกตเวย์ไม่ถูกต้อง |\n| 503 | บริการไม่พร้อมใช้งาน |\n| 504 | เกตเวย์หมดเวลา |\n\n*หากคุณพบข้อผิดพลาด `5xx` โปรดติดต่อ [api@forwardemail.net](mailto:api@forwardemail.net)*\n\n## การแปล\nการตอบสนองของ API จะถูกแปลตามตำแหน่งที่ตั้งที่ผู้ใช้ตรวจพบหรือส่วนหัว `Accept-Language` รองรับมากกว่า 25 ภาษา\n\n## การแบ่งหน้า\nปลายทางที่ส่งคืนรายการรองรับการแบ่งหน้าผ่านพารามิเตอร์การค้นหา\n\n| พารามิเตอร์ | ประเภท | ตัวเลือก | คำอธิบาย | ค่าเริ่มต้น | ข้อจำกัด |\n|-----------|---------|----------|-----------------------------------------------------------------------------|---------|-----------------------------------|\n| `page` | จำนวนเต็ม | ใช่ | หมายเลขหน้าที่ต้องการเรียก | 1 | `>= 1` |\n| `limit` | จำนวนเต็ม | ใช่ | จำนวนผลลัพธ์ต่อหน้า | 10 | `>= 1`, `<= 50` |\n| `pagination` | บูลีน | ใช่ | เลือกรับพฤติกรรมการแบ่งหน้า (จำเป็นก่อนวันที่ 1 พฤศจิกายน 2024 สำหรับปลายทางบางจุด) | false | |\n\n**ส่วนหัวการแบ่งหน้า:**\n* `X-Page-Count`: จำนวนหน้าทั้งหมด\n* `X-Page-Current`: หมายเลขหน้าปัจจุบัน\n* `X-Page-Size`: จำนวนรายการในหน้าปัจจุบัน\n* `X-Item-Count`: จำนวนรายการทั้งหมดในทุกหน้า\n* `Link`: ลิงก์การนำทาง (ก่อนหน้า, ถัดไป, แรก, สุดท้าย)\n\n**ตัวอย่าง:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## ไลบรารีที่แนะนำ\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (ดูแลโดย Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -13,7 +13,7 @@
   "servers": [
     {
       "url": "https://api.forwardemail.net",
-      "description": "เซิร์ฟเวอร์ API สำหรับการส่งต่ออีเมล"
+      "description": "เซิร์ฟเวอร์ API ส่งต่ออีเมล"
     }
   ],
   "components": {
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nใช้รหัส API ของคุณเป็น **ชื่อผู้ใช้** สำหรับการตรวจสอบสิทธิ์ขั้นพื้นฐาน ปล่อยให้ช่องรหัสผ่านว่างเปล่า\n\n**ตัวอย่าง:**\nหากรหัส API ของคุณคือ `YOUR_API_KEY` ค่าที่เข้ารหัส Base64 สำหรับส่วนหัว `Authorization` จะเป็น `echo -n \"YOUR_API_KEY:\" | base64`\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "\nใช้รหัส API ของคุณเป็น **ชื่อผู้ใช้** สำหรับการยืนยันตัวตนขั้นพื้นฐาน เว้นช่องรหัสผ่านว่างไว้\n\n**ตัวอย่าง:**\nหากรหัส API ของคุณคือ `YOUR_API_KEY` ค่าที่เข้ารหัส Base64 สำหรับส่วนหัว `Authorization` จะเป็น `echo -n \"YOUR_API_KEY:\" | base64`\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nใช้ **ชื่อผู้ใช้และรหัสผ่านนามแฝง** ที่สร้างขึ้นสำหรับการตรวจสอบสิทธิ์ขั้นพื้นฐาน ซึ่งจะใช้กับปลายทางภายใต้:\n* รายชื่อผู้ติดต่อนามแฝง (CardDAV)\n* ปฏิทินนามแฝง (CalDAV)\n* ข้อความนามแฝง (IMAP/POP3)\n* โฟลเดอร์นามแฝง (IMAP/POP3)\n\n*(หมายเหตุ: คุณลักษณะเหล่านี้ถูกทำเครื่องหมายว่า \"เร็วๆ นี้\")*\n\n**ตัวอย่าง:**\nหากชื่อผู้ใช้นามแฝงคือ `alias@domain.com` และรหัสผ่านคือ `GENERATED_PASSWORD` ค่าที่เข้ารหัส Base64 จะเป็น `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`\n\n```http\nการอนุญาต: พื้นฐาน YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nใช้ **ชื่อผู้ใช้และรหัสผ่านนามแฝง** ที่สร้างขึ้นสำหรับการตรวจสอบสิทธิ์ขั้นพื้นฐาน วิธีนี้ใช้กับปลายทางภายใต้:\n* รายชื่อผู้ติดต่อนามแฝง (CardDAV)\n* ปฏิทินนามแฝง (CalDAV)\n* ข้อความนามแฝง (IMAP/POP3)\n* โฟลเดอร์นามแฝง (IMAP/POP3)\n\n**ตัวอย่าง:**\nหากชื่อผู้ใช้นามแฝงคือ `alias@domain.com` และรหัสผ่านคือ `GENERATED_PASSWORD` ค่าที่เข้ารหัส Base64 จะเป็น `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`\n\n```http\nการอนุญาต: พื้นฐาน YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID ผู้ติดต่อ (contact_id จาก CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "ติดต่อ UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "ชื่อ-นามสกุลของผู้ติดต่อ"
+          },
+          "content": {
+            "type": "string",
+            "description": "เนื้อหา vCard"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag สำหรับการกำหนดเวอร์ชัน"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "ไม่ว่าการติดต่อจะเป็นแบบกลุ่ม"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของที่อยู่อีเมล"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของหมายเลขโทรศัพท์"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "เนื้อหา vCard (ถ้าไม่ได้ระบุ จะถูกสร้างขึ้นจากฟิลด์อื่น)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "ชื่อ-นามสกุลของผู้ติดต่อ"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "รหัสติดต่อที่กำหนดเอง (หากไม่ได้ระบุไว้ ระบบจะสร้างโดยอัตโนมัติ)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "UID การติดต่อ (หากไม่ได้ระบุ ระบบจะสร้างให้โดยอัตโนมัติ)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของที่อยู่อีเมล"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของหมายเลขโทรศัพท์"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของหมายเลขโทรศัพท์ (นามแฝงสำหรับ phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "อาร์เรย์ของที่อยู่"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "ไม่ว่าการติดต่อจะเป็นแบบกลุ่ม"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "เนื้อหา vCard"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "ชื่อ-นามสกุลของผู้ติดต่อ"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของที่อยู่อีเมล"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของหมายเลขโทรศัพท์"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "อาร์เรย์ของหมายเลขโทรศัพท์ (นามแฝงสำหรับ phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "อาร์เรย์ของที่อยู่"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "ไม่ว่าการติดต่อจะเป็นแบบกลุ่ม"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "รหัสปฏิทิน (calendarId จาก CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "ชื่อปฏิทิน"
+          },
+          "description": {
+            "type": "string",
+            "description": "คำอธิบายปฏิทิน"
+          },
+          "color": {
+            "type": "string",
+            "description": "สีปฏิทิน (รูปแบบเลขฐานสิบหก)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "โซนเวลาปฏิทิน"
+          },
+          "order": {
+            "type": "integer",
+            "description": "ลำดับการแสดงปฏิทิน"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "ชื่อปฏิทิน"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "ID ปฏิทินที่กำหนดเอง (ถ้าไม่ได้ระบุ ระบบจะสร้างขึ้นโดยอัตโนมัติ)"
+          },
+          "description": {
+            "type": "string",
+            "description": "คำอธิบายปฏิทิน"
+          },
+          "color": {
+            "type": "string",
+            "description": "สีปฏิทิน (รูปแบบเลขฐานสิบหก หากไม่ได้ระบุไว้ ระบบจะสร้างให้โดยอัตโนมัติ)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "โซนเวลาปฏิทิน (ค่าเริ่มต้นเป็นโซนเวลาของผู้ใช้หรือ UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "ลำดับการแสดงปฏิทิน (ค่าเริ่มต้นเป็น 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "ชื่อปฏิทิน"
+          },
+          "description": {
+            "type": "string",
+            "description": "คำอธิบายปฏิทิน"
+          },
+          "color": {
+            "type": "string",
+            "description": "สีปฏิทิน (รูปแบบเลขฐานสิบหก)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "โซนเวลาปฏิทิน"
+          },
+          "order": {
+            "type": "integer",
+            "description": "ลำดับการแสดงปฏิทิน"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "รหัสโฟลเดอร์"
+          },
+          "path": {
+            "type": "string",
+            "description": "เส้นทางโฟลเดอร์แบบเต็ม"
+          },
+          "name": {
+            "type": "string",
+            "description": "ชื่อโฟลเดอร์ (ส่วนสุดท้ายของเส้นทาง)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "เส้นทางโฟลเดอร์หลัก"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "ความถูกต้องของ IMAP UID"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "ค่า UID ถัดไป"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "ดัชนีการปรับเปลี่ยน"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "โฟลเดอร์ที่สมัครใช้งานอยู่"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "แฟล็กโฟลเดอร์"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "ระยะเวลาเก็บรักษาข้อความ"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "การกำหนดการใช้งานพิเศษ"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "เส้นทาง/ชื่อโฟลเดอร์"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "เส้นทาง/ชื่อโฟลเดอร์ใหม่"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "รหัสข้อความ"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "ID ข้อความรูทสำหรับการเธรด"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "ID โฟลเดอร์ที่มีข้อความ"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "เส้นทางโฟลเดอร์ที่มีข้อความ"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "ID เธรดสำหรับการจัดกลุ่มการสนทนา"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "ค่าส่วนหัว ID ข้อความ"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "ไม่ว่าข้อความจะยังไม่ได้อ่านหรือไม่"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "ไม่ว่าข้อความจะถูกทำเครื่องหมายไว้หรือไม่"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "ข้อความจะถูกลบหรือไม่"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "ไม่ว่าข้อความจะเป็นฉบับร่าง"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "ไม่ว่าข้อความจะเป็นขยะ/สแปม"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "ว่าข้อความจะถูกคัดลอกหรือไม่"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "ข้อความสามารถค้นหาได้หรือไม่"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "ข้อความหมดอายุหรือไม่"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "ข้อความมีไฟล์แนบหรือไม่"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "วันที่เก็บรักษาข้อความ"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "วันที่ภายใน (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "วันที่จากส่วนหัวข้อความ"
+          },
+          "subject": {
+            "type": "string",
+            "description": "หัวข้อข้อความ"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "แฟล็ก IMAP"
+          },
+          "size": {
+            "type": "integer",
+            "description": "ขนาดข้อความเป็นไบต์"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "รหัส IMAP"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "ลำดับการปรับเปลี่ยน"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "ประเภทธุรกรรม"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "ที่อยู่ IP ระยะไกล"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "วัตถุข้อความที่แยกวิเคราะห์ (รวมไว้ตามค่าเริ่มต้น ตั้งค่า ?nodemailer=false เพื่อแยกออก)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "เนื้อหาข้อความดิบ (รวมไว้ตามค่าเริ่มต้น ตั้งค่า ?raw=false เพื่อไม่รวม)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "ที่อยู่อีเมลของผู้ส่ง"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "ที่อยู่อีเมลของผู้รับ"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "ที่อยู่อีเมลของผู้รับ CC"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "ที่อยู่อีเมลผู้รับ BCC"
+          },
+          "subject": {
+            "type": "string",
+            "description": "หัวข้อข้อความ"
+          },
+          "text": {
+            "type": "string",
+            "description": "เนื้อหาข้อความธรรมดา"
+          },
+          "html": {
+            "type": "string",
+            "description": "เนื้อหา HTML"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "ไฟล์แนบข้อความ (รูปแบบ Nodemailer)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "โฟลเดอร์เป้าหมาย (ค่าเริ่มต้นคือ INBOX)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "ตั้งค่าแฟล็ก IMAP บนข้อความ"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "ตั้งค่าแฟล็ก IMAP บนข้อความ"
+          },
+          "folder": {
+            "type": "string",
+            "description": "ย้ายข้อความไปยังโฟลเดอร์นี้"
+          }
         }
       },
       "Email": {
@@ -304,7 +1173,7 @@
                 }
               }
             ],
-            "description": "รายการที่คั่นด้วยจุลภาคหรืออาร์เรย์ของผู้รับสำหรับส่วนหัว 'Cc'"
+            "description": "รายการที่คั่นด้วยจุลภาคหรืออาร์เรย์ของผู้รับสำหรับส่วนหัว 'สำเนาถึง'"
           },
           "bcc": {
             "oneOf": [
@@ -433,7 +1302,7 @@
           },
           "messageId": {
             "type": "string",
-            "description": "ตัวเลือก Message-ID สำหรับส่วนหัว 'Message-ID'"
+            "description": "Message-ID ที่เป็นทางเลือกสำหรับส่วนหัว 'Message-ID'"
           },
           "date": {
             "oneOf": [
@@ -445,7 +1314,7 @@
                 "type": "string"
               }
             ],
-            "description": "ส่วนหัววันที่ที่เลือกได้ ไม่สามารถเกิน 30 วันในอนาคต"
+            "description": "ส่วนหัววันที่ (ไม่บังคับ) ต้องไม่เกิน 30 วันในอนาคต"
           },
           "list": {
             "type": "object",
@@ -682,7 +1551,7 @@
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "มอบหมายให้ทีมเดียวกันจากโดเมนอื่น อาจเป็น ID โดเมนหรือ FQDN ใช้ \"ไม่มี\" เพื่อปิดการใช้งานโดยชัดเจน"
+            "description": "มอบหมายให้ทีมเดียวกันจากโดเมนอื่น อาจเป็น ID โดเมนหรือ FQDN ก็ได้ ใช้ \"none\" เพื่อปิดใช้งานโดยชัดเจน"
           },
           "plan": {
             "type": "string",
@@ -691,7 +1560,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "ประเภทแผน (ค่าเริ่มต้นคือ 'ฟรี' หรือแผนแบบชำระเงินปัจจุบันของผู้ใช้)"
+            "description": "ประเภทแผน (ค่าเริ่มต้นคือ 'ฟรี' หรือแผนชำระเงินปัจจุบันของผู้ใช้)"
           },
           "catchall": {
             "oneOf": [
@@ -711,7 +1580,7 @@
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "เปิดใช้งานการป้องกันการฟิชชิ่งด้วยเครื่องสแกนสแปม"
+            "description": "เปิดใช้งานการป้องกันฟิชชิ่งด้วยเครื่องสแกนสแปม"
           },
           "has_executable_protection": {
             "type": "boolean",
@@ -719,7 +1588,7 @@
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "เปิดใช้งานการป้องกันไวรัส Spam Scanner"
+            "description": "เปิดใช้งานการป้องกันไวรัสของ Spam Scanner"
           },
           "has_recipient_verification": {
             "type": "boolean",
@@ -733,21 +1602,21 @@
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "จำนวนวันในการเก็บบันทึก SMTP ขาออก (0–30, ค่าเริ่มต้น: 0)"
+            "description": "จำนวนวันที่จะเก็บรักษาบันทึก SMTP ขาออก (0–30, ค่าเริ่มต้น: 0)"
           },
           "bounce_webhook": {
             "oneOf": [
               {
                 "type": "string",
                 "format": "uri",
-                "description": "URL เว็บฮุกสำหรับรับเหตุการณ์เด้งกลับ"
+                "description": "URL เว็บฮุกสำหรับรับเหตุการณ์การตีกลับ"
               },
               {
                 "type": "boolean",
                 "enum": [
                   false
                 ],
-                "description": "ปิดใช้งานเว็บฮุกเด้ง"
+                "description": "ปิดใช้งานเว็บฮุกแบบเด้งกลับ"
               }
             ]
           },
@@ -769,7 +1638,7 @@
                 "type": "number"
               }
             ],
-            "description": "พอร์ตที่กำหนดเองเพื่อกำหนดค่าสำหรับการส่งต่อ SMTP (ค่าเริ่มต้นคือ '25')"
+            "description": "พอร์ตที่กำหนดเองเพื่อกำหนดค่าการส่งต่อ SMTP (ค่าเริ่มต้นคือ '25')"
           },
           "has_adult_content_protection": {
             "type": "boolean",
@@ -781,7 +1650,7 @@
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "ว่าจะเปิดใช้งานการป้องกันการทำงาน Spam Scanner บนโดเมนนี้หรือไม่"
+            "description": "ว่าจะเปิดใช้งานการป้องกันการทำงานของ Spam Scanner บนโดเมนนี้หรือไม่"
           },
           "has_virus_protection": {
             "type": "boolean",
@@ -789,7 +1658,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "ค่าเริ่มต้นของโดเมนทั่วโลกสำหรับการกำหนดให้ผู้รับนามแฝงต้องคลิกลิงก์ยืนยันอีเมลเพื่อให้อีเมลไหลผ่าน"
+            "description": "โดเมนทั่วโลกเป็นค่าเริ่มต้นสำหรับการกำหนดให้ผู้รับนามแฝงต้องคลิกลิงก์ยืนยันอีเมลเพื่อให้อีเมลไหลผ่านหรือไม่"
           },
           "ignore_mx_check": {
             "type": "boolean",
@@ -814,11 +1683,11 @@
                 ]
               }
             ],
-            "description": "URL เว็บฮุกเพื่อรับการแจ้งเตือนการตีกลับ หรือเท็จเพื่อปิดการใช้งาน"
+            "description": "URL เว็บฮุกสำหรับรับการแจ้งเตือนการตีกลับ หรือเท็จเพื่อปิดการใช้งาน"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "โควตาพื้นที่เก็บข้อมูลตามนามแฝง (เช่น '1 GB' แยกเป็นไบต์)"
+            "description": "โควตาพื้นที่เก็บข้อมูลต่อนามแฝง (เช่น '1 GB' แยกเป็นไบต์)"
           }
         }
       },
@@ -969,13 +1838,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "ชื่อนามแฝง (ถ้าไม่ได้ระบุหรือเว้นว่างไว้ นามแฝงแบบสุ่มจะถูกสร้างขึ้น)"
+            "description": "ชื่อนามแฝง (ถ้าไม่ได้ระบุหรือเว้นว่างไว้ ระบบจะสร้างนามแฝงแบบสุ่ม)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "สตริงที่คั่นด้วยเครื่องหมายจุลภาค/แบ่งบรรทัด/เว้นวรรคของที่อยู่อีเมล FQDN, IP หรือ URL ของเว็บฮุกที่ถูกต้อง"
+                "description": "สตริงที่คั่นด้วยเครื่องหมายจุลภาค/แบ่งบรรทัด/ช่องว่างของที่อยู่อีเมลที่ถูกต้อง, FQDN, IP หรือ URL ของเว็บฮุก"
               },
               {
                 "type": "array",
@@ -986,7 +1855,7 @@
                 "description": "อาร์เรย์ของผู้รับที่ถูกต้อง"
               }
             ],
-            "description": "รายชื่อผู้รับ หากไม่ได้ระบุหรือว่างเปล่า จะเป็นอีเมลของผู้ร้องขอตามค่าเริ่มต้น"
+            "description": "รายชื่อผู้รับ หากไม่ได้ระบุหรือว่างเปล่า ระบบจะตั้งค่าเริ่มต้นเป็นอีเมลของผู้ร้องขอ"
           },
           "description": {
             "type": "string",
@@ -996,7 +1865,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "สตริงของป้ายกำกับที่คั่นด้วยเครื่องหมายจุลภาค/แบ่งบรรทัด/เว้นวรรค"
+                "description": "สตริงป้ายกำกับที่คั่นด้วยการแบ่งบรรทัด/ช่องว่าง/จุลภาค"
               },
               {
                 "type": "array",
@@ -1009,7 +1878,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "กำหนดให้ผู้รับคลิกลิงก์ยืนยัน (ค่าเริ่มต้นคือการตั้งค่าโดเมน)"
+            "description": "กำหนดให้ผู้รับคลิกลิงก์ยืนยัน (ค่าเริ่มต้นเป็นการตั้งค่าโดเมน)"
           },
           "is_enabled": {
             "type": "boolean",
@@ -1042,23 +1911,23 @@
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "เปิดใช้งานหรือปิดใช้งานระบบตอบกลับอัตโนมัติเมื่อลาพักร้อน"
+            "description": "เปิดใช้งานหรือปิดใช้งานการตอบกลับช่วงวันหยุด"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "วันที่เริ่มต้น (เช่น 'ปปป-ดด-วว') สำหรับการตอบกลับในช่วงวันหยุด"
+            "description": "วันที่เริ่มต้น (เช่น 'YYYY-MM-DD') สำหรับผู้ตอบกลับในช่วงวันหยุด"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "วันที่สิ้นสุด (เช่น 'ปปป-ดด-วว') สำหรับผู้ตอบกลับในช่วงวันหยุด"
+            "description": "วันที่สิ้นสุด (เช่น 'YYYY-MM-DD') สำหรับผู้ตอบกลับในช่วงวันหยุด"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "หัวเรื่องแบบข้อความธรรมดาสำหรับการตอบกลับในช่วงวันหยุด"
+            "description": "หัวเรื่องข้อความธรรมดาสำหรับการตอบกลับในช่วงวันหยุด"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "ข้อความธรรมดาสำหรับการตอบกลับในช่วงวันหยุด"
+            "description": "ข้อความธรรมดาสำหรับการตอบกลับช่วงวันหยุด"
           }
         }
       },
@@ -1073,7 +1942,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "สตริงที่คั่นด้วยเครื่องหมายจุลภาค/แบ่งบรรทัด/เว้นวรรคของที่อยู่อีเมล FQDN, IP หรือ URL ของเว็บฮุกที่ถูกต้อง"
+                "description": "สตริงที่คั่นด้วยเครื่องหมายจุลภาค/แบ่งบรรทัด/ช่องว่างของที่อยู่อีเมลที่ถูกต้อง, FQDN, IP หรือ URL ของเว็บฮุก"
               },
               {
                 "type": "array",
@@ -1093,7 +1962,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "สตริงของป้ายกำกับที่คั่นด้วยเครื่องหมายจุลภาค/แบ่งบรรทัด/เว้นวรรค"
+                "description": "สตริงป้ายกำกับที่คั่นด้วยการแบ่งบรรทัด/ช่องว่าง/จุลภาค"
               },
               {
                 "type": "array",
@@ -1106,7 +1975,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "กำหนดให้ผู้รับคลิกลิงก์ยืนยัน (ค่าเริ่มต้นคือการตั้งค่าโดเมน)"
+            "description": "กำหนดให้ผู้รับคลิกลิงก์ยืนยัน (ค่าเริ่มต้นเป็นการตั้งค่าโดเมน)"
           },
           "is_enabled": {
             "type": "boolean",
@@ -1123,7 +1992,7 @@
           },
           "has_imap": {
             "type": "boolean",
-            "description": "เปิดใช้งานหรือปิดใช้งานการจัดเก็บ IMAP"
+            "description": "เปิดใช้งานหรือปิดใช้งานที่เก็บข้อมูล IMAP"
           },
           "has_pgp": {
             "type": "boolean",
@@ -1139,7 +2008,7 @@
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "เปิดใช้งานหรือปิดใช้งานระบบตอบกลับอัตโนมัติเมื่อลาพักร้อน"
+            "description": "เปิดใช้งานหรือปิดใช้งานการตอบกลับช่วงวันหยุด"
           },
           "vacation_responder_start_date": {
             "type": "string",
@@ -1151,11 +2020,11 @@
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "หัวข้อข้อความธรรมดาของการตอบกลับในช่วงวันหยุด"
+            "description": "หัวข้อข้อความธรรมดาของผู้ตอบกลับในช่วงวันหยุด"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "ข้อความตอบกลับแบบข้อความธรรมดาในช่วงวันหยุด"
+            "description": "ข้อความธรรมดาของผู้ตอบกลับช่วงวันหยุด"
           }
         }
       },
@@ -1168,7 +2037,7 @@
           },
           "password": {
             "type": "string",
-            "description": "รหัสผ่านที่มีอยู่สำหรับนามแฝงเพื่อเปลี่ยนแปลงโดยไม่ต้องลบพื้นที่จัดเก็บกล่องจดหมาย"
+            "description": "รหัสผ่านที่มีอยู่สำหรับนามแฝงเพื่อเปลี่ยนโดยไม่ต้องลบพื้นที่จัดเก็บกล่องจดหมาย"
           },
           "is_override": {
             "type": "boolean",
@@ -1204,7 +2073,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "ที่อยู่อีเมล์ของสมาชิก"
+            "description": "ที่อยู่อีเมลของสมาชิก"
           },
           "role": {
             "type": "string",
@@ -1218,7 +2087,7 @@
           "email": {
             "type": "string",
             "format": "email",
-            "description": "ที่อยู่อีเมลเชิญ"
+            "description": "ที่อยู่อีเมลที่ได้รับเชิญ"
           }
         }
       }
@@ -1227,7 +2096,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "หน้าผลลัพธ์ที่จะส่งกลับ หากไม่ได้ระบุค่าจะเป็น 1 ต้องเป็นตัวเลขที่มากกว่าหรือเท่ากับ 1",
+        "description": "หน้าผลลัพธ์ที่จะส่งคืน หากไม่ได้ระบุ ค่าจะเป็น 1 ต้องเป็นตัวเลขที่มากกว่าหรือเท่ากับ 1",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1237,7 +2106,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "จำนวนผลลัพธ์ที่จะแสดงต่อหนึ่งเพจ ค่าเริ่มต้นคือ 10 หากไม่ได้ระบุ ต้องเป็นตัวเลขที่มากกว่าหรือเท่ากับ 1 และน้อยกว่าหรือเท่ากับ 50",
+        "description": "จำนวนผลลัพธ์ที่จะแสดงต่อหน้า ค่าเริ่มต้นคือ 10 หากไม่ได้ระบุ ต้องเป็นตัวเลขที่มากกว่าหรือเท่ากับ 1 และน้อยกว่าหรือเท่ากับ 50",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "นามแฝง ID",
+        "description": "รหัสนามแฝง",
         "schema": {
           "type": "string"
         }
@@ -1284,7 +2153,43 @@
         "name": "id",
         "in": "path",
         "required": true,
-        "description": "อีเมลไอดี",
+        "description": "รหัสอีเมล",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "รหัสติดต่อ",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "รหัสปฏิทิน",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "ID หรือเส้นทางโฟลเดอร์",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "รหัสข้อความ",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "สร้างบัญชี",
-        "description": "สร้างบัญชีผู้ใช้ใหม่",
-        "tags": [
-          "บัญชี"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "ที่อยู่อีเมล์"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "รหัสผ่าน"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "ดึงข้อมูลบัญชี",
-        "description": "ดึงข้อมูลบัญชีของผู้ใช้ปัจจุบัน",
         "tags": [
           "บัญชี"
         ],
+        "summary": "ดึงข้อมูลบัญชี",
+        "description": "ดึงข้อมูลบัญชีของคุณ",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "อัปเดตบัญชี",
-        "description": "อัปเดตข้อมูลบัญชีผู้ใช้ปัจจุบัน",
         "tags": [
           "บัญชี"
         ],
+        "summary": "อัปเดตบัญชี",
+        "description": "อัปเดตข้อมูลบัญชีของคุณ",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "ที่อยู่อีเมล์"
+                    "description": "ชื่อที่แสดง"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "ชื่อจริง"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "นามสกุล"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "ลิงค์ไปยังรูปอวาตาร์"
+                    "description": "การตั้งค่าตำแหน่งที่ตั้ง"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "ติดต่อเรา"
+        ],
+        "summary": "รายชื่อผู้ติดต่อ",
+        "description": "ดึงรายชื่อผู้ติดต่อทั้งหมดสำหรับนามแฝงที่ผ่านการรับรองแล้ว จุดสิ้นสุดนี้รองรับการแบ่งหน้าและส่งคืนรายชื่อผู้ติดต่อในรูปแบบ CardDAV",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ติดต่อเรา"
+        ],
+        "summary": "สร้างการติดต่อ",
+        "description": "สร้างผู้ติดต่อใหม่ คุณสามารถระบุข้อมูล vCard โดยตรงหรือระบุข้อมูลผู้ติดต่อรายบุคคลที่จะแปลงเป็นรูปแบบ vCard ก็ได้ หากมีผู้ติดต่อที่มี ID เดียวกันอยู่แล้ว ระบบจะแสดงข้อผิดพลาดข้อขัดแย้ง",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "ติดต่อเรา"
+        ],
+        "summary": "ดึงข้อมูลติดต่อ",
+        "description": "ดึงข้อมูลผู้ติดต่อเฉพาะตาม ID ผู้ติดต่อจะถูกส่งคืนในรูปแบบ Contact มาตรฐานพร้อมเนื้อหา vCard และฟิลด์ที่แยกวิเคราะห์",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ติดต่อเรา"
+        ],
+        "summary": "อัปเดตข้อมูลติดต่อ",
+        "description": "อัปเดตผู้ติดต่อที่มีอยู่ คุณสามารถระบุเนื้อหา vCard ที่อัปเดตแล้วหรือระบุฟิลด์ที่ต้องการอัปเดตได้ vCard ของผู้ติดต่อจะถูกสร้างขึ้นใหม่หากมีการระบุฟิลด์ที่ต้องการอัปเดต",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ติดต่อเรา"
+        ],
+        "summary": "ลบรายชื่อผู้ติดต่อ",
+        "description": "ลบรายชื่อติดต่อที่ต้องการอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "ปฏิทิน"
+        ],
+        "summary": "รายการปฏิทิน",
+        "description": "ดึงรายการปฏิทินทั้งหมดสำหรับนามแฝงที่ผ่านการรับรองความถูกต้อง จุดสิ้นสุดนี้รองรับการแบ่งหน้าและส่งคืนปฏิทินในรูปแบบ CalDAV",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ปฏิทิน"
+        ],
+        "summary": "สร้างปฏิทิน",
+        "description": "สร้างปฏิทินใหม่ จำเป็นต้องระบุชื่อปฏิทิน ส่วนคุณสมบัติอื่นๆ เช่น สี เขตเวลา และคำอธิบาย เป็นตัวเลือกเสริม หากมีปฏิทินที่มีชื่อเดียวกันอยู่แล้ว ระบบจะแสดงข้อผิดพลาดข้อขัดแย้ง",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "ปฏิทิน"
+        ],
+        "summary": "ดึงข้อมูลปฏิทิน",
+        "description": "ดึงปฏิทินที่ต้องการตาม ID ปฏิทินจะแสดงพร้อมคุณสมบัติทั้งหมด ได้แก่ ชื่อ คำอธิบาย สี เขตเวลา และลำดับ",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ปฏิทิน"
+        ],
+        "summary": "อัปเดตปฏิทิน",
+        "description": "อัปเดตปฏิทินที่มีอยู่ คุณสามารถอัปเดตคุณสมบัติปฏิทินใดๆ ก็ได้ รวมถึงชื่อ คำอธิบาย สี เขตเวลา และลำดับ หากคุณเปลี่ยนชื่อเป็นชื่อที่มีอยู่แล้ว ระบบจะแสดงข้อผิดพลาดข้อขัดแย้ง",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ปฏิทิน"
+        ],
+        "summary": "ลบปฏิทิน",
+        "description": "ลบปฏิทินที่ต้องการอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้ และจะลบกิจกรรมทั้งหมดภายในปฏิทินด้วย",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "โฟลเดอร์"
+        ],
+        "summary": "รายการโฟลเดอร์",
+        "description": "ดึงรายชื่อโฟลเดอร์/กล่องจดหมาย IMAP ทั้งหมดสำหรับนามแฝงที่ผ่านการรับรองความถูกต้อง จุดสิ้นสุดนี้รองรับการแบ่งหน้าและการกรองตามสถานะการสมัครใช้งาน",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "กรองโฟลเดอร์ตามสถานะการสมัครรับข้อมูล",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "โฟลเดอร์"
+        ],
+        "summary": "สร้างโฟลเดอร์",
+        "description": "สร้างโฟลเดอร์/กล่องจดหมาย IMAP ใหม่ จำเป็นต้องมีเส้นทางโฟลเดอร์และสามารถรวมโฟลเดอร์หลัก (เช่น 'INBOX/โฟลเดอร์ย่อย') หากไม่มีโฟลเดอร์หลัก ระบบจะสร้างโฟลเดอร์เหล่านั้นโดยอัตโนมัติ",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "โฟลเดอร์"
+        ],
+        "summary": "ดึงข้อมูลโฟลเดอร์",
+        "description": "เรียกค้นโฟลเดอร์เฉพาะตาม ID หรือเส้นทาง คุณสามารถใช้ ObjectID ของโฟลเดอร์หรือเส้นทางแบบเต็ม (เช่น 'INBOX/Subfolder') เป็นตัวระบุได้",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "โฟลเดอร์"
+        ],
+        "summary": "อัพเดตโฟลเดอร์",
+        "description": "อัปเดต/เปลี่ยนชื่อโฟลเดอร์ที่มีอยู่ การดำเนินการนี้จะเปลี่ยนชื่อโฟลเดอร์เป็นเส้นทางใหม่ที่ระบุไว้ในเนื้อหาคำขอ คุณสามารถใช้ ObjectID ของโฟลเดอร์หรือเส้นทางปัจจุบันเป็นตัวระบุได้",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "โฟลเดอร์"
+        ],
+        "summary": "ลบโฟลเดอร์",
+        "description": "ลบโฟลเดอร์ที่ระบุอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้ และจะลบข้อความทั้งหมดภายในโฟลเดอร์นั้นด้วย คุณสามารถใช้ ObjectID ของโฟลเดอร์หรือพาธเป็นตัวระบุได้",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "ข้อความ"
+        ],
+        "summary": "รายการและค้นหาข้อความ",
+        "description": "เรียกดูรายการข้อความด้วยความสามารถในการค้นหาและกรองขั้นสูง จุดสิ้นสุดนี้รองรับการแบ่งหน้าและการค้นหาที่ครอบคลุมทั้งเนื้อหาข้อความ ส่วนหัว แฟล็ก และเมตาดาต้า คุณสามารถค้นหาตามโฟลเดอร์ แฟล็ก เนื้อหา ส่วนหัว ช่วงวันที่ ขนาด และอื่นๆ อีกมากมาย",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "กรองข้อความตามเส้นทางโฟลเดอร์",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "กรองตามสถานะการอ่าน",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "กรองตามสถานะที่ถูกทำเครื่องหมาย",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "กรองตามสถานะที่ถูกลบ",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "กรองตามสถานะร่าง",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "กรองตามสถานะขยะ/สแปม",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "กรองตามสถานะที่คัดลอก",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "กรองตามสถานะที่สามารถค้นหาได้",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "กรองตามสถานะหมดอายุ",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "กรองตามการมีอยู่ของสิ่งที่แนบมา",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "กรองตามการมีอยู่ของไฟล์แนบ (นามแฝงสำหรับ has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "ค้นหาในหัวข้อข้อความ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "ค้นหาในเนื้อหาข้อความ/ข้อความ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "ค้นหาในข้อความ (นามแฝงสำหรับเนื้อหา)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "ค้นหาในส่วนหัวข้อความทั้งหมด",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "ค้นหาตามส่วนหัว Message-ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "การค้นหาทั่วไปในส่วนหัวและข้อความ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "การค้นหาทั่วไป (นามแฝงสำหรับการค้นหา)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "กรองข้อความตั้งแต่วันที่นี้ (รูปแบบ ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "กรองข้อความก่อนวันที่นี้ (รูปแบบ ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "กรองข้อความด้วยขนาดขั้นต่ำเป็นไบต์",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "กรองข้อความที่มีขนาดสูงสุดเป็นไบต์",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "ค้นหาโดย จากส่วนหัว",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "ค้นหาตามส่วนหัว",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "ค้นหาตามส่วนหัว CC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "ค้นหาตามส่วนหัว BCC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "ค้นหาตามส่วนหัววันที่",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "ค้นหาตามส่วนหัวตอบกลับ",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "ข้อความ"
+        ],
+        "summary": "สร้างข้อความ",
+        "description": "สร้าง/ผนวกข้อความใหม่ลงในโฟลเดอร์ ปลายทางนี้รองรับรูปแบบข้อความ Nodemailer มาตรฐาน และอนุญาตให้คุณระบุโฟลเดอร์เป้าหมายและแฟล็กเริ่มต้นได้ หากไม่มีโฟลเดอร์เป้าหมาย ระบบจะสร้างโฟลเดอร์นั้นโดยอัตโนมัติ",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "ข้อความ"
+        ],
+        "summary": "ดึงข้อความ",
+        "description": "ดึงข้อความเฉพาะตาม ID ของข้อความนั้น โดยค่าเริ่มต้น การตอบกลับจะรวมอ็อบเจ็กต์ Nodemailer ที่วิเคราะห์แล้วและเนื้อหาข้อความดิบ คุณสามารถควบคุมสิ่งที่รวมอยู่ได้โดยใช้พารามิเตอร์การค้นหา",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "ส่งคืนรูปแบบ EML ดิบแทน JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "รวมวัตถุ Nodemailer ที่แยกวิเคราะห์แล้ว",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "รวมสิ่งที่แนบมาในวัตถุ Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "รวมเนื้อหาข้อความดิบ",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "ข้อความ"
+        ],
+        "summary": "อัปเดตข้อความ",
+        "description": "อัปเดตข้อความที่มีอยู่ คุณสามารถแก้ไขแฟล็กข้อความหรือย้ายไปยังโฟลเดอร์อื่นได้ หากไม่มีโฟลเดอร์เป้าหมาย ระบบจะสร้างขึ้นโดยอัตโนมัติ",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "ส่งคืนรูปแบบ EML ดิบแทน JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "ข้อความ"
+        ],
+        "summary": "ลบข้อความ",
+        "description": "ลบข้อความใดข้อความหนึ่งอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้และจะลบข้อความออกจากพื้นที่จัดเก็บอย่างถาวร ซึ่งแตกต่างจากไคลเอนต์ IMAP ที่มักจะย้ายข้อความไปที่ถังขยะ ปลายทางนี้จะดำเนินการลบแบบฮาร์ด",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1559,7 +3781,7 @@
     "/v1/logs/download": {
       "get": {
         "summary": "ดาวน์โหลดบันทึก",
-        "description": "**ดาวน์โหลดบันทึก**\n\nคำอธิบาย: โปรแกรม API ของเราอนุญาตให้คุณดาวน์โหลดบันทึกสำหรับบัญชีของคุณได้ การส่งคำขอไปยังจุดสิ้นสุดนี้จะประมวลผลบันทึกทั้งหมดสำหรับบัญชีของคุณและส่งให้คุณทางอีเมลเป็นไฟล์แนบ (ไฟล์สเปรดชีต CSV ที่บีบอัดด้วย Gzip) เมื่อดำเนินการเสร็จสิ้น\n\nวิธีนี้ช่วยให้คุณสร้างงานเบื้องหลังด้วยงาน Cron หรือใช้ซอฟต์แวร์จัดกำหนดการงาน Node.js ชื่อ Bree เพื่อรับบันทึกเมื่อใดก็ตามที่คุณต้องการ โปรดทราบว่าจุดสิ้นสุดนี้จำกัดให้ส่งคำขอได้ `10` ครั้งต่อวัน\n\nไฟล์แนบเป็นรูปแบบตัวพิมพ์เล็กของ `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` และอีเมลนั้นประกอบด้วยสรุปสั้นๆ ของบันทึกที่ดึงมา",
+        "description": "**ดาวน์โหลดบันทึก**\n\nคำอธิบาย: โปรแกรม API ของเราช่วยให้คุณดาวน์โหลดบันทึกสำหรับบัญชีของคุณได้ การส่งคำขอไปยังจุดสิ้นสุดนี้จะประมวลผลบันทึกทั้งหมดสำหรับบัญชีของคุณและส่งเป็นไฟล์แนบทางอีเมล (ไฟล์สเปรดชีต CSV ที่บีบอัดด้วย Gzip) เมื่อดำเนินการเสร็จสิ้น\n\nวิธีนี้ช่วยให้คุณสามารถสร้างงานเบื้องหลังด้วยงาน Cron หรือใช้ซอฟต์แวร์จัดตารางงาน Node.js ชื่อ Bree เพื่อรับบันทึกได้ทุกเมื่อที่ต้องการ โปรดทราบว่าจุดสิ้นสุดนี้จำกัดจำนวนคำขอไว้ที่ `10` คำขอต่อวัน\n\nไฟล์แนบเป็นรูปแบบตัวพิมพ์เล็กของ `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` และอีเมลจะมีข้อมูลสรุปสั้นๆ ของบันทึกที่ดึงมา",
         "tags": [
           "บันทึก"
         ],
@@ -1572,7 +3794,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "กรองบันทึกตามโดเมนที่ระบุคุณสมบัติครบถ้วน (\"FQDN\") หากไม่ได้ระบุไว้ ระบบจะดึงบันทึกทั้งหมดจากโดเมนทั้งหมด",
+            "description": "กรองบันทึกตามโดเมนที่ระบุแบบเต็ม (\"FQDN\") หากไม่ได้ระบุ ระบบจะดึงข้อมูลบันทึกทั้งหมดในทุกโดเมน",
             "schema": {
               "type": "string"
             }
@@ -1580,7 +3802,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "ค้นหาบันทึกตามอีเมล โดเมน ชื่อแฝง ที่อยู่ IP หรือวันที่ (รูปแบบ M/Y, M/D/YY, M-D, M-D-YY หรือ M.D.YY)",
+            "description": "ค้นหาบันทึกโดยใช้อีเมล โดเมน ชื่อแฝง ที่อยู่ IP หรือวันที่ (รูปแบบ เดือน/ปี, เดือน/ว/ปป, เดือน-ว, เดือน-ว-ปป หรือ เดือน-ปป)",
             "schema": {
               "type": "string"
             }
@@ -1637,7 +3859,7 @@
     "/v1/emails": {
       "get": {
         "summary": "รายชื่ออีเมล SMTP ขาออก",
-        "description": "**รายการอีเมล SMTP ขาออก**\n\nโปรดทราบว่าจุดสิ้นสุดนี้จะไม่ส่งคืนค่าคุณสมบัติสำหรับ `ข้อความ` `ส่วนหัว` หรือ `ข้อผิดพลาดที่ถูกปฏิเสธ` ของอีเมล\n\nหากต้องการส่งคืนคุณสมบัติและค่าของคุณสมบัติเหล่านั้น โปรดใช้จุดสิ้นสุด [เรียกอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) พร้อม ID อีเมล",
+        "description": "**แสดงรายการอีเมล SMTP ขาออก**\n\nโปรดทราบว่าจุดสิ้นสุดนี้จะไม่ส่งคืนค่าคุณสมบัติของ `message`, `headers` หรือ `rejectedErrors` ของอีเมล\n\nหากต้องการส่งคืนคุณสมบัติและค่าเหล่านั้น โปรดใช้จุดสิ้นสุด [เรียกอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) พร้อมรหัสอีเมล",
         "tags": [
           "อีเมล์"
         ],
@@ -1650,7 +3872,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "ค้นหาอีเมล์ตามข้อมูลเมตา",
+            "description": "ค้นหาอีเมลตามข้อมูลเมตา",
             "schema": {
               "type": "string"
             }
@@ -1666,7 +3888,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "เรียงลำดับตามฟิลด์ที่ระบุ (นำหน้าด้วยเครื่องหมายขีดกลางเพียงตัวเดียว เพื่อเรียงลำดับในทิศทางย้อนกลับของฟิลด์นั้น) ค่าเริ่มต้นคือ created_at หากไม่ได้ตั้งค่าไว้",
+            "description": "เรียงลำดับตามฟิลด์ที่ระบุ (นำหน้าด้วยเครื่องหมายยัติภังค์เพียงตัวเดียว - เพื่อเรียงลำดับในทิศทางย้อนกลับของฟิลด์นั้น) ค่าเริ่มต้นคือ created_at หากไม่ได้ตั้งค่าไว้",
             "schema": {
               "type": "string"
             }
@@ -1674,7 +3896,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "ดูการแบ่งหน้าเพื่อข้อมูลเชิงลึกเพิ่มเติม",
+            "description": "ดูการแบ่งหน้าเพื่อดูข้อมูลเชิงลึกเพิ่มเติม",
             "schema": {
               "type": "string"
             }
@@ -1682,7 +3904,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "ดูการแบ่งหน้าเพื่อข้อมูลเชิงลึกเพิ่มเติม",
+            "description": "ดูการแบ่งหน้าเพื่อดูข้อมูลเชิงลึกเพิ่มเติม",
             "schema": {
               "type": "string"
             }
@@ -1715,7 +3937,7 @@
       },
       "post": {
         "summary": "สร้างอีเมล SMTP ขาออก",
-        "description": "API ของเราสำหรับการสร้างอีเมลได้รับแรงบันดาลใจและใช้ประโยชน์จากการกำหนดค่าตัวเลือกข้อความของ Nodemailer โปรดใช้ [การกำหนดค่าข้อความของ Nodemailer](https://nodemailer.com/message/) สำหรับพารามิเตอร์เนื้อหาทั้งหมดด้านล่าง\n\nโปรดทราบว่ายกเว้น `envelope` และ `dkim` (เนื่องจากเราตั้งค่าให้คุณโดยอัตโนมัติ) เรารองรับตัวเลือก Nodemailer ทั้งหมด เราตั้งค่าตัวเลือก `disableFileAccess` และ `disableUrlAccess` เป็น `true` โดยอัตโนมัติเพื่อวัตถุประสงค์ด้านความปลอดภัย\n\nคุณควรส่งตัวเลือกเดี่ยวของ `raw` พร้อมอีเมลเต็มแบบดิบของคุณรวมถึงส่วนหัวหรือส่งตัวเลือกพารามิเตอร์เนื้อหาแต่ละรายการด้านล่าง\n\nจุดสิ้นสุดของ API นี้จะเข้ารหัสอีโมจิให้คุณโดยอัตโนมัติหากพบในส่วนหัว (เช่น บรรทัดหัวเรื่อง `Subject: 🤓 Hello` จะถูกแปลงเป็น `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` โดยอัตโนมัติ) เป้าหมายของเราคือการสร้าง API อีเมลที่เป็นมิตรกับนักพัฒนาและป้องกันข้อผิดพลาดได้ดียิ่งขึ้น",
+        "description": "API สำหรับการสร้างอีเมลของเราได้รับแรงบันดาลใจและใช้ประโยชน์จากการกำหนดค่าตัวเลือกข้อความของ Nodemailer โปรดอ้างอิง [การกำหนดค่าข้อความของ Nodemailer](https://nodemailer.com/message/) สำหรับพารามิเตอร์เนื้อหาทั้งหมดด้านล่างนี้\n\nโปรดทราบว่า ยกเว้น `envelope` และ `dkim` (เนื่องจากเราตั้งค่าเหล่านี้ให้คุณโดยอัตโนมัติ) เรารองรับตัวเลือกทั้งหมดของ Nodemailer โดยเราตั้งค่าตัวเลือก `disableFileAccess` และ `disableUrlAccess` เป็น `true` โดยอัตโนมัติเพื่อความปลอดภัย\n\nคุณควรส่งตัวเลือก `raw` เพียงตัวเลือกเดียวพร้อมกับอีเมลแบบเต็มแบบ raw ของคุณ รวมถึงส่วนหัว หรือส่งตัวเลือกพารามิเตอร์เนื้อหาแต่ละรายการด้านล่าง\n\nจุดสิ้นสุดของ API นี้จะเข้ารหัสอิโมจิให้คุณโดยอัตโนมัติ หากพบอิโมจิในส่วนหัว (เช่น บรรทัดหัวเรื่อง `Subject: 🤓 Hello` จะถูกแปลงเป็น `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` โดยอัตโนมัติ) เป้าหมายของเราคือการสร้าง API อีเมลที่เป็นมิตรกับนักพัฒนาและป้องกันข้อผิดพลาดอย่างยิ่ง",
         "tags": [
           "อีเมล์"
         ],
@@ -1765,7 +3987,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "รับขีดจำกัดอีเมล SMTP ขาออก",
-        "description": "นี่เป็นจุดสิ้นสุดแบบเรียบง่ายที่ส่งคืนวัตถุ JSON ที่มี `count` และ `limit` สำหรับจำนวนข้อความขาออก SMTP รายวันในแต่ละบัญชี",
+        "description": "นี่เป็นจุดสิ้นสุดแบบง่าย ๆ ที่จะส่งคืนวัตถุ JSON ที่มี `count` และ `limit` สำหรับจำนวนข้อความขาออก SMTP รายวันในแต่ละบัญชี",
         "tags": [
           "อีเมล์"
         ],
@@ -1801,7 +4023,7 @@
         }
       ],
       "get": {
-        "summary": "ดึงข้อมูลอีเมล SMTP ขาออก",
+        "summary": "ดึงอีเมล SMTP ขาออก",
         "description": "ดึงอีเมล SMTP ขาออกที่เฉพาะเจาะจง",
         "tags": [
           "อีเมล์"
@@ -1834,8 +4056,8 @@
         }
       },
       "delete": {
-        "summary": "ลบอีเมล์ SMTP ขาออก",
-        "description": "การลบอีเมลจะตั้งสถานะเป็น \"ปฏิเสธ\" (และจะไม่ดำเนินการในคิวในภายหลัง) ก็ต่อเมื่อสถานะปัจจุบันเป็น \"รอดำเนินการ\" \"เข้าคิว\" หรือ \"เลื่อนการดำเนินการ\" เราอาจล้างอีเมลโดยอัตโนมัติหลังจาก 30 วันหลังจากที่สร้างและ/หรือส่ง ดังนั้นคุณจึงควรเก็บสำเนาอีเมล SMTP ขาออกไว้ในไคลเอนต์ ฐานข้อมูล หรือแอปพลิเคชันของคุณ คุณสามารถอ้างอิงค่า ID อีเมลของเราในฐานข้อมูลของคุณได้หากต้องการ โดยค่านี้ส่งคืนจากทั้งจุดสิ้นสุด [สร้างอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) และ [เรียกอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email)",
+        "summary": "ลบอีเมล SMTP ขาออก",
+        "description": "การลบอีเมลจะตั้งสถานะเป็น \"ปฏิเสธ\" (และจะไม่ดำเนินการในคิว) ก็ต่อเมื่อสถานะปัจจุบันเป็น \"รอดำเนินการ\" \"คิว\" หรือ \"รอการอนุมัติ\" เราอาจล้างอีเมลโดยอัตโนมัติหลังจาก 30 วันหลังจากสร้างและ/หรือส่งอีเมล ดังนั้นคุณควรเก็บสำเนาอีเมล SMTP ขาออกไว้ในไคลเอ็นต์ ฐานข้อมูล หรือแอปพลิเคชันของคุณ คุณสามารถอ้างอิงค่ารหัสอีเมลของเราในฐานข้อมูลได้หากต้องการ โดยค่านี้จะส่งคืนจากทั้งจุดสิ้นสุด [สร้างอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email) และ [ดึงอีเมล](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email)",
         "tags": [
           "อีเมล์"
         ],
@@ -1875,8 +4097,8 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "รายการโดเมน",
-        "description": "> [!NOTE]\n>ตั้งแต่วันที่ 1 พฤศจิกายน 2024 เป็นต้นไป จุดสิ้นสุดของ API สำหรับโดเมนรายการและนามแฝงโดเมนรายการจะตั้งค่าเริ่มต้นเป็นผลลัพธ์สูงสุด `1,000` รายการต่อหน้า หากคุณต้องการเลือกใช้พฤติกรรมนี้ก่อนกำหนด คุณสามารถส่ง `?paginate=true` เป็นพารามิเตอร์ querystring เพิ่มเติมให้กับ URL สำหรับการค้นหาจุดสิ้นสุด ดูการแบ่งหน้าเพื่อดูข้อมูลเชิงลึกเพิ่มเติม",
+        "summary": "รายชื่อโดเมน",
+        "description": "> [!NOTE]\n>ตั้งแต่วันที่ 1 พฤศจิกายน 2024 เป็นต้นไป ปลายทาง API สำหรับโดเมนรายการและนามแฝงโดเมนรายการจะมีค่าเริ่มต้นเป็นผลลัพธ์สูงสุด `1000` รายการต่อหน้า หากต้องการเลือกใช้ลักษณะการทำงานนี้ก่อน คุณสามารถส่ง `?paginate=true` เป็นพารามิเตอร์ querystring เพิ่มเติมไปยัง URL สำหรับการค้นหาปลายทางได้ ดูการแบ่งหน้าสำหรับข้อมูลเชิงลึกเพิ่มเติม",
         "tags": [
           "โดเมน"
         ],
@@ -1905,7 +4127,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "เรียงลำดับตามฟิลด์ที่ระบุ (นำหน้าด้วยเครื่องหมายขีดกลางเพียงตัวเดียว เพื่อเรียงลำดับในทิศทางย้อนกลับของฟิลด์นั้น) ค่าเริ่มต้นคือ created_at หากไม่ได้ตั้งค่าไว้",
+            "description": "เรียงลำดับตามฟิลด์ที่ระบุ (นำหน้าด้วยเครื่องหมายยัติภังค์เพียงตัวเดียว - เพื่อเรียงลำดับในทิศทางย้อนกลับของฟิลด์นั้น) ค่าเริ่มต้นคือ created_at หากไม่ได้ตั้งค่าไว้",
             "schema": {
               "type": "string"
             }
@@ -1913,7 +4135,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "ดูการแบ่งหน้าเพื่อข้อมูลเชิงลึกเพิ่มเติม",
+            "description": "ดูการแบ่งหน้าเพื่อดูข้อมูลเชิงลึกเพิ่มเติม",
             "schema": {
               "type": "string"
             }
@@ -1921,7 +4143,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "ดูการแบ่งหน้าเพื่อข้อมูลเชิงลึกเพิ่มเติม",
+            "description": "ดูการแบ่งหน้าเพื่อดูข้อมูลเชิงลึกเพิ่มเติม",
             "schema": {
               "type": "string"
             }
@@ -1951,7 +4173,7 @@
       },
       "post": {
         "summary": "สร้างโดเมน",
-        "description": "สร้างโดเมนใหม่ในระบบ จุดสิ้นสุดนี้ช่วยให้คุณลงทะเบียนชื่อโดเมนที่มีคุณสมบัติครบถ้วน (FQDN) หรือที่อยู่ IP เพื่อใช้กับแพลตฟอร์มได้\n\nตัวเลือกการกำหนดค่าเพิ่มเติม ได้แก่ การกำหนดโดเมนให้กับทีมที่มีอยู่ การกำหนดประเภทแผน (เช่น ฟรี การป้องกันขั้นสูง หรือทีม) และการกำหนดค่าการป้องกันขั้นสูง เช่น การกรองสแปม การสแกนไวรัส และการยืนยันผู้รับ นอกจากนี้ คุณยังสามารถกำหนดค่าว่าควรสร้างนามแฝงแบบ catch-all ตามค่าเริ่มต้นหรือไม่ ตั้งค่า URL webhook ของอีเมลที่ส่งกลับแบบกำหนดเองสำหรับความล้มเหลวของ SMTP และกำหนดขีดจำกัดโควตาพื้นที่จัดเก็บสำหรับนามแฝงอีเมลบนโดเมนนี้ จุดสิ้นสุดนี้จะดำเนินการตรวจสอบและจัดเตรียมในระดับโดเมน หากเปิดใช้งานตัวเลือก `ignore_mx_check` การตรวจสอบระเบียน MX จะถูกข้าม (แนะนำสำหรับการตั้งค่าการกำหนดเส้นทางขั้นสูงเท่านั้น) การตอบสนองจะมีรายละเอียดทั้งหมดของวัตถุโดเมนที่สร้างขึ้น รวมถึงระเบียน DNS ที่จำเป็นสำหรับการกำหนดค่า",
+        "description": "สร้างโดเมนใหม่ในระบบ จุดสิ้นสุดนี้ช่วยให้คุณสามารถลงทะเบียนชื่อโดเมนที่มีคุณสมบัติครบถ้วน (FQDN) หรือที่อยู่ IP เพื่อใช้กับแพลตฟอร์ม\n\nตัวเลือกการกำหนดค่าเพิ่มเติม ได้แก่ การกำหนดโดเมนให้กับทีมที่มีอยู่ การตั้งค่าประเภทแผน (เช่น ฟรี การป้องกันขั้นสูง หรือทีม) และการกำหนดค่าการป้องกันขั้นสูง เช่น การกรองสแปม การสแกนไวรัส และการตรวจสอบผู้รับ คุณยังสามารถกำหนดค่าว่าควรสร้างนามแฝงแบบ catch-all ตามค่าเริ่มต้นหรือไม่ ตั้งค่า URL เว็บฮุกแบบตีกลับที่กำหนดเองสำหรับความล้มเหลวของ SMTP และกำหนดขีดจำกัดโควต้าพื้นที่เก็บข้อมูลสำหรับนามแฝงอีเมลบนโดเมนนี้ จุดสิ้นสุดนี้จะดำเนินการตรวจสอบความถูกต้องและจัดเตรียมระดับโดเมน หากเปิดใช้งานตัวเลือก `ignore_mx_check` การตรวจสอบระเบียน MX จะถูกข้าม (แนะนำสำหรับการตั้งค่าเส้นทางขั้นสูงเท่านั้น) การตอบสนองจะมีรายละเอียดทั้งหมดของวัตถุโดเมนที่สร้างขึ้น รวมถึงระเบียน DNS ที่จำเป็นสำหรับการกำหนดค่า",
         "tags": [
           "โดเมน"
         ],
@@ -2035,7 +4257,7 @@
         }
       },
       "put": {
-        "summary": "อัพเดทโดเมน",
+        "summary": "อัปเดตโดเมน",
         "description": "อัพเดทโดเมนเฉพาะ",
         "tags": [
           "โดเมน"
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2170,7 +4392,7 @@
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "ชื่อโดเมนที่มีคุณสมบัติครบถ้วน (FQDN) ที่ต้องตรวจสอบ",
+            "description": "ชื่อโดเมนที่ผ่านการรับรองอย่างสมบูรณ์ (FQDN) เพื่อตรวจสอบ",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -2209,7 +4431,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "สร้างรหัสผ่านที่ครอบคลุมทั้งโดเมน",
-        "description": "สร้างรหัสผ่านแบบครอบคลุมทั้งโดเมน หากไม่ได้ระบุรหัสผ่าน ระบบจะสร้างรหัสผ่านแบบสุ่มที่ปลอดภัย",
+        "description": "สร้างรหัสผ่านแบบ Catch-All ทั่วทั้งโดเมน หากไม่มีการระบุรหัสผ่าน ระบบจะสร้างรหัสผ่านแบบสุ่มที่ปลอดภัย",
         "tags": [
           "โดเมน"
         ],
@@ -2233,11 +4455,11 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "รหัสผ่านใหม่ที่คุณกำหนดเองเพื่อใช้เป็นรหัสผ่านที่ครอบคลุมทั้งโดเมน ปล่อยว่างไว้เพื่อสร้างรหัสผ่านที่แข็งแกร่ง"
+                    "description": "รหัสผ่านใหม่ที่คุณกำหนดเองสำหรับใช้เป็นรหัสผ่านแบบ Catch-all ทั่วทั้งโดเมน เว้นว่างไว้เพื่อสร้างรหัสผ่านที่แข็งแกร่ง"
                   },
                   "description": {
                     "type": "string",
-                    "description": "คำอธิบายเพื่อวัตถุประสงค์ในการจัดระเบียบเท่านั้น"
+                    "description": "คำอธิบายสำหรับวัตถุประสงค์ในการจัดระเบียบเท่านั้น"
                   }
                 }
               },
@@ -2282,8 +4504,8 @@
         }
       },
       "get": {
-        "summary": "รายการรหัสผ่านที่ครอบคลุมทั้งโดเมน",
-        "description": "ส่งคืนรายการรหัสผ่านแบบครอบคลุมทั่วโดเมนที่ได้รับการกำหนดค่าในปัจจุบันสำหรับโดเมนที่ระบุ",
+        "summary": "รายชื่อรหัสผ่านที่ครอบคลุมทั่วทั้งโดเมน",
+        "description": "ส่งคืนรายการรหัสผ่านที่ครอบคลุมทั่วทั้งโดเมนที่ได้รับการกำหนดค่าในปัจจุบันสำหรับโดเมนที่ระบุ",
         "operationId": "listCatchAllPasswords",
         "tags": [
           "โดเมน"
@@ -2293,7 +4515,7 @@
             "name": "domain_id",
             "in": "path",
             "required": true,
-            "description": "ชื่อโดเมนที่มีคุณสมบัติครบถ้วน (FQDN) ที่จะใช้แสดงรายการรหัสผ่านแบบครอบคลุม",
+            "description": "ชื่อโดเมนที่ผ่านการรับรองอย่างสมบูรณ์ (FQDN) ที่จะแสดงรายการรหัสผ่านแบบจับทั้งหมด",
             "schema": {
               "type": "string",
               "format": "hostname"
@@ -2359,8 +4581,8 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "ลบรหัสผ่านแบบครอบคลุมโดเมนทั้งหมด",
-        "description": "ลบรหัสผ่านแบบครอบคลุมโดเมนโดยใช้ ID โทเค็นที่ให้มา",
+        "summary": "ลบรหัสผ่านที่ครอบคลุมทั้งโดเมน",
+        "description": "ลบรหัสผ่านที่ครอบคลุมทั้งโดเมนโดยใช้ ID โทเค็นที่ให้มา",
         "tags": [
           "โดเมน"
         ],
@@ -2381,7 +4603,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "ID โทเค็นของรหัสผ่านแบบครอบคลุมโดเมนที่ต้องการลบ"
+            "description": "ID โทเค็นของรหัสผ่านแบบครอบคลุมโดเมนที่จะลบ"
           }
         ],
         "responses": {
@@ -2471,7 +4693,7 @@
       },
       "post": {
         "summary": "สร้างคำเชิญโดเมน",
-        "description": ">[!IMPORTANT]\n>หากผู้ใช้ที่ได้รับคำเชิญเป็นสมาชิกที่ได้รับการยอมรับของโดเมนอื่นใดที่ผู้ดูแลระบบที่ส่งคำเชิญเป็นสมาชิกอยู่แล้ว ระบบจะยอมรับคำเชิญโดยอัตโนมัติและจะไม่ส่งอีเมล",
+        "description": ">[!IMPORTANT]\n>หากผู้ใช้ที่ได้รับคำเชิญเป็นสมาชิกที่ได้รับการยอมรับแล้วในโดเมนอื่นที่ผู้ดูแลระบบผู้เชิญเป็นสมาชิกอยู่ ระบบจะยอมรับคำเชิญโดยอัตโนมัติและจะไม่ส่งอีเมล",
         "tags": [
           "คำเชิญ"
         ],
@@ -2497,7 +4719,7 @@
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "กลุ่มที่จะเพิ่มผู้ใช้เข้าในการเป็นสมาชิกโดเมน (สามารถเป็นหนึ่งใน \"ผู้ดูแลระบบ\" หรือ \"ผู้ใช้\" ก็ได้)"
+                    "description": "กลุ่มที่จะเพิ่มผู้ใช้เข้าในการเป็นสมาชิกโดเมน (สามารถเป็น `\"admin\"` หรือ `\"user\"`)"
                   }
                 }
               }
@@ -2604,8 +4826,8 @@
         }
       ],
       "put": {
-        "summary": "อัพเดทสมาชิกโดเมน",
-        "description": "อัพเดตสมาชิกโดเมน",
+        "summary": "อัปเดตสมาชิกโดเมน",
+        "description": "อัพเดทสมาชิกโดเมน",
         "tags": [
           "สมาชิก"
         ],
@@ -2623,7 +4845,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "กลุ่มที่จะอัพเดตผู้ใช้เป็นสมาชิกโดเมนด้วย (สามารถเป็นหนึ่งใน `\"admin\"` หรือ `\"user\"`)"
+                    "description": "กลุ่มที่จะอัปเดตผู้ใช้ให้เป็นสมาชิกโดเมนด้วย (สามารถเป็น `\"admin\"` หรือ `\"user\"` ก็ได้)"
                   }
                 }
               }
@@ -2698,7 +4920,7 @@
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
         "summary": "สร้างรหัสผ่านนามแฝง",
-        "description": "สร้างรหัสผ่านสำหรับนามแฝง หากไม่ได้ระบุ `emailed_instructions` การตอบสนองจะมีชื่อผู้ใช้และรหัสผ่านที่สร้างขึ้น",
+        "description": "สร้างรหัสผ่านสำหรับนามแฝง หากไม่ได้ระบุ `emailed_instructions` ไว้ การตอบกลับจะมีชื่อผู้ใช้และรหัสผ่านที่สร้างขึ้น",
         "tags": [
           "นามแฝง"
         ],
@@ -2710,7 +4932,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "ชื่อโดเมนที่มีคุณสมบัติครบถ้วน (FQDN)"
+            "description": "ชื่อโดเมนที่ผ่านการรับรองอย่างสมบูรณ์ (FQDN)"
           },
           {
             "name": "alias_id",
@@ -2719,7 +4941,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "รหัสประจำตัวที่ไม่ซ้ำกันของนามแฝง"
+            "description": "ตัวระบุเฉพาะของนามแฝง"
           }
         ],
         "requestBody": {
@@ -2774,7 +4996,7 @@
       ],
       "get": {
         "summary": "รายชื่อนามแฝงโดเมน",
-        "description": ">[!NOTE]\n>ตั้งแต่วันที่ 1 พฤศจิกายน 2024 เป็นต้นไป จุดสิ้นสุดของ API สำหรับ `List domains` และ `List domain aliases` จะใช้ค่าเริ่มต้นเป็นผลลัพธ์สูงสุด `1,000` รายการต่อหน้า หากคุณต้องการเลือกใช้พฤติกรรมนี้ก่อนกำหนด คุณสามารถส่ง `?paginate=true` เป็นพารามิเตอร์ querystring เพิ่มเติมให้กับ URL สำหรับการค้นหาจุดสิ้นสุด ดูการแบ่งหน้าเพื่อดูข้อมูลเชิงลึกเพิ่มเติม",
+        "description": ">[!NOTE]\n>ตั้งแต่วันที่ 1 พฤศจิกายน 2024 เป็นต้นไป ปลายทาง API สำหรับ `List domains` และ `List domain aliases` จะถูกตั้งค่าเริ่มต้นเป็นผลลัพธ์สูงสุด `1000` รายการต่อหน้า หากต้องการเลือกใช้ลักษณะการทำงานนี้ก่อน คุณสามารถส่ง `?paginate=true` เป็นพารามิเตอร์ querystring เพิ่มเติมไปยัง URL สำหรับการสืบค้นปลายทางได้ ดูการแบ่งหน้าสำหรับข้อมูลเชิงลึกเพิ่มเติม",
         "tags": [
           "นามแฝง"
         ],
@@ -2787,7 +5009,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "ค้นหาชื่อนามแฝงในโดเมนตามชื่อ ป้ายกำกับ หรือผู้รับ (รองรับ RegExp)",
+            "description": "ค้นหาชื่อแทนในโดเมนตามชื่อ ป้ายกำกับ หรือผู้รับ (รองรับ RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -2796,7 +5018,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "ค้นหาชื่อนามแฝงในโดเมนตามชื่อ (รองรับ RegExp)",
+            "description": "ค้นหาชื่อแทนในโดเมนตามชื่อ (รองรับ RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -2805,7 +5027,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "ค้นหาชื่อแทนในโดเมนโดยผู้รับ (รองรับ RegExp)",
+            "description": "ค้นหาชื่อแทนในโดเมนตามผู้รับ (รองรับ RegExp)",
             "required": false,
             "schema": {
               "type": "string"
@@ -2814,7 +5036,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "เรียงลำดับตามฟิลด์ที่ระบุ (นำหน้าด้วยเครื่องหมายขีดกลางเพียงตัวเดียว - เพื่อเรียงลำดับแบบย้อนกลับ) ค่าเริ่มต้นคือ created_at",
+            "description": "เรียงลำดับตามฟิลด์ที่ระบุ (นำหน้าด้วยเครื่องหมายยัติภังค์เพียงตัวเดียว - เพื่อเรียงลำดับแบบย้อนกลับ) ค่าเริ่มต้นคือ created_at",
             "required": false,
             "schema": {
               "type": "string"
@@ -2911,8 +5133,8 @@
         }
       ],
       "get": {
-        "summary": "ดึงข้อมูลนามแฝงโดเมน",
-        "description": "ดึงชื่อนามแฝงที่เฉพาะเจาะจงสำหรับโดเมน",
+        "summary": "ดึงชื่อโดเมน",
+        "description": "ดึงชื่อแทนเฉพาะสำหรับโดเมน",
         "tags": [
           "นามแฝง"
         ],
@@ -2990,7 +5212,7 @@
       },
       "delete": {
         "summary": "ลบชื่อโดเมน",
-        "description": "ลบชื่อแทนเฉพาะสำหรับโดเมน",
+        "description": "ลบชื่อนามแฝงที่เฉพาะเจาะจงสำหรับโดเมน",
         "tags": [
           "นามแฝง"
         ],
@@ -3031,7 +5253,7 @@
     "/v1/encrypt": {
       "post": {
         "summary": "เข้ารหัสบันทึก TXT",
-        "description": "เราอนุญาตให้คุณเข้ารหัสระเบียนได้แม้ในแผนฟรีโดยไม่มีค่าใช้จ่าย ความเป็นส่วนตัวไม่ควรเป็นคุณสมบัติ แต่ควรเป็นสิ่งที่มีอยู่ในผลิตภัณฑ์ทุกด้านโดยเนื้อแท้ ตามที่ขออย่างมากในการสนทนาเกี่ยวกับ [Privacy Guides](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) และใน [GitHub issues](https://github.com/forwardemail/forwardemail.net/issues/254) ของเรา เราได้เพิ่มสิ่งนี้เข้าไปแล้ว",
+        "description": "เราอนุญาตให้คุณเข้ารหัสข้อมูลได้แม้ในแพ็กเกจฟรีโดยไม่มีค่าใช้จ่าย ความเป็นส่วนตัวไม่ควรเป็นฟีเจอร์ แต่ควรเป็นสิ่งที่ฝังอยู่ในทุกแง่มุมของผลิตภัณฑ์ ดังคำเรียกร้องอย่างสูงใน [การสนทนาเกี่ยวกับคู่มือความเป็นส่วนตัว](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) และใน [GitHub Issues](https://github.com/forwardemail/forwardemail.net/issues/254) ของเรา เราได้เพิ่มฟีเจอร์นี้เข้าไปแล้ว",
         "tags": [
           "เข้ารหัส"
         ],
@@ -3052,7 +5274,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "บันทึก TXT แบบข้อความธรรมดาของ Forward Email ที่ถูกต้อง"
+                    "description": "บันทึก TXT แบบข้อความธรรมดาสำหรับส่งต่ออีเมลที่ถูกต้อง"
                   }
                 }
               }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "รายชื่อผู้ติดต่อ",
-        "description": "แสดงรายการผู้ติดต่อทั้งหมด (CardDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "รายชื่อผู้ติดต่อนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "สร้างการติดต่อ",
-        "description": "สร้างรายชื่อติดต่อใหม่ (CardDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "รายชื่อผู้ติดต่อนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "เบอร์ติดต่อ",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "ดึงข้อมูลการติดต่อ",
-        "description": "ดึงข้อมูลผู้ติดต่อเฉพาะ (CardDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "รายชื่อผู้ติดต่อนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "อัปเดตข้อมูลติดต่อ",
-        "description": "อัปเดตรายชื่อติดต่อเฉพาะ (CardDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "รายชื่อผู้ติดต่อนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "ลบข้อมูลติดต่อ",
-        "description": "ลบรายชื่อผู้ติดต่อเฉพาะ (CardDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "รายชื่อผู้ติดต่อนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "รายการปฏิทิน",
-        "description": "แสดงรายการปฏิทินทั้งหมด (CalDAV) จุดสิ้นสุดนี้จะมาเร็ว ๆ นี้",
-        "tags": [
-          "ปฏิทินนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "สร้างปฏิทิน",
-        "description": "สร้างปฏิทินใหม่ (CalDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ปฏิทินนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "รหัสปฏิทิน",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "ดึงข้อมูลปฏิทิน",
-        "description": "ดึงข้อมูลปฏิทินเฉพาะ (CalDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ปฏิทินนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "อัปเดตปฏิทิน",
-        "description": "อัปเดตปฏิทินเฉพาะ (CalDAV) จุดสิ้นสุดนี้จะมาเร็ว ๆ นี้",
-        "tags": [
-          "ปฏิทินนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "ลบปฏิทิน",
-        "description": "ลบปฏิทินเฉพาะ (CalDAV) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ปฏิทินนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "รายการและค้นหาข้อความ",
-        "description": "รายการและค้นหาข้อความ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ข้อความนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "สร้างข้อความ",
-        "description": "สร้างข้อความใหม่ (IMAP/POP3) การดำเนินการนี้จะไม่ส่งอีเมล แต่จะเพิ่มข้อความลงในโฟลเดอร์กล่องจดหมายของคุณเท่านั้น (คล้ายกับคำสั่ง IMAP APPEND) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ข้อความนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "รหัสข้อความ",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "ดึงข้อความ",
-        "description": "ดึงข้อความเฉพาะ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ข้อความนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "อัปเดตข้อความ",
-        "description": "อัปเดตข้อความเฉพาะ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ข้อความนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "ลบข้อความ",
-        "description": "ลบข้อความเฉพาะ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "ข้อความนามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "รายการโฟลเดอร์",
-        "description": "แสดงรายการโฟลเดอร์ทั้งหมด (IMAP/POP3) จุดสิ้นสุดนี้จะมาเร็ว ๆ นี้",
-        "tags": [
-          "โฟลเดอร์นามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "สร้างโฟลเดอร์",
-        "description": "สร้างโฟลเดอร์ใหม่ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "โฟลเดอร์นามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "รหัสโฟลเดอร์",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "ดึงข้อมูลโฟลเดอร์",
-        "description": "ดึงโฟลเดอร์ที่ระบุ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "โฟลเดอร์นามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "อัพเดตโฟลเดอร์",
-        "description": "อัปเดตโฟลเดอร์เฉพาะ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "โฟลเดอร์นามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "ลบโฟลเดอร์",
-        "description": "ลบโฟลเดอร์เฉพาะ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "โฟลเดอร์นามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "รหัสโฟลเดอร์",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "คัดลอกโฟลเดอร์",
-        "description": "คัดลอกโฟลเดอร์ที่ระบุ (IMAP/POP3) จุดสิ้นสุดนี้จะพร้อมใช้งานเร็วๆ นี้",
-        "tags": [
-          "โฟลเดอร์นามแฝง"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3688,7 +5333,7 @@
     },
     {
       "name": "โดเมน",
-      "description": "> [!TIP]\n> จุดสิ้นสุดของโดเมนที่มีชื่อโดเมน <code>/v1/domains/:domain\\_name</code> เป็นจุดสิ้นสุดนั้นสามารถใช้แทน ID ของโดเมน <code>:domain\\_id</code> ได้ ซึ่งหมายความว่าคุณสามารถอ้างถึงโดเมนโดยใช้ค่า <code>name</code> หรือ <code>id</code> ก็ได้"
+      "description": "> [!TIP]\n> ปลายทางโดเมนที่มีชื่อโดเมน <code>/v1/domains/:domain\\_name</code> เป็นปลายทาง สามารถใช้แทน ID ของโดเมน <code>:domain\\_id</code> ได้ ซึ่งหมายความว่าคุณสามารถอ้างอิงโดเมนโดยใช้ค่า <code>name</code> หรือ <code>id</code> ก็ได้"
     },
     {
       "name": "คำเชิญ",
@@ -3707,20 +5352,20 @@
       "description": "จุดสิ้นสุดการเข้ารหัส"
     },
     {
-      "name": "รายชื่อผู้ติดต่อนามแฝง",
-      "description": "จุดสิ้นสุดการจัดการรายชื่อผู้ติดต่อนามแฝง (CardDAV)\n\n>[!NOTE]\n>ไม่เหมือนกับจุดสิ้นสุด API อื่นๆ จุดสิ้นสุดเหล่านี้ต้องการ \"ชื่อผู้ใช้\" ของการรับรองความถูกต้องที่เท่ากับชื่อผู้ใช้นามแฝง และ \"รหัสผ่าน\" ที่เท่ากับรหัสผ่านนามแฝงที่สร้างขึ้นเป็นส่วนหัวการอนุญาตพื้นฐาน\n\n>[!WARNING]\n>ส่วนจุดสิ้นสุดนี้อยู่ระหว่างดำเนินการและจะเปิดตัว (หวังว่าจะเป็นเช่นนั้น) ในปี 2025 ในระหว่างนี้ โปรดใช้ไคลเอนต์ IMAP จากเมนูแบบดรอปดาวน์ \"แอป\" ในการนำทางของเว็บไซต์ของเรา"
+      "name": "ติดต่อเรา",
+      "description": "จุดสิ้นสุดการจัดการผู้ติดต่อแบบนามแฝง (CardDAV)\n\n>[!NOTE]\n>ต่างจากจุดสิ้นสุด API อื่นๆ จุดสิ้นสุดเหล่านี้ต้องการ \"ชื่อผู้ใช้\" ของการยืนยันตัวตนที่เท่ากับชื่อผู้ใช้นามแฝง และ \"รหัสผ่าน\" เท่ากับรหัสผ่านที่สร้างขึ้นโดยนามแฝง ตามส่วนหัวการอนุญาตพื้นฐาน\n\n>[!TIP]\n>จุดสิ้นสุดเหล่านี้มีการดำเนินการ CRUD เต็มรูปแบบสำหรับการจัดการผู้ติดต่อพร้อมการรองรับ vCard ซึ่งรวมถึงการสร้าง การดึงข้อมูล การอัปเดต และการลบผู้ติดต่อ คุณสามารถระบุเนื้อหา vCard โดยตรงหรือฟิลด์ผู้ติดต่อแต่ละรายที่จะถูกแปลงเป็นรูปแบบ vCard"
     },
     {
-      "name": "ปฏิทินนามแฝง",
-      "description": "จุดสิ้นสุดการจัดการปฏิทินนามแฝง (CalDAV)\n\n>[!NOTE]\n> ต่างจากจุดสิ้นสุด API อื่นๆ จุดสิ้นสุดเหล่านี้ต้องการ [Authentication](#description/authentication) \"ชื่อผู้ใช้\" เท่ากับชื่อผู้ใช้นามแฝง และ \"รหัสผ่าน\" เท่ากับรหัสผ่านนามแฝงที่สร้างขึ้นเป็นส่วนหัวการอนุญาตพื้นฐาน\n\n>[!WARNING]\n> ส่วนจุดสิ้นสุดนี้อยู่ระหว่างดำเนินการและจะเปิดตัว (หวังว่าจะเป็นเช่นนั้น) ในปี 2025 ในระหว่างนี้ โปรดใช้ไคลเอนต์ IMAP จากเมนูแบบดรอปดาวน์ \"แอป\" ในการนำทางของเว็บไซต์ของเรา"
+      "name": "ปฏิทิน",
+      "description": "จุดสิ้นสุดการจัดการปฏิทินแบบนามแฝง (CalDAV)\n\n>[!NOTE]\n> ต่างจากจุดสิ้นสุด API อื่นๆ ตรงที่จุดสิ้นสุดเหล่านี้ต้องการ [Authentication](#description/authentication) \"ชื่อผู้ใช้\" เท่ากับชื่อผู้ใช้นามแฝง และ \"รหัสผ่าน\" เท่ากับรหัสผ่านนามแฝงที่สร้างขึ้น ตามส่วนหัวการอนุญาตพื้นฐาน\n\n>[!TIP]\n> จุดสิ้นสุดเหล่านี้มอบการจัดการปฏิทินที่ครบครัน พร้อมการรองรับเขตเวลาและสี ซึ่งรวมถึงการสร้าง การเรียกดู การอัปเดต และการลบปฏิทิน จำเป็นต้องมีชื่อปฏิทิน ในขณะที่คุณสมบัติอื่นๆ เช่น สี เขตเวลา และคำอธิบาย เป็นตัวเลือกเสริม"
     },
     {
-      "name": "ข้อความนามแฝง",
-      "description": "จุดสิ้นสุดการจัดการข้อความนามแฝง (IMAP/POP3)\n\n>[!NOTE]\n> ต่างจากจุดสิ้นสุด API อื่นๆ จุดสิ้นสุดเหล่านี้ต้องการ [Authentication](#description/authentication) \"ชื่อผู้ใช้\" เท่ากับชื่อผู้ใช้นามแฝง และ \"รหัสผ่าน\" เท่ากับรหัสผ่านนามแฝงที่สร้างขึ้นเป็นส่วนหัวการอนุญาตพื้นฐาน\n\n> [!WARNING]\n> ส่วนจุดสิ้นสุดนี้อยู่ระหว่างดำเนินการและจะเปิดตัว (หวังว่าจะเป็นเช่นนั้น) ในปี 2025 ในระหว่างนี้ โปรดใช้ไคลเอนต์ IMAP จากเมนูแบบดรอปดาวน์ \"แอป\" ในการนำทางของเว็บไซต์ของเรา\nโปรดตรวจสอบให้แน่ใจว่าคุณได้ปฏิบัติตามคำแนะนำในการตั้งค่าสำหรับโดเมนของคุณแล้ว\nสามารถดูคำแนะนำเหล่านี้ได้ในส่วนคำถามที่พบบ่อย [คุณรองรับการรับอีเมลด้วย IMAP หรือไม่](/faq#do-you-support-receiving-email-with-imap)"
+      "name": "ข้อความ",
+      "description": "จุดสิ้นสุดการจัดการข้อความนามแฝง (IMAP/POP3)\n\n>[!NOTE]\n> ต่างจากจุดสิ้นสุด API อื่นๆ ตรงที่จุดสิ้นสุดเหล่านี้ต้องการ [Authentication](#description/authentication) \"ชื่อผู้ใช้\" เท่ากับชื่อผู้ใช้นามแฝง และ \"รหัสผ่าน\" เท่ากับรหัสผ่านนามแฝงที่สร้างขึ้น เป็นส่วนหัวการอนุญาตพื้นฐาน\n\n>[!TIP]\n> จุดสิ้นสุดเหล่านี้มอบการจัดการข้อความที่ครอบคลุมพร้อมความสามารถในการค้นหาขั้นสูง คุณสามารถค้นหาตามโฟลเดอร์ แฟล็ก เนื้อหา ส่วนหัว ช่วงวันที่ ขนาด และอื่นๆ สามารถสร้างข้อความได้โดยใช้รูปแบบ Nodemailer มาตรฐาน และรองรับการย้ายระหว่างโฟลเดอร์และการจัดการแฟล็ก\n\nโปรดตรวจสอบให้แน่ใจว่าคุณได้ปฏิบัติตามคำแนะนำในการตั้งค่าสำหรับโดเมนของคุณแล้ว\nคุณสามารถดูคำแนะนำเหล่านี้ได้ในส่วนคำถามที่พบบ่อยของเรา [คุณรองรับการรับอีเมลด้วย IMAP หรือไม่](/faq#do-you-support-receiving-email-with-imap)"
     },
     {
-      "name": "โฟลเดอร์นามแฝง",
-      "description": "จุดสิ้นสุดการจัดการโฟลเดอร์นามแฝง (IMAP/POP3)\n\n>[!TIP]\n> จุดสิ้นสุดของโฟลเดอร์ที่มีเส้นทางของโฟลเดอร์ <code>/v1/folders/:path</code> เป็นจุดสิ้นสุดนั้นสามารถใช้แทน ID ของโฟลเดอร์ <code>:id</code> ได้ ซึ่งหมายความว่าคุณสามารถอ้างถึงโฟลเดอร์โดยใช้ <code>เส้นทาง</code> หรือค่า <code>id</code> ก็ได้\n\n>[!WARNING]\n> ส่วนจุดสิ้นสุดนี้อยู่ระหว่างดำเนินการและจะเปิดตัว (หวังว่าจะเป็นเช่นนั้น) ในปี 2025 ในระหว่างนี้ โปรดใช้ไคลเอนต์ IMAP จากเมนูแบบดรอปดาวน์ \"แอป\" ในการนำทางของเว็บไซต์ของเรา"
+      "name": "โฟลเดอร์",
+      "description": "จุดสิ้นสุดการจัดการโฟลเดอร์นามแฝง (IMAP/POP3)\n\n>[!TIP]\n> จุดสิ้นสุดโฟลเดอร์ที่มีเส้นทางของโฟลเดอร์ <code>/v1/folders/:path</code> เป็นจุดสิ้นสุดนั้นสามารถใช้แทน ID ของโฟลเดอร์ <code>:id</code> ได้ ซึ่งหมายความว่าคุณสามารถอ้างอิงโฟลเดอร์โดยใช้ค่า <code>path</code> หรือ <code>id</code>\n\n>[!NOTE]\n> จุดสิ้นสุดเหล่านี้แตกต่างจากจุดสิ้นสุด API อื่นๆ ตรงที่ต้องใช้ [Authentication](#description/authentication) \"username\" เท่ากับชื่อผู้ใช้นามแฝง และ \"password\" เท่ากับรหัสผ่านนามแฝงที่สร้างขึ้น เป็นส่วนหัวของ Basic Authorization\n\n>[!TIP]\n> จุดสิ้นสุดเหล่านี้ให้การจัดการโฟลเดอร์อย่างเต็มรูปแบบ รวมถึงการสร้าง การเปลี่ยนชื่อ และการลบ เส้นทางโฟลเดอร์สามารถรวมโฟลเดอร์หลักได้ (เช่น 'กล่องจดหมาย/โฟลเดอร์ย่อย') และโฟลเดอร์หลักจะถูกสร้างขึ้นโดยอัตโนมัติหากไม่มีอยู่"
     }
   ]
 }

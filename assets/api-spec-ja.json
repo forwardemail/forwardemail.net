@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Forward Email の包括的な API ドキュメントへようこそ。この API を使用すると、メール転送、ドメイン、エイリアス、送信メールなどをプログラムで管理できます。\n\n## 主な機能\n* **ドメイン管理:** ドメインの作成、取得、更新、削除、検証。\n* **エイリアス管理:** メールエイリアスの作成、更新、受信者管理などの管理。\n* **送信 SMTP:** SMTP 経由でメールを送信し、制限を管理し、送信メールを追跡。\n* **アカウントとログ:** アカウントの詳細を管理し、アクティビティログをダウンロード。\n* **セキュリティ:** TXT レコードを暗号化し、ドメインメンバー/招待を管理。\n* **近日公開:** CardDAV 連絡先、CalDAV カレンダー、IMAP/POP3 メッセージ/フォルダ管理などの機能が予定されています。\n\n## 認証\nほとんどのエンドポイントでは、**API キー** を使用した認証が必要です。Basic 認証ヘッダーの `username` に API キーを指定し、パスワードは空のままにしてください。\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Base64 エンコードの前に、`API_TOKEN` を実際のキーに置き換えてください)\n\n**エイリアス連絡先、カレンダー、メッセージ、フォルダ** (現在「近日公開」と表示されています) に関連するエンドポイントでは、生成されたエイリアスのユーザー名とパスワードが Basic 認証に使用されます。\n\n## エラー\nAPI は標準の HTTP ステータスコードを使用して成功または失敗を示します。エラーレスポンスには、エラーの詳細を示す `message` フィールドを含む JSON 本文が含まれます。\n\n| ステータスコード | 意味 |\n|------------|---------------------|\n| 200 | OK |\n| 400 | 不正なリクエスト |\n| 401 |権限がありません |\n| 403 | 禁止されています |\n| 404 | 見つかりません |\n| 429 | リクエストが多すぎます |\n| 500 | 内部サーバーエラー |\n| 501 | 実装されていません |\n| 502 | ゲートウェイが無効です |\n| 503 | サービスを利用できません |\n| 504 | ゲートウェイがタイムアウトしました |\n\n*`5xx` エラーが発生した場合は、[api@forwardemail.net](mailto:api@forwardemail.net) までお問い合わせください。*\n\n## ローカリゼーション\nAPI レスポンスは、ユーザーが検出したロケールまたは `Accept-Language` ヘッダーに基づいて翻訳されます。25 以上の言語がサポートされています。\n\n## ページネーション\nリストを返すエンドポイントは、クエリパラメータによるページネーションをサポートしています。\n\n| パラメータ | タイプ | オプション | 説明 | デフォルト | 制約 |\n|--------------|---------|----------|-----------------------------------------------------------------------------|--------|--------------------|\n| `page` | 整数 | はい | 取得するページ番号。 | 1 | `>= 1` |\n| `limit` | 整数 | はい | 1 ページあたりの結果数。 | 10 | `>= 1`, `<= 50` |\n| `pagination` | ブール値 | はい | ページ区切りの動作をオプトインします (一部のエンドポイントでは 2024 年 11 月 1 日より前に必須)。 | false | |\n\n**ページ区切りヘッダー:**\n* `X-Page-Count`: 合計ページ数。\n* `X-Page-Current`: 現在のページ番号。\n* `X-Page-Size`: 現在のページにあるアイテム数。\n* `X-Item-Count`: 全ページのアイテムの総数。\n* `Link`: ナビゲーションリンク（前、次、最初、最後）。\n\n**例:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## 推奨ライブラリ\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Forward Email がメンテナンス)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Forward Email の包括的な API ドキュメントへようこそ。この API を使用すると、メール転送、ドメイン、エイリアス、送信メールなどをプログラムで管理できます。\n\n## 主な機能\n* **ドメイン管理:** ドメインの作成、取得、更新、削除、検証。\n* **エイリアス管理:** メールエイリアスの作成、更新、受信者管理など、管理。\n* **送信 SMTP:** SMTP 経由でメールを送信し、制限を管理し、送信メールを追跡。\n* **アカウントとログ:** アカウントの詳細を管理し、アクティビティログをダウンロード。\n* **セキュリティ:** TXT レコードを暗号化し、ドメインメンバー/招待を管理。\n* **CardDAV 連絡先:** vCard をサポートする連絡先管理のための完全な CRUD 操作。\n* **CalDAV カレンダー:** タイムゾーンと色分けに対応した完全なカレンダー管理機能。\n* **IMAP/POP3 メッセージ:** 高度な検索機能を備えた包括的なメッセージ管理機能。\n* **IMAP/POP3 フォルダ:** 作成、名前変更、削除を含む完全なフォルダ管理機能。\n\n## 認証\nほとんどのエンドポイントでは、**API キー** を使用した認証が必要です。Basic 認証ヘッダーの `username` に API キーを指定し、パスワードは空のままにしてください。\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Base64 エンコードの前に、`API_TOKEN` を実際のキーに置き換えてください)\n\n**エイリアス連絡先、カレンダー、メッセージ、フォルダ** に関連するエンドポイントでは、Basic 認証用に生成されたエイリアス ユーザー名とパスワードが必要です。\n\n## エラー\nAPI は標準の HTTP ステータスコードを使用して成功または失敗を示します。エラーレスポンスには、エラーの詳細を示す `message` フィールドを含む JSON 本文が含まれます。\n\n| ステータスコード | 意味 |\n|------------|---------------------|\n| 200 | OK |\n| 400 | 不正なリクエスト |\n| 401 | 権限がありません |\n| 403 | 禁止されています |\n| 404 | 見つかりません |\n| 409 | 競合 |\n| 412 | 前提条件が満たされていません |\n| 429 | リクエストが多すぎます |\n| 500 | 内部サーバーエラー |\n| 501 | 実装されていません |\n| 502 | ゲートウェイが不正です |\n| 503 | サービスを利用できません |\n| 504 | ゲートウェイがタイムアウトしました |\n\n*`5xx` エラーが発生した場合は、[api@forwardemail.net](mailto:api@forwardemail.net) までお問い合わせください。*\n\n## ローカリゼーション\nAPI レスポンスは、ユーザーが検出したロケールまたは `Accept-Language` ヘッダーに基づいて翻訳されます。25 以上の言語がサポートされています。\n\n## ページネーション\nリストを返すエンドポイントは、クエリパラメータによるページネーションをサポートしています。\n\n| パラメータ | タイプ | 省略可能 | 説明 | デフォルト | 制約 |\n|--------------|---------|----------|---------------------------------------------------------------------------------------------|---------|--------------------|\n| `page` | 整数 | はい | 取得するページ番号。| 1 | `>= 1` |\n| `limit` | 整数 | はい | 1 ページあたりの結果数。| 10 | `>= 1`, `<= 50` |\n| `pagination` | ブール値 | Yes | ページネーション動作のオプトイン（一部のエンドポイントでは2024年11月1日までに必須）。 | false | |\n\n**ページネーションヘッダー:**\n* `X-Page-Count`: 総ページ数。\n* `X-Page-Current`: 現在のページ番号。\n* `X-Page-Size`: 現在のページにあるアイテム数。\n* `X-Item-Count`: 全ページのアイテム数。\n* `Link`: ナビゲーションリンク（前、次、最初、最後）。\n\n**例:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## 推奨ライブラリ\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Forward Email がメンテナンス)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\n生成された**エイリアスのユーザー名とパスワード**をBasic認証に使用します。これは、以下のエンドポイントに適用されます。\n* エイリアス連絡先 (CardDAV)\n* エイリアスカレンダー (CalDAV)\n* エイリアスメッセージ (IMAP/POP3)\n* エイリアスフォルダ (IMAP/POP3)\n\n*(注: これらの機能は現在「近日公開」となっています)*\n\n**例:**\nエイリアスのユーザー名が`alias@domain.com`、パスワードが`GENERATED_PASSWORD`の場合、Base64エンコードされた値は`echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`となります。\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\n生成された**エイリアスのユーザー名とパスワード**をBasic認証に使用します。これは、以下のエンドポイントに適用されます。\n* エイリアス連絡先 (CardDAV)\n* エイリアスカレンダー (CalDAV)\n* エイリアスメッセージ (IMAP/POP3)\n* エイリアスフォルダ (IMAP/POP3)\n\n**例:**\nエイリアスのユーザー名が「alias@domain.com」で、パスワードが「GENERATED_PASSWORD」の場合、Base64エンコードされた値は「echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64」となります。\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "連絡先ID（CardDAVからのcontact_id）"
+          },
+          "uid": {
+            "type": "string",
+            "description": "UIDに連絡"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "連絡先の氏名"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCardコンテンツ"
+          },
+          "etag": {
+            "type": "string",
+            "description": "バージョン管理のためのETag"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "連絡先がグループかどうか"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "メールアドレスの配列"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "電話番号の配列"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard コンテンツ (指定されていない場合は、他のフィールドから生成されます)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "連絡先の氏名"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "カスタム連絡先ID（指定されていない場合は自動生成されます）"
+          },
+          "uid": {
+            "type": "string",
+            "description": "連絡先UID（指定されていない場合は自動生成されます）"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "メールアドレスの配列"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "電話番号の配列"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "電話番号の配列（phone_numbers のエイリアス）"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "アドレスの配列"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "連絡先がグループかどうか"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCardコンテンツ"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "連絡先の氏名"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "メールアドレスの配列"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "電話番号の配列"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "電話番号の配列（phone_numbers のエイリアス）"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "アドレスの配列"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "連絡先がグループかどうか"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "カレンダーID (CalDAVのcalendarId)"
+          },
+          "name": {
+            "type": "string",
+            "description": "カレンダー名"
+          },
+          "description": {
+            "type": "string",
+            "description": "カレンダーの説明"
+          },
+          "color": {
+            "type": "string",
+            "description": "カレンダーの色（16進数形式）"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "カレンダーのタイムゾーン"
+          },
+          "order": {
+            "type": "integer",
+            "description": "カレンダーの表示順序"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "カレンダー名"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "カスタムカレンダーID（指定されていない場合は自動生成されます）"
+          },
+          "description": {
+            "type": "string",
+            "description": "カレンダーの説明"
+          },
+          "color": {
+            "type": "string",
+            "description": "カレンダーの色（16 進形式。指定されていない場合は自動生成されます）"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "カレンダーのタイムゾーン（デフォルトはユーザーのタイムゾーンまたは UTC）"
+          },
+          "order": {
+            "type": "integer",
+            "description": "カレンダーの表示順序（デフォルトは0）"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "カレンダー名"
+          },
+          "description": {
+            "type": "string",
+            "description": "カレンダーの説明"
+          },
+          "color": {
+            "type": "string",
+            "description": "カレンダーの色（16進数形式）"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "カレンダーのタイムゾーン"
+          },
+          "order": {
+            "type": "integer",
+            "description": "カレンダーの表示順序"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "フォルダID"
+          },
+          "path": {
+            "type": "string",
+            "description": "完全なフォルダパス"
+          },
+          "name": {
+            "type": "string",
+            "description": "フォルダ名（パスの最後の部分）"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "親フォルダのパス"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UIDの有効性"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "次のUID値"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "修正インデックス"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "フォルダが購読されているかどうか"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "フォルダフラグ"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "メッセージの保存期間"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "特別用途指定"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "フォルダのパス/名前"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "新しいフォルダのパス/名前"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "メッセージID"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "スレッドのルートメッセージID"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "メッセージを含むフォルダID"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "メッセージを含むフォルダパス"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "会話をグループ化するためのスレッドID"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "メッセージIDヘッダー値"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "メッセージが未読かどうか"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "メッセージにフラグが付けられているかどうか"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "メッセージが削除されるかどうか"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "メッセージが下書きかどうか"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "メッセージが迷惑メール/スパムかどうか"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "メッセージがコピーされるかどうか"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "メッセージを検索可能かどうか"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "メッセージの有効期限が切れているかどうか"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "メッセージに添付ファイルがあるかどうか"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "メッセージの保存日"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "内部日付（IMAP）"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "メッセージヘッダーからの日付"
+          },
+          "subject": {
+            "type": "string",
+            "description": "メッセージの件名"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAPフラグ"
+          },
+          "size": {
+            "type": "integer",
+            "description": "メッセージサイズ（バイト単位）"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "変更シーケンス"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "取引の種類"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "リモートIPアドレス"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "解析されたメッセージ オブジェクト (デフォルトで含まれますが、除外するには ?nodemailer=false を設定します)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "生のメッセージ内容（デフォルトで含まれますが、除外するには ?raw=false を設定します）"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "送信者のメールアドレス"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "受信者のメールアドレス"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "CC受信者のメールアドレス"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "BCC受信者のメールアドレス"
+          },
+          "subject": {
+            "type": "string",
+            "description": "メッセージの件名"
+          },
+          "text": {
+            "type": "string",
+            "description": "プレーンテキストコンテンツ"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTMLコンテンツ"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "メッセージの添付ファイル（Nodemailer 形式）"
+          },
+          "folder": {
+            "type": "string",
+            "description": "対象フォルダ（デフォルトはINBOX）"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "メッセージに設定するIMAPフラグ"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "メッセージに設定するIMAPフラグ"
+          },
+          "folder": {
+            "type": "string",
+            "description": "メッセージをこのフォルダに移動する"
+          }
         }
       },
       "Email": {
@@ -1058,7 +1927,7 @@
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "休暇応答者へのプレーンテキストメッセージ"
+            "description": "休暇中の応答者へのプレーンテキストメッセージ"
           }
         }
       },
@@ -1119,11 +1988,11 @@
               421,
               550
             ],
-            "description": "エイリアスが無効の場合に使用するエラー コード (デフォルトは 250)"
+            "description": "エイリアスが無効になっている場合に使用するエラー コード (デフォルトは 250)"
           },
           "has_imap": {
             "type": "boolean",
-            "description": "IMAP ストレージを有効または無効にする"
+            "description": "IMAPストレージを有効または無効にする"
           },
           "has_pgp": {
             "type": "boolean",
@@ -1227,7 +2096,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "返される結果のページ。指定しない場合は、値は1になります。1以上の数値を指定する必要があります。",
+        "description": "返される結果のページ。指定されていない場合は、値は1になります。1以上の数値を指定する必要があります。",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "IDエイリアス",
+        "description": "エイリアスID",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "メールID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "連絡先ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "カレンダーID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "フォルダIDまたはパス",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "メッセージID",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "アカウントを作成する",
-        "description": "新しいユーザーアカウントを作成する",
-        "tags": [
-          "アカウント"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "電子メールアドレス"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "パスワード"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "アカウントを取得",
-        "description": "現在のユーザーのアカウント情報を取得する",
         "tags": [
           "アカウント"
         ],
+        "summary": "アカウントを取得",
+        "description": "アカウント情報を取得します。",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "アカウントを更新する",
-        "description": "現在のユーザーのアカウント情報を更新する",
         "tags": [
           "アカウント"
         ],
+        "summary": "アカウントを更新する",
+        "description": "アカウント情報を更新してください。",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "電子メールアドレス"
+                    "description": "表示名"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "ファーストネーム"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "苗字"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "アバター画像へのリンク"
+                    "description": "ロケール設定"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "連絡先"
+        ],
+        "summary": "連絡先リスト",
+        "description": "認証されたエイリアスのすべての連絡先のリストを取得します。このエンドポイントはページ区切りをサポートし、CardDAV形式で連絡先を返します。",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "連絡先"
+        ],
+        "summary": "連絡先を作成",
+        "description": "新しい連絡先を作成します。vCardコンテンツを直接指定することも、個々の連絡先フィールドを指定してvCard形式に変換することもできます。同じIDの連絡先が既に存在する場合は、競合エラーが返されます。",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "連絡先"
+        ],
+        "summary": "連絡先を取得",
+        "description": "特定の連絡先をIDで取得します。連絡先は、vCardコンテンツと解析済みフィールドを含む標準の連絡先形式で返されます。",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "連絡先"
+        ],
+        "summary": "連絡先を更新",
+        "description": "既存の連絡先を更新します。更新するvCardの内容、または個々のフィールドを指定できます。個々のフィールドを指定した場合、連絡先のvCardは再生成されます。",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "連絡先"
+        ],
+        "summary": "連絡先を削除",
+        "description": "特定の連絡先を完全に削除します。この操作は元に戻せません。",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "カレンダー"
+        ],
+        "summary": "カレンダーを一覧表示する",
+        "description": "認証されたエイリアスのすべてのカレンダーのリストを取得します。このエンドポイントはページ区切りをサポートし、CalDAV形式でカレンダーを返します。",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "カレンダー"
+        ],
+        "summary": "カレンダーを作成",
+        "description": "新しいカレンダーを作成します。カレンダー名は必須ですが、色、タイムゾーン、説明などの他のプロパティは任意です。同じ名前のカレンダーが既に存在する場合は、競合エラーが返されます。",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "カレンダー"
+        ],
+        "summary": "カレンダーを取得",
+        "description": "IDで指定したカレンダーを取得します。カレンダーは、名前、説明、色、タイムゾーン、順序など、すべてのプロパティとともに返されます。",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "カレンダー"
+        ],
+        "summary": "カレンダーを更新",
+        "description": "既存のカレンダーを更新します。カレンダーの名前、説明、色、タイムゾーン、順序など、すべてのプロパティを更新できます。既存のカレンダー名に変更すると、競合エラーが返されます。",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "カレンダー"
+        ],
+        "summary": "カレンダーを削除",
+        "description": "特定のカレンダーを完全に削除します。この操作は元に戻すことができず、カレンダー内のすべてのイベントも削除されます。",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "フォルダ"
+        ],
+        "summary": "フォルダの一覧",
+        "description": "認証済みエイリアスのすべてのIMAPフォルダ／メールボックスのリストを取得します。このエンドポイントは、ページ区切りとサブスクリプションステータスによるフィルタリングをサポートしています。",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "サブスクリプションのステータスでフォルダをフィルタリングする",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "フォルダ"
+        ],
+        "summary": "フォルダを作成",
+        "description": "新しいIMAPフォルダ／メールボックスを作成します。フォルダパスは必須で、親フォルダ（例：INBOX/サブフォルダ）を含めることができます。親フォルダが存在しない場合は、自動的に作成されます。",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "フォルダ"
+        ],
+        "summary": "フォルダを取得",
+        "description": "特定のフォルダをIDまたはパスで取得します。フォルダのオブジェクトIDまたはフルパス（例：'INBOX/Subfolder'）を識別子として使用できます。",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "フォルダ"
+        ],
+        "summary": "フォルダを更新",
+        "description": "既存のフォルダを更新/名前変更します。この操作は、リクエスト本文で指定された新しいパスにフォルダの名前を変更します。識別子として、フォルダのオブジェクトIDまたは現在のパスのいずれかを使用できます。",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "フォルダ"
+        ],
+        "summary": "フォルダを削除",
+        "description": "特定のフォルダを完全に削除します。この操作は元に戻すことができず、フォルダ内のすべてのメッセージも削除されます。識別子として、フォルダのオブジェクトIDまたはパスのいずれかを使用できます。",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "メッセージ"
+        ],
+        "summary": "メッセージの一覧と検索",
+        "description": "高度な検索機能とフィルタリング機能を使用して、メッセージのリストを取得します。このエンドポイントは、ページ区切りと、メッセージの内容、ヘッダー、フラグ、メタデータを網羅した包括的な検索をサポートしています。フォルダー、フラグ、内容、ヘッダー、日付範囲、サイズなど、さまざまな条件で検索できます。",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "フォルダパスでメッセージをフィルタリングする",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "既読ステータスでフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "フラグ付きステータスでフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "削除ステータスでフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "下書きステータスでフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "迷惑メール/スパムステータスでフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "コピーステータスでフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "検索可能なステータスでフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "有効期限でフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "添付ファイルの有無でフィルタリング",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "添付ファイルの有無でフィルタリング（has_attachments のエイリアス）",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "メッセージの件名で検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "メッセージ本文/テキスト内を検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "メッセージテキスト内を検索（本文のエイリアス）",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "すべてのメッセージヘッダーを検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "メッセージIDヘッダーによる検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "ヘッダーとテキスト全体の一般検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "一般検索（検索のエイリアス）",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "この日付以降のメッセージをフィルタリングする（ISO 8601 形式）",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "この日付より前のメッセージをフィルタリングする（ISO 8601 形式）",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "最小バイトサイズでメッセージをフィルタリングする",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "最大バイトサイズでメッセージをフィルタリングする",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Fromヘッダーで検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Toヘッダーで検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "CCヘッダーで検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "BCCヘッダーで検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "日付ヘッダーで検索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Reply-Toヘッダーで検索",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "メッセージ"
+        ],
+        "summary": "メッセージを作成",
+        "description": "フォルダに新しいメッセージを作成／追加します。このエンドポイントは標準のNodemailerメッセージ形式に対応しており、対象フォルダと初期フラグを指定できます。対象フォルダが存在しない場合は、自動的に作成されます。",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "メッセージ"
+        ],
+        "summary": "メッセージを取得",
+        "description": "IDで特定のメッセージを取得します。デフォルトでは、レスポンスには解析済みのNodemailerオブジェクトと生のメッセージコンテンツが含まれます。クエリパラメータを使用して、含まれる内容を制御できます。",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "JSONではなく生のEML形式を返す",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "解析されたNodemailerオブジェクトを含める",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Nodemailer オブジェクトに添付ファイルを含める",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "生のメッセージコンテンツを含める",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "メッセージ"
+        ],
+        "summary": "更新メッセージ",
+        "description": "既存のメッセージを更新します。メッセージのフラグを変更したり、別のフォルダに移動したりできます。対象のフォルダが存在しない場合は、自動的に作成されます。",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "JSONではなく生のEML形式を返す",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "メッセージ"
+        ],
+        "summary": "メッセージを削除",
+        "description": "特定のメッセージを完全に削除します。この操作は元に戻すことができず、メッセージはストレージから完全に削除されます。通常、メッセージをゴミ箱に移動するIMAPクライアントとは異なり、このエンドポイントはハード削除を実行します。",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1559,7 +3781,7 @@
     "/v1/logs/download": {
       "get": {
         "summary": "ログをダウンロード",
-        "description": "**ログのダウンロード**\n\n説明: 当社のAPIを使用すると、プログラム的にアカウントのログをダウンロードできます。このエンドポイントにリクエストを送信すると、アカウントのすべてのログが処理され、処理が完了すると添付ファイル（Gzip圧縮されたCSVスプレッドシートファイル）としてメールで送信されます。\n\nこれにより、Cronジョブでバックグラウンドジョブを作成したり、Node.jsジョブスケジューリングソフトウェアBreeを使用して、必要なときにいつでもログを取得できます。なお、このエンドポイントは1日あたり10リクエストまでに制限されています。\n\n添付ファイルは「email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz」の小文字形式で、メールには取得したログの簡単な概要が含まれます。",
+        "description": "**ログのダウンロード**\n\n説明: 当社のAPIを使用すると、プログラム的にアカウントのログをダウンロードできます。このエンドポイントにリクエストを送信すると、アカウントのすべてのログが処理され、処理が完了すると添付ファイル（Gzip圧縮されたCSVスプレッドシートファイル）としてメールで送信されます。\n\nこれにより、Cronジョブを使用したバックグラウンドジョブの作成や、Node.jsジョブスケジューリングソフトウェアBreeを使用して、必要なときにいつでもログを取得できます。なお、このエンドポイントは1日あたり10リクエストまでに制限されています。\n\n添付ファイルは「email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz」の小文字形式で、メールには取得したログの簡単な概要が記載されています。",
         "tags": [
           "ログ"
         ],
@@ -1715,7 +3937,7 @@
       },
       "post": {
         "summary": "送信SMTPメールを作成する",
-        "description": "メール作成用のAPIは、Nodemailerのメッセージオプション設定を参考に開発されています。以下のすべての本文パラメータについては、[Nodemailerのメッセージ設定](https://nodemailer.com/message/)を参照してください。\n\n`envelope`と`dkim`（これらは自動的に設定されます）を除き、すべてのNodemailerオプションをサポートしています。セキュリティ上の理由から、`disableFileAccess`と`disableUrlAccess`オプションは自動的に`true`に設定されます。\n\nヘッダーを含む生のメール全体と`raw`オプションのみを渡すか、以下の本文パラメータオプションを個別に渡す必要があります。\n\nこのAPIエンドポイントは、ヘッダーに絵文字が含まれている場合、自動的にエンコードします（例：件名が`Subject: 🤓 Hello`の場合、`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`に自動的に変換されます）。私たちの目標は、開発者にとって非常に使いやすく、誰でも簡単に使用できる電子メール API を作成することでした。",
+        "description": "メール作成用のAPIは、Nodemailerのメッセージオプション設定を参考に開発されています。以下のすべての本文パラメータについては、[Nodemailerのメッセージ設定](https://nodemailer.com/message/)を参照してください。\n\n`envelope`と`dkim`（これらは自動的に設定されます）を除き、すべてのNodemailerオプションをサポートしています。`disableFileAccess`と`disableUrlAccess`オプションは、セキュリティ上の理由から自動的に`true`に設定されます。\n\nヘッダーを含む生のメール全体と`raw`オプションのみを渡すか、以下の本文パラメータオプションを個別に渡す必要があります。\n\nこのAPIエンドポイントは、ヘッダーに絵文字が含まれている場合、自動的にエンコードします（例：件名が`Subject: 🤓 Hello`の場合、`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`に自動的に変換されます）。私たちの目標は、開発者にとって非常に使いやすく、誰でも簡単に使用できる電子メール API を作成することでした。",
         "tags": [
           "メール"
         ],
@@ -1905,7 +4127,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "特定のフィールドで並べ替えます（先頭にハイフンを 1 つ付けると、そのフィールドの逆方向に並べ替えられます）。設定されていない場合は、デフォルトで created_at に設定されます。",
+            "description": "特定のフィールドで並べ替えます（先頭にハイフンを 1 つ付けると、そのフィールドの逆方向に並べ替えられます）。設定されていない場合は、デフォルトで created_at が使用されます。",
             "schema": {
               "type": "string"
             }
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -3031,7 +5253,7 @@
     "/v1/encrypt": {
       "post": {
         "summary": "TXTレコードを暗号化する",
-        "description": "無料プランでもレコードの暗号化を無料でご利用いただけます。プライバシーは機能ではなく、製品のあらゆる側面に本来組み込まれているべきです。[プライバシーガイドのディスカッション](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)や[GitHub Issues](https://github.com/forwardemail/forwardemail.net/issues/254)で多くのご要望をいただき、この機能を追加しました。",
+        "description": "無料プランでもレコードの暗号化を無料でご利用いただけます。プライバシーは機能ではなく、製品のあらゆる側面に本質的に組み込まれているべきです。[プライバシーガイドのディスカッション](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)や[GitHub Issues](https://github.com/forwardemail/forwardemail.net/issues/254)で多くのご要望をいただいたため、この機能を追加しました。",
         "tags": [
           "暗号化"
         ],
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "連絡先リスト",
-        "description": "すべての連絡先を一覧表示します（CardDAV）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアス連絡先"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "連絡先を作成",
-        "description": "新しい連絡先を作成します（CardDAV）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアス連絡先"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "連絡先ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "連絡先を取得",
-        "description": "特定の連絡先を取得します（CardDAV）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアス連絡先"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "連絡先を更新",
-        "description": "特定の連絡先を更新します（CardDAV）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアス連絡先"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "連絡先を削除",
-        "description": "特定の連絡先を削除します（CardDAV）。このエンドポイントは近日中にリリースされる予定です。",
-        "tags": [
-          "エイリアス連絡先"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "カレンダーを一覧表示する",
-        "description": "すべてのカレンダーを一覧表示します（CalDAV）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスカレンダー"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "カレンダーを作成",
-        "description": "新しいカレンダー（CalDAV）を作成します。このエンドポイントは近日中にリリースされる予定です。",
-        "tags": [
-          "エイリアスカレンダー"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "カレンダーID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "カレンダーを取得",
-        "description": "特定のカレンダー（CalDAV）を取得します。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスカレンダー"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "カレンダーを更新",
-        "description": "特定のカレンダー（CalDAV）を更新します。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスカレンダー"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "カレンダーを削除",
-        "description": "特定のカレンダー（CalDAV）を削除します。このエンドポイントは近日中にリリースされる予定です。",
-        "tags": [
-          "エイリアスカレンダー"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "メッセージの一覧と検索",
-        "description": "メッセージの一覧表示と検索（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスメッセージ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "メッセージを作成",
-        "description": "新しいメッセージを作成します（IMAP/POP3）。これはメールの送信ではなく、メッセージをメールボックスフォルダに追加するだけです（IMAPのAPPENDコマンドと同様です）。このエンドポイントは近日中に公開予定です。",
-        "tags": [
-          "エイリアスメッセージ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "メッセージID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "メッセージを取得",
-        "description": "特定のメッセージを取得します（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスメッセージ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "更新メッセージ",
-        "description": "特定のメッセージを更新します（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスメッセージ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "メッセージを削除",
-        "description": "特定のメッセージを削除します（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスメッセージ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "フォルダの一覧",
-        "description": "すべてのフォルダを一覧表示します（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスフォルダ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "フォルダを作成",
-        "description": "新しいフォルダを作成します（IMAP/POP3）。このエンドポイントは近日中に公開予定です。",
-        "tags": [
-          "エイリアスフォルダ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "フォルダID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "フォルダを取得",
-        "description": "特定のフォルダを取得します（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスフォルダ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "フォルダを更新",
-        "description": "特定のフォルダを更新します（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスフォルダ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "フォルダを削除",
-        "description": "特定のフォルダを削除します（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスフォルダ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "フォルダID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "フォルダをコピー",
-        "description": "特定のフォルダをコピーします（IMAP/POP3）。このエンドポイントは近日中にリリース予定です。",
-        "tags": [
-          "エイリアスフォルダ"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "暗号化エンドポイント"
     },
     {
-      "name": "エイリアス連絡先",
-      "description": "エイリアス連絡先管理エンドポイント (CardDAV)\n\n>[!NOTE]\n>他のAPIエンドポイントとは異なり、これらのエンドポイントでは、Basic認証ヘッダーとして、エイリアスのユーザー名と一致する「ユーザー名」と、エイリアスで生成されたパスワードと一致する「パスワード」が必要です。\n\n>[!WARNING]\n>このエンドポイントセクションは現在開発中で、（おそらく）2025年にリリースされる予定です。それまでの間、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンからIMAPクライアントをご利用ください。"
+      "name": "連絡先",
+      "description": "エイリアス連絡先管理エンドポイント (CardDAV)\n\n>[!NOTE]\n>他のAPIエンドポイントとは異なり、これらのエンドポイントでは、Basic認証ヘッダーとして、エイリアスのユーザー名と一致する「ユーザー名」と、エイリアスで生成されたパスワードと一致する「パスワード」が必要です。\n\n>[!TIP]\n>これらのエンドポイントは、vCardをサポートする連絡先管理のための完全なCRUD操作（連絡先の作成、取得、更新、削除など）を提供します。vCardコンテンツを直接提供することも、vCard形式に変換される個々の連絡先フィールドを提供することもできます。"
     },
     {
-      "name": "エイリアスカレンダー",
-      "description": "エイリアスカレンダー管理エンドポイント (CalDAV)\n\n>[!NOTE]\n> 他のAPIエンドポイントとは異なり、これらのエンドポイントでは、Basic認証ヘッダーとして[認証](#description/authentication)「username」にエイリアスのユーザー名、そして「password」にエイリアスで生成されたパスワードを指定する必要があります。\n\n>[!WARNING]\n> このエンドポイントセクションは現在開発中で、2025年にリリース予定です（予定）。それまでの間は、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンからIMAPクライアントをご利用ください。"
+      "name": "カレンダー",
+      "description": "エイリアスカレンダー管理エンドポイント (CalDAV)\n\n>[!NOTE]\n> 他のAPIエンドポイントとは異なり、これらのエンドポイントでは、Basic認証ヘッダーとして[認証](#description/authentication)「username」にエイリアスのユーザー名、そして「password」にエイリアスで生成されたパスワードを指定する必要があります。\n\n>[!TIP]\n> これらのエンドポイントは、タイムゾーンと色をサポートした完全なカレンダー管理機能を提供します。カレンダーの作成、取得、更新、削除などが含まれます。カレンダー名は必須ですが、色、タイムゾーン、説明などのその他のプロパティは任意です。"
     },
     {
-      "name": "エイリアスメッセージ",
-      "description": "エイリアスメッセージ管理エンドポイント (IMAP/POP3)\n\n>[!NOTE]\n> 他のAPIエンドポイントとは異なり、これらのエンドポイントでは、Basic認証ヘッダーとして[認証](#description/authentication)「username」にエイリアスのユーザー名、そして「password」にエイリアスで生成されたパスワードを指定する必要があります。\n\n> [!WARNING]\n> このエンドポイントセクションは現在開発中で、2025年にリリース予定です（予定）。それまでは、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンからIMAPクライアントをご利用ください。\n\nドメインの設定手順に従っていることをご確認ください。\n設定手順は、FAQセクション[IMAPでのメール受信はサポートされていますか？](/faq#do-you-support-receiving-email-with-imap)をご覧ください。"
+      "name": "メッセージ",
+      "description": "エイリアスメッセージ管理エンドポイント (IMAP/POP3)\n\n>[!NOTE]\n> 他のAPIエンドポイントとは異なり、これらのエンドポイントでは、Basic認証ヘッダーとして[認証](#description/authentication)「username」にエイリアスのユーザー名、そして「password」にエイリアスで生成されたパスワードを指定する必要があります。\n\n>[!TIP]\n> これらのエンドポイントは、高度な検索機能を備えた包括的なメッセージ管理を提供します。フォルダ、フラグ、コンテンツ、ヘッダー、日付範囲、サイズなどで検索できます。メッセージは標準のNodemailer形式で作成でき、フォルダ間の移動やフラグ管理もサポートされています。\n\nドメインの設定手順に従っていることをご確認ください。\n設定手順については、FAQセクション[IMAPでのメール受信はサポートされていますか？](/faq#do-you-support-receiving-email-with-imap)をご覧ください。"
     },
     {
-      "name": "エイリアスフォルダ",
-      "description": "エイリアスフォルダ管理エンドポイント (IMAP/POP3)\n\n>[!TIP]\n> フォルダのパス <code>/v1/folders/:path</code> をエンドポイントとするフォルダエンドポイントは、フォルダの ID <code>:id</code> と互換性があります。つまり、フォルダは <code>path</code> または <code>id</code> のどちらの値でも参照できます。\n\n>[!WARNING]\n> このエンドポイントセクションは現在開発中で、（おそらく）2025年にリリースされる予定です。それまでの間は、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンから IMAP クライアントをご利用ください。"
+      "name": "フォルダ",
+      "description": "エイリアスフォルダ管理エンドポイント (IMAP/POP3)\n\n>[!TIP]\n> フォルダのパス <code>/v1/folders/:path</code> をエンドポイントとするフォルダエンドポイントは、フォルダの ID <code>:id</code> と互換性があります。つまり、フォルダは <code>path</code> 値または <code>id</code> 値のどちらでも参照できます。\n\n>[!NOTE]\n> 他の API エンドポイントとは異なり、これらのエンドポイントでは [認証](#description/authentication) として、エイリアスのユーザー名と同じ「username」と、エイリアスで生成されたパスワードと同じ「password」を Basic 認証ヘッダーとして設定する必要があります。\n\n>[!TIP]\n> これらのエンドポイントは、フォルダの作成、名前変更、削除など、完全なフォルダ管理機能を提供します。フォルダー パスには親フォルダー (例: 'INBOX/サブフォルダー') を含めることができ、親フォルダーが存在しない場合は自動的に作成されます。"
     }
   ]
 }

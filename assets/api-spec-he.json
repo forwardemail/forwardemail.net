@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />ברוכים הבאים לתיעוד ה-API המקיף עבור העברת דוא\"ל. API זה מאפשר לך לנהל העברת דוא\"ל, דומיינים, כינויים, דוא\"ל יוצא ועוד באופן תכנותי.\n\n## תכונות עיקריות\n* **ניהול דומיינים:** יצירה, אחזור, עדכון, מחיקה ואימות דומיינים.\n* **ניהול כינויים:** ניהול כינויי דוא\"ל, כולל יצירה, עדכונים וניהול נמענים.\n* **SMTP יוצא:** שליחת דוא\"ל דרך SMTP, ניהול מגבלות ומעקב אחר דוא\"ל שנשלח.\n* **חשבון ויומנים:** ניהול פרטי החשבון שלך והורדת יומני פעילות.\n* **אבטחה:** הצפנת רשומות TXT וניהול חברי/הזמנות דומיין.\n* **בקרוב:** תכונות כמו אנשי קשר של CardDAV, יומני CalDAV וניהול הודעות/תיקיות IMAP/POP3 מתוכננות.\n\n## אימות\nרוב נקודות הקצה דורשות אימות באמצעות **מפתח ה-API** שלך. ספק את מפתח ה-API בתור `username` בכותרת האימות הבסיסי, והשאר את הסיסמה ריקה.\n\n```http\nאישור: בסיסי QVBJX1RPS0VOOg==\n```\n(החלף את `API_TOKEN` במפתח בפועל שלך לפני קידוד Base64)\n\nנקודות קצה הקשורות ל- **Alias Contacts, Calendars, Messages, and Folders** (מסומנות כעת כ-\"בקרוב\") ישתמשו בשם משתמש וסיסמה שנוצרו עבור אימות בסיסי.\n\n## שגיאות\nה-API משתמש בקודי סטטוס סטנדרטיים של HTTP כדי לציין הצלחה או כישלון. תגובות שגיאה כוללות גוף JSON עם שדה `message` המפרט את השגיאה.\n\n| קוד סטטוס | משמעות |\n|-------------|---------------------|\n| 200 | אישור |\n| 400 | בקשה שגויה |\n| 401 | לא מורשה |\n| 403 | אסור |\n| 404 | לא נמצא |\n| 429 | יותר מדי בקשות |\n| 500 | שגיאת שרת פנימית |\n| 501 | לא מיושם |\n| 502 | שער פגום |\n| 503 | שירות לא זמין |\n| 504 | זמן קצוב של שער |\n\n*אם נתקלת בשגיאת `5xx`, אנא צור קשר עם [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## לוקליזציה\nתגובות ה-API מתורגמות על סמך המיקום שזוהה על ידי המשתמש או על כותרת `Accept-Language`. מעל 25 שפות נתמכות.\n\n## עימוד\nנקודות קצה המחזירות רשימות תומכות בעימוד באמצעות פרמטרי שאילתה.\n\n| פרמטר | סוג | אופציונלי | תיאור | ברירת מחדל | אילוצים |\n|--------------|---------|----------|-------------------------------------------------------------------------|----------------------|\n| `page` | מספר שלם | כן | מספר עמוד לאחזור. | 1 | `>= 1` |\n| `limit` | מספר שלם | כן | מספר תוצאות לעמוד. | 10 | `>= 1`, `<= 50` |\n| `pagination` | בוליאני | כן | הצטרף להתנהגות pagination (נדרש לפני 1 בנובמבר 2024 עבור נקודות קצה מסוימות). | false | |\n\n**כותרות pagination:**\n* `X-Page-Count`: ספירת עמודים כוללת.\n* `X-Page-Current`: מספר עמוד נוכחי.\n* `X-Page-Size`: מספר הפריטים בעמוד הנוכחי.\n* `X-Item-Count`: מספר הפריטים הכולל בכל הדפים.\n\n* `Link`: קישורי ניווט (קודם, הבא, ראשון, אחרון).\n\n**דוגמה:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## ספריות מומלצות\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (מתוחזק על ידי Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />ברוכים הבאים לתיעוד ה-API המקיף עבור העברת דוא\"ל. API זה מאפשר לכם לנהל העברת דוא\"ל, דומיינים, כינויים, דוא\"ל יוצא ועוד באופן תכנותי.\n\n## תכונות עיקריות\n* **ניהול דומיינים:** יצירה, אחזור, עדכון, מחיקה ואימות דומיינים.\n* **ניהול כינויים:** ניהול כינויי דוא\"ל, כולל יצירה, עדכונים וניהול נמענים.\n* **SMTP יוצא:** שליחת דוא\"ל דרך SMTP, ניהול מגבלות ומעקב אחר דוא\"ל שנשלח.\n* **חשבון ויומנים:** ניהול פרטי החשבון שלכם והורדת יומני פעילות.\n* **אבטחה:** הצפנת רשומות TXT וניהול חברי/הזמנות דומיין.\n* **אנשי קשר של CardDAV:** פעולות CRUD מלאות לניהול אנשי קשר עם תמיכה ב-vCard.\n* **יומני CalDAV:** ניהול יומנים מלא עם תמיכה באזורי זמן וצבע.\n* **הודעות IMAP/POP3:** ניהול מקיף של הודעות עם יכולות חיפוש מתקדמות.\n\n* **תיקיות IMAP/POP3:** ניהול תיקיות מלא כולל יצירה, שינוי שם ומחיקה.\n\n## אימות\nרוב נקודות הקצה דורשות אימות באמצעות **מפתח ה-API** שלך. ספק את מפתח ה-API כ-`שם משתמש` בכותרת האימות הבסיסי, והשאר את הסיסמה ריקה.\n\n```http\nאישור: בסיסי QVBJX1RPS0VOOg==\n```\n(החלף את `API_TOKEN` במפתח בפועל שלך לפני קידוד Base64)\n\nנקודות קצה הקשורות ל- **אנשי קשר, לוחות שנה, הודעות ותיקיות כינויים** דורשות שם משתמש וסיסמה כינויים שנוצרו עבור אימות בסיסי.\n\n## שגיאות\nה-API משתמש בקודי סטטוס HTTP סטנדרטיים כדי לציין הצלחה או כישלון. תגובות שגיאה כוללות גוף JSON עם שדה `הודעה` המפרט את השגיאה.\n\n| קוד סטטוס | משמעות |\n|-------------|----------------------|\n| 200 | אישור |\n| 400 | בקשה שגויה |\n| 401 | לא מורשה |\n| 403 | אסור |\n| 404 | לא נמצא |\n| 409 | התנגשות |\n| 412 | תנאי מוקדם נכשל |\n| 429 | יותר מדי בקשות |\n| 500 | שגיאת שרת פנימית |\n| 501 | לא יושם |\n| 502 | שער פגום |\n| 503 | שירות לא זמין |\n| 504 | פסק זמן של שער |\n\n*אם נתקלת בשגיאת `5xx`, אנא צור קשר עם [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## לוקליזציה\nתגובות ה-API מתורגמות על סמך הלוקאל שזוהה על ידי המשתמש או על סמך כותרת `Accept-Language`. מעל 25 שפות נתמכות.\n\n## עימוד\nנקודות קצה המחזירות רשימות תומכות בעימוד באמצעות פרמטרי שאילתה.\n\n| פרמטר | סוג | אופציונלי | תיאור | ברירת מחדל | אילוצים |\n|--------------|----------|--------------------------------------------------------------------------|---------|----------------------------------------------|\n| `page` | מספר שלם | כן | מספר עמוד לאחזור. | 1 | `>= 1` |\n| `limit` | מספר שלם | כן | מספר תוצאות לעמוד. | 10 | `>= 1`, `<= 50` |\n| `pagination` | בוליאני | כן | אופציה של עמודים (נדרש לפני 1 בנובמבר 2024 עבור נקודות קצה מסוימות). | false | |\n\n**כותרות עמודים:**\n* `X-Page-Count`: ספירת עמודים כוללת.\n* `X-Page-Current`: מספר העמוד הנוכחי.\n* `X-Page-Size`: מספר הפריטים בעמוד הנוכחי.\n* `X-Item-Count`: מספר הפריטים הכולל בכל העמודים.\n* `Link`: קישורי ניווט (הקודם, הבא, ראשון, אחרון).\n\n**דוגמה:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## ספריות מומלצות\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (מתוחזק על ידי Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "השתמש בשם המשתמש והסיסמה הכינויים שנוצרו עבור אימות בסיסי. זה חל על נקודות קצה תחת:\n* אנשי קשר כינויים (CardDAV)\n* לוחות שנה כינויים (CalDAV)\n* הודעות כינויים (IMAP/POP3)\n* תיקיות כינויים (IMAP/POP3)\n\n*(הערה: תכונות אלה מסומנות כעת כ\"בקרוב\")*\n\n**דוגמה:**\nאם שם המשתמש הכינויים הוא `alias@domain.com` והסיסמה היא `GENERATED_PASSWORD`, הערך המקודד ב-Base64 יהיה `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nאישור: בסיסי YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "השתמש בשם המשתמש והסיסמה הכינויים שנוצרו עבור אימות בסיסי. זה חל על נקודות קצה תחת:\n* אנשי קשר כינויים (CardDAV)\n* לוחות שנה כינויים (CalDAV)\n* הודעות כינויים (IMAP/POP3)\n* תיקיות כינויים (IMAP/POP3)\n\n**דוגמה:**\nאם שם המשתמש הכינויים הוא `alias@domain.com` והסיסמה היא `GENERATED_PASSWORD`, הערך המקודד ב-Base64 יהיה `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nאישור: בסיסי YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "מזהה איש קשר (contact_id מ-CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "צור קשר עם UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "שם מלא של איש קשר"
+          },
+          "content": {
+            "type": "string",
+            "description": "תוכן vCard"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag לניהול גרסאות"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "האם איש הקשר הוא קבוצה"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך של כתובות דוא\"ל"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך של מספרי טלפון"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "תוכן vCard (אם לא סופק, ייווצר משדות אחרים)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "שם מלא של איש קשר"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "מזהה איש קשר מותאם אישית (אם לא יסופק, ייווצר אוטומטית)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "מזהה משתמש של איש קשר (אם לא סופק, ייווצר אוטומטית)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך של כתובות דוא\"ל"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך של מספרי טלפון"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך מספרי טלפון (כינוי למספרי_טלפון)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "מערך של כתובות"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "האם איש הקשר הוא קבוצה"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "תוכן vCard"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "שם מלא של איש קשר"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך של כתובות דוא\"ל"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך של מספרי טלפון"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "מערך מספרי טלפון (כינוי למספרי_טלפון)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "מערך של כתובות"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "האם איש הקשר הוא קבוצה"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "מזהה לוח שנה (calendarId מ-CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "שם לוח שנה"
+          },
+          "description": {
+            "type": "string",
+            "description": "תיאור לוח השנה"
+          },
+          "color": {
+            "type": "string",
+            "description": "צבע לוח שנה (פורמט הקסדצימלי)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "אזור זמן של לוח שנה"
+          },
+          "order": {
+            "type": "integer",
+            "description": "סדר התצוגה של לוח השנה"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "שם לוח שנה"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "מזהה לוח שנה מותאם אישית (אם לא יסופק, ייווצר אוטומטית)"
+          },
+          "description": {
+            "type": "string",
+            "description": "תיאור לוח השנה"
+          },
+          "color": {
+            "type": "string",
+            "description": "צבע לוח שנה (פורמט הקסדצימלי, אם לא סופק, ייווצר אוטומטית)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "אזור זמן של לוח שנה (ברירת מחדל היא אזור הזמן של המשתמש או UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "סדר הצגת לוח שנה (ברירת מחדל היא 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "שם לוח שנה"
+          },
+          "description": {
+            "type": "string",
+            "description": "תיאור לוח השנה"
+          },
+          "color": {
+            "type": "string",
+            "description": "צבע לוח שנה (פורמט הקסדצימלי)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "אזור זמן של לוח שנה"
+          },
+          "order": {
+            "type": "integer",
+            "description": "סדר התצוגה של לוח השנה"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "מזהה תיקייה"
+          },
+          "path": {
+            "type": "string",
+            "description": "נתיב התיקייה המלא"
+          },
+          "name": {
+            "type": "string",
+            "description": "שם התיקייה (החלק האחרון של הנתיב)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "נתיב תיקיית האב"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "תוקף IMAP UID"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "ערך ה-UID הבא"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "אינדקס שינויים"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "האם התיקייה מנויה"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "דגלי תיקיות"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "תקופת שמירת ההודעות"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "ייעוד שימוש מיוחד"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "נתיב/שם התיקייה"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "נתיב/שם תיקייה חדשים"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "מזהה הודעה"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "מזהה הודעת שורש עבור שרשור"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "מזהה תיקייה המכילה את ההודעה"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "נתיב התיקייה המכיל את ההודעה"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "מזהה שרשור עבור קיבוץ שיחות"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "ערך כותרת של מזהה הודעה"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "האם ההודעה לא נקראה"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "האם ההודעה מסומנת"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "האם ההודעה נמחקה"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "האם ההודעה היא טיוטה"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "האם ההודעה היא דואר זבל/ספאם"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "האם ההודעה הועתקה"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "האם ניתן לחפש את ההודעה"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "האם פג תוקף ההודעה"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "האם להודעה יש קבצים מצורפים"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "תאריך שמירת הודעות"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "תאריך פנימי (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "תאריך מכותרות ההודעות"
+          },
+          "subject": {
+            "type": "string",
+            "description": "נושא ההודעה"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "דגלי IMAP"
+          },
+          "size": {
+            "type": "integer",
+            "description": "גודל ההודעה בבתים"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "מזהה משתמש של IMAP"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "רצף שינויים"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "סוג העסקה"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "כתובת IP מרוחקת"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "אובייקט הודעה מנותח (כלול כברירת מחדל, הגדר ?nodemailer=false כדי לא לכלול)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "תוכן הודעה גולמי (כלול כברירת מחדל, הגדר ?raw=false כדי לא לכלול)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "כתובת הדוא\"ל של השולח"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "כתובות דוא\"ל של נמענים"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "כתובות דוא\"ל של נמעני CC"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "כתובות דוא\"ל של נמעני BCC"
+          },
+          "subject": {
+            "type": "string",
+            "description": "נושא ההודעה"
+          },
+          "text": {
+            "type": "string",
+            "description": "תוכן טקסט רגיל"
+          },
+          "html": {
+            "type": "string",
+            "description": "תוכן HTML"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "קבצים מצורפים להודעות (פורמט Nodemailer)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "תיקיית יעד (ברירת מחדל היא תיבת דואר נכנס)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "דגלי IMAP להגדרה על ההודעה"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "דגלי IMAP להגדרה על ההודעה"
+          },
+          "folder": {
+            "type": "string",
+            "description": "העברת הודעה לתיקייה זו"
+          }
         }
       },
       "Email": {
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "כינויי זיהוי",
+        "description": "מזהה כינוי",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "מזהה דוא\"ל",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "מזהה איש קשר",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "מזהה לוח שנה",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "מזהה תיקייה או נתיב",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "מזהה הודעה",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "צור חשבון",
-        "description": "צור חשבון משתמש חדש",
-        "tags": [
-          "חֶשְׁבּוֹן"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "כתובת דוא\"ל"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "סִיסמָה"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "אחזור חשבון",
-        "description": "אחזור פרטי החשבון של המשתמש הנוכחי",
         "tags": [
           "חֶשְׁבּוֹן"
         ],
+        "summary": "אחזור חשבון",
+        "description": "אחזור פרטי החשבון שלך.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "עדכון חשבון",
-        "description": "עדכון פרטי החשבון של המשתמש הנוכחי",
         "tags": [
           "חֶשְׁבּוֹן"
         ],
+        "summary": "עדכון חשבון",
+        "description": "עדכן את פרטי החשבון שלך.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "כתובת דוא\"ל"
+                    "description": "שם תצוגה"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "שֵׁם פְּרַטִי"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "שֵׁם מִשׁפָּחָה"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "קישור לתמונת אווטאר"
+                    "description": "העדפת מקום"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "אנשי קשר"
+        ],
+        "summary": "רשימת אנשי קשר",
+        "description": "אחזור רשימה של כל אנשי הקשר עבור הכינוי המאומת. נקודת קצה זו תומכת בחלוקה לעמודים ומחזירה אנשי קשר בפורמט CardDAV.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "אנשי קשר"
+        ],
+        "summary": "צור איש קשר",
+        "description": "צור איש קשר חדש. ניתן לספק תוכן vCard ישירות או שדות של אנשי קשר בודדים שיומרו לפורמט vCard. אם איש קשר עם אותו מזהה כבר קיים, תוחזר שגיאת התנגשות.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "אנשי קשר"
+        ],
+        "summary": "אחזור איש קשר",
+        "description": "אחזור איש קשר ספציפי לפי המזהה שלו. איש הקשר מוחזר בפורמט איש קשר סטנדרטי עם תוכן vCard ושדות מנותחים.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "אנשי קשר"
+        ],
+        "summary": "עדכון איש קשר",
+        "description": "עדכון איש קשר קיים. ניתן לספק תוכן vCard מעודכן או שדות בודדים לעדכון. ה-vCard של איש הקשר ייווצר מחדש אם יסופקו שדות בודדים.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "אנשי קשר"
+        ],
+        "summary": "מחיקת איש קשר",
+        "description": "מחק איש קשר ספציפי לצמיתות. לא ניתן לבטל פעולה זו.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "לוחות שנה"
+        ],
+        "summary": "רשימת לוחות שנה",
+        "description": "אחזור רשימה של כל היומנים עבור הכינוי המאומת. נקודת קצה זו תומכת בעמודים ומחזירה יומנים בפורמט CalDAV.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "לוחות שנה"
+        ],
+        "summary": "צור לוח שנה",
+        "description": "צור לוח שנה חדש. שם לוח השנה נדרש, בעוד שמאפיינים אחרים כמו צבע, אזור זמן ותיאור הם אופציונליים. אם כבר קיים לוח שנה עם אותו שם, תוחזר שגיאת התנגשות.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "לוחות שנה"
+        ],
+        "summary": "אחזור לוח שנה",
+        "description": "אחזור לוח שנה ספציפי לפי המזהה שלו. לוח השנה מוחזר עם כל המאפיינים שלו, כולל שם, תיאור, צבע, אזור זמן וסדר.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "לוחות שנה"
+        ],
+        "summary": "עדכון לוח שנה",
+        "description": "עדכון לוח שנה קיים. ניתן לעדכן כל אחד ממאפייני לוח השנה, כולל שם, תיאור, צבע, אזור זמן וסדר. אם תשנה את השם לשם שכבר קיים, תוחזר שגיאת התנגשות.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "לוחות שנה"
+        ],
+        "summary": "מחיקת לוח שנה",
+        "description": "מחיקת לוח שנה ספציפי לצמיתות. פעולה זו אינה ניתנת לביטול והיא תמחק גם את כל האירועים בלוח השנה.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "תיקיות"
+        ],
+        "summary": "רשימת תיקיות",
+        "description": "אחזור רשימה של כל תיקיות/תיבות הדואר של IMAP עבור הכינוי המאומת. נקודת קצה זו תומכת בחלוקה לדפים ובסינון לפי סטטוס מנוי.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "סנן תיקיות לפי סטטוס מנוי",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "תיקיות"
+        ],
+        "summary": "צור תיקייה",
+        "description": "צור תיקיית/תיבת דואר IMAP חדשה. נתיב התיקייה נדרש ויכול לכלול תיקיות אב (לדוגמה, 'INBOX/Subfolder'). אם תיקיות האב אינן קיימות, הן ייווצרו אוטומטית.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "תיקיות"
+        ],
+        "summary": "אחזור תיקייה",
+        "description": "אחזר תיקייה ספציפית לפי המזהה או הנתיב שלה. ניתן להשתמש במזהה האובייקט של התיקייה או בנתיב המלא שלה (למשל, 'INBOX/Subfolder') כמזהה.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "תיקיות"
+        ],
+        "summary": "עדכון תיקייה",
+        "description": "עדכון/שינוי שם של תיקייה קיימת. פעולה זו משנה את שם התיקייה לנתיב החדש שצוין בגוף הבקשה. ניתן להשתמש במזהה האובייקט של התיקייה או בנתיב הנוכחי שלה כמזהה.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "תיקיות"
+        ],
+        "summary": "מחיקת תיקייה",
+        "description": "מחיקת תיקייה ספציפית לצמיתות. פעולה זו אינה ניתנת לביטול והיא תמחק גם את כל ההודעות בתיקייה. ניתן להשתמש ב-ObjectID של התיקייה או בנתיב שלה כמזהה.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "הודעות"
+        ],
+        "summary": "רשימת הודעות וחיפושן",
+        "description": "אחזור רשימת הודעות באמצעות יכולות חיפוש וסינון מתקדמות. נקודת קצה זו תומכת בחלוקה לעמודים ובחיפוש מקיף על פני תוכן ההודעות, כותרות, סימנים ומטא-דאטה. ניתן לחפש לפי תיקייה, סימנים, תוכן, כותרות, טווחי תאריכים, גודל ועוד.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "סנן הודעות לפי נתיב תיקייה",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "סנן לפי סטטוס קריאה",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "סנן לפי סטטוס מסומן",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "סנן לפי סטטוס מחיקה",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "סנן לפי סטטוס טיוטה",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "סנן לפי סטטוס זבל/ספאם",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "סנן לפי סטטוס שהועתק",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "סנן לפי סטטוס שניתן לחפש",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "סנן לפי סטטוס פג תוקף",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "סנן לפי נוכחות קובץ מצורף",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "סנן לפי נוכחות קובץ מצורף (כינוי עבור has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "חיפוש בנושא ההודעה",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "חיפוש בגוף/טקסט ההודעה",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "חיפוש בטקסט ההודעה (כינוי לגוף ההודעה)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "חיפוש בכל כותרות ההודעות",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "חיפוש לפי כותרת מזהה הודעה",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "חיפוש כללי בין כותרות וטקסט",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "חיפוש כללי (כינוי לחיפוש)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "סנן הודעות מאז תאריך זה (פורמט ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "סנן הודעות לפני תאריך זה (פורמט ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "סנן הודעות עם גודל מינימלי בבתים",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "סנן הודעות עם גודל מקסימלי בבתים",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "חיפוש לפי כותרת \"מאת\"",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "חיפוש לפי כותרת אל",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "חיפוש לפי כותרת CC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "חיפוש לפי כותרת עותק מוסתר",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "כותרת חיפוש לפי תאריך",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "חיפוש לפי כותרת \"תשובה ל\"",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "הודעות"
+        ],
+        "summary": "צור הודעה",
+        "description": "צור/הוסף הודעה חדשה לתיקייה. נקודת קצה זו מקבלת את פורמט ההודעות הסטנדרטי של Nodemailer ומאפשרת לך לציין את תיקיית היעד ואת הדגלים הראשוניים. אם תיקיית היעד אינה קיימת, היא תיווצר אוטומטית.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "הודעות"
+        ],
+        "summary": "אחזור הודעה",
+        "description": "אחזור הודעה ספציפית לפי המזהה שלה. כברירת מחדל, התגובה כוללת את אובייקט Nodemailer שעבר ניתוח ואת תוכן ההודעה הגולמי. ניתן לשלוט במה שייכלל באמצעות פרמטרי שאילתה.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "החזרת פורמט EML גולמי במקום JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "כלול אובייקט Nodemailer מנותח",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "כלול קבצים מצורפים באובייקט Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "כלול תוכן גולמי של ההודעה",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "הודעות"
+        ],
+        "summary": "עדכון הודעה",
+        "description": "עדכון הודעה קיימת. ניתן לשנות את דגלי ההודעה או להעביר אותה לתיקייה אחרת. אם תיקיית היעד אינה קיימת, היא תיווצר אוטומטית.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "החזרת פורמט EML גולמי במקום JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "הודעות"
+        ],
+        "summary": "מחיקת הודעה",
+        "description": "מחיקת הודעה ספציפית לצמיתות. פעולה זו אינה ניתנת לביטול והיא תסיר לצמיתות את ההודעה מהאחסון. בניגוד ללקוחות IMAP שבדרך כלל מעבירים הודעות לאשפה, נקודת קצה זו מבצעת מחיקה מוחלטת.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "רשימת אנשי קשר",
-        "description": "רשימת כל אנשי הקשר (CardDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "אנשי קשר חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "צור איש קשר",
-        "description": "צור איש קשר חדש (CardDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "אנשי קשר חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "מזהה איש קשר",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "אחזור איש קשר",
-        "description": "אחזור איש קשר ספציפי (CardDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "אנשי קשר חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "עדכון איש קשר",
-        "description": "עדכון איש קשר ספציפי (CardDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "אנשי קשר חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "מחיקת איש קשר",
-        "description": "מחיקת איש קשר ספציפי (CardDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "אנשי קשר חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "רשימת לוחות שנה",
-        "description": "רשימת כל היומנים (CalDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "לוחות שנה חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "צור לוח שנה",
-        "description": "צור לוח שנה חדש (CalDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "לוחות שנה חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "מזהה לוח שנה",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "אחזור לוח שנה",
-        "description": "אחזור לוח שנה ספציפי (CalDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "לוחות שנה חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "עדכון לוח שנה",
-        "description": "עדכון לוח שנה ספציפי (CalDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "לוחות שנה חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "מחיקת לוח שנה",
-        "description": "מחיקת לוח שנה ספציפי (CalDAV). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "לוחות שנה חלופיים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "רשימת הודעות וחיפושן",
-        "description": "הצג וחפש הודעות (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "הודעות כינוי"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "צור הודעה",
-        "description": "צור הודעה חדשה (IMAP/POP3). פעולה זו לא תשלח אימייל - היא פשוט תוסיף את ההודעה לתיקיית תיבת הדואר שלך (בדומה לפקודת IMAP APPEND). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "הודעות כינוי"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "מזהה הודעה",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "אחזור הודעה",
-        "description": "אחזור הודעה ספציפית (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "הודעות כינוי"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "עדכון הודעה",
-        "description": "עדכון הודעה ספציפית (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "הודעות כינוי"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "מחיקת הודעה",
-        "description": "מחיקת הודעה ספציפית (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "הודעות כינוי"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "רשימת תיקיות",
-        "description": "פרט את כל התיקיות (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "תיקיות כינויים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "צור תיקייה",
-        "description": "צור תיקייה חדשה (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "תיקיות כינויים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "מזהה תיקייה",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "אחזור תיקייה",
-        "description": "אחזור תיקייה ספציפית (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "תיקיות כינויים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "עדכון תיקייה",
-        "description": "עדכון תיקייה ספציפית (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "תיקיות כינויים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "מחיקת תיקייה",
-        "description": "מחיקת תיקייה ספציפית (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "תיקיות כינויים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "מזהה תיקייה",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "העתקת תיקייה",
-        "description": "העתק תיקייה ספציפית (IMAP/POP3). נקודת קצה זו תגיע בקרוב.",
-        "tags": [
-          "תיקיות כינויים"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "נקודות קצה של הצפנה"
     },
     {
-      "name": "אנשי קשר חלופיים",
-      "description": "נקודות קצה לניהול אנשי קשר מסוג כינוי (CardDAV)\n\n>[!NOTE]\n>בניגוד לנקודות קצה אחרות של API, אלו דורשות אימות \"שם משתמש\" שווה לשם המשתמש הכינוי ו-\"סיסמה\" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.\n\n>[!WARNING]\n>מקטע נקודות קצה זה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2025. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח \"אפליקציות\" בניווט באתר האינטרנט שלנו."
+      "name": "אנשי קשר",
+      "description": "נקודות קצה לניהול אנשי קשר מסוג כינוי (CardDAV)\n\n>[!NOTE]\n>בניגוד לנקודות קצה אחרות של API, אלו דורשות אימות \"שם משתמש\" שווה לשם המשתמש מסוג כינוי ו-\"סיסמה\" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.\n\n>[!TIP]\n>נקודות קצה אלו מספקות פעולות CRUD מלאות לניהול אנשי קשר עם תמיכה ב-vCard, כולל יצירה, אחזור, עדכון ומחיקה של אנשי קשר. ניתן לספק תוכן vCard ישירות או שדות אנשי קשר בודדים שיומרו לפורמט vCard."
     },
     {
-      "name": "לוחות שנה חלופיים",
-      "description": "נקודות קצה לניהול יומני כינוי (CalDAV)\n\n>[!NOTE]\n> בניגוד לנקודות קצה אחרות של API, אלה דורשות [Authentication](#description/authentication) \"username\" שווה לשם המשתמש הכינוי ו-\"password\" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.\n\n>[!WARNING]\n> סעיף נקודות קצה זה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2025. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח \"אפליקציות\" בניווט באתר האינטרנט שלנו."
+      "name": "לוחות שנה",
+      "description": "נקודות קצה לניהול לוחות שנה מסוג כינוי (CalDAV)\n\n>[!NOTE]\n> בניגוד לנקודות קצה אחרות של API, אלו דורשות [Authentication](#description/authentication) \"username\" שווה לשם המשתמש של הכינוי ו-\"password\" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.\n\n>[!TIP]\n> נקודות קצה אלו מספקות ניהול לוחות שנה מלא עם תמיכה באזורי זמן וצבע, כולל יצירה, אחזור, עדכון ומחיקה של לוחות שנה. שמות לוחות שנה נדרשים, בעוד שמאפיינים אחרים כמו צבע, אזור זמן ותיאור הם אופציונליים."
     },
     {
-      "name": "הודעות כינוי",
-      "description": "נקודות קצה לניהול הודעות כינוי (IMAP/POP3)\n\n>[!NOTE]\n> שלא כמו נקודות קצה אחרות של API, אלה דורשות [Authentication](#description/authentication) \"username\" שווה לשם המשתמש הכינוי ו-\"password\" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.\n\n> [!WARNING]\n> סעיף נקודות קצה זה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2025. בינתיים, אנא השתמש בלקוח IMAP מהתפריט הנפתח \"אפליקציות\" בניווט באתר האינטרנט שלנו.\n\nאנא ודא שפעלת לפי הוראות ההתקנה עבור הדומיין שלך.\n\nניתן למצוא הוראות אלה במקטע השאלות הנפוצות שלנו [האם אתם תומכים בקבלת דוא\"ל עם IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "הודעות",
+      "description": "נקודות קצה לניהול הודעות כינוי (IMAP/POP3)\n\n>[!NOTE]\n> בניגוד לנקודות קצה אחרות של API, אלה דורשות [Authentication](#description/authentication) \"username\" שווה לשם המשתמש הכינוי ו-\"password\" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.\n\n>[!TIP]\n> נקודות קצה אלה מספקות ניהול הודעות מקיף עם יכולות חיפוש מתקדמות. ניתן לחפש לפי תיקייה, דגלים, תוכן, כותרות, טווחי תאריכים, גודל ועוד. ניתן ליצור הודעות באמצעות פורמט סטנדרטי של Nodemailer ותומכות במעבר בין תיקיות וניהול דגלים.\n\nאנא ודא שפעלת לפי הוראות ההתקנה עבור הדומיין שלך.\n\nניתן למצוא הוראות אלה בסעיף השאלות הנפוצות שלנו [האם אתם תומכים בקבלת דוא\"ל באמצעות IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "תיקיות כינויים",
-      "description": "נקודות קצה לניהול תיקיות כינויים (IMAP/POP3)\n\n>[!TIP]\n> נקודות קצה של תיקיות עם נתיב של תיקייה <code>/v1/folders/:path</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה של תיקייה <code>:id</code>. משמעות הדבר היא שניתן להתייחס לתיקייה לפי ערך <code>path</code> או <code>id</code> שלה.\n\n>[!WARNING]\n> סעיף נקודות קצה זה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2025. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח \"אפליקציות\" בניווט באתר שלנו."
+      "name": "תיקיות",
+      "description": "נקודות קצה לניהול תיקיות כינויים (IMAP/POP3)\n\n>[!TIP]\n> נקודות קצה של תיקיות עם נתיב של תיקייה <code>/v1/folders/:path</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה של תיקייה <code>:id</code>. משמעות הדבר היא שניתן להתייחס לתיקייה לפי ערך <code>path</code> או <code>id</code> שלה.\n\n>[!NOTE]\n> שלא כמו נקודות קצה אחרות של API, אלה דורשות [Authentication](#description/authentication) \"username\" שווה לשם המשתמש הכינוי ו-\"password\" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.\n\n>[!TIP]\n> נקודות קצה אלה מספקות ניהול תיקיות מלא כולל יצירה, שינוי שם ומחיקה. נתיבי תיקיות יכולים לכלול תיקיות אב (למשל, 'INBOX/Subfolder'), ותיקיות אב ייווצרו אוטומטית אם הן אינן קיימות."
     }
   ]
 }

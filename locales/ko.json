@@ -11304,5 +11304,8 @@
   "SMTP Server Limits and Configuration": "SMTP Server Limits and Configuration",
   "Email Best Practices Guide": "Email Best Practices Guide",
   "Forward Email's SMTP service provides a reliable, secure, and privacy-focused way to send emails from your applications and email clients. With our intelligent queue system, 5-day retry mechanism, and comprehensive delivery status notifications, you can be confident that your emails will reach their destination.": "Forward Email's SMTP service provides a reliable, secure, and privacy-focused way to send emails from your applications and email clients. With our intelligent queue system, 5-day retry mechanism, and comprehensive delivery status notifications, you can be confident that your emails will reach their destination.",
-  "For more advanced use cases or custom integrations, please contact our support team.": "For more advanced use cases or custom integrations, please contact our support team."
+  "For more advanced use cases or custom integrations, please contact our support team.": "For more advanced use cases or custom integrations, please contact our support team.",
+  "IMAP/CardDAV/CalDAV REST Endpoints": "IMAP/CardDAV/CalDAV REST Endpoints",
+  "Complete Email API with IMAP, CardDAV & CalDAV REST Endpoints": "Complete Email API with IMAP, CardDAV & CalDAV REST Endpoints",
+  "First complete REST API for email management. 20 endpoints for contacts, calendars, messages & folders. No IMAP complexity, simple authentication.": "First complete REST API for email management. 20 endpoints for contacts, calendars, messages & folders. No IMAP complexity, simple authentication."
 }

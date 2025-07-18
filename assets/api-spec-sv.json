@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Välkommen till den omfattande API-dokumentationen för vidarebefordran av e-post. Detta API låter dig hantera vidarebefordran av e-post, domäner, alias, utgående e-postmeddelanden och mer programmatiskt.\n\n## Viktiga funktioner\n* **Domänhantering:** Skapa, hämta, uppdatera, ta bort och verifiera domäner.\n* **Aliashantering:** Hantera e-postalias, inklusive skapande, uppdateringar och mottagarhantering.\n* **Utgående SMTP:** Skicka e-postmeddelanden via SMTP, hantera gränser och spåra skickade e-postmeddelanden.\n* **Konto och loggar:** Hantera dina kontouppgifter och ladda ner aktivitetsloggar.\n* **Säkerhet:** Kryptera TXT-poster och hantera domänmedlemmar/inbjudningar.\n* **Kommer snart:** Funktioner som CardDAV-kontakter, CalDAV-kalendrar och IMAP/POP3-meddelande-/mapphantering är planerade.\n\n## Autentisering\nDe flesta slutpunkter kräver autentisering med din **API-nyckel**. Ange API-nyckeln som `användarnamn` i huvudet för grundläggande autentisering och lämna lösenordet tomt.\n\n```http\nAuktorisering: Grundläggande QVBJX1RPS0VOOg==\n```\n(Ersätt `API_TOKEN` med din faktiska nyckel före Base64-kodning)\n\nSlutpunkter relaterade till **Aliaskontakter, kalendrar, meddelanden och mappar** (för närvarande markerade som \"Kommer snart\") kommer att använda ett genererat aliasanvändarnamn och lösenord för grundläggande autentisering.\n\n## Fel\nAPI:et använder standard HTTP-statuskoder för att indikera framgång eller misslyckande. Felsvar inkluderar en JSON-text med ett `meddelande`-fält som beskriver felet.\n\n| Statuskod | Betydelse |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Felaktig begäran |\n| 401 | Obehörig |\n| 403 | Förbjuden |\n| 404 | Hittades inte |\n| 429 | För många förfrågningar |\n| 500 | Internt serverfel |\n| 501 | Inte implementerat |\n| 502 | Felaktig gateway |\n| 503 | Tjänsten är inte tillgänglig |\n| 504 | Gateway-timeout |\n\n*Om du stöter på ett `5xx`-fel, vänligen kontakta [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisering\nAPI-svar översätts baserat på användarens identifierade språkinställning eller `Accept-Language`-rubriken. Över 25 språk stöds.\n\n## Paginering\nSlutpunkter som returnerar listor stöder paginering via frågeparametrar.\n\n| Parameter | Typ | Valfritt | Beskrivning | Standard | Begränsningar |\n|--------------|---------|----------|------------------------------------------------------------------------|----------------------|\n| `sida` | Heltal | Ja | Sidnummer att hämta. | 1 | `>= 1` |\n| `limit` | Heltal | Ja | Antal resultat per sida. | 10 | `>= 1`, `<= 50` |\n| `paginering` | Boolean | Ja | Välj att paginera (krävs före 1 november 2024 för vissa slutpunkter). | false | |\n\n**Pagineringsrubriker:**\n* `X-Page-Count`: Totalt antal sidor.\n* `X-Page-Current`: Aktuellt sidnummer.\n* `X-Page-Size`: Antal objekt på den aktuella sidan.\n* `X-Item-Count`: Totalt antal objekt på alla sidor.\n\n* `Länk`: Navigeringslänkar (föregående, nästa, första, sista).\n\n**Exempel:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Rekommenderade bibliotek\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Underhålls av vidarebefordran av e-post)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Välkommen till den omfattande API-dokumentationen för vidarebefordran av e-post. Detta API låter dig hantera vidarebefordran av e-post, domäner, alias, utgående e-postmeddelanden och mer programmatiskt.\n\n## Viktiga funktioner\n* **Domänhantering:** Skapa, hämta, uppdatera, ta bort och verifiera domäner.\n* **Aliashantering:** Hantera e-postalias, inklusive skapande, uppdateringar och mottagarhantering.\n* **Utgående SMTP:** Skicka e-postmeddelanden via SMTP, hantera gränser och spåra skickade e-postmeddelanden.\n* **Konto och loggar:** Hantera dina kontouppgifter och ladda ner aktivitetsloggar.\n* **Säkerhet:** Kryptera TXT-poster och hantera domänmedlemmar/inbjudningar.\n* **CardDAV-kontakter:** Fullständiga CRUD-åtgärder för kontakthantering med vCard-stöd.\n* **CalDAV-kalendrar:** Komplett kalenderhantering med stöd för tidszoner och färger.\n* **IMAP/POP3-meddelanden:** Omfattande meddelandehantering med avancerade sökfunktioner.\n\n* **IMAP/POP3-mappar:** Fullständig mapphantering inklusive skapande, namnbyte och borttagning.\n\n## Autentisering\nDe flesta slutpunkter kräver autentisering med din **API-nyckel**. Ange API-nyckeln som `användarnamn` i huvudet för grundläggande autentisering och lämna lösenordet tomt.\n\n```http\nAuktorisering: Grundläggande QVBJX1RPS0VOOg==\n```\n(Ersätt `API_TOKEN` med din faktiska nyckel före Base64-kodning)\n\nSlutpunkter relaterade till **Aliaskontakter, kalendrar, meddelanden och mappar** kräver ett genererat aliasanvändarnamn och lösenord för grundläggande autentisering.\n\n## Fel\nAPI:et använder standard HTTP-statuskoder för att indikera framgång eller misslyckande. Felsvar inkluderar en JSON-text med ett `meddelande`-fält som beskriver felet.\n\n| Statuskod | Betydelse |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Felaktig begäran |\n| 401 | Obehörig |\n| 403 | Förbjuden |\n| 404 | Hittades inte |\n| 409 | Konflikt |\n| 412 | Förutsättning misslyckades |\n| 429 | För många begäranden |\n| 500 | Internt serverfel |\n| 501 | Inte implementerat |\n| 502 | Felaktig gateway |\n| 503 | Tjänsten är inte tillgänglig |\n| 504 | Gateway-timeout |\n\n*Om du stöter på ett `5xx`-fel, vänligen kontakta [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisering\nAPI-svar översätts baserat på användarens identifierade språkinställning eller `Accept-Language`-rubriken. Över 25 språk stöds.\n\n## Paginering\nSlutpunkter som returnerar listor stöder paginering via frågeparametrar.\n\n| Parameter | Typ | Valfritt | Beskrivning | Standard | Begränsningar |\n|--------------|----------|------------------------------------------------------------------------|---------|------------------------------------------------|\n| `page` | Heltal | Ja | Sidnummer att hämta. | 1 | `>= 1` |\n| `limit` | Heltal | Ja | Antal resultat per sida. | 10 | `>= 1`, `<= 50` |\n| `paginering` | Boolean | Ja | Välj pagineringsbeteende (krävs före 1 november 2024 för vissa slutpunkter). | false | |\n\n**Pagineringsrubriker:**\n* `X-Page-Count`: Totalt antal sidor.\n* `X-Page-Current`: Aktuellt sidnummer.\n* `X-Page-Size`: Antal objekt på den aktuella sidan.\n* `X-Item-Count`: Totalt antal objekt på alla sidor.\n* `Länk`: Navigeringslänkar (föregående, nästa, första, sista).\n\n**Exempel:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Rekommenderade bibliotek\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Underhålls av vidarebefordran av e-post)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "Använd det genererade **alias användarnamnet och lösenordet** för grundläggande autentisering. Detta gäller slutpunkter under:\n* Alias Kontakter (CardDAV)\n* Alias Kalendrar (CalDAV)\n* Alias Meddelanden (IMAP/POP3)\n* Alias Mappar (IMAP/POP3)\n\n*(Obs: Dessa funktioner är för närvarande markerade som \"Kommer snart\")*\n\n**Exempel:**\nOm alias användarnamnet är `alias@domain.com` och lösenordet är `GENERATED_PASSWORD`, skulle det Base64-kodade värdet vara `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuktorisering: Grundläggande YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "Använd det genererade **alias användarnamnet och lösenordet** för grundläggande autentisering. Detta gäller slutpunkter under:\n* Alias Kontakter (CardDAV)\n* Alias Kalendrar (CalDAV)\n* Alias Meddelanden (IMAP/POP3)\n* Alias Mappar (IMAP/POP3)\n\n**Exempel:**\nOm alias användarnamnet är `alias@domain.com` och lösenordet är `GENERATED_PASSWORD`, skulle det Base64-kodade värdet vara `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuktorisering: Grundläggande YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kontakt-ID (contact_id från CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Kontakt-UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kontaktens fullständiga namn"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard-innehåll"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag för versionshantering"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Om kontakten är en grupp"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med e-postadresser"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med telefonnummer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-innehåll (om det inte anges genereras det från andra fält)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kontaktens fullständiga namn"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Anpassat kontakt-ID (om det inte anges genereras det automatiskt)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Kontakt-UID (om det inte anges genereras det automatiskt)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med e-postadresser"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med telefonnummer"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med telefonnummer (alias för telefonnummer)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Adressmatris"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Om kontakten är en grupp"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-innehåll"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Kontaktens fullständiga namn"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med e-postadresser"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med telefonnummer"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Matris med telefonnummer (alias för telefonnummer)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Adressmatris"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Om kontakten är en grupp"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kalender-ID (calendarId från CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Kalendernamn"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeskrivning"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderfärg (hexformat)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenderns tidszon"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kalenderns visningsordning"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalendernamn"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Anpassat kalender-ID (om det inte anges genereras det automatiskt)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeskrivning"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderfärg (hexformat genereras automatiskt om det inte anges)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalendertidszon (standard är användarens tidszon eller UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kalenderns visningsordning (standard är 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalendernamn"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenderbeskrivning"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenderfärg (hexformat)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenderns tidszon"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kalenderns visningsordning"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Mapp-ID"
+          },
+          "path": {
+            "type": "string",
+            "description": "Fullständig mappsökväg"
+          },
+          "name": {
+            "type": "string",
+            "description": "Mappnamn (sista delen av sökvägen)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Sökväg till överordnad mapp"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID-giltighet"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Nästa UID-värde"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Modifieringsindex"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Om mappen prenumereras"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Mappflaggor"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Meddelandets lagringsperiod"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Särskild användningsbeteckning"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Mappsökväg/namn"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ny mappsökväg/namn"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Meddelande-ID"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Rotmeddelande-ID för trådning"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Mapp-ID som innehåller meddelandet"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Mappsökvägen som innehåller meddelandet"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Tråd-ID för konversationsgruppering"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Meddelande-ID-rubrikvärde"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Om meddelandet är oläst"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Om meddelandet är flaggat"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Om meddelandet tas bort"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Om meddelandet är ett utkast"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Om meddelandet är skräppost"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Om meddelandet kopieras"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Om meddelandet är sökbart"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Om meddelandet har gått ut"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Om meddelandet innehåller bilagor"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Meddelandets lagringsdatum"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Internt datum (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Datum från meddelanderubriker"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Meddelandeämne"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flaggor"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Meddelandestorlek i byte"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Modifieringssekvens"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Transaktionstyp"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Fjärr-IP-adress"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Parserat meddelandeobjekt (inkluderat som standard, sätt ?nodemailer=false för att exkludera)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Råmeddelandeinnehåll (inkluderat som standard, sätt ?raw=false för att exkludera)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Avsändarens e-postadress"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Mottagarens e-postadresser"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "CC-mottagarens e-postadresser"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "BCC-mottagarens e-postadresser"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Meddelandeämne"
+          },
+          "text": {
+            "type": "string",
+            "description": "Vanligt textinnehåll"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML-innehåll"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Meddelandebilagor (Nodemailer-format)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Målmapp (standard är INKORG)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "IMAP-flaggor att ställa in på meddelandet"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-flaggor att ställa in på meddelandet"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Flytta meddelandet till den här mappen"
+          }
         }
       },
       "Email": {
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "ID-alias",
+        "description": "Alias-ID",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "E-postadress",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kontakt-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kalender-ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Mapp-ID eller sökväg",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Meddelande-ID",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Skapa konto",
-        "description": "Skapa ett nytt användarkonto",
-        "tags": [
-          "Konto"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "E-postadress"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Lösenord"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Hämta konto",
-        "description": "Hämta den nuvarande användarens kontoinformation",
         "tags": [
           "Konto"
         ],
+        "summary": "Hämta konto",
+        "description": "Hämta din kontoinformation.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Uppdatera konto",
-        "description": "Uppdatera den nuvarande användarens kontoinformation",
         "tags": [
           "Konto"
         ],
+        "summary": "Uppdatera konto",
+        "description": "Uppdatera din kontoinformation.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "E-postadress"
+                    "description": "Visningsnamn"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Förnamn"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Efternamn"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Länk till avatarbild"
+                    "description": "Språkinställning"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Lista kontakter",
+        "description": "Hämta en lista över alla kontakter för det autentiserade aliaset. Denna slutpunkt stöder paginering och returnerar kontakter i CardDAV-format.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Skapa kontakt",
+        "description": "Skapa en ny kontakt. Du kan ange antingen vCard-innehåll direkt eller enskilda kontaktfält som konverteras till vCard-format. Om en kontakt med samma ID redan finns returneras ett konfliktfel.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Hämta kontakt",
+        "description": "Hämta en specifik kontakt via dess ID. Kontakten returneras i standardformatet för kontakter med vCard-innehåll och analyserade fält.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Uppdatera kontakt",
+        "description": "Uppdatera en befintlig kontakt. Du kan antingen ange uppdaterat vCard-innehåll eller enskilda fält att uppdatera. Kontaktens vCard kommer att genereras på nytt om enskilda fält anges.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kontakter"
+        ],
+        "summary": "Ta bort kontakt",
+        "description": "Ta bort en specifik kontakt permanent. Den här åtgärden kan inte ångras.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Kalendrar"
+        ],
+        "summary": "Lista kalendrar",
+        "description": "Hämta en lista över alla kalendrar för det autentiserade aliaset. Denna slutpunkt stöder paginering och returnerar kalendrar i CalDAV-format.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kalendrar"
+        ],
+        "summary": "Skapa kalender",
+        "description": "Skapa en ny kalender. Kalendernamnet är obligatoriskt, medan andra egenskaper som färg, tidszon och beskrivning är valfria. Om en kalender med samma namn redan finns kommer ett konfliktfel att returneras.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Kalendrar"
+        ],
+        "summary": "Hämta kalender",
+        "description": "Hämta en specifik kalender via dess ID. Kalendern returneras med alla dess egenskaper inklusive namn, beskrivning, färg, tidszon och ordning.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kalendrar"
+        ],
+        "summary": "Uppdatera kalendern",
+        "description": "Uppdatera en befintlig kalender. Du kan uppdatera alla kalenderegenskaper, inklusive namn, beskrivning, färg, tidszon och ordning. Om du ändrar namnet till ett som redan finns kommer ett konfliktfel att returneras.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kalendrar"
+        ],
+        "summary": "Ta bort kalender",
+        "description": "Ta bort en specifik kalender permanent. Den här åtgärden kan inte ångras och kommer även att ta bort alla händelser i kalendern.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Mappar"
+        ],
+        "summary": "Lista mappar",
+        "description": "Hämta en lista över alla IMAP-mappar/postlådor för det autentiserade aliaset. Denna slutpunkt stöder paginering och filtrering efter prenumerationsstatus.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Filtrera mappar efter prenumerationsstatus",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mappar"
+        ],
+        "summary": "Skapa mapp",
+        "description": "Skapa en ny IMAP-mapp/brevlåda. Mappsökvägen är obligatorisk och kan inkludera överordnade mappar (t.ex. 'INKORG/Undermapp'). Om överordnade mappar inte finns skapas de automatiskt.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Mappar"
+        ],
+        "summary": "Hämta mapp",
+        "description": "Hämta en specifik mapp via dess ID eller sökväg. Du kan använda antingen mappens objekt-ID eller dess fullständiga sökväg (t.ex. 'INKORG/Undermapp') som identifierare.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Mappar"
+        ],
+        "summary": "Uppdatera mapp",
+        "description": "Uppdatera/byt namn på en befintlig mapp. Den här åtgärden byter namn på mappen till den nya sökvägen som anges i begäran. Du kan använda antingen mappens objekt-ID eller dess aktuella sökväg som identifierare.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Mappar"
+        ],
+        "summary": "Ta bort mapp",
+        "description": "Ta bort en specifik mapp permanent. Den här åtgärden kan inte ångras och kommer även att ta bort alla meddelanden i mappen. Du kan använda antingen mappens objekt-ID eller dess sökväg som identifierare.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Meddelanden"
+        ],
+        "summary": "Lista och sök meddelanden",
+        "description": "Hämta en lista med meddelanden med avancerade sök- och filtreringsfunktioner. Denna slutpunkt stöder paginering och omfattande sökning över meddelandeinnehåll, rubriker, flaggor och metadata. Du kan söka efter mapp, flaggor, innehåll, rubriker, datumintervall, storlek med mera.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Filtrera meddelanden efter mappsökväg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Filtrera efter lässtatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Filtrera efter flaggad status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Filtrera efter raderad status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Filtrera efter utkaststatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Filtrera efter skräppoststatus",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Filtrera efter kopierad status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Filtrera efter sökbar status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Filtrera efter utgången status",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Filtrera efter närvaro av bilagor",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Filtrera efter närvaro av bilagor (alias för has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Sök i meddelandets ämne",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Sök i meddelandets brödtext",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Sök i meddelandetexten (alias för brödtexten)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Sök i alla meddelanderubriker",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Sök efter meddelande-ID-rubrik",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Allmän sökning i rubriker och text",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Allmän sökning (alias för sökning)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filtrera meddelanden sedan detta datum (ISO 8601-format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Filtrera meddelanden före detta datum (ISO 8601-format)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Filtrera meddelanden med minsta storlek i byte",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Filtrera meddelanden med maximal storlek i byte",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Sök efter Från-rubrik",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Sök efter Till-rubrik",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Sök efter CC-rubrik",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Sök efter BCC-rubrik",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Sök efter datumrubrik",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Sök efter svarsrubrik",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Meddelanden"
+        ],
+        "summary": "Skapa meddelande",
+        "description": "Skapa/lägg till ett nytt meddelande i en mapp. Denna slutpunkt accepterar standardmeddelandeformatet för Nodemailer och låter dig ange målmappen och initiala flaggor. Om målmappen inte finns skapas den automatiskt.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Meddelanden"
+        ],
+        "summary": "Hämta meddelande",
+        "description": "Hämta ett specifikt meddelande via dess ID. Som standard inkluderar svaret det analyserade Nodemailer-objektet och rått meddelandeinnehåll. Du kan styra vad som inkluderas med hjälp av frågeparametrar.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Returnera rått EML-format istället för JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Inkludera parsat Nodemailer-objekt",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Inkludera bilagor i Nodemailer-objektet",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Inkludera rått meddelandeinnehåll",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Meddelanden"
+        ],
+        "summary": "Uppdatera meddelande",
+        "description": "Uppdatera ett befintligt meddelande. Du kan ändra meddelandeflaggorna eller flytta det till en annan mapp. Om målmappen inte finns skapas den automatiskt.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Returnera rått EML-format istället för JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Meddelanden"
+        ],
+        "summary": "Ta bort meddelande",
+        "description": "Ta bort ett specifikt meddelande permanent. Den här åtgärden kan inte ångras och tar bort meddelandet permanent från lagringen. Till skillnad från IMAP-klienter som vanligtvis flyttar meddelanden till papperskorgen, utför den här slutpunkten en hård borttagning.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1951,7 +4173,7 @@
       },
       "post": {
         "summary": "Skapa domän",
-        "description": "Skapar en ny domän i systemet. Denna slutpunkt låter dig registrera ett fullständigt kvalificerat domännamn (FQDN) eller en IP-adress för användning med plattformen.\n\nValfria konfigurationsalternativ inkluderar att tilldela domänen till ett befintligt team, ställa in en plantyp (t.ex. gratis, utökat skydd eller team) och konfigurera avancerade skydd som skräppostfiltrering, virusskanning och mottagarverifiering. Du kan också konfigurera om ett catch-all-alias ska skapas som standard, ange en anpassad studs-webhook-URL för SMTP-fel och definiera lagringskvotgränser för e-postalias på denna domän. Denna slutpunkt utför validering och provisionering på domännivå. Om alternativet \"ignore_mx_check\" är aktiverat hoppas MX-postverifiering över (rekommenderas endast för avancerade routinginställningar). Svaret kommer att innehålla fullständig information om det skapade domänobjektet, inklusive DNS-poster som behövs för konfigurationen.",
+        "description": "Skapar en ny domän i systemet. Denna slutpunkt låter dig registrera ett fullständigt kvalificerat domännamn (FQDN) eller en IP-adress för användning med plattformen.\n\nValfria konfigurationsalternativ inkluderar att tilldela domänen till ett befintligt team, ställa in en plantyp (t.ex. gratis, utökat skydd eller team) och konfigurera avancerade skydd som spamfiltrering, virusskanning och mottagarverifiering. Du kan också konfigurera om ett catch-all-alias ska skapas som standard, ange en anpassad studs-webhook-URL för SMTP-fel och definiera lagringskvotgränser för e-postalias på denna domän. Denna slutpunkt utför validering och provisionering på domännivå. Om alternativet \"ignore_mx_check\" är aktiverat hoppas MX-postverifiering över (rekommenderas endast för avancerade routinginställningar). Svaret kommer att innehålla fullständig information om det skapade domänobjektet, inklusive DNS-poster som behövs för konfigurationen.",
         "tags": [
           "Domäner"
         ],
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2282,7 +4504,7 @@
         }
       },
       "get": {
-        "summary": "Lista domänomfattande lösenord som omfattar alla",
+        "summary": "Lista domänomfattande lösenord med alla lösenord",
         "description": "Returnerar en lista över domänomfattande catch-all-lösenord som för närvarande är konfigurerade för den angivna domänen.",
         "operationId": "listCatchAllPasswords",
         "tags": [
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Lista kontakter",
-        "description": "Lista alla kontakter (CardDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Skapa kontakt",
-        "description": "Skapa en ny kontakt (CardDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kontakt-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hämta kontakt",
-        "description": "Hämta en specifik kontakt (CardDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Uppdatera kontakt",
-        "description": "Uppdatera en specifik kontakt (CardDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Ta bort kontakt",
-        "description": "Ta bort en specifik kontakt (CardDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskontakter"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Lista kalendrar",
-        "description": "Lista alla kalendrar (CalDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskalendrar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Skapa kalender",
-        "description": "Skapa en ny kalender (CalDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskalendrar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kalender-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hämta kalender",
-        "description": "Hämta en specifik kalender (CalDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskalendrar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Uppdatera kalendern",
-        "description": "Uppdatera en specifik kalender (CalDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskalendrar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Ta bort kalender",
-        "description": "Ta bort en specifik kalender (CalDAV). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliaskalendrar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Lista och sök efter meddelanden",
-        "description": "Lista och sök efter meddelanden (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmeddelanden"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Skapa meddelande",
-        "description": "Skapa ett nytt meddelande (IMAP/POP3). Detta skickar INTE ett e-postmeddelande – det lägger bara till meddelandet i din inkorgsmapp (ungefär som IMAP APPEND-kommandot). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmeddelanden"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Meddelande-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hämta meddelande",
-        "description": "Hämta ett specifikt meddelande (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmeddelanden"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Uppdatera meddelande",
-        "description": "Uppdatera ett specifikt meddelande (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmeddelanden"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Ta bort meddelande",
-        "description": "Ta bort ett specifikt meddelande (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmeddelanden"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Lista mappar",
-        "description": "Lista alla mappar (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmappar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Skapa mapp",
-        "description": "Skapa en ny mapp (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmappar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Mapp-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hämta mapp",
-        "description": "Hämta en specifik mapp (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmappar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Uppdatera mapp",
-        "description": "Uppdatera en specifik mapp (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmappar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Ta bort mapp",
-        "description": "Ta bort en specifik mapp (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmappar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Mapp-ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Kopiera mapp",
-        "description": "Kopiera en specifik mapp (IMAP/POP3). Denna slutpunkt kommer snart.",
-        "tags": [
-          "Aliasmappar"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "Krypteringsslutpunkter"
     },
     {
-      "name": "Aliaskontakter",
-      "description": "Slutpunkter för hantering av aliaskontakter (CardDAV)\n\n>[!NOTE]\n>Till skillnad från andra API-slutpunkter kräver dessa autentisering \"användarnamn\" lika med aliasanvändarnamnet och \"lösenord\" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.\n\n>[!WARNING]\n>Detta slutpunktsavsnitt är under utveckling och kommer (förhoppningsvis) att släppas under 2025. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn \"Appar\" i navigeringen på vår webbplats."
+      "name": "Kontakter",
+      "description": "Slutpunkter för hantering av aliaskontakter (CardDAV)\n\n>[!NOTE]\n>Till skillnad från andra API-slutpunkter kräver dessa autentisering \"användarnamn\" lika med aliasanvändarnamnet och \"lösenord\" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.\n\n>[!TIP]\n>Dessa slutpunkter tillhandahåller fullständiga CRUD-åtgärder för kontakthantering med vCard-stöd, inklusive skapande, hämtning, uppdatering och borttagning av kontakter. Du kan tillhandahålla antingen vCard-innehåll direkt eller enskilda kontaktfält som konverteras till vCard-format."
     },
     {
-      "name": "Aliaskalendrar",
-      "description": "Slutpunkter för hantering av aliaskalendrar (CalDAV)\n\n>[!NOTE]\n> Till skillnad från andra API-slutpunkter kräver dessa [Autentisering](#description/authentication) \"användarnamn\" lika med aliasanvändarnamnet och \"lösenord\" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.\n\n>[!WARNING]\n> Detta slutpunktsavsnitt är under utveckling och kommer (förhoppningsvis) att släppas under 2025. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn \"Appar\" i navigeringen på vår webbplats."
+      "name": "Kalendrar",
+      "description": "Slutpunkter för hantering av aliaskalendrar (CalDAV)\n\n>[!NOTE]\n> Till skillnad från andra API-slutpunkter kräver dessa [Authentication](#description/authentication) \"username\" lika med aliasanvändarnamnet och \"password\" lika med det aliasgenererade lösenordet som Basic Authorization-rubriker.\n\n>[!TIP]\n> Dessa slutpunkter tillhandahåller fullständig kalenderhantering med stöd för tidszoner och färger, inklusive skapande, hämtning, uppdatering och borttagning av kalendrar. Kalendernamn krävs, medan andra egenskaper som färg, tidszon och beskrivning är valfria."
     },
     {
-      "name": "Aliasmeddelanden",
-      "description": "Slutpunkter för hantering av aliasmeddelanden (IMAP/POP3)\n\n>[!NOTE]\n> Till skillnad från andra API-slutpunkter kräver dessa [Autentisering](#description/authentication) \"användarnamn\" lika med aliasanvändarnamnet och \"lösenord\" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.\n\n> [!WARNING]\n> Detta slutpunktsavsnitt är under utveckling och kommer (förhoppningsvis) att släppas 2025. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn \"Appar\" i navigeringen på vår webbplats.\n\nSe till att du har följt installationsanvisningarna för din domän.\nDessa instruktioner finns i vår FAQ-sektion [Stödjer ni att ta emot e-post med IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Meddelanden",
+      "description": "Slutpunkter för hantering av aliasmeddelanden (IMAP/POP3)\n\n>[!NOTE]\n> Till skillnad från andra API-slutpunkter kräver dessa [Autentisering](#description/authentication) \"användarnamn\" lika med aliasanvändarnamnet och \"lösenord\" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.\n\n>[!TIP]\n> Dessa slutpunkter erbjuder omfattande meddelandehantering med avancerade sökfunktioner. Du kan söka efter mapp, flaggor, innehåll, rubriker, datumintervall, storlek med mera. Meddelanden kan skapas med standard Nodemailer-format och stöder flytt mellan mappar och flagghantering.\n\nSe till att du har följt installationsanvisningarna för din domän.\nDessa instruktioner finns i vår FAQ-sektion [Stödjer ni att ta emot e-post med IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Aliasmappar",
-      "description": "Slutpunkter för hantering av aliasmappar (IMAP/POP3)\n\n>[!TIP]\n> Mappslutpunkter med en mapps sökväg <code>/v1/folders/:path</code> som slutpunkt är utbytbara mot en mapps ID <code>:id</code>. Det betyder att du kan referera till mappen med antingen dess <code>path</code>- eller <code>id</code>-värde.\n\n>[!WARNING]\n> Detta slutpunktsavsnitt är ett pågående arbete och kommer (förhoppningsvis) att släppas under 2025. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn \"Appar\" i navigeringen på vår webbplats."
+      "name": "Mappar",
+      "description": "Slutpunkter för hantering av aliasmappar (IMAP/POP3)\n\n>[!TIP]\n> Mappslutpunkter med en mapps sökväg <code>/v1/folders/:path</code> som slutpunkt är utbytbara mot en mapps ID <code>:id</code>. Det betyder att du kan referera till mappen med antingen dess <code>path</code>- eller <code>id</code>-värde.\n\n>[!NOTE]\n> Till skillnad från andra API-slutpunkter kräver dessa [Authentication](#description/authentication) \"username\" lika med aliasanvändarnamnet och \"password\" lika med det aliasgenererade lösenordet som Basic Authorization-rubriker.\n\n>[!TIP]\n> Dessa slutpunkter ger fullständig mapphantering inklusive skapande, namnbyte och borttagning. Mappsökvägar kan inkludera överordnade mappar (t.ex. 'INBOX/Undermapp'), och överordnade mappar skapas automatiskt om de inte finns."
     }
   ]
 }

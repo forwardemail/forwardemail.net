@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Forward Email에 대한 포괄적인 API 설명서에 오신 것을 환영합니다. 이 API를 사용하면 이메일 전달, 도메인, 별칭, 발신 이메일 등을 프로그래밍 방식으로 관리할 수 있습니다.\n\n## 주요 기능\n* **도메인 관리:** 도메인을 생성, 검색, 업데이트, 삭제 및 확인할 수 있습니다.\n* **별칭 관리:** 생성, 업데이트 및 수신자 관리를 포함하여 이메일 별칭을 관리할 수 있습니다.\n* **발신 SMTP:** SMTP를 통해 이메일을 전송하고, 한도를 관리하고, 전송된 이메일을 추적할 수 있습니다.\n* **계정 및 로그:** 계정 정보를 관리하고 활동 로그를 다운로드할 수 있습니다.\n* **보안:** TXT 레코드를 암호화하고 도메인 구성원/초대를 관리할 수 있습니다.\n* **곧 제공 예정:** CardDAV 연락처, CalDAV 캘린더, IMAP/POP3 메시지/폴더 관리와 같은 기능이 추가될 예정입니다.\n\n## 인증\n대부분의 엔드포인트는 **API 키**를 사용한 인증을 요구합니다. 기본 인증 헤더에 API 키를 `username`으로 입력하고 비밀번호는 비워 두세요.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(`API_TOKEN`을 Base64 인코딩 전의 실제 키로 바꾸세요.)\n\n**별칭 연락처, 캘린더, 메시지 및 폴더**(현재 \"곧 제공 예정\"으로 표시됨)와 관련된 엔드포인트는 기본 인증에 생성된 별칭 사용자 이름과 비밀번호를 사용합니다.\n\n## 오류\nAPI는 표준 HTTP 상태 코드를 사용하여 성공 또는 실패를 나타냅니다. 오류 응답에는 오류를 자세히 설명하는 `message` 필드가 있는 JSON 본문이 포함됩니다.\n\n| 상태 코드 | 의미 |\n|-------------|---------------------|\n| 200 | 정상 |\n| 400 | 잘못된 요청 |\n| 401 | 권한 없음 |\n| 403 | 금지됨 |\n| 404 | 찾을 수 없음 |\n| 429 | 요청이 너무 많음 |\n| 500 | 내부 서버 오류 |\n| 501 | 구현되지 않음 |\n| 502 | 잘못된 게이트웨이 |\n| 503 | 서비스를 사용할 수 없음 |\n| 504 | 게이트웨이 시간 초과 |\n\n*`5xx` 오류가 발생하면 [api@forwardemail.net](mailto:api@forwardemail.net)으로 문의해 주세요.*\n\n## 현지화\nAPI 응답은 사용자가 감지한 로캘 또는 `Accept-Language` 헤더를 기반으로 번역됩니다. 25개 이상의 언어가 지원됩니다.\n\n## 페이지 매김\n목록을 반환하는 엔드포인트는 쿼리 매개변수를 통한 페이지 매김을 지원합니다.\n\n| 매개변수 | 유형 | 선택 사항 | 설명 | 기본값 | 제약 조건 |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page` | 정수 | 예 | 검색할 페이지 번호입니다. | 1 | `>= 1` |\n| `limit` | 정수 | 예 | 페이지당 결과 수입니다. | 10 | `>= 1`, `<= 50` |\n| `pagination` | 부울 | 예 | 페이지 매김 동작 옵트인(일부 엔드포인트의 경우 2024년 11월 1일 이전 필수). | false | |\n\n**페이지 매김 헤더:**\n* `X-Page-Count`: 총 페이지 수입니다.\n* `X-Page-Current`: 현재 페이지 번호입니다.\n* `X-Page-Size`: 현재 페이지의 항목 수입니다.\n* `X-Item-Count`: 모든 페이지의 총 항목 수입니다.\n* `링크`: 탐색 링크(이전, 다음, 처음, 마지막).\n\n**예:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## 추천 라이브러리\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Forward Email에서 관리)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Forward Email에 대한 포괄적인 API 설명서에 오신 것을 환영합니다. 이 API를 사용하면 이메일 전달, 도메인, 별칭, 발신 이메일 등을 프로그래밍 방식으로 관리할 수 있습니다.\n\n## 주요 기능\n* **도메인 관리:** 도메인을 생성, 검색, 업데이트, 삭제 및 확인할 수 있습니다.\n* **별칭 관리:** 생성, 업데이트 및 수신자 관리를 포함하여 이메일 별칭을 관리할 수 있습니다.\n* **발신 SMTP:** SMTP를 통해 이메일을 전송하고, 한도를 관리하고, 전송된 이메일을 추적할 수 있습니다.\n* **계정 및 로그:** 계정 정보를 관리하고 활동 로그를 다운로드할 수 있습니다.\n* **보안:** TXT 레코드를 암호화하고 도메인 구성원/초대를 관리할 수 있습니다.\n* **CardDAV 연락처:** vCard를 지원하는 연락처 관리를 위한 전체 CRUD 작업을 수행할 수 있습니다.\n* **CalDAV 캘린더:** 시간대 및 색상 지원을 통해 완벽한 캘린더 관리를 제공합니다.\n* **IMAP/POP3 메시지:** 고급 검색 기능을 갖춘 포괄적인 메시지 관리\n* **IMAP/POP3 폴더:** 생성, 이름 변경, 삭제를 포함한 전체 폴더 관리\n\n## 인증\n대부분의 엔드포인트는 **API 키**를 사용한 인증이 필요합니다. 기본 인증 헤더에 API 키를 `username`으로 입력하고 비밀번호는 비워 두세요.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Base64 인코딩 전에 `API_TOKEN`을 실제 키로 바꾸세요.)\n\n**별칭 연락처, 캘린더, 메시지 및 폴더**와 관련된 엔드포인트는 기본 인증을 위해 생성된 별칭 사용자 이름과 비밀번호가 필요합니다.\n\n## 오류\nAPI는 표준 HTTP 상태 코드를 사용하여 성공 또는 실패를 나타냅니다. 오류 응답에는 오류를 자세히 설명하는 `message` 필드가 있는 JSON 본문이 포함됩니다.\n\n| 상태 코드 | 의미 |\n|-------------|---------------------|\n| 200 | 정상 |\n| 400 | 잘못된 요청 |\n| 401 | 승인되지 않음 |\n| 403 | 금지됨 |\n| 404 | 찾을 수 없음 |\n| 409 | 충돌 |\n| 412 | 전제 조건 실패 |\n| 429 | 요청이 너무 많음 |\n| 500 | 내부 서버 오류 |\n| 501 | 구현되지 않음 |\n| 502 | 잘못된 게이트웨이 |\n| 503 | 서비스를 사용할 수 없음 |\n| 504 | 게이트웨이 시간 초과 |\n\n*`5xx` 오류가 발생하는 경우 [api@forwardemail.net](mailto:api@forwardemail.net)으로 문의해 주세요.*\n\n## 현지화\nAPI 응답은 사용자의 감지된 로캘 또는 `Accept-Language` 헤더를 기반으로 번역됩니다. 25개 이상의 언어가 지원됩니다.\n\n## 페이지 매김\n목록을 반환하는 엔드포인트는 쿼리 매개변수를 통한 페이지 매김을 지원합니다.\n\n| 매개변수 | 유형 | 선택 사항 | 설명 | 기본값 | 제약 조건 |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page` | 정수 | 예 | 검색할 페이지 번호 | 1 | `>= 1` |\n| `limit` | 정수 | 예 | 페이지당 결과 수 | 10 | `>= 1`, `<= 50` |\n| `pagination` | 부울 | 예 | 페이지 매김 동작 옵트인(일부 엔드포인트의 경우 2024년 11월 1일 이전 필수). | false | |\n\n**페이지 매김 헤더:**\n* `X-Page-Count`: 총 페이지 수\n* `X-Page-Current`: 현재 페이지 번호\n* `X-Page-Size`: 현재 페이지의 항목 수입니다.\n* `X-Item-Count`: 모든 페이지의 총 항목 수입니다.\n* `Link`: 탐색 링크(이전, 다음, 처음, 마지막).\n\n**예:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## 추천 라이브러리\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Forward Email에서 관리)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\n기본 인증에는 생성된 **별칭 사용자 이름과 비밀번호**를 사용하세요. 이는 다음 엔드포인트에 적용됩니다.\n* 별칭 연락처(CardDAV)\n* 별칭 캘린더(CalDAV)\n* 별칭 메시지(IMAP/POP3)\n* 별칭 폴더(IMAP/POP3)\n\n*(참고: 이 기능은 현재 \"출시 예정\"으로 표시되어 있습니다.)*\n\n**예:**\n별칭 사용자 이름이 `alias@domain.com`이고 비밀번호가 `GENERATED_PASSWORD`인 경우, Base64로 인코딩된 값은 `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`입니다.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "생성된 **별칭 사용자 이름과 비밀번호**를 기본 인증에 사용하세요. 이는 다음 엔드포인트에 적용됩니다.\n* 별칭 연락처(CardDAV)\n* 별칭 캘린더(CalDAV)\n* 별칭 메시지(IMAP/POP3)\n* 별칭 폴더(IMAP/POP3)\n\n**예:**\n별칭 사용자 이름이 `alias@domain.com`이고 비밀번호가 `GENERATED_PASSWORD`인 경우, Base64로 인코딩된 값은 `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`입니다.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "연락처 ID(CardDAV의 contact_id)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "UID에 문의하세요"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "연락처의 성명"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard 콘텐츠"
+          },
+          "etag": {
+            "type": "string",
+            "description": "버전 관리를 위한 ETag"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "연락처가 그룹인지 여부"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "이메일 주소 배열"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "전화번호 배열"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard 콘텐츠(제공되지 않으면 다른 필드에서 생성됩니다)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "연락처의 성명"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "사용자 지정 연락처 ID(제공되지 않으면 자동 생성됨)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "연락처 UID(제공되지 않으면 자동 생성됨)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "이메일 주소 배열"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "전화번호 배열"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "전화번호 배열(phone_numbers의 별칭)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "주소 배열"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "연락처가 그룹인지 여부"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard 콘텐츠"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "연락처의 성명"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "이메일 주소 배열"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "전화번호 배열"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "전화번호 배열(phone_numbers의 별칭)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "주소 배열"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "연락처가 그룹인지 여부"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "캘린더 ID(CalDAV의 CalendarId)"
+          },
+          "name": {
+            "type": "string",
+            "description": "캘린더 이름"
+          },
+          "description": {
+            "type": "string",
+            "description": "달력 설명"
+          },
+          "color": {
+            "type": "string",
+            "description": "달력 색상(16진수 형식)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "달력 시간대"
+          },
+          "order": {
+            "type": "integer",
+            "description": "달력 표시 순서"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "캘린더 이름"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "사용자 지정 캘린더 ID(제공되지 않으면 자동 생성됨)"
+          },
+          "description": {
+            "type": "string",
+            "description": "달력 설명"
+          },
+          "color": {
+            "type": "string",
+            "description": "달력 색상(16진수 형식, 제공되지 않으면 자동 생성됨)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "달력 시간대(기본값은 사용자 시간대 또는 UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "달력 표시 순서(기본값은 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "캘린더 이름"
+          },
+          "description": {
+            "type": "string",
+            "description": "달력 설명"
+          },
+          "color": {
+            "type": "string",
+            "description": "달력 색상(16진수 형식)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "달력 시간대"
+          },
+          "order": {
+            "type": "integer",
+            "description": "달력 표시 순서"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "폴더 ID"
+          },
+          "path": {
+            "type": "string",
+            "description": "전체 폴더 경로"
+          },
+          "name": {
+            "type": "string",
+            "description": "폴더 이름(경로의 마지막 부분)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "상위 폴더 경로"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID 유효성"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "다음 UID 값"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "수정 지수"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "폴더가 구독되었는지 여부"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "폴더 플래그"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "메시지 보존 기간"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "특수 용도 지정"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "폴더 경로/이름"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "새 폴더 경로/이름"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "메시지 ID"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "스레딩을 위한 루트 메시지 ID"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "메시지가 포함된 폴더 ID"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "메시지가 포함된 폴더 경로"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "대화 그룹화를 위한 스레드 ID"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "메시지 ID 헤더 값"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "메시지가 읽히지 않았는지 여부"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "메시지가 플래그로 지정되었는지 여부"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "메시지가 삭제되었는지 여부"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "메시지가 초안인지 여부"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "메시지가 정크/스팸인지 여부"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "메시지가 복사되는지 여부"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "메시지를 검색할 수 있는지 여부"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "메시지가 만료되었는지 여부"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "메시지에 첨부 파일이 있는지 여부"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "메시지 보존 날짜"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "내부 날짜(IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "메시지 헤더의 날짜"
+          },
+          "subject": {
+            "type": "string",
+            "description": "메시지 제목"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP 플래그"
+          },
+          "size": {
+            "type": "integer",
+            "description": "메시지 크기(바이트)"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "수정 순서"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "거래 유형"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "원격 IP 주소"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "구문 분석된 메시지 객체(기본적으로 포함됨, 제외하려면 ?nodemailer=false로 설정)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "원시 메시지 콘텐츠(기본적으로 포함됨, 제외하려면 ?raw=false로 설정)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "발신자 이메일 주소"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "수신자 이메일 주소"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "참조 수신자 이메일 주소"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "BCC 수신자 이메일 주소"
+          },
+          "subject": {
+            "type": "string",
+            "description": "메시지 제목"
+          },
+          "text": {
+            "type": "string",
+            "description": "일반 텍스트 콘텐츠"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML 콘텐츠"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "메시지 첨부 파일(Nodemailer 형식)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "대상 폴더(기본값은 INBOX)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "메시지에 설정할 IMAP 플래그"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "메시지에 설정할 IMAP 플래그"
+          },
+          "folder": {
+            "type": "string",
+            "description": "이 폴더로 메시지를 이동하세요"
+          }
         }
       },
       "Email": {
@@ -682,7 +1551,7 @@
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "다른 도메인에서 동일한 팀에 할당합니다. 도메인 ID 또는 FQDN일 수 있습니다. 명시적으로 비활성화하려면 \"none\"을 사용하세요."
+            "description": "다른 도메인에서 동일한 팀에 할당합니다. 도메인 ID 또는 FQDN일 수 있습니다. \"none\"을 사용하여 명시적으로 비활성화하세요."
           },
           "plan": {
             "type": "string",
@@ -814,7 +1683,7 @@
                 ]
               }
             ],
-            "description": "반송 알림을 수신하려면 Webhook URL을 지정하고, 비활성화하려면 false를 지정합니다."
+            "description": "반송 알림을 수신하려면 Webhook URL을 입력하거나, 비활성화하려면 false를 입력하세요."
           },
           "max_quota_per_alias": {
             "type": "string",
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "ID 별칭",
+        "description": "별칭 ID",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "이메일 ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "연락처 ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "캘린더 ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "폴더 ID 또는 경로",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "메시지 ID",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "계정 생성",
-        "description": "새로운 사용자 계정을 만듭니다",
-        "tags": [
-          "계정"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "이메일 주소"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "비밀번호"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "계정 검색",
-        "description": "현재 사용자의 계정 정보를 검색합니다",
         "tags": [
           "계정"
         ],
+        "summary": "계정 검색",
+        "description": "계정 정보를 검색하세요.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "계정 업데이트",
-        "description": "현재 사용자의 계정 정보를 업데이트합니다",
         "tags": [
           "계정"
         ],
+        "summary": "계정 업데이트",
+        "description": "계정 정보를 업데이트하세요.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "이메일 주소"
+                    "description": "표시 이름"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "이름"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "성"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "아바타 이미지에 대한 링크"
+                    "description": "로케일 환경 설정"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "콘택트 렌즈"
+        ],
+        "summary": "연락처 목록",
+        "description": "인증된 별칭에 대한 모든 연락처 목록을 검색합니다. 이 엔드포인트는 페이지 매김을 지원하며 CardDAV 형식으로 연락처를 반환합니다.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "콘택트 렌즈"
+        ],
+        "summary": "연락처 만들기",
+        "description": "새 연락처를 만드세요. vCard 콘텐츠를 직접 제공하거나 vCard 형식으로 변환될 개별 연락처 필드를 제공할 수 있습니다. 동일한 ID를 가진 연락처가 이미 있는 경우 충돌 오류가 반환됩니다.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "콘택트 렌즈"
+        ],
+        "summary": "연락처 검색",
+        "description": "ID로 특정 연락처를 검색합니다. 연락처는 vCard 콘텐츠와 구문 분석된 필드를 포함하는 표준 연락처 형식으로 반환됩니다.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "콘택트 렌즈"
+        ],
+        "summary": "연락처 업데이트",
+        "description": "기존 연락처를 업데이트합니다. 업데이트된 vCard 콘텐츠 또는 개별 필드를 제공하여 업데이트할 수 있습니다. 개별 필드를 제공하면 연락처의 vCard가 다시 생성됩니다.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "콘택트 렌즈"
+        ],
+        "summary": "연락처 삭제",
+        "description": "특정 연락처를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없습니다.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "달력"
+        ],
+        "summary": "캘린더 목록",
+        "description": "인증된 별칭에 대한 모든 캘린더 목록을 가져옵니다. 이 엔드포인트는 페이지 매김을 지원하며 CalDAV 형식으로 캘린더를 반환합니다.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "달력"
+        ],
+        "summary": "캘린더 만들기",
+        "description": "새 캘린더를 만듭니다. 캘린더 이름은 필수이며, 색상, 시간대, 설명 등의 다른 속성은 선택 사항입니다. 동일한 이름의 캘린더가 이미 있는 경우 충돌 오류가 반환됩니다.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "달력"
+        ],
+        "summary": "달력 검색",
+        "description": "ID로 특정 캘린더를 검색합니다. 캘린더는 이름, 설명, 색상, 시간대, 순서를 포함한 모든 속성과 함께 반환됩니다.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "달력"
+        ],
+        "summary": "캘린더 업데이트",
+        "description": "기존 캘린더를 업데이트합니다. 이름, 설명, 색상, 시간대, 순서 등 모든 캘린더 속성을 업데이트할 수 있습니다. 이미 존재하는 이름으로 이름을 변경하면 충돌 오류가 반환됩니다.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "달력"
+        ],
+        "summary": "캘린더 삭제",
+        "description": "특정 캘린더를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없으며 캘린더에 있는 모든 일정이 삭제됩니다.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "폴더"
+        ],
+        "summary": "폴더 목록",
+        "description": "인증된 별칭에 대한 모든 IMAP 폴더/사서함 목록을 검색합니다. 이 엔드포인트는 구독 상태별 페이지 매김 및 필터링을 지원합니다.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "구독 상태별로 폴더 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "폴더"
+        ],
+        "summary": "폴더 만들기",
+        "description": "새 IMAP 폴더/사서함을 만드세요. 폴더 경로는 필수이며 상위 폴더(예: '받은 편지함/하위 폴더')를 포함할 수 있습니다. 상위 폴더가 없으면 자동으로 생성됩니다.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "폴더"
+        ],
+        "summary": "폴더 검색",
+        "description": "ID 또는 경로로 특정 폴더를 검색합니다. 폴더의 ObjectID 또는 전체 경로(예: 'INBOX/Subfolder')를 식별자로 사용할 수 있습니다.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "폴더"
+        ],
+        "summary": "폴더 업데이트",
+        "description": "기존 폴더를 업데이트하거나 이름을 변경합니다. 이 작업은 요청 본문에 지정된 새 경로로 폴더 이름을 변경합니다. 폴더의 ObjectID 또는 현재 경로를 식별자로 사용할 수 있습니다.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "폴더"
+        ],
+        "summary": "폴더 삭제",
+        "description": "특정 폴더를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없으며 폴더 내의 모든 메시지가 삭제됩니다. 폴더의 ObjectID 또는 경로를 식별자로 사용할 수 있습니다.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "메시지"
+        ],
+        "summary": "메시지 나열 및 검색",
+        "description": "고급 검색 및 필터링 기능을 사용하여 메시지 목록을 검색하세요. 이 엔드포인트는 메시지 내용, 헤더, 플래그 및 메타데이터에 대한 페이지 매김 및 포괄적인 검색을 지원합니다. 폴더, 플래그, 내용, 헤더, 날짜 범위, 크기 등으로 검색할 수 있습니다.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "폴더 경로로 메시지 필터링",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "읽은 상태별 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "플래그가 지정된 상태로 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "삭제된 상태로 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "초안 상태별 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "정크/스팸 상태로 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "복사된 상태로 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "검색 가능한 상태로 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "만료 상태별 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "첨부 파일 존재 여부로 필터링",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "첨부 파일 존재 여부에 따른 필터링(has_attachments의 별칭)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "메시지 제목에서 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "메시지 본문/텍스트에서 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "메시지 텍스트에서 검색(본문의 별칭)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "모든 메시지 헤더에서 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "메시지 ID 헤더로 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "헤더와 텍스트에 대한 일반 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "일반 검색(검색의 별칭)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "이 날짜 이후의 메시지 필터링(ISO 8601 형식)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "이 날짜 이전의 메시지 필터링(ISO 8601 형식)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "최소 바이트 크기로 메시지 필터링",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "최대 바이트 크기의 메시지 필터링",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "헤더에서 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "To 헤더로 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "CC 헤더로 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "BCC 헤더로 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "날짜 헤더로 검색",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "답장 헤더로 검색",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "메시지"
+        ],
+        "summary": "메시지 작성",
+        "description": "폴더에 새 메시지를 생성/추가합니다. 이 엔드포인트는 표준 Nodemailer 메시지 형식을 지원하며 대상 폴더와 초기 플래그를 지정할 수 있습니다. 대상 폴더가 없으면 자동으로 생성됩니다.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "메시지"
+        ],
+        "summary": "메시지 검색",
+        "description": "ID로 특정 메시지를 검색합니다. 기본적으로 응답에는 파싱된 Nodemailer 객체와 원시 메시지 내용이 포함됩니다. 쿼리 매개변수를 사용하여 포함되는 내용을 제어할 수 있습니다.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "JSON 대신 원시 EML 형식을 반환합니다.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "구문 분석된 Nodemailer 객체를 포함합니다.",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Nodemailer 객체에 첨부 파일 포함",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "원시 메시지 내용을 포함합니다",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "메시지"
+        ],
+        "summary": "메시지 업데이트",
+        "description": "기존 메시지를 업데이트하세요. 메시지 플래그를 수정하거나 다른 폴더로 이동할 수 있습니다. 대상 폴더가 없으면 자동으로 생성됩니다.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "JSON 대신 원시 EML 형식을 반환합니다.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "메시지"
+        ],
+        "summary": "메시지 삭제",
+        "description": "특정 메시지를 영구적으로 삭제합니다. 이 작업은 실행 취소할 수 없으며 저장소에서 메시지가 영구적으로 삭제됩니다. 일반적으로 메시지를 휴지통으로 옮기는 IMAP 클라이언트와 달리, 이 엔드포인트는 영구 삭제를 수행합니다.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "연락처 목록",
-        "description": "모든 연락처를 나열합니다(CardDAV). 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 연락처"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "연락처 만들기",
-        "description": "새 연락처(CardDAV)를 만드세요. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 연락처"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "연락처 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "연락처 검색",
-        "description": "특정 연락처(CardDAV)를 검색합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 연락처"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "연락처 업데이트",
-        "description": "특정 연락처(CardDAV)를 업데이트합니다. 이 엔드포인트는 곧 출시될 예정입니다.",
-        "tags": [
-          "별칭 연락처"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "연락처 삭제",
-        "description": "특정 연락처(CardDAV)를 삭제합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 연락처"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "캘린더 목록",
-        "description": "모든 캘린더를 나열합니다(CalDAV). 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 캘린더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "캘린더 만들기",
-        "description": "새 캘린더(CalDAV)를 만드세요. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 캘린더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "캘린더 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "달력 검색",
-        "description": "특정 캘린더(CalDAV)를 가져옵니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 캘린더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "캘린더 업데이트",
-        "description": "특정 캘린더(CalDAV)를 업데이트합니다. 이 엔드포인트는 곧 출시될 예정입니다.",
-        "tags": [
-          "별칭 캘린더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "캘린더 삭제",
-        "description": "특정 캘린더(CalDAV)를 삭제합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 캘린더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "메시지 나열 및 검색",
-        "description": "메시지(IMAP/POP3)를 나열하고 검색할 수 있습니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 메시지"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "메시지 작성",
-        "description": "새 메시지(IMAP/POP3)를 만드세요. 이 기능은 이메일을 전송하는 것이 아니라, 메시지를 사서함 폴더에 추가하는 기능만 제공합니다(IMAP APPEND 명령과 유사). 이 기능은 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 메시지"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "메시지 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "메시지 검색",
-        "description": "특정 메시지(IMAP/POP3)를 가져옵니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 메시지"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "메시지 업데이트",
-        "description": "특정 메시지(IMAP/POP3)를 업데이트합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 메시지"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "메시지 삭제",
-        "description": "특정 메시지(IMAP/POP3)를 삭제합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 메시지"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "폴더 목록",
-        "description": "모든 폴더(IMAP/POP3)를 나열합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 폴더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "폴더 만들기",
-        "description": "새 폴더(IMAP/POP3)를 만드세요. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 폴더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "폴더 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "폴더 검색",
-        "description": "특정 폴더(IMAP/POP3)를 가져옵니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 폴더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "폴더 업데이트",
-        "description": "특정 폴더(IMAP/POP3)를 업데이트합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 폴더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "폴더 삭제",
-        "description": "특정 폴더(IMAP/POP3)를 삭제합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 폴더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "폴더 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "폴더 복사",
-        "description": "특정 폴더(IMAP/POP3)를 복사합니다. 이 엔드포인트는 곧 제공될 예정입니다.",
-        "tags": [
-          "별칭 폴더"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "암호화 엔드포인트"
     },
     {
-      "name": "별칭 연락처",
-      "description": "별칭 연락처 관리 엔드포인트(CardDAV)\n\n>[!NOTE]\n>다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 별칭 사용자 이름과 동일한 인증 \"username\"과 별칭에서 생성된 비밀번호와 동일한 \"password\"를 요구합니다.\n\n>[!WARNING]\n>이 엔드포인트 섹션은 현재 작업 중이며 2025년에 출시될 예정입니다(희망). 그동안 웹사이트 탐색 메뉴의 \"앱\" 드롭다운 메뉴에서 IMAP 클라이언트를 사용해 주세요."
+      "name": "콘택트 렌즈",
+      "description": "별칭 연락처 관리 엔드포인트(CardDAV)\n\n>[!NOTE]\n>다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 별칭 사용자 이름과 동일한 인증 \"username\"과 별칭에서 생성된 비밀번호와 동일한 \"password\"를 요구합니다.\n\n>[!TIP]\n>이 엔드포인트는 연락처 생성, 검색, 업데이트 및 삭제를 포함하여 vCard 지원을 통해 연락처 관리를 위한 완전한 CRUD 작업을 제공합니다. vCard 콘텐츠를 직접 제공하거나 vCard 형식으로 변환될 개별 연락처 필드를 제공할 수 있습니다."
     },
     {
-      "name": "별칭 달력",
-      "description": "별칭 캘린더 관리 엔드포인트(CalDAV)\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"username\"이 별칭 사용자 이름과 동일하고 \"password\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!WARNING]\n> 이 엔드포인트 섹션은 현재 작업 중이며 2025년에 출시될 예정입니다(희망). 그동안 웹사이트 탐색 메뉴의 \"앱\" 드롭다운에서 IMAP 클라이언트를 사용해 주세요."
+      "name": "달력",
+      "description": "별칭 캘린더 관리 엔드포인트(CalDAV)\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"username\"이 별칭 사용자 이름과 동일하고 \"password\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 캘린더 생성, 검색, 업데이트 및 삭제를 포함하여 시간대 및 색상 지원을 통해 완벽한 캘린더 관리를 제공합니다. 캘린더 이름은 필수이며, 색상, 시간대, 설명과 같은 다른 속성은 선택 사항입니다."
     },
     {
-      "name": "별칭 메시지",
-      "description": "별칭 메시지 관리 엔드포인트(IMAP/POP3)\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"사용자 이름\"이 별칭 사용자 이름과 동일하고 \"암호\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n> [!WARNING]\n> 이 엔드포인트 섹션은 현재 작업 중이며 2025년에 출시될 예정입니다(희망). 그동안 웹사이트 탐색 메뉴의 \"앱\" 드롭다운에서 IMAP 클라이언트를 사용해 주세요.\n도메인 설정 지침을 준수했는지 확인하세요.\n해당 지침은 FAQ 섹션 [IMAP으로 이메일 수신을 지원하시나요?](/faq#do-you-support-receiving-email-with-imap)에서 확인할 수 있습니다."
+      "name": "메시지",
+      "description": "별칭 메시지 관리 엔드포인트(IMAP/POP3)\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"사용자 이름\"이 별칭 사용자 이름과 동일하고 \"암호\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 고급 검색 기능을 통해 포괄적인 메시지 관리 기능을 제공합니다. 폴더, 플래그, 콘텐츠, 헤더, 날짜 범위, 크기 등으로 검색할 수 있습니다. 메시지는 표준 Nodemailer 형식을 사용하여 생성할 수 있으며, 폴더 간 이동 및 플래그 관리를 지원합니다.\n\n도메인 설정 지침을 준수했는지 확인하세요.\n해당 지침은 FAQ 섹션 [IMAP으로 이메일 수신을 지원하시나요?](/faq#do-you-support-receiving-email-with-imap)에서 확인할 수 있습니다."
     },
     {
-      "name": "별칭 폴더",
-      "description": "별칭 폴더 관리 엔드포인트(IMAP/POP3)\n\n>[!TIP]\n> 폴더 경로 <code>/v1/folders/:path</code>를 엔드포인트로 사용하는 폴더 엔드포인트는 폴더 ID <code>:id</code>와 호환됩니다. 즉, <code>path</code> 또는 <code>id</code> 값으로 폴더를 참조할 수 있습니다.\n\n>[!WARNING]\n> 이 엔드포인트 섹션은 현재 작업 중이며 2025년에 출시될 예정입니다(희망). 그동안 웹사이트 탐색 메뉴의 \"앱\" 드롭다운 메뉴에서 IMAP 클라이언트를 사용해 주세요."
+      "name": "폴더",
+      "description": "별칭 폴더 관리 엔드포인트(IMAP/POP3)\n\n>[!TIP]\n> 폴더 경로가 <code>/v1/folders/:path</code>인 폴더 엔드포인트는 폴더 ID <code>:id</code>와 호환됩니다. 즉, <code>path</code> 또는 <code>id</code> 값으로 폴더를 참조할 수 있습니다.\n\n>[!NOTE]\n> 다른 API 엔드포인트와 달리, 이 엔드포인트는 기본 인증 헤더로 [인증](#description/authentication) \"username\"이 별칭 사용자 이름과 동일하고 \"password\"가 별칭에서 생성된 비밀번호와 동일해야 합니다.\n\n>[!TIP]\n> 이 엔드포인트는 폴더 생성, 이름 변경, 삭제를 포함한 전체 폴더 관리 기능을 제공합니다. 폴더 경로에는 상위 폴더(예: 'INBOX/하위 폴더')가 포함될 수 있으며, 상위 폴더가 없으면 자동으로 생성됩니다."
     }
   ]
 }

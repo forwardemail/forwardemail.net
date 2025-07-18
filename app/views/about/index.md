@@ -115,6 +115,7 @@ The simplicity and effectiveness of this solution attracted attention from promi
 
 **June 2025**: Forward Email launched support for the [CardDAV protocol](/faq#do-you-support-contacts-carddav), expanding the platform's capabilities to include contact synchronization alongside existing email and calendar services.
 
+
 ## Core Principles
 
 Since its inception, Forward Email has maintained a steadfast commitment to privacy and security principles:

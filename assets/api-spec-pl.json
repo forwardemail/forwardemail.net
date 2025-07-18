@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Witamy w kompleksowej dokumentacji API dla Forward Email. To API umożliwia programowe zarządzanie przekierowaniem poczty e-mail, domenami, aliasami, wiadomościami wychodzącymi i wieloma innymi funkcjami.\n\n## Główne funkcje\n* **Zarządzanie domeną:** Tworzenie, pobieranie, aktualizowanie, usuwanie i weryfikowanie domen.\n* **Zarządzanie aliasami:** Zarządzanie aliasami e-mail, w tym tworzenie, aktualizowanie i zarządzanie odbiorcami.\n* **Wychodzące SMTP:** Wysyłanie wiadomości e-mail za pośrednictwem SMTP, zarządzanie limitami i śledzenie wysłanych wiadomości e-mail.\n* **Konto i dzienniki:** Zarządzanie danymi konta i pobieranie dzienników aktywności.\n* **Bezpieczeństwo:** Szyfrowanie rekordów TXT i zarządzanie członkami domeny/zaproszeniami.\n* **Wkrótce:** Planowane są takie funkcje, jak kontakty CardDAV, kalendarze CalDAV i zarządzanie wiadomościami/folderami IMAP/POP3.\n\n## Uwierzytelnianie\nWiększość punktów końcowych wymaga uwierzytelniania przy użyciu **Klucza API**. Podaj Klucz API jako `username` w nagłówku Basic Authentication, pozostawiając puste hasło.\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n(Zastąp `API_TOKEN` swoim rzeczywistym kluczem przed kodowaniem Base64)\n\nPunkty końcowe związane z **Alias Contacts, Calendars, Messages, and Folders** (obecnie oznaczone jako „Coming Soon”) będą używać wygenerowanej nazwy użytkownika i hasła aliasu do Basic Authentication.\n\n## Błędy\nInterfejs API używa standardowych kodów stanu HTTP, aby wskazać powodzenie lub niepowodzenie. Odpowiedzi na błędy obejmują treść JSON z polem `message` szczegółowo opisującym błąd.\n\n| Kod stanu | Znaczenie |\n|-------------|--------------------|\n| 200 | OK | | 400 | Błędne żądanie |\n| 401 | Nieautoryzowane |\n| 403 | Zabronione |\n| 404 | Nie znaleziono |\n| 429 | Zbyt wiele żądań |\n| 500 | Wewnętrzny błąd serwera|\n| 501 | Nie zaimplementowano |\n| 502 | Błędna brama |\n| 503 | Usługa niedostępna |\n| 504 | Przekroczenie limitu czasu bramy |\n\n*Jeśli wystąpi błąd `5xx`, skontaktuj się z [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalizacja\nOdpowiedzi API są tłumaczone na podstawie wykrytej lokalizacji użytkownika lub nagłówka `Accept-Language`. Obsługiwanych jest ponad 25 języków.\n\n## Paginacja\nPunkty końcowe zwracające listy obsługują paginację za pośrednictwem parametrów zapytania.\n\n| Parametr | Typ | Opcjonalny | Opis | Domyślne | Ograniczenia |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page` | Liczba całkowita | Tak | Numer strony do pobrania. | 1 | `>= 1` |\n| `limit` | Liczba całkowita | Tak | Liczba wyników na stronie. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Wartość logiczna | Tak | Zgoda na zachowanie paginacji (wymagane przed 1 listopada 2024 r. dla niektórych punktów końcowych). | false | |\n\n**Nagłówki paginacji:**\n* `X-Page-Count`: Całkowita liczba stron.\n* `X-Page-Current`: Numer bieżącej strony.\n* `X-Page-Size`: Liczba elementów na bieżącej stronie.\n* `X-Item-Count`: Całkowita liczba elementów na wszystkich stronach.\n* `Link`: Linki nawigacyjne (poprzedni, następny, pierwszy, ostatni).\n\n**Przykład:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Zalecane biblioteki\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagenta](https://github.com/visionmedia/superagent) (Obsługiwane przez Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Witamy w kompleksowej dokumentacji API dla Forward Email. To API umożliwia programowe zarządzanie przekierowaniami poczty e-mail, domenami, aliasami, wiadomościami wychodzącymi i wieloma innymi funkcjami.\n\n## Kluczowe funkcje\n* **Zarządzanie domenami:** Tworzenie, pobieranie, aktualizowanie, usuwanie i weryfikowanie domen.\n* **Zarządzanie aliasami:** Zarządzanie aliasami e-mail, w tym tworzenie, aktualizowanie i zarządzanie odbiorcami.\n* **Wychodzące SMTP:** Wysyłanie wiadomości e-mail przez SMTP, zarządzanie limitami i śledzenie wysłanych wiadomości.\n* **Konto i dzienniki:** Zarządzanie danymi konta i pobieranie dzienników aktywności.\n* **Bezpieczeństwo:** Szyfrowanie rekordów TXT i zarządzanie członkami/zaproszeniami domeny.\n* **Kontakty CardDAV:** Pełne operacje CRUD do zarządzania kontaktami z obsługą vCard. * **Kalendarze CalDAV:** Pełne zarządzanie kalendarzem z obsługą stref czasowych i kolorów.\n* **Wiadomości IMAP/POP3:** Kompleksowe zarządzanie wiadomościami z zaawansowanymi funkcjami wyszukiwania.\n* **Foldery IMAP/POP3:** Pełne zarządzanie folderami, w tym tworzenie, zmiana nazwy i usuwanie.\n\n## Uwierzytelnianie\nWiększość punktów końcowych wymaga uwierzytelnienia za pomocą **Klucza API**. Podaj klucz API jako `nazwę użytkownika` w nagłówku uwierzytelniania podstawowego, pozostawiając puste hasło.\n\n```http\nAutoryzacja: Podstawowa QVBJX1RPS0VOOg==\n```\n(Zastąp `API_TOKEN` rzeczywistym kluczem przed kodowaniem Base64)\n\nPunkty końcowe powiązane z **Kontaktami, Kalendarzami, Wiadomościami i Folderami aliasów** wymagają wygenerowanej nazwy użytkownika i hasła aliasu do uwierzytelniania podstawowego.\n\n## Błędy\nInterfejs API używa standardowych kodów stanu HTTP do sygnalizowania powodzenia lub niepowodzenia. Odpowiedzi na błędy zawierają treść JSON z polem „message” szczegółowo opisującym błąd.\n\n| Kod statusu | Znaczenie |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Błędne żądanie |\n| 401 | Nieautoryzowane |\n| 403 | Zabronione |\n| 404 | Nie znaleziono |\n| 409 | Konflikt |\n| 412 | Niespełniony warunek wstępny |\n| 429 | Zbyt wiele żądań |\n| 500 | Wewnętrzny błąd serwera |\n| 501 | Nie zaimplementowano |\n| 502 | Błędna brama |\n| 503 | Usługa niedostępna |\n| 504 | Przekroczenie limitu czasu bramy |\n\n*W przypadku wystąpienia błędu `5xx` prosimy o kontakt pod adresem [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalizacja\nOdpowiedzi API są tłumaczone na podstawie wykrytej lokalizacji użytkownika lub nagłówka `Accept-Language`. Obsługiwanych jest ponad 25 języków.\n\n## Paginacja\nPunkty końcowe zwracające listy obsługują paginację za pomocą parametrów zapytania.\n\n| Parametr | Typ | Opcjonalny | Opis | Domyślne | Ograniczenia |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|---------------------|\n| `strona` | Liczba całkowita | Tak | Numer strony do pobrania. | 1 | `>= 1` |\n| `limit` | Liczba całkowita | Tak | Liczba wyników na stronie. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Wartość logiczna | Tak | Włącz paginację (wymagane przed 1 listopada 2024 r. dla niektórych punktów końcowych). | false | |\n\n**Nagłówki paginacji:**\n* `X-Page-Count`: Całkowita liczba stron.\n* `X-Page-Current`: Numer bieżącej strony.\n* `X-Page-Size`: Liczba elementów na bieżącej stronie.\n* `X-Item-Count`: Całkowita liczba elementów na wszystkich stronach.\n* `Link`: Linki nawigacyjne (poprzedni, następny, pierwszy, ostatni).\n\n**Przykład:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Polecane biblioteki\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagenta](https://github.com/visionmedia/superagenta) (Obsługiwane przez Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUżyj swojego klucza API jako **nazwy użytkownika** dla uwierzytelniania podstawowego. Pozostaw pole hasła puste.\n\n**Przykład:**\nJeśli klucz API to `YOUR_API_KEY`, zakodowana wartość Base64 dla nagłówka `Authorization` będzie wynosić `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "\nUżyj swojego klucza API jako **nazwy użytkownika** dla uwierzytelniania podstawowego. Pozostaw pole hasła puste.\n\n**Przykład:**\nJeśli Twój klucz API to `YOUR_API_KEY`, zakodowana w Base64 wartość nagłówka `Authorization` będzie wyglądać następująco: `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nUżyj wygenerowanej **alias nazwy użytkownika i hasła** do uwierzytelniania podstawowego. Dotyczy to punktów końcowych w ramach:\n* Alias kontaktów (CardDAV)\n* Alias kalendarzy (CalDAV)\n* Alias wiadomości (IMAP/POP3)\n* Alias folderów (IMAP/POP3)\n\n*(Uwaga: te funkcje są obecnie oznaczone jako „Wkrótce”)*\n\n**Przykład:**\nJeśli alias nazwy użytkownika to `alias@domena.com`, a hasło to `GENERATED_PASSWORD`, zakodowana wartość Base64 będzie wynosić `echo -n \"alias@domena.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAuthorization: Basic YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nUżyj wygenerowanej **aliasowej nazwy użytkownika i hasła** do uwierzytelniania podstawowego. Dotyczy to punktów końcowych w ramach:\n* Alias Kontaktów (CardDAV)\n* Alias Kalendarzy (CalDAV)\n* Alias Wiadomości (IMAP/POP3)\n* Alias Folderów (IMAP/POP3)\n\n**Przykład:**\nJeśli aliasowa nazwa użytkownika to `alias@domena.com`, a hasło to `GENERATED_PASSWORD`, wartość zakodowana w Base64 to `echo -n \"alias@domena.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nAutoryzacja: Podstawowa YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identyfikator kontaktu (contact_id z CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Identyfikator użytkownika kontaktu"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Pełna nazwa kontaktu"
+          },
+          "content": {
+            "type": "string",
+            "description": "Zawartość vCard"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag do kontroli wersji"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Czy kontakt jest grupą"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica adresów e-mail"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica numerów telefonów"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Zawartość vCard (jeśli nie zostanie podana, zostanie wygenerowana z innych pól)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Pełna nazwa kontaktu"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Niestandardowy identyfikator kontaktu (jeśli nie zostanie podany, zostanie wygenerowany automatycznie)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Identyfikator kontaktu (jeśli nie podano, zostanie wygenerowany automatycznie)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica adresów e-mail"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica numerów telefonów"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica numerów telefonów (alias dla phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Tablica adresów"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Czy kontakt jest grupą"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Zawartość vCard"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Pełna nazwa kontaktu"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica adresów e-mail"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica numerów telefonów"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Tablica numerów telefonów (alias dla phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Tablica adresów"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Czy kontakt jest grupą"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identyfikator kalendarza (calendarId z CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nazwa kalendarza"
+          },
+          "description": {
+            "type": "string",
+            "description": "Opis kalendarza"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kolor kalendarza (format szesnastkowy)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Strefa czasowa kalendarza"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kolejność wyświetlania kalendarza"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nazwa kalendarza"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Niestandardowy identyfikator kalendarza (jeśli nie zostanie podany, zostanie wygenerowany automatycznie)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Opis kalendarza"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kolor kalendarza (format szesnastkowy; jeśli nie zostanie podany, zostanie wygenerowany automatycznie)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Strefa czasowa kalendarza (domyślnie strefa czasowa użytkownika lub UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kolejność wyświetlania kalendarza (domyślnie 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Nazwa kalendarza"
+          },
+          "description": {
+            "type": "string",
+            "description": "Opis kalendarza"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kolor kalendarza (format szesnastkowy)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Strefa czasowa kalendarza"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kolejność wyświetlania kalendarza"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identyfikator folderu"
+          },
+          "path": {
+            "type": "string",
+            "description": "Pełna ścieżka do folderu"
+          },
+          "name": {
+            "type": "string",
+            "description": "Nazwa folderu (ostatnia część ścieżki)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Ścieżka do folderu nadrzędnego"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "Ważność identyfikatora użytkownika IMAP"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Następna wartość UID"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Indeks modyfikacji"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Czy folder jest subskrybowany"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flagi folderów"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Okres przechowywania wiadomości"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Oznaczenie specjalnego przeznaczenia"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Ścieżka/nazwa folderu"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Nowa ścieżka/nazwa folderu"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identyfikator wiadomości"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Identyfikator wiadomości głównej dla wątków"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Identyfikator folderu zawierającego wiadomość"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Ścieżka do folderu zawierającego wiadomość"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Identyfikator wątku dla grupowania konwersacji"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Wartość nagłówka Message-ID"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Czy wiadomość jest nieprzeczytana"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Czy wiadomość jest oznaczona flagą"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Czy wiadomość została usunięta"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Czy wiadomość jest wersją roboczą"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Czy wiadomość jest spamem/śmiecią"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Czy wiadomość została skopiowana"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Czy wiadomość jest przeszukiwalna"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Czy wiadomość wygasła"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Czy wiadomość zawiera załączniki"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Data przechowywania wiadomości"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data wewnętrzna (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Data z nagłówków wiadomości"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Temat wiadomości"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flagi IMAP"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Rozmiar wiadomości w bajtach"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "Identyfikator użytkownika IMAP"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Sekwencja modyfikacji"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Typ transakcji"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Zdalny adres IP"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Przetworzony obiekt wiadomości (domyślnie uwzględniony, ustaw ?nodemailer=false, aby wykluczyć)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Surowa treść wiadomości (domyślnie uwzględniona, ustaw ?raw=false, aby wykluczyć)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Adres e-mail nadawcy"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Adresy e-mail odbiorców"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Adresy e-mail odbiorców DW"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Adresy e-mail odbiorców w polu „UDW”"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Temat wiadomości"
+          },
+          "text": {
+            "type": "string",
+            "description": "Zawartość zwykłego tekstu"
+          },
+          "html": {
+            "type": "string",
+            "description": "Zawartość HTML"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Załączniki do wiadomości (format Nodemailer)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Folder docelowy (domyślnie SKRZYNKA ODBIORCZA)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Flagi IMAP do ustawienia w wiadomości"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Flagi IMAP do ustawienia w wiadomości"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Przenieś wiadomość do tego folderu"
+          }
         }
       },
       "Email": {
@@ -331,7 +1200,7 @@
           },
           "html": {
             "type": "string",
-            "description": "Wersja wiadomości w formacie HTML."
+            "description": "Wersja HTML wiadomości."
           },
           "attachments": {
             "type": "array",
@@ -343,7 +1212,7 @@
           "sender": {
             "type": "string",
             "format": "email",
-            "description": "Adres e-mail dla nagłówka „Nadawca”."
+            "description": "Adres e-mail w nagłówku „Nadawca”."
           },
           "replyTo": {
             "type": "string",
@@ -366,15 +1235,15 @@
                 }
               }
             ],
-            "description": "Lista lub tablica identyfikatorów wiadomości rozdzielonych spacją."
+            "description": "Lista lub tablica identyfikatorów wiadomości rozdzielonych spacjami."
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "Jeśli wartość jest równa true, konwertuje dane: obrazy w zawartości HTML do osadzonych załączników."
+            "description": "Jeśli wartość jest równa prawda, konwertuje dane: obrazy w zawartości HTML na osadzone załączniki."
           },
           "watchHtml": {
             "type": "string",
-            "description": "Wersja wiadomości HTML specyficzna dla Apple Watch."
+            "description": "Wersja wiadomości HTML specyficzna dla zegarka Apple Watch."
           },
           "amp": {
             "type": "string",
@@ -433,7 +1302,7 @@
           },
           "messageId": {
             "type": "string",
-            "description": "Opcjonalny identyfikator wiadomości dla nagłówka „Message-ID”."
+            "description": "Opcjonalny Message-ID dla nagłówka „Message-ID”."
           },
           "date": {
             "oneOf": [
@@ -445,7 +1314,7 @@
                 "type": "string"
               }
             ],
-            "description": "Opcjonalny nagłówek daty. Nie może przypadać później niż 30 dni w przyszłości."
+            "description": "Opcjonalny nagłówek daty. Data nie może przypadać później niż 30 dni w przyszłości."
           },
           "list": {
             "type": "object",
@@ -682,7 +1551,7 @@
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Przypisz do tego samego zespołu z innej domeny; może to być identyfikator domeny lub FQDN. Użyj „none”, aby wyraźnie wyłączyć."
+            "description": "Przypisz do tego samego zespołu z innej domeny; może to być identyfikator domeny lub nazwa domeny w pełni kwalifikowanej (FQDN). Użyj „brak”, aby wyraźnie wyłączyć."
           },
           "plan": {
             "type": "string",
@@ -691,7 +1560,7 @@
               "enhanced_protection",
               "team"
             ],
-            "description": "Typ planu (domyślnie „bezpłatny” lub bieżący płatny plan użytkownika)"
+            "description": "Typ planu (domyślnie „bezpłatny” lub aktualny płatny plan użytkownika)"
           },
           "catchall": {
             "oneOf": [
@@ -700,7 +1569,7 @@
               },
               {
                 "type": "string",
-                "description": "Lista adresów e-mail rozdzielonych przecinkiem, spacją lub nową linią"
+                "description": "Lista adresów e-mail rozdzielonych przecinkami, spacjami lub znakami nowej linii"
               }
             ],
             "description": "Utwórz domyślny alias typu catch-all (domyślnie true)"
@@ -711,11 +1580,11 @@
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Włącz ochronę przed phishingiem za pomocą Spam Scanner"
+            "description": "Włącz ochronę przed phishingiem za pomocą skanera spamu"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Włącz ochronę pliku wykonywalnego Spam Scanner"
+            "description": "Włącz ochronę pliku wykonywalnego skanera spamu"
           },
           "has_virus_protection": {
             "type": "boolean",
@@ -747,7 +1616,7 @@
                 "enum": [
                   false
                 ],
-                "description": "Wyłącz odrzucanie webhook"
+                "description": "Wyłącz webhook odbicia"
               }
             ]
           },
@@ -773,15 +1642,15 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Czy włączyć ochronę treści dla dorosłych za pomocą skanera spamu w tej domenie"
+            "description": "Czy włączyć ochronę antyspamową dla treści dla dorosłych w tej domenie?"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Czy włączyć ochronę przed phishingiem Spam Scanner w tej domenie"
+            "description": "Czy włączyć ochronę przed phishingiem za pomocą Spam Scanner w tej domenie?"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Czy włączyć ochronę pliku wykonywalnego Spam Scanner w tej domenie"
+            "description": "Czy włączyć ochronę pliku wykonywalnego skanera spamu w tej domenie"
           },
           "has_virus_protection": {
             "type": "boolean",
@@ -789,7 +1658,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Globalna domyślna domena, która określa, czy odbiorcy aliasów mają być zobowiązani do kliknięcia łącza weryfikacyjnego adresu e-mail, aby wiadomości e-mail mogły być przesyłane"
+            "description": "Globalna domyślna domena, która określa, czy odbiorcy aliasów mają być zobowiązani do kliknięcia łącza weryfikacyjnego adresu e-mail, aby wiadomości e-mail mogły przez nią przepływać"
           },
           "ignore_mx_check": {
             "type": "boolean",
@@ -814,11 +1683,11 @@
                 ]
               }
             ],
-            "description": "Adres URL webhooka do otrzymywania powiadomień o odrzuceniu lub false, aby je wyłączyć"
+            "description": "Adres URL webhooka do otrzymywania powiadomień o odrzuceniu lub fałsz, aby je wyłączyć"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Limit pamięci masowej na alias (np. „1 GB”, podzielony na bajty)"
+            "description": "Limit pamięci masowej dla każdego aliasu (np. „1 GB”, podzielony na bajty)"
           }
         }
       },
@@ -969,13 +1838,13 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Nazwa aliasu (jeśli nie podano lub jest pusta, generowany jest losowy alias)"
+            "description": "Nazwa aliasu (jeśli nie zostanie podana lub będzie pusta, zostanie wygenerowany losowy alias)"
           },
           "recipients": {
             "oneOf": [
               {
                 "type": "string",
-                "description": "Ciąg rozdzielony podziałem wiersza/spacją/przecinkiem zawierający prawidłowe adresy e-mail, nazwy FQDN, adresy IP lub adresy URL webhook"
+                "description": "Ciąg prawidłowych adresów e-mail, nazw w pełni kwalifikowanych (FQDN), adresów IP lub adresów URL webhook rozdzielonych podziałem wiersza, spacją lub przecinkiem"
               },
               {
                 "type": "array",
@@ -986,7 +1855,7 @@
                 "description": "Tablica prawidłowych odbiorców"
               }
             ],
-            "description": "Lista odbiorców. Jeśli nie podano lub jest pusta, domyślnie jest to adres e-mail wnioskodawcy"
+            "description": "Lista odbiorców. Jeśli nie zostanie podana lub będzie pusta, domyślnie zostanie wyświetlony adres e-mail wnioskodawcy."
           },
           "description": {
             "type": "string",
@@ -1022,7 +1891,7 @@
               421,
               550
             ],
-            "description": "Kod błędu, jeśli alias jest wyłączony. Domyślnie 250"
+            "description": "Kod błędu, jeśli alias jest wyłączony. Domyślnie 250."
           },
           "has_imap": {
             "type": "boolean",
@@ -1042,23 +1911,23 @@
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Włączanie i wyłączanie funkcji powiadamiania o nieobecności"
+            "description": "Włączanie lub wyłączanie funkcji powiadamiania o nieobecności"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Data rozpoczęcia (np. „RRRR-MM-DD”) dla odpowiedzi o nieobecności"
+            "description": "Data rozpoczęcia (np. „RRRR-MM-DD”) dla wiadomości wysyłanej z informacją o nieobecności"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Data zakończenia (np. „RRRR-MM-DD”) dla odpowiedzi o nieobecności"
+            "description": "Data zakończenia (np. „RRRR-MM-DD”) dla wiadomości wysyłanej z informacją o nieobecności"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Temat w postaci zwykłego tekstu dla odpowiedzi o nieobecności"
+            "description": "Temat w tekście jawnym dla wiadomości o nieobecności"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Wiadomość w formie zwykłego tekstu dla osoby wysyłającej wiadomość o nieobecności"
+            "description": "Wiadomość tekstowa dla osoby wysyłającej wiadomość o nieobecności"
           }
         }
       },
@@ -1073,7 +1942,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "Ciąg rozdzielony podziałem wiersza/spacją/przecinkiem zawierający prawidłowe adresy e-mail, nazwy FQDN, adresy IP lub adresy URL webhook"
+                "description": "Ciąg prawidłowych adresów e-mail, nazw w pełni kwalifikowanych (FQDN), adresów IP lub adresów URL webhook rozdzielonych podziałem wiersza, spacją lub przecinkiem"
               },
               {
                 "type": "array",
@@ -1123,7 +1992,7 @@
           },
           "has_imap": {
             "type": "boolean",
-            "description": "Włączanie lub wyłączanie przechowywania IMAP"
+            "description": "Włączanie lub wyłączanie pamięci masowej IMAP"
           },
           "has_pgp": {
             "type": "boolean",
@@ -1135,27 +2004,27 @@
           },
           "max_quota": {
             "type": "string",
-            "description": "Maksymalny limit pamięci masowej (np. „1 GB”)"
+            "description": "Maksymalny limit miejsca na dane (np. „1 GB”)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Włączanie i wyłączanie funkcji powiadamiania o nieobecności"
+            "description": "Włączanie lub wyłączanie funkcji powiadamiania o nieobecności"
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Data rozpoczęcia funkcji odpowiadania na urlop (np. RRRR-MM-DD)"
+            "description": "Data rozpoczęcia wysyłania wiadomości o nieobecności (np. RRRR-MM-DD)"
           },
           "vacation_responder_end_date": {
             "type": "string",
-            "description": "Data zakończenia odpowiedzi urlopowej (np. RRRR-MM-DD)"
+            "description": "Data zakończenia wysyłania wiadomości o nieobecności (np. RRRR-MM-DD)"
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Temat odpowiedzi urlopowej w formie jawnego tekstu"
+            "description": "Temat wiadomości o nieobecności w formie tekstu jawnego"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Wiadomość tekstowa w formie zwykłego tekstu od osoby udzielającej odpowiedzi na wiadomość o nieobecności"
+            "description": "Wiadomość tekstowa w formie wiadomości o nieobecności"
           }
         }
       },
@@ -1168,7 +2037,7 @@
           },
           "password": {
             "type": "string",
-            "description": "Istniejące hasło dla aliasu, aby je zmienić bez usuwania pamięci skrzynki pocztowej"
+            "description": "Istniejące hasło aliasu, aby je zmienić bez usuwania zawartości skrzynki pocztowej"
           },
           "is_override": {
             "type": "boolean",
@@ -1227,7 +2096,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Strona wyników do zwrócenia. Jeśli nie określono, wartość będzie wynosić 1. Musi być liczbą większą lub równą 1.",
+        "description": "Strona wyników do zwrócenia. Jeśli nie określono, wartość będzie wynosić 1. Musi to być liczba większa lub równa 1.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1237,7 +2106,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Liczba wyników do zwrócenia na stronę. Domyślnie 10, jeśli nie określono. Musi być liczbą większą lub równą 1 i mniejszą lub równą 50.",
+        "description": "Liczba wyników zwracanych na stronę. Domyślnie 10, jeśli nie określono inaczej. Musi to być liczba większa lub równa 1 i mniejsza lub równa 50.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Aliasy ID",
+        "description": "Identyfikator aliasu",
         "schema": {
           "type": "string"
         }
@@ -1275,7 +2144,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "ID członka",
+        "description": "Identyfikator członka",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "Identyfikator e-mail",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Identyfikator kontaktu",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Identyfikator kalendarza",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Identyfikator folderu lub ścieżka",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Identyfikator wiadomości",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Utwórz konto",
-        "description": "Utwórz nowe konto użytkownika",
-        "tags": [
-          "Konto"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "Adres e-mail"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Hasło"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Odzyskaj konto",
-        "description": "Pobierz informacje o koncie bieżącego użytkownika",
         "tags": [
           "Konto"
         ],
+        "summary": "Pobierz konto",
+        "description": "Pobierz informacje o swoim koncie.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Aktualizuj konto",
-        "description": "Zaktualizuj informacje o koncie bieżącego użytkownika",
         "tags": [
           "Konto"
         ],
+        "summary": "Zaktualizuj konto",
+        "description": "Zaktualizuj dane swojego konta.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "Adres e-mail"
+                    "description": "Nazwa wyświetlana"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Imię"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Nazwisko"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Link do obrazu awatara"
+                    "description": "Preferencje regionalne"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Łączność"
+        ],
+        "summary": "Lista kontaktów",
+        "description": "Pobierz listę wszystkich kontaktów dla uwierzytelnionego aliasu. Ten punkt końcowy obsługuje paginację i zwraca kontakty w formacie CardDAV.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Łączność"
+        ],
+        "summary": "Utwórz kontakt",
+        "description": "Utwórz nowy kontakt. Możesz podać bezpośrednio zawartość vCard lub poszczególne pola kontaktu, które zostaną przekonwertowane na format vCard. Jeśli kontakt o tym samym identyfikatorze już istnieje, zostanie zwrócony błąd konfliktu.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Łączność"
+        ],
+        "summary": "Pobierz kontakt",
+        "description": "Pobierz konkretny kontakt według jego identyfikatora. Kontakt jest zwracany w standardowym formacie kontaktu z zawartością vCard i przetworzonymi polami.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Łączność"
+        ],
+        "summary": "Aktualizacja kontaktu",
+        "description": "Zaktualizuj istniejący kontakt. Możesz podać zaktualizowaną zawartość vCard lub poszczególne pola do aktualizacji. Wizytówka vCard kontaktu zostanie wygenerowana ponownie, jeśli podane zostaną poszczególne pola.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Łączność"
+        ],
+        "summary": "Usuń kontakt",
+        "description": "Trwale usuń konkretny kontakt. Tej czynności nie można cofnąć.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Kalendarze"
+        ],
+        "summary": "Lista kalendarzy",
+        "description": "Pobierz listę wszystkich kalendarzy dla uwierzytelnionego aliasu. Ten punkt końcowy obsługuje paginację i zwraca kalendarze w formacie CalDAV.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kalendarze"
+        ],
+        "summary": "Utwórz kalendarz",
+        "description": "Utwórz nowy kalendarz. Nazwa kalendarza jest wymagana, a inne właściwości, takie jak kolor, strefa czasowa i opis, są opcjonalne. Jeśli kalendarz o tej samej nazwie już istnieje, zostanie zwrócony błąd konfliktu.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Kalendarze"
+        ],
+        "summary": "Pobierz kalendarz",
+        "description": "Pobierz konkretny kalendarz według jego identyfikatora. Kalendarz zostanie zwrócony ze wszystkimi swoimi właściwościami, w tym nazwą, opisem, kolorem, strefą czasową i kolejnością.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kalendarze"
+        ],
+        "summary": "Aktualizacja kalendarza",
+        "description": "Zaktualizuj istniejący kalendarz. Możesz zaktualizować dowolne właściwości kalendarza, w tym nazwę, opis, kolor, strefę czasową i kolejność. Jeśli zmienisz nazwę na już istniejącą, zostanie zwrócony błąd konfliktu.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kalendarze"
+        ],
+        "summary": "Usuń kalendarz",
+        "description": "Trwale usuń konkretny kalendarz. Tej czynności nie można cofnąć, a wszystkie wydarzenia w kalendarzu zostaną usunięte.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Lornetka składana"
+        ],
+        "summary": "Wyświetlanie listy folderów",
+        "description": "Pobierz listę wszystkich folderów/skrzynek pocztowych IMAP dla uwierzytelnionego aliasu. Ten punkt końcowy obsługuje paginację i filtrowanie według statusu subskrypcji.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Filtruj foldery według statusu subskrypcji",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Lornetka składana"
+        ],
+        "summary": "Utwórz folder",
+        "description": "Utwórz nowy folder/skrzynkę pocztową IMAP. Ścieżka do folderu jest wymagana i może zawierać foldery nadrzędne (np. „SKRZYNKA ODBIORCZA/Podfolder”). Jeśli foldery nadrzędne nie istnieją, zostaną utworzone automatycznie.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Lornetka składana"
+        ],
+        "summary": "Pobierz folder",
+        "description": "Pobierz konkretny folder według jego identyfikatora lub ścieżki. Jako identyfikatora możesz użyć identyfikatora obiektu folderu lub jego pełnej ścieżki (np. „SKRZYNKA ODBIORCZA/Podfolder”).",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Lornetka składana"
+        ],
+        "summary": "Aktualizuj folder",
+        "description": "Zaktualizuj/zmień nazwę istniejącego folderu. Ta operacja zmienia nazwę folderu na nową ścieżkę określoną w treści żądania. Jako identyfikatora możesz użyć identyfikatora obiektu folderu lub jego bieżącej ścieżki.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Lornetka składana"
+        ],
+        "summary": "Usuń folder",
+        "description": "Trwale usuń określony folder. Tej czynności nie można cofnąć, a wszystkie wiadomości w folderze zostaną usunięte. Jako identyfikatora możesz użyć identyfikatora obiektu folderu lub jego ścieżki.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Wiadomości"
+        ],
+        "summary": "Wyświetlanie listy i wyszukiwanie wiadomości",
+        "description": "Pobierz listę wiadomości z zaawansowanymi funkcjami wyszukiwania i filtrowania. Ten punkt końcowy obsługuje paginację i kompleksowe wyszukiwanie w treści wiadomości, nagłówkach, flagach i metadanych. Możesz wyszukiwać według folderu, flag, treści, nagłówków, zakresów dat, rozmiaru i innych kryteriów.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Filtruj wiadomości według ścieżki folderu",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Filtruj według statusu odczytu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Filtruj według oznaczonego statusu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Filtruj według statusu usunięcia",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Filtruj według statusu roboczego",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Filtruj według statusu niechcianej/spamu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Filtruj według skopiowanego statusu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Filtruj według wyszukiwalnego statusu",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Filtruj według statusu wygasłego",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Filtruj według obecności załącznika",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Filtruj według obecności załącznika (alias dla has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Szukaj w temacie wiadomości",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Szukaj w treści/tekście wiadomości",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Szukaj w tekście wiadomości (alias treści)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Szukaj we wszystkich nagłówkach wiadomości",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Wyszukaj według nagłówka Message-ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Ogólne wyszukiwanie w nagłówkach i tekście",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Wyszukiwanie ogólne (alias wyszukiwania)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Filtruj wiadomości od tej daty (format ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Filtruj wiadomości sprzed tej daty (format ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Filtruj wiadomości o minimalnym rozmiarze w bajtach",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Filtruj wiadomości o maksymalnym rozmiarze w bajtach",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Szukaj według nagłówka Od",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Szukaj według Do nagłówka",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Wyszukaj według nagłówka CC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Szukaj według nagłówka UDW",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Szukaj według nagłówka daty",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Szukaj według nagłówka „Odpowiedz do”",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Wiadomości"
+        ],
+        "summary": "Utwórz wiadomość",
+        "description": "Utwórz/dołącz nową wiadomość do folderu. Ten punkt końcowy akceptuje standardowy format wiadomości Nodemailer i pozwala określić folder docelowy oraz flagi początkowe. Jeśli folder docelowy nie istnieje, zostanie utworzony automatycznie.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Wiadomości"
+        ],
+        "summary": "Pobierz wiadomość",
+        "description": "Pobierz konkretną wiadomość według jej identyfikatora. Domyślnie odpowiedź zawiera sparsowany obiekt Nodemailer i nieprzetworzoną treść wiadomości. Możesz kontrolować, co zostanie uwzględnione, za pomocą parametrów zapytania.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Zwróć surowy format EML zamiast JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Dołącz sparsowany obiekt Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Dołącz załączniki do obiektu Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Dołącz surową treść wiadomości",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Wiadomości"
+        ],
+        "summary": "Aktualizuj wiadomość",
+        "description": "Zaktualizuj istniejącą wiadomość. Możesz zmodyfikować flagi wiadomości lub przenieść ją do innego folderu. Jeśli folder docelowy nie istnieje, zostanie utworzony automatycznie.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Zwróć surowy format EML zamiast JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Wiadomości"
+        ],
+        "summary": "Usuń wiadomość",
+        "description": "Trwałe usunięcie konkretnej wiadomości. Tej czynności nie można cofnąć i spowoduje ona trwałe usunięcie wiadomości z pamięci. W przeciwieństwie do klientów IMAP, które zazwyczaj przenoszą wiadomości do Kosza, ten punkt końcowy wykonuje trwałe usunięcie.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1559,7 +3781,7 @@
     "/v1/logs/download": {
       "get": {
         "summary": "Pobierz dzienniki",
-        "description": "**Pobierz dzienniki**\n\nOpis: Nasz interfejs API programowo umożliwia pobieranie dzienników dla Twojego konta. Wysłanie żądania do tego punktu końcowego spowoduje przetworzenie wszystkich dzienników dla Twojego konta i wysłanie ich do Ciebie jako załącznika (skompresowany plik arkusza kalkulacyjnego CSV Gzip) po zakończeniu.\n\nUmożliwia to tworzenie zadań w tle za pomocą zadania Cron lub za pomocą oprogramowania do planowania zadań Node.js Bree w celu otrzymywania dzienników w dowolnym momencie. Należy pamiętać, że ten punkt końcowy jest ograniczony do `10` żądań dziennie.\n\nZałącznik jest małą literą `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, a sam e-mail zawiera krótkie podsumowanie pobranych dzienników.",
+        "description": "**Pobieranie logów**\n\nOpis: Nasze API programowo umożliwia pobieranie logów dla Twojego konta. Wysłanie żądania do tego punktu końcowego spowoduje przetworzenie wszystkich logów dla Twojego konta i przesłanie ich e-mailem w postaci załącznika (skompresowanego pliku arkusza kalkulacyjnego CSV w formacie Gzip) po zakończeniu.\n\nUmożliwia to tworzenie zadań w tle za pomocą zadania Cron lub za pomocą oprogramowania Bree do planowania zadań Node.js, aby otrzymywać logi w dowolnym momencie. Należy pamiętać, że ten punkt końcowy jest ograniczony do `10` żądań dziennie.\n\nZałącznik to `email-deliverability-logs-RRRR-MM-DD-h-mm-A-z.csv.gz` (pisane małymi literami), a sama wiadomość e-mail zawiera krótkie podsumowanie pobranych logów.",
         "tags": [
           "Dzienniki"
         ],
@@ -1572,7 +3794,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Filtruj logi według w pełni kwalifikowanej domeny („FQDN”). Jeśli nie podano, zostaną pobrane wszystkie logi ze wszystkich domen.",
+            "description": "Filtruj logi według w pełni kwalifikowanej domeny („FQDN”). Jeśli nie zostanie podany, zostaną pobrane wszystkie logi ze wszystkich domen.",
             "schema": {
               "type": "string"
             }
@@ -1588,7 +3810,7 @@
           {
             "name": "bounce_category",
             "in": "query",
-            "description": "Wyszukaj dzienniki według określonej kategorii odrzuceń (np. „lista zablokowanych”).",
+            "description": "Wyszukaj dzienniki według określonej kategorii odrzuceń (np. „lista blokowanych wiadomości”).",
             "schema": {
               "type": "string"
             }
@@ -1596,7 +3818,7 @@
           {
             "name": "response_code",
             "in": "query",
-            "description": "Wyszukaj dzienniki według określonego kodu odpowiedzi na błąd (np. 421 lub 550).",
+            "description": "Przeszukaj dzienniki według określonego kodu odpowiedzi na błąd (np. 421 lub 550).",
             "schema": {
               "type": "integer"
             }
@@ -1637,7 +3859,7 @@
     "/v1/emails": {
       "get": {
         "summary": "Wyświetl listę wiadomości e-mail SMTP wychodzących",
-        "description": "**Lista wychodzących wiadomości e-mail SMTP**\n\nNależy pamiętać, że ten punkt końcowy nie zwraca wartości właściwości dla `message`, `headers` ani `rejectedErrors` wiadomości e-mail.\n\nAby zwrócić te właściwości i ich wartości, należy użyć punktu końcowego [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) z identyfikatorem e-mail.",
+        "description": "**Wyświetl listę wychodzących wiadomości e-mail SMTP**\n\nNależy pamiętać, że ten punkt końcowy nie zwraca wartości właściwości „message”, „headers” ani „rejectedErrors” wiadomości e-mail.\n\nAby zwrócić te właściwości i ich wartości, należy użyć punktu końcowego [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) z identyfikatorem e-mail.",
         "tags": [
           "E-maile"
         ],
@@ -1666,7 +3888,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sortuj według określonego pola (prefiks z pojedynczym myślnikiem - aby sortować w odwrotnym kierunku do tego pola). Domyślnie created_at, jeśli nie ustawiono.",
+            "description": "Sortuj według konkretnego pola (prefiks z pojedynczym myślnikiem – sortowanie w odwrotnym kierunku niż w przypadku danego pola). Domyślnie created_at, jeśli nie jest ustawione.",
             "schema": {
               "type": "string"
             }
@@ -1714,8 +3936,8 @@
         }
       },
       "post": {
-        "summary": "Utwórz wychodzącą pocztę SMTP",
-        "description": "Nasze API do tworzenia wiadomości e-mail jest inspirowane i wykorzystuje konfigurację opcji wiadomości Nodemailer. Proszę odnieść się do [konfiguracji wiadomości Nodemailer](https://nodemailer.com/message/) dla wszystkich parametrów treści poniżej.\n\nNależy pamiętać, że z wyjątkiem `envelope` i `dkim` (ponieważ ustawiamy je automatycznie dla Ciebie), obsługujemy wszystkie opcje Nodemailer. Automatycznie ustawiamy opcje `disableFileAccess` i `disableUrlAccess` na `true` ze względów bezpieczeństwa.\n\nPowinieneś przekazać pojedynczą opcję `raw` z Twoją pełną wiadomością e-mail, w tym nagłówkami, lub przekazać poszczególne opcje parametrów treści poniżej.\n\nTen punkt końcowy API automatycznie zakoduje emotikony, jeśli zostaną znalezione w nagłówkach (np. wiersz tematu `Subject: 🤓 Hello` zostanie automatycznie przekonwertowany na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naszym celem było stworzenie niezwykle przyjaznego dla programistów i odpornego na błędy interfejsu API poczty e-mail.",
+        "summary": "Utwórz wychodzącą pocztę e-mail SMTP",
+        "description": "Nasze API do tworzenia wiadomości e-mail jest inspirowane i wykorzystuje konfigurację opcji wiadomości Nodemailer. Prosimy o zapoznanie się z [konfiguracją wiadomości Nodemailer](https://nodemailer.com/message/) dla wszystkich poniższych parametrów treści.\n\nPamiętaj, że z wyjątkiem `envelope` i `dkim` (ponieważ ustawiamy je automatycznie), obsługujemy wszystkie opcje Nodemailer. Ze względów bezpieczeństwa automatycznie ustawiamy opcje `disableFileAccess` i `disableUrlAccess` na `true`.\n\nNależy przekazać pojedynczą opcję `raw` wraz z pełną treścią wiadomości e-mail, w tym nagłówkami, lub przekazać poniższe opcje parametrów treści.\n\nTen punkt końcowy API automatycznie zakoduje emotikony, jeśli zostaną znalezione w nagłówkach (np. temat wiadomości `Subject: 🤓 Hello` zostanie automatycznie przekonwertowany na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naszym celem było stworzenie niezwykle przyjaznego dla programistów i odpornego na błędy interfejsu API poczty e-mail.",
         "tags": [
           "E-maile"
         ],
@@ -1802,7 +4024,7 @@
       ],
       "get": {
         "summary": "Pobierz wychodzącą pocztę SMTP",
-        "description": "Pobierz konkretną wiadomość e-mail wychodzącą SMTP.",
+        "description": "Pobierz konkretną wiadomość e-mail SMTP.",
         "tags": [
           "E-maile"
         ],
@@ -1835,7 +4057,7 @@
       },
       "delete": {
         "summary": "Usuń wychodzącą pocztę SMTP",
-        "description": "Usunięcie wiadomości e-mail ustawi status na `\"odrzucony\"` (i następnie nie przetworzy jej w kolejce) wtedy i tylko wtedy, gdy bieżący status to `\"oczekujący\"`, `\"w kolejce\"` lub `\"odroczony\"`. Możemy automatycznie usuwać wiadomości e-mail po 30 dniach od ich utworzenia i/lub wysłania – dlatego powinieneś przechowywać kopię wychodzących wiadomości e-mail SMTP w swoim kliencie, bazie danych lub aplikacji. Możesz odwołać się do naszej wartości identyfikatora wiadomości e-mail w swojej bazie danych, jeśli chcesz – ta wartość jest zwracana zarówno z punktów końcowych [Utwórz wiadomość e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email), jak i [Pobierz wiadomość e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
+        "description": "Usunięcie wiadomości e-mail spowoduje ustawienie statusu na „odrzucono” (i nieprzetworzenie jej w kolejce) tylko wtedy, gdy aktualny status to „oczekujący”, „w kolejce” lub „odroczony”. Możemy automatycznie usuwać wiadomości e-mail po 30 dniach od ich utworzenia i/lub wysłania – dlatego należy zachować kopię wychodzących wiadomości SMTP w kliencie, bazie danych lub aplikacji. W razie potrzeby można odwołać się do wartości identyfikatora wiadomości e-mail w bazie danych – wartość ta jest zwracana zarówno z punktów końcowych [Utwórz wiadomość e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email), jak i [Pobierz wiadomość e-mail](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
         "tags": [
           "E-maile"
         ],
@@ -1875,8 +4097,8 @@
     },
     "/v1/domains": {
       "get": {
-        "summary": "Wyświetlanie domen",
-        "description": "> [!NOTE]\n>Od 1 listopada 2024 r. punkty końcowe interfejsu API dla domen listy i aliasów domen listy będą domyślnie miały maks. `1000` wyników na stronę. Jeśli chcesz wcześniej włączyć to zachowanie, możesz przekazać `?paginate=true` jako dodatkowy parametr ciągu zapytania do adresu URL dla zapytania punktu końcowego. Więcej informacji znajdziesz w sekcji Paginacja.",
+        "summary": "Wyświetl domeny",
+        "description": "> [!NOTE]\n>Od 1 listopada 2024 r. punkty końcowe API dla domen List i aliasów domen List będą domyślnie miały maksymalną liczbę wyników na stronę: ``1000``. Jeśli chcesz włączyć tę funkcję wcześniej, możesz przekazać `?paginate=true` jako dodatkowy parametr ciągu zapytania do adresu URL zapytania punktu końcowego. Więcej informacji znajdziesz w sekcji Paginacja.",
         "tags": [
           "Domeny"
         ],
@@ -1905,7 +4127,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sortuj według określonego pola (prefiks z pojedynczym myślnikiem - aby sortować w odwrotnym kierunku do tego pola). Domyślnie created_at, jeśli nie ustawiono.",
+            "description": "Sortuj według konkretnego pola (prefiks z pojedynczym myślnikiem – sortowanie w odwrotnym kierunku niż pole). Domyślnie created_at, jeśli nie jest ustawione.",
             "schema": {
               "type": "string"
             }
@@ -1951,7 +4173,7 @@
       },
       "post": {
         "summary": "Utwórz domenę",
-        "description": "Tworzy nową domenę w systemie. Ten punkt końcowy umożliwia zarejestrowanie w pełni kwalifikowanej nazwy domeny (FQDN) lub adresu IP do użytku z platformą.\n\nOpcjonalne opcje konfiguracji obejmują przypisanie domeny do istniejącego zespołu, ustawienie typu planu (np. bezpłatny, rozszerzona ochrona lub zespół) i skonfigurowanie zaawansowanych zabezpieczeń, takich jak filtrowanie spamu, skanowanie antywirusowe i weryfikacja odbiorcy. Możesz również skonfigurować, czy domyślnie ma być tworzony alias catch-all, ustawić niestandardowy adres URL webhooka odrzucenia dla awarii SMTP i zdefiniować limity przydziału pamięci dla aliasów e-mail w tej domenie. Ten punkt końcowy wykonuje walidację i provisioning na poziomie domeny. Jeśli opcja `ignore_mx_check` jest włączona, weryfikacja rekordu MX jest pomijana (zalecane tylko w przypadku zaawansowanych konfiguracji routingu). Odpowiedź będzie zawierać pełne szczegóły utworzonego obiektu domeny, w tym rekordy DNS potrzebne do konfiguracji.",
+        "description": "Tworzy nową domenę w systemie. Ten punkt końcowy umożliwia rejestrację w pełni kwalifikowanej nazwy domeny (FQDN) lub adresu IP do użytku z platformą.\n\nOpcjonalne opcje konfiguracji obejmują przypisanie domeny do istniejącego zespołu, ustawienie typu planu (np. bezpłatny, rozszerzona ochrona lub zespół) oraz skonfigurowanie zaawansowanych zabezpieczeń, takich jak filtrowanie spamu, skanowanie antywirusowe i weryfikacja odbiorców. Można również skonfigurować, czy domyślnie ma być tworzony alias typu catch-all, ustawić niestandardowy adres URL webhooka dla błędów SMTP oraz zdefiniować limity przestrzeni dyskowej dla aliasów e-mail w tej domenie. Ten punkt końcowy przeprowadza walidację i provisioning na poziomie domeny. Jeśli opcja `ignore_mx_check` jest włączona, weryfikacja rekordów MX jest pomijana (zalecane tylko w przypadku zaawansowanych konfiguracji routingu). Odpowiedź będzie zawierała pełne informacje o utworzonym obiekcie domeny, w tym rekordy DNS potrzebne do konfiguracji.",
         "tags": [
           "Domeny"
         ],
@@ -2035,7 +4257,7 @@
         }
       },
       "put": {
-        "summary": "Aktualizuj domenę",
+        "summary": "Aktualizacja domeny",
         "description": "Zaktualizuj konkretną domenę.",
         "tags": [
           "Domeny"
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2078,7 +4300,7 @@
       },
       "delete": {
         "summary": "Usuń domenę",
-        "description": "Usuń konkretną domenę.",
+        "description": "Usuń określoną domenę.",
         "tags": [
           "Domeny"
         ],
@@ -2209,7 +4431,7 @@
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
         "summary": "Utwórz hasło uniwersalne dla całej domeny",
-        "description": "Tworzy hasło typu catch-all dla całej domeny. Jeśli nie podano hasła, zostanie wygenerowane bezpieczne hasło losowe.",
+        "description": "Tworzy hasło uniwersalne dla całej domeny. Jeśli nie zostanie podane hasło, zostanie wygenerowane bezpieczne, losowe hasło.",
         "tags": [
           "Domeny"
         ],
@@ -2221,7 +4443,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Nazwa domeny, dla której chcesz utworzyć hasło uniwersalne"
+            "description": "Nazwa domeny, dla której chcesz utworzyć hasło zbiorcze"
           }
         ],
         "requestBody": {
@@ -2233,7 +4455,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Twoje nowe hasło niestandardowe do użycia jako hasło catch-all dla całej domeny. Pozostaw puste, aby wygenerować silne hasło."
+                    "description": "Twoje nowe, niestandardowe hasło, które będzie używane jako hasło uniwersalne dla całej domeny. Pozostaw puste, aby wygenerować silne hasło."
                   },
                   "description": {
                     "type": "string",
@@ -2282,8 +4504,8 @@
         }
       },
       "get": {
-        "summary": "Wyświetl listę haseł typu catch-all w całej domenie",
-        "description": "Zwraca listę haseł uniwersalnych dla całej domeny, które są aktualnie skonfigurowane dla określonej domeny.",
+        "summary": "Wyświetl listę haseł uniwersalnych dla całej domeny",
+        "description": "Zwraca listę haseł uniwersalnych dla danej domeny, które są aktualnie skonfigurowane dla określonej domeny.",
         "operationId": "listCatchAllPasswords",
         "tags": [
           "Domeny"
@@ -2471,7 +4693,7 @@
       },
       "post": {
         "summary": "Utwórz zaproszenie do domeny",
-        "description": ">[!IMPORTANT]\n>Jeśli zapraszany użytkownik jest już zaakceptowanym członkiem jakiejkolwiek innej domeny, której członkiem jest zapraszający go administrator, zaproszenie zostanie automatycznie zaakceptowane i nie zostanie wysłana wiadomość e-mail.",
+        "description": ">[!IMPORTANT]\n>Jeśli zapraszany użytkownik jest już zaakceptowanym członkiem jakiejkolwiek innej domeny, do której należy zapraszający go administrator, zaproszenie zostanie automatycznie zaakceptowane i wiadomość e-mail nie zostanie wysłana.",
         "tags": [
           "Zaproszenia"
         ],
@@ -2497,7 +4719,7 @@
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Grupa, do której należy dodać użytkownika, aby mógł być członkiem domeny (może to być jedna z grup ``admin`` lub ``user``)"
+                    "description": "Grupa, do której należy dodać użytkownika, aby był członkiem domeny (może to być jedna z grup: ``admin`` lub ``user``)"
                   }
                 }
               }
@@ -2623,7 +4845,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Grupa, do której ma zostać dodany użytkownik, aby uzyskać członkostwo w domenie (może to być jedna z grup ``admin`` lub ``user``)"
+                    "description": "Grupa, do której ma zostać dodany użytkownik w celu aktualizacji członkostwa w domenie (może to być jedna z grup: ``admin`` lub ``user``)"
                   }
                 }
               }
@@ -2698,7 +4920,7 @@
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
         "summary": "Wygeneruj hasło aliasu",
-        "description": "Wygeneruj hasło dla aliasu. Jeśli `emailed_instructions` nie zostanie podane, odpowiedź będzie zawierać wygenerowaną nazwę użytkownika i hasło.",
+        "description": "Wygeneruj hasło dla aliasu. Jeśli nie podano `emailed_instructions`, odpowiedź będzie zawierać wygenerowaną nazwę użytkownika i hasło.",
         "tags": [
           "Pseudonimy"
         ],
@@ -2773,8 +4995,8 @@
         }
       ],
       "get": {
-        "summary": "Wyświetl listę aliasów domen",
-        "description": ">[!NOTE]\n>Od 1 listopada 2024 r. punkty końcowe interfejsu API dla `List domains` i `List domain aliases` będą domyślnie miały maks. `1000` wyników na stronę. Jeśli chcesz wcześniej włączyć to zachowanie, możesz przekazać `?paginate=true` jako dodatkowy parametr ciągu zapytania do adresu URL dla zapytania punktu końcowego. Więcej informacji znajdziesz w sekcji Paginacja.",
+        "summary": "Wyświetl aliasy domen",
+        "description": ">[!NOTE]\n>Od 1 listopada 2024 r. punkty końcowe API dla funkcji „Lista domen” i „Lista aliasów domen” będą domyślnie miały maksymalną liczbę wyników na stronę: ``1000``. Jeśli chcesz włączyć tę funkcję wcześniej, możesz przekazać `?paginate=true` jako dodatkowy parametr ciągu zapytania do adresu URL zapytania punktu końcowego. Więcej informacji znajdziesz w sekcji Paginacja.",
         "tags": [
           "Pseudonimy"
         ],
@@ -2787,7 +5009,7 @@
           {
             "name": "q",
             "in": "query",
-            "description": "Wyszukiwanie aliasów w domenie według nazwy, etykiety lub odbiorcy (obsługa RegExp)",
+            "description": "Wyszukiwanie aliasów w domenie według nazwy, etykiety lub odbiorcy (obsługa wyrażeń regularnych)",
             "required": false,
             "schema": {
               "type": "string"
@@ -2796,7 +5018,7 @@
           {
             "name": "name",
             "in": "query",
-            "description": "Wyszukaj aliasów w domenie według nazwy (obsługa RegExp)",
+            "description": "Wyszukiwanie aliasów w domenie według nazwy (obsługa wyrażeń regularnych)",
             "required": false,
             "schema": {
               "type": "string"
@@ -2805,7 +5027,7 @@
           {
             "name": "recipient",
             "in": "query",
-            "description": "Wyszukiwanie aliasów w domenie według odbiorcy (obsługa RegExp)",
+            "description": "Wyszukiwanie aliasów w domenie według odbiorcy (obsługa wyrażeń regularnych)",
             "required": false,
             "schema": {
               "type": "string"
@@ -2814,7 +5036,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Sortuj według określonego pola (prefiks z pojedynczym myślnikiem - aby sortować w odwrotnej kolejności). Domyślnie created_at.",
+            "description": "Sortuj według konkretnego pola (prefiks z pojedynczym myślnikiem – sortowanie w odwrotnej kolejności). Domyślnie created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -3030,10 +5252,10 @@
     },
     "/v1/encrypt": {
       "post": {
-        "summary": "Zaszyfruj rekord TXT",
-        "description": "Umożliwiamy szyfrowanie rekordów nawet w ramach bezpłatnego planu bez żadnych kosztów. Prywatność nie powinna być funkcją, powinna być nieodłącznie wbudowana we wszystkie aspekty produktu. Zgodnie z gorącymi prośbami w [dyskusji na temat przewodników po prywatności](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) i w naszych [problemach GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) dodaliśmy to.",
+        "summary": "Szyfruj rekord TXT",
+        "description": "Umożliwiamy szyfrowanie rekordów nawet w ramach darmowego planu, bez żadnych kosztów. Prywatność nie powinna być funkcją, lecz integralną częścią wszystkich aspektów produktu. Zgodnie z gorącymi prośbami w [dyskusji na temat przewodników po prywatności](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) oraz w naszych [problemach na GitHubie](https://github.com/forwardemail/forwardemail.net/issues/254) dodaliśmy tę opcję.",
         "tags": [
-          "Szyfrować"
+          "Szyfruj"
         ],
         "security": [
           {
@@ -3052,7 +5274,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Dowolny prawidłowy rekord Forward Email w formacie zwykłego tekstu TXT"
+                    "description": "Dowolny prawidłowy rekord TXT w postaci zwykłego tekstu do przekazania wiadomości e-mail"
                   }
                 }
               }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Lista kontaktów",
-        "description": "Wyświetl wszystkie kontakty (CardDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Alias Kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Utwórz kontakt",
-        "description": "Utwórz nowy kontakt (CardDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Alias Kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Identyfikator kontaktu",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Pobierz kontakt",
-        "description": "Pobierz konkretny kontakt (CardDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Alias Kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizuj kontakt",
-        "description": "Aktualizuj konkretny kontakt (CardDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Alias Kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Usuń kontakt",
-        "description": "Usuń konkretny kontakt (CardDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Alias Kontakty"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Lista kalendarzy",
-        "description": "Wyświetl wszystkie kalendarze (CalDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Kalendarze Alias"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Utwórz kalendarz",
-        "description": "Utwórz nowy kalendarz (CalDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Kalendarze Alias"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Identyfikator kalendarza",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Pobierz kalendarz",
-        "description": "Pobierz konkretny kalendarz (CalDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Kalendarze Alias"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizuj kalendarz",
-        "description": "Zaktualizuj konkretny kalendarz (CalDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Kalendarze Alias"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Usuń kalendarz",
-        "description": "Usuń konkretny kalendarz (CalDAV). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Kalendarze Alias"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Lista i wyszukiwanie wiadomości",
-        "description": "Wyświetlanie i wyszukiwanie wiadomości (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Wiadomości aliasowe"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Utwórz wiadomość",
-        "description": "Utwórz nową wiadomość (IMAP/POP3). NIE wyśle to wiadomości e-mail – po prostu doda wiadomość do folderu skrzynki pocztowej (podobnie jak polecenie IMAP APPEND). Ten punkt końcowy pojawi się wkrótce.",
-        "tags": [
-          "Wiadomości aliasowe"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Identyfikator wiadomości",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Pobierz wiadomość",
-        "description": "Pobierz konkretną wiadomość (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Wiadomości aliasowe"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizuj wiadomość",
-        "description": "Zaktualizuj konkretną wiadomość (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Wiadomości aliasowe"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Usuń wiadomość",
-        "description": "Usuń konkretną wiadomość (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Wiadomości aliasowe"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Wyświetlanie listy folderów",
-        "description": "Wyświetl wszystkie foldery (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Foldery aliasów"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Utwórz folder",
-        "description": "Utwórz nowy folder (IMAP/POP3). Ten punkt końcowy będzie dostępny wkrótce.",
-        "tags": [
-          "Foldery aliasów"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Identyfikator folderu",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Pobierz folder",
-        "description": "Pobierz konkretny folder (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Foldery aliasów"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Aktualizuj folder",
-        "description": "Zaktualizuj konkretny folder (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Foldery aliasów"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Usuń folder",
-        "description": "Usuń konkretny folder (IMAP/POP3). Ten punkt końcowy pojawi się wkrótce.",
-        "tags": [
-          "Foldery aliasów"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Identyfikator folderu",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Kopiuj folder",
-        "description": "Skopiuj konkretny folder (IMAP/POP3). Ten punkt końcowy będzie wkrótce dostępny.",
-        "tags": [
-          "Foldery aliasów"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3688,7 +5333,7 @@
     },
     {
       "name": "Domeny",
-      "description": "> [!TIP]\n> Punkty końcowe domeny z nazwą domeny <code>/v1/domains/:domain\\_name</code> jako punktem końcowym są zamienne z identyfikatorem domeny <code>:domain\\_id</code>. Oznacza to, że można odwoływać się do domeny za pomocą jej wartości <code>name</code> lub <code>id</code>."
+      "description": "> [!TIP]\n> Punkty końcowe domeny z nazwą domeny <code>/v1/domains/:domena\\_nazwa</code> jako punktem końcowym są wymienne z identyfikatorem domeny <code>:domena\\_id</code>. Oznacza to, że można odwołać się do domeny za pomocą jej wartości <code>nazwa</code> lub <code>id</code>."
     },
     {
       "name": "Zaproszenia",
@@ -3703,24 +5348,24 @@
       "description": "Punkty końcowe zarządzania aliasami domen"
     },
     {
-      "name": "Szyfrować",
+      "name": "Szyfruj",
       "description": "Punkty końcowe szyfrowania"
     },
     {
-      "name": "Alias Kontakty",
-      "description": "Punkty końcowe zarządzania kontaktami aliasów (CardDAV)\n\n>[!NOTE]\n>W przeciwieństwie do innych punktów końcowych API, te wymagają uwierzytelniania „username” równego aliasowi username i „password” równego hasłu wygenerowanemu przez alias jako nagłówków Basic Authorization.\n\n>[!WARNING]\n>Ta sekcja punktów końcowych jest w trakcie opracowywania i zostanie wydana (miejmy nadzieję) w 2025 r. W międzyczasie skorzystaj z klienta IMAP z rozwijanego menu „Apps” w nawigacji naszej witryny."
+      "name": "Łączność",
+      "description": "Punkty końcowe zarządzania kontaktami aliasów (CardDAV)\n\n>[!NOTE]\n>W przeciwieństwie do innych punktów końcowych API, te wymagają uwierzytelniania „nazwa użytkownika” równej nazwie użytkownika aliasu i „hasło” równemu hasłu wygenerowanemu przez alias jako nagłówków autoryzacji podstawowej.\n\n>[!TIP]\n>Te punkty końcowe zapewniają pełne operacje CRUD do zarządzania kontaktami z obsługą vCard, w tym tworzenie, pobieranie, aktualizowanie i usuwanie kontaktów. Można dostarczyć bezpośrednio zawartość vCard lub poszczególne pola kontaktów, które zostaną przekonwertowane do formatu vCard."
     },
     {
-      "name": "Kalendarze Alias",
-      "description": "Punkty końcowe zarządzania kalendarzami aliasów (CalDAV)\n\n>[!NOTE]\n> W przeciwieństwie do innych punktów końcowych API, te wymagają [Authentication](#description/authentication) „username” równej aliasowi username i „password” równemu hasłu wygenerowanemu przez alias jako nagłówków Basic Authorization.\n\n>[!WARNING]\n> Ta sekcja punktów końcowych jest w trakcie opracowywania i zostanie wydana (miejmy nadzieję) w 2025 r. W międzyczasie skorzystaj z klienta IMAP z rozwijanej listy „Aplikacje” w nawigacji naszej witryny."
+      "name": "Kalendarze",
+      "description": "Punkty końcowe zarządzania kalendarzami aliasów (CalDAV)\n\n>[!NOTE]\n> W przeciwieństwie do innych punktów końcowych API, te wymagają [Authentication](#description/authentication) „username” równej nazwie użytkownika aliasu i „password” równemu hasłu wygenerowanemu przez alias jako nagłówków Basic Authorization.\n\n>[!TIP]\n> Te punkty końcowe zapewniają pełne zarządzanie kalendarzami z obsługą stref czasowych i kolorów, w tym tworzenie, pobieranie, aktualizowanie i usuwanie kalendarzy. Nazwy kalendarzy są wymagane, natomiast inne właściwości, takie jak kolor, strefa czasowa i opis, są opcjonalne."
     },
     {
-      "name": "Wiadomości aliasowe",
-      "description": "Punkty końcowe zarządzania wiadomościami aliasów (IMAP/POP3)\n\n>[!NOTE]\n> W przeciwieństwie do innych punktów końcowych API, te wymagają [Uwierzytelniania](#description/authentication) „nazwy użytkownika” równej nazwie użytkownika aliasu i „hasła” równego wygenerowanemu hasłu aliasu jako nagłówków Basic Authorization.\n\n> [!WARNING]\n> Ta sekcja punktu końcowego jest w trakcie opracowywania i zostanie wydana (miejmy nadzieję) w 2025 r. W międzyczasie skorzystaj z klienta IMAP z rozwijanej listy „Aplikacje” w nawigacji naszej witryny.\nUpewnij się, że wykonałeś instrukcje konfiguracji dla swojej domeny.\nTe instrukcje można znaleźć w naszej sekcji FAQ [Czy obsługujesz odbieranie wiadomości e-mail za pomocą protokołu IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Wiadomości",
+      "description": "Punkty końcowe zarządzania wiadomościami aliasów (IMAP/POP3)\n\n>[!NOTE]\n> W przeciwieństwie do innych punktów końcowych API, te wymagają [Uwierzytelniania](#description/authentication) „nazwy użytkownika” równej nazwie użytkownika aliasu i „hasła” równego hasłu wygenerowanemu przez alias jako nagłówków autoryzacji podstawowej.\n\n>[!TIP]\n> Te punkty końcowe zapewniają kompleksowe zarządzanie wiadomościami z zaawansowanymi funkcjami wyszukiwania. Można wyszukiwać według folderu, flag, treści, nagłówków, zakresów dat, rozmiaru i innych. Wiadomości można tworzyć w standardowym formacie Nodemailer i obsługują one przenoszenie między folderami oraz zarządzanie flagami.\n\nUpewnij się, że postępowałeś zgodnie z instrukcjami konfiguracji dla swojej domeny.\nInstrukcje te znajdziesz w sekcji FAQ [Czy obsługujesz odbieranie wiadomości e-mail za pomocą IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Foldery aliasów",
-      "description": "Punkty końcowe zarządzania folderami aliasów (IMAP/POP3)\n\n>[!TIP]\n> Punkty końcowe folderów ze ścieżką folderu <code>/v1/folders/:path</code> jako punktem końcowym są zamienne z identyfikatorem folderu <code>:id</code>. Oznacza to, że możesz odwołać się do folderu za pomocą wartości <code>path</code> lub <code>id</code>.\n\n>[!WARNING]\n> Ta sekcja punktów końcowych jest w trakcie opracowywania i zostanie wydana (miejmy nadzieję) w 2025 r. W międzyczasie skorzystaj z klienta IMAP z rozwijanej listy „Aplikacje” w nawigacji naszej witryny."
+      "name": "Lornetka składana",
+      "description": "Punkty końcowe zarządzania folderami aliasów (IMAP/POP3)\n\n>[!TIP]\n> Punkty końcowe folderów ze ścieżką <code>/v1/folders/:path</code> jako punktem końcowym są wymienne z identyfikatorem folderu <code>:id</code>. Oznacza to, że można odwołać się do folderu za pomocą wartości <code>path</code> lub <code>id</code>.\n\n>[!NOTE]\n> W przeciwieństwie do innych punktów końcowych API, wymagają one [Authentication](#description/authentication) „username” równej nazwie użytkownika aliasu i „password” równemu hasłu wygenerowanemu przez alias jako nagłówków Basic Authorization.\n\n>[!TIP]\n> Te punkty końcowe umożliwiają pełne zarządzanie folderami, w tym tworzenie, zmianę nazwy i usuwanie. Ścieżki folderów mogą obejmować foldery nadrzędne (np. „SKRZYNKA ODBIORCZA/Podfolder”). Foldery nadrzędne zostaną utworzone automatycznie, jeśli nie istnieją."
     }
   ]
 }

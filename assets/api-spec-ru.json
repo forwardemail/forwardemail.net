@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Добро пожаловать в подробную документацию API для пересылки электронной почты. Этот API позволяет вам программно управлять пересылкой электронной почты, доменами, псевдонимами, исходящими электронными письмами и многим другим.\n\n## Основные функции\n* **Управление доменами:** Создание, извлечение, обновление, удаление и проверка доменов.\n* **Управление псевдонимами:** Управление псевдонимами электронной почты, включая создание, обновление и управление получателями.\n* **Исходящий SMTP:** Отправка писем через SMTP, управление ограничениями и отслеживание отправленных писем.\n* **Учетная запись и журналы:** Управление данными вашей учетной записи и загрузка журналов активности.\n* **Безопасность:** Шифрование записей TXT и управление участниками/приглашениями домена.\n* **Скоро:** Планируются такие функции, как контакты CardDAV, календари CalDAV и управление сообщениями/папками IMAP/POP3.\n\n## Аутентификация\nДля большинства конечных точек требуется аутентификация с использованием вашего **ключа API**. Укажите ключ API как `username` в заголовке базовой аутентификации, оставив пароль пустым.\n\n```http\nАвторизация: Базовая QVBJX1RPS0VOOg==\n```\n(Замените `API_TOKEN` на ваш фактический ключ перед кодировкой Base64)\n\nКонечные точки, связанные с **псевдонимами контактов, календарей, сообщений и папок** (в настоящее время помечены как «Скоро»), будут использовать сгенерированный псевдоним имени пользователя и пароля для базовой аутентификации.\n\n## Ошибки\nAPI использует стандартные коды статуса HTTP для указания успеха или неудачи. Ответы об ошибках включают тело JSON с полем `message`, описывающим ошибку.\n\n| Код статуса | Значение |\n|-------------|---------------------|\n| 200 | OK |\n| 400 | Неверный запрос |\n| 401 | Неавторизованный |\n| 403 | Запрещено |\n| 404 | Не найдено |\n| 429 | Слишком много запросов |\n| 500 | Внутренняя ошибка сервера |\n| 501 | Не реализовано |\n| 502 | Неверный шлюз |\n| 503 | Служба недоступна |\n| 504 | Истекло время ожидания шлюза |\n\n*Если вы столкнулись с ошибкой `5xx`, свяжитесь с [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Локализация\nОтветы API переводятся на основе обнаруженной локали пользователя или заголовка `Accept-Language`. Поддерживается более 25 языков.\n\n## Пагинация\nКонечные точки, возвращающие списки, поддерживают пагинацию через параметры запроса.\n\n| Параметр | Тип | Необязательно | Описание | По умолчанию | Ограничения |\n|-------------|----------|-----------|----------------------------------------------------------------------------|----------|---------------------|\n| `page` | Целое число | Да | Номер страницы для извлечения. | 1 | `>= 1` |\n| `limit` | Целое число | Да | Количество результатов на странице. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Логическое значение | Да | Включение поведения пагинации (требуется до 1 ноября 2024 г. для некоторых конечных точек). | false | |\n\n**Заголовки пагинации:**\n* `X-Page-Count`: Общее количество страниц.\n* `X-Page-Current`: Текущий номер страницы.\n* `X-Page-Size`: Количество элементов на текущей странице.\n* `X-Item-Count`: Общее количество элементов на всех страницах.\n* `Link`: Ссылки навигации (предыдущая, следующая, первая, последняя).\n\n**Пример:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Рекомендуемые библиотеки\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Поддерживается Forward Email)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Добро пожаловать в подробную документацию по API для пересылки электронной почты. Этот API позволяет программно управлять пересылкой электронной почты, доменами, псевдонимами, исходящими письмами и другими функциями.\n\n## Основные функции\n* **Управление доменами:** Создание, извлечение, обновление, удаление и верификация доменов.\n* **Управление псевдонимами:** Управление псевдонимами электронной почты, включая создание, обновление и управление получателями.\n* **Исходящий SMTP:** Отправка писем по SMTP, управление ограничениями и отслеживание отправленных писем.\n* **Учетная запись и журналы:** Управление данными вашей учетной записи и загрузка журналов активности.\n* **Безопасность:** Шифрование TXT-записей и управление участниками/приглашениями домена.\n* **Контакты CardDAV:** Полный набор CRUD-операций для управления контактами с поддержкой vCard.\n* **Календари CalDAV:** Полное управление календарями с поддержкой часовых поясов и цветов.\n* **Сообщения IMAP/POP3:** Комплексное управление сообщениями с расширенными возможностями поиска.\n* **Папки IMAP/POP3:** Полное управление папками, включая создание, переименование и удаление.\n\n## Аутентификация\nДля большинства конечных точек требуется аутентификация с использованием вашего **ключа API**. Укажите ключ API в качестве `username` в заголовке базовой аутентификации, оставив пароль пустым.\n\n```http\nАвторизация: Базовая QVBJX1RPS0VOOg==\n```\n(Замените `API_TOKEN` на ваш фактический ключ перед кодированием в Base64)\n\nДля конечных точек, связанных с **псевдонимами контактов, календарей, сообщений и папок**, требуется сгенерированный псевдоним имени пользователя и пароля для базовой аутентификации.\n\n## Ошибки\nAPI использует стандартные коды статуса HTTP для обозначения успеха или неудачи. Ответы об ошибках включают тело JSON с полем `message`, описывающим ошибку.\n\n| Код статуса | Значение |\n|------------|---------------------|\n| 200 | OK |\n| 400 | Неверный запрос |\n| 401 | Неавторизован |\n| 403 | Запрещено |\n| 404 | Не найдено |\n| 409 | Конфликт |\n| 412 | Предварительное условие не выполнено |\n| 429 | Слишком много запросов |\n| 500 | Внутренняя ошибка сервера |\n| 501 | Не реализовано |\n| 502 | Неверный шлюз |\n| 503 | Служба недоступна |\n| 504 | Истекло время ожидания шлюза |\n\n*Если вы столкнулись с ошибкой `5xx`, свяжитесь с [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Локализация\nОтветы API переводятся на основе обнаруженных локалей пользователя или заголовка `Accept-Language`. Поддерживается более 25 языков.\n\n## Пагинация\nКонечные точки, возвращающие списки, поддерживают пагинацию через параметры запроса.\n\n| Параметр | Тип | Необязательный | Описание | По умолчанию | Ограничения |\n|-------------|---------|-----------|----------------------------------------------------------------------------|---------|--------------------|\n| `page` | Целое число | Да | Номер страницы для извлечения. | 1 | `>= 1` |\n| `limit` | Целое число | Да | Количество результатов на странице. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | Да | Включение пагинации (требуется до 1 ноября 2024 г. для некоторых конечных точек). | false | |\n\n**Заголовки пагинации:**\n* `X-Page-Count`: Общее количество страниц.\n* `X-Page-Current`: Номер текущей страницы.\n* `X-Page-Size`: Количество элементов на текущей странице.\n* `X-Item-Count`: Общее количество элементов на всех страницах.\n* `Link`: Навигационные ссылки (предыдущая, следующая, первая, последняя).\n\n**Пример:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Рекомендуемые библиотеки\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Поддерживается пересылкой электронной почты)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nИспользуйте свой API Key в качестве **имени пользователя** для базовой аутентификации. Оставьте поле пароля пустым.\n\n**Пример:**\nЕсли ваш API Key — `YOUR_API_KEY`, то значение в кодировке Base64 для заголовка `Authorization` будет `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "\nИспользуйте свой ключ API в качестве **имени пользователя** для базовой аутентификации. Оставьте поле пароля пустым.\n\n**Пример:**\nЕсли ваш ключ API — `YOUR_API_KEY`, то значение в кодировке Base64 для заголовка `Authorization` будет выглядеть так: `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nАвторизация: Базовая WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\nИспользуйте сгенерированные **псевдоним имени пользователя и пароля** для базовой аутентификации. Это применимо к конечным точкам в:\n* Псевдонимы контактов (CardDAV)\n* Псевдонимы календарей (CalDAV)\n* Псевдонимы сообщений (IMAP/POP3)\n* Псевдонимы папок (IMAP/POP3)\n\n*(Примечание: эти функции в настоящее время помечены как «Скоро»)*\n\n**Пример:**\nЕсли псевдоним имени пользователя - `alias@domain.com`, а пароль - `GENERATED_PASSWORD`, то значение в кодировке Base64 будет `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nАвторизация: Базовая YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\nИспользуйте сгенерированные **имя пользователя и пароль псевдонима** для базовой аутентификации. Это применимо к конечным точкам в разделах:\n* Псевдоним контактов (CardDAV)\n* Псевдоним календарей (CalDAV)\n* Псевдоним сообщений (IMAP/POP3)\n* Псевдоним папок (IMAP/POP3)\n\n**Пример:**\nЕсли имя пользователя псевдонима — `alias@domain.com`, а пароль — `GENERATED_PASSWORD`, значение в кодировке Base64 будет выглядеть так: `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nАвторизация: Базовая YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Идентификатор контакта (contact_id из CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Контактный UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Полное имя контакта"
+          },
+          "content": {
+            "type": "string",
+            "description": "содержимое vCard"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag для управления версиями"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Является ли контакт группой"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив адресов электронной почты"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив телефонных номеров"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Содержимое vCard (если не указано, будет сгенерировано из других полей)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Полное имя контакта"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Пользовательский идентификатор контакта (если не указан, будет сгенерирован автоматически)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Контактный UID (если не указан, будет сгенерирован автоматически)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив адресов электронной почты"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив телефонных номеров"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив телефонных номеров (псевдоним для phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Массив адресов"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Является ли контакт группой"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "содержимое vCard"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Полное имя контакта"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив адресов электронной почты"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив телефонных номеров"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Массив телефонных номеров (псевдоним для phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Массив адресов"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Является ли контакт группой"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Идентификатор календаря (calendarId из CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Название календаря"
+          },
+          "description": {
+            "type": "string",
+            "description": "Описание календаря"
+          },
+          "color": {
+            "type": "string",
+            "description": "Цвет календаря (шестнадцатеричный формат)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Календарь часового пояса"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Порядок отображения календаря"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Название календаря"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Пользовательский идентификатор календаря (если не указан, будет сгенерирован автоматически)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Описание календаря"
+          },
+          "color": {
+            "type": "string",
+            "description": "Цвет календаря (шестнадцатеричный формат, если не указан, будет сгенерирован автоматически)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Часовой пояс календаря (по умолчанию — часовой пояс пользователя или UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Порядок отображения календаря (по умолчанию 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Название календаря"
+          },
+          "description": {
+            "type": "string",
+            "description": "Описание календаря"
+          },
+          "color": {
+            "type": "string",
+            "description": "Цвет календаря (шестнадцатеричный формат)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Календарь часового пояса"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Порядок отображения календаря"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Идентификатор папки"
+          },
+          "path": {
+            "type": "string",
+            "description": "Полный путь к папке"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя папки (последняя часть пути)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Путь к родительской папке"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "Действительность UID IMAP"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Следующее значение UID"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Индекс модификации"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Подписана ли папка"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Флаги папок"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Срок хранения сообщений"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Специальное назначение"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Путь/имя папки"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Новый путь/имя папки"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Идентификатор сообщения"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Идентификатор корневого сообщения для потоковой передачи"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Идентификатор папки, содержащей сообщение"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Путь к папке, содержащей сообщение"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Идентификатор потока для группировки бесед"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Значение заголовка Message-ID"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Непрочитано ли сообщение"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Помечено ли сообщение"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Удалено ли сообщение"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Является ли сообщение черновиком"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Является ли сообщение спамом"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Копируется ли сообщение"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Можно ли выполнить поиск по сообщению?"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Срок действия сообщения истек"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Есть ли вложения в сообщении"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Дата хранения сообщения"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Внутренняя дата (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Дата из заголовков сообщения"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Тема сообщения"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Флаги IMAP"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Размер сообщения в байтах"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP-UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Последовательность модификации"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Тип транзакции"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Удаленный IP-адрес"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Проанализированный объект сообщения (включен по умолчанию, установите ?nodemailer=false для исключения)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Необработанное содержимое сообщения (включено по умолчанию, установите ?raw=false, чтобы исключить)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Адрес электронной почты отправителя"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Адреса электронной почты получателей"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Адреса электронной почты получателей копий"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Адреса электронной почты получателей скрытых копий"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Тема сообщения"
+          },
+          "text": {
+            "type": "string",
+            "description": "Простой текстовый контент"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML-контент"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Вложения сообщений (формат Nodemailer)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Целевая папка (по умолчанию INBOX)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Флаги IMAP для установки в сообщении"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Флаги IMAP для установки в сообщении"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Переместить сообщение в эту папку"
+          }
         }
       },
       "Email": {
@@ -304,7 +1173,7 @@
                 }
               }
             ],
-            "description": "Список получателей, разделенных запятыми, или массив для заголовка «Копия»."
+            "description": "Список получателей, разделенных запятыми, или массив получателей для заголовка «Копия»."
           },
           "bcc": {
             "oneOf": [
@@ -319,7 +1188,7 @@
                 }
               }
             ],
-            "description": "Список получателей, разделенных запятыми, или массив для заголовка «СК»."
+            "description": "Список получателей, разделенных запятыми, или массив для заголовка «Скрытая копия»."
           },
           "subject": {
             "type": "string",
@@ -370,7 +1239,7 @@
           },
           "attachDataUrls": {
             "type": "boolean",
-            "description": "Если true, преобразует данные: изображения в HTML-контенте во встроенные вложения."
+            "description": "Если значение равно true, преобразует данные: изображения в HTML-содержимом во встроенные вложения."
           },
           "watchHtml": {
             "type": "string",
@@ -382,7 +1251,7 @@
           },
           "icalEvent": {
             "type": "object",
-            "description": "Событие iCalendar как альтернативное содержимое сообщения."
+            "description": "Событие iCalendar как альтернативный контент сообщения."
           },
           "alternatives": {
             "type": "array",
@@ -405,7 +1274,7 @@
               "quoted-printable",
               "base64"
             ],
-            "description": "Для текстовых значений принудительно используется кодировка."
+            "description": "Для текстовых значений принудительно применяется кодировка."
           },
           "priority": {
             "type": "string",
@@ -414,7 +1283,7 @@
               "normal",
               "low"
             ],
-            "description": "Уровень приоритета для электронного письма."
+            "description": "Уровень приоритета электронного письма."
           },
           "headers": {
             "oneOf": [
@@ -433,7 +1302,7 @@
           },
           "messageId": {
             "type": "string",
-            "description": "Необязательный Message-ID для заголовка «Message-ID»."
+            "description": "Дополнительный Message-ID для заголовка «Message-ID»."
           },
           "date": {
             "oneOf": [
@@ -445,7 +1314,7 @@
                 "type": "string"
               }
             ],
-            "description": "Необязательный заголовок даты. Не может быть более 30 дней в будущем."
+            "description": "Необязательный заголовок «Дата». Не может быть позже 30 дней."
           },
           "list": {
             "type": "object",
@@ -682,7 +1551,7 @@
           "team_domain": {
             "type": "string",
             "nullable": true,
-            "description": "Назначить той же команде из другого домена; может быть идентификатором домена или полным доменным именем. Используйте \"none\" для явного отключения."
+            "description": "Назначить той же команде из другого домена; можно указать идентификатор домена или полное доменное имя. Для явного отключения используйте значение «none»."
           },
           "plan": {
             "type": "string",
@@ -700,14 +1569,14 @@
               },
               {
                 "type": "string",
-                "description": "Список адресов электронной почты с разделителями (через запятую, пробел или новую строку)"
+                "description": "Список адресов электронной почты с разделителями (запятыми, пробелами или символами новой строки)"
               }
             ],
-            "description": "Создать универсальный псевдоним по умолчанию (по умолчанию true)"
+            "description": "Создать универсальный псевдоним по умолчанию (значение по умолчанию — true)"
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Включить защиту от контента для взрослых с помощью Spam Scanner"
+            "description": "Включить защиту от контента для взрослых с помощью спам-сканера"
           },
           "has_phishing_protection": {
             "type": "boolean",
@@ -723,7 +1592,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Требовать от получателей псевдонимов нажатия ссылки подтверждения адреса электронной почты"
+            "description": "Требовать от получателей псевдонимов нажатия ссылки для подтверждения адреса электронной почты"
           },
           "ignore_mx_check": {
             "type": "boolean",
@@ -747,13 +1616,13 @@
                 "enum": [
                   false
                 ],
-                "description": "Отключить вебхук Bounce"
+                "description": "Отключить веб-перехватчик отказов"
               }
             ]
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Максимальная квота хранения на псевдоним (например, «1 ГБ»)"
+            "description": "Максимальная квота хранения для псевдонима (например, «1 ГБ»)"
           }
         }
       },
@@ -773,33 +1642,33 @@
           },
           "has_adult_content_protection": {
             "type": "boolean",
-            "description": "Включать ли Spam Scanner защиту от контента для взрослых на этом домене"
+            "description": "Включать ли защиту от контента для взрослых с помощью Spam Scanner на этом домене?"
           },
           "has_phishing_protection": {
             "type": "boolean",
-            "description": "Включать ли защиту от фишинга Spam Scanner на этом домене"
+            "description": "Включать ли защиту от фишинга Spam Scanner на этом домене?"
           },
           "has_executable_protection": {
             "type": "boolean",
-            "description": "Включать ли защиту исполняемого файла Spam Scanner на этом домене"
+            "description": "Включать ли защиту исполняемого файла Spam Scanner на этом домене?"
           },
           "has_virus_protection": {
             "type": "boolean",
-            "description": "Включать ли антивирусную защиту Spam Scanner на этом домене"
+            "description": "Включать ли антивирусную защиту Spam Scanner на этом домене?"
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Глобальное значение по умолчанию для домена, определяющее, требуется ли получателям псевдонимов нажимать ссылку для проверки адреса электронной почты, чтобы электронные письма проходили через него"
+            "description": "Глобальное значение домена по умолчанию, определяющее, требуется ли, чтобы получатели псевдонимов нажимали ссылку для подтверждения адреса электронной почты, чтобы электронные письма проходили через него."
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "Игнорировать ли проверку записи MX в домене для подтверждения (в основном для расширенных настроек маршрутизации MX)"
+            "description": "Игнорировать ли проверку MX-записи в домене для подтверждения (в основном для расширенных настроек маршрутизации MX)"
           },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
             "maximum": 30,
-            "description": "Количество дней хранения исходящих писем SMTP (0 = очистить немедленно)"
+            "description": "Количество дней хранения исходящих писем SMTP (0 = немедленно очистить)"
           },
           "bounce_webhook": {
             "oneOf": [
@@ -814,11 +1683,11 @@
                 ]
               }
             ],
-            "description": "URL-адрес веб-перехватчика для получения уведомлений о недоставке или false для отключения"
+            "description": "URL-адрес веб-перехватчика для получения уведомлений о недоставке или значение false для отключения"
           },
           "max_quota_per_alias": {
             "type": "string",
-            "description": "Квота хранения на псевдоним (например, «1 ГБ», разложенная на байты)"
+            "description": "Квота хранения для каждого псевдонима (например, «1 ГБ», в байтах)"
           }
         }
       },
@@ -975,7 +1844,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "Строка действительных адресов электронной почты, полных доменных имен, IP-адресов или URL-адресов веб-перехватчиков, разделенная разрывами строк/пробелами/запятыми"
+                "description": "Строка допустимых адресов электронной почты, полных доменных имен, IP-адресов или URL-адресов веб-перехватчиков, разделенных разрывами строк, пробелами или запятыми"
               },
               {
                 "type": "array",
@@ -983,10 +1852,10 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Массив действительных получателей"
+                "description": "Массив допустимых получателей"
               }
             ],
-            "description": "Список получателей. Если не указан или пуст, по умолчанию используется адрес электронной почты запрашивающего"
+            "description": "Список получателей. Если не указан или пуст, по умолчанию используется адрес электронной почты отправителя запроса."
           },
           "description": {
             "type": "string",
@@ -1009,7 +1878,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Требовать от получателей нажатия на ссылку подтверждения (по умолчанию установлено значение домена)"
+            "description": "Требовать от получателей нажатия ссылки подтверждения (по умолчанию установлено в настройках домена)"
           },
           "is_enabled": {
             "type": "boolean",
@@ -1022,7 +1891,7 @@
               421,
               550
             ],
-            "description": "Код ошибки, если псевдоним отключен. По умолчанию 250"
+            "description": "Код ошибки, если псевдоним отключен. По умолчанию — 250."
           },
           "has_imap": {
             "type": "boolean",
@@ -1042,7 +1911,7 @@
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
-            "description": "Включить или отключить автоответчик на время отпуска"
+            "description": "Включить или отключить автоответчик"
           },
           "vacation_responder_start_date": {
             "type": "string",
@@ -1054,11 +1923,11 @@
           },
           "vacation_responder_subject": {
             "type": "string",
-            "description": "Тема открытого текста для автоответчика"
+            "description": "Тема сообщения в виде открытого текста для автоответчика"
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Текстовое сообщение для автоответчика на время отпуска"
+            "description": "Текстовое сообщение для автоответчика"
           }
         }
       },
@@ -1073,7 +1942,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "Строка действительных адресов электронной почты, полных доменных имен, IP-адресов или URL-адресов веб-перехватчиков, разделенная разрывами строк, пробелами или запятыми"
+                "description": "Строка допустимых адресов электронной почты, полных доменных имен, IP-адресов или URL-адресов веб-перехватчиков, разделенных разрывами строк, пробелами или запятыми"
               },
               {
                 "type": "array",
@@ -1081,7 +1950,7 @@
                   "type": "string",
                   "format": "email"
                 },
-                "description": "Массив действительных получателей"
+                "description": "Массив допустимых получателей"
               }
             ]
           },
@@ -1093,7 +1962,7 @@
             "oneOf": [
               {
                 "type": "string",
-                "description": "Строка меток, разделенных разрывом строки/пробелом/запятой"
+                "description": "Строка меток, разделенная разрывом строки/пробелом/запятой"
               },
               {
                 "type": "array",
@@ -1106,7 +1975,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "Требовать от получателей нажатия на ссылку подтверждения (по умолчанию установлено значение домена)"
+            "description": "Требовать от получателей нажатия ссылки подтверждения (по умолчанию установлено в настройках домена)"
           },
           "is_enabled": {
             "type": "boolean",
@@ -1135,7 +2004,7 @@
           },
           "max_quota": {
             "type": "string",
-            "description": "Максимальная квота хранения (например, «1 ГБ»)"
+            "description": "Максимальная квота хранилища (например, «1 ГБ»)"
           },
           "vacation_responder_is_enabled": {
             "type": "boolean",
@@ -1143,7 +2012,7 @@
           },
           "vacation_responder_start_date": {
             "type": "string",
-            "description": "Дата начала работы автоответчика (например, ГГГГ-ММ-ДД)"
+            "description": "Дата начала отпуска (например, ГГГГ-ММ-ДД)"
           },
           "vacation_responder_end_date": {
             "type": "string",
@@ -1155,7 +2024,7 @@
           },
           "vacation_responder_message": {
             "type": "string",
-            "description": "Текстовое сообщение автоответчика об отпуске"
+            "description": "Текстовое сообщение автоответчика"
           }
         }
       },
@@ -1227,7 +2096,7 @@
       "page": {
         "name": "page",
         "in": "query",
-        "description": "Страница результатов для возврата. Если не указано, значение будет 1. Должно быть числом больше или равным 1.",
+        "description": "Страница с результатами для возврата. Если значение не указано, оно будет равно 1. Должно быть числом, большим или равным 1.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1237,7 +2106,7 @@
       "limit": {
         "name": "limit",
         "in": "query",
-        "description": "Количество результатов для возврата на страницу. По умолчанию 10, если не указано иное. Должно быть числом больше или равным 1 и меньше или равным 50.",
+        "description": "Количество результатов, возвращаемых на страницу. По умолчанию 10, если не указано иное. Должно быть числом больше или равно 1 и меньше или равно 50.",
         "schema": {
           "type": "integer",
           "minimum": 1,
@@ -1248,7 +2117,7 @@
       "pagination": {
         "name": "pagination",
         "in": "query",
-        "description": "Подпишитесь на пагинацию до 1 ноября 2024 г.",
+        "description": "Подключить пагинацию до 1 ноября 2024 г.",
         "schema": {
           "type": "boolean"
         }
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "Псевдонимы идентификаторов",
+        "description": "Псевдоним ID",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "Идентификатор электронной почты",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Контактный идентификатор",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Идентификатор календаря",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Идентификатор папки или путь",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Идентификатор сообщения",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Зарегистрироваться",
-        "description": "Создать новую учетную запись пользователя",
-        "tags": [
-          "Счет"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "Адрес электронной почты"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Пароль"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Восстановить учетную запись",
-        "description": "Получить информацию об учетной записи текущего пользователя",
         "tags": [
           "Счет"
         ],
+        "summary": "Восстановить учетную запись",
+        "description": "Получите информацию о своей учетной записи.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Обновить аккаунт",
-        "description": "Обновить информацию об учетной записи текущего пользователя",
         "tags": [
           "Счет"
         ],
+        "summary": "Обновить аккаунт",
+        "description": "Обновите информацию своей учетной записи.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "Адрес электронной почты"
+                    "description": "Отображаемое имя"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Имя"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Фамилия"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Ссылка на изображение аватара"
+                    "description": "Предпочтения локали"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Контакты"
+        ],
+        "summary": "Список контактов",
+        "description": "Получить список всех контактов для аутентифицированного псевдонима. Эта конечная точка поддерживает пагинацию и возвращает контакты в формате CardDAV.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Контакты"
+        ],
+        "summary": "Создать контакт",
+        "description": "Создайте новый контакт. Вы можете предоставить либо непосредственно содержимое vCard, либо отдельные поля контакта, которые будут преобразованы в формат vCard. Если контакт с таким же идентификатором уже существует, будет возвращена ошибка конфликта.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Контакты"
+        ],
+        "summary": "Восстановить контакт",
+        "description": "Получить конкретный контакт по его идентификатору. Контакт возвращается в стандартном формате Contact с содержимым vCard и проанализированными полями.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Контакты"
+        ],
+        "summary": "Обновить контакт",
+        "description": "Обновите существующий контакт. Вы можете предоставить как обновлённое содержимое vCard, так и отдельные поля для обновления. Если вы предоставите отдельные поля, vCard контакта будет сгенерирована заново.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Контакты"
+        ],
+        "summary": "Удалить контакт",
+        "description": "Удалить определённый контакт навсегда. Это действие не может быть отменено.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Календари"
+        ],
+        "summary": "Список календарей",
+        "description": "Получить список всех календарей для аутентифицированного псевдонима. Эта конечная точка поддерживает пагинацию и возвращает календари в формате CalDAV.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Календари"
+        ],
+        "summary": "Создать календарь",
+        "description": "Создайте новый календарь. Имя календаря обязательно, другие свойства, такие как цвет, часовой пояс и описание, необязательны. Если календарь с таким именем уже существует, будет возвращена ошибка конфликта.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Календари"
+        ],
+        "summary": "Получить календарь",
+        "description": "Получить конкретный календарь по его идентификатору. Календарь возвращается со всеми своими свойствами, включая название, описание, цвет, часовой пояс и порядок.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Календари"
+        ],
+        "summary": "Обновление календаря",
+        "description": "Обновите существующий календарь. Вы можете изменить любые свойства календаря, включая название, описание, цвет, часовой пояс и порядок. Если изменить название на уже существующее, возникнет ошибка конфликта.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Календари"
+        ],
+        "summary": "Удалить календарь",
+        "description": "Удалить выбранный календарь навсегда. Это действие не может быть отменено и также удалит все события в календаре.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Папки"
+        ],
+        "summary": "Список папок",
+        "description": "Получает список всех папок/почтовых ящиков IMAP для аутентифицированного псевдонима. Эта конечная точка поддерживает пагинацию и фильтрацию по статусу подписки.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Фильтровать папки по статусу подписки",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Папки"
+        ],
+        "summary": "Создать папку",
+        "description": "Создайте новую папку/почтовый ящик IMAP. Путь к папке обязателен и может включать родительские папки (например, «INBOX/Подпапка»). Если родительские папки отсутствуют, они будут созданы автоматически.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Папки"
+        ],
+        "summary": "Восстановить папку",
+        "description": "Получить конкретную папку по её идентификатору или пути. В качестве идентификатора можно использовать ObjectID папки или её полный путь (например, «INBOX/Subfolder»).",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Папки"
+        ],
+        "summary": "Обновить папку",
+        "description": "Обновить/переименовать существующую папку. Эта операция переименовывает папку в соответствии с новым путём, указанным в теле запроса. В качестве идентификатора можно использовать ObjectID папки или её текущий путь.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Папки"
+        ],
+        "summary": "Удалить папку",
+        "description": "Удалить определённую папку навсегда. Это действие не может быть отменено и также удалит все сообщения в папке. В качестве идентификатора можно использовать ObjectID папки или путь к ней.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Сообщения"
+        ],
+        "summary": "Список и поиск сообщений",
+        "description": "Получайте список сообщений с расширенными возможностями поиска и фильтрации. Эта конечная точка поддерживает постраничную навигацию и комплексный поиск по содержимому сообщений, заголовкам, флагам и метаданным. Вы можете искать по папке, флагам, содержимому, заголовкам, диапазонам дат, размеру и другим параметрам.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Фильтровать сообщения по пути к папке",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Фильтр по статусу прочтения",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Фильтр по помеченному статусу",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Фильтр по удаленному статусу",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Фильтр по статусу черновика",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Фильтр по статусу спама/нежелательной почты",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Фильтр по статусу копирования",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Фильтр по статусу поиска",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Фильтр по просроченному статусу",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Фильтр по наличию вложений",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Фильтр по наличию вложений (псевдоним для has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Поиск по теме сообщения",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Поиск в тексте сообщения",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Поиск в тексте сообщения (псевдоним тела)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Поиск во всех заголовках сообщений",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Поиск по заголовку Message-ID",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Общий поиск по заголовкам и тексту",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Общий поиск (псевдоним для поиска)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Фильтр сообщений с этой даты (формат ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Фильтровать сообщения до этой даты (формат ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Фильтровать сообщения по минимальному размеру в байтах",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Фильтровать сообщения по максимальному размеру в байтах",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Поиск по заголовку «Из»",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Поиск по заголовку «Кому»",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Поиск по заголовку CC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Поиск по заголовку BCC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Поиск по заголовку даты",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Поиск по заголовку «Ответить»",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Сообщения"
+        ],
+        "summary": "Создать сообщение",
+        "description": "Создание/добавление нового сообщения в папку. Эта конечная точка принимает стандартный формат сообщений Nodemailer и позволяет указать целевую папку и начальные флаги. Если целевая папка не существует, она будет создана автоматически.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Сообщения"
+        ],
+        "summary": "Получить сообщение",
+        "description": "Извлечение конкретного сообщения по его идентификатору. По умолчанию ответ включает в себя разобранный объект Nodemailer и необработанное содержимое сообщения. Вы можете управлять тем, что включается, с помощью параметров запроса.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Возвращает необработанный формат EML вместо JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Включить проанализированный объект Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Включить вложения в объект Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Включить необработанное содержание сообщения",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Сообщения"
+        ],
+        "summary": "Обновление сообщения",
+        "description": "Обновите существующее сообщение. Вы можете изменить флаги сообщения или переместить его в другую папку. Если целевая папка не существует, она будет создана автоматически.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Возвращает необработанный формат EML вместо JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Сообщения"
+        ],
+        "summary": "Удалить сообщение",
+        "description": "Удалить определённое сообщение без возможности восстановления. Это действие не может быть отменено и навсегда удалит сообщение из хранилища. В отличие от IMAP-клиентов, которые обычно перемещают сообщения в корзину, эта конечная точка выполняет безвозвратное удаление.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1559,7 +3781,7 @@
     "/v1/logs/download": {
       "get": {
         "summary": "Загрузить журналы",
-        "description": "**Загрузка журналов**\n\nОписание: Наш API программно позволяет вам загружать журналы для вашей учетной записи. Отправка запроса на эту конечную точку обработает все журналы для вашей учетной записи и отправит их вам по электронной почте в виде вложения (файл таблицы CSV, сжатый Gzip) после завершения.\n\nЭто позволяет вам создавать фоновые задания с помощью задания Cron или использовать программное обеспечение для планирования заданий Node.js Bree для получения журналов в любое удобное для вас время. Обратите внимание, что эта конечная точка ограничена `10` запросами в день.\n\nВложение представляет собой строчную форму `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, а само электронное письмо содержит краткий обзор полученных журналов.",
+        "description": "**Скачать журналы**\n\nОписание: Наш API позволяет программно загружать журналы вашей учётной записи. Отправка запроса на эту конечную точку обработает все журналы вашей учётной записи и отправит их вам по электронной почте в виде вложения (CSV-файл, сжатый Gzip).\n\nЭто позволяет создавать фоновые задания с помощью Cron-задания или с помощью программы планирования заданий Node.js Bree для получения журналов в любое удобное время. Обратите внимание, что эта конечная точка ограничена 10 запросами в день.\n\nВложение представляет собой строчную форму `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, а само письмо содержит краткую сводку полученных журналов.",
         "tags": [
           "Журналы"
         ],
@@ -1572,7 +3794,7 @@
           {
             "name": "domain",
             "in": "query",
-            "description": "Фильтровать журналы по полному домену («FQDN»). Если не указано, будут извлечены все журналы по всем доменам.",
+            "description": "Фильтрация журналов по полному доменному имени (FQDN). Если имя не указано, будут извлечены все журналы по всем доменам.",
             "schema": {
               "type": "string"
             }
@@ -1637,7 +3859,7 @@
     "/v1/emails": {
       "get": {
         "summary": "Список исходящих писем SMTP",
-        "description": "**Список исходящих писем SMTP**\n\nОбратите внимание, что эта конечная точка не возвращает значения свойств для `message`, `headers` или `rejectedErrors` электронного письма.\n\nЧтобы вернуть эти свойства и их значения, используйте конечную точку [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) с идентификатором электронной почты.",
+        "description": "**Список исходящих SMTP-сообщений**\n\nОбратите внимание, что эта конечная точка не возвращает значения свойств `message`, `headers` и `rejectedErrors` электронного письма.\n\nЧтобы получить эти свойства и их значения, используйте конечную точку [Retrieve email](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email) с идентификатором электронной почты.",
         "tags": [
           "Электронные письма"
         ],
@@ -1666,7 +3888,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Сортировать по определенному полю (префикс с одним дефисом — для сортировки в обратном направлении этого поля). По умолчанию created_at, если не задано.",
+            "description": "Сортировка по указанному полю (префикс с одним дефисом — для сортировки в обратном направлении по этому полю). По умолчанию используется created_at, если не задано.",
             "schema": {
               "type": "string"
             }
@@ -1674,7 +3896,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "Для получения более подробной информации см. раздел «Пагинация».",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -1682,7 +3904,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Для получения более подробной информации см. раздел «Пагинация».",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -1715,7 +3937,7 @@
       },
       "post": {
         "summary": "Создать исходящее SMTP-сообщение",
-        "description": "Наш API для создания электронной почты вдохновлен и использует конфигурацию параметров сообщения Nodemailer. Пожалуйста, обратитесь к [конфигурации сообщения Nodemailer](https://nodemailer.com/message/) для всех параметров тела ниже.\n\nОбратите внимание, что за исключением `envelope` и `dkim` (так как мы устанавливаем их автоматически для вас), мы поддерживаем все параметры Nodemailer. Мы автоматически устанавливаем параметры `disableFileAccess` и `disableUrlAccess` на `true` в целях безопасности.\n\nВам следует либо передать единственный параметр `raw` с вашим необработанным полным письмом, включая заголовки, либо передать отдельные параметры параметров тела ниже.\n\nЭта конечная точка API автоматически кодирует для вас эмодзи, если они найдены в заголовках (например, строка темы `Subject: 🤓 Hello` автоматически преобразуется в `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Нашей целью было создать максимально удобный для разработчиков и защищенный от неопытных пользователей API электронной почты.",
+        "description": "Наш API для создания электронных писем основан на конфигурации параметров сообщений Nodemailer и использует её. Для всех параметров тела письма ниже обратитесь к [конфигурации сообщений Nodemailer](https://nodemailer.com/message/).\n\nОбратите внимание, что, за исключением `envelope` и `dkim` (поскольку мы устанавливаем их автоматически), мы поддерживаем все параметры Nodemailer. В целях безопасности мы автоматически устанавливаем параметры `disableFileAccess` и `disableUrlAccess` в значение `true`.\n\nВам следует либо передать единственный параметр `raw` вместе с полным необработанным письмом, включая заголовки, либо передать отдельные параметры тела письма ниже.\n\nЭта конечная точка API автоматически кодирует эмодзи, если они встречаются в заголовках (например, тема `Subject: 🤓 Hello` автоматически преобразуется в `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Нашей целью было создать максимально удобный для разработчиков и защищенный от «чайников» API электронной почты.",
         "tags": [
           "Электронные письма"
         ],
@@ -1765,7 +3987,7 @@
     "/v1/emails/limit": {
       "get": {
         "summary": "Получить лимит исходящей электронной почты SMTP",
-        "description": "Это простая конечная точка, которая возвращает объект JSON, содержащий `count` и `limit` для количества исходящих SMTP-сообщений в день для каждой учетной записи.",
+        "description": "Это простая конечная точка, которая возвращает объект JSON, содержащий «количество» и «лимит» количества ежедневных исходящих SMTP-сообщений для каждой учетной записи.",
         "tags": [
           "Электронные письма"
         ],
@@ -1835,7 +4057,7 @@
       },
       "delete": {
         "summary": "Удалить исходящую SMTP-почту",
-        "description": "Удаление электронной почты установит статус `\"отклонено\"` (и впоследствии не будет обрабатываться в очереди) только в том случае, если текущий статус - один из `\"ожидающих\"`, `\"в очереди\"` или `\"отложенных\"`. Мы можем автоматически очищать электронные письма через 30 дней после их создания и/или отправки, поэтому вам следует хранить копию исходящих SMTP-писем в своем клиенте, базе данных или приложении. При желании вы можете сослаться на наше значение идентификатора электронной почты в своей базе данных - это значение возвращается как из конечных точек [Создать электронную почту](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email), так и [Извлечь электронную почту](https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
+        "description": "Удаление письма приведёт к установке статуса «отклонено» (и, следовательно, не будет обрабатываться в очереди) только в том случае, если текущий статус — «ожидание», «в очереди» или «отложенный». Мы можем автоматически удалять письма через 30 дней после их создания и/или отправки, поэтому вам следует сохранять копии исходящих SMTP-сообщений в вашем клиенте, базе данных или приложении. При желании вы можете использовать наш идентификатор электронной почты в вашей базе данных — это значение возвращается как конечными точками [Создать письмо] (https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#create-email), так и [Получить письмо] (https://github.com/forwardemail/forwardemail.net/blob/master/app/views/api/index.md#retrieve-email).",
         "tags": [
           "Электронные письма"
         ],
@@ -1876,7 +4098,7 @@
     "/v1/domains": {
       "get": {
         "summary": "Список доменов",
-        "description": "> [!NOTE]\n>С 1 ноября 2024 года конечные точки API для доменов List и псевдонимов доменов List будут по умолчанию иметь максимальное количество результатов `1000` на страницу. Если вы хотите заранее включить это поведение, вы можете передать `?paginate=true` в качестве дополнительного параметра строки запроса в URL для запроса конечной точки. Подробнее см. в разделе Пагинация.",
+        "description": "> [!NOTE]\n>С 1 ноября 2024 года конечные точки API для доменов List и псевдонимов доменов List будут по умолчанию отображать максимум 1000 результатов на страницу. Если вы хотите заранее включить это поведение, вы можете передать `?paginate=true` в качестве дополнительного параметра строки запроса в URL-адрес запроса конечной точки. Подробнее см. в разделе «Пагинация».",
         "tags": [
           "Домены"
         ],
@@ -1905,7 +4127,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Сортировать по определенному полю (префикс с одним дефисом — для сортировки в обратном направлении этого поля). По умолчанию created_at, если не задано.",
+            "description": "Сортировка по указанному полю (префикс с одним дефисом — для сортировки в обратном направлении по этому полю). По умолчанию используется created_at, если не задано.",
             "schema": {
               "type": "string"
             }
@@ -1913,7 +4135,7 @@
           {
             "name": "page",
             "in": "query",
-            "description": "Для получения более подробной информации см. раздел «Пагинация».",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -1921,7 +4143,7 @@
           {
             "name": "limit",
             "in": "query",
-            "description": "Для получения более подробной информации см. раздел «Пагинация».",
+            "description": "Более подробную информацию см. в разделе «Пагинация».",
             "schema": {
               "type": "string"
             }
@@ -1951,7 +4173,7 @@
       },
       "post": {
         "summary": "Создать домен",
-        "description": "Создает новый домен в системе. Эта конечная точка позволяет вам зарегистрировать полное доменное имя (FQDN) или IP-адрес для использования с платформой.\n\nДополнительные параметры конфигурации включают назначение домена существующей команде, установку типа плана (например, бесплатный, улучшенная защита или команда) и настройку расширенных мер защиты, таких как фильтрация спама, сканирование на вирусы и проверка получателя. Вы также можете настроить, следует ли создавать псевдоним catch-all по умолчанию, задать пользовательский URL-адрес веб-перехватчика отказов для сбоев SMTP и определить ограничения квоты хранения для псевдонимов электронной почты в этом домене. Эта конечная точка выполняет проверку и подготовку на уровне домена. Если включена опция `ignore_mx_check`, проверка записи MX пропускается (рекомендуется только для расширенных настроек маршрутизации). Ответ будет содержать полную информацию о созданном объекте домена, включая записи DNS, необходимые для настройки.",
+        "description": "Создаёт новый домен в системе. Эта конечная точка позволяет зарегистрировать полное доменное имя (FQDN) или IP-адрес для использования с платформой.\n\nДополнительные параметры конфигурации включают назначение домена существующей команде, установку типа плана (например, бесплатный, улучшенная защита или командный) и настройку расширенных мер защиты, таких как фильтрация спама, сканирование на вирусы и проверка получателя. Вы также можете указать, следует ли создавать псевдоним для перехвата всех сообщений по умолчанию, задать URL-адрес веб-перехвата для сообщений об ошибках SMTP и определить квоты хранения для псевдонимов электронной почты в этом домене. Эта конечная точка выполняет проверку и подготовку на уровне домена. Если включен параметр `ignore_mx_check`, проверка MX-записи пропускается (рекомендуется только для расширенных настроек маршрутизации). Ответ будет содержать полную информацию о созданном объекте домена, включая записи DNS, необходимые для настройки.",
         "tags": [
           "Домены"
         ],
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2208,8 +4430,8 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords": {
       "post": {
-        "summary": "Создать общедоменный пароль для всех атак",
-        "description": "Создает общедоменный пароль. Если пароль не указан, будет сгенерирован безопасный случайный пароль.",
+        "summary": "Создайте пароль для всего домена",
+        "description": "Создаёт универсальный пароль для всего домена. Если пароль не указан, будет сгенерирован случайный пароль.",
         "tags": [
           "Домены"
         ],
@@ -2233,7 +4455,7 @@
                 "properties": {
                   "new_password": {
                     "type": "string",
-                    "description": "Ваш новый пароль для использования в качестве общедоменного пароля. Оставьте поле пустым, чтобы сгенерировать надежный пароль."
+                    "description": "Ваш новый пароль для использования в качестве пароля для всех доменов. Оставьте поле пустым, чтобы создать надёжный пароль."
                   },
                   "description": {
                     "type": "string",
@@ -2282,7 +4504,7 @@
         }
       },
       "get": {
-        "summary": "Список паролей для всего домена",
+        "summary": "Список паролей для всех доменов",
         "description": "Возвращает список общедоменных паролей, которые в данный момент настроены для указанного домена.",
         "operationId": "listCatchAllPasswords",
         "tags": [
@@ -2359,7 +4581,7 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "Удалить общедоменный пароль для всеобщего распространения",
+        "summary": "Удалить пароль для всех доменов",
         "description": "Удаляет общедоменный пароль, используя предоставленный идентификатор токена.",
         "tags": [
           "Домены"
@@ -2432,7 +4654,7 @@
       ],
       "get": {
         "summary": "Принять приглашение домена",
-        "description": "Принять приглашение на домен.",
+        "description": "Принять приглашение в домен.",
         "tags": [
           "Приглашения"
         ],
@@ -2470,8 +4692,8 @@
         }
       },
       "post": {
-        "summary": "Создать доменное приглашение",
-        "description": ">[!IMPORTANT]\n>Если приглашаемый пользователь уже является принятым участником любого другого домена, членом которого является приглашающий его администратор, то он автоматически примет приглашение и не отправит электронное письмо.",
+        "summary": "Создать приглашение на домен",
+        "description": ">[!IMPORTANT]\n>Если приглашаемый пользователь уже является принятым участником любого другого домена, к которому принадлежит приглашающий его администратор, то приглашение будет принято автоматически и не будет отправлено электронное письмо.",
         "tags": [
           "Приглашения"
         ],
@@ -2497,7 +4719,7 @@
                   "group": {
                     "type": "string",
                     "format": "string",
-                    "description": "Группа, в которую необходимо добавить пользователя для членства в домене (может быть `\"admin\"` или `\"user\"`)"
+                    "description": "Группа, к которой нужно добавить пользователя для членства в домене (может быть `\"admin\"` или `\"user\"`)"
                   }
                 }
               }
@@ -2555,7 +4777,7 @@
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "description": "Адрес электронной почты, который необходимо удалить из списка участников домена"
+                    "description": "Адрес электронной почты, который нужно удалить из списка участников домена"
                   }
                 }
               }
@@ -2604,8 +4826,8 @@
         }
       ],
       "put": {
-        "summary": "Обновить члена домена",
-        "description": "Обновить участника домена.",
+        "summary": "Обновление члена домена",
+        "description": "Обновление члена домена.",
         "tags": [
           "Участники"
         ],
@@ -2623,7 +4845,7 @@
                   "group": {
                     "required": true,
                     "type": "string",
-                    "description": "Группа, в которой необходимо обновить членство пользователя в домене (может быть `\"admin\"` или `\"user\"`)"
+                    "description": "Группа для обновления членства пользователя в домене (может быть `\"admin\"` или `\"user\"`)"
                   }
                 }
               }
@@ -2698,7 +4920,7 @@
     "/v1/domains/{domain_id}/aliases/{alias_id}/generate-password": {
       "post": {
         "summary": "Сгенерировать пароль псевдонима",
-        "description": "Сгенерировать пароль для псевдонима. Если `emailed_instructions` не предоставлено, ответ будет содержать сгенерированное имя пользователя и пароль.",
+        "description": "Сгенерируйте пароль для псевдонима. Если `emailed_instructions` не указан, ответ будет содержать сгенерированные имя пользователя и пароль.",
         "tags": [
           "Псевдонимы"
         ],
@@ -2773,8 +4995,8 @@
         }
       ],
       "get": {
-        "summary": "Список псевдонимов домена",
-        "description": ">[!NOTE]\n>С 1 ноября 2024 года конечные точки API для `Список доменов` и `Список псевдонимов доменов` будут по умолчанию иметь макс. `1000` результатов на страницу. Если вы хотите заранее включить это поведение, вы можете передать `?paginate=true` в качестве дополнительного параметра строки запроса в URL для запроса конечной точки. Подробнее см. в разделе Пагинация.",
+        "summary": "Список доменных псевдонимов",
+        "description": ">[!NOTE]\n>С 1 ноября 2024 года конечные точки API для «Списка доменов» и «Списка псевдонимов доменов» по умолчанию будут отображать максимум 1000 результатов на страницу. Если вы хотите заранее включить это поведение, вы можете передать `?paginate=true` в качестве дополнительного параметра строки запроса в URL-адрес запроса конечной точки. Подробнее см. в разделе «Пагинация».",
         "tags": [
           "Псевдонимы"
         ],
@@ -2814,7 +5036,7 @@
           {
             "name": "sort",
             "in": "query",
-            "description": "Сортировать по определенному полю (префикс с одним дефисом — для сортировки в обратном порядке). По умолчанию created_at.",
+            "description": "Сортировать по заданному полю (префикс с одним дефисом — для сортировки в обратном порядке). По умолчанию — created_at.",
             "required": false,
             "schema": {
               "type": "string"
@@ -3031,9 +5253,9 @@
     "/v1/encrypt": {
       "post": {
         "summary": "Зашифровать TXT-запись",
-        "description": "Мы позволяем вам шифровать записи даже на бесплатном плане без каких-либо затрат. Конфиденциальность не должна быть функцией, она должна быть изначально встроена во все аспекты продукта. Как настоятельно просили в [обсуждении руководств по конфиденциальности](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) и в наших [проблемах GitHub](https://github.com/forwardemail/forwardemail.net/issues/254) мы добавили это.",
+        "description": "Мы позволяем вам шифровать записи бесплатно даже на бесплатном тарифе. Конфиденциальность не должна быть просто функцией, она должна быть неотъемлемой частью всех аспектов продукта. Мы добавили эту функцию по многочисленным просьбам в [обсуждении руководств по конфиденциальности](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) и в [обсуждении проблем на GitHub](https://github.com/forwardemail/forwardemail.net/issues/254).",
         "tags": [
-          "Зашифровать"
+          "Шифровать"
         ],
         "security": [
           {
@@ -3052,7 +5274,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "Любая допустимая запись TXT для пересылки электронного письма"
+                    "description": "Любая допустимая запись открытого текста TXT для пересылки электронной почты"
                   }
                 }
               }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Список контактов",
-        "description": "Список всех контактов (CardDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Контакты псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Создать контакт",
-        "description": "Создайте новый контакт (CardDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Контакты псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Контактный идентификатор",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Получить контакт",
-        "description": "Извлечь определенный контакт (CardDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Контакты псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Обновить контакт",
-        "description": "Обновить определенный контакт (CardDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Контакты псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Удалить контакт",
-        "description": "Удалить определенный контакт (CardDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Контакты псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Список календарей",
-        "description": "Список всех календарей (CalDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы Календари"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Создать календарь",
-        "description": "Создать новый календарь (CalDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы Календари"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Идентификатор календаря",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Получить календарь",
-        "description": "Получить определенный календарь (CalDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы Календари"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Календарь обновлений",
-        "description": "Обновить определенный календарь (CalDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы Календари"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Удалить календарь",
-        "description": "Удалить определенный календарь (CalDAV). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы Календари"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Список и поиск сообщений",
-        "description": "Список и поиск сообщений (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Сообщения псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Создать сообщение",
-        "description": "Создать новое сообщение (IMAP/POP3). Это НЕ отправит электронное письмо – это просто добавит сообщение в папку вашего почтового ящика (аналогично команде IMAP APPEND). Эта конечная точка появится скоро.",
-        "tags": [
-          "Сообщения псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Идентификатор сообщения",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Получить сообщение",
-        "description": "Получить определенное сообщение (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Сообщения псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Обновить сообщение",
-        "description": "Обновить определенное сообщение (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Сообщения псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Удалить сообщение",
-        "description": "Удалить определенное сообщение (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Сообщения псевдонима"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Список папок",
-        "description": "Список всех папок (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы папок"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Создать папку",
-        "description": "Создайте новую папку (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы папок"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Идентификатор папки",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Восстановить папку",
-        "description": "Получить определенную папку (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы папок"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Обновить папку",
-        "description": "Обновить определенную папку (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы папок"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Удалить папку",
-        "description": "Удалить определенную папку (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы папок"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Идентификатор папки",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Копировать папку",
-        "description": "Копировать определенную папку (IMAP/POP3). Эта конечная точка появится скоро.",
-        "tags": [
-          "Псевдонимы папок"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3688,11 +5333,11 @@
     },
     {
       "name": "Домены",
-      "description": "> [!TIP]\n> Конечные точки домена с именем домена <code>/v1/domains/:domain\\_name</code> в качестве конечной точки взаимозаменяемы с идентификатором домена <code>:domain\\_id</code>. Это означает, что вы можете ссылаться на домен либо по его значению <code>name</code>, либо по значению <code>id</code>."
+      "description": "> [!TIP]\n> Конечные точки домена с именем <code>/v1/domains/:domain\\_name</code> взаимозаменяемы с идентификатором домена <code>:domain\\_id</code>. Это означает, что вы можете ссылаться на домен либо по его значению <code>name</code>, либо по значению <code>id</code>."
     },
     {
       "name": "Приглашения",
-      "description": "Конечные точки управления приглашением домена"
+      "description": "Конечные точки управления приглашениями домена"
     },
     {
       "name": "Участники",
@@ -3703,24 +5348,24 @@
       "description": "Конечные точки управления псевдонимами домена"
     },
     {
-      "name": "Зашифровать",
+      "name": "Шифровать",
       "description": "Конечные точки шифрования"
     },
     {
-      "name": "Контакты псевдонима",
-      "description": "Псевдонимы управления контактами конечных точек (CardDAV)\n\n>[!NOTE]\n>В отличие от других конечных точек API, для них требуется аутентификация «имя пользователя», равное имени пользователя псевдонима, и «пароль», равный паролю, сгенерированному псевдонимом, в качестве заголовков базовой авторизации.\n\n>[!WARNING]\n>Этот раздел конечной точки находится в стадии разработки и будет выпущен (надеюсь) в 2025 году. В это время используйте клиент IMAP из раскрывающегося списка «Приложения» в навигации нашего веб-сайта."
+      "name": "Контакты",
+      "description": "Конечные точки управления псевдонимами контактов (CardDAV)\n\n>[!NOTE]\n>В отличие от других конечных точек API, для этих конечных точек требуется аутентификация с указанием имени пользователя псевдонима и пароля, сгенерированного псевдонимом, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n>Эти конечные точки предоставляют полный набор CRUD-операций для управления контактами с поддержкой vCard, включая создание, извлечение, обновление и удаление контактов. Вы можете предоставить как непосредственно содержимое vCard, так и отдельные поля контактов, которые будут преобразованы в формат vCard."
     },
     {
-      "name": "Псевдонимы Календари",
-      "description": "Псевдонимы управления календарями конечных точек (CalDAV)\n\n>[!NOTE]\n> В отличие от других конечных точек API, для них требуется [Authentication](#description/authentication) \"username\", равное псевдониму имени пользователя, и \"password\", равное псевдониму сгенерированному паролю, в качестве заголовков базовой авторизации.\n\n>[!WARNING]\n> Этот раздел конечной точки находится в стадии разработки и будет выпущен (надеюсь) в 2025 году. В это время используйте клиент IMAP из раскрывающегося списка \"Приложения\" в навигации нашего веб-сайта."
+      "name": "Календари",
+      "description": "Конечные точки управления псевдонимами календарей (CalDAV)\n\n>[!NOTE]\n> В отличие от других конечных точек API, для этих конечных точек требуется [Authentication](#description/authentication) \"username\", совпадающий с именем пользователя псевдонима, и \"password\", совпадающий с паролем, сгенерированным псевдонимом, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n> Эти конечные точки обеспечивают полное управление календарями с поддержкой часовых поясов и цветов, включая создание, извлечение, обновление и удаление календарей. Названия календарей обязательны, другие свойства, такие как цвет, часовой пояс и описание, необязательны."
     },
     {
-      "name": "Сообщения псевдонима",
-      "description": "Конечные точки управления сообщениями псевдонима (IMAP/POP3)\n\n>[!NOTE]\n> В отличие от других конечных точек API, для них требуется [Аутентификация](#description/authentication) \"имя пользователя\", равное имени пользователя псевдонима, и \"пароль\", равный сгенерированному паролю псевдонима, в качестве заголовков базовой авторизации.\n\n> [!WARNING]\n> Этот раздел конечной точки находится в стадии разработки и будет выпущен (надеюсь) в 2025 году. В это время используйте клиент IMAP из раскрывающегося списка \"Приложения\" в навигации нашего веб-сайта.\nУбедитесь, что вы выполнили инструкции по настройке для своего домена.\nЭти инструкции можно найти в разделе часто задаваемых вопросов [Поддерживаете ли вы получение электронной почты с помощью IMAP?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Сообщения",
+      "description": "Конечные точки управления сообщениями-псевдонимами (IMAP/POP3)\n\n>[!NOTE]\n> В отличие от других конечных точек API, для этих конечных точек требуется [Аутентификация](#description/authentication) «имя пользователя», равное имени пользователя-псевдонима, и «пароль», равный сгенерированному паролю-псевдониму, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n> Эти конечные точки обеспечивают комплексное управление сообщениями с расширенными возможностями поиска. Вы можете искать по папкам, флагам, содержимому, заголовкам, диапазонам дат, размеру и другим параметрам. Сообщения можно создавать в стандартном формате Nodemailer, они поддерживают перемещение между папками и управление флагами.\n\nУбедитесь, что вы выполнили инструкции по настройке для своего домена.\nЭти инструкции можно найти в разделе часто задаваемых вопросов [Поддерживаете ли вы получение электронной почты по протоколу IMAP?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Псевдонимы папок",
-      "description": "Конечные точки управления папками псевдонимов (IMAP/POP3)\n\n>[!TIP]\n> Конечные точки папок с путем папки <code>/v1/folders/:path</code> в качестве конечной точки взаимозаменяемы с идентификатором папки <code>:id</code>. Это означает, что вы можете ссылаться на папку по ее значению <code>path</code> или <code>id</code>.\n\n>[!WARNING]\n> Этот раздел конечной точки находится в стадии разработки и будет выпущен (надеюсь) в 2025 году. В это время используйте клиент IMAP из раскрывающегося списка «Приложения» в навигации нашего веб-сайта."
+      "name": "Папки",
+      "description": "Конечные точки управления псевдонимами папок (IMAP/POP3)\n\n>[!TIP]\n> Конечные точки папок с путём <code>/v1/folders/:path</code> взаимозаменяемы с идентификатором папки <code>:id</code>. Это означает, что вы можете ссылаться на папку по её значению <code>path</code> или <code>id</code>.\n\n>[!NOTE]\n> В отличие от других конечных точек API, для этих конечных точек требуется [Authentication](#description/authentication) \"username\", равный имени пользователя псевдонима, и \"password\", равный паролю, сгенерированному псевдонимом, в качестве заголовков базовой авторизации.\n\n>[!TIP]\n> Эти конечные точки обеспечивают полное управление папками, включая создание, переименование и удаление. Пути к папкам могут включать родительские папки (например, «INBOX/Subfolder»), и родительские папки будут созданы автоматически, если они не существуют."
     }
   ]
 }

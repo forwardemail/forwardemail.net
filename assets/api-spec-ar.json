@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />مرحبًا بك في توثيق واجهة برمجة التطبيقات الشاملة لإعادة توجيه البريد الإلكتروني. تتيح لك هذه الواجهة إدارة إعادة توجيه البريد الإلكتروني، والنطاقات، والأسماء المستعارة، ورسائل البريد الإلكتروني الصادرة، والمزيد برمجيًا.\n\n## الميزات الرئيسية\n* **إدارة النطاقات:** إنشاء النطاقات، واسترجاعها، وتحديثها، وحذفها، والتحقق منها.\n* **إدارة الأسماء المستعارة:** إدارة أسماء البريد الإلكتروني المستعارة، بما في ذلك الإنشاء، والتحديثات، وإدارة المستلمين.\n* **بروتوكول SMTP الصادر:** إرسال رسائل البريد الإلكتروني عبر SMTP، وإدارة الحدود، وتتبع رسائل البريد الإلكتروني المرسلة.\n* **الحساب والسجلات:** إدارة تفاصيل حسابك وتنزيل سجلات النشاط.\n* **الأمان:** تشفير سجلات TXT وإدارة أعضاء/دعوات النطاق.\n* **قريبًا:** ميزات مثل جهات اتصال CardDAV، وتقويمات CalDAV، وإدارة رسائل/مجلدات IMAP/POP3 مُخطط لها.\n\n## المصادقة\nتتطلب معظم نقاط النهاية المصادقة باستخدام **مفتاح واجهة برمجة التطبيقات**. أدخل مفتاح واجهة برمجة التطبيقات كـ \"اسم المستخدم\" في ترويسة المصادقة الأساسية، مع ترك كلمة المرور فارغة.\n\n```http\nالتفويض: أساسي QVBJX1RPS0VOOg==\n```\n(استبدل `API_TOKEN` بمفتاحك الفعلي قبل ترميز Base64)\n\nستستخدم نقاط النهاية المرتبطة بـ **جهات الاتصال والتقويمات والرسائل والمجلدات البديلة** (المُعلَّمة حاليًا باسم \"قريبًا\") اسم مستخدم وكلمة مرور بديلين مُولَّدين للمصادقة الأساسية.\n\n## الأخطاء\nتستخدم واجهة برمجة التطبيقات رموز حالة HTTP القياسية للإشارة إلى النجاح أو الفشل. تتضمن استجابات الأخطاء نص JSON مع حقل \"رسالة\" يُفصِّل الخطأ.\n\n| رمز الحالة | المعنى |\n|-------------|---------------------|\n| 200 | موافق |\n| ٤٠٠ | طلب خاطئ |\n| ٤٠١ | غير مُصرَّح به |\n| ٤٠٣ | ممنوع |\n| ٤٠٤ | غير موجود |\n| ٤٢٩ | طلبات كثيرة جدًا |\n| ٥٠٠ | خطأ داخلي في الخادم |\n| ٥٠١ | غير مُنفَّذ |\n| ٥٠٢ | بوابة خاطئة |\n| ٥٠٣ | الخدمة غير متاحة |\n| ٥٠٤ | انتهاء مهلة البوابة |\n\n*إذا واجهتَ خطأ `5xx`، يُرجى التواصل مع [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## الترجمة\nتُترجم استجابات واجهة برمجة التطبيقات بناءً على الإعدادات المحلية التي اكتشفها المستخدم أو ترويسة `Accept-Language`. يدعم الموقع أكثر من ٢٥ لغة.\n\n## ترقيم الصفحات\nتدعم نقاط النهاية التي تُرجع القوائم ترقيم الصفحات عبر معلمات الاستعلام.\n\n| المعلمة | النوع | اختياري | الوصف | الافتراضي | القيود |\n|--------------|----------|------------|---------------------------------------------------------------------------|---------|--------------------|\n| `page` | عدد صحيح | نعم | رقم الصفحة المطلوب استرجاعها. | 1 | `>= 1` |\n| `limit` | عدد صحيح | نعم | عدد النتائج في الصفحة. | 10 | `>= 1`, `<= 50` |\n| `pagination` | Boolean | نعم | الاشتراك في سلوك ترقيم الصفحات (مطلوب قبل 1 نوفمبر 2024 لبعض نقاط النهاية). | false | |\n\n**رؤوس ترقيم الصفحات:**\n* `X-Page-Count`: إجمالي عدد الصفحات.\n* `X-Page-Current`: رقم الصفحة الحالية.\n* `X-Page-Size`: عدد العناصر في الصفحة الحالية.\n* `X-Item-Count`: إجمالي عدد العناصر في جميع الصفحات.\n* `Link`: روابط التنقل (السابق، التالي، الأول، الأخير).\n\n**مثال:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## المكتبات الموصى بها\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (يُدار بواسطة إعادة توجيه البريد الإلكتروني)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />مرحبًا بك في توثيق واجهة برمجة التطبيقات الشاملة لإعادة توجيه البريد الإلكتروني. تتيح لك هذه الواجهة إدارة إعادة توجيه البريد الإلكتروني، والنطاقات، والأسماء المستعارة، ورسائل البريد الإلكتروني الصادرة، والمزيد برمجيًا.\n\n## الميزات الرئيسية\n* **إدارة النطاقات:** إنشاء النطاقات، واسترجاعها، وتحديثها، وحذفها، والتحقق منها.\n* **إدارة الأسماء المستعارة:** إدارة أسماء البريد الإلكتروني المستعارة، بما في ذلك الإنشاء، والتحديثات، وإدارة المستلمين.\n* **بروتوكول SMTP الصادر:** إرسال رسائل البريد الإلكتروني عبر SMTP، وإدارة الحدود، وتتبع رسائل البريد الإلكتروني المرسلة.\n* **الحساب والسجلات:** إدارة تفاصيل حسابك وتنزيل سجلات النشاط.\n* **الأمان:** تشفير سجلات TXT وإدارة أعضاء/دعوات النطاق.\n* **جهات اتصال CardDAV:** عمليات CRUD كاملة لإدارة جهات الاتصال مع دعم vCard.\n* **تقويمات CalDAV:** إدارة تقويم كاملة مع دعم المنطقة الزمنية والألوان.\n* **رسائل IMAP/POP3:** إدارة شاملة للرسائل مع إمكانيات بحث متقدمة.\n* **مجلدات IMAP/POP3:** إدارة كاملة للمجلدات، بما في ذلك الإنشاء وإعادة التسمية والحذف.\n\n## المصادقة\nتتطلب معظم نقاط النهاية المصادقة باستخدام **مفتاح واجهة برمجة التطبيقات** الخاص بك. أدخل مفتاح واجهة برمجة التطبيقات كـ \"اسم المستخدم\" في ترويسة المصادقة الأساسية، مع ترك كلمة المرور فارغة.\n\n```http\nالتفويض: أساسي QVBJX1RPS0VOOg==\n```\n\n(استبدل `API_TOKEN` بمفتاحك الفعلي قبل ترميز Base64)\n\nتتطلب نقاط النهاية المتعلقة بـ **جهات الاتصال البديلة، والتقويمات، والرسائل، والمجلدات** اسم مستخدم وكلمة مرور بديلين مُولّدين للمصادقة الأساسية.\n\n## الأخطاء\nتستخدم واجهة برمجة التطبيقات رموز حالة HTTP القياسية للإشارة إلى النجاح أو الفشل. تتضمن استجابات الأخطاء نص JSON مع حقل \"رسالة\" يُفصّل الخطأ.\n\n| رمز الحالة | المعنى |\n|-------------|---------------------|\n| 200 | موافق |\n| 400 | طلب خاطئ |\n| 401 | غير مُصرّح به |\n| 403 | ممنوع |\n| 404 | غير موجود |\n| 409 | تعارض |\n| 412 | فشل الشرط المسبق |\n| 429 | طلبات كثيرة جدًا |\n| 500 | خطأ داخلي في الخادم |\n| 501 | غير مُنفّذ |\n| 502 | بوابة خاطئة |\n| 503 | الخدمة غير متاحة |\n| 504 | انتهاء مهلة البوابة |\n\n*إذا واجهتَ خطأ `5xx`، يُرجى التواصل مع [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## الترجمة\nتُترجم استجابات واجهة برمجة التطبيقات بناءً على الإعدادات المحلية التي اكتشفها المستخدم أو ترويسة `Accept-Language`. يدعم البرنامج أكثر من 25 لغة.\n\n## ترقيم الصفحات\nتدعم نقاط النهاية التي تُرجع القوائم ترقيم الصفحات عبر معلمات الاستعلام.\n\n| المعلمة | النوع | اختياري | الوصف | افتراضي | القيود |\n|-------------|----------|------------|---------------------------------------------------------------------------|----------|-----------------------|\n| `page` | عدد صحيح | نعم | رقم الصفحة المطلوب استرجاعها. | 1 | `>= 1` |\n| `limit` | عدد صحيح | نعم | عدد النتائج في الصفحة. | 10 | `>= 1`, `<= 50` |\n| `ترقيم الصفحات` | منطقي | نعم | الاشتراك في سلوك ترقيم الصفحات (مطلوب قبل 1 نوفمبر 2024 لبعض نقاط النهاية). | خطأ | |\n\n**رؤوس ترقيم الصفحات:**\n* `X-Page-Count`: إجمالي عدد الصفحات.\n* `X-Page-Current`: رقم الصفحة الحالية.\n* `X-Page-Size`: عدد العناصر في الصفحة الحالية.\n* `X-Item-Count`: إجمالي عدد العناصر في جميع الصفحات.\n* `Link`: روابط التنقل (السابق، التالي، الأول، الأخير).\n\n**مثال:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## المكتبات الموصى بها\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (يُدار بواسطة إعادة توجيه البريد الإلكتروني)\n* **Go:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -21,12 +21,12 @@
       "ApiKeyAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "استخدم مفتاح واجهة برمجة التطبيقات (API) كاسم مستخدم للمصادقة الأساسية. اترك حقل كلمة المرور فارغًا.\n\nمثال: إذا كان مفتاح واجهة برمجة التطبيقات (API) الخاص بك هو `YOUR_API_KEY`، فإن قيمة Base64 المُرمَّزة لرأس `Authorization` ستكون `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
+        "description": "استخدم مفتاح واجهة برمجة التطبيقات (API) كاسم مستخدم للمصادقة الأساسية. اترك حقل كلمة المرور فارغًا.\n\nمثال: إذا كان مفتاح واجهة برمجة التطبيقات (API) الخاص بك هو `YOUR_API_KEY`، فستكون قيمة Base64 المُرمَّزة لرأس `Authorization` هي `echo -n \"YOUR_API_KEY:\" | base64`.\n\n```http\nAuthorization: Basic WU9VUl9BUElfS0VZOg==\n```\n"
       },
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "استخدم **اسم المستخدم وكلمة المرور المستعارين** المُولَّدين للمصادقة الأساسية. ينطبق هذا على نقاط النهاية ضمن:\n* جهات اتصال مستعارة (CardDAV)\n* تقويمات مستعارة (CalDAV)\n* رسائل مستعارة (IMAP/POP3)\n* مجلدات مستعارة (IMAP/POP3)\n\n*(ملاحظة: هذه الميزات مُعلَّمة حاليًا بأنها \"قريبًا\")*\n\n**مثال:**\nإذا كان اسم المستخدم المستعار هو `alias@domain.com` وكلمة المرور هي `GENERATED_PASSWORD`، فستكون قيمة Base64 المُرمَّزة هي `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nالتفويض: أساسي YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "استخدم **اسم المستخدم وكلمة المرور المستعارين** المُولَّدين للمصادقة الأساسية. ينطبق هذا على نقاط النهاية ضمن:\n* جهات اتصال المستعارة (CardDAV)\n* التقويمات المستعارة (CalDAV)\n* الرسائل المستعارة (IMAP/POP3)\n* المجلدات المستعارة (IMAP/POP3)\n\n**مثال:**\nإذا كان اسم المستخدم المستعار هو `alias@domain.com` وكلمة المرور هي `GENERATED_PASSWORD`، فإن قيمة Base64 المُرمَّزة ستكون `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nالتفويض: أساسي YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "معرف جهة الاتصال (contact_id من CardDAV)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "معرف جهة الاتصال الفريد"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "الاسم الكامل للجهة الاتصال"
+          },
+          "content": {
+            "type": "string",
+            "description": "محتوى بطاقة vCard"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag لإصدارات"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "هل الاتصال عبارة عن مجموعة"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من عناوين البريد الإلكتروني"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من أرقام الهواتف"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "محتوى vCard (إذا لم يتم توفيره، فسيتم إنشاؤه من حقول أخرى)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "الاسم الكامل للجهة الاتصال"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "معرف جهة الاتصال المخصص (إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "معرف جهة الاتصال الفريد (إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من عناوين البريد الإلكتروني"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من أرقام الهواتف"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من أرقام الهواتف (اسم مستعار لـ phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "مجموعة من العناوين"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "هل الاتصال عبارة عن مجموعة"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "محتوى بطاقة vCard"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "الاسم الكامل للجهة الاتصال"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من عناوين البريد الإلكتروني"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من أرقام الهواتف"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "مجموعة من أرقام الهواتف (اسم مستعار لـ phone_numbers)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "مجموعة من العناوين"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "هل الاتصال عبارة عن مجموعة"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "معرف التقويم (معرف التقويم من CalDAV)"
+          },
+          "name": {
+            "type": "string",
+            "description": "اسم التقويم"
+          },
+          "description": {
+            "type": "string",
+            "description": "وصف التقويم"
+          },
+          "color": {
+            "type": "string",
+            "description": "لون التقويم (تنسيق سداسي عشري)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "المنطقة الزمنية للتقويم"
+          },
+          "order": {
+            "type": "integer",
+            "description": "ترتيب عرض التقويم"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "اسم التقويم"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "معرف التقويم المخصص (إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
+          },
+          "description": {
+            "type": "string",
+            "description": "وصف التقويم"
+          },
+          "color": {
+            "type": "string",
+            "description": "لون التقويم (تنسيق سداسي عشري، إذا لم يتم توفيره، فسيتم إنشاؤه تلقائيًا)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "المنطقة الزمنية للتقويم (الافتراضي هو المنطقة الزمنية للمستخدم أو UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "ترتيب عرض التقويم (الافتراضي هو 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "اسم التقويم"
+          },
+          "description": {
+            "type": "string",
+            "description": "وصف التقويم"
+          },
+          "color": {
+            "type": "string",
+            "description": "لون التقويم (تنسيق سداسي عشري)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "المنطقة الزمنية للتقويم"
+          },
+          "order": {
+            "type": "integer",
+            "description": "ترتيب عرض التقويم"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "معرف المجلد"
+          },
+          "path": {
+            "type": "string",
+            "description": "مسار المجلد الكامل"
+          },
+          "name": {
+            "type": "string",
+            "description": "اسم المجلد (الجزء الأخير من المسار)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "مسار المجلد الرئيسي"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "صحة معرف IMAP"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "قيمة UID التالية"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "مؤشر التعديل"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "ما إذا كان المجلد مشتركًا"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "أعلام المجلد"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "فترة الاحتفاظ بالرسالة"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "تسمية الاستخدام الخاص"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "مسار المجلد/الاسم"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "مسار/اسم المجلد الجديد"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "معرف الرسالة"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "معرف الرسالة الجذرية للترابط"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "معرف المجلد الذي يحتوي على الرسالة"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "مسار المجلد الذي يحتوي على الرسالة"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "معرف الموضوع لتجميع المحادثة"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "قيمة رأس معرف الرسالة"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "ما إذا كانت الرسالة غير مقروءة"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "ما إذا كانت الرسالة مميزة"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "هل سيتم حذف الرسالة"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "هل الرسالة مسودة؟"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "ما إذا كانت الرسالة غير مرغوب فيها/غير مرغوب فيها"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "هل تم نسخ الرسالة"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "ما إذا كانت الرسالة قابلة للبحث"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "ما إذا كانت الرسالة منتهية الصلاحية"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "ما إذا كانت الرسالة تحتوي على مرفقات"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "تاريخ الاحتفاظ بالرسالة"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "التاريخ الداخلي (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "التاريخ من رؤوس الرسائل"
+          },
+          "subject": {
+            "type": "string",
+            "description": "موضوع الرسالة"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "أعلام IMAP"
+          },
+          "size": {
+            "type": "integer",
+            "description": "حجم الرسالة بالبايت"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "معرف IMAP الفريد"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "تسلسل التعديل"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "نوع المعاملة"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "عنوان IP البعيد"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "كائن الرسالة المُحلل (مُضمن افتراضيًا، اضبط ?nodemailer=false للاستبعاد)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "محتوى الرسالة الخام (مضمن بشكل افتراضي، اضبط ?raw=false للاستبعاد)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "عنوان البريد الإلكتروني للمرسل"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "عناوين البريد الإلكتروني للمستلمين"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "عناوين البريد الإلكتروني لمستلمي النسخة الكربونية"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "عناوين البريد الإلكتروني لمتلقي نسخة مخفية"
+          },
+          "subject": {
+            "type": "string",
+            "description": "موضوع الرسالة"
+          },
+          "text": {
+            "type": "string",
+            "description": "محتوى نص عادي"
+          },
+          "html": {
+            "type": "string",
+            "description": "محتوى HTML"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "مرفقات الرسائل (تنسيق Nodemailer)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "المجلد المستهدف (الافتراضي هو صندوق الوارد)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "علامات IMAP التي يجب تعيينها على الرسالة"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "علامات IMAP التي يجب تعيينها على الرسالة"
+          },
+          "folder": {
+            "type": "string",
+            "description": "نقل الرسالة إلى هذا المجلد"
+          }
         }
       },
       "Email": {
@@ -1009,7 +1878,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (الافتراضي هو إعداد المجال)"
+            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (يتم تعيينه افتراضيًا على إعداد المجال)"
           },
           "is_enabled": {
             "type": "boolean",
@@ -1106,7 +1975,7 @@
           },
           "has_recipient_verification": {
             "type": "boolean",
-            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (يتم تعيينه افتراضيًا على إعداد المجال)"
+            "description": "مطالبة المستلمين بالنقر فوق رابط التحقق (الافتراضي هو إعداد المجال)"
           },
           "is_enabled": {
             "type": "boolean",
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "أسماء مستعارة للمعرفات",
+        "description": "معرف الاسم المستعار",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "معرف البريد الإلكتروني",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "معرف جهة الاتصال",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "معرف التقويم",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "معرف المجلد أو المسار",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "معرف الرسالة",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "إنشاء حساب",
-        "description": "إنشاء حساب مستخدم جديد",
-        "tags": [
-          "حساب"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "عنوان البريد الإلكتروني"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "كلمة المرور"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "استرداد الحساب",
-        "description": "استرداد معلومات حساب المستخدم الحالي",
         "tags": [
           "حساب"
         ],
+        "summary": "استرداد الحساب",
+        "description": "استرداد معلومات حسابك.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "تحديث الحساب",
-        "description": "تحديث معلومات حساب المستخدم الحالي",
         "tags": [
           "حساب"
         ],
+        "summary": "تحديث الحساب",
+        "description": "تحديث معلومات حسابك.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "عنوان البريد الإلكتروني"
+                    "description": "اسم العرض"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "الاسم الأول"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "اسم العائلة"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "رابط لصورة الرمزية"
+                    "description": "تفضيلات الموقع"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "جهات الاتصال"
+        ],
+        "summary": "قائمة جهات الاتصال",
+        "description": "استرجاع قائمة بجميع جهات الاتصال للاسم المستعار المُصادق عليه. تدعم هذه النقطة النهائية الترقيم الصفحي وتُرجع جهات الاتصال بتنسيق CardDAV.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "جهات الاتصال"
+        ],
+        "summary": "إنشاء جهة اتصال",
+        "description": "أنشئ جهة اتصال جديدة. يمكنك إما توفير محتوى vCard مباشرةً أو حقول جهات اتصال فردية سيتم تحويلها إلى صيغة vCard. في حال وجود جهة اتصال بنفس المعرف، سيتم إرجاع خطأ تعارض.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "جهات الاتصال"
+        ],
+        "summary": "استرجاع جهة الاتصال",
+        "description": "استرجاع جهة اتصال محددة من خلال مُعرِّفها. يتم إرجاع جهة الاتصال بتنسيق جهة اتصال قياسي مع محتوى vCard وحقول مُحلَّلة.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "جهات الاتصال"
+        ],
+        "summary": "تحديث جهة الاتصال",
+        "description": "تحديث جهة اتصال موجودة. يمكنك إما توفير محتوى vCard مُحدّث أو حقول فردية للتحديث. سيتم إعادة إنشاء vCard الخاصة بجهة الاتصال في حال توفير حقول فردية.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "جهات الاتصال"
+        ],
+        "summary": "حذف جهة الاتصال",
+        "description": "حذف جهة اتصال محددة نهائيًا. لا يمكن التراجع عن هذا الإجراء.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "التقويمات"
+        ],
+        "summary": "قائمة التقويمات",
+        "description": "استرجاع قائمة بجميع التقويمات للاسم المستعار المُصادق عليه. تدعم هذه النقطة النهائية الترقيم الصفحي وتُرجع التقويمات بتنسيق CalDAV.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "التقويمات"
+        ],
+        "summary": "إنشاء التقويم",
+        "description": "أنشئ تقويمًا جديدًا. اسم التقويم مطلوب، بينما الخصائص الأخرى، مثل اللون والمنطقة الزمنية والوصف، اختيارية. في حال وجود تقويم بنفس الاسم، سيظهر خطأ تعارض.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "التقويمات"
+        ],
+        "summary": "استرجاع التقويم",
+        "description": "استرجاع تقويم محدد من خلال مُعرِّفه. سيتم إرجاع التقويم مع جميع خصائصه، بما في ذلك الاسم والوصف واللون والمنطقة الزمنية والترتيب.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "التقويمات"
+        ],
+        "summary": "تحديث التقويم",
+        "description": "تحديث تقويم موجود. يمكنك تحديث أيٍّ من خصائص التقويم، بما في ذلك الاسم والوصف واللون والمنطقة الزمنية والترتيب. في حال تغيير الاسم إلى اسم موجود بالفعل، سيظهر خطأ تعارض.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "التقويمات"
+        ],
+        "summary": "حذف التقويم",
+        "description": "حذف تقويم مُحدد نهائيًا. لا يُمكن التراجع عن هذا الإجراء، وسيؤدي أيضًا إلى حذف جميع الأحداث في التقويم.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "المجلدات"
+        ],
+        "summary": "قائمة المجلدات",
+        "description": "استرجاع قائمة بجميع مجلدات/صناديق بريد IMAP للاسم المستعار المُصادق عليه. تدعم هذه النقطة النهائية الترقيم والتصفية حسب حالة الاشتراك.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "تصفية المجلدات حسب حالة الاشتراك",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "المجلدات"
+        ],
+        "summary": "إنشاء مجلد",
+        "description": "أنشئ مجلدًا/صندوق بريد IMAP جديدًا. مسار المجلد مطلوب، ويمكن أن يتضمن المجلدات الرئيسية (مثل \"صندوق الوارد/المجلد الفرعي\"). إذا لم تكن المجلدات الرئيسية موجودة، فسيتم إنشاؤها تلقائيًا.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "المجلدات"
+        ],
+        "summary": "استرجاع المجلد",
+        "description": "استرجاع مجلد محدد باستخدام معرفه أو مساره. يمكنك استخدام معرف كائن المجلد أو مساره الكامل (مثلاً، \"الوارد/المجلد الفرعي\") كمعرف.",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "المجلدات"
+        ],
+        "summary": "تحديث المجلد",
+        "description": "تحديث/إعادة تسمية مجلد موجود. تُعيد هذه العملية تسمية المجلد إلى المسار الجديد المُحدد في نص الطلب. يمكنك استخدام مُعرّف كائن المجلد أو مساره الحالي كمُعرّف.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "المجلدات"
+        ],
+        "summary": "حذف المجلد",
+        "description": "حذف مجلد محدد نهائيًا. لا يمكن التراجع عن هذا الإجراء، وسيؤدي أيضًا إلى حذف جميع الرسائل داخل المجلد. يمكنك استخدام مُعرِّف كائن المجلد أو مساره كمُعرِّف.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "رسائل"
+        ],
+        "summary": "قائمة الرسائل والبحث عنها",
+        "description": "استرجاع قائمة الرسائل مع إمكانيات بحث وتصفية متقدمة. تدعم هذه الأداة ترقيم الصفحات والبحث الشامل في محتوى الرسائل، والرؤوس، والعلامات، والبيانات الوصفية. يمكنك البحث حسب المجلد، والعلامات، والمحتوى، والرؤوس، ونطاقات التواريخ، والحجم، والمزيد.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "تصفية الرسائل حسب مسار المجلد",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "تصفية حسب حالة القراءة",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "تصفية حسب الحالة المميزة",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "تصفية حسب الحالة المحذوفة",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "تصفية حسب حالة المسودة",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "تصفية حسب حالة البريد العشوائي",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "تصفية حسب حالة النسخ",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "تصفية حسب الحالة القابلة للبحث",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "تصفية حسب حالة انتهاء الصلاحية",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "التصفية حسب وجود المرفق",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "التصفية حسب وجود المرفق (الاسم المستعار لـ has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "البحث في موضوع الرسالة",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "البحث في نص الرسالة/النص",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "البحث في نص الرسالة (الاسم المستعار للنص)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "البحث في جميع رؤوس الرسائل",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "البحث حسب رأس معرف الرسالة",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "البحث العام عبر العناوين والنصوص",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "البحث العام (اسم مستعار للبحث)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "تصفية الرسائل منذ هذا التاريخ (تنسيق ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "تصفية الرسائل قبل هذا التاريخ (تنسيق ISO 8601)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "تصفية الرسائل ذات الحجم الأدنى بالبايت",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "تصفية الرسائل ذات الحجم الأقصى بالبايتات",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "البحث حسب العنوان من",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "البحث حسب العنوان",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "البحث عن طريق رأس CC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "البحث عن طريق عنوان BCC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "البحث حسب التاريخ",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "البحث حسب عنوان الرد",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "رسائل"
+        ],
+        "summary": "إنشاء رسالة",
+        "description": "أنشئ/أضِف رسالة جديدة إلى مجلد. تقبل هذه النقطة النهائية تنسيق رسائل Nodemailer القياسي، وتتيح لك تحديد المجلد الهدف والأعلام الأولية. إذا لم يكن المجلد الهدف موجودًا، فسيتم إنشاؤه تلقائيًا.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "رسائل"
+        ],
+        "summary": "استرجاع الرسالة",
+        "description": "استرجاع رسالة محددة من خلال مُعرِّفها. افتراضيًا، تتضمن الاستجابة كائن Nodemailer المُحلَّل ومحتوى الرسالة الخام. يمكنك التحكم في المحتوى المُضمَّن باستخدام مُعاملات الاستعلام.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "إرجاع تنسيق EML الخام بدلاً من JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "تضمين كائن Nodemailer المُحلل",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "تضمين المرفقات في كائن Nodemailer",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "تضمين محتوى الرسالة الخام",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "رسائل"
+        ],
+        "summary": "تحديث الرسالة",
+        "description": "تحديث رسالة موجودة. يمكنك تعديل علامات الرسالة أو نقلها إلى مجلد آخر. إذا لم يكن المجلد المستهدف موجودًا، فسيتم إنشاؤه تلقائيًا.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "إرجاع تنسيق EML الخام بدلاً من JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "رسائل"
+        ],
+        "summary": "حذف الرسالة",
+        "description": "حذف رسالة محددة نهائيًا. لا يمكن التراجع عن هذا الإجراء، وسيؤدي إلى حذف الرسالة نهائيًا من وحدة التخزين. بخلاف عملاء IMAP الذين ينقلون الرسائل عادةً إلى سلة المهملات، تُجري هذه النقطة النهائية حذفًا نهائيًا.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2078,7 +4300,7 @@
       },
       "delete": {
         "summary": "حذف المجال",
-        "description": "حذف مجال معين.",
+        "description": "حذف نطاق معين.",
         "tags": [
           "المجالات"
         ],
@@ -2912,7 +5134,7 @@
       ],
       "get": {
         "summary": "استرداد اسم النطاق المستعار",
-        "description": "استرجاع اسم مستعار محدد لنطاق.",
+        "description": "استرداد اسم مستعار محدد لنطاق.",
         "tags": [
           "أسماء مستعارة"
         ],
@@ -3052,7 +5274,7 @@
                   "input": {
                     "required": true,
                     "type": "string",
-                    "description": "أي سجل نص عادي صالح لإعادة توجيه البريد الإلكتروني"
+                    "description": "أي سجل نص عادي صالح للبريد الإلكتروني المعاد توجيهه"
                   }
                 }
               }
@@ -3084,583 +5306,6 @@
           },
           "429": {
             "description": "Rate limit exceeded (50 requests for 'encrypt')",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "قائمة جهات الاتصال",
-        "description": "قائمة بجميع جهات الاتصال (CardDAV). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "جهات اتصال مستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "إنشاء جهة اتصال",
-        "description": "أنشئ جهة اتصال جديدة (CardDAV). ستتوفر هذه النقطة قريبًا.",
-        "tags": [
-          "جهات اتصال مستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "معرف جهة الاتصال",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "استرجاع جهة الاتصال",
-        "description": "استرداد جهة اتصال محددة (CardDAV). ستتوفر هذه النقطة قريبًا.",
-        "tags": [
-          "جهات اتصال مستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "تحديث جهة الاتصال",
-        "description": "تحديث جهة اتصال محددة (CardDAV). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "جهات اتصال مستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "حذف جهة الاتصال",
-        "description": "حذف جهة اتصال محددة (CardDAV). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "جهات اتصال مستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "قائمة التقويمات",
-        "description": "قائمة بجميع التقويمات (CalDAV). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "تقويمات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "إنشاء التقويم",
-        "description": "أنشئ تقويمًا جديدًا (CalDAV). ستتوفر هذه النقطة النهائية قريبًا.",
-        "tags": [
-          "تقويمات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "معرف التقويم",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "استرجاع التقويم",
-        "description": "استرداد تقويم مُحدد (CalDAV). ستتوفر هذه النقطة النهائية قريبًا.",
-        "tags": [
-          "تقويمات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "تحديث التقويم",
-        "description": "تحديث تقويم مُحدد (CalDAV). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "تقويمات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "حذف التقويم",
-        "description": "احذف تقويمًا محددًا (CalDAV). ستتوفر هذه النقطة النهائية قريبًا.",
-        "tags": [
-          "تقويمات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "قائمة الرسائل والبحث عنها",
-        "description": "قائمة الرسائل والبحث عنها (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "رسائل الاسم المستعار"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "إنشاء رسالة",
-        "description": "أنشئ رسالة جديدة (IMAP/POP3). لن يؤدي هذا إلى إرسال بريد إلكتروني، بل سيضيف الرسالة إلى مجلد صندوق بريدك (كما هو الحال مع أمر IMAP APPEND). ستتوفر هذه الميزة قريبًا.",
-        "tags": [
-          "رسائل الاسم المستعار"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "معرف الرسالة",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "استرجاع الرسالة",
-        "description": "استرجاع رسالة محددة (IMAP/POP3). ستتوفر هذه الخدمة قريبًا.",
-        "tags": [
-          "رسائل الاسم المستعار"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "تحديث الرسالة",
-        "description": "تحديث رسالة محددة (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "رسائل الاسم المستعار"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "حذف الرسالة",
-        "description": "احذف رسالة محددة (IMAP/POP3). ستتوفر هذه الخدمة قريبًا.",
-        "tags": [
-          "رسائل الاسم المستعار"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "قائمة المجلدات",
-        "description": "قائمة بجميع المجلدات (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "مجلدات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "إنشاء مجلد",
-        "description": "أنشئ مجلدًا جديدًا (IMAP/POP3). ستتوفر هذه الخدمة قريبًا.",
-        "tags": [
-          "مجلدات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "معرف المجلد",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "استرجاع المجلد",
-        "description": "استرجاع مجلد محدد (IMAP/POP3). هذه الخدمة متاحة قريبًا.",
-        "tags": [
-          "مجلدات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "تحديث المجلد",
-        "description": "تحديث مجلد محدد (IMAP/POP3). هذه النقطة النهائية ستتوفر قريبًا.",
-        "tags": [
-          "مجلدات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "حذف المجلد",
-        "description": "احذف مجلدًا محددًا (IMAP/POP3). ستتوفر هذه الميزة قريبًا.",
-        "tags": [
-          "مجلدات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "معرف المجلد",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "نسخ المجلد",
-        "description": "انسخ مجلدًا محددًا (IMAP/POP3). ستتوفر هذه الميزة قريبًا.",
-        "tags": [
-          "مجلدات الأسماء المستعارة"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
             "content": {
               "application/json": {
                 "schema": {
@@ -3707,20 +5352,20 @@
       "description": "نقاط نهاية التشفير"
     },
     {
-      "name": "جهات اتصال مستعارة",
-      "description": "نقاط نهاية إدارة جهات اتصال الأسماء المستعارة (CardDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط مصادقة \"اسم المستخدم\" مساويًا لاسم المستخدم و\"كلمة المرور\" مساوية لكلمة المرور المُولّدة من الاسم المستعار كرؤوس تفويض أساسية.\n\n>[!WARNING]\n> هذا القسم الخاص بنقاط النهاية قيد التطوير، ومن المؤمل إصداره (إن شاء الله) في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام عميل IMAP من القائمة المنسدلة \"التطبيقات\" في شريط التنقل بموقعنا الإلكتروني."
+      "name": "جهات الاتصال",
+      "description": "نقاط نهاية إدارة جهات الاتصال المستعارة (CardDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط مصادقة \"اسم المستخدم\" مساويًا لاسم المستخدم المستعار و\"كلمة المرور\" مساوية لكلمة المرور المُولّدة من الاسم المستعار كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط النهائية عمليات CRUD كاملة لإدارة جهات الاتصال مع دعم vCard، بما في ذلك إنشاء جهات الاتصال واسترجاعها وتحديثها وحذفها. يمكنك توفير محتوى vCard مباشرةً أو حقول جهات اتصال فردية سيتم تحويلها إلى تنسيق vCard."
     },
     {
-      "name": "تقويمات الأسماء المستعارة",
-      "description": "نقاط نهاية إدارة تقويمات الأسماء المستعارة (CalDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم للاسم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة للاسم المستعار كرؤوس تفويض أساسية.\n\n>[!WARNING]\n> هذا القسم الخاص بنقاط النهاية قيد التطوير، ومن المؤمل إصداره (إن شاء الله) في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام برنامج IMAP من القائمة المنسدلة \"التطبيقات\" في شريط التنقل بموقعنا الإلكتروني."
+      "name": "التقويمات",
+      "description": "نقاط نهاية إدارة التقويمات البديلة (CalDAV)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم البديل و\"كلمة المرور\" تساوي كلمة المرور المُولّدة من الاسم البديل كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط إدارة تقويم شاملة مع دعم المنطقة الزمنية واللون، بما في ذلك إنشاء التقويمات واسترجاعها وتحديثها وحذفها. أسماء التقويمات مطلوبة، بينما خصائص أخرى مثل اللون والمنطقة الزمنية والوصف اختيارية."
     },
     {
-      "name": "رسائل الاسم المستعار",
-      "description": "نقاط نهاية إدارة رسائل الأسماء المستعارة (IMAP/POP3)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات (API) الأخرى، تتطلب هذه النقاط [مصادقة](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم للاسم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة للاسم المستعار كرؤوس تفويض أساسية.\n\n> [!WARNING]\n> هذا القسم من نقاط النهاية قيد التطوير، ومن المؤمل إصداره في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام برنامج IMAP من قائمة \"التطبيقات\" المنسدلة في شريط التنقل بموقعنا الإلكتروني.\n\nيرجى التأكد من اتباع تعليمات الإعداد الخاصة بنطاقك.\n\nيمكنك العثور على هذه التعليمات في قسم الأسئلة الشائعة [هل تدعم استلام البريد الإلكتروني عبر IMAP؟](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "رسائل",
+      "description": "نقاط نهاية إدارة رسائل الأسماء المستعارة (IMAP/POP3)\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات (API) الأخرى، تتطلب هذه النقاط [مصادقة](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم للاسم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة للاسم المستعار كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط النهائية إدارة شاملة للرسائل مع إمكانيات بحث متقدمة. يمكنك البحث حسب المجلد، والعلامات، والمحتوى، والرؤوس، ونطاقات التواريخ، والحجم، والمزيد. يمكن إنشاء الرسائل باستخدام تنسيق Nodemailer القياسي، كما تدعم التنقل بين المجلدات وإدارة العلامات.\n\nيرجى التأكد من اتباع تعليمات الإعداد الخاصة بنطاقك.\n\nيمكنك العثور على هذه التعليمات في قسم الأسئلة الشائعة [هل تدعم استلام البريد الإلكتروني عبر IMAP؟](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "مجلدات الأسماء المستعارة",
-      "description": "نقاط نهاية إدارة مجلدات الأسماء المستعارة (IMAP/POP3)\n\n>[!TIP]\n> نقاط نهاية المجلدات التي يكون مسارها <code>/v1/folders/:path</code> نقطة نهاية لها قابلة للتبادل مع معرف المجلد <code>:id</code>. هذا يعني أنه يمكنك الإشارة إلى المجلد إما باستخدام قيمة <code>path</code> أو <code>id</code>.\n\n>[!WARNING]\n> هذا القسم الخاص بنقاط النهاية قيد التطوير، ومن المأمول إصداره في عام ٢٠٢٥. في هذه الأثناء، يُرجى استخدام برنامج IMAP من قائمة \"التطبيقات\" المنسدلة في شريط التنقل بموقعنا الإلكتروني."
+      "name": "المجلدات",
+      "description": "نقاط نهاية إدارة مجلدات الأسماء المستعارة (IMAP/POP3)\n\n>[!TIP]\n> نقاط نهاية المجلدات التي يكون مسارها <code>/v1/folders/:path</code> نقطة نهايتها قابلة للتبادل مع معرف المجلد <code>:id</code>. هذا يعني أنه يمكنك الإشارة إلى المجلد إما باستخدام قيمة <code>path</code> أو <code>id</code>.\n\n>[!NOTE]\n> بخلاف نقاط نهاية واجهات برمجة التطبيقات (API) الأخرى، تتطلب هذه النقاط [Authentication](#description/authentication) \"اسم المستخدم\" يساوي اسم المستخدم المستعار و\"كلمة المرور\" تساوي كلمة المرور المُولّدة من الاسم المستعار كرؤوس تفويض أساسية.\n\n>[!TIP]\n> توفر هذه النقاط النهائية إدارة كاملة للمجلدات، بما في ذلك الإنشاء وإعادة التسمية والحذف. يمكن أن تتضمن مسارات المجلدات مجلدات رئيسية (على سبيل المثال، \"البريد الوارد/المجلد الفرعي\")، وسيتم إنشاء المجلدات الرئيسية تلقائيًا إذا لم تكن موجودة."
     }
   ]
 }

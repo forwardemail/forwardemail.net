@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Tervetuloa kattavaan sähköpostin edelleenlähetyksen API-dokumentaatioon. Tämän API:n avulla voit hallita sähköpostin edelleenlähetystä, verkkotunnuksia, aliaksia, lähteviä sähköposteja ja paljon muuta ohjelmallisesti.\n\n## Tärkeimmät ominaisuudet\n* **Verkkotunnusten hallinta:** Luo, hae, päivitä, poista ja vahvista verkkotunnuksia.\n* **Aliasten hallinta:** Hallitse sähköpostialiaksia, mukaan lukien luominen, päivitykset ja vastaanottajien hallinta.\n* **Lähtevät SMTP:** Lähetä sähköposteja SMTP:n kautta, hallitse rajoituksia ja seuraa lähetettyjä sähköposteja.\n* **Tili ja lokit:** Hallitse tilisi tietoja ja lataa toimintalokeja.\n* **Turvallisuus:** Salaa TXT-tietueet ja hallitse verkkotunnuksen jäseniä/kutsuja.\n* **Tulossa pian:** Ominaisuuksia, kuten CardDAV-yhteystiedot, CalDAV-kalenterit ja IMAP/POP3-viestien/kansioiden hallinta, on suunnitteilla.\n\n## Todennus\nUseimmat päätepisteet vaativat todennuksen **API-avaimella**. Anna API-avain `käyttäjätunnuksena` perustodennuksen otsikossa ja jätä salasana tyhjäksi.\n\n```http\nValtuutus: Perus QVBJX1RPS0VOOg==\n```\n(Korvaa `API_TOKEN` omalla avaimellasi ennen Base64-koodausta)\n\n**Yhteystietojen, kalentereiden, viestien ja kansioiden aliaksiin** (tällä hetkellä merkitty \"Tulossa pian\") liittyvät päätepisteet käyttävät luotua alias-käyttäjätunnusta ja salasanaa perustodennuksessa.\n\n## Virheet\nAPI käyttää HTTP-vakiotilakoodeja onnistumisen tai epäonnistumisen osoittamiseen. Virhevastaukset sisältävät JSON-rungon, jossa on `viesti`-kenttä, jossa on virheen tiedot.\n\n| Tilakoodi | Merkitys |\n|--------------|--------------------|\n| 200 | OK |\n| 400 | Virheellinen pyyntö |\n| 401 | Luvaton |\n| 403 | Kielletty |\n| 404 | Ei löydy |\n| 429 | Liikaa pyyntöjä |\n| 500 | Sisäinen palvelinvirhe|\n| 501 | Ei toteutettu |\n| 502 | Viallinen yhdyskäytävä |\n| 503 | Palvelu ei ole käytettävissä |\n| 504 | Yhdyskäytävän aikakatkaisu |\n\n*Jos kohtaat `5xx`-virheen, ota yhteyttä osoitteeseen [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisointi\nAPI-vastaukset käännetään käyttäjän havaitseman kieliasetuksen tai `Accept-Language`-otsikon perusteella. Yli 25 kieltä tuetaan.\n\n## Sivutus\nPäätepisteet, jotka palauttavat luetteloita, tukevat sivutusta kyselyparametrien kautta.\n\n| Parametri | Tyyppi | Valinnainen | Kuvaus | Oletusarvo | Rajoitukset |\n|---------------|----------|-----------|----------------------------------------------------------------------|---------|------------------------|\n| `sivu` | Kokonaisluku | Kyllä | Haettava sivunumero. | 1 | `>= 1` |\n| `limit` | Kokonaisluku | Kyllä | Tulosten määrä sivua kohden. | 10 | `>= 1`, `<= 50` |\n| `sivutus` | Boolean | Kyllä | Sivutustoiminto käytössä (vaaditaan joillekin päätepisteille ennen 1. marraskuuta 2024). | false | |\n\n**Sivutusotsikot:**\n* `X-Page-Count`: Sivujen kokonaismäärä.\n* `X-Page-Current`: Nykyinen sivunumero.\n* `X-Page-Size`: Nykyisellä sivulla olevien kohteiden määrä.\n* `X-Item-Count`: Kohteiden kokonaismäärä kaikilla sivuilla.\n* `Link`: Navigointilinkit (edellinen, seuraava, ensimmäinen, viimeinen).\n\n**Esimerkki:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Suositellut kirjastot\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Ylläpitää Forward Email)\n* **Siirry:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />Tervetuloa kattavaan sähköpostin edelleenlähetyksen API-dokumentaatioon. Tämän API:n avulla voit hallita sähköpostin edelleenlähetystä, verkkotunnuksia, aliaksia, lähteviä sähköposteja ja paljon muuta ohjelmallisesti.\n\n## Tärkeimmät ominaisuudet\n* **Verkkotunnusten hallinta:** Luo, hae, päivitä, poista ja vahvista verkkotunnuksia.\n* **Aliasten hallinta:** Hallitse sähköpostialiaksia, mukaan lukien luominen, päivitykset ja vastaanottajien hallinta.\n* **Lähtevät SMTP:** Lähetä sähköposteja SMTP:n kautta, hallitse rajoituksia ja seuraa lähetettyjä sähköposteja.\n* **Tili ja lokit:** Hallitse tilisi tietoja ja lataa toimintalokeja.\n* **Turvallisuus:** Salaa TXT-tietueet ja hallitse verkkotunnuksen jäseniä/kutsuja.\n* **CardDAV-yhteystiedot:** Täydelliset CRUD-toiminnot yhteystietojen hallintaan vCard-tuella.\n* **CalDAV-kalenterit:** Täydellinen kalenterinhallinta aikavyöhyke- ja värituella.\n* **IMAP/POP3-viestit:** Kattava viestien hallinta edistyneillä hakutoiminnoilla.\n* **IMAP/POP3-kansiot:** Täydellinen kansioiden hallinta, mukaan lukien luominen, uudelleennimeäminen ja poistaminen.\n\n## Todennus\nUseimmat päätepisteet vaativat todennuksen **API-avaimella**. Anna API-avain `käyttäjänimenä` perustodennuksen otsikossa ja jätä salasana tyhjäksi.\n\n```http\nValtuutus: Perus QVBJX1RPS0VOOg==\n```\n(Korvaa `API_TOKEN` omalla avaimellasi ennen Base64-koodausta)\n\n**Yhteystietojen, kalentereiden, viestien ja kansioiden** aliaksiin liittyvät päätepisteet vaativat luodun alias-käyttäjätunnuksen ja salasanan perustodennusta varten.\n\n## Virheet\nAPI käyttää HTTP-standarditilakoodeja onnistumisen tai epäonnistumisen osoittamiseen. Virhevastaukset sisältävät JSON-rungon, jossa on `viesti`-kenttä, jossa on virheen tiedot.\n\n| Tilakoodi | Merkitys |\n|--------------|---------------------|\n| 200 | OK |\n| 400 | Virheellinen pyyntö |\n| 401 | Luvaton |\n| 403 | Kielletty |\n| 404 | Ei löydy |\n| 409 | Ristiriita |\n| 412 | Edellytys epäonnistui |\n| 429 | Liian monta pyyntöä |\n| 500 | Sisäinen palvelinvirhe|\n| 501 | Ei toteutettu |\n| 502 | Virheellinen yhdyskäytävä |\n| 503 | Palvelu ei ole käytettävissä |\n| 504 | Yhdyskäytävän aikakatkaisu |\n\n*Jos kohtaat `5xx`-virheen, ota yhteyttä osoitteeseen [api@forwardemail.net](mailto:api@forwardemail.net).*\n\n## Lokalisointi\nAPI-vastaukset käännetään käyttäjän havaitun kieliasetuksen tai `Accept-Language`-otsikon perusteella. Yli 25 kieltä tuetaan.\n\n## Sivutus\nPäätepisteet, jotka palauttavat luetteloita, tukevat sivutusta kyselyparametrien avulla.\n\n| Parametri | Tyyppi | Valinnainen | Kuvaus | Oletusarvo | Rajoitukset |\n|---------------|----------|----------|-----------------------------------------------------------------------|---------|-------------------------|\n| `sivu` | Kokonaisluku | Kyllä | Haettava sivunumero. | 1 | `>= 1` |\n| `limit` | Kokonaisluku | Kyllä | Tulosten määrä sivulla. | 10 | `>= 1`, `<= 50` |\n| `sivutus` | Totuusarvo | Kyllä | Sivutustoiminto käytössä (vaaditaan joillekin päätepisteille ennen 1. marraskuuta 2024). | false | |\n\n**Sivutuksen otsikot:**\n* `X-Page-Count`: Sivujen kokonaismäärä.\n* `X-Page-Current`: Nykyinen sivunumero.\n* `X-Page-Size`: Nykyisellä sivulla olevien kohteiden lukumäärä.\n* `X-Item-Count`: Kohteiden kokonaismäärä kaikilla sivuilla.\n* `Link`: Navigointilinkit (edellinen, seuraava, ensimmäinen, viimeinen).\n\n**Esimerkki:**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## Suositellut kirjastot\n* **Ruby:** [Faraday](https://github.com/lostisland/faraday)\n* **Python:** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java:** [OkHttp](https://square.github.io/okhttp/)\n* **PHP:** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js:** [superagent](https://github.com/visionmedia/superagent) (Ylläpitää Forward Email)\n* **Siirry:** `net/http`\n* **.NET:** [RestSharp](https://restsharp.dev/)",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "Käytä luotua **alias-käyttäjätunnusta ja -salasanaa** perustodennukseen. Tämä koskee päätepisteitä seuraavissa:\n* Alias-yhteystiedot (CardDAV)\n* Alias-kalenterit (CalDAV)\n* Alias-viestit (IMAP/POP3)\n* Alias-kansiot (IMAP/POP3)\n\n*(Huomautus: Nämä ominaisuudet on tällä hetkellä merkitty \"Tulossa pian\")*\n\n**Esimerkki:**\nJos alias-käyttäjätunnus on `alias@domain.com` ja salasana on `GENERATED_PASSWORD`, Base64-koodattu arvo olisi `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nValtuutus: Perus YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "Käytä luotua **alias-käyttäjätunnusta ja -salasanaa** perustodennukseen. Tämä koskee päätepisteitä seuraavissa:\n* Alias-yhteystiedot (CardDAV)\n* Alias-kalenterit (CalDAV)\n* Alias-viestit (IMAP/POP3)\n* Alias-kansiot (IMAP/POP3)\n\n**Esimerkki:**\nJos alias-käyttäjätunnus on `alias@domain.com` ja salasana on `GENERATED_PASSWORD`, Base64-koodattu arvo olisi `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`.\n\n```http\nValtuutus: Perus YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Yhteyshenkilön tunnus (contact_id CardDAVista)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Yhteyshenkilön UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Yhteyshenkilön koko nimi"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard-sisältö"
+          },
+          "etag": {
+            "type": "string",
+            "description": "ETag versiointia varten"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Onko yhteystieto ryhmä"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Sähköpostiosoitteiden taulukko"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Puhelinnumeroiden taulukko"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-sisältö (jos sitä ei anneta, se luodaan muista kentistä)"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Yhteyshenkilön koko nimi"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "Mukautettu yhteyshenkilön tunnus (jos sitä ei anneta, se luodaan automaattisesti)"
+          },
+          "uid": {
+            "type": "string",
+            "description": "Yhteyshenkilön UID (jos sitä ei anneta, se luodaan automaattisesti)"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Sähköpostiosoitteiden taulukko"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Puhelinnumeroiden taulukko"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Puhelinnumeroiden taulukko (alias puhelinnumeroille)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Osoitetaulukko"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Onko yhteystieto ryhmä"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard-sisältö"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "Yhteyshenkilön koko nimi"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Sähköpostiosoitteiden taulukko"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Puhelinnumeroiden taulukko"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "Puhelinnumeroiden taulukko (alias puhelinnumeroille)"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "Osoitetaulukko"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "Onko yhteystieto ryhmä"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kalenterin tunnus (calendarId CalDAV:sta)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Kalenterin nimi"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenterin kuvaus"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenterin väri (heksadesimaalimuoto)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenterin aikavyöhyke"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kalenterin näyttöjärjestys"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalenterin nimi"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "Mukautetun kalenterin tunnus (jos sitä ei anneta, se luodaan automaattisesti)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenterin kuvaus"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenterin väri (heksadesimaalimuodossa, jos sitä ei anneta, luodaan automaattisesti)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenterin aikavyöhyke (oletusarvoisesti käyttäjän aikavyöhyke tai UTC)"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kalenterin näyttöjärjestys (oletusarvo on 0)"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Kalenterin nimi"
+          },
+          "description": {
+            "type": "string",
+            "description": "Kalenterin kuvaus"
+          },
+          "color": {
+            "type": "string",
+            "description": "Kalenterin väri (heksadesimaalimuoto)"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Kalenterin aikavyöhyke"
+          },
+          "order": {
+            "type": "integer",
+            "description": "Kalenterin näyttöjärjestys"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Kansion tunnus"
+          },
+          "path": {
+            "type": "string",
+            "description": "Koko kansion polku"
+          },
+          "name": {
+            "type": "string",
+            "description": "Kansion nimi (polun viimeinen osa)"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "Yläkansion polku"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID:n voimassaolo"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "Seuraava UID-arvo"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "Muokkausindeksi"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "Onko kansio tilattu"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Kansioiden liput"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Viestin säilytysaika"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "Erityiskäyttönimitys"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Kansion polku/nimi"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Uusi kansiopolku/nimi"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Viestin tunnus"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "Säikeiden juuriviestin tunnus"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "Viestin sisältävän kansion tunnus"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "Viestin sisältävän kansion polku"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "Keskusteluryhmittelyn ketjun tunnus"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Viesti-ID-otsikkoarvo"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "Onko viesti lukematon"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "Onko viesti merkitty lipulla"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "Poistetaanko viesti"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "Onko viesti luonnos"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "Onko viesti roskapostia/roskapostia"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "Kopioidaanko viesti"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "Onko viesti haettavissa"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "Onko viesti vanhentunut"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "Onko viestissä liitteitä"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Viestin säilytyspäivämäärä"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Sisäinen päivämäärä (IMAP)"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Viestiotsikoiden päivämäärä"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Viestin aihe"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP-liput"
+          },
+          "size": {
+            "type": "integer",
+            "description": "Viestin koko tavuina"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP-UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "Muokkausjärjestys"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "Tapahtumatyyppi"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "Etä-IP-osoite"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "Jäsennetyn viestin objekti (sisältyy oletuksena, aseta ?nodemailer=false poisjättämiseksi)"
+          },
+          "raw": {
+            "type": "string",
+            "description": "Raaka viestisisältö (sisältyy oletuksena, aseta ?raw=false poisjättämiseksi)"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "Lähettäjän sähköpostiosoite"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Vastaanottajien sähköpostiosoitteet"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Kopion vastaanottajien sähköpostiosoitteet"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "Piilokopion vastaanottajien sähköpostiosoitteet"
+          },
+          "subject": {
+            "type": "string",
+            "description": "Viestin aihe"
+          },
+          "text": {
+            "type": "string",
+            "description": "Pelkkä tekstisisältö"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML-sisältö"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Viestin liitteet (Nodemailer-muodossa)"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Kohdekansio (oletuksena INBOX)"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "Viestille asetettavat IMAP-liput"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Viestille asetettavat IMAP-liput"
+          },
+          "folder": {
+            "type": "string",
+            "description": "Siirrä viesti tähän kansioon"
+          }
         }
       },
       "Email": {
@@ -352,7 +1221,7 @@
           },
           "inReplyTo": {
             "type": "string",
-            "description": "Viesti-ID, johon viesti on vastaus."
+            "description": "Viestin ID, johon viesti on vastaus."
           },
           "references": {
             "oneOf": [
@@ -1190,7 +2059,7 @@
           },
           "limit": {
             "type": "integer",
-            "description": "Sähköpostien sallittu enimmäismäärä"
+            "description": "Sähköpostien enimmäismäärä"
           }
         }
       },
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "ID-aliakset",
+        "description": "Alias-tunnus",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "Sähköpostiosoite",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Yhteyshenkilön tunnus",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kalenterin tunnus",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Kansion tunnus tai polku",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Viestin tunnus",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "Luo tili",
-        "description": "Luo uusi käyttäjätili",
-        "tags": [
-          "Tili"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "Sähköpostiosoite"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "Salasana"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "Nouda tili",
-        "description": "Hae nykyisen käyttäjän tilitiedot",
         "tags": [
           "Tili"
         ],
+        "summary": "Nouda tili",
+        "description": "Hae tilitietosi.",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "Päivitä tili",
-        "description": "Päivitä nykyisen käyttäjän tilitiedot",
         "tags": [
           "Tili"
         ],
+        "summary": "Päivitä tili",
+        "description": "Päivitä tilitietosi.",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "Sähköpostiosoite"
+                    "description": "Näyttönimi"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "Etunimi"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "Sukunimi"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "Linkki avatar-kuvaan"
+                    "description": "Kielikohtainen asetus"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "Yhteystiedot"
+        ],
+        "summary": "Listaa yhteystiedot",
+        "description": "Hae luettelo kaikista todennetun aliaksen yhteystiedoista. Tämä päätepiste tukee sivutusta ja palauttaa yhteystiedot CardDAV-muodossa.",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Yhteystiedot"
+        ],
+        "summary": "Luo yhteystieto",
+        "description": "Luo uusi yhteystieto. Voit antaa joko vCard-sisällön suoraan tai yksittäisiä yhteystietokenttiä, jotka muunnetaan vCard-muotoon. Jos samalla tunnuksella varustettu yhteystieto on jo olemassa, palautetaan ristiriitavirhe.",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Yhteystiedot"
+        ],
+        "summary": "Hae yhteystieto",
+        "description": "Hae tietty yhteystieto sen tunnuksen perusteella. Yhteystieto palautetaan vakiomuotoisessa yhteystietomuodossa, jossa on vCard-sisältöä ja jäsennetyt kentät.",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Yhteystiedot"
+        ],
+        "summary": "Päivitä yhteystieto",
+        "description": "Päivitä olemassa oleva yhteystieto. Voit antaa joko päivitetyn vCard-sisällön tai yksittäisiä päivitettäviä kenttiä. Yhteystiedon vCard luodaan uudelleen, jos yksittäisiä kenttiä annetaan.",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Yhteystiedot"
+        ],
+        "summary": "Poista yhteystieto",
+        "description": "Poista tietty yhteystieto pysyvästi. Tätä toimintoa ei voi perua.",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "Kalenterit"
+        ],
+        "summary": "Listaa kalenterit",
+        "description": "Hae luettelo kaikista todennetun aliaksen kalentereista. Tämä päätepiste tukee sivutusta ja palauttaa kalenterit CalDAV-muodossa.",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kalenterit"
+        ],
+        "summary": "Luo kalenteri",
+        "description": "Luo uusi kalenteri. Kalenterin nimi on pakollinen, kun taas muut ominaisuudet, kuten väri, aikavyöhyke ja kuvaus, ovat valinnaisia. Jos samanniminen kalenteri on jo olemassa, palautetaan ristiriitavirhe.",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "Kalenterit"
+        ],
+        "summary": "Hae kalenteri",
+        "description": "Hae tietty kalenteri sen tunnuksen perusteella. Kalenteri palautetaan kaikkien ominaisuuksiensa, kuten nimen, kuvauksen, värin, aikavyöhykkeen ja järjestyksen, kanssa.",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kalenterit"
+        ],
+        "summary": "Päivitä kalenteri",
+        "description": "Päivitä olemassa oleva kalenteri. Voit päivittää mitä tahansa kalenterin ominaisuuksia, kuten nimen, kuvauksen, värin, aikavyöhykkeen ja järjestyksen. Jos muutat nimen jo olemassa olevaan nimeen, saat ristiriitavirheen.",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kalenterit"
+        ],
+        "summary": "Poista kalenteri",
+        "description": "Poista tietty kalenteri pysyvästi. Tätä toimintoa ei voi perua, ja se poistaa myös kaikki kalenterin tapahtumat.",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "Kansiot"
+        ],
+        "summary": "Listaa kansiot",
+        "description": "Hae luettelo kaikista todennetun aliaksen IMAP-kansioista/postilaatikoista. Tämä päätepiste tukee sivutusta ja suodattamista tilaustilan mukaan.",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "Suodata kansiot tilaustilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Kansiot"
+        ],
+        "summary": "Luo kansio",
+        "description": "Luo uusi IMAP-kansio/postilaatikko. Kansiopolku on pakollinen ja voi sisältää ylätason kansioita (esim. 'SAAPUVAT/Alikansio'). Jos ylätason kansioita ei ole, ne luodaan automaattisesti.",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "Kansiot"
+        ],
+        "summary": "Noutokansio",
+        "description": "Hae tietty kansio sen tunnuksen tai polun perusteella. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen koko polkua (esim. 'INBOX/Subfolder').",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Kansiot"
+        ],
+        "summary": "Päivitä kansio",
+        "description": "Päivitä/nimeä uudelleen olemassa oleva kansio. Tämä toiminto nimeää kansion uudelleen pyynnön rungossa määritetyn uuden polun mukaisesti. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen nykyistä polkua.",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Kansiot"
+        ],
+        "summary": "Poista kansio",
+        "description": "Poista tietty kansio pysyvästi. Tätä toimintoa ei voi perua, ja se poistaa myös kaikki kansiossa olevat viestit. Voit käyttää tunnisteena joko kansion ObjectID:tä tai sen polkua.",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "Viestit"
+        ],
+        "summary": "Listaa ja hae viestejä",
+        "description": "Hae viestiluettelo edistyneiden haku- ja suodatusominaisuuksien avulla. Tämä päätepiste tukee sivutusta ja kattavaa hakua viestien sisällöstä, otsikoista, lipuista ja metatiedoista. Voit hakea kansion, lippujen, sisällön, otsikoiden, päivämäärävälien, koon ja muiden ominaisuuksien mukaan.",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "Suodata viestit kansion polun mukaan",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "Suodata lukutilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "Suodata merkityn tilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "Suodata poistetun tilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "Suodata luonnostilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "Suodata roskapostin tilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "Suodata kopioinnin tilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "Suodata haettavan tilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "Suodata vanhentuneen tilan mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "Suodata liitteen läsnäolon mukaan",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "Suodata liitteen läsnäolon mukaan (alias liitteelle has_attachments)",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "Hae viestin aiheesta",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "Hae viestin rungosta/tekstistä",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "Hae viestin tekstistä (alias viestin rungosta)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "Hae kaikista viestiotsikoista",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "Hae viesti-ID-otsikon perusteella",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "Yleinen haku otsikoista ja tekstistä",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "Yleinen haku (haun alias)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "Suodata viestit tästä päivämäärästä lähtien (ISO 8601 -muoto)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "Suodata viestit ennen tätä päivämäärää (ISO 8601 -muoto)",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "Suodata viestit vähimmäiskoon mukaan tavuina",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "Suodata viestit, joiden koko on tavuina suurin mahdollinen",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Hae Lähettäjä-otsikon mukaan",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "Hae Vastaanottaja-otsikon mukaan",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "Hae CC-otsikon perusteella",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "Hae piilokopio-otsikon perusteella",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Hae päivämäärän mukaan -otsikko",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "Hae vastausotsikon perusteella",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Viestit"
+        ],
+        "summary": "Luo viesti",
+        "description": "Luo/lisää uusi viesti kansioon. Tämä päätepiste hyväksyy Nodemailer-viestin standardimuodon ja antaa sinun määrittää kohdekansion ja alkumerkinnät. Jos kohdekansiota ei ole, se luodaan automaattisesti.",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "Viestit"
+        ],
+        "summary": "Nouda viesti",
+        "description": "Hae tietty viesti sen ID:n perusteella. Oletusarvoisesti vastaus sisältää jäsennetyn Nodemailer-objektin ja raakaviestin sisällön. Voit hallita sisällytettäviä tietoja kyselyparametrien avulla.",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Palauttaa raaka EML-muodon JSON-muodon sijaan",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "Sisällytä jäsennetyn Nodemailer-objektin",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "Sisällytä liitteet Nodemailer-objektiin",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "Sisällytä viestin raakasisältö",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Viestit"
+        ],
+        "summary": "Päivitä viesti",
+        "description": "Päivitä olemassa oleva viesti. Voit muokata viestin merkintöjä tai siirtää sen toiseen kansioon. Jos kohdekansiota ei ole olemassa, se luodaan automaattisesti.",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "Palauttaa raaka EML-muodon JSON-muodon sijaan",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Viestit"
+        ],
+        "summary": "Poista viesti",
+        "description": "Poista tietty viesti pysyvästi. Tätä toimintoa ei voi perua, ja se poistaa viestin pysyvästi tallennustilasta. Toisin kuin IMAP-asiakasohjelmat, jotka yleensä siirtävät viestit roskakoriin, tämä päätepiste suorittaa pysyvän poiston.",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -1801,7 +4023,7 @@
         }
       ],
       "get": {
-        "summary": "Nouda lähtevä SMTP-sähköposti",
+        "summary": "Hae lähtevä SMTP-sähköposti",
         "description": "Hae tietty lähtevä SMTP-sähköposti.",
         "tags": [
           "Sähköpostit"
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "Listaa yhteystiedot",
-        "description": "Listaa kaikki yhteystiedot (CardDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-yhteystiedot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Luo yhteystieto",
-        "description": "Luo uusi yhteystieto (CardDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-yhteystiedot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Yhteyshenkilön tunnus",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hae yhteystieto",
-        "description": "Hae tietty yhteystieto (CardDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-yhteystiedot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Päivitä yhteystieto",
-        "description": "Päivitä tietty yhteystieto (CardDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-yhteystiedot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Poista yhteystieto",
-        "description": "Poista tietty yhteystieto (CardDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-yhteystiedot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "Listaa kalenterit",
-        "description": "Listaa kaikki kalenterit (CalDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kalenterit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Luo kalenteri",
-        "description": "Luo uusi kalenteri (CalDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kalenterit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kalenterin tunnus",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Hae kalenteri",
-        "description": "Hae tietty kalenteri (CalDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kalenterit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Päivitä kalenteri",
-        "description": "Päivitä tietty kalenteri (CalDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kalenterit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Poista kalenteri",
-        "description": "Poista tietty kalenteri (CalDAV). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kalenterit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "Viestien listaaminen ja hakeminen",
-        "description": "Listaa ja hae viestejä (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-viestit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Luo viesti",
-        "description": "Luo uusi viesti (IMAP/POP3). Tämä EI lähetä sähköpostia – se vain lisää viestin postilaatikkoosi (samanlainen kuin IMAP APPEND -komento). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-viestit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Viestin tunnus",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Nouda viesti",
-        "description": "Hae tietty viesti (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-viestit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Päivitä viesti",
-        "description": "Päivitä tietty viesti (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-viestit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Poista viesti",
-        "description": "Poista tietty viesti (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-viestit"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "Listaa kansiot",
-        "description": "Listaa kaikki kansiot (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kansiot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "Luo kansio",
-        "description": "Luo uusi kansio (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kansiot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kansion tunnus",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "Noutokansio",
-        "description": "Hae tietty kansio (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kansiot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "Päivitä kansio",
-        "description": "Päivitä tietty kansio (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kansiot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Poista kansio",
-        "description": "Poista tietty kansio (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kansiot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "Kansion tunnus",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "Kopioi kansio",
-        "description": "Kopioi tietty kansio (IMAP/POP3). Tämä päätepiste on tulossa pian.",
-        "tags": [
-          "Alias-kansiot"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "Salauksen päätepisteet"
     },
     {
-      "name": "Alias-yhteystiedot",
-      "description": "Alias-yhteystietojen hallinnan päätepisteet (CardDAV)\n\n>[!NOTE]\n>Toisin kuin muut API-päätepisteet, nämä vaativat todennuksen \"käyttäjätunnus\", joka on yhtä suuri kuin aliaksen käyttäjätunnus, ja \"salasana\", joka on yhtä suuri kuin aliaksen luoma salasana, perusvalinnan otsikoina.\n\n>[!WARNING]\n>Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2025. Sillä välin käytä IMAP-asiakasohjelmaa verkkosivustomme navigoinnin \"Sovellukset\"-alasvetovalikosta."
+      "name": "Yhteystiedot",
+      "description": "Alias-yhteystietojen hallinnan päätepisteet (CardDAV)\n\n>[!NOTE]\n>Toisin kuin muut API-päätepisteet, nämä vaativat todennuksen \"käyttäjätunnus\", joka on yhtä suuri kuin aliaksen käyttäjätunnus, ja \"salasana\", joka on yhtä suuri kuin aliaksen luoma salasana, perusvaltuutusotsikoina.\n\n>[!TIP]\n>Nämä päätepisteet tarjoavat täydet CRUD-toiminnot yhteystietojen hallintaan vCard-tuella, mukaan lukien yhteystietojen luominen, hakeminen, päivittäminen ja poistaminen. Voit antaa joko vCard-sisältöä suoraan tai yksittäisiä yhteystietokenttiä, jotka muunnetaan vCard-muotoon."
     },
     {
-      "name": "Alias-kalenterit",
-      "description": "Alias-kalentereiden hallinnan päätepisteet (CalDAV)\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat [Authentication](#description/authentication) \"käyttäjätunnus\"-kentän, joka on sama kuin aliaksen käyttäjätunnus, ja \"salasana\"-kentän, joka on sama kuin aliaksen luoma salasana, perusvalinnan otsikoiksi.\n\n>[!WARNING]\n> Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2025. Sillä välin käytä IMAP-asiakasohjelmaa verkkosivustomme navigoinnin \"Sovellukset\"-valikosta."
+      "name": "Kalenterit",
+      "description": "Alias-kalentereiden hallinnan päätepisteet (CalDAV)\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat [Authentication](#description/authentication) \"käyttäjänimi\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasanan\", joka on sama kuin aliaksen luoma salasana, perusvaltuutusotsikoina.\n\n>[!TIP]\n> Nämä päätepisteet tarjoavat täydellisen kalenterinhallinnan aikavyöhyke- ja värituella, mukaan lukien kalentereiden luominen, hakeminen, päivittäminen ja poistaminen. Kalenterien nimet ovat pakollisia, kun taas muut ominaisuudet, kuten väri, aikavyöhyke ja kuvaus, ovat valinnaisia."
     },
     {
-      "name": "Alias-viestit",
-      "description": "Alias-viestien hallinnan päätepisteet (IMAP/POP3)\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat [Authentication](#description/authentication) \"käyttäjätunnus\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasana\", joka on sama kuin aliaksen luoma salasana, perusvaltuutusotsikoiksi.\n\n> [!WARNING]\n> Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2025. Käytä sillä välin IMAP-asiakasohjelmaa verkkosivustomme navigoinnin \"Sovellukset\"-alasvetovalikosta.\n\nVarmista, että olet noudattanut verkkotunnuksesi asennusohjeita.\n\nNämä ohjeet löytyvät usein kysyttyjen kysymysten osiostamme [Tuetaanko sähköpostin vastaanottamista IMAPin avulla?](/faq#do-you-support-receiving-email-with-imap)."
+      "name": "Viestit",
+      "description": "Alias-viestien hallinnan päätepisteet (IMAP/POP3)\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat [Authentication](#description/authentication) \"käyttäjätunnus\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasanan\", joka on sama kuin aliaksen luoma salasana, perusvaltuutusotsikoiksi.\n\n>[!TIP]\n> Nämä päätepisteet tarjoavat kattavan viestien hallinnan ja edistyneet hakuominaisuudet. Voit hakea kansion, lippujen, sisällön, otsikoiden, päivämääräalueiden, koon ja muiden ominaisuuksien mukaan. Viestejä voidaan luoda Nodemailer-vakiomuodossa, ja ne tukevat siirtymistä kansioiden välillä ja lippujen hallintaa.\n\nVarmista, että olet noudattanut verkkotunnuksesi asennusohjeita.\n\nNämä ohjeet löytyvät usein kysyttyjen kysymysten osiostamme [Tuetaanko sähköpostin vastaanottamista IMAPin kautta?](/faq#do-you-support-receiving-email-with-imap)."
     },
     {
-      "name": "Alias-kansiot",
-      "description": "Alias-kansioiden hallinnan päätepisteet (IMAP/POP3)\n\n>[!TIP]\n> Kansioiden päätepisteet, joiden päätepisteenä on kansion polku <code>/v1/folders/:path</code>, ovat keskenään vaihdettavissa kansion tunnuksen <code>:id</code> kanssa. Tämä tarkoittaa, että voit viitata kansioon joko sen <code>path</code>- tai <code>id</code>-arvolla.\n\n>[!WARNING]\n> Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2025. Sillä välin käytä IMAP-asiakasohjelmaa verkkosivustomme navigoinnin \"Sovellukset\"-alasvetovalikosta."
+      "name": "Kansiot",
+      "description": "Alias-kansioiden hallinnan päätepisteet (IMAP/POP3)\n\n>[!TIP]\n> Kansioiden päätepisteet, joiden päätepiste on kansion polku <code>/v1/folders/:path</code>, ovat keskenään vaihdettavissa kansion tunnuksen <code>:id</code> kanssa. Tämä tarkoittaa, että voit viitata kansioon joko sen <code>path</code>- tai <code>id</code>-arvolla.\n\n>[!NOTE]\n> Toisin kuin muut API-päätepisteet, nämä vaativat perusvaltuutusotsikoina [Authentication](#description/authentication) \"käyttäjänimi\", joka on sama kuin aliaksen käyttäjätunnus, ja \"salasanan\", joka on sama kuin aliaksen luoma salasana.\n\n>[!TIP]\n> Nämä päätepisteet tarjoavat täyden kansioiden hallinnan, mukaan lukien luomisen, uudelleennimeämisen ja poistamisen. Kansiopolut voivat sisältää ylätason kansioita (esim. 'SAAPUNEET/Alikansio'), ja ylätason kansiot luodaan automaattisesti, jos niitä ei ole olemassa."
     }
   ]
 }

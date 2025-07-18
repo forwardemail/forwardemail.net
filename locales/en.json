@@ -14265,5 +14265,8 @@
   "due to high spam activity.": "due to high spam activity.",
   "[!NOTE]\nWe're the world's first and only email service to use": "[!NOTE]\nWe're the world's first and only email service to use",
   "quantum-resistant and individually encrypted SQLite mailboxes": "quantum-resistant and individually encrypted SQLite mailboxes",
-  "\"After trying to capture the order, PayPal returns a 404. When retrieving Details of the Order: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...}": "\"After trying to capture the order, PayPal returns a 404. When retrieving Details of the Order: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...}"
+  "\"After trying to capture the order, PayPal returns a 404. When retrieving Details of the Order: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...}": "\"After trying to capture the order, PayPal returns a 404. When retrieving Details of the Order: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...}",
+  "IMAP/CardDAV/CalDAV REST Endpoints": "IMAP/CardDAV/CalDAV REST Endpoints",
+  "Complete Email API with IMAP, CardDAV & CalDAV REST Endpoints": "Complete Email API with IMAP, CardDAV & CalDAV REST Endpoints",
+  "First complete REST API for email management. 20 endpoints for contacts, calendars, messages & folders. No IMAP complexity, simple authentication.": "First complete REST API for email management. 20 endpoints for contacts, calendars, messages & folders. No IMAP complexity, simple authentication."
 }

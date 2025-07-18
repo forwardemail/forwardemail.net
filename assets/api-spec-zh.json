@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Forward Email API",
-    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />欢迎使用“转发邮件”的全面 API 文档。此 API 允许您以编程方式管理邮件转发、域名、别名、外发邮件等。\n\n## 主要功能\n* **域名管理**：创建、检索、更新、删除和验证域名。\n* **别名管理**：管理邮件别名，包括创建、更新和收件人管理。\n* **外发 SMTP 邮件**：通过 SMTP 发送电子邮件、管理限制并跟踪已发送的邮件。\n* **账户和日志**：管理您的账户详情并下载活动日志。\n* **安全性**：加密 TXT 记录并管理域名成员/邀请。\n* **即将推出**：CardDAV 联系人、CalDAV 日历以及 IMAP/POP3 消息/文件夹管理等功能正在计划中。\n\n## 身份验证\n大多数端点都需要使用您的**API 密钥**进行身份验证。请在基本身份验证标头中将 API 密钥作为“用户名”提供，密码留空。\n\n```http\nAuthorization: Basic QVBJX1RPS0VOOg==\n```\n（请在 Base64 编码之前将 `API_TOKEN` 替换为您的实际密钥）\n\n与**别名联系人、日历、消息和文件夹**相关的端点（目前标记为“即将推出”）将使用生成的别名用户名和密码进行基本身份验证。\n\n## 错误\nAPI 使用标准 HTTP 状态代码来指示成功或失败。错误响应包含一个 JSON 正文，其中包含一个详细说明错误的“message”字段。\n\n| 状态代码 | 含义 |\n|-------------|---------------------|\n| 200 | 正常 |\n| 400 | 错误请求 |\n| 401 | 未授权 |\n| 403 |禁止访问 |\n| 404 | 未找到 |\n| 429 | 请求过多 |\n| 500 | 内部服务器错误 |\n| 501 | 未实现 |\n| 502 | 网关错误 |\n| 503 | 服务不可用 |\n| 504 | 网关超时 |\n\n*如果您遇到 `5xx` 错误，请联系 [api@forwardemail.net](mailto:api@forwardemail.net)。*\n\n## 本地化\nAPI 响应会根据检测到的用户语言环境或 `Accept-Language` 标头进行翻译。支持超过 25 种语言。\n\n## 分页\n返回列表的端点支持通过查询参数进行分页。\n\n| 参数 | 类型 | 可选 | 描述 | 默认值 | 约束 |\n|--------------|---------|----------|-----------------------------------------------------------------------------|---------|--------------------|\n| `page` | 整数 | 是 | 要检索的页码。| 1 | `>= 1` |\n| `limit` | 整数 | 是 | 每页的结果数。| 10 | `>= 1`, `<= 50` |\n| `pagination` | 布尔值 | 是 | 选择启用分页行为（某些端点需要在 2024 年 11 月 1 日之前启用）。| false | |\n\n**分页标题：**\n* `X-Page-Count`：总页数。\n* `X-Page-Current`：当前页码。\n* `X-Page-Size`：当前页面上的项目数。\n* `X-Item-Count`：所有页面上的项目总数。\n* `Link`：导航链接（上一页、下一页、第一页、最后一页）。\n\n**示例：**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## 推荐库\n* **Ruby：** [Faraday](https://github.com/lostisland/faraday)\n* **Python：** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java：** [OkHttp](https://square.github.io/okhttp/)\n* **PHP：** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js：** [superagent](https://github.com/visionmedia/superagent)（由 Forward Email 维护）\n* **Go：** `net/http`\n* **.NET：** RestSharp",
+    "description": "<img src=\"/img/articles/email-api.webp\" alt=\"\"/><br />欢迎使用“转发邮件”的全面 API 文档。此 API 允许您以编程方式管理邮件转发、域名、别名、外发邮件等。\n\n## 主要功能\n* **域名管理**：创建、检索、更新、删除和验证域名。\n* **别名管理**：管理邮件别名，包括创建、更新和收件人管理。\n* **外发 SMTP 邮件**：通过 SMTP 发送电子邮件、管理限制并跟踪已发送邮件。\n* **账户和日志**：管理您的账户详情并下载活动日志。\n* **安全性**：加密 TXT 记录并管理域名成员/邀请。\n* **CardDAV 联系人**：支持 vCard 的联系人管理的完整 CRUD 操作。\n* **CalDAV 日历**：提供完整的日历管理功能，并支持时区和颜色。\n* **IMAP/POP3 消息**：提供全面的消息管理功能，并具备高级搜索功能。\n* **IMAP/POP3 文件夹**：提供完整的文件夹管理功能，包括创建、重命名和删除文件夹。\n\n## 身份验证\n大多数端点需要使用您的**API 密钥**进行身份验证。请在基本身份验证标头中将 API 密钥作为“用户名”提供，密码留空。\n\n```http\n授权：基本 QVBJX1RPS0VOOg==\n```\n（在 Base64 编码之前，请将“API_TOKEN”替换为您的实际密钥）\n\n与**别名联系人、日历、消息和文件夹**相关的端点需要生成别名用户名和密码才能进行基本身份验证。\n\n## 错误\nAPI 使用标准 HTTP 状态代码来指示成功或失败。错误响应包含一个 JSON 正文，其中包含一个详细说明错误的“message”字段。\n\n| 状态码 | 含义 |\n|-------------|---------------------|\n| 200 | 正常 |\n| 400 | 错误请求 |\n| 401 | 未授权 |\n| 403 | 禁止访问 |\n| 404 | 未找到 |\n| 409 | 冲突 |\n| 412 | 前提条件不满足 |\n| 429 | 请求过多 |\n| 500 | 内部服务器错误 |\n| 501 | 未实现 |\n| 502 | 网关错误 |\n| 503 | 服务不可用 |\n| 504 | 网关超时 |\n\n*如果您遇到 `5xx` 错误，请联系 [api@forwardemail.net](mailto:api@forwardemail.net)。*\n\n## 本地化\nAPI 响应会根据用户检测到的语言环境或 `Accept-Language` 标头进行翻译。支持超过 25 种语言。\n\n## 分页\n返回列表的端点支持通过查询参数进行分页。\n\n| 参数 | 类型 | 可选 | 描述 | 默认值 | 约束 |\n|-----------|---------|----------|----------------------------------------------------------------------------|---------|--------------------|\n| `page` | 整数 | 是 | 要检索的页码。| 1 | `>= 1` |\n| `limit` | 整数 | 是 | 每页结果数。| 10 | `>= 1`, `<= 50` |\n| `pagination` | 布尔值 | 是 |选择启用分页行为（某些端点需要在 2024 年 11 月 1 日之前启用）。| false | |\n\n**分页标题**\n* `X-Page-Count`：总页数。\n* `X-Page-Current`：当前页码。\n* `X-Page-Size`：当前页面上的项目数。\n* `X-Item-Count`：所有页面上的项目总数。\n* `Link`：导航链接（上一页、下一页、第一页、最后一页）。\n\n**示例：**\n```bash\ncurl \"https://api.forwardemail.net/v1/domains?page=2&limit=20&pagination=true\" \\\n-u API_TOKEN:\n```\n\n## 推荐库\n* **Ruby：** [Faraday](https://github.com/lostisland/faraday)\n* **Python：** [requests](https://requests.readthedocs.io/en/latest/)\n* **Java：** [OkHttp](https://square.github.io/okhttp/)\n* **PHP：** [Guzzle](https://docs.guzzlephp.org/en/stable/)\n* **JavaScript/Node.js：** [superagent](https://github.com/visionmedia/superagent)（由 Forward Email 维护）\n* **Go：** `net/http`\n* **.NET：** RestSharp",
     "version": "1.0.0",
     "contact": {
       "name": "Forward Email Support",
@@ -26,7 +26,7 @@
       "AliasAuth": {
         "type": "http",
         "scheme": "basic",
-        "description": "\n使用生成的**别名用户名和密码**进行基本身份验证。这适用于以下终端：\n* 别名联系人 (CardDAV)\n* 别名日历 (CalDAV)\n* 别名邮件 (IMAP/POP3)\n* 别名文件夹 (IMAP/POP3)\n\n*（注意：这些功能目前标记为“即将推出”）*\n\n**示例：**\n如果别名用户名为 `alias@domain.com`，密码为 `GENERATED_PASSWORD`，则 Base64 编码值为 `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`。\n\n```http\n授权：基本 YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
+        "description": "\n使用生成的**别名用户名和密码**进行基本身份验证。这适用于以下终端：\n* 别名联系人 (CardDAV)\n* 别名日历 (CalDAV)\n* 别名邮件 (IMAP/POP3)\n* 别名文件夹 (IMAP/POP3)\n\n**示例：**\n如果别名用户名为 `alias@domain.com`，密码为 `GENERATED_PASSWORD`，则 Base64 编码值为 `echo -n \"alias@domain.com:GENERATED_PASSWORD\" | base64`。\n\n```http\n授权：基本 YWxpYXNAZG9tYWluLmNvbTpHRU5FUkFURURfUEFTU1dPUkQ=\n```\n"
       }
     },
     "schemas": {
@@ -133,6 +133,875 @@
           "updated_at": "2025-06-04T02:43:55.350Z",
           "address_html": "",
           "api_token": "15ac16ae21784aa2cb4d5508"
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "required": [
+          "id",
+          "uid",
+          "full_name",
+          "content",
+          "etag",
+          "is_group",
+          "emails",
+          "phone_numbers",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "联系人 ID（来自 CardDAV 的 contact_id）"
+          },
+          "uid": {
+            "type": "string",
+            "description": "联系 UID"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "联系人的全名"
+          },
+          "content": {
+            "type": "string",
+            "description": "vCard 内容"
+          },
+          "etag": {
+            "type": "string",
+            "description": "用于版本控制的 ETag"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "联系人是否属于群组"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电子邮件地址数组"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电话号码数组"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "contact"
+            ]
+          }
+        },
+        "example": {
+          "id": "contact123",
+          "uid": "uid123",
+          "full_name": "John Doe",
+          "content": "BEGIN:VCARD\\nVERSION:3.0\\nUID:uid123\\nFN:John Doe\\nEMAIL;TYPE=INTERNET:john@example.com\\nEND:VCARD",
+          "etag": "etag123",
+          "is_group": false,
+          "emails": [
+            {
+              "value": "john@example.com",
+              "type": "INTERNET"
+            }
+          ],
+          "phone_numbers": [
+            {
+              "value": "+1234567890",
+              "type": "CELL"
+            }
+          ],
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "contact"
+        }
+      },
+      "ContactInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard 内容（若未提供，将从其他字段生成）"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "联系人的全名"
+          },
+          "contact_id": {
+            "type": "string",
+            "description": "自定义联系人 ID（如果未提供，将自动生成）"
+          },
+          "uid": {
+            "type": "string",
+            "description": "联系人 UID（如未提供，将自动生成）"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电子邮件地址数组"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电话号码数组"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电话号码数组（phone_numbers 的别名）"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "地址数组"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "联系人是否属于群组"
+          }
+        }
+      },
+      "ContactUpdateInput": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "vCard 内容"
+          },
+          "full_name": {
+            "type": "string",
+            "description": "联系人的全名"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string",
+                  "format": "email"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "INTERNET"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电子邮件地址数组"
+          },
+          "phone_numbers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电话号码数组"
+          },
+          "phones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "value": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "default": "CELL"
+                }
+              },
+              "required": [
+                "value"
+              ]
+            },
+            "description": "电话号码数组（phone_numbers 的别名）"
+          },
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "street": {
+                  "type": "string"
+                },
+                "city": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "postalCode": {
+                  "type": "string"
+                },
+                "country": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "地址数组"
+          },
+          "is_group": {
+            "type": "boolean",
+            "description": "联系人是否属于群组"
+          }
+        }
+      },
+      "Calendar": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "color",
+          "timezone",
+          "order",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "日历 ID（来自 CalDAV 的 calendarId）"
+          },
+          "name": {
+            "type": "string",
+            "description": "日历名称"
+          },
+          "description": {
+            "type": "string",
+            "description": "日历描述"
+          },
+          "color": {
+            "type": "string",
+            "description": "日历颜色（十六进制格式）"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "日历时区"
+          },
+          "order": {
+            "type": "integer",
+            "description": "日历显示顺序"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "calendar"
+            ]
+          }
+        },
+        "example": {
+          "id": "calendar123",
+          "name": "Personal Calendar",
+          "description": "My personal calendar",
+          "color": "#ff0000",
+          "timezone": "America/New_York",
+          "order": 0,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "calendar"
+        }
+      },
+      "CalendarInput": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "日历名称"
+          },
+          "calendar_id": {
+            "type": "string",
+            "description": "自定义日历 ID（如果未提供，将自动生成）"
+          },
+          "description": {
+            "type": "string",
+            "description": "日历描述"
+          },
+          "color": {
+            "type": "string",
+            "description": "日历颜色（十六进制格式，若未提供，将自动生成）"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "日历时区（默认为用户时区或 UTC）"
+          },
+          "order": {
+            "type": "integer",
+            "description": "日历显示顺序（默认为0）"
+          }
+        }
+      },
+      "CalendarUpdateInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "日历名称"
+          },
+          "description": {
+            "type": "string",
+            "description": "日历描述"
+          },
+          "color": {
+            "type": "string",
+            "description": "日历颜色（十六进制格式）"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "日历时区"
+          },
+          "order": {
+            "type": "integer",
+            "description": "日历显示顺序"
+          }
+        }
+      },
+      "Folder": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "name",
+          "parent",
+          "uid_validity",
+          "uid_next",
+          "modify_index",
+          "subscribed",
+          "flags",
+          "retention",
+          "special_use",
+          "created_at",
+          "updated_at",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "文件夹 ID"
+          },
+          "path": {
+            "type": "string",
+            "description": "完整文件夹路径"
+          },
+          "name": {
+            "type": "string",
+            "description": "文件夹名称（路径的最后一部分）"
+          },
+          "parent": {
+            "type": "string",
+            "nullable": true,
+            "description": "父文件夹路径"
+          },
+          "uid_validity": {
+            "type": "integer",
+            "description": "IMAP UID 有效性"
+          },
+          "uid_next": {
+            "type": "integer",
+            "description": "下一个 UID 值"
+          },
+          "modify_index": {
+            "type": "integer",
+            "description": "修改索引"
+          },
+          "subscribed": {
+            "type": "boolean",
+            "description": "文件夹是否已订阅"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "文件夹标志"
+          },
+          "retention": {
+            "type": "integer",
+            "nullable": true,
+            "description": "消息保留期"
+          },
+          "special_use": {
+            "type": "string",
+            "nullable": true,
+            "description": "特殊用途指定"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "folder"
+            ]
+          }
+        },
+        "example": {
+          "id": "folder123",
+          "path": "INBOX/Subfolder",
+          "name": "Subfolder",
+          "parent": "INBOX",
+          "uid_validity": 123456,
+          "uid_next": 1,
+          "modify_index": 1,
+          "subscribed": true,
+          "flags": [],
+          "retention": null,
+          "special_use": null,
+          "created_at": "2025-01-01T00:00:00.000Z",
+          "updated_at": "2025-01-01T00:00:00.000Z",
+          "object": "folder"
+        }
+      },
+      "FolderInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "文件夹路径/名称"
+          }
+        }
+      },
+      "FolderUpdateInput": {
+        "type": "object",
+        "required": [
+          "path"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "新文件夹路径/名称"
+          }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "required": [
+          "id",
+          "root_id",
+          "folder_id",
+          "folder_path",
+          "thread_id",
+          "header_message_id",
+          "is_unread",
+          "is_flagged",
+          "is_deleted",
+          "is_draft",
+          "is_junk",
+          "is_copied",
+          "is_searchable",
+          "is_expired",
+          "has_attachment",
+          "retention_date",
+          "internal_date",
+          "header_date",
+          "subject",
+          "flags",
+          "size",
+          "uid",
+          "modseq",
+          "transaction",
+          "remote_address",
+          "object"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "消息 ID"
+          },
+          "root_id": {
+            "type": "string",
+            "description": "线程的根消息 ID"
+          },
+          "folder_id": {
+            "type": "string",
+            "description": "包含邮件的文件夹 ID"
+          },
+          "folder_path": {
+            "type": "string",
+            "description": "包含消息的文件夹路径"
+          },
+          "thread_id": {
+            "type": "string",
+            "description": "会话分组的线程 ID"
+          },
+          "header_message_id": {
+            "type": "string",
+            "description": "Message-ID 标头值"
+          },
+          "is_unread": {
+            "type": "boolean",
+            "description": "消息是否未读"
+          },
+          "is_flagged": {
+            "type": "boolean",
+            "description": "消息是否被标记"
+          },
+          "is_deleted": {
+            "type": "boolean",
+            "description": "是否删除消息"
+          },
+          "is_draft": {
+            "type": "boolean",
+            "description": "消息是否为草稿"
+          },
+          "is_junk": {
+            "type": "boolean",
+            "description": "邮件是否为垃圾邮件"
+          },
+          "is_copied": {
+            "type": "boolean",
+            "description": "是否复制消息"
+          },
+          "is_searchable": {
+            "type": "boolean",
+            "description": "消息是否可以搜索"
+          },
+          "is_expired": {
+            "type": "boolean",
+            "description": "消息是否过期"
+          },
+          "has_attachment": {
+            "type": "boolean",
+            "description": "邮件是否带有附件"
+          },
+          "retention_date": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "消息保留日期"
+          },
+          "internal_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "内部日期（IMAP）"
+          },
+          "header_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "邮件标题中的日期"
+          },
+          "subject": {
+            "type": "string",
+            "description": "消息主题"
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "IMAP 标志"
+          },
+          "size": {
+            "type": "integer",
+            "description": "消息大小（以字节为单位）"
+          },
+          "uid": {
+            "type": "integer",
+            "description": "IMAP UID"
+          },
+          "modseq": {
+            "type": "integer",
+            "description": "修改顺序"
+          },
+          "transaction": {
+            "type": "string",
+            "description": "交易类型"
+          },
+          "remote_address": {
+            "type": "string",
+            "description": "远程 IP 地址"
+          },
+          "nodemailer": {
+            "type": "object",
+            "description": "解析的消息对象（默认包含，设置 ?nodemailer=false 为排除）"
+          },
+          "raw": {
+            "type": "string",
+            "description": "原始消息内容（默认包含，设置 ?raw=false 以排除）"
+          },
+          "object": {
+            "type": "string",
+            "enum": [
+              "message"
+            ]
+          }
+        },
+        "example": {
+          "id": "message123",
+          "root_id": "root123",
+          "folder_id": "folder123",
+          "folder_path": "INBOX",
+          "thread_id": "thread123",
+          "header_message_id": "<message123@example.com>",
+          "is_unread": true,
+          "is_flagged": false,
+          "is_deleted": false,
+          "is_draft": false,
+          "is_junk": false,
+          "is_copied": false,
+          "is_searchable": true,
+          "is_expired": false,
+          "has_attachment": false,
+          "retention_date": null,
+          "internal_date": "2025-01-01T00:00:00.000Z",
+          "header_date": "2025-01-01T00:00:00.000Z",
+          "subject": "Test Message",
+          "flags": [
+            "\\Seen"
+          ],
+          "size": 1024,
+          "uid": 1,
+          "modseq": 1,
+          "transaction": "API",
+          "remote_address": "127.0.0.1",
+          "object": "message"
+        }
+      },
+      "MessageInput": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "email",
+            "description": "发件人电子邮件地址"
+          },
+          "to": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "收件人电子邮件地址"
+          },
+          "cc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "抄送收件人电子邮件地址"
+          },
+          "bcc": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            ],
+            "description": "密件抄送收件人电子邮件地址"
+          },
+          "subject": {
+            "type": "string",
+            "description": "消息主题"
+          },
+          "text": {
+            "type": "string",
+            "description": "纯文本内容"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML 内容"
+          },
+          "attachments": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "消息附件（Nodemailer 格式）"
+          },
+          "folder": {
+            "type": "string",
+            "description": "目标文件夹（默认为 INBOX）"
+          },
+          "flags": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ],
+            "description": "要在邮件上设置的 IMAP 标志"
+          }
+        }
+      },
+      "MessageUpdateInput": {
+        "type": "object",
+        "properties": {
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "要在邮件上设置的 IMAP 标志"
+          },
+          "folder": {
+            "type": "string",
+            "description": "将邮件移动到此文件夹"
+          }
         }
       },
       "Email": {
@@ -793,7 +1662,7 @@
           },
           "ignore_mx_check": {
             "type": "boolean",
-            "description": "是否忽略域上的 MX 记录检查以进行验证（主要用于高级 MX 路由设置）"
+            "description": "是否忽略域名上的 MX 记录检查以进行验证（主要用于高级 MX 路由设置）"
           },
           "retention_days": {
             "type": "integer",
@@ -1199,7 +2068,7 @@
         "properties": {
           "id": {
             "type": "string",
-            "description": "会员 ID"
+            "description": "会员编号"
           },
           "email": {
             "type": "string",
@@ -1266,7 +2135,7 @@
         "name": "alias_id",
         "in": "path",
         "required": true,
-        "description": "ID别名",
+        "description": "别名 ID",
         "schema": {
           "type": "string"
         }
@@ -1275,7 +2144,7 @@
         "name": "member_id",
         "in": "path",
         "required": true,
-        "description": "会员 ID",
+        "description": "会员编号",
         "schema": {
           "type": "string"
         }
@@ -1285,6 +2154,42 @@
         "in": "path",
         "required": true,
         "description": "电子邮件 ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "contactId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "联系人 ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "calendarId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "日历 ID",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "folderId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "文件夹 ID 或路径",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "messageId": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "消息 ID",
         "schema": {
           "type": "string"
         }
@@ -1333,6 +2238,26 @@
       },
       "NotFound": {
         "description": "Not Found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Precondition Failed",
         "content": {
           "application/json": {
             "schema": {
@@ -1405,65 +2330,13 @@
   },
   "paths": {
     "/v1/account": {
-      "post": {
-        "summary": "创建账户",
-        "description": "创建新用户帐户",
-        "tags": [
-          "帐户"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "description": "电子邮件"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password",
-                    "description": "密码"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "429": {
-            "$ref": "#/components/responses/TooManyRequests"
-          }
-        }
-      },
       "get": {
-        "summary": "找回账户",
-        "description": "检索当前用户的帐户信息",
         "tags": [
           "帐户"
         ],
+        "summary": "找回账户",
+        "description": "检索您的帐户信息。",
+        "operationId": "retrieveAccount",
         "security": [
           {
             "ApiKeyAuth": []
@@ -1480,50 +2353,43 @@
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
-          "403": {
-            "$ref": "#/components/responses/Forbidden"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       },
       "put": {
-        "summary": "更新帐户",
-        "description": "更新当前用户的账户信息",
         "tags": [
           "帐户"
         ],
+        "summary": "更新帐户",
+        "description": "更新您的帐户信息。",
+        "operationId": "updateAccount",
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
                 "type": "object",
                 "properties": {
-                  "email": {
+                  "display_name": {
                     "type": "string",
-                    "format": "email",
-                    "description": "电子邮件"
+                    "description": "显示名称"
                   },
-                  "given_name": {
+                  "locale": {
                     "type": "string",
-                    "description": "名"
-                  },
-                  "family_name": {
-                    "type": "string",
-                    "description": "姓"
-                  },
-                  "avatar_url": {
-                    "type": "string",
-                    "description": "头像图片链接"
+                    "description": "区域设置偏好"
                   }
                 }
               }
@@ -1547,11 +2413,1367 @@
           "401": {
             "$ref": "#/components/responses/Unauthorized"
           },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts": {
+      "get": {
+        "tags": [
+          "联系方式"
+        ],
+        "summary": "列出联系人",
+        "description": "检索已验证别名的所有联系人列表。此端点支持分页，并以 CardDAV 格式返回联系人。",
+        "operationId": "listContacts",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contacts retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Contact"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "联系方式"
+        ],
+        "summary": "创建联系人",
+        "description": "创建新联系人。您可以直接提供 vCard 内容，也可以提供单独的联系人字段，这些字段将转换为 vCard 格式。如果已存在具有相同 ID 的联系人，则会返回冲突错误。",
+        "operationId": "createContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Contact created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/contacts/{id}": {
+      "get": {
+        "tags": [
+          "联系方式"
+        ],
+        "summary": "检索联系人",
+        "description": "通过 ID 检索特定联系人。该联系人信息将以标准联系人格式返回，其中包含 vCard 内容和已解析的字段。",
+        "operationId": "retrieveContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "联系方式"
+        ],
+        "summary": "更新联系方式",
+        "description": "更新现有联系人。您可以提供更新后的 vCard 内容，也可以提供单个字段进行更新。如果提供单个字段，系统将重新生成联系人的 vCard。",
+        "operationId": "updateContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContactUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contact updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "403": {
             "$ref": "#/components/responses/Forbidden"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "联系方式"
+        ],
+        "summary": "删除联系人",
+        "description": "永久删除特定联系人。此操作无法撤消。",
+        "operationId": "deleteContact",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/contactId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contact deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Contact"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars": {
+      "get": {
+        "tags": [
+          "日历"
+        ],
+        "summary": "列出日历",
+        "description": "检索已验证别名的所有日历列表。此端点支持分页，并返回 CalDAV 格式的日历。",
+        "operationId": "listCalendars",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendars retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Calendar"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "日历"
+        ],
+        "summary": "创建日历",
+        "description": "创建新日历。日历名称为必填项，其他属性（例如颜色、时区和描述）为可选。如果已存在同名日历，则会返回冲突错误。",
+        "operationId": "createCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Calendar created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/calendars/{id}": {
+      "get": {
+        "tags": [
+          "日历"
+        ],
+        "summary": "检索日历",
+        "description": "通过 ID 检索特定日历。返回日历及其所有属性，包括名称、描述、颜色、时区和顺序。",
+        "operationId": "retrieveCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "日历"
+        ],
+        "summary": "更新日历",
+        "description": "更新现有日历。您可以更新任何日历属性，包括名称、描述、颜色、时区和顺序。如果您将名称更改为已存在的名称，则会返回冲突错误。",
+        "operationId": "updateCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calendar updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "日历"
+        ],
+        "summary": "删除日历",
+        "description": "永久删除特定日历。此操作无法撤消，并且会删除日历中的所有事件。",
+        "operationId": "deleteCalendar",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/calendarId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Calendar deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Calendar"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders": {
+      "get": {
+        "tags": [
+          "文件夹"
+        ],
+        "summary": "列出文件夹",
+        "description": "检索已验证别名的所有 IMAP 文件夹/邮箱列表。此端点支持分页和按订阅状态筛选。",
+        "operationId": "listFolders",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "subscribed",
+            "in": "query",
+            "description": "按订阅状态过滤文件夹",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folders retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Folder"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "文件夹"
+        ],
+        "summary": "创建文件夹",
+        "description": "创建一个新的 IMAP 文件夹/邮箱。文件夹路径是必填项，可以包含父文件夹（例如“INBOX/Subfolder”）。如果父文件夹不存在，系统将自动创建。",
+        "operationId": "createFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Folder created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/folders/{id}": {
+      "get": {
+        "tags": [
+          "文件夹"
+        ],
+        "summary": "检索文件夹",
+        "description": "通过 ID 或路径检索特定文件夹。您可以使用文件夹的 ObjectID 或其完整路径（例如“INBOX/Subfolder”）作为标识符。",
+        "operationId": "retrieveFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "文件夹"
+        ],
+        "summary": "更新文件夹",
+        "description": "更新/重命名现有文件夹。此操作会将文件夹重命名为请求正文中指定的新路径。您可以使用文件夹的 ObjectID 或其当前路径作为标识符。",
+        "operationId": "updateFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Folder updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "文件夹"
+        ],
+        "summary": "删除文件夹",
+        "description": "永久删除特定文件夹。此操作无法撤消，并且会删除文件夹中的所有邮件。您可以使用文件夹的 ObjectID 或其路径作为标识符。",
+        "operationId": "deleteFolder",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/folderId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Folder deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Folder"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages": {
+      "get": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "列出和搜索消息",
+        "description": "使用高级搜索和筛选功能检索消息列表。此端点支持分页和全面搜索消息内容、标头、标记和元数据。您可以按文件夹、标记、内容、标头、日期范围、大小等进行搜索。",
+        "operationId": "listMessages",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/page"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          },
+          {
+            "name": "folder",
+            "in": "query",
+            "description": "按文件夹路径过滤邮件",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_unread",
+            "in": "query",
+            "description": "按阅读状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_flagged",
+            "in": "query",
+            "description": "按标记状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_deleted",
+            "in": "query",
+            "description": "按已删除状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_draft",
+            "in": "query",
+            "description": "按草稿状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_junk",
+            "in": "query",
+            "description": "按垃圾邮件/垃圾邮件状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_copied",
+            "in": "query",
+            "description": "按复制状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_searchable",
+            "in": "query",
+            "description": "按可搜索状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "is_expired",
+            "in": "query",
+            "description": "按过期状态过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachments",
+            "in": "query",
+            "description": "按附件存在情况过滤",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "has_attachment",
+            "in": "query",
+            "description": "按附件存在进行过滤（has_attachments 的别名）",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "subject",
+            "in": "query",
+            "description": "在邮件主题中搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "body",
+            "in": "query",
+            "description": "在邮件正文/文本中搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "text",
+            "in": "query",
+            "description": "在消息文本中搜索（正文的别名）",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "headers",
+            "in": "query",
+            "description": "在所有邮件标题中搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "message_id",
+            "in": "query",
+            "description": "按 Message-ID 标头搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "description": "跨标题和文本的常规搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "常规搜索（搜索的别名）",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "since",
+            "in": "query",
+            "description": "过滤自该日期以来的消息（ISO 8601 格式）",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "before",
+            "in": "query",
+            "description": "过滤此日期之前的消息（ISO 8601 格式）",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "min_size",
+            "in": "query",
+            "description": "过滤具有最小字节数的消息",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "max_size",
+            "in": "query",
+            "description": "过滤具有最大大小（以字节为单位）的消息",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "按“来自”标题搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "按“至”标题搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "cc",
+            "in": "query",
+            "description": "按 CC 标题搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "bcc",
+            "in": "query",
+            "description": "按密件抄送标题搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "description": "按日期标题搜索",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "reply-to",
+            "in": "query",
+            "description": "按回复标题搜索",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Messages retrieved successfully",
+            "headers": {
+              "X-Page-Count": {
+                "description": "Total number of pages",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Current": {
+                "description": "Current page number",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Page-Size": {
+                "description": "Number of items on current page",
+                "schema": {
+                  "type": "integer"
+                }
+              },
+              "X-Item-Count": {
+                "description": "Total number of items",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Message"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "创建消息",
+        "description": "创建/附加新消息到文件夹。此端点接受标准的 Nodemailer 消息格式，并允许您指定目标文件夹和初始标志。如果目标文件夹不存在，则会自动创建。",
+        "operationId": "createMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Message created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      }
+    },
+    "/v1/messages/{id}": {
+      "get": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "检索消息",
+        "description": "通过 ID 检索特定消息。默认情况下，响应包含已解析的 Nodemailer 对象和原始消息内容。您可以使用查询参数控制包含的内容。",
+        "operationId": "retrieveMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "返回原始 EML 格式而不是 JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "nodemailer",
+            "in": "query",
+            "description": "包含已解析的 Nodemailer 对象",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "attachments",
+            "in": "query",
+            "description": "在 Nodemailer 对象中包含附件",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "raw",
+            "in": "query",
+            "description": "包含原始消息内容",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "更新消息",
+        "description": "更新现有邮件。您可以修改邮件标记或将其移动到其他文件夹。如果目标文件夹不存在，系统将自动创建。",
+        "operationId": "updateMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          },
+          {
+            "name": "eml",
+            "in": "query",
+            "description": "返回原始 EML 格式而不是 JSON",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MessageUpdateInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              },
+              "message/rfc822": {
+                "description": "Raw EML format (when ?eml=true)",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "403": {
+            "$ref": "#/components/responses/Forbidden"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "消息"
+        ],
+        "summary": "删除消息",
+        "description": "永久删除特定邮件。此操作无法撤消，并将永久从存储中移除该邮件。与通常将邮件移至“已删除邮件”的 IMAP 客户端不同，此端点执行的是硬删除。",
+        "operationId": "deleteMessage",
+        "security": [
+          {
+            "AliasAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/messageId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Message deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         }
       }
@@ -2049,7 +4271,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateDomainInput"
+                "$ref": "#/components/schemas/UpdateDomainInput"
               }
             }
           }
@@ -2359,7 +4581,7 @@
     },
     "/v1/domains/{domain_id}/catch-all-passwords/{token_id}": {
       "delete": {
-        "summary": "删除全域通用密码",
+        "summary": "删除域范围内的万能密码",
         "description": "使用提供的令牌 ID 删除域范围的 catch-all 密码。",
         "tags": [
           "域"
@@ -3094,583 +5316,6 @@
           }
         }
       }
-    },
-    "/v1/contacts": {
-      "get": {
-        "summary": "列出联系人",
-        "description": "列出所有联系人 (CardDAV)。此端点即将推出。",
-        "tags": [
-          "别名联系人"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "创建联系人",
-        "description": "创建新联系人 (CardDAV)。此端点即将推出。",
-        "tags": [
-          "别名联系人"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/contacts/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "联系人 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "检索联系人",
-        "description": "检索特定联系人 (CardDAV)。此端点即将推出。",
-        "tags": [
-          "别名联系人"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "更新联系方式",
-        "description": "更新特定联系人 (CardDAV)。此端点即将推出。",
-        "tags": [
-          "别名联系人"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "删除联系人",
-        "description": "删除特定联系人（CardDAV）。此端点即将推出。",
-        "tags": [
-          "别名联系人"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars": {
-      "get": {
-        "summary": "列出日历",
-        "description": "列出所有日历 (CalDAV)。此端点即将推出。",
-        "tags": [
-          "别名日历"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "创建日历",
-        "description": "创建新日历 (CalDAV)。此端点即将推出。",
-        "tags": [
-          "别名日历"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/calendars/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "日历 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "检索日历",
-        "description": "检索特定日历 (CalDAV)。此端点即将推出。",
-        "tags": [
-          "别名日历"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "更新日历",
-        "description": "更新特定日历 (CalDAV)。此端点即将推出。",
-        "tags": [
-          "别名日历"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "删除日历",
-        "description": "删除特定日历 (CalDAV)。此端点即将推出。",
-        "tags": [
-          "别名日历"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages": {
-      "get": {
-        "summary": "列出并搜索消息",
-        "description": "列出并搜索邮件（IMAP/POP3）。此端点即将推出。",
-        "tags": [
-          "别名消息"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "创建消息",
-        "description": "创建新邮件（IMAP/POP3）。这不会发送电子邮件，只会将邮件添加到您的邮箱文件夹（类似于 IMAP APPEND 命令）。此端点即将推出。",
-        "tags": [
-          "别名消息"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/messages/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "消息 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "检索消息",
-        "description": "检索特定消息（IMAP/POP3）。此端点即将推出。",
-        "tags": [
-          "别名消息"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "更新消息",
-        "description": "更新特定消息（IMAP/POP3）。此端点即将推出。",
-        "tags": [
-          "别名消息"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "删除消息",
-        "description": "删除特定邮件（IMAP/POP3）。此端点即将推出。",
-        "tags": [
-          "别名消息"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders": {
-      "get": {
-        "summary": "列出文件夹",
-        "description": "列出所有文件夹（IMAP/POP3）。此端点即将推出。",
-        "tags": [
-          "别名文件夹"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "post": {
-        "summary": "创建文件夹",
-        "description": "创建新文件夹 (IMAP/POP3)。此端点即将推出。",
-        "tags": [
-          "别名文件夹"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "文件夹 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "get": {
-        "summary": "检索文件夹",
-        "description": "检索特定文件夹 (IMAP/POP3)。此端点即将推出。",
-        "tags": [
-          "别名文件夹"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "put": {
-        "summary": "更新文件夹",
-        "description": "更新特定文件夹 (IMAP/POP3)。此端点即将推出。",
-        "tags": [
-          "别名文件夹"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "删除文件夹",
-        "description": "删除特定文件夹（IMAP/POP3）。此端点即将推出。",
-        "tags": [
-          "别名文件夹"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/v1/folders/{id}/copy": {
-      "parameters": [
-        {
-          "name": "id",
-          "in": "path",
-          "required": true,
-          "description": "文件夹 ID",
-          "schema": {
-            "type": "string"
-          }
-        }
-      ],
-      "post": {
-        "summary": "复制文件夹",
-        "description": "复制特定文件夹（IMAP/POP3）。此端点即将推出。",
-        "tags": [
-          "别名文件夹"
-        ],
-        "security": [
-          {
-            "AliasAuth": []
-          }
-        ],
-        "responses": {
-          "501": {
-            "description": "Not Implemented - This feature is coming soon",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
     }
   },
   "tags": [
@@ -3707,20 +5352,20 @@
       "description": "加密端点"
     },
     {
-      "name": "别名联系人",
-      "description": "别名联系人管理端点 (CardDAV)\n\n>[!NOTE]\n>与其他 API 端点不同，这些端点要求身份验证“用户名”等于别名用户名，“密码”等于别名生成的密码，作为基本授权标头。\n\n>[!WARNING]\n>此端点部分尚在开发中，预计将于 2025 年发布（希望如此）。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。"
+      "name": "联系方式",
+      "description": "别名联系人管理端点 (CardDAV)\n\n>[!NOTE]\n>与其他 API 端点不同，这些端点需要身份验证“用户名”等于别名用户名，“密码”等于别名生成的密码，作为基本授权标头。\n\n>[!TIP]\n>这些端点提供完整的联系人管理增删改查 (CRUD) 操作，并支持 vCard 格式，包括联系人的创建、检索、更新和删除。您可以直接提供 vCard 内容，也可以提供单独的联系人字段，这些字段将被转换为 vCard 格式。"
     },
     {
-      "name": "别名日历",
-      "description": "别名日历管理端点 (CalDAV)\n\n>[!NOTE]\n> 与其他 API 端点不同，这些端点需要 [Authentication](#description/authentication) 将别名用户名设为“username”，将别名生成的密码设为“password”，作为基本授权标头。\n\n>[!WARNING]\n> 此端点部分尚在开发中，预计将于 2025 年发布（预计）。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。"
+      "name": "日历",
+      "description": "别名日历管理端点 (CalDAV)\n\n>[!NOTE]\n> 与其他 API 端点不同，这些端点需要 [Authentication](#description/authentication) 将别名用户名设为“username”，将别名生成的密码设为“password”，作为基本授权标头。\n\n>[!TIP]\n> 这些端点提供完整的日历管理功能，支持时区和颜色，包括日历的创建、检索、更新和删除。日历名称是必需的，而其他属性（例如颜色、时区和描述）则是可选的。"
     },
     {
-      "name": "别名消息",
-      "description": "别名邮件管理端点 (IMAP/POP3)\n\n>[!NOTE]\n> 与其他 API 端点不同，这些端点需要 [身份验证](#description/authentication) 将“用户名”设置为别名的用户名，将“密码”设置为别名生成的密码，作为基本授权标头。\n\n> [!WARNING]\n> 此端点部分尚在开发中，预计将于 2025 年发布。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。\n请确保您已按照域名的设置说明进行操作。\n这些说明可在我们的常见问题解答部分 [您支持使用 IMAP 接收电子邮件吗？](/faq#do-you-support-receiving-email-with-imap) 中找到。"
+      "name": "消息",
+      "description": "别名邮件管理端点 (IMAP/POP3)\n\n>[!NOTE]\n> 与其他 API 端点不同，这些端点需要 [Authentication](#description/authentication) 将“username”设置为别名用户名，将“password”设置为别名生成的密码，作为基本授权标头。\n\n>[!TIP]\n> 这些端点提供全面的邮件管理功能和高级搜索功能。您可以按文件夹、标记、内容、标头、日期范围、大小等进行搜索。邮件可以使用标准 Nodemailer 格式创建，并支持在文件夹之间移动和标记管理。\n\n请确保您已遵循域名的设置说明。\n这些说明可在我们的常见问题解答部分 [您支持使用 IMAP 接收电子邮件吗？](/faq#do-you-support-receiving-email-with-imap) 中找到。"
     },
     {
-      "name": "别名文件夹",
-      "description": "别名文件夹管理端点 (IMAP/POP3)\n\n>[!TIP]\n> 文件夹路径为 <code>/v1/folders/:path</code> 的端点可以与文件夹 ID <code>:id</code> 互换。这意味着您可以通过 <code>path</code> 或 <code>id</code> 值来引用文件夹。\n\n>[!WARNING]\n> 此端点部分尚在开发中，预计将于 2025 年发布。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。"
+      "name": "文件夹",
+      "description": "别名文件夹管理端点 (IMAP/POP3)\n\n>[!TIP]\n> 文件夹路径为 <code>/v1/folders/:path</code> 的文件夹端点可以与文件夹 ID <code>:id</code> 互换。这意味着您可以通过 <code>path</code> 或 <code>id</code> 值引用文件夹。\n\n>[!NOTE]\n> 与其他 API 端点不同，这些端点需要 [Authentication](#description/authentication) 将“username”设置为别名用户名，将“password”设置为别名生成的密码，作为基本授权标头。\n\n>[!TIP]\n> 这些端点提供完整的文件夹管理功能，包括创建、重命名和删除。文件夹路径可以包含父文件夹（例如，“INBOX/Subfolder”），如果父文件夹不存在，则会自动创建。"
     }
   ]
 }
