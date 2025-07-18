@@ -25,8 +25,6 @@ class API extends APIServer {
       publisher: this.client
       // NOTE: we do not supply `subscriber` option since it's not IMAP
     });
-    // this allows you to do `ctx.instance` inside routers
-    this.app.context.instance = this;
     // this allows you to do `ctx.notifier` inside routers
     this.app.context.notifier = this.notifier;
     // this allows you to do `ctx.attachmentStorage` inside routers

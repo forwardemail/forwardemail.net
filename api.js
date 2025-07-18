@@ -16,13 +16,20 @@ const ip = require('ip');
 
 const API = require('./api-server');
 
-const apiConfig = require('#config/api');
 const Users = require('#models/users');
+const apiConfig = require('#config/api');
+const createWebSocketAsPromised = require('#helpers/create-websocket-as-promised');
 const logger = require('#helpers/logger');
-const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
+const setupMongoose = require('#helpers/setup-mongoose');
 
-const api = new API(apiConfig, Users);
+const api = new API(
+  {
+    ...apiConfig,
+    wsp: createWebSocketAsPromised()
+  },
+  Users
+);
 
 const graceful = new Graceful({
   mongooses: [mongoose],
