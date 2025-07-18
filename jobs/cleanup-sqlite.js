@@ -23,8 +23,9 @@ const mongoose = require('mongoose');
 const ms = require('ms');
 const pMapSeries = require('p-map-series');
 const parseErr = require('parse-err');
-const sharedConfig = require('@ladjs/shared-config');
+const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
+const sharedConfig = require('@ladjs/shared-config');
 const _ = require('#helpers/lodash');
 
 const Aliases = require('#models/aliases');
@@ -265,6 +266,24 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             domain
           );
 
+          //
+          // don't send a notification to the alias if the `alias.user` has
+          // already received this threshold notification in past 7d
+          //
+          let cache = await client.get(
+            `threshold:${alias.user.toString()}:${threshold.toString()}`
+          );
+          if (cache) return;
+
+          //
+          // don't send a notification to admins if they've already received
+          // this threshold notification in past 7d
+          //
+          cache = await client.get(
+            `threshold:${revHash(to)}:${threshold.toString()}`
+          );
+          if (cache) return;
+
           // send the email to the user with threshold notification
           const subject =
             config.views.locals.emoji('warning') +
@@ -286,19 +305,6 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             `${config.urls.web}/${locale}/my-account/billing`
           );
 
-          await emailHelper({
-            template: 'alert',
-            message: {
-              to,
-              // bcc: config.email.message.from,
-              subject
-            },
-            locals: {
-              message,
-              locale
-            }
-          });
-
           // mark when the email was successfully sent/queued
           alias.storage_thresholds_sent_at[threshold.toString()] = new Date();
           alias.markModified('storage_thresholds_sent_at');
@@ -317,6 +323,34 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
               }
             }
           );
+
+          await client.set(
+            `threshold:${alias.user.toString()}:${threshold.toString()}`,
+            true,
+            'PX',
+            ms('7d')
+          );
+          await client.set(
+            `threshold:${revHash(to)}:${threshold.toString()}`,
+            true,
+            'PX',
+            ms('7d')
+          );
+
+          // TODO: use email queue so it retries (?)
+          await emailHelper({
+            template: 'alert',
+            message: {
+              to: `${alias.name}@${domain.name}`,
+              cc: to,
+              // bcc: config.email.message.from,
+              subject
+            },
+            locals: {
+              message,
+              locale
+            }
+          });
         } catch (err) {
           if (err.message === 'Alias does not exist') {
             err.isCodeBug = true;
