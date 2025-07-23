@@ -16,8 +16,8 @@ on:
   # , reopened, assigned, unassigned, review_requested, review_request_removed, labeled, unlabeled, synchronize, converted_to_draft, ready_for_review, locked, unlocked]
 
   # Pull Request Reviews
-  pull_request_review:
-    types: [submitted] # , edited, dismissed]
+  # pull_request_review:
+    # types: [submitted] # , edited, dismissed]
 
   # Pull Request Review Comments
   #pull_request_review_comment:
@@ -92,7 +92,7 @@ on:
     types: [published, updated]
 
   # Status (commit status)
-  status:
+  # status:
 
 jobs:
   notify-matrix:
