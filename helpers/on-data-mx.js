@@ -1646,7 +1646,7 @@ async function onDataMX(session, headers, body) {
       //
       await isAuthenticatedMessage(headers, body, session, this.resolver);
 
-      isArbitrary(session, headers); // , body.toString());
+      await isArbitrary(session, headers, this.client); // , body.toString());
 
       // if there were DKIM signing domains then check them
       // against the silent ban and denylists

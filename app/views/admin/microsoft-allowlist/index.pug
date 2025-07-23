@@ -1,0 +1,142 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+
+        // Add new Microsoft allowlist entry form
+        .card.mb-4
+          .card-header
+            h5.mb-0
+              i.fa.fa-plus.mr-2
+              | Add Microsoft Allowlist Entry
+          .card-body
+            form.ajax-form(
+              action=ctx.path,
+              method="POST",
+              autocomplete=config.env === "test" ? "off" : randomstring()
+            )
+              .row
+                .col-md-6
+                  .form-group
+                    label(for="input-value") Microsoft Identifier
+                    input#input-value.form-control(
+                      type="text",
+                      name="value",
+                      placeholder="user@tenant.onmicrosoft.com, tenant.onmicrosoft.com, or tenant.*",
+                      required
+                    )
+                    .form-text.text-muted
+                      | Examples:
+                      code user@contoso.onmicrosoft.com
+                      | ,
+                      code contoso.onmicrosoft.com
+                      | ,
+                      code contoso.*
+                .col-md-4
+                  .form-group
+                    label(for="input-ttl") TTL (seconds)
+                    input#input-ttl.form-control(
+                      type="number",
+                      name="ttl",
+                      value="2592000",
+                      min="60",
+                      max="2592000"
+                    )
+                    .form-text.text-muted Default: 30 days (2592000 seconds)
+                .col-md-2
+                  .form-group
+                    label &nbsp;
+                    button.btn.btn-success.btn-block(type="submit")
+                      i.fa.fa-plus.mr-1
+                      | Add Entry
+
+        // Bulk add form (collapsible)
+        .card.mb-4
+          .card-header
+            button.btn.btn-link.text-left.p-0(
+              type="button",
+              data-toggle="collapse",
+              data-target="#bulk-add-form",
+              aria-expanded="false"
+            )
+              h6.mb-0
+                i.fa.fa-upload.mr-2
+                | Bulk Add Entries
+                i.fa.fa-chevron-down.ml-2
+          #bulk-add-form.collapse
+            .card-body
+              form.ajax-form(
+                action=ctx.path + "/bulk",
+                method="POST",
+                autocomplete=config.env === "test" ? "off" : randomstring()
+              )
+                .form-group
+                  label(for="bulk-values") Microsoft Identifiers (one per line)
+                  textarea#bulk-values.form-control(
+                    name="values",
+                    rows="5",
+                    placeholder="user1@tenant.onmicrosoft.com\ntenant.onmicrosoft.com\ntenant.*"
+                  )
+                .row
+                  .col-md-6
+                    .form-group
+                      label(for="bulk-ttl") TTL (seconds)
+                      input#bulk-ttl.form-control(
+                        type="number",
+                        name="ttl",
+                        value="2592000",
+                        min="60",
+                        max="2592000"
+                      )
+                  .col-md-6
+                    .form-group
+                      label &nbsp;
+                      button.btn.btn-info.btn-block(type="submit")
+                        i.fa.fa-upload.mr-1
+                        | Bulk Add
+
+        // Search and results
+        form.ajax-form.table-ajax-form(
+          action=ctx.path,
+          method="GET",
+          data-table="#table-results",
+          data-search-params="key"
+        )
+          .input-group.mb-3
+            input#input-value-search.form-control(
+              type="text",
+              value=ctx.query.key ? ctx.query.key : "",
+              name="key",
+              placeholder=t("Search by identifier")
+            )
+            .input-group-append
+              button.btn.btn-success(type="submit")= t("Search")
+
+        #table-results
+          include ./_table
+
+block scripts
+  script.
+    // Handle bulk add form - split textarea by lines
+    document.querySelector("#bulk-add-form form.ajax-form").addEventListener("submit", function (e) {
+      const textarea = document.querySelector("#bulk-values");
+      const values = textarea.value
+        .split("\n")
+        .filter((line) => line.trim())
+        .map((line) => line.trim());
+
+      // Convert textarea to hidden inputs array
+      textarea.name = "";
+      values.forEach(
+        function (value, index) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "values[]";
+          input.value = value;
+          this.appendChild(input);
+        }.bind(this)
+      );
+    });

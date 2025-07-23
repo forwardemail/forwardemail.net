@@ -8,6 +8,7 @@ const domains = require('./domains');
 const dashboard = require('./dashboard');
 const logs = require('./logs');
 const allowlist = require('./allowlist');
+const microsoftAllowlist = require('./microsoft-allowlist');
 const denylist = require('./denylist');
 const emails = require('./emails');
 const inquiries = require('./inquiries');
@@ -18,6 +19,7 @@ module.exports = {
   domains,
   logs,
   allowlist,
+  microsoftAllowlist,
   denylist,
   emails,
   inquiries

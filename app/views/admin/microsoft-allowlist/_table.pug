@@ -1,0 +1,66 @@
+include ../../_sort-header
+include ../../_pagination
+
+.table-responsive
+  table.table.table-hover.table-bordered.table-sm
+    thead.thead-dark
+      tr
+        th(scope="col")
+          +sortHeader('key', 'Identifier', '#table-results')
+        th.text-center.align-middle(scope="col") Type
+        th.text-center.align-middle(scope="col") TTL
+        th.text-center.align-middle(scope="col")= t("Actions")
+    tbody
+      if results.length === 0
+        tr
+          td.alert.alert-info(colspan="4")
+            = t("No Microsoft allowlist entries exist for that search.")
+      else
+        each entry in results
+          tr
+            td.align-middle
+              .markdown-body.ml-0.mr-0: code= entry.identifier
+            td.text-center.align-middle
+              case entry.type
+                when 'email'
+                  span.badge.badge-primary
+                    i.fa.fa-envelope.mr-1
+                    | Email
+                when 'domain'
+                  span.badge.badge-info
+                    i.fa.fa-globe.mr-1
+                    | Domain
+                when 'wildcard'
+                  span.badge.badge-warning
+                    i.fa.fa-asterisk.mr-1
+                    | Wildcard
+                default
+                  span.badge.badge-secondary Unknown
+            td.text-center.align-middle
+              if entry.ttl
+                - const hours = Math.floor(entry.ttl / 3600);
+                - const days = Math.floor(hours / 24);
+                if days > 0
+                  span.text-muted= `${days}d ${hours % 24}h`
+                else
+                  span.text-muted= `${hours}h`
+              else
+                span.badge.badge-success Permanent
+            td.text-center.align-middle
+              form.ajax-form.confirm-prompt(
+                action=l("/admin/microsoft-allowlist"),
+                method="POST",
+                autocomplete=config.env === "test" ? "off" : randomstring()
+              )
+                input(type="hidden", name="_method", value="DELETE")
+                input(type="hidden", name="value", value=entry.identifier)
+                button.btn.btn-danger.btn-sm(
+                  type="submit",
+                  data-toggle="tooltip",
+                  data-title=t("Remove from Microsoft allowlist"),
+                  data-confirm=`Are you sure you want to remove "${entry.identifier}" from the Microsoft allowlist?`
+                )
+                  i.fa.fa-fw.fa-remove
+                  | Remove
+
++paginate('#table-results')

@@ -756,6 +756,17 @@ const config = {
       : []
   ),
 
+  // Microsoft/onmicrosoft.com allowlist for legitimate senders
+  microsoftAllowlist: new Set(
+    _.isArray(env.MICROSOFT_ALLOWLIST)
+      ? env.MICROSOFT_ALLOWLIST.map((key) => key.toLowerCase().trim())
+      : isSANB(env.MICROSOFT_ALLOWLIST)
+      ? env.MICROSOFT_ALLOWLIST.split(',').map((key) =>
+          key.toLowerCase().trim()
+        )
+      : []
+  ),
+
   ignoredSelfTestDomains: new Set(
     _.isArray(env.IGNORED_SELF_TEST_DOMAINS)
       ? env.IGNORED_SELF_TEST_DOMAINS.map((key) => key.toLowerCase().trim())

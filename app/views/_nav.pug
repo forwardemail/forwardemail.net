@@ -796,6 +796,10 @@ nav.navbar(class=navbarClasses.join(" "))
                       href=l("/admin/allowlist")
                     )= t("Allowlist")
                     a.dropdown-item(
+                      class=ctx.pathWithoutLocale.startsWith("/admin/microsoft-allowlist") ? "active" : "",
+                      href=l("/admin/microsoft-allowlist")
+                    ) Microsoft Allowlist
+                    a.dropdown-item(
                       class=ctx.pathWithoutLocale.startsWith("/admin/denylist") ? "active" : "",
                       href=l("/admin/denylist")
                     )= t("Denylist")

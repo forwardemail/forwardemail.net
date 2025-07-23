@@ -89,8 +89,81 @@ table.table.table-hover.table-bordered.table-sm
                 if statusCode
                   span.badge.badge-pill(class=badgeClass)= statusCode
             td.align-middle.text-center
-              a.btn.btn-dark.btn-sm(
-                href=l(`/admin/logs/${log.id}`),
-                target="_blank"
-              ): i.fa.fa-search
+              .btn-group-vertical.btn-group-sm
+                a.btn.btn-dark.btn-sm(
+                  href=l(`/admin/logs/${log.id}`),
+                  target="_blank",
+                  data-toggle="tooltip",
+                  data-title="View Details"
+                ): i.fa.fa-search
+
+                // Microsoft allowlist actions for onmicrosoft.com related blocks
+                if log && log.err && (log.err.message || log.message)
+                  - const errorMessage = log.err.message || log.message || "";
+                  - const isMicrosoftBlock = errorMessage.toLowerCase().includes("onmicrosoft.com") && (errorMessage.includes("blocked") || errorMessage.includes("restricted") || errorMessage.includes("spam"));
+                  - let fromAddress, fromDomain;
+
+                  if log.meta && log.meta.session
+                    - fromAddress = log.meta.session.originalFromAddress;
+                    - fromDomain = log.meta.session.originalFromAddressDomain;
+
+                  if isMicrosoftBlock && fromDomain && fromDomain.endsWith('.onmicrosoft.com')
+                    // Allow specific email button
+                    if fromAddress
+                      form.ajax-form.mt-1(
+                        action=l("/admin/microsoft-allowlist"),
+                        method="POST",
+                        autocomplete=config.env === "test" ? "off" : randomstring()
+                      )
+                        input(type="hidden", name="value", value=fromAddress)
+                        input(type="hidden", name="ttl", value="2592000")
+                        button.btn.btn-success.btn-sm(
+                          type="submit",
+                          data-toggle="tooltip",
+                          data-title=`Allow ${fromAddress}`,
+                          data-placement="left"
+                        )
+                          i.fa.fa-envelope.mr-1
+                          | Allow Email
+
+                    // Allow domain button
+                    form.ajax-form.mt-1(
+                      action=l("/admin/microsoft-allowlist"),
+                      method="POST",
+                      autocomplete=config.env === "test" ? "off" : randomstring()
+                    )
+                      input(type="hidden", name="value", value=fromDomain)
+                      input(type="hidden", name="ttl", value="2592000")
+                      button.btn.btn-info.btn-sm(
+                        type="submit",
+                        data-toggle="tooltip",
+                        data-title=`Allow ${fromDomain}`,
+                        data-placement="left"
+                      )
+                        i.fa.fa-globe.mr-1
+                        | Allow Domain
+
+                    // Allow tenant wildcard button
+                    - const tenantMatch = fromDomain.match(/^([^.]+)\.onmicrosoft\.com$/);
+                    if tenantMatch
+                      - const tenantWildcard = tenantMatch[1] + ".*";
+                      form.ajax-form.mt-1(
+                        action=l("/admin/microsoft-allowlist"),
+                        method="POST",
+                        autocomplete=config.env === "test" ? "off" : randomstring()
+                      )
+                        input(
+                          type="hidden",
+                          name="value",
+                          value=tenantWildcard
+                        )
+                        input(type="hidden", name="ttl", value="2592000")
+                        button.btn.btn-warning.btn-sm(
+                          type="submit",
+                          data-toggle="tooltip",
+                          data-title=`Allow all ${tenantMatch[1]}.* emails`,
+                          data-placement="left"
+                        )
+                          i.fa.fa-asterisk.mr-1
+                          | Allow Tenant
 +paginate('#table-logs')

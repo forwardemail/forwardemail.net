@@ -13,6 +13,7 @@ const config = require('#config');
 const env = require('#config/env');
 const getHeaders = require('#helpers/get-headers');
 const isAutoReplyOrMailingList = require('#helpers/is-auto-reply-or-mailing-list');
+const { isMicrosoftAllowlisted } = require('#helpers/is-microsoft-allowlisted');
 const parseHostFromDomainOrAddress = require('#helpers/parse-host-from-domain-or-address');
 const parseRootDomain = require('#helpers/parse-root-domain');
 
@@ -77,7 +78,7 @@ const REGEX_APP_NAME = new RE2(new RegExp(env.APP_NAME, 'im'));
 
 // function isArbitrary(session, headers, bodyStr) {
 
-function isArbitrary(session, headers) {
+async function isArbitrary(session, headers, client) {
   let subject = getHeaders(headers, 'subject');
   if (!isSANB(subject)) subject = null;
 
@@ -188,28 +189,35 @@ function isArbitrary(session, headers) {
   //
   // NOTE: due to unprecendented spam from Microsoft's "onmicrosoft.com" domain
   //       we had to implement arbitrary rule to block spam from them
+  //       BUT we first check if the sender is in our Microsoft allowlist
   //
   // <https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/>
   // <https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c>
   // <https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/>
   //
   if (session.originalFromAddressRootDomain === 'onmicrosoft.com') {
-    const msHeader = headers.getFirst('X-MS-Exchange-Authentication-Results');
-    if (
-      msHeader &&
-      (msHeader.includes('spf=fail') ||
-        msHeader.includes('spf=none') ||
-        msHeader.includes('dmarc=fail') ||
-        msHeader.includes('spf=softfail'))
-    )
-      throw new SMTPError(
-        'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
-      );
+    // Check if this Microsoft sender is allowlisted
+    if (client && (await isMicrosoftAllowlisted(session, client))) {
+      // Skip Microsoft restrictions for allowlisted senders
+    } else {
+      const msHeader = headers.getFirst('X-MS-Exchange-Authentication-Results');
+      if (
+        msHeader &&
+        (msHeader.includes('spf=fail') ||
+          msHeader.includes('spf=none') ||
+          msHeader.includes('dmarc=fail') ||
+          msHeader.includes('spf=softfail'))
+      )
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
+        );
+    }
   }
 
   //
   // due to high amount of Microsoft spam we are blocking their bounces
   // if from postmaster@outlook.com and message is "Undeliverable: "
+  // BUT we check Microsoft allowlist first
   //
   if (
     (session.originalFromAddress === 'postmaster@outlook.com' ||
@@ -222,11 +230,13 @@ function isArbitrary(session, headers) {
     isAutoReplyOrMailingList(headers) &&
     subject &&
     (subject.startsWith('Undeliverable: ') ||
-      subject.startsWith('No se puede entregar: '))
-  )
+      subject.startsWith('No se puede entregar: ')) && // Check if this Microsoft bounce sender is allowlisted
+    !(client && (await isMicrosoftAllowlisted(session, client)))
+  ) {
     throw new SMTPError(
       'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
     );
+  }
 
   /*
   // Postmark has refused to do any KYC process to prevent Cash App scammers

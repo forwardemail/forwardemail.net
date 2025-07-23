@@ -43,6 +43,24 @@ router
     web.admin.allowlist.remove
   )
 
+  // microsoft allowlist
+  .get(
+    '/microsoft-allowlist',
+    paginate.middleware(10, 50),
+    web.admin.microsoftAllowlist.list
+  )
+  .post(
+    '/microsoft-allowlist',
+    web.admin.microsoftAllowlist.validate,
+    web.admin.microsoftAllowlist.create
+  )
+  .delete(
+    '/microsoft-allowlist',
+    web.admin.microsoftAllowlist.validate,
+    web.admin.microsoftAllowlist.remove
+  )
+  .post('/microsoft-allowlist/bulk', web.admin.microsoftAllowlist.bulkAdd)
+
   // denylist
   .get('/denylist', paginate.middleware(10, 50), web.admin.denylist.list)
   .post('/denylist', web.admin.denylist.validate, web.admin.denylist.create)
