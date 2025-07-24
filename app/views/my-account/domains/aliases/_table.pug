@@ -329,7 +329,7 @@ p.text-center.d-lg-none
                         button.btn.btn-success.btn-block.btn-lg(type="submit")= t("Continue")
 
               //- Download QR Code
-              if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+              if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
                 .modal.fade(
                   id=`modal-qrcode-${alias.id}`,
                   tabindex="-1",
@@ -373,7 +373,7 @@ p.text-center.d-lg-none
                           )= t("Continue")
 
               //- Generate Password
-              if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && !_.isDate(domain.smtp_suspended_sent_at) && domain.plan !== 'free'
+              if !domain.is_global && alias.name !== '*' && !alias.name.startsWith('/') && domain.plan !== 'free'
                 .modal.fade(
                   id=`modal-generate-password-${alias.id}`,
                   tabindex="-1",
