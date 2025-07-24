@@ -27,9 +27,8 @@ function createBounce(email, error, message) {
     'multipart/report; report-type=delivery-status'
   );
 
-  // TODO: in the future reserve mailer-daemon@ alias for the domain (hidden alias)
   rootNode.setHeader('From', email.envelope.from);
-  rootNode.setHeader('To', email.envelope.from);
+  rootNode.setHeader('To', email.envelope.to);
   rootNode.setHeader('Precedence', 'auto_reply');
   rootNode.setHeader('Auto-Submitted', 'auto-replied');
   rootNode.setHeader('X-Failed-Recipients', error.recipient);

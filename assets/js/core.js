@@ -13,7 +13,7 @@ const URLParse = require('url-parse');
 const base64url = require('base64url');
 const lazyframe = require('lazyframe');
 const superagent = require('superagent');
-const { randomstring } = require('@sidoshi/random-string');
+const { generateSlug } = require('random-word-slugs');
 const { spinner: Spinner } = require('@ladjs/assets');
 
 // <https://gist.github.com/miguelmota/5b06ae5698877322d0ca?permalink_comment_id=3611597#gistcomment-3611597>
@@ -375,9 +375,34 @@ $body.on('click', '.generate-random-alias', function () {
   if (!target) return;
   const $target = $(target);
   if ($target.lengh === 0) return;
-  const string = randomstring({
-    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
-    length: 10
+  //
+  // NOTE: previously we generated a random string
+  //       however these strings were not memorable
+  //
+  // const string = randomstring({
+  //   characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+  //   length: 10
+  // });
+  const string = generateSlug(2, {
+    format: 'kebab',
+    categories: {
+      noun: [
+        'animals',
+        'business',
+        'education',
+        'food',
+        'health',
+        'media',
+        'place',
+        'profession',
+        'science',
+        'sports',
+        'technology',
+        'thing',
+        'time',
+        'transportation'
+      ]
+    }
   });
   $target.val(string);
 });
@@ -540,8 +565,10 @@ function navbarScroll() {
   ) {
     $nav
       .addClass('bg-white navbar-themed bg-themed border-bottom')
-      .removeClass('text-white');
-    $toggler.addClass('text-dark').removeClass('text-white');
+      .removeClass(isTextWhiteRequired ? 'text-white' : '');
+    $toggler
+      .addClass(togglerIsDark ? '' : 'text-dark')
+      .removeClass(isTextWhiteRequired ? 'text-white' : '');
   } else {
     $nav
       .addClass(isTextWhiteRequired ? 'text-white' : '')

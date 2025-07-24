@@ -409,9 +409,7 @@ block body
                   = " "
                   != t('We are not affiliated, associated, authorized, endorsed by, or in any way officially connected with <span class="notranslate">%s</span>, or any of its subsidiaries or its affiliates. The name <span class="notranslate">%s</span> as well as related names, marks, emblems, and images are registered trademarks of their respective owners.', arrayJoinConjunction(platforms), arrayJoinConjunction(platforms))
   if !isBot(ctx.get('User-Agent'))
-    .bg-dark.text-white.py-3.d-block.overflow-hidden.no-search(
-      data-ignore-hash-change
-    )
+    .d-block.overflow-hidden.no-search(data-ignore-hash-change)
       include _marketing
     .container.text-center
       .row.mb-3

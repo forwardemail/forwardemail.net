@@ -407,13 +407,14 @@ async function getRecipients(session, scan) {
                 try {
                   await isDenylisted(address, this.client, this.resolver);
                 } catch (err) {
+                  if (err.name !== 'DenylistError') throw err;
                   err.message = `The address ${
                     recipient.address
                   } is denylisted by ${
                     config.urls.web
                   } ; To request removal, you must visit ${
                     config.urls.web
-                  }/denylist?q=${encrypt(address.toLowerCase())} ;`;
+                  }/denylist?q=${encrypt(err.denylistValue)} ;`;
                   err.address = address;
                   denylistErr = err;
                 }

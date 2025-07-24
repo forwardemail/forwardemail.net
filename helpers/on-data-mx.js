@@ -331,7 +331,8 @@ async function sendBounce(bounce, headers, session, body) {
     const stream = createBounce(
       {
         envelope: {
-          from: `mailer-daemon@${env.WEB_HOST}`
+          from: `mailer-daemon@${env.WEB_HOST}`,
+          to: checkSRS(session.envelope.mailFrom.address)
         },
         messageId: headers.getFirst('message-id'),
         date: session.arrivalDate

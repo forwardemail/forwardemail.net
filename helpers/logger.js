@@ -108,7 +108,12 @@ const REDACTED_FIELDS = new Set([
   'verification_pin',
 
   // redis object specific
-  'auth'
+  'auth',
+
+  // oauth specific
+  'google_access_token',
+  'google_refresh_token',
+  'github_access_token'
 ]);
 
 //

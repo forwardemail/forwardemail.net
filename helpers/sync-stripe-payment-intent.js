@@ -33,6 +33,8 @@ function syncStripePaymentIntent(user) {
       user: user._id
     };
 
+    let stripeCharge;
+
     try {
       //
       // payment intent status could be "failed", "canceled", "processing"
@@ -68,7 +70,7 @@ function syncStripePaymentIntent(user) {
       //       <https://github.com/stripe/stripe-node/blob/master/CHANGELOG.md#%EF%B8%8F-removed>
       //
       //
-      const [stripeCharge] = paymentIntent.charges.data;
+      [stripeCharge] = paymentIntent.charges.data;
       if (
         !stripeCharge ||
         !stripeCharge.paid ||
@@ -440,6 +442,7 @@ function syncStripePaymentIntent(user) {
       err.paymentIntent = paymentIntent;
       err.q = q;
       err.user = user;
+      err.stripeCharge = stripeCharge;
 
       logger.error(err);
       errorEmails.push({

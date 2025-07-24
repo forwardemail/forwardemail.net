@@ -275,14 +275,26 @@ async function processEmail({ email, port = 25, resolver, client }) {
               const count = await client.incrby(key, 0);
               if (count > 0) return;
 
-              const stream = createBounce(email, error, message);
+              const envelope = {
+                from: `mailer-daemon@${domain.name}`,
+                to: email.envelope.from
+              };
+
+              const stream = createBounce(
+                {
+                  envelope,
+                  messageId: email.messageId,
+                  date: email.date,
+                  id: email.id
+                },
+                error,
+                message
+              );
+
               const raw = await getStream.buffer(stream);
               const bounceEmail = await Emails.queue({
                 message: {
-                  envelope: {
-                    from: email.envelope.from,
-                    to: email.envelope.from
-                  },
+                  envelope,
                   raw
                 },
                 alias,
@@ -1351,14 +1363,25 @@ async function processEmail({ email, port = 25, resolver, client }) {
             )
               return;
 
-            const stream = createBounce(email, error, message);
+            const envelope = {
+              from: `mailer-daemon@${domain.name}`,
+              to: email.envelope.from
+            };
+
+            const stream = createBounce(
+              {
+                envelope,
+                messageId: email.messageId,
+                date: email.date,
+                id: email.id
+              },
+              error,
+              message
+            );
             const raw = await getStream.buffer(stream);
             const bounceEmail = await Emails.queue({
               message: {
-                envelope: {
-                  from: email.envelope.from,
-                  to: email.envelope.from
-                },
+                envelope,
                 raw
               },
               alias,

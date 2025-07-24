@@ -99,9 +99,9 @@ block body
             )
   .min-vh-100.bg-dark.text-white.d-flex.flex-column.pb-5.text-center(
     data-ignore-hash-change,
-    id=!isPDF && (ctx.pathWithoutLocale === "/" || ctx.pathWithoutLocale === "/private-business-email") && !isBot(ctx.get("User-Agent")) ? "freddy" : ""
+    id=!isPDF && ["/", "/private-business-email", ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing) ? "freddy" : ""
   )
-    if (!isPDF && (ctx.pathWithoutLocale === '/' || ctx.pathWithoutLocale === '/private-business-email'))
+    if !isPDF && ['/', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing)
       //- #stars
       #stars2
       #stars3

@@ -257,6 +257,7 @@
     "puppeteer": "23.11.1",
     "qrcode": "1.5.4",
     "qs": "6.14.0",
+    "random-word-slugs": "0.1.7",
     "re2": "1.22.1",
     "regex-parser": "2.3.1",
     "reserved-email-addresses-list": "2.0.16",

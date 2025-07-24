@@ -705,6 +705,9 @@ importers:
       qs:
         specifier: 6.14.0
         version: 6.14.0
+      random-word-slugs:
+        specifier: 0.1.7
+        version: 0.1.7
       re2:
         specifier: 1.22.1
         version: 1.22.1
@@ -14739,6 +14742,9 @@ packages:
   random-bytes@1.0.0:
     resolution: {integrity: sha512-iv7LhNVO047HzYR3InF6pUcUsPQiHTM1Qal51DcGSuZFBil1aBBWG5eHPNek7bvILMaYJ/8RU1e8w1AMdHmLQQ==}
     engines: {node: '>= 0.8'}
+
+  random-word-slugs@0.1.7:
+    resolution: {integrity: sha512-8cyzxOIDeLFvwSPTgCItMXHGT5ZPkjhuFKUTww06Xg1dNMXuGxIKlARvS7upk6JXIm41ZKXmtlKR1iCRWklKmg==}
 
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
@@ -36134,6 +36140,8 @@ snapshots:
       ret: 0.1.15
 
   random-bytes@1.0.0: {}
+
+  random-word-slugs@0.1.7: {}
 
   randombytes@2.1.0:
     dependencies:

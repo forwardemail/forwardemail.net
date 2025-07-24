@@ -59,6 +59,11 @@ let jobs = [
     timeout: 0
   },
   {
+    name: 'banned-user-abuse',
+    interval: '1h',
+    timeout: 0
+  },
+  {
     name: 'check-domains',
     interval: '1h',
     timeout: 0

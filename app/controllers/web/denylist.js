@@ -235,7 +235,7 @@ async function remove(ctx) {
 
   // if user is on free plan then send an email
   // with link for admins to /denylist?q=ctx.state.q
-  if (ctx.state.user.group !== 'admin') {
+  if (ctx.state.user.group !== 'admin' && !ctx.state.isHardCoded) {
     //
     // if it was allowlisted domain but denylisted email
     // then we should email admins because it's either a false positive

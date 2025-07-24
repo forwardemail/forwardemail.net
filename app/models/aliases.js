@@ -16,8 +16,8 @@ const reservedEmailAddressesList = require('reserved-email-addresses-list');
 const slug = require('speakingurl');
 const striptags = require('striptags');
 const { boolean } = require('boolean');
+const { generateSlug } = require('random-word-slugs');
 const { isIP, isURL } = require('@forwardemail/validator');
-const { randomstring } = require('@sidoshi/random-string');
 const _ = require('#helpers/lodash');
 
 // <https://github.com/Automattic/mongoose/issues/5534>
@@ -410,9 +410,35 @@ Aliases.pre('validate', function (next) {
 
   // if name was not a string then generate a random one
   if (!isSANB(this.name)) {
-    this.name = randomstring({
-      characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
-      length: 10
+    //
+    // NOTE: previously we generated a random string
+    //       however these strings were not memorable
+    //
+    // this.name = randomstring({
+    //   characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    //   length: 10
+    // });
+    //
+    this.name = generateSlug(2, {
+      format: 'kebab',
+      categories: {
+        noun: [
+          'animals',
+          'business',
+          'education',
+          'food',
+          'health',
+          'media',
+          'place',
+          'profession',
+          'science',
+          'sports',
+          'technology',
+          'thing',
+          'time',
+          'transportation'
+        ]
+      }
     });
   }
 

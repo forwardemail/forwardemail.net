@@ -82,7 +82,7 @@ if !user && !registerOrLogin
 - const navbarClasses = [];
 if user
   - navbarClasses.push("navbar-dark", "bg-dark", "border-bottom");
-else if ctx.pathWithoutLocale === "/" && !isBot(ctx.get("User-Agent"))
+else if ['/', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale) && !isBot(ctx.get("User-Agent")) && !boolean(ctx.query.pricing)
   - navbarClasses.push("text-white");
   //- used by core.js JavaScript file
   //- (purely for `hasClass('text-white-required')` check
@@ -249,7 +249,7 @@ nav.navbar(class=navbarClasses.join(" "))
         aria-controls="navbar-header",
         aria-expanded="false",
         aria-label=t("Toggle navigation"),
-        class=user ? "text-white" : "text-dark text-themed"
+        class=user ? "text-white" : "text-themed"
       )
         i.fas.fa-bars
     //- once we have responsive border utilities added to bootstrap

@@ -243,7 +243,7 @@ async function processEvent(ctx) {
             subject: `PayPal Subscription Issue (${res.body.id})`
           },
           locals: {
-            message: `Your PayPal subscription could not be synchronized properly since your PayPal email address differs from your Forward Email account.  Please try to checkout again if necessary with PayPal and ensure that you proceed to our website after you have completed your PayPal transaction.  Visit <a target="_blank" rel="noopener noreferrer" href="${config.urls.web}/my-account/billing">${config.urls.web}/my-account/billing</a> to get your latest billing information.  We will automatically process your refund.`
+            message: `Your PayPal subscription could not be synchronized properly since your PayPal email address differs from your Forward Email account.  Please try to checkout again if necessary with PayPal and ensure that you proceed to our website after you have completed your PayPal transaction.  Visit <a target="_blank" rel="noopener noreferrer" href="${config.urls.web}/my-account/billing">${config.urls.web}/my-account/billing</a> to get your latest billing information.  We will automatically process your refund if necessary.`
           }
         })
           .then()
