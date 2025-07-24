@@ -5,7 +5,7 @@
 
 // const os = require('node:os');
 
-const isCI = require('is-ci');
+// const isCI = require('is-ci');
 
 // const { familySync, GLIBC } = require('detect-libc');
 
