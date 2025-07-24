@@ -1104,7 +1104,7 @@ Emails.statics.queue = async function (
   options = {},
   locale = i18n.config.defaultLocale
 ) {
-  const isBounce = boolean(options?.is_bounce)
+  const isBounce = boolean(options?.is_bounce);
 
   //
   // NOTE: memory-leak warning from nodemailer message docs:
