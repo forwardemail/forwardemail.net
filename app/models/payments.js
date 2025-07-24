@@ -514,6 +514,22 @@ Payments.pre('save', async function (next) {
   }
 });
 
+// Compound indices for optimized search performance
+Payments.index({
+  user: 1,
+  created_at: -1
+}); // For sorted pagination with user lookups
+
+Payments.index({
+  reference: 'text',
+  stripe_payment_intent_id: 'text',
+  paypal_transaction_id: 'text',
+  currency: 'text',
+  method: 'text',
+  plan: 'text',
+  kind: 'text'
+}); // For text searches across payment fields
+
 Payments.plugin(mongooseCommonPlugin, {
   object: 'payment',
   defaultLocale: i18n.config.defaultLocale
