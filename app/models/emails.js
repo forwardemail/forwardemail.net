@@ -1104,6 +1104,8 @@ Emails.statics.queue = async function (
   options = {},
   locale = i18n.config.defaultLocale
 ) {
+  const isBounce = boolean(options?.is_bounce)
+
   //
   // NOTE: memory-leak warning from nodemailer message docs:
   //       when using readable streams as content if sending fails then
@@ -1370,7 +1372,8 @@ Emails.statics.queue = async function (
   else if (
     !options.catchall &&
     alias &&
-    from !== `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}`
+    from !== `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}` &&
+    !isBounce
   )
     throw Boom.forbidden(
       i18n.translateError(
@@ -1512,7 +1515,7 @@ Emails.statics.queue = async function (
     date,
     subject,
     status,
-    is_bounce: boolean(options?.is_bounce)
+    is_bounce: isBounce
   });
 
   return email;
