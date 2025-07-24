@@ -1372,7 +1372,8 @@ Emails.statics.queue = async function (
   else if (
     !options.catchall &&
     alias &&
-    from !== `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}` &&
+    from !==
+      `${punycode.toASCII(alias.name)}@${punycode.toASCII(domain.name)}` &&
     !isBounce
   )
     throw Boom.forbidden(
