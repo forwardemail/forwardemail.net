@@ -9,22 +9,14 @@ require('#config/env');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const Redis = require('@ladjs/redis');
 const pMap = require('p-map');
-const revHash = require('rev-hash');
-const sharedConfig = require('@ladjs/shared-config');
 const { Translate } = require('@google-cloud/translate').v2;
-
-const config = require('#config');
-const locales = require('#config/locales');
-const logger = require('#helpers/logger');
 
 // Initialize Google Translate client
 const translate = new Translate();
 
-const breeSharedConfig = sharedConfig('BREE');
-const client = new Redis(breeSharedConfig.redis, logger);
-
+const config = require('#config');
+const locales = require('#config/locales');
 /*
 // All 25 locales
 const locales = [
@@ -86,20 +78,11 @@ async function translateTextDynamically(text, targetLocale) {
     // Step 1: Protect GitHub alerts from translation
     const protectedText = protectGitHubAlerts(text);
 
-    //
     // Step 2: Translate the protected text
-    //
-
-    // Check cache first
-    const key = `${targetLocale}:${revHash(protectedText)}`;
-    let translation = await client.get(key);
-    if (typeof translation !== 'string') {
-      [translation] = await translate.translate(protectedText, {
-        to: targetLocale,
-        format: 'text'
-      });
-      if (typeof translation === 'string') await client.set(key, translation);
-    }
+    const [translation] = await translate.translate(protectedText, {
+      to: targetLocale,
+      format: 'text'
+    });
 
     // Step 3: Restore GitHub alerts
     const finalTranslation = restoreGitHubAlerts(translation);

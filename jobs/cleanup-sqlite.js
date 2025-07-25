@@ -280,7 +280,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
           // this threshold notification in past 7d
           //
           cache = await client.get(
-            `threshold:${revHash(safeStringify(to))}:${threshold.toString()}`
+            `threshold:${revHash(to)}:${threshold.toString()}`
           );
           if (cache) return;
 
@@ -331,7 +331,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             ms('7d')
           );
           await client.set(
-            `threshold:${revHash(safeStringify(to))}:${threshold.toString()}`,
+            `threshold:${revHash(to)}:${threshold.toString()}`,
             true,
             'PX',
             ms('7d')

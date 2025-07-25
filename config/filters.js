@@ -108,11 +108,6 @@ function fixTableOfContents(content, options) {
   //
   for (const link of root.querySelectorAll('a')) {
     let href = link.getAttribute('href');
-    if (!href) {
-      console.error('link', link, 'content', content, 'options', options);
-      throw new TypeError(`Link does not contain href`);
-    }
-
     if (href.startsWith('#')) continue;
     if (href.includes('http://') || href.includes('https://')) {
       href = href.replace('http://', 'https://');
