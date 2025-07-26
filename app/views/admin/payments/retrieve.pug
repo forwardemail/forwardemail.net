@@ -79,7 +79,7 @@ block body
                       method="POST"
                     )
                       .form-group
-                        button.btn.btn-warning.btn-block(type="submit")= t("Refund Payment")
+                        button.btn.btn-warning(type="submit")= t("Refund Payment")
                   else
                     p.text-muted= t("Payment has been fully refunded")
                 else
@@ -101,7 +101,7 @@ block body
 
         if payment.user && userPayments && userPayments.length > 0
           .card.mt-3
-            .card-header.bg-light
+            .card-header.bg-dark.text-white
               h5.mb-0= t("Payment History for %s", payment.user.email)
             .card-body
               .table-responsive

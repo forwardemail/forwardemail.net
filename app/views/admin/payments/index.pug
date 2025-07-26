@@ -29,9 +29,7 @@ block body
                 name="q",
                 placeholder=t("Search by reference, email, currency, method, plan, or transaction ID")
               )
-            .row
-              .col-md-3
-                button.btn.btn-success.btn-block(type="submit")= t("Search")
+            button.btn.btn-success(type="submit")= t("Search")
 
         .card.mb-3
           .card-body
@@ -66,9 +64,7 @@ block body
                       option(value="1y") 1 year
                       option(value="2y") 2 years
                       option(value="3y") 3 years
-              .row.mt-3
-                .col-md-3
-                  button#credit-submit.btn.btn-primary.btn-block(type="submit")= t("Grant Credit")
+              button#credit-submit.btn.btn-primary(type="submit")= t("Grant Credit")
 
         #table-payments
           include ./_table
