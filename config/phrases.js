@@ -797,6 +797,8 @@ module.exports = {
   UPGRADE_REQUEST: 'Upgrade Request',
   UPGRADE_REQUEST_NOTIFICATION:
     'Our team has been notified and will follow up shortly by email.',
+  FREE_CREDIT_GRANTED:
+    'Free credit granted successfully to <span class="notranslate">%s</span> for <span class="notranslate">%s</span> plan (%s duration)',
 
   // API endpoint validation messages
   CONTACT_FULLNAME_OR_CONTENT_REQUIRED:
