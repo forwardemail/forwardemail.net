@@ -19,7 +19,7 @@ const puppeteer = require('puppeteer');
 const render = require('koa-views-render');
 const revHash = require('rev-hash');
 const { gzip } = require('node-gzip');
-const { parse } = require('node-html-parser');
+// const { parse } = require('node-html-parser');
 
 // dynamically import mermaid cli
 let parseMMD;
@@ -664,6 +664,7 @@ for (const [x, provider] of nsProviders.entries()) {
       if (provider.video) ctx.state.video = provider.video;
       if (provider.gif) ctx.state.gif = provider.gif;
 
+      /*
       // dynamically load the DNS Management by Registrar table from FAQ
       try {
         const html = pug.renderFile(
@@ -685,6 +686,7 @@ for (const [x, provider] of nsProviders.entries()) {
       } catch (err) {
         ctx.logger.error(err);
       }
+      */
 
       return next();
     },

@@ -1,0 +1,317 @@
+# כיצד דוא"ל מורחב מגן על הפרטיות, הדומיין והאבטחה שלך: צלילה טכנית מעמיקה {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
+
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="" class="rounded-lg" />
+
+תוכן עניינים {##
+
+* [הַקדָמָה](#foreword)
+* [פילוסופיית הפרטיות של דוא"ל קדימה](#the-forward-email-privacy-philosophy)
+* [יישום SQLite: עמידות וניידות עבור הנתונים שלך](#sqlite-implementation-durability-and-portability-for-your-data)
+* [מנגנון תור חכם וניסיון חוזר: הבטחת מסירת דואר אלקטרוני](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [משאבים בלתי מוגבלים עם הגבלת תעריפים חכמה](#unlimited-resources-with-intelligent-rate-limiting)
+* [הצפנה בארגז חול לאבטחה משופרת](#sandboxed-encryption-for-enhanced-security)
+* [עיבוד דוא"ל בזיכרון: אין אחסון בדיסק לפרטיות מרבית](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [הצפנה מקצה לקצה עם OpenPGP לפרטיות מלאה](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [הגנה על תוכן רב-שכבתי לאבטחה מקיפה](#multi-layered-content-protection-for-comprehensive-security)
+* [כיצד אנו שונים משירותי דוא"ל אחרים: יתרון הפרטיות הטכנית](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+  * [שקיפות קוד פתוח לפרטיות ניתנת לאימות](#open-source-transparency-for-verifiable-privacy)
+  * [אין נעילת ספק לפרטיות ללא פשרות](#no-vendor-lock-in-for-privacy-without-compromise)
+  * [נתונים בארגז חול לבידוד אמיתי](#sandboxed-data-for-true-isolation)
+  * [ניידות ובקרה של נתונים](#data-portability-and-control)
+* [האתגרים הטכניים של העברת דוא"ל תחילה על פרטיות](#the-technical-challenges-of-privacy-first-email-forwarding)
+  * [ניהול זיכרון לעיבוד דואר אלקטרוני ללא רישום](#memory-management-for-no-logging-email-processing)
+  * [איתור דואר זבל ללא ניתוח תוכן עבור סינון שומר פרטיות](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
+  * [שמירה על תאימות ל-Privacy-First Design](#maintaining-compatibility-with-privacy-first-design)
+* [שיטות עבודה מומלצות לפרטיות למשתמשי העברת דוא"ל](#privacy-best-practices-for-forward-email-users)
+* [מסקנה: העתיד של העברת דוא"ל פרטית](#conclusion-the-future-of-private-email-forwarding)
+
+## הקדמה {#foreword}
+
+בנוף הדיגיטלי של היום, פרטיות הדוא"ל הפכה קריטית מתמיד. עם פרצות נתונים, חששות מעקב ופרסום ממוקד המבוסס על תוכן דואר אלקטרוני, משתמשים מחפשים יותר ויותר פתרונות שמתעדפים את הפרטיות שלהם. ב-Forward Email, בנינו את השירות שלנו מהיסוד עם פרטיות כאבן הפינה של הארכיטקטורה שלנו. פוסט זה בבלוג חוקר את ההטמעות הטכניות שהופכות את השירות שלנו לאחד מפתרונות העברת הדוא"ל הממוקדים ביותר בפרטיות הזמינים.
+
+## פילוסופיית הפרטיות של העברת דוא"ל {#the-forward-email-privacy-philosophy}
+
+לפני שנצלול לפרטים הטכניים, חשוב להבין את פילוסופיית הפרטיות הבסיסית שלנו: **האימיילים שלך שייכים לך ורק לך**. עיקרון זה מנחה כל החלטה טכנית שאנו מקבלים, החל מאופן הטיפול בהעברת אימיילים ועד לאופן שבו אנו מיישמים הצפנה.
+
+בניגוד לספקי דוא"ל רבים שסורקים את ההודעות שלך למטרות פרסום או מאחסנים אותן ללא הגבלת זמן בשרתים שלהם, Forward Email פועלת בגישה שונה בתכלית:
+
+1. **עיבוד בזיכרון בלבד** - איננו מאחסנים את האימיילים המועברים שלך בדיסק
+2. **אין אחסון מטא-נתונים** - איננו שומרים תיעוד של מי שולח אימייל למי
+3. **קוד פתוח 100%** - כל בסיס הקוד שלנו שקוף וניתן לביקורת
+4. **הצפנה מקצה לקצה** - אנו תומכים ב-OpenPGP לתקשורת פרטית באמת
+
+## הטמעת SQLite: עמידות וניידות לנתונים שלך {#sqlite-implementation-durability-and-portability-for-your-data}
+
+אחד מיתרונות הפרטיות המשמעותיים ביותר של Forward Email הוא יישום [SQLite](https://en.wikipedia.org/wiki/SQLite) שתוכנן בקפידה. כיווננו את SQLite עם הגדרות PRAGMA ספציפיות ו-[רישום מראש (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) כדי להבטיח עמידות וניידות של הנתונים שלך, תוך שמירה על הסטנדרטים הגבוהים ביותר של פרטיות ואבטחה.
+
+הנה מבט על איך יישמנו את SQLite עם [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) כצופן להצפנה עמידה בפני קוונטים:
+
+```javascript
+// Initialize the database with better-sqlite3-multiple-ciphers
+const Database = require('better-sqlite3-multiple-ciphers');
+
+// Set up encryption with ChaCha20-Poly1305 cipher
+db.pragma(`key="${decrypt(session.user.password)}"`);
+
+// Enable Write-Ahead Logging for durability and performance
+db.pragma('journal_mode=WAL');
+
+// Overwrite deleted content with zeros for privacy
+db.pragma('secure_delete=ON');
+
+// Enable auto vacuum for efficient storage management
+db.pragma('auto_vacuum=FULL');
+
+// Set busy timeout for handling concurrent access
+db.pragma(`busy_timeout=${config.busyTimeout}`);
+
+// Optimize synchronization for reliability
+db.pragma('synchronous=NORMAL');
+
+// Enable foreign key constraints for data integrity
+db.pragma('foreign_keys=ON');
+
+// Set UTF-8 encoding for international character support
+db.pragma(`encoding='UTF-8'`);
+
+// Optimize database performance
+db.pragma('optimize=0x10002;');
+
+// Use disk for temporary storage instead of memory
+db.pragma('temp_store=1;');
+```
+
+יישום זה מבטיח שהנתונים שלכם לא רק מאובטחים אלא גם ניידים. אתם יכולים לקחת את האימייל שלכם וללכת בכל עת על ידי ייצוא בפורמטים [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) או SQLite. וכאשר אתם רוצים למחוק את הנתונים שלכם, הם באמת נעלמים - אנחנו פשוט מוחקים את הקבצים מאחסון הדיסק במקום להריץ פקודות SQL DELETE ROW, שיכולות להשאיר עקבות במסד הנתונים.
+
+היבט ההצפנה הקוונטית של היישום שלנו משתמש ב-ChaCha20-Poly1305 כצופן כאשר אנו מאתחלים את מסד הנתונים, ומספק הגנה חזקה מפני איומים נוכחיים ועתידיים על פרטיות הנתונים שלך.
+
+## מנגנון חכם לתור ולניסיון חוזר: הבטחת מסירת דוא"ל {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
+
+במקום להתמקד אך ורק בטיפול בכותרות, יישמנו מנגנון חכם ומתוחכם לתור ולניסיון חוזר באמצעות שיטת `getBounceInfo` שלנו. מערכת זו מבטיחה שלאימיילים שלכם יש את הסיכוי הטוב ביותר להישלח, גם כאשר מתעוררות בעיות זמניות.
+
+```javascript
+function getBounceInfo(err) {
+  // Initialize bounce info with default values
+  const bounceInfo = {
+    action: err.responseCode >= 500 ? 'reject' : 'defer',
+    category: err.category || 'other',
+    message: err.message,
+    code: err.responseCode || err.code
+  };
+
+  // Analyze error response to determine appropriate action
+  const response = err.response || err.message || '';
+
+  // Determine if the issue is temporary or permanent
+  if (response.includes('temporarily deferred') ||
+      response.includes('try again later')) {
+    bounceInfo.action = 'defer';
+  }
+
+  // Categorize the bounce reason for appropriate handling
+  if (response.includes('mailbox full')) {
+    bounceInfo.category = 'full';
+    bounceInfo.action = 'defer';
+  } else if (response.includes('user unknown')) {
+    bounceInfo.category = 'unknown';
+  }
+
+  return bounceInfo;
+}
+```
+
+> \[!NOTE]
+> This is an excerpt of the `getBounceInfo` method and not the actual extensive implementation. For the complete code, you can review it on [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+
+אנו מנסים לשלוח דואר שוב במשך 5 ימים, בדומה לתקני התעשייה כמו [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), ומעניקים לבעיות זמניות זמן לפתור את עצמן. גישה זו משפרת משמעותית את שיעורי המסירה תוך שמירה על הפרטיות.
+
+בנימה דומה, אנו מסירים גם את תוכן ההודעות של הודעות דוא"ל SMTP יוצאות לאחר מסירה מוצלחת. זה מוגדר במערכת האחסון שלנו עם תקופת שמירה ברירת מחדל של 30 יום, אותה תוכל להתאים בהגדרות המתקדמות של הדומיין שלך. לאחר תקופה זו, תוכן הדואר האלקטרוני נמחק ומטוהק באופן אוטומטי, כאשר נותרה רק הודעת מציין מיקום:
+
+```txt
+This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
+```
+
+גישה זו מבטיחה שהודעות הדוא"ל שנשלחו לא יישארו מאוחסנות ללא הגבלת זמן, ומפחיתה את הסיכון לפרצות נתונים או גישה לא מורשית לתקשורת שלך.
+
+## משאבים ללא הגבלה עם הגבלת קצב חכמה {#unlimited-resources-with-intelligent-rate-limiting}
+
+בעוד Forward Email מציעה דומיינים וכינויים ללא הגבלה, הטמענו הגבלת תעריפים חכמה כדי להגן על המערכת שלנו מפני שימוש לרעה ולהבטיח שימוש הוגן לכל המשתמשים. לדוגמה, לקוחות שאינם ארגוניים יכולים ליצור עד 50+ כינויים ביום, מה שמונע מבסיס הנתונים שלנו להיות ספאם והצפת, ומאפשר לתכונות הניצול וההגנה שלנו בזמן אמת לפעול ביעילות.
+
+```javascript
+// Rate limiter implementation
+const rateLimiter = new RateLimiter({
+  // Configuration settings
+});
+
+// Check rate limits before processing
+const limit = await rateLimiter.get({
+  key: `domain:${domain.id}`,
+  duration: ms('1d')
+});
+
+// Apply appropriate action based on limit status
+if (limit.remaining <= 0) {
+  // Handle rate limit exceeded
+}
+```
+
+גישה מאוזנת זו מספקת לך את הגמישות ליצור כתובות דוא"ל רבות ככל שתצטרך לניהול פרטיות מקיף, תוך שמירה על שלמות וביצועי השירות שלנו עבור כל המשתמשים.
+
+## הצפנה בארגז חול לאבטחה משופרת {#sandboxed-encryption-for-enhanced-security}
+
+גישת ההצפנה הייחודית שלנו בארגז חול מספקת יתרון אבטחה קריטי שמשתמשים רבים מתעלמים ממנו בעת בחירת שירות דוא"ל. בואו נחקור מדוע נתוני ארגז חול, במיוחד דואר אלקטרוני, חשובים כל כך.
+
+שירותים כמו Gmail ו-Proton ככל הנראה משתמשים ב-[מסדי נתונים יחסיים](https://en.wikipedia.org/wiki/Relational_database) משותף, מה שיוצר פגיעות אבטחה בסיסית. בסביבת מסד נתונים משותף, אם מישהו מקבל גישה לנתונים של משתמש אחד, יש לו פוטנציאל לגישה גם לנתונים של משתמשים אחרים. הסיבה לכך היא שכל נתוני המשתמש נמצאים באותן טבלאות מסד נתונים, מופרדים רק על ידי מזהי משתמש או מזהים דומים.
+
+העבר דוא"ל נוקט בגישה שונה מהותית עם ההצפנה שלנו בארגז החול:
+
+1. **בידוד מוחלט**: נתוני כל משתמש מאוחסנים בקובץ מסד נתונים SQLite מוצפן משלו, מבודד לחלוטין ממשתמשים אחרים.
+2. **מפתחות הצפנה עצמאיים**: כל מסד נתונים מוצפן עם מפתח ייחודי משלו הנגזר מסיסמת המשתמש.
+3. **ללא אחסון משותף**: בניגוד למסדי נתונים יחסיים שבהם כל האימיילים של המשתמשים עשויים להיות בטבלת "אימיילים" אחת, הגישה שלנו מבטיחה אי ערבוב נתונים.
+4. **הגנה מעמיקה**: גם אם מסד נתונים של משתמש אחד נפרץ בצורה כלשהי, הוא לא יספק גישה לנתונים של אף משתמש אחר.
+
+גישה זו בארגז חול דומה לאימייל שלך בכספת פיזית נפרדת ולא במתקן אחסון משותף עם מחלקים פנימיים. זהו הבדל ארכיטקטוני מהותי שמשפר באופן משמעותי את הפרטיות והאבטחה שלך.
+
+## עיבוד דוא"ל בזיכרון: אין אחסון בדיסק לפרטיות מרבית {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+
+עבור שירות העברת הדוא"ל שלנו, אנו מעבדים דוא"ל לחלוטין ב-RAM ולעולם לא כותבים אותם לאחסון דיסק או לבסיסי נתונים. גישה זו מספקת הגנה ללא תחרות מפני מעקב דוא"ל ואיסוף מטא נתונים.
+
+להלן מבט פשוט על איך עובד עיבוד הדוא"ל שלנו:
+
+```javascript
+async function onData(stream, _session, fn) {
+  // Store clone of session since it gets modified/destroyed
+  const session = JSON.parse(safeStringify(_session));
+
+  try {
+    // Process the email stream in memory
+    const messageSplitter = new MessageSplitter({
+      maxBytes: MAX_BYTES
+    });
+    stream.pipe(messageSplitter);
+    const body = await getStream.buffer(messageSplitter);
+
+    const { headers } = messageSplitter;
+
+    // Update session object with useful debug info for error logs
+    await updateSession.call(this, body, headers, session);
+
+    // Process the email without storing to disk
+    // [Processing code omitted for brevity]
+
+    // Return success without persisting email data
+    fn();
+  } catch (err) {
+    // Handle errors without storing sensitive information
+    fn(err);
+  }
+}
+```
+
+גישה זו פירושה שגם אם השרתים שלנו היו נפגעים, לא יהיו נתוני דוא"ל היסטוריים לתוקפים לגשת אליהם. המיילים שלך פשוט עוברים במערכת שלנו ומועברים מיד ליעדם מבלי להשאיר עקבות. גישת העברת דוא"ל זו ללא רישום היא בסיסית להגנה על התקשורת שלך מפני מעקב.
+
+## הצפנה מקצה לקצה עם OpenPGP לפרטיות מלאה {#end-to-end-encryption-with-openpgp-for-complete-privacy}
+
+עבור משתמשים הזקוקים לרמת הגנת הפרטיות הגבוהה ביותר מפני מעקב אחר דוא"ל, אנו תומכים ב-[OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) להצפנה מקצה לקצה. בניגוד לספקי דוא"ל רבים הדורשים גשרים או אפליקציות קנייניות, היישום שלנו עובד עם לקוחות דוא"ל סטנדרטיים, מה שהופך תקשורת מאובטחת לנגישה לכולם.
+
+כך אנו מיישמים הצפנת OpenPGP:
+
+```javascript
+async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
+  // [Initial validation code omitted for brevity]
+
+  // Read the public key
+  const pubKey = isArmored
+    ? await openpgp.readKey({
+        armoredKey: tools.prepareArmoredPubKey(pubKeyArmored),
+        config: { tolerant: true }
+      })
+    : pubKeyArmored;
+
+  if (!pubKey) throw new TypeError('Public key does not exist');
+
+  // Perform the actual encryption using OpenPGP
+  const ciphertext = await openpgp.encrypt({
+    message: await openpgp.createMessage({
+      binary: Buffer.concat([Buffer.from(bodyHeaders + '\r\n\r\n'), body])
+    }),
+    encryptionKeys: pubKey,
+    format: 'armored',
+    config: { minRSABits: 1024 }
+  });
+
+  // Format the encrypted message as a proper MIME message
+  // [MIME formatting code omitted for brevity]
+
+  return Buffer.concat([headers, breaker, Buffer.from(text)]);
+}
+```
+
+יישום זה מבטיח שהמיילים שלך מוצפנים לפני שהם עוזבים את המכשיר שלך וניתן לפענח אותם רק על ידי הנמען המיועד, תוך שמירה על פרטיות התקשורת שלך אפילו מאיתנו. זה חיוני להגנה על תקשורת רגישה מפני גישה ומעקב לא מורשית.
+
+## הגנה רב-שכבתית על תוכן לאבטחה מקיפה {#multi-layered-content-protection-for-comprehensive-security}
+
+Forward Email מציעה שכבות מרובות של הגנה על תוכן המופעלות כברירת מחדל כדי לספק אבטחה מקיפה מפני איומים שונים:
+
+1. **הגנה מפני תוכן למבוגרים** - מסנן תוכן לא הולם מבלי לפגוע בפרטיות
+2. **הגנה[פישינג](https://en.wikipedia.org/wiki/Phishing)** - חוסם ניסיונות לגניבת המידע שלך תוך שמירה על אנונימיות
+3. **הגנה מפני קבצים להרצה** - מונעת קבצים מצורפים שעלולים להזיק ללא סריקת תוכן
+4. **הגנה[נגיף](https://en.wikipedia.org/wiki/Computer_virus)** - סורק אחר תוכנות זדוניות באמצעות טכניקות לשמירה על פרטיות
+
+בניגוד לספקים רבים שגורמים להצטרפות לתכונות אלו, גרמנו להם לבטל את הסכמתם, מה שמבטיח שכל המשתמשים ייהנו מההגנות הללו כברירת מחדל. גישה זו משקפת את המחויבות שלנו לפרטיות ולאבטחה, ומספקת איזון ששירותי דוא"ל רבים לא מצליחים להשיג.
+
+## במה אנו שונים משירותי דוא"ל אחרים: יתרון הפרטיות הטכני {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
+
+כאשר משווים העבר דוא"ל לשירותי דוא"ל אחרים, מספר הבדלים טכניים מרכזיים מדגישים את גישת הפרטיות הראשונה שלנו:
+
+### שקיפות בקוד פתוח לפרטיות ניתנת לאימות {#open-source-transparency-for-verifiable-privacy}
+
+בעוד שספקי דוא"ל רבים טוענים שהם קוד פתוח, הם נוטים לשמור על קוד ה-backend שלהם סגור. העברה של דוא"ל היא __מוגנת_LINK_81__ ב-100%, כולל קוד frontend ו-backend כאחד. שקיפות זו מאפשרת ביקורת אבטחה עצמאית של כל הרכיבים, מה שמבטיח שכל אחד יוכל לאמת את טענות הפרטיות שלנו.
+
+### אין נעילת ספק לשמירה על פרטיות ללא פשרות {#no-vendor-lock-in-for-privacy-without-compromise}
+
+ספקי דוא"ל רבים המתמקדים בפרטיות דורשים ממך להשתמש באפליקציות או בגשרים הקנייניים שלהם. Forward Email פועל עם כל תוכנת דוא"ל סטנדרטית דרך הפרוטוקולים [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) ו-[SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), ומעניקים לך את החופש לבחור את תוכנת הדוא"ל המועדפת עליך מבלי להתפשר על הפרטיות.
+
+### נתונים בארגז חול לבידוד אמיתי {#sandboxed-data-for-true-isolation}
+
+בניגוד לשירותים המשתמשים בבסיסי נתונים משותפים שבהם כל הנתונים של המשתמשים מתערבבים, גישת ארגז החול שלנו מבטיחה שהנתונים של כל משתמש מבודדים לחלוטין. ההבדל הארכיטקטוני הבסיסי הזה מספק הבטחות פרטיות חזקות משמעותית ממה שמציעים רוב שירותי הדוא"ל.
+
+### ניידות ובקרה של נתונים {#data-portability-and-control}
+
+אנו מאמינים שהנתונים שלך שייכים לך, וזו הסיבה שאנו מקלים לייצא את המיילים שלך בפורמטים סטנדרטיים (MBOX, EML, SQLite) ובאמת למחוק את הנתונים שלך כשתרצה בכך. רמת שליטה זו נדירה בקרב ספקי דואר אלקטרוני אך חיונית לפרטיות אמיתית.
+
+## האתגרים הטכניים של העברת דוא"ל שמקדמת את הפרטיות {#the-technical-challenges-of-privacy-first-email-forwarding}
+
+בניית שירות דוא"ל ראשון במעלה לפרטיות מגיעה עם אתגרים טכניים משמעותיים. הנה כמה מהמכשולים שהתגברנו עליהם:
+
+### ניהול זיכרון לעיבוד דוא"ל ללא רישום {#memory-management-for-no-logging-email-processing}
+
+עיבוד הודעות דוא"ל בזיכרון ללא אחסון בדיסק דורש ניהול זיכרון קפדני כדי לטפל בכמויות גבוהות של תעבורת דואר אלקטרוני ביעילות. יישמנו טכניקות מתקדמות לאופטימיזציה של זיכרון כדי להבטיח ביצועים אמינים מבלי להתפשר על מדיניות אי-האחסון שלנו, מרכיב קריטי באסטרטגיית הגנת הפרטיות שלנו.
+
+### זיהוי דואר זבל ללא ניתוח תוכן לסינון לשמירה על פרטיות {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
+
+רוב מערכות הזיהוי [ספאם](https://en.wikipedia.org/wiki/Email_spam) מסתמכות על ניתוח תוכן דוא"ל, דבר שסותר את עקרונות הפרטיות שלנו. פיתחנו טכניקות לזיהוי דפוסי ספאם מבלי לקרוא את תוכן הדוא"ל שלך, תוך איזון בין פרטיות לשימושיות תוך שמירה על סודיות התקשורת שלך.
+
+### שמירה על תאימות עם עיצוב שמתמקד בפרטיות {#maintaining-compatibility-with-privacy-first-design}
+
+הבטחת תאימות לכל לקוחות הדוא"ל תוך יישום תכונות פרטיות מתקדמות דרשה פתרונות הנדסיים יצירתיים. הצוות שלנו עבד ללא לאות כדי להפוך את הפרטיות לחלקה, כך שלא תצטרך לבחור בין נוחות ואבטחה בעת הגנה על תקשורת הדוא"ל שלך.
+
+## שיטות עבודה מומלצות לפרטיות עבור משתמשי דוא"ל עתידיים {#privacy-best-practices-for-forward-email-users}
+
+כדי למקסם את ההגנה שלך מפני מעקב דוא"ל ולמקסם את פרטיותך בעת השימוש ב-Forward Email, אנו ממליצים על השיטות המומלצות הבאות:
+
+1. **השתמשו בכינויים ייחודיים עבור שירותים שונים** - צרו כינוי דוא"ל שונה עבור כל שירות שאליו אתם נרשמים כדי למנוע מעקב בין שירותים
+2. **הפעילו הצפנת OpenPGP** - עבור תקשורת רגישה, השתמשו בהצפנה מקצה לקצה כדי להבטיח פרטיות מלאה
+3. **החליפו באופן קבוע את כינויי הדוא"ל שלכם** - עדכנו מעת לעת כינויים עבור שירותים חשובים כדי למזער איסוף נתונים לטווח ארוך
+4. **השתמשו בסיסמאות חזקות וייחודיות** - הגנו על חשבון הדוא"ל שלכם באמצעות סיסמה חזקה כדי למנוע גישה לא מורשית
+5. **הטמיעו אנונימיזציה [כתובת IP](https://en.wikipedia.org/wiki/IP_address)** - שקלו להשתמש ב-[VPN](https://en.wikipedia.org/wiki/Virtual_private_network) בשילוב עם דוא"ל מורשה לאנונימיזציה מוחלטת
+
+## מסקנה: עתיד העברת דוא"ל פרטי {#conclusion-the-future-of-private-email-forwarding}
+
+ב-Forward Email, אנו מאמינים שפרטיות היא לא רק תכונה - זו זכות בסיסית. ההטמעות הטכניות שלנו משקפות אמונה זו, ומספקות לך העברת דוא"ל המכבדת את פרטיותך בכל רמה ומגינה עליך מפני מעקב דוא"ל ואיסוף מטא נתונים.
+
+ככל שאנו ממשיכים לפתח ולשפר את השירות שלנו, המחויבות שלנו לפרטיות נותרת בלתי מעורערת. אנו כל הזמן חוקרים שיטות הצפנה חדשות, בוחנים הגנות פרטיות נוספות ומשכללים את בסיס הקוד שלנו כדי לספק את חוויית האימייל המאובטחת ביותר האפשרית.
+
+על ידי בחירת העבר דוא"ל, אתה לא רק בוחר שירות דוא"ל - אתה תומך בחזון של האינטרנט שבו פרטיות היא ברירת המחדל, לא החריג. הצטרפו אלינו בבניית עתיד דיגיטלי פרטי יותר, מייל אחד בכל פעם.
+
+<!-- *מילות מפתח: העברת דוא"ל פרטית, הגנת פרטיות דוא"ל, שירות דוא"ל מאובטח, דוא"ל בקוד פתוח, הצפנה בטוחה קוונטית, דוא"ל OpenPGP, עיבוד דוא"ל בזיכרון, שירות דוא"ל ללא רישום, הגנה על מטא-נתונים של דוא"ל, פרטיות כותרת דוא"ל, דוא"ל מוצפן מקצה לקצה, דוא"ל שקודם כל פרטיות, העברת דוא"ל אנונימית, שיטות עבודה מומלצות לאבטחת דוא"ל, הגנה על תוכן דוא"ל, הגנה מפני פישינג, סריקת וירוסים בדוא"ל, ספק דוא"ל ממוקד פרטיות, כותרות דוא"ל מאובטחות, יישום פרטיות דוא"ל, הגנה מפני מעקב דוא"ל, העברת דוא"ל ללא רישום, מניעת דליפת מטא-נתונים של דוא"ל, טכניקות לפרטיות דוא"ל, אנונימיזציה של כתובות IP עבור דוא"ל, כינויי דוא"ל פרטיים, אבטחת העברת דוא"ל, פרטיות דוא"ל ממפרסמים, הצפנת דוא"ל עמידה קוונטית, פרטיות דוא"ל ללא פשרות, אחסון דוא"ל של SQLite, הצפנת דוא"ל בארגז חול, ניידות נתונים עבור דוא"ל* -->

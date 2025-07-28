@@ -1,0 +1,50 @@
+# การปฏิบัติตาม GDPR {#gdpr-compliance}
+
+<img กำลังโหลด="ขี้เกียจ" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
+
+## สารบัญ {#table-of-contents}
+
+* [คำนำ](#foreword)
+* [การถ่ายโอนข้อมูลระหว่างประเทศ](#international-data-transfer)
+* [ตัวแทน GDPR](#gdpr-representative)
+  * [ผู้แทนสหภาพยุโรป](#eu-representative)
+  * [ผู้แทนจากสหราชอาณาจักร](#uk-representative)
+
+## คำนำ {#foreword}
+
+Forward Email เป็นบริษัทที่เน้นความเป็นส่วนตัวและมุ่งมั่นที่จะปกป้องข้อมูลของคุณ
+
+[กฎข้อบังคับทั่วไปเกี่ยวกับการคุ้มครองข้อมูล](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") กำกับดูแลการถ่ายโอนข้อมูลนอกสหภาพยุโรปและเขตเศรษฐกิจยุโรป (EU) และมีเป้าหมายเพื่อเสริมสร้างการควบคุมและสิทธิ์ของคุณที่มีต่อข้อมูลส่วนบุคคลของคุณ โชคดีที่เราไม่ขายข้อมูลใดๆ ที่เราประมวลผล จัดเก็บ และ/หรือถ่ายโอน และเราจะไม่ใช้ข้อมูลดังกล่าวเพื่อวัตถุประสงค์อื่นใดนอกจากเพื่อให้บริการแก่คุณ
+
+คุณสามารถแก้ไขข้อมูลส่วนบุคคลของคุณได้ทุกเมื่อที่ [บัญชีของฉัน → โปรไฟล์](/my-account/profile) และลบบัญชีทั้งหมดและข้อมูลที่เกี่ยวข้องทั้งหมดได้ที่ [บัญชีของฉัน → ความปลอดภัย](/my-account/security) เนื่องจากเราเป็นโอเพนซอร์ส 100% ที่ <https://github.com/forwardemail> เราจึงสามารถตรวจสอบซอร์สโค้ดของเราให้สอดคล้องกับกฎหมายความเป็นส่วนตัวได้ตลอดเวลา
+
+[ข้อตกลงการประมวลผลข้อมูล](/dpa) ของเรามีรายละเอียดเกี่ยวกับการปฏิบัติตาม GDPR ของเรา รวมถึงกรอบการทำงาน Privacy Shield ระหว่างสหภาพยุโรปและสหรัฐอเมริกา และระหว่างสวิตเซอร์แลนด์และสหรัฐอเมริกา ในส่วนของความเป็นส่วนตัวของข้อมูลที่ได้รับการประมวลผล จัดเก็บ และถ่ายโอน
+
+เมื่อคุณยอมรับ [เงื่อนไขการบริการ](/terms) ของเรา ถือว่าคุณยอมรับ DPA ของเราโดยอัตโนมัติ และไม่จำเป็นต้องลงนามในเอกสารแยกต่างหาก เราจะพยายามอย่างเต็มที่เพื่อปกป้องข้อมูลส่วนบุคคลทั้งหมดของคุณตาม [นโยบายความเป็นส่วนตัว](/privacy) ของเรา - **ไม่ว่าจะประมวลผล จัดเก็บ และถ่ายโอนข้อมูลในสถานที่ใด** คุณยังสามารถเรียนรู้เพิ่มเติมได้โดยอ่าน [เงื่อนไขการบริการ](/terms) และ [นโยบายความเป็นส่วนตัว](/privacy) ของเรา
+
+## การถ่ายโอนข้อมูลระหว่างประเทศ {#international-data-transfer}
+
+เนื่องจากเราประมวลผล จัดเก็บ และถ่ายโอนข้อมูลระหว่างประเทศ (เช่น อีเมลที่ส่งจากประเทศหนึ่งไปยังอีกประเทศหนึ่ง) จึงเป็นเรื่องสำคัญที่เราต้องเคารพกฎหมายความเป็นส่วนตัวในท้องถิ่นที่บังคับใช้
+
+ด้านล่างนี้คือรายชื่อผู้ให้บริการที่เราใช้งานในการถ่ายโอนข้อมูลระหว่างประเทศและลิงก์ไปยังหน้าเฉพาะของพวกเขาเกี่ยวกับการปฏิบัติตาม GDPR
+
+| ผู้ให้บริการ | [Data Privacy Framework Program](https://www.dataprivacyframework.gov/) ("DPF") ได้รับการรับรอง | หน้าการปฏิบัติตาม GDPR |
+| ----------------------------------------- | :---------------------------------------------------------------------------------------: | ------------------------------------------------- |
+| [Cloudflare](https://cloudflare.com) | :white_check_mark: ใช่ | https://www.cloudflare.com/trust-hub/gdpr/ |
+| [DataPacket](https://www.datapacket.com/) | :x: ไม่ | <https://www.datapacket.com/นโยบายความเป็นส่วนตัว> |
+| [Digital Ocean](https://digitalocean.com) | :x: ไม่ | ลิขสิทธิ์ © 2018 digitalocean.com |
+| [Vultr](https://www.vultr.com) | :x: ไม่ | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| [Stripe](https://stripe.com/) | :white_check_mark: ใช่ | <https://stripe.com/legal/privacy-center> |
+| [PayPal](https://www.paypal.com/us/home) | :x: ไม่ | <https://www.paypal.com/uk/legalhub/privacy-full> |
+
+## ตัวแทน GDPR {#gdpr-representative}
+
+ตาม [มาตรา 27 ของ GDPR](https://gdpr-info.eu/art-27-gdpr/) เรามีตัวแทนรัฐสมาชิกดังรายการด้านล่าง:
+
+### ผู้แทนสหภาพยุโรป {#eu-representative}
+
+บริษัท Osano International Compliance Services Limited<br />ATTN: LFHC<br />3 Dublin Landings<br />North Wall Quay<br />Dublin 1<br />D01C4E0</blockquote>
+
+### ตัวแทนสหราชอาณาจักร {#uk-representative}
+
+<blockquote class="notranslate">Osano UK Compliance LTD<br />ATTN: LFHC<br />42-46 Fountain Street<br />เบลฟาสต์<br />แอนทริม<br />BT1 - 5EF</blockquote>
