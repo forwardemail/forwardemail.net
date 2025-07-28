@@ -43,9 +43,9 @@ if ['/', '/resources', '/about', '/terms', '/about', '/faq', '/private-business-
 
 if !video
   //- og video tag
-  if ['/', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale)
-    - video = "https://www.youtube.com/watch?v=N6zjv40zuIY";
-  else if ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain"
+  //- if ['/', '/private-business-email', ...Object.keys(useCases)].includes(ctx.pathWithoutLocale)
+  //-   - video = "https://www.youtube.com/watch?v=N6zjv40zuIY";
+  if ctx.pathWithoutLocale === "/guides/send-mail-as-gmail-custom-domain"
     //- gmail specific guide
     - video = "https://www.youtube.com/watch?v=MEheS8gM4Xs";
   else if ctx.pathWithoutLocale === "/guides/send-email-with-custom-domain-smtp"

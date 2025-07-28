@@ -6,7 +6,7 @@
 const path = require('node:path');
 
 const I18N = require('@ladjs/i18n');
-const isSANB = require('is-string-and-not-blank');
+// const isSANB = require('is-string-and-not-blank');
 const manifestRev = require('manifest-rev');
 const { parse } = require('node-html-parser');
 
@@ -108,10 +108,7 @@ function fixTableOfContents(content, options) {
   //
   for (const link of root.querySelectorAll('a')) {
     let href = link.getAttribute('href');
-    if (!href) {
-      console.error('link', link, 'content', content, 'options', options);
-      throw new TypeError(`Link does not contain href`);
-    }
+    if (!href) continue;
 
     if (href.startsWith('#')) continue;
     if (href.includes('http://') || href.includes('https://')) {
@@ -559,8 +556,12 @@ module.exports = {
       // replace footnote escaped chars
       string = fixFootnoteReferences(string);
 
+      return fixTableOfContents(markdown.render(string), options);
+
+      /*
       if (typeof options !== 'object' || !isSANB(options.locale))
         return fixTableOfContents(markdown.render(string), options);
+
       return fixTableOfContents(
         i18n.api.t({
           phrase: markdown.render(string),
@@ -568,6 +569,7 @@ module.exports = {
         }),
         options
       );
+      */
     } catch (err) {
       console.error(err);
       throw err;
