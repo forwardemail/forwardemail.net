@@ -5,29 +5,29 @@
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Bevezetés](#introduction)
-* [A Kihívás](#the-challenge)
-* [A Megoldás](#the-solution)
+* [A kihívás](#the-challenge)
+* [A megoldás](#the-solution)
   * [100%-ban nyílt forráskódú architektúra](#100-open-source-architecture)
   * [Adatvédelem-központú tervezés](#privacy-focused-design)
   * [Vállalati szintű biztonság](#enterprise-grade-security)
   * [Fix áras vállalati modell](#fixed-price-enterprise-model)
   * [Fejlesztőbarát API](#developer-friendly-api)
-* [Végrehajtási folyamat](#implementation-process)
+* [Megvalósítási folyamat](#implementation-process)
 * [Eredmények és előnyök](#results-and-benefits)
-  * [Hatékonysági fejlesztések](#efficiency-improvements)
-  * [Költségkezelés](#cost-management)
+  * [Hatékonyságnövelések](#efficiency-improvements)
+  * [Költséggazdálkodás](#cost-management)
   * [Fokozott biztonság](#enhanced-security)
-  * [Továbbfejlesztett felhasználói élmény](#improved-user-experience)
+  * [Javított felhasználói élmény](#improved-user-experience)
 * [Következtetés](#conclusion)
-* [Hivatkozások](#references)
+* [Referenciák](#references)
 
 ## Bevezetés {#introduction}
 
-A [Linux Alapítvány](https://en.wikipedia.org/wiki/Linux_Foundation) több mint 900 nyílt forráskódú projektet kezel több mint 250 domainen, beleértve a [linux.com](https://www.linux.com/) és a [jQuery.com](https://jquery.com/) domaineket is. Ez az esettanulmány azt vizsgálja, hogyan működtek együtt a [E-mail továbbítása](https://forwardemail.net)-vel az e-mail-kezelés egyszerűsítése érdekében, miközben fenntartják az összhangot a nyílt forráskódú elvekkel.
+A [Linux Alapítvány](https://en.wikipedia.org/wiki/Linux_Foundation) több mint 900 nyílt forráskódú projektet kezel több mint 250 domainen, beleértve a [linux.com](https://www.linux.com/) és a [jQuery.com](https://jquery.com/) projekteket is. Ez az esettanulmány azt vizsgálja, hogyan működtek együtt a [E-mail továbbítása](https://forwardemail.net)-mal az e-mail-kezelés egyszerűsítése érdekében, miközben fenntartják az összhangot a nyílt forráskódú elvekkel.
 
 ## A kihívás {#the-challenge}
 
-A Linux Foundation számos e-mail-kezelési kihívással szembesült:
+A Linux Foundation számos e-mail-kezelési kihívással nézett szembe:
 
 * **Méret**: E-mailek kezelése több mint 250, eltérő követelményekkel rendelkező domainen
 * **Adminisztratív terhek**: DNS-rekordok konfigurálása, továbbítási szabályok karbantartása és támogatási kérések megválaszolása
@@ -35,11 +35,11 @@ A Linux Foundation számos e-mail-kezelési kihívással szembesült:
 * **Költség**: A hagyományos felhasználónkénti megoldások megfizethetetlenül drágák voltak a méretükben
 * **Nyílt forráskódú szoftverekhez való igazodás**: Olyan megoldásokra van szükség, amelyek megfelelnek a nyílt forráskódú értékek iránti elkötelezettségüknek
 
-A [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) által a több terjesztési tartományukkal szemben támasztott kihívásokhoz hasonlóan a Linux Foundationnek is olyan megoldásra volt szüksége, amely képes kezelni a különféle projekteket, miközben egységes kezelési megközelítést tart fenn.
+A [Kanonikus/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) által a több terjesztési tartomány miatt tapasztalt kihívásokhoz hasonlóan a Linux Foundationnek is olyan megoldásra volt szüksége, amely képes kezelni a különféle projekteket, miközben egységes kezelési megközelítést tart fenn.
 
 ## A megoldás {#the-solution}
 
-Az e-mail továbbítása átfogó megoldást kínál a legfontosabb jellemzőkkel:
+A Forward Email átfogó megoldást kínált a következő főbb funkciókkal:
 
 ```mermaid
 graph TD
@@ -53,13 +53,13 @@ graph TD
 
 ### 100%-ban nyílt forráskódú architektúra {#100-open-source-architecture}
 
-Mivel a Forward Email az egyetlen olyan e-mail szolgáltatás, amely teljesen nyílt forráskódú platformmal rendelkezik (mind a frontend, mind a backend felületen), tökéletesen illeszkedett a Linux Foundation nyílt forráskódú alapelvek iránti elkötelezettségéhez. A [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) esetében megvalósított megvalósításunkhoz hasonlóan ez az átláthatóság lehetővé tette technikai csapatuk számára, hogy ellenőrizzék a biztonsági megvalósításokat, sőt, fejlesztésekhez is hozzájáruljanak.
+Mivel a Forward Email az egyetlen olyan e-mail szolgáltatás, amely teljesen nyílt forráskódú platformmal rendelkezik (mind a frontend, mind a backend felületen), tökéletesen illeszkedett a Linux Foundation nyílt forráskódú alapelvek iránti elkötelezettségéhez. A [Kanonikus/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) implementációnkhoz hasonlóan ez az átláthatóság lehetővé tette a technikai csapatuk számára, hogy ellenőrizzék a biztonsági megvalósításokat, sőt, fejlesztésekhez is hozzájáruljanak.
 
 ### Adatvédelem-központú tervezés {#privacy-focused-design}
 
-A Forward Email szigorú [adatvédelmi szabályzatok](https://forwardemail.net/privacy) biztonsági előírásai biztosították a Linux Foundation által megkövetelt biztonságot. A mi [e-mail adatvédelem technikai megvalósítás](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) rendszerünk biztosítja, hogy minden kommunikáció biztonságos maradjon a tervezésnek köszönhetően, az e-mailek tartalmának naplózása vagy ellenőrzése nélkül.
+A Forward Email szigorú [adatvédelmi irányelvek](https://forwardemail.net/privacy) tulajdonsága biztosította a Linux Foundation által megkövetelt biztonságot. A [e-mail adatvédelem technikai megvalósítása](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) tulajdonságunk biztosítja, hogy minden kommunikáció a tervezésnek megfelelően biztonságos maradjon, az e-mailek tartalmának naplózása vagy vizsgálata nélkül.
 
-A műszaki megvalósítási dokumentációnk szerint:
+Amint azt a technikai megvalósítási dokumentációnkban részletezzük:
 
 > „A teljes rendszerünket arra az elvre építettük, hogy az e-mailjeid csakis a tiéid. Más szolgáltatókkal ellentétben, akik hirdetések vagy mesterséges intelligencia-képzés céljából szkennelik az e-mail tartalmakat, mi szigorú naplózásmentes és szkennelésmentes szabályzatot tartunk fenn, amely megőrzi az összes kommunikáció bizalmasságát.”
 
@@ -69,11 +69,11 @@ A [kvantum-rezisztens titkosítás](https://forwardemail.net/blog/docs/best-quan
 
 ### Fix áras vállalati modell {#fixed-price-enterprise-model}
 
-A Forward Email [vállalati árképzés](https://forwardemail.net/pricing) megoldása fix havi költséget biztosított a domainektől vagy a felhasználóktól függetlenül. Ez a megközelítés jelentős költségmegtakarítást eredményezett más nagyvállalatok számára, amint azt a [egyetemi öregdiák email esettanulmány](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) példánk is mutatja, ahol az intézmények akár 99%-ot is megtakaríthattak a hagyományos, felhasználónkénti e-mail megoldásokhoz képest.
+A Forward Email [vállalati árképzés](https://forwardemail.net/pricing) megoldása fix havi költséget biztosított a domainektől vagy a felhasználóktól függetlenül. Ez a megközelítés jelentős költségmegtakarítást eredményezett más nagyvállalatok számára, amint azt a [egyetemi öregdiákok e-mail esettanulmánya](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) megoldásunk is mutatja, ahol az intézmények akár 99%-ot is megtakaríthattak a hagyományos, felhasználónkénti e-mail megoldásokhoz képest.
 
 ### Fejlesztőbarát API {#developer-friendly-api}
 
-Egy [README-első megközelítés](https://tom.preston-werner.com/2010/08/23/readme-driven-development) után és a [A Stripe RESTful API kialakítása](https://amberonrails.com/building-stripes-api) által inspirálva a Forward Email [API](https://forwardemail.net/api) rendszere mély integrációt tett lehetővé a Linux Foundation Projektirányító Központjával. Ez az integráció kulcsfontosságú volt az e-mail-kezelés automatizálásához a sokszínű projektportfóliójukon belül.
+Egy [README-első megközelítés](https://tom.preston-werner.com/2010/08/23/readme-driven-development) utasítást követően és a [A Stripe RESTful API-tervezése](https://amberonrails.com/building-stripes-api) utasítás ihlette a Forward Email [API](https://forwardemail.net/api) utasítása mély integrációt tett lehetővé a Linux Foundation Projektirányító Központjával. Ez az integráció kulcsfontosságú volt az e-mail-kezelés automatizálásához a sokszínű projektportfóliójukon.
 
 ## Megvalósítási folyamat {#implementation-process}
 
@@ -99,7 +99,7 @@ flowchart LR
 
 3. **Egyedi funkciók fejlesztése**: Több domain kezelése, jelentéskészítés, biztonsági szabályzatok
 
-Szorosan együttműködtünk a Linux Foundationnel, hogy kifejezetten a többprojektes környezetükhöz illő funkciókat fejlesszünk ki (amelyek ráadásul 100%-ban nyílt forráskódúak, így mindenki profitálhat belőlük), hasonlóan ahhoz, ahogyan a [egyetemi öregdiákok levelezőrendszerei](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) számára készítettünk egyedi megoldásokat.
+Szorosan együttműködtünk a Linux Foundationnel, hogy kifejezetten a többprojektes környezetükhöz tartozó funkciókat fejlesszünk ki (amelyek ráadásul 100%-ban nyílt forráskódúak, így mindenki profitálhat belőlük), hasonlóan ahhoz, ahogyan a [egyetemi öregdiák e-mail rendszerek](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) számára készítettünk egyedi megoldásokat.
 
 ## Eredmények és előnyök {#results-and-benefits}
 
@@ -111,18 +111,18 @@ A megvalósítás jelentős előnyökkel járt:
 * Gyorsabb projektbevezetés (napokról percekre)
 * Mind a 250+ domain egyszerűsített kezelése egyetlen felületről
 
-### Költséggazdálkodás {#cost-management}
+### Költségkezelés {#cost-management}
 
 * Fix árak a domainek vagy felhasználók számának növekedésétől függetlenül
 * A felhasználónkénti licencdíjak eltörlése
-* A [egyetemi esettanulmány](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) megoldásunkhoz hasonlóan a Linux Foundation jelentős költségmegtakarítást ért el a hagyományos megoldásokhoz képest
+* A [egyetemi esettanulmány](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)-hoz hasonlóan a Linux Foundation jelentős költségmegtakarítást ért el a hagyományos megoldásokhoz képest
 
 ### Fokozott biztonság {#enhanced-security}
 
 * Kvantumálló titkosítás minden domainen
 * Átfogó e-mail hitelesítés a hamisítás és az adathalászat megakadályozására
 * Biztonsági tesztelés és gyakorlatok a [biztonsági funkciók](https://forwardemail.net/security) segítségével
-* Adatvédelem a [műszaki megvalósítás](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) segítségével
+* Adatvédelem a [technikai megvalósítás](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) segítségével
 
 ### Továbbfejlesztett felhasználói élmény {#improved-user-experience}
 
@@ -132,13 +132,13 @@ A megvalósítás jelentős előnyökkel járt:
 
 ## Következtetés {#conclusion}
 
-A Linux Foundation és a Forward Email együttműködése bemutatja, hogy a szervezetek hogyan tudnak megoldani összetett e-mail-kezelési kihívásokat, miközben megtartják az alapvető értékeikhez való igazodást. A nyílt forráskódú elveket, az adatvédelmet és a biztonságot előnyben részesítő megoldás kiválasztásával a Linux Foundation adminisztratív teherből stratégiai előnnyé változtatta az e-mail-kezelést.
+A Linux Foundation és a Forward Email partnersége jól mutatja, hogyan tudják a szervezetek kezelni az összetett e-mail-kezelési kihívásokat, miközben összhangban vannak alapvető értékeikkel. Egy olyan megoldás kiválasztásával, amely a nyílt forráskódú alapelveket, az adatvédelmet és a biztonságot helyezi előtérbe, a Linux Foundation az e-mail-kezelést adminisztratív teherből stratégiai előnnyé alakította.
 
-Amint azt a [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) és a [jelentős egyetemek](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) megoldásokkal végzett munkánk is mutatja, a komplex domainportfólióval rendelkező szervezetek jelentős javulást érhetnek el a hatékonyság, a biztonság és a költséggazdálkodás terén a Forward Email vállalati megoldásával.
+Amint azt a [Kanonikus/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) és a [nagyobb egyetemek](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) megoldásokkal végzett munkánk is mutatja, az összetett domainportfólióval rendelkező szervezetek jelentős javulást érhetnek el a hatékonyság, a biztonság és a költséggazdálkodás terén a Forward Email vállalati megoldásával.
 
-Ha többet szeretne megtudni arról, hogyan segítheti szervezete a több domainen keresztüli e-mail-kezelést az E-mail továbbítása funkcióval, látogasson el a [forwardemail.net](https://forwardemail.net) oldalra, vagy tekintse meg a részletes [dokumentáció](https://forwardemail.net/email-api) és [útmutatók](https://forwardemail.net/guides) oldalainkat.
+Ha további információra van szüksége arról, hogy az E-mail továbbítása hogyan segíthet szervezetének a több domainen keresztüli e-mailek kezelésében, látogasson el a [forwardemail.net](https://forwardemail.net) oldalra, vagy tekintse meg a részletes [dokumentáció](https://forwardemail.net/email-api) és [útmutatók](https://forwardemail.net/guides) dokumentumokat.
 
-## Hivatkozások {#references}
+## Referenciák {#references}
 
-* Linux Foundation. (2025). „Projektek böngészése.” Elérhető: <https://www.linuxfoundation.org/projects>
-* Wikipédia. (2025). „Linux Foundation.” Elérhető: <https://en.wikipedia.org/wiki/Linux_Foundation>
+* Linux Foundation. (2025). „Projektek böngészése.” Letöltve innen: <https://www.linuxfoundation.org/projects>
+* Wikipédia. (2025). „Linux Foundation.” Letöltve innen: <https://en.wikipedia.org/wiki/Linux_Foundation>

@@ -4,29 +4,29 @@
 
 * [Komme i gang](#getting-started)
 * [Krav](#requirements)
-  * [Cloud-init / Bruker-data](#cloud-init--user-data)
+  * [Cloud-initiering / Brukerdata](#cloud-init--user-data)
 * [Installer](#install)
-  * [Feilsøke installasjonsskript](#debug-install-script)
-  * [Forespørsler](#prompts)
-  * [Første oppsett (alternativ 1)](#initial-setup-option-1)
+  * [Feilsøkingsskript for installasjon](#debug-install-script)
+  * [Leder](#prompts)
+  * [Førstegangsoppsett (alternativ 1)](#initial-setup-option-1)
 * [Tjenester](#services)
   * [Viktige filstier](#important-file-paths)
 * [Konfigurasjon](#configuration)
-  * [Innledende DNS-oppsett](#initial-dns-setup)
+  * [Første DNS-oppsett](#initial-dns-setup)
 * [Onboarding](#onboarding)
 * [Testing](#testing)
   * [Oppretter ditt første alias](#creating-your-first-alias)
-  * [Sender/mottar din første e-post](#sending--receiving-your-first-email)
+  * [Sende/motta din første e-post](#sending--receiving-your-first-email)
 * [Feilsøking](#troubleshooting)
-  * [Hva er det grunnleggende autentiske brukernavnet og passordet](#what-is-the-basic-auth-username-and-password)
+  * [Hva er det grunnleggende brukernavnet og passordet for autentisering](#what-is-the-basic-auth-username-and-password)
   * [Hvordan vet jeg hva som kjører](#how-do-i-know-what-is-running)
-  * [Hvordan vet jeg at det er noe som ikke kjører](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [Hvordan vet jeg om noe som burde kjører ikke](#how-do-i-know-if-something-isnt-running-that-should-be)
   * [Hvordan finner jeg logger](#how-do-i-find-logs)
-  * [Hvorfor tar de utgående e-postene mine timeout](#why-are-my-outgoing-emails-timing-out)
+  * [Hvorfor går tidsgrensen for utgående e-poster](#why-are-my-outgoing-emails-timing-out)
 
 ## Komme i gang {#getting-started}
 
-Vår selvhostede e-postløsning, som alle produktene våre, er 100 % åpen kildekode – både frontend og backend. Dette betyr:
+Vår selvhostede e-postløsning, som alle våre produkter, er 100 % åpen kildekode – både frontend og backend. Dette betyr:
 
 1. **Fullstendig åpenhet**: Hver kodelinje som behandler e-postene dine er tilgjengelig for offentlig gransking.
 2. **Bidrag fra fellesskapet**: Alle kan bidra med forbedringer eller fikse problemer.
@@ -45,37 +45,37 @@ Arkitekturen inkluderer containere for:
 * SQLite for sikker, kryptert postkasselagring
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+> Sørg for å sjekke ut vår [selvhostet blogg](https://forwardemail.net/blog/docs/self-hosted-solution)
 >
-> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Og for de som er interessert i en mer detaljert trinnvis versjon, se våre [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)- eller [Debian](https://forwardemail.net/guides/selfhosted-on-debian)-baserte veiledninger.
 
 ## Krav {#requirements}
 
-Før du kjører installasjonsskriptet, sørg for at du har følgende:
+Før du kjører installasjonsskriptet, må du sørge for at du har følgende:
 
 * **Operativsystem**: En Linux-basert server (støtter for øyeblikket Ubuntu 22.04+).
 * **Ressurser**: 1 vCPU og 2 GB RAM
 * **Root-tilgang**: Administratorrettigheter for å utføre kommandoer.
 * **Domenenavn**: Et tilpasset domene klart for DNS-konfigurasjon.
-* **Ren IP**: Sørg for at serveren din har en ren IP-adresse uten tidligere spam-rykte ved å sjekke svartelister. Mer informasjon [her](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* **Ren IP**: Sørg for at serveren din har en ren IP-adresse uten tidligere spam-rykte ved å sjekke svartelister. Mer informasjon: [her](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
 * Offentlig IP-adresse med støtte for port 25
 * Mulighet for å angi [omvendt PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
 * Støtte for IPv4 og IPv6
 
 > \[!TIP]
-> See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
+> Se listen vår over [fantastiske leverandører av e-postservere](https://github.com/forwardemail/awesome-mail-server-providers)
 
 ### Skyinitiering / Brukerdata {#cloud-init--user-data}
 
-De fleste skyleverandører støtter en sky-init-konfigurasjon for når den virtuelle private serveren (VPS) er klargjort. Dette er en fin måte å sette noen filer og miljøvariabler på på forhånd for bruk av skriptets innledende oppsettlogikk som vil omgå behovet for å spørre mens skriptet kjører for ytterligere informasjon.
+De fleste skyleverandører støtter en skyinitieringskonfigurasjon for når den virtuelle private serveren (VPS) klargjøres. Dette er en fin måte å angi noen filer og miljøvariabler på forhånd for bruk av skriptets første oppsettlogikk, noe som vil omgå behovet for å spørre om tilleggsinformasjon mens skriptet kjører.
 
 **Alternativer**
 
-* `EMAIL` - e-post brukt for påminnelser om utløp av certbot
+* `EMAIL` - e-post brukt for påminnelser om utløp av Certbot
 * `DOMAIN` - tilpasset domene (f.eks. `example.com`) brukt for oppsett av selvhosting
 * `AUTH_BASIC_USERNAME` - brukernavn brukt ved første gangs oppsett for å beskytte nettstedet
 * `AUTH_BASIC_PASSWORD` - passord brukt ved første gangs oppsett for å beskytte nettstedet
-* `/root/.cloudflare.ini` - (**Kun Cloudflare-brukere**) Cloudflare-konfigurasjonsfil brukt av certbot for DNS-konfigurasjon. Det krever at du angir API-tokenet ditt via `dns_cloudflare_api_token`. Les mer [her](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+* `/root/.cloudflare.ini` - (**Kun Cloudflare-brukere**) Cloudflare-konfigurasjonsfil brukt av Certbot for DNS-konfigurasjon. Det krever at du angir API-tokenet ditt via `dns_cloudflare_api_token`. Les mer om [her](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 
 Eksempel:
 
@@ -104,7 +104,7 @@ Kjør følgende kommando på serveren din for å laste ned og kjøre installasjo
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Feilsøkingsskript for installasjon {#debug-install-script}
+### Feilsøking av installasjonsskript {#debug-install-script}
 
 Legg til `DEBUG=true` foran installasjonsskriptet for detaljert utdata:
 
@@ -127,54 +127,54 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 * **Første oppsett**: Last ned den nyeste koden for videresending av e-post, konfigurer miljøet, spør etter ditt egendefinerte domene og konfigurer alle nødvendige sertifikater, nøkler og hemmeligheter.
 * **Konfigurer sikkerhetskopiering**: Vil sette opp en cron for å sikkerhetskopiere mongoDB og redis ved hjelp av et S3-kompatibelt lager for sikker, ekstern lagring. Sqlite vil bli sikkerhetskopiert separat ved innlogging hvis det er endringer for sikre, krypterte sikkerhetskopier.
 * **Konfigurer oppgradering**: Konfigurer en cron for å se etter nattlige oppdateringer som trygt vil gjenoppbygge og starte infrastrukturkomponenter på nytt.
-* **Forny sertifikater**: Certbot / lets encrypt brukes for SSL-sertifikater, og nøklene utløper hver tredje måned. Dette vil fornye sertifikatene for domenet ditt og plassere dem i den nødvendige mappen for relaterte komponenter å forbruke. Se [viktige filstier](#important-file-paths)
+* **Forny sertifikater**: Certbot / lets encrypt brukes for SSL-sertifikater, og nøklene utløper hver tredje måned. Dette vil fornye sertifikatene for domenet ditt og plassere dem i den nødvendige mappen for relaterte komponenter å bruke. Se [viktige filstier](#important-file-paths)
 * **Gjenopprett fra sikkerhetskopi**: Vil utløse mongodb og redis for å gjenopprette fra sikkerhetskopidata.
 
 ### Førstegangsoppsett (alternativ 1) {#initial-setup-option-1}
 
 Velg alternativet `1. Initial setup` for å begynne.
 
-Når det er fullført, skal du se en suksessmelding. Du kan til og med kjøre `docker ps` for å se komponentene spunnet opp. Mer informasjon om komponentene nedenfor.
+Når det er fullført, skal du se en suksessmelding. Du kan til og med kjøre `docker ps` for å se komponentene starte opp. Mer informasjon om komponentene nedenfor.
 
 ## Tjenester {#services}
 
-| Tjenestenavn | Standard port | Beskrivelse |
+| Tjenestenavn | Standardport | Beskrivelse |
 | ------------ | :----------: | ------------------------------------------------------ |
-| Web | `443` | Webgrensesnitt for alle admin-interaksjoner |
-| API | `4000` | Api-lag til abstrakte databaser |
+| Nett | `443` | Nettgrensesnitt for alle administratorinteraksjoner |
+| API | `4000` | API-lag til abstrakte databaser |
 | Bree | Ingen | Bakgrunnsjobb og oppgaveløper |
 | SMTP | `465/587` | SMTP-server for utgående e-post |
-| SMTP Bree | Ingen | SMTP bakgrunnsjobb |
-| MX | `2525` | E-postutveksling for innkommende e-post og videresending av e-post |
-| IMAP | `993/2993` | IMAP-server for innkommende e-post og postboksadministrasjon |
-| POP3 | `995/2995` | POP3-server for innkommende e-post og postboksadministrasjon |
-| SQLite | `3456` | SQLite-server for interaksjoner med sqlite-database(r) |
-| SQLite Bree | Ingen | SQLite bakgrunnsjobb |
+| SMTP Bree | Ingen | SMTP-bakgrunnsjobb |
+| MX | `2525` | Postutveksling for innkommende e-post og videresending av e-post |
+| IMAP | `993/2993` | IMAP-server for innkommende e-post og postkasseadministrasjon |
+| POP3 | `995/2995` | POP3-server for innkommende e-post og postkasseadministrasjon |
+| SQLite | `3456` | SQLite-server for interaksjoner med SQLite-database(r) |
+| SQLite Bree | Ingen | SQLite-bakgrunnsjobb |
 | CalDAV | `5000` | CalDAV-server for kalenderadministrasjon |
 | CardDAV | `6000` | CardDAV-server for kalenderadministrasjon |
-| MongoDB | `27017` | MongoDB-database for det meste av databehandling |
-| Redis | `6379` | Redis for caching og tilstandsstyring |
+| MongoDB | `27017` | MongoDB-database for mesteparten av datahåndteringen |
+| Redis | `6379` | Redis for mellomlagring og tilstandsadministrasjon |
 | SQLite | Ingen | SQLite-database(r) for krypterte postbokser |
 
 ### Viktige filstier {#important-file-paths}
 
 Merk: *Vertsbanen* nedenfor er relativ til `/root/forwardemail.net/self-hosting/`.
 
-| Komponent | Vertsbane | Containerbane |
+| Komponent | Vertssti | Beholderbane |
 | ---------------------- | :-------------------: | ---------------------------- |
 | MongoDB | `./mongo-backups` | `/backups` |
 | Redis | `./redis-data` | `/data` |
 | Sqlite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| Env-fil | `./.env` | `/app/.env` |
-| SSL-sertifikater/nøkler | `./ssl` | `/app/ssl/` |
+| Konvoluttfil | `./.env` | `/app/.env` |
+| SSL-sertifikater/-nøkler | `./ssl` | `/app/ssl/` |
 | Privat nøkkel | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| Full kjedesertifikat | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| CA-sertifikater | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
-| DKIM privat nøkkel | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
+| Fullt kjedesertifikat | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
+| Sertifiserte CA-er | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
+| DKIM privatnøkkel | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
 
 > \[!IMPORTANT]
-> Save the `.env` file securely. It is critical for recovery in case of failure.
-> You can find this in `/root/forwardemail.net/self-hosting/.env`.
+> Lagre `.env`-filen på en sikker måte. Den er avgjørende for gjenoppretting ved feil.
+> Du finner denne i `/root/forwardemail.net/self-hosting/.env`.
 
 ## Konfigurasjon {#configuration}
 
@@ -184,25 +184,25 @@ Konfigurer de riktige DNS-oppføringene i din valgte DNS-leverandør. Vær oppme
 
 | Type | Navn | Innhold | TTL |
 | ----- | ------------------ | ----------------------------- | ---- |
-| A | "@", ".", eller blankt | <ip_adresse> | auto |
-| CNAME | api | <domenenavn> | auto |
-| CNAME | caldav | <domenenavn> | auto |
-| CNAME | carddav | <domenenavn> | auto |
-| CNAME | fe-spretter | <domenenavn> | auto |
-| CNAME | imap | <domenenavn> | auto |
-| CNAME | mx | <domenenavn> | auto |
-| CNAME | pop3 | <domenenavn> | auto |
-| CNAME | smtp | <domenenavn> | auto |
-| MX | "@", ".", eller blankt | mx.<domenenavn> (prioritet 0) | auto |
-| TXT | "@", ".", eller blankt | "v=spf1 a -all" | auto |
+| A | "@", ".", eller blankt | <ip_adresse> | bil |
+| CNAME | API | <domenenavn> | bil |
+| CNAME | caldav | <domenenavn> | bil |
+| CNAME | carddav | <domenenavn> | bil |
+| CNAME | fe-spretter | <domenenavn> | bil |
+| CNAME | imap | <domenenavn> | bil |
+| CNAME | mx | <domenenavn> | bil |
+| CNAME | pop3 | <domenenavn> | bil |
+| CNAME | smtp | <domenenavn> | bil |
+| MX | "@", ".", eller blankt | mx.<domenenavn> (prioritet 0) | bil |
+| TXT | "@", ".", eller blankt | "v=spf1 a -all" | bil |
 
 #### Omvendt DNS-/PTR-oppføring {#reverse-dns--ptr-record}
 
-Reverse DNS (rDNS) eller reverse pointer records (PTR-poster) er avgjørende for e-postservere fordi de hjelper til med å bekrefte legitimiteten til serveren som sender e-posten. Hver skyleverandør gjør dette forskjellig, så du må slå opp hvordan du legger til "Reverse DNS" for å kartlegge verten og IP-en til dets tilsvarende vertsnavn. Mest sannsynlig i nettverksdelen til leverandøren.
+Omvendt DNS (rDNS) eller reverse pointer-poster (PTR-poster) er viktige for e-postservere fordi de bidrar til å bekrefte legitimiteten til serveren som sender e-posten. Hver skyleverandør gjør dette forskjellig, så du må slå opp hvordan du legger til "Omvendt DNS" for å tilordne verten og IP-adressen til det tilsvarende vertsnavnet. Mest sannsynlig i nettverksdelen av leverandøren.
 
 #### Port 25 blokkert {#port-25-blocked}
 
-Noen Internett-leverandører og skyleverandører blokkerer 25 for å unngå dårlige aktører. Det kan hende du må sende inn en støttebillett for å åpne port 25 for SMTP / utgående e-post.
+Noen internettleverandører og skyleverandører blokkerer port 25 for å unngå skadelige aktører. Du må kanskje sende inn en supportforespørsel for å åpne port 25 for SMTP / utgående e-post.
 
 ## Onboarding {#onboarding}
 
@@ -221,7 +221,7 @@ Naviger til https\://\<domenenavn>, og erstatt \<domenenavn> med domenet som er 
 * Du kan eventuelt konfigurere **SMTP for utgående e-post** i **Domeneinnstillingene**. Dette krever flere DNS-oppføringer.
 
 > \[!NOTE]
-> No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
+> Ingen informasjon sendes utenfor serveren din. Alternativet for selvhosting og den første kontoen er kun for administratorinnlogging og nettvisning for å administrere domener, aliaser og relaterte e-postkonfigurasjoner.
 
 ## Testing {#testing}
 
@@ -259,18 +259,18 @@ Brukernavn: `<alias name>`
 
 | Type | Vertsnavn | Havn | Tilkoblingssikkerhet | Autentisering |
 | ---- | ------------------ | ---- | ------------------- | --------------- |
-| SMTP | smtp.<domenenavn> | 465 | SSL / TLS | Normalt passord |
-| IMAP | imap.<domenenavn> | 993 | SSL / TLS | Normalt passord |
+| SMTP | smtp.<domenenavn> | 465 | SSL / TLS | Vanlig passord |
+| IMAP | imap.<domenenavn> | 993 | SSL / TLS | Vanlig passord |
 
-### Sende/motta din første e-post {#sending--receiving-your-first-email}
+### Sender/mottar din første e-post {#sending--receiving-your-first-email}
 
-Når du er konfigurert, bør du kunne sende og motta e-post til din nyopprettede og selvverterte e-postadresse!
+Når du er konfigurert, skal du kunne sende og motta e-post til den nyopprettede og selvhostede e-postadressen din!
 
 ## Feilsøking {#troubleshooting}
 
 #### Hvorfor fungerer ikke dette utenfor Ubuntu og Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Vi ser for tiden etter støtte for MacOS, og vil se etter andre. Vennligst åpne en [diskusjon](https://github.com/orgs/forwardemail/discussions) eller bidra hvis du ønsker at andre skal få støtte.
+Vi ser for tiden etter støtte for MacOS, og vil se etter andre. Åpne en [diskusjon](https://github.com/orgs/forwardemail/discussions) eller bidra hvis du ønsker at andre skal få støtte.
 
 #### Hvorfor mislykkes certbot acme-utfordringen {#why-is-the-certbot-acme-challenge-failing}
 
@@ -285,17 +285,17 @@ Det er også mulig at DNS-forplantningen ikke er fullført. Du kan bruke verktø
 
 Et annet alternativ er å bruke de automatiserte Cerbot DNS-endringene ved å sette `/root/.cloudflare.ini`-filen med API-tokenet i cloud-init / user-data ved første VPS-oppsett, eller opprette denne filen og kjøre skriptet på nytt. Dette vil administrere DNS-endringene og utfordre oppdateringer automatisk.
 
-### Hva er det grunnleggende brukernavnet og passordet for autentisering {#what-is-the-basic-auth-username-and-password}
+### Hva er det grunnleggende brukernavnet og passordet for godkjenning {#what-is-the-basic-auth-username-and-password}
 
-For selvhosting legger vi til et popup-vindu for autentisering av nettleseren for første gang, med et enkelt brukernavn (`admin`) og passord (tilfeldig generert ved første oppsett). Vi legger kun til dette som en beskyttelse i tilfelle automatisering/skraping på en eller annen måte kommer deg i forkjøpet når du registrerer deg på nett. Du finner dette passordet etter første oppsett i `.env`-filen din under `AUTH_BASIC_USERNAME` og `AUTH_BASIC_PASSWORD`.
+For selvhosting legger vi til et popup-vindu for førstegangs autentisering av nettleseren med et enkelt brukernavn (`admin`) og passord (tilfeldig generert ved første oppsett). Vi legger kun til dette som en beskyttelse i tilfelle automatisering/skraping på en eller annen måte foregriper deg når du registrerer deg på nett. Du finner dette passordet etter første oppsett i `.env`-filen under `AUTH_BASIC_USERNAME` og `AUTH_BASIC_PASSWORD`.
 
 ### Hvordan vet jeg hva som kjører {#how-do-i-know-what-is-running}
 
 Du kan kjøre `docker ps` for å se alle de kjørende containerne som spinnes opp fra `docker-compose-self-hosting.yml`-filen. Du kan også kjøre `docker ps -a` for å se alt (inkludert containere som ikke kjører).
 
-### Hvordan vet jeg om noe som burde kjøre ikke {#how-do-i-know-if-something-isnt-running-that-should-be}
+### Hvordan vet jeg om noe som ikke kjører, men som burde være {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-Du kan kjøre `docker ps -a` for å se alt (inkludert containere som ikke kjører). Du kan se en exit-logg eller et notat.
+Du kan kjøre `docker ps -a` for å se alt (inkludert containere som ikke kjører). Du kan se en avslutningslogg eller et notat.
 
 ### Hvordan finner jeg logger {#how-do-i-find-logs}
 
@@ -303,10 +303,10 @@ Du kan få flere logger via `docker logs -f <container_name>`. Hvis noe ble avsl
 
 I nettgrensesnittet kan du se `/admin/emails` og `/admin/logs` for henholdsvis utgående e-postlogger og feillogger.
 
-### Hvorfor får jeg tidsavbrudd for utgående e-poster? {#why-are-my-outgoing-emails-timing-out}
+### Hvorfor får jeg utgående e-poster tidsavbrudd {#why-are-my-outgoing-emails-timing-out}
 
-Hvis du ser en melding som Tidsavbrudd for tilkobling når du kobler til MX-serveren... så må du kanskje sjekke om port 25 er blokkert. Det er vanlig at Internett-leverandører eller skyleverandører blokkerer dette som standard, der du kanskje må kontakte support/file en billett for å få dette åpnet.
+Hvis du ser en melding som «Tilkoblingen ble tidsavbrutt ved tilkobling til MX-server...», må du kanskje sjekke om port 25 er blokkert. Det er vanlig at internettleverandører eller skyleverandører blokkerer dette som standard, og du må kanskje kontakte kundestøtte/sende inn en sak for å få dette åpnet.
 
 #### Hvilke verktøy bør jeg bruke for å teste beste praksis for e-postkonfigurasjon og IP-omdømme {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-Ta en titt på vår [FAQ her](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).
+Ta en titt på vår [Vanlige spørsmål her](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).

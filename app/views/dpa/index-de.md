@@ -55,16 +55,16 @@
 | <strong>Sicherheitsrichtlinie</strong> | [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) anzeigen |
 | <strong>Regierender Staat</strong> | Der Staat Delaware, USA |
 
-## Änderungen der Vereinbarung {#changes-to-the-agreement}
+## Änderungen an der Vereinbarung {#changes-to-the-agreement}
 
 Dieses Dokument ist eine Ableitung von [Gemeinsame Standardbedingungen für das DPA-Papier (Version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) und es wurden die folgenden Änderungen vorgenommen:
 
-1. [Geltendes Recht und Gerichtsstand](#11-governing-law-and-chosen-courts) wurde unten als Abschnitt mit dem oben angegebenen `Governing State` eingefügt.
+1. [Geltendes Recht und Gerichtsstand](#11-governing-law-and-chosen-courts) wurde unten als Abschnitt mit dem oben genannten `Governing State` eingefügt.
 2. [Dienstanbieterbeziehung](#12-service-provider-relationship) wurde unten als Abschnitt eingefügt.
 
-## 1. Beziehungen zwischen Auftragsverarbeitern und Unterauftragsverarbeitern {#1-processor-and-subprocessor-relationships}
+## 1. Prozessor- und Subprozessorbeziehungen {#1-processor-and-subprocessor-relationships}
 
-### 1. Anbieter als Auftragsverarbeiter {#1-provider-as-processor}
+### 1. Anbieter als Verarbeiter {#1-provider-as-processor}
 
 In Situationen, in denen der <strong>Kunde</strong> ein Verantwortlicher für die personenbezogenen Daten des Kunden ist, wird der <strong>Anbieter</strong> als Verarbeiter betrachtet, der personenbezogene Daten im Auftrag des <strong>Kunden</strong> verarbeitet.
 
@@ -78,7 +78,7 @@ In Situationen, in denen der <strong>Kunde</strong> ein Verarbeiter der personen
 
 Anhang I(B) auf dem Deckblatt beschreibt Gegenstand, Art, Zweck und Dauer dieser Verarbeitung sowie die <strong>Kategorien der erfassten personenbezogenen Daten</strong> und die <strong>Kategorien der betroffenen Personen</strong>.
 
-### 2. Verarbeitungshinweise {#2-processing-instructions}
+### 2. Verarbeitungsanweisungen {#2-processing-instructions}
 
 Der <strong>Kunde</strong> weist den <strong>Anbieter</strong> an, personenbezogene Daten des Kunden zu verarbeiten: (a) um den Dienst bereitzustellen und aufrechtzuerhalten; (b) wie durch die Nutzung des Dienstes durch den <strong>Kunden</strong> näher spezifiziert; (c) wie in der <strong>Vereinbarung</strong> dokumentiert; und (d) wie in anderen schriftlichen Anweisungen des <strong>Kunden</strong> dokumentiert, die vom <strong>Anbieter</strong> zur Verarbeitung personenbezogener Daten des Kunden im Rahmen dieser DPA erteilt und bestätigt wurden. Der <strong>Anbieter</strong> wird diese Anweisungen befolgen, sofern ihm dies nicht durch geltende Gesetze untersagt ist. Der <strong>Anbieter</strong> wird den <strong>Kunden</strong> unverzüglich informieren, falls er den Verarbeitungsanweisungen nicht folgen kann. Der <strong>Kunde</strong> hat nur Anweisungen erteilt und wird dies auch weiterhin tun, wenn diese den geltenden Gesetzen entsprechen.
 
@@ -94,7 +94,7 @@ Ist der Kunde Auftragsverarbeiter und der Anbieter Unterauftragsverarbeiter, ver
 
 Der <strong>Kunde</strong> hat alle geltenden Datenschutzgesetze hinsichtlich der Bereitstellung personenbezogener Kundendaten an den <strong>Anbieter</strong> und/oder den Dienst eingehalten und wird dies auch weiterhin tun. Dies umfasst die Vornahme aller Offenlegungen, die Einholung aller Einwilligungen, die Bereitstellung angemessener Auswahlmöglichkeiten und die Umsetzung der gemäß den geltenden Datenschutzgesetzen erforderlichen Sicherheitsvorkehrungen.
 
-### 6. Unterauftragsverarbeiter {#6-subprocessors}
+### 6. Unterprozessoren {#6-subprocessors}
 
 a. Der <strong>Anbieter</strong> stellt keine personenbezogenen Daten des Kunden einem Unterauftragsverarbeiter zur Verfügung, überträgt sie oder händigt sie diesem aus, es sei denn, der <strong>Kunde</strong> hat den Unterauftragsverarbeiter genehmigt. Die aktuelle Liste der <strong>Genehmigten Unterauftragsverarbeiter</strong> enthält die Identität der Unterauftragsverarbeiter, ihr Sitzland und ihre voraussichtlichen Verarbeitungsaufgaben. Der <strong>Anbieter</strong> informiert den <strong>Kunden</strong> mindestens 10 Werktage im Voraus schriftlich über geplante Änderungen der <strong>Genehmigten Unterauftragsverarbeiter</strong>, sei es durch Hinzufügung oder Austausch eines Unterauftragsverarbeiters, sodass dem <strong>Kunden</strong> genügend Zeit bleibt, Einspruch gegen die Änderungen zu erheben, bevor der <strong>Anbieter</strong> den/die neuen Unterauftragsverarbeiter einsetzt. Der <strong>Anbieter</strong> stellt dem <strong>Kunden</strong> die erforderlichen Informationen zur Verfügung, damit der <strong>Kunde</strong> sein Widerspruchsrecht gegen die Änderung der <strong>Genehmigten Unterauftragsverarbeiter</strong> ausüben kann. Der Kunde hat nach Bekanntgabe einer Änderung der <strong>genehmigten Unterauftragsverarbeiter</strong> 30 Tage Zeit, Einspruch zu erheben. Andernfalls gelten die Änderungen als vom Kunden akzeptiert. Erhebt der Kunde innerhalb von 30 Tagen nach Bekanntgabe Einspruch, arbeiten Kunde und Anbieter nach Treu und Glauben zusammen, um den Einspruch oder die Bedenken des Kunden zu klären.
 
@@ -110,7 +110,7 @@ d. Der <strong>Anbieter</strong> bleibt voll haftbar für alle an seine Unterauf
 
 Der <strong>Kunde</strong> erklärt sich damit einverstanden, dass der <strong>Anbieter</strong> personenbezogene Daten des Kunden außerhalb des EWR, des Vereinigten Königreichs oder anderer relevanter geografischer Gebiete übermitteln darf, soweit dies zur Bereitstellung des Dienstes erforderlich ist. Überträgt der <strong>Anbieter</strong> personenbezogene Daten des Kunden in ein Gebiet, für das die Europäische Kommission oder eine andere relevante Aufsichtsbehörde keinen Angemessenheitsbeschluss erlassen hat, wird der <strong>Anbieter</strong> angemessene Sicherheitsvorkehrungen für die Übermittlung personenbezogener Daten des Kunden in dieses Gebiet im Einklang mit den geltenden Datenschutzgesetzen treffen.
 
-### 2. Übertragungen außerhalb des EWR {#2-ex-eea-transfers}
+### 2. Überweisungen außerhalb des EWR {#2-ex-eea-transfers}
 
 <strong>Kunde</strong> und <strong>Anbieter</strong> vereinbaren, dass, sofern die DSGVO die Übermittlung personenbezogener Kundendaten schützt, die Übermittlung vom <strong>Kunden</strong> innerhalb des EWR an den <strong>Anbieter</strong> außerhalb des EWR erfolgt und die Übermittlung keinem Angemessenheitsbeschluss der Europäischen Kommission unterliegt, mit dem Abschluss dieser Datenverarbeitungsvereinbarung (DPA) die EWR-Standardvertragsklauseln und deren Anhänge als unterzeichnet gelten, die durch Verweis einbezogen werden. Jede derartige Übermittlung erfolgt gemäß den EWR-Standardvertragsklauseln, die wie folgt ausgefüllt werden:
 
@@ -144,7 +144,7 @@ b. Tabelle 4 des UK-Nachtrags wird wie folgt geändert: Keine der Parteien darf 
 
 c. Das Deckblatt enthält die in Anhang 1A, Anhang 1B, Anhang II und Anhang III des UK-Nachtrags geforderten Informationen.
 
-### 4. Andere internationale Übertragungen {#4-other-international-transfers}
+### 4. Andere internationale Überweisungen {#4-other-international-transfers}
 
 Bei der Übermittlung personenbezogener Daten, bei der aufgrund des internationalen Charakters der Übermittlung Schweizer Recht (und nicht das Recht eines EWR-Mitgliedstaats oder des Vereinigten Königreichs) gilt, werden die Verweise auf die DSGVO in Klausel 4 der Standardvertragsklauseln für den EWR, soweit gesetzlich erforderlich, dahingehend geändert, dass sie stattdessen auf das Schweizer Bundesgesetz über den Datenschutz oder dessen Nachfolgegesetz verweisen. Der Begriff der Aufsichtsbehörde umfasst dann den Eidgenössischen Datenschutz- und Öffentlichkeitsbeauftragten.
 
@@ -168,11 +168,11 @@ Zusätzlich zum Bericht beantwortet der <strong>Anbieter</strong> angemessene In
 
 ## 6. Koordination und Zusammenarbeit {#6-coordination--cooperation}
 
-### 1. Beantwortung von Anfragen {#1-response-to-inquiries}
+### 1. Antwort auf Anfragen {#1-response-to-inquiries}
 
 Erhält der <strong>Anbieter</strong> eine Anfrage oder Aufforderung zur Verarbeitung personenbezogener Kundendaten, benachrichtigt er den <strong>Anbieter</strong> hierüber und beantwortet diese nicht ohne dessen vorherige Zustimmung. Beispiele hierfür sind gerichtliche, behördliche oder behördliche Anordnungen zu personenbezogenen Kundendaten, sofern die Benachrichtigung des <strong>Kunden</strong> nicht durch geltendes Recht untersagt ist, oder Anfragen von betroffenen Personen. Soweit gesetzlich zulässig, befolgt der <strong>Anbieter</strong> die angemessenen Anweisungen des <strong>Kunden</strong> zu diesen Anfragen, einschließlich der Bereitstellung von Statusaktualisierungen und anderen vom <strong>Kunden</strong> in angemessener Weise angeforderten Informationen. Wenn eine betroffene Person gemäß den geltenden Datenschutzgesetzen eine gültige Anfrage zur Löschung oder zum Widerspruch gegen die Weitergabe personenbezogener Kundendaten an den <strong>Anbieter</strong> stellt, unterstützt der <strong>Anbieter</strong> den <strong>Kunden</strong> bei der Erfüllung der Anfrage gemäß den geltenden Datenschutzgesetzen. Der <strong>Anbieter</strong> kooperiert mit dem <strong>Kunden</strong> und bietet ihm auf Kosten des <strong>Kunden</strong> angemessene Unterstützung bei allen rechtlichen Antworten oder anderen Verfahrensschritten, die der <strong>Kunde</strong> als Reaktion auf eine Anfrage eines Dritten bezüglich der Verarbeitung personenbezogener Kundendaten durch den <strong>Anbieter</strong> gemäß dieser DPA unternimmt.
 
-### 2. Datenschutz-Folgenabschätzungen und Datenschutz-Folgenabschätzungen {#2-dpias-and-dtias}
+### 2. DPIAs und DTIAs {#2-dpias-and-dtias}
 
 Falls gemäß den geltenden Datenschutzgesetzen erforderlich, wird der <strong>Anbieter</strong> den <strong>Kunden</strong> in angemessenem Umfang bei der Durchführung aller vorgeschriebenen Datenschutz-Folgenabschätzungen oder Datenübertragungs-Folgenabschätzungen sowie bei Konsultationen mit den zuständigen Datenschutzbehörden unterstützen und dabei die Art der Verarbeitung und der personenbezogenen Daten des Kunden berücksichtigen.
 
@@ -182,7 +182,7 @@ Falls gemäß den geltenden Datenschutzgesetzen erforderlich, wird der <strong>A
 
 Der <strong>Anbieter</strong> ermöglicht dem <strong>Kunden</strong>, personenbezogene Kundendaten in einer Weise zu löschen, die mit der Funktionalität der Dienste vereinbar ist. Der <strong>Anbieter</strong> wird dieser Anweisung so schnell wie möglich nachkommen, es sei denn, eine weitere Speicherung personenbezogener Kundendaten ist gesetzlich vorgeschrieben.
 
-### 2. Löschung bei Ablauf der DPA {#2-deletion-at-dpa-expiration}
+### 2. Löschung bei Ablauf des DPA {#2-deletion-at-dpa-expiration}
 
 a. Nach Ablauf der DPA wird der <strong>Anbieter</strong> die personenbezogenen Kundendaten auf Anweisung des <strong>Kunden</strong> zurückgeben oder löschen, es sei denn, eine weitere Speicherung der personenbezogenen Kundendaten ist gesetzlich vorgeschrieben oder zulässig. Ist die Rückgabe oder Vernichtung nicht durchführbar oder gesetzlich verboten, wird der <strong>Anbieter</strong> angemessene Anstrengungen unternehmen, um eine weitere Verarbeitung der personenbezogenen Kundendaten zu verhindern und die in seinem Besitz, seiner Obhut oder seiner Kontrolle verbleibenden personenbezogenen Kundendaten weiterhin zu schützen. Beispielsweise kann der <strong>Anbieter</strong> gesetzlich verpflichtet sein, die personenbezogenen Kundendaten weiterhin zu hosten oder zu verarbeiten.
 
@@ -260,6 +260,6 @@ Soweit der California Consumer Privacy Act, Cal. Civ. Code § 1798.100 ff. („C
 
 20. **„UK-Nachtrag“** bezeichnet den Nachtrag zum internationalen Datentransfer zu den Standardvertragsklauseln des EWR, der vom Information Commissioner für Parteien herausgegeben wird, die eingeschränkte Transfers gemäß S119A(1) Data Protection Act 2018 vornehmen.
 
-## Credits {#credits}
+## Guthaben {#credits}
 
 Dieses Dokument ist eine Ableitung von [Gemeinsame Standardbedingungen für das DPA-Papier (Version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) und ist unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) lizenziert.

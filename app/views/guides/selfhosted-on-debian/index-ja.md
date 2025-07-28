@@ -1,4 +1,4 @@
-# Debian向けメール転送セルフホスティングインストールガイド {#forward-email-self-hosting-installation-guide-for-debian}
+# メール転送 Debian 向けセルフホスティングインストールガイド {#forward-email-self-hosting-installation-guide-for-debian}
 
 ## 目次 {#table-of-contents}
 
@@ -350,7 +350,7 @@ update_env_file "AUTH_BASIC_ENABLED" "true"
 
 ### ステップ12: SSL証明書を生成する {#step-12-generate-ssl-certificates}
 
-#### オプション A: 手動 DNS チャレンジ (ほとんどのユーザーに推奨) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### オプションA: 手動DNSチャレンジ（ほとんどのユーザーに推奨）{#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -401,7 +401,7 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### ステップ13: 暗号化キーを生成する {#step-13-generate-encryption-keys}
+### ステップ13: 暗号化キーの生成 {#step-13-generate-encryption-keys}
 
 安全な操作に必要なさまざまな暗号化キーを作成します。
 
@@ -469,7 +469,7 @@ echo "You'll need these to access the web interface after installation."
 echo ""
 ```
 
-### ステップ16: Docker Compose でデプロイする {#step-16-deploy-with-docker-compose}
+### ステップ16: Docker Composeでデプロイする {#step-16-deploy-with-docker-compose}
 
 すべてのメール転送サービスを開始します。
 
@@ -531,7 +531,7 @@ curl -I https://$DOMAIN
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## インストール後の設定 {#post-installation-configuration}
+## インストール後の構成 {#post-installation-configuration}
 
 ### DNSレコードの設定 {#dns-records-setup}
 
@@ -585,14 +585,14 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### 初回ログイン {#first-login}
 
-1. ウェブブラウザを開き、`https://yourdomain.com` に移動します。
+1. Webブラウザを開き、`https://yourdomain.com`に移動します。
 2. 先ほど保存した基本認証情報を入力します。
 3. 初期設定ウィザードを完了します。
 4. 最初のメールアカウントを作成します。
 
 ## バックアップ構成 {#backup-configuration}
 
-### S3 互換バックアップの設定 {#set-up-s3-compatible-backup}
+### S3互換バックアップの設定 {#set-up-s3-compatible-backup}
 
 S3 互換ストレージへの自動バックアップを構成します。
 
@@ -618,7 +618,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### バックアップ Cron ジョブを設定する {#set-up-backup-cron-jobs}
+### バックアップ Cron ジョブの設定 {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -635,7 +635,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## 自動更新設定 {#auto-update-configuration}
+## 自動更新構成 {#auto-update-configuration}
 
 Forward Email インストールの自動更新を設定します。
 
@@ -658,7 +658,7 @@ crontab -l
 
 ### パッケージ管理の違い {#package-management-differences}
 
-* **Snapd**: Debianではデフォルトでインストールされません。手動でインストールする必要があります。
+* **Snapd**: Debianではデフォルトではインストールされません。手動でインストールする必要があります。
 * **Docker**: Debian固有のリポジトリとGPGキーを使用します。
 * **UFW**: Debianの最小インストールには含まれていない場合があります。
 * **systemd**: Ubuntuとは動作が若干異なる場合があります。
@@ -704,10 +704,10 @@ nslookup google.com
 ### 定期メンテナンスタスク {#regular-maintenance-tasks}
 
 1. **ディスク容量を監視**: `df -h`
-2. **サービスステータスを確認**: 適切な docker compose コマンドを使用する
-3. **ログを確認する**: アプリケーションログとシステムログの両方を確認する
-4. **システムパッケージを更新する**: `apt update && apt upgrade`
-5. **snapd を監視する**: `snap list` および `snap refresh`
+2. **サービスステータスを確認**: 適切な docker compose コマンドを使用
+3. **ログを確認**: アプリケーションログとシステムログの両方を確認
+4. **システムパッケージを更新**: `apt update && apt upgrade`
+5. **snapd を監視**: `snap list` および `snap refresh`
 
 ### 証明書の更新 {#certificate-renewal}
 
@@ -749,7 +749,7 @@ echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-#### 2. Docker Compose コマンドが見つかりません {#2-docker-compose-command-not-found}
+#### 2. Docker Composeコマンドが見つかりません {#2-docker-compose-command-not-found}
 
 ```bash
 # Check which docker compose command is available
@@ -792,11 +792,11 @@ journalctl -u docker
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. 証明書生成に失敗する {#2-certificate-generation-fails}
+#### 2. 証明書の生成に失敗しました {#2-certificate-generation-fails}
 
 * ポート80と443にアクセスできることを確認してください
 * DNSレコードがサーバーを指していることを確認してください
-* `ufw status` でファイアウォール設定を確認してください
+* `ufw status`でファイアウォール設定を確認してください
 
 #### 3. メール配信の問題 {#3-email-delivery-issues}
 
@@ -814,11 +814,11 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 1. **システムを最新の状態に保つ**: Debianとパッケージを定期的に更新する
 2. **ログを監視する**: ログ監視とアラートを設定する
-3. **定期的にバックアップする**: バックアップと復元の手順をテストする
+3. **定期的にバックアップする**: バックアップと復元手順をテストする
 4. **強力なパスワードを使用する**: すべてのアカウントに強力なパスワードを生成する
 5. **Fail2Banを有効にする**: セキュリティ強化のため、Fail2Banのインストールを検討する
 6. **定期的なセキュリティ監査**: 設定を定期的に確認する
-7. **Snapdを監視する**: `snap refresh` を使用してSnapパッケージを最新の状態に保つ
+7. **Snapdを監視する**: `snap refresh`を使用してSnapパッケージを最新の状態に保つ
 
 ## 結論 {#conclusion}
 
@@ -833,4 +833,4 @@ Forward Emailのセルフホストインストールが完了し、Debian上で�
 
 Ubuntuとの主な違いは、snapdのインストールとDockerリポジトリの設定です。これらを適切に設定すれば、Forward Emailアプリケーションはどちらのシステムでも同じように動作します。
 
-追加の設定オプションと高度な機能については、<https://forwardemail.net/self-hosted#configuration>. にある公式のメール転送ドキュメントを参照してください。
+追加の設定オプションと高度な機能については、<https://forwardemail.net/self-hosted#configuration>.> にあるメール転送の公式ドキュメントを参照してください。

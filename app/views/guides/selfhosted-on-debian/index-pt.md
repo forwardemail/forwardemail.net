@@ -283,9 +283,9 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### Etapa 10: Configurar o ambiente {#step-10-set-up-environment-configuration}
+### Etapa 10: Definir a configuração do ambiente {#step-10-set-up-environment-configuration}
 
-Prepare a configuração do ambiente:
+Preparar a configuração do ambiente:
 
 ```bash
 # Set up directory variables
@@ -533,7 +533,7 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ## Configuração pós-instalação {#post-installation-configuration}
 
-Configuração de registros DNS ### {#dns-records-setup}
+### Configuração de registros DNS {#dns-records-setup}
 
 Você precisa configurar os seguintes registros DNS para seu domínio:
 
@@ -543,7 +543,7 @@ Você precisa configurar os seguintes registros DNS para seu domínio:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Registros A {#a-records}
+#### Um registro {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -663,7 +663,7 @@ crontab -l
 * **UFW**: Pode não estar incluído em instalações mínimas do Debian
 * **systemd**: O comportamento pode ser ligeiramente diferente do Ubuntu
 
-### Gerenciamento de serviços {#service-management}
+### Gerenciamento de Serviços {#service-management}
 
 ```bash
 # Check service status (Debian-specific commands)
@@ -695,11 +695,11 @@ nslookup google.com
 
 ### Locais de registro {#log-locations}
 
-* **Logs do Docker Compose**: Use o comando docker compose apropriado com base na instalação
-* **Logs do sistema**: `/var/log/syslog`
-* **Logs de backup**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Logs de atualização automática**: `/var/log/autoupdate.log`
-* **Logs do Snapd**: `journalctl -u snapd`
+* **Registros do Docker Compose**: Use o comando docker compose apropriado com base na instalação
+* **Registros do sistema**: `/var/log/syslog`
+* **Registros de backup**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Registros de atualização automática**: `/var/log/autoupdate.log`
+* **Registros do Snapd**: `journalctl -u snapd`
 
 ### Tarefas regulares de manutenção {#regular-maintenance-tasks}
 

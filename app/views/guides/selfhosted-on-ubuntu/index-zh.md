@@ -39,7 +39,7 @@
 * [安全最佳实践](#security-best-practices)
 * [结论](#conclusion)
 
-## 概述 {#overview}
+## 概览 {#overview}
 
 本指南提供在 Ubuntu 系统上安装 Forward Email 自托管解决方案的分步说明。本指南专门针对 Ubuntu 20.04、22.04 和 24.04 LTS 版本。
 
@@ -126,7 +126,7 @@ apt-get install -y \
     snapd
 ```
 
-### 步骤 4：安装 Snap 包 {#step-4-install-snap-packages}
+### 步骤 4：安装 Snap 软件包 {#step-4-install-snap-packages}
 
 通过 snap 安装 AWS CLI 和 Certbot：
 
@@ -261,7 +261,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### 步骤 10：配置您的域名 {#step-10-configure-your-domain}
+### 步骤 10：配置您的域 {#step-10-configure-your-domain}
 
 设置您的域名并更新环境变量：
 

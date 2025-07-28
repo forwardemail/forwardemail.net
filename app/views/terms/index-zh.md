@@ -1,4 +1,4 @@
-# 条款 {#terms}
+# 个条款 {#terms}
 
 <img 加载="懒惰" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
@@ -34,18 +34,18 @@ Forward Email 不作任何明示或暗示的保证，并在此声明和否认所
 
 此外，Forward Email 不保证或作出任何有关其服务中材料的使用或与此类材料或链接到本网站的任何网站有关的准确性、可能的结果或可靠性的陈述。
 
-<u>**您明确同意，您不会将本服务用于任何与[Stripe 禁止的业务](https://stripe.com/legal/restricted-businesses)和[PayPal 的禁止活动](https://www.paypal.com/us/legalhub/acceptableuse-full)相关的业务或材料。**</u>
+<u>**您明确同意不会将本服务用于 [Stripe 禁止的业务](https://stripe.com/legal/restricted-businesses) 和 [PayPal 的禁止活动](https://www.paypal.com/us/legalhub/acceptableuse-full) 的任何业务或相关材料。**</u>
 
 <u>**您明确同意，通过使用本服务，Forward Email 不承担任何责任，您也不会利用本服务创建、阅读、修改或传输以下任何内容：**</u>
 
-* **您不得使用我们的服务运营允许第三方（除您自己的员工和承包商外）访问、使用或受益于我们服务的服务。如果您需要我们在这方面为您破例，请联系我们讨论企业协议。更多信息，请参阅我们的[LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md)。**
-* 如果您使用我们的[出站 SMTP](/faq#do-you-support-sending-email-with-smtp)服务，则表示您同意以下条款：
-* 您被允许将其用于[交易电子邮件](https://wikipedia.org/wiki/Email_marketing#Transactional_emails)和[电子邮件营销](https://en.wikipedia.org/wiki/Email_marketing)。
-* 如果您要发送电子邮件营销材料，则必须包含`List-Unsubscribe`标头，并且您的订阅者必须选择加入。
-* 我们建议您使用开源新闻通讯管理器，例如位于<https://github.com/knadh/listmonk>.的[ListMonk](https://github.com/knadh/listmonk)。
+* **您不得使用我们的服务运营允许第三方（除您自己的员工和承包商外）访问、使用或受益于我们服务的服务。如果您需要我们在这方面为您破例，请联系我们讨论企业协议。更多信息，请参阅我们的 [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md)。**
+* 如果您使用我们的 [出站 SMTP](/faq#do-you-support-sending-email-with-smtp) 服务，则表示您同意以下条款：
+* 您被允许将其用于 [交易电子邮件](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) 和 [电子邮件营销](https://en.wikipedia.org/wiki/Email_marketing)。
+* 如果您要发送电子邮件营销材料，则必须包含 `List-Unsubscribe` 标头，并且您的订阅者必须选择加入。
+* 我们建议您使用开源新闻通讯管理器，例如 <https://github.com/knadh/listmonk>. 中的 [ListMonk](https://github.com/knadh/listmonk)。
 * 请注意，我们计划在未来发布我们自己的新闻通讯管理器。
 * 电子邮件营销材料包括向联系人列表发送具有类似内容、主题和正文（例如，新闻通讯和公告）的促销、群发或商业电子邮件。
-* 您必须遵守 [2003年《反垃圾邮件法》](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003)。
+* 您必须遵守 [2003年《反垃圾邮件法》](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003) 的规定。
 * 您必须立即或在 24 小时内移除选择退出、取消订阅或将您的电子邮件标记为垃圾邮件的用户。
 * 您的域名首次尝试发送新闻通讯时，管理员将审核并批准您的域名发送新闻通讯（通常在 2-4 小时内，但有时可能需要更长时间）。
 * 任何导致服务中断、运营和/或客户中断的内容。
@@ -57,7 +57,7 @@ Forward Email 不作任何明示或暗示的保证，并在此声明和否认所
 
 本网站所含材料受适用版权和商标法的保护。
 
-您访问我们的网站并使用我们的服务表明您已同意我们的[隐私政策](/privacy)和[数据处理协议](/dpa)（例如，为了遵守 GDPR）。
+您访问我们的网站并使用我们的服务表明您已同意我们的 [隐私政策](/privacy) 和 [数据处理协议](/dpa)（例如，为了符合 GDPR）。
 
 ## 无限使用 {#unlimited-usage}
 
@@ -65,7 +65,7 @@ Forward Email 不作任何明示或暗示的保证，并在此声明和否认所
 
 如果我们确定您对服务的使用与正常用户行为不同，被我们的团队视为垃圾邮件或恶意活动，或由于我们自行决定的任何其他原因 - 那么我们可能会限制或减慢使用速度。
 
-我们可能会或可能不会提前通知您已经对您的帐户和服务施加的限制或将要施加的限制。
+我们可能会或可能不会提前通知您已经实施或将要对您的帐户和服务实施的限制。
 
 ## 限制 {#limitations}
 
@@ -85,7 +85,7 @@ Forward Email 不作任何明示或暗示的保证，并在此声明和否认所
 
 如果您与信用卡提供商、银行或 PayPal 发生争议，您的帐户将被自动永久禁止。
 
-## 服务水平协议（“SLA”）{#service-level-agreement-sla}
+## 服务水平协议 (SLA) {#service-level-agreement-sla}
 
 ### 条款 {#terms-1}
 
@@ -96,7 +96,7 @@ Forward Email 不作任何明示或暗示的保证，并在此声明和否认所
 
 Forward Email 将尽一切合理的商业努力（不低于可接受的合理行业标准）确保付费客户在任何日历月内 99.99% 的时间都能使用 Forward Email 服务。如果未能达到此标准，您可能有资格根据 [合格](#eligibility) 获得下文所述的 [致谢](#credits)。
 
-### 致谢 {#credits}
+### 积分 {#credits}
 
 | 每月正常运行时间百分比 | 服务天数* |
 | ------------------------- | ---------------- |
@@ -108,9 +108,9 @@ Forward Email 将尽一切合理的商业努力（不低于可接受的合理行
 
 ### 资格 {#eligibility}
 
-最低抵扣金额必须至少为 1.00 美元才有资格获得。最高抵扣金额上限为 30 天或客户最近一个日历月因停机而支付的总金额（以较高者为准）。受停机影响的付费客户必须在停机日期起 30 天内提交 [帮助请求](/help) 申请抵扣。抵扣仅适用于“转发电子邮件”主要控制范围内的停机因素。
+最低抵扣金额必须至少为 1.00 美元才有资格获得。最高抵扣额为 30 天或客户最近一个日历月因停机而支付的总金额（以较高者为准）。受停机影响的付费客户必须在停机日期起 30 天内提交 [帮助请求](/help) 申请抵扣。抵扣仅适用于“转发电子邮件”主要控制范围内的停机因素。
 
-## 修订和勘误 {#revisions-and-errata}
+## 修订和勘误表 {#revisions-and-errata}
 
 Forward Email 网站上的资料可能包含技术、排版或图片错误。Forward Email 不保证其网站上任何资料的准确性、完整性或时效性。Forward Email 可随时更改其网站上的资料，恕不另行通知。然而，Forward Email 不承诺更新这些资料。
 
@@ -128,6 +128,6 @@ Forward Email 可随时修改其网站的使用条款，恕不另行通知。使
 
 适用于网站使用的一般条款和条件。
 
-## 附加披露 {#additional-disclosures}
+## 附加披露信息 {#additional-disclosures}
 
-本网站受 Cloudflare 保护，并适用其 [隐私政策](https://www.cloudflare.com/privacypolicy/) 和 [服务条款](https://www.cloudflare.com/website-terms/)。
+该网站受 Cloudflare 保护，并适用其 [隐私政策](https://www.cloudflare.com/privacypolicy/) 和 [服务条款](https://www.cloudflare.com/website-terms/)。

@@ -51,6 +51,6 @@ Kör appen för att skicka e-postmeddelandet:
 node app
 ```
 
-Nu kan du gå till **[Mitt konto → E-postmeddelanden](/my-account/emails)** för att se din e-postleveransstatus i realtid, leveransloggar för e-post och förhandsgranskningar av HTML/klartext/bilagor.
+Nu kan du gå till **[Mitt konto → E-postmeddelanden](/my-account/emails)** för att se din e-postleveransstatus i realtid, loggar för e-postleverans och förhandsgranskningar av HTML/klartext/bilagor.
 
 > P.S. :tada: Du kan också **[förhandsgranska e-postmeddelanden i webbläsare och iOS-simulatorn](/docs/test-preview-email-rendering-browsers-ios-simulator)** och **[skapa e-postmallar med Node.js](/docs/send-emails-with-node-js-javascript)**.

@@ -4,7 +4,7 @@
 
 * [Prefazione](#foreword)
 * [Come funziona l'elaborazione SMTP di Forward Email](#how-forward-emails-smtp-processing-works)
-  * [Sistema di coda e ripetizione e-mail](#email-queue-and-retry-system)
+  * [Sistema di coda e ripetizione delle e-mail](#email-queue-and-retry-system)
   * [Affidabilità a prova di manichino](#dummy-proofed-for-reliability)
 * [Integrazione Node.js](#nodejs-integration)
   * [Utilizzo di Nodemailer](#using-nodemailer)
@@ -31,7 +31,7 @@
 
 ## Prefazione {#foreword}
 
-Questa guida fornisce esempi dettagliati su come integrare il servizio SMTP di Forward Email utilizzando vari linguaggi di programmazione, framework e client di posta elettronica. Il nostro servizio SMTP è progettato per essere affidabile, sicuro e facile da integrare con le tue applicazioni esistenti.
+Questa guida fornisce esempi dettagliati su come integrare il servizio SMTP di Forward Email utilizzando diversi linguaggi di programmazione, framework e client di posta elettronica. Il nostro servizio SMTP è progettato per essere affidabile, sicuro e facile da integrare con le applicazioni esistenti.
 
 ## Come funziona l'elaborazione SMTP di Inoltra e-mail {#how-forward-emails-smtp-processing-works}
 
@@ -41,20 +41,20 @@ Prima di addentrarci negli esempi di integrazione, è importante capire come il 
 
 Quando invii un'e-mail tramite SMTP ai nostri server:
 
-1. **Elaborazione iniziale**: l'email viene convalidata, analizzata per malware e verificata rispetto ai filtri antispam.
+1. **Elaborazione iniziale**: l'email viene convalidata, analizzata per malware e verificata con i filtri antispam.
 2. **Coda intelligente**: le email vengono inserite in un sofisticato sistema di coda per la consegna.
-3. **Meccanismo di ripetizione intelligente**: in caso di mancata consegna temporanea, il nostro sistema:
+3. **Meccanismo di ripetizione intelligente**: se la consegna fallisce temporaneamente, il nostro sistema:
 * Analizza la risposta di errore utilizzando la nostra funzione `getBounceInfo`.
 * Determina se il problema è temporaneo (ad esempio, "riprova più tardi", "temporaneamente rinviato") o permanente (ad esempio, "utente sconosciuto").
 * In caso di problemi temporanei, contrassegna l'email per una nuova ripetizione.
 * In caso di problemi permanenti, genera una notifica di mancato recapito.
-4. **Periodo di ripetizione di 5 giorni**: Ritentiamo la consegna per un massimo di 5 giorni (simile a standard di settore come Postfix), dando il tempo ai problemi temporanei di risolversi.
+4. **Periodo di ripetizione di 5 giorni**: riproviamo la consegna per un massimo di 5 giorni (simile a standard di settore come Postfix), dando il tempo ai problemi temporanei di risolversi.
 5. **Notifiche sullo stato di consegna**: i mittenti ricevono notifiche sullo stato delle loro email (consegnate, in ritardo o respinte).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Dopo la consegna avvenuta correttamente, il contenuto dell'email SMTP in uscita viene redatto dopo un periodo di conservazione configurabile (il valore predefinito è 30 giorni) per motivi di sicurezza e privacy. Rimane solo un messaggio segnaposto che indica l'avvenuta consegna.
 
-### Affidabilità a prova di errore {#dummy-proofed-for-reliability}
+### A prova di errore per affidabilità {#dummy-proofed-for-reliability}
 
 Il nostro sistema è progettato per gestire vari casi limite:
 
@@ -204,7 +204,7 @@ except Exception as e:
 
 ### Utilizzo di Django {#using-django}
 
-Per le applicazioni Django, aggiungi quanto segue al tuo `settings.py`:
+Per le applicazioni Django, aggiungi quanto segue a `settings.py`:
 
 ```python
 # Email settings
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Quindi invia e-mail nelle tue visualizzazioni:
+Quindi invia email nelle tue visualizzazioni:
 
 ```python
 from django.core.mail import send_mail
@@ -277,7 +277,7 @@ try {
 
 ### Utilizzo di Laravel {#using-laravel}
 
-Per le applicazioni Laravel, aggiorna il file `.env` :
+Per le applicazioni Laravel, aggiorna il file `.env`:
 
 ```sh
 MAIL_MAILER=smtp
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Quindi invia le email utilizzando la facciata Mail di Laravel:
+Quindi invia email utilizzando l'interfaccia Mail di Laravel:
 
 ```php
 <?php
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## Configurazione client di posta elettronica {#email-client-configuration}
 
-__URL_PROTETTO_54__ Thunderbird {__URL_PROTETTO_55__
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
@@ -452,7 +452,7 @@ flowchart TD
 * Nome utente: il tuo indirizzo email completo
 5. Fai clic su "Test" e poi su "Fine"
 
-### Apple Mail {#apple-mail}
+### Posta di Apple {#apple-mail}
 
 1. Apri Mail e vai su Mail > Preferenze > Account
 2. Fai clic sul pulsante "+" per aggiungere un nuovo account
@@ -500,25 +500,25 @@ flowchart TD
 4. **Errori TLS/SSL**
 * Aggiorna l'applicazione/libreria per supportare le versioni moderne di TLS
 * Assicurati che i certificati CA del tuo sistema siano aggiornati
-* Prova TLS esplicito invece di TLS implicito
+* Prova il TLS esplicito invece del TLS implicito
 
 ### Ottenere aiuto {#getting-help}
 
 Se riscontri problemi non trattati qui, ti preghiamo di:
 
 1. Consulta il nostro [Pagina FAQ](/faq) per le domande più frequenti
-2. Consulta il nostro [post del blog sulla consegna della posta elettronica](/blog/docs/best-email-forwarding-service) per informazioni dettagliate
+2. Consulta il nostro [post del blog sulla consegna delle e-mail](/blog/docs/best-email-forwarding-service) per informazioni dettagliate
 3. Contatta il nostro team di supporto all'indirizzo <support@forwardemail.net>
 
 ## Risorse aggiuntive {#additional-resources}
 
-* [Documentazione di inoltro e-mail](/docs)
+* [Documentazione sull'inoltro e-mail](/docs)
 * [Limiti e configurazione del server SMTP](/faq#what-are-your-outbound-smtp-limits)
 * [Guida alle migliori pratiche per la posta elettronica](/blog/docs/best-email-forwarding-service)
 * [Pratiche di sicurezza](/security)
 
 ## Conclusione {#conclusion}
 
-Il servizio SMTP di Forward Email fornisce un modo affidabile, sicuro e incentrato sulla privacy per inviare e-mail dalle tue applicazioni e dai tuoi client di posta elettronica. Con il nostro sistema di coda intelligente, il meccanismo di ripetizione di 5 giorni e le notifiche complete sullo stato di consegna, puoi essere certo che le tue e-mail raggiungeranno la loro destinazione.
+Il servizio SMTP di Forward Email offre un modo affidabile, sicuro e rispettoso della privacy per inviare email dalle tue applicazioni e client di posta elettronica. Grazie al nostro sistema di coda intelligente, al meccanismo di ripetizione dei tentativi ogni 5 giorni e alle notifiche complete sullo stato di consegna, puoi essere certo che le tue email raggiungeranno la destinazione.
 
 Per casi d'uso più avanzati o integrazioni personalizzate, contatta il nostro team di supporto.

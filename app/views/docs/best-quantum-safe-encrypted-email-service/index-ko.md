@@ -25,13 +25,13 @@
 ## 서문 {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> 저희 이메일 서비스는 [100% 오픈소스](https://github.com/forwardemail)이며, 안전하고 암호화된 SQLite 메일함을 통해 개인정보 보호에 중점을 두고 있습니다.
 
 [IMAP 지원](/faq#do-you-support-receiving-email-with-imap)을 출시하기 전까지 우리는 지속적인 데이터 저장 요구 사항을 위해 MongoDB를 사용했습니다.
 
 이 기술은 놀랍고 오늘날에도 여전히 사용되고 있습니다. 하지만 MongoDB에서 암호화를 사용하려면 Digital Ocean이나 Mongo Atlas와 같이 MongoDB Enterprise를 제공하는 공급업체를 이용하거나 엔터프라이즈 라이선스 비용을 지불해야 합니다(그러면 영업팀 지연 시간에 대처해야 합니다).
 
-[이메일 전달](https://forwardemail.net) 팀은 IMAP 사서함을 위한 개발자 친화적이고 확장 가능하며 안정적이며 암호화된 저장 솔루션이 필요했습니다. 오픈 소스 개발자로서, 저장 데이터 암호화 기능을 사용하려면 라이선스 비용을 지불해야 하는 기술을 사용하는 것은 [우리의 원칙](#principles)에 어긋났습니다. 그래서 저희는 이러한 요구를 해결하기 위해 처음부터 새로운 솔루션을 실험하고, 연구하고, 개발했습니다.
+[이메일 전달](https://forwardemail.net) 팀은 IMAP 사서함을 위한 개발자 친화적이고 확장 가능하며 안정적이고 암호화된 저장 솔루션이 필요했습니다. 오픈 소스 개발자로서, 저장 데이터 암호화 기능을 사용하려면 라이선스 비용을 지불해야 하는 기술을 사용하는 것은 [우리의 원칙](#principles) 팀에 적합하지 않았습니다. 그래서 저희는 이러한 요구를 해결하기 위해 처음부터 새로운 솔루션을 실험하고, 연구하고, 개발했습니다.
 
 저희는 여러분의 사서함을 저장하기 위해 공유 데이터베이스를 사용하는 대신, 여러분만의 비밀번호(여러분만 알고 계십니다)를 사용하여 사서함을 개별적으로 저장하고 암호화합니다. **저희 이메일 서비스는 매우 안전하기 때문에 비밀번호를 잊어버리면 사서함을 잃게 됩니다.** (그러면 오프라인 백업을 통해 복구하거나 다시 시작해야 합니다).
 
@@ -45,14 +45,14 @@
 
 <a href="/blog/best-email-service" target="_blank" class="btn btn-lg bg-success text-white btn-block btn-success">이메일 서비스 비교 읽기 <i class="fa fa-search-plus"></i></a>
 
-## 어떻게 작동합니까? {#how-does-it-work}
+## 작동 원리 {#how-does-it-work}
 
-1. Apple Mail, Thunderbird, Gmail 또는 Outlook과 같은 이메일 클라이언트를 사용하면 사용자 이름과 비밀번호를 사용하여 보안된 [IMAP](/faq#do-you-support-receiving-email-with-imap) 서버에 연결합니다.
+1. Apple Mail, Thunderbird, Gmail 또는 Outlook과 같은 이메일 클라이언트를 사용하여 사용자 이름과 비밀번호를 사용하여 보안 [IMAP](/faq#do-you-support-receiving-email-with-imap) 서버에 연결합니다.
 
-* 사용자 이름은 `hello@example.com`과 같은 도메인을 포함한 전체 별칭입니다.
+* 사용자 이름은 `hello@example.com`과 같은 도메인의 전체 별칭입니다.
 * 비밀번호는 무작위로 생성되며, <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">내 계정 <i class="fa fa-angle-right"></i> 도메인</a> <i class="fa fa-angle-right"></i> 별칭에서 <strong class="text-success"><i class="fa fa-key"></i>비밀번호 생성</strong>을 클릭할 때만 30초 동안 표시됩니다.
 
-2. 연결되면 이메일 클라이언트가 [IMAP 프로토콜 명령](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)를 IMAP 서버로 전송하여 사서함 동기화를 유지합니다. 여기에는 임시 이메일 작성 및 저장, 그리고 사용자가 수행하는 기타 작업(예: 이메일을 중요 메일로 표시하거나 이메일을 스팸/정크 메일로 표시)이 포함됩니다.
+2. 연결되면 이메일 클라이언트가 [IMAP 프로토콜 명령](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)을 IMAP 서버로 전송하여 사서함 동기화를 유지합니다. 여기에는 임시 이메일 작성 및 저장, 그리고 사용자가 수행하는 기타 작업(예: 이메일을 중요 메일로 표시하거나 이메일을 스팸/정크 메일로 표시)이 포함됩니다.
 
 3. 메일 교환 서버(일반적으로 "MX" 서버라고 함)는 새로 수신되는 이메일을 수신하여 사용자의 사서함에 저장합니다. 이 경우 이메일 클라이언트가 알림을 받고 사서함을 동기화합니다. 당사의 메일 교환 서버는 한 명 이상의 수신자([웹훅](/faq#do-you-support-webhooks) 포함)에게 이메일을 전달하거나, 암호화된 IMAP 저장소에 이메일을 저장하거나, **또는 두 가지 모두**를 모두 수행할 수 있습니다!
 
@@ -110,9 +110,9 @@
 
 ### 보안 {#security}
 
-저희는 항상 [저장 중 암호화](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [전송 중 암호화](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [HTTPS를 통한 DNS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH")를 사용하며, 여기에는 :tangerine: [귤](https://tangeri.ne) 및 [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([차차20-폴리1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) 암호화가 적용됩니다. 또한, 토큰 기반 2단계 인증([중간자 공격](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)에 의심되는 SMS와는 대조적), 루트 접근이 비활성화된 순환 SSH 키, 제한된 IP 주소를 통한 서버 단독 접근 등을 사용합니다.
+저희는 항상 [저장 중 암호화](https://en.wikipedia.org/wiki/Data_at_rest)([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [전송 중 암호화](https://en.wikipedia.org/wiki/Data_in_transit)([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [HTTPS를 통한 DNS](https://en.wikipedia.org/wiki/DNS_over_HTTPS)("DoH")를 사용하며, [귤](https://tangeri.ne)와 [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)([차차20-폴리1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) 암호화를 적용합니다. 또한, 토큰 기반 2단계 인증([중간자 공격](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)에서 의심되는 SMS와는 대조적), 루트 접근이 비활성화된 순환 SSH 키, 제한된 IP 주소를 통한 서버 단독 접근 등을 사용합니다.
 
-[사악한 하녀의 공격](https://en.wikipedia.org/wiki/Evil_maid_attack) 또는 타사 공급업체의 악의적인 직원이 있는 경우, **생성된 비밀번호로만 메일함을 열 수 있습니다**. SOC 유형 2 규정을 준수하는 Cloudflare, DataPacket, Digital Ocean, Vultr 서버 공급업체 외에는 다른 타사 공급업체에 의존하지 않으므로 안심하셔도 됩니다.
+[사악한 하녀의 공격](https://en.wikipedia.org/wiki/Evil_maid_attack) 또는 타사 공급업체의 악의적인 직원이 있는 경우, **생성된 비밀번호로만 메일함을 열 수 있습니다**. 저희는 SOC 유형 2 규정을 준수하는 Cloudflare, DataPacket, Digital Ocean, Vultr 서버 공급업체 외에는 다른 타사 공급업체에 의존하지 않으므로 안심하셔도 됩니다.
 
 우리의 목표는 [단일 실패 지점](https://en.wikipedia.org/wiki/Single_point_of_failure)를 가능한 한 적게 만드는 것입니다.
 
@@ -122,11 +122,11 @@
 
 [SQLite는 매우 인기가 있습니다](https://www.sqlite.org/mostdeployed.html) 내장 데이터베이스 – 현재 휴대폰과 컴퓨터에서 실행 중입니다 – [거의 모든 주요 기술에서 사용됨](https://www.sqlite.org/famous.html).
 
-예를 들어, 암호화된 서버에는 `linux@example.com`, `info@example.com`, `hello@example.com` 등의 SQLite 데이터베이스 사서함이 있으며, 각각에 대해 `.sqlite` 데이터베이스 파일이 있습니다. 데이터베이스 파일 이름도 이메일 주소로 지정하지 않습니다. 대신 BSON ObjectID와 고유한 UUID를 생성하여 사서함 소유자나 이메일 주소를 공유하지 않습니다(예: `353a03f21e534321f5d6e267.sqlite`).
+예를 들어, 암호화된 서버에는 `linux@example.com`, `info@example.com`, `hello@example.com` 등의 SQLite 데이터베이스 사서함이 있습니다. 각 사서함마다 `.sqlite` 데이터베이스 파일이 하나씩 있습니다. 데이터베이스 파일 이름도 이메일 주소로 지정하지 않습니다. 대신 BSON ObjectID와 고유한 UUID를 생성하여 사서함 소유자나 이메일 주소를 공유하지 않습니다(예: `353a03f21e534321f5d6e267.sqlite`).
 
-각 데이터베이스는 [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)([차차20-폴리1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/))를 사용하여 사용자 본인만 아는 비밀번호를 사용하여 암호화됩니다. 즉, 사용자의 사서함은 개별적으로 암호화되고, 자체적으로 포함되며, [샌드박스](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)(__PROTECTED_LINK_157__) 이동 가능합니다.
+각 데이터베이스는 [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)([차차20-폴리1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/))을 사용하여 사용자 본인만 아는 비밀번호를 사용하여 암호화됩니다. 즉, 사용자의 사서함은 개별적으로 암호화되고, 자체적으로 포함되며, [샌드박스](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) 이동 가능합니다.
 
-우리는 다음의 [PRAGMA](https://www.sqlite.org/pragma.html)로 SQLite를 미세 조정했습니다:
+우리는 다음의 [PRAGMA](https://www.sqlite.org/pragma.html)으로 SQLite를 미세 조정했습니다:
 
 | `PRAGMA` | 목적 |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -144,26 +144,26 @@
 
 > **tldr;** 암호화된 SQLite 사서함에 대한 동시 읽기 및 쓰기를 위해 `WebSocket`을 사용합니다.
 
-####은 {#reads}을 읽습니다.
+####은 {#reads}}을 읽습니다.
 
-휴대전화의 이메일 클라이언트는 `imap.forwardemail.net`를 Digital Ocean IP 주소 중 하나로 확인할 수 있으며, 데스크톱 클라이언트는 완전히 다른 [공급자](#providers)의 별도 IP를 확인할 수 있습니다.
+휴대전화의 이메일 클라이언트는 `imap.forwardemail.net`을 Digital Ocean IP 주소 중 하나로 확인할 수 있으며, 데스크톱 클라이언트는 다른 [공급자](#providers)의 별도 IP를 확인할 수도 있습니다.
 
 이메일 클라이언트가 어떤 IMAP 서버에 연결하든, 데이터베이스에서 100% 정확한 실시간 데이터를 읽어오도록 해야 합니다. 이는 웹소켓을 통해 이루어집니다.
 
-####은 {#writes}을(를) 씁니다.
+####이 {#writes}}을(를) 씁니다.
 
 데이터베이스에 쓰는 것은 약간 다릅니다. SQLite는 내장형 데이터베이스이고 사서함은 기본적으로 단일 파일에 저장됩니다.
 
-우리는 아래의 `litestream`, `rqlite`, `dqlite`과 같은 옵션을 살펴보았지만, 이 중 어떤 것도 우리의 요구 사항을 충족시키지 못했습니다.
+우리는 아래의 `litestream`, `rqlite`, `dqlite`와 같은 옵션을 살펴보았지만, 이 중 어떤 것도 우리의 요구 사항을 충족시키지 못했습니다.
 
-write-ahead-logging("[WAL](https://www.sqlite.org/wal.html)")을 활성화하여 쓰기를 수행하려면 하나의 서버("Primary")만 해당 작업을 담당하도록 해야 합니다. [WAL](https://www.sqlite.org/wal.html)는 동시성 속도를 크게 높이고 하나의 작성자와 여러 개의 판독자를 허용합니다.
+미리 쓰기 로깅("[WAL](https://www.sqlite.org/wal.html)")을 활성화하여 쓰기 작업을 수행하려면 단 하나의 서버("Primary")만 해당 작업을 담당하도록 해야 합니다. [WAL](https://www.sqlite.org/wal.html)은 동시성 속도를 크게 높이고 하나의 작성자와 여러 개의 읽기 작업을 허용합니다.
 
 주 서버는 암호화된 사서함이 포함된 볼륨이 마운트된 데이터 서버에서 실행됩니다. 배포 관점에서는 `imap.forwardemail.net` 뒤에 있는 모든 개별 IMAP 서버를 보조 서버("Secondary")로 간주할 수 있습니다.
 
-[웹소켓](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)을 통해 양방향 통신을 구현합니다.
+[웹소켓](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket)을 통해 양방향 통신을 수행합니다.
 
 * 기본 서버는 [와스](https://github.com/websockets/ws)의 `WebSocketServer` 서버 인스턴스를 사용합니다.
-* 보조 서버는 [와스](https://github.com/websockets/ws)의 `WebSocket` 클라이언트 인스턴스를 사용하며, 이 인스턴스는 [웹소켓-as-promised](https://github.com/vitalets/websocket-as-promised)과 [재연결-웹소켓](https://github.com/opensumi/reconnecting-websocket)로 래핑됩니다. 이 두 래퍼는 `WebSocket`이 다시 연결되고 특정 데이터베이스 쓰기 작업에 대한 데이터를 주고받을 수 있도록 보장합니다.
+* 보조 서버는 [와스](https://github.com/websockets/ws)의 `WebSocket` 클라이언트 인스턴스를 사용하며, 이 인스턴스는 [웹소켓-as-promised](https://github.com/vitalets/websocket-as-promised)와 [재연결-웹소켓](https://github.com/opensumi/reconnecting-websocket)로 래핑됩니다. 이 두 래퍼는 `WebSocket`이 다시 연결되고 특정 데이터베이스 쓰기 작업에 대한 데이터를 주고받을 수 있도록 보장합니다.
 
 ### 백업 {#backups}
 
@@ -171,21 +171,21 @@ write-ahead-logging("[WAL](https://www.sqlite.org/wal.html)")을 활성화하여
 
 백업의 경우, IMAP 명령 처리 중에 매일 SQLite `VACUUM INTO` 명령을 실행합니다. 이 명령은 메모리 내 IMAP 연결에서 암호화된 비밀번호를 활용합니다. 기존 백업이 감지되지 않거나 파일의 [SHA-256](https://en.wikipedia.org/wiki/SHA-2) 해시가 최신 백업과 비교하여 변경된 경우 백업이 저장됩니다.
 
-내장된 `backup` 명령 대신 `VACUUM INTO` 명령을 사용합니다. `backup` 명령 작업 중에 페이지가 수정되면 처음부터 다시 시작해야 하기 때문입니다. `VACUUM INTO` 명령은 스냅샷을 생성합니다. 자세한 내용은 [깃허브](https://github.com/benbjohnson/litestream.io/issues/56) 및 [해커 뉴스](https://news.ycombinator.com/item?id=31387556)에 대한 주석을 참조하세요.
+`VACUUM INTO` 명령은 내장된 `backup` 명령과 달리 사용됩니다. `backup` 명령 작업 중에 페이지가 수정되면 처음부터 다시 시작해야 하기 때문입니다. `VACUUM INTO` 명령은 스냅샷을 생성합니다. 자세한 내용은 [깃허브](https://github.com/benbjohnson/litestream.io/issues/56) 및 [해커 뉴스](https://news.ycombinator.com/item?id=31387556)에 대한 설명을 참조하세요.
 
-또한 `backup` 명령은 `rekey`이 호출될 때까지 잠시 동안 데이터베이스를 암호화하지 않기 때문에 `backup` 대신 `VACUUM INTO`을 사용합니다(통찰력은 GitHub [논평](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927)에서 확인할 수 있습니다).
+또한 `backup` 대신 `VACUUM INTO`을 사용합니다. `backup` 명령은 `rekey`가 호출될 때까지 잠시 동안 데이터베이스를 암호화하지 않기 때문입니다(통찰력은 GitHub [논평](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927)를 참조하세요).
 
-2차 서버는 `WebSocket` 연결을 통해 1차 서버에게 백업을 실행하도록 지시합니다. 그러면 1차 서버는 해당 명령을 받고 다음과 같은 작업을 수행합니다.
+2차 서버는 `WebSocket` 연결을 통해 1차 서버에 백업을 실행하도록 지시합니다. 그러면 1차 서버는 해당 명령을 받고 다음과 같은 작업을 수행합니다.
 
 1. 암호화된 사서함에 연결합니다.
 2. 쓰기 잠금을 획득합니다.
-3. `wal_checkpoint(PASSIVE)`를 통해 WAL 체크포인트를 실행합니다.
+3. `wal_checkpoint(PASSIVE)`을 통해 WAL 체크포인트를 실행합니다.
 4. `VACUUM INTO` SQLite 명령을 실행합니다.
 5. 암호화된 비밀번호로 복사된 파일을 열 수 있는지 확인합니다(보안/더미 검증).
 6. Cloudflare R2(또는 지정된 경우 자체 제공업체)에 업로드하여 저장합니다.
 
 <!--
-7. 생성된 백업 파일을 `gzip`로 압축합니다.
+7. 생성된 백업 파일을 `gzip`으로 압축합니다.
 8. 저장을 위해 Cloudflare R2(또는 지정된 경우 자체 제공업체)에 업로드합니다.
 -->
 
@@ -197,9 +197,9 @@ write-ahead-logging("[WAL](https://www.sqlite.org/wal.html)")을 활성화하여
 
 당사의 IMAP 서버는 복잡한 쿼리, 정규 표현식 등을 포함하는 `SEARCH` 명령을 지원합니다.
 
-빠른 검색 성능은 [FTS5](https://www.sqlite.org/fts5.html) 및 [sqlite-정규식](https://github.com/asg017/sqlite-regex#sqlite-regex) 덕분입니다.
+[FTS5](https://www.sqlite.org/fts5.html)과 [sqlite-정규식](https://github.com/asg017/sqlite-regex#sqlite-regex) 덕분에 검색 성능이 빨라졌습니다.
 
-`Date` 값을 [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) 문자열로 SQLite 사서함에 저장합니다(적절한 동등성 비교 기능을 위해 UTC 시간대 사용).
+`Date` 값을 SQLite 사서함에 [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) 문자열로 저장하고, 이를 [Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)를 통해 저장합니다(동등성 비교가 제대로 작동하도록 UTC 시간대를 사용합니다).
 
 검색 쿼리에 포함된 모든 속성에 대한 인덱스도 저장됩니다.
 
@@ -255,9 +255,9 @@ write-ahead-logging("[WAL](https://www.sqlite.org/wal.html)")을 활성화하여
 
 전달 이메일은 다음 원칙에 따라 설계되었습니다.
 
-1. 항상 개발자 친화적이고, 보안 및 개인정보 보호에 중점을 두고, 투명성을 유지하십시오.
-2. [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [유닉스](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [열두 가지 요소](https://12factor.net/), [오컴의 면도날](https://en.wikipedia.org/wiki/Occam%27s_razor), [도그푸딩](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)를 준수하십시오.
-3. 엉성하고, 부트스트랩 방식으로 개발하며, [라면-수익성 있는](http://www.paulgraham.com/ramenprofitable.html) 방식으로 개발하는 개발자를 대상으로 합니다.
+1. 항상 개발자 친화적이고, 보안 및 개인정보 보호에 중점을 두고, 투명하게 운영하십시오.
+2. [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [유닉스](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [열두 가지 요소](https://12factor.net/), [오컴의 면도날](https://en.wikipedia.org/wiki/Occam%27s_razor), [도그푸딩](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)을 준수하십시오.
+3. 초보 개발자, 부트스트랩 개발자, [라면-수익성 있는](http://www.paulgraham.com/ramenprofitable.html) 개발자를 대상으로 합니다.
 
 ### 실험 {#experiments}
 
@@ -267,39 +267,39 @@ write-ahead-logging("[WAL](https://www.sqlite.org/wal.html)")을 활성화하여
 
 그 중 하나는 S3 호환 스토리지 계층과 함께 [rclone]() 및 SQLite를 함께 사용해 보는 것이었습니다.
 
-그 실험을 통해 우리는 rclone, SQLite 및 [VFS](https://en.wikipedia.org/wiki/Virtual_file_system) 사용과 관련된 예외 사례를 더욱 잘 이해하고 발견할 수 있었습니다.
+그 실험을 통해 우리는 rclone, SQLite, [VFS](https://en.wikipedia.org/wiki/Virtual_file_system) 사용과 관련된 극단적인 사례를 더욱 잘 이해하고 발견할 수 있었습니다.
 
-* rclone에서 `--vfs-cache-mode writes` 플래그를 활성화하면 읽기는 정상이지만 쓰기는 캐시됩니다.
-* 여러 IMAP 서버가 전역적으로 분산되어 있는 경우, 단일 작성자와 여러 리스너(예: 게시/구독 방식)가 있는 경우를 제외하고는 캐시가 각 서버에 분산됩니다.
-* 이는 매우 복잡하며, 이와 같은 복잡성을 추가하면 단일 장애 지점이 더 많아집니다.
+* rclone으로 `--vfs-cache-mode writes` 플래그를 활성화하면 읽기는 정상이지만 쓰기는 캐시됩니다.
+* 여러 IMAP 서버가 전역적으로 분산되어 있는 경우, 단일 작성자와 여러 리스너(예: pub/sub 방식)가 있는 경우가 아니면 캐시가 각 서버에 분산됩니다.
+* 이는 매우 복잡하며, 이와 같은 복잡성이 더해지면 단일 장애 지점이 더 많아집니다.
 * S3 호환 스토리지 공급자는 부분 파일 변경을 지원하지 않습니다. 즉, `.sqlite` 파일을 변경하면 데이터베이스가 완전히 변경되어 다시 업로드됩니다.
-* `rsync`와 같은 다른 솔루션도 있지만, 미리 쓰기 로그("[WAL](https://www.sqlite.org/wal.html)") 지원에 중점을 두지 않습니다. 따라서 Litestream을 검토하게 되었습니다. 다행히 암호화 방식에서 [WAL](https://www.sqlite.org/wal.html) 파일이 이미 암호화되어 있으므로 Litestream에 의존할 필요가 없습니다. 하지만 Litestream을 프로덕션 환경에서 사용하는 데 아직 확신이 없었기 때문에 아래에 몇 가지 참고 사항을 적어 두었습니다.
-* `--vfs-cache-mode writes` 옵션(쓰기 작업에 `rclone` 대신 SQLite를 사용하는 *유일한* 방법)을 사용하면 전체 데이터베이스를 처음부터 메모리에 복사하려고 시도합니다. 10GB 사서함 하나를 처리하는 것은 괜찮지만, 저장 용량이 매우 큰 사서함을 여러 개 처리하면 IMAP 서버에서 메모리 제한 및 `ENOMEM` 오류, 세그먼테이션 오류, 데이터 손상이 발생할 수 있습니다.
-* S3 호환 스토리지 계층에 데이터를 저장하기 위해 SQLite [가상 테이블](https://www.sqlite.org/vtab.html)(예: [s3db](https://github.com/jrhy/s3db))을 사용하려고 하면 다음과 같은 몇 가지 문제가 발생합니다.
-* S3 API 엔드포인트에 HTTP `GET`, `PUT`, `HEAD` 및 `POST` 메서드를 적용해야 하므로 읽기 및 쓰기 속도가 매우 느려집니다.
-* 개발 테스트 결과, 광섬유 인터넷에서 50만~100만 개 이상의 레코드를 초과하는 경우에도 S3 호환 제공자에 대한 쓰기 및 읽기 처리량에 따라 제한되는 것으로 나타났습니다. 예를 들어, 개발자는 순차적인 SQL `INSERT` 문과 대량의 데이터를 대량으로 쓰는 문을 모두 실행하기 위해 `for` 루프를 실행했습니다. 두 경우 모두 성능이 엄청나게 느렸습니다.
-* 가상 테이블에는 **인덱스를 포함할 수 없음**, `ALTER TABLE` 문, 그리고 [다른](https://stackoverflow.com/a/12507650) 및 [제한 사항](https://sqlite.org/lang_createvtab.html)이 포함되어 있어 데이터 양에 따라 1~2분 이상 지연이 발생할 수 있습니다.
+* `rsync`와 같은 다른 솔루션도 있지만, 미리 쓰기 로그("[WAL](https://www.sqlite.org/wal.html)") 지원에 중점을 두지 않습니다. 따라서 Litestream을 검토하게 되었습니다. 다행히 암호화 방식에서 [WAL](https://www.sqlite.org/wal.html) 파일을 이미 암호화하고 있으므로 Litestream에 의존할 필요가 없습니다. 하지만 Litestream을 프로덕션 환경에서 사용할 수 있을지 아직 확신이 서지 않아 아래에 몇 가지 참고 사항을 남겨둡니다.
+* `--vfs-cache-mode writes` 옵션(쓰기 작업에 `rclone` 대신 SQLite를 사용하는 *유일한* 방법)을 사용하면 전체 데이터베이스를 처음부터 메모리에 복사하려고 시도합니다. 10GB 사서함 하나를 처리하는 것은 괜찮지만, 저장 용량이 매우 큰 사서함을 여러 개 처리하면 IMAP 서버에서 메모리 제한, `ENOMEM` 오류, 세그먼테이션 오류 및 데이터 손상이 발생할 수 있습니다.
+* S3 호환 스토리지 계층에 데이터를 저장하기 위해 SQLite [가상 테이블](https://www.sqlite.org/vtab.html)(예: [s3db](https://github.com/jrhy/s3db) 사용)을 사용하려고 하면 다음과 같은 몇 가지 문제가 발생합니다.
+* S3 API 엔드포인트에 HTTP `.sqlite`0, `.sqlite`1, `.sqlite`2 및 `.sqlite`3 메서드를 사용해야 하므로 읽기 및 쓰기 속도가 매우 느립니다.
+* 개발 테스트 결과, 파이버 인터넷에서 50만~100만 개 이상의 레코드를 초과하는 레코드는 S3 호환 공급자에 대한 쓰기 및 읽기 처리량에 의해 여전히 제한되는 것으로 나타났습니다. 예를 들어, 개발자는 순차적인 SQL `.sqlite`5 문과 대량의 데이터를 대량으로 쓰는 문을 모두 실행하기 위해 `.sqlite`4 루프를 실행했습니다. 두 경우 모두 성능이 엄청나게 느렸습니다.
+* 가상 테이블은 **인덱스**, `.sqlite`6 문, `.sqlite`7, `.sqlite`8을 가질 수 없습니다. 이로 인해 데이터 양에 따라 1~2분 이상 지연이 발생할 수 있습니다.
 * 객체는 암호화되지 않은 상태로 저장되었으며, 기본 암호화 지원은 즉시 제공되지 않습니다.
-* 또한 개념적, 기술적 측면에서 이전 글머리 기호와 유사한 [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs)를 사용하는 방법도 모색했습니다(따라서 동일한 문제가 있습니다). [wxSQLite3](https://github.com/utelle/wxsqlite3)(현재 위 솔루션에서 사용 중)부터 [설치 파일 편집](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276)까지 암호화로 래핑된 사용자 지정 `sqlite3` 빌드를 사용하는 것도 한 가지 방법이 될 수 있습니다.
-* 또 다른 잠재적인 접근 방식은 [멀티플렉스 확장](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c)을 사용하는 것이었지만, 이 방법은 32GB라는 제한이 있어 복잡한 빌드 및 개발 과정이 필요합니다.
-* `ALTER TABLE` 문이 필요합니다(따라서 가상 테이블 사용이 완전히 배제됩니다). `knex-schema-inspector`을 사용한 후크가 제대로 작동하려면 `ALTER TABLE` 문이 필요합니다. 이를 통해 데이터가 손상되지 않고 검색된 행이 `mongoose` 스키마 정의(제약 조건, 변수 유형 및 임의 데이터 유효성 검사 포함)에 따라 유효한 문서로 변환될 수 있습니다.
-* 오픈 소스 커뮤니티에서 SQLite와 관련된 S3 호환 프로젝트는 거의 모두 Python으로 진행됩니다(저희 스택의 100%에 JavaScript를 사용하는 것은 아닙니다).
-* [sqlite-zstd](https://github.com/phiresky/sqlite-zstd)([댓글](https://news.ycombinator.com/item?id=32303762) 참조)과 같은 압축 라이브러리는 유망해 보이지만, [아직 프로덕션에 사용할 준비가 되지 않았을 수 있습니다.](https://github.com/phiresky/sqlite-zstd#usage)은 그렇지 않습니다. `String`, `Object`, `Map`, `Array`, `Set`, `Buffer`과 같은 데이터 유형에 대한 애플리케이션 측 압축은 더 깔끔하고 간편한 접근 방식입니다(데이터베이스 메타데이터로 `Boolean` 플래그 또는 열을 저장하거나, `PRAGMA` 또는 `user_version=1`을 압축에 사용하거나, `user_version=0`를 비압축에 사용할 수 있으므로 마이그레이션도 더 쉽습니다).
-* 다행히 IMAP 서버 저장소에 첨부 파일 중복 제거 기능이 이미 구현되어 있습니다. 따라서 동일한 첨부 파일이 있는 모든 메시지는 첨부 파일의 사본을 유지하지 않습니다. 대신, 하나의 첨부 파일이 여러 메시지와 스레드에 대해 하나의 사서함에 저장됩니다(이후 외부 참조가 사용됩니다).
-* SQLite 복제 및 백업 솔루션인 Litestream 프로젝트는 매우 유망하며 앞으로도 계속 사용할 가능성이 높습니다.
-* 작성자의 공로를 깎아내리는 것은 아닙니다. 저희는 10년 넘게 오픈 소스에 대한 그들의 작업과 기여를 사랑해 왔습니다. 하지만 실제 사용 환경에서는 [두통이 많을 수도 있다](https://github.com/benbjohnson/litestream/issues)과 [사용으로 인한 잠재적인 데이터 손실](https://github.com/benbjohnson/litestream/issues/218)가 있는 것으로 보입니다.
-* 백업 복원은 원활하고 간단해야 합니다. `mongodump` 및 `mongoexport`을 사용하는 MongoDB와 같은 솔루션을 사용하는 것은 지루할 뿐만 아니라 시간이 많이 걸리고 구성이 복잡합니다.
-* SQLite 데이터베이스는 단일 파일이므로 간편합니다.
+* 또한 개념적, 기술적 측면에서 이전 글머리 기호와 유사한 `.sqlite`9를 사용하는 방안도 검토했습니다(따라서 동일한 문제가 있습니다). `rsync`1(현재 위 솔루션에서 사용 중)부터 `rsync`2까지 암호화로 래핑된 사용자 지정 `rsync`0 빌드를 사용하는 방안도 검토할 수 있습니다.
+* 또 다른 가능한 접근 방식은 `rsync`3을 사용하는 것이었지만, 이 방법은 32GB 제한이 있어 복잡한 빌드 및 개발 과정이 필요합니다.
+* `rsync`4 문이 필요합니다(따라서 가상 테이블 사용이 완전히 배제됩니다). `rsync`6을 사용한 후크가 제대로 작동하려면 `rsync`5 문이 필요합니다. 이를 통해 데이터가 손상되지 않고 검색된 행이 `rsync`7 스키마 정의(제약 조건, 변수 유형 및 임의 데이터 유효성 검사 포함)에 따라 유효한 문서로 변환될 수 있습니다.
+* 오픈 소스 커뮤니티에서 SQLite와 관련된 S3 호환 프로젝트는 거의 모두 Python으로 작성됩니다(스택의 100%에 JavaScript를 사용하는 것은 아닙니다).
+* `rsync`8(`rsync`9 참조)과 같은 압축 라이브러리는 유망해 보이지만, __PROTECTED_LINK_189__0은 그렇지 않습니다. __PROTECTED_LINK_189__1, __PROTECTED_LINK_189__2, __PROTECTED_LINK_189__3, __PROTECTED_LINK_189__4, __PROTECTED_LINK_189__5, __PROTECTED_LINK_189__6과 같은 데이터 유형에 대한 애플리케이션 측 압축은 더 깔끔하고 간편한 접근 방식입니다(또한 __PROTECTED_LINK_189__7 플래그 또는 열을 저장할 수 있기 때문에 마이그레이션도 더 쉽습니다. 또는 데이터베이스 메타데이터로 __PROTECTED_LINK_189__8, __PROTECTED_LINK_189__9를 압축에 사용하거나 __PROTECTED_LINK_190__0을 비압축에 사용할 수도 있습니다).
+* 다행히 IMAP 서버 저장소에 이미 첨부 파일 중복 제거 기능이 구현되어 있습니다. 따라서 동일한 첨부 파일이 있는 모든 메시지는 첨부 파일의 사본을 보관하지 않습니다. 대신, 사서함의 여러 메시지와 스레드에 대해 단일 첨부 파일이 저장되고, 이후에는 외부 참조가 사용됩니다.
+* SQLite 복제 및 백업 솔루션인 Litestream 프로젝트는 매우 유망하며, 앞으로도 계속 사용할 가능성이 높습니다.
+* 작성자의 업적과 오픈 소스 기여를 10년 넘게 사랑해 온 만큼, 작성자의 공로를 깎아내리는 것은 아닙니다. 하지만 실제 사용 환경에서는 __PROTECTED_LINK_190__1과 __PROTECTED_LINK_190__2가 존재하는 것으로 보입니다.
+* 백업 복원은 원활하고 간단해야 합니다. __PROTECTED_LINK_190__3과 __PROTECTED_LINK_190__4를 사용하는 MongoDB와 같은 솔루션을 사용하는 것은 번거로울 뿐만 아니라 시간도 많이 소요되고 구성도 복잡합니다.
+* SQLite 데이터베이스는 이를 간소화합니다(단일 파일).
 * 사용자가 언제든지 사서함을 가져가서 떠날 수 있는 솔루션을 설계하고 싶었습니다.
-* `fs.unlink('mailbox.sqlite'))`에 대한 간단한 Node.js 명령을 사용하면 디스크 저장소에서 영구적으로 삭제됩니다.
-* 마찬가지로 S3 호환 API와 HTTP `DELETE`을 사용하여 사용자의 스냅샷과 백업을 쉽게 제거할 수 있습니다.
+* __PROTECTED_LINK_190__5에 대한 간단한 Node.js 명령을 실행하면 디스크 저장소에서 영구적으로 삭제됩니다.
+* 마찬가지로 HTTP __PROTECTED_LINK_190__6을 사용하는 S3 호환 API를 사용하여 사용자의 스냅샷과 백업을 쉽게 제거할 수 있습니다.
 * SQLite는 가장 간단하고 빠르며 비용 효율적인 솔루션이었습니다.
 
-### 대안이 부족합니다 {#lack-of-alternatives}
+### 대안이 부족합니다. {#lack-of-alternatives}
 
 우리가 아는 한, 이런 방식으로 설계된 다른 이메일 서비스는 없으며 오픈 소스도 아닙니다.
 
-우리는 이것이 기존 이메일 서비스가 [스파게티 코드](https://en.wikipedia.org/wiki/Spaghetti_code) :spaghetti:와 같은 레거시 기술을 프로덕션에 사용하고 있기 때문일 수 있다고 생각합니다.
+우리는 이것이 기존 이메일 서비스가 [스파게티 코드](https://en.wikipedia.org/wiki/Spaghetti_code) :spaghetti:와 같은 레거시 기술을 사용하고 있기 때문일 수 있다고 생각합니다.
 
 기존 이메일 서비스 제공업체의 대부분, 아니면 전부는 폐쇄 소스이거나 오픈 소스로 광고하지만 **실제로는 프런트엔드만 오픈 소스입니다.**
 

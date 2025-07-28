@@ -1,8 +1,8 @@
-# Přeposílání e-mailů: Vaše řešení pro přeposílání e-mailů v souladu se paragrafem 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
+# Přeposílání e-mailů: Vaše řešení pro přeposílání e-mailů v souladu se § 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
 <img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_6__ Obsah {__CHRÁNĚNÁ_URL_7__
+## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
 * [Pochopení souladu s paragrafem 889](#understanding-section-889-compliance)
@@ -15,9 +15,9 @@ __CHRÁNĚNÁ_URL_6__ Obsah {__CHRÁNĚNÁ_URL_7__
 * [Bezpečné a kompatibilní přeposílání e-mailů začíná zde](#secure-compliant-email-forwarding-starts-here)
 * [Reference](#references)
 
-__CHRÁNĚNÁ_URL_8__ Předmluva {__CHRÁNĚNÁ_URL_9__
+## Předmluva {#foreword}
 
-Ve společnosti Forward Email věříme v jednoduché, bezpečné a soukromé přeposílání e-mailů pro každého. Víme, že pro mnoho organizací, zejména pro ty, které spolupracují s vládou USA, není dodržování předpisů jen módním slovem – je to nutnost. Zajištění dodržování **federálních předpisů pro e-mail** je klíčové. Proto s hrdostí potvrzujeme, že naše služba **bezpečného přeposílání e-mailů** je vytvořena tak, aby splňovala přísné federální požadavky, včetně [Oddíl 889](https://www.acquisition.gov/Section-889-Policies) z [Zákon o zmocnění k národní obraně (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
+Ve společnosti Forward Email věříme v jednoduché, bezpečné a soukromé přeposílání e-mailů pro každého. Víme, že pro mnoho organizací, zejména pro ty, které spolupracují s vládou USA, není dodržování předpisů jen módním slovem – je to nutnost. Zajištění dodržování **federálních předpisů pro e-mail** je klíčové. Proto s hrdostí potvrzujeme, že naše služba **bezpečného přeposílání e-mailů** je vytvořena tak, aby splňovala přísné federální požadavky, včetně [Oddíl 889](https://www.acquisition.gov/Section-889-Policies) požadavku [Zákon o zmocnění k národní obraně (NDAA)](https://en.wikipedia.org/wiki/National_Defense_Authorization_Act).
 
 Náš závazek k **dodržování předpisů pro vládní e-maily** byl nedávno uveden do praxe, když **Americká námořní akademie** oslovila **Forward Email**. Požadovali služby **zabezpečeného přeposílání e-mailů** a potřebovali dokumentaci potvrzující naše dodržování federálních předpisů, včetně **dodržování paragrafu 889**. Tato zkušenost slouží jako cenná případová studie, která demonstruje naši připravenost a schopnost podporovat vládou financované organizace a plnit jejich přísné požadavky. Tento závazek se vztahuje na všechny naše uživatele, kteří hledají spolehlivé **e-mailové řešení zaměřené na soukromí**.
 
@@ -26,7 +26,7 @@ Náš závazek k **dodržování předpisů pro vládní e-maily** byl nedávno 
 Co je paragraf 889? Jednoduše řečeno, jedná se o federální zákon USA, který zakazuje vládním agenturám používat nebo uzavírat smlouvy se subjekty, které používají určitá telekomunikační a kamerová sledovací zařízení nebo služby od konkrétních společností (jako jsou Huawei, ZTE, Hikvision, Dahua a Hytera). Toto pravidlo, často spojované se **zákazem Huawei** a **zákazem ZTE**, pomáhá chránit národní bezpečnost.
 
 > \[!NOTE]
-> Section 889 specifically targets equipment and services from Huawei, ZTE, Hytera, Hikvision, and Dahua, including their subsidiaries and affiliates.
+> Oddíl 889 se konkrétně zaměřuje na zařízení a služby společností Huawei, ZTE, Hytera, Hikvision a Dahua, včetně jejich dceřiných společností a přidružených společností.
 
 Pro **službu přeposílání e-mailů pro vládní zakázky**, jako je **Forward Email**, to znamená zajistit, aby žádný z našich poskytovatelů základní infrastruktury toto zakázané zařízení nepoužíval, a my tak **dodržujeme požadavky § 889**.
 
@@ -34,40 +34,40 @@ Pro **službu přeposílání e-mailů pro vládní zakázky**, jako je **Forwar
 
 Takže **jak je Forward Email v souladu s paragrafem 889**? Toho dosahujeme pečlivým výběrem našich infrastrukturních partnerů. **Forward Email** se pro svou **infrastrukturu v souladu s paragrafem 889** spoléhá výhradně na dva klíčové poskytovatele:
 
-1. **[mračna](https://www.cloudflare.com/):** Náš hlavní partner pro síťové služby a **zabezpečení e-mailů Cloudflare**.
-2. **[DataPacket](https://datapacket.com/):** Náš hlavní poskytovatel serverové infrastruktury (pro failover používáme [Digitální oceán](https://www.digitalocean.com/) a/nebo [Vultr](https://www.vultr.com/) a brzy přejdeme výhradně na používání DataPacket – samozřejmě jsme písemně potvrdili shodu s paragrafem 889 od obou těchto poskytovatelů failoveru).
+1. **[Cloudflare](https://www.cloudflare.com/):** Náš primární partner pro síťové služby a **zabezpečení e-mailů Cloudflare**.
+2. **[Datový paket](https://datapacket.com/):** Náš primární poskytovatel serverové infrastruktury (pro failover používáme [Digitální oceán](https://www.digitalocean.com/) a/nebo [Vultr](https://www.vultr.com/) a brzy přejdeme výhradně na používání DataPacket – samozřejmě jsme písemně potvrdili soulad s paragrafem 889 od obou těchto poskytovatelů failoveru).
 
 > \[!IMPORTANT]
-> Our exclusive reliance on Cloudflare and DataPacket, neither of which uses Section 889 prohibited equipment, is the cornerstone of our compliance.
+> Základem našeho souladu s předpisy je naše výhradní spoléhání se na Cloudflare a DataPacket, z nichž ani jeden nepoužívá zařízení zakázaná podle paragrafu 889.
 
-Jak [mračna](https://www.cloudflare.com/), tak [DataPacket](https://datapacket.com/) se zavazují k dodržování vysokých bezpečnostních standardů a nepoužívají zařízení zakázaná podle § 889. **Používání služeb Cloudflare a DataPacket pro dodržování § 889** je pro naši službu zásadní.
+[Cloudflare](https://www.cloudflare.com/) i [Datový paket](https://datapacket.com/) se zavazují k dodržování vysokých bezpečnostních standardů a nepoužívají zařízení zakázaná podle § 889. **Používání služeb Cloudflare a DataPacket pro dodržování předpisů podle § 889** je pro naši službu zásadní.
 
 ### Závazek Cloudflare {#cloudflares-commitment}
 
-[mračna](https://www.cloudflare.com/) ve svém dokumentu **[Kodex chování třetích stran](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)** výslovně uvádí **dodržování paragrafu 889**. Uvádí:
+[Cloudflare](https://www.cloudflare.com/) explicitně řeší **soulad s paragrafem 889** ve svém **[Kodex chování třetích stran](https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf)**. Uvádí:
 
 > „Podle § 889 zákona o zmocnění k národní obraně (NDAA) společnost Cloudflare ve svém dodavatelském řetězci nepoužívá ani jinak nepovoluje telekomunikační zařízení, produkty pro video dohled ani služby vyrobené nebo poskytované společnostmi Huawei Technologies Company, ZTE Corporation, Hytera Communications Corporation, Hangzhou Hikvision Digital Technology Company nebo Dahua Technology Company (nebo jakoukoli dceřinou společností či přidruženou společností těchto subjektů).“
 
 *(Zdroj: Kodex chování třetích stran Cloudflare, načteno 29. dubna 2025)*
 
-Toto jasné prohlášení potvrzuje, že infrastruktura [Cloudflare](https://www.cloudflare.com/), kterou služba **Forward Email** využívá, splňuje požadavky paragrafu 889.
+Toto jasné prohlášení potvrzuje, že infrastruktura [Cloudflare](https://www.cloudflare.com/), kterou funkce **Forward Email** využívá, splňuje požadavky § 889.
 
 ### Infrastruktura datových paketů {#datapackets-infrastructure}
 
-Náš poskytovatel serverů, [DataPacket](https://datapacket.com/), využívá síťové vybavení výhradně od společností **Arista Networks** a **Cisco**. Ani Arista, ani Cisco nepatří mezi společnosti zakázané podle paragrafu 889. Obě společnosti jsou zavedenými dodavateli, kteří se široce používají v zabezpečeném podnikovém a vládním prostředí a jsou známí dodržováním přísných bezpečnostních a shodných standardů.
+[Datový paket](https://datapacket.com/), náš poskytovatel serverů, využívá síťové vybavení výhradně od společností **Arista Networks** a **Cisco**. Ani Arista, ani Cisco nepatří mezi společnosti zakázané podle paragrafu 889. Obě společnosti jsou zavedenými dodavateli, kteří se široce používají v bezpečném podnikovém a vládním prostředí a jsou známí dodržováním přísných bezpečnostních a shodných standardů.
 
-Používáním pouze [mračna](https://www.cloudflare.com/) a [DataPacket](https://datapacket.com/) zajišťuje **Forward Email**, že celý jeho řetězec poskytování služeb neobsahuje zařízení zakázaná podle § 889, a poskytuje tak **bezpečné přeposílání e-mailů pro federální agentury** a další uživatele, kteří dbají na bezpečnost.
+Používáním pouze parametrů [Cloudflare](https://www.cloudflare.com/) a [Datový paket](https://datapacket.com/) zajišťuje **Forward Email**, že celý řetězec poskytování služeb neobsahuje zařízení zakázaná podle paragrafu 889, a poskytuje tak **bezpečné přeposílání e-mailů pro federální agentury** a další uživatele, kteří dbají na bezpečnost.
 
-## Nad rámec § 889: Širší dodržování předpisů ze strany vlády {#beyond-section-889-broader-government-compliance}
+## Nad rámec § 889: Širší dodržování předpisů vlády {#beyond-section-889-broader-government-compliance}
 
-Náš závazek k **zabezpečení vládních e-mailů** a dodržování předpisů přesahuje rámec § 889. I když samotná služba **Forward Email** přímo nezpracovává ani neukládá citlivá vládní data, jako je [Kontrolované neutajované informace (CUI)](https://en.wikipedia.org/wiki/Controlled_Unclassified_Information), stejným způsobem jako velká SaaS platforma, naše architektura **open-source forwarding e-mailů** a spoléhání se na bezpečné a kompatibilní poskytovatele je v souladu se zásadami dalších klíčových předpisů:
+Náš závazek k **zabezpečení vládních e-mailů** a dodržování předpisů přesahuje rámec § 889. I když samotná služba **Přeposílání e-mailů** přímo nezpracovává ani neukládá citlivá vládní data, jako je [Kontrolované neutajované informace (CUI)](https://en.wikipedia.org/wiki/Controlled_Unclassified_Information), stejným způsobem jako velká SaaS platforma, naše architektura **přeposílání e-mailů s otevřeným zdrojovým kódem** a spoléhání se na bezpečné a kompatibilní poskytovatele je v souladu se zásadami dalších klíčových předpisů:
 
-* **[FAR (Federální nařízení o zadávání veřejných zakázek)](https://en.wikipedia.org/wiki/Federal_Acquisition_Regulation):** Díky využívání infrastruktury v souladu s FAR a nabídce přímočarých komerčních služeb poskytujeme principy přeposílání e-mailů v souladu s FAR, které jsou vhodné pro vládní dodavatele.
-* **Zákon o ochraně osobních údajů a [FISMA](https://en.wikipedia.org/wiki/Federal_Information_Security_Management_Act_of\_2002):** Jsme **navrhováni s ohledem na soukromí** a nabízíme principy **zákona o ochraně osobních údajů**. Vaše e-maily neukládáme. E-maily jsou přeposílány přímo, čímž se minimalizuje manipulace s daty. Naši poskytovatelé infrastruktury ([mračna](https://www.cloudflare.com/), [DataPacket](https://datapacket.com/)) spravují své systémy v souladu s vysokými bezpečnostními standardy, které jsou v souladu s principy **e-mailů v souladu s FISMA**.
+* **[FAR (Federální nařízení o zadávání veřejných zakázek)](https://en.wikipedia.org/wiki/Federal_Acquisition_Regulation):** Díky používání infrastruktury v souladu s HIPAA a nabídce přímočarých komerčních služeb poskytujeme principy přeposílání e-mailů v souladu s FAR, které jsou vhodné pro vládní dodavatele.
+* **Zákon o ochraně osobních údajů a [FISMA](https://en.wikipedia.org/wiki/Federal_Information_Security_Management_Act_of\_2002):** Jsme navrženi tak, abychom **dbali na soukromí** a dodržovali principy zákona o ochraně osobních údajů. Vaše e-maily neukládáme. E-maily jsou přeposílány přímo, čímž se minimalizuje manipulace s daty. Naši poskytovatelé infrastruktury ([Cloudflare](https://www.cloudflare.com/), [Datový paket](https://datapacket.com/)) spravují své systémy v souladu s vysokými bezpečnostními standardy, které jsou v souladu s principy **e-mailů v souladu s FISMA**.
 * **[HIPAA](https://en.wikipedia.org/wiki/Health_Insurance_Portability_and_Accountability_Act):** Pro organizace, které potřebují **přeposílání e-mailů v souladu s HIPAA**, může být **Přeposílání e-mailů** součástí řešení v souladu s HIPAA. Vzhledem k tomu, že e-maily neukládáme, primární odpovědnost za dodržování předpisů leží na koncových e-mailových systémech. Naše bezpečná transportní vrstva však při správném použití splňuje požadavky HIPAA.
 
 > \[!WARNING]
-> A [Business Associate Agreement (BAA)](https://en.wikipedia.org/wiki/Business_associate_agreement) might be needed with your final email provider, not **Forward Email** itself, as we do not store your email content (unless you use [our encrypted IMAP/POP3 storage layer](/blog/docs/best-quantum-safe-encrypted-email-service)).
+> U vašeho poskytovatele e-mailů může být potřeba [Smlouva o obchodním partnerství (BAA)](https://en.wikipedia.org/wiki/Business_associate_agreement), nikoli samotná funkce **Přeposílání e-mailů**, protože my neukládáme obsah vašich e-mailů (pokud nepoužíváte [naše šifrovaná úložná vrstva IMAP/POP3](/blog/docs/best-quantum-safe-encrypted-email-service)).
 
 ## Naše cesta vpřed: Rozšiřování horizontů dodržování předpisů {#our-path-forward-expanding-compliance-horizons}
 
@@ -75,11 +75,9 @@ Přestože naše shoda s paragrafem 889 poskytuje klíčový základ, zejména p
 
 Uznáváme důležitost rámců a předpisů, jako například:
 
-* **[Systém pro správu ocenění (SAM)](https://sam.gov/):** Nezbytné pro přímé federální zakázky. * **[FAR (Federální nařízení o zadávání veřejných zakázek)](https://www.acquisition.gov/browse/index/far):** Včetně standardních ustanovení jako [FAR 52.212-4](https://www.acquisition.gov/far/52.212-4) pro komerční služby. * **[DFARS (Dodatek k nařízení o federálních obranných akvizicích)](https://en.wikipedia.org/wiki/Defense_Federal_Acquisition_Regulation_Supplement):** Zejména [DFARS 252.239-7010](https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.) pro cloudové služby DoD. * **[CMMC (Certifikace modelu vyspělosti kybernetické bezpečnosti)](https://en.wikipedia.org/wiki/Cybersecurity_Maturity_Model_Certification):** Požadováno pro dodavatele DoD, kteří pracují s [Informace o federálních smlouvách (FCI)](https://en.wikipedia.org/wiki/Federal_Contract_Information) nebo CUI. * **[NIST SP 800-171](https://csrc.nist.gov/pubs/sp/800/171/r3/final):** Základ pro CMMC úrovně 2, zaměřený na ochranu CUI. ([NIST](https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology) - Národní institut pro standardy a technologie)
-* **[FedRAMP (Federální program pro řízení rizik a autorizací)](https://en.wikipedia.org/wiki/FedRAMP):** Standard pro cloudové služby používané federálními agenturami. * **[FISMA (Federální zákon o modernizaci informační bezpečnosti)](https://www.cisa.gov/topics/cybersecurity-best-practices/fisma):** Zastřešující rámec pro federální informační bezpečnost.
-* **[HIPAA (Zákon o přenositelnosti a odpovědnosti zdravotního pojištění)](https://www.hhs.gov/hipaa/index.html):** Pro nakládání s chráněnými zdravotními informacemi (PHI).
-* **[FERPA (Zákon o vzdělávacích právech a ochraně soukromí rodin)](https://en.wikipedia.org/wiki/Family_Educational_Rights_and_Privacy_Act):** Pro ochranu záznamů o vzdělávání studentů.
-* **[COPPA (Zákon o ochraně soukromí dětí online)](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act):** Pro služby zabývající se dětmi mladšími 13 let.
+* **[Systém pro správu ocenění (SAM)](https://sam.gov/):** Nezbytné pro přímé federální zakázky. * **[FAR (Federální nařízení o zadávání veřejných zakázek)](https://www.acquisition.gov/browse/index/far):** Včetně standardních klauzulí jako [FAR 52.212-4](https://www.acquisition.gov/far/52.212-4) pro komerční služby. * **[DFARS (Dodatek k nařízení o federálních obranných akvizicích)](https://en.wikipedia.org/wiki/Defense_Federal_Acquisition_Regulation_Supplement):** Zejména [DFARS 252.239-7010](https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.) pro cloudové služby Ministerstva obrany USA. * **[CMMC (Certifikace modelu vyspělosti kybernetické bezpečnosti)](https://en.wikipedia.org/wiki/Cybersecurity_Maturity_Model_Certification):** Požadované pro dodavatele Ministerstva obrany USA, kteří pracují s [Informace o federálních smlouvách (FCI)](https://en.wikipedia.org/wiki/Federal_Contract_Information) nebo CUI. * **[NIST SP 800-171](https://csrc.nist.gov/pubs/sp/800/171/r3/final):** Základ pro CMMC úrovně 2, zaměřený na ochranu CUI. ([NIST](https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology) - Národní institut pro standardy a technologie)
+* **[FedRAMP (Federální program pro řízení rizik a autorizací)](https://en.wikipedia.org/wiki/FedRAMP):** Standard pro cloudové služby používané federálními agenturami. * **__PROTECTED_LINK_77__0:** Zastřešující rámec pro federální informační bezpečnost. * **__PROTECTED_LINK_77__1:** Pro práci s chráněnými zdravotními informacemi (PHI). * **__PROTECTED_LINK_77__2:** Pro ochranu záznamů o vzdělávání studentů.
+* **__PROTECTED_LINK_77__3:** Pro služby zabývající se dětmi mladšími 13 let.
 
 **Naše současná pozice a budoucí cíle:**
 
@@ -88,7 +86,7 @@ Základní design služby **Forward Email** – **zaměření na soukromí**, **
 Získání formální certifikace nebo autorizace pro frameworky jako **FedRAMP** nebo **CMMC** je však významný úkol. Zahrnuje důkladnou dokumentaci, implementaci specifických technických a procedurálních kontrol (často jich jsou stovky), nezávislá hodnocení (jako [3PAO](https://www.fedramp.gov/glossary/#3pao) pro FedRAMP - Third-Party Assessment Organization) a průběžné monitorování.
 
 > \[!IMPORTANT]
-> Compliance isn't just about technology; it's about documented processes, policies, and ongoing vigilance. Achieving certifications like FedRAMP or CMMC requires substantial investment and time.
+> Dodržování předpisů se netýká jen technologií; jde o zdokumentované procesy, zásady a neustálou ostražitost. Získání certifikací, jako je FedRAMP nebo CMMC, vyžaduje značné investice a čas.
 
 **Náš závazek:**
 
@@ -96,13 +94,13 @@ S růstem **Forward Email** a s vývojem potřeb našich zákazníků se zavazuj
 
 1. **Registrace SAM:** Usnadnění přímé spolupráce s federálními agenturami USA.
 2. **Formalizace procesů:** Vylepšení naší interní dokumentace a postupů tak, aby byly v souladu se standardy, jako je NIST SP 800-171, který tvoří základ pro CMMC.
-3. **Hodnocení postupů FedRAMP:** Posouzení požadavků a proveditelnosti získání autorizace FedRAMP, pravděpodobně s nízkým nebo středním základním stavem, s potenciálním využitím modelu [TO-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/), kde je to relevantní.
+3. **Hodnocení postupů FedRAMP:** Posouzení požadavků a proveditelnosti získání autorizace FedRAMP, pravděpodobně počínaje nízkou nebo střední základní úrovní, s potenciálním využitím modelu [TO-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/), kde je to relevantní.
 4. **Podpora specifických potřeb:** Řešení požadavků, jako je HIPAA (potenciálně prostřednictvím BAA a specifických konfigurací pro uložená data) a FERPA (prostřednictvím vhodných smluvních podmínek a kontrol), jelikož se více zapojujeme do zdravotnických a vzdělávacích institucí.
 
 Tato cesta vyžaduje pečlivé plánování a investice. I když nemáme bezprostřední časové harmonogramy pro všechny certifikace, klíčovou součástí našeho plánu je posílení naší pozice v oblasti dodržování předpisů s cílem splnit potřeby vlády a regulovaných odvětví.
 
 > \[!NOTE]
-> We believe our **open-source** nature provides unique transparency throughout this process, allowing our community and customers to see our commitment firsthand.
+> Věříme, že naše **open source** povaha poskytuje v celém tomto procesu jedinečnou transparentnost a umožňuje naší komunitě a zákazníkům vidět náš závazek na vlastní oči.
 
 Naši komunitu budeme i nadále informovat o dosažení významných milníků na naší cestě k dodržování předpisů.
 
@@ -118,7 +116,7 @@ Výběr služby pro přeposílání e-mailů v souladu s paragrafem 889**, jako 
 
 ## Bezpečné a kompatibilní přeposílání e-mailů začíná zde {#secure-compliant-email-forwarding-starts-here}
 
-Společnost **Forward Email** se věnuje poskytování **bezpečné, soukromé a open-source služby přeposílání e-mailů**. Naše **soulad s paragrafem 889**, kterého jsme dosáhli díky partnerství se společnostmi [mračna](https://www.cloudflare.com/) a [DataPacket](https://datapacket.com/) (což odráží naši práci v rámci **souladu s předpisy pro Forward Email pro Námořní akademii Spojených států**), je důkazem tohoto závazku. Ať už jste vládní subjekt, dodavatel nebo si jednoduše ceníte **zabezpečení vládních e-mailů**, služba **Forward Email** je tu pro vás.
+Společnost **Forward Email** se věnuje poskytování **bezpečné, soukromé a open-source služby přeposílání e-mailů**. Naše **soulad s paragrafem 889**, kterého jsme dosáhli díky partnerství se společnostmi [Cloudflare](https://www.cloudflare.com/) a [Datový paket](https://datapacket.com/) (což odráží naši práci v oblasti **přeposílání e-mailů pro Námořní akademii Spojených států**), je důkazem tohoto závazku. Ať už jste vládní subjekt, dodavatel nebo si jednoduše ceníte **zabezpečení vládních e-mailů**, služba **Forward Email** je tu pro vás.
 
 Jste připraveni na **bezpečné a kompatibilní přeposílání e-mailů**? [Zaregistrujte se zdarma ještě dnes!](https://forwardemail.net)
 
@@ -134,9 +132,9 @@ Jste připraveni na **bezpečné a kompatibilní přeposílání e-mailů**? [Za
 * **Dodatek k federálnímu nařízení o zadávání veřejných zakázek pro obranu (DFARS):** <https://www.acquisition.gov/dfars>
 * **DFARS 252.239-7010:** <https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.>
 * **Certifikace modelu vyspělosti kybernetické bezpečnosti (CMMC):** <https://dodcio.defense.gov/cmmc/About/>
-* **NIST SP 800-171:** <https://csrc.nist.gov/pubs/sp/800/171/r3/final>
-* **Federální program pro řízení rizik a autorizací (FedRAMP):** <https://www.fedramp.gov/>
-* **Federální zákon o modernizaci informační bezpečnosti (FISMA):** <https://www.cisa.gov/topics/cybersecurity-best-practices/fisma>
-* **Zákon o přenositelnosti a odpovědnosti zdravotního pojištění (HIPAA):** <https://www.hhs.gov/hipaa/index.html>
-* **Zákon o vzdělávacích právech a ochraně soukromí rodin (FERPA):** <https://studentprivacy.ed.gov/ferpa>
-* **Zákon o ochraně soukromí dětí online (COPPA):** <https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa>
+* **NIST SP 800-171:** <https://www.cloudflare.com/>0
+* **Federální program pro řízení rizik a autorizací (FedRAMP):** <https://www.cloudflare.com/>1
+* **Federální zákon o modernizaci informační bezpečnosti (FISMA):** <https://www.cloudflare.com/>2
+* **Zákon o přenositelnosti a odpovědnosti zdravotního pojištění (HIPAA):** <https://www.cloudflare.com/>3
+* **Zákon o vzdělávacích právech a ochraně soukromí rodin (FERPA):** <https://www.cloudflare.com/>4
+* **Zákon o ochraně soukromí dětí online (COPPA):** <https://www.cloudflare.com/>5

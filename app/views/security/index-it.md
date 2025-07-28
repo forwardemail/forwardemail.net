@@ -6,7 +6,7 @@
 
 * [Prefazione](#foreword)
 * [Sicurezza delle infrastrutture](#infrastructure-security)
-  * [Data Center sicuri](#secure-data-centers)
+  * [Data center sicuri](#secure-data-centers)
   * [Sicurezza di rete](#network-security)
 * [Sicurezza della posta elettronica](#email-security)
   * [Crittografia](#encryption)
@@ -20,7 +20,7 @@
   * [Valutazioni di sicurezza regolari](#regular-security-assessments)
   * [Conformità](#compliance)
 * [Risposta agli incidenti](#incident-response)
-* [Ciclo di sviluppo della sicurezza](#security-development-lifecycle)
+* [Ciclo di vita dello sviluppo della sicurezza](#security-development-lifecycle)
 * [Protezione del server](#server-hardening)
 * [Contratto di servizio](#service-level-agreement)
 * [Sicurezza Open Source](#open-source-security)
@@ -30,7 +30,7 @@
 
 ## Prefazione {#foreword}
 
-In Forward Email, la sicurezza è la nostra massima priorità. Abbiamo implementato misure di sicurezza complete per proteggere le tue comunicazioni e-mail e i tuoi dati personali. Questo documento delinea le nostre pratiche di sicurezza e i passaggi che adottiamo per garantire la riservatezza, l'integrità e la disponibilità della tua e-mail.
+Per Forward Email, la sicurezza è la nostra massima priorità. Abbiamo implementato misure di sicurezza complete per proteggere le tue comunicazioni email e i tuoi dati personali. Questo documento illustra le nostre pratiche di sicurezza e le misure che adottiamo per garantire la riservatezza, l'integrità e la disponibilità delle tue email.
 
 ## Sicurezza dell'infrastruttura {#infrastructure-security}
 
@@ -56,7 +56,7 @@ Implementiamo più livelli di sicurezza di rete:
 * Protezione tramite scansione delle porte con blocco automatico delle attività sospette
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Tutti i dati in transito vengono crittografati utilizzando TLS 1.2+ con suite di cifratura moderne.
 
 ## Sicurezza e-mail {#email-security}
 
@@ -69,7 +69,7 @@ Implementiamo più livelli di sicurezza di rete:
 * **Protezione completa**: implementiamo crittografia a riposo, crittografia in memoria e crittografia in transito
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Siamo il primo e unico servizio di posta elettronica al mondo a utilizzare **[caselle di posta SQLite resistenti ai quanti e crittografate individualmente](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Autenticazione e autorizzazione {#authentication-and-authorization}
 
@@ -105,7 +105,7 @@ Seguiamo il principio della minimizzazione dei dati:
 
 ## Fornitori di servizi {#service-providers}
 
-Selezioniamo attentamente i nostri fornitori di servizi per garantire che rispettino i nostri elevati standard di sicurezza. Di seguito sono riportati i fornitori che utilizziamo per il trasferimento internazionale di dati e il loro stato di conformità al GDPR:
+Selezioniamo attentamente i nostri fornitori di servizi per garantire che rispettino i nostri elevati standard di sicurezza. Di seguito sono elencati i fornitori che utilizziamo per il trasferimento internazionale di dati e il loro stato di conformità al GDPR:
 
 | Fornitore | Scopo | Certificato DPF | Pagina di conformità al GDPR |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
@@ -116,9 +116,9 @@ Selezioniamo attentamente i nostri fornitori di servizi per garantire che rispet
 | [Stripe](https://stripe.com) | Elaborazione dei pagamenti | ✅ Sì | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Elaborazione dei pagamenti | ❌ No | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Utilizziamo questi provider per garantire un servizio affidabile e sicuro, mantenendo la conformità alle normative internazionali sulla protezione dei dati. Tutti i trasferimenti di dati vengono condotti con le opportune misure di sicurezza in atto per proteggere le tue informazioni personali.
+Utilizziamo questi fornitori per garantire un servizio affidabile e sicuro, nel rispetto delle normative internazionali sulla protezione dei dati. Tutti i trasferimenti di dati vengono effettuati adottando misure di sicurezza adeguate per proteggere le vostre informazioni personali.
 
-## Conformità e auditing {#compliance-and-auditing}
+## Conformità e audit {#compliance-and-auditing}
 
 ### Valutazioni di sicurezza regolari {#regular-security-assessments}
 
@@ -133,7 +133,7 @@ Il nostro team monitora, esamina e valuta regolarmente la base di codice, i serv
 ### Conformità {#compliance}
 
 * Pratiche di gestione dei dati conformi a [GDPR](https://forwardemail.net/gdpr)
-* [Contratto di elaborazione dei dati (DPA)](https://forwardemail.net/dpa) disponibili per i clienti aziendali
+* [Contratto di elaborazione dei dati (DPA)](https://forwardemail.net/dpa) disponibile per i clienti aziendali
 * Controlli della privacy conformi al CCPA
 * Processi verificati SOC 2 Tipo II
 
@@ -149,7 +149,7 @@ Il nostro piano di risposta agli incidenti di sicurezza include:
 6. **Analisi post-incidente**: Revisione completa e miglioramento
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Se scopri una vulnerabilità di sicurezza, segnalala immediatamente a <security@forwardemail.net>.
 
 ## Ciclo di vita dello sviluppo della sicurezza {#security-development-lifecycle}
 
@@ -177,7 +177,7 @@ Tutto il codice viene sottoposto a:
 * Revisione del codice con focus sulla sicurezza
 * Scansione delle vulnerabilità delle dipendenze
 
-## Protezione del server {#server-hardening}
+## Rafforzamento del server {#server-hardening}
 
 Il nostro [Configurazione Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementa numerose misure di rafforzamento del server:
 
@@ -197,9 +197,9 @@ Il nostro [Configurazione Ansible](https://github.com/forwardemail/forwardemail.
 * **Gestione utenti**: Principio dei privilegi minimi con utenti di deploy e DevOps separati
 * **Limiti dei descrittori di file**: Limiti aumentati per prestazioni e sicurezza migliori
 
-## Contratto di livello di servizio {#service-level-agreement}
+## Contratto di servizio {#service-level-agreement}
 
-Manteniamo un elevato livello di disponibilità e affidabilità del servizio. La nostra infrastruttura è progettata per ridondanza e tolleranza agli errori per garantire che il tuo servizio di posta elettronica rimanga operativo. Sebbene non pubblichiamo un documento SLA formale, ci impegniamo a:
+Manteniamo un elevato livello di disponibilità e affidabilità del servizio. La nostra infrastruttura è progettata per garantire ridondanza e tolleranza agli errori, garantendo la continuità operativa del tuo servizio di posta elettronica. Sebbene non pubblichiamo un documento SLA formale, ci impegniamo a:
 
 * Tempo di attività superiore al 99,9% per tutti i servizi
 * Risposta rapida alle interruzioni del servizio
@@ -224,7 +224,7 @@ In qualità di [servizio open source](https://github.com/forwardemail/forwardema
 
 ## Miglioramento continuo {#continuous-improvement}
 
-Miglioriamo costantemente la nostra posizione in materia di sicurezza attraverso:
+Miglioriamo costantemente la nostra strategia di sicurezza attraverso:
 
 * Monitoraggio delle tendenze di sicurezza e delle minacce emergenti
 * Revisione e aggiornamento periodici delle policy di sicurezza
@@ -242,5 +242,5 @@ Per maggiori informazioni sulle nostre pratiche di sicurezza o per segnalare pro
 * [Segnala abuso](https://forwardemail.net/en/report-abuse)
 * [Politica di sicurezza](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [Deposito GitHub](https://github.com/forwardemail/forwardemail.net)
+* [Repository GitHub](https://github.com/forwardemail/forwardemail.net)
 * [FAQ](https://forwardemail.net/en/faq)

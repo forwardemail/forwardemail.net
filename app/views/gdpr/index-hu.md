@@ -14,13 +14,13 @@
 
 A Forward Email egy adatvédelemre összpontosító vállalat, amely elkötelezett az Ön adatainak védelme iránt.
 
-A [Általános adatvédelmi rendelet](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) („GDPR”) szabályozza az EU-n és az EGT-n kívülre történő adattovábbítást, és célja, hogy fokozza az Ön személyes adatai feletti ellenőrzését és jogait. Szerencsére nem adjuk el az általunk feldolgozott, tárolt és/vagy továbbított adatokat – és az ilyen adatokat semmilyen más célra nem használjuk fel, mint hogy szolgáltatásainkat nyújtsuk Önnek.
+A [Általános adatvédelmi rendelet](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) („GDPR”) az EU-n és az EGT-n kívülre történő adattovábbítást szabályozza, célja pedig a személyes adatai feletti ellenőrzés és jogok fokozása. Szerencsére nem adjuk el az általunk feldolgozott, tárolt és/vagy továbbított adatokat – és az ilyen adatokat semmilyen más célra nem használjuk fel, mint hogy szolgáltatásainkat nyújtsuk Önnek.
 
-Személyes adatait **bármikor** módosíthatja a [Fiókom → Profil](/my-account/profile) oldalon, sőt, teljes fiókját és az összes kapcsolódó információt törölheti a [Fiókom → Biztonság](/my-account/security) oldalon. Mivel **100%-ban nyílt forráskódúak vagyunk** a <https://github.com/forwardemail> címen, forráskódunk bármikor ellenőrizhető az adatvédelmi törvényeknek való megfelelés szempontjából.
+**Bármikor** módosíthatja személyes adatait a [Fiókom → Profil](/my-account/profile) alatt, sőt, akár törölheti teljes fiókját és az összes kapcsolódó információt a [Fiókom → Biztonság](/my-account/security) alatt. Mivel a **<https://github.com/forwardemail>>-nál **100%-ban nyílt forráskódúak vagyunk**, forráskódunk bármikor auditálható az adatvédelmi törvényeknek való megfelelés szempontjából.
 
-A [Adatfeldolgozási megállapodás](/dpa) dokumentumunk részletesen ismerteti a GDPR-nak, valamint az EU-USA és a Svájc-USA adatvédelmi pajzs keretrendszereknek való megfelelésünket a feldolgozott, tárolt és továbbított adatok védelme tekintetében.
+A [Adatfeldolgozási megállapodás](/dpa) dokumentumunk részletezi a GDPR-nak, valamint az EU-USA és a Svájc-USA adatvédelmi pajzs keretrendszereknek való megfelelésünket a feldolgozott, tárolt és továbbított adatok védelme tekintetében.
 
-A [Szolgáltatási feltételek](/terms) dokumentum elfogadásával automatikusan elfogadja az adatvédelmi megállapodásunkat (DPA), és nem kell külön dokumentumot aláírnia. Mindent megteszünk annak érdekében, hogy minden személyes adatát a [Adatvédelmi irányelvek](/privacy) dokumentumnak megfelelően védjük – **függetlenül attól, hogy** hol dolgozzuk fel, tároljuk és továbbítjuk azokat. További információkat a [Szolgáltatási feltételek](/terms) és [Adatvédelmi irányelvek](/privacy) dokumentumainkban talál.
+A [Szolgáltatási feltételek](/terms) dokumentum elfogadásával automatikusan elfogadja az adatvédelmi megállapodásunkat (DPA), és nem kell külön dokumentumot aláírnia. Minden tőlünk telhetőt megteszünk annak érdekében, hogy minden személyes adatát a [Adatvédelmi irányelvek](/privacy) dokumentumnak megfelelően védjük – **függetlenül attól, hogy** hol dolgozzuk fel, tároljuk és továbbítjuk azokat. További információkat a [Szolgáltatási feltételek](/terms) és [Adatvédelmi irányelvek](/privacy) dokumentumainkban talál.
 
 ## Nemzetközi adatátvitel {#international-data-transfer}
 
@@ -37,7 +37,7 @@ Az alábbiakban felsoroljuk azokat a szolgáltatóinkat, akiket nemzetközi adat
 | [Stripe](https://stripe.com/) | :white_check_mark: Igen | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: Nem | <https://www.paypal.com/uk/legalhub/privacy-full> |
 
-## GDPR képviselő {#gdpr-representative}
+## GDPR-képviselő {#gdpr-representative}
 
 A [Az Általános Adatvédelmi Rendelet 27. cikke](https://gdpr-info.eu/art-27-gdpr/) dokumentummal összhangban az alábbiakban felsorolt tagállami képviselőink vannak:
 

@@ -57,23 +57,23 @@
 
 ## Sopimuksen muutokset {#changes-to-the-agreement}
 
-Tämä dokumentti on johdannainen dokumentista [Yleiset paperiset DPA-vakioehdot (versio 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) ja siihen on tehty seuraavat muutokset:
+Tämä asiakirja on johdannainen [Yleiset paperiset DPA-vakioehdot (versio 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0)-asiakirjasta, ja siihen on tehty seuraavat muutokset:
 
-1. [Sovellettava laki ja valitut tuomioistuimet](#11-governing-law-and-chosen-courts) on lisätty alla olevaksi osioksi, jonka yllä oleva `Governing State` on tunnistettu.
+1. [Sovellettava laki ja valitut tuomioistuimet](#11-governing-law-and-chosen-courts) on lisätty alla olevaksi osioksi, ja `Governing State` on tunnistettu yllä.
 
 2. [Palveluntarjoajasuhde](#12-service-provider-relationship) on lisätty alla olevaksi osioksi.
 
-## 1. Käsittelijän ja alihankkijan suhteet {#1-processor-and-subprocessor-relationships}
+## 1. Käsittelijän ja alihankkijan väliset suhteet {#1-processor-and-subprocessor-relationships}
 
 ### 1. Palveluntarjoaja käsittelijänä {#1-provider-as-processor}
 
 Tilanteissa, joissa **Asiakas** on asiakkaan henkilötietojen rekisterinpitäjä, **Palveluntarjoaja** katsotaan käsittelijäksi, joka käsittelee henkilötietoja **Asiakkaan** puolesta.
 
-### 2. Palveluntarjoaja alihankkijana {#2-provider-as-subprocessor}
+### 2. Palveluntarjoaja alikäsittelijänä {#2-provider-as-subprocessor}
 
 Tilanteissa, joissa **Asiakas** on asiakkaan henkilötietojen käsittelijä, **Palveluntarjoaja** katsotaan asiakkaan henkilötietojen alihankkijaksi.
 
-## 2. Käsittely {#2-processing}
+## 2. Käsitellään kohdetta {#2-processing}
 
 ### 1. Käsittelytiedot {#1-processing-details}
 
@@ -83,7 +83,7 @@ Kansisivun liitteessä I(B) kuvataan tämän käsittelyn kohde, luonne, tarkoitu
 
 <strong>Asiakas</strong> ohjeistaa <strong>Palveluntarjoajaa</strong> käsittelemään asiakkaan henkilötietoja: (a) Palvelun tarjoamiseksi ja ylläpitämiseksi; (b) Asiakkaan Palvelun käytön kautta mahdollisesti tarkemmin määritellyllä tavalla; (c) <strong>Sopimuksessa</strong> dokumentoidulla tavalla; ja (d) Asiakkaan <strong>an antamien ja <strong>Palveluntarjoajan</strong> vahvistamien muiden kirjallisten ohjeiden mukaisesti, jotka koskevat asiakkaan henkilötietojen käsittelyä tämän Tietojenkäsittelysopimuksen mukaisesti. <strong>Palveluntarjoaja</strong> noudattaa näitä ohjeita, ellei sovellettava lainsäädäntö sitä kiellä. <strong>Palveluntarjoaja</strong> ilmoittaa välittömästi <strong>Asiakkaalle</strong>, jos se ei pysty noudattamaan käsittelyohjeita. <strong>Asiakas</strong> on antanut ja antaa ainoastaan ohjeita, jotka ovat sovellettavan lainsäädännön mukaisia.
 
-### 3. Palveluntarjoajan {#3-processing-by-provider} suorittama käsittely
+### 3. Palveluntarjoajan suorittama käsittely {#3-processing-by-provider}
 
 <strong>Palveluntarjoaja</strong> käsittelee asiakkaan henkilötietoja ainoastaan tämän tietosuojasopimuksen mukaisesti, mukaan lukien kansilehden tiedot. Jos <strong>Palveluntarjoaja</strong> päivittää Palvelua päivittääkseen olemassa olevia tai lisätäkseen uusia tuotteita, ominaisuuksia tai toimintoja, <strong>Palveluntarjoaja</strong> voi muuttaa <strong>Rekisteröityjen luokkia</strong>, <strong>Henkilötietojen luokkia</strong>, <strong>Erityisten tietoluokkien tietoja</strong>, <strong>Erityisten tietoluokkien rajoituksia tai suojatoimia</strong>, <strong>Siirtotiheyttä</strong>, <strong>Käsittelyn luonnetta ja tarkoitusta</strong> ja <strong>Käsittelyn kestoa</strong> tarpeen mukaan päivitysten huomioon ottamiseksi ilmoittamalla <strong>Asiakkaalle</strong> päivityksistä ja muutoksista.
 
@@ -111,7 +111,7 @@ d. <strong>Tarjoaja</strong> on täysin vastuussa kaikista alihankkijoilleen ali
 
 <strong>Asiakas</strong> hyväksyy, että <strong>Palveluntarjoaja</strong> voi siirtää Asiakkaan henkilötietoja ETA-alueen, Yhdistyneen kuningaskunnan tai muun asiaankuuluvan maantieteellisen alueen ulkopuolelle, jos se on tarpeen Palvelun tarjoamiseksi. Jos <strong>Palveluntarjoaja</strong> siirtää Asiakkaan henkilötietoja alueelle, jolle Euroopan komissio tai muu asiaankuuluva valvontaviranomainen ei ole antanut tietosuojan riittävyyttä koskevaa päätöstä, <strong>Palveluntarjoaja</strong> toteuttaa asianmukaiset suojatoimet Asiakkaan henkilötietojen siirtämiseksi kyseiselle alueelle sovellettavien tietosuojalakien mukaisesti.
 
-### 2. ETA-alueen ulkopuoliset siirrot {#2-ex-eea-transfers}
+### 2. ETA:n ulkopuoliset siirrot {#2-ex-eea-transfers}
 
 <strong>Asiakas</strong> ja <strong>Palveluntarjoaja</strong> sopivat, että jos GDPR suojaa Asiakkaan henkilötietojen siirtoa, siirto tapahtuu <strong>Asiakkaalta</strong> ETA-alueen sisältä <strong>Palveluntarjoajalle</strong> ETA-alueen ulkopuolelle, eikä siirtoon sovelleta Euroopan komission tekemää tietosuojan riittävyyspäätöstä, tämän tietosuojasopimuksen allekirjoittamisen myötä <strong>Asiakkaan</strong> ja <strong>Palveluntarjoajan</strong> katsotaan allekirjoittaneen ETA-alueen vakiosopimuslausekkeet ja niiden liitteet, jotka sisällytetään tähän viittauksella. Tällaiset siirrot tehdään ETA-alueen vakiosopimuslausekkeiden mukaisesti, jotka täytetään seuraavasti:
 
@@ -127,7 +127,7 @@ c. Jokaiseen moduuliin sovelletaan seuraavaa (soveltuvin osin):
 
 3. Kohdassa 11 valinnaista sanamuotoa ei sovelleta;
 
-4. Kaikki hakasulkeet 13. kohdassa poistetaan;
+4. Kaikki hakasulkeet 13. kohdasta poistetaan;
 
 5. Kohdassa 17 (vaihtoehto 1) ETA:n vakiosopimuslausekkeisiin sovelletaan **hallintojäsenvaltion** lakia.
 
@@ -147,9 +147,9 @@ c. Kansilehti sisältää Yhdistyneen kuningaskunnan lisäsopimuksen liitteissä
 
 ### 4. Muut kansainväliset siirrot {#4-other-international-transfers}
 
-Henkilötietojen siirroissa, joissa siirron kansainväliseen luonteeseen sovelletaan Sveitsin lakia (eikä minkään ETA-maan tai Yhdistyneen kuningaskunnan lakia), ETA-sopimuslausekkeiden 4 §:n viittaukset yleiseen tietosuoja-asetukseen muutetaan lain edellyttämässä laajuudessa siten, että ne viittaavat sen sijaan Sveitsin liittovaltion tietosuojalakiin tai sen seuraajaan, ja valvontaviranomaisen käsite sisältää Sveitsin liittovaltion tietosuoja- ja tietosovvaltuutetun.
+Henkilötietojen siirroissa, joissa siirron kansainväliseen luonteeseen sovelletaan Sveitsin lakia (eikä minkään ETA-maan tai Yhdistyneen kuningaskunnan lakia), ETA-sopimuslausekkeiden 4 §:n viittaukset yleiseen tietosuoja-asetukseen muutetaan, siinä määrin kuin se on laissa edellytetty, viittaamaan Sveitsin liittovaltion tietosuojalakiin tai sen seuraajaan, ja valvontaviranomaisen käsite sisältää Sveitsin liittovaltion tietosuoja- ja tietosovvaltuutetun.
 
-## 4. Tietoturvahäiriön reagointi {#4-security-incident-response}
+## 4. Tietoturvahäiriön vaste {#4-security-incident-response}
 
 1. Saatuaan tiedon tietoturvaloukkauksesta **Palveluntarjoajan** tulee: (a) ilmoittaa **Asiakkaalle** ilman aiheetonta viivytystä, kun se on mahdollista, mutta viimeistään 72 tunnin kuluessa siitä, kun **Tietoturvaloukkauksesta** on tullut tietoiseksi; (b) antaa **Tietoturvaloukkauksesta** oikea-aikaista tietoa, kun se tulee tietoiseksi tai **Asiakkaan** kohtuudella pyytäessä; ja (c) ryhtyä viipymättä kohtuullisiin toimenpiteisiin tietoturvaloukkauksen estämiseksi ja tutkimiseksi. **Tarjoajan** tämän tietosuojasopimuksen edellyttämää ilmoitusta tai vastausta tietoturvaloukkaukseen ei tulkita **Tarjoajan** myöntämiseksi mistään tietoturvaloukkaukseen liittyvästä syystä tai vastuusta.
 
@@ -173,13 +173,13 @@ Raportin lisäksi **Palveluntarjoaja** vastaa **Asiakkaan** kohtuullisiin tietop
 
 Jos **Palveluntarjoaja** vastaanottaa keneltä tahansa muulta tiedustelun tai pyynnön asiakkaan henkilötietojen käsittelystä, **Palveluntarjoaja** ilmoittaa **Asiakkaalle** pyynnöstä, eikä **Palveluntarjoaja** vastaa pyyntöön ilman **Asiakkaan** etukäteistä suostumusta. Esimerkkejä tällaisista tiedusteluista ja pyynnöistä ovat oikeudellisen, hallinnollisen tai sääntelyviranomaisen määräys asiakkaan henkilötiedoista, jos **Asiakkaalle** ilmoittaminen ei ole sovellettavan lain kieltämää, tai rekisteröidyn pyyntö. Jos sovellettava laki sen sallii, **Palveluntarjoaja** noudattaa **Asiakkaan** kohtuullisia ohjeita näistä pyynnöistä, mukaan lukien tilannepäivitysten ja muiden **Asiakkaan** kohtuudella pyytämien tietojen toimittaminen. Jos rekisteröity tekee sovellettavien tietosuojalakien mukaisen pätevän pyynnön poistaa Asiakkaan henkilötietoja tai estää heitä luovuttamasta henkilötietoja Palveluntarjoajalle, Palveluntarjoaja avustaa Asiakasta pyynnön täyttämisessä sovellettavan tietosuojalain mukaisesti. Palveluntarjoaja tekee yhteistyötä Asiakkaan kanssa ja tarjoaa Asiakkaalle kohtuullista apua Asiakkaan kustannuksella kaikissa Asiakkaan oikeudellisissa vastauksissa tai muissa prosessuaalisissa toimissa, joita Asiakas suorittaa vastauksena kolmannen osapuolen pyyntöön Palveluntarjoajan suorittamasta Asiakkaan henkilötietojen käsittelystä tämän Tietojenkäsittelysopimuksen nojalla.
 
-### 2. Tietosuoja- ja suoravaikutuksen vaikutustenarvioinnit {#2-dpias-and-dtias}
+### 2. DPIA:t ja DTIA:t {#2-dpias-and-dtias}
 
 Jos sovellettavat tietosuojalait sitä edellyttävät, **Palveluntarjoaja** avustaa **Asiakasta** kohtuullisesti pakollisten tietosuojavaikutusten arviointien tai tiedonsiirron vaikutusten arviointien sekä asiaankuuluvien tietosuojaviranomaisten kanssa tehtävien neuvottelujen suorittamisessa ottaen huomioon käsittelyn luonteen ja asiakkaan henkilötiedot.
 
 ## 7. Asiakkaan henkilötietojen poistaminen {#7-deletion-of-customer-personal-data}
 
-### 1. Asiakkaan suorittama poisto {#1-deletion-by-customer}
+### 1. Asiakkaan tekemä poisto {#1-deletion-by-customer}
 
 <strong>Palveluntarjoaja</strong> antaa <strong>Asiakkaalle</strong> mahdollisuuden poistaa Asiakkaan henkilötietoja Palveluiden toiminnallisuuden edellyttämällä tavalla. <strong>Palveluntarjoaja</strong> noudattaa tätä ohjetta niin pian kuin se on kohtuudella mahdollista, paitsi jos Asiakkaan henkilötietojen lisäsäilytystä edellytetään sovellettavan lain nojalla.
 
@@ -191,7 +191,7 @@ b. Jos **Asiakas** ja **Palveluntarjoaja** ovat allekirjoittaneet ETA-sopimuksen
 
 ## 8. Vastuunrajoitus {#8-limitation-of-liability}
 
-### 1. Vastuun ylärajat ja vahingonkorvausvelvollisuuden raukeaminen {#1-liability-caps-and-damages-waiver}
+### 1. Vastuun ylärajat ja vahingonkorvausvastuun vapauslauseke {#1-liability-caps-and-damages-waiver}
 
 **Sovellettavien tietosuojalakien sallimissa rajoissa kummankin osapuolen kokonaisvastuu toista osapuolta kohtaan, joka johtuu tästä tietojenkäsittelysopimuksesta tai liittyy siihen, on **Sopimuksessa** mainittujen vastuuvapauslausekkeiden, poissulkemisten ja vastuunrajoitusten alainen.**
 
@@ -203,11 +203,11 @@ b. Jos **Asiakas** ja **Palveluntarjoaja** ovat allekirjoittaneet ETA-sopimuksen
 
 1. Tämä tietosuojasopimus ei rajoita yksilön vastuuta hänen tietosuojaoikeuksistaan sovellettavien tietosuojalakien nojalla. Lisäksi tämä tietosuojasopimus ei rajoita osapuolten välistä vastuuta ETA-sopimuksen tai Yhdistyneen kuningaskunnan lisäsopimuksen rikkomisesta.
 
-## 9. Ristiriidat dokumenttien välillä {#9-conflicts-between-documents}
+## 9. Ristiriidat asiakirjojen välillä {#9-conflicts-between-documents}
 
 1. Tämä tietosuojasopimus on osa sopimusta ja täydentää sitä. Jos tämän tietosuojasopimuksen, **Sopimuksen** tai jonkin niiden osan välillä on ristiriitaisuuksia, aiemmin luetellulla osalla on etusija myöhemmin lueteltuun osaan nähden kyseisen ristiriidan osalta: (1) ETA:n vakiosopimuslausekkeet tai Yhdistyneen kuningaskunnan lisäys, (2) tämä tietosuojasopimus ja sitten (3) **Sopimus**.
 
-## 10. Sopimuksen ehdot {#10-term-of-agreement}
+## 10. Sopimuksen voimassaoloaika {#10-term-of-agreement}
 
 Tämä tietosuojasopimus tulee voimaan, kun **Palveluntarjoaja** ja **Asiakas** sopivat tietosuojasopimuksen kansilehdestä ja allekirjoittavat tai hyväksyvät **Sopimuksen** sähköisesti, ja se jatkuu, kunnes **Sopimus** vanhenee tai irtisanotaan. **Palveluntarjoaja** ja **Asiakas** ovat kuitenkin edelleen tämän tietosuojasopimuksen ja sovellettavien tietosuojalakien velvoitteiden alaisia, kunnes **Asiakas** lopettaa asiakkaan henkilötietojen siirtämisen **Palveluntarjoajalle** ja **Palveluntarjoaja** lopettaa asiakkaan henkilötietojen käsittelyn.
 
@@ -215,13 +215,13 @@ Tämä tietosuojasopimus tulee voimaan, kun **Palveluntarjoaja** ja **Asiakas** 
 
 Sovellettavasta laista tai **Sopimuksen** vastaavista lausekkeista huolimatta kaikkiin tätä Tietojenkäsittelysopimusta koskeviin tulkintoihin ja riitoihin sovelletaan **hallintovaltion** lakia ottamatta huomioon sen lainvalintasäännöksiä. Lisäksi ja **sopimuksen** oikeuspaikan valintaa, lainkäyttövaltaa tai vastaavia lausekkeita lukuun ottamatta osapuolet sopivat nostavansa kaikki tätä Tietojenkäsittelysopimusta koskevat kanteet, toimet tai menettelyt **hallintovaltion** tuomioistuimissa, ja kumpikin osapuoli peruuttamattomasti alistuu kyseisen valtion** tuomioistuinten yksinomaiseen toimivaltaan.
 
-## 12. Palveluntarjoajasuhde {#12-service-provider-relationship}
+## 12. Palveluntarjoajan suhde {#12-service-provider-relationship}
 
 Siltä osin kuin Kalifornian kuluttajien tietosuojalakia, Cal. Civ. Code § 1798.100 et seq ("CCPA") sovelletaan, osapuolet ymmärtävät ja sopivat, että **Palveluntarjoaja** on palveluntarjoaja ja vastaanottaa henkilötietoja **Asiakkaalta** tarjotakseen **Sopimuksessa** sovitun **Palveluntarjoajan** mukaisesti, mikä muodostaa liiketoimintatarkoituksen. **Palveluntarjoaja** ei myy **Asiakkaan** **Sopimuksen** nojalla toimittamia henkilötietoja. Lisäksi **Palveluntarjoaja** ei säilytä, käytä tai luovuta **Asiakkaan** **Sopimuksen** nojalla toimittamia henkilötietoja, paitsi siltä osin kuin se on tarpeen **Asiakkaalle** **Sopimuksessa** mainitulla tavalla tai sovellettavien tietosuojalakien sallimalla tavalla. **Palveluntarjoaja** vakuuttaa ymmärtävänsä tämän kappaleen rajoitukset.
 
 ## 13. Määritelmät {#13-definitions}
 
-1. **"Sovellettavat lait"** tarkoittaa lakeja, sääntöjä, määräyksiä, tuomioistuimen määräyksiä ja muita asiaankuuluvan viranomaisen sitovia vaatimuksia, jotka koskevat osapuolta tai joita sovelletaan siihen.
+1. **"Sovellettavat lait"** tarkoittaa lakeja, sääntöjä, määräyksiä, tuomioistuimen määräyksiä ja muita asiaankuuluvan viranomaisen sitovia vaatimuksia, jotka koskevat osapuolta tai joita sovelletaan häneen.
 
 2. **"Sovellettavat tietosuojalait"** tarkoittaa sovellettavia lakeja, jotka säätelevät, miten Palvelu voi käsitellä tai käyttää yksilön henkilötietoja, henkilötietoja, henkilökohtaisesti tunnistettavia tietoja tai muita vastaavia termejä.
 
@@ -245,7 +245,7 @@ Siltä osin kuin Kalifornian kuluttajien tietosuojalakia, Cal. Civ. Code § 1798
 
 12. **"Käsittelijä"** on määritelty sovellettavissa tietosuojalaeissa rekisterinpitäjän puolesta henkilötietoja käsittelevälle yritykselle.
 
-13. **"Raportti"** tarkoittaa toisen yrityksen Palveluntarjoajan puolesta laatimia tarkastusraportteja, jotka on laadittu tietoturvakäytännössä määriteltyjen standardien mukaisesti.
+13. **"Raportti"** tarkoittaa toisen yrityksen Palveluntarjoajan puolesta turvallisuuskäytännössä määriteltyjen standardien mukaisesti laatimia tarkastusraportteja.
 
 14. **"Rajoitettu siirto"** tarkoittaa (a) jos GDPR:ää sovelletaan, henkilötietojen siirtoa ETA-alueelta ETA-alueen ulkopuoliseen maahan, johon Euroopan komissio ei ole tehnyt tietosuojan riittävyysmääritystä; ja (b) jos Yhdistyneen kuningaskunnan GDPR:ää sovelletaan, henkilötietojen siirtoa Yhdistyneestä kuningaskunnasta mihin tahansa muuhun maahan, johon ei sovelleta Yhdistyneen kuningaskunnan vuoden 2018 tietosuojalain 17A §:n nojalla annettuja tietosuojan riittävyyssäännöksiä.
 
@@ -263,4 +263,4 @@ Siltä osin kuin Kalifornian kuluttajien tietosuojalakia, Cal. Civ. Code § 1798
 
 ## Tekijät {#credits}
 
-Tämä dokumentti on johdannainen dokumentista [Yleiset paperiset DPA-vakioehdot (versio 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) ja siihen sovelletaan [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) -lisenssiä.
+Tämä asiakirja on johdannainen asiakirjasta [Yleiset paperiset DPA-vakioehdot (versio 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) ja siihen sovelletaan [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)-lisenssiä.

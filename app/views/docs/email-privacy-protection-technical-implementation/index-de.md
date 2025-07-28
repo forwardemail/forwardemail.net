@@ -53,7 +53,7 @@ E-Mail-Weiterleitung ist ein Prozess, bei dem E-Mails, die an eine E-Mail-Adress
 
 Diese scheinbar einfache Funktion bietet enorme Vorteile:
 
-* **Professionelles Branding**: Verwenden Sie E-Mail-Adressen mit Ihrer individuellen Domain (<Sie@IhreDomain.com>) und verwalten Sie alles über Ihren bestehenden persönlichen Posteingang.
+* **Professionelles Branding**: Nutzen Sie E-Mail-Adressen mit Ihrer individuellen Domain (<Sie@IhreDomain.com>) und verwalten Sie alles über Ihren bestehenden persönlichen Posteingang.
 * **Datenschutz**: Erstellen Sie Einweg- oder zweckgebundene Adressen, die Ihre primäre E-Mail-Adresse schützen.
 * **Vereinfachte Verwaltung**: Konsolidieren Sie mehrere E-Mail-Adressen in einem einzigen Posteingang.
 * **Flexibilität**: Erstellen Sie unbegrenzt viele Adressen für verschiedene Zwecke, ohne mehrere Konten verwalten zu müssen.
@@ -113,7 +113,7 @@ Fügen Sie nach der Anmeldung die gewünschte Domain für die E-Mail-Weiterleitu
 
 ### 3. DNS-Einträge konfigurieren {#3-configure-dns-records}
 
-Wir stellen Ihnen die genauen DNS-Einträge zur Verfügung, die Sie Ihrer Domain hinzufügen müssen. Normalerweise umfasst dies:
+Wir stellen Ihnen die genauen DNS-Einträge zur Verfügung, die Sie zu Ihrer Domain hinzufügen müssen. Normalerweise umfasst dies:
 
 * Hinzufügen von MX-Einträgen, die auf unsere E-Mail-Server verweisen.
 * Hinzufügen von TXT-Einträgen zur Verifizierung und Sicherheit.
@@ -127,9 +127,9 @@ Nachdem Ihre DNS-Einträge verifiziert wurden (was normalerweise nur wenige Minu
 * Die E-Mail-Adresse Ihrer Domain (z. B. <kontakt@ihredomain.com>)
 * Das Ziel, an das Ihre E-Mails gesendet werden sollen (z. B. Ihre persönliche Gmail-Adresse)
 
-### 5. Beginnen Sie mit der Nutzung Ihrer neuen E-Mail-Adressen {#5-start-using-your-new-email-addresses}
+### 5. Beginnen Sie mit der Verwendung Ihrer neuen E-Mail-Adressen {#5-start-using-your-new-email-addresses}
 
-Das war's! E-Mails, die an Ihre benutzerdefinierten Domänenadressen gesendet werden, werden nun an das angegebene Ziel weitergeleitet. Sie können beliebig viele Weiterleitungen erstellen, einschließlich Catch-All-Adressen, die alle E-Mails an alle Adressen Ihrer Domäne weiterleiten.
+Das war's! E-Mails, die an Ihre benutzerdefinierten Domänenadressen gesendet werden, werden nun an das angegebene Ziel weitergeleitet. Sie können beliebig viele Weiterleitungen erstellen, einschließlich Catch-All-Adressen, die alle E-Mails an eine beliebige Adresse in Ihrer Domäne weiterleiten.
 
 ## Erweiterte Funktionen zum Weiterleiten von E-Mails {#advanced-features-of-forward-email}
 
@@ -143,19 +143,19 @@ Erstellen Sie spezifische oder anonyme E-Mail-Adressen, die an Ihr Hauptkonto we
 
 Leiten Sie eine einzelne Adresse an mehrere Empfänger weiter und teilen Sie so Informationen ganz einfach mit einem Team. Sie können auch Platzhalteradressen (Catch-All-Weiterleitungen) verwenden, um E-Mails an beliebige Adressen in Ihrer Domain zu empfangen.
 
-### Integration „E-Mail senden als“ {#send-mail-as-integration}
+### „E-Mail senden als“-Integration {#send-mail-as-integration}
 
 Sie müssen Ihren Posteingang nie verlassen, um E-Mails von Ihrer benutzerdefinierten Domain zu senden. Senden und beantworten Sie Nachrichten, als kämen sie von <Sie@IhreDomain.com>, direkt von Ihrem Gmail- oder Outlook-Konto.
 
 ### Quantenresistente Sicherheit {#quantum-resistant-security}
 
-Wir sind der weltweit erste und einzige E-Mail-Dienst, der eine quantenresistente Verschlüsselung verwendet und Ihre Kommunikation selbst vor den fortschrittlichsten zukünftigen Bedrohungen schützt.
+Wir sind der weltweit erste und einzige E-Mail-Dienst, der eine quantenresistente Verschlüsselung verwendet und Ihre Kommunikation selbst vor den fortschrittlichsten Bedrohungen der Zukunft schützt.
 
 ### Individuell verschlüsselte SQLite-Postfächer {#individually-encrypted-sqlite-mailboxes}
 
 Im Gegensatz zu anderen Anbietern, die alle Benutzer-E-Mails in gemeinsam genutzten Datenbanken speichern, verwenden wir individuell verschlüsselte SQLite-Postfächer für beispiellose Privatsphäre und Sicherheit.
 
-## Warum Sie Forward Email gegenüber der Konkurrenz bevorzugen sollten {#why-choose-forward-email-over-competitors}
+## Warum Sie sich für die Weiterleitung von E-Mails gegenüber der Konkurrenz entscheiden sollten {#why-choose-forward-email-over-competitors}
 
 Auf dem Markt für E-Mail-Weiterleitungen gibt es mehrere Akteure, doch Forward Email sticht in mehreren wichtigen Punkten hervor:
 
@@ -167,7 +167,7 @@ Wir sind der einzige E-Mail-Weiterleitungsdienst, der vollständig Open Source i
 
 Wir haben diesen Service entwickelt, weil Sie ein Recht auf Privatsphäre haben. Wir verwenden robuste TLS-Verschlüsselung, speichern keine SMTP-Protokolle (mit Ausnahme von Fehlern und ausgehendem SMTP) und speichern Ihre E-Mails nicht auf der Festplatte.
 
-### 3. Kein Vertrauen in Drittanbieter {#3-no-third-party-reliance}
+### 3. Keine Abhängigkeit von Drittanbietern {#3-no-third-party-reliance}
 
 Im Gegensatz zu Wettbewerbern, die auf Amazon SES oder andere Dienste von Drittanbietern angewiesen sind, behalten wir die vollständige Kontrolle über unsere Infrastruktur, was sowohl die Zuverlässigkeit als auch den Datenschutz verbessert.
 
@@ -181,7 +181,7 @@ Wir legen keine künstlichen Beschränkungen für Domänen, Aliase oder E-Mail-A
 
 ### 6. Von großen Organisationen als vertrauenswürdig eingestuft {#6-trusted-by-major-organizations}
 
-Unser Service wird von über 500.000 Domains genutzt, darunter namhafte Organisationen wie [Die US Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [Die Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales und viele andere.
+Unser Service wird von über 500.000 Domänen verwendet, darunter namhafte Organisationen wie [Die US Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [Die Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales und viele andere.
 
 ## Häufige Anwendungsfälle für die E-Mail-Weiterleitung {#common-use-cases-for-email-forwarding}
 
@@ -222,13 +222,13 @@ Stellen Sie sicher, dass Ihre Domain über die richtigen SPF-, DKIM- und DMARC-E
 
 ### 3. Überprüfen Sie regelmäßig Ihre Weiterleitungen {#3-regularly-review-your-forwards}
 
-Überprüfen Sie regelmäßig Ihre E-Mail-Weiterleitungen, um alle zu deaktivieren, die nicht mehr benötigt werden oder übermäßig viel Spam erhalten.
+Überprüfen Sie Ihre E-Mail-Weiterleitungen regelmäßig, um alle Weiterleitungen zu deaktivieren, die nicht mehr benötigt werden oder übermäßig viel Spam erhalten.
 
 ### 4. Richten Sie „E-Mail senden als“ für nahtlose Antworten ein {#4-set-up-send-mail-as-for-seamless-replies}
 
 Konfigurieren Sie Ihren Haupt-E-Mail-Client so, dass E-Mails als Ihre benutzerdefinierten Domänenadressen gesendet werden, um beim Beantworten weitergeleiteter E-Mails ein einheitliches Erlebnis zu gewährleisten.
 
-### 5. Verwenden Sie Catch-All-Adressen mit Vorsicht {#5-use-catch-all-addresses-cautiously}
+### 5. Verwenden Sie Catch-All-Adressen mit Bedacht {#5-use-catch-all-addresses-cautiously}
 
 Catch-All-Adressen sind zwar praktisch, können aber potenziell mehr Spam empfangen. Erwägen Sie die Einrichtung spezifischer Weiterleitungen für wichtige Nachrichten.
 
@@ -240,8 +240,8 @@ Als einziger 100 % Open-Source-Anbieter mit quantenresistenter Verschlüsselung 
 
 Egal, ob Sie professionelle E-Mail-Adressen für Ihr Unternehmen erstellen, Ihre Privatsphäre mit Wegwerfadressen schützen oder die Verwaltung mehrerer E-Mail-Konten vereinfachen möchten, Forward Email bietet die perfekte Lösung.
 
-Sind Sie bereit, Ihr E-Mail-Erlebnis zu transformieren? [Kostenlos registrieren](https://forwardemail.net) Sie noch heute und schließen Sie sich über 500.000 Domains an, die bereits von unserem Service profitieren.
+Sind Sie bereit, Ihr E-Mail-Erlebnis zu transformieren? [Kostenlos registrieren](https://forwardemail.net) noch heute und schließen Sie sich über 500.000 Domänen an, die bereits von unserem Service profitieren.
 
 ---
 
-*Dieser Blogbeitrag wurde vom Forward Email-Team verfasst, den Entwicklern des weltweit sichersten, vertraulichsten und flexibelsten E-Mail-Weiterleitungsdienstes. Besuchen Sie [forwardemail.net](https://forwardemail.net), um mehr über unseren Service zu erfahren und E-Mails sicher weiterzuleiten.*
+*Dieser Blogbeitrag wurde vom Forward Email-Team verfasst, den Entwicklern des weltweit sichersten, vertraulichsten und flexibelsten E-Mail-Weiterleitungsdienstes. Besuchen Sie [forwardemail.net](https://forwardemail.net), um mehr über unseren Service zu erfahren und E-Mails vertrauensvoll weiterzuleiten.*

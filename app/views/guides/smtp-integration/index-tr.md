@@ -3,25 +3,25 @@
 ## İçindekiler {#table-of-contents}
 
 * [Önsöz](#foreword)
-* [Forward Email'in SMTP İşlemesi Nasıl Çalışır?](#how-forward-emails-smtp-processing-works)
+* [Forward E-postanın SMTP İşlemesi Nasıl Çalışır?](#how-forward-emails-smtp-processing-works)
   * [E-posta Kuyruğu ve Yeniden Deneme Sistemi](#email-queue-and-retry-system)
-  * [Güvenilirlik için Aptallara Karşı Koruma Sağlandı](#dummy-proofed-for-reliability)
+  * [Güvenilirlik için Kukla Geçirmez](#dummy-proofed-for-reliability)
 * [Node.js Entegrasyonu](#nodejs-integration)
-  * [Nodemailer'ı Kullanma](#using-nodemailer)
+  * [Nodemailer Kullanımı](#using-nodemailer)
   * [Express.js kullanımı](#using-expressjs)
 * [Python Entegrasyonu](#python-integration)
-  * [smtplib'i kullanma](#using-smtplib)
+  * [smtplib kullanımı](#using-smtplib)
   * [Django'yu Kullanma](#using-django)
 * [PHP Entegrasyonu](#php-integration)
-  * [PHPMailer'ı Kullanma](#using-phpmailer)
+  * [PHPMailer Kullanımı](#using-phpmailer)
   * [Laravel Kullanımı](#using-laravel)
 * [Ruby Entegrasyonu](#ruby-integration)
   * [Ruby Mail Gem'i Kullanma](#using-ruby-mail-gem)
 * [Java Entegrasyonu](#java-integration)
   * [Java Mail API'sini kullanma](#using-javamail-api)
 * [E-posta İstemcisi Yapılandırması](#email-client-configuration)
-  * [Şimşek kuşu](#thunderbird)
-  * [Elma Postası](#apple-mail)
+  * [Thunderbird](#thunderbird)
+  * [Apple Mail](#apple-mail)
   * [Gmail (Postaları Şu Şekilde Gönder)](#gmail-send-mail-as)
 * [Sorun giderme](#troubleshooting)
   * [Yaygın Sorunlar ve Çözümleri](#common-issues-and-solutions)
@@ -31,45 +31,45 @@
 
 ## Önsöz {#foreword}
 
-Bu kılavuz, çeşitli programlama dilleri, çerçeveler ve e-posta istemcileri kullanarak Forward Email'in SMTP hizmetiyle nasıl entegre olunacağına dair ayrıntılı örnekler sunar. SMTP hizmetimiz, güvenilir, güvenli ve mevcut uygulamalarınızla entegre edilmesi kolay olacak şekilde tasarlanmıştır.
+Bu kılavuz, çeşitli programlama dilleri, çerçeveler ve e-posta istemcileri kullanarak Forward Email'in SMTP hizmetiyle nasıl entegre olabileceğinize dair ayrıntılı örnekler sunmaktadır. SMTP hizmetimiz, güvenilir, güvenli ve mevcut uygulamalarınızla kolayca entegre edilebilecek şekilde tasarlanmıştır.
 
-## Forward E-postanın SMTP İşlemesi Nasıl Çalışır? {#how-forward-emails-smtp-processing-works}
+## E-postanın SMTP İşlemesinin Nasıl Çalıştığı
 
 Entegrasyon örneklerine dalmadan önce, SMTP hizmetimizin e-postaları nasıl işlediğini anlamak önemlidir:
 
 ### E-posta Kuyruğu ve Yeniden Deneme Sistemi {#email-queue-and-retry-system}
 
-SMTP yoluyla sunucularımıza bir e-posta gönderdiğinizde:
+Sunucularımıza SMTP yoluyla bir e-posta gönderdiğinizde:
 
 1. **İlk İşleme**: E-posta doğrulanır, kötü amaçlı yazılım taramasından geçirilir ve spam filtrelerine karşı kontrol edilir.
 2. **Akıllı Sıralama**: E-postalar, teslimat için gelişmiş bir sıra sistemine yerleştirilir.
 3. **Akıllı Yeniden Deneme Mekanizması**: Teslimat geçici olarak başarısız olursa, sistemimiz şunları yapar:
 * `getBounceInfo` fonksiyonumuzu kullanarak hata yanıtını analiz eder.
-* Sorunun geçici (örneğin, "daha sonra tekrar deneyin", "geçici olarak ertelendi") veya kalıcı (örneğin, "kullanıcı bilinmiyor") olup olmadığını belirler.
+* Sorunun geçici mi (örneğin, "daha sonra tekrar dene", "geçici olarak ertelendi") yoksa kalıcı mı (örneğin, "kullanıcı bilinmiyor") olduğunu belirler.
 * Geçici sorunlar için e-postayı yeniden deneme için işaretler.
 * Kalıcı sorunlar için geri dönme bildirimi oluşturur.
 4. **5 Günlük Yeniden Deneme Süresi**: Teslimatı 5 güne kadar yeniden deneriz (Postfix gibi endüstri standartlarına benzer şekilde), bu da geçici sorunların çözülmesi için zaman tanır.
 5. **Teslimat Durumu Bildirimleri**: Göndericiler, e-postalarının durumu (teslim edildi, gecikti veya geri döndü) hakkında bildirimler alır.
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Başarılı teslimattan sonra, giden SMTP e-posta içeriği, güvenlik ve gizlilik nedeniyle yapılandırılabilir bir saklama süresinden (varsayılan 30 gün) sonra silinir. Geriye yalnızca başarılı teslimatı gösteren bir yer tutucu mesaj kalır.
 
 ### Güvenilirlik için Sahteciliğe Karşı Korumalı {#dummy-proofed-for-reliability}
 
 Sistemimiz çeşitli uç durumları ele alacak şekilde tasarlanmıştır:
 
-* Bir engelleme listesi algılanırsa, e-posta otomatik olarak yeniden denenecektir
-* Ağ sorunları oluşursa, teslimat yeniden denenecektir
-* Alıcının posta kutusu doluysa, sistem daha sonra yeniden deneyecektir
-* Alıcı sunucu geçici olarak kullanılamıyorsa, denemeye devam edeceğiz
+* Engelleme listesi tespit edilirse, e-posta otomatik olarak yeniden denenecektir.
+* Ağ sorunları oluşursa, teslimat yeniden denenecektir.
+* Alıcının posta kutusu doluysa, sistem daha sonra yeniden deneyecektir.
+* Alıcı sunucu geçici olarak kullanılamıyorsa, denemeye devam edeceğiz.
 
-Bu yaklaşım, gizliliği ve güvenliği koruyarak teslimat oranlarını önemli ölçüde iyileştirir.
+Bu yaklaşım, gizliliği ve güvenliği koruyarak teslimat oranlarını önemli ölçüde artırır.
 
 ## Node.js Entegrasyonu {#nodejs-integration}
 
-### Nodemailer'ı Kullanarak {#using-nodemailer}
+### Nodemailer'ı Kullanıyor {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) Node.js uygulamalarından e-posta göndermek için kullanılan popüler bir modüldür.
+[Nodemailer](https://nodemailer.com/), Node.js uygulamalarından e-posta göndermek için kullanılan popüler bir modüldür.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -105,9 +105,9 @@ async function sendEmail() {
 sendEmail();
 ```
 
-### Express.js Kullanımı {#using-expressjs}
+### Express.js'yi kullanarak {#using-expressjs}
 
-Forward Email SMTP'yi bir Express.js uygulamasıyla nasıl entegre edebileceğinizi öğrenin:
+Forward Email SMTP'yi bir Express.js uygulamasıyla nasıl entegre edebileceğiniz aşağıda açıklanmıştır:
 
 ```javascript
 const express = require('express');
@@ -202,9 +202,9 @@ except Exception as e:
     print(f"Error sending email: {e}")
 ```
 
-### Django Kullanımı {#using-django}
+### Django'yu Kullanarak {#using-django}
 
-Django uygulamaları için `settings.py`'e aşağıdakileri ekleyin:
+Django uygulamaları için `settings.py`'ınıza aşağıdakileri ekleyin:
 
 ```python
 # Email settings
@@ -236,7 +236,7 @@ def send_email_view(request):
 
 ## PHP Entegrasyonu {#php-integration}
 
-### PHPMailer Kullanımı {#using-phpmailer}
+### PHPMailer'ı Kullanarak {#using-phpmailer}
 
 ```php
 <?php
@@ -275,7 +275,7 @@ try {
 }
 ```
 
-### Laravel'i Kullanarak {#using-laravel}
+### Laravel {#using-laravel} Kullanımı
 
 Laravel uygulamaları için `.env` dosyanızı güncelleyin:
 
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Daha sonra Laravel'in Mail arayüzünü kullanarak e-postalar gönderin:
+Daha sonra Laravel'in Mail arayüzünü kullanarak e-posta gönderin:
 
 ```php
 <?php
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## E-posta İstemcisi Yapılandırması {#email-client-configuration}
 
-__KORUMA_URL_54__ Thunderbird {__KORUMA_URL_55__
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
@@ -440,43 +440,43 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Thunderbird'ü açın ve Hesap Ayarları'na gidin
-2. "Hesap Eylemleri"ne tıklayın ve "Posta Hesabı Ekle"yi seçin
-3. Adınızı, e-posta adresinizi ve parolanızı girin
+1. Thunderbird'ü açın ve Hesap Ayarları'na gidin.
+2. "Hesap İşlemleri"ne tıklayın ve "Posta Hesabı Ekle"yi seçin.
+3. Adınızı, e-posta adresinizi ve parolanızı girin.
 4. "Manuel Yapılandırma"ya tıklayın ve aşağıdaki bilgileri girin:
 * Gelen Sunucu:
-* IMAP: imap.forwardemail.net, Bağlantı Noktası: 993, SSL/TLS
-* POP3: pop3.forwardemail.net, Bağlantı Noktası: 995, SSL/TLS
-* Giden Sunucu (SMTP): smtp.forwardemail.net, Bağlantı Noktası: 465, SSL/TLS
+* IMAP: imap.forwardemail.net, Port: 993, SSL/TLS
+* POP3: pop3.forwardemail.net, Port: 995, SSL/TLS
+* Giden Sunucu (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS
 * Kimlik Doğrulama: Normal Parola
-* Kullanıcı adı: tam e-posta adresiniz
-5. "Test"e ve ardından "Bitti"ye tıklayın
+* Kullanıcı Adı: tam e-posta adresiniz
+5. "Test"e ve ardından "Bitti"ye tıklayın.
 
-__KORUYUCU_URL_56__ Apple Mail {__KORUYUCU_URL_57__
+### Apple Mail {#apple-mail}
 
-1. Mail'i açın ve Mail > Tercihler > Hesaplar'a gidin
-2. Yeni bir hesap eklemek için "+" düğmesine tıklayın
-3. "Diğer Mail Hesabı"nı seçin ve "Devam"a tıklayın
-4. Adınızı, e-posta adresinizi ve parolanızı girin, ardından "Oturum Aç"a tıklayın
-5. Otomatik kurulum başarısız olduğunda, aşağıdaki bilgileri girin:
+1. Mail'i açın ve Mail > Tercihler > Hesaplar'a gidin.
+2. Yeni bir hesap eklemek için "+" düğmesine tıklayın.
+3. "Diğer Mail Hesabı"nı seçin ve "Devam"a tıklayın.
+4. Adınızı, e-posta adresinizi ve şifrenizi girip "Oturum Aç"a tıklayın.
+5. Otomatik kurulum başarısız olursa, aşağıdaki bilgileri girin:
 * Gelen Posta Sunucusu: imap.forwardemail.net (veya POP3 için pop3.forwardemail.net)
 * Giden Posta Sunucusu: smtp.forwardemail.net
-* Kullanıcı adı: tam e-posta adresiniz
-* Parola: parolanız
-6. Kurulumu tamamlamak için "Oturum Aç"a tıklayın
+* Kullanıcı Adı: tam e-posta adresiniz
+* Şifre: şifreniz
+6. Kurulumu tamamlamak için "Oturum Aç"a tıklayın.
 
 ### Gmail (Postaları Şu Şekilde Gönder) {#gmail-send-mail-as}
 
-1. Gmail'i açın ve Ayarlar > Hesaplar ve İçe Aktarma'ya gidin
-2. "Postaları şu şekilde gönder" altında "Başka bir e-posta adresi ekle"ye tıklayın
-3. Adınızı ve e-posta adresinizi girin, ardından "Sonraki Adım"a tıklayın
-4. Aşağıdaki SMTP sunucusu ayrıntılarını girin:
+1. Gmail'i açın ve Ayarlar > Hesaplar ve İçe Aktarma'ya gidin.
+2. "Postaları şu adresten gönder" bölümünde "Başka bir e-posta adresi ekle"ye tıklayın.
+3. Adınızı ve e-posta adresinizi girin ve ardından "Sonraki Adım"a tıklayın.
+4. Aşağıdaki SMTP sunucusu bilgilerini girin:
 * SMTP Sunucusu: smtp.forwardemail.net
-* Bağlantı noktası: 465
-* Kullanıcı adı: tam e-posta adresiniz
-* Parola: parolanız
-* "SSL kullanarak güvenli bağlantı"yı seçin
-5. "Hesap Ekle"ye tıklayın ve e-posta adresinizi doğrulayın
+* Bağlantı Noktası: 465
+* Kullanıcı Adı: tam e-posta adresiniz
+* Şifre: şifreniz
+* "SSL kullanarak güvenli bağlantı"yı seçin.
+5. "Hesap Ekle"ye tıklayın ve e-posta adresinizi doğrulayın.
 
 ## Sorun Giderme {#troubleshooting}
 
@@ -484,41 +484,41 @@ __KORUYUCU_URL_56__ Apple Mail {__KORUYUCU_URL_57__
 
 1. **Kimlik Doğrulama Başarısız**
 * Kullanıcı adınızı (tam e-posta adresi) ve şifrenizi doğrulayın
-* Doğru portu kullandığınızdan emin olun (SSL/TLS için 465)
+* Doğru bağlantı noktasını (SSL/TLS için 465) kullandığınızdan emin olun
 * Hesabınızda SMTP erişiminin etkin olup olmadığını kontrol edin
 
 2. **Bağlantı Zaman Aşımı**
 * İnternet bağlantınızı kontrol edin
-* Güvenlik duvarı ayarlarının SMTP trafiğini engellemediğini doğrulayın
+* Güvenlik duvarı ayarlarınızın SMTP trafiğini engellemediğini doğrulayın
 * Farklı bir port kullanmayı deneyin (STARTTLS ile 587)
 
 3. **Mesaj Reddedildi**
-* "Kimden" adresinizin doğrulanmış e-postanızla eşleştiğinden emin olun
-* IP'nizin kara listeye alınıp alınmadığını kontrol edin
+* "Kimden" adresinizin kimliği doğrulanmış e-postanızla eşleştiğinden emin olun
+* IP adresinizin kara listede olup olmadığını kontrol edin
 * Mesaj içeriğinizin spam filtrelerini tetiklemediğini doğrulayın
 
 4. **TLS/SSL Hataları**
 * Uygulamanızı/kütüphanenizi modern TLS sürümlerini destekleyecek şekilde güncelleyin
 * Sisteminizin CA sertifikalarının güncel olduğundan emin olun
-* Açık TLS'yi örtük TLS yerine deneyin
+* Örtük TLS yerine açık TLS'yi deneyin
 
 ### Yardım Alma {#getting-help}
 
 Burada ele alınmayan sorunlarla karşılaşırsanız lütfen:
 
-1. Sık sorulan sorular için [SSS sayfası](/faq) sayfamızı inceleyin
-2. Ayrıntılı bilgi için [e-posta teslimi hakkında blog yazısı](/blog/docs/best-email-forwarding-service) sayfamızı inceleyin
+1. Sık sorulan sorular için [SSS sayfası](/faq) sayfamızı kontrol edin
+2. Ayrıntılı bilgi için [e-posta teslimatı hakkında blog yazısı](/blog/docs/best-email-forwarding-service) sayfamızı inceleyin
 3. Destek ekibimizle <support@forwardemail.net> adresinden iletişime geçin
 
 ## Ek Kaynaklar {#additional-resources}
 
 * [E-posta Belgelerini İlet](/docs)
 * [SMTP Sunucusu Sınırları ve Yapılandırması](/faq#what-are-your-outbound-smtp-limits)
-* [E-posta En İyi Uygulamaları Kılavuzu](/blog/docs/best-email-forwarding-service)
+* [E-posta En İyi Uygulamalar Kılavuzu](/blog/docs/best-email-forwarding-service)
 * [Güvenlik Uygulamaları](/security)
 
 ## Sonuç {#conclusion}
 
-Forward Email'in SMTP hizmeti, uygulamalarınızdan ve e-posta istemcilerinizden e-posta göndermek için güvenilir, güvenli ve gizlilik odaklı bir yol sağlar. Akıllı kuyruk sistemimiz, 5 günlük yeniden deneme mekanizmamız ve kapsamlı teslimat durumu bildirimlerimizle e-postalarınızın hedeflerine ulaşacağından emin olabilirsiniz.
+Forward Email'in SMTP hizmeti, uygulamalarınızdan ve e-posta istemcilerinizden e-posta göndermenin güvenilir, güvenli ve gizliliğe odaklı bir yolunu sunar. Akıllı kuyruk sistemimiz, 5 günlük yeniden deneme mekanizmamız ve kapsamlı teslimat durumu bildirimlerimizle, e-postalarınızın hedeflerine ulaşacağından emin olabilirsiniz.
 
 Daha gelişmiş kullanım durumları veya özel entegrasyonlar için lütfen destek ekibimizle iletişime geçin.

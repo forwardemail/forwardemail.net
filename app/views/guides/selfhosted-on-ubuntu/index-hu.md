@@ -35,7 +35,7 @@
   * [Tanúsítvány megújítása](#certificate-renewal)
 * [Hibaelhárítás](#troubleshooting)
   * [Gyakori problémák](#common-issues)
-  * [Segítség kérése](#getting-help)
+  * [Segítségkérés](#getting-help)
 * [Biztonsági bevált gyakorlatok](#security-best-practices)
 * [Következtetés](#conclusion)
 
@@ -187,7 +187,7 @@ docker info
 
 ### 7. lépés: Tűzfal konfigurálása {#step-7-configure-firewall}
 
-Állítson be UFW tűzfalat a szerver biztonságossá tételéhez:
+UFW tűzfal beállítása a szerver védelme érdekében:
 
 ```bash
 # Set default policies
@@ -388,7 +388,7 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 echo "✅ All encryption keys generated successfully"
 ```
 
-### 13. lépés: SSL-útvonalak frissítése a(z) {#step-13-update-ssl-paths-in-configuration} konfigurációban
+### 13. lépés: SSL-útvonalak frissítése a {#step-13-update-ssl-paths-in-configuration}} konfigurációban
 
 Konfigurálja az SSL tanúsítványok elérési útjait a környezeti fájlban:
 
@@ -425,7 +425,7 @@ echo "You'll need these to access the web interface after installation."
 echo ""
 ```
 
-### 15. lépés: Telepítés a Docker Compose-szal {#step-15-deploy-with-docker-compose}
+### 15. lépés: Telepítés a Docker Compose {#step-15-deploy-with-docker-compose} használatával
 
 Indítsa el az összes e-mail továbbítási szolgáltatást:
 
@@ -473,13 +473,13 @@ netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 A következő DNS-rekordokat kell konfigurálnia a domainjéhez:
 
-#### MX rekord {#mx-record}
+#### MX rekord {#mx-record}}
 
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
-#### A-rekordok {#a-records}
+#### A Rekordok {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -498,7 +498,7 @@ carddav A YOUR_SERVER_IP
 @ TXT "v=spf1 mx ~all"
 ```
 
-#### DKIM-rekord {#dkim-record}
+#### DKIM rekord {#dkim-record}
 
 Szerezd meg a DKIM nyilvános kulcsodat:
 
@@ -521,9 +521,9 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Első bejelentkezés {#first-login}
 
-1. Nyisd meg a webböngésződet, és navigálj a `https://yourdomain.com` oldalra.
-2. Add meg a korábban mentett alapvető hitelesítési adatokat.
-3. Fejezd ki a kezdeti beállítási varázslót.
+1. Nyissa meg a webböngészőjét, és navigáljon a `https://yourdomain.com` oldalra.
+2. Adja meg a korábban mentett alapvető hitelesítési adatokat.
+3. Fejezze be a kezdeti beállítási varázslót.
 4. Hozza létre első e-mail fiókját.
 
 ## Biztonsági mentés konfigurációja {#backup-configuration}
@@ -588,7 +588,7 @@ crontab -l
 
 ## Karbantartás és felügyelet {#maintenance-and-monitoring}
 
-### Naplózási helyek {#log-locations}
+### Naplóhelyek {#log-locations}
 
 * **Docker Compose naplók**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
 * **Rendszernaplók**: `/var/log/syslog`
@@ -646,7 +646,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * SSL-tanúsítványok ellenőrzése: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
 * Alapvető hitelesítő adatok ellenőrzése
 
-### Segítségkérés {#getting-help}
+### Segítség kérése {#getting-help}
 
 * **Dokumentáció**: <https://forwardemail.net/self-hosted>
 * **GitHub problémák**: <https://github.com/forwardemail/forwardemail.net/issues>
@@ -658,7 +658,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 2. **Naplók figyelése**: Naplófigyelés és riasztások beállítása
 3. **Rendszeres biztonsági mentés**: A biztonsági mentési és visszaállítási eljárások tesztelése
 4. **Erős jelszavak használata**: Erős jelszavak generálása minden fiókhoz
-5. **Fail2Ban engedélyezése**: A fokozott biztonság érdekében érdemes lehet telepíteni a fail2ban-t
+5. **Fail2Ban engedélyezése**: A fokozott biztonság érdekében érdemes megfontolni a fail2ban telepítését
 6. **Rendszeres biztonsági auditok**: A konfiguráció rendszeres ellenőrzése
 
 ## Következtetés {#conclusion}

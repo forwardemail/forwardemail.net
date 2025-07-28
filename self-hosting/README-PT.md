@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Lançamentos auto-hospedados {#self-hosted-releases}
 
 Esta seção documenta o fluxo de trabalho de CI/CD para a solução auto-hospedada da ForwardEmail, explicando como as imagens do Docker são criadas, publicadas e implantadas.
 
-## Table of Contents {#table-of-contents}
+## Índice {#table-of-contents}
 
 * [Visão geral](#overview)
 * [Fluxo de trabalho de CI/CD](#cicd-workflow)
@@ -19,20 +19,20 @@ Esta seção documenta o fluxo de trabalho de CI/CD para a solução auto-hosped
 * [Acessando Imagens](#accessing-images)
 * [Contribuindo](#contributing)
 
-## Overview {#overview}
+## Visão geral {#overview}
 
-A solução auto-hospedada da ForwardEmail usa GitHub Actions para construir e publicar automaticamente imagens Docker sempre que uma nova versão é criada. Essas imagens ficam então disponíveis para os usuários implantarem em seus próprios servidores usando o script de configuração fornecido.
+A solução auto-hospedada da ForwardEmail utiliza o GitHub Actions para criar e publicar imagens do Docker automaticamente sempre que uma nova versão é criada. Essas imagens ficam então disponíveis para os usuários implantarem em seus próprios servidores usando o script de configuração fornecido.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Há também o [blog auto-hospedado](https://forwardemail.net/blog/docs/self-hosted-solution) e o [guia do desenvolvedor auto-hospedado](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> E para versões mais detalhadas e passo a passo, consulte os guias baseados no [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) ou [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Fluxo de trabalho de CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Fluxo de trabalho de ações do GitHub {#github-actions-workflow}
 
-O processo de criação e publicação de imagens do Docker auto-hospedadas é definido em `.github/workflows/docker-image-build-publish.yml`. Este fluxo de trabalho:
+O processo de criação e publicação da imagem do Docker auto-hospedada é definido em `.github/workflows/docker-image-build-publish.yml`. Este fluxo de trabalho:
 
 1. **Gatilhos**: Executa automaticamente quando uma nova versão do GitHub é publicada
 2. **Ambiente**: Executa no Ubuntu com Node.js 18.20.4
@@ -71,13 +71,13 @@ jobs:
 
 ### Estrutura de imagem do Docker {#docker-image-structure}
 
-A imagem do Docker é construída usando uma abordagem de vários estágios definida em `self-hosting/Dockerfile-selfhosted`:
+A imagem do Docker é criada usando uma abordagem de vários estágios definida em `self-hosting/Dockerfile-selfhosted`:
 
 1. **Estágio do Construtor**:
 * Utiliza o Node.js 20 como imagem base
 * Define a variável de ambiente `SELF_HOSTED=true`
 * Instala dependências com pnpm
-* Compila a aplicação em modo de produção
+* Compila o aplicativo em modo de produção
 
 2. **Estágio Final**:
 * Utiliza uma imagem Node.js 20 mais compacta
@@ -87,7 +87,7 @@ A imagem do Docker é construída usando uma abordagem de vários estágios defi
 
 Essa abordagem garante que a imagem final seja otimizada em termos de tamanho e segurança.
 
-## Processo de implantação {#deployment-process}
+## Processo de Implantação {#deployment-process}
 
 ### Instalação {#installation}
 
@@ -97,7 +97,7 @@ Os usuários podem implantar a solução auto-hospedada usando o script de confi
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
-Este script:
+Este roteiro:
 
 1. Clona o repositório
 2. Configura o ambiente
@@ -174,11 +174,11 @@ As imagens do Docker estão disponíveis publicamente em:
 
 Nenhuma autenticação é necessária para extrair essas imagens.
 
-## Contribuindo {#contributing}
+## Contribuindo com {#contributing}
 
 Para contribuir com a solução auto-hospedada:
 
 1. Faça alterações nos arquivos relevantes no diretório `self-hosting`
-2. Teste localmente ou em um VPS baseado em Ubuntu usando o script `setup.sh` fornecido
+2. Teste localmente ou em um VPS baseado no Ubuntu usando o script `setup.sh` fornecido
 3. Envie uma solicitação de pull
 4. Após a mesclagem e a criação de uma nova versão, o fluxo de trabalho de CI criará e publicará automaticamente a imagem do Docker atualizada.

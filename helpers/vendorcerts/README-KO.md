@@ -1,1 +1,1 @@
-<https://github.com/scintill/macos-server-apns-certs/tree/master>을 참조하세요
+<https://github.com/scintill/macos-server-apns-certs/tree/master>>을 참조하세요.

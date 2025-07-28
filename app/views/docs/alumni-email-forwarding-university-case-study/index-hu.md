@@ -5,25 +5,25 @@
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [Drámai költségmegtakarítás a stabil árakkal](#dramatic-cost-savings-with-stable-pricing)
+* [Drámai költségmegtakarítás stabil árakkal](#dramatic-cost-savings-with-stable-pricing)
   * [Valós egyetemi megtakarítások](#real-world-university-savings)
 * [Az egyetemi öregdiákok e-mail kihívása](#the-university-alumni-email-challenge)
-  * [Az öregdiák e-mail identitásának értéke](#the-value-of-alumni-email-identity)
-  * [A hagyományos megoldások elmaradnak](#traditional-solutions-fall-short)
-  * [Az e-mail továbbítás megoldása](#the-forward-email-solution)
-* [Műszaki megvalósítás: Hogyan működik](#technical-implementation-how-it-works)
-  * [Core Architecture](#core-architecture)
+  * [Az öregdiákok e-mailes identitásának értéke](#the-value-of-alumni-email-identity)
+  * [A hagyományos megoldások kudarcot vallnak](#traditional-solutions-fall-short)
+  * [Az e-mail továbbítási megoldása](#the-forward-email-solution)
+* [Technikai megvalósítás: Hogyan működik](#technical-implementation-how-it-works)
+  * [Alapvető architektúra](#core-architecture)
   * [Integráció az egyetemi rendszerekkel](#integration-with-university-systems)
   * [API-vezérelt menedzsment](#api-driven-management)
-  * [DNS konfiguráció és ellenőrzés](#dns-configuration-and-verification)
+  * [DNS-konfiguráció és -ellenőrzés](#dns-configuration-and-verification)
   * [Tesztelés és minőségbiztosítás](#testing-and-quality-assurance)
-* [Megvalósítási idővonal](#implementation-timeline)
-* [Megvalósítási folyamat: a migrációtól a karbantartásig](#implementation-process-from-migration-to-maintenance)
+* [Megvalósítási ütemterv](#implementation-timeline)
+* [Megvalósítási folyamat: A migrációtól a karbantartásig](#implementation-process-from-migration-to-maintenance)
   * [Kezdeti értékelés és tervezés](#initial-assessment-and-planning)
-  * [Migrációs Stratégia](#migration-strategy)
+  * [Migrációs stratégia](#migration-strategy)
   * [Műszaki beállítás és konfiguráció](#technical-setup-and-configuration)
-  * [Felhasználói élmény tervezés](#user-experience-design)
-  * [Képzés és Dokumentáció](#training-and-documentation)
+  * [Felhasználói élmény tervezése](#user-experience-design)
+  * [Képzés és dokumentáció](#training-and-documentation)
   * [Folyamatos támogatás és optimalizálás](#ongoing-support-and-optimization)
 * [Esettanulmány: Cambridge-i Egyetem](#case-study-university-of-cambridge)
   * [Kihívás](#challenge)
@@ -32,63 +32,63 @@
 * [Előnyök egyetemek és öregdiákok számára](#benefits-for-universities-and-alumni)
   * [Egyetemek számára](#for-universities)
   * [Öregdiákoknak](#for-alumni)
-  * [Örökbefogadási arányok öregdiákok körében](#adoption-rates-among-alumni)
+  * [Örökbefogadási arányok az öregdiákok körében](#adoption-rates-among-alumni)
   * [Költségmegtakarítás a korábbi megoldásokhoz képest](#cost-savings-compared-to-previous-solutions)
 * [Biztonsági és adatvédelmi szempontok](#security-and-privacy-considerations)
   * [Adatvédelmi intézkedések](#data-protection-measures)
   * [Megfelelőségi keretrendszer](#compliance-framework)
-* [Jövőbeli fejlesztések](#future-developments)
+* [Jövőbeli fejlemények](#future-developments)
 * [Következtetés](#conclusion)
 
 ## Előszó {#foreword}
 
-Megépítettük a világ legbiztonságosabb, privát és legrugalmasabb e-mail-továbbítási szolgáltatását tekintélyes egyetemek és öregdiákjaik számára.
+A világ legbiztonságosabb, legprivátabb és legrugalmasabb e-mail-továbbító szolgáltatását építettük fel rangos egyetemek és öregdiákjaik számára.
 
-A felsőoktatás versenyhelyzetében az öregdiákokkal való élethosszig tartó kapcsolatok fenntartása nem csupán hagyomány kérdése, hanem stratégiai kényszer. Az egyik legkézzelfoghatóbb módja annak, hogy az egyetemek elősegítsék ezeket a kapcsolatokat, az az öregdiákok e-mail-címe, amellyel a végzett hallgatók olyan digitális identitást biztosítanak, amely tükrözi tudományos örökségüket.
+A felsőoktatás versenyhelyzetében az öregdiákokkal való élethosszig tartó kapcsolatok fenntartása nem csupán hagyomány kérdése – stratégiai kötelesség. Az egyetemek egyik legkézzelfoghatóbb módja ezeknek a kapcsolatoknak az öregdiákok e-mail címei, amelyek digitális identitást biztosítanak a végzetteknek, amely tükrözi tudományos örökségüket.
 
-A Forward Emailnél a világ néhány legrangosabb oktatási intézményével működtünk együtt, hogy forradalmasítsuk az öregdiákoknak szóló e-mail szolgáltatások kezelését. Vállalati szintű e-mail továbbítási megoldásunk mostantól a [Cambridge-i Egyetem](https://en.wikipedia.org/wiki/University_of_Cambridge), a [Marylandi Egyetem](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park), a [Tufts Egyetem](https://en.wikipedia.org/wiki/Tufts_University) és a [Swarthmore College](https://en.wikipedia.org/wiki/Swarthmore_College) öregdiákoknak szóló e-mail rendszereit működteti, összesen több ezer öregdiákot szolgálva ki világszerte.
+A Forward Emailnél a világ néhány legrangosabb oktatási intézményével működtünk együtt, hogy forradalmasítsuk az öregdiákoknak szóló e-mail szolgáltatások kezelését. Vállalati szintű e-mail továbbítási megoldásunk mostantól a [Cambridge-i Egyetem](https://en.wikipedia.org/wiki/University_of_Cambridge), a [Marylandi Egyetem](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park), a [Tufts Egyetem](https://en.wikipedia.org/wiki/Tufts_University) és a [Swarthmore Főiskola](https://en.wikipedia.org/wiki/Swarthmore_College) öregdiákoknak szóló e-mail rendszereit működteti, összesen több ezer öregdiákot szolgálva ki világszerte.
 
-Ez a blogbejegyzés azt vizsgálja, hogyan vált a [nyílt forráskódú](https://en.wikipedia.org/wiki/Open-source_software), adatvédelemre összpontosító e-mail-továbbítási szolgáltatásunk ezeknek az intézményeknek a preferált megoldásává, milyen technikai megvalósítások teszik ezt lehetővé, és milyen átalakító hatással volt mind az adminisztratív hatékonyságra, mind az öregdiákok elégedettségére.
+Ez a blogbejegyzés azt vizsgálja, hogyan vált a [nyílt forráskódú](https://en.wikipedia.org/wiki/Open-source_software), adatvédelemre összpontosító e-mail-továbbítási szolgáltatásunk ezeknek az intézményeknek a preferált megoldásává, milyen technikai megvalósítások teszik lehetővé, és milyen átalakító hatással volt mind az adminisztratív hatékonyságra, mind az öregdiákok elégedettségére.
 
 ## Jelentős költségmegtakarítás stabil árakkal {#dramatic-cost-savings-with-stable-pricing}
 
-Megoldásunk anyagi előnyei jelentősek, különösen a hagyományos e-mail szolgáltatók folyamatosan növekvő áraihoz képest:
+Megoldásunk pénzügyi előnyei jelentősek, különösen a hagyományos e-mail szolgáltatók folyamatosan növekvő áraihoz képest:
 
 | Megoldás | Költség öregdiákonként (éves) | 100 000 öregdiák költsége | Legutóbbi áremelések |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Google Workspace cégeknek | $72 | $7,200,000 | • 2019: G Suite Basic ára 5 dollárról 6 dollárra/hónapra (+20%)<br>• 2023: Rugalmas csomagok ára 20%-kal emelkedett<br>• 2025: Business Plus ára 18 dollárról 26,40 dollárra/hónapra (+47%) mesterséges intelligencia funkciókkal |
-| Google Workspace for Education | Ingyenes (Education Fundamentals)<br>3 dollár/diák/év (Education Standard)<br>5 dollár/diák/év (Education Plus) | Ingyenes - 500 000 USD | • Mennyiségi kedvezmények: 5% 100-499 licenc esetén<br>• Mennyiségi kedvezmények: 10% 500+ licenc esetén<br>• Az ingyenes csomag az alapvető szolgáltatásokra korlátozódik |
-| Microsoft 365 Business | $60 | $6,000,000 | • 2023: Bevezették a kétévente esedékes árfrissítéseket<br>• 2025 (január): Személyes csomag 6,99 dollárról 9,99 dollárra/hónapban (+43%) a Copilot mesterséges intelligenciájával<br>• 2025 (április): 5%-os növekedés az éves kötelezettségvállalásokban, havonta fizetve |
-| Microsoft 365 oktatás | Ingyenes (A1)<br>38–55 USD/oktató/év (A3)<br>65–96 USD/oktató/év (A5) | Ingyenes - 96 000 USD | • A diáklicencek gyakran benne foglaltatnak az oktatói vásárlásokban<br>• Egyedi árképzés mennyiségi licencelés révén<br>• Az ingyenes szint webes verziókra korlátozódik |
-| Self-Hosted Exchange | $45 | $4,500,000 | A folyamatos karbantartási és biztonsági költségek továbbra is emelkednek |
+| Google Workspace vállalkozásoknak | $72 | $7,200,000 | • 2019: G Suite Basic ára 5 dollárról 6 dollárra/hónapra (+20%)<br>• 2023: Rugalmas csomagok ára 20%-kal emelkedett<br>• 2025: Business Plus ára 18 dollárról 26,40 dollárra/hónapra (+47%) mesterséges intelligencia funkciókkal |
+| Google Workspace oktatási célokra | Ingyenes (Education Fundamentals)<br>3 dollár/diák/év (Education Standard)<br>5 dollár/diák/év (Education Plus) | Ingyenes - 500 000 dollár | • Mennyiségi kedvezmények: 5% 100-499 licenc esetén<br>• Mennyiségi kedvezmények: 10% 500+ licenc esetén<br>• Az ingyenes csomag az alapvető szolgáltatásokra korlátozódik |
+| Microsoft 365 Vállalati verzió | $60 | $6,000,000 | • 2023: Bevezették a kétévente esedékes árfrissítéseket<br>• 2025 (január): Személyes csomag 6,99 dollárról 9,99 dollárra/hónapban (+43%) a Copilot mesterséges intelligenciájával<br>• 2025 (április): 5%-os növekedés az éves kötelezettségvállalásokban, havonta fizetve |
+| Microsoft 365 Oktatás | Ingyenes (A1)<br>38–55 USD/oktató/év (A3)<br>65–96 USD/oktató/év (A5) | Ingyenes - 96 000 dollár | • A diáklicencek gyakran benne foglaltatnak az oktatói vásárlásokban<br>• Egyedi árképzés mennyiségi licencelés révén<br>• Az ingyenes szint webes verziókra korlátozódik |
+| Saját üzemeltetésű Exchange | $45 | $4,500,000 | A folyamatos karbantartási és biztonsági költségek folyamatosan emelkednek |
 | **E-mail továbbítása vállalatnak** | **Fix 250 dollár/hó** | **3000 dollár/év** | **A bevezetés óta nem történt áremelkedés** |
 
-### Egyetemi megtakarítások a való világban {#real-world-university-savings}
+### Valós egyetemi megtakarítások {#real-world-university-savings}
 
-Íme, mennyit takarítanak meg partneregyetemeink évente, ha az E-mail továbbítást választják a hagyományos szolgáltatókkal szemben:
+Így takaríthatnak meg partneregyetemeink évente, ha a hagyományos szolgáltatókkal szemben a Forward Email szolgáltatást választják:
 
-| Egyetemi | Öregdiák gróf | Éves költség a Google-nál | Éves költség e-mail továbbítással | Éves megtakarítás |
+| Egyetemi | Öregdiákok száma | Éves költség a Google-lal | Éves költség e-mail továbbítással | Éves megtakarítás |
 | ----------------------- | ------------ | ----------------------- | ------------------------------ | -------------- |
 | Cambridge-i Egyetem | 30,000 | $90,000 | $3,000 | $87,000 |
-| Swarthmore College | 5,000 | $15,000 | $3,000 | $12,000 |
+| Swarthmore Főiskola | 5,000 | $15,000 | $3,000 | $12,000 |
 | Tufts Egyetem | 12,000 | $36,000 | $3,000 | $33,000 |
 | Marylandi Egyetem | 25,000 | $75,000 | $3,000 | $72,000 |
 
 > \[!NOTE]
-> Forward Email enterprise only costs $250/month typically, with no extra cost per user, whitelisted API rate limitations, and the only additional cost is storage if you need additional GB/TB for students (+$3 per 10 GB additional storage). We use NVMe SSD drives for fast support of IMAP/POP3/SMTP/CalDAV/CardDAV as well.
+> A Forward Email Enterprise szolgáltatás jellemzően mindössze havi 250 dollárba kerül, felhasználónkénti felár nélkül, engedélyezett API-díjkorlátozásokkal, és az egyetlen további költség a tárhely, ha további GB/TB-ra van szüksége diákoknak (+3 USD minden 10 GB-os további tárhelyért). NVMe SSD meghajtókat használunk az IMAP/POP3/SMTP/CalDAV/CardDAV gyors támogatásához is.
 
 > \[!IMPORTANT]
-> Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
+> A Google-lel és a Microsofttal ellentétben, amelyek többször is emelték áraikat, miközben integrálták az adatelemző mesterséges intelligencia alapú funkciókat, a Forward Email stabil árakat tart fenn, szigorú adatvédelmi szemlélettel. Nem használunk mesterséges intelligenciát, nem követjük nyomon a használati mintákat, és nem tárolunk naplókat vagy e-maileket lemezen (minden feldolgozás a memóriában történik), így biztosítva az öregdiákokkal folytatott kommunikáció teljes adatvédelmét.
 
-Ez jelentős költségcsökkentést jelent a hagyományos e-mail-tárhelymegoldásokhoz képest – az egyetemek által ösztöndíjakra, kutatásra vagy más, kritikus fontosságú tevékenységekre átirányítható forrásokhoz képest. Az Email Vendor Selection 2023-as elemzése szerint az oktatási intézmények egyre inkább költséghatékony alternatívákat keresnek a hagyományos e-mail-szolgáltatókkal szemben, mivel az árak a mesterséges intelligencia funkcióinak integrációjával folyamatosan emelkednek ([Szállítóválasztás e-mailben, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
+Ez jelentős költségcsökkentést jelent a hagyományos e-mail-tárhelymegoldásokhoz képest – az egyetemek által ösztöndíjakra, kutatásra vagy más, kritikus fontosságú tevékenységekre átirányítható forrásokhoz képest. Az Email Vendor Selection 2023-as elemzése szerint az oktatási intézmények egyre inkább költséghatékony alternatívákat keresnek a hagyományos e-mail-szolgáltatókkal szemben, mivel az árak a mesterséges intelligencia funkcióinak integrációjával folyamatosan emelkednek ([E-mail szolgáltató kiválasztása, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
 
 ## Egyetemi Öregdiákok E-mail Kihívása {#the-university-alumni-email-challenge}
 
-Az egyetemek számára az öregdiákoknak biztosított, életre szóló e-mail címek egyedi kihívásokat jelentenek, amelyeket a hagyományos e-mail megoldások nehezen tudnak hatékonyan kezelni. Amint azt a ServerFaultról szóló átfogó beszélgetés is megjegyezte, a nagy felhasználói bázissal rendelkező egyetemeknek speciális e-mail megoldásokra van szükségük, amelyek egyensúlyt teremtenek a teljesítmény, a biztonság és a költséghatékonyság között ([ServerFault, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)).
+Az egyetemek számára az öregdiákoknak biztosított, élettartamra szóló e-mail címek egyedi kihívásokat jelentenek, amelyeket a hagyományos e-mail megoldások nehezen tudnak hatékonyan kezelni. Amint azt a ServerFaultról szóló átfogó beszélgetésben is megjegyezték, a nagy felhasználói bázissal rendelkező egyetemeknek speciális e-mail megoldásokra van szükségük, amelyek egyensúlyt teremtenek a teljesítmény, a biztonság és a költséghatékonyság között ([ServerFault, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)).
 
 ### Az öregdiákok e-mail-azonosítójának értéke {#the-value-of-alumni-email-identity}
 
-Az öregdiákok e-mail címei (mint például a `firstname.lastname@cl.cam.ac.uk` vagy a `username@terpalum.umd.edu`) több fontos funkciót is betöltenek:
+Az öregdiákok e-mail címei (például `firstname.lastname@cl.cam.ac.uk` vagy `username@terpalum.umd.edu`) több fontos funkciót töltenek be:
 
 * Az intézményi kapcsolat és márkaidentitás fenntartása
 * Az egyetemmel való folyamatos kommunikáció elősegítése
@@ -99,11 +99,11 @@ Az öregdiákok e-mail címei (mint például a `firstname.lastname@cl.cam.ac.uk
 A Tekade (2020) kutatása kiemeli, hogy az oktatási e-mail címek számos előnnyel járnak az öregdiákok számára, beleértve az akadémiai forrásokhoz való hozzáférést, a szakmai hitelességet és az exkluzív kedvezményeket különféle szolgáltatásokra ([Közepes, 2020](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05)).
 
 > \[!TIP]
-> Visit our new [AlumniEmail.com](https://alumniemail.com) directory for a comprehensive resource on university alumni email services, including setup guides, best practices, and a searchable directory of alumni email domains. It serves as a central hub for all alumni email information.
+> Látogassa meg új [AlumniEmail.com](https://alumniemail.com) jegyzékünket, ahol átfogó információkat talál az egyetemi öregdiákok e-mail szolgáltatásairól, beleértve a beállítási útmutatókat, a bevált gyakorlatokat és az öregdiákok e-mail domainjeinek kereshető jegyzékét. Központi csomópontként szolgál az összes öregdiák e-mail információ számára.
 
 ### A hagyományos megoldások kudarcot vallottak {#traditional-solutions-fall-short}
 
-A hagyományos e-mail rendszerek számos korlátozást tartalmaznak, amikor az öregdiákok e-mail igényeire alkalmazzák:
+A hagyományos e-mail rendszerek számos korlátozást mutatnak, amikor az öregdiákok e-mail igényeire alkalmazzák őket:
 
 * **Költségbeli korlátok**: A felhasználónkénti licencelési modellek pénzügyileg fenntarthatatlanná válnak a nagy öregdiák bázisok számára.
 * **Adminisztratív terhek**: Több ezer vagy több millió fiók kezelése jelentős informatikai erőforrásokat igényel.
@@ -113,9 +113,9 @@ A hagyományos e-mail rendszerek számos korlátozást tartalmaznak, amikor az �
 
 Egy, az egyetemi e-mail-karbantartásról szóló Quora-beszélgetésből kiderül, hogy a biztonsági aggályok az egyik fő oka annak, hogy az egyetemek korlátozhatják vagy törölhetik az öregdiákok e-mail-címeit, mivel a fel nem használt fiókok sebezhetőek lehetnek a feltörésekkel és az identitáslopással szemben ([Quora, 2011](https://www.quora.com/Is-there-any-cost-for-a-college-or-university-to-maintain-edu-e-mail-addresses)).
 
-### Az e-mail továbbítási megoldás {#the-forward-email-solution}
+### Az e-mail továbbítási megoldása {#the-forward-email-solution}
 
-Megközelítésünk alapvetően más modellen keresztül kezeli ezeket a kihívásokat:
+Megközelítésünk alapvetően eltérő modellen keresztül kezeli ezeket a kihívásokat:
 
 * E-mail továbbítás tárhelyszolgáltatás helyett
 * Fix díjas árképzés felhasználónkénti költségek helyett
@@ -125,11 +125,11 @@ Megközelítésünk alapvetően más modellen keresztül kezeli ezeket a kihív�
 
 ## Technikai megvalósítás: Hogyan működik {#technical-implementation-how-it-works}
 
-Megoldásunk kifinomult, mégis elegánsan egyszerű műszaki architektúrát használ, hogy megbízható, biztonságos e-mail-továbbítást biztosítson nagy méretekben.
+Megoldásunk kifinomult, mégis elegánsan egyszerű technikai architektúrát alkalmaz, hogy megbízható és biztonságos e-mail-továbbítást biztosítson nagy léptékben.
 
 ### Alapvető architektúra {#core-architecture}
 
-A Forward Email rendszer több kulcsfontosságú összetevőből áll:
+Az e-mail továbbító rendszer több kulcsfontosságú összetevőből áll:
 
 * Elosztott MX szerverek a magas rendelkezésre állásért
 * Valós idejű továbbítás üzenetek tárolása nélkül
@@ -141,14 +141,14 @@ A ServerFault informatikai szakemberei szerint az egyetemek számára, amelyek s
 
 ### Integráció az egyetemi rendszerekkel {#integration-with-university-systems}
 
-Zökkenőmentes integrációs utakat fejlesztettünk ki a meglévő egyetemi infrastruktúrával:
+Zökkenőmentes integrációs útvonalakat dolgoztunk ki a meglévő egyetemi infrastruktúrával:
 
-* Automatizált kiépítés a [RESTful API](https://forwardemail.net/email-api) integráció révén
+* Automatizált kiépítés a [RESTful API](https://forwardemail.net/email-api) integrációján keresztül
 * Egyedi arculati lehetőségek egyetemi portálokhoz
 * Rugalmas alias-kezelés tanszékek és szervezetek számára
 * Kötegelt műveletek a hatékony adminisztráció érdekében
 
-### API-alapú menedzsment {#api-driven-management}
+### API-vezérelt felügyelet {#api-driven-management}
 
 A [RESTful API](https://forwardemail.net/email-api) lehetővé teszi az egyetemek számára az e-mail-kezelés automatizálását:
 
@@ -170,24 +170,24 @@ const response = await fetch('https://forwardemail.net/api/v1/domains/example.ed
 
 ### DNS-konfiguráció és -ellenőrzés {#dns-configuration-and-verification}
 
-A megfelelő DNS-konfiguráció kritikus fontosságú az e-mailek kézbesítéséhez. Csapatunk segít:
+A megfelelő DNS-konfiguráció elengedhetetlen az e-mail kézbesítéshez. Csapatunk a következőkben nyújt segítséget:
 
 * [DNS](https://en.wikipedia.org/wiki/Domain_Name_System) konfiguráció, beleértve az MX rekordokat
-* Átfogó e-mail biztonsági megvalósítás nyílt forráskódú [mailauth](https://www.npmjs.com/package/mailauth) csomagunkkal, egy svájci bicska az e-mail hitelesítéshez, amely a következőket kezeli:
+* Átfogó e-mail biztonsági megvalósítás a nyílt forráskódú [mailauth](https://www.npmjs.com/package/mailauth) csomagunkkal, egy svájci bicska az e-mail hitelesítéshez, amely a következőket kezeli:
 * [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Sender Policy Framework) az e-mail hamisítás megakadályozására
 * [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (DomainKeys Identified Mail) az e-mail hitelesítéshez
 * [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Domain-alapú üzenethitelesítés, jelentéskészítés és megfelelőség) a szabályzat betartatásához
 * [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (SMTP MTA Strict Transport Security) a TLS titkosítás kikényszerítéséhez
 * [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Authenticated Received Chain) a hitelesítés fenntartására az üzenetek továbbításakor
 * [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Sender Rewriting Scheme) az SPF-érvényesítés megőrzésére a továbbítás során
-* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Márkajelzők üzenetazonosításhoz) a logó megjelenítéséhez a támogató e-mail kliensekben
+* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Brand Indicators for Message Identification) a logó megjelenítéséhez a támogató e-mail kliensekben
 * DNS TXT rekord ellenőrzése a domain tulajdonjogához
 
-A `mailauth` csomag (<http://npmjs.com/package/mailauth>) egy teljesen nyílt forráskódú megoldás, amely az e-mail-hitelesítés minden aspektusát egyetlen integrált könyvtárban kezeli. A zárt megoldásokkal ellentétben ez a megközelítés átláthatóságot, rendszeres biztonsági frissítéseket és teljes kontrollt biztosít az e-mail-hitelesítési folyamat felett.
+A `mailauth` csomag (<http://npmjs.com/package/mailauth>) egy teljesen nyílt forráskódú megoldás, amely egyetlen integrált könyvtárban kezeli az e-mail hitelesítés minden aspektusát. A zárt megoldásokkal ellentétben ez a megközelítés átláthatóságot, rendszeres biztonsági frissítéseket és teljes kontrollt biztosít az e-mail hitelesítési folyamat felett.
 
 ### Tesztelés és minőségbiztosítás {#testing-and-quality-assurance}
 
-A teljes üzembe helyezés előtt szigorú tesztelést végzünk:
+A teljes körű telepítés előtt szigorú tesztelést végzünk:
 
 * Teljes körű e-mail kézbesítési tesztelés
 * Terheléses tesztelés nagy volumenű forgatókönyvekhez
@@ -219,13 +219,13 @@ gantt
     Ongoing Maintenance            :e1, after d2, 365d
 ```
 
-## Megvalósítási folyamat: A migrációtól a karbantartásig {#implementation-process-from-migration-to-maintenance}
+## Megvalósítási folyamat: Az áttelepítéstől a karbantartásig {#implementation-process-from-migration-to-maintenance}
 
-Strukturált megvalósítási folyamatunk zökkenőmentes átmenetet biztosít a megoldásunkat alkalmazó egyetemek számára.
+Strukturált megvalósítási folyamatunk zökkenőmentes átmenetet biztosít az egyetemek számára a megoldásunk bevezetése során.
 
 ### Kezdeti értékelés és tervezés {#initial-assessment-and-planning}
 
-Kezdjük az egyetem jelenlegi levelezőrendszerének, öregdiák-adatbázisának és műszaki követelményeinek átfogó felmérésével. Ez a fázis a következőket tartalmazza:
+Az egyetem jelenlegi e-mail rendszerének, öregdiák-adatbázisának és technikai követelményeinek átfogó felmérésével kezdjük. Ez a fázis a következőket foglalja magában:
 
 * Érdekelt felek interjúi az informatikai, az öregdiák-kapcsolati és az adminisztrációs részleggel
 * A meglévő e-mail infrastruktúra technikai auditja
@@ -235,7 +235,7 @@ Kezdjük az egyetem jelenlegi levelezőrendszerének, öregdiák-adatbázisának
 
 ### Migrációs stratégia {#migration-strategy}
 
-Az értékelés alapján személyre szabott migrációs stratégiát dolgozunk ki, amely minimálisra csökkenti a fennakadásokat, miközben biztosítja a teljes adatintegritást:
+Az értékelés alapján személyre szabott migrációs stratégiát dolgozunk ki, amely minimalizálja a zavarokat, miközben biztosítja az adatok teljes integritását:
 
 * Fázisos migrációs megközelítés az öregdiák csoportok által
 * Párhuzamos rendszerek működtetése az átmenet során
@@ -245,7 +245,7 @@ Az értékelés alapján személyre szabott migrációs stratégiát dolgozunk k
 
 ### Műszaki beállítás és konfiguráció {#technical-setup-and-configuration}
 
-Technikai csapatunk a rendszerbeállítás minden aspektusával foglalkozik:
+Műszaki csapatunk a rendszerbeállítás minden aspektusát kezeli:
 
 * DNS konfiguráció és ellenőrzés
 * API integráció egyetemi rendszerekkel
@@ -254,7 +254,7 @@ Technikai csapatunk a rendszerbeállítás minden aspektusával foglalkozik:
 
 ### Felhasználói élmény tervezése {#user-experience-design}
 
-Szorosan együttműködünk az egyetemekkel, hogy intuitív felületeket hozzunk létre mind a rendszergazdák, mind az öregdiákok számára:
+Szorosan együttműködünk egyetemekkel, hogy intuitív felületeket hozzunk létre mind az adminisztrátorok, mind az öregdiákok számára:
 
 * Egyedi arculatú öregdiák e-mail portálok
 * Egyszerűsített e-mail-továbbítás kezelés
@@ -262,7 +262,7 @@ Szorosan együttműködünk az egyetemekkel, hogy intuitív felületeket hozzunk
 * Akadálymentesítési megfelelőség
 * Többnyelvű támogatás, ahol szükséges
 
-### Oktatás és dokumentáció {#training-and-documentation}
+### Képzés és dokumentáció {#training-and-documentation}
 
 Az átfogó képzés biztosítja, hogy minden érdekelt fél hatékonyan tudja használni a rendszert:
 
@@ -284,11 +284,11 @@ Partnerségünk a megvalósításon túl is folytatódik:
 
 ## Esettanulmány: Cambridge-i Egyetem {#case-study-university-of-cambridge}
 
-A Cambridge-i Egyetem megoldást keresett arra, hogy @cam.ac.uk e-mail címeket biztosítson az öregdiákoknak, miközben csökkenti az informatikai általános költségeket és költségeket.
+A Cambridge-i Egyetem megoldást keresett arra, hogy @cam.ac.uk e-mail címeket biztosítson az öregdiákoknak, miközben csökkenti az informatikai rezsiköltségeket és a rezsiköltségeket.
 
 ### Kihívás {#challenge}
 
-A Cambridge számos kihívással szembesült a korábbi öregdiákok levelezőrendszerével kapcsolatban:
+Cambridge számos kihívással nézett szembe korábbi öregdiák e-mail rendszerével:
 
 * Magas üzemeltetési költségek a különálló e-mail infrastruktúra fenntartása miatt
 * Több ezer fiók kezelésének adminisztratív terhei
@@ -298,7 +298,7 @@ A Cambridge számos kihívással szembesült a korábbi öregdiákok levelezőre
 
 ### Megoldás {#solution}
 
-A Forward Email átfogó megoldást vezetett be:
+A Forward Email átfogó megoldást valósított meg:
 
 * E-mail átirányítás minden @cam.ac.uk alumni címre
 * Egyedi arculatú portál az alumni önkiszolgáló rendszerhez
@@ -315,11 +315,11 @@ A megvalósítás jelentős előnyökkel járt:
 * Fokozott biztonság modern e-mail hitelesítéssel
 * Pozitív öregdiák visszajelzések a rendszer használhatóságáról
 
-## Egyetemek és öregdiákok számára nyújtott előnyök {#benefits-for-universities-and-alumni}
+## Előnyök egyetemek és öregdiákok számára {#benefits-for-universities-and-alumni}
 
-Megoldásunk kézzelfogható előnyökkel jár mind az intézmények, mind a végzett hallgatók számára.
+Megoldásunk kézzelfogható előnyöket biztosít mind az intézmények, mind a végzettek számára.
 
-### Egyetemeknek {#for-universities}
+### Egyetemek számára {#for-universities}
 
 * **Költséghatékonyság**: Fix árak az öregdiákok számától függetlenül
 * **Adminisztrációs egyszerűség**: Automatizált kezelés API-n keresztül
@@ -341,19 +341,19 @@ Az International Journal of Education & Literacy Studies kutatása kiemeli a meg
 
 ### Elfogadási arányok az öregdiákok körében {#adoption-rates-among-alumni}
 
-Az egyetemek magas elfogadási és elégedettségi arányról számolnak be öregdiák közösségeik körében.
+Az egyetemek magas elfogadási és elégedettségi arányokról számolnak be az öregdiák közösségeik körében.
 
 ### Költségmegtakarítás a korábbi megoldásokhoz képest {#cost-savings-compared-to-previous-solutions}
 
-A pénzügyi hatás jelentős volt, az egyetemek jelentős költségmegtakarításról számoltak be korábbi e-mail megoldásaikhoz képest.
+A pénzügyi hatás jelentős volt, az egyetemek jelentős költségmegtakarításról számoltak be a korábbi e-mail megoldásaikhoz képest.
 
 ## Biztonsági és adatvédelmi szempontok {#security-and-privacy-considerations}
 
-Az oktatási intézmények számára az öregdiákok adatainak védelme nem csupán bevált gyakorlat – ez gyakran törvényi előírás az olyan szabályozások értelmében, mint a GDPR Európában.
+Az oktatási intézmények számára az öregdiákok adatainak védelme nem csupán bevált gyakorlat – gyakran jogi kötelezettség is, olyan szabályozások értelmében, mint az európai GDPR.
 
 ### Adatvédelmi intézkedések {#data-protection-measures}
 
-Megoldásunk több biztonsági réteget tartalmaz:
+Megoldásunk több szintű biztonságot ötvöz:
 
 * Végponttól végpontig terjedő titkosítás az összes e-mail forgalomhoz
 * Az e-mail tartalmak nem tárolódnak a szervereinken
@@ -362,7 +362,7 @@ Megoldásunk több biztonsági réteget tartalmaz:
 * Átlátható, nyílt forráskódú kód a biztonsági ellenőrzéshez
 
 > \[!WARNING]
-> Many email providers scan email content for advertising purposes or to train AI models. This practice raises serious privacy concerns, especially for professional and academic communications. Forward Email never scans email content and processes all emails in-memory to ensure complete privacy.
+> Sok e-mail-szolgáltató reklámozási célokra vagy mesterséges intelligencia modellek betanítására vizsgálja az e-mailek tartalmát. Ez a gyakorlat komoly adatvédelmi aggályokat vet fel, különösen a szakmai és tudományos kommunikáció esetében. A Forward Email soha nem vizsgálja az e-mailek tartalmát, és minden e-mailt a memóriában dolgoz fel a teljes adatvédelem biztosítása érdekében.
 
 ### Megfelelőségi keretrendszer {#compliance-framework}
 
@@ -376,7 +376,7 @@ Szigorúan betartjuk a vonatkozó előírásokat:
 
 ## Jövőbeli fejlesztések {#future-developments}
 
-Folyamatosan bővítjük öregdiák e-mail megoldásunkat új funkciókkal és képességekkel:
+Továbbra is új funkciókkal és lehetőségekkel bővítjük öregdiákoknak szóló e-mail megoldásunkat:
 
 * Továbbfejlesztett analitika az egyetemi adminisztrátorok számára
 * Fejlett adathalászat elleni védelem
@@ -385,9 +385,9 @@ Folyamatosan bővítjük öregdiák e-mail megoldásunkat új funkciókkal és k
 
 ## Következtetés {#conclusion}
 
-A Forward Email forradalmasította azt, ahogyan az egyetemek biztosítják és kezelik az öregdiákok e-mail szolgáltatásait. Azáltal, hogy a költséges, összetett e-mail-tárhelyet elegáns, biztonságos e-mail-továbbításra cseréltük, lehetővé tettük az intézmények számára, hogy élethosszig tartó e-mail-címeket kínáljanak minden öregdiáknak, miközben drámai módon csökkentik a költségeket és az adminisztrációs költségeket.
+A Forward Email forradalmasította az egyetemek öregdiák e-mail szolgáltatásainak nyújtását és kezelését. Azzal, hogy a költséges és összetett e-mail tárhelyet elegáns, biztonságos e-mail továbbítással váltottuk fel, lehetővé tettük az intézmények számára, hogy minden öregdiáknak élettartamra szóló e-mail címet kínáljanak, miközben drámaian csökkentették a költségeket és az adminisztratív terheket.
 
-Partnerkapcsolataink olyan rangos intézményekkel, mint Cambridge, Maryland, Tufts és Swarthmore demonstrálják megközelítésünk hatékonyságát a különböző oktatási környezetekben. Mivel az egyetemekre egyre nagyobb nyomás nehezedik az öregdiák kapcsolatok fenntartása és a költségek ellenőrzése mellett, megoldásunk lenyűgöző alternatívát kínál a hagyományos levelezőrendszerekkel szemben.
+Olyan rangos intézményekkel kötött partnerségeink, mint a Cambridge, Maryland, Tufts és Swarthmore, jól mutatják megközelítésünk hatékonyságát a sokszínű oktatási környezetekben. Mivel az egyetemekre egyre nagyobb nyomás nehezedik, hogy fenntartsák az öregdiák kapcsolatokat a költségek ellenőrzése mellett, megoldásunk meggyőző alternatívát kínál a hagyományos e-mail rendszerekkel szemben.
 
 ```mermaid
 flowchart LR
@@ -399,4 +399,4 @@ flowchart LR
     A -->|SSO Authentication| F
 ```
 
-Azoknak az egyetemeknek, amelyek érdeklődnek a Forward Email által alumni e-mail szolgáltatásaik átalakítása iránt, vegye fel a kapcsolatot csapatunkkal a <support@forwardemail.net> címen, vagy látogasson el a [forwardemail.net](https://forwardemail.net) oldalra, ahol többet megtudhat vállalati megoldásainkról.
+Azoknak az egyetemeknek, amelyek szeretnék felfedezni, hogyan alakíthatja át a Forward Email az öregdiák e-mail szolgáltatásaikat, vegye fel a kapcsolatot csapatunkkal a <support@forwardemail.net> címen, vagy látogasson el a [forwardemail.net](https://forwardemail.net) oldalra, ahol többet megtudhat vállalati megoldásainkról.

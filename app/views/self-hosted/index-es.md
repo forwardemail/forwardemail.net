@@ -45,9 +45,9 @@ La arquitectura incluye contenedores para:
 * SQLite para el almacenamiento seguro y cifrado del buzón
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+> No olvides consultar nuestra guía [blog autoalojado](https://forwardemail.net/blog/docs/self-hosted-solution)
 >
-> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Si te interesa una versión más detallada, consulta nuestras guías [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) o [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
 ## Requisitos {#requirements}
 
@@ -57,25 +57,25 @@ Antes de ejecutar el script de instalación, asegúrese de tener lo siguiente:
 * **Recursos**: 1 vCPU y 2 GB de RAM
 * **Acceso root**: Privilegios administrativos para ejecutar comandos.
 * **Nombre de dominio**: Un dominio personalizado listo para la configuración de DNS.
-* **IP limpia**: Asegúrese de que su servidor tenga una dirección IP limpia y sin reputación de spam revisando las listas negras. Más información: [aquí](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* **IP limpia**: Asegúrese de que su servidor tenga una dirección IP limpia y sin reputación de spam previa revisando las listas negras. Más información: [aquí](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
 * Dirección IP pública compatible con el puerto 25
 * Posibilidad de configurar [PTR inverso](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
 * Compatibilidad con IPv4 e IPv6
 
 > \[!TIP]
-> See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
+> Consulta nuestra lista de [proveedores de servidores de correo increíbles](https://github.com/forwardemail/awesome-mail-server-providers)
 
-### Cloud-init / Datos de usuario {#cloud-init--user-data}
+### Inicialización de nube / Datos de usuario {#cloud-init--user-data}
 
 La mayoría de los proveedores de nube admiten una configuración de cloud-init para cuando se aprovisiona el servidor privado virtual (VPS). Esta es una excelente manera de configurar algunos archivos y variables de entorno con antelación para su uso en la lógica de configuración inicial de los scripts, lo que evita la necesidad de solicitar información adicional mientras el script se ejecuta.
 
 **Opciones**
 
 * `EMAIL` - Correo electrónico usado para recordatorios de expiración de Certbot
-* `DOMAIN` - Dominio personalizado (p. ej., `example.com`) usado para configuración de autoalojamiento
+* `DOMAIN` - Dominio personalizado (p. ej., `example.com`) usado para la configuración de autoalojamiento
 * `AUTH_BASIC_USERNAME` - Nombre de usuario usado en la primera configuración para proteger el sitio
 * `AUTH_BASIC_PASSWORD` - Contraseña usada en la primera configuración para proteger el sitio
-* `/root/.cloudflare.ini` - (**Solo para usuarios de Cloudflare**) Archivo de configuración de Cloudflare usado por Certbot para la configuración de DNS. Requiere que configures tu token de API mediante `dns_cloudflare_api_token`. Más información en [aquí](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+* `/root/.cloudflare.ini` - (**Solo para usuarios de Cloudflare**) Archivo de configuración de Cloudflare usado por Certbot para la configuración de DNS. Requiere que configures tu token de API mediante `dns_cloudflare_api_token`. Más información sobre [aquí](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 
 Ejemplo:
 
@@ -158,7 +158,7 @@ Una vez completado, debería ver un mensaje de éxito. Incluso puede ejecutar `d
 
 ### Rutas de archivos importantes {#important-file-paths}
 
-Nota: La *ruta de host* a continuación es relativa a `/root/forwardemail.net/self-hosting/`.
+Nota: La *ruta del host* a continuación es relativa a `/root/forwardemail.net/self-hosting/`.
 
 | Componente | Ruta del host | Ruta del contenedor |
 | ---------------------- | :-------------------: | ---------------------------- |
@@ -173,8 +173,8 @@ Nota: La *ruta de host* a continuación es relativa a `/root/forwardemail.net/se
 | Clave privada DKIM | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
 
 > \[!IMPORTANT]
-> Save the `.env` file securely. It is critical for recovery in case of failure.
-> You can find this in `/root/forwardemail.net/self-hosting/.env`.
+> Guarde el archivo `.env` de forma segura. Es fundamental para la recuperación en caso de fallo.
+> Puede encontrarlo en `/root/forwardemail.net/self-hosting/.env`.
 
 ## Configuración {#configuration}
 
@@ -221,11 +221,11 @@ Vaya a https\://\<nombre_de_dominio> y reemplace \<nombre_de_dominio> con el dom
 * Opcionalmente, configura **SMTP para correo saliente** en **Configuración del dominio**. Esto requiere registros DNS adicionales.
 
 > \[!NOTE]
-> No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
+> No se envía información fuera de su servidor. La opción de alojamiento propio y la cuenta inicial son solo para el inicio de sesión de administrador y la vista web para gestionar dominios, alias y configuraciones de correo electrónico relacionadas.
 
 ## Prueba {#testing}
 
-### Creando tu primer alias {#creating-your-first-alias}
+### Creando su primer alias {#creating-your-first-alias}
 
 1. Acceda a la página de alias.
 Abra la página de administración de alias:
@@ -269,7 +269,7 @@ Una vez configurado, ¡debería poder enviar y recibir correos electrónicos a s
 
 #### ¿Por qué esto no funciona fuera de Ubuntu y Debian? {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Actualmente buscamos compatibilidad con macOS y buscaremos otras opciones. Si desea que otros usuarios también lo hagan, abra un enlace o contribuya.
+Actualmente buscamos compatibilidad con macOS y buscaremos otras opciones. Si desea que otros usuarios también lo sean, abra un [discusión](https://github.com/orgs/forwardemail/discussions) o contribuya.
 
 #### ¿Por qué falla el desafío acme de certbot? {#why-is-the-certbot-acme-challenge-failing}
 
@@ -282,11 +282,11 @@ Podrías ver dos desafíos como este:
 
 También es posible que la propagación del DNS no se haya completado. Puedes usar herramientas como `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Esto te dará una idea de si los cambios en tu registro TXT deberían reflejarse. También es posible que la caché DNS local de tu host siga usando un valor antiguo o no haya detectado los cambios recientes.
 
-Otra opción es usar los cambios de DNS automatizados de cerbot configurando el archivo `/root/.cloudflare.ini` con el token de la API en cloud-init/user-data durante la configuración inicial del VPS, o bien crear este archivo y ejecutar el script de nuevo. Esto gestionará los cambios de DNS y las actualizaciones de desafío automáticamente.
+Otra opción es usar los cambios de DNS automatizados de cerbot configurando el archivo `/root/.cloudflare.ini` con el token de la API en cloud-init/user-data durante la configuración inicial del VPS, o crear este archivo y ejecutar el script de nuevo. Esto gestionará los cambios de DNS y las actualizaciones de desafío automáticamente.
 
 ### ¿Cuál es el nombre de usuario y la contraseña de autenticación básica? {#what-is-the-basic-auth-username-and-password}
 
-Para el autoalojamiento, añadimos una ventana emergente de autenticación nativa del navegador para el primer uso con un nombre de usuario simple (`admin`) y una contraseña (generada aleatoriamente durante la configuración inicial). Esto se añade como protección en caso de que la automatización o los scrapers se adelanten a su primer registro en la experiencia web. Puede encontrar esta contraseña después de la configuración inicial en su archivo `.env`, en `AUTH_BASIC_USERNAME` y `AUTH_BASIC_PASSWORD`.
+Para el autoalojamiento, añadimos una ventana emergente de autenticación nativa del navegador para el primer acceso con un nombre de usuario simple (`admin`) y una contraseña (generada aleatoriamente durante la configuración inicial). Esto se añade como protección en caso de que la automatización o los scrapers se adelanten a su primer registro en la experiencia web. Puede encontrar esta contraseña después de la configuración inicial en su archivo `.env`, dentro de `AUTH_BASIC_USERNAME` y `AUTH_BASIC_PASSWORD`.
 
 ### ¿Cómo sé qué se está ejecutando? {#how-do-i-know-what-is-running}
 
@@ -308,4 +308,4 @@ Si ves un mensaje como "Tiempo de conexión agotado" al conectarte al servidor M
 
 #### ¿Qué herramientas debo usar para probar las mejores prácticas de configuración de correo electrónico y la reputación de IP? {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-Echa un vistazo a nuestro [Preguntas frecuentes aquí](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).
+Eche un vistazo a nuestro [Preguntas frecuentes aquí](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).

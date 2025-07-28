@@ -3,7 +3,7 @@
 ## Innehållsförteckning {#table-of-contents}
 
 * [Översikt](#overview)
-* [Förutsättningar](#prerequisites)
+* [Förkunskapskrav](#prerequisites)
 * [Systemkrav](#system-requirements)
 * [Steg-för-steg-installation](#step-by-step-installation)
   * [Steg 1: Initial systeminstallation](#step-1-initial-system-setup)
@@ -32,7 +32,7 @@
 * [Underhåll och övervakning](#maintenance-and-monitoring)
   * [Loggplatser](#log-locations)
   * [Regelbundna underhållsuppgifter](#regular-maintenance-tasks)
-  * [Certifikatförnyelse](#certificate-renewal)
+  * [Förnyelse av certifikat](#certificate-renewal)
 * [Felsökning](#troubleshooting)
   * [Vanliga problem](#common-issues)
   * [Få hjälp](#getting-help)
@@ -523,12 +523,12 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 1. Öppna din webbläsare och navigera till `https://yourdomain.com`
 2. Ange de grundläggande autentiseringsuppgifterna du sparade tidigare
-3. Slutför den initiala installationsguiden
+3. Slutför den inledande installationsguiden
 4. Skapa ditt första e-postkonto
 
 ## Säkerhetskopieringskonfiguration {#backup-configuration}
 
-### Konfigurera S3-kompatibel säkerhetskopia {#set-up-s3-compatible-backup}
+### Konfigurera S3-kompatibel säkerhetskopiering {#set-up-s3-compatible-backup}
 
 Konfigurera automatiska säkerhetskopior till S3-kompatibel lagring:
 
@@ -593,7 +593,7 @@ crontab -l
 * **Docker Compose-loggar**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
 * **Systemloggar**: `/var/log/syslog`
 * **Säkerhetskopieringsloggar**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Automatiska uppdateringar av loggar**: `/var/log/autoupdate.log`
+* **Automatisk uppdatering av loggar**: `/var/log/autoupdate.log`
 
 ### Regelbundna underhållsuppgifter {#regular-maintenance-tasks}
 
@@ -656,7 +656,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * **GitHub-problem**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Communitysupport**: Kontrollera projektets GitHub-diskussioner
 
-## Bästa säkerhetsrutiner {#security-best-practices}
+## Bästa säkerhetsmetoder {#security-best-practices}
 
 1. **Håll systemet uppdaterat**: Uppdatera Ubuntu och paket regelbundet
 2. **Övervaka loggar**: Konfigurera loggövervakning och varningar

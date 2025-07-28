@@ -20,7 +20,7 @@
   * [Contactpersoon ophalen](#retrieve-contact)
   * [Contactpersoon bijwerken](#update-contact)
   * [Contactpersoon verwijderen](#delete-contact)
-* [Alias-kalenders (CalDAV)](#alias-calendars-caldav)
+* [Aliaskalenders (CalDAV)](#alias-calendars-caldav)
   * [Lijstkalenders](#list-calendars)
   * [Kalender maken](#create-calendar)
   * [Kalender ophalen](#retrieve-calendar)
@@ -94,7 +94,7 @@ Het huidige HTTP-basis-URI-pad is: `BASE_URI`.
 
 ## Authenticatie {#authentication}
 
-Voor alle eindpunten moet uw [API-sleutel](https://forwardemail.net/my-account/security) worden ingesteld als de waarde voor de gebruikersnaam in de [Basisautorisatie](https://en.wikipedia.org/wiki/Basic_access_authentication) header van de aanvraag (met uitzondering van [Alias-contacten](#alias-contacts), [Alias-kalenders](#alias-calendars) en [Alias-mailboxen](#alias-mailboxes), die een [gegenereerde alias gebruikersnaam en wachtwoord](/faq#do-you-support-receiving-email-with-imap) gebruiken).
+Voor alle eindpunten moet uw [API-sleutel](https://forwardemail.net/my-account/security) worden ingesteld als de waarde voor de gebruikersnaam in de [Basisautorisatie](https://en.wikipedia.org/wiki/Basic_access_authentication)-header van de aanvraag (met uitzondering van [Alias-contacten](#alias-contacts), [Alias-kalenders](#alias-calendars) en [Alias-mailboxen](#alias-mailboxes), die een [gegenereerde alias gebruikersnaam en wachtwoord](/faq#do-you-support-receiving-email-with-imap) gebruiken).
 
 Maakt u zich geen zorgen: hieronder vindt u voorbeelden als u niet zeker weet wat dit is.
 
@@ -117,16 +117,16 @@ Als er fouten optreden, bevat de antwoordtekst van de API-aanvraag een gedetaill
 | 504 | Gateway-time-out |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Als u een 5xx-statuscode ontvangt (wat normaal gesproken niet zou moeten gebeuren), neem dan contact met ons op via <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>. We helpen u dan direct met het oplossen van uw probleem.
 
 ## Lokalisatie {#localization}
 
-Onze service is vertaald naar meer dan 25 verschillende talen. Alle API-responsberichten worden vertaald naar de laatst gedetecteerde landinstellingen van de gebruiker die de API-aanvraag indient. U kunt dit overschrijven door een aangepaste header `Accept-Language` toe te voegen. Probeer het gerust uit met behulp van de taalkeuzelijst onderaan deze pagina.
+Onze service is vertaald naar meer dan 25 verschillende talen. Alle API-responsberichten worden vertaald naar de laatst gedetecteerde landinstellingen van de gebruiker die de API-aanvraag indient. U kunt dit overschrijven door een aangepaste `Accept-Language`-header toe te voegen. Probeer het gerust uit met behulp van de taalkeuzelijst onderaan deze pagina.
 
 ## Paginering {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> Vanaf 1 november 2024 zijn de API-eindpunten voor [Lijstdomeinen](#list-domains) en [Domeinaliassen weergeven](#list-domain-aliases) standaard ingesteld op het maximale aantal resultaten per pagina van `1000`. Als u zich hier al eerder voor wilt aanmelden, kunt u `?paginate=true` als extra querystringparameter doorgeven aan de URL voor de eindpuntquery.
 
 Paginering wordt ondersteund door alle API-eindpunten die resultaten weergeven.
 
@@ -160,11 +160,11 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ### Logs ophalen {#retrieve-logs}
 
-Met onze API kunt u programmatisch logs voor uw account downloaden. Door een aanvraag in te dienen bij dit eindpunt, worden alle logs voor uw account verwerkt en als bijlage (gecomprimeerd spreadsheetbestand [Gzip](https://en.wikipedia.org/wiki/Gzip) [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) naar u gemaild zodra deze voltooid zijn.
+Met onze API kunt u programmatisch logs voor uw account downloaden. Door een aanvraag in te dienen bij dit eindpunt, worden alle logs voor uw account verwerkt en als bijlage ([Gzip](https://en.wikipedia.org/wiki/Gzip) gecomprimeerd [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) spreadsheetbestand) naar u gemaild zodra deze voltooid zijn.
 
-Hiermee kunt u achtergrondtaken aanmaken met een [Cron-taak](https://en.wikipedia.org/wiki/Cron) of met onze [Node.js-taakplanningssoftware Bree](https://github.com/breejs/bree) om logs te ontvangen wanneer u maar wilt. Houd er rekening mee dat dit eindpunt beperkt is tot `10` verzoeken per dag.
+Hiermee kunt u achtergrondtaken aanmaken met een [Cron-taak](https://en.wikipedia.org/wiki/Cron) of met onze [Node.js-taakplanningssoftware Bree](https://github.com/breejs/bree) om logs te ontvangen wanneer u dat wilt. Let op: dit eindpunt is beperkt tot `10`-verzoeken per dag.
 
-De bijlage is de kleine letter `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` en de e-mail zelf bevat een korte samenvatting van de opgehaalde logs. U kunt logs ook op elk gewenst moment downloaden via [Mijn account → Logboeken](/my-account/logs).
+De bijlage is de kleine letter `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` en de e-mail zelf bevat een korte samenvatting van de opgehaalde logs. U kunt logs ook op elk gewenst moment downloaden van [Mijn account → Logboeken](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -190,7 +190,7 @@ curl BASE_URI/v1/logs/download \
 
 Houd er rekening mee dat u services zoals [Crontab.guru](https://crontab.guru/) kunt gebruiken om de syntaxis van uw cron-taakexpressies te valideren.
 
-> Voorbeeld cronjob (elke dag om middernacht **en met logs van de vorige dag**):
+> Voorbeeld van een cronjob (elke dag om middernacht **en met logs van de vorige dag**):
 
 Voor MacOS:
 
@@ -204,7 +204,7 @@ Voor Linux en Ubuntu:
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date --date "-1 days" -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
-## Account {#account}
+## Rekening {#account}
 
 ### Account aanmaken {#create-account}
 
@@ -223,7 +223,7 @@ curl -X POST BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-### Account ophalen {#retrieve-account}
+### Rekening ophalen {#retrieve-account}
 
 > `GET /v1/account`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Aliascontacten (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> In tegenstelling tot andere API-eindpunten vereisen deze headers voor basisautorisatie een 'gebruikersnaam' van [Authenticatie](#authentication) die gelijk is aan de aliasgebruikersnaam en een 'wachtwoord' dat gelijk is aan het door de alias gegenereerde wachtwoord.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Deze endpointsectie is nog in ontwikkeling en zal (hopelijk) in 2024 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown 'Apps' in de navigatiebalk van onze website.
 
 ### Contactenlijst {#list-contacts}
 
@@ -267,7 +267,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Binnenkort beschikbaar**
 
-### Contactpersoon aanmaken {#create-contact}
+### Contactpersoon {#create-contact} aanmaken
 
 > `POST /v1/contacts`
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-agenda's (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> In tegenstelling tot andere API-eindpunten vereisen deze headers voor basisautorisatie een 'gebruikersnaam' van [Authenticatie](#authentication) die gelijk is aan de aliasgebruikersnaam en een 'wachtwoord' dat gelijk is aan het door de alias gegenereerde wachtwoord.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Deze endpointsectie is nog in ontwikkeling en zal (hopelijk) in 2024 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown 'Apps' in de navigatiebalk van onze website.
 
 ### Kalenders weergeven {#list-calendars}
 
@@ -305,7 +305,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Binnenkort beschikbaar**
 
-### Agenda aanmaken {#create-calendar}
+### Kalender aanmaken {#create-calendar}
 
 > `POST /v1/calendars`
 
@@ -323,7 +323,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Binnenkort beschikbaar**
 
-### Agenda verwijderen {#delete-calendar}
+### Verwijder agenda {#delete-calendar}
 
 > `DELETE /v1/calendars/:id`
 
@@ -332,10 +332,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Aliasberichten (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> In tegenstelling tot andere API-eindpunten vereisen deze headers voor basisautorisatie een 'gebruikersnaam' van [Authenticatie](#authentication) die gelijk is aan de aliasgebruikersnaam en een 'wachtwoord' dat gelijk is aan het door de alias gegenereerde wachtwoord.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Deze endpointsectie is nog in ontwikkeling en zal (hopelijk) in 2024 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown 'Apps' in de navigatiebalk van onze website.
 
 Zorg ervoor dat u de installatie-instructies voor uw domein hebt gevolgd.
 
@@ -350,7 +350,7 @@ Deze instructies vindt u in onze FAQ-sectie [Ondersteunt u het ontvangen van e-m
 ### Bericht maken {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Hiermee wordt **GEEN** e-mail verzonden – het bericht wordt alleen toegevoegd aan uw mailboxmap (dit is bijvoorbeeld vergelijkbaar met de IMAP-opdracht `APPEND`). Als u een e-mail wilt verzenden, zie dan [Uitgaande SMTP-e-mail maken](#create-outbound-smtp-email) hieronder. Nadat u de uitgaande SMTP-mail hebt aangemaakt, kunt u een kopie ervan met behulp van dit eindpunt toevoegen aan de mailbox van uw alias voor opslagdoeleinden.
 
 > `POST /v1/messages`
 
@@ -368,7 +368,7 @@ Deze instructies vindt u in onze FAQ-sectie [Ondersteunt u het ontvangen van e-m
 
 **Binnenkort beschikbaar**
 
-### Bericht verwijderen {#delete-message}
+### Verwijder bericht {#delete-message}
 
 > `DELETE /v1/messages:id`
 
@@ -377,10 +377,10 @@ Deze instructies vindt u in onze FAQ-sectie [Ondersteunt u het ontvangen van e-m
 ## Alias-mappen (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Eindpunten van mappen met het pad <code>/v1/folders/:path</code> als eindpunt zijn uitwisselbaar met de ID <code>:id</code> van een map. Dit betekent dat u naar de map kunt verwijzen met de waarde <code>path</code> of <code>id</code>.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Deze endpointsectie is nog in ontwikkeling en zal (hopelijk) in 2024 worden uitgebracht. Gebruik in de tussentijd een IMAP-client uit de dropdown 'Apps' in de navigatiebalk van onze website.
 
 ### Mappen weergeven {#list-folders}
 
@@ -394,7 +394,7 @@ Deze instructies vindt u in onze FAQ-sectie [Ondersteunt u het ontvangen van e-m
 
 **Binnenkort beschikbaar**
 
-### Map {#retrieve-folder} ophalen
+### Haal map {#retrieve-folder} op
 
 > `GET /v1/folders/:id`
 
@@ -426,7 +426,7 @@ Deze instructies zijn te vinden op [Mijn account → Domeinen → Instellingen �
 
 ### Uitgaande SMTP-e-maillimiet ophalen {#get-outbound-smtp-email-limit}
 
-Dit is een eenvoudig eindpunt dat een JSON-object retourneert dat de `count` en `limit` bevat voor het aantal dagelijkse uitgaande SMTP-berichten per account.
+Dit is een eenvoudig eindpunt dat een JSON-object retourneert dat `count` en `limit` bevat voor het aantal dagelijkse uitgaande SMTP-berichten per account.
 
 > `GET /v1/emails/limit`
 
@@ -462,7 +462,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Uitgaande SMTP-e-mail maken {#create-outbound-smtp-email}
 
-Onze API voor het maken van een e-mail is geïnspireerd op en maakt gebruik van de berichtopties van Nodemailer. Raadpleeg de [Nodemailer-berichtconfiguratie](https://nodemailer.com/message/) voor alle bodyparameters hieronder.
+Onze API voor het maken van een e-mail is geïnspireerd op en maakt gebruik van de berichtopties van Nodemailer. Raadpleeg [Nodemailer-berichtconfiguratie](https://nodemailer.com/message/) voor alle onderstaande bodyparameters.
 
 Houd er rekening mee dat we, met uitzondering van `envelope` en `dkim` (aangezien we die automatisch voor u instellen), alle opties van Nodemailer ondersteunen. Om beveiligingsredenen stellen we de opties `disableFileAccess` en `disableUrlAccess` automatisch in op `true`.
 
@@ -530,9 +530,9 @@ curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### Uitgaande SMTP-e-mail verwijderen {#delete-outbound-smtp-email}
+### Verwijder uitgaande SMTP-e-mail {#delete-outbound-smtp-email}
 
-Het verwijderen van e-mails zet de status op `"rejected"` (en verwerkt deze vervolgens niet in de wachtrij) als en alleen als de huidige status `"pending"`, `"queued"` of `"deferred"` is. We kunnen e-mails automatisch verwijderen na 30 dagen nadat ze zijn aangemaakt en/of verzonden. Bewaar daarom een kopie van uitgaande SMTP-e-mails in uw client, database of applicatie. U kunt desgewenst verwijzen naar onze e-mail-ID-waarde in uw database. Deze waarde wordt geretourneerd door zowel [E-mail maken](#create-email) als [E-mail ophalen](#retrieve-email) eindpunten.
+Het verwijderen van e-mails zet de status op `"rejected"` (en verwerkt deze vervolgens niet in de wachtrij) als en alleen als de huidige status `"pending"`, `"queued"` of `"deferred"` is. We kunnen e-mails automatisch verwijderen na 30 dagen nadat ze zijn aangemaakt en/of verzonden. Bewaar daarom een kopie van uitgaande SMTP-e-mails in uw client, database of applicatie. U kunt desgewenst verwijzen naar onze e-mail-ID in uw database. Deze waarde wordt geretourneerd door zowel [E-mail maken](#create-email) als [E-mail ophalen](#retrieve-email) eindpunten.
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Domeinen {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Domeineindpunten met de domeinnaam <code>/v1/domains/:domeinnaam</code> als eindpunt zijn uitwisselbaar met de domein-ID <code>:domeinnaam</code>. Dit betekent dat u naar het domein kunt verwijzen met de waarde <code>naam</code> of <code>id</code>.
 
-### Lijst domeinen {#list-domains}
+### Domeinen weergeven {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Vanaf 1 november 2024 zijn de API-eindpunten voor [Lijstdomeinen](#list-domains) en [Domeinaliassen weergeven](#list-domain-aliases) standaard ingesteld op het maximale aantal resultaten per pagina van `1000`. Als u zich hier al eerder voor wilt aanmelden, kunt u `?paginate=true` als extra querystringparameter doorgeven aan de URL voor de eindpuntquery. Zie [Paginering](#pagination) voor meer informatie.
 
 > `GET /v1/domains`
 
@@ -659,7 +659,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Verwijder het domeinbrede catch-all-wachtwoord {#remove-domain-wide-catch-all-password}
+### Verwijder domeinbrede catch-all-wachtwoord {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
@@ -694,7 +694,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### Verwijder domein {#delete-domain}
+### Domein {#delete-domain} verwijderen
 
 > `DELETE /v1/domains/:domain_name`
 
@@ -705,7 +705,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-## Nodigt {#invites} uit
+## nodigt {#invites} uit
 
 ### Accepteer domeinuitnodiging {#accept-domain-invite}
 
@@ -718,7 +718,7 @@ curl BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
-### Domeinuitnodiging maken {#create-domain-invite}
+### Maak domeinuitnodiging {#create-domain-invite}
 
 > `POST /v1/domains/DOMAIN_NAME/invites`
 
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Als de uitgenodigde gebruiker al een geaccepteerd lid is van een ander domein waarvan de beheerder die hem uitnodigt lid is, wordt de uitnodiging automatisch geaccepteerd en wordt er geen e-mail verzonden.
 
 ### Verwijder domeinuitnodiging {#remove-domain-invite}
 
@@ -786,7 +786,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 ### Genereer een aliaswachtwoord {#generate-an-alias-password}
 
-Houd er rekening mee dat als u geen instructies per e-mail verstuurt, de gebruikersnaam en het wachtwoord in de JSON-responsbody van een succesvolle aanvraag worden geplaatst in de indeling `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
+Houd er rekening mee dat als u geen instructies per e-mail verstuurt, de gebruikersnaam en het wachtwoord in de JSON-responsbody van een succesvolle aanvraag worden weergegeven in de indeling `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Domeinaliassen weergeven {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Vanaf 1 november 2024 zijn de API-eindpunten voor [Lijstdomeinen](#list-domains) en [Domeinaliassen weergeven](#list-domain-aliases) standaard ingesteld op het maximale aantal resultaten per pagina van `1000`. Als u zich hier al eerder voor wilt aanmelden, kunt u `?paginate=true` als extra querystringparameter doorgeven aan de URL voor de eindpuntquery. Zie [Paginering](#pagination) voor meer informatie.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -838,15 +838,15 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `description` | Nee | Snaar | Aliasbeschrijving |
 | `labels` | Nee | String of Array | Lijst met labels (moet een door regelovergangen/spaties/komma's gescheiden string of array zijn) |
 | `has_recipient_verification` | Nee | Booleaanse | Vereist dat ontvangers op een e-mailverificatielink klikken om e-mails door te laten stromen (standaardinstelling van het domein als dit niet expliciet is ingesteld in de aanvraagtekst) |
-| `is_enabled` | Nee | Booleaanse | Of deze alias moet worden in- of uitgeschakeld (indien uitgeschakeld, worden e-mails nergens naartoe geleid, maar retourneren ze wel succesvolle statuscodes). Als een waarde wordt doorgegeven, wordt deze omgezet naar een Booleaanse waarde met behulp van [boolean](https://github.com/thenativeweb/boolean#quick-start)). |
+| `is_enabled` | Nee | Booleaanse | Of deze alias moet worden in- of uitgeschakeld (indien uitgeschakeld, worden e-mails nergens naartoe geleid, maar retourneren ze wel succesvolle statuscodes). Als er een waarde wordt doorgegeven, wordt deze omgezet naar een Booleaanse waarde met behulp van [boolean](https://github.com/thenativeweb/boolean#quick-start)). |
 | `error_code_if_disabled` | Nee | Nummer (`250`, `421` of `550`) | Inkomende e-mail naar deze alias wordt geweigerd als `is_enabled` gelijk is aan `false` met `250` (stilzwijgend nergens bezorgen, bijvoorbeeld blackhole of `/dev/null`), `421` (zachte weigering; en opnieuw proberen gedurende maximaal ~5 dagen) of `550` permanente mislukking en weigering. Standaard is dit `250`. |
 | `has_imap` | Nee | Booleaanse | Of IMAP-opslag voor deze alias moet worden in- of uitgeschakeld (indien uitgeschakeld, worden binnenkomende e-mails niet opgeslagen in [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Als een waarde wordt doorgegeven, wordt deze omgezet naar een Booleaanse waarde met behulp van [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `has_pgp` | Nee | Booleaanse | Of [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) voor [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) moet worden in- of uitgeschakeld met behulp van de alias `public_key`. |
 | `public_key` | Nee | Snaar | Openbare OpenPGP-sleutel in ASCII Armor-formaat ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); bijvoorbeeld GPG-sleutel voor `support@forwardemail.net`). Dit is alleen van toepassing als u `has_pgp` hebt ingesteld op `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Nee | Snaar | Maximale opslagquotum voor deze alias. Laat dit leeg om het huidige maximale quotum van het domein te resetten of voer een waarde in, zoals "1 GB", die door [bytes](https://github.com/visionmedia/bytes.js) wordt verwerkt. Deze waarde kan alleen door domeinbeheerders worden aangepast. |
-| `vacation_responder_is_enabled` | Nee | Booleaanse | Of een automatisch antwoord bij afwezigheid moet worden in- of uitgeschakeld. |
+| `vacation_responder_is_enabled` | Nee | Booleaanse | Of een automatisch antwoord op vakantie moet worden in- of uitgeschakeld. |
 | `vacation_responder_start_date` | Nee | Snaar | Begindatum voor de vakantieresponder (indien ingeschakeld en er geen begindatum is ingesteld, wordt ervan uitgegaan dat deze al is begonnen). We ondersteunen datumnotaties zoals `MM/DD/YYYY`, `YYYY-MM-DD` en andere datumnotaties via slimme parsing met behulp van `dayjs`. |
-| `vacation_responder_end_date` | Nee | Snaar | Einddatum voor de vakantiebeantwoorder (indien ingeschakeld en hier geen einddatum is ingesteld, wordt ervan uitgegaan dat de vakantiebeantwoorder nooit eindigt en voor altijd reageert). We ondersteunen datumnotaties zoals `MM/DD/YYYY`, `YYYY-MM-DD` en andere datumnotaties via slimme parsing met behulp van `dayjs`. |
+| `vacation_responder_end_date` | Nee | Snaar | Einddatum voor de vakantiebeantwoorder (indien ingeschakeld en hier geen einddatum is ingesteld, wordt ervan uitgegaan dat de vakantiebeantwoorder nooit eindigt en altijd reageert). We ondersteunen datumnotaties zoals `MM/DD/YYYY`, `YYYY-MM-DD` en andere datumnotaties via slimme parsing met behulp van `dayjs`. |
 | `vacation_responder_subject` | Nee | Snaar | Onderwerp in platte tekst voor het afwezigheidsbericht, bijvoorbeeld "Afwezig". We gebruiken `striptags` om alle HTML hier te verwijderen. |
 | `vacation_responder_message` | Nee | Snaar | Bericht in platte tekst voor de automatische beantwoorder, bijvoorbeeld: "Ik ben afwezig tot februari." We gebruiken `striptags` om alle HTML hier te verwijderen. |
 
@@ -857,7 +857,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 
-### Domeinalias {#retrieve-domain-alias} ophalen
+### Domeinalias ophalen {#retrieve-domain-alias}
 
 U kunt een domeinalias ophalen aan de hand van de waarde `id` of `name`.
 
@@ -890,15 +890,15 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `description` | Nee | Snaar | Aliasbeschrijving |
 | `labels` | Nee | String of Array | Lijst met labels (moet een door regelovergangen/spaties/komma's gescheiden string of array zijn) |
 | `has_recipient_verification` | Nee | Booleaanse | Vereist dat ontvangers op een e-mailverificatielink klikken om e-mails door te laten stromen (standaardinstelling van het domein als dit niet expliciet is ingesteld in de aanvraagtekst) |
-| `is_enabled` | Nee | Booleaanse | Of deze alias moet worden in- of uitgeschakeld (indien uitgeschakeld, worden e-mails nergens naartoe geleid, maar retourneren ze wel succesvolle statuscodes). Als een waarde wordt doorgegeven, wordt deze omgezet naar een Booleaanse waarde met behulp van [boolean](https://github.com/thenativeweb/boolean#quick-start)). |
+| `is_enabled` | Nee | Booleaanse | Of deze alias moet worden in- of uitgeschakeld (indien uitgeschakeld, worden e-mails nergens naartoe geleid, maar retourneren ze wel succesvolle statuscodes). Als er een waarde wordt doorgegeven, wordt deze omgezet naar een Booleaanse waarde met behulp van [boolean](https://github.com/thenativeweb/boolean#quick-start)). |
 | `error_code_if_disabled` | Nee | Nummer (`250`, `421` of `550`) | Inkomende e-mail naar deze alias wordt geweigerd als `is_enabled` gelijk is aan `false` met `250` (stilzwijgend nergens bezorgen, bijvoorbeeld blackhole of `/dev/null`), `421` (zachte weigering; en opnieuw proberen gedurende maximaal ~5 dagen) of `550` permanente mislukking en weigering. Standaard is dit `250`. |
 | `has_imap` | Nee | Booleaanse | Of IMAP-opslag voor deze alias moet worden in- of uitgeschakeld (indien uitgeschakeld, worden binnenkomende e-mails niet opgeslagen in [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Als een waarde wordt doorgegeven, wordt deze omgezet naar een Booleaanse waarde met behulp van [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `has_pgp` | Nee | Booleaanse | Of [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) voor [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) moet worden in- of uitgeschakeld met behulp van de alias `public_key`. |
 | `public_key` | Nee | Snaar | Openbare OpenPGP-sleutel in ASCII Armor-formaat ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); bijvoorbeeld GPG-sleutel voor `support@forwardemail.net`). Dit is alleen van toepassing als u `has_pgp` hebt ingesteld op `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Nee | Snaar | Maximale opslagquotum voor deze alias. Laat dit leeg om het huidige maximale quotum van het domein te resetten of voer een waarde in, zoals "1 GB", die door [bytes](https://github.com/visionmedia/bytes.js) wordt verwerkt. Deze waarde kan alleen door domeinbeheerders worden aangepast. |
-| `vacation_responder_is_enabled` | Nee | Booleaanse | Of een automatisch antwoord bij afwezigheid moet worden in- of uitgeschakeld. |
+| `vacation_responder_is_enabled` | Nee | Booleaanse | Of een automatisch antwoord op vakantie moet worden in- of uitgeschakeld. |
 | `vacation_responder_start_date` | Nee | Snaar | Begindatum voor de vakantieresponder (indien ingeschakeld en er geen begindatum is ingesteld, wordt ervan uitgegaan dat deze al is begonnen). We ondersteunen datumnotaties zoals `MM/DD/YYYY`, `YYYY-MM-DD` en andere datumnotaties via slimme parsing met behulp van `dayjs`. |
-| `vacation_responder_end_date` | Nee | Snaar | Einddatum voor de vakantiebeantwoorder (indien ingeschakeld en hier geen einddatum is ingesteld, wordt ervan uitgegaan dat de vakantiebeantwoorder nooit eindigt en voor altijd reageert). We ondersteunen datumnotaties zoals `MM/DD/YYYY`, `YYYY-MM-DD` en andere datumnotaties via slimme parsing met behulp van `dayjs`. |
+| `vacation_responder_end_date` | Nee | Snaar | Einddatum voor de vakantiebeantwoorder (indien ingeschakeld en hier geen einddatum is ingesteld, wordt ervan uitgegaan dat de vakantiebeantwoorder nooit eindigt en altijd reageert). We ondersteunen datumnotaties zoals `MM/DD/YYYY`, `YYYY-MM-DD` en andere datumnotaties via slimme parsing met behulp van `dayjs`. |
 | `vacation_responder_subject` | Nee | Snaar | Onderwerp in platte tekst voor het afwezigheidsbericht, bijvoorbeeld "Afwezig". We gebruiken `striptags` om alle HTML hier te verwijderen. |
 | `vacation_responder_message` | Nee | Snaar | Bericht in platte tekst voor de automatische beantwoorder, bijvoorbeeld: "Ik ben afwezig tot februari." We gebruiken `striptags` om alle HTML hier te verwijderen. |
 
@@ -909,7 +909,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
   -u API_TOKEN:
 ```
 
-### Verwijder domeinalias {#delete-domain-alias}
+### Domeinalias {#delete-domain-alias} verwijderen
 
 > `DELETE /v1/domains/:domain_name/aliases/:alias_id`
 
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Versleutel {#encrypt}
 
-We bieden u de mogelijkheid om records te versleutelen, zelfs met het gratis abonnement, zonder extra kosten. Privacy zou geen functie moeten zijn, maar een inherent onderdeel van alle aspecten van een product. Zoals nadrukkelijk gevraagd in een [Discussie over privacygidsen](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) en op [onze GitHub-problemen](https://github.com/forwardemail/forwardemail.net/issues/254), hebben we dit toegevoegd.
+We bieden u de mogelijkheid om records te versleutelen, zelfs met het gratis abonnement, zonder extra kosten. Privacy zou geen feature moeten zijn, maar inherent ingebouwd in alle aspecten van een product. Zoals dringend gevraagd in een [Discussie over privacygidsen](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) en op [onze GitHub-problemen](https://github.com/forwardemail/forwardemail.net/issues/254), hebben we dit toegevoegd.
 
 ### TXT-record versleutelen {#encrypt-txt-record}
 

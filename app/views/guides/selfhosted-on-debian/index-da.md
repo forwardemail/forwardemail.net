@@ -14,7 +14,7 @@
   * [Trin 6: Installer Docker](#step-6-install-docker)
   * [Trin 7: Konfigurer Docker-tjenesten](#step-7-configure-docker-service)
   * [Trin 8: Installer og konfigurer UFW Firewall](#step-8-install-and-configure-ufw-firewall)
-  * [Trin 9: Klon videresendt e-mail-arkiv](#step-9-clone-forward-email-repository)
+  * [Trin 9: Klon arkivet for videresendte e-mails](#step-9-clone-forward-email-repository)
   * [Trin 10: Opsæt miljøkonfiguration](#step-10-set-up-environment-configuration)
   * [Trin 11: Konfigurer dit domæne](#step-11-configure-your-domain)
   * [Trin 12: Generer SSL-certifikater](#step-12-generate-ssl-certificates)
@@ -364,7 +364,7 @@ certbot certonly \
 
 **Vigtigt**: Når du bliver bedt om det, skal du oprette TXT-poster i din DNS. Du kan opleve flere udfordringer for det samme domæne - **opret ALLE**. Fjern ikke den første TXT-post, når du tilføjer den anden.
 
-#### Mulighed B: Cloudflare DNS (hvis du bruger Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Mulighed B: Cloudflare DNS (Hvis du bruger Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
 Hvis dit domæne bruger Cloudflare til DNS, kan du automatisere generering af certifikater:
 
@@ -637,7 +637,7 @@ crontab -l
 
 ## Konfiguration af automatisk opdatering {#auto-update-configuration}
 
-Konfigurer automatiske opdateringer til din installation af videresendt e-mail:
+Konfigurer automatiske opdateringer til din installation af Videresend e-mail:
 
 ```bash
 # Create auto-update command (use appropriate docker compose command)
@@ -695,7 +695,7 @@ nslookup google.com
 
 ### Logplaceringer {#log-locations}
 
-* **Docker Compose-logfiler**: Brug den relevante docker compose-kommando baseret på installationen
+* **Docker Compose-logfiler**: Brug den passende docker compose-kommando baseret på installationen
 * **Systemlogfiler**: `/var/log/syslog`
 * **Backup-logfiler**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Automatisk opdatering af logfiler**: `/var/log/autoupdate.log`
@@ -817,7 +817,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 3. **Sikkerhedskopier regelmæssigt**: Test sikkerhedskopierings- og gendannelsesprocedurer
 4. **Brug stærke adgangskoder**: Generer stærke adgangskoder til alle konti
 5. **Aktiver Fail2Ban**: Overvej at installere fail2ban for yderligere sikkerhed
-6. **Regelmæssige sikkerhedsrevisioner**: Gennemgå din konfiguration med jævne mellemrum
+6. **Regelmæssige sikkerhedsrevisioner**: Gennemgå din konfiguration regelmæssigt
 7. **Overvåg Snapd**: Hold snap-pakker opdateret med `snap refresh`
 
 ## Konklusion {#conclusion}

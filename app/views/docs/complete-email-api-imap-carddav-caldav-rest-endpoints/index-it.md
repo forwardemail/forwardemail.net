@@ -84,7 +84,7 @@ Tutti i principali provider di posta elettronica costringono gli sviluppatori a 
 Il risultato? Gli sviluppatori abbandonano completamente l'integrazione email o sprecano settimane a sviluppare wrapper IMAP fragili che si rompono di continuo.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Il segreto sporco**: la maggior parte delle "API email" sono solo API di invio. Non è possibile organizzare cartelle, sincronizzare contatti o gestire calendari tramite una semplice interfaccia REST. Fino ad ora.
 
 ## Cosa dicono realmente gli sviluppatori {#what-developers-are-actually-saying}
 
@@ -94,7 +94,7 @@ La frustrazione è reale e documentata ovunque:
 >
 > *- [Sviluppatore di Hacker News](https://news.ycombinator.com/item?id=42106944), 147 voti a favore*
 
-> "Tutte le API di posta elettronica sono mediocri? Sembrano limitate o restrittive in qualche modo."
+> "Tutte le API email sono mediocri? Sembrano limitate o restrittive in qualche modo."
 >
 > *- [Discussione su Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
@@ -104,14 +104,14 @@ La frustrazione è reale e documentata ovunque:
 
 > "Cosa rende l'API di Gmail più efficiente di IMAP? Un altro motivo per cui l'API di Gmail è molto più efficiente è che deve scaricare ogni messaggio una sola volta. Con IMAP, ogni messaggio deve essere scaricato e indicizzato..."
 >
-> *- [Domanda su Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) con 47 voti positivi*
+> *- [Domanda su Stack Overflow](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) con 47 voti a favore*
 
 Le prove sono ovunque:
 
 * **Problemi SMTP di WordPress**: [631 problemi su GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) sui problemi di recapito delle email
 * **Limitazioni di Zapier**: [Reclami della comunità](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) sui limiti di 10 email/ora e sui problemi di rilevamento IMAP
 * **Progetti API IMAP**: [Multiplo](https://github.com/ewildgoose/imap-api) [open source](https://emailengine.app/) [progetti](https://www.npmjs.com/package/imapflow) esistono specificamente per "convertire IMAP in REST" perché nessun provider offre questa funzionalità
-* **Frustazioni dell'API di Gmail**: [Overflow dello stack](https://stackoverflow.com/questions/tagged/gmail-api) contiene 4.847 domande con tag "gmail-api" con reclami comuni su limiti di velocità e complessità
+* **Frustazioni dell'API di Gmail**: [Overflow dello stack](https://stackoverflow.com/questions/tagged/gmail-api) ha 4.847 domande con il tag "gmail-api" con reclami comuni su limiti di velocità e complessità
 
 ## La soluzione rivoluzionaria di Forward Email {#forward-emails-revolutionary-solution}
 
@@ -121,10 +121,10 @@ Questa non è solo un'altra API di invio. Si tratta di un controllo programmatic
 
 * **Messaggi**: Crea, leggi, aggiorna, elimina, cerca, sposta, contrassegna
 * **Cartelle**: Gestione completa delle cartelle IMAP tramite endpoint REST
-* **Contatti**: [CardDAV](https://tools.ietf.org/html/rfc6352) archiviazione e sincronizzazione dei contatti
-* **Calendari**: [CalDAV](https://tools.ietf.org/html/rfc4791) eventi e pianificazione del calendario
+* **Contatti**: Archiviazione e sincronizzazione dei contatti [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **Calendari**: Eventi e pianificazione del calendario [CalDAV](https://tools.ietf.org/html/rfc4791)
 
-### Perché abbiamo creato questo {#why-we-built-this}
+### Perché abbiamo costruito questo {#why-we-built-this}
 
 **Il problema**: Ogni provider di posta elettronica tratta la posta elettronica come una scatola nera. Puoi inviare email, magari leggerle con un OAuth complesso, ma non puoi davvero *gestire* i dati delle tue email a livello di programmazione.
 
@@ -145,7 +145,7 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Messaggi (5 endpoint) {#messages-5-endpoints}
 
-* `GET /v1/messages` - Elenca i messaggi con filtro (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `GET /v1/messages` - Elenca i messaggi con filtri (`?folder=`, `?is_unread=`, `?is_flagged=`)
 * `POST /v1/messages` - Invia i nuovi messaggi direttamente alle cartelle
 * `GET /v1/messages/:id` - Recupera un messaggio specifico con metadati completi
 * `PUT /v1/messages/:id` - Aggiorna il messaggio (flag, cartella, stato di lettura)
@@ -175,13 +175,13 @@ curl -u "alias@yourdomain.com:password" \
 * `PUT /v1/calendars/:id` - Aggiorna l'evento con rilevamento dei conflitti
 * `DELETE /v1/calendars/:id` - Elimina l'evento con notifiche ai partecipanti
 
-## Ricerca avanzata: nessun altro servizio è paragonabile a {#advanced-search-no-other-service-compares}
+## Ricerca avanzata: nessun altro servizio è paragonabile {#advanced-search-no-other-service-compares}
 
 **Forward Email è l'unico servizio di posta elettronica che offre una ricerca programmatica completa in tutti i campi del messaggio tramite un'API REST.**
 
 Mentre altri provider offrono al massimo un filtraggio di base, noi abbiamo creato l'API di ricerca email più avanzata mai creata. Nessuna API di Gmail, di Outlook o di qualsiasi altro servizio si avvicina alle nostre capacità di ricerca.
 
-### Il panorama dell'API di ricerca è compromesso {#the-search-api-landscape-is-broken}
+### Il panorama dell'API di ricerca è instabile {#the-search-api-landscape-is-broken}
 
 **Limitazioni della ricerca dell'API di Gmail:**
 
@@ -210,7 +210,7 @@ Mentre altri provider offrono al massimo un filtraggio di base, noi abbiamo crea
 * ❌ Nessuna API pubblica
 * ❌ Nessuna funzionalità di ricerca programmatica
 
-### La rivoluzionaria API di ricerca di Forward Email {#forward-emails-revolutionary-search-api}
+### Inoltra la rivoluzionaria API di ricerca di Email {#forward-emails-revolutionary-search-api}
 
 **Offriamo oltre 15 parametri di ricerca che nessun altro servizio fornisce:**
 
@@ -225,9 +225,9 @@ Mentre altri provider offrono al massimo un filtraggio di base, noi abbiamo crea
 | **Ricerca ID messaggio** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
 | **Filtri combinati** | ✅ Parametri multipli con logica AND | ❌ | ❌ | ❌ |
 | **Non distingue tra maiuscole e minuscole** | ✅ Tutte le ricerche | ✅ | ✅ | ❌ |
-| **Supporto per la paginazione** | ✅ Funziona con tutti i parametri di ricerca | ✅ | ✅ | ❌ |
+| **Supporto alla paginazione** | ✅ Funziona con tutti i parametri di ricerca | ✅ | ✅ | ❌ |
 
-### Esempi di ricerche nel mondo reale {#real-world-search-examples}
+### Esempi di ricerca nel mondo reale {#real-world-search-examples}
 
 **Trova tutte le fatture dell'ultimo trimestre:**
 
@@ -363,7 +363,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Vantaggio per gli sviluppatori**: con l'API di ricerca di Forward Email, puoi creare applicazioni di posta elettronica che rivaleggiano con i client desktop in termini di funzionalità, mantenendo la semplicità delle API REST.
 
 ## Architettura ad alte prestazioni {#blazing-fast-performance-architecture}
 
@@ -399,7 +399,7 @@ graph LR
 
 ### Architettura che privilegia la privacy {#privacy-first-architecture}
 
-**Design a conoscenza zero**: solo tu hai accesso con la tua password IMAP: non possiamo leggere le tue email. Il nostro [architettura a conoscenza zero](https://forwardemail.net/en/security) garantisce la massima privacy, offrendo al contempo prestazioni eccezionali.
+**Progettazione a conoscenza zero**: solo tu hai accesso con la tua password IMAP: non possiamo leggere le tue email. Il nostro [architettura a conoscenza zero](https://forwardemail.net/en/security) garantisce la massima privacy, offrendo al contempo prestazioni eccezionali.
 
 ## Perché siamo diversi: il confronto completo {#why-were-different-the-complete-comparison}
 
@@ -431,14 +431,14 @@ graph LR
 **ProtonMail e Tuta si pubblicizzano come "open source" e "trasparenti", ma si tratta di un marketing fuorviante che viola i moderni principi di privacy.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **False affermazioni di trasparenza**: sia ProtonMail che Tuta pubblicizzano in modo evidente le loro credenziali "open source", pur mantenendo il loro codice lato server più critico proprietario e chiuso.
 
 **L'inganno di ProtonMail:**
 
-* **Affermazioni**: ["Siamo open source"](https://proton.me/blog/open-source) in evidenza nel marketing
+* **Affermazioni**: ["Siamo open source"](https://proton.me/blog/open-source) in primo piano nel marketing
 * **Realtà**: [Il codice del server è completamente proprietario](https://github.com/ProtonMail) - solo le app client sono open source
 * **Impatto**: Gli utenti non possono verificare la crittografia lato server, la gestione dei dati o le dichiarazioni sulla privacy
-* **Violazione della trasparenza**: Impossibile verificare gli effettivi sistemi di elaborazione e archiviazione delle email
+* **Violazione della trasparenza**: Impossibile verificare i sistemi effettivi di elaborazione e archiviazione delle email
 
 **Il marketing ingannevole di Tuta:**
 
@@ -451,10 +451,10 @@ graph LR
 
 Nel 2025, la vera privacy richiede **completa trasparenza**. Quando i provider di posta elettronica dichiarano di essere "open source" ma nascondono il codice del loro server:
 
-1. **Crittografia non verificabile**: Non è possibile verificare come vengono effettivamente crittografati i dati
-2. **Pratiche di gestione dei dati nascoste**: La gestione dei dati lato server rimane una scatola nera
-3. **Sicurezza basata sulla fiducia**: È necessario fidarsi delle loro affermazioni senza verifica
-4. **Blocco del fornitore**: I sistemi proprietari impediscono la portabilità dei dati
+1. **Crittografia non verificabile**: non è possibile verificare come vengono effettivamente crittografati i dati
+2. **Pratiche di gestione dei dati nascoste**: la gestione dei dati lato server rimane una scatola nera
+3. **Sicurezza basata sulla fiducia**: è necessario fidarsi delle loro affermazioni senza verifica
+4. **Blocco del fornitore**: i sistemi proprietari impediscono la portabilità dei dati
 
 **La vera trasparenza dell'email inoltrata:**
 
@@ -465,7 +465,7 @@ Nel 2025, la vera privacy richiede **completa trasparenza**. Quando i provider d
 * ✅ **Nessun vincolo con il fornitore** - i tuoi dati, il tuo controllo
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Vero open source significa che puoi verificare ogni affermazione.** Con Forward Email, puoi verificare la nostra crittografia, esaminare la nostra gestione dei dati e persino eseguire la tua istanza. Questa è vera trasparenza.
 
 ## Oltre 30 esempi di integrazione nel mondo reale {#30-real-world-integration-examples}
 
@@ -697,7 +697,7 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. Integrazione da e-mail a calendario {#11-email-to-calendar-integration}
+### 11. Integrazione e-mail-calendario {#11-email-to-calendar-integration}
 
 **Problema**: Creazione manuale di [evento del calendario](https://tools.ietf.org/html/rfc4791) dalle email
 **Soluzione**: Estrazione e creazione automatica di eventi
@@ -748,7 +748,7 @@ await saveToComplianceStorage(backup);
 
 ### 13. Gestione dei contenuti basata sulla posta elettronica {#13-email-based-content-management}
 
-**Problema**: Gestione dell'invio di contenuti via email per [Piattaforme CMS](https://en.wikipedia.org/wiki/Content_management_system)
+**Problema**: Gestione dell'invio di contenuti tramite email per [Piattaforme CMS](https://en.wikipedia.org/wiki/Content_management_system)
 **Soluzione**: Email come sistema di gestione dei contenuti
 
 ```javascript
@@ -770,7 +770,7 @@ for (const submission of submissions) {
 
 ### 14. Gestione dei modelli di posta elettronica {#14-email-template-management}
 
-**Problema**: [modelli di posta elettronica](https://en.wikipedia.org/wiki/Email_template) incoerente nel team
+**Problema**: [modelli di posta elettronica](https://en.wikipedia.org/wiki/Email_template) non coerente nel team
 **Soluzione**: Sistema di template centralizzato con API
 
 ```javascript
@@ -789,7 +789,7 @@ await fetch('/v1/messages', {
 
 ### 15. Automazione del flusso di lavoro basato su e-mail {#15-email-based-workflow-automation}
 
-**Problema**: Manuale [processi di approvazione](https://en.wikipedia.org/wiki/Workflow) via email
+**Problema**: [processi di approvazione](https://en.wikipedia.org/wiki/Workflow) manuale via email
 **Soluzione**: Trigger del flusso di lavoro automatizzato
 
 ```javascript
@@ -811,7 +811,7 @@ for (const approval of approvals) {
 
 ### 16. Monitoraggio della sicurezza della posta elettronica {#16-email-security-monitoring}
 
-**Problema**: Manuale [rilevamento delle minacce alla sicurezza](https://en.wikipedia.org/wiki/Email_security)
+**Problema**: [rilevamento delle minacce alla sicurezza](https://en.wikipedia.org/wiki/Email_security) manuale
 **Soluzione**: Analisi automatica delle minacce
 
 ```javascript
@@ -883,9 +883,9 @@ for (const prospect of prospects) {
 }
 ```
 
-### 20. Gestione dei progetti tramite e-mail {#20-email-based-project-management}
+### 20. Gestione dei progetti basata sulla posta elettronica {#20-email-based-project-management}
 
-**Problema**: [Aggiornamenti del progetto](https://en.wikipedia.org/wiki/Project_management) sparsi tra i thread di posta elettronica
+**Problema**: [Aggiornamenti del progetto](https://en.wikipedia.org/wiki/Project_management) sparsi nei thread di posta elettronica
 **Soluzione**: Hub di comunicazione centralizzato del progetto
 
 ```javascript
@@ -965,7 +965,7 @@ for (const email of invoiceEmails) {
 
 ### 23. Registrazione eventi tramite e-mail {#23-email-based-event-registration}
 
-**Problema**: Elaborazione manuale [registrazione dell'evento](https://en.wikipedia.org/wiki/Event_management) dalle risposte via email
+**Problema**: Elaborazione manuale di [registrazione dell'evento](https://en.wikipedia.org/wiki/Event_management) dalle risposte via email
 **Soluzione**: Gestione automatizzata dei partecipanti e integrazione del calendario
 
 ```javascript
@@ -1000,7 +1000,7 @@ for (const registration of registrations) {
 
 ### 24. Flusso di lavoro per l'approvazione dei documenti tramite e-mail {#24-email-based-document-approval-workflow}
 
-**Problema**: Catene complesse [approvazione del documento](https://en.wikipedia.org/wiki/Document_management_system) via email
+**Problema**: Catene complesse di [approvazione del documento](https://en.wikipedia.org/wiki/Document_management_system) via email
 **Soluzione**: Monitoraggio automatico delle approvazioni e controllo delle versioni dei documenti
 
 ```javascript
@@ -1032,7 +1032,7 @@ for (const email of approvalEmails) {
 ### 25. Analisi del feedback dei clienti basata su e-mail {#25-email-based-customer-feedback-analysis}
 
 **Problema**: Raccolta manuale di [feedback dei clienti](https://en.wikipedia.org/wiki/Customer_feedback) e analisi del sentiment
-**Soluzione**: Elaborazione automatizzata del feedback e monitoraggio del sentiment
+**Soluzione**: Elaborazione automatica del feedback e monitoraggio del sentiment
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1097,7 +1097,7 @@ for (const application of applications) {
 
 ### 27. Elaborazione dei report spese tramite e-mail {#27-email-based-expense-report-processing}
 
-**Problema**: Invio e approvazione manuale [nota spese](https://en.wikipedia.org/wiki/Expense_report)
+**Problema**: Invio e approvazione manuale di [nota spese](https://en.wikipedia.org/wiki/Expense_report)
 **Soluzione**: Flusso di lavoro automatizzato per l'estrazione e l'approvazione delle spese
 
 ```javascript
@@ -1133,7 +1133,7 @@ for (const email of expenseEmails) {
 ### 28. Report di garanzia della qualità basati su e-mail {#28-email-based-quality-assurance-reporting}
 
 **Problema**: Monitoraggio manuale dei problemi [garanzia di qualità](https://en.wikipedia.org/wiki/Quality_assurance)
-**Soluzione**: Gestione automatizzata dei problemi di QA e monitoraggio dei bug
+**Soluzione**: Gestione automatizzata dei problemi QA e monitoraggio dei bug
 
 ```javascript
 // Process QA bug reports from email
@@ -1172,7 +1172,7 @@ for (const report of bugReports) {
 
 ### 29. Gestione dei fornitori tramite e-mail {#29-email-based-vendor-management}
 
-**Problema**: [comunicazione con il fornitore](https://en.wikipedia.org/wiki/Vendor_management) manuale e monitoraggio dei contratti
+**Problema**: [comunicazione con il fornitore](https://en.wikipedia.org/wiki/Vendor_management) manuale e tracciamento dei contratti
 **Soluzione**: Gestione automatizzata delle relazioni con i fornitori
 
 ```javascript
@@ -1212,9 +1212,9 @@ for (const email of vendorEmails) {
 }
 ```
 
-### 30. Monitoraggio dei social media tramite e-mail {#30-email-based-social-media-monitoring}
+### 30. Monitoraggio dei social media basato su e-mail {#30-email-based-social-media-monitoring}
 
-**Problema**: Monitoraggio e risposta manuale alle menzioni [social media](https://en.wikipedia.org/wiki/Social_media_monitoring)
+**Problema**: Tracciamento manuale delle menzioni [social media](https://en.wikipedia.org/wiki/Social_media_monitoring) e risposta
 **Soluzione**: Elaborazione automatizzata degli avvisi sui social media e coordinamento delle risposte
 
 ```javascript
@@ -1291,7 +1291,7 @@ Visita [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) pe
 * **[Documentazione API completa](https://forwardemail.net/en/email-api)** - Specifiche interattive OpenAPI 3.0
 * **[Guida all'auto-hosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Distribuisci Forward Email sulla tua infrastruttura
 * **[Libro bianco sulla sicurezza](https://forwardemail.net/technical-whitepaper.pdf)** - Dettagli tecnici su architettura e sicurezza
-* **[Deposito GitHub](https://github.com/forwardemail/forwardemail.net)** - Codice sorgente open source
+* **[Repository GitHub](https://github.com/forwardemail/forwardemail.net)** - Codice sorgente open source
 * **[Supporto per sviluppatori](mailto:api@forwardemail.net)** - Accesso diretto al nostro team di ingegneri
 
 ---

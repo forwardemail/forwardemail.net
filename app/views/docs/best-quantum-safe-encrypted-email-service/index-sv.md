@@ -25,13 +25,13 @@
 ## Förord {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> Vår e-posttjänst är [100 % öppen källkod](https://github.com/forwardemail) och integritetsfokuserad genom säkra och krypterade SQLite-postlådor.
 
 Tills vi lanserade [IMAP-stöd](/faq#do-you-support-receiving-email-with-imap) använde vi MongoDB för våra behov av permanent datalagring.
 
 Den här tekniken är fantastisk och vi använder den fortfarande idag – men för att få kryptering i vila med MongoDB behöver du använda en leverantör som erbjuder MongoDB Enterprise, till exempel Digital Ocean eller Mongo Atlas – eller betala för en företagslicens (och därefter behöva arbeta med säljteamets latens).
 
-Vårt team på [Vidarebefordra e-post](https://forwardemail.net) behövde en utvecklarvänlig, skalbar, pålitlig och krypterad lagringslösning för IMAP-postlådor. Som utvecklare med öppen källkod var det emot [våra principer](#principles) att använda en teknik som kräver licensavgift för att få funktionen för kryptering i vila – och därför experimenterade, undersökte och utvecklade vi en ny lösning från grunden för att lösa dessa behov.
+Vårt team på [Vidarebefordra e-post](https://forwardemail.net) behövde en utvecklarvänlig, skalbar, pålitlig och krypterad lagringslösning för IMAP-postlådor. Som utvecklare med öppen källkod var det emot [våra principer](#principles) att använda en teknik som kräver licensavgift för att få funktionen kryptering i vila – och därför experimenterade, undersökte och utvecklade vi en ny lösning från grunden för att lösa dessa behov.
 
 Istället för att använda en delad databas för att lagra dina brevlådor, lagrar och krypterar vi dina brevlådor individuellt med ditt lösenord (som bara du har). **Vår e-posttjänst är så säker att om du glömmer ditt lösenord förlorar du din brevlåda** (och behöver återställa den med offline-säkerhetskopior eller börja om).
 
@@ -54,10 +54,10 @@ Vi är den enda e-postleverantören med 100 % öppen källkod och integritetsfok
 
 2. När du är ansluten skickar din e-postklient [IMAP-protokollkommandon](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) till vår IMAP-server för att hålla din inkorg synkroniserad. Detta inkluderar att skriva och lagra utkast till e-postmeddelanden och andra åtgärder du kan göra (t.ex. markera ett e-postmeddelande som viktigt eller flagga ett e-postmeddelande som skräppost).
 
-3. E-postutbytesservrar (allmänt kända som "MX"-servrar) tar emot ny inkommande e-post och lagrar den i din inkorg. När detta händer kommer din e-postklient att meddelas och synkronisera din inkorg. Våra e-postutbytesservrar kan vidarebefordra din e-post till en eller flera mottagare (inklusive [webhooks](/faq#do-you-support-webhooks)), lagra din e-post åt dig i din krypterade IMAP-lagring hos oss, **eller båda**!
+3. E-postutbytesservrar (allmänt kända som "MX"-servrar) tar emot ny inkommande e-post och lagrar den i din inkorg. När detta händer kommer din e-postklient att meddelas och synkronisera din inkorg. Våra e-postutbytesservrar kan vidarebefordra din e-post till en eller flera mottagare (inklusive [webbhooks](/faq#do-you-support-webhooks)), lagra din e-post åt dig i din krypterade IMAP-lagring hos oss, **eller båda**!
 
 > \[!TIP]
-> Intresserad av att lära dig mer? Läs [hur man konfigurerar vidarebefordran av e-post](/faq#how-do-i-get-started-and-set-up-email-forwarding), [hur vår postutbytestjänst fungerar](/faq#how-does-your-email-forwarding-system-work) eller se [våra guider](/guides).
+> Intresserad av att lära dig mer? Läs [hur man konfigurerar vidarebefordran av e-post](/faq#how-do-i-get-started-and-set-up-email-forwarding), [hur vår postutbytestjänst fungerar](/faq#how-does-your-email-forwarding-system-work) eller visa [våra guider](/guides).
 
 4. Bakom kulisserna fungerar vår säkra e-postlagringsdesign på två sätt för att hålla dina brevlådor krypterade och endast tillgängliga för dig:
 
@@ -94,7 +94,7 @@ Vi är den enda e-postleverantören med 100 % öppen källkod och integritetsfok
 
 ### Databaser {#databases}
 
-Vi utforskade andra möjliga databaslagringslager, men ingen uppfyllde våra krav lika mycket som SQLite gjorde:
+Vi undersökte andra möjliga databaslagringslager, men ingen uppfyllde våra krav lika mycket som SQLite gjorde:
 
 | Databas | Kryptering i vila | [Sandboxed](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) Brevlådor | Licens | [Used Everywhere](https://www.sqlite.org/mostdeployed.html) |
 | ------------------------------------------------------ | :-----------------------------------------------------------------------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------: | :---------------------------------------------------------: | :---------------------------------------------------------: |
@@ -112,7 +112,7 @@ Vi utforskade andra möjliga databaslagringslager, men ingen uppfyllde våra kra
 
 Vi använder alltid [kryptering i vila](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [kryptering under överföring](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS över HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") med :tangerine: [Mandarin](https://tangeri.ne) och [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) kryptering på brevlådor. Dessutom använder vi tokenbaserad tvåfaktorsautentisering (i motsats till SMS som är misstänkt för [man-in-the-middle-attacker](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)), roterade SSH-nycklar med root-åtkomst inaktiverad, exklusiv åtkomst till servrar via begränsade IP-adresser och mer.
 
-I händelse av en [ond hembiträdesattack](https://en.wikipedia.org/wiki/Evil_maid_attack) eller oseriös anställd från en tredjepartsleverantör **kan din inkorg fortfarande bara öppnas med ditt genererade lösenord**. Var säker på att vi inte förlitar oss på några tredjepartsleverantörer utöver våra SOC Type 2-klagomålsserverleverantörer Cloudflare, DataPacket, Digital Ocean och Vultr.
+I händelse av en [ond hembiträdesattack](https://en.wikipedia.org/wiki/Evil_maid_attack) eller en oseriös anställd från en tredjepartsleverantör **kan din inkorg fortfarande bara öppnas med ditt genererade lösenord**. Var säker på att vi inte förlitar oss på några tredjepartsleverantörer utöver våra SOC Type 2-klagomålsserverleverantörer Cloudflare, DataPacket, Digital Ocean och Vultr.
 
 Vårt mål är att ha så få [enda felpunkt](https://en.wikipedia.org/wiki/Single_point_of_failure) som möjligt.
 
@@ -146,7 +146,7 @@ Vi har finjusterat SQLite med följande [PRAGMA](https://www.sqlite.org/pragma.h
 
 #### Läser {#reads}
 
-Din e-postklient på din telefon kan tolka `imap.forwardemail.net` till en av våra IP-adresser för Digital Ocean – och din skrivbordsklient kan tolka en separat IP-adress från en helt annan [leverantör](#providers).
+Din e-postklient på din telefon kan tolka `imap.forwardemail.net` till en av våra Digital Ocean IP-adresser – och din skrivbordsklient kan tolka en separat IP från en helt annan [leverantör](#providers).
 
 Oavsett vilken IMAP-server din e-postklient ansluter till vill vi att anslutningen ska läsa från din databas i realtid med 100 % noggrannhet. Detta görs via WebSockets.
 
@@ -154,18 +154,18 @@ Oavsett vilken IMAP-server din e-postklient ansluter till vill vi att anslutning
 
 Att skriva till din databas är lite annorlunda – eftersom SQLite är en inbäddad databas och din postlåda som standard finns i en enda fil.
 
-Vi hade undersökt alternativ som `litestream`, `rqlite` och `dqlite` nedan – men ingen av dessa uppfyllde våra krav.
+Vi hade undersökt alternativ som `litestream`, `rqlite` och `dqlite` nedan – men inget av dessa uppfyllde våra krav.
 
-För att kunna skriva med write-ahead-loggning ("[WAL](https://www.sqlite.org/wal.html)") aktiverad – måste vi se till att endast en server ("Primär") är ansvarig för att göra det. [WAL](https://www.sqlite.org/wal.html) snabbar upp samtidighet drastiskt och tillåter en skribent och flera läsare.
+För att kunna skriva med write-ahead-loggning ("[WAL](https://www.sqlite.org/wal.html)") aktiverad måste vi se till att endast en server ("Primär") är ansvarig för att göra det. [WAL](https://www.sqlite.org/wal.html) snabbar upp samtidighet drastiskt och tillåter en skribent och flera läsare.
 
-Primärservrarna körs på dataservrarna med de monterade volymerna som innehåller de krypterade postlådorna. Ur distributionssynpunkt kan man betrakta alla individuella IMAP-servrar bakom `imap.forwardemail.net` som sekundära servrar ("Sekundära").
+Primärservrarna körs på dataservrarna med de monterade volymerna som innehåller de krypterade postlådorna. Ur distributionssynpunkt kan man betrakta alla individuella IMAP-servrar bakom `imap.forwardemail.net` som sekundära servrar ("Sekundär").
 
 Vi åstadkommer tvåvägskommunikation med [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
-* Primära servrar använder en instans av [ws](https://github.com/websockets/ws)s `WebSocketServer`-server.
-* Sekundära servrar använder en instans av [ws](https://github.com/websockets/ws)s `WebSocket`-klient som är omsluten av [websocket-som-utlovat](https://github.com/vitalets/websocket-as-promised) och [återansluta-websocket](https://github.com/opensumi/reconnecting-websocket). Dessa två omslutare säkerställer att `WebSocket` återansluter och kan skicka och ta emot data för specifika databasskrivningar.
+* Primära servrar använder en instans av [ws](https://github.com/websockets/ws):s `WebSocketServer`-server.
+* Sekundära servrar använder en instans av [ws](https://github.com/websockets/ws):s `WebSocket`-klient som är omsluten av [websocket-som-utlovat](https://github.com/vitalets/websocket-as-promised) och [återansluta-websocket](https://github.com/opensumi/reconnecting-websocket). Dessa två omslutare säkerställer att `WebSocket` återansluter och kan skicka och ta emot data för specifika databasskrivningar.
 
-### Säkerhetskopior {#backups}
+### Säkerhetskopieringar {#backups}
 
 > **tldr;** Säkerhetskopieringar av dina krypterade brevlådor görs dagligen. Du kan också direkt begära en ny säkerhetskopia eller ladda ner den senaste säkerhetskopian när som helst från <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Alias.
 
@@ -175,7 +175,7 @@ Observera att vi använder kommandot `VACUUM INTO` i motsats till det inbyggda k
 
 Dessutom använder vi `VACUUM INTO` istället för `backup`, eftersom kommandot `backup` skulle lämna databasen okrypterad under en kort period tills `rekey` anropas (se GitHub [kommentar](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) för mer information).
 
-Sekundären instruerar primären via `WebSocket` att köra säkerhetskopieringen – och primären får sedan kommandot att göra det och kommer därefter att:
+Sekundärenheten kommer att instruera primärenheten via `WebSocket`-anslutningen att köra säkerhetskopieringen – och primärenheten kommer sedan att få kommandot att göra det och kommer därefter att:
 
 1. Anslut till din krypterade postlåda.
 2. Skaffa ett skrivlås.
@@ -186,7 +186,7 @@ Sekundären instruerar primären via `WebSocket` att köra säkerhetskopieringen
 
 <!--
 7. Komprimera den resulterande säkerhetskopian med `gzip`.
-8. Ladda upp den till Cloudflare R2 för lagring (eller din egen leverantör om angivet).
+8. Ladda upp den till Cloudflare R2 för lagring (eller din egen leverantör om det anges).
 -->
 
 Kom ihåg att dina brevlådor är krypterade – och även om vi har IP-begränsningar och andra autentiseringsåtgärder på plats för WebSocket-kommunikation – kan du vara säker på att WebSocket-nyttolasten inte kan öppna din databas om den inte har ditt IMAP-lösenord.
@@ -257,9 +257,9 @@ Vidarebefordran av e-post är utformad enligt dessa principer:
 
 1. Var alltid utvecklarvänlig, säkerhets- och integritetsfokuserad och transparent.
 
-2. Följ [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Tolv Faktorer](https://12factor.net/), [Occams rakkniv](https://en.wikipedia.org/wiki/Occam%27s_razor) och [hundmat](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)
+2. Följ [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Tolv Faktorer](https://12factor.net/), [Occams rakkniv](https://en.wikipedia.org/wiki/Occam%27s_razor) och [hundmatning](https://en.wikipedia.org/wiki/Eating_your_own_dog_food).
 
-3. Rikta in dig på skrappiga, bootstrappade och [ramen-lönsam](http://www.paulgraham.com/ramenprofitable.html) utvecklare
+3. Rikta in dig på den skrappiga, bootstrappade och [ramen-lönsam](http://www.paulgraham.com/ramenprofitable.html)-utvecklaren.
 
 ### Experiment {#experiments}
 
@@ -275,32 +275,33 @@ Det experimentet ledde oss till att ytterligare förstå och upptäcka edge-fall
 * Om du har flera IMAP-servrar distribuerade globalt, kommer cachen att vara avstängd över dem om du inte har en enda skrivare och flera lyssnare (t.ex. en pub/sub-metod).
 * Detta är otroligt komplext och att lägga till ytterligare komplexitet som denna kommer att resultera i fler enskilda felpunkter.
 * S3-kompatibla lagringsleverantörer stöder inte partiella filändringar – vilket innebär att alla ändringar av `.sqlite`-filen kommer att resultera i en fullständig ändring och omladdning av databasen.
-* Andra lösningar som `rsync` finns, men de fokuserar inte på stöd för write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)") – så vi slutade med att granska Litestream. Som tur är krypterar vår krypteringsanvändning redan [WAL](https://www.sqlite.org/wal.html)-filerna åt oss, så vi behöver inte förlita oss på Litestream för det. Vi var dock ännu inte säkra på Litestream för produktionsanvändning och har några anteckningar om det nedan.
-* Att använda alternativet `--vfs-cache-mode writes` (det *enda* sättet att använda SQLite över `rclone` för skrivningar) kommer att försöka kopiera hela databasen från grunden till minnet – att hantera en 10 GB-postlåda är okej, men att hantera flera postlådor med extremt hög lagringskapacitet kommer att orsaka att IMAP-servrarna stöter på minnesbegränsningar och `ENOMEM`-fel, segmenteringsfel och datakorruption.
-* Om du försöker använda SQLite [Virtuella bord](https://www.sqlite.org/vtab.html) (t.ex. genom att använda [s3db](https://github.com/jrhy/s3db)) för att ha data live på ett S3-kompatibelt lagringslager, kommer du att stöta på flera fler problem:
-* Läsning och skrivning kommer att vara extremt långsam eftersom S3 API-slutpunkter måste nås med HTTP `GET`, `PUT`, `HEAD` och `POST` metoder.
-* Utvecklingstester visade att överskridande av 500 000–1 miljon poster på fiberinternet fortfarande begränsas av dataflödet för skrivning och läsning till S3-kompatibla leverantörer. Till exempel körde våra utvecklare `for` loopar för att göra både sekventiella SQL `INSERT`-satser och de som skrev stora mängder data i bulk. I båda fallen var prestandan otroligt långsam.
-* Virtuella tabeller **kan inte ha index**, `ALTER TABLE`-satser och [andra](https://stackoverflow.com/a/12507650) [begränsningar](https://sqlite.org/lang_createvtab.html) – vilket leder till fördröjningar på upp till 1–2 minuter eller mer beroende på datamängden.
+* Andra lösningar som `rsync` finns, men de fokuserar inte på stöd för write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)") – så vi slutade med att granska Litestream. Lyckligtvis krypterar vår krypteringsanvändning redan [WAL](https://www.sqlite.org/wal.html)-filerna åt oss, så vi behöver inte förlita oss på Litestream för det. Vi var dock ännu inte säkra på Litestream för produktionsanvändning och har några anteckningar nedan om det.
+* Genom att använda alternativet `--vfs-cache-mode writes` (det *enda* sättet att använda SQLite istället för `rclone` för skrivningar) försöker man kopiera hela databasen från grunden till minnet – det går bra att hantera en 10 GB-postlåda, men att hantera flera postlådor med extremt hög lagringskapacitet kommer att orsaka att IMAP-servrarna stöter på minnesbegränsningar och `ENOMEM`-fel, segmenteringsfel och datakorruption.
+
+* Om du försöker använda SQLite [Virtuella bord](https://www.sqlite.org/vtab.html) (t.ex. genom att använda [s3db](https://github.com/jrhy/s3db)) för att ha data live på ett S3-kompatibelt lagringslager kommer du att stöta på flera fler problem:
+
+* Läsning och skrivning kommer att vara extremt långsam eftersom S3 API-slutpunkter måste nås med HTTP `.sqlite`0, `.sqlite`1, `.sqlite`2 och `.sqlite`3-metoderna.
+* Utvecklingstester visade att överskridande av 500 000–1 miljon poster på fiberinternet fortfarande begränsas av dataflödet för skrivning och läsning till S3-kompatibla leverantörer. Till exempel körde våra utvecklare `.sqlite`4-loopar för att göra både sekventiella SQL-`.sqlite`5-satser och sådana som skrev stora mängder data i bulk. I båda fallen var prestandan förbluffande långsam.
+
+* Virtuella tabeller **kan inte ha index**, `.sqlite`6-satser och `.sqlite`7 `.sqlite`8 – vilket leder till fördröjningar på upp till 1–2 minuter eller mer beroende på datamängden.
+
 * Objekt lagrades okrypterade och inget inbyggt krypteringsstöd finns tillgängligt.
-* Vi undersökte också användningen av [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs), vilket konceptuellt och tekniskt liknar föregående punkt (så det har samma problem). En möjlighet skulle vara att använda en anpassad `sqlite3`-version inlindad med kryptering, såsom [wxSQLite3](https://github.com/utelle/wxsqlite3) (som vi för närvarande använder i vår lösning ovan) till och med [redigera installationsfilen](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276).
-* Ett annat potentiellt tillvägagångssätt var att använda [multiplexförlängning](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c), men detta har en begränsning på 32 GB och skulle kräva komplexa bygg- och utvecklingsproblem.
 
-* `ALTER TABLE`-satser krävs (så detta utesluter helt användning av virtuella tabeller). Vi behöver `ALTER TABLE`-satser för att vår hook med `knex-schema-inspector` ska fungera korrekt – vilket säkerställer att data inte skadas och att hämtade rader kan konverteras till giltiga dokument enligt våra `mongoose`-schemadefinitioner (som inkluderar begränsning, variabeltyp och godtycklig datavalidering).
-
+* Vi undersökte också möjligheten att använda `.sqlite`9, vilket konceptuellt och tekniskt liknar föregående punkt (så det har samma problem). En möjlighet vore att använda en anpassad `rsync`0-bygge inlindad med kryptering, såsom `rsync`1 (som vi för närvarande använder i vår lösning ovan) via `rsync`2.
+* En annan potentiell metod var att använda `rsync`3, men detta har en begränsning på 32 GB och skulle kräva komplexa bygg- och utvecklingsproblem.
+* `rsync`4-satser krävs (så detta utesluter helt användning av virtuella tabeller). Vi behöver `rsync`5-satser för att vår hook med `rsync`6 ska fungera korrekt – vilket säkerställer att data inte skadas och att hämtade rader kan konverteras till giltiga dokument enligt våra `rsync`7-schemadefinitioner (som inkluderar begränsning, variabeltyp och godtycklig datavalidering).
 * Nästan alla S3-kompatibla projekt relaterade till SQLite i öppen källkodsgemenskapen är i Python (och inte JavaScript som vi använder för 100 % av vår stack).
+* Komprimeringsbibliotek som `rsync`8 (se `rsync`9) ser lovande ut, men __PROTECTED_LINK_189__0. Istället kommer applikationssideskomprimering på datatyper som __PROTECTED_LINK_189__1, __PROTECTED_LINK_189__2, __PROTECTED_LINK_189__3, __PROTECTED_LINK_189__4, __PROTECTED_LINK_189__5 och __PROTECTED_LINK_189__6 att vara en renare och enklare metod (och är också enklare att migrera, eftersom vi kan lagra en __PROTECTED_LINK_189__7-flagga eller kolumn – eller till och med använda __PROTECTED_LINK_189__8 __PROTECTED_LINK_189__9 för komprimering eller __PROTECTED_LINK_190__0 för ingen komprimering som databasmetadata).
 
-* Komprimeringsbibliotek som [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) (se [kommentarer](https://news.ycombinator.com/item?id=32303762)) ser lovande ut, men [kanske ännu inte är redo för produktionsanvändning](https://github.com/phiresky/sqlite-zstd#usage). Istället kommer applikationssideskomprimering av datatyper som `String`, `Object`, `Map`, `Array`, `Set` och `Buffer` att vara en renare och enklare metod (och är också enklare att migrera, eftersom vi kan lagra en `Boolean` flagga eller kolumn – eller till och med använda `PRAGMA` `user_version=1` för komprimering eller `user_version=0` för ingen komprimering som databasmetadata). * Som tur är har vi redan implementerat deduplicering av bilagor i vår IMAP-serverlagring – därför kommer varje meddelande med samma bilaga inte att behålla en kopia av den bilagda filen – istället lagras en enda bilaga för flera meddelanden och trådar i en inkorg (och en extern referens används därefter).
-
+* Som tur är har vi redan implementerad deduplicering av bilagor i vår IMAP-serverlagring – därför kommer varje meddelande med samma bilaga inte att behålla en kopia av bilagan – istället lagras en enda bilaga för flera meddelanden och trådar i en postlåda (och en extern referens används därefter).
 * Projektet Litestream, som är en SQLite-replikerings- och säkerhetskopieringslösning, är mycket lovande och vi kommer troligtvis att använda det i framtiden.
-* Inte för att misskreditera författaren/författarna – eftersom vi älskar deras arbete och bidrag till öppen källkod i över ett decennium nu – men från verklig användning verkar det som att det finns [kan vara mycket huvudvärk](https://github.com/benbjohnson/litestream/issues) och [potentiell dataförlust från användning](https://github.com/benbjohnson/litestream/issues/218).
-
-* Återställning av säkerhetskopior måste vara friktionsfritt och trivialt. Att använda en lösning som MongoDB med `mongodump` och `mongoexport` är inte bara tråkigt, utan också tidskrävande och har konfigurationskomplexitet.
-
+* Inte för att misskreditera författaren/författarna – eftersom vi älskar deras arbete och bidrag till öppen källkod i över ett decennium nu – men från verklig användning verkar det som att det finns __PROTECTED_LINK_190__1 och __PROTECTED_LINK_190__2.
+* Återställning av säkerhetskopior måste vara friktionsfritt och trivialt. Att använda en lösning som MongoDB med __PROTECTED_LINK_190__3 och __PROTECTED_LINK_190__4 är inte bara tråkigt, utan också tidskrävande och har konfigurationskomplexitet.
 * SQLite-databaser gör det enkelt (det är en enda fil).
+* Vi ville designa en lösning där användare kan ta sin postlåda och lämna när som helst.
+* Enkla Node.js-kommandon till __PROTECTED_LINK_190__5 och den raderas permanent från disklagring.
+* Vi kan på liknande sätt använda ett S3-kompatibelt API med HTTP __PROTECTED_LINK_190__6 för att enkelt ta bort snapshots och säkerhetskopior för användare.
 
-* Vi ville designa en lösning där användare kunde ta med sig sin postlåda och lämna den när som helst.
-* Enkla Node.js-kommandon till `fs.unlink('mailbox.sqlite'))` och den raderas permanent från disklagringen.
-* Vi kan på liknande sätt använda ett S3-kompatibelt API med HTTP `DELETE` för att enkelt ta bort ögonblicksbilder och säkerhetskopior för användare.
 * SQLite var den enklaste, snabbaste och mest kostnadseffektiva lösningen.
 
 ### Brist på alternativ {#lack-of-alternatives}
@@ -311,7 +312,7 @@ Vi *tror att detta kan bero på* att befintliga e-posttjänster har äldre tekni
 
 De flesta, om inte alla, befintliga e-postleverantörer är antingen slutna eller marknadsför sig som öppna, **men i verkligheten är det bara deras användargränssnitt som är öppna.**
 
-**Den känsligaste delen av e-post** (själva lagrings-/IMAP-/SMTP-interaktionen) **görs helt på backend-systemet (servern) och *inte* på frontend-systemet (klienten)**.
+**Den känsligaste delen av e-post** (själva lagrings-/IMAP-/SMTP-interaktionen) **görs helt på backend-servern och *inte* på frontend-klienten**.
 
 ### Testa vidarebefordra e-post {#try-out-forward-email}
 

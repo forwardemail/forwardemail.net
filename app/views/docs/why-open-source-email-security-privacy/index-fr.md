@@ -48,13 +48,13 @@ En ce qui concerne le courrier électronique, l’épine dorsale de votre identi
 
 ### Le problème du backend : là où la plupart des services de messagerie « open source » échouent {#the-backend-problem-where-most-open-source-email-services-fall-short}
 
-C'est là que les choses deviennent intéressantes. De nombreux fournisseurs de messagerie électronique populaires, soucieux de la confidentialité, se présentent comme open source, mais il existe une distinction essentielle qu'ils espèrent que vous ne remarquerez pas : **ils n'ouvrent le code source que de leurs interfaces, tout en gardant leurs back-ends fermés**.
+C'est là que les choses deviennent intéressantes. De nombreux fournisseurs de messagerie électronique populaires, soucieux de la confidentialité, se présentent comme open source, mais il existe une distinction essentielle qu'ils espèrent que vous ne remarquerez pas : **ils n'ouvrent le code source que de leurs interfaces utilisateur, tout en gardant leurs back-ends fermés**.
 
 Qu'est-ce que cela signifie ? Le front-end est ce que vous voyez et avec lequel vous interagissez : l'interface web ou l'application mobile. Le back-end est le lieu où s'effectue le traitement des e-mails : vos messages sont stockés, chiffrés et transmis. Lorsqu'un fournisseur conserve son back-end en mode fermé :
 
-1. Vous ne pouvez pas vérifier le traitement réel de vos e-mails.
+1. Vous ne pouvez pas vérifier le traitement de vos e-mails.
 2. Vous ne pouvez pas confirmer la légitimité de leurs déclarations de confidentialité.
-3. Vous vous fiez aux affirmations marketing plutôt qu'à un code vérifiable.
+3. Vous vous fiez aux arguments marketing plutôt qu'à un code vérifiable.
 4. Des failles de sécurité peuvent rester invisibles au public.
 
 Comme l'ont souligné les discussions sur les forums Privacy Guides, Proton Mail et Tutanota se revendiquent tous deux open source, mais leurs backends restent fermés et propriétaires\[^2]. Cela crée un important manque de confiance : on vous demande de croire à leurs promesses de confidentialité sans pouvoir les vérifier.
@@ -66,7 +66,7 @@ Chez Forward Email, nous avons adopté une approche radicalement différente. L'
 Cela signifie:
 
 1. **Transparence totale** : Chaque ligne de code qui traite vos e-mails est accessible au public.
-2. **Confidentialité vérifiable** : Nos déclarations de confidentialité ne sont pas du marketing, mais des faits vérifiables que chacun peut confirmer en examinant notre code.
+2. **Confidentialité vérifiable** : Nos déclarations de confidentialité ne sont pas du marketing, ce sont des faits vérifiables que chacun peut confirmer en examinant notre code.
 3. **Sécurité communautaire** : Notre sécurité est renforcée par l'expertise collective de la communauté mondiale de développeurs.
 4. **Aucune fonctionnalité cachée** : Ce que vous voyez est ce que vous obtenez : pas de suivi caché, pas de portes dérobées secrètes.
 
@@ -88,7 +88,7 @@ Comme nous l'avons expliqué dans les discussions sur les guides de confidential
 
 #### Chiffrement résistant aux quanta {#quantum-resistant-encryption}
 
-Alors que d’autres fournisseurs sont encore en train de rattraper leur retard, nous avons déjà mis en œuvre des méthodes de cryptage résistantes aux quanta pour protéger la confidentialité de vos e-mails contre les menaces émergentes de l’informatique quantique.
+Alors que d’autres fournisseurs sont encore en train de rattraper leur retard, nous avons déjà mis en œuvre des méthodes de cryptage résistantes aux technologies quantiques pour garantir la confidentialité de vos e-mails contre les menaces émergentes de l’informatique quantique.
 
 #### Aucune dépendance tierce {#no-third-party-dependencies}
 
@@ -98,7 +98,7 @@ Contrairement à nos concurrents qui s'appuient sur des services comme Amazon SE
 
 L'un des atouts majeurs des logiciels open source est la liberté qu'ils offrent. Avec Forward Email, vous n'êtes jamais limité : vous pouvez auto-héberger l'intégralité de notre plateforme si vous le souhaitez.
 
-### Pourquoi nous soutenons l'auto-hébergement {#why-we-support-self-hosting}
+### Pourquoi nous prenons en charge l'auto-hébergement {#why-we-support-self-hosting}
 
 Nous croyons qu'il est important de donner aux utilisateurs un contrôle total sur leurs données. C'est pourquoi nous avons rendu notre plateforme entièrement auto-hébergée, avec une documentation complète et des guides d'installation. Cette approche :
 
@@ -133,7 +133,7 @@ Bien que l'auto-hébergement soit une option puissante, il est important de comp
 
 Comme l'a dit un auto-hébergeur expérimenté : « Le courrier électronique est un service de base... Il est moins cher d'héberger mon courrier électronique chez \[un fournisseur] que de dépenser de l'argent *et* du temps pour l'héberger lui-même. »\[^6]
 
-## Pourquoi notre service payant est judicieux (même si nous sommes open source) {#why-our-paid-service-makes-sense-even-though-were-open-source}
+## Pourquoi notre service payant est logique (même si nous sommes open source) {#why-our-paid-service-makes-sense-even-though-were-open-source}
 
 Compte tenu des défis de l’auto-hébergement, notre service payant offre le meilleur des deux mondes : la transparence et la sécurité de l’open source avec la commodité et la fiabilité d’un service géré.
 
@@ -174,11 +174,11 @@ Proton Mail se présente comme open source, mais cela ne s'applique qu'à ses ap
 * Les failles de sécurité de leur back-end restent invisibles au public.
 * Vous êtes enfermé dans leur écosystème sans options d'auto-hébergement.
 
-### L'approche similaire de Tutanota {#tutanotas-similar-approach}
+### Approche similaire de Tutanota {#tutanotas-similar-approach}
 
 Comme Proton Mail, Tutanota n'ouvre le code source que de son interface utilisateur, tout en conservant son back-end propriétaire\[^8]. Ils sont confrontés aux mêmes problèmes de confiance :
 
-* Aucun moyen de vérifier les déclarations de confidentialité du back-end
+* Aucun moyen de vérifier les déclarations de confidentialité du backend
 * Transparence limitée sur le traitement réel des e-mails
 * Problèmes de sécurité potentiels cachés au public
 * Enfermement chez un fournisseur sans option d'auto-hébergement
@@ -195,7 +195,7 @@ Nous avons également déclaré :
 
 Ce manque de transparence crée un problème fondamental de confiance. Sans backends open source, les utilisateurs sont contraints de croire aux déclarations de confidentialité sur parole plutôt que de se fier à une vérification.
 
-## L'avenir est à l'open source {#the-future-is-open-source}
+## L'avenir est l'open source {#the-future-is-open-source}
 
 La tendance vers les solutions open source s'accélère dans l'industrie du logiciel. Selon une étude récente :
 
@@ -205,7 +205,7 @@ La tendance vers les solutions open source s'accélère dans l'industrie du logi
 
 Cette croissance reflète une évolution fondamentale de notre conception de la sécurité et de la confidentialité des logiciels. À mesure que les utilisateurs se soucient de plus en plus de leur vie privée, la demande de confidentialité vérifiable grâce à des solutions open source ne fera qu'augmenter.
 
-### Pourquoi l'Open Source gagne {#why-open-source-is-winning}
+### Pourquoi l'Open Source est en train de gagner {#why-open-source-is-winning}
 
 Les avantages de l’open source deviennent de plus en plus évidents :
 
@@ -224,14 +224,14 @@ Notre service offre :
 * Domaines et alias illimités
 * Prise en charge des protocoles standards (SMTP, IMAP, POP3) sans passerelles propriétaires
 * Intégration transparente avec les clients de messagerie existants
-* Installation simple et documentation complète
+* Configuration simple avec documentation complète
 * Forfaits abordables à partir de 3 $/mois
 
-Conclusion : un e-mail open source pour un avenir privé
+## Conclusion : Email open source pour un avenir privé {#conclusion-open-source-email-for-a-private-future}
 
 Dans un monde où la confidentialité numérique est de plus en plus menacée, la transparence des solutions open source offre une protection essentielle. Chez Forward Email, nous sommes fiers d'être à l'avant-garde avec notre approche entièrement open source de la confidentialité des e-mails.
 
-Contrairement à nos concurrents qui n'adoptent que partiellement l'open source, nous avons mis l'intégralité de notre plateforme (front-end et back-end) à la disposition du public. Cet engagement de transparence, combiné à notre approche technique innovante, offre un niveau de confidentialité vérifiable que les alternatives à code source fermé ne peuvent tout simplement pas égaler.
+Contrairement à nos concurrents qui n'adoptent que partiellement l'open source, nous avons mis l'intégralité de notre plateforme – front-end et back-end – à la disposition du public. Cet engagement de transparence, combiné à notre approche technique innovante, offre un niveau de confidentialité vérifiable que les alternatives à code source fermé ne peuvent tout simplement pas égaler.
 
 Que vous choisissiez d'utiliser notre service géré ou d'auto-héberger notre plateforme, vous bénéficiez de la sécurité, de la confidentialité et de la tranquillité d'esprit qui découlent d'un courrier électronique véritablement open source.
 
@@ -247,16 +247,16 @@ L'avenir du courrier électronique est ouvert, transparent et respectueux de la 
 
 \[^5] : Forum Mail-in-a-Box. « La maintenance m'a pris environ 16 heures pendant cette période… » [Serveur de messagerie auto-hébergé mal vu](https://discourse.mailinabox.email/t/self-hosting-mail-server-frowned-upon/4143)
 
-\[^6]: Reddit r/selfhosted. « En résumé : Comme tout ce qui est auto-hébergé, cela demandera du temps. Si vous n'avez pas de temps à y consacrer, il est toujours préférable de rester sur un hébergement… » [Héberger soi-même son serveur de messagerie ? Pourquoi ? Qu'est-ce qui est populaire ?](https://www.reddit.com/r/selfhosted/comments/1etb8jh/selfhosting_an_email_server_why_or_why_not_whats/)
+\[^6]: Reddit r/selfhosted. « En résumé : Comme tout ce qui est auto-hébergé, cela demandera du temps. Si vous n'avez pas de temps à y consacrer, il est toujours préférable de vous en tenir à un hébergement… » [Héberger soi-même son serveur de messagerie ? Pourquoi ? Qu'est-ce qui est populaire ?](https://www.reddit.com/r/selfhosted/comments/1etb8jh/selfhosting_an_email_server_why_or_why_not_whats/)
 
 \[^7] : Transférer un e-mail. « Proton Mail se présente comme open source, mais son back-end est en réalité fermé. » [Comparaison entre Tutanota et Proton Mail (2025)](https://forwardemail.net/blog/tutanota-vs-proton-mail-email-service-comparison)
 
 \[^8] : Transférer un e-mail. « Tutanota prétend être open source, mais son back-end est en réalité un back-end fermé. » [Comparaison entre Proton Mail et Tutanota (2025)](https://forwardemail.net/blog/proton-mail-vs-tutanota-email-service-comparison)
 
-\[^9]: Communauté des guides de confidentialité. « Il est indiqué que Protonmail et Tuta sont des logiciels à code source fermé. Car leur backend est bel et bien à code source fermé. » [Transfert d'e-mails (fournisseur de messagerie) - Développement de sites Web / Suggestions d'outils](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
+\[^9] : Communauté des guides de confidentialité. « Il est indiqué que Protonmail et Tuta sont des logiciels à code source fermé. Car leur backend est bel et bien à code source fermé. » [Transfert d'e-mails (fournisseur de messagerie) - Développement de sites Web / Suggestions d'outils](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
 \[^10] : Communauté des guides de confidentialité. « Aucun audit public des infrastructures back-end des fournisseurs de services de messagerie PG actuellement répertoriés n'a été publié, ni aucun extrait de code source ouvert n'a été partagé sur leur traitement des e-mails entrants. » [Transfert d'e-mails (fournisseur de messagerie) - Développement de sites Web / Suggestions d'outils](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^11]: IBM. « Le marché des logiciels open source passera de 41,83 milliards de dollars en 2024 à 48,92 milliards de dollars en 2025 à un rythme composé… » [Qu'est-ce qu'un logiciel open source ?](https://www.ibm.com/think/topics/open-source)
+\[^11]: IBM. « Le marché des logiciels open source passera de 41,83 milliards de dollars en 2024 à 48,92 milliards de dollars en 2025 à un taux composé… » [Qu'est-ce qu'un logiciel open source ?](https://www.ibm.com/think/topics/open-source)
 
 \[^12]: PingCAP. « Avec 80 % des entreprises signalant une utilisation accrue des technologies open source au cours de l'année écoulée, c'est… » [Tendances émergentes dans les communautés Open Source 2024](https://www.pingcap.com/article/emerging-trends-open-source-communities-2024/)

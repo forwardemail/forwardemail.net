@@ -10,25 +10,25 @@
   * [Cure53](#cure53)
   * [Sicurezza radicalmente aperta](#radically-open-security)
   * [Assicurato AB](#assured-ab)
-  * [Sentiero dei pezzi](#trail-of-bits)
+  * [Trail of Bits](#trail-of-bits)
 * [Confronto tra aziende](#company-comparison)
 * [Criteri di selezione](#selection-criteria)
 
 ## Panoramica {#overview}
 
-Forward Email ha valutato attivamente società di ricerca sulla sicurezza informatica per condurre audit completi del nostro codice open source su [GitHub](https://github.com/forwardemail) e dell'infrastruttura server. Dopo approfondite ricerche e valutazioni negli ultimi anni, abbiamo individuato diverse società di audit di sicurezza di eccellenza che dimostrano costantemente un lavoro di alta qualità, competenza tecnica e allineamento con i nostri valori incentrati sulla privacy.
+Forward Email ha valutato attivamente società di ricerca sulla sicurezza informatica per condurre audit completi del nostro codice sorgente open source su [GitHub](https://github.com/forwardemail) e dell'infrastruttura server. Dopo approfondite ricerche e valutazioni negli ultimi anni, abbiamo individuato diverse società di audit di sicurezza di eccellenza che dimostrano costantemente un lavoro di alta qualità, competenza tecnica e coerenza con i nostri valori incentrati sulla privacy.
 
 Questo documento presenta i nostri risultati e le nostre raccomandazioni per le organizzazioni che cercano servizi di audit di sicurezza professionali. Le aziende qui elencate hanno tutte dimostrato eccezionali capacità nei test di penetrazione, nella revisione del codice, nella valutazione delle infrastrutture e nella ricerca sulla sicurezza.
 
 ## Il nostro processo di valutazione {#our-evaluation-process}
 
-Il nostro processo di valutazione si è concentrato su diversi fattori chiave, cruciali per le organizzazioni che necessitano di valutazioni di sicurezza approfondite. Abbiamo esaminato la storia aziendale, le competenze tecniche, la trasparenza nel reporting e l'impegno verso i principi open source di ciascuna azienda. Le aziende presentate in questa guida hanno tutte dimostrato un'eccellenza costante durante il nostro periodo di valutazione pluriennale.
+Il nostro processo di valutazione si è concentrato su diversi fattori chiave, cruciali per le organizzazioni che necessitano di valutazioni di sicurezza approfondite. Abbiamo esaminato i precedenti di ciascuna azienda, le sue competenze tecniche, la trasparenza nel reporting e l'impegno verso i principi open source. Le aziende presentate in questa guida hanno tutte dimostrato un'eccellenza costante durante il nostro periodo di valutazione pluriennale.
 
 È importante notare che le aziende elencate di seguito non sono classificate in un ordine particolare. Ogni organizzazione offre punti di forza e specializzazioni uniche nel campo della sicurezza informatica e la scelta migliore dipende dai requisiti specifici del progetto, dalle considerazioni di budget e dalle esigenze organizzative.
 
 ## Aziende di audit di sicurezza consigliate {#recommended-security-audit-companies}
 
-__URL_PROTETTO_10__ Cure53 {__URL_PROTETTO_11__
+### Cure53 {#cure53}
 
 **Posizione**: Berlino, Germania
 **Sito web**: <https://cure53.de/>
@@ -50,7 +50,7 @@ L'azienda ha sviluppato un portfolio impressionante di valutazioni di sicurezza 
 **Sito web**: <https://www.radicallyopensecurity.com/>
 **Specializzazione**: "Consulenza sulla sicurezza informatica senza scopo di lucro"
 
-Radically Open Security (ROS) opera come un'esclusiva società di consulenza sulla sicurezza informatica senza scopo di lucro, perfettamente in linea con i principi open source e i valori di trasparenza. Con sede ad Amsterdam, ROS ha introdotto un approccio innovativo alla consulenza sulla sicurezza, rendendo pubbliche le proprie metodologie e scoperte ogniqualvolta possibile.
+Radically Open Security (ROS) opera come un'esclusiva società di consulenza sulla sicurezza informatica senza scopo di lucro, perfettamente in linea con i principi dell'open source e i valori di trasparenza. Con sede ad Amsterdam, ROS ha introdotto un approccio innovativo alla consulenza sulla sicurezza, rendendo pubbliche le proprie metodologie e scoperte ogniqualvolta possibile.
 
 Il loro modello no-profit consente loro di concentrarsi esclusivamente sui risultati in termini di sicurezza piuttosto che sulla massimizzazione del profitto, il che spesso si traduce in valutazioni più approfondite e raccomandazioni concrete. ROS vanta una particolare competenza nelle tecnologie incentrate sulla privacy, nei servizi VPN e nelle applicazioni che gestiscono dati sensibili degli utenti.
 
@@ -73,10 +73,10 @@ L'approccio dell'azienda si basa su un'analisi tecnica approfondita, combinata c
 **Pubblicazioni e relazioni degne di nota**:
 
 * [Audit di sicurezza dei server di posta elettronica Mullvad 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Valutazione della sicurezza dell'infrastruttura email
-* [Controllo della sicurezza API di Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Valutazione della sicurezza delle API
+* [Controllo della sicurezza API di Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Valutazione della sicurezza dell'API
 * [Audit di sicurezza del server DNS Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Valutazione dell'infrastruttura DNS
 
-### Traccia di bit {#trail-of-bits}
+### Scia di bit {#trail-of-bits}
 
 **Sede**: New York, New York, Stati Uniti
 **Sito web**: <https://www.trailofbits.com/>
@@ -89,7 +89,7 @@ L'azienda vanta una particolare competenza nella sicurezza blockchain, nelle imp
 **Pubblicazioni e relazioni degne di nota**:
 
 * [Recensione di Homebrew Security 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Valutazione della sicurezza del gestore pacchetti
-* [Hey Security Review](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Valutazione della sicurezza del servizio di posta elettronica
+* [Hey Security Review](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Valutazione della sicurezza del servizio email
 * [Revisione della sicurezza cURL 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Analisi della sicurezza della libreria di rete
 
 ## Confronto tra aziende {#company-comparison}
@@ -107,7 +107,7 @@ Nel valutare queste società di audit di sicurezza, abbiamo preso in considerazi
 
 **Competenza tecnica**: Tutte le aziende consigliate dimostrano una profonda conoscenza tecnica in più ambiti, tra cui sicurezza delle applicazioni web, valutazione delle infrastrutture, implementazioni crittografiche e tecnologie emergenti.
 
-**Trasparenza e reporting**: Ogni azienda fornisce report completi e fruibili che comunicano chiaramente i risultati, le valutazioni dei rischi e le strategie di intervento. Molte aziende contribuiscono anche alla più ampia comunità della sicurezza attraverso la ricerca pubblica e strumenti open source.
+**Trasparenza e reporting**: Ogni azienda fornisce report completi e fruibili che comunicano chiaramente risultati, valutazioni dei rischi e strategie di intervento. Molte aziende contribuiscono anche alla più ampia comunità della sicurezza attraverso la ricerca pubblica e strumenti open source.
 
 **Track Record**: Le società quotate vantano una comprovata esperienza con clienti di alto profilo e complesse sfide di sicurezza. I loro report pubblici dimostrano qualità e accuratezza costanti.
 

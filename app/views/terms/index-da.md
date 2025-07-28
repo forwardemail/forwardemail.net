@@ -39,12 +39,12 @@ Derudover garanterer eller fremsætter Forward Email ingen erklæringer vedrøre
 <u>**Du accepterer specifikt, at ved at bruge Tjenesten er Forward Email ikke ansvarlig for, og du vil ikke oprette, læse, ændre eller overføre noget af følgende med Tjenesten:**</u>
 
 * **Du må ikke bruge vores tjeneste til at drive en tjeneste, der giver tredjeparter (ud over dine egne medarbejdere og leverandører) adgang til, brug eller drage fordel af vores tjeneste. Hvis du har brug for, at vi gør en undtagelse for dig angående dette, bedes du kontakte os for at drøfte en virksomhedsaftale. Se vores [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) for yderligere information.**
-* Hvis du bruger vores [Udgående SMTP](/faq#do-you-support-sending-email-with-smtp) tjeneste, accepterer du følgende:
+* Hvis du bruger vores [Udgående SMTP](/faq#do-you-support-sending-email-with-smtp)-tjeneste, accepterer du følgende:
 * Du har tilladelse til at bruge den til [transaktionel e-mail](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) og [e-mailmarkedsføring](https://en.wikipedia.org/wiki/Email_marketing).
-* Hvis du sender e-mailmarkedsføringsmateriale, skal du inkludere en `List-Unsubscribe` header, og dine abonnenter skal tilmelde sig.
-* Vi anbefaler, at du bruger en open source nyhedsbrevsadministrator, f.eks. [ListMonk](https://github.com/knadh/listmonk) på <https://github.com/knadh/listmonk>.
+* Hvis du sender e-mailmarkedsføringsmateriale, skal du inkludere en `List-Unsubscribe`-header, og dine abonnenter skal tilmelde sig.
+* Vi anbefaler, at du bruger en open source-nyhedsbrevsadministrator, f.eks. [ListMonk](https://github.com/knadh/listmonk), på <https://github.com/knadh/listmonk>.
 * Bemærk, at vi planlægger at udgive vores egen nyhedsbrevsadministrator i fremtiden.
-* E-mailmarkedsføringsmateriale omfatter salgsfremmende, masse- eller kommercielle e-mails til en liste over kontakter med lignende indhold, emnelinje og brødtekst (f.eks. nyhedsbreve og meddelelser).
+* * E-mailmarkedsføringsmateriale omfatter reklame-, masse- eller kommercielle e-mails til en liste over kontakter med lignende indhold, emnelinje og brødtekst (f.eks. nyhedsbreve og meddelelser).
 
 * Du skal overholde [CAN-SPAM-loven af 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
 
@@ -75,7 +75,7 @@ Vi kan give dig besked på forhånd om restriktioner, der allerede er pålagt, e
 
 ## Begrænsninger {#limitations}
 
-Forward Email eller dets leverandører er under ingen omstændigheder ansvarlige for nogen skader (herunder, uden begrænsning, skader for tab af data eller fortjeneste eller på grund af driftsafbrydelse) som følge af brugen eller manglende evne til at bruge materialerne på Forward Emails hjemmeside, selvom Forward Email eller en autoriseret repræsentant for Forward Email er blevet underrettet mundtligt eller skriftligt om muligheden for sådan skade. Da nogle jurisdiktioner ikke tillader begrænsninger af implicitte garantier eller begrænsninger af ansvar for følgeskader eller hændelige skader, gælder disse begrænsninger muligvis ikke for dig.
+Forward Email eller dets leverandører er under ingen omstændigheder ansvarlige for nogen skader (herunder, uden begrænsning, skader for tab af data eller fortjeneste eller på grund af driftsafbrydelse) som følge af brugen eller manglende evne til at bruge materialerne på Forward Emails hjemmeside, selvom Forward Email eller en autoriseret repræsentant fra Forward Email er blevet underrettet mundtligt eller skriftligt om muligheden for sådan skade. Da nogle jurisdiktioner ikke tillader begrænsninger af implicitte garantier eller begrænsninger af ansvar for følgeskader eller hændelige skader, gælder disse begrænsninger muligvis ikke for dig.
 
 ## Refusioner {#refunds}
 
@@ -115,9 +115,9 @@ Forward Email skal gøre alle rimelige kommercielle bestræbelser (ikke mindre e
 
 ### Berettigelse {#eligibility}
 
-Minimumsbeløbet for kredit skal være mindst $1,00 for at være berettiget. Maksimal kredit er begrænset til de 30 dage eller det samlede beløb, kunden betaler pr. den seneste kalendermåned i forbindelse med nedetid (alt efter hvad der er størst). Betalende kunder, der er berørt af nedetid, skal anmode om kreditter ved at indsende en [Hjælpanmodning](/help) inden for 30 dage fra datoen for nedetiden. Kreditter gælder kun for nedetidsfaktorer, der er inden for den primære kontrol af Videresend e-mail.
+Minimumsbeløbet for kredit skal være mindst $1,00 for at være berettiget. Maksimal kredit er begrænset til de 30 dage eller det samlede beløb, kunden betaler pr. den seneste kalendermåned i forbindelse med nedetid (alt efter hvad der er størst). Betalende kunder, der er berørt af nedetid, skal anmode om kreditter ved at indsende en [Hjælpanmodning](/help) inden for 30 dage fra datoen for nedetid. Kreditter gælder kun for nedetidsfaktorer, der er inden for den primære kontrol af Videresend e-mail.
 
-## Revisioner og fejlrettelser {#revisions-and-errata}
+## Revisioner og fejl {#revisions-and-errata}
 
 Materialerne på Forward Emails hjemmeside kan indeholde tekniske, typografiske eller fotografiske fejl. Forward Email garanterer ikke, at materialerne på hjemmesiden er nøjagtige, fuldstændige eller aktuelle. Forward Email kan til enhver tid foretage ændringer i materialerne på hjemmesiden uden varsel. Forward Email forpligter sig dog ikke til at opdatere materialerne.
 

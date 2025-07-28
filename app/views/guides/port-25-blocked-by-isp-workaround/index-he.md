@@ -1,12 +1,12 @@
-# פורט 25 נחסם על ידי פתרון עוקף של ספק האינטרנט {#port-25-blocked-by-isp-workaround}
+# פורט 25 נחסם על ידי פתרון ספק האינטרנט {#port-25-blocked-by-isp-workaround}
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [כיצד לעקוף חסימת SMTP נכנס על ידי ספק שירותי אינטרנט בפורט 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
 * [כיצד לעקוף חסימת SMTP יוצא על ידי ספק שירותי אינטרנט ביציאה 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
 * [איך אני יכול לבדוק אם ספק האינטרנט שלי חוסם פורטים](#how-can-i-check-if-my-isp-blocks-ports)
 
-## כיצד לעקוף חסימת SMTP נכנס על ידי ספק אינטרנט בפורט 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
+## כיצד לעקוף את חסימת SMTP נכנס על ידי ספק אינטרנט בפורט 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
 אם פורט 25 אינו פתוח בכתובת ה-IP של שרת הדואר שלך, מדריך זה הוא בשבילך.
 
@@ -14,12 +14,12 @@
 
 מכיוון שלא ניתן לקבל תעבורה יוצאת בפורט 25, סביר להניח שגם לא תהיה לך תעבורה נכנסת בפורט 25 עקב חסימה זו.
 
-בהנחה שאתה משתמש בשירות שלנו כדי להעביר אימיילים, [ניתן לעקוף בעיה זו באמצעות תשובות לשאלות נפוצות כאן](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
+בהנחה שאתה משתמש בשירות שלנו להעברת אימיילים, [ניתן לעקוף בעיה זו באמצעות תשובות לשאלות נפוצות כאן](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
 
-## כיצד לעקוף חסימת SMTP יוצא על ידי ספק אינטרנט בפורט 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
+## כיצד לעקוף את חסימת ה-SMTP היוצא של ספק האינטרנט ביציאה 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 
 אם ספק האינטרנט שלך חוסם את פורט יוצא 25, תצטרך למצוא פתרון חלופי או ליצור איתו קשר.
 
-## איך אני יכול לבדוק אם ספק האינטרנט שלי חוסם פורטים {#how-can-i-check-if-my-isp-blocks-ports}
+## כיצד אוכל לבדוק אם ספק האינטרנט שלי חוסם פורטים {#how-can-i-check-if-my-isp-blocks-ports}
 
-ניתן להריץ `telnet smtp.forwardemail.net 25` משורת הפקודה או מהטרמינל כדי לראות אם החיבור היוצא שלך בפורט 25 חסום.
+ניתן להריץ את `telnet smtp.forwardemail.net 25` משורת הפקודה או מהטרמינל כדי לראות אם החיבור היוצא שלך בפורט 25 חסום.

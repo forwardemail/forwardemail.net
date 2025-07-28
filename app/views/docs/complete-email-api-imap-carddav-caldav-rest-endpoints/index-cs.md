@@ -6,12 +6,12 @@
 <strong>TL;DR:</strong> Vytvořili jsme první kompletní REST API na světě pro správu e-mailů s pokročilými vyhledávacími funkcemi, které žádná jiná služba nenabízí. Zatímco Gmail, Outlook a Apple nutí vývojáře do pekla IMAP nebo API s omezenou rychlostí, Forward Email nabízí bleskově rychlé operace CRUD pro zprávy, složky, kontakty a kalendáře prostřednictvím jednotného rozhraní REST s více než 15 parametry vyhledávání. Na toto vývojáři e-mailového API čekali.
 </p>
 
-__CHRÁNĚNÁ_URL_75__ Obsah {__CHRÁNĚNÁ_URL_76__
+## Obsah {#table-of-contents}
 
 * [Problém s e-mailovým API](#the-email-api-problem)
 * [Co vývojáři vlastně říkají](#what-developers-are-actually-saying)
 * [Revoluční řešení pro přeposílání e-mailů](#forward-emails-revolutionary-solution)
-  * [Proč jsme to postavili](#why-we-built-this)
+  * [Proč jsme tohle postavili](#why-we-built-this)
   * [Jednoduché ověřování](#simple-authentication)
 * [20 koncových bodů, které změní všechno](#20-endpoints-that-change-everything)
   * [Zprávy (5 koncových bodů)](#messages-5-endpoints)
@@ -83,7 +83,7 @@ Každý velký poskytovatel e-mailových služeb nutí vývojáře k jedné ze d
 Výsledek? Vývojáři buď zcela opustí integraci e-mailů, nebo ztrácejí týdny budováním křehkých IMAP wrapperů, které neustále porouchávají.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Špinavé tajemství**: Většina „e-mailových API“ jsou pouze odesílací API. Nemůžete programově organizovat složky, synchronizovat kontakty ani spravovat kalendáře prostřednictvím jednoduchého rozhraní REST. Až doteď.
 
 ## Co vývojáři vlastně říkají {#what-developers-are-actually-saying}
 
@@ -107,10 +107,10 @@ Frustrace je skutečná a zdokumentovaná všude:
 
 Důkazy jsou všude:
 
-* **Problémy s SMTP ve WordPressu**: [631 problémů s GitHubem](https://github.com/awesomemotive/WP-Mail-SMTP/issues) o selhání doručování e-mailů
-* **Omezení Zapieru**: [Stížnosti komunity](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) o limitech 10 e-mailů za hodinu a selhání detekce IMAP
+* **Problémy s SMTP ve WordPressu**: [631 problémů s GitHubem](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ohledně selhání doručování e-mailů
+* **Omezení Zapieru**: [Stížnosti komunity](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) limity 10 e-mailů za hodinu a selhání detekce IMAP
 * **Projekty IMAP API**: [Násobek](https://github.com/ewildgoose/imap-api) [open-source](https://emailengine.app/) [projekty](https://www.npmjs.com/package/imapflow) existují speciálně pro „převod IMAP na REST“, protože žádný poskytovatel tuto funkci nenabízí
-* **Frustrace s Gmail API**: [Přetečení zásobníku](https://stackoverflow.com/questions/tagged/gmail-api) obsahuje 4 847 otázek označených štítkem „gmail-api“ s běžnými stížnostmi na limity rychlosti a složitost
+* **Frustrace s Gmail API**: [Přetečení zásobníku](https://stackoverflow.com/questions/tagged/gmail-api) má 4 847 otázek označených štítkem „gmail-api“ s běžnými stížnostmi na limity rychlosti a složitost
 
 ## Revoluční řešení pro přeposílání e-mailů {#forward-emails-revolutionary-solution}
 
@@ -120,10 +120,10 @@ Toto není jen další odesílací API. Toto je kompletní programová kontrola 
 
 * **Zprávy**: Vytváření, čtení, aktualizace, mazání, vyhledávání, přesouvání, označování
 * **Složky**: Plná správa složek IMAP prostřednictvím koncových bodů REST
-* **Kontakty**: [CardDAV](https://tools.ietf.org/html/rfc6352) ukládání a synchronizace kontaktů
-* **Kalendáře**: [CalDAV](https://tools.ietf.org/html/rfc4791) události kalendáře a plánování
+* **Kontakty**: Ukládání a synchronizace kontaktů [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **Kalendáře**: Události a plánování kalendáře [CalDAV](https://tools.ietf.org/html/rfc4791)
 
-### Proč jsme toto vytvořili {#why-we-built-this}
+### Proč jsme toto postavili {#why-we-built-this}
 
 **Problém**: Každý poskytovatel e-mailových služeb zachází s e-mailem jako s černou skříňkou. Můžete posílat e-maily, možná je i číst pomocí komplexního OAuth, ale nemůžete svá e-mailová data skutečně *spravovat* programově.
 
@@ -133,7 +133,7 @@ Toto není jen další odesílací API. Toto je kompletní programová kontrola 
 
 ### Jednoduché ověřování {#simple-authentication}
 
-Žádné [Složitost OAuth](https://oauth.net/2/). Žádné [hesla pro konkrétní aplikace](https://support.google.com/accounts/answer/185833). Pouze vaše přihlašovací údaje k aliasu:
+Žádný [Složitost OAuth](https://oauth.net/2/). Žádný [hesla pro konkrétní aplikace](https://support.google.com/accounts/answer/185833). Pouze vaše přihlašovací údaje k aliasu:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -144,7 +144,7 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Zprávy (5 koncových bodů) {#messages-5-endpoints}
 
-* `GET /v1/messages` - Zobrazit seznam zpráv s filtrováním (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `GET /v1/messages` - Zobrazit zprávy s filtrováním (`?folder=`, `?is_unread=`, `?is_flagged=`)
 * `POST /v1/messages` - Odeslat nové zprávy přímo do složek
 * `GET /v1/messages/:id` - Načíst konkrétní zprávu s kompletními metadaty
 * `PUT /v1/messages/:id` - Aktualizovat zprávu (příznaky, složka, stav přečtení)
@@ -152,10 +152,10 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Složky (5 koncových bodů) {#folders-5-endpoints}
 
-* `GET /v1/folders` - Zobrazit všechny složky se stavem předplatného
+* `GET /v1/folders` - Zobrazit všechny složky se stavem odběru
 * `POST /v1/folders` - Vytvořit novou složku s vlastními vlastnostmi
 * `GET /v1/folders/:id` - Zobrazit podrobnosti o složce a počet zpráv
-* `PUT /v1/folders/:id` - Aktualizovat vlastnosti složky a předplatné
+* `PUT /v1/folders/:id` - Aktualizovat vlastnosti složky a odběr
 * `DELETE /v1/folders/:id` - Smazat složku a opravit přemístění zpráv
 
 ### Kontakty (5 koncových bodů) {#contacts-5-endpoints}
@@ -211,7 +211,7 @@ Omezení vyhledávání v Outlook API:
 
 ### Revoluční vyhledávací API pro přeposílání e-mailů {#forward-emails-revolutionary-search-api}
 
-Nabízíme více než 15 vyhledávacích parametrů, které žádná jiná služba nenabízí:
+**Nabízíme více než 15 vyhledávacích parametrů, které žádná jiná služba nenabízí:**
 
 | Vyhledávací funkce | Přeposlat e-mail | API Gmailu | API pro Outlook | Ostatní |
 | ------------------------------ | -------------------------------------- | ------------ | ------------------ | ------ |
@@ -222,7 +222,7 @@ Nabízíme více než 15 vyhledávacích parametrů, které žádná jiná služ
 | **Filtrování příloh** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
 | **Vyhledávání v záhlaví** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
 | **Vyhledávání ID zprávy** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
-| **Kombinované filtry** | ✅ Více parametrů s logikou AND | ❌ | ❌ | ❌ |
+| **Kombinované filtry** | ✅ Více parametrů s logickým operátorem AND | ❌ | ❌ | ❌ |
 | **Nerozlišuje velká a malá písmena** | ✅ Všechna vyhledávání | ✅ | ✅ | ❌ |
 | **Podpora stránkování** | ✅ Funguje se všemi parametry vyhledávání | ✅ | ✅ | ❌ |
 
@@ -280,7 +280,7 @@ GET /me/messages?$search="quarterly"
 * 🐌 **Outlook API**: Agresivní omezování s komplexními požadavky na omezení přístupu
 * 🐌 **Ostatní**: Žádná API pro porovnání
 
-### Vyhledávací funkce, které nikdo jiný nemá {#search-features-no-one-else-has}
+### Funkce vyhledávání, které nikdo jiný nemá {#search-features-no-one-else-has}
 
 #### 1. Vyhledávání specifické pro záhlaví {#1-header-specific-search}
 
@@ -290,7 +290,7 @@ GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-__CHRÁNĚNÁ_URL_111__ 2. Inteligence založená na velikosti {__CHRÁNĚNÁ_URL_112__
+#### 2. Inteligence založená na velikosti {#2-size-based-intelligence}
 
 ```bash
 # Find newsletter emails (typically large)
@@ -362,9 +362,9 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Výhoda pro vývojáře**: S vyhledávacím API služby Forward Email můžete vytvářet e-mailové aplikace, které svou funkčností konkurují desktopovým klientům, a zároveň si zachovávají jednoduchost rozhraní REST API.
 
-## Bleskově rychlá architektura s vysokým výkonem {#blazing-fast-performance-architecture}
+## Architektura s bleskově rychlým výkonem {#blazing-fast-performance-architecture}
 
 Náš technický stack je postaven na rychlosti a spolehlivosti:
 
@@ -376,7 +376,7 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Výkonnostní benchmarky {#performance-benchmarks}
+### Srovnávací kritéria výkonu {#performance-benchmarks}
 
 **Proč jsme bleskově rychlí:**
 
@@ -396,9 +396,9 @@ graph LR
 * **Synchronizace kontaktů**: více než 1000 kontaktů/sekundu
 * **Provozní doba**: 99,99% SLA s redundantní infrastrukturou
 
-### Architektura zaměřená na soukromí {#privacy-first-architecture}
+### Architektura zaměřená na ochranu soukromí {#privacy-first-architecture}
 
-**Design s nulovými znalostmi**: Přístup máte pouze vy pomocí hesla IMAP – my nemůžeme číst vaše e-maily. Naše [architektura s nulovými znalostmi](https://forwardemail.net/en/security) zajišťuje naprosté soukromí a zároveň poskytuje vynikající výkon.
+**Design s nulovými znalostmi**: Přístup máte pouze vy s heslem IMAP – my nemůžeme číst vaše e-maily. Náš [architektura s nulovými znalostmi](https://forwardemail.net/en/security) zajišťuje naprosté soukromí a zároveň poskytuje skvělý výkon.
 
 ## Proč jsme jiní: Kompletní srovnání {#why-were-different-the-complete-comparison}
 
@@ -419,7 +419,7 @@ graph LR
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | **Kompletní CRUD** | ✅ Úplné vytváření, čtení, aktualizace a mazání všech dat | ❌ Operace pouze pro čtení nebo omezené operace |
 | **Sjednocené API** | ✅ Zprávy, složky, kontakty, kalendáře v jednom API | ❌ Samostatná API nebo chybějící funkce |
-| **Jednoduché ověřování** | ✅ Základní ověřování s aliasovými přihlašovacími údaji | ❌ Komplexní OAuth s více obory |
+| **Jednoduché ověření** | ✅ Základní ověřování s aliasovými přihlašovacími údaji | ❌ Komplexní OAuth s více obory |
 | **Žádné limity sazeb** | ✅ Velkorysé limity navržené pro reálné aplikace | ❌ Omezující kvóty, které narušují pracovní postupy |
 | **Vlastní hosting** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Pouze vázání na dodavatele |
 | **Soukromí** | ✅ Bez znalostí, šifrované, soukromé | ❌ Těžba dat a obavy o soukromí |
@@ -430,18 +430,18 @@ graph LR
 **ProtonMail a Tuta se propagují jako „open source“ a „transparentní“, ale jedná se o zavádějící marketing, který porušuje moderní zásady ochrany osobních údajů.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Nepravdivá tvrzení o transparentnosti**: ProtonMail i Tuta prominentně propagují své „open source“ certifikace, zatímco svůj nejdůležitější kód na straně serveru uchovávají proprietární a důvěrný.
 
 **Podvod ProtonMailu:**
 
-* **Tvrzení**: [„Jsme open source“](https://proton.me/blog/open-source) prominentně uváděno v marketingu
-* **Realita**: [Kód serveru je zcela proprietární](https://github.com/ProtonMail) - open source jsou pouze klientské aplikace
+* **Tvrzení**: [„Jsme open source“](https://proton.me/blog/open-source) prominentně uvedeno v marketingu
+* **Realita**: [Kód serveru je zcela proprietární](https://github.com/ProtonMail) - pouze klientské aplikace jsou open source
 * **Dopad**: Uživatelé nemohou ověřit šifrování na straně serveru, zpracování dat ani tvrzení o porušení soukromí
 * **Porušení transparentnosti**: Neexistuje způsob, jak auditovat skutečné systémy zpracování a ukládání e-mailů
 
 **Tutův zavádějící marketing:**
 
-* **Tvrzení**: [„E-mail s otevřeným zdrojovým kódem“](https://tuta.com/blog/posts/open-source-email) jako hlavní prodejní argument
+* **Tvrzení**: [„E-mail s otevřeným zdrojovým kódem“](https://tuta.com/blog/posts/open-source-email) jako klíčový prodejní argument
 * **Realita**: [Backendová infrastruktura je uzavřeného zdrojového kódu](https://github.com/tutao/tutanota) - k dispozici je pouze frontend
 * **Dopad**: Proprietární šifrování brání standardním e-mailovým protokolům (IMAP/SMTP)
 * **Strategie uzamčení**: Vlastní šifrování vynucuje závislost na dodavateli
@@ -464,11 +464,11 @@ V roce 2025 vyžaduje skutečné soukromí **úplnou transparentnost**. Když po
 * ✅ **Žádná vazba na dodavatele** - vaše data, vaše kontrola
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Skutečně otevřený zdrojový kód znamená, že si můžete ověřit každé tvrzení.** S Forward Email můžete auditovat naše šifrování, kontrolovat, jak nakládáme s daty, a dokonce i spustit vlastní instanci. To je skutečná transparentnost.
 
 ## Více než 30 příkladů integrace z reálného světa {#30-real-world-integration-examples}
 
-### 1. Vylepšení kontaktního formuláře ve WordPressu {#1-wordpress-contact-form-enhancement}
+### 1. Vylepšení kontaktního formuláře WordPressu {#1-wordpress-contact-form-enhancement}
 
 **Problém**: [Chyby konfigurace SMTP ve WordPressu](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 problémů s GitHubem](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
 **Řešení**: Přímá integrace API zcela obchází [SMTP](https://tools.ietf.org/html/rfc5321)
@@ -510,7 +510,7 @@ for (const message of messages) {
 ### 3. Synchronizace e-mailů CRM {#3-crm-email-synchronization}
 
 **Problém**: Ruční správa kontaktů mezi e-mailem a [CRM systémy](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**Řešení**: Obousměrná synchronizace s [CardDAV](https://tools.ietf.org/html/rfc6352) kontaktním API
+**Řešení**: Obousměrná synchronizace s rozhraním API pro kontakty [CardDAV](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
 // Sync new email contacts to CRM
@@ -548,7 +548,7 @@ for (const order of orderEmails) {
 
 ### 5. Integrace tiketů podpory {#5-support-ticket-integration}
 
-**Problém**: Vlákna e-mailů roztroušena po [platformy helpdesku](https://en.wikipedia.org/wiki/Help_desk_software)
+**Problém**: Vlákna e-mailů roztroušena v [platformy helpdesku](https://en.wikipedia.org/wiki/Help_desk_software)
 **Řešení**: Dokončete sledování vláken e-mailů
 
 ```javascript
@@ -589,10 +589,10 @@ for (const msg of unsubscribes) {
 }
 ```
 
-### 7. Správa úkolů pomocí e-mailu {#7-email-based-task-management}
+### 7. Správa úkolů na základě e-mailu {#7-email-based-task-management}
 
 **Problém**: Zahlcení doručené pošty a [sledování úkolů](https://en.wikipedia.org/wiki/Task_management)
-**Řešení**: Převeďte e-maily na úkoly, které lze splnit
+**Řešení**: Převeďte e-maily na úkoly, které lze provést
 
 ```javascript
 // Create tasks from flagged emails
@@ -627,7 +627,7 @@ for (const account of accounts) {
 
 ### 9. Panel pokročilé analýzy e-mailů {#9-advanced-email-analytics-dashboard}
 
-**Problém**: Žádné informace o [vzory e-mailů](https://en.wikipedia.org/wiki/Email_analytics) se sofistikovaným filtrováním
+**Problém**: Žádné informace o [vzory e-mailů](https://en.wikipedia.org/wiki/Email_analytics) s propracovaným filtrováním
 **Řešení**: Vlastní analýza e-mailů s využitím pokročilých vyhledávacích funkcí
 
 ```javascript
@@ -677,7 +677,7 @@ analytics.complianceReview = complianceEmails.length;
 
 ### 10. Inteligentní archivace e-mailů {#10-smart-email-archiving}
 
-**Problém**: Manuální [organizace e-mailů](https://en.wikipedia.org/wiki/Email_management)
+**Problém**: Ruční [organizace e-mailů](https://en.wikipedia.org/wiki/Email_management)
 **Řešení**: Inteligentní kategorizace e-mailů
 
 ```javascript
@@ -696,9 +696,9 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. Integrace e-mailů s kalendářem {#11-email-to-calendar-integration}
+### 11. Integrace e-mailu s kalendářem {#11-email-to-calendar-integration}
 
-**Problém**: Ruční [událost v kalendáři](https://tools.ietf.org/html/rfc4791) vytváření z e-mailů
+**Problém**: Ruční vytváření [událost v kalendáři](https://tools.ietf.org/html/rfc4791) z e-mailů
 **Řešení**: Automatická extrakce a vytváření událostí
 
 ```javascript
@@ -745,7 +745,7 @@ const backup = {
 await saveToComplianceStorage(backup);
 ```
 
-### 13. Správa obsahu prostřednictvím e-mailů {#13-email-based-content-management}
+### 13. Správa obsahu na základě e-mailů {#13-email-based-content-management}
 
 **Problém**: Správa obsahu odesílaného e-mailem pro [CMS platformy](https://en.wikipedia.org/wiki/Content_management_system)
 **Řešení**: E-mail jako systém pro správu obsahu
@@ -788,7 +788,7 @@ await fetch('/v1/messages', {
 
 ### 15. Automatizace pracovních postupů založená na e-mailech {#15-email-based-workflow-automation}
 
-**Problém**: Manuální [schvalovací procesy](https://en.wikipedia.org/wiki/Workflow) prostřednictvím e-mailu
+**Problém**: Ruční nastavení [schvalovací procesy](https://en.wikipedia.org/wiki/Workflow) e-mailem
 **Řešení**: Automatizované spouštěče pracovního postupu
 
 ```javascript
@@ -810,7 +810,7 @@ for (const approval of approvals) {
 
 ### 16. Monitorování zabezpečení e-mailu {#16-email-security-monitoring}
 
-**Problém**: Manuální [detekce bezpečnostních hrozeb](https://en.wikipedia.org/wiki/Email_security)
+**Problém**: Ruční [detekce bezpečnostních hrozeb](https://en.wikipedia.org/wiki/Email_security)
 **Řešení**: Automatizovaná analýza hrozeb
 
 ```javascript
@@ -828,10 +828,10 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. Sběr dat z e-mailových průzkumů {#17-email-based-survey-collection}
+### 17. Sbírka průzkumů založená na e-mailech {#17-email-based-survey-collection}
 
 **Problém**: Ruční zpracování [odpověď na průzkum](https://en.wikipedia.org/wiki/Survey_methodology)
-**Řešení**: Automatizovaná agregace odpovědí
+**Řešení**: Automatická agregace odpovědí
 
 ```javascript
 // Collect and process survey responses
@@ -864,9 +864,9 @@ const deliveryStats = {
 await updateDashboard(deliveryStats);
 ```
 
-### 19. Kvalifikace leadů na základě e-mailu {#19-email-based-lead-qualification}
+### 19. Kvalifikace potenciálního zákazníka na základě e-mailu {#19-email-based-lead-qualification}
 
-**Problém**: Manuální [bodování vedení](https://en.wikipedia.org/wiki/Lead_scoring) před e-mailovými interakcemi
+**Problém**: Ruční nastavení [bodování vedení](https://en.wikipedia.org/wiki/Lead_scoring) z e-mailových interakcí
 **Řešení**: Automatizovaný proces kvalifikace potenciálních zákazníků
 
 ```javascript
@@ -884,7 +884,7 @@ for (const prospect of prospects) {
 
 ### 20. Řízení projektů prostřednictvím e-mailu {#20-email-based-project-management}
 
-**Problém**: [Aktualizace projektu](https://en.wikipedia.org/wiki/Project_management) roztroušený v různých e-mailových vláknech
+**Problém**: [Aktualizace projektu](https://en.wikipedia.org/wiki/Project_management) rozptýlený v různých e-mailových vláknech
 **Řešení**: Centralizované komunikační centrum projektu
 
 ```javascript
@@ -933,9 +933,9 @@ for (const email of inventoryEmails) {
 }
 ```
 
-### 22. Zpracování faktur prostřednictvím e-mailu {#22-email-based-invoice-processing}
+### 22. Zpracování faktur na základě e-mailu {#22-email-based-invoice-processing}
 
-**Problém**: Ruční [zpracování faktur](https://en.wikipedia.org/wiki/Invoice_processing) a integrace účetnictví
+**Problém**: Ruční integrace [zpracování faktur](https://en.wikipedia.org/wiki/Invoice_processing) a účetnictví
 **Řešení**: Automatická extrakce faktur a synchronizace účetního systému
 
 ```javascript
@@ -1028,7 +1028,7 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. Analýza zpětné vazby od zákazníků na základě e-mailů {#25-email-based-customer-feedback-analysis}
+### 25. Analýza zpětné vazby od zákazníků na základě e-mailu {#25-email-based-customer-feedback-analysis}
 
 **Problém**: Ruční sběr [zpětná vazba od zákazníků](https://en.wikipedia.org/wiki/Customer_feedback) a analýza sentimentu
 **Řešení**: Automatizované zpracování zpětné vazby a sledování sentimentu
@@ -1096,7 +1096,7 @@ for (const application of applications) {
 
 ### 27. Zpracování e-mailových výkazů výdajů {#27-email-based-expense-report-processing}
 
-**Problém**: Ruční [výkaz výdajů](https://en.wikipedia.org/wiki/Expense_report) odeslání a schválení
+**Problém**: Ruční odeslání a schválení [výkaz výdajů](https://en.wikipedia.org/wiki/Expense_report)
 **Řešení**: Automatizovaný pracovní postup extrakce a schvalování výdajů
 
 ```javascript
@@ -1169,7 +1169,7 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. Správa dodavatelů prostřednictvím e-mailu {#29-email-based-vendor-management}
+### 29. Správa dodavatelů na základě e-mailu {#29-email-based-vendor-management}
 
 **Problém**: Manuální [komunikace s dodavateli](https://en.wikipedia.org/wiki/Vendor_management) a sledování smluv
 **Řešení**: Automatizovaná správa vztahů s dodavateli
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. Monitorování sociálních médií prostřednictvím e-mailů {#30-email-based-social-media-monitoring}
 
-**Problém**: Manuální [sociální média](https://en.wikipedia.org/wiki/Social_media_monitoring) sledování zmínek a reakce
+**Problém**: Ruční sledování zmínek [sociální média](https://en.wikipedia.org/wiki/Social_media_monitoring) a reakce
 **Řešení**: Automatizované zpracování upozornění na sociálních sítích a koordinace reakcí
 
 ```javascript
@@ -1260,9 +1260,9 @@ for (const alert of socialAlerts) {
 
 ### 1. Vytvořte si účet pro přesměrování e-mailů {#1-create-your-forward-email-account}
 
-Zaregistrujte se na [forwardemail.net](https://forwardemail.net) a ověřte svou doménu.
+Zaregistrujte se na adrese [forwardemail.net](https://forwardemail.net) a ověřte svou doménu.
 
-### 2. Vygenerujte přihlašovací údaje API {#2-generate-api-credentials}
+### 2. Generování přihlašovacích údajů API {#2-generate-api-credentials}
 
 Váš alias e-mail a heslo slouží jako přihlašovací údaje API – není nutné žádné další nastavení.
 
@@ -1283,14 +1283,14 @@ curl -u "your-alias@domain.com:password" \
 
 ### 4. Prozkoumejte dokumentaci {#4-explore-the-documentation}
 
-Kompletní dokumentaci k API s interaktivními příklady naleznete na adrese [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api).
+Kompletní dokumentaci k API s interaktivními příklady naleznete na stránce [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api).
 
 ## Technické zdroje {#technical-resources}
 
 * **[Kompletní dokumentace API](https://forwardemail.net/en/email-api)** - Interaktivní specifikace OpenAPI 3.0
 * **[Průvodce vlastním hostingem](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Nasazení přeposílání e-mailů ve vaší infrastruktuře
-* **[Bezpečnostní bílá kniha](https://forwardemail.net/technical-whitepaper.pdf)** - Technická architektura a bezpečnostní podrobnosti
-* **[Úložiště GitHub](https://github.com/forwardemail/forwardemail.net)** - Open source kód
+* **[Bezpečnostní bílá kniha](https://forwardemail.net/technical-whitepaper.pdf)** - Technická architektura a podrobnosti o zabezpečení
+* **[Repozitář GitHubu](https://github.com/forwardemail/forwardemail.net)** - Kódová základna s otevřeným zdrojovým kódem
 * **[Podpora pro vývojáře](mailto:api@forwardemail.net)** - Přímý přístup k našemu technickému týmu
 
 ---

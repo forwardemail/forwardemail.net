@@ -1,36 +1,36 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Selvhostede utgivelser {#self-hosted-releases}
 
-Denne delen dokumenterer CI/CD-arbeidsflyten for ForwardEmails selvdrevne løsning, og forklarer hvordan Docker-bilder bygges, publiseres og distribueres.
+Denne delen dokumenterer CI/CD-arbeidsflyten for ForwardEmails selvhostede løsning, og forklarer hvordan Docker-bilder bygges, publiseres og distribueres.
 
-## Table of Contents {#table-of-contents}
+## Innholdsfortegnelse {#table-of-contents}
 
 * [Oversikt](#overview)
-* [CI/CD arbeidsflyt](#cicd-workflow)
-  * [GitHub Actions arbeidsflyt](#github-actions-workflow)
-  * [Docker bildestruktur](#docker-image-structure)
-* [Implementeringsprosess](#deployment-process)
+* [CI/CD-arbeidsflyt](#cicd-workflow)
+  * [GitHub-handlinger Arbeidsflyt](#github-actions-workflow)
+  * [Docker-bildestruktur](#docker-image-structure)
+* [Distribusjonsprosess](#deployment-process)
   * [Installasjon](#installation)
   * [Docker Compose-konfigurasjon](#docker-compose-configuration)
 * [Vedlikeholdsfunksjoner](#maintenance-features)
   * [Automatiske oppdateringer](#automatic-updates)
   * [Sikkerhetskopiering og gjenoppretting](#backup-and-restore)
-  * [Sertifikatfornyelse](#certificate-renewal)
-* [Versjonskontroll](#versioning)
-* [Få tilgang til bilder](#accessing-images)
-* [Bidrar](#contributing)
+  * [Fornyelse av sertifikat](#certificate-renewal)
+* [Versjonering](#versioning)
+* [Tilgang til bilder](#accessing-images)
+* [Bidragende](#contributing)
 
-## Overview {#overview}
+## Oversikt {#overview}
 
-ForwardEmails selvhostede løsning bruker GitHub Actions for å automatisk bygge og publisere Docker-bilder hver gang en ny utgivelse opprettes. Disse bildene er deretter tilgjengelige for brukere å distribuere på sine egne servere ved å bruke det medfølgende oppsettskriptet.
+ForwardEmails selvhostede løsning bruker GitHub Actions til å automatisk bygge og publisere Docker-bilder når en ny utgivelse opprettes. Disse bildene er deretter tilgjengelige for brukere å distribuere på sine egne servere ved hjelp av det medfølgende oppsettskriptet.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Det finnes også våre [selvhostet blogg](https://forwardemail.net/blog/docs/self-hosted-solution) og [veiledning for utviklere med egen hosting](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Og for de mer oppdelte trinnvise versjonene, se veiledningene basert på [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) eller [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD-arbeidsflyt {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub-handlinger Arbeidsflyt {#github-actions-workflow}
 
 Prosessen for bygging og publisering av Docker-bilder med egen hosting er definert i `.github/workflows/docker-image-build-publish.yml`. Denne arbeidsflyten:
 
@@ -91,13 +91,13 @@ Denne tilnærmingen sikrer at det endelige bildet er optimalisert for størrelse
 
 ### Installasjon {#installation}
 
-Brukere kan distribuere den selvdrevne løsningen ved å bruke det medfølgende oppsettskriptet:
+Brukere kan distribuere den selvhostede løsningen ved hjelp av det medfølgende oppsettskriptet:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
-Dette manuset:
+Dette skriptet:
 
 1. Kloner depotet
 2. Setter opp miljøet
@@ -108,7 +108,7 @@ Dette manuset:
 
 ### Docker Compose-konfigurasjon {#docker-compose-configuration}
 
-Filen `docker-compose-self-hosted.yml` definerer alle tjenestene som kreves for den selvhostede løsningen:
+`docker-compose-self-hosted.yml`-filen definerer alle tjenestene som kreves for den selvhostede løsningen:
 
 * **Web**: Hovednettgrensesnitt
 * **API**: API-server for programmatisk tilgang
@@ -121,11 +121,11 @@ Filen `docker-compose-self-hosted.yml` definerer alle tjenestene som kreves for 
 * **Redis**: Datalager i minnet
 * **SQLite**: Database for lagring av e-poster
 
-Hver tjeneste bruker det samme Docker-bildet, men med forskjellige inngangspunkter, noe som muliggjør en modulær arkitektur samtidig som vedlikeholdet forenkles.
+Hver tjeneste bruker det samme Docker-imaget, men med forskjellige inngangspunkter, noe som gir mulighet for en modulær arkitektur samtidig som vedlikeholdet forenkles.
 
 ## Vedlikeholdsfunksjoner {#maintenance-features}
 
-Den selvdrevne løsningen inkluderer flere vedlikeholdsfunksjoner:
+Den selvhostede løsningen inkluderer flere vedlikeholdsfunksjoner:
 
 ### Automatiske oppdateringer {#automatic-updates}
 
@@ -158,7 +158,7 @@ SSL-sertifikater administreres automatisk med alternativer for å:
 
 ## Versjonskontroll {#versioning}
 
-Hver GitHub-utgivelse lager et nytt Docker-bilde merket med:
+Hver GitHub-utgivelse oppretter et nytt Docker-bilde merket med:
 
 1. Den spesifikke utgivelsesversjonen (f.eks. `v1.0.0`)
 2. `latest`-taggen for den nyeste utgivelsen
@@ -172,13 +172,13 @@ Docker-bildene er offentlig tilgjengelige på:
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (eksempelversjonstag)
 
-Ingen autentisering er nødvendig for å trekke disse bildene.
+Ingen autentisering er nødvendig for å hente disse bildene.
 
-## Bidragsyter {#contributing}
+## Bidrager {#contributing}
 
-For å bidra til den selvdrevne løsningen:
+For å bidra til den selvhostede løsningen:
 
 1. Gjør endringer i de relevante filene i `self-hosting`-katalogen.
-2. Test lokalt eller på en Ubuntu-basert VPS ved å bruke det medfølgende `setup.sh`-skriptet.
+2. Test lokalt eller på en Ubuntu-basert VPS ved hjelp av det medfølgende `setup.sh`-skriptet.
 3. Send inn en pull-forespørsel.
-4. Når den er slått sammen og en ny utgivelse er opprettet, vil CI-arbeidsflyten automatisk bygge og publisere det oppdaterte Docker-imaget.
+4. Når filene er slått sammen og en ny utgivelse er opprettet, vil CI-arbeidsflyten automatisk bygge og publisere det oppdaterte Docker-imaget.

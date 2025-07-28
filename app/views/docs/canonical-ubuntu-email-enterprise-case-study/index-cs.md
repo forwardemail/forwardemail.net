@@ -2,36 +2,36 @@
 
 <img loading="lazy" src="/img/articles/canonical.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_9__ Obsah {__CHRÁNĚNÁ_URL_10__
+## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
 * [Výzva: Správa komplexního e-mailového ekosystému](#the-challenge-managing-a-complex-email-ecosystem)
-* [Klíčové věci](#key-takeaways)
-* [Proč přeposílat e-mail](#why-forward-email)
+* [Klíčové poznatky](#key-takeaways)
+* [Proč přeposílat e-maily](#why-forward-email)
 * [Implementace: Bezproblémová integrace SSO](#the-implementation-seamless-sso-integration)
-  * [Vizualizace toku autentizace](#authentication-flow-visualization)
-  * [Podrobnosti technické implementace](#technical-implementation-details)
+  * [Vizualizace procesu ověřování](#authentication-flow-visualization)
+  * [Technické implementační detaily](#technical-implementation-details)
 * [Konfigurace DNS a směrování e-mailů](#dns-configuration-and-email-routing)
 * [Výsledky: Zjednodušená správa e-mailů a vylepšené zabezpečení](#results-streamlined-email-management-and-enhanced-security)
   * [Provozní efektivita](#operational-efficiency)
   * [Vylepšené zabezpečení a soukromí](#enhanced-security-and-privacy)
   * [Úspory nákladů](#cost-savings)
   * [Vylepšené prostředí pro přispěvatele](#improved-contributor-experience)
-* [Těšíme se: Pokračujeme ve spolupráci](#looking-forward-continued-collaboration)
-* [Závěr: Perfektní partnerství s otevřeným zdrojem](#conclusion-a-perfect-open-source-partnership)
+* [Pohled do budoucna: Pokračující spolupráce](#looking-forward-continued-collaboration)
+* [Závěr: Dokonalé partnerství s otevřeným zdrojovým kódem](#conclusion-a-perfect-open-source-partnership)
 * [Podpora podnikových klientů](#supporting-enterprise-clients)
   * [Kontaktujte nás](#get-in-touch)
-  * [O přeposílání e-mailů](#about-forward-email)
+  * [O přeposlání e-mailu](#about-forward-email)
 
-__CHRÁNĚNÁ_URL_11__ Předmluva {__CHRÁNĚNÁ_URL_12__
+## Předmluva {#foreword}
 
-Ve světě open-source softwaru má jen málo jmen takovou váhu jako [Kanonický](https://en.wikipedia.org/wiki/Canonical_\(company\)), společnost stojící za [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), jednou z nejpopulárnějších linuxových distribucí na světě. Společnost Canonical, která má rozsáhlý ekosystém zahrnující několik distribucí včetně Ubuntu, [V lidskosti](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) a dalších, čelila jedinečným výzvám při správě e-mailových adres napříč svými četnými doménami. Tato případová studie zkoumá, jak se společnost Canonical spojila se společností Forward Email, aby vytvořila bezproblémové, bezpečné a na soukromí zaměřené řešení pro správu podnikových e-mailů, které je dokonale v souladu s jejími hodnotami open-source.
+Ve světě open-source softwaru má jen málo jmen takovou váhu jako [Kanonický](https://en.wikipedia.org/wiki/Canonical_\(company\)), společnost stojící za [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), jednou z nejpopulárnějších linuxových distribucí na světě. Společnost Canonical se svým rozsáhlým ekosystémem zahrnujícím několik distribucí včetně Ubuntu, [Uvolnit](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) a dalších se potýkala s jedinečnými výzvami při správě e-mailových adres napříč svými četnými doménami. Tato případová studie zkoumá, jak se společnost Canonical spojila se společností Forward Email, aby vytvořila bezproblémové, bezpečné a na soukromí zaměřené řešení pro správu podnikových e-mailů, které je dokonale v souladu s jejími hodnotami open-source.
 
 ## Výzva: Správa komplexního e-mailového ekosystému {#the-challenge-managing-a-complex-email-ecosystem}
 
-Ekosystém společnosti Canonical je rozmanitý a rozsáhlý. S miliony uživatelů po celém světě a tisíci přispěvatelů v různých projektech představovala správa e-mailových adres ve více doménách značné problémy. Hlavní přispěvatelé potřebovali oficiální e-mailové adresy (@ubuntu.com, @kubuntu.org atd.), které odrážely jejich zapojení do projektu při zachování bezpečnosti a snadného použití prostřednictvím robustního systému správy domény Ubuntu.
+Ekosystém společnosti Canonical je rozmanitý a rozsáhlý. S miliony uživatelů po celém světě a tisíci přispěvatelů v různých projektech představovala správa e-mailových adres napříč více doménami značné výzvy. Hlavní přispěvatelé potřebovali oficiální e-mailové adresy (@ubuntu.com, @kubuntu.org atd.), které by odrážely jejich zapojení do projektu a zároveň zachovaly bezpečnost a snadnou použitelnost prostřednictvím robustního systému správy domén Ubuntu.
 
-Před implementací Forward Email se Canonical potýkal s:
+Před implementací Forward Email se společnost Canonical potýkala s:
 
 * Správa e-mailových adres napříč více doménami (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org a @ubuntu.net)
 * Zajištění konzistentního e-mailového prostředí pro klíčové přispěvatele
@@ -49,11 +49,11 @@ Před implementací Forward Email se Canonical potýkal s:
 
 ## Proč přeposílat e-mail {#why-forward-email}
 
-Jako jediný 100% poskytovatel e-mailových služeb s otevřeným zdrojovým kódem se zaměřením na soukromí a zabezpečení byl Forward Email přirozeným řešením pro podnikové přeposílání e-mailů společnosti Canonical. Naše hodnoty jsou dokonale v souladu se závazkem společnosti Canonical k softwaru s otevřeným zdrojovým kódem a ochraně osobních údajů.
+Jako jediný poskytovatel e-mailových služeb s otevřeným zdrojovým kódem a zaměřením na soukromí a bezpečnost byla společnost Forward Email přirozeným řešením pro potřeby společnosti Canonical v oblasti přeposílání podnikových e-mailů. Naše hodnoty se dokonale shodovaly se závazkem společnosti Canonical k softwaru s otevřeným zdrojovým kódem a ochraně soukromí.
 
-Klíčové faktory, které učinily Forward Email ideální volbou, zahrnovaly:
+Mezi klíčové faktory, které z Forward Email udělaly ideální volbu, patřily:
 
-1. **Kompletní kódová základna s otevřeným zdrojovým kódem**: Celá naše platforma je open-source a dostupná na [GitHub](https://en.wikipedia.org/wiki/GitHub), což umožňuje transparentnost a příspěvky komunity. Na rozdíl od mnoha poskytovatelů e-mailů „zaměřených na soukromí“, kteří open-source poskytují pouze své frontendy, zatímco backendy nechávají uzavřené, jsme zpřístupnili celou naši kódovou základnu – frontend i backend – komukoli k nahlédnutí na [GitHub](https://github.com/forwardemail/forwardemail.net).
+1. **Kompletní kódová základna s otevřeným zdrojovým kódem**: Celá naše platforma je open-source a dostupná na [GitHub](https://en.wikipedia.org/wiki/GitHub), což umožňuje transparentnost a příspěvky komunity. Na rozdíl od mnoha poskytovatelů e-mailů „zaměřených na soukromí“, kteří open-source poskytují pouze svá frontendová rozhraní, zatímco backendová rozhraní nechávají uzavřená, jsme zpřístupnili celou naši kódovou základnu – frontend i backend – komukoli k nahlédnutí na [GitHub](https://github.com/forwardemail/forwardemail.net).
 
 2. **Přístup zaměřený na soukromí**: Na rozdíl od jiných poskytovatelů neukládáme e-maily ve sdílených databázích a používáme robustní šifrování pomocí TLS. Naše základní filozofie ochrany soukromí je jednoduchá: **vaše e-maily patří vám a pouze vám**. Tímto principem se řídí každé naše technické rozhodnutí, od způsobu přeposílání e-mailů až po implementaci šifrování.
 
@@ -61,15 +61,15 @@ Klíčové faktory, které učinily Forward Email ideální volbou, zahrnovaly:
 
 4. **Cenovo efektivní škálování**: Náš cenový model umožňuje organizacím škálovat bez placení za uživatele, což je ideální pro velkou základnu přispěvatelů společnosti Canonical.
 
-5. **Kvantově odolné šifrování**: Používáme individuálně šifrované poštovní schránky SQLite s [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) jako šifrou pro [kvantově odolné šifrování](/blog/docs/best-quantum-safe-encrypted-email-service). Každá poštovní schránka je samostatný šifrovaný soubor, což znamená, že přístup k datům jednoho uživatele neumožňuje přístup ostatním.
+5. **Kvantově odolné šifrování**: Používáme individuálně šifrované poštovní schránky SQLite s šifrou [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) pro [kvantově odolné šifrování](/blog/docs/best-quantum-safe-encrypted-email-service). Každá poštovní schránka je samostatný šifrovaný soubor, což znamená, že přístup k datům jednoho uživatele neumožňuje přístup ostatním.
 
 ## Implementace: Bezproblémová integrace SSO {#the-implementation-seamless-sso-integration}
 
-Jedním z nejkritičtějších aspektů implementace byla integrace se stávajícím systémem Ubuntu One SSO společnosti Canonical. Tato integrace by základním přispěvatelům umožnila spravovat své e-mailové adresy @ubuntu.com pomocí jejich stávajících přihlašovacích údajů Ubuntu One.
+Jedním z nejdůležitějších aspektů implementace byla integrace se stávajícím systémem Ubuntu One SSO společnosti Canonical. Tato integrace by umožnila klíčovým přispěvatelům spravovat své e-mailové adresy @ubuntu.com pomocí svých stávajících přihlašovacích údajů Ubuntu One.
 
 ### Vizualizace procesu ověřování {#authentication-flow-visualization}
 
-Následující diagram znázorňuje úplný postup ověřování a poskytování e-mailů:
+Následující diagram znázorňuje kompletní postup ověřování a zřizování e-mailů:
 
 ```mermaid
 flowchart TD
@@ -113,7 +113,7 @@ flowchart TD
 
 ### Technické podrobnosti implementace {#technical-implementation-details}
 
-Integrace mezi Forward Email a Ubuntu One SSO byla provedena pomocí vlastní implementace autentizační strategie passport-ubuntu. To umožnilo bezproblémový tok ověřování mezi systémy Ubuntu One a Forward Email.
+Integrace mezi Forward Email a Ubuntu One SSO byla provedena vlastní implementací strategie ověřování passport-ubuntu. To umožnilo bezproblémový tok ověřování mezi systémy Ubuntu One a Forward Email.
 
 #### Proces ověřování {#the-authentication-flow}
 
@@ -226,7 +226,7 @@ async function syncUbuntuUser(user, map) {
 }
 ```
 
-Abychom zjednodušili správu týmových členství v různých doménách Ubuntu, vytvořili jsme jednoduché mapování mezi názvy domén a jejich odpovídajícími týmy na Launchpadu:
+Pro zjednodušení správy členství v týmech napříč různými doménami Ubuntu jsme vytvořili jednoduché mapování mezi názvy domén a jejich odpovídajícími týmy Launchpadu:
 
 ```javascript
 ubuntuTeamMapping: {
@@ -239,39 +239,39 @@ ubuntuTeamMapping: {
 },
 ```
 
-Toto jednoduché mapování nám umožňuje automatizovat proces kontroly členství v týmu a poskytování e-mailových adres, což usnadňuje údržbu a rozšiřování systému při přidávání nových domén.
+Toto jednoduché mapování nám umožňuje automatizovat proces kontroly členství v týmu a přidělování e-mailových adres, což usnadňuje údržbu a rozšiřování systému s přidáváním nových domén.
 
 #### Zpracování chyb a oznámení {#error-handling-and-notifications}
 
-Implementovali jsme robustní systém zpracování chyb, který:
+Implementovali jsme robustní systém pro ošetřování chyb, který:
 
 1. Zaznamenává všechny chyby s podrobnými informacemi o uživateli.
 2. Odesílá e-maily týmu Ubuntu, když jsou zjištěny problémy.
 3. Upozorňuje administrátory, když se zaregistrují noví přispěvatelé a vytvoří se jim e-mailové adresy.
 4. Řeší okrajové případy, jako jsou uživatelé, kteří nepodepsali Kodex chování Ubuntu.
 
-To zajišťuje, že jakékoli problémy jsou rychle identifikovány a řešeny, přičemž je zachována integrita e-mailového systému.
+Díky tomu je zajištěna rychlá identifikace a řešení jakýchkoli problémů a zachování integrity e-mailového systému.
 
 ## Konfigurace DNS a směrování e-mailů {#dns-configuration-and-email-routing}
 
-Pro každou doménu spravovanou přes Forward Email přidal Canonical jednoduchý DNS TXT záznam pro ověření:
+Pro každou doménu spravovanou prostřednictvím služby Forward Email přidala společnost Canonical pro ověření jednoduchý DNS TXT záznam:
 
 ```sh
 ❯ dig ubuntu.com txt
 ubuntu.com.             600     IN      TXT     "forward-email-site-verification=6IsURgl2t7"
 ```
 
-Tento ověřovací záznam potvrzuje vlastnictví domény a umožňuje našemu systému bezpečně spravovat e-maily pro tyto domény. Canonical směruje poštu přes naši službu prostřednictvím Postfixu, který poskytuje spolehlivou a bezpečnou infrastrukturu pro doručování e-mailů.
+Tento ověřovací záznam potvrzuje vlastnictví domény a umožňuje našemu systému bezpečně spravovat e-maily pro tyto domény. Canonical směruje poštu prostřednictvím naší služby přes Postfix, který poskytuje spolehlivou a bezpečnou infrastrukturu pro doručování e-mailů.
 
 ## Výsledky: Zjednodušená správa e-mailů a vylepšené zabezpečení {#results-streamlined-email-management-and-enhanced-security}
 
-Implementace podnikového řešení Forward Email přinesla významné výhody pro správu e-mailů společnosti Canonical ve všech jejich doménách:
+Implementace podnikového řešení Forward Email přinesla společnosti Canonical významné výhody pro správu e-mailů ve všech jejích doménách:
 
 ### Provozní efektivita {#operational-efficiency}
 
 * **Centralizovaná správa**: Všechny domény související s Ubuntu jsou nyní spravovány prostřednictvím jednoho rozhraní
 * **Snížená administrativní režie**: Automatizované zřizování a samoobslužná správa pro přispěvatele
-* **Zjednodušený nástup**: Noví přispěvatelé mohou rychle získat své oficiální e-mailové adresy
+* **Zjednodušený onboarding**: Noví přispěvatelé mohou rychle získat své oficiální e-mailové adresy
 
 ### Vylepšené zabezpečení a soukromí {#enhanced-security-and-privacy}
 
@@ -281,23 +281,23 @@ Implementace podnikového řešení Forward Email přinesla významné výhody p
 * **Zpracování v paměti**: Neukládáme přeposílané e-maily na disk, což zvyšuje ochranu soukromí.
 * **Žádné ukládání metadat**: Na rozdíl od mnoha poskytovatelů e-mailů nevedeme záznamy o tom, kdo komu e-mailuje.
 
-### Úspory nákladů {#cost-savings}
+### Úspora nákladů {#cost-savings}
 
 * **Škálovatelný cenový model**: Žádné poplatky za uživatele, což umožňuje společnosti Canonical přidávat přispěvatele bez zvyšování nákladů
 * **Snížené nároky na infrastrukturu**: Není třeba udržovat samostatné e-mailové servery pro různé domény
 * **Nižší požadavky na podporu**: Samoobslužná správa snižuje počet požadavků na IT podporu
 
-### Vylepšený zážitek pro přispěvatele {#improved-contributor-experience}
+### Vylepšené prostředí pro přispěvatele {#improved-contributor-experience}
 
 * **Bezproblémové ověřování**: Jednotné přihlášení se stávajícími přihlašovacími údaji Ubuntu One
 * **Konzistentní branding**: Jednotné prostředí napříč všemi službami souvisejícími s Ubuntu
-* **Spolehlivé doručování e-mailů**: Vysoce kvalitní reputace IP adres zajišťuje, že e-maily dorazí do cíle
+* **Spolehlivé doručování e-mailů**: Vysoce kvalitní reputace IP adresy zajišťuje, že e-maily dorazí na místo určení
 
-Integrace s Forward Email výrazně zjednodušila proces správy emailů společnosti Canonical. Přispěvatelé mají nyní bezproblémovou správu svých e-mailových adres @ubuntu.com se sníženou administrativní režií a vylepšeným zabezpečením.
+Integrace s Forward Email výrazně zjednodušila proces správy e-mailů ve společnosti Canonical. Přispěvatelé nyní mohou bezproblémově spravovat své e-mailové adresy @ubuntu.com se sníženou administrativní režií a vyšším zabezpečením.
 
-## Těšíme se: Pokračování spolupráce {#looking-forward-continued-collaboration}
+## Těžký pohled: Pokračování spolupráce {#looking-forward-continued-collaboration}
 
-Partnerství mezi Canonical a Forward Email se nadále vyvíjí. Spolupracujeme na několika iniciativách:
+Partnerství mezi společnostmi Canonical a Forward Email se neustále vyvíjí. Spolupracujeme na několika iniciativách:
 
 * Rozšíření e-mailových služeb do dalších domén souvisejících s Ubuntu
 * Vylepšení uživatelského rozhraní na základě zpětné vazby od přispěvatelů
@@ -306,21 +306,21 @@ Partnerství mezi Canonical a Forward Email se nadále vyvíjí. Spolupracujeme 
 
 ## Závěr: Dokonalé partnerství s otevřeným zdrojovým kódem {#conclusion-a-perfect-open-source-partnership}
 
-Spolupráce mezi Canonical a Forward Email demonstruje sílu partnerství postavených na sdílených hodnotách. Volbou Forward Email jako poskytovatele e-mailových služeb společnost Canonical nalezla řešení, které nejen splňovalo jejich technické požadavky, ale také dokonale odpovídalo jejich závazku k softwaru s otevřeným zdrojovým kódem, soukromí a zabezpečení.
+Spolupráce mezi společnostmi Canonical a Forward Email demonstruje sílu partnerství založených na sdílených hodnotách. Výběrem společnosti Forward Email jako poskytovatele e-mailových služeb nalezla společnost Canonical řešení, které nejen splňovalo její technické požadavky, ale také dokonale odpovídalo jejímu závazku k softwaru s otevřeným zdrojovým kódem, ochraně soukromí a zabezpečení.
 
-Pro organizace spravující více domén a vyžadující bezproblémové ověřování se stávajícími systémy nabízí Forward Email flexibilní, bezpečné a na soukromí zaměřené řešení. Naše [open-source přístup](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) zajišťuje transparentnost a umožňuje příspěvky komunity, což z ní činí ideální volbu pro organizace, které si těchto principů cení.
+Pro organizace spravující více domén a vyžadující bezproblémové ověřování se stávajícími systémy nabízí Forward Email flexibilní, bezpečné a na soukromí zaměřené řešení. Náš [přístup s otevřeným zdrojovým kódem](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) zajišťuje transparentnost a umožňuje příspěvky komunity, což z něj činí ideální volbu pro organizace, které si těchto principů cení.
 
-Jak Canonical, tak Forward Email pokračují v inovacích ve svých příslušných oborech, toto partnerství je důkazem síly open source spolupráce a sdílených hodnot při vytváření efektivních řešení.
+Vzhledem k tomu, že společnosti Canonical i Forward Email neustále inovují ve svých oborech, toto partnerství svědčí o síle spolupráce v oblasti open-source technologií a sdílených hodnot při vytváření efektivních řešení.
 
-Aktuální stav doručování e-mailů si můžete prohlédnout na našich [stav služby v reálném čase](https://status.forwardemail.net). Průběžně monitorujeme naše IP adresy, abychom zajistili vysokou reputaci a doručitelnost e-mailů.
+Aktuální výkonnost doručování e-mailů si můžete prohlédnout v našem [stav služby v reálném čase](https://status.forwardemail.net). Průběžně monitorujeme, abychom zajistili vysokou reputaci IP adresy a doručitelnost e-mailů.
 
 ## Podpora podnikových klientů {#supporting-enterprise-clients}
 
-Zatímco tato případová studie se zaměřuje na naše partnerství se společností Canonical, Forward Email hrdě podporuje řadu podnikových klientů v různých odvětvích, kteří oceňují náš závazek k ochraně soukromí, bezpečnosti a principům open source.
+Ačkoli se tato případová studie zaměřuje na naše partnerství se společností Canonical, společnost Forward Email hrdě podporuje řadu podnikových klientů z různých odvětví, kteří si cení našeho závazku k ochraně soukromí, bezpečnosti a principům open source.
 
 Naše podniková řešení jsou přizpůsobena specifickým potřebám organizací všech velikostí a nabízejí:
 
-* Vlastní doména [správa emailů](/) napříč více doménami
+* Vlastní doména [správa e-mailů](/) napříč více doménami
 * Bezproblémová integrace se stávajícími ověřovacími systémy
 * Vyhrazený chatový kanál podpory Matrix
 * Vylepšené bezpečnostní funkce včetně [kvantově odolné šifrování](/blog/docs/best-quantum-safe-encrypted-email-service)
@@ -329,14 +329,14 @@ Naše podniková řešení jsou přizpůsobena specifickým potřebám organizac
 
 ### Kontaktujte nás {#get-in-touch}
 
-Pokud vaše organizace potřebuje podnikový e-mail nebo se chcete dozvědět více o tom, jak může Forward Email pomoci zefektivnit vaši správu e-mailů a zároveň zlepšit soukromí a zabezpečení, rádi bychom vás slyšeli:
+Pokud má vaše organizace potřeby v oblasti podnikového e-mailu nebo se chcete dozvědět více o tom, jak vám může Forward Email zefektivnit správu e-mailů a zároveň zvýšit soukromí a zabezpečení, rádi se s vámi spojíme:
 
 * Napište nám přímo na adresu `support@forwardemail.net`
-* Odešlete žádost o pomoc na našich [stránka nápovědy](https://forwardemail.net/help)
-* Podívejte se na naše [cenová stránka](https://forwardemail.net/pricing) pro firemní tarify
+* Odešlete žádost o pomoc na naši adresu [stránka nápovědy](https://forwardemail.net/help)
+* Podívejte se na naši adresu [ceník](https://forwardemail.net/pricing) pro firemní plány
 
-Náš tým je připraven prodiskutovat vaše specifické požadavky a vyvinout přizpůsobené řešení, které bude v souladu s hodnotami a technickými potřebami vaší organizace.
+Náš tým je připraven s vámi prodiskutovat vaše specifické požadavky a vyvinout řešení na míru, které bude odpovídat hodnotám a technickým potřebám vaší organizace.
 
-### O přeposílání e-mailu {#about-forward-email}
+### O přeposílaném e-mailu {#about-forward-email}
 
-Forward Email je e-mailová služba se 100% otevřeným zdrojovým kódem a zaměřením na soukromí. Nabízíme služby přesměrování e-mailů na vlastní domény, SMTP, IMAP a POP3 se zaměřením na bezpečnost, soukromí a transparentnost. Celá naše kódová základna je k dispozici na adrese [GitHub](https://github.com/forwardemail/forwardemail.net) a zavázali jsme se poskytovat e-mailové služby, které respektují soukromí a bezpečnost uživatelů. Zjistěte více o [proč je open-source e-mail budoucností](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [jak funguje naše přeposílání e-mailů](https://forwardemail.net/blog/docs/best-email-forwarding-service) a [náš přístup k ochraně soukromí e-mailů](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).
+Forward Email je e-mailová služba se 100% otevřeným zdrojovým kódem a zaměřením na soukromí. Nabízíme služby přesměrování e-mailů na vlastní domény, SMTP, IMAP a POP3 se zaměřením na bezpečnost, soukromí a transparentnost. Celá naše kódová základna je k dispozici na adrese [GitHub](https://github.com/forwardemail/forwardemail.net) a zavázali jsme se poskytovat e-mailové služby, které respektují soukromí a bezpečnost uživatelů. Zjistěte více o [Proč je open-source e-mail budoucností](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [jak funguje naše přeposílání e-mailů](https://forwardemail.net/blog/docs/best-email-forwarding-service) a [náš přístup k ochraně soukromí v e-mailech](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).

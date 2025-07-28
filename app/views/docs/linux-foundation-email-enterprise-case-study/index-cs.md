@@ -2,7 +2,7 @@
 
 <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_4__ Obsah {__CHRÁNĚNÁ_URL_5__
+## Obsah {#table-of-contents}
 
 * [Zavedení](#introduction)
 * [Výzva](#the-challenge)
@@ -11,33 +11,33 @@ __CHRÁNĚNÁ_URL_4__ Obsah {__CHRÁNĚNÁ_URL_5__
   * [Design zaměřený na soukromí](#privacy-focused-design)
   * [Zabezpečení na podnikové úrovni](#enterprise-grade-security)
   * [Podnikový model s pevnou cenou](#fixed-price-enterprise-model)
-  * [Rozhraní API pro vývojáře](#developer-friendly-api)
-* [Proces implementace](#implementation-process)
-* [Výsledky a výhody](#results-and-benefits)
-  * [Zlepšení účinnosti](#efficiency-improvements)
+  * [API přátelské k vývojářům](#developer-friendly-api)
+* [Implementační proces](#implementation-process)
+* [Výsledky a přínosy](#results-and-benefits)
+  * [Zlepšení efektivity](#efficiency-improvements)
   * [Řízení nákladů](#cost-management)
-  * [Vylepšené zabezpečení](#enhanced-security)
-  * [Vylepšená uživatelská zkušenost](#improved-user-experience)
+  * [Zvýšené zabezpečení](#enhanced-security)
+  * [Vylepšený uživatelský zážitek](#improved-user-experience)
 * [Závěr](#conclusion)
 * [Reference](#references)
 
-__CHRÁNĚNÁ_URL_6__ Úvod {__CHRÁNĚNÁ_URL_7__
+## Úvod {#introduction}
 
-Projekt [Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) spravuje přes 900 open-source projektů napříč více než 250 doménami, včetně [linux.com](https://www.linux.com/) a [jQuery.com](https://jquery.com/). Tato případová studie zkoumá, jak se projekt [Přeposlat e-mail](https://forwardemail.net) spojil s cílem zefektivnit správu e-mailů a zároveň zachovat soulad s principy open-source.
+Projekt [Linuxová nadace](https://en.wikipedia.org/wiki/Linux_Foundation) spravuje přes 900 open-source projektů ve více než 250 doménách, včetně [linux.com](https://www.linux.com/) a [jQuery.com](https://jquery.com/). Tato případová studie zkoumá, jak projekt [Přeposlat e-mail](https://forwardemail.net) navázal partnerství s projektem __PROTECTED_LINK_59__ s cílem zefektivnit správu e-mailů a zároveň zachovat soulad s principy open-source.
 
-__CHRÁNĚNÁ_URL_8__ Výzva {__CHRÁNĚNÁ_URL_9__
+## Výzva {#the-challenge}
 
-Linux Foundation čelila několika problémům se správou e-mailů:
+Nadace Linux Foundation čelila několika problémům se správou e-mailů:
 
-* **Rozsah**: Správa e-mailů ve více než 250 doménách s různými požadavky
+* **Rozsah**: Správa e-mailů napříč více než 250 doménami s různými požadavky
 * **Administrativní zátěž**: Konfigurace DNS záznamů, údržba pravidel pro přesměrování a reakce na žádosti o podporu
 * **Zabezpečení**: Ochrana před hrozbami z e-mailů při zachování soukromí
 * **Náklady**: Tradiční řešení pro každého uživatele byla ve svém rozsahu neúnosně drahá
 * **Zarovnání s open-source**: Potřeba řešení, která odpovídají jejich závazku k hodnotám open-source
 
-Podobně jako problémy, kterým čelila společnost [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) s jejími více distribučními doménami, potřebovala Linux Foundation řešení, které by dokázalo zvládat rozmanité projekty a zároveň zachovat jednotný přístup ke správě.
+Podobně jako u problémů, kterým čelil [Kanonický/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) s jeho více distribučními doménami, potřebovala Linux Foundation řešení, které by dokázalo zvládat rozmanité projekty a zároveň zachovat jednotný přístup ke správě.
 
-__CHRÁNĚNÁ_URL_10__ Řešení {__CHRÁNĚNÁ_URL_11__
+## Řešení {#the-solution}
 
 Forward Email poskytl komplexní řešení s klíčovými funkcemi:
 
@@ -53,15 +53,15 @@ graph TD
 
 ### 100% open-source architektura {#100-open-source-architecture}
 
-Jako jediná e-mailová služba s kompletně open-source platformou (frontend i backend) se Forward Email dokonale shodoval se závazkem Linux Foundation k principům open-source. Podobně jako u naší implementace s [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), tato transparentnost umožnila jejich technickému týmu ověřit implementace zabezpečení a dokonce přispět k vylepšením.
+Jako jediná e-mailová služba s kompletně open-source platformou (frontend i backend) se Forward Email dokonale shodoval se závazkem Linux Foundation k principům open-source. Podobně jako u naší implementace s [Kanonický/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), tato transparentnost umožnila jejich technickému týmu ověřit implementace zabezpečení a dokonce přispět k vylepšením.
 
 ### Design zaměřený na soukromí {#privacy-focused-design}
 
-Přísné [zásady ochrany osobních údajů](https://forwardemail.net/privacy) služby Forward Email poskytovalo zabezpečení, které Linux Foundation vyžadovala. Naše [technická implementace ochrany soukromí e-mailu](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) zajišťuje, že veškerá komunikace zůstává zabezpečená již od návrhu, bez protokolování nebo skenování obsahu e-mailů.
+Přísné nastavení [zásady ochrany osobních údajů](https://forwardemail.net/privacy) pro přeposílání e-mailů poskytovalo zabezpečení, které Linux Foundation vyžadovala. Naše nastavení [technická implementace ochrany soukromí e-mailů](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) zajišťuje, že veškerá komunikace zůstává zabezpečená již od návrhu, bez protokolování nebo skenování obsahu e-mailů.
 
-Jak je uvedeno v naší technické prováděcí dokumentaci:
+Jak je podrobně uvedeno v naší technické implementační dokumentaci:
 
-> „Celý náš systém jsme vybudovali na principu, že vaše e-maily patří vám a pouze vám. Na rozdíl od jiných poskytovatelů, kteří skenují obsah e-mailů za účelem reklamy nebo školení umělé inteligence, dodržujeme přísné zásady neukládání protokolů a skenování, které zachovávají důvěrnost veškeré komunikace.“
+> „Celý náš systém jsme vybudovali na principu, že vaše e-maily patří jen vám. Na rozdíl od jiných poskytovatelů, kteří skenují obsah e-mailů za účelem reklamy nebo školení umělé inteligence, dodržujeme přísné zásady neukládání protokolů a skenování, které zachovávají důvěrnost veškeré komunikace.“
 
 ### Zabezpečení na podnikové úrovni {#enterprise-grade-security}
 
@@ -69,15 +69,15 @@ Implementace [kvantově odolné šifrování](https://forwardemail.net/blog/docs
 
 ### Podnikový model s pevnou cenou {#fixed-price-enterprise-model}
 
-Služba Forward Email [podnikové ceny](https://forwardemail.net/pricing) poskytovala fixní měsíční poplatek bez ohledu na domény nebo uživatele. Tento přístup přinesl značné úspory nákladů i dalším velkým organizacím, jak ukazuje naše studie [případová studie e-mailu absolventů univerzity](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), kde instituce ušetřily až 99 % ve srovnání s tradičními e-mailovými řešeními pro jednotlivé uživatele.
+Řešení [ceny pro podniky](https://forwardemail.net/pricing) pro přeposílání e-mailů poskytovalo fixní měsíční náklady bez ohledu na domény nebo uživatele. Tento přístup přinesl značné úspory nákladů i dalším velkým organizacím, jak ukazuje náš příklad [případová studie e-mailů absolventů univerzity](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), kde instituce ušetřily až 99 % ve srovnání s tradičními e-mailovými řešeními pro jednotlivé uživatele.
 
 ### Rozhraní API vhodné pro vývojáře {#developer-friendly-api}
 
-V návaznosti na [README-první přístup](https://tom.preston-werner.com/2010/08/23/readme-driven-development) a inspirovaný [Design RESTful API Stripe](https://amberonrails.com/building-stripes-api), umožnil [API](https://forwardemail.net/api) od Forward Email hlubokou integraci s Projektovým řídicím centrem Linux Foundation. Tato integrace byla klíčová pro automatizaci správy e-mailů v rámci jejich rozmanitého projektového portfolia.
+V návaznosti na [Přístup „README first“](https://tom.preston-werner.com/2010/08/23/readme-driven-development) a inspirovaný [Návrh RESTful API ve Stripe](https://amberonrails.com/building-stripes-api), umožnil [API](https://forwardemail.net/api) od Forward Email hlubokou integraci s Projektovým řídicím centrem Linux Foundation. Tato integrace byla klíčová pro automatizaci správy e-mailů v rámci jejich rozmanitého portfolia projektů.
 
 ## Proces implementace {#implementation-process}
 
-Implementace probíhala strukturovaným přístupem:
+Implementace probíhala strukturovaným způsobem:
 
 ```mermaid
 flowchart LR
@@ -99,13 +99,13 @@ flowchart LR
 
 3. **Vývoj vlastních funkcí**: Správa více domén, reporting, bezpečnostní zásady
 
-Úzce jsme spolupracovali s Linux Foundation na vývoji funkcí (které jsou také 100% open-source, takže z nich může těžit každý) speciálně pro jejich multiprojektové prostředí, podobně jako jsme vytvářeli vlastní řešení pro [e-mailové systémy pro absolventy univerzit](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
+Úzce jsme spolupracovali s Linux Foundation na vývoji funkcí (které jsou také 100% open-source, takže z nich může těžit každý) speciálně pro jejich multiprojektové prostředí, podobně jako jsme vytvořili vlastní řešení pro [e-mailové systémy absolventů univerzit](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
 
 ## Výsledky a přínosy {#results-and-benefits}
 
 Implementace přinesla významné výhody:
 
-### Zvýšení efektivity {#efficiency-improvements}
+### Zlepšení efektivity {#efficiency-improvements}
 
 * Snížená administrativní režie
 * Rychlejší zavádění projektu (z několika dnů na minuty)
@@ -115,9 +115,9 @@ Implementace přinesla významné výhody:
 
 * Fixní ceny bez ohledu na růst počtu domén nebo uživatelů
 * Eliminace licenčních poplatků za uživatele
-* Podobně jako u našeho [univerzitní případová studie](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) dosáhla Linux Foundation značných úspor nákladů ve srovnání s tradičními řešeními
+* Podobně jako u našeho [případová studie univerzity](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) dosáhla Linux Foundation značných úspor nákladů ve srovnání s tradičními řešeními
 
-### Vylepšené zabezpečení {#enhanced-security}
+### Zvýšené zabezpečení {#enhanced-security}
 
 * Kvantově odolné šifrování napříč všemi doménami
 * Komplexní ověřování e-mailů zabraňující spoofingu a phishingu
@@ -132,11 +132,11 @@ Implementace přinesla významné výhody:
 
 ## Závěr {#conclusion}
 
-Partnerství Linux Foundation s Forward Email demonstruje, jak mohou organizace řešit složité výzvy správy e-mailů a zároveň zachovat soulad se svými základními hodnotami. Výběrem řešení, které upřednostňuje principy open source, soukromí a zabezpečení, Linux Foundation přeměnila správu e-mailů z administrativní zátěže na strategickou výhodu.
+Partnerství Linux Foundation se společností Forward Email ukazuje, jak mohou organizace řešit složité výzvy v oblasti správy e-mailů a zároveň zachovat soulad se svými základními hodnotami. Výběrem řešení, které upřednostňuje principy open source, soukromí a zabezpečení, Linux Foundation proměnila správu e-mailů z administrativní zátěže ve strategickou výhodu.
 
-Jak je vidět z naší práce s doménami [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) a [velké univerzity](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organizace s komplexními doménovými portfolii mohou dosáhnout významného zlepšení efektivity, zabezpečení a správy nákladů prostřednictvím podnikového řešení Forward Email.
+Jak je vidět z naší práce s doménami [Kanonický/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) i [hlavní univerzity](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organizace s komplexními portfolii domén mohou dosáhnout významného zlepšení efektivity, zabezpečení a správy nákladů prostřednictvím podnikového řešení Forward Email.
 
-Další informace o tom, jak vám služba Forward Email může pomoci s správou e-mailů ve vaší organizaci napříč více doménami, naleznete na adrese [forwardemail.net](https://forwardemail.net) nebo si prohlédněte naše podrobné [dokumentace](https://forwardemail.net/email-api) a [průvodci](https://forwardemail.net/guides).
+Další informace o tom, jak vám může přeposílání e-mailů pomoci ve vaší organizaci spravovat e-maily napříč více doménami, naleznete na stránce [forwardemail.net](https://forwardemail.net) nebo si prohlédněte naše podrobné informace o [dokumentace](https://forwardemail.net/email-api) a [průvodci](https://forwardemail.net/guides).
 
 ## Odkazy {#references}
 

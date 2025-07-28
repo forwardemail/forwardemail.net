@@ -7,7 +7,7 @@
 
 ## التثبيت والمتطلبات {#install-and-requirements}
 
-سوف تحتاج إلى تثبيت `nodemailer` تبعية npm:
+سوف تحتاج إلى تثبيت تبعية `nodemailer` لـ npm:
 
 ```sh
 npm install nodemailer
@@ -15,7 +15,7 @@ npm install nodemailer
 
 ## كود المصدر والمثال {#source-code-and-example}
 
-يستخدم هذا المثال مكتبة **[نوداميلر](https://github.com/nodemailer/nodemailer)** والراعي الرسمي لها **[إعادة توجيه البريد الإلكتروني](https://forwardemail.net)** لإرسال البريد الصادر ومعاينته.
+يستخدم هذا المثال مكتبة **[مُرسِل البريد العقدي](https://github.com/nodemailer/nodemailer)** والراعي الرسمي لها **[إعادة توجيه البريد الإلكتروني](https://forwardemail.net)** لإرسال البريد الصادر ومعاينته.
 
 سوف تحتاج إلى <strong class="text-success"><i class="fa fa-key"></i> إنشاء كلمة مرور</strong> لإرسال بريد صادر - يرجى اتباع **[إرسال بريد إلكتروني باستخدام دليل SMTP للنطاق المخصص](/guides/send-email-with-custom-domain-smtp)**.
 
@@ -51,6 +51,6 @@ await transporter.sendMail({
 node app
 ```
 
-يمكنك الآن الانتقال إلى **[حسابي → رسائل البريد الإلكتروني](/my-account/emails)** للاطلاع على حالة تسليم البريد الإلكتروني في الوقت الفعلي، وسجلات إمكانية تسليم البريد الإلكتروني، ومعاينات HTML/النص العادي/المرفقات.
+يمكنك الآن الانتقال إلى **[حسابي → رسائل البريد الإلكتروني](/my-account/emails)** لرؤية حالة تسليم البريد الإلكتروني في الوقت الفعلي، وسجلات إمكانية تسليم البريد الإلكتروني، ومعاينات HTML/النص العادي/المرفق.
 
-> ملاحظة: :tada: يمكنك أيضًا **[معاينة رسائل البريد الإلكتروني في المتصفحات ومحاكي iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** و**[إنشاء قوالب البريد الإلكتروني باستخدام Node.js](/docs/send-emails-with-node-js-javascript)**.
+> ملاحظة: :tada: يمكنك أيضًا استخدام **[معاينة رسائل البريد الإلكتروني في المتصفحات ومحاكي iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** و**[إنشاء قوالب البريد الإلكتروني باستخدام Node.js](/docs/send-emails-with-node-js-javascript)**.

@@ -29,9 +29,9 @@ Se você é um membro da imprensa, jornalista ou representante da mídia e gosta
 
 ## Cores {#colors}
 
-* **Azul:** __CÓDIGO_INLINE_PROTEGIDO_1__ <span style="vertical-align:middle;display:inline-block;padding:10px;background:__URL_PROTEGIDO_13__
-* **Ciano:** __CÓDIGO_INLINE_PROTEGIDO_2__ <span style="vertical-align:middle;display:inline-block;padding:10px;background:__URL_PROTEGIDO_14__
-* **Verde:** __CÓDIGO_INLINE_PROTEGIDO_3__ <span style="vertical-align:middle;display:inline-block;padding:10px;background:__URL_PROTEGIDO_15__
+* **Azul:** RESERVATÓRIO_TEMPORÁRIO_0 <span style="vertical-align:middle;display:inline-block;padding:10px;background:RESERVATÓRIO_TEMPORÁRIO_1
+* **Ciano:** RESERVATÓRIO_TEMPORÁRIO_2 <span style="vertical-align:middle;display:inline-block;padding:10px;background:RESERVATÓRIO_TEMPORÁRIO_3
+* **Verde:** RESERVATÓRIO_TEMPORÁRIO_4 <span style="vertical-align:middle;display:inline-block;padding:10px;background:RESERVATÓRIO_TEMPORÁRIO_5
 
 ## Logotipos {#logos}
 

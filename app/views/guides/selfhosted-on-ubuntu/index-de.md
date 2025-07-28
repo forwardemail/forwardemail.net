@@ -41,7 +41,7 @@
 
 ## Übersicht {#overview}
 
-Diese Anleitung enthält Schritt-für-Schritt-Anweisungen zur Installation der selbstgehosteten Lösung von Forward Email auf Ubuntu-Systemen. Sie ist speziell auf die Ubuntu-LTS-Versionen 20.04, 22.04 und 24.04 zugeschnitten.
+Diese Anleitung enthält Schritt-für-Schritt-Anweisungen zur Installation der selbstgehosteten Lösung von Forward Email auf Ubuntu-Systemen. Sie ist speziell auf die LTS-Versionen Ubuntu 20.04, 22.04 und 24.04 zugeschnitten.
 
 ## Voraussetzungen {#prerequisites}
 
@@ -306,7 +306,7 @@ update_env_file "AUTH_BASIC_ENABLED" "true"
 
 ### Schritt 11: SSL-Zertifikate generieren {#step-11-generate-ssl-certificates}
 
-#### Option A: Manuelle DNS-Challenge (für die meisten Benutzer empfohlen) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Option A: Manuelle DNS-Herausforderung (für die meisten Benutzer empfohlen) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -479,7 +479,7 @@ Sie müssen die folgenden DNS-Einträge für Ihre Domäne konfigurieren:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### A-Datensätze {#a-records}
+#### A Datensätze {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -526,7 +526,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 3. Schließen Sie den Einrichtungsassistenten ab.
 4. Erstellen Sie Ihr erstes E-Mail-Konto.
 
-## Backup-Konfiguration {#backup-configuration}
+## Sicherungskonfiguration {#backup-configuration}
 
 ### S3-kompatibles Backup einrichten {#set-up-s3-compatible-backup}
 
@@ -601,7 +601,7 @@ crontab -l
 2. **Dienststatus prüfen**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Protokolle prüfen**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Systempakete aktualisieren**: `apt update && apt upgrade`
-5. **Zertifikate erneuern**: Zertifikate werden automatisch erneuert, das Ablaufdatum wird jedoch überwacht.
+5. **Zertifikate erneuern**: Zertifikate werden automatisch erneuert, aber das Ablaufdatum wird überwacht.
 
 ### Zertifikatserneuerung {#certificate-renewal}
 
@@ -644,7 +644,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * Überprüfen Sie die SPF-, DKIM- und DMARC-Einträge.
 * Stellen Sie sicher, dass Port 25 nicht von Ihrem Hosting-Anbieter blockiert wird.
 
-#### 4. Web-Schnittstelle nicht zugänglich {#4-web-interface-not-accessible}
+#### 4. Auf die Weboberfläche kann nicht zugegriffen werden {#4-web-interface-not-accessible}
 
 * Firewall-Einstellungen prüfen: `ufw status`
 * SSL-Zertifikate verifizieren: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
@@ -654,9 +654,9 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * **Dokumentation**: <https://forwardemail.net/self-hosted>
 * **GitHub-Probleme**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Community-Support**: Sehen Sie sich die GitHub-Diskussionen des Projekts an.
+* **Community-Support**: Siehe die GitHub-Diskussionen des Projekts.
 
-## Bewährte Sicherheitspraktiken {#security-best-practices}
+## Best Practices für die Sicherheit {#security-best-practices}
 
 1. **System aktuell halten**: Ubuntu und Pakete regelmäßig aktualisieren.
 2. **Protokolle überwachen**: Protokollüberwachung und Warnmeldungen einrichten.

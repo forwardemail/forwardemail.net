@@ -28,7 +28,7 @@ Het is belangrijk om te weten dat de onderstaande bedrijven niet in een bepaalde
 
 ## Aanbevolen beveiligingsauditbedrijven {#recommended-security-audit-companies}
 
-### Cure53 {#cure53}
+### Genezing53 {#cure53}
 
 **Locatie**: Berlijn, Duitsland
 **Website**: <https://cure53.de/>
@@ -36,7 +36,7 @@ Het is belangrijk om te weten dat de onderstaande bedrijven niet in een bepaalde
 
 Cure53 is een Duits cybersecuritybedrijf dat bekend staat om zijn nauwgezette aanpak van beveiligingstests en penetratietests voor webapplicaties. Gevestigd in Berlijn, heeft het bedrijf zich gevestigd als leider in de branche dankzij zijn uitgebreide testmethodologieën en gedetailleerde rapportagepraktijken.
 
-Het bedrijf heeft een indrukwekkend portfolio opgebouwd van beveiligingsbeoordelingen voor gerenommeerde klanten en open-sourceprojecten. Hun werk getuigt van een diepgaand begrip van moderne webtechnologieën, cryptografische implementaties en infrastructuurbeveiliging. De rapporten van Cure53 vallen vooral op door hun technische diepgang en bruikbare aanbevelingen.
+Het bedrijf heeft een indrukwekkend portfolio opgebouwd van beveiligingsbeoordelingen voor vooraanstaande klanten en open-sourceprojecten. Hun werk getuigt van een diepgaand begrip van moderne webtechnologieën, cryptografische implementaties en infrastructuurbeveiliging. De rapporten van Cure53 vallen vooral op door hun technische diepgang en bruikbare aanbevelingen.
 
 **Opmerkelijke publicaties en rapporten**:
 
@@ -60,7 +60,7 @@ Dankzij hun non-profitmodel kunnen ze zich puur richten op beveiligingsresultate
 * [Tauri Programma Veiligheidsbeoordeling 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluatie van platformonafhankelijk applicatieframework
 * [Mullvad VPN-beveiligingsbeoordeling 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Beveiligingsanalyse van VPN-service
 
-### Verzekerde AB {#assured-ab}
+### Gegarandeerde AB {#assured-ab}
 
 **Locatie**: Göteborg, Zweden
 **Website**: <https://www.assured.se/>
@@ -76,7 +76,7 @@ De aanpak van het bedrijf legt de nadruk op grondige technische analyse in combi
 * [Mullvad API-beveiligingsaudit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Evaluatie van de API-beveiliging
 * [Mullvad DNS-serverbeveiligingsaudit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Beoordeling van de DNS-infrastructuur
 
-### Spoor van Bits {#trail-of-bits}
+### Trail of Bits {#trail-of-bits}
 
 **Locatie**: New York, New York, Verenigde Staten
 **Website**: <https://www.trailofbits.com/>

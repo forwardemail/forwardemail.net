@@ -1,1 +1,1 @@
-<https://github.com/scintill/macos-server-apns-certs/tree/master> adresine bakın
+<https://github.com/scintill/macos-server-apns-certs/tree/master>'a bakın

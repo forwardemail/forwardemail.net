@@ -11,7 +11,7 @@
 * [Bezpieczeństwo poczty e-mail](#email-security)
   * [Szyfrowanie](#encryption)
   * [Uwierzytelnianie i autoryzacja](#authentication-and-authorization)
-  * [Środki antyprzemocowe](#anti-abuse-measures)
+  * [Środki przeciwdziałania nadużyciom](#anti-abuse-measures)
 * [Ochrona danych](#data-protection)
   * [Minimalizacja danych](#data-minimization)
   * [Kopie zapasowe i odzyskiwanie](#backup-and-recovery)
@@ -21,7 +21,7 @@
   * [Zgodność](#compliance)
 * [Reagowanie na incydenty](#incident-response)
 * [Cykl rozwoju zabezpieczeń](#security-development-lifecycle)
-* [Utwardzanie serwera](#server-hardening)
+* [Wzmocnienie serwera](#server-hardening)
 * [Umowa o poziomie usług](#service-level-agreement)
 * [Bezpieczeństwo Open Source](#open-source-security)
 * [Bezpieczeństwo pracowników](#employee-security)
@@ -30,60 +30,60 @@
 
 ## Przedmowa {#foreword}
 
-W Forward Email bezpieczeństwo jest naszym najwyższym priorytetem. Wdrożyliśmy kompleksowe środki bezpieczeństwa, aby chronić Twoją komunikację e-mailową i dane osobowe. Niniejszy dokument opisuje nasze praktyki bezpieczeństwa i kroki, które podejmujemy, aby zapewnić poufność, integralność i dostępność Twojej poczty e-mail.
+W Forward Email bezpieczeństwo jest naszym najwyższym priorytetem. Wdrożyliśmy kompleksowe środki bezpieczeństwa, aby chronić Twoją komunikację e-mailową i dane osobowe. Niniejszy dokument opisuje nasze praktyki bezpieczeństwa oraz kroki, które podejmujemy w celu zapewnienia poufności, integralności i dostępności Twojej poczty e-mail.
 
 ## Bezpieczeństwo infrastruktury {#infrastructure-security}
 
 ### Bezpieczne centra danych {#secure-data-centers}
 
-Nasza infrastruktura jest hostowana w centrach danych zgodnych ze standardem SOC 2, wyposażonych w:
+Nasza infrastruktura jest hostowana w centrach danych zgodnych ze standardem SOC 2, które posiadają:
 
-* Całodobowa ochrona fizyczna i nadzór
+* Całodobowa ochrona fizyczna i monitoring
 * Biometryczna kontrola dostępu
-* Nadmiarowe systemy zasilania
+* Redundantne systemy zasilania
 * Zaawansowane wykrywanie i gaszenie pożaru
-* Monitorowanie środowiska
+* Monitoring środowiska
 
 ### Bezpieczeństwo sieci {#network-security}
 
 Wdrażamy wielowarstwowe zabezpieczenia sieciowe:
 
-* Zapory klasy korporacyjnej ze ścisłymi listami kontroli dostępu
-* Ochrona i łagodzenie ataków DDoS
-* Regularne skanowanie luk w sieci
+* Zapory sieciowe klasy korporacyjnej ze ścisłymi listami kontroli dostępu
+* Ochrona przed atakami DDoS i ich łagodzenie
+* Regularne skanowanie sieci w poszukiwaniu luk w zabezpieczeniach
 * Systemy wykrywania i zapobiegania włamaniom
 * Szyfrowanie ruchu między wszystkimi punktami końcowymi usługi
-* Ochrona skanowania portów z automatycznym blokowaniem podejrzanej aktywności
+* Ochrona poprzez skanowanie portów z automatycznym blokowaniem podejrzanej aktywności
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Wszystkie przesyłane dane są szyfrowane przy użyciu protokołu TLS 1.2+ z wykorzystaniem nowoczesnych szyfrów.
 
 ## Bezpieczeństwo poczty e-mail {#email-security}
 
 ### Szyfrowanie {#encryption}
 
-* **Transport Layer Security (TLS)**: Cały ruch e-mail jest szyfrowany w trakcie przesyłania przy użyciu protokołu TLS 1.2 lub nowszego
-* **Szyfrowanie typu end-to-end**: Obsługa standardów OpenPGP/MIME i S/MIME
-* **Szyfrowanie pamięci masowej**: Wszystkie przechowywane wiadomości e-mail są szyfrowane w stanie spoczynku przy użyciu szyfrowania ChaCha20-Poly1305 w plikach SQLite
-* **Pełne szyfrowanie dysku**: Szyfrowanie LUKS v2 dla całego dysku
-* **Kompleksowa ochrona**: Wdrażamy szyfrowanie w stanie spoczynku, szyfrowanie w pamięci i szyfrowanie w trakcie przesyłania
+* **Transport Layer Security (TLS)**: Cały ruch e-mail jest szyfrowany w trakcie przesyłania przy użyciu protokołu TLS 1.2 lub nowszego.
+* **Szyfrowanie typu end-to-end**: Obsługa standardów OpenPGP/MIME i S/MIME.
+* **Szyfrowanie pamięci masowej**: Wszystkie przechowywane wiadomości e-mail są szyfrowane w stanie spoczynku przy użyciu szyfrowania ChaCha20-Poly1305 w plikach SQLite.
+* **Pełne szyfrowanie dysku**: Szyfrowanie LUKS v2 dla całego dysku.
+* **Kompleksowa ochrona**: Wdrażamy szyfrowanie w stanie spoczynku, szyfrowanie w pamięci i szyfrowanie w trakcie przesyłania.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Jesteśmy pierwszą i jedyną na świecie usługą poczty e-mail korzystającą z **[skrzynki pocztowe SQLite odporne na ataki kwantowe i indywidualnie szyfrowane](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Uwierzytelnianie i autoryzacja {#authentication-and-authorization}
 
 * **Podpisywanie DKIM**: Wszystkie wiadomości wychodzące są podpisywane za pomocą DKIM
-* **SPF i DMARC**: Pełne wsparcie dla SPF i DMARC w celu zapobiegania podszywaniu się pod e-mail
+* **SPF i DMARC**: Pełne wsparcie dla SPF i DMARC w celu zapobiegania podszywaniu się pod adres e-mail
 * **MTA-STS**: Wsparcie dla MTA-STS w celu wymuszenia szyfrowania TLS
-* **Uwierzytelnianie wieloskładnikowe**: Dostępne dla wszystkich dostępów do kont
+* **Uwierzytelnianie wieloskładnikowe**: Dostępne dla wszystkich kont
 
 ### Środki przeciwdziałania nadużyciom {#anti-abuse-measures}
 
 * **Filtrowanie spamu**: Wielowarstwowe wykrywanie spamu z wykorzystaniem uczenia maszynowego
 * **Skanowanie w poszukiwaniu wirusów**: Skanowanie wszystkich załączników w czasie rzeczywistym
-* **Ograniczanie szybkości**: Ochrona przed atakami siłowymi i wyliczeniowymi
-* **Reputacja IP**: Monitorowanie reputacji wysyłania IP
+* **Ograniczanie przepustowości**: Ochrona przed atakami siłowymi i enumeracyjnymi
+* **Reputacja IP**: Monitorowanie reputacji wysyłającego adresu IP
 * **Filtrowanie treści**: Wykrywanie złośliwych adresów URL i prób phishingu
 
 ## Ochrona danych {#data-protection}
@@ -92,20 +92,20 @@ Wdrażamy wielowarstwowe zabezpieczenia sieciowe:
 
 Kierujemy się zasadą minimalizacji danych:
 
-* Gromadzimy tylko dane niezbędne do świadczenia naszych usług
-* Treść wiadomości e-mail jest przetwarzana w pamięci i nie jest trwale przechowywana, chyba że jest to wymagane do dostarczenia za pośrednictwem protokołu IMAP/POP3
-* Dzienniki są anonimizowane i przechowywane tylko tak długo, jak jest to konieczne
+* Gromadzimy tylko dane niezbędne do świadczenia naszych usług.
+* Treść wiadomości e-mail jest przetwarzana w pamięci i nie jest trwale przechowywana, chyba że jest to wymagane do dostarczenia wiadomości IMAP/POP3.
+* Logi są anonimizowane i przechowywane tylko tak długo, jak to konieczne.
 
 ### Kopia zapasowa i odzyskiwanie {#backup-and-recovery}
 
-* Zautomatyzowane codzienne kopie zapasowe z szyfrowaniem
+* Automatyczne codzienne kopie zapasowe z szyfrowaniem
 * Geograficznie rozproszone przechowywanie kopii zapasowych
 * Regularne testowanie przywracania kopii zapasowych
-* Procedury odzyskiwania po awarii z określonymi RPO i RTO
+* Procedury odzyskiwania po awarii z określonymi wartościami RPO i RTO
 
 ## Dostawcy usług {#service-providers}
 
-Starannie wybieramy naszych dostawców usług, aby mieć pewność, że spełniają nasze wysokie standardy bezpieczeństwa. Poniżej wymieniono dostawców, z których korzystamy w zakresie międzynarodowego transferu danych, oraz ich status zgodności z GDPR:
+Starannie dobieramy naszych dostawców usług, aby zapewnić im zgodność z naszymi wysokimi standardami bezpieczeństwa. Poniżej przedstawiamy dostawców, z których korzystamy w zakresie międzynarodowego transferu danych, oraz ich status zgodności z RODO:
 
 | Dostawca | Zamiar | Certyfikowany DPF | Strona zgodności z RODO |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
@@ -116,13 +116,13 @@ Starannie wybieramy naszych dostawców usług, aby mieć pewność, że spełnia
 | [Stripe](https://stripe.com) | Przetwarzanie płatności | ✅ Tak | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Przetwarzanie płatności | ❌ Nie | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Korzystamy z tych dostawców, aby zapewnić niezawodne, bezpieczne świadczenie usług przy jednoczesnym zachowaniu zgodności z międzynarodowymi przepisami o ochronie danych. Wszystkie transfery danych są przeprowadzane z odpowiednimi zabezpieczeniami w celu ochrony Twoich danych osobowych.
+Korzystamy z usług tych dostawców, aby zapewnić niezawodne i bezpieczne świadczenie usług, zachowując jednocześnie zgodność z międzynarodowymi przepisami o ochronie danych. Wszystkie transfery danych odbywają się z zachowaniem odpowiednich zabezpieczeń w celu ochrony Twoich danych osobowych.
 
 ## Zgodność i audyt {#compliance-and-auditing}
 
 ### Regularne oceny bezpieczeństwa {#regular-security-assessments}
 
-Nasz zespół regularnie monitoruje, przegląda i ocenia bazę kodu, serwery, infrastrukturę i praktyki. Wdrażamy kompleksowy program bezpieczeństwa, który obejmuje:
+Nasz zespół regularnie monitoruje, weryfikuje i ocenia bazę kodu, serwery, infrastrukturę i procedury. Wdrażamy kompleksowy program bezpieczeństwa, który obejmuje:
 
 * Regularna rotacja kluczy SSH
 * Ciągły monitoring logów dostępu
@@ -132,7 +132,7 @@ Nasz zespół regularnie monitoruje, przegląda i ocenia bazę kodu, serwery, in
 
 ### Zgodność {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr) praktyki przetwarzania danych zgodne z przepisami
+* Praktyki przetwarzania danych zgodne z [GDPR](https://forwardemail.net/gdpr)
 * [Umowa o przetwarzaniu danych (DPA)](https://forwardemail.net/dpa) dostępne dla klientów biznesowych
 * Kontrola prywatności zgodna z CCPA
 * Procesy audytowane zgodnie z SOC 2 typu II
@@ -141,15 +141,15 @@ Nasz zespół regularnie monitoruje, przegląda i ocenia bazę kodu, serwery, in
 
 Nasz plan reagowania na incydenty bezpieczeństwa obejmuje:
 
-1. **Wykrywanie**: Zautomatyzowane systemy monitorowania i ostrzegania
-2. **Ograniczanie**: Natychmiastowa izolacja dotkniętych systemów
-3. **Eradykacja**: Usunięcie zagrożenia i analiza przyczyny źródłowej
+1. **Wykrywanie**: Zautomatyzowane systemy monitorowania i alarmowania
+2. **Ograniczanie**: Natychmiastowa izolacja zagrożonych systemów
+3. **Eradykacja**: Usunięcie zagrożenia i analiza przyczyn źródłowych
 4. **Odzyskiwanie**: Bezpieczne przywracanie usług
-5. **Powiadomienie**: Terminowa komunikacja z dotkniętymi użytkownikami
-6. **Analiza poincydencie**: Kompleksowy przegląd i udoskonalenie
+5. **Powiadomienie**: Terminowa komunikacja z zagrożonymi użytkownikami
+6. **Analiza poincydentalna**: Kompleksowy przegląd i udoskonalenie
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Jeśli odkryjesz lukę w zabezpieczeniach, zgłoś ją natychmiast na adres <security@forwardemail.net>.
 
 ## Cykl rozwoju zabezpieczeń {#security-development-lifecycle}
 
@@ -181,57 +181,57 @@ Cały kod przechodzi:
 
 Nasz [Konfiguracja Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) wdraża liczne środki wzmacniające serwer:
 
-* **Dostęp USB wyłączony**: Porty fizyczne są wyłączane przez umieszczenie modułu jądra usb-storage na czarnej liście
-* **Zasady zapory**: Surowe reguły iptables zezwalające tylko na niezbędne połączenia
-* **Utrwalanie SSH**: Tylko uwierzytelnianie oparte na kluczach, brak logowania hasłem, logowanie root wyłączone
-* **Izolacja usługi**: Każda usługa działa z minimalnymi wymaganymi uprawnieniami
-* **Automatyczne aktualizacje**: Poprawki bezpieczeństwa są stosowane automatycznie
-* **Bezpieczny rozruch**: Zweryfikowany proces rozruchu w celu zapobiegania manipulacjom
-* **Utrwalanie jądra**: Bezpieczne parametry jądra i konfiguracje sysctl
-* **Ograniczenia systemu plików**: Opcje montowania noexec, nosuid i nodev, jeśli są odpowiednie
-* **Wyłączone zrzuty pamięci**: System skonfigurowany w celu zapobiegania zrzutom pamięci ze względów bezpieczeństwa
-* **Wyłączona wymiana**: Wyłączona pamięć wymiany w celu zapobiegania wyciekom danych
-* **Ochrona skanowania portów**: Automatyczne wykrywanie i blokowanie prób skanowania portów
-* **Przezroczysty Ogromne strony wyłączone**: THP wyłączone w celu poprawy wydajności i bezpieczeństwa
-* **Utwardzanie usług systemowych**: Usługi nieistotne, takie jak Apport wyłączone
-* **Zarządzanie użytkownikami**: Zasada najmniejszych uprawnień z oddzielnymi użytkownikami wdrażania i devops
-* **Limit deskryptora pliku**: Zwiększone limity w celu poprawy wydajności i bezpieczeństwa
+* **Dostęp USB wyłączony**: Porty fizyczne są wyłączane poprzez umieszczenie modułu jądra USB-storage na czarnej liście.
+* **Reguły zapory sieciowej**: Surowe reguły iptables zezwalające tylko na niezbędne połączenia.
+* **Wzmocnienie SSH**: Tylko uwierzytelnianie oparte na kluczu, brak logowania hasłem, logowanie root wyłączone.
+* **Izolacja usług**: Każda usługa działa z minimalnymi wymaganymi uprawnieniami.
+* **Automatyczne aktualizacje**: Poprawki bezpieczeństwa są stosowane automatycznie.
+* **Bezpieczny rozruch**: Zweryfikowany proces rozruchu w celu zapobiegania manipulacjom.
+* **Wzmocnienie jądra**: Bezpieczne parametry jądra i konfiguracje sysctl.
+* **Ograniczenia systemu plików**: Opcje montowania noexec, nosuid i nodev, jeśli dotyczy.
+* **Wyłączone zrzuty pamięci**: System skonfigurowany w celu zapobiegania zrzutom pamięci ze względów bezpieczeństwa.
+* **Wyłączona pamięć wymiany**: Wyłączona pamięć wymiany, aby zapobiec wyciekowi danych.
+* **Ochrona przed skanowaniem portów**: Automatyczne wykrywanie i blokowanie prób skanowania portów.
+* **Przezroczysty Duże strony wyłączone**: THP wyłączone dla poprawy wydajności i bezpieczeństwa
+* **Wzmocnienie usług systemowych**: Usługi nieistotne, takie jak Apport, wyłączone
+* **Zarządzanie użytkownikami**: Zasada najmniejszych uprawnień z oddzielnymi użytkownikami wdrożeniowymi i DevOps
+* **Limit deskryptorów plików**: Zwiększone limity dla lepszej wydajności i bezpieczeństwa
 
 ## Umowa o poziomie usług {#service-level-agreement}
 
-Utrzymujemy wysoki poziom dostępności i niezawodności usług. Nasza infrastruktura jest zaprojektowana pod kątem redundancji i tolerancji błędów, aby zapewnić, że Twoja usługa poczty e-mail pozostanie operacyjna. Chociaż nie publikujemy formalnego dokumentu SLA, zobowiązujemy się do:
+Utrzymujemy wysoki poziom dostępności i niezawodności usług. Nasza infrastruktura jest zaprojektowana z myślą o redundancji i odporności na błędy, aby zapewnić ciągłość działania Twojej usługi poczty elektronicznej. Chociaż nie publikujemy formalnego dokumentu SLA, zobowiązujemy się do:
 
-* 99,9%+ czasu sprawności wszystkich usług
+* 99,9%+ dostępności wszystkich usług
 * Szybka reakcja na zakłócenia w świadczeniu usług
-* Przejrzysta komunikacja w trakcie incydentów
+* Przejrzysta komunikacja w przypadku awarii
 * Regularna konserwacja w okresach niskiego ruchu
 
 ## Bezpieczeństwo Open Source {#open-source-security}
 
-Jako [usługa typu open source](https://github.com/forwardemail/forwardemail.net) nasze bezpieczeństwo jest zapewnione dzięki:
+Jako [usługa typu open source](https://github.com/forwardemail/forwardemail.net) nasze bezpieczeństwo korzystają z następujących korzyści:
 
 * Przejrzysty kod, który może być audytowany przez każdego
 * Ulepszenia bezpieczeństwa wprowadzane przez społeczność
 * Szybka identyfikacja i łatanie luk
-* Brak bezpieczeństwa poprzez niejasność
+* Brak konieczności zabezpieczania się poprzez ukrywanie
 
 ## Bezpieczeństwo pracowników {#employee-security}
 
-* Kontrole przeszłości wszystkich pracowników
-* Szkolenia w zakresie świadomości bezpieczeństwa
+* Weryfikacja przeszłości wszystkich pracowników
+* Szkolenia z zakresu bezpieczeństwa
 * Zasada dostępu z najmniejszymi uprawnieniami
-* Regularne szkolenia w zakresie bezpieczeństwa
+* Regularne szkolenia z zakresu bezpieczeństwa
 
 ## Ciągłe doskonalenie {#continuous-improvement}
 
-Ciągle udoskonalamy nasze standardy bezpieczeństwa poprzez:
+Ciągle udoskonalamy naszą postawę w zakresie bezpieczeństwa poprzez:
 
 * Monitorowanie trendów bezpieczeństwa i pojawiających się zagrożeń
-* Regularny przegląd i aktualizacje zasad bezpieczeństwa
-* Opinie od badaczy bezpieczeństwa i użytkowników
-* Udział w społeczności bezpieczeństwa
+* Regularny przegląd i aktualizacja polityk bezpieczeństwa
+* Informacje zwrotne od badaczy bezpieczeństwa i użytkowników
+* Udział w społeczności zajmującej się bezpieczeństwem
 
-Aby uzyskać więcej informacji na temat naszych praktyk bezpieczeństwa lub zgłosić obawy dotyczące bezpieczeństwa, skontaktuj się z nami pod adresem <security@forwardemail.net>.
+Aby uzyskać więcej informacji na temat naszych praktyk bezpieczeństwa lub zgłosić kwestie związane z bezpieczeństwem, skontaktuj się z nami pod adresem <security@forwardemail.net>.
 
 ## Dodatkowe zasoby {#additional-resources}
 

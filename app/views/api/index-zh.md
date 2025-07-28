@@ -53,7 +53,7 @@
   * [验证域 SMTP 记录](#verify-domain-smtp-records)
   * [列出全域通用密码](#list-domain-wide-catch-all-passwords)
   * [创建域范围的万能密码](#create-domain-wide-catch-all-password)
-  * [删除域范围内的万能密码](#remove-domain-wide-catch-all-password)
+  * [删除全域通用密码](#remove-domain-wide-catch-all-password)
   * [更新域](#update-domain)
   * [删除域名](#delete-domain)
 * [邀请](#invites)
@@ -75,7 +75,7 @@
 
 ## 库 {#libraries}
 
-目前我们尚未发布任何 API 封装器，但计划在不久的将来发布。如果您希望在特定编程语言的 API 封装器发布时收到通知，请发送电子邮件至 <api@forwardemail.net>。目前，您可以在应用中使用这些推荐的 HTTP 请求库，或者像以下示例一样直接使用 [卷曲](https://stackoverflow.com/a/27442239/3586413)。
+目前我们尚未发布任何 API 包装器，但计划在不久的将来发布。如果您希望在特定编程语言的 API 包装器发布时收到通知，请发送电子邮件至 <api@forwardemail.net>。目前，您可以在应用程序中使用这些推荐的 HTTP 请求库，或者像以下示例一样直接使用 [卷曲](https://stackoverflow.com/a/27442239/3586413)。
 
 | 语言 | 图书馆 |
 | ---------- | ---------------------------------------------------------------------- |
@@ -94,7 +94,7 @@
 
 ## 身份验证 {#authentication}
 
-所有端点都要求将 [API 密钥](https://forwardemail.net/my-account/security) 设置为请求的 [基本授权](https://en.wikipedia.org/wiki/Basic_access_authentication) 标头的“用户名”值（使用 [生成的别名用户名和密码](/faq#do-you-support-receiving-email-with-imap) 的 [别名联系人](#alias-contacts)、[别名日历](#alias-calendars) 和 [别名邮箱](#alias-mailboxes) 除外）。
+所有端点都要求将 [API 密钥](https://forwardemail.net/my-account/security) 设置为请求的 [基本授权](https://en.wikipedia.org/wiki/Basic_access_authentication) 标头的“用户名”值（[别名联系人](#alias-contacts)、[别名日历](#alias-calendars) 和 [别名邮箱](#alias-mailboxes) 除外，它们使用 [生成的别名用户名和密码](/faq#do-you-support-receiving-email-with-imap)）。
 
 别担心——如果您不确定这是什么，下面会为您提供示例。
 
@@ -117,7 +117,7 @@
 | 504 | 网关超时 |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> 如果您收到 5xx 状态代码（这不应该发生），请通过 <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> 联系我们，我们将立即帮助您解决问题。
 
 ## 本地化 {#localization}
 
@@ -126,7 +126,7 @@
 ## 分页 {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> 自 2024 年 11 月 1 日起，[列出域名](#list-domains) 和 [列出域别名](#list-domain-aliases) 的 API 端点将默认每页最多显示 `1000` 条结果。如果您想提前启用此行为，可以将 `?paginate=true` 作为额外的查询字符串参数传递给端点查询的 URL。
 
 所有列出结果的 API 端点都支持分页。
 
@@ -162,9 +162,9 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 我们的 API 允许您以编程方式下载您帐户的日志。向此端点提交请求后，系统会处理您帐户的所有日志，并在完成后以附件（[Gzip](https://en.wikipedia.org/wiki/Gzip) 压缩的 [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) 电子表格文件）的形式通过电子邮件发送给您。
 
-您可以使用 [计划任务](https://en.wikipedia.org/wiki/Cron) 创建后台作业，或使用我们的 [Node.js 作业调度软件 Bree](https://github.com/breejs/bree) 随时接收日志。请注意，此端点每日限制 `10` 个请求。
+这允许您使用 [计划任务](https://en.wikipedia.org/wiki/Cron) 或使用我们的 [Node.js 作业调度软件 Bree](https://github.com/breejs/bree) 创建后台作业，以便随时接收日志。请注意，此端点每天限制 `10` 个请求。
 
-附件是`email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`的小写形式，电子邮件本身包含已检索日志的简要摘要。您也可以随时从[我的账户 → 日志](/my-account/logs)下载日志。
+附件是 `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` 的小写形式，电子邮件本身包含已检索日志的简要摘要。您也可以随时从 [我的账户 → 日志](/my-account/logs) 下载日志
 
 > `GET /v1/logs/download`
 
@@ -188,7 +188,7 @@ curl BASE_URI/v1/logs/download \
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-请注意，您可以使用诸如[Crontab.guru](https://crontab.guru/)之类的服务来验证您的 cron 作业表达式语法。
+请注意，您可以使用 [Crontab.guru](https://crontab.guru/) 等服务来验证您的 cron 作业表达式语法。
 
 > 示例 Cron 作业（每天午夜 **并记录前一天的日志**）：
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## 别名联系人 (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> 与其他 API 端点不同，这些端点需要 [验证](#authentication) 的“用户名”等于别名用户名，“密码”等于别名生成的密码作为基本授权标头。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> 此端点部分尚在开发中，预计将于 2024 年发布。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。
 
 ### 列出联系人 {#list-contacts}
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## 别名日历 (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> 与其他 API 端点不同，这些端点需要 [验证](#authentication) 的“用户名”等于别名用户名，“密码”等于别名生成的密码作为基本授权标头。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> 此端点部分尚在开发中，预计将于 2024 年发布。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。
 
 ### 列出日历 {#list-calendars}
 
@@ -332,14 +332,14 @@ curl -X PUT BASE_URI/v1/account \
 ## 别名邮件 (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> 与其他 API 端点不同，这些端点需要 [验证](#authentication) 的“用户名”等于别名用户名，“密码”等于别名生成的密码作为基本授权标头。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> 此端点部分尚在开发中，预计将于 2024 年发布。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。
 
 请确保您已遵循域名的设置说明。
 
-这些说明可以在我们的常见问题解答部分[你们支持使用 IMAP 接收电子邮件吗？](/faq#do-you-support-receiving-email-with-imap)中找到。
+这些说明可以在我们的常见问题解答部分 [你们支持使用 IMAP 接收电子邮件吗？](/faq#do-you-support-receiving-email-with-imap) 中找到。
 
 ### 列出并搜索消息 {#list-and-search-for-messages}
 
@@ -350,7 +350,7 @@ curl -X PUT BASE_URI/v1/account \
 ### 创建消息 {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> 这**不会**发送电子邮件——它只会将邮件添加到您的邮箱文件夹中（例如，这与 IMAP `APPEND` 命令类似）。如果您想发送电子邮件，请参阅下面的 [创建出站 SMTP 电子邮件](#create-outbound-smtp-email)。创建出站 SMTP 电子邮件后，您可以使用此端点将其副本附加到您的别名邮箱中进行存储。
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ curl -X PUT BASE_URI/v1/account \
 ## 别名文件夹 (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> 以文件夹路径 <code>/v1/folders/:path</code> 为端点的文件夹端点可以与文件夹 ID <code>:id</code> 互换。这意味着您可以通过文件夹的 <code>path</code> 或 <code>id</code> 值来引用该文件夹。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> 此端点部分尚在开发中，预计将于 2024 年发布。在此期间，请使用我们网站导航栏中“应用”下拉菜单中的 IMAP 客户端。
 
 ### 列出文件夹 {#list-folders}
 
@@ -418,7 +418,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **即将推出**
 
-## 出站电子邮件 {#outbound-emails}
+## 发件人：{#outbound-emails}
 
 请确保您已遵循域名的设置说明。
 
@@ -439,7 +439,7 @@ curl BASE_URI/v1/emails/limit \
 
 ### 列出出站 SMTP 电子邮件 {#list-outbound-smtp-emails}
 
-请注意，此端点不会返回电子邮件的`message`、`headers` 和`rejectedErrors` 的属性值。
+请注意，此端点不会返回电子邮件的 `message`、`headers` 或 `rejectedErrors` 的属性值。
 
 要返回这些属性及其值，请使用带有电子邮件 ID 的 [检索电子邮件](#retrieve-email) 端点。
 
@@ -462,7 +462,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### 创建出站 SMTP 电子邮件 {#create-outbound-smtp-email}
 
-我们用于创建电子邮件的 API 灵感源自 Nodemailer 的消息选项配置，并充分利用了它。以下所有正文参数请遵循 [Nodemailer 消息配置](https://nodemailer.com/message/) 的规范。
+我们创建电子邮件的 API 灵感源自 Nodemailer 的消息选项配置，并充分利用了它。以下所有正文参数请遵循 [Nodemailer 消息配置](https://nodemailer.com/message/) 的规范。
 
 请注意，除了 `envelope` 和 `dkim`（因为我们会自动为您设置）之外，我们支持所有 Nodemailer 选项。出于安全考虑，我们会自动将 `disableFileAccess` 和 `disableUrlAccess` 选项设置为 `true`。
 
@@ -532,7 +532,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### 删除出站 SMTP 电子邮件 {#delete-outbound-smtp-email}
 
-当且仅当当前状态为 `"pending"`、`"queued"` 或 `"deferred"` 之一时，删除电子邮件会将状态设置为 `"rejected"`（并且随后不会在队列中处理该邮件）。我们可能会在电子邮件创建和/或发送 30 天后自动清除这些邮件，因此您应该在客户端、数据库或应用程序中保留一份已发送 SMTP 电子邮件的副本。如果需要，您可以在数据库中引用我们的电子邮件 ID 值，该值会从 [创建电子邮件](#create-email) 和 [检索电子邮件](#retrieve-email) 端点返回。
+当且仅当当前状态为 `"pending"`、`"queued"` 或 `"deferred"` 之一时，删除电子邮件会将状态设置为 `"rejected"`（并且随后不会在队列中处理该邮件）。我们可能会在电子邮件创建和/或发送 30 天后自动清除邮件，因此您应该在客户端、数据库或应用程序中保留一份已发送 SMTP 邮件的副本。如果需要，您可以在数据库中引用我们的电子邮件 ID 值，该值会从 [创建电子邮件](#create-email) 和 [检索电子邮件](#retrieve-email) 端点返回。
 
 > `DELETE /v1/emails/:id`
 
@@ -543,15 +543,15 @@ curl -X DELETE BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-## 域名 {#domains}
+## 个域名 {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> 以域名 <code>/v1/domains/:domain_name</code> 作为端点的域名端点可以与域名 ID <code>:domain_id</code> 互换。这意味着您可以通过域名的 <code>name</code> 或 <code>id</code> 值来引用该域名。
 
 ### 列出域 {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 自 2024 年 11 月 1 日起，[列出域名](#list-domains) 和 [列出域别名](#list-domain-aliases) 的 API 端点将默认每页最多显示 `1000` 条结果。如果您想提前启用此行为，可以将 `?paginate=true` 作为额外的查询字符串参数传递给端点查询的 URL。更多详情，请参阅 [分页](#pagination)。
 
 > `GET /v1/domains`
 
@@ -570,7 +570,7 @@ curl BASE_URI/v1/domains \
   -u API_TOKEN:
 ```
 
-### 创建域名 {#create-domain}
+### 创建域 {#create-domain}
 
 > `POST /v1/domains`
 
@@ -599,7 +599,7 @@ curl -X POST BASE_URI/v1/domains \
   -d plan=free
 ```
 
-### 检索域名 {#retrieve-domain}
+### 检索域 {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
 
@@ -610,7 +610,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### 验证域名记录 {#verify-domain-records}
+### 验证域记录 {#verify-domain-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-records`
 
@@ -632,7 +632,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### 列出域范围的万能密码 {#list-domain-wide-catch-all-passwords}
+### 列出全域通用密码 {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
@@ -659,7 +659,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### 删除域范围的万能密码 {#remove-domain-wide-catch-all-password}
+### 移除全域通用密码 {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
@@ -670,7 +670,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
   -u API_TOKEN:
 ```
 
-### 更新域名 {#update-domain}
+### 更新域 {#update-domain}
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
@@ -694,7 +694,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### 删除域名 {#delete-domain}
+### 删除域 {#delete-domain}
 
 > `DELETE /v1/domains/:domain_name`
 
@@ -705,7 +705,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-## 邀请 {#invites}
+## 邀请了 {#invites}
 
 ### 接受域名邀请 {#accept-domain-invite}
 
@@ -737,9 +737,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> 如果受邀用户已经是邀请他们的管理员所属的任何其他域的接受成员，则系统将自动接受邀请，而不会发送电子邮件。
 
-### 删除域名邀请 {#remove-domain-invite}
+### 移除域名邀请 {#remove-domain-invite}
 
 > `DELETE /v1/domains/:domain_name/invites`
 
@@ -754,7 +754,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
-## 成员 {#members}
+## 名成员 {#members}
 
 ### 更新域成员 {#update-domain-member}
 
@@ -771,7 +771,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
   -u API_TOKEN:
 ```
 
-### 删除域成员 {#remove-domain-member}
+### 移除域成员 {#remove-domain-member}
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### 列出域别名 {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 自 2024 年 11 月 1 日起，[列出域名](#list-domains) 和 [列出域别名](#list-domain-aliases) 的 API 端点将默认每页最多显示 `1000` 条结果。如果您想提前启用此行为，可以将 `?paginate=true` 作为额外的查询字符串参数传递给端点查询的 URL。更多详情，请参阅 [分页](#pagination)。
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## 加密 {#encrypt}
 
-即使在免费方案中，我们也允许您免费加密记录。隐私不应只是一项功能，而应融入产品的各个方面。应[隐私指南讨论](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)和[我们的 GitHub 问题](https://github.com/forwardemail/forwardemail.net/issues/254)中的强烈要求，我们已添加此功能。
+即使在免费方案中，我们也允许您免费加密记录。隐私不应该只是一项功能，而应该融入产品的各个方面。应 [隐私指南讨论](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) 和 [我们的 GitHub 问题](https://github.com/forwardemail/forwardemail.net/issues/254) 中的强烈要求，我们已添加此功能。
 
 ### 加密 TXT 记录 {#encrypt-txt-record}
 

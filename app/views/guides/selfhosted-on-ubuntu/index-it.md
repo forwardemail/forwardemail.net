@@ -126,7 +126,7 @@ apt-get install -y \
     snapd
 ```
 
-### Passaggio 4: installa i pacchetti Snap {#step-4-install-snap-packages}
+### Passaggio 4: installare i pacchetti Snap {#step-4-install-snap-packages}
 
 Installa AWS CLI e Certbot tramite snap:
 
@@ -554,7 +554,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Imposta i cron job di backup {#set-up-backup-cron-jobs}
+### Imposta i processi cron di backup {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -601,7 +601,7 @@ crontab -l
 2. **Controllo dello stato del servizio**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Esaminazione dei log**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Aggiorna pacchetti di sistema**: `apt update && apt upgrade`
-5. **Rinnovo certificati**: i certificati si rinnovano automaticamente, ma ne monitorano la scadenza
+5. **Rinnovo certificati**: I certificati si rinnovano automaticamente, ma ne monitorano la scadenza
 
 ### Rinnovo del certificato {#certificate-renewal}
 
@@ -653,8 +653,8 @@ nohup dockerd >/dev/null 2>/dev/null &
 ### Ottenere aiuto {#getting-help}
 
 * **Documentazione**: <https://forwardemail.net/self-hosted>
-* **Problemi su GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Supporto della community**: Consulta le discussioni del progetto su GitHub
+* **Problemi GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Supporto della community**: Consulta le discussioni GitHub del progetto
 
 ## Procedure consigliate per la sicurezza {#security-best-practices}
 

@@ -1,4 +1,4 @@
-# Node.js 프로덕션 인프라를 최적화하는 방법: 모범 사례 {#how-to-optimize-nodejs-production-infrastructure-best-practices}
+# Node.js 프로덕션 인프라 최적화 방법: 모범 사례 {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
 <img 로딩="게으른" src="/img/articles/nodejs-성능.webp" alt="" 클래스="둥근-lg" />
 
@@ -69,14 +69,14 @@ Forward Email에서는 수년간 Node.js 프로덕션 환경 설정을 완벽하
 Intel에서 AMD Ryzen 프로세서로 마이그레이션했을 때 Node.js 애플리케이션의 성능이 **573% 향상**되었습니다. 이는 단순한 사소한 최적화가 아니라, Node.js 애플리케이션의 운영 환경을 근본적으로 변화시켰으며, 모든 Node.js 애플리케이션에서 단일 코어 성능 최적화의 중요성을 보여줍니다.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Node.js 프로덕션 배포 모범 사례를 위해서는 하드웨어 선택이 매우 중요합니다. Node.js 애플리케이션에서는 JavaScript 실행이 단일 스레드로 이루어지기 때문에 단일 코어 성능이 매우 중요하기 때문에, AMD Ryzen을 지원하는 DataPacket 호스팅을 선택했습니다.
 
 ### Node.js에 단일 코어 성능 최적화가 중요한 이유 {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Intel에서 AMD Ryzen으로 마이그레이션한 결과:
 
 * **요청 처리 성능 573% 향상** ([상태 페이지의 GitHub 이슈 #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **처리 지연 제거**를 통해 거의 즉각적인 응답을 제공합니다([GitHub 이슈 #298](https://github.com/forwardemail/forwardemail.net/issues/298]))
+* **처리 지연 제거**로 거의 즉각적인 응답 제공([GitHub 이슈 #298](https://github.com/forwardemail/forwardemail.net/issues/298)) 참조)
 * **Node.js 프로덕션 환경에서 더 나은 가격 대비 성능**
 * **모든 애플리케이션 엔드포인트에서 응답 시간 향상**
 
@@ -84,7 +84,7 @@ Intel에서 AMD Ryzen으로 마이그레이션한 결과:
 
 ### 관련 콘텐츠 {#related-content}
 
-인프라 선택에 대한 자세한 내용은 다음을 참조하세요.
+저희 인프라 선택에 대한 자세한 내용은 다음을 참조하세요.
 
 * [최고의 이메일 전달 서비스]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - 성능 비교 참조)
 * [셀프 호스팅 솔루션](https://forwardemail.net/blog/docs/self-hosted-solution) - 하드웨어 권장 사항
@@ -95,7 +95,7 @@ Intel에서 AMD Ryzen으로 마이그레이션한 결과:
 
 ### 패키지 관리자: 프로덕션 효율성을 위한 pnpm {#package-manager-pnpm-for-production-efficiency}
 
-**사용하는 것:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (고정 버전)
+**사용하는 것:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (고정된 버전)
 
 우리는 Node.js 프로덕션 환경을 설정하기 위해 npm과 yarn 대신 pnpm을 선택했습니다. 그 이유는 다음과 같습니다.
 
@@ -105,7 +105,7 @@ Intel에서 AMD Ryzen으로 마이그레이션한 결과:
 * 프로덕션 배포에서 **성능 향상**
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Node.js 프로덕션 배포 모범 사례의 일환으로, 모든 환경과 팀원의 컴퓨터에서 일관된 동작을 보장하기 위해 pnpm과 같은 필수 도구의 정확한 버전을 고정합니다.
 
 **구현 세부 정보:**
 
@@ -130,7 +130,7 @@ Intel에서 AMD Ryzen으로 마이그레이션한 결과:
 * [API 서버 구성](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
 * [연락처 양식 구현 가이드](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 
-### 백그라운드 작업 처리: 프로덕션 안정성을 위한 Bree {#background-job-processing-bree-for-production-reliability}
+### 백그라운드 작업 처리: 생산 안정성을 위한 Bree {#background-job-processing-bree-for-production-reliability}
 
 **사용하는 것:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) 스케줄러
 
@@ -172,7 +172,7 @@ Node.js 프로덕션 애플리케이션 전체에서 구조화된 오류 응답�
 * **75% 디스크 사용량** 경고 임계값
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> 이 임계값은 특정 하드웨어 구성에 적용됩니다. Node.js 프로덕션 모니터링을 구현할 때는 monitor-server.js 구현을 검토하여 정확한 로직을 이해하고 설정에 맞게 값을 조정하세요.
 
 ### Node.js 프로덕션을 위한 애플리케이션 수준 모니터링 {#application-level-monitoring-for-nodejs-production}
 
@@ -204,7 +204,7 @@ Node.js 프로덕션 애플리케이션 전체에서 구조화된 오류 응답�
 
 저희는 수년간의 프로덕션 경험을 바탕으로 PM2를 활용하여 Node.js 프로덕션 환경 설정을 개선해 왔습니다. PM2 상태 점검은 모든 Node.js 애플리케이션의 안정성을 유지하는 데 필수적입니다.
 
-### PM2 건강 검진 시스템 {#our-pm2-health-check-system}
+### 당사의 PM2 건강 검진 시스템 {#our-pm2-health-check-system}
 
 **핵심 구현:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
@@ -217,9 +217,9 @@ PM2 상태 검사를 통한 Node.js 프로덕션 모니터링에는 다음이 �
 * **지능형 상태 검사를 통해 재시작 루프를 방지합니다.**
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Node.js 프로덕션 배포 모범 사례에 따라, 재시작 루프를 방지하기 위해 프로세스가 정상으로 간주되기 전에 15분 이상의 가동 시간을 요구합니다. 이를 통해 프로세스가 메모리 문제 또는 기타 문제로 인해 연쇄적인 실패를 방지할 수 있습니다.
 
-### PM2 프로덕션 구성 {#our-pm2-production-configuration}
+### PM2 생산 구성 {#our-pm2-production-configuration}
 
 **생태계 설정:** Node.js 프로덕션 환경 설정을 위한 서버 시작 파일을 연구하세요.
 
@@ -230,11 +230,11 @@ PM2 상태 검사를 통한 Node.js 프로덕션 모니터링에는 다음이 �
 
 이러한 패턴은 Express 앱, Koa 서버, GraphQL API 또는 기타 Node.js 애플리케이션을 실행하는 경우 모두 적용됩니다.
 
-### 자동화된 PM2 배포 {#automated-pm2-deployment}
+### 자동 PM2 배포 {#automated-pm2-deployment}
 
 **PM2 배포:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
-Ansible을 통해 전체 PM2 설정을 자동화하여 모든 서버에서 일관된 Node.js 프로덕션 배포를 보장합니다.
+우리는 모든 서버에서 일관된 Node.js 프로덕션 배포를 보장하기 위해 Ansible을 통해 전체 PM2 설정을 자동화합니다.
 
 ## 생산 오류 처리 및 분류 시스템 {#production-error-handling-and-classification-system}
 
@@ -257,7 +257,7 @@ Ansible을 통해 전체 PM2 설정을 자동화하여 모든 서버에서 일�
 
 **로거 통합:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-저희 로거는 `isCodeBug`를 사용하여 경보 수준과 필드 삭제를 결정하고, Node.js 프로덕션 환경에서 노이즈를 필터링하는 동시에 실제 문제에 대한 알림을 받을 수 있도록 합니다.
+저희 로거는 `isCodeBug`을 사용하여 경보 수준과 필드 삭제를 결정하고, Node.js 프로덕션 환경에서 노이즈를 필터링하는 동시에 실제 문제에 대한 알림을 받을 수 있도록 합니다.
 
 ### 관련 콘텐츠 {#related-content-1}
 
@@ -278,13 +278,13 @@ Ansible을 통해 전체 PM2 설정을 자동화하여 모든 서버에서 일�
 * [`cpupro`](https://github.com/discoveryjs/cpupro) - CPU 프로필 및 힙 스냅샷 분석
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> v8-profiler-next와 cpupro를 함께 사용하여 Node.js 애플리케이션의 완벽한 성능 디버깅 워크플로를 구축했습니다. 이 조합은 메모리 누수와 성능 병목 현상을 파악하고 프로덕션 코드를 최적화하는 데 도움이 됩니다.
 
 ### 힙 스냅샷 분석 구현 방법 {#how-we-implement-heap-snapshot-analysis}
 
 **모니터링 구현:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-저희 프로덕션 모니터링에는 메모리 임계값 초과 시 자동 힙 스냅샷 생성 기능이 포함되어 있습니다. 이를 통해 OOM 문제로 인해 애플리케이션 충돌이 발생하기 전에 디버깅하는 데 도움이 됩니다.
+저희 프로덕션 모니터링에는 메모리 임계값 초과 시 자동 힙 스냅샷 생성 기능이 포함되어 있습니다. 이를 통해 OOM 문제로 인해 애플리케이션이 중단되기 전에 디버깅할 수 있습니다.
 
 **주요 구현 패턴:**
 
@@ -301,7 +301,7 @@ Ansible을 통해 전체 PM2 설정을 자동화하여 모든 서버에서 일�
 * [정리 작업](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - 스냅샷 보존 및 정리
 * [로거 통합](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - 성능 로깅
 
-Node.js 애플리케이션에 권장되는 ### 구현 {#recommended-implementation-for-your-nodejs-application}
+### Node.js 애플리케이션에 권장되는 구현 {#recommended-implementation-for-your-nodejs-application}
 
 **힙 스냅샷 분석의 경우:**
 
@@ -319,7 +319,7 @@ Node.js 애플리케이션에 권장되는 ### 구현 {#recommended-implementati
 4. **성능 개선 전/후 모니터링**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> 힙 스냅샷 및 CPU 프로필을 생성하면 성능에 영향을 줄 수 있습니다. 성능 제한을 구현하고 특정 문제를 조사하거나 유지 관리 기간 동안만 프로파일링을 활성화하는 것이 좋습니다.
 
 ### 프로덕션 모니터링과 통합 {#integration-with-our-production-monitoring}
 
@@ -348,11 +348,11 @@ Node.js 프로덕션 환경을 위한 주요 보안 조치:
 * **보안 및 성능 향상을 위한 커널 매개변수 조정**
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Node.js 프로덕션 배포 모범 사례를 구현할 때, 스왑을 비활성화하면 애플리케이션이 사용 가능한 RAM을 초과할 경우 메모리 부족으로 인해 종료될 수 있습니다. 저희는 메모리 사용량을 면밀히 모니터링하고 서버 규모를 적절하게 조정하고 있습니다.
 
 ### Node.js 애플리케이션을 위한 애플리케이션 보안 {#application-security-for-nodejs-applications}
 
-**로그 필드 삭제:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+**로그 필드 수정:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
 비밀번호, 토큰, API 키, 개인 정보 등 민감한 필드는 로그에서 삭제합니다. 이를 통해 모든 Node.js 프로덕션 환경에서 디버깅 기능을 유지하면서 사용자 개인 정보를 보호합니다.
 
@@ -409,13 +409,13 @@ Node.js 프로덕션 환경을 위한 주요 보안 조치:
 
 우리는 Node.js 프로덕션 환경에서 애플리케이션 데이터에 MongoDB를 사용합니다. 그 이유는 다음과 같습니다.
 
-* 진화하는 데이터 구조를 위한 **유연한 스키마**
-* 복잡한 쿼리에 대한 **더 나은 성능**
+* **변화하는 데이터 구조를 위한 유연한 스키마**
+* **복잡한 쿼리에 대한 향상된 성능**
 * **수평 확장** 기능
 * **풍부한 쿼리 언어**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> 저희의 하이브리드 방식은 특정 사용 사례에 최적화되어 있습니다. 코드베이스에서 실제 데이터베이스 사용 패턴을 분석하여 이 방식이 Node.js 애플리케이션 요구 사항에 적합한지 확인하세요.
 
 ## Node.js 프로덕션 백그라운드 작업 처리 {#nodejs-production-background-job-processing}
 
@@ -427,13 +427,13 @@ Node.js 프로덕션 환경을 위한 주요 보안 조치:
 
 **Ansible 배포:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
-### 프로덕션 작업 예시 {#production-job-examples}
+### 프로덕션 작업 예 {#production-job-examples}
 
-**건강 모니터링:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+**상태 모니터링:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 **정리 자동화:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-**저희의 모든 작업:** [전체 채용 공고 디렉토리를 탐색하세요](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+**모든 작업:** [전체 채용 공고 디렉토리를 탐색하세요](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
 
 이러한 패턴은 다음이 필요한 모든 Node.js 애플리케이션에 적용됩니다.
 

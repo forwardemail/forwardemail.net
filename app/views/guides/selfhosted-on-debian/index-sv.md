@@ -3,7 +3,7 @@
 ## Innehållsförteckning {#table-of-contents}
 
 * [Översikt](#overview)
-* [Förutsättningar](#prerequisites)
+* [Förkunskapskrav](#prerequisites)
 * [Systemkrav](#system-requirements)
 * [Steg-för-steg-installation](#step-by-step-installation)
   * [Steg 1: Initial systeminstallation](#step-1-initial-system-setup)
@@ -37,7 +37,7 @@
 * [Underhåll och övervakning](#maintenance-and-monitoring)
   * [Loggplatser](#log-locations)
   * [Regelbundna underhållsuppgifter](#regular-maintenance-tasks)
-  * [Certifikatförnyelse](#certificate-renewal)
+  * [Förnyelse av certifikat](#certificate-renewal)
 * [Felsökning](#troubleshooting)
   * [Debianspecifika problem](#debian-specific-issues)
   * [Vanliga problem](#common-issues)
@@ -283,7 +283,7 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### Steg 10: Konfigurera miljön {#step-10-set-up-environment-configuration}
+### Steg 10: Konfigurera miljökonfiguration {#step-10-set-up-environment-configuration}
 
 Förbered miljökonfigurationen:
 
@@ -350,7 +350,7 @@ update_env_file "AUTH_BASIC_ENABLED" "true"
 
 ### Steg 12: Generera SSL-certifikat {#step-12-generate-ssl-certificates}
 
-#### Alternativ A: Manuell DNS-utmaning (Rekommenderas för de flesta användare) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Alternativ A: Manuell DNS-utmaning (rekommenderas för de flesta användare) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -587,12 +587,12 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 1. Öppna din webbläsare och navigera till `https://yourdomain.com`
 2. Ange de grundläggande autentiseringsuppgifterna du sparade tidigare
-3. Slutför den initiala installationsguiden
+3. Slutför den inledande installationsguiden
 4. Skapa ditt första e-postkonto
 
 ## Säkerhetskopieringskonfiguration {#backup-configuration}
 
-### Konfigurera S3-kompatibel säkerhetskopia {#set-up-s3-compatible-backup}
+### Konfigurera S3-kompatibel säkerhetskopiering {#set-up-s3-compatible-backup}
 
 Konfigurera automatiska säkerhetskopior till S3-kompatibel lagring:
 
@@ -663,7 +663,7 @@ crontab -l
 * **UFW**: Kan eventuellt inte inkluderas i minimala Debian-installationer
 * **systemd**: Beteendet kan skilja sig något från Ubuntu
 
-### Tjänsthantering {#service-management}
+### Tjänstehantering {#service-management}
 
 ```bash
 # Check service status (Debian-specific commands)
@@ -795,7 +795,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 #### 2. Certifikatgenerering misslyckas {#2-certificate-generation-fails}
 
 * Se till att portarna 80 och 443 är tillgängliga
-* Verifiera att DNS-posterna pekar mot din server
+* Verifiera att DNS-poster pekar mot din server
 * Kontrollera brandväggsinställningarna med `ufw status`
 
 #### 3. Problem med e-postleverans {#3-email-delivery-issues}
@@ -810,7 +810,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * **GitHub-problem**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Debian-dokumentation**: <https://www.debian.org/doc/>
 
-## Bästa säkerhetsrutiner {#security-best-practices}
+## Bästa säkerhetsmetoder {#security-best-practices}
 
 1. **Håll systemet uppdaterat**: Uppdatera Debian och paket regelbundet
 2. **Övervaka loggar**: Konfigurera loggövervakning och varningar

@@ -24,7 +24,7 @@
 
 ## Descripción general {#overview}
 
-Esta guía proporciona a los desarrolladores instrucciones paso a paso para configurar [Listmonk](https://listmonk.app/), un potente gestor de boletines y listas de correo de código abierto, para usar [Reenviar correo electrónico](https://forwardemail.net/) como proveedor SMTP. Esta combinación permite gestionar las campañas eficazmente, garantizando al mismo tiempo un envío de correo electrónico seguro, privado y fiable.
+Esta guía proporciona a los desarrolladores instrucciones paso a paso para configurar [Listmonk](https://listmonk.app/), un potente gestor de boletines y listas de correo de código abierto, para que utilice [Reenviar correo electrónico](https://forwardemail.net/) como proveedor SMTP. Esta combinación permite gestionar las campañas eficazmente, garantizando al mismo tiempo un envío de correo electrónico seguro, privado y fiable.
 
 **Listmonk**: Gestiona la gestión de suscriptores, la organización de listas, la creación de campañas y el seguimiento del rendimiento.
 
@@ -32,7 +32,7 @@ Esta guía proporciona a los desarrolladores instrucciones paso a paso para conf
 
 Al integrar estos dos, usted conserva el control total sobre sus datos e infraestructura mientras aprovecha el sólido sistema de entrega de Forward Email.
 
-## Por qué Listmonk y reenvío de correo electrónico {#why-listmonk-and-forward-email}
+## ¿Por qué Listmonk y reenviar correo electrónico? {#why-listmonk-and-forward-email}
 
 **Código abierto**: Tanto Listmonk como los principios de Forward Email priorizan la transparencia y el control. Usted mismo aloja Listmonk y es el propietario de sus datos.
 * **Privacidad**: Forward Email se basa en la privacidad, minimizando la retención de datos y priorizando la transmisión segura.
@@ -46,7 +46,7 @@ Antes de comenzar, asegúrese de tener lo siguiente:
 
 * Un Servidor Virtual Privado (VPS) con una distribución reciente de Linux (se recomienda Ubuntu 20.04 o superior) con al menos 1 CPU y 1 GB de RAM (se recomiendan 2 GB).
 * ¿Necesitas un proveedor? Consulta [lista de VPS recomendados](https://github.com/forwardemail/awesome-mail-server-providers).
-* Un nombre de dominio que controles (se requiere acceso a DNS).
+* Un nombre de dominio que controles (se requiere acceso DNS).
 * Una cuenta activa con [Reenviar correo electrónico](https://forwardemail.net/).
 * Acceso root o `sudo` a tu VPS.
 * Conocimientos básicos de la línea de comandos de Linux.
@@ -101,16 +101,17 @@ Ejecutar Listmonk mediante HTTPS es crucial para la seguridad. Tiene dos opcione
 
 #### Opción A: Usar el proxy de Cloudflare (recomendado por simplicidad) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-Si el DNS de su dominio está administrado por Cloudflare, puede aprovechar su función de proxy para facilitar el acceso HTTPS.
+Si el DNS de su dominio está administrado por Cloudflare, puede aprovechar su función de proxy para acceder a HTTPS fácilmente.
 
 1. **DNS de punto**: Crea un registro `A` en Cloudflare para tu subdominio de Listmonk (p. ej., `listmonk.yourdomain.com`) que apunte a la dirección IP de tu VPS. Asegúrate de que el **Estado del proxy** esté configurado como **Con proxy** (nube naranja).
 2. **Modifica Docker Compose**: Edita el archivo `docker-compose.yml` que descargaste:
+
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
 Esto permite que Listmonk sea accesible internamente en el puerto 80, que Cloudflare puede usar como proxy y proteger con HTTPS.
 
-#### Opción B: Usar un proxy inverso (Nginx, Caddy, etc.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
+#### Opción B: Uso de un proxy inverso (Nginx, Caddy, etc.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
 Como alternativa, puede configurar un proxy inverso como Nginx o Caddy en su VPS para manejar la terminación HTTPS y las solicitudes de proxy a Listmonk (que se ejecuta en el puerto 9000 de manera predeterminada).
 
@@ -163,14 +164,14 @@ El procesamiento de rebotes permite a Listmonk gestionar automáticamente los co
 #### Configuración de reenvío de correo electrónico {#forward-email-setup}
 
 1. Inicia sesión en tu [Panel de control de reenvío de correo electrónico](https://forwardemail.net/).
-2. Ve a **Dominios**, selecciona el dominio que usas para enviar y ve a su página de **Configuración**.
-3. Desplázate hacia abajo hasta la sección **URL de Webhook de Rebote**.
+2. Ve a **Dominios**, selecciona el dominio que usas para enviar y ve a su página **Configuración**.
+3. Desplázate hacia abajo hasta la sección **URL del Webhook de Rebote**.
 4. Introduce la siguiente URL, reemplazando `<your_listmonk_domain>` por el dominio o subdominio donde se puede acceder a tu instancia de Listmonk:
 ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
 *Ejemplo*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-5. Desplázate hacia abajo hasta la sección **Clave de Verificación de Carga Útil de Firma de Webhook**.
+5. Desplázate hacia abajo hasta la sección **Clave de Verificación de la Carga Útil de la Firma del Webhook**.
 6. **Copia** la clave de verificación generada. La necesitarás en Listmonk.
 7. Guarda los cambios en la configuración de tu dominio de Reenvío de Correo Electrónico.
 
@@ -183,8 +184,8 @@ El procesamiento de rebotes permite a Listmonk gestionar automáticamente los co
 5. Activa **Reenvío de correo electrónico**.
 6. Pega la **Clave de verificación de carga útil de firma de webhook** que copiaste del panel de Reenvío de correo electrónico en el campo **Clave de reenvío de correo electrónico**.
 7. Haz clic en **Guardar** al final de la página.
-8. ¡El procesamiento de rebotes ya está configurado! Cuando Reenvío de correo electrónico detecte un rebote en un correo electrónico enviado por Listmonk, notificará a tu instancia de Listmonk a través del webhook, y Listmonk marcará al suscriptor como corresponde.
-9. Completa los pasos a continuación en [Pruebas](#testing) para asegurarte de que todo funciona correctamente.
+8. ¡El procesamiento de rebotes ya está configurado! Cuando Reenvío de correo electrónico detecte un rebote en un correo electrónico enviado por Listmonk, notificará a tu instancia de Listmonk a través del webhook y Listmonk marcará al suscriptor como corresponde.
+9. Completa los pasos a continuación en [Pruebas](#testing) para asegurarte de que todo funcione correctamente.
 
 ## Prueba {#testing}
 
@@ -217,10 +218,13 @@ A continuación se muestra una descripción general rápida de las funciones pri
 
 ## Verificación {#verification}
 
-* **Entrega SMTP**: Envía correos electrónicos de prueba regularmente a través de la página de configuración SMTP de Listmonk y realiza campañas de prueba para garantizar que se entreguen correctamente.
-* **Gestión de rebotes**: Envía una campaña de prueba a una dirección de correo electrónico no válida (por ejemplo, `bounce-test@yourdomain.com` si no tienes una real a mano, aunque los resultados pueden variar). Revisa las estadísticas de la campaña en Listmonk después de un rato para ver si se registra el rebote.
-* **Encabezados de correo electrónico**: Usa herramientas como [Probador de correo](https://www.mail-tester.com/) o inspecciona manualmente los encabezados de correo electrónico para verificar que SPF, DKIM y DMARC estén funcionando correctamente, lo que indica que la configuración a través de Reenvío de correo electrónico es correcta.
-* **Registros de Reenvío de correo electrónico**: Revisa los registros del panel de Reenvío de correo electrónico si sospechas que hay problemas de entrega originados por el servidor SMTP.
+**Entrega SMTP**: Envía regularmente correos electrónicos de prueba a través de la página de configuración SMTP de Listmonk y realiza campañas de prueba para garantizar que se entreguen correctamente.
+
+**Gestión de rebotes**: Envía una campaña de prueba a una dirección de correo electrónico no válida (por ejemplo, `bounce-test@yourdomain.com` si no tienes una real a mano, aunque los resultados pueden variar). Revisa las estadísticas de la campaña en Listmonk después de un rato para ver si se registra el rebote.
+
+**Encabezados de correo electrónico**: Usa herramientas como [Probador de correo](https://www.mail-tester.com/) o inspecciona manualmente los encabezados de correo electrónico para verificar que SPF, DKIM y DMARC estén funcionando correctamente, lo que indica una configuración correcta mediante el reenvío de correo electrónico.
+
+**Registros de reenvío de correo electrónico**: Consulta los registros del panel de reenvío de correo electrónico si sospechas que hay problemas de entrega originados por el servidor SMTP.
 
 ## Notas del desarrollador {#developer-notes}
 

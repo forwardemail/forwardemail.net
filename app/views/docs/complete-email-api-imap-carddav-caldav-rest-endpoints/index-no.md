@@ -38,7 +38,7 @@
   * [2. Zapier-alternativ for e-postautomatisering](#2-zapier-alternative-for-email-automation)
   * [3. CRM-e-postsynkronisering](#3-crm-email-synchronization)
   * [4. Behandling av e-handelsordrer](#4-e-commerce-order-processing)
-  * [5. Støtt billettintegrasjon](#5-support-ticket-integration)
+  * [5. Støtte for integrering av billett](#5-support-ticket-integration)
   * [6. Nyhetsbrevhåndteringssystem](#6-newsletter-management-system)
   * [7. E-postbasert oppgavehåndtering](#7-email-based-task-management)
   * [8. E-postaggregering for flere kontoer](#8-multi-account-email-aggregation)
@@ -83,9 +83,9 @@ Alle større e-postleverandører tvinger utviklere til ett av to forferdelige va
 Resultatet? Utviklere enten forlater e-postintegrasjon helt eller kaster bort uker på å bygge skjøre IMAP-innpakninger som stadig vekk går i stykker.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Den skitne hemmeligheten**: De fleste «e-post-API-er» er bare sendende API-er. Du kan ikke programmatisk organisere mapper, synkronisere kontakter eller administrere kalendere via et enkelt REST-grensesnitt. Før nå.
 
-## Hva utviklerne faktisk sier {#what-developers-are-actually-saying}
+## Hva utviklere faktisk sier {#what-developers-are-actually-saying}
 
 Frustrasjonen er reell og dokumentert overalt:
 
@@ -108,7 +108,7 @@ Frustrasjonen er reell og dokumentert overalt:
 Bevisene er overalt:
 
 * **WordPress SMTP-problemer**: [631 GitHub-problemer](https://github.com/awesomemotive/WP-Mail-SMTP/issues) om leveringsfeil i e-post
-* **Zapier-begrensninger**: [Klager fra lokalsamfunnet](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om grenser på 10 e-poster/time og feil i IMAP-deteksjon
+* **Zapier-begrensninger**: [Klager fra lokalsamfunnet](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om grenser for 10 e-poster/time og feil i IMAP-deteksjon
 * **IMAP API-prosjekter**: [Flere](https://github.com/ewildgoose/imap-api) [åpen kildekode](https://emailengine.app/) [prosjekter](https://www.npmjs.com/package/imapflow) eksisterer spesifikt for å "konvertere IMAP til REST" fordi ingen leverandører tilbyr dette
 * **Frustrasjoner med Gmail API**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api) har 4847 spørsmål merket med "gmail-api" med vanlige klager om hastighetsgrenser og kompleksitet
 
@@ -144,7 +144,7 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Meldinger (5 endepunkter) {#messages-5-endpoints}
 
-* `GET /v1/messages` - Vis meldinger med filtrering (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `GET /v1/messages` - List meldinger med filtrering (`?folder=`, `?is_unread=`, `?is_flagged=`)
 * `POST /v1/messages` - Send nye meldinger direkte til mapper
 * `GET /v1/messages/:id` - Hent spesifikk melding med full metadata
 * `PUT /v1/messages/:id` - Oppdater melding (flagg, mappe, lesestatus)
@@ -152,11 +152,11 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Mapper (5 endepunkter) {#folders-5-endpoints}
 
-* `GET /v1/folders` - List opp alle mapper med abonnementsstatus
-* `POST /v1/folders` - Opprett ny mappe med tilpassede egenskaper
-* `GET /v1/folders/:id` - Hent mappedetaljer og meldingsantall
-* `PUT /v1/folders/:id` - Oppdater mappeegenskaper og abonnement
-* `DELETE /v1/folders/:id` - Slett mappe og håndter flytting av meldinger
+* `GET /v1/folders` – List opp alle mapper med abonnementsstatus
+* `POST /v1/folders` – Opprett ny mappe med tilpassede egenskaper
+* `GET /v1/folders/:id` – Hent mappedetaljer og antall meldinger
+* `PUT /v1/folders/:id` – Oppdater mappeegenskaper og abonnement
+* `DELETE /v1/folders/:id` – Slett mappe og håndter flytting av meldinger
 
 ### Kontakter (5 endepunkter) {#contacts-5-endpoints}
 
@@ -168,7 +168,7 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Kalendere (5 endepunkter) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - Liste over kalenderhendelser med datofiltrering
+* `GET /v1/calendars` - List opp kalenderhendelser med datofiltrering
 * `POST /v1/calendars` - Opprett kalenderhendelse med deltakere og regelmessighet
 * `GET /v1/calendars/:id` - Hent hendelsesdetaljer med tidssonehåndtering
 * `PUT /v1/calendars/:id` - Oppdater hendelse med konfliktdeteksjon
@@ -186,7 +186,7 @@ Mens andre leverandører i beste fall tilbyr grunnleggende filtrering, har vi by
 
 * ✅ Kun grunnleggende `q`-parameter
 * ❌ Ingen feltspesifikk søk
-* ❌ Ingen filtrering etter datointervall
+* ❌ Ingen filtrering av datointervall
 * ❌ Ingen størrelsesbasert filtrering
 * ❌ Ingen filtrering av vedlegg
 * ❌ Begrenset til Gmails søkesyntaks
@@ -209,7 +209,7 @@ Mens andre leverandører i beste fall tilbyr grunnleggende filtrering, har vi by
 * ❌ Ingen offentlige API-er
 * ❌ Ingen programmatiske søkemuligheter
 
-### Det revolusjonerende søke-API-et for videresending av e-post {#forward-emails-revolutionary-search-api}
+### Videresend e-posts revolusjonerende søke-API {#forward-emails-revolutionary-search-api}
 
 **Vi tilbyr over 15 søkeparametere som ingen annen tjeneste tilbyr:**
 
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Fordel for utviklere**: Med søke-API-et for Forward Email kan du bygge e-postprogrammer som kan konkurrere med skrivebordsklienter i funksjonalitet, samtidig som du beholder enkelheten til REST API-er.
 
 ## Lynrask ytelsesarkitektur {#blazing-fast-performance-architecture}
 
@@ -386,7 +386,7 @@ graph LR
 | **Database** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Null nettverksforsinkelse, optimalisert serialisering |
 | **Maskinvare** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) bart metall | Ingen virtualiseringsoverhead |
 | **Bufring** | I minnet + vedvarende | Responstider på under et millisekund |
-| **Sikkerhetskopier** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) kryptert | Pålitelighet i bedriftsklassen |
+| **Sikkerhetskopier** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) kryptert | Pålitelighet i bedriftsklasse |
 
 **Reelle ytelsestall:**
 
@@ -430,7 +430,7 @@ graph LR
 **ProtonMail og Tuta markedsfører seg selv som «åpen kildekode» og «transparente», men dette er villedende markedsføring som bryter med moderne personvernprinsipper.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Falske påstander om åpenhet**: Både ProtonMail og Tuta reklamerer tydelig for sine «åpen kildekode»-legitimasjoner, samtidig som de holder den viktigste serversidekoden sin proprietær og lukket.
 
 **ProtonMails bedrag:**
 
@@ -442,7 +442,7 @@ graph LR
 **Tutas villedende markedsføring:**
 
 * **Påstander**: ["Åpen kildekode-e-post"](https://tuta.com/blog/posts/open-source-email) som et sentralt salgsargument
-* **Realitet**: [Backend-infrastruktur er lukket kildekode](https://github.com/tutao/tutanota) - kun frontend er tilgjengelig
+* **Realitet**: [Backend-infrastruktur er lukket kildekode](https://github.com/tutao/tutanota) - bare frontend er tilgjengelig
 * **Virkning**: Proprietær kryptering forhindrer standard e-postprotokoller (IMAP/SMTP)
 * **Låsestrategi**: Tilpasset kryptering tvinger frem leverandøravhengighet
 
@@ -464,7 +464,7 @@ I 2025 krever ekte personvern **fullstendig åpenhet**. Når e-postleverandører
 * ✅ **Ingen leverandørbinding** - dine data, din kontroll
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Ekte åpen kildekode betyr at du kan bekrefte alle påstander.** Med Videresendt e-post kan du revidere krypteringen vår, gjennomgå datahåndteringen vår og til og med kjøre din egen instans. Det er ekte åpenhet.
 
 ## 30+ eksempler på integrasjon fra den virkelige verden {#30-real-world-integration-examples}
 
@@ -568,7 +568,7 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. System for administrasjon av nyhetsbrev {#6-newsletter-management-system}
+### 6. System for nyhetsbrevhåndtering {#6-newsletter-management-system}
 
 **Problem**: Begrensede [nyhetsbrevplattform](https://en.wikipedia.org/wiki/Email_marketing)-integrasjoner
 **Løsning**: Fullstendig administrasjon av abonnentens livssyklus
@@ -698,7 +698,7 @@ for (const email of oldEmails) {
 
 ### 11. Integrering av e-post til kalender {#11-email-to-calendar-integration}
 
-**Problem**: Manuell [kalenderhendelse](https://tools.ietf.org/html/rfc4791)-oppretting fra e-poster
+**Problem**: Manuell oppretting av [kalenderhendelse](https://tools.ietf.org/html/rfc4791) fra e-poster
 **Løsning**: Automatisk uttrekking og oppretting av hendelser
 
 ```javascript
@@ -831,7 +831,7 @@ for (const email of recentEmails) {
 ### 17. E-postbasert undersøkelsesinnsamling {#17-email-based-survey-collection}
 
 **Problem**: Manuell [svar på undersøkelsen](https://en.wikipedia.org/wiki/Survey_methodology)-behandling
-**Løsning**: Automatisert svarsamling
+**Løsning**: Automatisert svaraggregering
 
 ```javascript
 // Collect and process survey responses
@@ -884,7 +884,7 @@ for (const prospect of prospects) {
 
 ### 20. E-postbasert prosjektstyring {#20-email-based-project-management}
 
-**Problem**: [Prosjektoppdateringer](https://en.wikipedia.org/wiki/Project_management) spredt i e-posttråder
+**Problem**: [Prosjektoppdateringer](https://en.wikipedia.org/wiki/Project_management) spredt på tvers av e-posttråder
 **Løsning**: Sentralisert prosjektkommunikasjonssenter
 
 ```javascript
@@ -936,7 +936,7 @@ for (const email of inventoryEmails) {
 ### 22. E-postbasert fakturabehandling {#22-email-based-invoice-processing}
 
 **Problem**: Manuell [fakturabehandling](https://en.wikipedia.org/wiki/Invoice_processing) og regnskapsintegrasjon
-**Løsning**: Automatisk fakturauttrekk og synkronisering av regnskapssystem
+**Løsning**: Automatisk fakturauttrekking og synkronisering av regnskapssystem
 
 ```javascript
 // Extract invoice data from email attachments
@@ -964,7 +964,7 @@ for (const email of invoiceEmails) {
 
 ### 23. E-postbasert arrangementsregistrering {#23-email-based-event-registration}
 
-**Problem**: Manuell [arrangementsregistrering](https://en.wikipedia.org/wiki/Event_management) behandling fra e-postsvar
+**Problem**: Manuell [arrangementsregistrering](https://en.wikipedia.org/wiki/Event_management)-behandling fra e-postsvar
 **Løsning**: Automatisert deltakeradministrasjon og kalenderintegrasjon
 
 ```javascript
@@ -1028,9 +1028,9 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. E-postbasert analyse av tilbakemeldinger fra kunder {#25-email-based-customer-feedback-analysis}
+### 25. E-postbasert analyse av kundetilbakemeldinger {#25-email-based-customer-feedback-analysis}
 
-**Problem**: Manuell [tilbakemeldinger fra kunder](https://en.wikipedia.org/wiki/Customer_feedback) innsamling og sentimentanalyse
+**Problem**: Manuell [tilbakemeldinger fra kunder](https://en.wikipedia.org/wiki/Customer_feedback)-innsamling og sentimentanalyse
 **Løsning**: Automatisert tilbakemeldingsbehandling og sentimentsporing
 
 ```javascript
@@ -1063,7 +1063,7 @@ for (const email of feedbackEmails) {
 ### 26. E-postbasert rekrutteringsprosess {#26-email-based-recruitment-pipeline}
 
 **Problem**: Manuell [rekruttering](https://en.wikipedia.org/wiki/Recruitment) og kandidatsporing
-**Løsning**: Automatisert kandidathåndtering og intervjuplanlegging
+**Løsning**: Automatisert kandidatadministrasjon og intervjuplanlegging
 
 ```javascript
 // Process job application emails
@@ -1096,7 +1096,7 @@ for (const application of applications) {
 
 ### 27. E-postbasert behandling av utgiftsrapporter {#27-email-based-expense-report-processing}
 
-**Problem**: Manuell [utgiftsrapport](https://en.wikipedia.org/wiki/Expense_report) innsending og godkjenning
+**Problem**: Manuell innsending og godkjenning av [utgiftsrapport](https://en.wikipedia.org/wiki/Expense_report)
 **Løsning**: Automatisert arbeidsflyt for uttrekk og godkjenning av utgifter
 
 ```javascript
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. E-postbasert overvåking av sosiale medier {#30-email-based-social-media-monitoring}
 
-**Problem**: Manuell [sosiale medier](https://en.wikipedia.org/wiki/Social_media_monitoring) omtalesporing og respons
+**Problem**: Manuell sporing og respons av [sosiale medier](https://en.wikipedia.org/wiki/Social_media_monitoring)-omtaler
 **Løsning**: Automatisert behandling av varsler på sosiale medier og koordinering av responser
 
 ```javascript
@@ -1258,7 +1258,7 @@ for (const alert of socialAlerts) {
 
 ## Komme i gang {#getting-started}
 
-### 1. Opprett din konto for videresending av e-post {#1-create-your-forward-email-account}
+### 1. Opprett din videresendingskonto for e-post {#1-create-your-forward-email-account}
 
 Registrer deg på [forwardemail.net](https://forwardemail.net) og bekreft domenet ditt.
 
@@ -1283,15 +1283,15 @@ curl -u "your-alias@domain.com:password" \
 
 ### 4. Utforsk dokumentasjonen {#4-explore-the-documentation}
 
-Besøk [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) for fullstendig API-dokumentasjon med interaktive eksempler.
+Gå til [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) for fullstendig API-dokumentasjon med interaktive eksempler.
 
 ## Tekniske ressurser {#technical-resources}
 
-* **[Komplett API-dokumentasjon](https://forwardemail.net/en/email-api)** - Interaktiv OpenAPI 3.0-spesifikasjon
-* **[Guide for selvhosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Implementer videresendt e-post på infrastrukturen din
-* **[Hvitbok for sikkerhet](https://forwardemail.net/technical-whitepaper.pdf)** - Teknisk arkitektur og sikkerhetsdetaljer
-* **[GitHub Repository](https://github.com/forwardemail/forwardemail.net)** - Åpen kildekodebase
-* **[Utviklerstøtte](mailto:api@forwardemail.net)** - Direkte tilgang til vårt ingeniørteam
+* **[Komplett API-dokumentasjon](https://forwardemail.net/en/email-api)** – Interaktiv OpenAPI 3.0-spesifikasjon
+* **[Guide for selvhosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – Implementer videresendt e-post på infrastrukturen din
+* **[Hvitbok for sikkerhet](https://forwardemail.net/technical-whitepaper.pdf)** – Teknisk arkitektur og sikkerhetsdetaljer
+* **[GitHub-arkivet](https://github.com/forwardemail/forwardemail.net)** – Åpen kildekodebase
+* **[Utviklerstøtte](mailto:api@forwardemail.net)** – Direkte tilgang til vårt ingeniørteam
 
 ---
 

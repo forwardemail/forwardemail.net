@@ -15,7 +15,7 @@ npm install @react-email/render nodemailer
 
 ## Broncode en voorbeeld {#source-code-and-example}
 
-Maak uw e-mailsjabloon met een `.jsx` of een `.js` bestand:
+Maak uw e-mailsjabloon met een bestand van het type `.jsx` of `.js`:
 
 ```jsx
 // email.jsx
@@ -76,6 +76,6 @@ Start de app om de e-mail te verzenden:
 node app
 ```
 
-U kunt nu naar **[Mijn account → E-mails](/my-account/emails)** gaan om de realtimestatus van uw e-mailbezorging, logs over de bezorging van e-mails en voorbeelden van HTML/platte tekst/bijlagen te bekijken.
+U kunt nu naar **[Mijn account → E-mails](/my-account/emails)** gaan om de realtimestatus van uw e-mailbezorging, logboeken over de bezorging van e-mails en voorbeelden van HTML/platte tekst/bijlagen te bekijken.
 
 > P.S. :tada: Je kunt ook **[e-mails bekijken in browsers en de iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** en **[e-mailsjablonen maken met Node.js](/docs/send-emails-with-node-js-javascript)** gebruiken.

@@ -1,14 +1,14 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Bản phát hành tự lưu trữ {#self-hosted-releases}
 
 Phần này ghi lại quy trình làm việc CI/CD cho giải pháp tự lưu trữ của ForwardEmail, giải thích cách hình ảnh Docker được xây dựng, xuất bản và triển khai.
 
-## Table of Contents {#table-of-contents}
+## Mục lục {#table-of-contents}
 
 * [Tổng quan](#overview)
 * [Quy trình làm việc CI/CD](#cicd-workflow)
   * [Quy trình làm việc của GitHub Actions](#github-actions-workflow)
   * [Cấu trúc hình ảnh Docker](#docker-image-structure)
-* [Quá trình triển khai](#deployment-process)
+* [Quy trình triển khai](#deployment-process)
   * [Cài đặt](#installation)
   * [Cấu hình Docker Compose](#docker-compose-configuration)
 * [Tính năng bảo trì](#maintenance-features)
@@ -19,18 +19,18 @@ Phần này ghi lại quy trình làm việc CI/CD cho giải pháp tự lưu tr
 * [Truy cập hình ảnh](#accessing-images)
 * [Đóng góp](#contributing)
 
-## Overview {#overview}
+## Tổng quan về {#overview}
 
-Giải pháp tự lưu trữ của ForwardEmail sử dụng GitHub Actions để tự động xây dựng và xuất bản hình ảnh Docker bất cứ khi nào bản phát hành mới được tạo. Những hình ảnh này sau đó có sẵn để người dùng triển khai trên máy chủ của riêng họ bằng cách sử dụng tập lệnh thiết lập được cung cấp.
+Giải pháp tự lưu trữ của ForwardEmail sử dụng GitHub Actions để tự động xây dựng và xuất bản hình ảnh Docker mỗi khi có bản phát hành mới. Những hình ảnh này sau đó sẽ có sẵn để người dùng triển khai trên máy chủ của riêng họ bằng tập lệnh thiết lập được cung cấp.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Ngoài ra còn có [blog tự lưu trữ](https://forwardemail.net/blog/docs/self-hosted-solution) và [hướng dẫn dành cho nhà phát triển tự lưu trữ](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Để biết thêm chi tiết về các phiên bản hướng dẫn từng bước, hãy xem hướng dẫn [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) hoặc [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Quy trình làm việc CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Quy trình làm việc GitHub Actions {#github-actions-workflow}
 
 Quy trình xây dựng và xuất bản hình ảnh Docker tự lưu trữ được định nghĩa trong `.github/workflows/docker-image-build-publish.yml`. Quy trình làm việc này:
 
@@ -76,16 +76,16 @@ Hình ảnh Docker được xây dựng bằng cách sử dụng phương pháp 
 1. **Giai đoạn xây dựng**:
 * Sử dụng Node.js 20 làm ảnh cơ sở
 * Đặt biến môi trường `SELF_HOSTED=true`
-* Cài đặt các gói phụ thuộc bằng pnpm
+* Cài đặt các phần phụ thuộc bằng pnpm
 * Xây dựng ứng dụng ở chế độ sản xuất
 
 2. **Giai đoạn cuối cùng**:
-* Sử dụng hình ảnh Node.js 20 mỏng hơn
+* Sử dụng ảnh Node.js 20 gọn nhẹ hơn
 * Chỉ cài đặt các phụ thuộc hệ thống cần thiết
 * Tạo các thư mục cần thiết để lưu trữ dữ liệu
 * Sao chép ứng dụng đã xây dựng từ giai đoạn xây dựng
 
-Phương pháp này đảm bảo hình ảnh cuối cùng được tối ưu hóa về kích thước và tính bảo mật.
+Phương pháp này đảm bảo hình ảnh cuối cùng được tối ưu hóa về kích thước và bảo mật.
 
 ## Quy trình triển khai {#deployment-process}
 
@@ -97,18 +97,18 @@ Người dùng có thể triển khai giải pháp tự lưu trữ bằng cách 
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
-Tập lệnh này:
+Kịch bản này:
 
 1. Sao chép kho lưu trữ
 2. Thiết lập môi trường
-3. Cấu hình cài đặt DNS và tường lửa
+3. Cấu hình DNS và cài đặt tường lửa
 4. Tạo chứng chỉ SSL
-5. Kéo hình ảnh Docker mới nhất
+5. Tải xuống các hình ảnh Docker mới nhất
 6. Khởi động các dịch vụ bằng Docker Compose
 
 ### Cấu hình Docker Compose {#docker-compose-configuration}
 
-Tệp `docker-compose-self-hosted.yml` định nghĩa tất cả các dịch vụ cần thiết cho giải pháp tự lưu trữ:
+Tệp `docker-compose-self-hosted.yml` xác định tất cả các dịch vụ cần thiết cho giải pháp tự lưu trữ:
 
 * **Web**: Giao diện web chính
 * **API**: Máy chủ API để truy cập theo chương trình
@@ -117,9 +117,9 @@ Tệp `docker-compose-self-hosted.yml` định nghĩa tất cả các dịch v�
 * **MX**: Dịch vụ trao đổi thư
 * **CalDAV**: Dịch vụ lịch
 * **CardDAV**: Dịch vụ danh bạ
-* **MongoDB**: Cơ sở dữ liệu để lưu trữ dữ liệu người dùng
+* **MongoDB**: Cơ sở dữ liệu lưu trữ dữ liệu người dùng
 * **Redis**: Kho dữ liệu trong bộ nhớ
-* **SQLite**: Cơ sở dữ liệu để lưu trữ email
+* **SQLite**: Cơ sở dữ liệu lưu trữ email
 
 Mỗi dịch vụ đều sử dụng cùng một hình ảnh Docker nhưng có các điểm vào khác nhau, cho phép sử dụng kiến trúc mô-đun đồng thời đơn giản hóa việc bảo trì.
 
@@ -131,8 +131,8 @@ Giải pháp tự lưu trữ bao gồm một số tính năng bảo trì:
 
 Người dùng có thể bật tính năng cập nhật tự động để:
 
-* Kéo hình ảnh Docker mới nhất hàng đêm
-* Khởi động lại dịch vụ với hình ảnh đã cập nhật
+* Tải ảnh Docker mới nhất hàng đêm
+* Khởi động lại dịch vụ với ảnh đã cập nhật
 * Ghi lại quá trình cập nhật
 
 ```bash
@@ -142,9 +142,9 @@ Người dùng có thể bật tính năng cập nhật tự động để:
 
 ### Sao lưu và khôi phục {#backup-and-restore}
 
-Thiết lập cung cấp các tùy chọn cho:
+Thiết lập này cung cấp các tùy chọn cho:
 
-* Cấu hình sao lưu thường xuyên vào bộ lưu trữ tương thích với S3
+* Cấu hình sao lưu thường xuyên vào bộ lưu trữ tương thích S3
 * Sao lưu dữ liệu MongoDB, Redis và SQLite
 * Khôi phục từ bản sao lưu trong trường hợp lỗi
 
@@ -153,7 +153,7 @@ Thiết lập cung cấp các tùy chọn cho:
 Chứng chỉ SSL được quản lý tự động với các tùy chọn sau:
 
 * Tạo chứng chỉ mới trong quá trình thiết lập
-* Gia hạn chứng chỉ khi cần
+* Gia hạn chứng chỉ khi cần thiết
 * Cấu hình DKIM để xác thực email
 
 ## Phiên bản {#versioning}
@@ -165,7 +165,7 @@ Mỗi bản phát hành GitHub sẽ tạo một hình ảnh Docker mới đượ
 
 Người dùng có thể chọn sử dụng phiên bản cụ thể để đảm bảo tính ổn định hoặc thẻ `latest` để luôn nhận được các tính năng mới nhất.
 
-## Truy cập hình ảnh {#accessing-images}
+## Đang truy cập hình ảnh {#accessing-images}
 
 Hình ảnh Docker có sẵn công khai tại:
 

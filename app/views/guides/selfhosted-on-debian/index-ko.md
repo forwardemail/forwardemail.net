@@ -25,7 +25,7 @@
   * [17단계: 설치 확인](#step-17-verify-installation)
 * [설치 후 구성](#post-installation-configuration)
   * [DNS 레코드 설정](#dns-records-setup)
-  * [첫 로그인](#first-login)
+  * [첫 번째 로그인](#first-login)
 * [백업 구성](#backup-configuration)
   * [S3 호환 백업 설정](#set-up-s3-compatible-backup)
   * [백업 Cron 작업 설정](#set-up-backup-cron-jobs)
@@ -47,7 +47,7 @@
 
 ## 개요 {#overview}
 
-이 가이드는 데비안 시스템에 Forward Email의 셀프호스팅 솔루션을 설치하는 단계별 지침을 제공합니다. 이 가이드는 데비안 11(Bullseye)과 데비안 12(Bookworm)에 맞춰 특별히 제작되었습니다.
+이 가이드는 데비안 시스템에 Forward Email의 셀프 호스팅 솔루션을 설치하는 단계별 지침을 제공합니다. 이 가이드는 데비안 11(Bullseye)과 데비안 12(Bookworm)에 맞춰 특별히 제작되었습니다.
 
 ## 필수 조건 {#prerequisites}
 
@@ -432,7 +432,7 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 echo "✅ All encryption keys generated successfully"
 ```
 
-### 14단계: 구성 {#step-14-update-ssl-paths-in-configuration}에서 SSL 경로 업데이트
+### 14단계: 구성에서 SSL 경로 업데이트 {#step-14-update-ssl-paths-in-configuration}
 
 환경 파일에서 SSL 인증서 경로를 구성합니다.
 
@@ -654,7 +654,7 @@ fi
 crontab -l
 ```
 
-## 데비안 특정 고려 사항 {#debian-specific-considerations}
+## 데비안 관련 고려 사항 {#debian-specific-considerations}
 
 ### 패키지 관리 차이점 {#package-management-differences}
 
@@ -833,4 +833,4 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 Ubuntu와의 주요 차이점은 snapd 설치와 Docker 저장소 구성입니다. 이 두 가지가 제대로 설정되면 Forward Email 애플리케이션은 두 시스템에서 동일하게 작동합니다.
 
-추가 구성 옵션 및 고급 기능에 대해서는 <https://forwardemail.net/self-hosted#configuration>.에서 공식 Forward Email 문서를 참조하세요.
+추가 구성 옵션 및 고급 기능에 대해서는 <https://forwardemail.net/self-hosted#configuration>.>의 공식 Forward Email 문서를 참조하세요.

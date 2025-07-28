@@ -2,8 +2,8 @@
 
 ## Mục lục {#table-of-contents}
 
-* [Cách khắc phục sự cố ISP chặn SMTP đến trên cổng 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
-* [Cách khắc phục sự cố ISP chặn SMTP gửi đi trên cổng 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
+* [Cách khắc phục sự cố khi ISP chặn SMTP đến trên cổng 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
+* [Cách khắc phục sự cố khi ISP chặn SMTP đi trên cổng 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
 * [Làm thế nào tôi có thể kiểm tra xem ISP của tôi có chặn cổng không](#how-can-i-check-if-my-isp-blocks-ports)
 
 ## Cách khắc phục sự cố ISP chặn SMTP đến trên cổng 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
@@ -12,9 +12,9 @@ Nếu bạn không mở cổng 25 trên địa chỉ IP của máy chủ thư th
 
 Ví dụ, bạn đang chạy một máy chủ thư tùy chỉnh tại nhà và Nhà cung cấp dịch vụ Internet ("ISP") của bạn đã chặn cổng đi 25.
 
-Vì bạn không thể có lưu lượng truy cập đi trên cổng 25, nên rất có thể bạn cũng sẽ không có lưu lượng truy cập đến trên cổng 25 do lệnh chặn này.
+Vì bạn không thể có lưu lượng truy cập đi trên cổng 25, nên rất có thể bạn cũng sẽ không có lưu lượng truy cập đến trên cổng 25 do khối này.
 
-Giả sử bạn đang sử dụng dịch vụ của chúng tôi để chuyển tiếp email, [bạn có thể giải quyết vấn đề này thông qua câu trả lời FAQ của chúng tôi tại đây](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
+Giả sử bạn đang sử dụng dịch vụ của chúng tôi để chuyển tiếp email, [bạn có thể giải quyết vấn đề này thông qua câu trả lời Câu hỏi thường gặp của chúng tôi tại đây](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
 
 ## Cách khắc phục sự cố ISP chặn SMTP đi trên cổng 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 

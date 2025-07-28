@@ -2,7 +2,7 @@
 
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [סקירה כללית](#overview)
 * [תהליך ההערכה שלנו](#our-evaluation-process)
@@ -14,9 +14,9 @@
 * [השוואת חברות](#company-comparison)
 * [קריטריוני בחירה](#selection-criteria)
 
-## סקירה כללית {#overview}
+## סקירה כללית של {#overview}
 
-Forward Email מעריכה באופן פעיל חברות מחקר בתחום אבטחת הסייבר כדי לבצע ביקורות מקיפות של בסיס הקוד הפתוח שלנו על [GitHub](https://github.com/forwardemail) ותשתית השרתים. לאחר מחקר והערכה מקיפים במהלך השנים האחרונות, זיהינו מספר חברות ביקורת אבטחה יוצאות דופן המדגימות באופן עקבי עבודה איכותית, מומחיות טכנית והתאמה לערכים שלנו המתמקדים בפרטיות.
+Forward Email מעריכה באופן פעיל חברות מחקר בתחום אבטחת הסייבר כדי לבצע ביקורות מקיפות של בסיס הקוד הפתוח שלנו על תשתית [גיטהאב](https://github.com/forwardemail) ועל תשתית השרתים. לאחר מחקר והערכה מקיפים במהלך השנים האחרונות, זיהינו מספר חברות ביקורת אבטחה יוצאות דופן המדגימות באופן עקבי עבודה איכותית, מומחיות טכנית והתאמה לערכים שלנו המתמקדים בפרטיות.
 
 מסמך זה מייצג את הממצאים וההמלצות שלנו לארגונים המחפשים שירותי ביקורת אבטחה מקצועיים. החברות המפורטות כאן הפגינו יכולות יוצאות דופן בבדיקות חדירה, סקירת קוד, הערכת תשתיות ומחקר אבטחה.
 
@@ -50,15 +50,15 @@ Cure53 היא חברת אבטחת סייבר גרמנית הידועה בגיש�
 **אתר אינטרנט**: <https://www.radicallyopensecurity.com/>
 **התמחות**: "ייעוץ אבטחת מחשבים ללא מטרות רווח"
 
-Radically Open Security (ROS) פועלת כייעוץ אבטחת מחשבים ייחודי ללא מטרות רווח, התואם באופן מושלם את עקרונות הקוד הפתוח וערכי השקיפות. ROS, שבסיסה באמסטרדם, חלוצה בגישה חדשנית לייעוץ אבטחה על ידי הפיכת המתודולוגיות והממצאים שלה לזמינים לציבור בכל עת שניתן.
+Radically Open Security (ROS) פועלת כייעוץ אבטחת מחשבים ייחודי ללא מטרות רווח, התואם באופן מושלם את עקרונות הקוד הפתוח וערכי השקיפות. ROS, שבסיסה באמסטרדם, חלוצה בגישה חדשנית לייעוץ אבטחה על ידי הפיכת המתודולוגיות והממצאים שלה לזמינות לציבור בכל עת שניתן.
 
 המודל ללא מטרות רווח שלהם מאפשר להם להתמקד אך ורק בתוצאות אבטחה ולא במקסום רווחים, מה שלעתים קרובות מוביל להערכות יסודיות יותר ולהמלצות אמיתיות. ל-ROS מומחיות מיוחדת בטכנולוגיות המתמקדות בפרטיות, שירותי VPN ויישומים המטפלים בנתוני משתמשים רגישים.
 
 **פרסומים ודוחות בולטים**:
 
-* [הערכת אבטחה של Droid2Tracking](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - ניתוח מעקב נייד
+* [הערכת אבטחה של Droid2Tracking](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - ניתוח מעקב אחר מכשירים ניידים
 * [הערכת הביטחון של תוכנית טאורי 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - הערכה של מסגרת יישומים חוצת פלטפורמות
-* [הערכת אבטחה של Mullvad VPN 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - ניתוח אבטחת שירות VPN
+* [הערכת אבטחה של Mullvad VPN לשנת 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - ניתוח אבטחת שירות VPN
 
 ### מובטח AB {#assured-ab}
 
@@ -72,11 +72,11 @@ Assured AB היא חברת ייעוץ אבטחת סייבר שבדית שביס�
 
 **פרסומים ודוחות בולטים**:
 
-* [ביקורת אבטחה של שרתי דוא"ל של Mullvad 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - הערכת אבטחת תשתית דוא"ל
-* [ביקורת אבטחה של Mullvad API 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - הערכת אבטחת API
+* [ביקורת אבטחה של שרתי דוא"ל של Mullvad 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - הערכת אבטחת תשתית הדוא"ל
+* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - הערכת אבטחת API
 * [ביקורת אבטחה של שרת DNS של Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - הערכת תשתית DNS
 
-### שובל של סיביות {#trail-of-bits}
+### שובל של חתיכות {#trail-of-bits}
 
 **מיקום**: ניו יורק, ניו יורק, ארצות הברית
 **אתר אינטרנט**: <https://www.trailofbits.com/>
@@ -89,8 +89,8 @@ Trail of Bits היא חברת אבטחת סייבר אמריקאית בולטת 
 **פרסומים ודוחות בולטים**:
 
 * [סקירת אבטחת Homebrew 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - הערכת אבטחה של מנהל החבילות
-* [סקירת Hey Security](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - הערכת אבטחה של שירות דוא"ל
-* [סקירת אבטחה של cURL 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - ניתוח אבטחה של ספריית רשת
+* [סקירת Hey Security](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - הערכת אבטחה של שירות הדוא"ל
+* [סקירת אבטחה של cURL 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - ניתוח אבטחה של ספריית הרשת
 
 ## השוואת חברות {#company-comparison}
 
@@ -101,7 +101,7 @@ Trail of Bits היא חברת אבטחת סייבר אמריקאית בולטת 
 | **AB מובטח** | גטבורג, שבדיה | תשתית טכנית | אבטחת דוא"ל/DNS, הערכות API | ביקורות שרתים מיוחדות |
 | **שביל החתיכות** | ניו יורק, ארה"ב | אבטחת תוכנה | בלוקצ'יין, קריפטוגרפיה, כלי אבטחה | תרומות בקוד פתוח |
 
-קריטריוני בחירה ## {#selection-criteria}
+## קריטריוני בחירה {#selection-criteria}
 
 בעת הערכת חברות ביקורת אבטחה אלו, שקלנו מספר גורמים קריטיים שארגונים צריכים לשקול בעת בחירת שותף אבטחה:
 

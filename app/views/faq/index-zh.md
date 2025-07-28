@@ -1,4 +1,4 @@
-# 常见问题 {#frequently-asked-questions}
+# 常见问题解答 {#frequently-asked-questions}
 
 <img 加载="懒惰" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
@@ -34,7 +34,7 @@
 * [电子邮件配置](#email-configuration)
   * [如何开始并设置电子邮件转发](#how-do-i-get-started-and-set-up-email-forwarding)
   * [我可以使用多个 MX 交换器和服务器进行高级转发吗？](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [如何设置休假回复程序（外出自动回复程序）](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [如何设置休假回复器（外出自动回复器）](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [如何设置 SPF 以转发电子邮件](#how-do-i-set-up-spf-for-forward-email)
   * [如何设置 DKIM 以转发电子邮件](#how-do-i-set-up-dkim-for-forward-email)
   * [如何设置 DMARC 以转发电子邮件](#how-do-i-set-up-dmarc-for-forward-email)
@@ -47,7 +47,7 @@
 * [高级功能](#advanced-features)
   * [您是否支持营销相关电子邮件的新闻通讯或邮件列表](#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email)
   * [你们支持用API发送电子邮件吗](#do-you-support-sending-email-with-api)
-  * [您是否支持使用 IMAP 接收电子邮件](#do-you-support-receiving-email-with-imap)
+  * [你们支持使用 IMAP 接收电子邮件吗](#do-you-support-receiving-email-with-imap)
   * [你们支持POP3吗](#do-you-support-pop3)
   * [您是否支持日历（CalDAV）](#do-you-support-calendars-caldav)
   * [您是否支持联系人（CardDAV）](#do-you-support-contacts-carddav)
@@ -146,17 +146,17 @@
 4. 通过向您的新别名之一发送电子邮件来**测试您的设置**
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> DNS 更改最多可能需要 24-48 小时才能在全球范围内生效，但通常会更快生效。
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> 为了提高送达率，我们建议设置 [SPF](#how-do-i-set-up-spf-for-forward-email)、[DKIM](#how-do-i-set-up-dkim-for-forward-email) 和 [DMARC](#how-do-i-set-up-dmarc-for-forward-email) 记录。
 
 ## 简介 {#introduction}
 
 ### 什么是转发电子邮件 {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> 转发电子邮件非常适合个人、小型企业和开发人员，他们希望获得专业的电子邮件地址，但又无需承担完整电子邮件托管解决方案的成本和维护费用。
 
 Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定义域名的电子邮件托管提供商**。
 
@@ -174,10 +174,10 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 * **端到端加密**：支持 OpenPGP/MIME
 * **自定义 Catch-All 别名**：创建无限数量的邮件别名
 
-您可以在[我们的电子邮件比较页面](/blog/best-email-service)上将我们与 56 多个其他电子邮件服务提供商进行比较。
+您可以在 [我们的电子邮件比较页面](/blog/best-email-service) 上将我们与 56 多家其他电子邮件服务提供商进行比较。
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> 阅读我们的免费 [技术白皮书](/technical-whitepaper.pdf) 了解更多关于转发电子邮件的信息
 
 ### 谁使用转发电子邮件 {#who-uses-forward-email}
 
@@ -211,12 +211,12 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 ### 转发电子邮件的历史记录是什么 {#what-is-forward-emails-history}
 
-您可以在[我们的“关于”页面](/about)上了解有关转发电子邮件的更多信息。
+您可以在 [我们的“关于”页面](/about) 上了解有关转发电子邮件的更多信息。
 
 ### 这项服务的速度有多快？{#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> 我们的系统注重速度和可靠性，配备多个冗余服务器，确保您的电子邮件及时送达。
 
 转发电子邮件可以以最小的延迟传递消息，通常在收到后的几秒钟内。
 
@@ -224,14 +224,14 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 * **平均送达时间**：从接收到转发只需不到 5-10 秒 ([请参阅我们的收件箱时间“TTI”监控页面](/tti))
 * **正常运行时间**：服务可用性高达 99.9% 以上
-* **全球基础设施**：服务器位于战略位置，可实现最佳路由
+* **全球基础设施**：服务器战略性布局，确保最佳路由
 * **自动扩展**：我们的系统会在电子邮件高峰期进行扩展
 
 我们实时运营，不像其他依赖延迟队列的提供商。
 
-我们不会使用 [错误异常](#do-you-store-error-logs) 和 [出站 SMTP](#do-you-support-sending-email-with-smtp) 写入磁盘或存储日志（请参阅我们的 [隐私政策](/privacy)）。
+我们不使用 [错误异常](#do-you-store-error-logs) 和 [出站 SMTP](#do-you-support-sending-email-with-smtp)（参见我们的 [隐私政策](/privacy)）写入磁盘或存储日志。
 
-所有操作均在内存中完成，并且[我们的源代码在 GitHub 上](https://github.com/forwardemail)。
+所有操作均在内存和 [我们的源代码在 GitHub 上](https://github.com/forwardemail) 中完成。
 
 ## 电子邮件客户端 {#email-clients}
 
@@ -241,8 +241,8 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 2. 打开 Thunderbird，前往“编辑 → 账户设置 → 账户操作 → 添加邮件账户”
 3. 输入您的姓名、转发邮件地址和密码
 4. 点击“手动配置”并输入：
-* 接收邮件：IMAP，`imap.forwardemail.net`，端口 993，SSL/TLS
-* 发送邮件：SMTP，`smtp.forwardemail.net`，端口 587，STARTTLS
+* 接收：IMAP，`imap.forwardemail.net`，端口 993，SSL/TLS
+* 发送：SMTP，`smtp.forwardemail.net`，端口 587，STARTTLS
 5. 点击“完成”
 
 ### Microsoft Outlook {#microsoft-outlook}
@@ -258,7 +258,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 * 密码：您生成的密码
 6. 点击“连接”
 
-### 苹果邮件 {#apple-mail}
+### Apple 邮件 {#apple-mail}
 
 1. 在“转发邮件”面板中创建新别名并生成密码
 2. 前往“邮件”→“偏好设置”→“帐户”→“+”
@@ -331,7 +331,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 3. 点击新创建的别名旁边的<strong class="text-success"><i class="fa fa-key"></i>生成密码</strong>。将其复制到剪贴板并安全存储屏幕上显示的生成密码。
 
-4. 前往 [Gmail](https://gmail.com)，然后在 [设置<i class="fa fa-angle-right"></i> 帐户和导入<i class="fa fa-angle-right"></i> 以...身份发送邮件](https://mail.google.com/mail/u/0/#settings/accounts) 下点击“添加其他电子邮件地址”
+4. 前往 [Gmail](https://gmail.com)，并在 [设置<i class="fa fa-angle-right"></i> 帐户和导入<i class="fa fa-angle-right"></i> 以...身份发送邮件](https://mail.google.com/mail/u/0/#settings/accounts) 下点击“添加其他电子邮件地址”
 
 5. 当提示输入“姓名”时，输入您希望电子邮件显示为“发件人”的姓名（例如“Linus Torvalds”）。
 
@@ -343,7 +343,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 9. 当提示“SMTP 服务器”时，输入 <code>smtp.forwardemail.net</code>，并将端口保留为 <code>587</code>
 
-10. 当提示输入“用户名”时，请输入您在<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的帐户<i class="fa fa-angle-right"></i>域</a> <i class="fa fa-angle-right"></i>别名下创建的别名的完整电子邮件地址（例如<code><hello@example.com></code>）
+10. 当提示输入“用户名”时，请输入您在<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">我的帐户<i class="fa fa-angle-right"></i>域</a> <i class="fa fa-angle-right"></i>别名下创建的别名的完整电子邮件地址（例如 <code><hello@example.com></code>）
 
 11. 当提示输入“密码”时，请粘贴上述第 3 步中<strong class="text-success"><i class="fa fa-key"></i>生成密码</strong>中输入的密码
 
@@ -351,7 +351,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 13. 点击“添加账户”继续
 
-14. 打开新标签页访问 [Gmail](https://gmail.com) 并等待验证邮件到达（您将收到一个验证码，确认您是您尝试“以此身份发送邮件”的电子邮件地址的所有者）
+14. 打开新标签页，前往 [Gmail](https://gmail.com)，等待验证邮件到达（您将收到一个验证码，确认您是您尝试“以此身份发送邮件”的电子邮件地址的所有者）。
 
 15. 收到验证码后，请复制并粘贴上一步中收到的验证码
 
@@ -373,7 +373,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 ### 使用 Gmail 发送邮件的旧版免费指南是什么？{#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">重要提示：</strong>自<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we 现已支持出站 SMTP</a>以来，此旧版免费指南已于 2023 年 5 月弃用。如果您使用以下指南，<a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this 将导致您的出站电子邮件</a>在 Gmail 中显示“<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>”。</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">重要提示：</strong>自<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we 现已支持出站 SMTP</a> 以来，此旧版免费指南已于 2023 年 5 月弃用。如果您使用以下指南，<a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this 将导致您的出站电子邮件</a>在 Gmail 中显示“<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>”。</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -397,7 +397,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 1. 您需要启用 [Gmail 双重身份验证][gmail-2fa] 才能使用此功能。如果您尚未启用，请访问 <https://www.google.com/landing/2step/>。
 
-2. 启用双重身份验证后（或者如果您已经启用），请访问 <https://myaccount.google.com/apppasswords>.
+2. 启用双重身份验证后（或者如果您已经启用了双重身份验证），请访问 <https://myaccount.google.com/apppasswords>.
 
 3. 当系统提示“选择要为其生成应用密码的应用和设备”时：
 * 在“选择应用”下拉菜单中选择“邮件”
@@ -444,7 +444,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 14. 点击“添加账户”继续
 
-15. 打开新标签页访问 [Gmail](https://gmail.com) 并等待验证邮件到达（您将收到一个验证码，确认您是您尝试“以此身份发送邮件”的电子邮件地址的所有者）
+15. 打开新标签页到 [Gmail](https://gmail.com)，等待验证邮件到达（您将收到一个验证码，确认您是您尝试“以此身份发送邮件”的电子邮件地址的所有者）
 
 16. 收到验证码后，请复制并粘贴上一步中收到的验证码
 
@@ -462,9 +462,9 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 如果您想在 Gmail 中设置高级路由，以便与邮箱不匹配的别名将转发到转发电子邮件的邮件交换，请按照以下步骤操作：
 
-1. 登录您的 Google 管理控制台（网址为 [admin.google.com](https://admin.google.com)）
-2. 前往 **应用 → Google Workspace → Gmail → 路由**
-3. 点击 **添加路由** 并配置以下设置：
+1. 登录您的 Google 管理控制台（地址：[admin.google.com](https://admin.google.com)）
+2. 前往**应用 → Google Workspace → Gmail → 路由**
+3. 点击**添加路由**并配置以下设置：
 
 **单个收件人设置：**
 
@@ -504,27 +504,27 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 对于想要设置高级路由的 Microsoft 365（以前称为 Office 365）用户，以便与邮箱不匹配的别名将转发到转发电子邮件的邮件交换：
 
-1. 登录 Microsoft 365 管理中心，网址为 [admin.microsoft.com](https://admin.microsoft.com)
+1. 登录 Microsoft 365 管理中心，地址为 [admin.microsoft.com](https://admin.microsoft.com)
 2. 前往 **Exchange → 邮件流 → 规则**
 3. 点击 **添加规则**，然后选择 **创建新规则**
 4. 为您的规则命名（例如，“将不存在的邮箱转发到转发邮件”）
 5. 在 **如果应用此规则** 下，选择：
-* “收件人地址匹配……”
+* “收件人地址匹配...”
 * 输入与您域中所有地址匹配的模式（例如 `*@yourdomain.com`）
 6. 在 **执行以下操作** 下，选择：
-* “将邮件重定向到……”
+* “将邮件重定向到...”
 * 选择“以下邮件服务器”
 * 输入 `mx1.forwardemail.net` 和端口 25
 * 添加 `mx2.forwardemail.net` 作为备用服务器
 7. 在 **除非** 下，选择：
-* “收件人是……”
-* 添加您的所有不应转发的现有邮箱
+* “收件人是...”
+* 添加所有不应已转发
 8. 设置规则优先级，确保其在其他邮件流规则之后运行
 9. 点击**保存**以激活规则
 
 ## 故障排除 {#troubleshooting}
 
-### 为什么我收不到测试邮件 {#why-am-i-not-receiving-my-test-emails}
+### 为什么我没有收到测试电子邮件 {#why-am-i-not-receiving-my-test-emails}
 
 如果您向自己发送测试电子邮件，那么它可能不会出现在您的收件箱中，因为它具有相同的“Message-ID”标头。
 
@@ -568,15 +568,15 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 | IMAP | `imap.forwardemail.net` | SSL/TLS **首选** | `993` 和 `2993` |
 | SMTP | `smtp.forwardemail.net` | SSL/TLS **首选** 或 TLS (STARTTLS) | SSL/TLS 的 `465` 和 `2465`（或）TLS（STARTTLS）的 `587`、`2587`、`2525` 和 `25` |
 
-### 为什么我的电子邮件被归类为垃圾邮件和垃圾邮件，我该如何检查我的域名信誉？{#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### 为什么我的电子邮件被归类为垃圾邮件和垃圾邮件，我该如何检查我的域名声誉？{#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
 本部分将指导您，您的外发邮件是否使用我们的 SMTP 服务器（例如 `smtp.forwardemail.net`）（或通过 `mx1.forwardemail.net` 或 `mx2.forwardemail.net` 转发），并且是否被投递到收件人的垃圾邮件或垃圾文件夹中。
 
-我们定期监控我们的[IP 地址](#what-are-your-servers-ip-addresses)与[所有信誉良好的 DNS 拒绝列表](#how-do-you-handle-your-ip-addresses-becoming-blocked)之间的差异，**因此这很可能是一个与域名声誉相关的问题**。
+我们定期监控 [IP 地址](#what-are-your-servers-ip-addresses) 与 [所有信誉良好的 DNS 拒绝列表](#how-do-you-handle-your-ip-addresses-becoming-blocked) 之间的关系，**因此这很可能是特定于域声誉的问题**。
 
 电子邮件可能由于以下几个原因而被归入垃圾邮件文件夹：
 
-1. **缺少身份验证**：设置[SPF](#how-do-i-set-up-spf-for-forward-email)、[DKIM](#how-do-i-set-up-dkim-for-forward-email)和[DMARC](#how-do-i-set-up-dmarc-for-forward-email)记录。
+1. **缺少身份验证**：设置 [SPF](#how-do-i-set-up-spf-for-forward-email)、[DKIM](#how-do-i-set-up-dkim-for-forward-email) 和 [DMARC](#how-do-i-set-up-dmarc-for-forward-email) 记录。
 
 2. **域名信誉**：新域名通常具有中性信誉，直到建立发送历史记录。
 
@@ -599,12 +599,12 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 | 发件人分数 | <https://senderscore.org/act/blocklist-remover/> | 名声 |
 | 贬值 | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP 删除 | <https://ipcheck.proofpoint.com/> | 移动 |
-| 删除 Cloudmark IP | <https://csi.cloudmark.com/en/reset/> | 移动 |
+| Apple/Proofpoint IP 移除 | <https://ipcheck.proofpoint.com/> | 移动 |
+| Cloudmark IP 删除 | <https://csi.cloudmark.com/en/reset/> | 移动 |
 | 垃圾邮件警察 | <https://www.spamcop.net/bl.shtml> | DNSBL |
 | Microsoft Outlook 和 Office 365 IP 删除 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | 移动 |
 | UCEPROTECT 的 1、2 和 3 级 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| UCEPROTECT 的 backscatterer.org | <https://www.backscatterer.org/> | 背散射保护 |
+| UCEPROTECT 的 backscatterer.org | <https://www.backscatterer.org/> | 背向散射保护 |
 | UCEPROTECT 的 whitelisted.org | <https://www.whitelisted.org/>（需付费） | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | 移动 |
 | AOL/Verizon（例如 `[IPTS04]`） | <https://senders.yahooinc.com/> | 移动 |
@@ -612,13 +612,13 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 | t-online.de（德语/T-Mobile） | `tobr@rx.t-online.de` | 移动 |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> 先发送少量高质量的电子邮件，建立良好的声誉，然后再发送大量邮件。
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> 如果您的域名被列入黑名单，每个黑名单都有各自的移除流程。请查看相关网站了解相关说明。
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> 如果您需要更多帮助，或发现我们被某个电子邮件服务提供商误认为垃圾邮件，请<a href="/help">联系我们</a>。
 
 ### 如果我收到垃圾邮件该怎么办？{#what-should-i-do-if-i-receive-spam-emails}
 
@@ -628,7 +628,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 **转发垃圾邮件的电子邮件地址是：** <abuse@forwardemail.net>
 
-### 为什么我发送给自己的测试邮件在 Gmail 中显示为“可疑”{#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### 为什么我发送给自己的测试电子邮件在 Gmail 中显示为“可疑”{#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
 如果您在向自己发送测试时在 Gmail 中看到此错误消息，或者当您使用别名发送电子邮件的人第一次看到您的电子邮件时，那么**请不要担心** - 因为这是 Gmail 的内置安全功能。
 
@@ -636,30 +636,30 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 但是，如果他们确实看到了这条消息，那是因为他们通常习惯于看到你的邮件来自 <john@gmail.com>，而不是 <john@customdomain.com>（仅举个例子）。Gmail 会提醒用户，以确保万无一失，但目前没有其他解决方法。
 
-### 我可以删除 Gmail 中的 via forwardemail dot net 吗？{#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### 我可以在 Gmail 中删除 via forwardemail dot net 吗？{#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-此主题与[Gmail 中一个众所周知的问题：发件人姓名旁边会出现额外的信息](https://support.google.com/mail/answer/1311182)相关。
+此主题与 [Gmail 中一个众所周知的问题：发件人姓名旁边会出现额外的信息](https://support.google.com/mail/answer/1311182) 相关。
 
-自 2023 年 5 月起，我们支持所有付费用户使用 SMTP 发送电子邮件作为附加功能 - 这意味着您可以在 Gmail 中删除 <span class="notranslate">via forwardemail dot net</span>。
+自 2023 年 5 月起，我们支持所有付费用户使用 SMTP 发送电子邮件作为附加组件 - 这意味着您可以在 Gmail 中删除 <span class="notranslate">via forwardemail dot net</span>。
 
-请注意，此常见问题解答主题专门针对使用[如何使用 Gmail 发送邮件](#how-to-send-mail-as-using-gmail)功能的用户。
+请注意，此常见问题解答主题专门针对使用 [如何使用 Gmail 发送邮件](#how-to-send-mail-as-using-gmail) 功能的用户。
 
-请参阅[您是否支持使用 SMTP 发送电子邮件](#do-you-support-sending-email-with-smtp)部分了解配置说明。
+请参阅 [您是否支持使用 SMTP 发送电子邮件](#do-you-support-sending-email-with-smtp) 部分了解配置说明。
 
 ## 数据管理 {#data-management}
 
-### 您的服务器位于哪里？{#where-are-your-servers-located}
+### 您的服务器位于哪里 {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> 我们可能很快会宣布我们的欧盟数据中心位于 [forwardemail.eu](https://forwardemail.eu)。请订阅 <https://github.com/orgs/forwardemail/discussions/336> 上的讨论以获取最新资讯。
 
-我们的服务器主要位于科罗拉多州丹佛市 - 请参阅<https://forwardemail.net/ips>以获取我们的完整 IP 地址列表。
+我们的服务器主要位于科罗拉多州丹佛市 - 请参阅<https://forwardemail.net/ips> 获取我们的完整 IP 地址列表。
 
-您可以在我们的[GDPR](/gdpr)、[DPA](/dpa)和[隐私](/privacy)页面上了解我们的子处理器。
+您可以在我们的 [GDPR](/gdpr)、[DPA](/dpa) 和 [隐私](/privacy) 页面上了解我们的子处理器。
 
 ### 如何导出和备份我的邮箱 {#how-do-i-export-and-backup-my-mailbox}
 
-您可以随时将您的邮箱导出为[EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)、[Mbox](https://en.wikipedia.org/wiki/Mbox)或加密的[SQLite](https://en.wikipedia.org/wiki/SQLite)格式。
+您可以随时将您的邮箱导出为 [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)、[Mbox](https://en.wikipedia.org/wiki/Mbox) 或加密的 [SQLite](https://en.wikipedia.org/wiki/SQLite) 格式。
 
 转至<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的帐户<i class="fa fa-angle-right"></i>域</a> <i class="fa fa-angle-right"></i>别名<i class="fa fa-angle-right"></i>下载备份并选择您喜欢的导出格式类型。
 
@@ -681,7 +681,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 ### 如何导入和迁移我现有的邮箱 {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-您可以按照以下说明轻松地将您的电子邮件导入转发电子邮件（例如使用[雷鸟](https://www.thunderbird.net)）：
+您可以按照以下说明轻松地将电子邮件导入转发电子邮件（例如使用 [雷鸟](https://www.thunderbird.net)）：
 
 <div class="alert alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -707,13 +707,13 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 | Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
 | 其他 | [Use Thunderbird](https://www.thunderbird.net) | 在 Thunderbird 中设置您现有的电子邮件帐户，然后使用 [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) 插件导出和导入您的电子邮件。**您也可以简单地在一个帐户之间复制/粘贴或拖放电子邮件。** |
 
-2. 下载、安装并打开[雷鸟](https://www.thunderbird.net)。
+2.下载、安装并打开[雷鸟](https://www.thunderbird.net)。
 
 3. 使用您别名的完整电子邮件地址（例如 <code><you@yourdomain.com></code>）和您生成的密码创建一个新帐户。<strong>如果您尚未生成密码，请<a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">参阅我们的设置说明</a></strong>。
 
-4. 下载并安装[进出口工具](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird 插件。
+4.下载并安装[进出口工具](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird插件。
 
-5. 在 Thunderbird 中创建一个新的本地文件夹，然后右键单击它 → 选择 `ImportExportTools NG` 选项 → 选择 `Import mbox file`（用于 MBOX 导出格式） – 或 – `Import messages` / `Import all messages from a directory`（用于 EML 导出格式）。
+5. 在 Thunderbird 中创建一个新的本地文件夹，然后右键单击它 → 选择 `ImportExportTools NG` 选项 → 选择 `Import mbox file`（用于 MBOX 导出格式）– 或 – `Import messages` / `Import all messages from a directory`（用于 EML 导出格式）。
 
 6. 将本地文件夹拖放到 Thunderbird 中您想要使用我们的服务将邮件上传到 IMAP 存储的新建（或现有）IMAP 文件夹。这将确保邮件通过我们的 SQLite 加密存储进行在线备份。
 
@@ -723,9 +723,9 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 提示：
 </strong>
 <span>
-如果您不清楚如何导入 Thunderbird，可以参考官方说明：<a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> 和 <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+如果您不清楚如何导入 Thunderbird，可以参考 <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> 和 <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
 </span>
-</div>
+</div> 的官方说明
 
 <div class="alert my-3 alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -829,91 +829,92 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>登录 <i class="fa fa-angle-right"></i> 网络 <i class="fa fa-angle-right"></i> 域名 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i>更多<i class="fa fa-angle-right"></i>管理域名</td>
+<td>登录 <i class="fa fa-angle-right"></i> 网络 <i class="fa fa-angle-right"></i> 域名 <i class="fa fa-angle-right"></i> （选择您的域名）<i class="fa fa-angle-right"></i> 更多 <i class="fa fa-angle-right"></i> 管理域名</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>登录<i class="fa fa-angle-right"></i>在卡片视图中，点击您的域名上的“管理”<i class="fa fa-angle-right"></i>在列表视图中，点击齿轮图标<i class="fa fa-angle-right"></i>DNS 和域名服务器<i class="fa fa-angle-right"></i>DNS 记录</td>
+<td>登录 <i class="fa fa-angle-right"></i> 在卡片视图中，点击您的域名上的“管理”<i class="fa fa-angle-right"></i> 在列表视图中，点击
+齿轮图标 <i class="fa fa-angle-right"></i> DNS 和域名服务器 <i class="fa fa-angle-right"></i> DNS 记录</td>
 </tr>
 <tr>
 <td>
 <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> 观看</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> 观看</a>
 </td>
 <td>登录 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i>（点击齿轮图标）<i class="fa fa-angle-right"></i> 点击左侧菜单中的“DNS 和域名服务器”</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-<td>登录 <i class="fa fa-angle-right"></i> 面板 <i class="fa fa-angle-right"></i>域名 <i class="fa fa-angle-right"></i> 管理域名 <i class="fa fa-angle-right"></i> DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
+<td>登录 <i class="fa fa-angle-right"></i> 面板 <i class="fa fa-angle-right"></i> 域名 <i class="fa fa-angle-right"></i> 管理域名 <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
 <td>登录 <i class="fa fa-angle-right"></i> 概览 <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> 简易编辑器 <i class="fa fa-angle-right"></i> 记录</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
 <td>登录 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> 编辑区域</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> 观看</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> 观看</a>
 </td>
 <td>登录 <i class="fa fa-angle-right"></i> 管理我的域名 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> 管理 DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google 域名</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 域名</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> 观看</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> 观看</a>
 </td>
 <td>登录 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> 配置 DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> 观看</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> 观看</a>
 </td>
 <td>登录 <i class="fa fa-angle-right"></i> 域名列表 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> 高级 DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
 <td>登录 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> 设置 Netlify DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network 解决方案</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1解决方案</a></td>
 <td>登录 <i class="fa fa-angle-right"></i> 账户管理 <i class="fa fa-angle-right"></i> 我的域名 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> 更改域名指向 <i class="fa fa-angle-right"></i> 高级 DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> 观看</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> 观看</a>
 </td>
 <td>登录 <i class="fa fa-angle-right"></i> 托管域名 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> DNS 设置</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
 <td>登录 <i class="fa fa-angle-right"></i> 主菜单 <i class="fa fa-angle-right"></i> 设置 <i class="fa fa-angle-right"></i> 域名 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i>
 高级设置 <i class="fa fa-angle-right"></i> 自定义记录</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Now</a></td>
 <td>使用“now”CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>登录 <i class="fa fa-angle-right"></i> 域名页面 <i class="fa fa-angle-right"></i>（选择您的域名）<i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
 <td>登录 <i class="fa fa-angle-right"></i> 域名页面 <i class="fa fa-angle-right"></i>（点击 <i class="fa fa-ellipsis-h"></i> 图标）<i class="fa fa-angle-right"></i> 选择“管理 DNS 记录”</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>登录 <i class="fa fa-angle-right"></i> 域名 <i class="fa fa-angle-right"></i> 我的域名</td>
 </tr>
 <tr>
@@ -1017,7 +1018,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 提示：
 </strong>
 <span>
-请务必将“值”列中的上述值替换为您自己的电子邮件地址。“TTL”值不必是 3600，可以根据需要设置更低或更高的值。较低的生存时间 (TTL) 值将确保您未来对 DNS 记录所做的任何更改都能更快地在整个互联网上传播——可以将其视为在内存中缓存的时间（以秒为单位）。您可以在维基百科上了解更多关于<a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL</a>的信息。
+请务必将“值”列中的上述值替换为您自己的电子邮件地址。“TTL”值不必是 3600，可以根据需要设置更低或更高的值。较低的生存时间 (TTL) 值将确保您未来对 DNS 记录所做的任何更改都能更快地在整个互联网上传播——可以将其视为它在内存中缓存的时间（以秒为单位）。您可以在<a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">维基百科上的 TTL</a> 上了解更多关于 TTL 的信息。
 </span>
 </div>
 
@@ -1193,7 +1194,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 选项 F：
 </strong>
 <span>
-您甚至可以将 Webhook 用作全局或单独的别名来转发电子邮件。请参阅下方标题为<a href="#do-you-support-webhooks" class="alert-link">您是否支持 Webhook</a> 的示例和关于 Webhook 的完整部分。
+您甚至可以将 Webhook 用作全局或单独的别名来转发电子邮件。请参阅下方标题为<a href="#do-you-support-webhooks" class="alert-link">您是否支持 Webhook</a>的示例和关于 Webhook 的完整部分。
 </span>
 </div>
 
@@ -1226,7 +1227,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 选项 G：
 </strong>
 <span>
-您甚至可以使用正则表达式 (“regex”) 来匹配别名并处理用于转发电子邮件的替换。请参阅下方标题为<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">您支持正则表达式还是正则表达式</a>的示例和完整部分。
+您甚至可以使用正则表达式（“regex”）来匹配别名并处理用于转发电子邮件的替换。请参阅下方标题为<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">您支持正则表达式还是正则表达式</a>的示例和完整正则表达式部分。
 </span>
 </div>
 
@@ -1237,7 +1238,7 @@ Forward Email 是一家**功能齐全的电子邮件服务提供商**和**自定
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>简单示例：</strong>如果我希望所有发送至 `linus@example.com` 或 `torvalds@example.com` 的邮件都转发至 `user@gmail.com`：
+<strong>简单示例：</strong>如果我希望所有发送到 `linus@example.com` 或 `torvalds@example.com` 的邮件都转发到 `user@gmail.com`：
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -1344,7 +1345,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 如果您没有收到测试邮件，或者收到一封显示“请小心此邮件”的测试邮件，请分别查看<a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">为什么我没有收到测试邮件</a>和<a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">为什么我发送给我的测试邮件在 Gmail 中显示为“可疑”</a>的答案。
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">如果您希望在 Gmail 中“以身份发送邮件”，则需要<strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">观看此视频</a></strong>，或按照下面<a href="#how-to-send-mail-as-using-gmail">How 使用 Gmail 以身份发送邮件</a>的步骤操作。
+</li><li class="mb-2 mb-md-3 mb-lg-5">如果您希望在 Gmail 中“以…身份发送邮件”，则需要<strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">观看此视频</a></strong>，或按照下面<a href="#how-to-send-mail-as-using-gmail">How 使用 Gmail 以…身份发送邮件</a>中的步骤操作。
 
 </li></ol>
 
@@ -1376,11 +1377,11 @@ Catch-all 转发规则也可以描述为“fall-through”。
 可选插件：
 </strong>
 <span>
-如果您使用<a class="alert-link" href="#how-to-send-mail-as-using-gmail">How 使用 Gmail 以身份发送邮件</a>功能，则可能需要将自己添加到允许列表。请参阅<a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">Gmail 的这些说明</a>中关于此主题的说明。
+如果您正在使用<a class="alert-link" href="#how-to-send-mail-as-using-gmail">How 使用 Gmail 以其他身份发送邮件</a>功能，则可能需要将自己添加到允许列表。请参阅<a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">Gmail 的这些说明</a>中关于此主题的说明。
 </span>
 </div>
 
-### 我可以使用多个 MX 交换和服务器进行高级转发吗？{#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### 我可以使用多个 MX 交换器和服务器进行高级转发吗？{#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
 是的，但是**您的 DNS 记录中应该只列出一个 MX 交换**。
 
@@ -1392,7 +1393,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 如果您使用的是 Microsoft 365（Outlook），并且想要将所有不匹配的别名转发到我们的服务，请参阅 <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> 和 <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### 如何设置休假回复器（外出自动回复器）{#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### 如何设置休假回复程序（外出自动回复程序）{#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
 转至<a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的帐户<i class="fa fa-angle-right"></i>域</a> <i class="fa fa-angle-right"></i>别名，然后创建或编辑您想要为其配置休假自动回复的别名。
 
@@ -1403,7 +1404,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 * 消息限制为 1000 个字符。
 * 设置需要出站 SMTP 配置（例如，您需要设置 DKIM、DMARC 和 Return-Path DNS 记录）。
 * 前往 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">我的帐户 <i class="fa fa-angle-right"></i> 域名</a> <i class="fa fa-angle-right"></i> 设置 <i class="fa fa-angle-right"></i> 出站 SMTP 配置，并按照设置说明进行操作。
-* 休假回复功能无法在全球虚荣域名上启用（例如，不支持 [一次性地址](/disposable-addresses)）。
+* 无法在全球虚荣域名上启用休假回复功能（例如，不支持 [一次性地址](/disposable-addresses)）。
 * 无法为带有通配符/全部捕获（`*`）或正则表达式的别名启用休假响应器。
 
 与 `postfix` 等邮件系统（例如使用 `sieve` 休假过滤器扩展）不同，转发电子邮件会自动添加您的 DKIM 签名，在发送休假回复时防止连接问题（例如由于常见的 SSL/TLS 连接问题和遗留维护的服务器），甚至支持对休假回复进行 Open WKD 和 PGP 加密。
@@ -1415,26 +1416,26 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 1. 我们每 4 天仅向每个 [列入白名单](#do-you-have-an-allowlist) 发件人发送一次（这与 Gmail 的行为类似）。
 
-* 我们的 Redis 缓存使用 `alias_id` 和 `sender` 指纹，其中 `alias_id` 是 MongoDB 别名 ID，而 `sender` 是发件人地址（如果已列入白名单）或发件人地址中的根域（如果未列入白名单）。为简单起见，此指纹在缓存中的有效期设置为 4 天。
+* 我们的 Redis 缓存使用 `alias_id` 和 `sender` 作为指纹，其中 `alias_id` 是 MongoDB ID 的别名，`sender` 是发件人地址（如果已列入白名单）或发件人地址中的根域（如果未列入白名单）。为简单起见，此指纹在缓存中的有效期设置为 4 天。
 
 * 我们对非允许名单发件人的发件人地址使用根域进行解析的方法可防止相对未知的发件人（例如恶意行为者）滥用洪水般的休假响应消息。
 
-2. 仅当 MAIL FROM 和/或 From 不为空且不包含（不区分大小写）[邮政局长用户名](#what-are-postmaster-addresses)（电子邮件中 @ 之前的部分）时，我们才会发送。
+2. 仅当 MAIL FROM 和/或 From 不为空并且不包含（不区分大小写）[邮政局长用户名](#what-are-postmaster-addresses)（电子邮件中 @ 之前的部分）时，我们才会发送。
 
 3. 如果原始邮件具有以下任何标头（不区分大小写），则我们不会发送：
 
 * `auto-submitted` 的标头，其值不等于 `no`。
 * `x-auto-response-suppress` 的标头，其值为 `dr`、`autoreply`、`auto-reply`、`auto_reply` 或 `all`
-* `list-id`、`list-subscribe`、`list-unsubscribe`、`list-help`、`list-post`、`list-owner`、`list-archive`、`x-autoreply`、`x-autorespond` 或`x-auto-respond`（无论值如何）。
-* `precedence` 的标头，其值为 `bulk`、`autoreply`、`auto-reply`、`auto_reply` 或 `list`。
+* `list-id`、`list-subscribe`、`no`0、`no`1、`no`2、`no`3、`no`4、`no`5、`no`6 或 `no`7 的标头（无论其值为多少）。
+* `no`8 的标题，其值为 `no`9、`x-auto-response-suppress`0、`x-auto-response-suppress`1、`x-auto-response-suppress`2 或 `x-auto-response-suppress`3。
 
 4. 如果 MAIL FROM 或 From 电子邮件地址以 `+donotreply`、`-donotreply`、`+noreply` 或 `-noreply` 结尾，我们不会发送。
 
-5. 如果发件人电子邮件地址用户名部分为 `mdaemon` 并且具有不区分大小写的标题 `X-MDDSN-Message`，则我们不会发送。
+5. 如果发件人电子邮件地址用户名部分为 `mdaemon`，并且其标头不区分大小写为 `X-MDDSN-Message`，则我们不会发送。
 
-6. 如果存在不区分大小写的 `multipart/report` 标头 `content-type`，则我们不会发送。
+6. 如果 `multipart/report` 的标头不区分大小写，则我们不会发送。
 
-### 如何设置转发电子邮件的 SPF {#how-do-i-set-up-spf-for-forward-email}
+### 如何设置 SPF 以转发电子邮件 {#how-do-i-set-up-spf-for-forward-email}
 
 使用您的注册商的 DNS 管理页面，设置以下 <strong class="notranslate">TXT</strong> 记录：
 
@@ -1507,11 +1508,11 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 如何连接和配置我的联系人{#how-do-i-connect-and-configure-my-contacts}
 
-**要配置您的联系人，请使用 CardDAV URL：** `https://carddav.forwardemail.net`（或者，如果您的客户端允许，则只需使用 `carddav.forwardemail.net`）
+**要配置您的联系人，请使用 CardDAV URL：** `https://carddav.forwardemail.net`（或者如果您的客户端允许，则直接使用 `carddav.forwardemail.net`）
 
 ### 如何连接和配置我的日历 {#how-do-i-connect-and-configure-my-calendars}
 
-**要配置您的日历，请使用 CalDAV URL：** `https://caldav.forwardemail.net`（或者，如果您的客户端允许，则只需使用 `caldav.forwardemail.net`）
+**要配置您的日历，请使用 CalDAV URL：** `https://caldav.forwardemail.net`（或者如果您的客户端允许，则只需使用 `caldav.forwardemail.net`）
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="转发电子邮件日历 CalDAV Thunderbird 示例设置" />
 
@@ -1523,13 +1524,13 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 如何设置 SRS 以转发电子邮件 {#how-do-i-set-up-srs-for-forward-email}
 
-我们自动配置[发件人重写方案](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（“SRS”）——您无需自己执行此操作。
+我们自动配置 [发件人重写方案](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（“SRS”）——您无需自己执行此操作。
 
 ### 如何设置 MTA-STS 来转发电子邮件 {#how-do-i-set-up-mta-sts-for-forward-email}
 
-请参阅[我们关于 MTA-STS 的部分](#do-you-support-mta-sts)以获得更多见解。
+请参阅 [我们关于 MTA-STS 的部分](#do-you-support-mta-sts) 以了解更多见解。
 
-### 如何在我的电子邮件地址中添加个人资料图片 {#how-do-i-add-a-profile-picture-to-my-email-address}
+### 如何在我的电子邮件地址中添加个人资料照片 {#how-do-i-add-a-profile-picture-to-my-email-address}
 
 如果您使用 Gmail，请按照以下步骤操作：
 
@@ -1550,13 +1551,13 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ## 高级功能 {#advanced-features}
 
-### 您是否支持营销相关电子邮件的通讯或邮件列表{#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+### 您是否支持营销相关电子邮件的简报或邮寄列表{#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
 是的，您可以在<https://forwardemail.net/guides/newsletter-with-listmonk>.阅读更多内容
 
-请注意，为了维护 IP 信誉并确保邮件送达率，Forward Email 会根据每个域名设置手动审核流程来审批**简报**。请发送电子邮件至 <support@forwardemail.net> 或提交 [帮助请求](https://forwardemail.net/help) 申请审批。审批流程通常不超过 24 小时，大多数请求会在 1-2 小时内完成。我们计划在不久的将来通过额外的垃圾邮件控制和警报功能，实现即时审批。此流程可确保您的邮件顺利送达收件箱，并且不会被标记为垃圾邮件。
+请注意，为了维护 IP 信誉并确保邮件送达率，Forward Email 会根据每个域名设置手动审核流程来审批**简报**。请发送电子邮件至 <support@forwardemail.net> 或创建 [帮助请求](https://forwardemail.net/help) 进行审批。审核通常需要不到 24 小时，大多数请求会在 1-2 小时内完成。我们计划在不久的将来通过额外的垃圾邮件控制和警报功能，实现即时审核。此流程可确保您的邮件到达收件箱，并且不会被标记为垃圾邮件。
 
-### 您是否支持使用 API {#do-you-support-sending-email-with-api} 发送电子邮件
+### 您是否支持使用 API {#do-you-support-sending-email-with-api}
 
 是的，自 2023 年 5 月起，我们支持使用 API 发送电子邮件作为所有付费用户的附加组件。
 
@@ -1576,7 +1577,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 您是否支持使用 IMAP 接收电子邮件 {#do-you-support-receiving-email-with-imap}
 
-是的，自 2023 年 10 月 16 日起，我们支持所有付费用户通过 IMAP 接收电子邮件，这是一个附加功能。**请阅读我们关于 [我们的加密 SQLite 邮箱存储功能如何运作](/blog/docs/best-quantum-safe-encrypted-email-service) 的深度文章**。
+是的，自 2023 年 10 月 16 日起，我们支持所有付费用户通过 IMAP 接收电子邮件，这是一个附加功能。**请阅读我们关于 [我们的加密 SQLite 邮箱存储功能如何运作](/blog/docs/best-quantum-safe-encrypted-email-service) 的深入文章**。
 
 <div id="imap-instructions">
 
@@ -1586,7 +1587,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 重要提示：
 </strong>
 <span>
-请确保您已阅读我们的<a href="/terms" class="alert-link" target="_blank">条款</a>和<a href="/privacy" class="alert-link" target="_blank">隐私政策</a>——您的使用即视为您已确认并同意。
+请确保您已阅读我们的<a href="/terms" class="alert-link" target="_blank">条款</a>和<a href="/privacy" class="alert-link" target="_blank">隐私政策</a>——您的使用即视为您已确认并同意本政策。
 </span>
 </div>
 
@@ -1594,13 +1595,13 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 2. 点击新创建的别名旁边的<strong class="text-success"><i class="fa fa-key"></i>生成密码</strong>。将其复制到剪贴板并安全存储屏幕上显示的生成密码。
 
-3. 使用您常用的电子邮件应用程序，添加或配置一个带有新创建别名的帐户（例如 <code><hello@example.com></code>）
+3. 使用您常用的电子邮件应用程序，添加或配置一个包含新创建别名的帐户（例如 <code><hello@example.com></code>）
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 提示：
 </strong>
-<span>我们推荐使用 <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a> 和 <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>，或者<a href="/blog/open-source" class="alert-link" target="_blank">一个开源且注重隐私的替代方案</a>。</span>
+<span>我们推荐使用 <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> 或<a href="/blog/open-source" class="alert-link" target="_blank">一个开源且注重隐私的替代方案</a>。</span>
 </div>
 
 4. 当提示输入 IMAP 服务器名称时，输入 `imap.forwardemail.net`
@@ -1634,7 +1635,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 您是否支持 POP3 {#do-you-support-pop3}
 
-是的，自 2023 年 12 月 4 日起，我们将以插件的形式支持所有付费用户使用 [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)。**请阅读我们关于 [我们的加密 SQLite 邮箱存储功能如何运作](/blog/docs/best-quantum-safe-encrypted-email-service) 的深度文章**。
+是的，自 2023 年 12 月 4 日起，我们将以插件的形式支持 [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)，供所有付费用户使用。**请阅读我们关于 [我们的加密 SQLite 邮箱存储功能如何运作](/blog/docs/best-quantum-safe-encrypted-email-service) 的深度文章**。
 
 <div id="pop3-instructions">
 
@@ -1644,7 +1645,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 重要提示：
 </strong>
 <span>
-请确保您已阅读我们的<a href="/terms" class="alert-link" target="_blank">条款</a>和<a href="/privacy" class="alert-link" target="_blank">隐私政策</a>——您的使用即视为您已确认并同意。
+请确保您已阅读我们的<a href="/terms" class="alert-link" target="_blank">条款</a>和<a href="/privacy" class="alert-link" target="_blank">隐私政策</a>——您的使用即视为您已确认并同意本政策。
 </span>
 </div>
 
@@ -1652,13 +1653,13 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 2. 点击新创建的别名旁边的<strong class="text-success"><i class="fa fa-key"></i>生成密码</strong>。将其复制到剪贴板并安全存储屏幕上显示的生成密码。
 
-3. 使用您常用的电子邮件应用程序，添加或配置一个带有新创建的别名的帐户（例如 <code><hello@example.com></code>）
+3. 使用您常用的电子邮件应用程序，添加或配置一个包含新创建别名的帐户（例如 <code><hello@example.com></code>）
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 提示：
 </strong>
-<span>我们推荐使用 <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a> 和 <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>，或者<a href="/blog/open-source" class="alert-link" target="_blank">一个开源且注重隐私的替代方案</a>。</span>
+<span>我们推荐使用 <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> 或<a href="/blog/open-source" class="alert-link" target="_blank">一个开源且注重隐私的替代方案</a>。</span>
 </div>
 
 4. 当提示输入 POP3 服务器名称时，输入 `pop3.forwardemail.net`
@@ -1692,9 +1693,9 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 您是否支持日历 (CalDAV) {#do-you-support-calendars-caldav}
 
-是的，我们已于 2024 年 2 月 5 日添加了此功能。我们的服务器已启用 `caldav.forwardemail.net` 保护，并且在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
+是的，我们已于 2024 年 2 月 5 日添加了此功能。我们的服务器是 `caldav.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
 
-它支持 IPv4 和 IPv6，并且可通过端口 `443` (HTTPS) 使用。
+它支持 IPv4 和 IPv6，并且可通过端口 `443`（HTTPS）使用。
 
 | 登录 | 例子 | 描述 |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1705,9 +1706,9 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 您是否支持联系人 (CardDAV) {#do-you-support-contacts-carddav}
 
-是的，我们已于 2025 年 6 月 12 日起添加此功能。我们的服务器已启用 `carddav.forwardemail.net` 保护，并且在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
+是的，我们已于 2025 年 6 月 12 日添加了此功能。我们的服务器是 `carddav.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
 
-它支持 IPv4 和 IPv6，并且可通过端口 `443` (HTTPS) 使用。
+它支持 IPv4 和 IPv6，并且可通过端口 `443`（HTTPS）使用。
 
 | 登录 | 例子 | 描述 |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1754,12 +1755,12 @@ Catch-all 转发规则也可以描述为“fall-through”。
 <strong class="font-weight-bold">
 提示：
 </strong>
-<span>我们推荐使用 <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a> 和 <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>，或者<a href="/blog/open-source" class="alert-link" target="_blank">一个开源且注重隐私的替代方案</a>。</span>
+<span>我们推荐使用 <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> 或<a href="/blog/open-source" class="alert-link" target="_blank">一个开源且注重隐私的替代方案</a>。</span>
 </div>
 
 5. 当提示输入 SMTP 服务器名称时，输入 `smtp.forwardemail.net`
 
-6. 当系统提示输入 SMTP 服务器端口时，请输入 `465` (SSL/TLS) – 如有需要，请参阅 [备用 SMTP 端口](/faq#what-are-your-smtp-server-configuration-settings)
+6. 当提示输入 SMTP 服务器端口时，请输入 `465` (SSL/TLS) – 如有需要，请参阅 [备用 SMTP 端口](/faq#what-are-your-smtp-server-configuration-settings)
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1798,16 +1799,16 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 您是否支持 OpenPGP/MIME、端到端加密（“E2EE”）和 Web 密钥目录（“WKD”）{#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-是的，我们支持[OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP)、[端到端加密（“E2EE”）](https://en.wikipedia.org/wiki/End-to-end_encryption)以及使用[Web 密钥目录（“WKD”）](https://wiki.gnupg.org/WKD)发现公钥。您可以使用[keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service)或[自托管您自己的密钥](https://wiki.gnupg.org/WKDHosting)配置OpenPGP（请参阅[这是 WKD 服务器设置的要点](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)）。
+是的，我们支持 [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP)、[端到端加密（“E2EE”）](https://en.wikipedia.org/wiki/End-to-end_encryption)，以及使用 [Web 密钥目录（“WKD”）](https://wiki.gnupg.org/WKD) 发现公钥。您可以使用 [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) 或 [自托管您自己的密钥](https://wiki.gnupg.org/WKDHosting)（请参阅 [这是 WKD 服务器设置的要点](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)）配置 OpenPGP。
 
-* WKD 查找会缓存 1 小时，以确保电子邮件及时送达 → 因此，如果您添加、更改或删除了 WKD 密钥，请发送电子邮件至 `support@forwardemail.net` 并提供您的电子邮件地址，以便我们手动清除缓存。
-* 我们支持对通过 WKD 查找或在我们的界面上使用已上传的 PGP 密钥转发的消息进行 PGP 加密。
-* 只要启用/选中 PGP 复选框，已上传的密钥就会生效。
-* 发送到 webhook 的消息目前未使用 PGP 加密。
-* 如果您有多个与给定转发地址匹配的别名（例如正则表达式/通配符/精确匹配组合），并且其中多个别名包含已上传的 PGP 密钥并已进行 PGP 校验 → 则我们将向您发送错误警报电子邮件，并且不会使用您上传的 PGP 密钥加密消息。这种情况非常罕见，通常仅适用于使用复杂别名规则的高级用户。
+* WKD 查找会缓存 1 小时，以确保邮件及时送达 → 因此，如果您添加、更改或删除了 WKD 密钥，请发送电子邮件至 `support@forwardemail.net` 并提供您的电子邮件地址，以便我们手动清除缓存。
+* 我们支持对通过 WKD 查找或在我们的界面上使用已上传的 PGP 密钥转发的邮件进行 PGP 加密。
+* 只要启用/选中 PGP 复选框，已上传的密钥将优先生效。
+* 发送到 webhook 的邮件目前未使用 PGP 加密。
+* 如果您有多个与给定转发地址匹配的别名（例如正则表达式/通配符/精确匹配组合），并且其中多个别名包含已上传的 PGP 密钥并已进行 PGP 校验 → 则我们将向您发送错误警报邮件，并且不会使用您上传的 PGP 密钥加密邮件。这种情况非常罕见，通常仅适用于使用复杂别名规则的高级用户。
 * **如果发件人的 DMARC 策略为拒绝，则 PGP 加密将不会应用于通过我们的 MX 服务器转发的邮件。如果您需要对*所有*邮件进行 PGP 加密，我们建议您使用我们的 IMAP 服务，并将您的 PGP 密钥配置为您的入站邮件别名。**
 
-**您可以在<https://wkd.chimbosonic.com/>（开源）或<https://www.webkeydirectory.com/>（专有）验证您的 Web 密钥目录设置。**
+**您可以在 <https://wkd.chimbosonic.com/> (开源) 或 <https://www.webkeydirectory.com/> (专有) 验证您的 Web 密钥目录设置。**
 
 <div class="alert my-3 alert-success">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1832,16 +1833,16 @@ Catch-all 转发规则也可以描述为“fall-through”。
 | 电子邮件客户端 | 平台 | 推荐插件 | 笔记 |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 雷鸟 | 桌面 | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird 内置了对 OpenPGP 的支持。 |
-| Gmail | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download) (专有许可证) | Gmail 不支持 OpenPGP，但是您可以下载开源插件 [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)。 |
+| Gmail | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)（专有许可证） | Gmail 不支持 OpenPGP，但是您可以下载开源插件 [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)。 |
 | 苹果邮件 | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail 不支持 OpenPGP，但是您可以下载开源插件 [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation)。 |
-| 苹果邮件 | iOS | [PGPro](https://github.com/opensourceios/PGPro/) 或 [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (专有许可证) | Apple Mail 不支持 OpenPGP，但是您可以下载开源插件 [PGPro](https://github.com/opensourceios/PGPro/) 或 [FlowCrypt](https://flowcrypt.com/download)。 |
+| 苹果邮件 | iOS | [PGPro](https://github.com/opensourceios/PGPro/) 或 [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995)（专有许可证） | Apple Mail 不支持 OpenPGP，但是您可以下载开源插件 [PGPro](https://github.com/opensourceios/PGPro/) 或 [FlowCrypt](https://flowcrypt.com/download)。 |
 | 前景 | 视窗 | [gpg4win](https://www.gpg4win.de/index.html) | Outlook 的桌面邮件客户端不支持 OpenPGP，但是您可以下载开源插件 [gpg4win](https://www.gpg4win.de/index.html)。 |
-| 前景 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download) (专有许可证) | Outlook 的基于 Web 的邮件客户端不支持 OpenPGP，但是您可以下载开源插件 [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)。 |
+| 前景 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)（专有许可证） | Outlook 的基于 Web 的邮件客户端不支持 OpenPGP，但是您可以下载开源插件 [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)。 |
 | 安卓 | 移动的 | [OpenKeychain](https://www.openkeychain.org/) 或 [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients)（例如 [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) 和 [FairEmail](https://github.com/M66B/FairEmail)）均支持开源插件 [OpenKeychain](https://www.openkeychain.org/)。您也可以使用开源（专有许可）插件 [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email)。 |
-| 谷歌浏览器 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download) (专有许可证) | 您可以下载开源浏览器扩展[Mailvelope](https://mailvelope.com/)或[FlowCrypt](https://flowcrypt.com/download)。 |
-| 火狐浏览器 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download) (专有许可证) | 您可以下载开源浏览器扩展[Mailvelope](https://mailvelope.com/)或[FlowCrypt](https://flowcrypt.com/download)。 |
+| 谷歌浏览器 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)（专有许可证） | 您可以下载开源浏览器扩展[Mailvelope](https://mailvelope.com/)或[FlowCrypt](https://flowcrypt.com/download)。 |
+| 火狐浏览器 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)（专有许可证） | 您可以下载开源浏览器扩展[Mailvelope](https://mailvelope.com/)或[FlowCrypt](https://flowcrypt.com/download)。 |
 | 微软 Edge | 浏览器 | [Mailvelope](https://mailvelope.com/) | 您可以下载开源浏览器扩展[Mailvelope](https://mailvelope.com/)。 |
-| 勇敢的 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download) (专有许可证) | 您可以下载开源浏览器扩展[Mailvelope](https://mailvelope.com/)或[FlowCrypt](https://flowcrypt.com/download)。 |
+| 勇敢的 | 浏览器 | [Mailvelope](https://mailvelope.com/) 或 [FlowCrypt](https://flowcrypt.com/download)（专有许可证） | 您可以下载开源浏览器扩展[Mailvelope](https://mailvelope.com/)或[FlowCrypt](https://flowcrypt.com/download)。 |
 | 巴尔萨 | 桌面 | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa 内置了对 OpenPGP 的支持。 |
 | KMail | 桌面 | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail 内置了对 OpenPGP 的支持。 |
 | GNOME 进化 | 桌面 | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution 内置了对 OpenPGP 的支持。 |
@@ -1849,7 +1850,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 2. 打开插件，创建您的公钥，并配置您的电子邮件客户端以使用它。
 
-3. 将您的公钥上传至<https://keys.openpgp.org/upload>.
+3. 将您的公钥上传至 <https://keys.openpgp.org/upload>.
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1912,7 +1913,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 ### 您是否支持 MTA-STS {#do-you-support-mta-sts}
 
-是的，自 2023 年 3 月 2 日起，我们支持 [MTA-STS](https://www.hardenize.com/blog/mta-sts)。如果您想在您的域名上启用它，可以使用 [这个模板](https://github.com/jpawlowski/mta-sts.template)。
+是的，自 2023 年 3 月 2 日起，我们支持 [MTA-STS](https://www.hardenize.com/blog/mta-sts)。如果您想在您的网域中启用 [这个模板](https://github.com/jpawlowski/mta-sts.template)，可以使用它。
 
 我们的配置可以在 GitHub 上公开找到，网址为 <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
@@ -1932,7 +1933,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 * [使用密钥登录 iPhone 上的应用和网站](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios)（苹果）
 * [维基百科关于密钥的文章](https://en.wikipedia.org/wiki/Passkey_\(credential\)）
 
-### 您是否支持电子邮件最佳实践 {#do-you-support-email-best-practices}
+### 您是否支持电子邮件最佳做法 {#do-you-support-email-best-practices}
 
 是的。所有方案均内置对 SPF、DKIM、DMARC、ARC 和 SRS 的支持。我们还与这些规范的原作者以及其他电子邮件专家进行了广泛的合作，以确保邮件的完善性和高送达率。
 
@@ -1948,30 +1949,30 @@ Catch-all 转发规则也可以描述为“fall-through”。
 </span>
 </div>
 
-是的，我们已于 2024 年 8 月 14 日起添加此功能。您现在可以前往“我的账户”→“域名”→“设置”→“退回 Webhook URL”，并配置一个 `http://` 或 `https://` URL，当外发 SMTP 电子邮件被退回时，我们会向该 URL 发送 `POST` 请求。
+是的，我们已于 2024 年 8 月 14 日起添加此功能。您现在可以前往“我的账户”→“域名”→“设置”→“退回 Webhook URL”，并配置一个 `http://` 或 `https://` URL，当外发 SMTP 邮件被退回时，我们会向该 URL 发送 `POST` 请求。
 
 这对您管理和监控出站 SMTP 很有用 - 并且可用于维护订阅者、选择退出以及检测是否发生退回。
 
 反弹 webhook 有效负载以 JSON 形式发送，具有以下属性：
 
-* `email_id`（字符串）- 与“我的账户”→“电子邮件”（出站 SMTP）中的电子邮件对应的电子邮件 ID
+* `email_id`（字符串）- 与“我的账户”→“电子邮件（出站 SMTP）”中的电子邮件对应的电子邮件 ID
 * `list_id`（字符串）- 原始出站电子邮件的 `List-ID` 标头值（不区分大小写）（如果有）
 * `list_unsubscribe`（字符串）- 原始出站电子邮件的 `List-Unsubscribe` 标头值（不区分大小写）（如果有）
 * `feedback_id`（字符串）- 原始出站电子邮件的 `Feedback-ID` 标头值（不区分大小写）（如果有）
 * `recipient`（字符串）- 退回或出错的收件人的电子邮件地址
-* `message`（字符串）- 退回邮件的详细错误消息
-* `response`（字符串）- SMTP 响应消息
-* `response_code`（数字）- 已解析的 SMTP 响应代码
-* `truth_source`（字符串）- 如果响应代码来自可信来源，则此值将填充根域名（例如 `google.com` 或 `yahoo.com`）
-* `bounce`（对象）- 包含以下属性的对象，这些属性详细说明了退回和拒绝状态
-* `action`（字符串）- 退回操作（例如 `"reject"`）
-* `message`（字符串）- 退回原因（例如 `"Message Sender Blocked By Receiving Server"`）
-* `category`（字符串）- 退回类别（例如 `"block"`）
-* `code`（数字）- 退回状态代码（例如 `554`）
-* `status`（字符串）- 响应消息中的退回代码（例如 `5.7.1`）
-* `line`（数字）- 已解析的行号（如果有），[来自 Zone-MTA 反弹解析列表](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt)（例如 `526`）
-* `headers`（对象）- 出站电子邮件标头的键值对
-* `bounced_at`（字符串）- [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) 格式的退回错误发生日期
+* `message`（字符串）- 退回的详细错误消息
+* `response`（字符串） - SMTP 响应消息
+* `list_id`0（数字）- 已解析的 SMTP 响应代码
+* `list_id`1（字符串）- 如果响应代码来自可信来源，则此值将填充根域名（例如 `list_id`2 或 `list_id`3）
+* `list_id`4（对象）- 包含以下属性的对象，这些属性详细说明了退回和拒绝状态
+* `list_id`5（字符串）- 退回操作（例如 `list_id`6）
+* `list_id`7（字符串）- 退回原因（例如 `list_id`8）
+* `list_id`9（字符串）- 退回类别（例如`List-ID`0)
+* `List-ID`1（数字）- 退回状态代码（例如 `List-ID`2）
+* `List-ID`3（字符串）- 响应消息中的退回代码（例如 `List-ID`4）
+* `List-ID`5（数字）- 解析后的行号（如有），`List-ID`6（例如 `List-ID`7）
+* `List-ID`8（对象）- 发送邮件标头的键值对
+* `List-ID`9（字符串）- `list_unsubscribe`0 格式的退回错误发生日期
 
 例如：
 
@@ -2000,16 +2001,16 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 * 如果 webhook 负载包含 `list_id`、`list_unsubscribe` 或 `feedback_id` 值，则您应采取适当措施，在必要时从列表中移除 `recipient`。
 * 如果 `bounce.category` 值为 `"block"`、`"recipient"`、`"spam"` 或 `"virus"`，则您务必将该用户从列表中移除。
-* 如果您需要验证 webhook 负载（以确保它们确实来自我们的服务器），您可以使用 [使用反向查找来解析远程客户端 IP 地址客户端主机名](https://nodejs.org/api/dns.html#dnspromisesreverseip) – 它应该是 `smtp.forwardemail.net`。
-* 您也可以根据 [我们公布的 IP 地址](#what-are-your-servers-ip-addresses) 检查 IP。
-* 前往“我的账户”→“域名”→“设置”→“Webhook 签名负载验证密钥”获取您的 webhook 密钥。
+* 如果您需要验证 webhook 负载（以确保它们确实来自我们的服务器），则可以使用 [使用反向查找来解析远程客户端 IP 地址客户端主机名](https://nodejs.org/api/dns.html#dnspromisesreverseip) - 它应该是 `list_unsubscribe`0。
+* 您还可以根据 `list_unsubscribe`1 检查 IP。
+* 前往“我的账户”→“域名”→“设置”→“Webhook 签名负载验证密钥”获取您的 Webhook 密钥。
 * 出于安全考虑，您可以随时轮换此密钥。
-* 使用此密钥计算并比较我们 webhook 请求中的 `X-Webhook-Signature` 值与计算出的 body 值。有关如何执行此操作的示例，请参阅 [这篇 Stack Overflow 帖子](https://stackoverflow.com/a/68885281)。
-* 有关更多详细信息，请参阅 <https://github.com/forwardemail/free-email-forwarding/issues/235> 上的讨论。
-* 我们将等待最多 `5` 秒，以便您的 webhook 端点响应 `200` 状态代码，并且我们将重试最多 `1` 次。
-* 如果我们在尝试向您的反弹 webhook URL 发送请求时检测到该 URL 有错误，那么我们将每周向您发送一次礼貌电子邮件。
+* 使用此密钥计算并比较来自 Webhook 请求的 `list_unsubscribe`2 值与计算出的正文值。`list_unsubscribe`3 中提供了一个操作示例。
+* 请参阅 <`list_unsubscribe`4> 中的讨论了解更多信息。
+* 我们将等待最多 `list_unsubscribe`5 秒，以便您的 Webhook 端点响应 `list_unsubscribe`6 状态码，并且我们将重试最多 `list_unsubscribe`7 次。
+* 如果我们在尝试向您的反弹 Webhook URL 发送请求时检测到该 URL 有错误，我们将每周向您发送一次礼貌电子邮件。
 
-### 您是否支持 webhook {#do-you-support-webhooks}
+### 您是否支持 Webhook {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2079,25 +2080,25 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 **以下是有关 webhook 的附加说明：**
 
-* 如果您需要验证 webhook 负载（以确保它们确实来自我们的服务器），您可以使用 [使用反向查找来解析远程客户端 IP 地址客户端主机名](https://nodejs.org/api/dns.html#dnspromisesreverseip) - 它应该是 `mx1.forwardemail.net` 或 `mx2.forwardemail.net`。
-* 您也可以根据 [我们公布的 IP 地址](#what-are-your-servers-ip-addresses) 检查 IP。
+* 如果您需要验证 webhook 负载（以确保它们确实来自我们的服务器），那么您可以使用 [使用反向查找来解析远程客户端 IP 地址客户端主机名](https://nodejs.org/api/dns.html#dnspromisesreverseip) - 它应该是 `mx1.forwardemail.net` 或 `mx2.forwardemail.net`。
+* 您还可以根据 [我们公布的 IP 地址](#what-are-your-servers-ip-addresses) 检查 IP。
 * 如果您使用的是付费套餐，请前往“我的账户”→“域名”→“设置”→“Webhook 签名负载验证密钥”获取您的 webhook 密钥。
 * 出于安全考虑，您可以随时轮换此密钥。
-* 使用此密钥计算并比较我们 webhook 请求中的 `X-Webhook-Signature` 值与计算出的 body 值。有关如何执行此操作的示例，请参阅 [这篇 Stack Overflow 帖子](https://stackoverflow.com/a/68885281)。
-* 有关更多详细信息，请参阅 <https://github.com/forwardemail/free-email-forwarding/issues/235> 上的讨论。
-* 如果 Webhook 未响应 `200` 状态码，我们会将其响应存储在 [错误日志已创建](#do-you-store-error-logs) 中，这有助于调试。
-* Webhook HTTP 请求在每次 SMTP 连接尝试中最多会重试 3 次，每个端点 POST 请求的最大超时时间为 60 秒。**请注意，这并不意味着它只重试 3 次**，实际上它会在第三次 HTTP POST 请求尝试失败后发送 421 的 SMTP 状态码（指示发件人稍后重试），从而持续重试。这意味着电子邮件将持续重试数天，直到达到 200 状态码。
-* 我们将根据 [superagent 的重试方法](https://ladjs.github.io/superagent/#retrying-requests) 中使用的默认状态和错误代码自动重试（我们是维护者）。
-* 我们将对同一端点的 Webhook HTTP 请求（而不是多个）组合成一个请求，以节省资源并加快响应时间。例如，如果您向 <webhook1@example.com>、<webhook2@example.com> 和 <webhook3@example.com> 发送电子邮件，并且所有这些端点都配置为访问相同的*精确*端点 URL，则只会发出一个请求。我们通过精确的端点匹配和严格相等原则进行分组。
-* 请注意，我们使用 [邮件解析器](https://nodemailer.com/extras/mailparser/) 库的“simpleParser”方法将消息解析为 JSON 友好对象。
+* 使用此密钥计算并比较来自我们 webhook 请求的 `X-Webhook-Signature` 值与计算出的 body 值。[这篇 Stack Overflow 帖子](https://stackoverflow.com/a/68885281) 中提供了一个如何执行此操作的示例。
+* 有关更多详细信息，请参阅 <https://github.com/forwardemail/free-email-forwarding/issues/235>> 中的讨论。
+* 如果 Webhook 没有响应 `200` 状态码，我们会将其响应存储在 [错误日志已创建](#do-you-store-error-logs) 中，这有助于调试。
+* Webhook HTTP 请求在每次 SMTP 连接尝试中最多会重试 3 次，每个端点 POST 请求的最大超时时间为 60 秒。**请注意，这并不意味着它只重试 3 次**，实际上它会在第三次 HTTP POST 请求失败后发送 421 的 SMTP 状态码（指示发件人稍后重试），从而持续重试。这意味着电子邮件将持续重试数天，直到达到 200 状态码。
+* 我们将根据 [superagent 的重试方法](https://ladjs.github.io/superagent/#retrying-requests) 中使用的默认状态码和错误代码自动重试（我们是维护者）。
+* 我们将对同一端点的 Webhook HTTP 请求组合成一个请求（而不是多个），以节省资源并加快响应时间。例如，如果您向 <webhook1@example.com>、<webhook2@example.com> 和 <webhook3@example.com> 发送电子邮件，并且这些服务器都配置为访问相同的 *精确* 端点 URL，则只会发出一个请求。我们会根据精确的端点匹配和严格相等原则进行分组。
+* 请注意，我们使用 `mx1.forwardemail.net`0 库的“simpleParser”方法将邮件解析为 JSON 格式的对象。
 * 原始电子邮件值作为字符串，以属性“raw”的形式提供。
 * 身份验证结果以属性“dkim”、“spf”、“arc”、“dmarc”和“bimi”的形式提供。
-* 解析后的电子邮件标头以属性“headers”的形式提供——另请注意，您可以使用“headerLines”更轻松地进行迭代和解析。
-* 此 webhook 的分组收件人会被分组在一起，并以属性“recipients”的形式提供。
-* SMTP 会话信息以属性“session”的形式提供。它包含有关邮件发件人、邮件到达时间、HELO 和客户端主机名的信息。客户端主机名值 `session.clientHostname` 可以是 FQDN（来自反向 PTR 查找），也可以是括号中的 `session.remoteAddress`（例如 `"[127.0.0.1]"`）。
-* 如果您需要快速获取 `X-Original-To` 的值，那么您可以使用 `session.recipient` 的值（参见下方示例）。标头 `X-Original-To` 是我们添加到邮件中的标头，用于与邮件的原始收件人（在屏蔽转发之前）进行调试。
-* 如果您需要从有效负载主体中移除 `attachments` 和/或 `raw` 属性，只需将 `?attachments=false`、`?raw=false` 或 `?attachments=false&raw=false` 作为查询字符串参数添加到您的 webhook 端点（例如 `https://example.com/webhook?attachments=false&raw=false`）。
-* 如果有附件，它们将附加到带有缓冲区值的 `attachments` 数组中。您可以使用 JavaScript 中的以下方法将它们解析回内容：
+* 解析后的电子邮件标头以属性“headers”的形式提供 - 另请注意，您可以使用“headerLines”更轻松地进行迭代和解析。
+* 此 webhook 的分组收件人将分组在一起，并以属性“recipients”的形式提供。
+* SMTP 会话信息以属性“session”的形式提供。它包含邮件发件人、邮件到达时间、HELO 和客户端主机名等信息。客户端主机名值 `mx1.forwardemail.net`1 要么是 FQDN（来自反向 PTR 查找），要么是括在括号中的 `mx1.forwardemail.net`2（例如 `mx1.forwardemail.net`3）。
+* 如果您需要快速获取 `mx1.forwardemail.net`4 的值，可以使用 `mx1.forwardemail.net`5 的值（参见下方示例）。标头 `mx1.forwardemail.net`6 是我们添加到邮件中的标头，用于在掩码转发之前与邮件的原始收件人进行调试。
+* 如果您需要从有效负载主体中移除 `mx1.forwardemail.net`7 和/或 `mx1.forwardemail.net`8 属性，只需将 `mx1.forwardemail.net`9、`mx2.forwardemail.net`0 或 `mx2.forwardemail.net`1 作为查询字符串参数添加到您的 webhook 端点（例如 `mx2.forwardemail.net`2）。
+* 如果有附件，它们将与缓冲区值一起附加到 `mx2.forwardemail.net`3 数组中。您可以使用 JavaScript 的方法将它们解析回内容，例如：
 
   ```js
   const data = [
@@ -2316,11 +2317,11 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 是的，我们已于 2021 年 9 月 27 日添加了此功能。您只需编写正则表达式（“regex”）即可匹配别名并执行替换。
 
-正则表达式支持的别名以 `/` 开头，以 `/` 结尾，且收件人为电子邮件地址或 Webhook。收件人还可以包含正则表达式替换支持（例如 `$1`、`$2`）。
+正则表达式支持的别名以 `/` 开头，以 `/` 结尾，收件人为电子邮件地址或 Webhook。收件人还可以包含正则表达式替换支持（例如 `$1`、`$2`）。
 
-我们支持两个正则表达式标记，包括 `i` 和 `g`。不区分大小写的 `i` 标记是永久默认标记，并且始终强制执行。全局标记 `g` 可以通过在 `/` 后加上 `/g` 来添加。
+我们支持两个正则表达式标志，包括 `i` 和 `g`。`i` 的不区分大小写标志是永久默认设置，并且始终强制执行。您可以通过在 `/` 后添加 `/g` 来添加 `g` 的全局标志。
 
-请注意，我们还通过正则表达式支持收件人部分的<a href="#can-i-disable-specific-aliases">disabled别名功能</a>。
+请注意，我们还通过正则表达式支持收件人部分的<a href="#can-i-disable-specific-aliases">disabled 别名功能</a>。
 
 <a href="/disposable-addresses" target="_blank">全局虚荣域名</a>不支持正则表达式（因为这可能是一个安全漏洞）。
 
@@ -2338,7 +2339,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>简单示例：</strong>如果我希望所有发送至 `linus@example.com` 或 `torvalds@example.com` 的邮件都转发至 `user@gmail.com`：
+<strong>简单示例：</strong>如果我希望所有发送到 `linus@example.com` 或 `torvalds@example.com` 的邮件都转发到 `user@gmail.com`：
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2362,7 +2363,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>名字姓氏替换示例：</strong>假设您公司的所有电子邮件地址都采用 `firstname.lastname@example.com` 格式。如果我希望所有采用 `firstname.lastname@example.com` 格式的邮件都转发到 `firstname.lastname@company.com` 格式，并支持替换 (<a href="https://regexr.com/66hnu" class="alert-link">在 RegExr 上查看测试</a>)：
+<strong>名字姓氏替换示例：</strong>假设您公司的所有电子邮件地址都采用 `firstname.lastname@example.com` 格式。如果我希望所有发送到 `firstname.lastname@example.com` 格式的邮件都转发到 `firstname.lastname@company.com` 格式，并支持替换（<a href="https://regexr.com/66hnu" class="alert-link">在 RegExr 上查看测试</a>）：
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2386,7 +2387,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>加号过滤替换示例：</strong> 如果我希望所有发送至 `info@example.com` 或 `support@example.com` 的邮件分别转发至 `user+info@gmail.com` 或 `user+support@gmail.com`（支持替换）（<a href="https://regexr.com/66ho7" class="alert-link">查看 RegExr 上的测试</a>）：
+<strong>加号符号过滤替换示例：</strong> 如果我希望所有发送到 `info@example.com` 或 `support@example.com` 的邮件分别转发到 `user+info@gmail.com` 或 `user+support@gmail.com`（支持替换）（<a href="https://regexr.com/66ho7" class="alert-link">查看 RegExr 上的测试</a>）：
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2410,7 +2411,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Webhook 查询字符串替换示例：</strong> 假设您希望所有发送至 `example.com` 的电子邮件都发送至一个 <a href="#do-you-support-webhooks" class="alert-link">webhook</a>，并使其动态查询字符串键为“to”，值为电子邮件地址的用户名部分（<a href="https://regexr.com/66ho4" class="alert-link">在 RegExr 上查看测试</a>）：
+<strong>Webhook 查询字符串替换示例：</strong> 假设您希望所有发送到 `example.com` 的电子邮件都发送到 <a href="#do-you-support-webhooks" class="alert-link">webhook</a>，并具有动态查询字符串键“to”，其值为电子邮件地址的用户名部分（<a href="https://regexr.com/66ho4" class="alert-link">在 RegExr 上查看测试</a>）：
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2458,7 +2459,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>软拒绝示例</strong>：如果您希望所有符合特定模式的邮件都被禁用，并以状态码 `421` 进行软拒绝（请参阅<a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），那么只需使用相同的方法，并添加双感叹号“!!”。这表示发件人需要重试发送邮件，发送到此别名的邮件将重试大约 5 天，然后被永久拒绝。
+<strong>软拒绝示例</strong>：如果您希望所有符合特定模式的邮件都被禁用，并以状态码 `421` 进行软拒绝（请参阅<a href="#can-i-disable-specific-aliases" class="alert-link">我可以禁用特定别名吗</a>），那么只需使用相同的方法，并添加双感叹号“!!”。这表示发件人需要重试发送邮件，发送到此别名的邮件将被重试大约 5 天，然后被永久拒绝。
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2514,19 +2515,19 @@ Catch-all 转发规则也可以描述为“fall-through”。
 </span>
 </div>
 
-### 您的出站 SMTP 限制是多少？{#what-are-your-outbound-smtp-limits}
+### 您的出站 SMTP 限制是多少 {#what-are-your-outbound-smtp-limits}
 
-我们限制用户和域名每天发送 SMTP 邮件数量为 300 封。这意味着平均每个自然月会发送超过 9000 封邮件。如果您需要超过此数量或持续发送大量邮件，请使用 [联系我们](https://forwardemail.net/help)。
+我们限制用户和域名每天发送 SMTP 邮件数量为 300 封。这意味着每个自然月平均发送邮件数量超过 9000 封。如果您需要超过此数量或邮件量持续较大，请使用 [联系我们](https://forwardemail.net/help)。
 
-### 我是否需要获得批准才能启用 SMTP {#do-i-need-approval-to-enable-smtp}
+### 我需要批准才能启用 SMTP {#do-i-need-approval-to-enable-smtp}
 
-是的，请注意，为了维护 IP 信誉并确保邮件送达率，Forward Email 会针对每个域名设置手动审核流程，以批准出站 SMTP 邮件。请发送电子邮件至 <support@forwardemail.net> 或提交 [帮助请求](https://forwardemail.net/help) 进行审核。审核通常需要不到 24 小时，大多数请求会在 1-2 小时内完成。我们计划在不久的将来通过额外的垃圾邮件控制和警报功能，使此流程即时完成。此流程可确保您的邮件到达收件箱，并且不会被标记为垃圾邮件。
+是的，请注意，为了维护 IP 信誉并确保邮件送达率，Forward Email 会针对每个域名设置手动审核流程，以批准外发 SMTP 邮件。请发送电子邮件至 <support@forwardemail.net> 或创建 [帮助请求](https://forwardemail.net/help) 进行审核。审核通常需要不到 24 小时，大多数请求会在 1-2 小时内完成。我们计划在不久的将来通过额外的垃圾邮件控制和警报功能，使此流程即时完成。此流程可确保您的邮件到达收件箱，并且不会被标记为垃圾邮件。
 
 ### 您的 SMTP 服务器配置设置是什么？{#what-are-your-smtp-server-configuration-settings}
 
-我们的服务器是`smtp.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
+我们的服务器是 `smtp.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
 
-它支持 IPv4 和 IPv6，可通过端口 `465` 和 `2465` 用于 SSL/TLS，以及 `587`、`2587`、`2525` 和 `25` 用于 TLS（STARTTLS）。
+它支持 IPv4 和 IPv6，可通过端口 `465` 和 `2465` 用于 SSL/TLS，通过 `587`、`2587`、`2525` 和 `25` 用于 TLS（STARTTLS）。
 
 | 协议 | 主机名 | 端口 | IPv4 | IPv6 |
 | :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
@@ -2540,11 +2541,11 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 为了使用 SMTP 发送出站电子邮件，**SMTP 用户**必须是<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的帐户<i class="fa fa-angle-right"></i>域</a>中存在的域别名的电子邮件地址 - 并且**SMTP 密码**必须是特定于别名的生成密码。
 
-请参阅[您是否支持使用 SMTP 发送电子邮件](#do-you-support-sending-email-with-smtp)获取分步说明。
+请参阅 [您是否支持使用 SMTP 发送电子邮件](#do-you-support-sending-email-with-smtp) 了解分步说明。
 
 ### 您的 IMAP 服务器配置设置是什么？{#what-are-your-imap-server-configuration-settings}
 
-我们的服务器是`imap.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
+我们的服务器是 `imap.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
 
 它支持 IPv4 和 IPv6，并且可通过端口 `993` 和 `2993` 用于 SSL/TLS。
 
@@ -2559,11 +2560,11 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 为了连接 IMAP，**IMAP 用户**必须是<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的帐户<i class="fa fa-angle-right"></i>域</a>中存在的域别名的电子邮件地址 - 并且**IMAP 密码**必须是特定于别名的生成密码。
 
-请参阅[您是否支持使用 IMAP 接收电子邮件](#do-you-support-receiving-email-with-imap)获取分步说明。
+请参阅 [你们支持使用 IMAP 接收电子邮件吗](#do-you-support-receiving-email-with-imap) 了解分步说明。
 
 ### 您的 POP3 服务器配置设置是什么？{#what-are-your-pop3-server-configuration-settings}
 
-我们的服务器是`pop3.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
+我们的服务器是 `pop3.forwardemail.net`，并且也在我们的<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">状态页面</a>上受到监控。
 
 它支持 IPv4 和 IPv6，并且可通过端口 `995` 和 `2995` 用于 SSL/TLS。
 
@@ -2578,7 +2579,7 @@ Catch-all 转发规则也可以描述为“fall-through”。
 
 为了连接 POP3，**POP3 用户**必须是<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">我的帐户<i class="fa fa-angle-right"></i>域</a>中存在的域别名的电子邮件地址 - 并且**IMAP 密码**必须是特定于别名的生成密码。
 
-请参阅[你们支持POP3吗](#do-you-support-pop3)获取分步说明。
+请参阅 [你们支持POP3吗](#do-you-support-pop3) 了解分步说明。
 
 ### Postfix SMTP 中继配置 {#postfix-smtp-relay-configuration}
 
@@ -2675,7 +2676,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### 高级服务器强化技术 {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> 访问 [我们的安全页面](/security) 了解更多关于我们安全基础设施的信息。
 
 Forward Email 实施了多种服务器强化技术，以确保我们的基础设施和您的数据的安全：
 
@@ -2712,15 +2713,15 @@ Forward Email 实施了多种服务器强化技术，以确保我们的基础设
 * 事件响应程序
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> 我们的安全实践不断更新，以应对新出现的威胁和漏洞。
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> 为了获得最高安全性，我们建议使用通过 OpenPGP 进行端到端加密的服务。
 
-### 您是否拥有 SOC 2 或 ISO 27001 认证？{#do-you-have-soc-2-or-iso-27001-certifications}
+### 您是否有 SOC 2 或 ISO 27001 认证？{#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> 转发电子邮件在经过认证的子处理器提供的基础设施上运行，以确保符合行业标准。
 
 Forward Email 并未直接持有 SOC 2 Type II 或 ISO 27001 认证。但是，该服务基于经认证的子处理商提供的基础架构运行：
 
@@ -2728,11 +2729,11 @@ Forward Email 并未直接持有 SOC 2 Type II 或 ISO 27001 认证。但是，�
 
 Vultr：已通过 SOC 2+ (HIPAA) 认证，ISO/IEC 认证：20000-1:2018、27001:2022、27017:2015、27018:2019。详情：<https://www.vultr.com/legal/compliance/>
 
-* **DataPacket**：符合 SOC 2 标准（可直接联系 DataPacket 获取认证），企业级基础设施提供商（丹佛分公司）。详情：<https://www.datapacket.com/datacenters/denver>
+* **DataPacket**：符合 SOC 2 标准（可直接联系 DataPacket 获取认证），企业级基础设施提供商（丹佛办事处）。详情：<https://www.datapacket.com/datacenters/denver>
 
 Forward Email 遵循行业最佳实践进行安全审计，并定期与独立安全研究人员合作。来源：<https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-### 您是否使用 TLS 加密进行电子邮件转发？{#do-you-use-tls-encryption-for-email-forwarding}
+### 您是否使用 TLS 加密进行电子邮件转发 {#do-you-use-tls-encryption-for-email-forwarding}
 
 是的。Forward Email 对所有连接（HTTPS、SMTP、IMAP、POP3）严格执行 TLS 1.2+ 协议，并实施 MTA-STS 以增强 TLS 支持。具体实施包括：
 
@@ -2750,7 +2751,7 @@ Forward Email 遵循行业最佳实践进行安全审计，并定期与独立安
 * TLS 错误检测：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
 * 发送电子邮件助手中的 MTA-STS 强制执行：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-第三方验证：<https://www.hardenize.com/report/forwardemail.net/1750312779> 对所有 TLS 和传输安全措施均显示“良好”评级。
+第三方验证：<https://www.hardenize.com/report/forwardemail.net/1750312779> 对所有 TLS 和传输安全措施显示“良好”评级。
 
 ### 您是否保留电子邮件身份验证标头 {#do-you-preserve-email-authentication-headers}
 
@@ -2765,10 +2766,10 @@ Forward Email 遵循行业最佳实践进行安全审计，并定期与独立安
 
 验证：Internet.nl 邮件测试显示“SPF、DKIM 和 DMARC”实施获得 100/100 分。强化评估确认 SPF 和 DMARC 评级为“良好”：<https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-### 您是否保留原始电子邮件标题并防止欺骗{#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### 您是否保留原始电子邮件标头并防止欺骗{#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> 转发电子邮件实施复杂的反欺骗保护，以防止电子邮件滥用。
 
 Forward Email 保留原始电子邮件标头，同时通过 MX 代码库实施全面的反欺骗保护：
 
@@ -2782,7 +2783,7 @@ Forward Email 保留原始电子邮件标头，同时通过 MX 代码库实施�
 * 主 MX 数据处理程序：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 * 任意电子邮件过滤（反欺骗）：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-`isArbitrary` 助手实现了复杂的反欺骗规则，包括检测域名模仿、阻止的短语和各种网络钓鱼模式。
+`isArbitrary` 助手实现了复杂的反欺骗规则，包括检测域名模仿、阻止短语和各种网络钓鱼模式。
 
 来源：<https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
@@ -2806,14 +2807,14 @@ Forward Email 实现全面的多层保护：
 ### 您是否将电子邮件内容存储在磁盘 {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> 转发电子邮件采用零知识架构，可防止电子邮件内容写入磁盘。
 
 * **零知识架构**：每个 SQLite 邮箱均经过单独加密，这意味着 Forward Email 无法访问电子邮件内容
 * **内存处理**：电子邮件处理完全在内存中进行，避免磁盘存储
 * **无内容日志记录**：“我们不会将电子邮件内容或元数据记录或存储到磁盘”
 * **沙盒加密**：加密密钥绝不会以明文形式存储在磁盘上
 
-**MX 代码库证据**：MX 服务器完全在内存中处理电子邮件，无需将内容写入磁盘。主电子邮件处理程序演示了这种内存处理方式：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+MX 代码库证据：MX 服务器完全在内存中处理电子邮件，无需将内容写入磁盘。主电子邮件处理程序演示了这种内存处理方式：<https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
 资料来源：
 
@@ -2821,7 +2822,7 @@ Forward Email 实现全面的多层保护：
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>（零知识详细信息）
 * <https://forwardemail.net/technical-whitepaper.pdf#page=21>（沙盒加密）
 
-### 系统崩溃时电子邮件内容是否会被泄露？{#can-email-content-be-exposed-during-system-crashes}
+### 系统崩溃时电子邮件内容是否会泄露？{#can-email-content-be-exposed-during-system-crashes}
 
 不会。Forward Email 实施了全面的保护措施，防止与崩溃相关的数据泄露：
 
@@ -2862,10 +2863,10 @@ Forward Email 对其至少 2-3 人的工程团队访问权限实施了全面的�
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30>（网络安全）
 * <https://forwardemail.net/technical-whitepaper.pdf#page=15>（防止“邪恶女仆”攻击）
 
-### 您使用哪些基础设施提供商 {#what-infrastructure-providers-do-you-use}
+### 您使用哪些基础设施提供商？{#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email 使用多个拥有全面合规认证的基础设施子处理器。
 
 完整详细信息请参阅我们的 GDPR 合规页面：<https://forwardemail.net/gdpr>
 
@@ -2874,9 +2875,9 @@ Forward Email 对其至少 2-3 人的工程团队访问权限实施了全面的�
 | 提供者 | 数据隐私框架认证 | GDPR 合规页面 |
 | ---------------- | -------------------------------- | ----------------------------------------------- |
 | **Cloudflare** | ✅ 是的 | <https://www.cloudflare.com/trust-hub/gdpr/> |
-| **数据包** | ❌ 不 | <https://www.datapacket.com/privacy-policy> |
-| **数字海洋** | ❌ 不 | <https://www.digitalocean.com/legal/gdpr> |
-| **Vultr** | ❌ 不 | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
+| **数据包** | ❌ 没有 | <https://www.datapacket.com/privacy-policy> |
+| **数字海洋** | ❌ 没有 | <https://www.digitalocean.com/legal/gdpr> |
+| **Vultr** | ❌ 没有 | <https://www.vultr.com/legal/eea-gdpr-privacy/> |
 
 **详细认证：**
 
@@ -2913,7 +2914,7 @@ Forward Email 对其至少 2-3 人的工程团队访问权限实施了全面的�
 
 ### 您是否提供数据处理协议 (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-是的，Forward Email 提供全面的数据处理协议 (DPA)，您可以与我们的企业协议一起签署。我们的 DPA 副本可从以下网址获取：<https://forwardemail.net/dpa>
+是的，Forward Email 提供全面的数据处理协议 (DPA)，您可以与我们的企业协议一起签署。我们的 DPA 副本可在以下位置获取：<https://forwardemail.net/dpa>
 
 **DPA 详情：**
 
@@ -2929,7 +2930,7 @@ Forward Email 对其至少 2-3 人的工程团队访问权限实施了全面的�
 ### 您如何处理数据泄露通知{#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Forward Email 的零知识架构显著限制了违规影响。
 
 * **有限的数据暴露**：由于零知识架构，无法访问加密的电子邮件内容
 * **最低限度的数据收集**：出于安全考虑，仅收集基本的订阅者信息和有限的 IP 日志
@@ -2970,9 +2971,9 @@ Forward Email 的技术文档并未明确描述专用的沙盒模式。不过，
 
 来源：<https://github.com/forwardemail/forwardemail.net>（开发环境详情）
 
-### 您是否提供监控和警报工具？{#do-you-provide-monitoring-and-alerting-tools}
+### 您是否提供监控和警报工具{#do-you-provide-monitoring-and-alerting-tools}
 
-转发电子邮件提供实时监控，但有一些限制：
+转发电子邮件提供实时监控，但存在一些限制：
 
 **可用的：**
 
@@ -2990,12 +2991,12 @@ Forward Email 的技术文档并未明确描述专用的沙盒模式。不过，
 资料来源：
 
 * <https://forwardemail.net>（实时监控显示）
-* <https://github.com/forwardemail/forwardemail.net>（监控执行）
+* <https://github.com/forwardemail/forwardemail.net>（监控实现）
 
-### 如何确保高可用性 {#how-do-you-ensure-high-availability}
+### 如何确保高可用性{#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email 实现了跨多个基础设施提供商的全面冗余。
 
 * **分布式基础设施**：跨地理区域的多家提供商（DigitalOcean、Vultr、DataPacket）
 * **地理负载均衡**：基于 Cloudflare 的地理负载均衡，具有自动故障转移功能
@@ -3005,17 +3006,17 @@ Forward Email 的技术文档并未明确描述专用的沙盒模式。不过，
 * **数据库复制**：跨多个位置的实时数据同步
 * **监控和警报**：全天候监控，自动事件响应
 
-**正常运行时间承诺**：服务可用性 99.9% 以上，可通过 <https://forwardemail.net> 进行透明监控
+**正常运行时间承诺**：99.9% 以上的服务可用性，并在 <https://forwardemail.net> 提供透明监控
 
 资料来源：
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### 您是否遵守《国防授权法案》（NDAA）第 889 条的规定？{#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### 您是否遵守《国防授权法案》(NDAA) 第 889 条的规定{#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> 通过精心挑选基础设施合作伙伴，Forward Email 完全符合第 889 条的规定。
 
 是的，转发电子邮件符合**第 889 条规定**。《国防授权法案》(NDAA) 第 889 条禁止政府机构使用或与使用特定公司（华为、中兴、海康威视、大华和海能达）的电信和视频监控设备的实体签订合同。
 
@@ -3035,27 +3036,27 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 ## 系统和技术细节 {#system-and-technical-details}
 
-### 您是否存储电子邮件及其内容 {#do-you-store-emails-and-their-contents}
+### 您是否存储电子邮件及其内容{#do-you-store-emails-and-their-contents}
 
-不，我们不会使用[错误异常](#do-you-store-error-logs)和[出站 SMTP](#do-you-support-sending-email-with-smtp)（参见我们的[隐私政策](/privacy)）写入磁盘或存储日志。
+不，我们不会使用 [错误异常](#do-you-store-error-logs) 和 [出站 SMTP](#do-you-support-sending-email-with-smtp)（参见我们的 [隐私政策](/privacy)）写入磁盘或存储日志。
 
-所有操作均在内存中完成，并且[我们的源代码在 GitHub 上](https://github.com/forwardemail)。
+所有操作均在内存和 [我们的源代码在 GitHub 上](https://github.com/forwardemail) 中完成。
 
 ### 您的电子邮件转发系统如何运作？{#how-does-your-email-forwarding-system-work}
 
-电子邮件依赖于 [SMTP 协议](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)。该协议由发送到服务器（通常在 25 端口上运行）的命令组成。首先建立初始连接，然后发件人指示邮件的发件人（“MAIL FROM”），接着指示邮件的目的地（“RCPT TO”），最后是邮件的标题和正文（“DATA”）。我们的电子邮件转发系统流程针对每个 SMTP 协议命令进行了描述，如下所示：
+电子邮件依赖于 [SMTP 协议](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) 协议。该协议由发送到服务器（通常在 25 端口上运行）的命令组成。首先建立初始连接，然后发件人指示邮件的发件人（“MAIL FROM”），接着指示邮件的目的地（“RCPT TO”），最后是邮件的标题和正文（“DATA”）。我们的电子邮件转发系统流程针对以下每个 SMTP 协议命令进行了描述：
 
-* 初始连接（无命令名称，例如 `telnet example.com 25`）- 这是初始连接。我们会将不在我们的 [允许列表](#do-you-have-an-allowlist) 中的发件人与我们的 [拒绝名单](#do-you-have-a-denylist) 进行比对。最后，如果发件人不在我们的允许列表中，我们会检查他们是否已被 [灰名单](#do-you-have-a-greylist) 保护。
+* 初始连接（无命令名，例如 `telnet example.com 25`）- 这是初始连接。我们会将不在 [允许列表](#do-you-have-an-allowlist) 中的发送者与 [拒绝名单](#do-you-have-a-denylist) 进行比对。最后，如果发送者不在我们的允许列表中，我们会检查他们是否已加入 [灰名单](#do-you-have-a-greylist)。
 
 * `HELO` - 表示用于识别发件人 FQDN、IP 地址或邮件处理程序名称的问候语。此值可能被伪造，因此我们不依赖此数据，而是使用连接 IP 地址的反向主机名查找。
 
-* `MAIL FROM` - 表示电子邮件的信封发件人地址。如果输入值，则必须是有效的 RFC 5322 电子邮件地址。允许为空。我们在此处使用 [检查背向散射](#how-do-you-protect-against-backscatter)，并且还会根据 [拒绝名单](#do-you-have-a-denylist) 检查 MAIL FROM。最后，我们会检查未列入允许列表的发件人，以进行速率限制（有关更多信息，请参阅 [速率限制](#do-you-have-rate-limiting) 和 [允许列表](#do-you-have-an-allowlist) 部分）。
+* `MAIL FROM` - 表示电子邮件的信封发件人地址。如果输入值，则必须是有效的 RFC 5322 电子邮件地址。允许为空。我们在此处使用 [检查背向散射](#how-do-you-protect-against-backscatter)，并且还会根据 [拒绝名单](#do-you-have-a-denylist) 检查 MAIL FROM。最后，我们会检查未列入允许列表的发件人是否进行速率限制（有关更多信息，请参阅 [速率限制](#do-you-have-rate-limiting) 和 [允许列表](#do-you-have-an-allowlist) 部分）。
 
-* `RCPT TO` - 此项指示电子邮件的收件人。这些地址必须是有效的 RFC 5322 电子邮件地址。每封邮件最多允许 50 个收件人（这与电子邮件的“收件人”标头不同）。我们还会在此处检查有效的 [发件人重写方案](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（“SRS”）地址，以防止使用我们的 SRS 域名进行欺骗。
+* `RCPT TO` - 指示电子邮件的收件人。这些地址必须是有效的 RFC 5322 电子邮件地址。每封邮件最多允许 50 个收件人（这与电子邮件的“收件人”标头不同）。我们还会在此处检查有效的 [发件人重写方案](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（“SRS”）地址，以防止使用我们的 SRS 域名进行欺骗。
 
-* `DATA` - 这是我们服务处理电子邮件的核心部分。请参阅下方 [如何处理电子邮件以便转发](#how-do-you-process-an-email-for-forwarding) 部分了解更多信息。
+* `DATA` - 这是我们服务的核心部分，用于处理电子邮件。请参阅下面的 [如何处理电子邮件以便转发](#how-do-you-process-an-email-for-forwarding) 部分了解更多信息。
 
-### 如何处理电子邮件以进行转发 {#how-do-you-process-an-email-for-forwarding}
+### 您如何处理要转发的电子邮件 {#how-do-you-process-an-email-for-forwarding}
 
 本节描述了我们与上面 [您的电子邮件转发系统如何工作](#how-does-your-email-forwarding-system-work) 部分中的 SMTP 协议命令 `DATA` 相关的流程 - 它是我们如何处理电子邮件的标题、正文、安全性、确定需要将其发送到哪里以及我们如何处理连接。
 
@@ -3065,66 +3066,66 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 3. 如果邮件中有超过 25 个“已接收”标头，则确定该邮件陷入了重定向循环，并使用 550 错误代码将其拒绝。
 
-4. 使用电子邮件的指纹（请参阅[指纹识别](#how-do-you-determine-an-email-fingerprint)部分），我们将检查该消息是否已尝试重试超过 5 天（与[默认后缀行为](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)相匹配），如果是，则将使用 550 错误代码拒绝该消息。
+4. 使用电子邮件的指纹（请参阅 [指纹识别](#how-do-you-determine-an-email-fingerprint) 部分），我们将检查该消息是否已尝试重试超过 5 天（与 [默认后缀行为](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime) 匹配），如果是，则将使用 550 错误代码拒绝该消息。
 
 5. 我们使用 [垃圾邮件扫描程序](https://spamscanner.net) 将扫描电子邮件的结果存储在内存中。
 
-6. 如果垃圾邮件扫描程序有任何任意结果，则会将其拒绝并返回 554 错误代码。截至本文撰写时，任意结果仅包含 GTUBE 测试。更多信息，请参阅 <https://spamassassin.apache.org/gtube/>。
+6. 如果垃圾邮件扫描程序有任何任意结果，则会将其拒绝并返回 554 错误代码。截至撰写本文时，任意结果仅包含 GTUBE 测试。更多信息，请参阅 <https://spamassassin.apache.org/gtube/>。
 
 7. 我们将在消息中添加以下标头，以便进行调试和防止滥用：
 
-* `Received` - 我们添加了此标准 Received 标头，其中包含原始 IP 和主机、传输类型、TLS 连接信息、日期/时间和收件人。
+* `Received` - 我们添加此标准 Received 标头，其中包含原始 IP 和主机、传输类型、TLS 连接信息、日期/时间和收件人。
 * `X-Original-To` - 邮件的原始收件人：
 * 这有助于确定电子邮件最初的送达目的地（除了“Received”标头之外）。
 * 此标头会在 IMAP 和/或屏蔽转发时为每个收件人添加（以保护隐私）。
-* `X-Forward-Email-Website` - 包含指向我们网站 <https://forwardemail.net> 的链接。
+* `X-Forward-Email-Website` - 包含指向我们网站的链接 <https://forwardemail.net>
 * `X-Forward-Email-Version` - 我们代码库中 `package.json` 的当前 [语义版本](https://semver.org/) 版本。
 * `X-Forward-Email-Session-ID` - 用于调试目的的会话 ID 值（仅适用于非生产环境）。
-* `X-Forward-Email-Sender` - 以逗号分隔的列表，包含原始信封 MAIL FROM 地址（如果非空）、反向 PTR 客户端 FQDN（如果存在）以及发件人的 IP 地址。
-* `X-Forward-Email-ID` - 仅适用于出站 SMTP，并与“我的账户”→“电子邮件”中存储的电子邮件 ID 相关联。
-* `X-Report-Abuse` - 值为 `abuse@forwardemail.net`。
-* `X-Report-Abuse-To` - 值为 `abuse@forwardemail.net`。
-* `X-Complaints-To` - 值为 `abuse@forwardemail.net`。
+* `X-Forward-Email-Sender` - 以逗号分隔的列表，包含原始信封 MAIL FROM 地址（如果不为空）、反向 PTR 客户端 FQDN（如果存在）以及发件人的 IP 地址。
+* `X-Forward-Email-ID` - 仅适用于出站 SMTP，并与“我的账户”→“电子邮件”中存储的电子邮件 ID 关联。
+* `X-Original-To`0 - 值为 `X-Original-To`1。
+* `X-Original-To`2 - 值为 `X-Original-To`3。
+* `X-Original-To`4 - 值为 `X-Original-To`5。
 
-8. 然后我们检查消息中的[DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail)、[SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework)、[ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain)和[DMARC](https://en.wikipedia.org/wiki/DMARC)。
+8. 然后我们检查消息中的 [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail)、[SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework)、[ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) 和 [DMARC](https://en.wikipedia.org/wiki/DMARC)。
 
-* 如果邮件未通过 DMARC 验证，且域名设置了拒绝策略（例如 `p=reject` [符合 DMARC 政策](https://wikipedia.org/wiki/DMARC)），则会被拒绝，并返回 550 错误代码。通常，域名的 DMARC 策略可以在 `_dmarc` 子域名 <strong class="notranslate">TXT</strong> 记录中找到（例如 `dig _dmarc.example.com txt`）。
-* 如果邮件未通过 SPF 验证，且域名设置了硬性失败策略（例如 SPF 策略中包含 `-all`，而不是 `~all` 或根本没有策略），则会被拒绝，并返回 550 错误代码。通常，域名的 SPF 策略可以在根域名的 <strong class="notranslate">TXT</strong> 记录中找到（例如 `dig example.com txt`）。有关 [像 Gmail 一样发送邮件](#can-i-send-mail-as-in-gmail-with-this) 和 SPF 的更多信息，请参阅本节。
+* 如果邮件未通过 DMARC 验证，且域名有拒绝策略（例如 `p=reject` [符合 DMARC 政策](https://wikipedia.org/wiki/DMARC)），则会被拒绝并返回 550 错误代码。通常，可以在 `_dmarc` 子域名的 <strong class="notranslate">TXT</strong> 记录中找到域名的 DMARC 策略（例如 `dig _dmarc.example.com txt`）。
+* 如果邮件未通过 SPF 验证，且域名有硬性失败策略（例如，`-all` 包含在 SPF 策略中，而 `~all` 包含在 SPF 策略中，或者根本没有策略），则会被拒绝并返回 550 错误代码。通常，可以在根域名的 <strong class="notranslate">TXT</strong> 记录中找到域名的 SPF 策略（例如 `dig example.com txt`）。有关 SPF 的 [像 Gmail 一样发送邮件](#can-i-send-mail-as-in-gmail-with-this) 的更多信息，请参阅本节。
 
 9. 现在，我们处理从上文 [您的电子邮件转发系统如何工作](#how-does-your-email-forwarding-system-work) 部分中的 `RCPT TO` 命令收集的消息收件人。对于每个收件人，我们执行以下操作：
 
-* 我们会查找域名的 <strong class="notranslate">TXT</strong> 记录（即 `@` 符号之后的部分，例如，如果电子邮件地址为 `test@example.com`，则查找 `example.com`）。例如，如果域名为 `example.com`，我们会进行 DNS 查找，例如 `dig example.com txt`。
-* 我们会解析所有以 `forward-email=`（免费方案）或 `forward-email-site-verification=`（付费方案）开头的 <strong class="notranslate">TXT</strong> 记录。请注意，我们会同时解析这两个记录，以便在用户升级或降级方案时处理电子邮件。
-* 从这些解析后的 <strong class="notranslate">TXT</strong> 记录中，我们会对其进行迭代以提取转发配置（如上文 [如何开始并设置电子邮件转发](#how-do-i-get-started-and-set-up-email-forwarding) 部分所述）。请注意，我们仅支持一个 `forward-email-site-verification=` 值，如果提供多个值，则会出现 550 错误，并且发件人将收到针对该收件人的退回邮件。
-* 我们以递归方式迭代提取出的转发配置，以确定全局转发、基于正则表达式的转发以及所有其他受支持的转发配置——这些配置现在称为我们的“转发地址”。
+* 我们查找域名的 <strong class="notranslate">TXT</strong> 记录（`@` 符号后面的部分，例如，如果电子邮件地址为 `test@example.com`，则查找 `example.com`）。例如，如果域名为 `example.com`，我们会执行 DNS 查找，例如 `dig example.com txt`。
+* 我们解析所有以 `forward-email=`（免费方案）或 `forward-email-site-verification=`（付费方案）开头的 <strong class="notranslate">TXT</strong> 记录。请注意，我们会同时解析这两个记录，以便在用户升级或降级方案时处理电子邮件。
+* 从这些解析后的 <strong class="notranslate">TXT</strong> 记录中，我们会对其进行迭代以提取转发配置（如上文 [如何开始并设置电子邮件转发](#how-do-i-get-started-and-set-up-email-forwarding) 部分所述）。请注意，我们仅支持一个 `forward-email-site-verification=` 值，如果提供多个，则会出现 550 错误，并且发件人将收到针对该收件人的退回邮件。
+* 我们以递归方式迭代提取的转发配置，以确定全局转发、基于正则表达式的转发以及所有其他支持的转发配置——这些配置现在称为我们的“转发地址”。
 * 对于每个转发地址，我们支持一次递归查找（这将在给定地址上重新开始这一系列操作）。如果找到递归匹配，则父结果将从转发地址中移除，并添加子结果。
-* 转发地址会被解析以确保唯一性（因为我们不想向一个地址发送重复邮件，也不想额外生成不必要的 SMTP 客户端连接）。
-* 对于每个转发地址，我们会根据 API 端点 `/v1/max-forwarded-addresses` 查找其域名（以确定该域名每个别名允许转发邮件到多少个地址，例如默认为 10 个 - 请参阅 [每个别名的转发最大限制](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) 部分）。如果超过此限制，将发生 550 错误，发件人将收到针对此收件人的退回邮件。
-* 我们会根据 API 端点 `/v1/settings` 查找原始收件人的设置，该端点支持付费用户的查找（免费用户可回退）。这将返回一个配置对象，用于设置 `port`（数字，例如 `25`）、`has_adult_content_protection`（布尔值）、`has_phishing_protection`（布尔值）、`has_executable_protection`（布尔值）和 `has_virus_protection`（布尔值）的高级设置。
-* 根据这些设置，我们会检查垃圾邮件扫描程序的结果，如果出现任何错误，则会拒绝该邮件并返回 554 错误代码（例如，如果启用了 `has_virus_protection`，我们会检查垃圾邮件扫描程序的结果中是否存在病毒）。请注意，所有免费套餐用户都将选择加入针对成人内容、网络钓鱼、可执行文件和病毒的检查。默认情况下，所有付费计划用户也选择加入，但可以在转发电子邮件仪表板中的域的设置页面下更改此配置）。
+* 转发地址会进行唯一性解析（因为我们不想向一个地址发送重复邮件或产生额外的不必要的 SMTP 客户端连接）。
+* 对于每个转发地址，我们会根据 API 端点 `/v1/max-forwarded-addresses` 查找其域名（以确定该域名每个别名允许转发电子邮件到多少个地址，例如默认为 10 个——请参阅 `example.com`0 部分）。如果超出此限制，则会出现 550 错误，发件人将收到针对该收件人的退回邮件。
+* 我们会根据 API 端点 `example.com`1 查找原始收件人的设置，该端点支持付费用户的查找（免费用户可回退）。这将返回一个配置对象，用于 `example.com`2（数字，例如 `example.com`3）、`example.com`4（布尔值）、`example.com`5（布尔值）、`example.com`6（布尔值）和 `example.com`7（布尔值）的高级设置。
+* 根据这些设置，我们会检查垃圾邮件扫描程序的结果，如果出现任何错误，则会拒绝该邮件并返回 554 错误代码（例如，如果启用了 `example.com`8，我们会检查垃圾邮件扫描程序的结果中是否存在病毒）。请注意，所有免费套餐用户都将选择加入针对成人内容、网络钓鱼、可执行文件和病毒的检查。默认情况下，所有付费套餐用户也选择加入，但您可以在“转发电子邮件”仪表板中针对域名的“设置”页面下更改此配置。
 
 10. 对于每个已处理的收件人的转发地址，我们执行以下操作：
 
-* 我们会根据我们的 [拒绝名单](#do-you-have-a-denylist) 检查地址，如果已列出，则会显示 421 错误代码（指示发件人稍后重试）。
-* 如果地址是 webhook，我们会为将来的操作设置一个布尔值（见下文 - 我们将相似的 webhook 组合在一起，以发出一个 POST 请求，而不是发送多个请求进行传递）。
-* 如果地址是电子邮件地址，我们会解析主机以进行将来的操作（见下文 - 我们将相似的主机组合在一起，以发出一个连接，而不是发送多个单独的连接进行传递）。
+* 我们会根据 [拒绝名单](#do-you-have-a-denylist) 检查地址，如果已列出，则会显示 421 错误代码（指示发件人稍后重试）。
+* 如果地址是 webhook，我们会设置一个布尔值用于将来的操作（见下文 - 我们将相似的 webhook 组合在一起，以发出一个 POST 请求，而不是发送多个请求进行传递）。
+* 如果地址是电子邮件地址，我们会解析主机以用于将来的操作（见下文 - 我们将相似的主机组合在一起，以发出一个连接，而不是发送多个单独的连接进行传递）。
 
 11. 如果没有收件人且没有退回，那么我们将响应 550 错误“收件人无效”。
 
-12. 如果有收件人，我们会遍历所有收件人（按同一主机分组）并发送电子邮件。更多详情，请参阅下方 [如何处理电子邮件传递问题](#how-do-you-handle-email-delivery-issues) 部分。
+12. 如果有收件人，我们会遍历所有收件人（按同一主机分组）并发送邮件。更多详情，请参阅下文 [如何处理电子邮件传递问题](#how-do-you-handle-email-delivery-issues) 部分。
 
 * 如果在发送电子邮件时发生任何错误，我们会将其存储在内存中以供后续处理。
-* 我们会从发送电子邮件中取出最低的错误代码（如果有），并将其用作 `DATA` 命令的响应代码。这意味着未送达的电子邮件通常会由原始发件人重试，但已送达的电子邮件将不会在下次发送邮件时重新发送（因为我们使用 [指纹识别](#how-do-you-determine-an-email-fingerprint)）。
+* 我们会从发送电子邮件中取出最低的错误代码（如果有），并将其用作 `DATA` 命令的响应代码。这意味着未送达的电子邮件通常会由原始发件人重试，而已送达的电子邮件将不会在下次发送邮件时重新发送（因为我们使用 [指纹识别](#how-do-you-determine-an-email-fingerprint)）。
 * 如果没有发生错误，我们将发送 250 表示成功的 SMTP 响应状态代码。
-* 任何尝试送达但导致状态代码 >= 500（永久失败）的邮件都会被判定为退回邮件。
+* 任何尝试发送但导致状态代码 >= 500（永久失败）的邮件都会被判定为退回邮件。
 
 13. 如果没有发生退回（永久性故障），那么我们将返回非永久性故障中最低错误代码的 SMTP 响应状态代码（如果没有，则返回 250 成功状态代码）。
 
-14. 如果确实发生退信，我们会在向发件人返回所有错误代码中最低的错误代码后，在后台发送退信邮件。但是，如果最低错误代码大于等于 500，我们不会发送任何退信邮件。这是因为，如果我们发送退信邮件，发件人将收到两封退信邮件（例如，一封来自他们的出站 MTA，例如 Gmail，另一封来自我们）。请参阅下文“[如何防止背向散射](#how-do-you-protect-against-backscatter)”部分了解更多信息。
+14. 如果确实发生退信，我们会在向发件人返回所有错误代码中最低的错误代码后，在后台发送退信邮件。但是，如果最低错误代码大于等于 500，我们不会发送任何退信邮件。这是因为，如果我们发送退信邮件，发件人会收到两封退信邮件（例如，一封来自他们的出站 MTA，例如 Gmail，另一封来自我们）。请参阅下文关于 [如何防止背向散射](#how-do-you-protect-against-backscatter) 的部分了解更多信息。
 
 ### 您如何处理电子邮件递送问题 {#how-do-you-handle-email-delivery-issues}
 
-请注意，当且仅当发件人的 DMARC 策略未通过且没有 DKIM 签名与“发件人”标头对齐时，我们才会对电子邮件进行“Friendly-From”重写。这意味着我们将更改邮件上的“发件人”标头，设置“X-Original-From”，如果尚未设置，还将设置“回复”。更改这些标头后，我们还将在邮件上重新密封 ARC 封条。
+请注意，当且仅当发件人的 DMARC 策略未通过且 DKIM 签名未与“发件人”报头匹配时，我们才会对邮件进行“友好发件人”重写。这意味着我们将修改邮件的“发件人”报头，设置“X-Original-From”，如果尚未设置，还会设置“回复至”。修改这些报头后，我们还会在邮件上重新加盖 ARC 封条。
 
 我们还在堆栈的每个级别使用错误消息的智能解析 - 在我们的代码中，DNS 请求、Node.js 内部、HTTP 请求（例如，如果收件人是 webhook，则 408、413 和 429 会映射到 SMTP 响应代码 421）和邮件服务器响应（例如，带有“defer”或“slowdown”的响应将作为 421 错误重试）。
 
@@ -3138,7 +3139,7 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 如果我们检测到我们尝试传递邮件的电子邮件服务器的一个或多个邮件交换 IP 地址被阻止（例如，通过他们用于延迟垃圾邮件发送者的任何技术），那么我们将发送 421 的 SMTP 响应代码，以便发件人稍后重试他们的消息（并且我们会收到有关该问题的警报，以便我们希望能够在下次尝试之前解决该问题）。
 
-### 您的 IP 地址被屏蔽后，您该如何处理？{#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### 您的 IP 地址被屏蔽后，您如何处理？{#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
 我们会定期监控所有主要的 DNS 拒绝列表，如果我们的任何邮件交换（“MX”）IP 地址列在主要拒绝列表中，我们将尽可能将其从相关的 DNS A 记录循环中拉出，直到问题得到解决。
 
@@ -3146,9 +3147,9 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 我们的 IP 地址是公开的，[请参阅下面的部分以获得更多见解](#what-are-your-servers-ip-addresses)。
 
-### 什么是邮政局长地址 {#what-are-postmaster-addresses}
+### 邮政局长地址是什么？{#what-are-postmaster-addresses}
 
-为了防止错误重定向的退回邮件以及向不受监控或不存在的邮箱发送休假响应消息，我们维护了一个邮件守护进程（如用户名）列表：
+为了防止错误重定向的退回邮件和向不受监控或不存在的邮箱发送休假响应消息，我们维护了一个邮件守护进程（如用户名）列表：
 
 * `automailer`
 * `autoresponder`
@@ -3169,7 +3170,7 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 * `postmaster`
 * [以及任何无回复地址](#what-are-no-reply-addresses)
 
-请参阅[RFC 5320 第 4.6 节](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6)以了解如何使用这些列表来创建高效的电子邮件系统。
+请参阅 [RFC 5320 第 4.6 节](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) 以了解如何使用这些列表来创建高效的电子邮件系统。
 
 ### 什么是无回复地址 {#what-are-no-reply-addresses}
 
@@ -3198,11 +3199,11 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 ### 您的服务器的 IP 地址是多少？{#what-are-your-servers-ip-addresses}
 
-我们在 <https://forwardemail.net/ips>. 上发布了我们的 IP 地址
+我们在 <https://forwardemail.net/ips>. 上发布我们的 IP 地址
 
-### 您是否有允许列表 {#do-you-have-an-allowlist}
+### 您是否有允许名单 {#do-you-have-an-allowlist}
 
-是的，我们有一个默认列入允许名单的[域名扩展列表](#what-domain-name-extensions-are-allowlisted-by-default)，以及一个基于[严格的标准](#what-is-your-allowlist-criteria)的动态、缓存和滚动允许名单。
+是的，我们有一个默认列入允许名单的 [域名扩展列表](#what-domain-name-extensions-are-allowlisted-by-default)，以及一个基于 [严格的标准](#what-is-your-allowlist-criteria) 的动态、缓存和滚动允许名单。
 
 付费计划客户的所有电子邮件、域名和收件人都会自动添加到我们的允许列表中。
 
@@ -3420,7 +3421,7 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-此外，这些 [品牌和企业顶级域名](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) 默认被列入允许名单（例如，对于 Apple Card 银行对账单，`apple` 对应 `applecard.apple`）：
+此外，这些 [品牌和企业顶级域名](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) 默认被列入允许名单（例如，`apple` 对应 Apple Card 银行对账单的 `applecard.apple`）：
 
 <ul class="list-inline">
 <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3621,7 +3622,7 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 <li class="list-inline-item"><code class="notranslate">吉普</code></li>
 <li class="list-inline-item"><code class="notranslate">摩根大通</code></li>
 <li class="list-inline-item"><code class="notranslate">瞻博网络</code></li>
-<li class="list-inline-item"><code class="notranslate">凯迪拉克国际</code></li>
+<li class="list-inline-item"><code class="notranslate">凯迪拉克迪迪</code></li>
 <li class="list-inline-item"><code class="notranslate">嘉里酒店</code></li>
 <li class="list-inline-item"><code class="notranslate">嘉里物流</code></li>
 <li class="list-inline-item"><code class="notranslate">嘉里物业</code></li>
@@ -3785,9 +3786,8 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 <li class="list-inline-item"><code class="notranslate">州立银行</code></li>
 <li class="list-inline-item"><code class="notranslate">州立农场</code></li>
 <li class="list-inline-item"><code class="notranslate">挪威国家石油</code></li>
-<li class="list-inline-item"><code class="notranslate">挪威国家石油</code></li>
-<li class="list-inline-item"><code class="notranslate">挪威国家石油</code></li>
-<li class="list-inline-item"><code class="notranslate">挪威国家石油集团</code></li>
+<li class="list-inline-item"><code class="notranslate">STC</code></li>
+<li class="list-inline-item"><code class="notranslate">STC集团</code></li>
 <li class="list-inline-item"><code class="notranslate">铃木</code></li>
 <li class="list-inline-item"><code class="notranslate">斯沃琪</code></li>
 <li class="list-inline-item"><code class="notranslate">swiftcover</code></li>
@@ -3806,7 +3806,7 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 <li class="list-inline-item"><code class="notranslate">东芝</code></li>
 <li class="list-inline-item"><code class="notranslate">道达尔</code></li>
 <li class="list-inline-item"><code class="notranslate">丰田</code></li>
-<li class="list-inline-item"><code class="notranslate">Travelchannel</code></li>
+<li class="list-inline-item"><code class="notranslate">TravelChannel</code></li>
 <li class="list-inline-item"><code class="notranslate">旅行者</code></li>
 <li class="list-inline-item"><code class="notranslate">途易</code></li>
 <li class="list-inline-item"><code class="notranslate">电视</code></li>
@@ -3886,18 +3886,18 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-由于垃圾邮件活动频繁，我们特意没有包括`cz`、`ru`和`ua`。
+由于垃圾邮件活动频繁，我们特意没有包括 `cz`、`ru` 和 `ua`。
 
-### 您的允许名单标准是什么？{#what-is-your-allowlist-criteria}
+### 您的许可名单标准是什么？{#what-is-your-allowlist-criteria}
 
-我们有一个静态的[默认列入允许名单的域名扩展](#what-domain-name-extensions-are-allowlisted-by-default)列表，并且我们还根据以下严格标准维护一个动态的、缓存的、滚动的允许列表：
+我们有一个 [默认列入允许名单的域名扩展](#what-domain-name-extensions-are-allowlisted-by-default) 的静态列表，并且我们还根据以下严格标准维护一个动态、缓存、滚动的允许列表：
 
-* 发件人根域名必须属于 [与我们在免费计划中提供的列表相匹配的域名扩展](#what-domain-name-extensions-can-be-used-for-free)（此外还包含 `biz` 和 `info`）。我们还包含 `edu`、`gov` 和 `mil` 部分匹配，例如 `xyz.gov.au` 和 `xyz.edu.au`。
-* 发件人根域名必须位于 [雨伞流行榜](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List")（“UPL”）解析结果的前 100,000 个唯一根域名之内。
-* 发件人根域名必须位于过去 7 天 UPL 中至少 4 天出现的唯一根域名的前 50,000 个结果之内（\~50%+）。
-* 发件人根域名不得被 Cloudflare 标记为包含成人内容或恶意软件 [已分类](https://radar.cloudflare.com/categorization-feedback/)。
-* 发件人根域名必须设置 A 记录或 MX 记录。
-* 发件人根域名必须具有 A 记录、MX 记录、带有 `p=reject` 或 `p=quarantine` 的 DMARC 记录，或带有 `-all` 或 `~all` 限定符的 SPF 记录。
+* 发件人根域名必须属于 [与我们在免费计划中提供的列表相匹配的域名扩展](#what-domain-name-extensions-can-be-used-for-free)（加上 `biz` 和 `info`）。我们还包含 `edu`、`gov` 和 `mil` 的部分匹配，例如 `xyz.gov.au` 和 `xyz.edu.au`。
+* 发件人根域名必须位于 [雨伞流行榜](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List")（“UPL”）解析后的前 100,000 个唯一根域名结果中。
+* 发件人根域名必须位于过去 7 天 UPL 中至少 4 天出现的唯一根域名的前 50,000 个结果中（\~50%+）。
+* 发件人根域名不得为 [已分类](https://radar.cloudflare.com/categorization-feedback/)，因为 Cloudflare 认为其包含成人内容或恶意软件。
+* 发件人根域必须设置 A 记录或 MX 记录。
+* 发件人根域必须具有 A 记录、MX 记录、带有 `biz`0 或 `biz`1 的 DMARC 记录，或者带有 `biz`2 或 `biz`3 限定符的 SPF 记录。
 
 如果满足此条件，则发件人根域将被缓存 7 天。请注意，我们的自动化作业每天都会运行，因此这是一个滚动的白名单缓存，每天更新。
 
@@ -3905,9 +3905,9 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 当然，其中包括撰写本文时的热门域名，例如 Google、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotify 等。
 
-如果您的发件人不在我们的允许列表中，那么您的 FQDN 根域或 IP 地址首次发送电子邮件时，您的链接将被设置为 [速率受限](#do-you-have-rate-limiting) 和 [灰名单](#do-you-have-a-greylist)。请注意，这是电子邮件标准中采用的标准做法。大多数电子邮件服务器客户端在收到速率限制或灰名单错误（例如 421 或 4xx 级错误状态代码）时都会尝试重试。
+如果您的发件人不在我们的允许列表中，那么您的 FQDN 根域或 IP 地址首次发送电子邮件时，您的状态码将为 [速率受限](#do-you-have-rate-limiting) 和 [灰名单](#do-you-have-a-greylist)。请注意，这是电子邮件标准采用的标准做法。大多数电子邮件服务器客户端在收到速率限制或灰名单错误（例如 421 或 4xx 级错误状态代码）时都会尝试重试。
 
-**请注意，特定发件人（例如`a@gmail.com`、`b@xyz.edu` 和 `c@gov.au`）仍可能是[列入黑名单](#do-you-have-a-denylist)**（例如，如果我们自动检测来自这些发件人的垃圾邮件、网络钓鱼或恶意软件）。
+**请注意，特定发件人（例如 `a@gmail.com`、`b@xyz.edu` 和 `c@gov.au`）仍然可以是 [列入黑名单](#do-you-have-a-denylist)**（例如，如果我们自动检测来自这些发件人的垃圾邮件、网络钓鱼或恶意软件）。
 
 ### 哪些域名扩展可以免费使用 {#what-domain-name-extensions-can-be-used-for-free}
 
@@ -4010,7 +4010,7 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 ### 您有灰名单吗？{#do-you-have-a-greylist}
 
-是的，我们采用了非常宽松的[电子邮件灰名单](https://en.wikipedia.org/wiki/Greylisting_\(email\))政策。灰名单仅适用于不在我们的允许名单上的发件人，并且会在我们的缓存中保留30天。
+是的，我们使用了非常宽松的 [电子邮件灰名单](https://en.wikipedia.org/wiki/Greylisting_\(email\)) 策略。灰名单仅适用于不在我们的允许名单上的发件人，并且会在我们的缓存中保留 30 天。
 
 对于任何新发件人，我们会将一个密钥存储在 Redis 数据库中 30 天，其值设置为其首次请求的初始到达时间。之后，我们会使用 450 的重试状态码拒绝其邮件，并且仅在 5 分钟后才允许其通过。
 
@@ -4018,17 +4018,17 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 密钥由 FQDN 根域或发件人的 IP 地址组成。这意味着任何通过灰名单的子域也会通过根域的审核，反之亦然（这就是我们所说的“非常宽松”的策略）。
 
-例如，如果一封来自 `test.example.com` 的电子邮件在我们收到一封来自 `example.com` 的电子邮件之前就已发出，那么任何来自 `test.example.com` 和/或 `example.com` 的电子邮件都必须从连接初始到达时间起等待 5 分钟。我们不会要求 `test.example.com` 和 `example.com` 分别等待各自的 5 分钟（我们的灰名单政策适用于根域级别）。
+例如，如果一封来自 `test.example.com` 的邮件在我们收到来自 `example.com` 的邮件之前就已到达，那么来自 `test.example.com` 和/或 `example.com` 的任何邮件都必须从连接初始到达时间起等待 5 分钟。我们不会让 `test.example.com` 和 `example.com` 分别等待 5 分钟（我们的灰名单政策适用于根域级别）。
 
-请注意，灰名单不适用于我们[允许列表](#do-you-have-an-allowlist)上的任何发件人（例如，撰写本文时的 Meta、Amazon、Netflix、Google、Microsoft）。
+请注意，灰名单不适用于我们 [允许列表](#do-you-have-an-allowlist) 上的任何发件人（例如，撰写本文时的 Meta、Amazon、Netflix、Google、Microsoft）。
 
-### 您是否有拒绝列表 {#do-you-have-a-denylist}
+### 您是否有拒绝名单 {#do-you-have-a-denylist}
 
 是的，我们运营自己的拒绝名单，并根据检测到的垃圾邮件和恶意活动实时自动更新和手动更新。
 
-我们还每小时从 UCEPROTECT 1 级拒绝列表 <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> 中提取所有 IP 地址，并将其输入到我们的拒绝列表中，有效期为 7 天。
+我们还每小时从 <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> 的 UCEPROTECT 1 级拒绝列表中提取所有 IP 地址，并将其输入到我们的拒绝列表中，有效期为 7 天。
 
-如果发件人在拒绝名单中找到[未列入允许名单](#do-you-have-an-allowlist)，他们将收到 421 错误代码（指示发件人稍后重试）。
+如果 [未列入允许名单](#do-you-have-an-allowlist)，则在拒绝名单中找到的发件人将收到 421 错误代码（指示发件人稍后重试）。
 
 通过使用 421 状态代码而不是 554 状态代码，可以实时缓解潜在的误报，然后可以在下一次尝试时成功传递消息。
 
@@ -4036,27 +4036,27 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 所有拒绝名单删除请求都由管理员实时监控（例如，以便管理员可以将反复出现的误报永久列入允许名单）。
 
-可以在 <https://forwardemail.net/denylist>. 请求拒绝名单删除请求。付费用户的拒绝名单删除请求会立即得到处理，而非付费用户则必须等待管理员处理他们的请求。
+可以在 <https://forwardemail.net/denylist>. 请求拒绝名单删除请求，付费用户的拒绝名单删除请求会立即得到处理，而非付费用户必须等待管理员处理他们的请求。
 
 检测到发送垃圾邮件或病毒内容的发件人将按照以下方式添加到拒绝名单中：
 
-1. 检测到垃圾邮件或来自“受信任”发件人的黑名单后，[初始消息指纹](#how-do-you-determine-an-email-fingerprint) 会被列入灰名单（例如 `gmail.com`、`microsoft.com`、`apple.com`）。
+1. 当检测到来自“受信任”发件人（例如 `gmail.com`、`microsoft.com`、`apple.com`）的垃圾邮件或黑名单时，[初始消息指纹](#how-do-you-determine-an-email-fingerprint) 会被列入灰名单。
 * 如果发件人已列入白名单，则该邮件将被列入灰名单 1 小时。
 * 如果发件人未列入白名单，则该邮件将被列入灰名单 6 小时。
-2. 我们会根据发件人和邮件信息解析黑名单密钥，并为每个密钥创建一个计数器（如果不存在），将其加 1，然后缓存 24 小时。
+2. 我们根据发件人和邮件信息解析黑名单密钥，并为每个密钥创建一个计数器（如果不存在），使其加 1，然后缓存 24 小时。
 * 对于已列入白名单的发件人：
-* 如果“MAIL FROM”邮件地址的 SPF 已通过或未通过 SPF 验证，并且不是 [邮政局长用户名](#what-are-postmaster-addresses) 或 [无回复用户名](#what-are-no-reply-addresses)，则为其添加密钥。
-* 如果“From”邮件头已列入白名单，则为其 SPF 已通过或 DKIM 已通过并对齐，则为其添加密钥。
-* 如果“From”邮件头未列入白名单，则为其 SPF 已通过或 DKIM 已通过并对齐，则为其添加密钥。
+* 如果信封“MAIL FROM”电子邮件地址的 SPF 已通过或未通过 SPF 验证，并且不是 [邮政局长用户名](#what-are-postmaster-addresses) 或 [无回复用户名](#what-are-no-reply-addresses)，则为其添加密钥。
+* 如果“发件人”报头已列入白名单，则为“发件人”报头的电子邮件地址添加一个密钥（前提是该电子邮件地址已通过 SPF 检测或已通过并对齐 DKIM 检测）。
+* 如果“发件人”报头未列入白名单，则为“发件人”报头的电子邮件地址及其根解析域名添加一个密钥。
 * 对于未列入白名单的发件人：
-* 如果“MAIL FROM”邮件地址的 SPF 已通过或未通过，则为其添加密钥。
-* 如果“From”邮件头已列入白名单，则为其 SPF 已通过或 DKIM 已通过并对齐，则为其添加密钥。
-* 如果“发件人”标头未列入白名单，则为“发件人”标头电子邮件地址及其解析的根域名添加一个密钥。
+* 如果信封“MAIL FROM”的电子邮件地址已通过 SPF 检测，则为其添加一个密钥。
+* 如果“发件人”报头已列入白名单，则为“发件人”报头的电子邮件地址及其根解析域名添加一个密钥（前提是该电子邮件地址已通过 SPF 检测或已通过并对齐 DKIM 检测）。
+* 如果“发件人”报头未列入白名单，则为“发件人”报头的电子邮件地址及其根解析域名添加一个密钥。
 * 为发件人的远程 IP 地址添加一个密钥。
 * 通过从发件人的 IP 地址进行反向查找，为客户端解析的主机名添加一个密钥（如果有）。
-* 为客户端解析的主机名的根域添加一个密钥（如果有，并且该根域与客户端解析的主机名不同）。
-3. 如果未列入白名单的发件人和密钥的计数器达到 5，我们会将该密钥列入黑名单 30 天，并向我们的滥用团队发送电子邮件。这些数字可能会发生变化，我们会在监控滥用情况时在此处更新。
-4. 如果已列入白名单的发件人和密钥的计数器达到 10，我们会将该密钥列入黑名单 7 天，并向我们的滥用团队发送电子邮件。这些数字可能会发生变化，我们会在监控滥用情况时在此处更新。
+* 为客户端解析的主机名的根域添加密钥（如果有，并且该根域与客户端解析的主机名不同）。
+3. 如果计数器对于未列入白名单的发件人和密钥达到 5，我们会将该密钥列入黑名单 30 天，并向我们的滥用团队发送电子邮件。这些数字可能会发生变化，我们将在监控滥用情况时在此处更新。
+4. 如果计数器对于列入白名单的发件人和密钥达到 10，我们会将该密钥列入黑名单 7 天，并向我们的滥用团队发送电子邮件。这些数字可能会发生变化，我们将在监控滥用情况时在此处更新。
 
 > **注意：** 不久的将来，我们将引入信誉监控功能。信誉监控将根据百分比阈值（而不是像上面提到的那样使用简单的计数器）来计算何时将发件人列入黑名单。
 
@@ -4066,22 +4066,22 @@ Forward Email 完全依赖于两个关键基础设施提供商，这两个提供
 
 我们的 MX 服务器对 [加密的 IMAP 存储](/blog/docs/best-quantum-safe-encrypted-email-service) 接收的每日入站邮件数量有限制：
 
-* 我们不再根据单个别名（例如 `you@yourdomain.com`）限制接收邮件的速率，而是根据别名的域名本身（例如 `yourdomain.com`）进行速率限制。这可以防止 `Senders` 邮件同时淹没您域中所有别名的收件箱。
-* 我们对服务中的所有 `Senders` 邮件设置了通用限制，无论收件人是谁：
-* 我们认为“可信”的可靠来源 `Senders`（例如 `gmail.com`、`microsoft.com`、`apple.com`）的邮件每日发送量限制为 100 GB。
-* `Senders` 的 [列入白名单](#do-you-have-an-allowlist) 限制每天发送 10 GB 数据。
-* 所有其他 `Senders` 限制每天发送 1 GB 数据和/或 1000 条消息。
-* 我们对 `Sender` 和 `yourdomain.com` 的每日数据量和/或 1 GB 消息有特定的限制。
+* 我们不再根据单个别名（例如 `you@yourdomain.com`）限制接收邮件的速率，而是根据别名本身的域名（例如 `yourdomain.com`）限制邮件的速率。这可以防止 `Senders` 一次性淹没您域中所有别名的收件箱。
+* 我们对服务中的所有 `Senders` 都设置了通用限制，无论收件人是谁：
+* 我们认为“可信”的 `Senders`（例如 `gmail.com`、`microsoft.com`、`apple.com`）的每日发送量限制为 100 GB。
+* `Senders` 的 [列入白名单](#do-you-have-an-allowlist) 的每日发送量限制为 10 GB。
+* 所有其他 `yourdomain.com`0 限制每天发送 1 GB 和/或 1000 条消息。
+* `yourdomain.com`1 和 `yourdomain.com`2 有特定的限制，即每天 1 GB 和/或 1000 条消息。
 
-MX 服务器还通过速率限制来限制转发给一个或多个收件人的消息 - 但这仅适用于 `Senders`，而不适用于 [允许列表](#do-you-have-an-allowlist)：
+MX 服务器还通过速率限制来限制转发给一个或多个收件人的邮件 - 但这仅适用于 `Senders`，而不适用于 [允许列表](#do-you-have-an-allowlist)：
 
-* 我们每小时仅允许最多 100 个连接，每个 `Sender` 已解析的 FQDN 根域（或）`Sender` 远程 IP 地址（若无可用的反向 PTR），以及每个信封收件人。我们将速率限制密钥以加密哈希值的形式存储在 Redis 数据库中。
+* 我们每小时仅允许最多 100 个连接，每个 `Sender` 已解析的 FQDN 根域（或）`Sender` 远程 IP 地址（如果没有可用的反向 PTR），以及每个信封收件人。我们将速率限制密钥以加密哈希值的形式存储在 Redis 数据库中。
 
 * 如果您通过我们的系统发送电子邮件，请确保为所有 IP 地址设置了反向 PTR（否则，您发送的每个唯一 FQDN 根域或 IP 地址都将受到速率限制）。
 
 * 请注意，如果您通过流行的系统（例如 Amazon SES）发送，那么您将不会受到速率限制，因为（在撰写本文时）Amazon SES 已列在我们的允许列表中。
 
-* 如果您从 `test.abc.123.example.com` 等域名发送邮件，则 `example.com` 也会受到速率限制。许多垃圾邮件发送者会使用数百个子域名来绕过常见的垃圾邮件过滤器，这些过滤器仅对唯一主机名进行速率限制，而不会对唯一 FQDN 根域名进行速率限制。
+* 如果您从 `test.abc.123.example.com` 等域名发送邮件，则 `example.com` 将被施加速率限制。许多垃圾邮件发送者会使用数百个子域名来绕过常见的垃圾邮件过滤器，这些过滤器仅对唯一主机名进行速率限制，而不会对唯一 FQDN 根域名进行速率限制。
 
 * 超出速率限制的 `Senders` 将被拒绝并出现 421 错误。
 
@@ -4089,23 +4089,23 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 我们的 MX 服务器限制 [未列入白名单](#do-you-have-an-allowlist) 发送者建立超过 10 个并发连接（计数器的缓存有效期为 3 分钟，这反映了我们的 3 分钟套接字超时）。
 
-### 如何防范反向散射 {#how-do-you-protect-against-backscatter}
+### 如何防范背向散射 {#how-do-you-protect-against-backscatter}
 
 错误定向的退回或退回垃圾邮件（称为“[背向散射](https://en.wikipedia.org/wiki/Backscatter_\(email\)”）可能会对发件人 IP 地址造成负面声誉。
 
-我们采取两个步骤来防止反向散射，详见下面的[防止来自已知垃圾邮件发送者的邮件被退回](#prevent-bounces-from-known-mail-from-spammers)和[防止不必要的反弹以防止背向散射](#prevent-unnecessary-bounces-to-protect-against-backscatter)部分。
+我们采取两个步骤来防止反向散射，在下面的 [防止来自已知垃圾邮件发送者的邮件被退回](#prevent-bounces-from-known-mail-from-spammers) 和 [防止不必要的反弹以防止背向散射](#prevent-unnecessary-bounces-to-protect-against-backscatter) 部分中有详细说明。
 
-### 防止来自已知垃圾邮件发送者的邮件退回 {#prevent-bounces-from-known-mail-from-spammers}
+### 防止来自已知垃圾邮件发送者的邮件被退回 {#prevent-bounces-from-known-mail-from-spammers}
 
 我们每小时从 <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> 处的 [Backscatter.org](https://www.backscatterer.org/)（由 [UCEPROTECT](https://www.uceprotect.net/) 提供支持）提取列表并将其输入到我们的 Redis 数据库中（我们还会提前比较差异；以防删除了任何需要遵守的 IP）。
 
-如果 MAIL FROM 为空或等于（不区分大小写）任何 [邮政局长地址](#what-are-postmaster-addresses)（电子邮件中 @ 之前的部分），那么我们会检查发件人 IP 是否与此列表中的一个匹配。
+如果 MAIL FROM 为空或等于（不区分大小写）[邮政局长地址](#what-are-postmaster-addresses)（电子邮件中 @ 之前的部分）中的任何一个，那么我们会检查发件人 IP 是否与此列表中的一个匹配。
 
-如果发件人的 IP 已列入我们的 [允许列表](#do-you-have-an-allowlist) 列表中（但不在我们的 `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}` 列表中），我们会发送 554 错误，并显示 `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}` 消息。如果发件人同时位于反向散射器列表和我们的允许列表中，我们会收到警报，以便在必要时解决问题。
+如果发件人的 IP 已列入（但不在我们的 [允许列表](#do-you-have-an-allowlist) 中），我们会发送 554 错误，并附带消息 `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`。如果发件人同时在反向散射器列表和我们的允许列表中，我们会收到警报，以便在必要时解决问题。
 
-本节中描述的技术遵循<https://www.backscatterer.org/?target=usage>处的“安全模式”建议 - 仅当已满足某些条件时我们才会检查发件人 IP。
+本节中描述的技术遵循 <https://www.backscatterer.org/?target=usage> 中的“安全模式”建议 - 仅当已满足某些条件时我们才会检查发送方 IP。
 
-### 防止不必要的反弹以防止反向散射 {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+### 防止不必要的反弹以防止背向散射 {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
 退回的电子邮件表明电子邮件转发给收件人完全失败，并且不会重试该电子邮件。
 
@@ -4113,7 +4113,7 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 1. 我们仅在发生 >= 500 状态代码错误时发送（当尝试转发的电子邮件失败时，例如 Gmail 以 500 级错误响应）。
 
-2. 我们只发送一次（我们使用计算出的弹回指纹密钥并将其存储在缓存中，以防止重复发送）。弹回指纹密钥是消息指纹与弹回地址及其错误代码的哈希值的组合。有关消息指纹计算方法的更多信息，请参阅 [指纹识别](#how-do-you-determine-an-email-fingerprint) 部分。成功发送的弹回指纹将在 Redis 缓存中保留 7 天。
+2. 我们只发送一次（我们使用计算出的弹回指纹密钥并将其存储在缓存中，以防止重复发送）。弹回指纹密钥是消息指纹与弹回地址及其错误代码的哈希值的组合。有关消息指纹计算方法的更多信息，请参阅 [指纹识别](#how-do-you-determine-an-email-fingerprint) 部分。成功发送的弹回指纹将在 Redis 缓存中保存 7 天后过期。
 
 3. 仅当 MAIL FROM 和/或 From 不为空且不包含（不区分大小写）[邮政局长用户名](#what-are-postmaster-addresses)（电子邮件中 @ 之前的部分）时，我们才会发送。
 
@@ -4121,18 +4121,18 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 * `auto-submitted` 的标头，其值不等于 `no`。
 * `x-auto-response-suppress` 的标头，其值为 `dr`、`autoreply`、`auto-reply`、`auto_reply` 或 `all`
-* `list-id`、`list-subscribe`、`list-unsubscribe`、`list-help`、`list-post`、`list-owner`、`list-archive`、`x-autoreply` 的标头`x-autorespond` 或 `x-auto-respond`（无论值如何）。
-* `precedence` 的标头，其值为 `bulk`、`autoreply`、`auto-reply`、`auto_reply` 或 `list`。
+* `list-id`、`list-subscribe`、`no`0、`no`1、`no`2、`no`3、`no`4、`no`5、`no`6 或 `no`7 的标头（无论其值为多少）。
+* `no`8 的标题，其值为 `no`9、`x-auto-response-suppress`0、`x-auto-response-suppress`1、`x-auto-response-suppress`2 或 `x-auto-response-suppress`3。
 
 5. 如果 MAIL FROM 或 From 电子邮件地址以 `+donotreply`、`-donotreply`、`+noreply` 或 `-noreply` 结尾，我们不会发送。
 
-6. 如果发件人电子邮件地址用户名部分为 `mdaemon` 并且具有不区分大小写的标题 `X-MDDSN-Message`，则我们不会发送。
+6. 如果发件人电子邮件地址用户名部分为 `mdaemon`，并且具有不区分大小写的 `X-MDDSN-Message` 标头，则我们不会发送。
 
-7. 如果存在不区分大小写的 `content-type` 或 `multipart/report` 标头，我们就不会发送。
+7. 如果 `multipart/report` 的标头不区分大小写，则我们不会发送。
 
-### 如何确定电子邮件指纹 {#how-do-you-determine-an-email-fingerprint}
+### 如何确定电子邮件指纹{#how-do-you-determine-an-email-fingerprint}
 
-电子邮件的指纹用于确定电子邮件的唯一性，并防止传递重复的消息和发送[重复退回](#prevent-unnecessary-bounces-to-protect-against-backscatter)。
+电子邮件的指纹用于确定电子邮件的唯一性并防止传递重复的消息和发送[重复退回](#prevent-unnecessary-bounces-to-protect-against-backscatter)。
 
 指纹是根据以下列表计算得出的：
 
@@ -4145,7 +4145,7 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 * `Subject` 标头值（如有）
 * `Body` 值（如有）
 
-### 我可以将电子邮件转发到 25 以外的端口吗（例如，如果我的 ISP 已阻止端口 25）{#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+### 我可以将电子邮件转发到 25 以外的端口吗（例如，如果我的 ISP 阻止了端口 25）{#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
 是的，我们已于 2020 年 5 月 5 日添加了此功能。目前，此功能是针对特定域名的，而非针对特定别名的。如果您需要将其针对特定别名，请联系我们并告知您的需求。
 
@@ -4211,15 +4211,15 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 </tbody>
 </table>
 
-### 它是否支持 Gmail 别名的加号 + 符号 {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### 是否支持 Gmail 别名的加号 + {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
 是的，绝对是。
 
-### 它是否支持子域名 {#does-it-support-sub-domains}
+### 是否支持子域名 {#does-it-support-sub-domains}
 
 是的，完全正确。您无需使用“@”、“.”或空白作为名称/主机/别名，只需使用子域名作为值即可。
 
-如果您希望使用 `foo.example.com` 转发电子邮件，请在 DNS 设置中输入 `foo` 作为名称/主机/别名值（对于 MX 和 <strong class="notranslate">TXT</strong> 记录）。
+如果您希望 `foo.example.com` 转发电子邮件，请在 DNS 设置中输入 `foo` 作为名称/主机/别名值（对于 MX 和 <strong class="notranslate">TXT</strong> 记录）。
 
 ### 这会转发我的电子邮件标题吗？{#does-this-forward-my-emails-headers}
 
@@ -4227,35 +4227,35 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 ### 这是经过充分测试的{#is-this-well-tested}
 
-是的，它有用[艾娃](https://github.com/avajs/ava)编写的测试，并且还有代码覆盖率。
+是的，它有用 [艾娃](https://github.com/avajs/ava) 编写的测试，并且还有代码覆盖率。
 
 ### 您是否传递 SMTP 响应消息和代码 {#do-you-pass-along-smtp-response-messages-and-codes}
 
-是的，绝对可以。例如，如果您要将电子邮件发送至 `hello@example.com`，而该邮件已注册转发至 `user@gmail.com`，则系统将返回来自“gmail.com”SMTP 服务器的 SMTP 响应消息和代码，而不是来自“mx1.forwardemail.net”或“mx2.forwardemail.net”的代理服务器。
+是的，绝对可以。例如，如果您要向 `hello@example.com` 发送电子邮件，而该地址已注册转发至 `user@gmail.com`，那么系统将返回来自“gmail.com”SMTP 服务器的 SMTP 响应消息和代码，而不是来自“mx1.forwardemail.net”或“mx2.forwardemail.net”的代理服务器。
 
-### 如何防止垃圾邮件发送者并确保良好的电子邮件转发声誉{#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### 如何防止垃圾邮件发送者并确保良好的电子邮件转发信誉{#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 请参阅上面有关 [您的电子邮件转发系统如何工作](#how-does-your-email-forwarding-system-work)、[如何处理电子邮件传递问题](#how-do-you-handle-email-delivery-issues) 和 [如何处理被阻止的 IP 地址](#how-do-you-handle-your-ip-addresses-becoming-blocked) 的部分。
 
-### 如何对域名执行 DNS 查找 {#how-do-you-perform-dns-lookups-on-domain-names}
+### 如何对域名 {#how-do-you-perform-dns-lookups-on-domain-names}
 
 我们创建了一个开源软件项目 :tangerine: [柑橘](https://github.com/forwardemail/tangerine)，并将其用于 DNS 查询。默认使用的 DNS 服务器是 `1.1.1.1` 和 `1.0.0.1`，DNS 查询通过应用层的 [通过 HTTPS 进行 DNS](https://en.wikipedia.org/wiki/DNS_over_HTTPS)（“DoH”）进行。
 
 :tangerine: [柑橘](https://github.com/tangerine) 默认使用 [CloudFlare 的隐私优先消费者 DNS 服务][cloudflare-dns]。
 
-## 帐户和账单 {#account-and-billing}
+## 帐户和帐单 {#account-and-billing}
 
-### 你们是否为付费计划提供退款保证？{#do-you-offer-a-money-back-guarantee-on-paid-plans}
+### 你们对付费方案提供退款保证吗？{#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
 是的！如果您在套餐生效后 30 天内升级、降级或取消账户，即可自动退款。此优惠仅适用于首次购买套餐的客户。
 
-### 如果我更换计划，你们会按比例退还差额吗？{#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### 如果我更换套餐，你们会按比例退还差额吗？{#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
 当您更换套餐时，我们不会按比例退还差价。相反，我们会将您现有套餐到期日的剩余时长转换为新套餐最接近的时长（按月向下取整）。
 
 请注意，如果您自首次开始付费计划以来的 30 天内在付费计划之间升级或降级，那么我们将自动从您的现有计划中退还全额金额。
 
-### 我可以将此电子邮件转发服务用作“后备”或“故障转移” MX 服务器吗？{#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### 我可以将此电子邮件转发服务用作“后备”或“故障转移”MX 服务器吗？{#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
 不，不建议这样做，因为您一次只能使用一台邮件交换服务器。由于优先级配置错误以及邮件服务器不遵守 MX 交换优先级检查，回退通常不会重试。
 
@@ -4275,13 +4275,13 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 请注意，您*应该*保留“：”映射，因为如果您决定关闭此功能，则需要保留该映射（如果您升级到我们的付费计划之一，它也会用于导入）。
 
-**对于静默拒绝（在发件人看来，邮件好像已成功发送，但实际上无处可去）（状态代码`250`）：**如果在别名前加上“！”（单个感叹号），那么它将向尝试发送到此地址的发件人返回成功状态代码`250`，但电子邮件本身无处可去（例如黑洞或`/dev/null`）。
+**对于静默拒绝（对发件人而言，邮件好像已成功发送，但实际上无处可去）（状态代码 `250`）：**如果在别名前加上“！”（单个感叹号），那么它将向尝试发送到此地址的发件人返回成功状态代码 `250`，但电子邮件本身无处可去（例如黑洞或 `/dev/null`）。
 
 **对于软拒绝（状态代码 `421`）：**如果在别名前加上“!!”（双感叹号），那么它将向尝试发送到此地址的发件人返回软错误状态代码 `421`，并且电子邮件通常会在被拒绝和退回之前重试最多 5 天。
 
-**对于硬拒绝（状态代码`550`）：**如果在别名前加上“!!!”（三个感叹号），那么它将向尝试发送到此地址的发件人返回永久错误状态代码`550`，并且电子邮件将被拒绝和退回。
+**对于硬拒绝（状态代码 `550`）：**如果在别名前加上“!!!”（三个感叹号），那么它将向尝试发送到此地址的发件人返回永久错误状态代码 `550`，并且电子邮件将被拒绝和退回。
 
-例如，如果我希望所有发送到 `alias@example.com` 的电子邮件不再流向 `user@gmail.com` 并被拒绝和退回（例如，使用三个感叹号）：
+例如，如果我希望所有发送到 `alias@example.com` 的电子邮件不再流经 `user@gmail.com` 并被拒绝和退回（例如，使用三个感叹号）：
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4418,7 +4418,7 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 是的，可以。只需在 <strong class="notranslate">TXT</strong> 记录中指定多个全局接收方即可。
 
-例如，如果我希望每封发送到 `*@example.com`（星号表示通配符，又称万能）的电子邮件都转发到 `user+a@gmail.com` 和 `user+b@gmail.com`，那么我的 <strong class="notranslate">TXT</strong> 记录将如下所示：
+例如，如果我希望发送到 `*@example.com`（星号表示通配符，又称万能信）的每封电子邮件都转发到 `user+a@gmail.com` 和 `user+b@gmail.com`，那么我的 <strong class="notranslate">TXT</strong> 记录将如下所示：
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4468,9 +4468,9 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 由你决定！
 
-### 每个别名可以转发的电子邮件地址数量是否有最大限制？{#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+### 每个别名可以转发的电子邮件地址数量是否有上限？{#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-是的，默认限制为 10。这并不意味着您的域名只能拥有 10 个别名。您可以拥有任意数量的别名（数量不限）。这意味着您只能将一个别名转发到 10 个唯一的电子邮件地址。您可以拥有 `hello:user+1@gmail.com`、`hello:user+2@gmail.com`、`hello:user+3@gmail.com` 等（1-10 个）——任何发送到 `hello@example.com` 的邮件都会被转发到 `user+1@gmail.com`、`user+2@gmail.com`、`user+3@gmail.com` 等（1-10 个）。
+是的，默认限制为 10。这并不意味着您的域名只能拥有 10 个别名。您可以拥有任意数量的别名（数量不限）。这意味着您只能将一个别名转发到 10 个唯一的电子邮件地址。您可以拥有 `hello:user+1@gmail.com`、`hello:user+2@gmail.com`、`hello:user+3@gmail.com`……（编号 1-10）——任何发送到 `hello@example.com` 的邮件都会被转发到 `user+1@gmail.com`、`user+2@gmail.com`、`user+3@gmail.com`……（编号 1-10）。
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4486,11 +4486,11 @@ MX 服务器还通过速率限制来限制转发给一个或多个收件人的�
 
 是的，您可以，但仍然必须遵守最大限制。如果您拥有 `hello:linus@example.com` 和 `linus:user@gmail.com`，那么发送至 `hello@example.com` 的电子邮件将被转发至 `linus@example.com` 和 `user@gmail.com`。请注意，如果您尝试递归转发超出最大限制的电子邮件，将会引发错误。
 
-### 未经我的许可，其他人可以注销或注册我的电子邮件转发吗？{#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### 未经我的许可，其他人可以取消注册或注册我的电子邮件转发吗？{#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 我们使用 MX 和 <strong class="notranslate">TXT</strong> 记录验证，因此如果您添加此服务相应的 MX 和 <strong class="notranslate">TXT</strong> 记录，则表示您已注册。如果您删除它们，则表示您已注销。您拥有域名的所有权和 DNS 管理权，因此如果有人访问这些内容，那就有问题了。
 
-### 它怎么免费？{#how-is-it-free}
+### 如何免费获得 {#how-is-it-free}
 
 Forward Email 通过开源开发、高效基础设施和支持该服务的可选付费计划的组合提供免费套餐。
 
@@ -4505,12 +4505,12 @@ Forward Email 通过开源开发、高效基础设施和支持该服务的可选
 4.**合理的使用限制**：免费套餐有公平的使用政策，以防止滥用。
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> 我们致力于保持基本电子邮件转发服务的免费，同时为有更高级需求的用户提供高级功能。
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> 如果您觉得我们的服务有价值，请考虑升级到付费计划以支持持续的开发和维护。
 
-### 电子邮件大小上限是多少 {#what-is-the-max-email-size-limit}
+### 电子邮件大小上限是多少？{#what-is-the-max-email-size-limit}
 
 我们默认邮件大小限制为 50MB，包含正文、邮件头和附件。请注意，Gmail 和 Outlook 等服务仅允许 25MB 的邮件大小限制，如果您向这些服务商的邮箱发送邮件时超出限制，将会收到错误消息。
 
@@ -4518,33 +4518,33 @@ Forward Email 通过开源开发、高效基础设施和支持该服务的可选
 
 ### 您是否存储电子邮件日志 {#do-you-store-logs-of-emails}
 
-不，我们不会写入磁盘或存储日志 - 使用[错误异常](#do-you-store-error-logs)和[出站 SMTP](#do-you-support-sending-email-with-smtp)（请参阅我们的[隐私政策](/privacy)）。
+不，我们不会使用 [错误异常](#do-you-store-error-logs) 和 [出站 SMTP](#do-you-support-sending-email-with-smtp)（参见我们的 [隐私政策](/privacy)）写入磁盘或存储日志。
 
-所有操作均在内存中完成，并且[我们的源代码在 GitHub 上](https://github.com/forwardemail)。
+所有操作均在内存和 [我们的源代码在 GitHub 上](https://github.com/forwardemail) 中完成。
 
 ### 您是否存储错误日志 {#do-you-store-error-logs}
 
 **是的。您可以访问 [我的账户 → 日志](/my-account/logs) 或 [我的账户 → 域名](/my-account/domains) 下的错误日志。**
 
-自 2023 年 2 月起，我们将存储 `4xx` 和 `5xx` SMTP 响应代码的错误日志，为期 7 天，其中包含 SMTP 错误、信封和电子邮件标头（我们**不**存储电子邮件正文或附件）。
+自 2023 年 2 月起，我们将存储 `4xx` 和 `5xx` SMTP 响应代码的错误日志，为期 7 天 - 其中包含 SMTP 错误、信封和电子邮件标头（我们**不**存储电子邮件正文或附件）。
 
 错误日志可让您检查是否有重要邮件遗漏，并减少 [你的域名](/my-account/domains) 的垃圾邮件误报。它们也是调试 [电子邮件 webhook](#do-you-support-webhooks) 问题的绝佳资源（因为错误日志包含 Webhook 端点响应）。
 
 由于连接提前结束（例如，在传输 `RCPT TO` 和 `MAIL FROM` 命令之前），因此无法访问 [速率限制](#do-you-have-rate-limiting) 和 [灰名单](#do-you-have-a-greylist) 的错误日志。
 
-请参阅我们的[隐私政策](/privacy)以获得更多见解。
+请参阅我们的 [隐私政策](/privacy) 以获得更多见解。
 
 ### 你会阅读我的电子邮件吗？{#do-you-read-my-emails}
 
-不，绝对不行。请参阅我们的[隐私政策](/privacy)。
+不，绝对不行。请参阅我们的 [隐私政策](/privacy)。
 
 许多其他电子邮件转发服务会存储您的电子邮件，甚至可能读取您的电子邮件。转发的电子邮件无需存储到磁盘存储中——因此，我们构建了首个在内存中完成所有操作的开源解决方案。
 
-我们相信您享有隐私权，并严格尊重您的隐私。为了确保透明度和建立信任，部署到服务器的代码已设置为 [GitHub 上的开源软件](https://github.com/forwardemail)。
+我们相信您享有隐私权，并严格尊重您的隐私。为了确保透明度并建立信任，部署到服务器的代码为 [GitHub 上的开源软件](https://github.com/forwardemail)。
 
-### 我可以使用此 {#can-i-send-mail-as-in-gmail-with-this} 在 Gmail 中“以...身份发送邮件”吗？
+### 我可以使用此 {#can-i-send-mail-as-in-gmail-with-this}
 
-是的！我们已于 2018 年 10 月 2 日添加了此功能。请参阅上面的 [如何使用 Gmail 发送邮件](#how-to-send-mail-as-using-gmail)！
+是的！我们已于 2018 年 10 月 2 日添加了此功能。请参阅上文的 [如何使用 Gmail 发送邮件](#how-to-send-mail-as-using-gmail)！
 
 您还应该在 DNS 配置 <strong class="notranslate">TXT</strong> 记录中设置 Gmail 的 SPF 记录。
 
@@ -4560,7 +4560,7 @@ Forward Email 通过开源开发、高效基础设施和支持该服务的可选
 </span>
 </div>
 
-### 我可以使用此 {#can-i-send-mail-as-in-outlook-with-this} 在 Outlook 中“以...身份发送邮件”吗？
+### 我可以使用此 {#can-i-send-mail-as-in-outlook-with-this}
 
 是的！我们已于 2018 年 10 月 2 日添加了此功能。只需查看以下来自 Microsoft 的这两个链接：
 
@@ -4583,15 +4583,15 @@ Forward Email 通过开源开发、高效基础设施和支持该服务的可选
 
 ### 我可以使用此 {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} 在 Apple Mail 和 iCloud Mail 中“以...身份发送邮件”吗？
 
-如果您是 iCloud+ 订阅者，则可以使用自定义域名。[我们的服务也兼容 Apple Mail](#apple-mail)。
+如果您是 iCloud+ 订阅者，则可以使用自定义域。[我们的服务也兼容 Apple Mail](#apple-mail)。
 
-请参阅<https://support.apple.com/en-us/102540>了解更多信息。
+请参阅<https://support.apple.com/en-us/102540> 以了解更多信息。
 
-### 我可以使用此 {#can-i-forward-unlimited-emails-with-this} 转发无限量的电子邮件吗？
+### 我可以使用此 {#can-i-forward-unlimited-emails-with-this}
 
 是的，但是“相对未知”的发件人每个主机名或 IP 的连接速率限制为每小时 100 个。请参阅上文关于 [速率限制](#do-you-have-rate-limiting) 和 [灰名单](#do-you-have-a-greylist) 的部分。
 
-“相对未知”是指未出现在[允许列表](#do-you-have-an-allowlist)中的发件人。
+“相对未知”是指未出现在 [允许列表](#do-you-have-an-allowlist) 中的发件人。
 
 如果超过此限制，我们将发送 421 响应代码，告知发件人的邮件服务器稍后重试。
 
@@ -4599,7 +4599,7 @@ Forward Email 通过开源开发、高效基础设施和支持该服务的可选
 
 是的。无论您选择哪种方案，只需支付一个月费，即可涵盖您的所有域名。
 
-### 您接受哪些付款方式 {#which-payment-methods-do-you-accept}
+### 您接受哪些付款方式？{#which-payment-methods-do-you-accept}
 
 Forward Email 接受以下一次性或每月/每季度/每年的付款方式：
 
@@ -4608,17 +4608,17 @@ Forward Email 接受以下一次性或每月/每季度/每年的付款方式：
 3. **加密货币**：我们接受 Stripe 在以太坊、Polygon 和 Solana 网络上的稳定币付款。
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> 我们在服务器上存储有限的支付信息，其中仅包含支付标识符以及对 [条纹](https://stripe.com/global) 和 [PayPal](https://www.paypal.com) 交易、客户、订阅和支付 ID 的引用。
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> 为了最大程度地保护隐私，请考虑使用加密货币支付。
 
 所有付款均通过 Stripe 或 PayPal 安全处理。您的付款信息绝不会存储在我们的服务器上。
 
-## 其他资源 {#additional-resources}
+## 额外资源 {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> 我们以下文章会定期更新，包含新的指南、技巧和技术信息。请经常回来查看以获取最新内容。
 
 * [案例研究和开发人员文档](/blog/docs)
 * [资源](/resources)

@@ -1,12 +1,12 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Versioni auto-ospitate {#self-hosted-releases}
 
 Questa sezione documenta il flusso di lavoro CI/CD per la soluzione self-hosted di ForwardEmail, spiegando come vengono create, pubblicate e distribuite le immagini Docker.
 
-## Table of Contents {#table-of-contents}
+## Indice {#table-of-contents}
 
 * [Panoramica](#overview)
 * [Flusso di lavoro CI/CD](#cicd-workflow)
-  * [Flusso di lavoro delle azioni GitHub](#github-actions-workflow)
+  * [Flusso di lavoro di GitHub Actions](#github-actions-workflow)
   * [Struttura dell'immagine Docker](#docker-image-structure)
 * [Processo di distribuzione](#deployment-process)
   * [Installazione](#installation)
@@ -19,18 +19,18 @@ Questa sezione documenta il flusso di lavoro CI/CD per la soluzione self-hosted 
 * [Accesso alle immagini](#accessing-images)
 * [Contribuire](#contributing)
 
-## Overview {#overview}
+## Panoramica {#overview}
 
-La soluzione self-hosted di ForwardEmail utilizza GitHub Actions per creare e pubblicare automaticamente immagini Docker ogni volta che viene creata una nuova release. Queste immagini sono quindi disponibili per gli utenti che le distribuiscono sui propri server utilizzando lo script di installazione fornito.
+La soluzione self-hosted di ForwardEmail utilizza GitHub Actions per creare e pubblicare automaticamente immagini Docker ogni volta che viene creata una nuova release. Queste immagini sono quindi disponibili per la distribuzione da parte degli utenti sui propri server tramite lo script di configurazione fornito.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Sono disponibili anche i nostri [blog auto-ospitato](https://forwardemail.net/blog/docs/self-hosted-solution) e [guida per sviluppatori auto-ospitati](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Per le versioni passo passo più dettagliate, consulta le guide basate su [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) o [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Flusso di lavoro CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Flusso di lavoro delle azioni GitHub {#github-actions-workflow}
 
 Il processo di creazione e pubblicazione dell'immagine Docker self-hosted è definito in `.github/workflows/docker-image-build-publish.yml`. Questo flusso di lavoro:
 
@@ -41,7 +41,7 @@ Il processo di creazione e pubblicazione dell'immagine Docker self-hosted è def
 * Imposta Docker Buildx per build multipiattaforma
 * Accede al GitHub Container Registry (GHCR)
 * Aggiorna lo schema per la distribuzione self-hosted
-* Compila l'immagine Docker utilizzando `self-hosting/Dockerfile-selfhosted`
+* Crea l'immagine Docker utilizzando `self-hosting/Dockerfile-selfhosted`
 * Tagga l'immagine sia con la versione di rilascio che con `latest`
 * Invio delle immagini al GitHub Container Registry
 
@@ -91,7 +91,7 @@ Questo approccio garantisce che l'immagine finale sia ottimizzata in termini di 
 
 ### Installazione {#installation}
 
-Gli utenti possono distribuire la soluzione self-hosted utilizzando lo script di installazione fornito:
+Gli utenti possono implementare la soluzione self-hosted utilizzando lo script di installazione fornito:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
@@ -142,7 +142,7 @@ Gli utenti possono abilitare gli aggiornamenti automatici che:
 
 ### Backup e ripristino {#backup-and-restore}
 
-L'installazione fornisce opzioni per:
+La configurazione fornisce opzioni per:
 
 * Configurazione di backup regolari su storage compatibile con S3
 * Backup di dati MongoDB, Redis e SQLite
@@ -174,7 +174,7 @@ Le immagini Docker sono disponibili al pubblico all'indirizzo:
 
 Per estrarre queste immagini non è richiesta alcuna autenticazione.
 
-## Contributo a {#contributing}
+## Contributo di {#contributing}
 
 Per contribuire alla soluzione self-hosted:
 

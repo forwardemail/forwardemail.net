@@ -44,7 +44,7 @@ Además, Forward Email no garantiza ni hace ninguna declaración sobre la precis
 * Si envía material de marketing por correo electrónico, debe incluir un encabezado `List-Unsubscribe` y sus suscriptores deben estar suscritos.
 * Le recomendamos que utilice un gestor de boletines de código abierto como [ListMonk](https://github.com/knadh/listmonk) en <https://github.com/knadh/listmonk>.
 * Tenga en cuenta que planeamos lanzar nuestro propio gestor de boletines en el futuro. * El material de marketing por correo electrónico incluye correos electrónicos promocionales, masivos o comerciales a una lista de contactos con contenido, asunto y cuerpo del mensaje similares (por ejemplo, boletines informativos y anuncios).
-* Debe cumplir con la [Ley CAN-SPAM de 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
+* Debe cumplir con el [Ley CAN-SPAM de 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
 * Debe eliminar a los usuarios que hayan cancelado su suscripción, cancelado su suscripción o marcado su correo electrónico como spam, ya sea de inmediato o en un plazo de 24 horas.
 * La primera vez que su dominio intente enviar un boletín informativo, un administrador lo revisará y aprobará para el envío (normalmente en un plazo de 2 a 4 horas, aunque en ocasiones puede tardar más).
 * Cualquier contenido que interfiera con la interrupción del Servicio, sus operaciones o sus clientes.
@@ -55,7 +55,7 @@ Además, Forward Email no garantiza ni hace ninguna declaración sobre la precis
 
 Los materiales contenidos en este sitio web están protegidos por las leyes de derechos de autor y marcas registradas aplicables.
 
-Su acceso a nuestro sitio web y el uso de nuestro servicio indican que usted ha aceptado nuestros [política de privacidad](/privacy) y [Acuerdo de procesamiento de datos](/dpa) (por ejemplo, para el cumplimiento del RGPD).
+Su acceso a nuestro sitio web y el uso de nuestro servicio indican que ha aceptado nuestros [política de privacidad](/privacy) y [Acuerdo de procesamiento de datos](/dpa) (por ejemplo, para el cumplimiento del RGPD).
 
 ## Uso ilimitado {#unlimited-usage}
 
@@ -94,7 +94,7 @@ Su cuenta será bloqueada de forma automática y permanente si abre una disputa 
 
 Forward Email hará todos los esfuerzos comerciales razonables (al menos los estándares aceptables y razonables de la industria) para garantizar que el servicio Forward Email esté disponible para los clientes de pago el 99.99% del tiempo de cualquier mes calendario. De no ser así, podría tener derecho a recibir el [Créditos](#credits) que se describe a continuación, de acuerdo con el [Elegibilidad](#eligibility).
 
-Créditos {#credits}
+### Créditos {#credits}
 
 | Porcentaje de tiempo de actividad mensual | Días de servicio* |
 | ------------------------- | ---------------- |
@@ -106,7 +106,7 @@ Créditos {#credits}
 
 ### Elegibilidad {#eligibility}
 
-El monto mínimo de crédito debe ser de al menos $1.00 para ser elegible. El crédito máximo se limita a los 30 días o al monto total que el cliente esté pagando durante el último mes calendario en relación con el Tiempo de Inactividad (lo que sea mayor). Los clientes afectados por un Tiempo de Inactividad deben solicitar Créditos presentando un formulario [Solicitud de ayuda](/help) dentro de los 30 días posteriores a la fecha del Tiempo de Inactividad. Los créditos solo se aplican a factores de Tiempo de Inactividad que estén bajo el control principal de Forward Email.
+El crédito mínimo debe ser de al menos $1.00 para ser elegible. El crédito máximo se limita a los 30 días o al importe total que el cliente esté pagando durante el último mes calendario en relación con el Tiempo de Inactividad (lo que sea mayor). Los clientes afectados por un Tiempo de Inactividad deben solicitar los Créditos mediante un formulario [Solicitud de ayuda](/help) dentro de los 30 días posteriores a la fecha del Tiempo de Inactividad. Los créditos solo se aplican a factores de Tiempo de Inactividad que estén bajo el control principal de Forward Email.
 
 ## Revisiones y erratas {#revisions-and-errata}
 

@@ -1,21 +1,21 @@
-# שליחת מיילים עם דוגמה לאפליקציית אינטרנט של Node בפורמט React.js {#send-emails-with-reactjs-node-web-app-example}
+# שליחת מיילים עם דוגמה לאפליקציית אינטרנט של Node React.js {#send-emails-with-reactjs-node-web-app-example}
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [התקנה ודרישות](#install-and-requirements)
 * [קוד מקור ודוגמה](#source-code-and-example)
 
 ## התקנה ודרישות {#install-and-requirements}
 
-תצטרך להתקין תלויות npm של `@react-email/render` ו- `nodemailer`:
+תצטרך להתקין את התלויות npm של `@react-email/render` ו- `nodemailer`:
 
 ```sh
 npm install @react-email/render nodemailer
 ```
 
-## קוד מקור ודוגמה {#source-code-and-example}
+## קוד מקור ודוגמה של {#source-code-and-example}
 
-צור את תבנית האימייל שלך באמצעות קובץ `.jsx` או קובץ `.js`:
+צור את תבנית האימייל שלך עם קובץ `.jsx` או `.js`:
 
 ```jsx
 // email.jsx
@@ -76,6 +76,6 @@ transporter.sendMail(options);
 node app
 ```
 
-כעת תוכל לעבור אל **[החשבון שלי → אימיילים](/my-account/emails)** כדי לראות את סטטוס מסירת הדוא"ל שלך בזמן אמת, יומני מסירת דוא"ל ותצוגות מקדימות של HTML/טקסט רגיל/קבצים מצורפים.
+כעת תוכל לעבור אל **[החשבון שלי → אימיילים](/my-account/emails)** כדי לראות את סטטוס מסירת הדוא"ל בזמן אמת, יומני מסירה ותצוגות מקדימות של HTML/טקסט רגיל/קבצים מצורפים.
 
 > נ.ב. :tada: אתה יכול גם **[תצוגה מקדימה של אימיילים בדפדפנים ובסימולטור iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** ו- **[צור תבניות דוא"ל עם Node.js](/docs/send-emails-with-node-js-javascript)**.

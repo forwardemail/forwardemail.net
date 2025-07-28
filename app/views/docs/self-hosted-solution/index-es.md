@@ -1,6 +1,6 @@
-# Correo electrónico autoalojado: compromiso con el código abierto {#self-hosted-email-commitment-to-open-source}
+# Correo electrónico autoalojado: Compromiso con el código abierto {#self-hosted-email-commitment-to-open-source}
 
-<img loading="perezoso" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## Tabla de contenido {#table-of-contents}
 
@@ -86,9 +86,9 @@ La arquitectura incluye contenedores para:
 * SQLite para almacenamiento seguro y cifrado de buzones de correo
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> No olvides consultar nuestro [guía para desarrolladores autoalojados](https://forwardemail.net/self-hosted)
 
-### Instalación de script Bash: la accesibilidad se une a la seguridad {#bash-script-installation-accessibility-meets-security}
+### Instalación del script Bash: la accesibilidad se une a la seguridad {#bash-script-installation-accessibility-meets-security}
 
 Hemos diseñado el proceso de instalación para que sea lo más simple posible manteniendo las mejores prácticas de seguridad:
 
@@ -107,7 +107,7 @@ Este único comando:
 
 Para quienes se preocupen por enviar scripts a bash (¡como debería ser!), les recomendamos revisar el script antes de ejecutarlo. Es completamente de código abierto y está disponible para su inspección.
 
-### Cifrado seguro cuántico para una privacidad a prueba de futuro {#quantum-safe-encryption-for-future-proof-privacy}
+### Cifrado cuántico seguro para una privacidad a prueba de futuro {#quantum-safe-encryption-for-future-proof-privacy}
 
 Al igual que nuestro servicio alojado, nuestra solución autoalojada implementa cifrado resistente a la computación cuántica utilizando ChaCha20-Poly1305 como cifrado para bases de datos SQLite. Este enfoque protege sus datos de correo electrónico no solo contra amenazas actuales, sino también contra futuros ataques de computación cuántica.
 
@@ -115,7 +115,7 @@ Cada buzón se almacena en su propio archivo de base de datos SQLite encriptado,
 
 ### Mantenimiento y actualizaciones automatizadas {#automated-maintenance-and-updates}
 
-Hemos incorporado utilidades de mantenimiento integrales directamente en la solución autohospedada:
+Hemos incorporado utilidades de mantenimiento integrales directamente en la solución alojada automáticamente:
 
 1. **Copias de seguridad automáticas**: Copias de seguridad programadas de todos los datos críticos
 2. **Renovación de certificados**: Gestión automatizada de certificados Let's Encrypt
@@ -147,7 +147,7 @@ Nuestra solución de correo electrónico autoalojada, al igual que todos nuestro
 
 El código base completo está disponible en GitHub en <https://github.com/forwardemail/forwardemail.net>.
 
-## Alojamiento propio vs. administrado: Cómo tomar la decisión correcta {#self-hosted-vs-managed-making-the-right-choice}
+## Alojamiento propio vs. administrado: la elección correcta {#self-hosted-vs-managed-making-the-right-choice}
 
 Si bien nos enorgullece ofrecer una opción de correo electrónico autoalojado, reconocemos que no es la opción ideal para todos. El correo electrónico autoalojado conlleva responsabilidades y desafíos reales:
 
@@ -185,7 +185,7 @@ Para muchos usuarios, nuestro servicio gestionado sigue siendo la mejor opción:
 
 Ambas opciones ofrecen los mismos beneficios de privacidad y transparencia de código abierto; la diferencia es simplemente quién administra la infraestructura.
 
-## Primeros pasos con el correo electrónico de reenvío autoalojado {#getting-started-with-self-hosted-forward-email}
+## Primeros pasos con el reenvío de correo electrónico autoalojado {#getting-started-with-self-hosted-forward-email}
 
 ¿Listo para tomar el control de tu infraestructura de correo electrónico? Aquí te explicamos cómo empezar:
 
@@ -200,7 +200,7 @@ Ambas opciones ofrecen los mismos beneficios de privacidad y transparencia de c�
 * Compatibilidad con IPv4 e IPv6
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> Recomendamos varios proveedores de servidores de correo en <https://forwardemail.net/blog/docs/best-mail-server-providers> (fuente en <https://github.com/forwardemail/awesome-mail-server-providers>)
 
 ### Pasos de instalación {#installation-steps}
 
@@ -245,7 +245,7 @@ Creemos que la privacidad no es solo una característica; es un derecho fundamen
 
 ## Referencias {#references}
 
-\[1] Reenviar correo electrónico al repositorio de GitHub: <https://github.com/forwardemail/forwardemail.net>
+\[1] Reenvío de correo electrónico al repositorio de GitHub: <https://github.com/forwardemail/forwardemail.net>
 
 \[2] Documentación autoalojada: <https://forwardemail.net/en/self-hosted>
 

@@ -18,7 +18,7 @@
 * [Integración de Ruby](#ruby-integration)
   * [Uso de Ruby Mail Gem](#using-ruby-mail-gem)
 * [Integración con Java](#java-integration)
-  * [Uso de la API de JavaMail](#using-javamail-api)
+  * [Uso de la API de correo de Java](#using-javamail-api)
 * [Configuración del cliente de correo electrónico](#email-client-configuration)
   * [Pájaro de trueno](#thunderbird)
   * [Correo de Apple](#apple-mail)
@@ -41,10 +41,10 @@ Antes de profundizar en los ejemplos de integración, es importante comprender c
 
 Cuando envía un correo electrónico a través de SMTP a nuestros servidores:
 
-1. **Procesamiento inicial**: El correo electrónico se valida, se analiza en busca de malware y se verifica con los filtros de spam.
+1. **Procesamiento inicial**: El correo electrónico se valida, se analiza en busca de malware y se verifica con filtros de spam.
 2. **Cola inteligente**: Los correos electrónicos se colocan en un sofisticado sistema de colas para su entrega.
 3. **Mecanismo de reintento inteligente**: Si la entrega falla temporalmente, nuestro sistema:
-* Analiza la respuesta de error mediante nuestra función `getBounceInfo`
+* Analiza la respuesta de error mediante nuestra función `getBounceInfo`.
 * Determina si el problema es temporal (p. ej., "inténtelo de nuevo más tarde", "aplazado temporalmente") o permanente (p. ej., "usuario desconocido").
 * Para problemas temporales, se marca el correo electrónico para reintentarlo.
 * Para problemas permanentes, se genera una notificación de rebote.
@@ -52,9 +52,9 @@ Cuando envía un correo electrónico a través de SMTP a nuestros servidores:
 5. **Notificaciones de estado de entrega**: Los remitentes reciben notificaciones sobre el estado de sus correos electrónicos (entregados, retrasados o rebotados).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Tras una entrega exitosa, el contenido del correo electrónico SMTP saliente se redacta tras un periodo de retención configurable (30 días por defecto) por motivos de seguridad y privacidad. Solo queda un mensaje de marcador de posición que indica la entrega exitosa.
 
-### A prueba de tontos para mayor confiabilidad {#dummy-proofed-for-reliability}
+### A prueba de manipulaciones para mayor confiabilidad {#dummy-proofed-for-reliability}
 
 Nuestro sistema está diseñado para manejar diversos casos extremos:
 
@@ -234,7 +234,7 @@ def send_email_view(request):
     return HttpResponse('Email sent!')
 ```
 
-## Integración con PHP {#php-integration}
+## Integración PHP {#php-integration}
 
 ### Usando PHPMailer {#using-phpmailer}
 
@@ -312,7 +312,7 @@ class EmailController extends Controller
 }
 ```
 
-## Integración con Ruby {#ruby-integration}
+## Integración de Ruby {#ruby-integration}
 
 ### Uso de Ruby Mail Gem {#using-ruby-mail-gem}
 
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## Configuración del cliente de correo electrónico {#email-client-configuration}
 
-__URL_PROTEGIDA_54__ Thunderbird {__URL_PROTEGIDA_55__
+MARCADOR DE TEMPERATURA 0 Thunderbird {MARCADOR DE TEMPERATURA 1
 
 ```mermaid
 flowchart TD
@@ -452,7 +452,7 @@ flowchart TD
 * Nombre de usuario: su dirección de correo electrónico completa.
 5. Haga clic en "Probar" y luego en "Listo".
 
-### Correo de Apple {#apple-mail}
+MARCADOR DE TEMPERATURA 0 Apple Mail {MARCADOR DE TEMPERATURA 1
 
 1. Abra Correo y vaya a Correo > Preferencias > Cuentas.
 2. Haga clic en el botón "+" para agregar una nueva cuenta.
@@ -502,7 +502,7 @@ flowchart TD
 * Asegúrese de que los certificados de CA de su sistema estén actualizados
 * Pruebe con TLS explícito en lugar de TLS implícito
 
-### Obteniendo ayuda {#getting-help}
+### Obtención de ayuda {#getting-help}
 
 Si encuentra problemas que no se abordan aquí, por favor:
 

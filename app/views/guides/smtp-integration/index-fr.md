@@ -14,7 +14,7 @@
   * [Utilisation de Django](#using-django)
 * [Intégration PHP](#php-integration)
   * [Utilisation de PHPMailer](#using-phpmailer)
-  * [Utiliser Laravel](#using-laravel)
+  * [Utilisation de Laravel](#using-laravel)
 * [Intégration Ruby](#ruby-integration)
   * [Utilisation de Ruby Mail Gem](#using-ruby-mail-gem)
 * [Intégration Java](#java-integration)
@@ -43,7 +43,7 @@ Lorsque vous soumettez un e-mail via SMTP à nos serveurs :
 
 1. **Traitement initial** : L’e-mail est validé, analysé pour détecter les logiciels malveillants et vérifié par les filtres anti-spam.
 2. **Mise en file d’attente intelligente** : Les e-mails sont placés dans un système de file d’attente sophistiqué avant d’être distribués.
-3. **Mécanisme de nouvelle tentative intelligent** : En cas d’échec temporaire de la distribution, notre système :
+3. **Mécanisme de nouvelle tentative intelligent** : En cas d’échec temporaire de distribution, notre système :
 * Analyse la réponse d’erreur à l’aide de notre fonction `getBounceInfo`.
 * Détermine si le problème est temporaire (par exemple, « réessayer ultérieurement », « temporairement différé ») ou permanent (par exemple, « utilisateur inconnu »).
 * En cas de problème temporaire, l’e-mail est marqué pour une nouvelle tentative.
@@ -52,9 +52,9 @@ Lorsque vous soumettez un e-mail via SMTP à nos serveurs :
 5. **Notifications d’état de distribution** : Les expéditeurs reçoivent des notifications sur l’état de leurs e-mails (distribués, retardés ou rejetés).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Après une distribution réussie, le contenu des e-mails SMTP sortants est supprimé après une période de conservation configurable (30 jours par défaut) pour des raisons de sécurité et de confidentialité. Seul un message d'espace réservé reste affiché, indiquant la distribution réussie.
 
-### Fiabilité garantie par des moyens factices {#dummy-proofed-for-reliability}
+### Testé pour plus de fiabilité {#dummy-proofed-for-reliability}
 
 Notre système est conçu pour gérer divers cas extrêmes :
 
@@ -420,7 +420,7 @@ public class SendEmail {
 }
 ```
 
-Configuration du client de messagerie ## {#email-client-configuration}
+## Configuration du client de messagerie {#email-client-configuration}
 
 ### Thunderbird {#thunderbird}
 
@@ -465,7 +465,7 @@ flowchart TD
 * Mot de passe : votre mot de passe.
 6. Cliquez sur « Connexion » pour terminer la configuration.
 
-### Gmail (Envoyer le courrier en tant que) {#gmail-send-mail-as}
+### Gmail (Envoyer un e-mail en tant que) {#gmail-send-mail-as}
 
 1. Ouvrez Gmail et accédez à Paramètres > Comptes et Importation.
 2. Sous « Envoyer un e-mail en tant que », cliquez sur « Ajouter une autre adresse e-mail ».
@@ -478,7 +478,7 @@ flowchart TD
 * Sélectionnez « Connexion sécurisée via SSL ».
 5. Cliquez sur « Ajouter un compte » et vérifiez votre adresse e-mail.
 
-## Dépannage {#troubleshooting}
+## Dépannage de {#troubleshooting}
 
 ### Problèmes courants et solutions {#common-issues-and-solutions}
 
@@ -517,7 +517,7 @@ Si vous rencontrez des problèmes non abordés ici, veuillez :
 * [Guide des meilleures pratiques en matière de courrier électronique](/blog/docs/best-email-forwarding-service)
 * [Pratiques de sécurité](/security)
 
-Conclusion
+## Conclusion {#conclusion}
 
 Le service SMTP de Forward Email offre un moyen fiable, sécurisé et respectueux de la confidentialité pour envoyer des e-mails depuis vos applications et clients de messagerie. Grâce à notre système de file d'attente intelligent, notre mécanisme de nouvelle tentative sous 5 jours et nos notifications complètes sur l'état de livraison, vous avez l'assurance que vos e-mails arriveront à destination.
 

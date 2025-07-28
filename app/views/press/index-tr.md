@@ -1,10 +1,10 @@
 # Basın ve Medya Kiti {#press--media-kit}
 
-<img loading="tembel" src="/img/articles/press.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 
-* [E-postayı İlet Hakkında](#about-forward-email)
+* [E-postayı İletme Hakkında](#about-forward-email)
 * [Yazı tipleri](#fonts)
 * [Renkler](#colors)
 * [Logolar](#logos)
@@ -12,11 +12,11 @@
 
 ## E-postayı İletme Hakkında {#about-forward-email}
 
-Forward Email, güvenlik ve gizliliğe odaklanan %100 açık kaynaklı tek e-posta barındırma hizmetidir. Geçmişimiz hakkında daha fazla bilgi edinmek için [Hakkımızda sayfamız](/about) adresini ziyaret edin.
+Forward Email, güvenlik ve gizliliğe odaklanan tek %100 açık kaynaklı e-posta barındırma hizmetidir. [Hakkımızda sayfamız](/about) adresindeki geçmişimiz hakkında daha fazla bilgi edinin.
 
 Hizmetimiz 2017 yılında kuruldu ve [ABD Deniz Harp Okulu](/blog/docs/federal-government-email-service-section-889-compliant), [Kanonik/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux Vakfı](/blog/docs/linux-foundation-email-enterprise-case-study), [birkaç üniversite](/blog/docs/alumni-email-forwarding-university-case-study) gibi önemli kullanıcılar ve hükümetler de dahil olmak üzere 500.000'den fazla alan adına e-posta sağlıyor.
 
-Amacımız kurumsal düzeyde e-posta ve güvenlik altyapısı platformu olmaktır ve [birkaç ilke](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles) ilkesine bağlı kalıyoruz.
+Amacımız kurumsal düzeyde e-posta ve güvenlik altyapısı platformu olmaktır ve [birkaç ilke](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)'a bağlı kalıyoruz.
 
 Basın mensubu, gazeteci veya medya temsilcisiyseniz ve bizimle konuşmak, soru sormak veya daha fazla bilgi edinmek istiyorsanız lütfen `press@forwardemail.net` adresinden bizimle iletişime geçin.
 
@@ -25,7 +25,7 @@ Basın mensubu, gazeteci veya medya temsilcisiyseniz ve bizimle konuşmak, soru 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (kalın; 700 ağırlık)
 * **Gövde:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normal; 400 ağırlık)
 * **Başlıklar:** [VC Balı](https://verycoolstudio.com/typefaces/honey) (kalın; 700 ağırlık)
-* **Simgeler:** [Harika Yazı Tipi 5](https://fontawesome.com/)
+* **Simgeler:** [Font Awesome 5](https://fontawesome.com/)
 
 ## Renkler {#colors}
 

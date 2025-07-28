@@ -1,34 +1,34 @@
 # Cara Mengoptimalkan Infrastruktur Produksi Node.js: Praktik Terbaik {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img memuat="malas" src="/img/articles/kinerja-nodejs.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 
 * [Kata pengantar](#foreword)
 * [Revolusi Optimalisasi Performa Inti Tunggal 573% Kami](#our-573-single-core-performance-optimization-revolution)
-  * [Mengapa Optimasi Performa Inti Tunggal Penting untuk Node.js](#why-single-core-performance-optimization-matters-for-nodejs)
+  * [Mengapa Optimasi Performa Single Core Penting untuk Node.js](#why-single-core-performance-optimization-matters-for-nodejs)
   * [Konten Terkait](#related-content)
 * [Pengaturan Lingkungan Produksi Node.js: Tumpukan Teknologi Kami](#nodejs-production-environment-setup-our-technology-stack)
-  * [Pengelola Paket: pnpm untuk Efisiensi Produksi](#package-manager-pnpm-for-production-efficiency)
-  * [Kerangka Web: Koa untuk Produksi Node.js Modern](#web-framework-koa-for-modern-nodejs-production)
-  * [Latar Belakang Pemrosesan Pekerjaan: Bree untuk Keandalan Produksi](#background-job-processing-bree-for-production-reliability)
+  * [Manajer Paket: pnpm untuk Efisiensi Produksi](#package-manager-pnpm-for-production-efficiency)
+  * [Kerangka Kerja Web: Koa untuk Produksi Node.js Modern](#web-framework-koa-for-modern-nodejs-production)
+  * [Pemrosesan Pekerjaan Latar Belakang: Bree untuk Keandalan Produksi](#background-job-processing-bree-for-production-reliability)
   * [Penanganan Kesalahan: @hapi/boom untuk Keandalan Produksi](#error-handling-hapiboom-for-production-reliability)
 * [Cara Memantau Aplikasi Node.js dalam Produksi](#how-to-monitor-nodejs-applications-in-production)
   * [Pemantauan Produksi Node.js Tingkat Sistem](#system-level-nodejs-production-monitoring)
   * [Pemantauan Tingkat Aplikasi untuk Produksi Node.js](#application-level-monitoring-for-nodejs-production)
   * [Pemantauan Spesifik Aplikasi](#application-specific-monitoring)
 * [Pemantauan Produksi Node.js dengan Pemeriksaan Kesehatan PM2](#nodejs-production-monitoring-with-pm2-health-checks)
-  * [Sistem Pemeriksaan Kesehatan PM2 kami](#our-pm2-health-check-system)
+  * [Sistem Pemeriksaan Kesehatan PM2 Kami](#our-pm2-health-check-system)
   * [Konfigurasi Produksi PM2 Kami](#our-pm2-production-configuration)
   * [Penerapan PM2 Otomatis](#automated-pm2-deployment)
 * [Sistem Penanganan dan Klasifikasi Kesalahan Produksi](#production-error-handling-and-classification-system)
   * [Implementasi isCodeBug kami untuk Produksi](#our-iscodebug-implementation-for-production)
   * [Integrasi dengan Pencatatan Produksi Kami](#integration-with-our-production-logging)
   * [Konten Terkait](#related-content-1)
-* [Debugging Kinerja Lanjutan dengan v8-profiler-next dan cpupro](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
-  * [Pendekatan Profiling Kami untuk Produksi Node.js](#our-profiling-approach-for-nodejs-production)
+* [Debugging Performa Lanjutan dengan v8-profiler-next dan cpupro](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
+  * [Pendekatan Profil Kami untuk Produksi Node.js](#our-profiling-approach-for-nodejs-production)
   * [Bagaimana Kami Menerapkan Analisis Snapshot Heap](#how-we-implement-heap-snapshot-analysis)
-  * [Alur Kerja Debugging Kinerja](#performance-debugging-workflow)
+  * [Alur Kerja Debugging Performa](#performance-debugging-workflow)
   * [Implementasi yang Direkomendasikan untuk Aplikasi Node.js Anda](#recommended-implementation-for-your-nodejs-application)
   * [Integrasi dengan Pemantauan Produksi Kami](#integration-with-our-production-monitoring)
 * [Keamanan Infrastruktur Produksi Node.js](#nodejs-production-infrastructure-security)
@@ -46,7 +46,7 @@
 * [Pemeliharaan Otomatis untuk Aplikasi Node.js Produksi](#automated-maintenance-for-production-nodejs-applications)
   * [Implementasi Pembersihan Kami](#our-cleanup-implementation)
   * [Manajemen Ruang Disk untuk Produksi Node.js](#disk-space-management-for-nodejs-production)
-  * [Otomasi Pemeliharaan Infrastruktur](#infrastructure-maintenance-automation)
+  * [Otomatisasi Pemeliharaan Infrastruktur](#infrastructure-maintenance-automation)
 * [Panduan Implementasi Penerapan Produksi Node.js](#nodejs-production-deployment-implementation-guide)
   * [Pelajari Kode Aktual Kami untuk Praktik Terbaik Produksi](#study-our-actual-code-for-production-best-practices)
   * [Belajar dari Postingan Blog Kami](#learn-from-our-blog-posts)
@@ -56,42 +56,42 @@
 * [Daftar Sumber Daya Lengkap untuk Produksi Node.js](#complete-resource-list-for-nodejs-production)
   * [File Implementasi Inti Kami](#our-core-implementation-files)
   * [Implementasi Server Kami](#our-server-implementations)
-  * [Otomasi Infrastruktur Kami](#our-infrastructure-automation)
-  * [Posting Blog Teknis Kami](#our-technical-blog-posts)
+  * [Otomatisasi Infrastruktur Kami](#our-infrastructure-automation)
+  * [Postingan Blog Teknis Kami](#our-technical-blog-posts)
   * [Studi Kasus Perusahaan Kami](#our-enterprise-case-studies)
 
 ## Kata Pengantar {#foreword}
 
-Di Forward Email, kami telah menghabiskan waktu bertahun-tahun untuk menyempurnakan pengaturan lingkungan produksi Node.js kami. Panduan komprehensif ini membagikan praktik terbaik penerapan produksi Node.js kami yang telah teruji, dengan fokus pada pengoptimalan kinerja, pemantauan, dan pelajaran yang telah kami pelajari dalam menskalakan aplikasi Node.js untuk menangani jutaan transaksi harian.
+Di Forward Email, kami telah menghabiskan waktu bertahun-tahun menyempurnakan pengaturan lingkungan produksi Node.js kami. Panduan komprehensif ini membagikan praktik terbaik penerapan produksi Node.js kami yang telah teruji, dengan fokus pada pengoptimalan performa, pemantauan, dan pembelajaran yang kami petik dalam menskalakan aplikasi Node.js untuk menangani jutaan transaksi harian.
 
 ## Revolusi Optimalisasi Performa Inti Tunggal 573% Kami {#our-573-single-core-performance-optimization-revolution}
 
-Ketika kami bermigrasi dari prosesor Intel ke AMD Ryzen, kami mencapai **peningkatan kinerja sebesar 573%** dalam aplikasi Node.js kami. Ini bukan sekadar pengoptimalan kecil—ini mengubah secara mendasar kinerja aplikasi Node.js kami dalam produksi dan menunjukkan pentingnya pengoptimalan kinerja inti tunggal untuk aplikasi Node.js apa pun.
+Ketika kami bermigrasi dari prosesor Intel ke AMD Ryzen, kami mencapai **peningkatan performa sebesar 573%** pada aplikasi Node.js kami. Ini bukan sekadar optimasi kecil—ini secara fundamental mengubah performa aplikasi Node.js kami dalam produksi dan menunjukkan pentingnya optimasi performa inti tunggal untuk setiap aplikasi Node.js.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Untuk praktik terbaik penerapan produksi Node.js, pilihan perangkat keras sangatlah penting. Kami secara khusus memilih hosting DataPacket karena ketersediaan AMD Ryzen mereka karena kinerja inti tunggal sangat penting untuk aplikasi Node.js karena eksekusi JavaScript bersifat single-threaded.
 
 ### Mengapa Optimasi Performa Inti Tunggal Penting untuk Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Migrasi kami dari Intel ke AMD Ryzen menghasilkan:
 
-* **Peningkatan kinerja 573%** dalam pemrosesan permintaan (didokumentasikan dalam [Masalah GitHub di halaman status kami #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **Peningkatan performa 573%** dalam pemrosesan permintaan (didokumentasikan dalam [Masalah GitHub di halaman status kami #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
 * **Menghilangkan penundaan pemrosesan** hingga respons yang hampir instan (disebutkan dalam [Masalah GitHub #298](https://github.com/forwardemail/forwardemail.net/issues/298))
 * **Rasio harga-kinerja yang lebih baik** untuk lingkungan produksi Node.js
 * **Waktu respons yang lebih baik** di seluruh titik akhir aplikasi kami
 
-Peningkatan kinerja ini begitu signifikan sehingga kami kini menganggap prosesor AMD Ryzen penting untuk setiap penerapan produksi Node.js yang serius, baik Anda menjalankan aplikasi web, API, layanan mikro, atau beban kerja Node.js lainnya.
+Peningkatan performa ini begitu signifikan sehingga kami kini menganggap prosesor AMD Ryzen penting untuk setiap penerapan produksi Node.js yang serius, baik Anda menjalankan aplikasi web, API, layanan mikro, atau beban kerja Node.js lainnya.
 
 ### Konten Terkait {#related-content}
 
 Untuk detail selengkapnya tentang pilihan infrastruktur kami, lihat:
 
-* [Layanan Penerusan Email Terbaik]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Perbandingan kinerja
+* [Layanan Penerusan Email Terbaik]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Perbandingan performa
 * [Solusi Hosting Mandiri](https://forwardemail.net/blog/docs/self-hosted-solution) - Rekomendasi perangkat keras
 
-## Pengaturan Lingkungan Produksi Node.js: Tumpukan Teknologi Kami {#nodejs-production-environment-setup-our-technology-stack}
+Pengaturan Lingkungan Produksi Node.js ##: Tumpukan Teknologi Kami {#nodejs-production-environment-setup-our-technology-stack}
 
-Praktik terbaik penerapan produksi Node.js kami mencakup pilihan teknologi yang disengaja berdasarkan pengalaman produksi selama bertahun-tahun. Berikut ini adalah teknologi yang kami gunakan dan mengapa pilihan ini berlaku untuk aplikasi Node.js apa pun:
+Praktik terbaik penerapan produksi Node.js kami mencakup pilihan teknologi yang disengaja berdasarkan pengalaman produksi selama bertahun-tahun. Berikut teknologi yang kami gunakan dan mengapa pilihan ini berlaku untuk semua aplikasi Node.js:
 
 ### Manajer Paket: pnpm untuk Efisiensi Produksi {#package-manager-pnpm-for-production-efficiency}
 
@@ -99,18 +99,18 @@ Praktik terbaik penerapan produksi Node.js kami mencakup pilihan teknologi yang 
 
 Kami memilih pnpm daripada npm dan yarn untuk pengaturan lingkungan produksi Node.js kami karena:
 
-* **Waktu instalasi yang lebih cepat** dalam alur kerja CI/CD
+* **Waktu instalasi lebih cepat** dalam pipeline CI/CD
 * **Efisiensi ruang disk** melalui hard linking
-* **Resolusi dependensi yang ketat** yang mencegah dependensi semu
+* **Resolusi dependensi yang ketat** yang mencegah dependensi phantom
 * **Performa yang lebih baik** dalam penerapan produksi
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Sebagai bagian dari praktik terbaik penerapan produksi Node.js, kami menyematkan versi persis dari alat penting seperti pnpm untuk memastikan perilaku yang konsisten di semua lingkungan dan mesin anggota tim.
 
 **Detail implementasi:**
 
 * [Konfigurasi package.json kami](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
-* [Posting blog ekosistem NPM kami](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
+* [Postingan blog ekosistem NPM kami](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 
 ### Kerangka Kerja Web: Koa untuk Produksi Node.js Modern {#web-framework-koa-for-modern-nodejs-production}
 
@@ -132,22 +132,22 @@ Pola ini berlaku baik Anda sedang membangun REST API, server GraphQL, aplikasi w
 
 ### Pemrosesan Pekerjaan Latar Belakang: Bree untuk Keandalan Produksi {#background-job-processing-bree-for-production-reliability}
 
-**Apa yang kami gunakan:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) penjadwal
+**Apa yang kami gunakan:** Penjadwal [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Kami membuat dan memelihara Bree karena penjadwal pekerjaan yang ada tidak memenuhi kebutuhan kami untuk dukungan thread pekerja dan fitur JavaScript modern di lingkungan Node.js produksi. Ini berlaku untuk aplikasi Node.js apa pun yang memerlukan pemrosesan latar belakang, tugas terjadwal, atau thread pekerja.
+Kami membuat dan memelihara Bree karena penjadwal pekerjaan yang ada tidak memenuhi kebutuhan kami akan dukungan utas pekerja dan fitur JavaScript modern di lingkungan Node.js produksi. Hal ini berlaku untuk semua aplikasi Node.js yang memerlukan pemrosesan latar belakang, tugas terjadwal, atau utas pekerja.
 
 **Contoh implementasi kami:**
 
 * [Pengaturan server Bree](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 * [Semua definisi pekerjaan kami](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
 * [Pekerjaan pemeriksaan kesehatan PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
-* [Pelaksanaan pekerjaan pembersihan](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+* [Implementasi pekerjaan pembersihan](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### Penanganan Kesalahan: @hapi/boom untuk Keandalan Produksi {#error-handling-hapiboom-for-production-reliability}
+Penanganan Kesalahan ###: @hapi/boom untuk Keandalan Produksi {#error-handling-hapiboom-for-production-reliability}
 
 **Apa yang kami gunakan:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Kami menggunakan @hapi/boom untuk respons kesalahan terstruktur di seluruh aplikasi produksi Node.js kami. Pola ini berfungsi untuk semua aplikasi Node.js yang memerlukan penanganan kesalahan yang konsisten.
+Kami menggunakan @hapi/boom untuk respons kesalahan terstruktur di seluruh aplikasi produksi Node.js kami. Pola ini berfungsi untuk semua aplikasi Node.js yang membutuhkan penanganan kesalahan yang konsisten.
 
 **Contoh implementasi kami:**
 
@@ -156,7 +156,7 @@ Kami menggunakan @hapi/boom untuk respons kesalahan terstruktur di seluruh aplik
 
 ## Cara Memantau Aplikasi Node.js dalam Produksi {#how-to-monitor-nodejs-applications-in-production}
 
-Pendekatan kami untuk memantau aplikasi Node.js dalam produksi telah berkembang selama bertahun-tahun dalam menjalankan aplikasi dalam skala besar. Kami menerapkan pemantauan di beberapa lapisan untuk memastikan keandalan dan kinerja untuk semua jenis aplikasi Node.js.
+Pendekatan kami dalam memantau aplikasi Node.js dalam produksi telah berkembang selama bertahun-tahun dalam menjalankan aplikasi dalam skala besar. Kami menerapkan pemantauan di berbagai lapisan untuk memastikan keandalan dan performa untuk semua jenis aplikasi Node.js.
 
 ### Pemantauan Produksi Node.js Tingkat Sistem {#system-level-nodejs-production-monitoring}
 
@@ -172,7 +172,7 @@ Ambang batas pemantauan produksi kami (dari kode produksi kami yang sebenarnya):
 * **Ambang batas peringatan penggunaan disk 75%**
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Ambang batas ini berlaku untuk konfigurasi perangkat keras spesifik kami. Saat menerapkan pemantauan produksi Node.js, tinjau implementasi monitor-server.js kami untuk memahami logika yang tepat dan menyesuaikan nilainya dengan pengaturan Anda.
 
 ### Pemantauan Tingkat Aplikasi untuk Produksi Node.js {#application-level-monitoring-for-nodejs-production}
 
@@ -181,7 +181,7 @@ Ambang batas pemantauan produksi kami (dari kode produksi kami yang sebenarnya):
 Pembantu ini membedakan antara:
 
 * **Bug kode aktual** yang memerlukan perhatian segera
-* **Kesalahan pengguna** yang merupakan perilaku yang diharapkan
+* **Kesalahan pengguna** yang merupakan perilaku yang wajar
 * **Kegagalan layanan eksternal** yang tidak dapat kami kendalikan
 
 Pola ini berlaku untuk aplikasi Node.js apa pun - aplikasi web, API, layanan mikro, atau layanan latar belakang.
@@ -194,15 +194,15 @@ Kami menerapkan penyuntingan bidang yang komprehensif untuk melindungi informasi
 
 **Implementasi server kami:**
 
-* [server SMTP](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
-* [server IMAP](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
+* [Server SMTP](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
+* [Server IMAP](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [server POP3](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-**Pemantauan antrean:** Kami menerapkan batas antrean 5 GB dan batas waktu 180 detik untuk pemrosesan permintaan guna mencegah kehabisan sumber daya. Pola ini berlaku untuk semua aplikasi Node.js dengan antrean atau pemrosesan latar belakang.
+**Pemantauan antrean:** Kami menerapkan batas antrean 5GB dan batas waktu 180 detik untuk pemrosesan permintaan guna mencegah kehabisan sumber daya. Pola ini berlaku untuk semua aplikasi Node.js dengan antrean atau pemrosesan latar belakang.
 
 ## Pemantauan Produksi Node.js dengan Pemeriksaan Kesehatan PM2 {#nodejs-production-monitoring-with-pm2-health-checks}
 
-Kami telah menyempurnakan pengaturan lingkungan produksi Node.js kami dengan PM2 selama bertahun-tahun pengalaman produksi. Pemeriksaan kesehatan PM2 kami penting untuk menjaga keandalan dalam aplikasi Node.js apa pun.
+Kami telah menyempurnakan pengaturan lingkungan produksi Node.js kami dengan PM2 selama bertahun-tahun pengalaman produksi. Pemeriksaan kesehatan PM2 kami sangat penting untuk menjaga keandalan di setiap aplikasi Node.js.
 
 ### Sistem Pemeriksaan Kesehatan PM2 Kami {#our-pm2-health-check-system}
 
@@ -211,13 +211,13 @@ Kami telah menyempurnakan pengaturan lingkungan produksi Node.js kami dengan PM2
 Pemantauan produksi Node.js kami dengan pemeriksaan kesehatan PM2 meliputi:
 
 * **Berjalan setiap 20 menit** melalui penjadwalan cron
-* **Memerlukan waktu aktif minimal 15 menit** sebelum menganggap suatu proses sehat
+* **Memerlukan waktu aktif minimal 15 menit** sebelum suatu proses dinyatakan sehat
 * **Memvalidasi status proses dan penggunaan memori**
 * **Otomatis memulai ulang proses yang gagal**
-* **Mencegah pengulangan ulang** melalui pemeriksaan kesehatan yang cerdas
+* **Mencegah pengulangan proses ulang** melalui pemeriksaan kesehatan cerdas
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Untuk praktik terbaik penerapan produksi Node.js, kami memerlukan waktu aktif 15+ menit sebelum menganggap proses sehat untuk menghindari pengulangan proses ulang. Hal ini mencegah kegagalan berantai ketika proses mengalami masalah memori atau masalah lainnya.
 
 ### Konfigurasi Produksi PM2 Kami {#our-pm2-production-configuration}
 
@@ -226,7 +226,7 @@ Pemantauan produksi Node.js kami dengan pemeriksaan kesehatan PM2 meliputi:
 * [Server web](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [server API](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
 * [Penjadwal Bree](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
-* [server SMTP](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
+* [Server SMTP](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
 
 Pola ini berlaku baik Anda menjalankan aplikasi Express, server Koa, API GraphQL, atau aplikasi Node.js lainnya.
 
@@ -238,7 +238,7 @@ Kami mengotomatiskan seluruh pengaturan PM2 kami melalui Ansible untuk memastika
 
 ## Sistem Penanganan dan Klasifikasi Kesalahan Produksi {#production-error-handling-and-classification-system}
 
-Salah satu praktik terbaik penerapan produksi Node.js yang paling berharga adalah klasifikasi kesalahan cerdas yang berlaku untuk aplikasi Node.js apa pun:
+Salah satu praktik terbaik penerapan produksi Node.js yang paling berharga adalah klasifikasi kesalahan cerdas yang berlaku untuk semua aplikasi Node.js:
 
 ### Implementasi isCodeBug kami untuk Produksi {#our-iscodebug-implementation-for-production}
 
@@ -246,14 +246,14 @@ Salah satu praktik terbaik penerapan produksi Node.js yang paling berharga adala
 
 Pembantu ini menyediakan klasifikasi kesalahan cerdas untuk aplikasi Node.js dalam produksi untuk:
 
-* **Prioritaskan bug aktual** daripada kesalahan pengguna
-* **Tingkatkan respons insiden** dengan berfokus pada masalah nyata
-* **Kurangi kelelahan peringatan** dari kesalahan pengguna yang diharapkan
-* **Lebih memahami** masalah aplikasi vs. masalah yang disebabkan pengguna
+**Prioritaskan bug aktual** daripada kesalahan pengguna
+* **Tingkatkan respons insiden kami** dengan berfokus pada masalah nyata
+* **Kurangi kelelahan peringatan** akibat kesalahan pengguna yang sudah diperkirakan
+* **Lebih memahami** masalah aplikasi dibandingkan masalah yang disebabkan pengguna
 
 Pola ini berfungsi untuk aplikasi Node.js apa pun - baik Anda sedang membangun situs e-commerce, platform SaaS, API, atau layanan mikro.
 
-### Integrasi dengan Pencatatan Produksi Kami {#integration-with-our-production-logging}
+Integrasi ### dengan Pencatatan Produksi Kami {#integration-with-our-production-logging}
 
 **Integrasi logger kami:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
@@ -266,11 +266,11 @@ Pelajari lebih lanjut tentang pola penanganan kesalahan kami:
 * [Membangun Sistem Pembayaran yang Handal](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Pola penanganan kesalahan
 * [Perlindungan Privasi Email](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Penanganan kesalahan keamanan
 
-## Debugging Performa Lanjutan dengan v8-profiler-next dan cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
+## Debugging Kinerja Lanjutan dengan v8-profiler-next dan cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
-Kami menggunakan alat profiling tingkat lanjut untuk menganalisis cuplikan heap dan men-debug masalah OOM (Out of Memory), hambatan kinerja, dan masalah memori Node.js di lingkungan produksi kami. Alat-alat ini penting untuk aplikasi Node.js yang mengalami kebocoran memori atau masalah kinerja.
+Kami menggunakan alat profiling canggih untuk menganalisis snapshot heap dan men-debug masalah OOM (Kehabisan Memori), hambatan kinerja, dan masalah memori Node.js di lingkungan produksi kami. Alat-alat ini penting untuk aplikasi Node.js apa pun yang mengalami kebocoran memori atau masalah kinerja.
 
-### Pendekatan Pembuatan Profil Kami untuk Produksi Node.js {#our-profiling-approach-for-nodejs-production}
+### Pendekatan Profil Kami untuk Produksi Node.js {#our-profiling-approach-for-nodejs-production}
 
 **Alat yang kami rekomendasikan:**
 
@@ -278,19 +278,19 @@ Kami menggunakan alat profiling tingkat lanjut untuk menganalisis cuplikan heap 
 * [`cpupro`](https://github.com/discoveryjs/cpupro) - Untuk menganalisis profil CPU dan snapshot heap
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> Kami menggunakan v8-profiler-next dan cpupro bersama-sama untuk menciptakan alur kerja debugging performa yang lengkap untuk aplikasi Node.js kami. Kombinasi ini membantu kami mengidentifikasi kebocoran memori, hambatan performa, dan mengoptimalkan kode produksi kami.
 
 ### Bagaimana Kami Menerapkan Analisis Snapshot Heap {#how-we-implement-heap-snapshot-analysis}
 
 **Implementasi pemantauan kami:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-Pemantauan produksi kami mencakup pembuatan snapshot heap secara otomatis saat ambang batas memori terlampaui. Ini membantu kami men-debug masalah OOM sebelum menyebabkan aplikasi mogok.
+Pemantauan produksi kami mencakup pembuatan snapshot heap otomatis ketika ambang batas memori terlampaui. Ini membantu kami men-debug masalah OOM sebelum menyebabkan aplikasi crash.
 
 **Pola implementasi utama:**
 
-* **Snapshot otomatis** saat ukuran heap melebihi ambang batas 2GB
+* **Snapshot otomatis** ketika ukuran heap melebihi ambang batas 2GB
 * **Profil berbasis sinyal** untuk analisis sesuai permintaan dalam produksi
-* **Kebijakan penyimpanan** untuk mengelola penyimpanan snapshot
+* **Kebijakan retensi** untuk mengelola penyimpanan snapshot
 * **Integrasi dengan pekerjaan pembersihan kami** untuk pemeliharaan otomatis
 
 ### Alur Kerja Debugging Performa {#performance-debugging-workflow}
@@ -299,62 +299,62 @@ Pemantauan produksi kami mencakup pembuatan snapshot heap secara otomatis saat a
 
 * [Memantau implementasi server](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Pemantauan heap dan pembuatan snapshot
 * [Pekerjaan pembersihan](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Retensi dan pembersihan snapshot
-* [Integrasi pencatat](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Pencatatan kinerja
+* [Integrasi pencatat](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Pencatatan performa
 
 ### Implementasi yang Direkomendasikan untuk Aplikasi Node.js Anda {#recommended-implementation-for-your-nodejs-application}
 
-**Untuk analisis snapshot heap:**
+**Untuk analisis snapshot tumpukan:**
 
 1. **Instal v8-profiler-next** untuk pembuatan snapshot
 2. **Gunakan cpupro** untuk menganalisis snapshot yang dihasilkan
-3. **Terapkan ambang batas pemantauan** yang mirip dengan monitor-server.js kami
-4. **Siapkan pembersihan otomatis** untuk mengelola penyimpanan snapshot
+3. **Implementasi ambang batas pemantauan** yang serupa dengan monitor-server.js kami
+4. **Atur pembersihan otomatis** untuk mengelola penyimpanan snapshot
 5. **Buat pengendali sinyal** untuk pembuatan profil sesuai permintaan dalam produksi
 
 **Untuk profil CPU:**
 
 1. **Buat profil CPU** selama periode beban tinggi
 2. **Analisis dengan cpupro** untuk mengidentifikasi hambatan
-3. **Fokus pada jalur aktif** dan peluang pengoptimalan
+3. **Fokus pada jalur panas** dan peluang pengoptimalan
 4. **Pantau peningkatan kinerja sebelum/sesudah**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> Pembuatan snapshot heap dan profil CPU dapat memengaruhi kinerja. Kami menyarankan untuk menerapkan pembatasan dan hanya mengaktifkan pembuatan profil saat menyelidiki masalah tertentu atau selama masa pemeliharaan.
 
-### Integrasi dengan Pemantauan Produksi Kami {#integration-with-our-production-monitoring}
+Integrasi ### dengan Pemantauan Produksi Kami {#integration-with-our-production-monitoring}
 
 Alat pembuatan profil kami terintegrasi dengan strategi pemantauan kami yang lebih luas:
 
 * **Pemicu otomatis** berdasarkan ambang batas memori/CPU
-* **Integrasi peringatan** saat masalah kinerja terdeteksi
-* **Analisis historis** untuk melacak tren kinerja dari waktu ke waktu
-* **Korelasi dengan metrik aplikasi** untuk debugging yang komprehensif
+* **Integrasi peringatan** ketika masalah performa terdeteksi
+* **Analisis historis** untuk melacak tren performa dari waktu ke waktu
+* **Korelasi dengan metrik aplikasi** untuk penelusuran kesalahan yang komprehensif
 
 Pendekatan ini telah membantu kami mengidentifikasi dan mengatasi kebocoran memori, mengoptimalkan jalur kode panas, dan menjaga kinerja yang stabil di lingkungan produksi Node.js kami.
 
 ## Keamanan Infrastruktur Produksi Node.js {#nodejs-production-infrastructure-security}
 
-Kami menerapkan keamanan menyeluruh untuk infrastruktur produksi Node.js kami melalui otomatisasi Ansible. Praktik berikut berlaku untuk semua aplikasi Node.js:
+Kami menerapkan keamanan komprehensif untuk infrastruktur produksi Node.js kami melalui otomatisasi Ansible. Praktik ini berlaku untuk semua aplikasi Node.js:
 
-### Keamanan Tingkat Sistem untuk Produksi Node.js {#system-level-security-for-nodejs-production}
+Keamanan Tingkat Sistem ### untuk Produksi Node.js {#system-level-security-for-nodejs-production}
 
 **Implementasi Ansible kami:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 
 Langkah-langkah keamanan utama kami untuk lingkungan produksi Node.js:
 
-* **Swap dinonaktifkan** untuk mencegah data sensitif ditulis ke disk
+**Swap dinonaktifkan** untuk mencegah data sensitif ditulis ke disk
 * **Core dump dinonaktifkan** untuk mencegah dump memori yang berisi informasi sensitif
 * **Penyimpanan USB diblokir** untuk mencegah akses data yang tidak sah
 * **Penyetelan parameter kernel** untuk keamanan dan kinerja
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Saat menerapkan praktik terbaik penerapan produksi Node.js, menonaktifkan swap dapat menyebabkan penghentian kehabisan memori jika aplikasi Anda melebihi RAM yang tersedia. Kami memantau penggunaan memori dengan cermat dan menyesuaikan ukuran server kami dengan tepat.
 
 ### Keamanan Aplikasi untuk Aplikasi Node.js {#application-security-for-nodejs-applications}
 
 **Penyuntingan bidang log kami:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Kami menyunting kolom sensitif dari log termasuk kata sandi, token, kunci API, dan informasi pribadi. Hal ini melindungi privasi pengguna sekaligus mempertahankan kemampuan debugging di lingkungan produksi Node.js mana pun.
+Kami menyunting kolom sensitif dari log, termasuk kata sandi, token, kunci API, dan informasi pribadi. Hal ini melindungi privasi pengguna sekaligus mempertahankan kemampuan debugging di lingkungan produksi Node.js mana pun.
 
 ### Otomatisasi Keamanan Infrastruktur {#infrastructure-security-automation}
 
@@ -373,11 +373,11 @@ Pelajari lebih lanjut tentang pendekatan keamanan kami:
 * [Email Terenkripsi Aman Kuantum](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
 * [Mengapa Keamanan Email Open Source](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
 
-## Arsitektur Basis Data untuk Aplikasi Node.js {#database-architecture-for-nodejs-applications}
+Arsitektur Basis Data ## untuk Aplikasi Node.js {#database-architecture-for-nodejs-applications}
 
-Kami menggunakan pendekatan database hibrid yang dioptimalkan untuk aplikasi Node.js kami. Pola-pola ini dapat diadaptasi untuk aplikasi Node.js apa pun:
+Kami menggunakan pendekatan basis data hibrida yang dioptimalkan untuk aplikasi Node.js kami. Pola-pola ini dapat diadaptasi untuk aplikasi Node.js apa pun:
 
-### Implementasi SQLite untuk Produksi Node.js {#sqlite-implementation-for-nodejs-production}
+Implementasi SQLite ### untuk Produksi Node.js {#sqlite-implementation-for-nodejs-production}
 
 **Apa yang kami gunakan:**
 
@@ -395,7 +395,7 @@ Kami menggunakan SQLite untuk data spesifik pengguna di aplikasi Node.js kami ka
 
 Pola ini berfungsi dengan baik untuk aplikasi SaaS, sistem multi-penyewa, atau aplikasi Node.js apa pun yang memerlukan isolasi data.
 
-### Implementasi MongoDB untuk Produksi Node.js {#mongodb-implementation-for-nodejs-production}
+Implementasi MongoDB ### untuk Produksi Node.js {#mongodb-implementation-for-nodejs-production}
 
 **Apa yang kami gunakan:**
 
@@ -409,17 +409,17 @@ Pola ini berfungsi dengan baik untuk aplikasi SaaS, sistem multi-penyewa, atau a
 
 Kami menggunakan MongoDB untuk data aplikasi di lingkungan produksi Node.js kami karena menyediakan:
 
-* **Skema yang fleksibel** untuk mengembangkan struktur data
+**Skema fleksibel** untuk struktur data yang terus berkembang
 * **Performa yang lebih baik** untuk kueri yang kompleks
 * **Kemampuan penskalaan horizontal**
 * **Bahasa kueri yang kaya**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Pendekatan hibrida kami dioptimalkan untuk kasus penggunaan spesifik kami. Pelajari pola penggunaan basis data aktual kami dalam basis kode untuk memahami apakah pendekatan ini sesuai dengan kebutuhan aplikasi Node.js Anda.
 
 ## Pemrosesan Pekerjaan Latar Belakang Produksi Node.js {#nodejs-production-background-job-processing}
 
-Kami membangun arsitektur pekerjaan latar belakang kami di sekitar Bree untuk penerapan produksi Node.js yang andal. Ini berlaku untuk semua aplikasi Node.js yang memerlukan pemrosesan latar belakang:
+Kami membangun arsitektur pekerjaan latar belakang kami di sekitar Bree untuk penerapan produksi Node.js yang andal. Hal ini berlaku untuk semua aplikasi Node.js yang memerlukan pemrosesan latar belakang:
 
 ### Pengaturan Server Bree Kami untuk Produksi {#our-bree-server-setup-for-production}
 
@@ -440,15 +440,15 @@ Pola ini berlaku untuk aplikasi Node.js apa pun yang membutuhkan:
 * Tugas terjadwal (pemrosesan data, laporan, pembersihan)
 * Pemrosesan latar belakang (pengubahan ukuran gambar, pengiriman email, impor data)
 * Pemantauan dan pemeliharaan kesehatan
-* Pemanfaatan utas pekerja untuk tugas-tugas yang membutuhkan CPU yang intensif
+* Pemanfaatan thread pekerja untuk tugas-tugas yang membutuhkan CPU intensif
 
 ### Pola Penjadwalan Pekerjaan Kami untuk Produksi Node.js {#our-job-scheduling-patterns-for-nodejs-production}
 
 Pelajari pola penjadwalan pekerjaan kami yang sebenarnya di direktori pekerjaan kami untuk memahami:
 
 * Bagaimana kami menerapkan penjadwalan seperti cron dalam produksi Node.js
-* Penanganan kesalahan dan logika percobaan ulang
-* Bagaimana kami menggunakan utas pekerja untuk tugas-tugas yang membutuhkan CPU yang intensif
+* Penanganan kesalahan dan logika percobaan ulang kami
+* Bagaimana kami menggunakan thread pekerja untuk tugas-tugas yang membutuhkan CPU intensif
 
 ## Pemeliharaan Otomatis untuk Aplikasi Node.js Produksi {#automated-maintenance-for-production-nodejs-applications}
 
@@ -460,11 +460,11 @@ Kami menerapkan pemeliharaan proaktif untuk mencegah masalah umum produksi Node.
 
 Pemeliharaan otomatis kami untuk aplikasi produksi Node.js menargetkan:
 
-* **File sementara** yang lebih lama dari 24 jam
-* **File log** yang melampaui batas penyimpanan
-* **File cache** dan data sementara
-* **File yang diunggah** yang tidak lagi diperlukan
-* **Snapshot tumpukan** dari debugging kinerja
+* **Berkas sementara** yang lebih lama dari 24 jam
+* **Berkas log** yang melebihi batas penyimpanan
+* **Berkas cache** dan data sementara
+* **Berkas yang diunggah** yang tidak lagi diperlukan
+* **Snapshot tumpukan** dari proses debugging kinerja
 
 Pola ini berlaku untuk aplikasi Node.js apa pun yang menghasilkan file sementara, log, atau data cache.
 
@@ -473,15 +473,15 @@ Pola ini berlaku untuk aplikasi Node.js apa pun yang menghasilkan file sementara
 **Ambang batas pemantauan kami:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
 * **Batas antrean** untuk pemrosesan latar belakang
-* **Ambang batas peringatan **penggunaan disk 75%**
-* **Pembersihan otomatis** saat ambang batas terlampaui
+* **Ambang batas peringatan penggunaan disk 75%**
+* **Pembersihan otomatis** ketika ambang batas terlampaui
 
 ### Otomatisasi Pemeliharaan Infrastruktur {#infrastructure-maintenance-automation}
 
 **Otomatisasi Ansible kami untuk produksi Node.js:**
 
 * [Penerapan lingkungan](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/env.yml)
-* [Manajemen kunci penyebaran](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
+* [Manajemen kunci penerapan](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
 
 ## Panduan Implementasi Penerapan Produksi Node.js {#nodejs-production-deployment-implementation-guide}
 
@@ -518,19 +518,19 @@ Pola ini berlaku untuk aplikasi Node.js apa pun yang menghasilkan file sementara
 **Implementasi perusahaan kami:**
 
 * [Studi Kasus Yayasan Linux](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Studi Kasus Canonical Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Studi Kasus Ubuntu Kanonik](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * [Penerusan Email Alumni](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 
-## Kesimpulan: Praktik Terbaik Penerapan Produksi Node.js {#conclusion-nodejs-production-deployment-best-practices}
+Kesimpulan ##: Praktik Terbaik Penerapan Produksi Node.js {#conclusion-nodejs-production-deployment-best-practices}
 
 Infrastruktur produksi Node.js kami menunjukkan bahwa aplikasi Node.js dapat mencapai keandalan tingkat perusahaan melalui:
 
-* **Pilihan perangkat keras yang terbukti** (AMD Ryzen untuk pengoptimalan kinerja inti tunggal 573%)
-* **Pemantauan produksi Node.js yang teruji** dengan ambang batas tertentu dan respons otomatis
+* **Pilihan perangkat keras yang terbukti** (AMD Ryzen untuk optimasi performa single core 573%)
+* **Pemantauan produksi Node.js yang teruji** dengan ambang batas spesifik dan respons otomatis
 * **Klasifikasi kesalahan cerdas** untuk meningkatkan respons insiden di lingkungan produksi
-* **Debugging kinerja tingkat lanjut** dengan v8-profiler-next dan cpupro untuk pencegahan OOM
-* **Pengerasan keamanan komprehensif** melalui otomatisasi Ansible
-* **Arsitektur basis data hibrid** yang dioptimalkan untuk kebutuhan aplikasi
+* **Debugging performa tingkat lanjut** dengan v8-profiler-next dan cpupro untuk pencegahan OOM
+* **Penguatan keamanan komprehensif** melalui otomatisasi Ansible
+* **Arsitektur database hybrid** yang dioptimalkan untuk kebutuhan aplikasi
 * **Pemeliharaan otomatis** untuk mencegah masalah umum produksi Node.js
 
 **Intinya:** Pelajari berkas implementasi dan postingan blog kami yang sebenarnya, alih-alih mengikuti praktik terbaik yang umum. Basis kode kami menyediakan pola dunia nyata untuk penerapan produksi Node.js yang dapat diadaptasi untuk aplikasi Node.js apa pun - aplikasi web, API, layanan mikro, atau layanan latar belakang.
@@ -552,11 +552,11 @@ Infrastruktur produksi Node.js kami menunjukkan bahwa aplikasi Node.js dapat men
 * [Server web](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [server API](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
 * [Penjadwal Bree](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
-* [server SMTP](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
-* [server IMAP](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
+* [Server SMTP](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
+* [Server IMAP](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [server POP3](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-### Otomatisasi Infrastruktur Kami {#our-infrastructure-automation}
+### Infrastruktur Otomatisasi Kami {#our-infrastructure-automation}
 
 * [Semua playbook Ansible kami](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
 * [Pengerasan keamanan](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
@@ -574,7 +574,7 @@ Infrastruktur produksi Node.js kami menunjukkan bahwa aplikasi Node.js dapat men
 
 ### Studi Kasus Perusahaan Kami {#our-enterprise-case-studies}
 
-* [Implementasi Fondasi Linux](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
-* [Studi Kasus Canonical Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
+* [Implementasi Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
+* [Studi Kasus Ubuntu Kanonik](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * [Kepatuhan Pemerintah Federal](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 * [Sistem Email Alumni](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)

@@ -1,4 +1,4 @@
-# JavaScript Kapcsolatfelvételi Űrlapok Node.js Kód Példa {#javascript-contact-forms-nodejs-code-example}
+# JavaScript kapcsolatfelvételi űrlapok Node.js kódpélda {#javascript-contact-forms-nodejs-code-example}
 
 ## Tartalomjegyzék {#table-of-contents}
 
@@ -15,9 +15,9 @@ npm install nodemailer
 
 ## Forráskód és példa {#source-code-and-example}
 
-Ez a példa a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és hivatalos szponzorát, a **[E-mail továbbítása](https://forwardemail.net)**-ot használja a kimenő levelek küldéséhez és megtekintéséhez.
+Ez a példa a **[Nodemailer](https://github.com/nodemailer/nodemailer)** könyvtárat és hivatalos szponzorát, a **[E-mail továbbítása](https://forwardemail.net)**-et használja a kimenő levelek küldéséhez és megtekintéséhez.
 
-A kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i>jelszó generálása</strong> szükséges – kérjük, kövesse a **[E-mail küldése egyéni domain SMTP-útmutatóval](/guides/send-email-with-custom-domain-smtp)** irányelveinket.
+A kimenő levelek küldéséhez <strong class="text-success"><i class="fa fa-key"></i>jelszó generálása</strong> szükséges – kérjük, kövesse az **IDEIGLENES_HELYTARTÓS_0** irányelveinket.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -53,4 +53,4 @@ node app
 
 Mostantól a **[Fiókom → E-mailek](/my-account/emails)** oldalon megtekintheti a valós idejű e-mail kézbesítési állapotát, az e-mail kézbesíthetőségi naplókat, valamint a HTML/szöveges/mellékletek előnézeteit.
 
-> Ui.: :tada: **[e-mailek előnézete böngészőkben és az iOS-szimulátorban](/docs/test-preview-email-rendering-browsers-ios-simulator)** és **[e-mail sablonok létrehozása Node.js segítségével](/docs/send-emails-with-node-js-javascript)** is használhatod.
+> Ui.: :tada: Használhatod a **[e-mailek előnézete böngészőkben és az iOS-szimulátorban](/docs/test-preview-email-rendering-browsers-ios-simulator)** és a **[e-mail sablonok létrehozása Node.js segítségével](/docs/send-emails-with-node-js-javascript)** értékeket is.

@@ -6,7 +6,7 @@
 
 * [Prefácio](#foreword)
 * [O Desafio: Vários Processadores de Pagamento, Uma Fonte de Verdade](#the-challenge-multiple-payment-processors-one-source-of-truth)
-* [A abordagem Trifecta: três camadas de confiabilidade](#the-trifecta-approach-three-layers-of-reliability)
+* [A Abordagem Trifecta: Três Camadas de Confiabilidade](#the-trifecta-approach-three-layers-of-reliability)
 * [Camada 1: Redirecionamentos pós-checkout](#layer-1-post-checkout-redirects)
   * [Implementação do Stripe Checkout](#stripe-checkout-implementation)
   * [Fluxo de pagamento do PayPal](#paypal-payment-flow)
@@ -20,19 +20,19 @@
   * [Detecção e Prevenção de Fraudes](#fraud-detection-and-prevention)
   * [Tratamento de Disputas](#dispute-handling)
 * [Reutilização de código: princípios KISS e DRY](#code-reuse-kiss-and-dry-principles)
-* [Implementação dos requisitos de assinatura do VISA](#visa-subscription-requirements-implementation)
-  * [Notificações de e-mail de pré-renovação automatizadas](#automated-pre-renewal-email-notifications)
+* [Implementação dos Requisitos de Assinatura VISA](#visa-subscription-requirements-implementation)
+  * [Notificações automatizadas por e-mail de pré-renovação](#automated-pre-renewal-email-notifications)
   * [Lidando com casos extremos](#handling-edge-cases-1)
   * [Períodos de teste e termos de assinatura](#trial-periods-and-subscription-terms)
 * [Conclusão: Os benefícios da nossa abordagem Trifecta](#conclusion-the-benefits-of-our-trifecta-approach)
 
 ## Prefácio {#foreword}
 
-Na Forward Email, sempre priorizamos a criação de sistemas confiáveis, precisos e fáceis de usar. Quando se tratou de implementar nosso sistema de processamento de pagamentos, sabíamos que precisávamos de uma solução que pudesse lidar com vários processadores de pagamento, mantendo a consistência perfeita dos dados. Esta postagem do blog detalha como nossa equipe de desenvolvimento integrou o Stripe e o PayPal usando uma abordagem trifecta que garante precisão 1:1 em tempo real em todo o nosso sistema.
+Na Forward Email, sempre priorizamos a criação de sistemas confiáveis, precisos e fáceis de usar. Quando implementamos nosso sistema de processamento de pagamentos, sabíamos que precisávamos de uma solução que pudesse lidar com múltiplos processadores de pagamento, mantendo a consistência perfeita dos dados. Este post detalha como nossa equipe de desenvolvimento integrou o Stripe e o PayPal usando uma abordagem tripla que garante precisão 1:1 em tempo real em todo o nosso sistema.
 
 ## O Desafio: Vários Processadores de Pagamento, Uma Fonte de Verdade {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Como um serviço de e-mail focado em privacidade, queríamos dar aos nossos usuários opções de pagamento. Alguns preferem a simplicidade dos pagamentos com cartão de crédito pelo Stripe, enquanto outros valorizam a camada adicional de separação que o PayPal fornece. No entanto, oferecer suporte a vários processadores de pagamento introduz uma complexidade significativa:
+Como um serviço de e-mail focado em privacidade, queríamos oferecer aos nossos usuários opções de pagamento. Alguns preferem a simplicidade dos pagamentos com cartão de crédito pelo Stripe, enquanto outros valorizam a camada adicional de separação que o PayPal oferece. No entanto, oferecer suporte a múltiplos processadores de pagamento apresenta uma complexidade significativa:
 
 1. Como garantimos a consistência dos dados em diferentes sistemas de pagamento?
 2. Como lidamos com casos extremos, como disputas, reembolsos ou pagamentos não realizados?
@@ -42,7 +42,7 @@ Nossa solução foi implementar o que chamamos de "abordagem trifecta" — um si
 
 ## A abordagem Trifecta: três camadas de confiabilidade {#the-trifecta-approach-three-layers-of-reliability}
 
-Nosso sistema de pagamento consiste em três componentes essenciais que trabalham juntos para garantir a sincronização perfeita de dados:
+Nosso sistema de pagamento consiste em três componentes críticos que trabalham juntos para garantir a sincronização perfeita de dados:
 
 1. **Redirecionamentos pós-checkout** - Captura de informações de pagamento imediatamente após o checkout
 2. **Gerenciadores de webhook** - Processamento de eventos em tempo real de processadores de pagamento
@@ -112,11 +112,11 @@ flowchart TD
 
 ## Camada 1: Redirecionamentos pós-checkout {#layer-1-post-checkout-redirects}
 
-A primeira camada da nossa abordagem trifecta acontece imediatamente após um usuário concluir um pagamento. Tanto o Stripe quanto o PayPal fornecem mecanismos para redirecionar os usuários de volta ao nosso site com informações de transação.
+A primeira camada da nossa abordagem trifecta acontece imediatamente após o usuário concluir um pagamento. Tanto o Stripe quanto o PayPal oferecem mecanismos para redirecionar os usuários de volta ao nosso site com informações sobre a transação.
 
 ### Implementação de checkout do Stripe {#stripe-checkout-implementation}
 
-Para Stripe, usamos sua Checkout Sessions API para criar uma experiência de pagamento perfeita. Quando um usuário seleciona um plano e escolhe pagar com cartão de crédito, criamos uma Checkout Session com URLs específicas de sucesso e cancelamento:
+Para o Stripe, usamos a API de Sessões de Checkout para criar uma experiência de pagamento integrada. Quando um usuário seleciona um plano e opta por pagar com cartão de crédito, criamos uma Sessão de Checkout com URLs específicas de sucesso e cancelamento:
 
 ```javascript
 const options = {
@@ -283,13 +283,13 @@ sequenceDiagram
 
 ## Camada 2: Manipuladores de Webhook com Verificação de Assinatura {#layer-2-webhook-handlers-with-signature-verification}
 
-Embora os redirecionamentos pós-checkout funcionem bem para a maioria dos cenários, eles não são infalíveis. Os usuários podem fechar o navegador antes de serem redirecionados, ou problemas de rede podem impedir que o redirecionamento seja concluído. É aí que entram os webhooks.
+Embora os redirecionamentos pós-checkout funcionem bem na maioria dos cenários, eles não são infalíveis. Os usuários podem fechar o navegador antes de serem redirecionados, ou problemas de rede podem impedir a conclusão do redirecionamento. É aí que entram os webhooks.
 
-Tanto o Stripe quanto o PayPal fornecem sistemas de webhook que enviam notificações em tempo real sobre eventos de pagamento. Implementamos manipuladores de webhook robustos que verificam a autenticidade dessas notificações e as processam adequadamente.
+Tanto o Stripe quanto o PayPal oferecem sistemas de webhook que enviam notificações em tempo real sobre eventos de pagamento. Implementamos manipuladores de webhook robustos que verificam a autenticidade dessas notificações e as processam adequadamente.
 
 ### Implementação do Stripe Webhook {#stripe-webhook-implementation}
 
-Nosso manipulador de webhook Stripe verifica a assinatura de eventos de webhook recebidos para garantir que sejam legítimos:
+Nosso manipulador de webhook Stripe verifica a assinatura de eventos de webhook recebidos para garantir que eles sejam legítimos:
 
 ```javascript
 async function webhook(ctx) {
@@ -377,15 +377,15 @@ async function webhook(ctx) {
 }
 ```
 
-Ambos os manipuladores de webhook seguem o mesmo padrão: verificam a assinatura, confirmam o recebimento e processam o evento de forma assíncrona. Isso garante que nunca percamos um evento de pagamento, mesmo se o redirecionamento pós-checkout falhar.
+Ambos os manipuladores de webhook seguem o mesmo padrão: verificam a assinatura, confirmam o recebimento e processam o evento de forma assíncrona. Isso garante que nunca percamos um evento de pagamento, mesmo que o redirecionamento pós-checkout falhe.
 
 ## Camada 3: Trabalhos automatizados com Bree {#layer-3-automated-jobs-with-bree}
 
-A camada final da nossa abordagem trifecta é um conjunto de trabalhos automatizados que verificam e reconciliam periodicamente os dados de pagamento. Usamos o Bree, um agendador de trabalhos para Node.js, para executar esses trabalhos em intervalos regulares.
+A camada final da nossa abordagem trifecta é um conjunto de tarefas automatizadas que verificam e reconciliam periodicamente os dados de pagamento. Usamos o Bree, um agendador de tarefas para Node.js, para executar essas tarefas em intervalos regulares.
 
 ### Verificador de precisão de assinatura {#subscription-accuracy-checker}
 
-Uma das nossas principais tarefas é o verificador de precisão da assinatura, que garante que nosso banco de dados reflita com precisão o status da assinatura no Stripe:
+Uma das nossas principais funções é verificar a precisão da assinatura, o que garante que nosso banco de dados reflita com precisão o status da assinatura no Stripe:
 
 ```javascript
 async function mapper(customer) {
@@ -452,7 +452,7 @@ async function mapper(customer) {
 }
 ```
 
-Este trabalho verifica discrepâncias entre nosso banco de dados e o Stripe, como endereços de e-mail incompatíveis ou várias assinaturas ativas. Se encontrar algum problema, ele os registra e envia alertas para nossa equipe de administração.
+Esta tarefa verifica discrepâncias entre nosso banco de dados e o Stripe, como endereços de e-mail incompatíveis ou múltiplas assinaturas ativas. Se encontrar algum problema, ele o registra e envia alertas para nossa equipe administrativa.
 
 ### Sincronização de assinatura do PayPal {#paypal-subscription-synchronization}
 
@@ -491,7 +491,7 @@ Esses trabalhos automatizados servem como nossa rede de segurança final, garant
 
 ## Lidando com casos extremos {#handling-edge-cases}
 
-Um sistema de pagamento robusto deve lidar com casos extremos graciosamente. Vamos dar uma olhada em como lidamos com alguns cenários comuns.
+Um sistema de pagamento robusto deve lidar com casos extremos com elegância. Vejamos como lidamos com alguns cenários comuns.
 
 ### Detecção e Prevenção de Fraudes {#fraud-detection-and-prevention}
 
@@ -544,7 +544,7 @@ Este código bane automaticamente usuários que têm várias cobranças com falh
 
 ### Tratamento de Disputas {#dispute-handling}
 
-Quando um usuário contesta uma cobrança, aceitamos automaticamente a reivindicação e tomamos as medidas adequadas:
+Quando um usuário contesta uma cobrança, nós automaticamente aceitamos a reivindicação e tomamos as medidas apropriadas:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
@@ -581,9 +581,9 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 
 Essa abordagem minimiza o impacto de disputas em nossos negócios e, ao mesmo tempo, garante uma boa experiência ao cliente.
 
-## Reutilização de código: Princípios KISS e DRY {#code-reuse-kiss-and-dry-principles}
+## Reutilização de código: princípios KISS e DRY {#code-reuse-kiss-and-dry-principles}
 
-Em todo o nosso sistema de pagamento, aderimos aos princípios KISS (Keep It Simple, Stupid) e DRY (Don't Repeat Yourself). Aqui estão alguns exemplos:
+Em todo o nosso sistema de pagamento, seguimos os princípios KISS (Keep It Simple, Stupid) e DRY (Don't Repeat Yourself). Aqui estão alguns exemplos:
 
 1. **Funções auxiliares compartilhadas**: Criamos funções auxiliares reutilizáveis para tarefas comuns, como sincronizar pagamentos e enviar e-mails.
 
@@ -689,11 +689,11 @@ graph TD
 
 ## Implementação dos Requisitos de Assinatura VISA {#visa-subscription-requirements-implementation}
 
-Além da nossa abordagem trifecta, implementamos recursos específicos para cumprir com os requisitos de assinatura da VISA, ao mesmo tempo em que aprimoramos a experiência do usuário. Um requisito essencial da VISA é que os usuários devem ser notificados antes de serem cobrados por uma assinatura, especialmente ao fazer a transição de uma avaliação para uma assinatura paga.
+Além da nossa abordagem trifecta, implementamos recursos específicos para atender aos requisitos de assinatura da VISA e, ao mesmo tempo, aprimorar a experiência do usuário. Um requisito fundamental da VISA é que os usuários sejam notificados antes de serem cobrados por uma assinatura, especialmente ao fazer a transição de uma versão de teste para uma assinatura paga.
 
 ### Notificações automatizadas por e-mail de pré-renovação {#automated-pre-renewal-email-notifications}
 
-Construímos um sistema automatizado que identifica usuários com assinaturas de teste ativas e envia a eles um e-mail de notificação antes que a primeira cobrança ocorra. Isso não apenas nos mantém em conformidade com os requisitos do VISA, mas também reduz estornos e melhora a satisfação do cliente.
+Criamos um sistema automatizado que identifica usuários com assinaturas de teste ativas e envia um e-mail de notificação antes da primeira cobrança. Isso não só nos mantém em conformidade com os requisitos da VISA, como também reduz estornos e melhora a satisfação do cliente.
 
 Veja como implementamos esse recurso:
 
@@ -776,7 +776,7 @@ for (const user of users) {
 }
 ```
 
-Esta implementação garante que os usuários sejam sempre informados sobre as próximas cobranças, com detalhes claros sobre:
+Esta implementação garante que os usuários estejam sempre informados sobre as próximas cobranças, com detalhes claros sobre:
 
 1. Quando ocorrerá a primeira cobrança
 2. A frequência das cobranças futuras (mensal, anual, etc.)
@@ -787,7 +787,7 @@ Ao automatizar esse processo, mantemos a conformidade perfeita com os requisitos
 
 ### Lidando com casos extremos {#handling-edge-cases-1}
 
-Nossa implementação também inclui tratamento robusto de erros. Se algo der errado durante o processo de notificação, nosso sistema alerta automaticamente nossa equipe:
+Nossa implementação também inclui um tratamento robusto de erros. Se algo der errado durante o processo de notificação, nosso sistema alerta nossa equipe automaticamente:
 
 ```javascript
 try {
@@ -813,13 +813,13 @@ try {
 }
 ```
 
-Isso garante que, mesmo que haja um problema com o sistema de notificação, nossa equipe possa resolvê-lo rapidamente e manter a conformidade com os requisitos da VISA.
+Isso garante que, mesmo se houver um problema com o sistema de notificação, nossa equipe possa resolvê-lo rapidamente e manter a conformidade com os requisitos da VISA.
 
-O sistema de notificação de assinatura VISA é outro exemplo de como construímos nossa infraestrutura de pagamento com a conformidade e a experiência do usuário em mente, complementando nossa abordagem tripla para garantir um processamento de pagamento confiável e transparente.
+O sistema de notificação de assinatura VISA é outro exemplo de como construímos nossa infraestrutura de pagamento com a conformidade e a experiência do usuário em mente, complementando nossa abordagem trifecta para garantir um processamento de pagamento confiável e transparente.
 
 ### Períodos de teste e termos de assinatura {#trial-periods-and-subscription-terms}
 
-Para usuários que habilitam a renovação automática em planos existentes, calculamos o período de teste apropriado para garantir que eles não sejam cobrados até que o plano atual expire:
+Para usuários que habilitaram a renovação automática em planos existentes, calculamos o período de teste apropriado para garantir que eles não sejam cobrados até que o plano atual expire:
 
 ```javascript
 if (
@@ -850,8 +850,8 @@ Nossa abordagem trifecta para processamento de pagamentos proporcionou vários b
 
 4. **Robustez**: Nosso sistema lida com casos extremos com elegância, desde falhas de rede até atividades fraudulentas.
 
-Se você estiver implementando um sistema de pagamento que suporta múltiplos processadores, recomendamos fortemente esta abordagem trifecta. Ela requer mais esforço de desenvolvimento inicial, mas os benefícios de longo prazo em termos de confiabilidade e precisão valem a pena.
+Se você estiver implementando um sistema de pagamento compatível com múltiplos processadores, recomendamos fortemente esta abordagem tripla. Ela exige mais esforço inicial de desenvolvimento, mas os benefícios a longo prazo em termos de confiabilidade e precisão compensam.
 
-Para obter mais informações sobre o Forward Email e nossos serviços de e-mail focados em privacidade, visite nosso [site](https://forwardemail.net).
+Para mais informações sobre o Forward Email e nossos serviços de e-mail focados em privacidade, visite nosso [site](https://forwardemail.net).
 
 <!-- *Palavras-chave: processamento de pagamentos, integração com Stripe, integração com PayPal, tratamento de webhook, sincronização de pagamentos, gerenciamento de assinaturas, prevenção de fraudes, tratamento de disputas, sistema de pagamento Node.js, sistema de pagamento multiprocessador, integração de gateway de pagamento, verificação de pagamento em tempo real, consistência de dados de pagamento, cobrança de assinatura, segurança de pagamento, automação de pagamento, webhooks de pagamento, reconciliação de pagamento, casos extremos de pagamento, tratamento de erros de pagamento, requisitos de assinatura VISA, notificações de pré-renovação, conformidade de assinatura* -->

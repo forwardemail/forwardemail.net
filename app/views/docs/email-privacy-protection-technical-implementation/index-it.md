@@ -7,14 +7,14 @@
 * [Prefazione](#foreword)
 * [Che cosa è l'inoltro di posta elettronica](#what-is-email-forwarding)
 * [Come funziona l'inoltro delle e-mail: la spiegazione tecnica](#how-email-forwarding-works-the-technical-explanation)
-  * [Il processo di inoltro della posta elettronica](#the-email-forwarding-process)
+  * [Il processo di inoltro delle e-mail](#the-email-forwarding-process)
   * [Il ruolo dell'SRS (Sender Rewriting Scheme)](#the-role-of-srs-sender-rewriting-scheme)
 * [Come funziona l'inoltro delle e-mail: la spiegazione semplice](#how-email-forwarding-works-the-simple-explanation)
 * [Impostazione dell'inoltro e-mail con Inoltra e-mail](#setting-up-email-forwarding-with-forward-email)
   * [1. Registrati per un account](#1-sign-up-for-an-account)
   * [2. Aggiungi il tuo dominio](#2-add-your-domain)
   * [3. Configurare i record DNS](#3-configure-dns-records)
-  * [4. Crea inoltri di posta elettronica](#4-create-email-forwards)
+  * [4. Creare inoltri di posta elettronica](#4-create-email-forwards)
   * [5. Inizia a utilizzare i tuoi nuovi indirizzi email](#5-start-using-your-new-email-addresses)
 * [Funzionalità avanzate di Inoltra e-mail](#advanced-features-of-forward-email)
   * [Indirizzi usa e getta](#disposable-addresses)
@@ -23,35 +23,35 @@
   * [Sicurezza resistente ai quanti](#quantum-resistant-security)
   * [Caselle di posta SQLite crittografate individualmente](#individually-encrypted-sqlite-mailboxes)
 * [Perché scegliere Forward Email rispetto ai concorrenti](#why-choose-forward-email-over-competitors)
-  * [1. 100% open source](#1-100-open-source)
+  * [1. 100% Open Source](#1-100-open-source)
   * [2. Incentrato sulla privacy](#2-privacy-focused)
   * [3. Nessun affidamento a terzi](#3-no-third-party-reliance)
   * [4. Prezzi convenienti](#4-cost-effective-pricing)
   * [5. Risorse illimitate](#5-unlimited-resources)
-  * [6. Di fiducia per le principali organizzazioni](#6-trusted-by-major-organizations)
-* [Casi di utilizzo comuni per l'inoltro di posta elettronica](#common-use-cases-for-email-forwarding)
+  * [6. Scelto dalle principali organizzazioni](#6-trusted-by-major-organizations)
+* [Casi d'uso comuni per l'inoltro di posta elettronica](#common-use-cases-for-email-forwarding)
   * [Per le aziende](#for-businesses)
   * [Per gli sviluppatori](#for-developers)
-  * [Per gli individui attenti alla privacy](#for-privacy-conscious-individuals)
+  * [Per le persone attente alla privacy](#for-privacy-conscious-individuals)
 * [Best Practice per l'inoltro di posta elettronica](#best-practices-for-email-forwarding)
   * [1. Utilizzare indirizzi descrittivi](#1-use-descriptive-addresses)
   * [2. Implementare un'autenticazione corretta](#2-implement-proper-authentication)
   * [3. Rivedi regolarmente i tuoi forward](#3-regularly-review-your-forwards)
-  * [4. Imposta "Invia posta come" per risposte senza interruzioni](#4-set-up-send-mail-as-for-seamless-replies)
+  * [4. Imposta "Invia messaggio come" per risposte senza interruzioni](#4-set-up-send-mail-as-for-seamless-replies)
   * [5. Utilizzare con cautela gli indirizzi catch-all](#5-use-catch-all-addresses-cautiously)
 * [Conclusione](#conclusion)
 
 ## Prefazione {#foreword}
 
-L'inoltro e-mail è uno strumento potente che può trasformare il modo in cui gestisci le tue comunicazioni online. Che tu sia un imprenditore che desidera creare indirizzi e-mail professionali con il tuo dominio personalizzato, un individuo attento alla privacy che desidera proteggere la propria e-mail principale o uno sviluppatore che necessita di una gestione flessibile delle e-mail, comprendere l'inoltro e-mail è essenziale nel panorama digitale odierno.
+L'inoltro email è uno strumento potente che può trasformare il modo in cui gestisci le tue comunicazioni online. Che tu sia un imprenditore che desidera creare indirizzi email professionali con il proprio dominio personalizzato, un privato attento alla privacy che desidera proteggere la propria email principale o uno sviluppatore che necessita di una gestione flessibile della posta elettronica, comprendere l'inoltro email è essenziale nel panorama digitale odierno.
 
-Noi di Forward Email abbiamo creato il servizio di inoltro email più sicuro, privato e flessibile al mondo. In questa guida completa, spiegheremo come funziona l'inoltro email (sia da una prospettiva tecnica che pratica), ti guideremo attraverso il nostro semplice processo di configurazione e sottolineeremo perché il nostro servizio si distingue dai concorrenti.
+Noi di Forward Email abbiamo creato il servizio di inoltro email più sicuro, privato e flessibile al mondo. In questa guida completa, spiegheremo come funziona l'inoltro email (sia dal punto di vista tecnico che pratico), vi guideremo attraverso la nostra semplice procedura di configurazione e metteremo in evidenza perché il nostro servizio si distingue dalla concorrenza.
 
 ## Che cos'è l'inoltro e-mail {#what-is-email-forwarding}
 
 L'inoltro email è un processo che reindirizza automaticamente le email inviate a un indirizzo email a un altro indirizzo di destinazione. Ad esempio, quando qualcuno invia un'email a <contatto@tuodominio.com>, il messaggio può essere inoltrato automaticamente al tuo account Gmail, Outlook o a qualsiasi altro account email.
 
-Questa capacità apparentemente semplice offre potenti vantaggi:
+Questa capacità apparentemente semplice offre notevoli vantaggi:
 
 * **Branding professionale**: utilizza indirizzi email con il tuo dominio personalizzato (<tu@tuodominio.com>) e gestisci tutto dalla tua casella di posta personale esistente
 * **Protezione della privacy**: crea indirizzi usa e getta o specifici per uno scopo specifico che proteggono la tua casella di posta principale
@@ -81,15 +81,15 @@ Per chi fosse interessato ai dettagli tecnici, esploriamo cosa succede dietro le
 
 ### Il ruolo dell'SRS (Sender Rewriting Scheme) {#the-role-of-srs-sender-rewriting-scheme}
 
-SRS merita un'attenzione speciale perché è essenziale per un inoltro email affidabile. Quando un'email viene inoltrata, l'indirizzo del mittente deve essere riscritto per garantire che l'email superi i controlli SPF nella destinazione finale.
+SRS merita particolare attenzione perché è essenziale per un inoltro email affidabile. Quando un'email viene inoltrata, l'indirizzo del mittente deve essere riscritto per garantire che l'email superi i controlli SPF a destinazione.
 
-Senza SRS, le email inoltrate spesso non superano la verifica SPF e vengono contrassegnate come spam o rifiutate del tutto. La nostra implementazione di SRS assicura che le email inoltrate vengano recapitate in modo affidabile, mantenendo le informazioni del mittente originale in modo trasparente per te.
+Senza SRS, le email inoltrate spesso non superano la verifica SPF e vengono contrassegnate come spam o rifiutate del tutto. La nostra implementazione di SRS garantisce che le email inoltrate vengano recapitate in modo affidabile, mantenendo le informazioni del mittente originale in modo trasparente per te.
 
 ## Come funziona l'inoltro delle e-mail: la spiegazione semplice {#how-email-forwarding-works-the-simple-explanation}
 
-Se i dettagli tecnici ti sembrano troppo complessi, ecco un modo più semplice per comprendere l'inoltro delle e-mail:
+Se i dettagli tecnici ti sembrano troppo complessi, ecco un modo più semplice per comprendere l'inoltro delle email:
 
-Pensa all'inoltro di posta elettronica come all'inoltro di posta per posta cartacea. Quando ti trasferisci in una nuova casa, puoi chiedere al servizio postale di inoltrare tutta la posta dal tuo vecchio indirizzo a quello nuovo. L'inoltro di posta elettronica funziona in modo simile, ma per i messaggi digitali.
+Considera l'inoltro delle email come l'inoltro della posta cartacea. Quando ti trasferisci in una nuova casa, puoi chiedere al servizio postale di inoltrare tutta la posta dal tuo vecchio indirizzo a quello nuovo. L'inoltro delle email funziona in modo simile, ma per i messaggi digitali.
 
 Con Inoltra Email:
 
@@ -97,7 +97,7 @@ Con Inoltra Email:
 2. Ci indichi dove desideri che vengano recapitate queste email (ad esempio, il tuo account Gmail o Outlook).
 3. Ci occupiamo di tutti i dettagli tecnici per garantire che le email inviate ai tuoi indirizzi personalizzati arrivino in modo sicuro nella casella di posta specificata.
 
-È semplicissimo! Puoi usare indirizzi email professionali senza modificare il tuo attuale flusso di lavoro email.
+È semplicissimo! Puoi utilizzare indirizzi email professionali senza modificare il tuo flusso di lavoro email attuale.
 
 ## Impostazione dell'inoltro e-mail con Inoltra e-mail {#setting-up-email-forwarding-with-forward-email}
 
@@ -109,27 +109,27 @@ Visita [forwardemail.net](https://forwardemail.net) e crea un account gratuito. 
 
 ### 2. Aggiungi il tuo dominio {#2-add-your-domain}
 
-Una volta effettuato l'accesso, aggiungi il dominio che vuoi usare per l'inoltro email. Se non possiedi già un dominio, dovrai prima acquistarne uno da un registrar di domini.
+Una volta effettuato l'accesso, aggiungi il dominio che desideri utilizzare per l'inoltro email. Se non possiedi già un dominio, dovrai prima acquistarne uno da un registrar di domini.
 
 ### 3. Configura i record DNS {#3-configure-dns-records}
 
-Ti forniremo i record DNS esatti che devi aggiungere al tuo dominio. In genere, questo comporta:
+Ti forniremo i record DNS esatti da aggiungere al tuo dominio. In genere, questo include:
 
 * Aggiunta di record MX che puntano ai nostri server di posta elettronica
 * Aggiunta di record TXT per verifica e sicurezza
 
-La maggior parte dei registrar di domini ha un'interfaccia semplice per aggiungere questi record. Forniamo guide dettagliate per tutti i principali registrar di domini per rendere questo processo il più fluido possibile.
+La maggior parte dei registrar di domini offre un'interfaccia semplice per l'aggiunta di questi record. Forniamo guide dettagliate per tutti i principali registrar di domini per rendere questo processo il più semplice possibile.
 
 ### 4. Crea inoltri e-mail {#4-create-email-forwards}
 
-Dopo che i tuoi record DNS sono stati verificati (il che di solito richiede solo pochi minuti), puoi creare inoltri email. Specifica semplicemente:
+Dopo aver verificato i record DNS (che di solito richiede solo pochi minuti), puoi creare inoltri email. Basta specificare:
 
 * L'indirizzo email del tuo dominio (ad esempio, <contatto@tuodominio.com>)
 * La destinazione a cui desideri inviare le email (ad esempio, il tuo indirizzo Gmail personale)
 
 ### 5. Inizia a utilizzare i tuoi nuovi indirizzi email {#5-start-using-your-new-email-addresses}
 
-Ecco fatto! Le email inviate ai tuoi indirizzi di dominio personalizzati saranno ora inoltrate alla destinazione specificata. Puoi creare tutti gli inoltri di cui hai bisogno, inclusi gli indirizzi catch-all che inoltrano tutte le email inviate a qualsiasi indirizzo sul tuo dominio.
+Ecco fatto! Le email inviate ai tuoi indirizzi di dominio personalizzati verranno ora inoltrate alla destinazione specificata. Puoi creare tutti gli inoltri di cui hai bisogno, inclusi indirizzi catch-all che inoltrano tutte le email inviate a qualsiasi indirizzo del tuo dominio.
 
 ## Funzionalità avanzate di Inoltro e-mail {#advanced-features-of-forward-email}
 
@@ -137,11 +137,11 @@ Sebbene l'inoltro di posta elettronica di base sia di per sé potente, Forward E
 
 ### Indirizzi usa e getta {#disposable-addresses}
 
-Crea indirizzi email specifici o anonimi che inoltrano al tuo account principale. Puoi assegnare etichette a questi indirizzi e abilitarli o disabilitarli in qualsiasi momento per mantenere organizzata la tua posta in arrivo. Il tuo indirizzo email effettivo non viene mai esposto.
+Crea indirizzi email specifici o anonimi che inoltrano i messaggi al tuo account principale. Puoi assegnare etichette a questi indirizzi e attivarle o disattivarle in qualsiasi momento per mantenere la posta in arrivo organizzata. Il tuo indirizzo email effettivo non verrà mai visualizzato.
 
 ### Destinatari multipli e caratteri jolly {#multiple-recipients-and-wildcards}
 
-Inoltra un singolo indirizzo a più destinatari, semplificando la condivisione di informazioni con un team. Puoi anche usare indirizzi jolly (inoltro catch-all) per ricevere e-mail inviate a qualsiasi indirizzo sul tuo dominio.
+Inoltra un singolo indirizzo a più destinatari, semplificando la condivisione di informazioni con un team. Puoi anche utilizzare indirizzi jolly (inoltro catch-all) per ricevere le email inviate a qualsiasi indirizzo del tuo dominio.
 
 ### Integrazione "Invia posta come" {#send-mail-as-integration}
 
@@ -153,31 +153,31 @@ Siamo il primo e unico servizio di posta elettronica al mondo a utilizzare la cr
 
 ### Caselle di posta SQLite crittografate individualmente {#individually-encrypted-sqlite-mailboxes}
 
-A differenza di altri provider che archiviano tutte le email degli utenti in database condivisi, noi utilizziamo caselle di posta SQLite crittografate individualmente per garantire una privacy e una sicurezza senza pari.
+A differenza di altri provider che archiviano tutte le e-mail degli utenti in database condivisi, noi utilizziamo caselle di posta SQLite crittografate individualmente per garantire privacy e sicurezza senza pari.
 
 ## Perché scegliere Inoltra e-mail rispetto ai concorrenti {#why-choose-forward-email-over-competitors}
 
-Il mercato dell'inoltro delle e-mail conta diversi attori, ma Forward Email si distingue per diversi aspetti importanti:
+Il mercato dell'inoltro delle email conta diversi attori, ma Forward Email si distingue per diversi aspetti importanti:
 
-### 1. 100% Open Source {#1-100-open-source}
+### 1. 100% open source {#1-100-open-source}
 
-Siamo l'unico servizio di inoltro e-mail completamente open source, incluso il nostro codice backend. Questa trasparenza crea fiducia e consente audit di sicurezza indipendenti. Altri servizi possono dichiarare di essere open source ma non rilasciano il loro codice backend.
+Siamo l'unico servizio di inoltro email completamente open source, incluso il nostro codice backend. Questa trasparenza crea fiducia e consente audit di sicurezza indipendenti. Altri servizi potrebbero dichiararsi open source ma non rilasciare il loro codice backend.
 
 ### 2. Incentrato sulla privacy {#2-privacy-focused}
 
-Abbiamo creato questo servizio perché hai diritto alla privacy. Utilizziamo una crittografia robusta con TLS, non memorizziamo log SMTP (tranne per errori e SMTP in uscita) e non scriviamo le tue email su un archivio su disco.
+Abbiamo creato questo servizio perché hai diritto alla privacy. Utilizziamo una crittografia avanzata con TLS, non memorizziamo log SMTP (ad eccezione di errori e SMTP in uscita) e non salviamo le tue email su disco.
 
-### 3. Nessun affidamento a terzi {#3-no-third-party-reliance}
+### 3. Nessun affidamento a terze parti {#3-no-third-party-reliance}
 
 A differenza dei concorrenti che si affidano ad Amazon SES o ad altri servizi di terze parti, manteniamo il controllo completo sulla nostra infrastruttura, migliorando sia l'affidabilità che la privacy.
 
 ### 4. Prezzi convenienti {#4-cost-effective-pricing}
 
-Il nostro modello di prezzi ti consente di scalare in modo economicamente conveniente. Non addebitiamo costi per utente e puoi pagare a consumo per lo storage. A $ 3/mese, offriamo più funzionalità a un prezzo inferiore rispetto ai concorrenti come Gandi ($ 3,99/mese).
+Il nostro modello tariffario ti permette di scalare in modo economicamente vantaggioso. Non applichiamo costi per utente e puoi pagare a consumo per lo spazio di archiviazione. A $3 al mese, offriamo più funzionalità a un prezzo inferiore rispetto a concorrenti come Gandi ($3,99 al mese).
 
 ### 5. Risorse illimitate {#5-unlimited-resources}
 
-Non imponiamo limiti artificiali su domini, alias o indirizzi email come fanno molti concorrenti.
+Non imponiamo limiti artificiali a domini, alias o indirizzi email come fanno molti concorrenti.
 
 ### 6. Scelto dalle principali organizzazioni {#6-trusted-by-major-organizations}
 
@@ -210,7 +210,7 @@ L'inoltro delle e-mail risolve numerose sfide per diverse tipologie di utenti:
 
 ## Procedure consigliate per l'inoltro delle e-mail {#best-practices-for-email-forwarding}
 
-Per sfruttare al meglio l'inoltro delle e-mail, tieni presente queste buone pratiche:
+Per sfruttare al meglio l'inoltro delle email, tieni in considerazione queste buone pratiche:
 
 ### 1. Utilizzare indirizzi descrittivi {#1-use-descriptive-addresses}
 
@@ -218,11 +218,11 @@ Crea indirizzi email che indichino chiaramente il loro scopo (ad esempio, <newsl
 
 ### 2. Implementare l'autenticazione corretta {#2-implement-proper-authentication}
 
-Assicurati che il tuo dominio abbia i record SPF, DKIM e DMARC corretti per massimizzare la recapitabilità. Forward Email semplifica tutto questo con la nostra configurazione guidata.
+Assicurati che il tuo dominio abbia i record SPF, DKIM e DMARC corretti per massimizzare la deliverability. Forward Email semplifica questa operazione con la nostra configurazione guidata.
 
-### 3. Controlla regolarmente i tuoi inoltri {#3-regularly-review-your-forwards}
+### 3. Rivedi regolarmente i tuoi inoltri {#3-regularly-review-your-forwards}
 
-Controlla periodicamente i tuoi inoltri di posta elettronica per disattivare quelli che non sono più necessari o che ricevono troppa posta indesiderata.
+Controlla periodicamente i tuoi inoltri di posta elettronica per disattivare quelli che non sono più necessari o che ricevono troppo spam.
 
 ### 4. Imposta "Invia posta come" per risposte senza interruzioni {#4-set-up-send-mail-as-for-seamless-replies}
 
@@ -230,17 +230,17 @@ Configura il tuo client di posta elettronica principale per inviare email come i
 
 ### 5. Utilizzare con cautela gli indirizzi catch-all {#5-use-catch-all-addresses-cautiously}
 
-Sebbene gli indirizzi catch-all siano comodi, possono potenzialmente ricevere più spam. Prendi in considerazione la creazione di inoltri specifici per le comunicazioni importanti.
+Sebbene gli indirizzi catch-all siano comodi, possono potenzialmente ricevere più spam. Valuta la possibilità di creare inoltri specifici per le comunicazioni importanti.
 
 ## Conclusione {#conclusion}
 
-L'inoltro e-mail è uno strumento potente che porta professionalità, privacy e semplicità alle tue comunicazioni e-mail. Con Forward Email, ottieni il servizio di inoltro e-mail più sicuro, privato e flessibile disponibile.
+L'inoltro email è uno strumento potente che aggiunge professionalità, privacy e semplicità alle tue comunicazioni email. Con Forward Email, ottieni il servizio di inoltro email più sicuro, privato e flessibile disponibile.
 
 Essendo l'unico fornitore open source al 100% con crittografia resistente ai computer quantistici e attenzione alla privacy, abbiamo creato un servizio che rispetta i tuoi diritti offrendo al contempo funzionalità eccezionali.
 
 Che tu voglia creare indirizzi email professionali per la tua azienda, proteggere la tua privacy con indirizzi usa e getta o semplificare la gestione di più account email, Forward Email è la soluzione perfetta.
 
-Pronto a trasformare la tua esperienza di posta elettronica? [Iscriviti gratuitamente](https://forwardemail.net) oggi stesso e unisciti agli oltre 500.000 domini che già beneficiano del nostro servizio.
+Pronto a trasformare la tua esperienza di posta elettronica? Registrati oggi stesso e unisciti agli oltre 500.000 domini che già beneficiano del nostro servizio.
 
 ---
 

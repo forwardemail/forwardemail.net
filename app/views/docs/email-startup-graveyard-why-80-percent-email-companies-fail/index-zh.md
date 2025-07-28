@@ -1,14 +1,14 @@
-# 电子邮件初创企业墓地：大多数电子邮件公司为何失败 {#the-email-startup-graveyard-why-most-email-companies-fail}
+# 电子邮件初创企业的坟墓：为什么大多数电子邮件公司都失败了{#the-email-startup-graveyard-why-most-email-companies-fail}
 
 <img 加载中="懒惰" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
 
-<p class="lead mt-3">虽然许多电子邮件初创公司已投入数百万美元来解决已知问题，但自 2017 年以来，我们 <a href="https://forwardemail.net">Forward Email</a> 一直致力于从零开始构建可靠的电子邮件基础设施。本分析探讨了电子邮件初创公司成果背后的模式以及电子邮件基础设施面临的根本挑战。</p>
+<p class="lead mt-3">虽然许多电子邮件初创公司已投入数百万美元来解决已知问题，但 <a href="https://forwardemail.net">Forward Email</a> 自 2017 年以来一直致力于从零开始构建可靠的电子邮件基础设施。本分析探讨了电子邮件初创公司成果背后的模式以及电子邮件基础设施面临的根本挑战。</p>
 
 > \[!NOTE]
-> **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
+> **关键洞察**：大多数电子邮件初创公司不会从零开始构建真正的电子邮件基础设施。许多公司都是基于现有解决方案（例如 Amazon SES）或开源系统（例如 Postfix）构建的。核心协议运行良好——挑战在于实施。
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **技术深度探究**：如需详细了解我们的方法、架构和安全实施，请参阅我们的 [转发电子邮件技术白皮书](https://forwardemail.net/technical-whitepaper.pdf) 和 [关于页面](https://forwardemail.net/en/about)，其中记录了我们自 2017 年以来的完整开发时间表。
 
 ## 目录 {#table-of-contents}
 
@@ -27,7 +27,7 @@
   * [加速器分析](#the-accelerator-analysis)
   * [风险投资陷阱](#the-venture-capital-trap)
 * [技术现实：现代电子邮件堆栈](#the-technical-reality-modern-email-stacks)
-  * [究竟是什么推动了“电子邮件创业公司”的发展](#what-actually-powers-email-startups)
+  * [究竟是什么推动了“电子邮件创业”](#what-actually-powers-email-startups)
   * [性能问题](#the-performance-problems)
 * [收购模式：成功 vs. 失败](#the-acquisition-patterns-success-vs-shutdown)
   * [两种模式](#the-two-patterns)
@@ -78,7 +78,7 @@
   * [从未发布的应用程序](#the-apps-that-never-launched)
   * [收购至关闭模式](#the-acquisition-to-shutdown-pattern)
   * [电子邮件基础设施整合](#email-infrastructure-consolidation)
-* [开源电子邮件的坟场：当“免费”不再可持续时](#the-open-source-email-graveyard-when-free-isnt-sustainable)
+* [开源电子邮件的坟墓：当“免费”不再可持续时](#the-open-source-email-graveyard-when-free-isnt-sustainable)
   * [Nylas Mail → Mailspring：无法实现的分叉](#nylas-mail--mailspring-the-fork-that-couldnt)
   * [尤朵拉：18年的死亡行军](#eudora-the-18-year-death-march)
   * [FairEmail：被 Google Play 政治扼杀](#fairemail-killed-by-google-play-politics)
@@ -99,7 +99,7 @@
 ## 电子邮件启动失败矩阵 {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Failure Rate Alert**: [Techstars alone has 28 email-related companies](https://www.techstars.com/portfolio) with only 5 exits - an exceedingly high failure rate (sometimes calculated to be 80%+).
+> **故障率警报**：[仅 Techstars 就有 28 家电子邮件相关公司](https://www.techstars.com/portfolio) 仅有 5 个出口 - 故障率极高（有时计算为 80% 以上）。
 
 以下是我们能找到的所有重大电子邮件初创公司的失败案例，按加速器、资金和结果进行整理：
 
@@ -120,7 +120,7 @@
 ## 基础设施现状检查 {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **The Hidden Truth**: Every single "email startup" is just building UI on top of existing infrastructure. They're not building actual email servers - they're building apps that connect to real email infrastructure.
+> **隐藏的真相**：每一家所谓的“电子邮件初创公司”都只是在现有基础设施之上构建用户界面。他们并非在构建真正的电子邮件服务器——他们只是在构建连接到真实电子邮件基础设施的应用程序。
 
 ### 实际运行的电子邮件 {#what-actually-runs-email}
 
@@ -139,7 +139,7 @@ graph TD
     F --> K[Authentication that works]
 ```
 
-###“电子邮件初创公司”实际上构建了什么{#what-email-startups-actually-build}
+### “电子邮件初创公司”实际上构建了什么{#what-email-startups-actually-build}
 
 ```mermaid
 graph LR
@@ -157,23 +157,23 @@ graph LR
 ```
 
 > \[!TIP]
-> **Key Pattern for Email Success**: The companies that actually succeed in email don't try to reinvent the wheel. Instead, they build **infrastructure and tools that enhance** existing email workflows. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), and [Postmark](https://postmarkapp.com/) became billion-dollar companies by providing reliable SMTP APIs and delivery services - they work **with** email protocols, not against them. This is the same approach we take at Forward Email.
+> **电子邮件成功的关键模式**：真正在电子邮件领域取得成功的公司不会尝试重新发明轮子。相反，他们会构建**基础架构和工具来增强**现有的电子邮件工作流程。[发送网格](https://sendgrid.com/)、[Mailgun](https://www.mailgun.com/) 和 [邮戳](https://postmarkapp.com/) 通过提供可靠的 SMTP API 和递送服务成为价值数十亿美元的公司——他们**与**电子邮件协议合作，而不是与之对抗。这与 Forward Email 所采用的方法相同。
 
-## 为什么大多数电子邮件初创公司都会失败 {#why-most-email-startups-fail}
+## 为什么大多数电子邮件初创公司都会失败{#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **The Fundamental Pattern**: Email *client* startups typically fail because they try to replace working protocols, while email *infrastructure* companies can succeed by enhancing existing workflows. The key is understanding what users actually need versus what entrepreneurs think they need.
+> **基本模式**：电子邮件*客户端*初创公司通常失败，是因为他们试图取代现有的工作协议，而电子邮件*基础设施*公司则可以通过增强现有工作流程而获得成功。关键在于理解用户的实际需求，以及创业者认为他们需要什么。
 
 ### 1. 电子邮件协议有效，但实施往往无效 {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Email Statistics**: [347.3 billion emails sent daily](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) without major issues, serving [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023.
+> **电子邮件统计信息**：[每天发送 3473 亿封电子邮件](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) 没有重大问题，截至 2023 年为 [全球有 43.7 亿电子邮件用户](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) 提供服务。
 
 核心电子邮件协议很可靠，但实施质量差异很大：
 
 * **通用兼容性**：所有设备、所有平台均支持 [SMTP](https://tools.ietf.org/html/rfc5321)、[IMAP](https://tools.ietf.org/html/rfc3501) 和 [POP3](https://tools.ietf.org/html/rfc1939)
 * **去中心化**：[全球数十亿个电子邮件服务器](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) 协议无单点故障
-* **标准化**：SMTP、IMAP、POP3 协议均是 20 世纪 80 年代至 90 年代久经考验的协议
+* **标准化**：SMTP、IMAP、POP3 协议是经过 20 世纪 80 年代至 90 年代实践检验的协议
 * **可靠**：[每天发送 3473 亿封电子邮件](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) 协议无重大问题
 
 **真正的机会**：更好地实施现有协议，而不是替代协议。
@@ -182,19 +182,19 @@ graph LR
 
 电子邮件的网络效应是绝对的：
 
-* **每个人都有电子邮件**：[全球有 43.7 亿电子邮件用户](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/)（截至 2023 年）
+* **每个人都有邮箱**：[全球有 43.7 亿电子邮件用户](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/)（截至 2023 年）
 * **跨平台**：可在所有提供商之间无缝协作
-* **业务关键**：[99% 的企业每天都使用电子邮件](https://blog.hubspot.com/marketing/email-marketing-stats)（用于运营）
-* **切换成本**：更改电子邮件地址会破坏与其相关的所有功能
+* **业务关键**：[99% 的企业每天都使用电子邮件](https://blog.hubspot.com/marketing/email-marketing-stats) 用于运营
+* **切换成本**：更改邮箱地址会破坏与其相关的所有功能
 
-### 3. 他们经常针对错误的问题 {#3-they-often-target-the-wrong-problems}
+### 3. 他们经常针对错误的问题{#3-they-often-target-the-wrong-problems}
 
 许多电子邮件初创公司关注的是感知到的问题，而不是真正的痛点：
 
 * **“电子邮件太复杂”**：基本工作流程很简单 - [自 1971 年起发送、接收、整理](https://en.wikipedia.org/wiki/History_of_email)
-* **“电子邮件需要人工智能”**：[Gmail 已经具备有效的智能功能](https://support.google.com/mail/answer/9116836)，例如智能回复和优先收件箱
+* **“电子邮件需要人工智能”**：[Gmail 已经具备有效的智能功能](https://support.google.com/mail/answer/9116836) 类似智能回复和优先收件箱
 * **“电子邮件需要更安全的安全性”**：[DKIM](https://tools.ietf.org/html/rfc6376)、[SPF](https://tools.ietf.org/html/rfc7208) 和 [DMARC](https://tools.ietf.org/html/rfc7489) 提供可靠的身份验证
-* **“电子邮件需要新的界面”**：[前景](https://outlook.com/) 和 [Gmail](https://gmail.com/) 界面经过数十年的用户研究不断改进
+* **“电子邮件需要新的界面”**：[前景](https://outlook.com/) 和 [Gmail](https://gmail.com/) 的界面经过数十年的用户研究而不断改进
 
 **值得解决的真正问题**：基础设施可靠性、可交付性、垃圾邮件过滤和开发人员工具。
 
@@ -206,13 +206,13 @@ graph LR
 * **垃圾邮件过滤**：不断发展的 [威胁形势](https://www.spamhaus.org/)
 * **存储系统**：可靠的 [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) 实现
 * **身份验证**：[DKIM](https://tools.ietf.org/html/rfc6376)、[SPF](https://tools.ietf.org/html/rfc7208)、[DMARC](https://tools.ietf.org/html/rfc7489)、[ARC](https://tools.ietf.org/html/rfc8617) 合规性
-* **可投递性**：ISP 关系和 [声誉管理](https://sendgrid.com/blog/what-is-email-deliverability/)
+* **可送达性**：ISP 关系和 [声誉管理](https://sendgrid.com/blog/what-is-email-deliverability/)
 
 ### 5. 基础设施已存在 {#5-the-infrastructure-already-exists}
 
-当你可以使用以下内容时，为什么还要重新发明：
+当你可以使用以下工具时，为什么还要重新发明：
 
-* **[亚马逊 SES](https://aws.amazon.com/ses/)**：久经考验的交付基础设施
+* **[亚马逊 SES](https://aws.amazon.com/ses/)**：经过验证的交付基础设施
 * **[后缀](http://www.postfix.org/)**：久经考验的 SMTP 服务器
 * **[鸽舍](https://www.dovecot.org/)**：可靠的 IMAP/POP3 服务器
 * **[垃圾邮件杀手](https://spamassassin.apache.org/)**：有效的垃圾邮件过滤
@@ -227,18 +227,18 @@ Skiff 完美地体现了电子邮件初创企业的所有弊端。
 #### 设置 {#the-setup}
 
 * **定位**：“隐私优先的电子邮件和生产力平台”
-* **资金**：[大量风险投资](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
-* **承诺**：通过隐私和加密改善电子邮件体验
+* **融资**：[大量风险投资](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
+* **承诺**：通过隐私和加密，提升电子邮件体验
 
 #### 收购 {#the-acquisition}
 
-[Notion 于 2024 年 2 月收购了 Skiff](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) 以及关于整合和持续发展的典型收购承诺。
+[Notion 于 2024 年 2 月收购了 Skiff](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) 带有关于整合和持续发展的典型收购承诺。
 
 #### 现实 {#the-reality}
 
-* **立即关闭**: [Skiff 在几个月内关闭](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
-* **创始人大批离职**: [Skiff 创始人离开 Notion 并加入 Cursor](https://x.com/skeptrune/status/1939763513695903946)
-* **用户流失**: 数千名用户被迫迁移
+* **立即关闭**：[Skiff 在几个月内关闭](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
+* **创始人流失**：[Skiff 创始人离开 Notion 并加入 Cursor](https://x.com/skeptrune/status/1939763513695903946)
+* **用户放弃**：数千名用户被迫迁移
 
 ### 加速器分析 {#the-accelerator-analysis}
 
@@ -251,24 +251,24 @@ Skiff 完美地体现了电子邮件初创企业的所有弊端。
 * **[重新邮件](https://www.ycombinator.com/companies/remail)** (2009)：iPhone 电子邮件搜索 → [被谷歌收购](https://techcrunch.com/2010/02/17/google-remail-iphone/) → 关闭
 * **[融洽的](https://www.ycombinator.com/companies/rapportive)** (2012)：Gmail 社交资料 → [被 LinkedIn 收购](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → 关闭
 
-**成功率**：结果好坏参半，但也有一些值得关注的退出案例。一些公司实现了成功的收购（例如 reMail 被谷歌收购，Rapportive 被领英收购），而其他一些公司则放弃了电子邮件业务，或者被收购以获取人才。
+**成功率**：结果好坏参半，但也有一些值得关注的退出案例。一些公司实现了成功的收购（例如，reMail 被谷歌收购，Rapportive 被领英收购），而其他一些公司则放弃了电子邮件业务，或者被收购以获取人才。
 
 #### Techstars：电子邮件墓地 {#techstars-the-email-graveyard}
 
 [科技之星](https://www.techstars.com/) 的记录甚至更糟糕：
 
-* **[电子邮件副驾驶](https://www.validity.com/everest/returnpath/)** (2012): 已获取 → 关闭
-* **[回复发送](https://www.crunchbase.com/organization/replysend)** (2012): 完全失败
-* **[Nveloped](https://www.crunchbase.com/organization/nveloped)** (2012): “简单。安全。电子邮件” → 失败
-* **[混乱](https://www.crunchbase.com/organization/jumble/technology)** (2015): 电子邮件加密 → 失败
-* **[收件箱狂热](https://www.crunchbase.com/organization/inboxfever)** (2011): 电子邮件 API → 失败
+* **[电子邮件副驾驶](https://www.validity.com/everest/returnpath/)** (2012)：已获取 → 关闭
+* **[回复发送](https://www.crunchbase.com/organization/replysend)** (2012)：完全失败
+* **[Nveloped](https://www.crunchbase.com/organization/nveloped)** (2012)：“简单。安全。电子邮件”→失败
+* **[混乱](https://www.crunchbase.com/organization/jumble/technology)** (2015)：电子邮件加密→失败
+* **[收件箱狂热](https://www.crunchbase.com/organization/inboxfever)** (2011)：电子邮件 API→失败
 
 **模式**：价值主张模糊，没有真正的技术创新，快速失败。
 
 ### 风险投资陷阱 {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
+> **风险投资悖论**：风险投资家青睐电子邮件初创公司，因为它们听起来简单，但实际上却不可能实现。吸引投资的基本假设恰恰注定了失败。
 
 风险投资家们喜欢电子邮件初创公司，因为它们听起来简单，但实际上不可能实现：
 
@@ -294,7 +294,7 @@ graph TD
 
 ## 技术现实：现代电子邮件堆栈 {#the-technical-reality-modern-email-stacks}
 
-### 真正推动“电子邮件初创公司”发展的因素是什么？{#what-actually-powers-email-startups}
+### 真正推动“电子邮件初创公司”发展的因素 {#what-actually-powers-email-startups}
 
 让我们看看这些公司实际经营的情况：
 
@@ -314,13 +314,13 @@ graph LR
 **内存膨胀**：大多数电子邮件应用程序都是基于 Electron 的 Web 应用程序，会消耗大量 RAM：
 
 * **[Mailspring](https://getmailspring.com/)**: [500MB+ 用于基本电子邮件](https://github.com/Foundry376/Mailspring/issues/1758)
-* **Nylas Mail**: [1GB+内存使用量](https://github.com/nylas/nylas-mail/issues/3501) 关机前
+* **Nylas Mail**: 关机前的 [1GB+内存使用量](https://github.com/nylas/nylas-mail/issues/3501)
 * **[邮箱](https://www.postbox-inc.com/)**: [300MB+ 空闲内存](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[金丝雀邮件](https://canarymail.io/)**: [由于内存问题而频繁崩溃](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[雷鸟](https://www.thunderbird.net/)**: [RAM 使用率高达 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) 系统内存
+* **[雷鸟](https://www.thunderbird.net/)**: 系统内存的 [RAM 使用率高达 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/)
 
 > \[!WARNING]
-> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
+> **Electron 性能危机**：使用 Electron 和 React Native 构建的现代电子邮件客户端存在严重的内存膨胀和性能问题。这些跨平台框架虽然为开发者提供了便利，但却会创建资源密集型应用程序，为了实现基本的电子邮件功能，会消耗数百兆到数千兆的内存。
 
 **电池消耗**：持续同步和低效代码：
 
@@ -376,21 +376,21 @@ flowchart TD
 
 **值得注意的例外**：
 
-* **[超人 → Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025)：成功收购，并战略性地融入生产力平台
+* [超人 → Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)：成功收购，并战略性地融入生产力平台
 
 **基础设施的成功**：
 
-* **[SendGrid → Twilio](https://en.wikipedia.org/wiki/SendGrid)** (2019 年)：30 亿美元收购，持续增长
-* **[Mailgun → Sinch](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021 年)：战略整合
-* **[邮戳 → ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022 年)：平台增强
+* [SendGrid → Twilio](https://en.wikipedia.org/wiki/SendGrid)** (2019)：30亿美元收购，持续增长
+* [Mailgun → Sinch](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)：战略整合
+* [邮戳 → ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)：平台增强
 
 ## 行业发展与整合 {#industry-evolution-and-consolidation}
 
-### 自然产业进步 {#natural-industry-progression}
+### 自然产业发展 {#natural-industry-progression}
 
 电子邮件行业自然而然地走向了整合，大公司不断收购小公司，以整合功能或消除竞争。这未必是坏事——大多数成熟行业都是这样发展的。
 
-### 收购后转型 {#post-acquisition-transitions}
+### 收购后转变 {#post-acquisition-transitions}
 
 当电子邮件公司被收购时，用户经常会面临：
 
@@ -409,7 +409,7 @@ flowchart TD
 
 ## 黑客新闻现实检验 {#the-hacker-news-reality-check}
 
-每个电子邮件初创公司都会在 [黑客新闻](https://news.ycombinator.com/) 上收到相同的评论：
+每个电子邮件启动器都会在 [黑客新闻](https://news.ycombinator.com/) 上收到相同的评论：
 
 * [“电子邮件工作正常，这解决了一个不成问题的问题”](https://news.ycombinator.com/item?id=35982757)
 * [“像其他人一样使用 Gmail/Outlook”](https://news.ycombinator.com/item?id=36001234)
@@ -420,13 +420,13 @@ flowchart TD
 
 ## 现代人工智能电子邮件诈骗 {#the-modern-ai-email-grift}
 
-### 最新浪潮 {#the-latest-wave}
+### 最新潮流 {#the-latest-wave}
 
 2024 年迎来了新一波“人工智能电子邮件”初创企业的浪潮，第一家大型企业已经成功退出：
 
-* **[超人](https://superhuman.com/)**: [筹集3300万美元](https://superhuman.com/), [成功被 Grammarly 收购](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - 罕见的成功客户端应用退出
-* **[短波](https://www.shortwave.com/)**: 带有 AI 摘要的 Gmail 包装器
-* **[SaneBox](https://www.sanebox.com/)**: AI 电子邮件过滤（实际有效，但并非革命性）
+* [超人](https://superhuman.com/)：[筹集3300万美元](https://superhuman.com/)、[成功被 Grammarly 收购](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - 罕见的成功客户端应用退出
+* [短波](https://www.shortwave.com/)：带有 AI 摘要的 Gmail 包装器
+* [SaneBox](https://www.sanebox.com/)：AI 电子邮件过滤（实际有效，但并非革命性）
 
 ### 同样的老问题 {#the-same-old-problems}
 
@@ -444,30 +444,30 @@ flowchart TD
 ### 基础设施公司（赢家）{#infrastructure-companies-the-winners}
 
 * **[发送网格](https://sendgrid.com/)**: [Twilio 以 30 亿美元收购](https://en.wikipedia.org/wiki/SendGrid)
-* **[邮件枪](https://www.mailgun.com/)**: [收入 5000 万美元以上](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)，被 Sinch 收购
+* **[Mailgun](https://www.mailgun.com/)**: [收入 5000 万美元以上](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)，已被 Sinch 收购
 * **[邮戳](https://postmarkapp.com/)**: 盈利，[被 ActiveCampaign 收购](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
-* **[亚马逊 SES](https://aws.amazon.com/ses/)**: 数十亿美元的收入
+* **[亚马逊 SES](https://aws.amazon.com/ses/)**: 收入数十亿美元
 
 **模式**：他们构建基础设施，而不是应用程序。
 
 ### 电子邮件提供商（幸存者）{#email-providers-the-survivors}
 
 * **[快速邮件](https://www.fastmail.com/)**：[25岁以上](https://www.fastmail.com/about/)，盈利，独立
-* **[ProtonMail](https://proton.me/)**：注重隐私，可持续发展
+* **[ProtonMail](https://proton.me/)**：注重隐私，可持续增长
 * **[Zoho Mail](https://www.zoho.com/mail/)**：大型企业套件的一部分
 * **我们**：7 年以上，盈利，不断发展
 
 > \[!WARNING]
-> **The JMAP Investment Question**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with limited adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that many users request. This represents a strategic choice to prioritize protocol innovation over user-requested features. Whether JMAP will gain broader adoption remains to be seen, but the current email client ecosystem continues to rely primarily on IMAP/SMTP.
+> **JMAP 投资问题**：Fastmail 在 [JMAP](https://jmap.io/)（属于 [10 岁以上，领养受限](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790) 的协议）上投入资源的同时，也投入了大量用户请求的 [拒绝实施 PGP 加密](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) 协议。这体现了一种战略选择，即优先考虑协议创新，而不是用户请求的功能。JMAP 是否会获得更广泛的采用还有待观察，但目前的电子邮件客户端生态系统仍然主要依赖于 IMAP/SMTP。
 
 > \[!TIP]
-> **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
+> **企业成功**：转发电子邮件为 [顶尖大学的校友电子邮件解决方案](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study) 提供支持，其中包括拥有 30,000 名校友地址的剑桥大学，与传统解决方案相比，每年可节省 87,000 美元的成本。
 
 **模式**：它们增强电子邮件，而不是取代它。
 
 ### 例外：Xobni 的成功故事 {#the-exception-xobnis-success-story}
 
-[霍布尼](https://en.wikipedia.org/wiki/Xobni) 是少数通过采取正确方法而真正取得成功的电子邮件相关初创公司之一。
+[霍布尼](https://en.wikipedia.org/wiki/Xobni) 是少数通过采取正确方法而获得成功的电子邮件相关初创公司之一。
 
 **Xobni 做对了什么**：
 
@@ -478,7 +478,7 @@ flowchart TD
 
 **成功之处**：[Xobni 于 2013 年被雅虎以 6000 万美元收购](https://en.wikipedia.org/wiki/Xobni)，为投资者带来丰厚回报，并为创始人带来成功退出。
 
-#### 为什么 Xobni 能在其他公司失败时取得成功 {#why-xobni-succeeded-where-others-failed}
+#### 为什么 Xobni 能成功而其他公司却失败了 {#why-xobni-succeeded-where-others-failed}
 
 1. **基于成熟的基础架构**：沿用 Outlook 现有的电子邮件处理机制
 2. **解决实际问题**：联系人管理功能确实存在问题
@@ -487,7 +487,7 @@ flowchart TD
 
 #### 创始人的持续成功 {#the-founders-continued-success}
 
-[马特·布雷齐纳](https://www.linkedin.com/in/mattbrezina/) 和 [亚当·斯密](https://www.linkedin.com/in/adamjsmith/) 在 Xobni 之后并没有停止：
+[马特·布雷齐纳](https://www.linkedin.com/in/mattbrezina/) 和 [亚当·斯密](https://www.linkedin.com/in/adamjsmith/) 在 Xobni 之后没有停止：
 
 * **Matt Brezina**：通过投资 Dropbox、Mailbox 等公司，成为活跃的 [天使投资人](https://mercury.com/investor-database/matt-brezina)
 * **Adam Smith**：继续在生产力领域打造成功的公司
@@ -497,7 +497,7 @@ flowchart TD
 
 当公司能够做到以下几点时，他们就能在电子邮件领域获得成功：
 
-1. **构建基础设施** ([发送网格](https://sendgrid.com/), [邮件枪](https://www.mailgun.com/))
+1. **构建基础设施** ([发送网格](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/))
 2. **增强现有工作流程** ([霍布尼](https://en.wikipedia.org/wiki/Xobni), [快速邮件](https://www.fastmail.com/))
 3. **注重可靠性** ([亚马逊 SES](https://aws.amazon.com/ses/), [邮戳](https://postmarkapp.com/))
 4. **服务开发者**（API 和工具，而非最终用户应用）
@@ -510,38 +510,38 @@ flowchart TD
 
 回顾过去 20 年的电子邮件创新：
 
-* **[Gmail 的线程](https://support.google.com/mail/answer/5900)**：增强电子邮件组织功能
-* **[Outlook 的日历集成](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)**：增强日程安排功能
-* **移动电子邮件应用**：增强辅助功能
-* **[DKIM](https://tools.ietf.org/html/rfc6376)/[SPF](https://tools.ietf.org/html/rfc7208)/[DMARC](https://tools.ietf.org/html/rfc7489)**：增强安全性
+* [Gmail 的线程](https://support.google.com/mail/answer/5900)：增强电子邮件组织功能
+* [Outlook 的日历集成](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)：增强日程安排功能
+* 移动电子邮件应用：增强辅助功能
+* [DKIM](https://tools.ietf.org/html/rfc6376)/[SPF](https://tools.ietf.org/html/rfc7208)/[DMARC](https://tools.ietf.org/html/rfc7489)：增强安全性
 
 **模式**：所有成功的创新都**增强**了现有的电子邮件协议，而不是取代它们。
 
 ### 新工具补充电子邮件（但不会取代它）{#new-tools-complement-email-but-dont-replace-it}
 
-* **[松弛](https://slack.com/)**：非常适合团队聊天，但仍会发送电子邮件通知
-* **[不和谐](https://discord.com/)**：非常适合社区交流，但会使用电子邮件进行账户管理
-* **[WhatsApp](https://www.whatsapp.com/)**：非常适合消息传递，但企业仍会使用电子邮件
-* **[飞涨](https://zoom.us/)**：视频通话必备，但会议邀请会通过电子邮件发送
+* [松弛](https://slack.com/)：非常适合团队聊天，但仍会发送电子邮件通知
+* [不和谐](https://discord.com/)：非常适合社区，但使用电子邮件进行帐户管理
+* [WhatsApp](https://www.whatsapp.com/)：非常适合消息传递，但企业仍会使用电子邮件
+* [飞涨](https://zoom.us/)：视频通话的必备工具，但会议邀请会通过电子邮件发送
 
 ### HEY 实验 {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Real-World Validation**: HEY's founder [DHH](https://dhh.dk/) actually uses our service at Forward Email for his personal domain `dhh.dk` and has for several years, demonstrating that even email innovators rely on proven infrastructure.
+> **真实世界验证**：HEY 的创始人 [DHH](https://dhh.dk/) 实际上在他的个人域名 `dhh.dk` 上使用我们 Forward Email 的服务，并且已经使用了好几年，这表明即使是电子邮件创新者也依赖于成熟的基础设施。
 
-[HEY](https://hey.com/) 和 [大本营](https://basecamp.com/) 代表了近期最严重的“重新发明”电子邮件的尝试：
+[HEY](https://hey.com/) 由 [大本营](https://basecamp.com/) 发起，代表了近期最严肃的“重新发明”电子邮件的尝试：
 
-* **发布日期**: [2020 年盛大开幕](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
-* **方法**: 全新电子邮件模式，包含筛选、打包和工作流程
-* **反响**: 褒贬不一 - 部分用户喜欢，大部分用户仍沿用现有电子邮件
-* **实际情况**: 它仍然是电子邮件 (SMTP/IMAP)，只是界面有所不同
+* **已发布**：[2020 年盛大开幕](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
+* **方法**：全新的电子邮件模式，包含筛选、打包和工作流程
+* **反响**：褒贬不一 - 部分用户喜欢，但大多数用户仍沿用现有电子邮件
+* **实际情况**：它仍然是电子邮件（SMTP/IMAP），只是界面有所不同
 
 ### 实际有效的方法 {#what-actually-works}
 
 最成功的电子邮件创新包括：
 
-1. **更完善的基础设施**：更快的服务器、更强大的垃圾邮件过滤功能、更高的邮件送达率
-2. **增强的界面**：[Gmail 的对话视图](https://support.google.com/mail/answer/5900)、[Outlook 的日历集成](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
+1. **更优的基础设施**：更快的服务器、更强大的垃圾邮件过滤功能、更高的邮件送达率
+2. **增强的接口**：[Gmail 的对话视图](https://support.google.com/mail/answer/5900)、[Outlook 的日历集成](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
 3. **开发者工具**：用于发送电子邮件的 API、用于跟踪的 Webhook
 4. **专业的工作流程**：CRM 集成、营销自动化、交易邮件
 
@@ -551,7 +551,7 @@ flowchart TD
 
 在深入探讨电子邮件的失败原因之前，重要的是先了解电子邮件究竟是如何运作的。问题不在于电子邮件本身存在缺陷，而在于大多数公司都在试图“修复”那些已经完美运行的功能。
 
-### 电子邮件创新频谱 {#the-email-innovation-spectrum}
+### 电子邮件创新谱 {#the-email-innovation-spectrum}
 
 电子邮件创新分为三类：
 
@@ -570,10 +570,10 @@ graph TD
 
 我们选择构建现代电子邮件基础设施是因为：
 
-* **电子邮件协议已得到验证**: [SMTP 自 1982 年以来一直可靠运行](https://tools.ietf.org/html/rfc821)
-* **问题在于实施**: 大多数电子邮件服务使用过时的软件堆栈
-* **用户需要可靠性**: 而不是破坏现有工作流程的新功能
-* **开发人员需要工具**: 更好的 API 和管理界面
+* **电子邮件协议已得到验证**：[SMTP 自 1982 年以来一直可靠运行](https://tools.ietf.org/html/rfc821)
+* **问题在于实现**：大多数电子邮件服务使用过时的软件堆栈
+* **用户需要可靠性**：而不是破坏现有工作流程的新功能
+* **开发人员需要工具**：更好的 API 和管理界面
 
 ### 电子邮件中实际起作用的内容 {#what-actually-works-in-email}
 
@@ -592,7 +592,7 @@ graph TD
 * **注重可靠性**：[99.99% 正常运行时间](https://status.forwardemail.net)，合理的错误处理
 * **增强现有工作流程**：兼容所有电子邮件客户端
 * **服务开发者**：提供切实有效的 API 和工具
-* **保持兼容性**：完全符合 [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) 标准
+* **保持兼容性**：完全兼容 [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
 
 ### 我们不做的事情 {#what-we-dont-do}
 
@@ -609,15 +609,15 @@ graph TD
 
 * **不转型**：我们已在电子邮件基础设施建设领域耕耘 7 年有余
 * **不收购**：我们着眼长远发展
-* **不做“革命性”宣传**：我们只为让电子邮件更好地运行
+* **不做“革命性”宣传**：我们只为提升电子邮件服务体验
 
 ### 我们的与众不同之处 {#what-makes-us-different}
 
 > \[!TIP]
-> **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
+> **政府级合规性**：转发电子邮件为 [符合第 889 条规定](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant)，服务于美国海军学院等组织，彰显了我们致力于满足严格的联邦安全要求的承诺。
 
 > \[!NOTE]
-> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+> **OpenPGP 和 OpenWKD 实现**：与 Fastmail（[拒绝实施 PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) 提及的复杂性问题）不同，Forward Email 提供完整的 OpenPGP 支持并兼容 OpenWKD（Web 密钥目录），为用户提供他们真正想要的加密，而无需强制他们使用 JMAP 等实验性协议。
 
 **技术堆栈比较**：
 
@@ -651,14 +651,14 @@ graph TD
 * **无遗留问题**：简洁、现代的代码库，无需数十年的补丁
 
 > \[!NOTE]
-> **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
+> **隐私设计**：我们的 [隐私政策](https://forwardemail.net/en/privacy) 确保我们不会将转发的电子邮件存储到磁盘存储或数据库中，不会存储有关电子邮件的元数据，也不会存储日志或 IP 地址 - 仅在电子邮件转发服务中使用内存操作。
 
-**技术文档**：有关我们的方法、架构和安全实施的全面详细信息，请参阅我们的[技术白皮书](https://forwardemail.net/technical-whitepaper.pdf)和广泛的技术文档。
+**技术文档**：有关我们的方法、架构和安全实施的全面详细信息，请参阅我们的 [技术白皮书](https://forwardemail.net/technical-whitepaper.pdf) 和广泛的技术文档。
 
-### 电子邮件服务提供商比较：通过经过验证的协议实现增长 {#email-service-provider-comparison-growth-through-proven-protocols}
+### 电子邮件服务提供商比较：通过成熟的协议实现增长 {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+> **实际增长数字**：当其他提供商追逐实验性协议时，Forward Email 专注于用户真正想要的东西——可靠的 IMAP、POP3、SMTP、CalDAV 和 CardDAV，并且兼容所有设备。我们的增长证明了这种方法的价值。
 
 | 提供者 | 域名（2024 个，通过 [SecurityTrails](https://securitytrails.com/)） | 域名（2025 个，通过 [ViewDNS](https://viewdns.info/reversemx/)） | 百分比变化 | MX记录 |
 | ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
@@ -679,7 +679,7 @@ graph TD
 
 ### 技术时间线 {#the-technical-timeline}
 
-根据我们的[官方公司时间表](https://forwardemail.net/en/about)，我们构建了实际有效的电子邮件基础设施：
+基于我们的 [官方公司时间表](https://forwardemail.net/en/about)，我们构建了实际运行的电子邮件基础设施：
 
 ```mermaid
 timeline
@@ -693,7 +693,7 @@ timeline
     2024 : February - CalDAV support : March-July - IMAP/POP3/CalDAV optimizations : July - iOS Push support and TTI monitoring : August - EML/Mbox export and webhook signatures : September-January 2025 - Vacation responder and OpenPGP/WKD encryption
 ```
 
-### 为什么我们能成功而别人却失败了 {#why-we-succeed-where-others-fail}
+### 为什么我们成功而其他人却失败了 {#why-we-succeed-where-others-fail}
 
 1. **我们构建基础设施，而非应用**：专注于服务器和协议
 2. **我们增强，而非取代**：与现有电子邮件客户端合作
@@ -719,7 +719,7 @@ graph TD
 ## 电子邮件基础设施中的安全挑战 {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Quantum-Safe Email Security**: Forward Email is the [world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), providing unprecedented security against future quantum computing threats.
+> **量子安全电子邮件**：转发电子邮件是 [世界上第一个也是唯一一个使用抗量子和单独加密的 SQLite 邮箱的电子邮件服务](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)，提供前所未有的安全性，抵御未来量子计算威胁。
 
 电子邮件安全是一项复杂的挑战，影响着业内所有提供商。与其关注个别事件，不如了解所有电子邮件基础设施提供商必须应对的常见安全问题。
 
@@ -733,7 +733,7 @@ graph TD
 * **合规性**：满足各种监管要求，例如 [GDPR](https://gdpr.eu/) 和 [CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Advanced Encryption**: Our [security practices](https://forwardemail.net/en/security) include ChaCha20-Poly1305 encryption for mailboxes, full disk encryption with LUKS v2, and comprehensive protection with encryption-at-rest, encryption-in-memory, and encryption-in-transit.
+> **高级加密**：我们的 [安全实践](https://forwardemail.net/en/security) 包括用于邮箱的 ChaCha20-Poly1305 加密、使用 LUKS v2 的全盘加密，以及静态加密、内存加密和传输加密的全面保护。
 
 ### 透明度的价值 {#the-value-of-transparency}
 
@@ -746,19 +746,19 @@ graph TD
 
 这些回应通过推广最佳实践并鼓励其他提供商保持高安全标准使整个电子邮件生态系统受益。
 
-### 持续存在的安全挑战 {#ongoing-security-challenges}
+### 持续的安全挑战 {#ongoing-security-challenges}
 
 电子邮件行业不断发展其安全实践：
 
 * **加密标准**：实施更完善的加密方法，例如 [TLS 1.3](https://tools.ietf.org/html/rfc8446)
 * **身份验证协议**：改进 [DKIM](https://tools.ietf.org/html/rfc6376)、[SPF](https://tools.ietf.org/html/rfc7208) 和 [DMARC](https://tools.ietf.org/html/rfc7489)
 * **威胁检测**：开发更完善的垃圾邮件和钓鱼过滤器
-* **基础设施强化**：保护服务器和数据库
-* **域名信誉管理**：处理 [来自微软 onmicrosoft.com 域名的前所未有的垃圾邮件](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) 需要 [任意阻止规则](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) 和 [额外的 MSP 讨论](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/) 的情况
+* **基础设施强化**：保障服务器和数据库安全
+* **域名信誉管理**：处理需要 [任意阻止规则](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) 和 [额外的 MSP 讨论](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/) 的 [来自微软 onmicrosoft.com 域名的前所未有的垃圾邮件](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/)
 
 这些挑战需要该领域所有供应商的持续投资和专业知识。
 
-## 结论：关注基础设施，而不是应用程序 {#conclusion-focus-on-infrastructure-not-apps}
+## 结论：关注基础设施，而非应用 {#conclusion-focus-on-infrastructure-not-apps}
 
 ### 证据确凿 {#the-evidence-is-clear}
 
@@ -787,7 +787,7 @@ graph TD
 
 教训并非在于电子邮件无法改进，而是在于选择正确的方法：
 
-1. **电子邮件协议有效**：[SMTP](https://tools.ietf.org/html/rfc5321)、[IMAP](https://tools.ietf.org/html/rfc3501)、[POP3](https://tools.ietf.org/html/rfc1939) 均已久经考验
+1. **电子邮件协议有效**：[SMTP](https://tools.ietf.org/html/rfc5321)、[IMAP](https://tools.ietf.org/html/rfc3501) 和 [POP3](https://tools.ietf.org/html/rfc1939) 均已久经考验
 2. **基础设施至关重要**：可靠性和性能胜过华而不实的功能
 3. **增强胜过替换**：与电子邮件合作，而非与之对抗
 4. **可持续性胜过增长**：盈利型企业比风险投资型企业更持久
@@ -796,10 +796,10 @@ graph TD
 **机会**：更好地实施经过验证的协议，而不是替代协议。
 
 > \[!TIP]
-> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
+> **全面的电子邮件服务分析**：如需深入比较 2025 年 79 款电子邮件服务，包括详细评测、屏幕截图和技术分析，请参阅我们的综合指南：[79 个最佳电子邮件服务](https://forwardemail.net/en/blog/best-email-service)。本分析阐述了 Forward Email 在可靠性、安全性和标准合规性方面始终被推荐的原因。
 
 > \[!NOTE]
-> **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
+> **真实世界验证**：我们的方法适用于从 [要求遵守第 889 条的政府机构](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) 到 [各大高校管理着数万个校友地址](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study) 的组织，证明了构建可靠的基础设施是电子邮件成功的关键。
 
 如果你正在考虑创建一家电子邮件初创公司，不妨考虑构建电子邮件基础设施。世界需要的是更好的电子邮件服务器，而不是更多的电子邮件应用。
 
@@ -807,9 +807,9 @@ graph TD
 
 ### Google 的电子邮件实验出了问题 {#googles-email-experiments-gone-wrong}
 
-尽管拥有[Gmail](https://gmail.com/)，谷歌还是终止了多个电子邮件项目：
+尽管拥有 [Gmail](https://gmail.com/)，Google 还是终止了多个电子邮件项目：
 
-* **[谷歌波浪](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012)：无人能懂的“电子邮件杀手”
+* **[谷歌波浪](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012)：无人知晓的“电子邮件杀手”
 * **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011)：社交电子邮件集成灾难
 * **[Gmail 收件箱](https://killedbygoogle.com/)** (2014-2019)：Gmail 的“智能”继任者，被抛弃
 * **[Google+](https://killedbygoogle.com/)** 电子邮件功能 (2011-2019)：社交网络电子邮件集成
@@ -818,7 +818,7 @@ graph TD
 
 ### 连续失败：牛顿·梅尔的三次死亡 {#the-serial-failure-newton-mails-three-deaths}
 
-[牛顿邮报](https://en.wikipedia.org/wiki/CloudMagic) 死了**三次**：
+[牛顿邮报](https://en.wikipedia.org/wiki/CloudMagic) 死亡**三次**：
 
 1. **[云魔法](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016)：电子邮件客户端被 Newton 收购
 2. **Newton Mail** (2016-2018)：品牌重塑，订阅模式失败
@@ -830,11 +830,11 @@ graph TD
 
 许多电子邮件初创公司在推出之前就倒闭了：
 
-* **Tempo** (2014)：日历电子邮件集成，发布前关闭
-* **[邮件流](https://mailstrom.co/)** (2011)：电子邮件管理工具，发布前被收购
-* **Fluent** (2013)：电子邮件客户端，开发已停止
+* **Tempo** (2014)：日历邮件集成，发布前关闭
+* **[邮件流](https://mailstrom.co/)** (2011)：邮件管理工具，发布前收购
+* **Fluent** (2013)：邮件客户端，开发停止
 
-### 获取到关闭模式 {#the-acquisition-to-shutdown-pattern}
+### 采集到关闭模式 {#the-acquisition-to-shutdown-pattern}
 
 * **[Sparrow → Google → 关闭](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → 关闭](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
@@ -845,18 +845,18 @@ graph TD
 ### 电子邮件基础设施整合 {#email-infrastructure-consolidation}
 
 * **[邮箱 → eM 客户端](https://www.postbox-inc.com/)** (2024)：邮箱在被收购后立即关闭
-* **多次收购**：[ImprovMX](https://improvmx.com/) 已被多次收购，其中包括 [隐私问题引发担忧](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55)、[收购公告](https://improvmx.com/blog/improvmx-has-been-acquired) 和 [商业列表](https://quietlight.com/listings/15877422)
-* **服务质量下降**：许多服务在被收购后质量下降
+* **多次收购**：[ImprovMX](https://improvmx.com/) 已被多次收购，包括 [隐私问题引发担忧](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55)、[收购公告](https://improvmx.com/blog/improvmx-has-been-acquired) 和 [商业列表](https://quietlight.com/listings/15877422)
+* **服务降级**：许多服务在被收购后变得更糟
 
 ## 开源电子邮件墓地：当“免费”无法持续时 {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
 ### Nylas Mail → Mailspring：无法分叉 {#nylas-mail--mailspring-the-fork-that-couldnt}
 
-* **[奈拉斯邮件](https://github.com/nylas/nylas-mail)**：开源电子邮件客户端，[2017年停产](https://github.com/nylas/nylas-mail) 并且有 [大量内存使用问题](https://github.com/nylas/nylas-mail/issues/3501)
-* **[Mailspring](https://getmailspring.com/)**：社区分叉，维护困难，并且 [高 RAM 使用率问题](https://github.com/Foundry376/Mailspring/issues/1758)
+* **[奈拉斯邮件](https://github.com/nylas/nylas-mail)**：开源电子邮件客户端，[2017年停产](https://github.com/nylas/nylas-mail)，并且有 [大量内存使用问题](https://github.com/nylas/nylas-mail/issues/3501)
+* **[Mailspring](https://getmailspring.com/)**：社区分支，维护困难，[高 RAM 使用率问题](https://github.com/Foundry376/Mailspring/issues/1758)
 * **现实**：开源电子邮件客户端无法与原生应用竞争
 
-### 尤多拉：18 年死亡行军 {#eudora-the-18-year-death-march}
+### 尤朵拉：18 年死亡行军 {#eudora-the-18-year-death-march}
 
 * **1988-2006**：Mac/Windows 的主流电子邮件客户端
 * **2006**：[高通停止开发](https://en.wikipedia.org/wiki/Eudora_\(email_client\))
@@ -868,7 +868,7 @@ graph TD
 
 * **[公平电子邮件](https://email.faircode.eu/)**：注重隐私的 Android 电子邮件客户端
 * **Google Play**：[因“违反政策”被禁言](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
-* **现实**：平台政策可以立即封杀电子邮件应用
+* **现实**：平台政策可能会立即封杀电子邮件应用
 
 ### 维护问题 {#the-maintenance-problem}
 
@@ -879,9 +879,9 @@ graph TD
 * **兼容性**：必须兼容所有电子邮件提供商
 * **资源**：志愿者开发人员容易倦怠
 
-## 人工智能电子邮件初创企业激增：“智能”重演历史{#the-ai-email-startup-surge-history-repeating-with-intelligence}
+## AI 电子邮件初创企业激增：“智能”重演历史{#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
-### 当前的 AI 电子邮件淘金热 {#the-current-ai-email-gold-rush}
+### 当前 AI 电子邮件淘金热 {#the-current-ai-email-gold-rush}
 
 2024年的AI电子邮件初创公司：
 
@@ -889,19 +889,19 @@ graph TD
 * **[短波](https://www.shortwave.com/)**: Y Combinator，Gmail + AI
 * **[SaneBox](https://www.sanebox.com/)**: AI 邮件过滤（实际盈利）
 * **[回旋镖](https://www.boomeranggmail.com/)**: AI 邮件调度和回复
-* **[邮件-0/零](https://github.com/Mail-0/Zero)**: AI 驱动的电子邮件客户端初创公司正在构建另一个电子邮件界面
+* **[邮件-0/零](https://github.com/Mail-0/Zero)**: AI 驱动的电子邮件客户端初创公司，正在构建另一个电子邮件界面
 * **[收件箱清零](https://github.com/elie222/inbox-zero)**: 开源 AI 邮件助手，尝试实现邮件管理自动化
 
 ### 融资狂潮 {#the-funding-frenzy}
 
 风险投资公司正在向“人工智能+电子邮件”投入资金：
 
-* **[投资超过 1 亿美元](https://pitchbook.com/)** 2024 年 AI 电子邮件初创公司
+* 2024 年 AI 电子邮件初创公司中的 [投资超过 1 亿美元](https://pitchbook.com/)
 * **同样的承诺**：“革命性的电子邮件体验”
 * **同样的问题**：在现有基础设施之上构建
 * **同样的结果**：大多数将在 3 年内倒闭
 
-### 为什么它们都会（再次）失败 {#why-theyll-all-fail-again}
+### 为什么它们都会再次失败 {#why-theyll-all-fail-again}
 
 1. **人工智能无法解决电子邮件的非问题**：电子邮件运行良好
 2. **[Gmail 已经拥有 AI](https://support.google.com/mail/answer/9116836)**：智能回复、优先收件箱、垃圾邮件过滤
@@ -925,11 +925,11 @@ graph TD
 * **[ActiveCampaign 收购 Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
 * **[Sinch收购了Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
 * **[Twilio收购SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **多项 [ImprovMX](https://improvmx.com/) 收购**（正在进行中），包括 [隐私问题](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55)、[收购公告](https://improvmx.com/blog/improvmx-has-been-acquired) 和 [商业列表](https://quietlight.com/listings/15877422)
+* **[ImprovMX](https://improvmx.com/) 的多个收购**（正在进行中），包括 [隐私问题](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55)、[收购公告](https://improvmx.com/blog/improvmx-has-been-acquired) 和 [商业列表](https://quietlight.com/listings/15877422)
 
 ### 展望：无法停止突破的“幸存者”{#outlook-the-survivor-that-cant-stop-breaking}
 
-[微软 Outlook](https://outlook.com/) 尽管是一名“幸存者”，但仍存在一些问题：
+[微软 Outlook](https://outlook.com/) 尽管是“幸存者”，但仍存在一些问题：
 
 * **内存泄漏**：[Outlook 消耗数 GB 的 RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) 和 [需要频繁重启](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
 * **同步问题**：电子邮件随机消失并重新出现
@@ -940,52 +940,52 @@ graph TD
 
 ### 邮戳基础设施问题 {#the-postmark-infrastructure-problem}
 
-[ActiveCampaign 的收购](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)之后：
+[ActiveCampaign 的收购](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign) 之后：
 
-* **SSL 证书失败**：[2024 年 9 月停电近 10 小时](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024)，原因是 SSL 证书已过期
-* **用户拒绝**：[Marc Köhlbrugge 被拒绝](https://x.com/marckohlbrugge/status/1935041134729769379)，尽管使用合法
+* **SSL 证书失败**：[2024 年 9 月停电近 10 小时](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) 因 SSL 证书过期
+* **用户拒绝**：[Marc Köhlbrugge 被拒绝](https://x.com/marckohlbrugge/status/1935041134729769379) 尽管使用合法
 * **开发者流失**：[@levelsio 表示“Amazon SES 是我们最后的希望”](https://x.com/levelsio/status/1934197733989999084)
 * **MailGun 问题**：[斯科特报道](https://x.com/\_SMBaxter/status/1934175626375704675)：“@Mail_Gun 的服务太差了……我们已经两周没能发送电子邮件了”
 
-### 近期电子邮件客户端伤亡（2024-2025 年）{#recent-email-client-casualties-2024-2025}
+### 近期电子邮件客户端伤亡 (2024-2025) {#recent-email-client-casualties-2024-2025}
 
 **[邮箱 → eM 客户端](https://www.postbox-inc.com/) 收购**：2024 年，eM Client 收购了 Postbox 和 [立即关闭](https://www.postbox-inc.com/)，迫使数千名用户迁移。
 
 **[金丝雀邮件](https://canarymail.io/) 问题**：尽管存在 [红杉资本支持](https://www.sequoiacap.com/)，但用户仍报告功能无法使用且客户支持不佳。
 
-**[Readdle 的 Spark](https://sparkmailapp.com/)**：越来越多的用户反映电子邮件客户端的体验不佳。
+**[Readdle 的 Spark](https://sparkmailapp.com/)**：越来越多的用户报告电子邮件客户端的体验不佳。
 
 **[邮件鸟](https://www.getmailbird.com/) 许可问题**：Windows 用户面临许可问题和订阅混乱。
 
-**[航空邮件](https://airmailapp.com/) 拒绝**：基于失败的 Sparrow 代码库的 Mac/iOS 电子邮件客户端因可靠性问题继续收到 [差评](https://airmailapp.com/)。
+**[航空邮件](https://airmailapp.com/) 拒绝**：基于失败的 Sparrow 代码库的 Mac/iOS 电子邮件客户端由于可靠性问题继续接收 [差评](https://airmailapp.com/)。
 
 ### 电子邮件扩展和服务获取 {#email-extension-and-service-acquisitions}
 
 **[HubSpot Sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → 已停用**：HubSpot 的电子邮件跟踪扩展程序为 [2016年停产](https://en.wikipedia.org/wiki/HubSpot#Products_and_services)，并已替换为“HubSpot Sales”。
 
-**[Engage for Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → 已退役**：Salesforce 的 Gmail 扩展程序已 [2024年6月退休](https://help.salesforce.com/s/articleView?id=000394547\&type=1)，迫使用户迁移到其他解决方案。
+**[Engage for Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → 已退役**：Salesforce 的 Gmail 扩展程序是 [2024年6月退休](https://help.salesforce.com/s/articleView?id=000394547\&type=1)，迫使用户迁移到其他解决方案。
 
 ### 幸存者：真正有效的电子邮件公司 {#the-survivors-email-companies-that-actually-work}
 
 并非所有电子邮件公司都会失败。以下是一些真正成功的公司：
 
-**[Mailmodo](https://www.mailmodo.com/)**：[Y Combinator 成功故事](https://www.ycombinator.com/companies/mailmodo)、[红杉资本 Surge 投资 200 万美元](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge)，重点关注互动电子邮件活动。
+**[Mailmodo](https://www.mailmodo.com/)**：[Y Combinator 成功故事](https://www.ycombinator.com/companies/mailmodo)、[红杉资本 Surge 投资 200 万美元](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge)，专注于互动电子邮件活动。
 
-**[Mixmax](https://mixmax.com/)**：筹集了[总融资额 1,330 万美元](https://www.mixmax.com/about)并继续作为成功的销售参与平台运营。
+**[Mixmax](https://mixmax.com/)**：筹集了 [总融资额 1,330 万美元](https://www.mixmax.com/about) 并继续作为成功的销售参与平台运营。
 
-**[Outreach.io](https://www.outreach.io/)**：已达到[估值44亿美元以上](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html)并正在为作为销售参与平台的潜在 IPO 做准备。
+**[Outreach.io](https://www.outreach.io/)**：已达到 [估值44亿美元以上](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html)，正在为作为销售参与平台的潜在 IPO 做准备。
 
 **[Apollo.io](https://www.apollo.io/)**：其销售智能平台于 2023 年通过 1 亿美元 D 轮融资实现了 [估值16亿美元](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/)。
 
 **[麻省大学](https://www.gmass.co/)**：Bootstrap 成功案例生成 [每月14万美元](https://www.indiehackers.com/product/gmass) 作为用于电子邮件营销的 Gmail 扩展。
 
-**[Streak CRM](https://www.streak.com/)**：基于 Gmail 的成功 CRM，运行 [自2012年以来](https://www.streak.com/about) 时没有出现重大问题。
+**[Streak CRM](https://www.streak.com/)**：基于 Gmail 的 CRM 成功运行 [自2012年以来](https://www.streak.com/about)，没有出现重大问题。
 
-**[兜售应用](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**：在筹集到 1500 万美元以上的资金后成功[2017 年被 Marketo 收购](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)。
+**[兜售应用](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**：在筹集 1500 万美元以上的资金后，[2017 年被 Marketo 收购](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) 成功。
 
-**[香蕉标签](https://staffbase.com/blog/staffbase-acquires-bananatag/)**：[2021 年被 Staffbase 收购](https://staffbase.com/blog/staffbase-acquires-bananatag/)并继续作为“Staffbase 电子邮件”运行。
+**[香蕉标签](https://staffbase.com/blog/staffbase-acquires-bananatag/)**：[2021 年被 Staffbase 收购](https://staffbase.com/blog/staffbase-acquires-bananatag/) 并继续作为“Staffbase 电子邮件”运行。
 
 **关键模式**：这些公司之所以成功，是因为他们**增强了现有的电子邮件工作流程**，而不是试图完全取代电子邮件。他们构建的工具与电子邮件基础设施**兼容**，而不是与之对抗。
 
 > \[!TIP]
-> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight.
+> **这里没有提到您知道的提供商？**（例如 Posteo、Mailbox.org、Migadu 等）请参阅我们的 [综合电子邮件服务比较页面](https://forwardemail.net/en/blog/best-email-service) 了解更多信息。

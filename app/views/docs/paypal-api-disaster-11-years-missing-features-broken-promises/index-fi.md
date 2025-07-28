@@ -44,12 +44,12 @@
   * [Miksi meidän piti estää PayPal](#why-we-had-to-block-paypal)
   * [Ongelman laajuus](#the-scale-of-the-problem)
   * [Ironia](#the-irony)
-  * [Todellinen vaikutus: Uudet PayPal-huijaukset](#real-world-impact-novel-paypal-scams)
+  * [Vaikutus tosielämässä: Uudet PayPal-huijaukset](#real-world-impact-novel-paypal-scams)
 * [PayPalin taaksepäin suuntautuva KYC-prosessi](#paypals-backwards-kyc-process)
   * [Miten sen pitäisi toimia](#how-it-should-work)
   * [Miten PayPal oikeasti toimii](#how-paypal-actually-works)
   * [Todellisen maailman vaikutus](#the-real-world-impact)
-  * [Heinäkuun 2025 tilinsiirtokatastrofi](#the-july-2025-account-migration-disaster)
+  * [Tilinsiirtokatastrofi heinäkuussa 2025](#the-july-2025-account-migration-disaster)
   * [Miksi tämä on tärkeää](#why-this-matters)
 * [Miten jokainen muu maksunvälittäjä tekee sen oikein](#how-every-other-payment-processor-does-it-right)
   * [Raita](#stripe)
@@ -103,7 +103,7 @@ Yhteisön jäsenet alkoivat turhautua:
 
 > "+1. Siitä on kulunut lähes 3 vuotta." - laudukang (eli ongelma on ollut olemassa vuodesta \~2014 lähtien)
 
-Vuoden 2017 [alkuperäinen yhteisöviesti](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066)-tiedostossa kehittäjät anelevat tätä perustoimintoa. PayPal vastasi tähän arkistoimalla tietovaraston, jossa ihmiset ilmoittivat ongelmasta.
+Vuoden 2017 [alkuperäinen yhteisöviesti](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066)-muuttujassa kehittäjät anelevat tätä perustoimintoa. PayPal vastasi arkistoimalla tietovaraston, jossa ongelmasta ilmoitettiin.
 
 ## 2020: Annamme heille laajaa palautetta {#2020-we-give-them-extensive-feedback}
 
@@ -129,7 +129,7 @@ Mark Stuart koki käyttöoikeustunnuksen ongelman erityisesti seuraavia asioita 
 
 > Emme yleensä kuule ongelmista käyttöoikeustunnuksen luomisessa.
 
-### Tiimit osallistuivat, lupauksia annettiin {#teams-got-involved-promises-were-made}
+### Tiimit osallistuivat, lupaukset annettiin {#teams-got-involved-promises-were-made}
 
 Kun löysimme lisää ongelmia, PayPal lisäsi keskusteluun lisää tiimejä. Darshan Raju tilausten hallintakäyttöliittymätiimistä liittyi mukaan ja sanoi:
 
@@ -151,7 +151,7 @@ Virallisesta palautetilaisuudesta, laajasta 27 kohdan listasta, useiden tiimien 
 
 ongelmia, mitään ei korjattu.
 
-## Johtajien pako: Kuinka PayPal menetti kaiken institutionaalisen muistin {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
+## Johtajien irtautuminen: Kuinka PayPal menetti kaiken institutionaalisen muistin {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
 Tässä kohtaa asia menee todella mielenkiintoiseksi. Jokainen vuoden 2020 palautteesi saanut henkilö on poistunut PayPalista:
 
@@ -162,9 +162,9 @@ Tässä kohtaa asia menee todella mielenkiintoiseksi. Jokainen vuoden 2020 palau
 
 **Tekniset johtajat, jotka antoivat lupauksia ja sitten lähtivät:**
 
-* **Mark Stuart** (luvattu palautteen toimiminen "katalyyttinä") → [Nyt Ripplessä](https://www.linkedin.com/in/markstuartsf)
-* **Jim Magats** (18 vuotta PayPalia käyttänyt) → [MX:n toimitusjohtaja](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
-* **John Kunze** (globaalien kuluttajatuotteiden varatoimitusjohtaja) → [Eläkkeellä](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
+* **Mark Stuart** (luvattu palaute olisi "katalyytti") → [Nyt Ripplessä](https://www.linkedin.com/in/markstuartsf)
+* **Jim Magats** (18 vuotta PayPal-veteraani) → [MX:n toimitusjohtaja](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
+* **John Kunze** (globaalin kuluttajatuotejohtaja) → [Eläkkeellä](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
 * **Edwin Aoki** (yksi viimeisistä jäljellä olevista) → [Juuri lähdin Nasdaqiin](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (tammikuu 2025)
 
 PayPalista on tullut pyöröovi, jossa johtajat keräävät kehittäjien palautetta, antavat lupauksia ja siirtyvät sitten parempiin yrityksiin, kuten JPMorganiin, Rippleen ja muihin fintech-yrityksiin.
@@ -193,7 +193,7 @@ Kieltäydyimme toisesta tapaamisesta ja selitimme turhautumistamme:
 
 > Kiitos. En kuitenkaan usko, että puheluun soittaminen auttaisi mitään. Tässä syy... Soitin aiemmin puhelun, eikä se johtanut mihinkään. Tuhlasin yli kaksi tuntia aikaani puhumalla koko tiimin ja johdon kanssa, eikä mitään tapahtunut... Tonnikaupalla sähköposteja edestakaisin. Mitään ei tapahtunut. Palaute ei johtanut mihinkään. Yritin vuosia, minua kuunneltiin, ja sitten se ei johtanut mihinkään.
 
-### Marty Brodbeckin vastaus ylisuunnitteluun {#marty-brodbecks-overengineering-response}
+### Marty Brodbeckin ylisuunnittelun vastaus {#marty-brodbecks-overengineering-response}
 
 Sitten Marty Brodbeck, joka johtaa PayPalin kuluttajatekniikkaa, otti yhteyttä:
 
@@ -222,7 +222,7 @@ Tämä vastaus osoittaa, ettei hän ymmärrä omaa API:aan. Jos "yksinkertaiset 
 
 > Jos ”yksinkertaiset CRUD-operaatiot ovat osa ydin-API:a”, niin missä on tilauslistauksen päätepiste? Kehittäjät ovat pyytäneet tätä ”yksinkertaista CRUD-operaatiota” vuodesta 2014 lähtien. Siitä on kulunut 11 vuotta. Kaikilla muilla maksupalveluntarjoajilla on ollut tämä perustoiminto alusta asti.
 
-### Yhteyden katkeaminen selvenee {#the-disconnect-becomes-clear}
+### Yhteyden katkeaminen selkeytyy {#the-disconnect-becomes-clear}
 
 Vuoden 2025 keskustelut Alex Chrissin, Michelle Gillin ja Marty Brodbeckin kanssa osoittavat saman organisaation toimintahäiriön:
 
@@ -267,13 +267,13 @@ Mark Stuart välitti sen kuluttajatuotetiimille:
 
 **Tulos**: Ei koskaan korjattu. Käyttöliittymä näyttää edelleen näitä turhia $0-merkintöjä.
 
-### 2021: Hiekkalaatikkoympäristön virheet {#2021-sandbox-environment-failures}
+### 2021: Sandbox-ympäristön virheet {#2021-sandbox-environment-failures}
 
 Marraskuussa 2021 raportoimme kriittisistä ongelmista PayPalin hiekkalaatikkoympäristössä:
 
 * Sandboxin salaiset API-avaimet muutettiin ja poistettiin käytöstä satunnaisesti
-* Kaikki hiekkalaatikon testitilit poistettiin ilman erillistä ilmoitusta
-* Virheilmoituksia yritettäessä tarkastella hiekkalaatikkotilin tietoja
+* Kaikki sandbox-testitilit poistettiin ilman erillistä ilmoitusta
+* Virheilmoituksia yritettäessä tarkastella sandbox-tilin tietoja
 * Ajoittaisia latausvirheitä
 
 > Jostain syystä hiekkalaatikon salainen API-avaimeni muutettiin ja se poistettiin käytöstä. Myös kaikki vanhat hiekkalaatikon testitilini poistettiin.
@@ -306,7 +306,7 @@ Tammikuussa 2022 otimme tilauslistausongelman uudelleen käsittelyyn, tällä ke
 
 Havaitsimme, että heidän viralliset dokumenttinsa olivat täysin epätarkkoja:
 
-> API-dokumentaatio on myös täysin epätarkka. Ajattelimme, että voisimme kiertää ongelman lataamalla kiinteästi koodatun luettelon tilaus-ID:istä. Mutta sekään ei toimi!
+> API-dokumentaatio on myös täysin epätarkka. Ajattelimme, että voisimme tehdä kiertotien lataamalla kiinteästi koodatun luettelon tilaus-ID:istä. Mutta sekään ei toimi!
 
 > Virallisista dokumenteista täällä... Niissä sanotaan, että voit tehdä tämän... Tässäpä se juju - missään ei ole "Tilauksen tunnus" -kenttää, josta voisi rastittaa pois.
 
@@ -324,7 +324,7 @@ Sri Shivananda (teknologiajohtaja) kiitti meitä:
 
 PayPalin API-rajapintojen kanssa työskentely on kuin astuisi ajassa taaksepäin 10 vuotta. Tässä ovat dokumentoimamme tekniset ongelmat:
 
-### Rikkoutunut käyttöliittymä {#broken-user-interface}
+### Rikkinäinen käyttöliittymä {#broken-user-interface}
 
 PayPalin kehittäjien kojelauta on katastrofi. Tässä on mitä painiskelemme päivittäin:
 
@@ -412,7 +412,7 @@ Yksinkertaiseksi muuttunutkin asia muuttui täydelliseksi katastrofiksi:
 
 * Alustavat testit osoittivat, että kaikki toimi oikein
 * Tunteja myöhemmin PayPal yhtäkkiä esti kaikki tilausmaksut ilman erillistä ilmoitusta
-* Asiakkaat eivät pystyneet maksamaan, mikä aiheutti hämmennystä ja tukitaakkaa
+* Asiakkaat eivät voineet maksaa, mikä aiheutti hämmennystä ja tukitaakkaa
 * PayPalin tuki antoi ristiriitaisia vastauksia väittäen, että tilit oli vahvistettu
 * Meidät pakotettiin keskeyttämään PayPal-maksut kokonaan
 
@@ -455,7 +455,7 @@ Epämääräinen viesti eikä vieläkään ratkaisua. Ei mitään tietoa, ilmoit
 <img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
 </figure>
 
-## Miksi emme voi vain hylätä PayPalia {#why-we-cant-just-drop-paypal}
+## Miksi emme voi vain poistaa PayPalia {#why-we-cant-just-drop-paypal}
 
 Kaikista näistä ongelmista huolimatta emme voi kokonaan hylätä PayPalia, koska joillakin asiakkailla on maksuvaihtoehtona vain PayPal. Kuten eräs asiakas sanoi [tilasivu](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515)-sivullamme:
 
@@ -467,9 +467,9 @@ Kaikista näistä ongelmista huolimatta emme voi kokonaan hylätä PayPalia, kos
 
 Koska PayPal ei tarjoa perustilauslistaustoimintoja, kehittäjäyhteisö on rakentanut kiertoteitä. Loimme skriptin, joka auttaa hallitsemaan PayPal-tilauksia: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Tämä skripti viittaa [yhteisön ydin](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) -linkkiin, jossa kehittäjät jakavat ratkaisuja. Käyttäjät ovat itse asiassa [kiittää meitä](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) siitä, että he tarjoavat sen, mitä PayPalin olisi pitänyt rakentaa vuosia sitten.
+Tämä skripti viittaa [yhteisön ydin](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)-kohteeseen, jossa kehittäjät jakavat ratkaisuja. Käyttäjät ovat itse asiassa [kiittää meitä](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)-kohteita, koska he tarjoavat sen, mitä PayPalin olisi pitänyt rakentaa vuosia sitten.
 
-## PayPal-mallien estäminen tietojenkalasteluhyökkäysten vuoksi {#blocking-paypal-templates-due-to-phishing}
+## PayPal-mallien estäminen tietojenkalastelun vuoksi {#blocking-paypal-templates-due-to-phishing}
 
 Ongelmat ulottuvat API-rajapintojen ulkopuolelle. PayPalin sähköpostipohjat on suunniteltu niin huonosti, että meidän piti ottaa käyttöön erityinen suodatus sähköpostipalvelussamme, koska niitä ei voida erottaa tietojenkalasteluyrityksistä.
 
@@ -477,13 +477,13 @@ Ongelmat ulottuvat API-rajapintojen ulkopuolelle. PayPalin sähköpostipohjat on
 
 Saamme säännöllisesti ilmoituksia PayPal-sähköposteista, jotka näyttävät täsmälleen tietojenkalasteluyrityksiltä. Tässä on konkreettinen esimerkki väärinkäyttöraporteistamme:
 
-**Aihe:** __SUOJATTU_RIVIIN_KOODI_7__
+**Aihe:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-Tämä sähköposti lähetettiin edelleen osoitteeseen `abuse@microsoft.com`, koska se vaikutti olevan tietojenkalasteluyritys. Ongelma? Se oli itse asiassa PayPalin hiekkalaatikkoympäristöstä, mutta heidän mallipohjansa on niin huono, että se laukaisee tietojenkalastelun tunnistusjärjestelmät.
+Tämä sähköposti lähetettiin edelleen osoitteeseen `abuse@microsoft.com`, koska se vaikutti olevan tietojenkalasteluyritys. Ongelma? Se oli itse asiassa PayPalin hiekkalaatikkoympäristöstä, mutta heidän mallipohjansa on niin huono, että se laukaisee tietojenkalasteluhyökkäykset.
 
 ### Toteutuksemme {#our-implementation}
 
-Voit nähdä PayPal-kohtaisen suodatuksemme toteutuksen [sähköpostin suodatuskoodi](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172)-sivullamme:
+Voit nähdä PayPal-kohtaisen suodatuksemme toteutuksen [sähköpostin suodatuskoodi](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172)-tiedostossamme:
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -526,14 +526,14 @@ Roskapostisuodatuslokimme osoittavat päivittäin käsittelemämme valtavan mä�
 * "Lasku \[COMPANY NAME] (\[TILAUKSEN TUNNUS])"
 * Useita muunnelmia eri puhelinnumeroilla ja väärennetyillä tilaustunnuksilla
 
-Nämä sähköpostit tulevat usein `outlook.com` -isännöintipalveluista, mutta näyttävät olevan peräisin PayPalin laillisista järjestelmistä, mikä tekee niistä erityisen vaarallisia. Sähköpostit läpäisevät SPF-, DKIM- ja DMARC-todennuksen, koska ne lähetetään PayPalin varsinaisen infrastruktuurin kautta.
+Nämä sähköpostit tulevat usein `outlook.com`-isänniltä, mutta näyttävät olevan peräisin PayPalin laillisista järjestelmistä, mikä tekee niistä erityisen vaarallisia. Sähköpostit läpäisevät SPF-, DKIM- ja DMARC-todennuksen, koska ne lähetetään PayPalin varsinaisen infrastruktuurin kautta.
 
 Teknisten lokiemme mukaan nämä roskapostit sisältävät laillisia PayPal-otsikoita:
 
 * `X-Email-Type-Id: RT000238` (sama ID, jonka estämme)
 * `From: "service@paypal.com" <service@paypal.com>`
-* Voimassa olevat DKIM-allekirjoitukset osoitteesta `paypal.com`
-* Asianmukaiset SPF-tietueet, jotka näyttävät PayPalin sähköpostipalvelimet
+* Kelvolliset DKIM-allekirjoitukset `paypal.com`:lta
+* Oikeat SPF-tietueet, jotka näyttävät PayPalin sähköpostipalvelimet
 
 Tämä luo mahdottoman tilanteen: sekä laillisilla PayPal-sähköposteilla että roskapostilla on identtiset tekniset ominaisuudet.
 
@@ -541,11 +541,11 @@ Tämä luo mahdottoman tilanteen: sekä laillisilla PayPal-sähköposteilla ett�
 
 PayPal, yritys, jonka pitäisi johtaa taistelua talouspetoksia vastaan, käyttää niin huonosti suunniteltuja sähköpostipohjia, että ne laukaisevat tietojenkalastelunestojärjestelmät. Meidän on pakko estää lailliset PayPal-sähköpostit, koska niitä on mahdotonta erottaa huijauksista.
 
-Tämä on dokumentoitu tietoturvatutkimuksessa: [Varo PayPalin uuden osoitteen huijausta](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - joka osoittaa, kuinka PayPalin omia järjestelmiä hyödynnetään petoksiin.
+Tämä on dokumentoitu tietoturvatutkimuksessa: [Varo PayPalin uuden osoitteen huijausta](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - joka osoittaa, miten PayPalin omia järjestelmiä hyödynnetään petoksiin.
 
 ### Vaikutus käytännössä: Uudet PayPal-huijaukset {#real-world-impact-novel-paypal-scams}
 
-Ongelma ulottuu pelkän huonon laskupohjan suunnittelun ulkoasuun. PayPalin laskutusjärjestelmää on niin helppo hyödyntää, että huijarit käyttävät sitä säännöllisesti hyväkseen lähettääkseen laillisen näköisiä vilpillisiä laskuja. Tietoturvatutkija Gavin Anderegg dokumentoi [Uusi PayPal-huijaus](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) tapauksen, jossa huijarit lähettävät aitoja PayPal-laskuja, jotka läpäisevät kaikki todennustarkastukset:
+Ongelma ulottuu pelkän huonon laskupohjan suunnittelun ulkoasuun. PayPalin laskutusjärjestelmää on niin helppo hyödyntää, että huijarit käyttävät sitä säännöllisesti hyväkseen lähettääkseen laillisen näköisiä vilpillisiä laskuja. Tietoturvatutkija Gavin Anderegg dokumentoi [Uusi PayPal-huijaus](https://anderegg.ca/2023/02/01/a-novel-paypal-scam)-tapauksen, jossa huijarit lähettävät aitoja PayPal-laskuja, jotka läpäisevät kaikki todennustarkastukset:
 
 > "Lähdettä tarkasteltaessa sähköposti näytti siltä, että se oli aidosti tullut PayPalilta (SPF, DKIM ja DMARC kaikki läpäisivät tarkastukset). Painike linkitti myös näennäisesti lailliselle PayPal-URL-osoitteelle... Kesti hetken tajuta, että kyseessä oli laillinen sähköposti. Olin juuri saanut satunnaisen "laskun" huijarilta."
 
@@ -568,7 +568,7 @@ Mikä pahinta, tämä vaikutti toimitukseemme Yahoon kanssa, mikä johti asiakas
 
 Yksi PayPalin alustan turhauttavimmista puolista on heidän käänteinen lähestymistapansa vaatimustenmukaisuuteen ja Tunne asiakkaasi (KYC) -menettelyihin. Toisin kuin kaikki muut maksunvälittäjät, PayPal antaa kehittäjille mahdollisuuden integroida API-rajapintansa ja aloittaa maksujen keräämisen tuotannossa ennen asianmukaisen vahvistuksen suorittamista.
 
-### Näin sen pitäisi toimia {#how-it-should-work}
+### Miten sen pitäisi toimia {#how-it-should-work}
 
 Jokainen laillinen maksunvälittäjä noudattaa tätä loogista järjestystä:
 
@@ -643,7 +643,7 @@ Jokainen nykyaikainen maksupalveluntarjoaja tarjoaa:
 * Webhook-ilmoitukset tilausmuutoksista
 * Kattava dokumentaatio toimivilla esimerkeillä
 
-### Mitä muut maksunkäsittelijät tarjoavat verrattuna PayPaliin {#what-other-processors-provide-vs-paypal}
+### Mitä muut käsittelijät tarjoavat verrattuna PayPaliin {#what-other-processors-provide-vs-paypal}
 
 **Stripe - Listaa kaikki tilaukset:**
 
@@ -674,7 +674,7 @@ Response:
 GET https://api.stripe.com/v1/subscriptions?customer=cus_Na6dX7aXxi11N4
 ```
 
-**Raita - Suodata tilan mukaan:**
+**Stripe - Suodata tilan mukaan:**
 
 ```http
 GET https://api.stripe.com/v1/subscriptions?status=active
@@ -717,22 +717,22 @@ PayPalin kritiikin käsittelytapaa täydellisesti kiteyttävä toimenpide oli ä
 
 Alkuperäinen PayPal-yhteisö osoitteessa `paypal-community.com` isännöi **6 003 558 jäsentä** ja sisälsi satojatuhansia julkaisuja, virheraportteja, valituksia ja keskusteluja PayPalin API-virheistä. Tämä edusti yli vuosikymmenen dokumentoitua näyttöä PayPalin systemaattisista ongelmista.
 
-PayPal poisti koko foorumin hiljaisesti käytöstä 30. kesäkuuta 2025. Kaikki `paypal-community.com` -linkit palauttavat nyt 404-virheet. Tämä ei ollut migraatio tai päivitys.
+PayPal poisti koko foorumin hiljaisesti käytöstä 30. kesäkuuta 2025. Kaikki `paypal-community.com`-linkit palauttavat nyt 404-virheet. Tämä ei ollut siirto tai päivitys.
 
 ### Kolmannen osapuolen pelastus {#the-third-party-rescue}
 
-Onneksi kolmannen osapuolen palvelu osoitteessa [ppl.lithium.com](https://ppl.lithium.com/) on säilyttänyt osan sisällöstä, minkä ansiosta voimme käyttää keskusteluja, jotka PayPal yritti piilottaa. Tämä kolmannen osapuolen säilyttämä tieto on kuitenkin epätäydellinen ja voi kadota milloin tahansa.
+Onneksi kolmannen osapuolen palvelu osoitteessa [ppl.lithium.com](https://ppl.lithium.com/) on säilyttänyt osan sisällöstä, minkä ansiosta voimme käyttää keskusteluja, jotka PayPal yritti piilottaa. Tämä kolmannen osapuolen säilyttämä sisältö on kuitenkin epätäydellinen ja voi kadota milloin tahansa.
 
 Tämä todisteiden piilottamisen malli ei ole uusi PayPalille. Heillä on dokumentoitu historia seuraavista asioista:
 
-* Kriittisten virheraporttien poistaminen julkisista näkymistä
+* Kriittisten virheraporttien poistaminen julkisista näkyvistä
 * Kehittäjätyökalujen lopettaminen ilman erillistä ilmoitusta
 * API-rajapintojen muuttaminen ilman asianmukaista dokumentaatiota
 * Yhteisön keskustelujen hiljentäminen niiden virheistä
 
 Foorumin sulkeminen on tähän mennessä röyhkein yritys piilottaa heidän systemaattiset epäonnistumisensa julkiselta tarkastelulta.
 
-## 11 vuotta kestänyt tiedonkeruuvirheen katastrofi: 1 899 dollaria ja lisää tulee {#the-11-year-capture-bug-disaster-1899-and-counting}
+## 11 vuotta kestänyt tallennusvirheen katastrofi: 1 899 dollaria ja lisää tulee {#the-11-year-capture-bug-disaster-1899-and-counting}
 
 Samalla kun PayPal järjesti kiireisesti palautekeskusteluja ja antoi lupauksia, heidän maksujärjestelmänsä on ollut perusteellisesti rikki yli 11 vuoden ajan. Todisteet tästä ovat musertavat.
 
@@ -744,7 +744,7 @@ Tuotantojärjestelmistämme löysimme 108 PayPal-maksua, joiden yhteissumma oli 
 * PayPalin kaappausrajapinta palautti 404 virhettä
 * Tilaukset muuttuivat käyttökelvottomiksi PayPalin rajapinnan kautta
 
-On mahdotonta selvittää, veloitettiinko asiakkailta maksu, koska PayPal piilottaa virheenkorjauslokit kokonaan 14 päivän kuluttua ja poistaa kojelaudasta kaikki tiedot tilaustunnuksista, joita ei tallennettu.
+On mahdotonta selvittää, veloitettiinko asiakkailta maksuja, koska PayPal piilottaa virheenkorjauslokit kokonaan 14 päivän kuluttua ja poistaa kojelaudasta kaikki tiedot tilaustunnuksista, joita ei tallennettu.
 
 Tämä edustaa vain yhtä yritystä. **Tuhansien kauppiaiden yhteenlasketut tappiot yli 11 vuoden aikana ovat todennäköisesti miljoonia dollareita.**
 
@@ -754,7 +754,7 @@ Ainoa syy miksi huomasimme tämän on se, että olemme uskomattoman huolellisia 
 
 ### Vuoden 2013 alkuperäinen raportti: Yli 11 vuotta huolimattomuutta {#the-2013-original-report-11-years-of-negligence}
 
-Varhaisin dokumentoitu raportti tästä täsmälleen samasta ongelmasta löytyy osoitteesta [Stack Overflow marraskuussa 2013](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([arkistoitu](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)):
+Tämän ongelman varhaisin dokumentoitu raportti löytyy [Stack Overflow marraskuussa 2013](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture):sta ([arkistoitu](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)):
 
 > "Saa jatkuvasti 404-virheen Rest API:lla kaappaustoimintoa suoritettaessa"
 
@@ -777,7 +777,7 @@ Yhteisön reaktio vuonna 2013 oli paljastava:
 
 ### Vuoden 2016 tunnustus: PayPal rikkoo oman SDK:nsa {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-Vuonna 2016 PayPalin oma GitHub-arkisto dokumentoi [massiiviset kaappausvirheet](https://github.com/paypal/PayPal-PHP-SDK/issues/660) vaikuttavan heidän viralliseen PHP SDK:hon. Laajakuva oli hämmästyttävä:
+Vuonna 2016 PayPalin oma GitHub-arkisto dokumentoi [massiiviset kaappausvirheet](https://github.com/paypal/PayPal-PHP-SDK/issues/660)-muuttujan vaikuttavan heidän viralliseen PHP SDK:hon. Laajakuva oli hämmästyttävä:
 
 > "20.9.2016 lähtien kaikki PayPalin kaappausyritykset ovat epäonnistuneet virheellä 'INVALID_RESOURCE_ID - Pyydettyä resurssitunnusta ei löytynyt'. API-integraatioon ei tehty muutoksia 19.9. ja 20.9. välillä. **100 % kaappausyrityksistä 20.9. jälkeen on palauttanut tämän virheen.**"
 
@@ -808,7 +808,7 @@ Säilytetyn PayPal-yhteisön viimeaikaiset raportit osoittavat, että ongelma on
 
 Kauppias kuvailee samaa kaavaa kuin sähköpostin edelleenlähetys:
 
-> "Yritettyään kaapata tilauksen, PayPal palauttaa 404-virheen. Tilauksen tietoja haettaessa: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **Tämä tapahtuu ilman mitään jälkeä onnistuneesta kaappauksesta meidän puolellamme.**"
+> "Yritettyään tallentaa tilauksen PayPal palauttaa 404-virheen. Tilauksen tietoja haettaessa: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **Tämä tapahtuu ilman mitään jälkeä onnistuneesta kaappauksesta meidän puolellamme.**"
 
 ### Webhookin luotettavuuskatastrofi {#the-webhook-reliability-disaster}
 
@@ -861,13 +861,13 @@ Tietojen kaappausvirheen aiheuttama katastrofi on vain yksi esimerkki PayPalin s
 
 ### New Yorkin finanssipalveluviraston toimintasuunnitelma {#the-new-york-department-of-financial-services-action}
 
-Tammikuussa 2025 New Yorkin finanssipalveluvirasto antoi [PayPalia vastaan kohdistuva täytäntöönpanotoimenpide](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) -määräyksen harhaanjohtavista käytännöistä, mikä osoittaa, että PayPalin harhaanjohtava toimintamalli ulottuu paljon API-rajapintoja pidemmälle.
+Tammikuussa 2025 New Yorkin finanssipalveluvirasto antoi [PayPalia vastaan kohdistuva täytäntöönpanotoimenpide](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf)-varoituskirjeen harhaanjohtavista käytännöistä, mikä osoittaa, että PayPalin harhaanjohtava toimintamalli ulottuu paljon API-rajapintojen ulkopuolelle.
 
 Tämä sääntelytoimenpide osoittaa PayPalin halukkuutta harjoittaa harhaanjohtavia käytäntöjä koko liiketoiminnassaan, ei vain kehitystyökaluissaan.
 
 ### Hunajaa koskeva oikeusjuttu: Kumppanuuslinkkien uudelleenkirjoittaminen {#the-honey-lawsuit-rewriting-affiliate-links}
 
-PayPalin Honey-yrityskauppa on johtanut [oikeusjuttuja, joissa väitetään, että Honey kirjoittaa uudelleen affiliate-linkkejä](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) palkkioiden varastamiseen sisällöntuottajilta ja vaikuttajilta. Tämä edustaa jälleen yhtä järjestelmällisen harhaanjohtamisen muotoa, jossa PayPal hyötyy ohjaamalla tuloja, joiden pitäisi mennä muille.
+PayPalin Honey-yrityskauppa on johtanut [oikeusjuttuja, joissa väitetään, että Honey kirjoittaa uudelleen affiliate-linkkejä](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer)-tapaukseen, jossa PayPal varastaa palkkioita sisällöntuottajilta ja vaikuttajilta. Tämä edustaa jälleen yhtä järjestelmällisen harhaanjohtamisen muotoa, jossa PayPal hyötyy ohjaamalla tuloja, joiden pitäisi mennä muille.
 
 Kaava on selvä:
 

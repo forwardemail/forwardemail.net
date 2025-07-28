@@ -1,37 +1,37 @@
-# Fallstudie: Hur Canonical styrker Ubuntus e-posthantering med vidarebefordran av e-posts företagslösning med öppen källkod {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
+# Fallstudie: Hur Canonical styrker Ubuntus e-posthantering med vidarebefordran av e-posts öppen källkod för företag {#case-study-how-canonical-powers-ubuntu-email-management-with-forward-emails-open-source-enterprise-solution}
 
 <img loading="lazy" src="/img/articles/canonical.webp" alt="" class="rounded-lg" />
 
 ## Innehållsförteckning {#table-of-contents}
 
 * [Förord](#foreword)
-* [Utmaningen: Hantera ett komplext e-ekosystem](#the-challenge-managing-a-complex-email-ecosystem)
-* [Nyckel takeaways](#key-takeaways)
+* [Utmaningen: Att hantera ett komplext e-postekosystem](#the-challenge-managing-a-complex-email-ecosystem)
+* [Viktiga slutsatser](#key-takeaways)
 * [Varför vidarebefordra e-post](#why-forward-email)
 * [Implementeringen: Sömlös SSO-integration](#the-implementation-seamless-sso-integration)
   * [Visualisering av autentiseringsflöde](#authentication-flow-visualization)
   * [Tekniska implementeringsdetaljer](#technical-implementation-details)
 * [DNS-konfiguration och e-postrouting](#dns-configuration-and-email-routing)
 * [Resultat: Effektiviserad e-posthantering och förbättrad säkerhet](#results-streamlined-email-management-and-enhanced-security)
-  * [Driftseffektivitet](#operational-efficiency)
+  * [Operativ effektivitet](#operational-efficiency)
   * [Förbättrad säkerhet och integritet](#enhanced-security-and-privacy)
   * [Kostnadsbesparingar](#cost-savings)
-  * [Förbättrad Contributor Experience](#improved-contributor-experience)
-* [Ser framåt: Fortsatt samarbete](#looking-forward-continued-collaboration)
+  * [Förbättrad bidragsupplevelse](#improved-contributor-experience)
+* [Framåtblick: Fortsatt samarbete](#looking-forward-continued-collaboration)
 * [Slutsats: Ett perfekt partnerskap med öppen källkod](#conclusion-a-perfect-open-source-partnership)
 * [Stödja företagskunder](#supporting-enterprise-clients)
-  * [Hör av dig](#get-in-touch)
+  * [Kontakta oss](#get-in-touch)
   * [Om vidarebefordran av e-post](#about-forward-email)
 
 ## Förord {#foreword}
 
-I världen av öppen källkodsprogramvara är det få namn som har så stor vikt som [Kanonisk](https://en.wikipedia.org/wiki/Canonical_\(company\)), företaget bakom [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), en av de mest populära Linuxdistributionerna globalt. Med ett stort ekosystem som spänner över flera distributioner, inklusive Ubuntu, [I mänskligheten](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) och andra, stod Canonical inför unika utmaningar när det gällde att hantera e-postadresser över sina många domäner. Denna fallstudie utforskar hur Canonical samarbetade med Forward Email för att skapa en sömlös, säker och integritetsfokuserad e-posthanteringslösning för företag som perfekt överensstämmer med deras värderingar inom öppen källkod.
+I världen av öppen källkodsprogramvara är det få namn som har så stor vikt som [Kanonisk](https://en.wikipedia.org/wiki/Canonical_\(company\)), företaget bakom [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), en av de mest populära Linuxdistributionerna globalt. Med ett stort ekosystem som spänner över flera distributioner, inklusive Ubuntu, [Gratis](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) och andra, stod Canonical inför unika utmaningar när det gällde att hantera e-postadresser över sina många domäner. Denna fallstudie utforskar hur Canonical samarbetade med Forward Email för att skapa en sömlös, säker och integritetsfokuserad e-posthanteringslösning för företag som perfekt överensstämmer med deras värderingar inom öppen källkod.
 
 ## Utmaningen: Hantera ett komplext e-postekosystem {#the-challenge-managing-a-complex-email-ecosystem}
 
-Canonicals ekosystem är mångsidigt och expansivt. Med miljontals användare över hela världen och tusentals bidragsgivare i olika projekt, innebar det stora utmaningar att hantera e-postadresser över flera domäner. Kärnbidragsgivare behövde officiella e-postadresser (@ubuntu.com, @kubuntu.org, etc.) som återspeglade deras engagemang i projektet samtidigt som säkerheten och användarvänligheten bibehölls genom ett robust Ubuntu-domänhanteringssystem.
+Canonicals ekosystem är mångsidigt och omfattande. Med miljontals användare världen över och tusentals bidragsgivare i olika projekt, innebar det betydande utmaningar att hantera e-postadresser över flera domäner. Kärnbidragsgivarna behövde officiella e-postadresser (@ubuntu.com, @kubuntu.org, etc.) som återspeglade deras engagemang i projektet samtidigt som säkerhet och användarvänlighet bibehölls genom ett robust Ubuntu-domänhanteringssystem.
 
-Innan Canonical implementerade Forward Email kämpade Canonical med:
+Innan Canonical implementerade vidarebefordran av e-post hade de problem med:
 
 * Hantera e-postadresser över flera domäner (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org och @ubuntu.net)
 * Erbjuda en konsekvent e-postupplevelse för kärnbidragsgivare
@@ -49,11 +49,11 @@ Innan Canonical implementerade Forward Email kämpade Canonical med:
 
 ## Varför vidarebefordra e-post {#why-forward-email}
 
-Som den enda leverantören av e-posttjänster med 100 % öppen källkod med fokus på integritet och säkerhet var Forward Email en naturlig passform för Canonicals behov för vidarebefordran av e-post för företag. Våra värderingar överensstämde perfekt med Canonicals engagemang för programvara med öppen källkod och integritet.
+Som den enda leverantören av e-posttjänster med 100 % öppen källkod och fokus på integritet och säkerhet, var Forward Email en naturlig lösning för Canonicals behov av vidarebefordran av e-post för företag. Våra värderingar stämde perfekt överens med Canonicals engagemang för programvara med öppen källkod och integritet.
 
-Nyckelfaktorer som gjorde Vidarebefordra e-post till det perfekta valet var:
+Viktiga faktorer som gjorde Forward Email till det ideala valet inkluderade:
 
-1. **Komplett öppen källkodsbas**: Hela vår plattform är öppen källkod och tillgänglig på [GitHub](https://en.wikipedia.org/wiki/GitHub), vilket möjliggör transparens och bidrag från communityn. Till skillnad från många "integritetsfokuserade" e-postleverantörer som bara har öppen källkod för sina frontends medan de håller sina backends stängda, har vi gjort hela vår kodbas – både frontend och backend – tillgänglig för alla att granska på [GitHub](https://github.com/forwardemail/forwardemail.net).
+1. **Komplett öppen källkodsbas**: Hela vår plattform är öppen källkod och tillgänglig på [GitHub](https://en.wikipedia.org/wiki/GitHub), vilket möjliggör transparens och bidrag från communityn. Till skillnad från många "integritetsfokuserade" e-postleverantörer som bara har öppen källkod för sina frontends men håller sina backends stängda, har vi gjort hela vår kodbas – både frontend och backend – tillgänglig för alla att granska på [GitHub](https://github.com/forwardemail/forwardemail.net).
 
 2. **Integritetsfokuserad strategi**: Till skillnad från andra leverantörer lagrar vi inte e-postmeddelanden i delade databaser, och vi använder robust kryptering med TLS. Vår grundläggande integritetsfilosofi är enkel: **dina e-postmeddelanden tillhör dig och bara dig**. Denna princip vägleder alla tekniska beslut vi fattar, från hur vi hanterar vidarebefordran av e-post till hur vi implementerar kryptering.
 
@@ -63,13 +63,13 @@ Nyckelfaktorer som gjorde Vidarebefordra e-post till det perfekta valet var:
 
 5. **Kvantresistent kryptering**: Vi använder individuellt krypterade SQLite-postlådor med [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) som chiffer för [kvantresistent kryptering](/blog/docs/best-quantum-safe-encrypted-email-service). Varje postlåda är en separat krypterad fil, vilket innebär att åtkomst till en användares data inte ger åtkomst till andra.
 
-## Implementeringen: Sömlös SSO-integration {#the-implementation-seamless-sso-integration}
+## Implementeringen: Sömlös SSO-integrering {#the-implementation-seamless-sso-integration}
 
-En av de mest kritiska aspekterna av implementeringen var integrering med Canonicals befintliga Ubuntu One SSO-system. Denna integration skulle göra det möjligt för kärnbidragsgivare att hantera sina @ubuntu.com-e-postadresser med hjälp av sina befintliga Ubuntu One-uppgifter.
+En av de viktigaste aspekterna av implementeringen var integrationen med Canonicals befintliga Ubuntu One SSO-system. Denna integration skulle göra det möjligt för kärnbidragsgivare att hantera sina @ubuntu.com-e-postadresser med hjälp av sina befintliga Ubuntu One-inloggningsuppgifter.
 
 ### Visualisering av autentiseringsflöde {#authentication-flow-visualization}
 
-Följande diagram illustrerar det fullständiga flödet för autentisering och e-postadministration:
+Följande diagram illustrerar det fullständiga flödet för autentisering och e-postprovisionering:
 
 ```mermaid
 flowchart TD
@@ -113,7 +113,7 @@ flowchart TD
 
 ### Tekniska implementeringsdetaljer {#technical-implementation-details}
 
-Integrationen mellan Forward Email och Ubuntu One SSO åstadkoms genom en anpassad implementering av pass-ubuntu-autentiseringsstrategin. Detta möjliggjorde ett sömlöst autentiseringsflöde mellan Ubuntu One och Forward Emails system.
+Integrationen mellan Forward Email och Ubuntu One SSO genomfördes genom en anpassad implementering av passport-ubuntu-autentiseringsstrategin. Detta möjliggjorde ett sömlöst autentiseringsflöde mellan Ubuntu One och Forward Emails system.
 
 #### Autentiseringsflödet {#the-authentication-flow}
 
@@ -136,7 +136,7 @@ passport.use(new UbuntuStrategy({
 }));
 ```
 
-#### Integrering och validering av Launchpad API {#launchpad-api-integration-and-validation}
+#### Launchpad API-integration och validering {#launchpad-api-integration-and-validation}
 
 En kritisk del av vår implementering är integrationen med [Launchpad](https://en.wikipedia.org/wiki/Launchpad_\(website\))s API för att validera Ubuntu-användare och deras teammedlemskap. Vi skapade återanvändbara hjälpfunktioner för att hantera denna integration effektivt och tillförlitligt.
 
@@ -239,7 +239,7 @@ ubuntuTeamMapping: {
 },
 ```
 
-Denna enkla mappning tillåter oss att automatisera processen för att kontrollera teammedlemskap och tillhandahålla e-postadresser, vilket gör systemet enkelt att underhålla och utöka när nya domäner läggs till.
+Denna enkla mappning gör det möjligt för oss att automatisera processen för att kontrollera teammedlemskap och tillhandahålla e-postadresser, vilket gör systemet enkelt att underhålla och utöka allt eftersom nya domäner läggs till.
 
 #### Felhantering och aviseringar {#error-handling-and-notifications}
 
@@ -254,20 +254,20 @@ Detta säkerställer att eventuella problem snabbt identifieras och åtgärdas, 
 
 ## DNS-konfiguration och e-postrouting {#dns-configuration-and-email-routing}
 
-För varje domän som hanteras via Vidarebefordra e-post lade Canonical till en enkel DNS TXT-post för validering:
+För varje domän som hanteras via Forward Email lade Canonical till en enkel DNS TXT-post för validering:
 
 ```sh
 ❯ dig ubuntu.com txt
 ubuntu.com.             600     IN      TXT     "forward-email-site-verification=6IsURgl2t7"
 ```
 
-Denna verifieringspost bekräftar domänägande och gör det möjligt för vårt system att säkert hantera e-post för dessa domäner. Canonical dirigerar post genom vår tjänst via Postfix, som ger en pålitlig och säker infrastruktur för e-postleverans.
+Denna verifieringspost bekräftar domänägande och gör det möjligt för vårt system att säkert hantera e-post för dessa domäner. Canonical skickar e-post genom vår tjänst via Postfix, vilket tillhandahåller en pålitlig och säker infrastruktur för e-postleverans.
 
 ## Resultat: Effektiviserad e-posthantering och förbättrad säkerhet {#results-streamlined-email-management-and-enhanced-security}
 
-Implementeringen av Forward Emails företagslösning har gett betydande fördelar för Canonicals e-posthantering över alla deras domäner:
+Implementeringen av Forward Emails företagslösning har gett betydande fördelar för Canonicals e-posthantering inom alla deras domäner:
 
-### Operativ effektivitet {#operational-efficiency}
+### Driftseffektivitet {#operational-efficiency}
 
 * **Centraliserad hantering**: Alla Ubuntu-relaterade domäner hanteras nu via ett enda gränssnitt
 * **Minskad administrativ omkostnad**: Automatiserad provisionering och självbetjäningshantering för bidragsgivare
@@ -293,11 +293,11 @@ Implementeringen av Forward Emails företagslösning har gett betydande fördela
 * **Konsekvent varumärkesbyggande**: Enhetlig upplevelse över alla Ubuntu-relaterade tjänster
 * **Pålitlig e-postleverans**: Högkvalitativt IP-rykte säkerställer att e-postmeddelanden når sin destination
 
-Integrationen med Forward Email har avsevärt effektiviserat Canonicals e-posthanteringsprocess. Bidragsgivare har nu en sömlös upplevelse av att hantera sina @ubuntu.com-e-postadresser, med minskade administrativa omkostnader och förbättrad säkerhet.
+Integrationen med Forward Email har avsevärt effektiviserat Canonicals e-posthanteringsprocess. Medarbetare har nu en smidig upplevelse med att hantera sina @ubuntu.com-e-postadresser, med minskad administrativ omkostnad och förbättrad säkerhet.
 
 ## Framåtblick: Fortsatt samarbete {#looking-forward-continued-collaboration}
 
-Partnerskapet mellan Canonical och Forward Email fortsätter att utvecklas. Vi arbetar tillsammans på flera initiativ:
+Partnerskapet mellan Canonical och Forward Email fortsätter att utvecklas. Vi samarbetar på flera initiativ:
 
 * Utöka e-posttjänster till ytterligare Ubuntu-relaterade domäner
 * Förbättra användargränssnittet baserat på feedback från bidragsgivare
@@ -306,17 +306,17 @@ Partnerskapet mellan Canonical och Forward Email fortsätter att utvecklas. Vi a
 
 ## Slutsats: Ett perfekt partnerskap med öppen källkod {#conclusion-a-perfect-open-source-partnership}
 
-Samarbetet mellan Canonical och Forward Email visar kraften i partnerskap som bygger på gemensamma värderingar. Genom att välja Forward Email som sin e-postleverantör hittade Canonical en lösning som inte bara uppfyllde deras tekniska krav utan också passade perfekt med deras engagemang för programvara med öppen källkod, integritet och säkerhet.
+Samarbetet mellan Canonical och Forward Email visar på kraften i partnerskap som bygger på gemensamma värderingar. Genom att välja Forward Email som sin e-postleverantör fann Canonical en lösning som inte bara uppfyllde deras tekniska krav utan också passade perfekt ihop med deras engagemang för öppen källkodsprogramvara, integritet och säkerhet.
 
-För organisationer som hanterar flera domäner och kräver sömlös autentisering med befintliga system erbjuder Forward Email en flexibel, säker och integritetsfokuserad lösning. Vår [öppen källkod](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) säkerställer transparens och möjliggör bidrag från communityn, vilket gör den till ett idealiskt val för organisationer som värdesätter dessa principer.
+För organisationer som hanterar flera domäner och kräver sömlös autentisering med befintliga system erbjuder Forward Email en flexibel, säker och integritetsfokuserad lösning. Vår [öppen källkodsmetod](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) säkerställer transparens och möjliggör bidrag från communityn, vilket gör den till ett idealiskt val för organisationer som värdesätter dessa principer.
 
-Eftersom både Canonical och Forward Email fortsätter att förnya sig inom sina respektive områden, står detta partnerskap som ett bevis på kraften i samarbete med öppen källkod och delade värderingar för att skapa effektiva lösningar.
+I takt med att både Canonical och Forward Email fortsätter att förnya sig inom sina respektive områden, står detta partnerskap som ett bevis på kraften i samarbete med öppen källkod och gemensamma värderingar för att skapa effektiva lösningar.
 
-Du kan kontrollera vår [servicestatus i realtid](https://status.forwardemail.net) för att se vår nuvarande e-postleveransprestanda, som vi övervakar kontinuerligt för att säkerställa högkvalitativt IP-rykte och e-postleverans.
+Du kan kontrollera vår [realtidstjänststatus](https://status.forwardemail.net) för att se vår nuvarande e-postleveransprestanda, som vi övervakar kontinuerligt för att säkerställa högkvalitativt IP-rykte och e-postleverans.
 
-## Stöd för företagskunder {#supporting-enterprise-clients}
+## Stödjer företagskunder {#supporting-enterprise-clients}
 
-Även om denna fallstudie fokuserar på vårt partnerskap med Canonical, stödjer Forward Email stolt många företagskunder inom olika branscher som värdesätter vårt engagemang för integritet, säkerhet och principer om öppen källkod.
+Även om denna fallstudie fokuserar på vårt partnerskap med Canonical, stöder Forward Email stolt ett flertal företagskunder inom olika branscher som värdesätter vårt engagemang för integritet, säkerhet och öppen källkod.
 
 Våra företagslösningar är skräddarsydda för att möta de specifika behoven hos organisationer av alla storlekar och erbjuder:
 
@@ -329,14 +329,14 @@ Våra företagslösningar är skräddarsydda för att möta de specifika behoven
 
 ### Kontakta oss {#get-in-touch}
 
-Om din organisation har e-postbehov för företag eller om du är intresserad av att lära dig mer om hur Forward Email kan hjälpa till att effektivisera din e-posthantering samtidigt som du förbättrar integriteten och säkerheten, vill vi gärna höra från dig:
+Om din organisation har behov av e-post för företag eller om du är intresserad av att lära dig mer om hur Vidarebefordra e-post kan hjälpa dig att effektivisera din e-posthantering samtidigt som du förbättrar integritet och säkerhet, vill vi gärna höra från dig:
 
 * Maila oss direkt på `support@forwardemail.net`
 * Skicka in en hjälpförfrågan på vår [hjälpsida](https://forwardemail.net/help)
 * Kolla vår [prissida](https://forwardemail.net/pricing) för företagsabonnemang
 
-Vårt team är redo att diskutera dina specifika krav och utveckla en skräddarsydd lösning som är i linje med din organisations värderingar och tekniska behov.
+Vårt team är redo att diskutera era specifika krav och utveckla en skräddarsydd lösning som överensstämmer med er organisations värderingar och tekniska behov.
 
 ### Om vidarebefordran av e-post {#about-forward-email}
 
-Vidarebefordra e-post är en e-posttjänst med 100 % öppen källkod och integritetsfokus. Vi tillhandahåller vidarebefordran av e-post till anpassade domäner, SMTP, IMAP och POP3-tjänster med fokus på säkerhet, integritet och transparens. Hela vår kodbas finns tillgänglig på [GitHub](https://github.com/forwardemail/forwardemail.net), och vi är engagerade i att tillhandahålla e-posttjänster som respekterar användarnas integritet och säkerhet. Läs mer om [varför öppen källkod är framtiden](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hur vår vidarebefordran av e-post fungerar](https://forwardemail.net/blog/docs/best-email-forwarding-service) och [vårt förhållningssätt till e-postskydd](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).
+Vidarebefordra e-post är en e-posttjänst med 100 % öppen källkod och integritetsfokus. Vi tillhandahåller vidarebefordran av e-post via domänanpassad e-post, SMTP, IMAP och POP3 med fokus på säkerhet, integritet och transparens. Hela vår kodbas finns tillgänglig på [GitHub](https://github.com/forwardemail/forwardemail.net), och vi är engagerade i att tillhandahålla e-posttjänster som respekterar användarnas integritet och säkerhet. Läs mer om [varför öppen källkod för e-post är framtiden](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hur vår vidarebefordran av e-post fungerar](https://forwardemail.net/blog/docs/best-email-forwarding-service) och [vår strategi för skydd av e-postsekretess](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).

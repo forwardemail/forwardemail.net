@@ -5,34 +5,34 @@
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
-* [Haaste: Useita maksuprosessoreita, yksi totuuden lähde](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Haaste: Useita maksupalveluntarjoajia, yksi totuuden lähde](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [Trifecta-lähestymistapa: Kolme luotettavuuden tasoa](#the-trifecta-approach-three-layers-of-reliability)
-* [Taso 1: Kassan jälkeiset uudelleenohjaukset](#layer-1-post-checkout-redirects)
-  * [Stripe Checkoutin toteutus](#stripe-checkout-implementation)
-  * [PayPalin maksuvirta](#paypal-payment-flow)
-* [Taso 2: Webhook-käsittelijät, joissa on allekirjoituksen vahvistus](#layer-2-webhook-handlers-with-signature-verification)
-  * [Stripe Webhook -toteutus](#stripe-webhook-implementation)
-  * [PayPal Webhook -toteutus](#paypal-webhook-implementation)
-* [Taso 3: Automatisoidut työt Breen kanssa](#layer-3-automated-jobs-with-bree)
-  * [Tilauksen tarkkuuden tarkistus](#subscription-accuracy-checker)
-  * [PayPal-tilauksen synkronointi](#paypal-subscription-synchronization)
-* [Edge-koteloiden käsittely](#handling-edge-cases)
+* [Kerros 1: Kassan jälkeiset uudelleenohjaukset](#layer-1-post-checkout-redirects)
+  * [Stripe Checkoutin käyttöönotto](#stripe-checkout-implementation)
+  * [PayPal-maksuprosessi](#paypal-payment-flow)
+* [Kerros 2: Webhook-käsittelijät allekirjoituksen varmentamalla](#layer-2-webhook-handlers-with-signature-verification)
+  * [Stripe Webhookin toteutus](#stripe-webhook-implementation)
+  * [PayPal Webhookin käyttöönotto](#paypal-webhook-implementation)
+* [Kerros 3: Automatisoidut työt Breen avulla](#layer-3-automated-jobs-with-bree)
+  * [Tilauksen tarkkuuden tarkistin](#subscription-accuracy-checker)
+  * [PayPal-tilausten synkronointi](#paypal-subscription-synchronization)
+* [Edge-tapausten käsittely](#handling-edge-cases)
   * [Petosten havaitseminen ja ehkäisy](#fraud-detection-and-prevention)
   * [Riitojen käsittely](#dispute-handling)
 * [Koodin uudelleenkäyttö: KISS- ja DRY-periaatteet](#code-reuse-kiss-and-dry-principles)
-* [VISA-tilausvaatimusten täytäntöönpano](#visa-subscription-requirements-implementation)
+* [VISA-tilausvaatimusten käyttöönotto](#visa-subscription-requirements-implementation)
   * [Automaattiset uusimista edeltävät sähköposti-ilmoitukset](#automated-pre-renewal-email-notifications)
-  * [Edge-koteloiden käsittely](#handling-edge-cases-1)
+  * [Edge-tapausten käsittely](#handling-edge-cases-1)
   * [Kokeilujaksot ja tilausehdot](#trial-periods-and-subscription-terms)
-* [Johtopäätös: Trifecta-lähestymistapamme edut](#conclusion-the-benefits-of-our-trifecta-approach)
+* [Yhteenveto: Trifecta-lähestymistapamme edut](#conclusion-the-benefits-of-our-trifecta-approach)
 
 ## Esipuhe {#foreword}
 
-Forward Emailissa olemme aina asettaneet etusijalle luotettavien, tarkkojen ja käyttäjäystävällisten järjestelmien luomisen. Maksujenkäsittelyjärjestelmämme käyttöönoton yhteydessä tiesimme, että tarvitsemme ratkaisun, joka pystyy käsittelemään useita maksuprosessoreita säilyttäen samalla täydellisen tietojen johdonmukaisuuden. Tässä blogiviestissä kerrotaan, kuinka kehitystiimimme integroi sekä Stripen että PayPalin käyttämällä trifecta-lähestymistapaa, joka varmistaa 1:1 reaaliaikaisen tarkkuuden koko järjestelmässämme.
+Forward Emaililla olemme aina priorisoineet luotettavien, tarkkojen ja käyttäjäystävällisten järjestelmien luomista. Kun maksujärjestelmämme käyttöönotto tuli ajankohtaiseksi, tiesimme tarvitsevamme ratkaisun, joka pystyy käsittelemään useita maksunvälittäjiä ja samalla ylläpitämään täydellisen datan yhtenäisyyden. Tässä blogikirjoituksessa kerrotaan, kuinka kehitystiimimme integroi sekä Stripen että PayPalin käyttämällä trifecta-lähestymistapaa, joka varmistaa reaaliaikaisen 1:1-tarkkuuden koko järjestelmässämme.
 
 ## Haaste: Useita maksupalveluntarjoajia, yksi totuuden lähde {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Tietosuojapainotteisena sähköpostipalveluna halusimme tarjota käyttäjillemme maksuvaihtoehtoja. Jotkut pitävät luottokorttimaksujen yksinkertaisuudesta Stripen kautta, kun taas toiset arvostavat PayPalin tarjoamaa lisäerotustasoa. Useiden maksuprosessorien tukeminen aiheuttaa kuitenkin huomattavaa monimutkaisuutta:
+Yksityisyyteen keskittyvänä sähköpostipalveluna halusimme tarjota käyttäjillemme maksuvaihtoehtoja. Jotkut pitävät parempana Stripen kautta tehtävien luottokorttimaksujen yksinkertaisuutta, kun taas toiset arvostavat PayPalin tarjoamaa lisäerottelukerrosta. Useiden maksupalveluntarjoajien tukeminen tuo kuitenkin mukanaan merkittävää monimutkaisuutta:
 
 1. Miten varmistamme yhdenmukaisen datan eri maksujärjestelmien välillä?
 
@@ -40,17 +40,17 @@ Tietosuojapainotteisena sähköpostipalveluna halusimme tarjota käyttäjillemme
 
 3. Miten ylläpidämme yhtä totuuden lähdettä tietokannassamme?
 
-Ratkaisumme oli ottaa käyttöön "trifecta-lähestymistapa" - kolmikerroksinen järjestelmä, joka tarjoaa redundanssin ja varmistaa tietojen johdonmukaisuuden tapahtumista riippumatta.
+Ratkaisumme oli toteuttaa niin sanottu "trifecta-lähestymistapa" – kolmikerroksinen järjestelmä, joka tarjoaa redundanssia ja varmistaa datan yhtenäisyyden tapahtumista riippumatta.
 
 ## Trifecta-lähestymistapa: Kolme luotettavuuden tasoa {#the-trifecta-approach-three-layers-of-reliability}
 
-Maksujärjestelmämme koostuu kolmesta kriittisestä osasta, jotka toimivat yhdessä varmistaakseen täydellisen tietojen synkronoinnin:
+Maksujärjestelmämme koostuu kolmesta kriittisestä komponentista, jotka toimivat yhdessä varmistaakseen täydellisen datan synkronoinnin:
 
 1. **Maksun jälkeiset uudelleenohjaukset** - Maksutietojen kerääminen heti kassan jälkeen
 2. **Webhook-käsittelijät** - Maksujen käsittelijöiden reaaliaikaisten tapahtumien käsittely
 3. **Automatisoidut työt** - Maksutietojen säännöllinen tarkistaminen ja täsmäyttäminen
 
-Sukellaan jokaiseen komponenttiin ja katsotaan kuinka ne toimivat yhdessä.
+Sukelletaanpa jokaiseen komponenttiin ja katsotaan, miten ne toimivat yhdessä.
 
 ```mermaid
 flowchart TD
@@ -114,11 +114,11 @@ flowchart TD
 
 ## Kerros 1: Maksun jälkeiset uudelleenohjaukset {#layer-1-post-checkout-redirects}
 
-Trifecta-lähestymistapamme ensimmäinen kerros tapahtuu heti, kun käyttäjä on suorittanut maksun. Sekä Stripe että PayPal tarjoavat mekanismeja käyttäjien ohjaamiseksi takaisin sivustollemme tapahtumatietojen kera.
+Trifecta-lähestymistapamme ensimmäinen taso tapahtuu heti, kun käyttäjä on suorittanut maksun. Sekä Stripe että PayPal tarjoavat mekanismeja, jotka ohjaavat käyttäjät takaisin sivustollemme maksutietojen kanssa.
 
 ### Stripe Checkout -toteutus {#stripe-checkout-implementation}
 
-Stripen osalta käytämme niiden Checkout Sessions -sovellusliittymää saumattoman maksukokemuksen luomiseen. Kun käyttäjä valitsee suunnitelman ja maksaa luottokortilla, luomme Checkout-istunnon tietyllä menestyksellä ja peruutamme URL-osoitteet:
+Stripen osalta käytämme heidän Checkout Sessions -rajapintaansa luodaksemme saumattoman maksukokemuksen. Kun käyttäjä valitsee tilauksen ja maksaa luottokortilla, luomme Checkout Sessionin, jolla on tietty onnistuminen, ja peruutamme URL-osoitteet:
 
 ```javascript
 const options = {
@@ -156,11 +156,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Kriittinen osa tässä on `success_url` -parametri, joka sisältää `session_id` -parametrin kyselyparametrina. Kun Stripe ohjaa käyttäjän takaisin sivustollemme onnistuneen maksun jälkeen, voimme käyttää tätä istuntotunnusta tapahtuman tarkistamiseen ja tietokantaamme päivittämiseen vastaavasti.
+Kriittinen osa tässä on `success_url`-parametri, joka sisältää `session_id`-parametrin kyselyparametrina. Kun Stripe ohjaa käyttäjän takaisin sivustollemme onnistuneen maksun jälkeen, voimme käyttää tätä istuntotunnusta tapahtuman tarkistamiseen ja tietokantaamme päivittämiseen vastaavasti.
 
 ### PayPal-maksuprosessi {#paypal-payment-flow}
 
-PayPalille käytämme samanlaista lähestymistapaa heidän tilaustensa API:n kanssa:
+PayPalin kohdalla käytämme samanlaista lähestymistapaa heidän Orders API:nsa kanssa:
 
 ```javascript
 const requestBody = {
@@ -212,7 +212,7 @@ const requestBody = {
 };
 ```
 
-Samoin kuin Stripessä, määritämme `return_url` ja `cancel_url` parametrit maksun jälkeisten uudelleenohjausten käsittelemiseksi. Kun PayPal ohjaa käyttäjän takaisin sivustollemme, voimme tallentaa maksutiedot ja päivittää tietokantaamme.
+Samoin kuin Stripessä, määritämme `return_url`- ja `cancel_url`-parametrit maksun jälkeisten uudelleenohjausten käsittelemiseksi. Kun PayPal ohjaa käyttäjän takaisin sivustollemme, voimme tallentaa maksutiedot ja päivittää tietokantaamme.
 
 ```mermaid
 sequenceDiagram
@@ -283,15 +283,15 @@ sequenceDiagram
     FE->>User: Send notification email
 ```
 
-## Kerros 2: Webhook-käsittelijät allekirjoituksen varmentamalla {#layer-2-webhook-handlers-with-signature-verification}
+## Kerros 2: Webhook-käsittelijät allekirjoituksen varmentamiseen {#layer-2-webhook-handlers-with-signature-verification}
 
-Vaikka kassan jälkeiset uudelleenohjaukset toimivat hyvin useimmissa skenaarioissa, ne eivät ole idioottivarmoja. Käyttäjät voivat sulkea selaimensa ennen uudelleenohjausta, tai verkko-ongelmat voivat estää uudelleenohjauksen loppuunsaattamisen. Siellä webhookit tulevat käyttöön.
+Vaikka kassan jälkeiset uudelleenohjaukset toimivat hyvin useimmissa tilanteissa, ne eivät ole erehtymättömiä. Käyttäjät saattavat sulkea selaimensa ennen uudelleenohjausta, tai verkko-ongelmat voivat estää uudelleenohjauksen suorittamisen. Tässä webhookit tulevat mukaan kuvaan.
 
-Sekä Stripe että PayPal tarjoavat webhook-järjestelmiä, jotka lähettävät reaaliaikaisia ilmoituksia maksutapahtumista. Olemme ottaneet käyttöön vankat webhook-käsittelijät, jotka varmistavat näiden ilmoitusten aitouden ja käsittelevät ne vastaavasti.
+Sekä Stripe että PayPal tarjoavat webhook-järjestelmiä, jotka lähettävät reaaliaikaisia ilmoituksia maksutapahtumista. Olemme ottaneet käyttöön vankat webhook-käsittelijät, jotka tarkistavat näiden ilmoitusten aitouden ja käsittelevät ne asianmukaisesti.
 
-### Stripe Webhookin toteutus {#stripe-webhook-implementation}
+### Stripe-webhookin toteutus {#stripe-webhook-implementation}
 
-Stripe-webhook-käsittelijämme varmistaa saapuvien webhook-tapahtumien allekirjoituksen varmistaakseen, että ne ovat laillisia:
+Stripe-webhook-käsittelijämme tarkistaa saapuvien webhook-tapahtumien allekirjoituksen varmistaakseen, että ne ovat aitoja:
 
 ```javascript
 async function webhook(ctx) {
@@ -336,11 +336,11 @@ async function webhook(ctx) {
 }
 ```
 
-`stripe.webhooks.constructEvent`-funktio tarkistaa allekirjoituksen käyttämällä päätepisteen salaisuuttamme. Jos allekirjoitus on kelvollinen, käsittelemme tapahtuman asynkronisesti, jotta webhook-vastaus ei estyisi.
+`stripe.webhooks.constructEvent`-funktio tarkistaa allekirjoituksen päätepisteen salaisuutemme avulla. Jos allekirjoitus on kelvollinen, käsittelemme tapahtuman asynkronisesti, jotta webhook-vastaus ei estyisi.
 
-### PayPal Webhookin toteutus {#paypal-webhook-implementation}
+### PayPal Webhook -toteutus {#paypal-webhook-implementation}
 
-Samoin PayPal-webhook-käsittelijämme varmistaa saapuvien ilmoitusten aitouden:
+Samoin PayPal-webhook-käsittelijämme tarkistaa saapuvien ilmoitusten aitouden:
 
 ```javascript
 async function webhook(ctx) {
@@ -379,15 +379,15 @@ async function webhook(ctx) {
 }
 ```
 
-Molemmat webhook-käsittelijät noudattavat samaa kaavaa: tarkista allekirjoitus, kuittaa vastaanottaminen ja käsittele tapahtuma asynkronisesti. Tämä varmistaa, että emme koskaan menetä maksutapahtumaa, vaikka kassan jälkeinen uudelleenohjaus epäonnistuisi.
+Molemmat webhook-käsittelijät noudattavat samaa kaavaa: tarkistavat allekirjoituksen, kuittaavat vastaanoton ja käsittelevät tapahtuman asynkronisesti. Tämä varmistaa, että emme koskaan unohda maksutapahtumaa, vaikka kassan jälkeinen uudelleenohjaus epäonnistuisi.
 
 ## Kerros 3: Automatisoidut työt Breen avulla {#layer-3-automated-jobs-with-bree}
 
-Trifecta-lähestymistapamme viimeinen kerros on joukko automatisoituja töitä, jotka säännöllisesti tarkistavat ja täsmäävät maksutiedot. Käytämme Breeä, Node.js:n työn ajoittajaa, suorittamaan nämä työt säännöllisin väliajoin.
+Trifecta-lähestymistapamme viimeinen taso on joukko automatisoituja töitä, jotka säännöllisesti tarkistavat ja täsmäävät maksutiedot. Käytämme Bree-työaikataulutustyökalua Node.js:lle näiden töiden suorittamiseen säännöllisin väliajoin.
 
-### Tilauksen tarkkuuden tarkistus {#subscription-accuracy-checker}
+### Tilauksen tarkkuuden tarkistin {#subscription-accuracy-checker}
 
-Yksi tärkeimmistä tehtävistämme on tilauksen tarkkuuden tarkistus, joka varmistaa, että tietokantamme kuvastaa tarkasti tilauksen tilaa Stripessä:
+Yksi keskeisistä tehtävistämme on tilausten tarkkuuden tarkistus, joka varmistaa, että tietokanta heijastaa tarkasti tilausten tilaa Stripessä:
 
 ```javascript
 async function mapper(customer) {
@@ -454,7 +454,7 @@ async function mapper(customer) {
 }
 ```
 
-Tämä työ tarkistaa tietokantamme ja Stripen välisten ristiriitojen varalta, kuten yhteensopimattomia sähköpostiosoitteita tai useita aktiivisia tilauksia. Jos se löytää ongelmia, se kirjaa ne lokiin ja lähettää hälytyksiä järjestelmänvalvojatiimillemme.
+Tämä työ tarkistaa tietokantaamme ja Stripen välillä olevat ristiriidat, kuten yhteensopimattomat sähköpostiosoitteet tai useat aktiiviset tilaukset. Jos se löytää ongelmia, se kirjaa ne ja lähettää hälytykset ylläpitäjillemme.
 
 ### PayPal-tilauksen synkronointi {#paypal-subscription-synchronization}
 
@@ -489,15 +489,15 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Nämä automatisoidut työt toimivat lopullisena turvaverkkonamme ja varmistavat, että tietokantamme kuvastaa aina tilausten ja maksujen todellista tilaa sekä Stripen että PayPalin kautta.
+Nämä automatisoidut työt toimivat viimeisenä turvaverkkonamme, joka varmistaa, että tietokanta heijastaa aina tilausten ja maksujen todellista tilaa sekä Stripessä että PayPalissa.
 
 ## Reunatapausten käsittely {#handling-edge-cases}
 
-Tukevan maksujärjestelmän on käsiteltävä reunatapauksia sulavasti. Katsotaanpa, kuinka käsittelemme joitain yleisiä skenaarioita.
+Vankan maksujärjestelmän on käsiteltävä reunatapaukset sujuvasti. Katsotaanpa, miten käsittelemme joitakin yleisiä tilanteita.
 
 ### Petosten havaitseminen ja ehkäisy {#fraud-detection-and-prevention}
 
-Olemme ottaneet käyttöön kehittyneitä petosten havaitsemismekanismeja, jotka tunnistavat ja käsittelevät automaattisesti epäilyttävät maksutoiminnot:
+Olemme ottaneet käyttöön kehittyneitä petosten havaitsemismekanismeja, jotka tunnistavat ja käsittelevät automaattisesti epäilyttävät maksutapahtumat:
 
 ```javascript
 case 'charge.failed': {
@@ -542,11 +542,11 @@ case 'charge.failed': {
 }
 ```
 
-Tämä koodi estää automaattisesti käyttäjät, joilla on useita epäonnistuneita maksuja ja joilla ei ole vahvistettuja verkkotunnuksia, mikä on vahva osoitus vilpillisestä toiminnasta.
+Tämä koodi estää automaattisesti käyttäjät, joilla on useita epäonnistuneita veloituksia ja joilla ei ole vahvistettuja verkkotunnuksia, mikä on vahva osoitus vilpillisestä toiminnasta.
 
-### Riitojen käsittely {#dispute-handling}
+### Riitautusten käsittely {#dispute-handling}
 
-Kun käyttäjä kiistää veloituksen, hyväksymme vaatimuksen automaattisesti ja ryhdymme tarvittaviin toimiin:
+Kun käyttäjä kiistää veloituksen, hyväksymme vaatimuksen automaattisesti ja ryhdymme asianmukaisiin toimiin:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
@@ -581,11 +581,11 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 }
 ```
 
-Tämä lähestymistapa minimoi riitojen vaikutuksen liiketoimintaamme ja takaa hyvän asiakaskokemuksen.
+Tämä lähestymistapa minimoi riitojen vaikutukset liiketoimintaamme ja varmistaa samalla hyvän asiakaskokemuksen.
 
 ## Koodin uudelleenkäyttö: KISS- ja DRY-periaatteet {#code-reuse-kiss-and-dry-principles}
 
-Olemme noudattaneet koko maksujärjestelmässämme KISS (Keep It Simple, Stupid) ja DRY (Don't Repeat Yourself) -periaatteita. Tässä on joitain esimerkkejä:
+Maksujärjestelmässämme olemme noudattaneet KISS- (Keep It Simple, Stupid) ja DRY- (Don't Repeat Yourself) periaatteita. Tässä on joitakin esimerkkejä:
 
 1. **Jaetut apufunktiot**: Olemme luoneet uudelleenkäytettäviä apufunktioita yleisiin tehtäviin, kuten maksujen synkronointiin ja sähköpostien lähettämiseen.
 
@@ -691,13 +691,13 @@ graph TD
 
 ## VISA-tilausvaatimusten käyttöönotto {#visa-subscription-requirements-implementation}
 
-Trifecta-lähestymistavan lisäksi olemme ottaneet käyttöön erityisiä ominaisuuksia, jotka täyttävät VISAn tilausvaatimukset ja parantavat samalla käyttökokemusta. Yksi VISA:n keskeisistä vaatimuksista on, että käyttäjille on ilmoitettava ennen tilauksen veloittamista, varsinkin kun he siirtyvät kokeilujaksosta maksulliseen tilaukseen.
+Trifecta-lähestymistapamme lisäksi olemme ottaneet käyttöön erityisominaisuuksia, jotka täyttävät VISAn tilausvaatimukset ja parantavat samalla käyttökokemusta. Yksi VISAn keskeisistä vaatimuksista on, että käyttäjille on ilmoitettava ennen tilauksen veloittamista, erityisesti siirryttäessä kokeilujaksosta maksulliseen tilaukseen.
 
-### Automaattiset sähköposti-ilmoitukset ennen uusimista {#automated-pre-renewal-email-notifications}
+### Automaattiset uusimista edeltävät sähköposti-ilmoitukset {#automated-pre-renewal-email-notifications}
 
-Olemme rakentaneet automatisoidun järjestelmän, joka tunnistaa käyttäjät, joilla on aktiivinen kokeilutilaus, ja lähettää heille ilmoituksen sähköpostitse ennen ensimmäistä veloitusta. Tämä ei ainoastaan pidä meidät VISA-vaatimusten mukaisina, vaan myös vähentää takaisinperintöjä ja parantaa asiakastyytyväisyyttä.
+Olemme rakentaneet automatisoidun järjestelmän, joka tunnistaa aktiivisen kokeilujakson omaavat käyttäjät ja lähettää heille ilmoitussähköpostin ennen ensimmäistä veloitusta. Tämä paitsi pitää meidät VISA-vaatimusten mukaisina, myös vähentää takaisinperintöjä ja parantaa asiakastyytyväisyyttä.
 
-Näin otimme tämän ominaisuuden käyttöön:
+Näin toteutimme tämän ominaisuuden:
 
 ```javascript
 // Find users with trial subscriptions who haven't received a notification yet
@@ -778,18 +778,18 @@ for (const user of users) {
 }
 ```
 
-Tämä toteutus varmistaa, että käyttäjät ovat aina tietoisia tulevista maksuista ja selkeät tiedot seuraavista:
+Tämä toteutus varmistaa, että käyttäjät ovat aina tietoisia tulevista veloituksista ja että heillä on selkeät tiedot seuraavista asioista:
 
 1. Milloin ensimmäinen veloitus tapahtuu
 2. Tulevien veloitusten tiheys (kuukausittain, vuosittain jne.)
 3. Tarkka veloitettava summa
 4. Mitkä verkkotunnukset tilaukseen kuuluvat
 
-Automatisoimalla tämän prosessin ylläpidämme VISAn vaatimusten täydellistä noudattamista (jotka edellyttävät ilmoitusta vähintään 7 päivää ennen laskutusta) samalla kun vähennämme tukikyselyitä ja parannamme yleistä käyttökokemusta.
+Automatisoimalla tämän prosessin ylläpidämme täydellistä VISA-vaatimusten noudattamista (jotka edellyttävät ilmoitusta vähintään 7 päivää ennen veloitusta) samalla vähentäen tukikyselyjä ja parantaen yleistä käyttäjäkokemusta.
 
 ### Reunatapausten käsittely {#handling-edge-cases-1}
 
-Toteuksemme sisältää myös tehokkaan virheenkäsittelyn. Jos jokin menee pieleen ilmoitusprosessin aikana, järjestelmämme hälyttää automaattisesti tiimillemme:
+Toteutukseemme kuuluu myös vankka virheenkäsittely. Jos ilmoitusprosessin aikana ilmenee ongelmia, järjestelmämme ilmoittaa siitä automaattisesti tiimillemme:
 
 ```javascript
 try {
@@ -815,13 +815,13 @@ try {
 }
 ```
 
-Näin varmistetaan, että vaikka ilmoitusjärjestelmässä olisi ongelmia, tiimimme voi korjata sen nopeasti ja noudattaa VISAn vaatimuksia.
+Tämä varmistaa, että vaikka ilmoitusjärjestelmässä olisi ongelmia, tiimimme voi korjata ne nopeasti ja ylläpitää VISAn vaatimustenmukaisuutta.
 
-VISA-tilausten ilmoitusjärjestelmä on toinen esimerkki siitä, kuinka olemme rakentaneet maksuinfrastruktuurimme sekä vaatimustenmukaisuuden että käyttökokemuksen mukaisesti. Se täydentää trifecta-lähestymistapaamme varmistaaksemme luotettavan ja läpinäkyvän maksujen käsittelyn.
+VISA-tilausilmoitusjärjestelmä on jälleen yksi esimerkki siitä, miten olemme rakentaneet maksuinfrastruktuurimme sekä vaatimustenmukaisuus että käyttäjäkokemus mielessä pitäen. Se täydentää trifecta-lähestymistapaamme luotettavan ja läpinäkyvän maksujen käsittelyn varmistamiseksi.
 
 ### Kokeilujaksot ja tilausehdot {#trial-periods-and-subscription-terms}
 
-Käyttäjille, jotka mahdollistavat automaattisen uusimisen olemassa olevissa sopimuksissa, laskemme sopivan kokeilujakson varmistaaksemme, että heitä ei veloiteta ennen kuin heidän nykyinen sopimuksensa vanhenee:
+Käyttäjille, jotka ottavat käyttöön automaattisen uusimisen olemassa olevissa paketeissa, laskemme sopivan kokeilujakson varmistaaksemme, ettei heitä veloiteta ennen nykyisen paketin vanhenemista:
 
 ```javascript
 if (
@@ -838,11 +838,11 @@ if (
 }
 ```
 
-Annamme myös selkeät tiedot tilausehdoista, mukaan lukien laskutustiheydestä ja peruutuskäytännöistä, ja sisällytämme jokaiseen tilaukseen yksityiskohtaiset metatiedot oikean seurannan ja hallinnan varmistamiseksi.
+Tarjoamme myös selkeät tiedot tilausehdoista, mukaan lukien laskutustiheys ja peruutusehdot, ja sisällytämme jokaisen tilauksen mukana yksityiskohtaiset metatiedot asianmukaisen seurannan ja hallinnan varmistamiseksi.
 
 ## Yhteenveto: Trifecta-lähestymistapamme edut {#conclusion-the-benefits-of-our-trifecta-approach}
 
-Trifecta-lähestymistapamme maksujen käsittelyyn on tarjonnut useita keskeisiä etuja:
+Kolminkertainen lähestymistapamme maksujen käsittelyyn on tuonut useita keskeisiä etuja:
 
 1. **Luotettavuus**: Toteuttamalla kolmikerroksisen maksunvahvistuksen varmistamme, ettei yhtäkään maksua jää huomaamatta tai käsitellä väärin.
 
@@ -852,8 +852,8 @@ Trifecta-lähestymistapamme maksujen käsittelyyn on tarjonnut useita keskeisiä
 
 4. **Lujuus**: Järjestelmämme käsittelee reunatapaukset sujuvasti verkkohäiriöistä petolliseen toimintaan.
 
-Jos käytät maksujärjestelmää, joka tukee useita prosessoreita, suosittelemme tätä trifecta-lähestymistapaa. Se vaatii enemmän etukäteistä kehitystyötä, mutta pitkän aikavälin hyödyt luotettavuuden ja tarkkuuden osalta ovat sen arvoisia.
+Jos olet toteuttamassa maksujärjestelmää, joka tukee useita prosessoreita, suosittelemme tätä trifecta-lähestymistapaa. Se vaatii enemmän alkuvaiheen kehitystyötä, mutta pitkän aikavälin hyödyt luotettavuuden ja tarkkuuden suhteen ovat sen arvoisia.
 
-Lisätietoja sähköpostin edelleenlähetyksestä ja yksityisyyttä suojaavista sähköpostipalveluistamme on osoitteessa [verkkosivuilla](https://forwardemail.net).
+Lisätietoja sähköpostin edelleenlähetyksestä ja yksityisyyttä suojaavista sähköpostipalveluistamme on osoitteessa [verkkosivusto](https://forwardemail.net).
 
 <!-- *Avainsanat: maksujen käsittely, Stripe-integraatio, PayPal-integraatio, webhookien käsittely, maksujen synkronointi, tilausten hallinta, petosten ehkäisy, riitojen käsittely, Node.js-maksujärjestelmä, moniajoinen maksujärjestelmä, maksuyhdyskäytävän integraatio, reaaliaikainen maksun varmennus, maksutietojen yhdenmukaisuus, tilausten laskutus, maksujen turvallisuus, maksuautomaatio, maksujen webhookit, maksujen täsmäytys, maksujen reunatapaukset, maksuvirheiden käsittely, VISA-tilausvaatimukset, uusimista edeltävät ilmoitukset, tilauksen vaatimustenmukaisuus* -->

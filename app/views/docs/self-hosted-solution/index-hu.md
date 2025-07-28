@@ -1,44 +1,44 @@
-# Saját tárhelyen tárolt e-mail: Elkötelezettség a nyílt forráskódú megoldások iránt {#self-hosted-email-commitment-to-open-source}
+# Saját tárhelyen tárolt e-mail: Elkötelezettség a nyílt forráskód mellett {#self-hosted-email-commitment-to-open-source}
 
 <img loading="lusta" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [Miért számít a saját üzemeltetésű e-mail?](#why-self-hosted-email-matters)
-  * [Probléma a hagyományos e-mail szolgáltatásokkal](#the-problem-with-traditional-email-services)
-  * [A saját üzemeltetésű alternatíva](#the-self-hosted-alternative)
-* [Saját üzemeltetésű megvalósításunk: Műszaki áttekintés](#our-self-hosted-implementation-technical-overview)
-  * [Docker-alapú architektúra az egyszerűség és hordozhatóság érdekében](#docker-based-architecture-for-simplicity-and-portability)
-  * [Bash Script telepítése: A kisegítő lehetőségek megfelelnek a biztonságnak](#bash-script-installation-accessibility-meets-security)
-  * [Kvantumbiztos titkosítás a jövőbiztos adatvédelem érdekében](#quantum-safe-encryption-for-future-proof-privacy)
+* [Miért fontos az önállóan üzemeltetett e-mail?](#why-self-hosted-email-matters)
+  * [A hagyományos e-mail szolgáltatások problémája](#the-problem-with-traditional-email-services)
+  * [Az önállóan üzemeltetett alternatíva](#the-self-hosted-alternative)
+* [Saját tárhelyen megvalósított megoldásunk: Műszaki áttekintés](#our-self-hosted-implementation-technical-overview)
+  * [Docker-alapú architektúra az egyszerűség és a hordozhatóság érdekében](#docker-based-architecture-for-simplicity-and-portability)
+  * [Bash szkript telepítése: Az akadálymentesítés és a biztonság találkozása](#bash-script-installation-accessibility-meets-security)
+  * [Kvantumbiztonságos titkosítás a jövőbiztos adatvédelemért](#quantum-safe-encryption-for-future-proof-privacy)
   * [Automatizált karbantartás és frissítések](#automated-maintenance-and-updates)
-* [A nyílt forráskódú kötelezettségvállalás](#the-open-source-commitment)
-* [Self-Hosted vs. Managed: A helyes választás](#self-hosted-vs-managed-making-the-right-choice)
-  * [Az önkiszolgáló e-mail valósága](#the-reality-of-self-hosting-email)
-  * [Mikor válassza menedzselt szolgáltatásunkat](#when-to-choose-our-managed-service)
-* [Kezdő lépések az önállóan tárolt e-mail-továbbítással](#getting-started-with-self-hosted-forward-email)
+* [A nyílt forráskódú programra vonatkozó kötelezettségvállalás](#the-open-source-commitment)
+* [Saját üzemeltetésű vs. felügyelt: A helyes választás](#self-hosted-vs-managed-making-the-right-choice)
+  * [Az önálló tárhelyszolgáltatással működő e-mailek valósága](#the-reality-of-self-hosting-email)
+  * [Mikor válassza a mi felügyelt szolgáltatásunkat?](#when-to-choose-our-managed-service)
+* [Első lépések az önállóan üzemeltetett e-mail-továbbítással](#getting-started-with-self-hosted-forward-email)
   * [Rendszerkövetelmények](#system-requirements)
   * [Telepítési lépések](#installation-steps)
-* [A saját üzemeltetésű e-mail jövője](#the-future-of-self-hosted-email)
-* [Következtetés: E-mail szabadság mindenkinek](#conclusion-email-freedom-for-everyone)
-* [Hivatkozások](#references)
+* [Az önállóan üzemeltetett e-mail jövője](#the-future-of-self-hosted-email)
+* [Konklúzió: E-mail szabadság mindenkinek](#conclusion-email-freedom-for-everyone)
+* [Referenciák](#references)
 
 ## Előszó {#foreword}
 
-A mai digitális környezetben az e-mail továbbra is online identitásunk és kommunikációnk gerince. Mégis, ahogy az adatvédelmi aggodalmak nőnek, sok felhasználó nehéz választás elé néz: a kényelem a magánélet árán, vagy a magánélet a kényelem árán. A Forward Emailnél mindig is úgy gondoltuk, hogy nem kell választania a kettő közül.
+A mai digitális környezetben az e-mail továbbra is online identitásunk és kommunikációnk gerincét alkotja. Az adatvédelmi aggodalmak növekedésével azonban sok felhasználó nehéz választással néz szembe: kényelem az adatvédelem rovására, vagy adatvédelem a kényelem rovására. A Forward Emailnél mindig is úgy gondoltuk, hogy nem kell választani a kettő között.
 
-A mai napon örömmel jelentjük be utunk egy jelentős mérföldkövét: saját üzemeltetésű e-mail megoldásunk elindítását. Ez a funkció a nyílt forráskódú alapelvek, az adatvédelemre fókuszáló tervezés és a felhasználók felhatalmazása iránti legmélyebb elkötelezettségünket tükrözi. Saját üzemeltetésű lehetőségünkkel közvetlenül az Ön kezébe adjuk az e-mail kommunikáció teljes erejét és irányítását.
+Izgatottan jelentjük be ma utunk egy jelentős mérföldkövét: saját tárhelyen futó e-mail megoldásunk elindítását. Ez a funkció a nyílt forráskódú alapelvek, az adatvédelemre összpontosító tervezés és a felhasználók felhatalmazása iránti legmélyebb elkötelezettségünket képviseli. Saját tárhelyen futó opciónkkal az e-mail kommunikáció teljes hatalmát és irányítását közvetlenül az Ön kezébe adjuk.
 
-Ez a blogbejegyzés feltárja a saját üzemeltetésű megoldásunk mögött meghúzódó filozófiát, annak műszaki megvalósítását, és azt, hogy miért számít ez azoknak a felhasználóknak, akik digitális kommunikációjuk során a magánélet védelmét és a tulajdonjogot egyaránt előnyben részesítik.
+Ez a blogbejegyzés a saját tárhelyen futó megoldásunk mögött álló filozófiát, annak technikai megvalósítását, és azt vizsgálja, hogy miért fontos azoknak a felhasználóknak, akik digitális kommunikációjukban mind az adatvédelmet, mind a tulajdonjogot előtérbe helyezik.
 
 ## Miért fontos a saját tárhelyen tárolt e-mail {#why-self-hosted-email-matters}
 
-Saját hosztolt e-mail megoldásunk a legtisztább kifejezése annak a hitünknek, hogy az igazi adatvédelem ellenőrzést jelent, és az ellenőrzés a nyílt forráskóddal kezdődik. Azon felhasználók számára, akik teljes tulajdonjogot követelnek digitális kommunikációjuk felett, az önálló tárhelyszolgáltatás többé már nem mellékes ötlet – ez alapvető jog. Büszkék vagyunk arra, hogy e hit mögött állhatunk egy teljesen nyitott, ellenőrizhető platformmal, amelyet saját feltételeid szerint működtethetsz.
+Saját tárhelyen futó e-mail megoldásunk a legtisztább kifejeződése annak a meggyőződésünknek, hogy az igazi adatvédelem kontrollt jelent, és a kontroll a nyílt forráskódú szoftverekkel kezdődik. Azoknak a felhasználóknak, akik teljes tulajdonjogot követelnek digitális kommunikációjuk felett, a saját tárhelyen futó e-mail megoldás már nem marginális ötlet – alapvető jog. Büszkék vagyunk arra, hogy kiállhatunk e meggyőződésünk mellett egy teljesen nyílt, ellenőrizhető platformmal, amelyet a saját feltételeid szerint üzemeltethetsz.
 
 ### A hagyományos e-mail szolgáltatások problémája {#the-problem-with-traditional-email-services}
 
-A hagyományos e-mail szolgáltatások számos alapvető kihívást jelentenek a magánélet-tudatos felhasználók számára:
+A hagyományos e-mail szolgáltatások számos alapvető kihívást jelentenek az adatvédelmet figyelembe vevő felhasználók számára:
 
 1. **Megbízhatósági követelmények**: Meg kell bíznia a szolgáltatóban, hogy nem fér hozzá, nem elemzi és nem osztja meg az adatait.
 2. **Központosított felügyelet**: Hozzáférése bármikor, bármilyen okból visszavonható.
@@ -46,11 +46,11 @@ A hagyományos e-mail szolgáltatások számos alapvető kihívást jelentenek a
 4. **Korlátozott átláthatóság**: A legtöbb szolgáltatás saját fejlesztésű, zárt forráskódú szoftvert használ.
 5. **Beszállítói függőség**: Nehéz vagy lehetetlen lehet eltávolodni ezektől a szolgáltatásoktól.
 
-Még az „adatvédelemre összpontosító” e-mail szolgáltatók is gyakran alulmaradnak azzal, hogy csak nyílt forráskódú előtér-alkalmazásaikat végzik, miközben háttérrendszereiket saját tulajdonúként és zárva tartják. Ez jelentős bizalomhiányt hoz létre – meg kell hinni az adatvédelmi ígéreteiket anélkül, hogy ellenőrizni tudná őket.
+Még az „adatvédelemre összpontosító” e-mail-szolgáltatók is gyakran kudarcot vallanak azzal, hogy csak a frontend alkalmazásaikat teszik nyílt forráskódúvá, miközben a backend rendszereiket zárt rendszerként és saját forráskódként kezelik. Ez jelentős bizalmi réseket teremt – arra kérik Önt, hogy higgyen az adatvédelmi ígéreteikben anélkül, hogy ellenőrizni tudná azokat.
 
-### Az önállóan tárhelyezett alternatíva {#the-self-hosted-alternative}
+### Az önállóan üzemeltetett alternatíva {#the-self-hosted-alternative}
 
-Az e-mailek önálló tárolása alapvetően más megközelítést kínál:
+Az e-mail saját tárhelyszolgáltatása alapvetően más megközelítést kínál:
 
 1. **Teljes kontroll**: Ön birtokolja és felügyeli a teljes e-mail infrastruktúrát.
 2. **Ellenőrizhető adatvédelem**: A teljes rendszer átlátható és auditálható.
@@ -58,15 +58,15 @@ Az e-mailek önálló tárolása alapvetően más megközelítést kínál:
 4. **Testreszabási szabadság**: A rendszert az Ön egyedi igényeihez igazíthatja.
 5. **Rugalmasság**: A szolgáltatás a vállalat döntéseitől függetlenül folytatódik.
 
-Ahogy egy felhasználó fogalmazott: "Az e-mailjeim öntárolása a saját ételem termesztésének digitális megfelelője – több munkát igényel, de pontosan tudom, mi van benne."
+Ahogy az egyik felhasználó fogalmazott: „Az e-mail fiókom saját tárhelyszolgáltatása olyan, mintha a saját élelmiszeremet termeszteném digitálisan – több munkát igényel, de pontosan tudom, mi van benne.”
 
 ## Saját tárhelyen futó megvalósításunk: Műszaki áttekintés {#our-self-hosted-implementation-technical-overview}
 
-Saját üzemeltetésű e-mail megoldásunk ugyanazokra az alapelvekre épül, amelyek az összes termékünket vezérlik. Vizsgáljuk meg azt a technikai megvalósítást, amely ezt lehetővé teszi.
+Saját tárhelyen futó e-mail-megoldásunk ugyanazon az adatvédelmet előtérbe helyező elvekre épül, amelyek minden termékünket irányítják. Vizsgáljuk meg a technikai megvalósítást, amely ezt lehetővé teszi.
 
 ### Docker-alapú architektúra az egyszerűség és a hordozhatóság érdekében {#docker-based-architecture-for-simplicity-and-portability}
 
-A teljes e-mail infrastruktúránkat a Docker segítségével csomagoltuk, így gyakorlatilag bármilyen Linux-alapú rendszeren könnyen telepíthető. Ez a konténeres megközelítés számos kulcsfontosságú előnnyel jár:
+A teljes e-mail infrastruktúránkat Docker segítségével csomagoltuk, így gyakorlatilag bármilyen Linux alapú rendszeren könnyen telepíthető. Ez a konténeres megközelítés számos fontos előnnyel jár:
 
 1. **Egyszerűsített telepítés**: Egyetlen parancs beállítja a teljes infrastruktúrát.
 2. **Konzisztens környezet**: Kiküszöböli a „saját gépemen működik” problémákat.
@@ -74,7 +74,7 @@ A teljes e-mail infrastruktúránkat a Docker segítségével csomagoltuk, így 
 4. **Egyszerű frissítések**: Egyszerű parancsok a teljes verem frissítéséhez.
 5. **Minimális függőségek**: Csak Docker és Docker Compose szükséges.
 
-Az architektúra konténereket tartalmaz:
+Az architektúra a következőkhöz tartalmaz konténereket:
 
 * Webes felület adminisztrációhoz
 * SMTP szerver a kimenő e-mailekhez
@@ -85,12 +85,12 @@ Az architektúra konténereket tartalmaz:
 * Redis a gyorsítótárazáshoz és a teljesítményhez
 * SQLite a biztonságos, titkosított postafiók-tároláshoz
 
-> \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+IDEIGLENES_PLACE_HOLDER_0
+> Mindenképpen tekintse meg a IDEIGLENES_PLACEHOLDER_1 oldalunkat
 
-### Bash szkript telepítése: Az akadálymentesítés találkozik a biztonsággal {#bash-script-installation-accessibility-meets-security}
+### Bash szkript telepítése: Az akadálymentesítés megfelel a biztonságnak {#bash-script-installation-accessibility-meets-security}
 
-A telepítési folyamatot úgy alakítottuk ki, hogy a lehető legegyszerűbb legyen, miközben megtartjuk a legjobb biztonsági gyakorlatokat:
+A telepítési folyamatot a lehető legegyszerűbbre terveztük, miközben betartjuk a biztonsági legjobb gyakorlatokat:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -105,17 +105,17 @@ Ez az egyetlen parancs:
 5. Telepíti a Docker-konténereket
 6. Elvégzi a kezdeti biztonsági megerősítést
 
-Azok számára, akik aggódnak a szkriptek bash-be állítása miatt (ahogyan annak lennie kell), javasoljuk a szkript áttekintését a végrehajtás előtt. Teljesen nyílt forráskódú, és ellenőrizhető.
+Azoknak, akik aggódnak a szkriptek bash-be küldése miatt (ahogy illik is!), javasoljuk, hogy a végrehajtás előtt ellenőrizzék a szkriptet. Teljesen nyílt forráskódú és megtekinthető.
 
-### Kvantumbiztonságos titkosítás a jövőbiztos adatvédelemért {#quantum-safe-encryption-for-future-proof-privacy}
+### Kvantumbiztonságos titkosítás a jövőbiztos adatvédelem érdekében {#quantum-safe-encryption-for-future-proof-privacy}
 
-A hosztolt szolgáltatásunkhoz hasonlóan saját hosztolt megoldásunk is kvantumálló titkosítást valósít meg a ChaCha20-Poly1305 titkosítással az SQLite adatbázisok titkosításaként. Ez a megközelítés nemcsak a jelenlegi fenyegetésekkel szemben védi meg e-mail-adatait, hanem a jövőbeni kvantumszámítási támadásoktól is.
+A hosztolt szolgáltatásunkhoz hasonlóan a saját hosztolt megoldásunk is kvantumrezisztens titkosítást valósít meg ChaCha20-Poly1305 titkosítással az SQLite adatbázisokhoz. Ez a megközelítés nemcsak a jelenlegi fenyegetésekkel, hanem a jövőbeli kvantumszámítástechnikai támadásokkal szemben is védi az e-mail adatait.
 
-Minden postafiók a saját titkosított SQLite adatbázisfájljában van tárolva, ami teljes elszigetelést biztosít a felhasználók között – ez jelentős biztonsági előny a hagyományos megosztott adatbázis-megközelítésekkel szemben.
+Minden postafiók saját titkosított SQLite adatbázisfájlban tárolódik, ami teljes elszigeteltséget biztosít a felhasználók között – ami jelentős biztonsági előnyt jelent a hagyományos megosztott adatbázis-megközelítésekkel szemben.
 
 ### Automatizált karbantartás és frissítések {#automated-maintenance-and-updates}
 
-Átfogó karbantartási segédprogramokat építettünk be közvetlenül a saját üzemeltetésű megoldásba:
+Átfogó karbantartási segédprogramokat építettünk be közvetlenül az önállóan üzemeltetett megoldásba:
 
 1. **Automatikus biztonsági mentések**: Minden kritikus adat ütemezett biztonsági mentése
 2. **Tanúsítványmegújítás**: Automatizált Let's Encrypt tanúsítványkezelés
@@ -138,7 +138,7 @@ Ezek a segédprogramok egy egyszerű interaktív menün keresztül érhetők el:
 
 ## A nyílt forráskódú szoftverekre vonatkozó kötelezettségvállalás {#the-open-source-commitment}
 
-Saját hosztolt e-mail megoldásunk, mint minden termékünk, 100%-ban nyílt forráskódú – előtérben és háttérben egyaránt. Ez azt jelenti:
+Saját tárhelyen futó e-mail megoldásunk, mint minden termékünk, 100%-ban nyílt forráskódú – mind a felhasználói felület, mind a háttérfelület tekintetében. Ez azt jelenti:
 
 1. **Teljes átláthatóság**: Minden egyes kódsor, amely az e-mailjeidet feldolgozza, nyilvánosan ellenőrizhető.
 2. **Közösségi hozzájárulások**: Bárki hozzájárulhat fejlesztésekhez vagy problémák megoldásához.
@@ -147,11 +147,11 @@ Saját hosztolt e-mail megoldásunk, mint minden termékünk, 100%-ban nyílt fo
 
 A teljes kódbázis elérhető a GitHubon a <https://github.com/forwardemail/forwardemail.net>. címen.
 
-## Saját tárhelyen tárolt vagy felügyelt webhelyek: A helyes választás {#self-hosted-vs-managed-making-the-right-choice}
+## Saját üzemeltetésű vs. felügyelt: A helyes döntés meghozatala {#self-hosted-vs-managed-making-the-right-choice}
 
-Noha büszkék vagyunk arra, hogy saját üzemeltetésű lehetőséget kínálunk, felismerjük, hogy ez nem mindenki számára a megfelelő választás. Az önkiszolgáló e-mailek valódi felelősségekkel és kihívásokkal járnak:
+Bár büszkék vagyunk arra, hogy saját tárhelyen keresztüli e-mail-szolgáltatást kínálunk, tisztában vagyunk vele, hogy ez nem mindenkinek a megfelelő választás. Az önálló e-mail-tárhelyszolgáltatás valódi felelősséggel és kihívásokkal jár:
 
-### Az önálló tárhelyszolgáltatással működő e-mailek valósága {#the-reality-of-self-hosting-email}
+### Az önálló tárhelyszolgáltatású e-mailek valósága {#the-reality-of-self-hosting-email}
 
 #### Technikai szempontok {#technical-considerations}
 
@@ -171,7 +171,7 @@ Noha büszkék vagyunk arra, hogy saját üzemeltetésű lehetőséget kínálun
 
 ### Mikor válassza felügyelt szolgáltatásunkat {#when-to-choose-our-managed-service}
 
-Sok felhasználó számára továbbra is menedzselt szolgáltatásunk a legjobb megoldás:
+Sok felhasználó számára továbbra is a felügyelt szolgáltatásunk a legjobb megoldás:
 
 1. **Kényelem**: Minden karbantartást, frissítést és felügyeletet mi intézünk.
 2. **Megbízhatóság**: Használja ki kiforrott infrastruktúránkat és szakértelmünket.
@@ -179,11 +179,11 @@ Sok felhasználó számára továbbra is menedzselt szolgáltatásunk a legjobb 
 4. **Szállíthatóság**: Használja ki kiforrott szellemi tulajdonunk hírnevét.
 5. **Költséghatékonyság**: Ha figyelembe vesszük az időköltségeket, szolgáltatásunk gyakran gazdaságosabb.
 
-Mindkét lehetőség ugyanazokat az adatvédelmi előnyöket és a nyílt forráskódú átláthatóságot biztosítja – a különbség egyszerűen az, hogy ki kezeli az infrastruktúrát.
+Mindkét lehetőség ugyanazokat az adatvédelmi előnyöket és nyílt forráskódú átláthatóságot biztosítja – a különbség egyszerűen az, hogy ki kezeli az infrastruktúrát.
 
 ## Első lépések a saját tárhelyen tárolt e-mail-továbbítással {#getting-started-with-self-hosted-forward-email}
 
-Készen áll arra, hogy átvegye e-mail infrastruktúrája irányítását? Így kezdheti el:
+Készen áll arra, hogy átvegye az irányítást az e-mail infrastruktúrája felett? Így kezdheti el:
 
 ### Rendszerkövetelmények {#system-requirements}
 
@@ -191,12 +191,12 @@ Készen áll arra, hogy átvegye e-mail infrastruktúrája irányítását? Így
 * Minimum 1 GB RAM (2 GB+ ajánlott)
 * 20 GB tárhely ajánlott
 * Egy általad felügyelt domain név
-* Nyilvános IP-cím 25-ös port támogatással
+* Nyilvános IP-cím 25-ös port támogatásával
 * Lehetőség a [fordított PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) beállítására
 * IPv4 és IPv6 támogatás
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> Több levelezőszerver-szolgáltatót is ajánlunk a <https://forwardemail.net/blog/docs/best-mail-server-providers> címen (forrás: <https://github.com/forwardemail/awesome-mail-server-providers>)
 
 ### Telepítési lépések {#installation-steps}
 
@@ -213,13 +213,13 @@ Készen áll arra, hogy átvegye e-mail infrastruktúrája irányítását? Így
 
 3. **Telepítés ellenőrzése**:
 A telepítés befejezése után a következőkkel ellenőrizheti, hogy minden működik-e:
-* A konténer állapotának ellenőrzése: `docker ps`
+* Konténer állapotának ellenőrzése: `docker ps`
 * Teszt e-mail küldése
 * Bejelentkezés a webes felületre
 
 ## Az önállóan üzemeltetett e-mail jövője {#the-future-of-self-hosted-email}
 
-Saját üzemeltetésű megoldásunk csak a kezdet. Elkötelezettek vagyunk amellett, hogy folyamatosan fejlesztjük ezt az ajánlatot:
+Saját üzemeltetésű megoldásunk csak a kezdet. Elkötelezettek vagyunk amellett, hogy folyamatosan fejlesszük ezt az ajánlatot az alábbiakkal:
 
 1. **Továbbfejlesztett adminisztrációs eszközök**: Hatékonyabb webalapú felügyelet
 2. **További hitelesítési lehetőségek**: Hardveres biztonsági kulcs támogatásával
@@ -229,17 +229,17 @@ Saját üzemeltetésű megoldásunk csak a kezdet. Elkötelezettek vagyunk amell
 
 ## Konklúzió: E-mail szabadság mindenkinek {#conclusion-email-freedom-for-everyone}
 
-Saját hosztolt e-mail megoldásunk bevezetése jelentős mérföldkövet jelent küldetésünkben, hogy az adatvédelemre fókuszáló, átlátható e-mail szolgáltatásokat nyújtsunk. Akár a felügyelt szolgáltatásunkat, akár a saját üzemeltetésű szolgáltatásunkat választja, hasznot húzhat a nyílt forráskódú alapelvek és a személyes adatok védelmét szolgáló tervezés iránti megingathatatlan elkötelezettségünkből.
+Saját tárhelyen futó e-mail megoldásunk bevezetése jelentős mérföldkövet jelent küldetésünkben, hogy adatvédelmi központú, átlátható e-mail szolgáltatásokat nyújtsunk. Akár a felügyelt szolgáltatásunkat, akár a saját tárhelyen futó opciót választja, Ön is élvezheti a nyílt forráskódú elvek és az adatvédelmet előtérbe helyező tervezés iránti rendíthetetlen elkötelezettségünk előnyeit.
 
-Az e-mail túlságosan fontos ahhoz, hogy zárt, szabadalmaztatott rendszerek irányítsák, amelyek az adatgyűjtést helyezik előtérbe a felhasználói adatvédelemmel szemben. A Forward Email saját üzemeltetésű megoldásával büszkék vagyunk arra, hogy egy valódi alternatívát kínálunk – amely lehetővé teszi digitális kommunikációja teljes irányítását.
+Az e-mail túl fontos ahhoz, hogy zárt, saját fejlesztésű rendszerek irányítsák, amelyek az adatgyűjtést helyezik előtérbe a felhasználói adatok védelmével szemben. A Forward Email saját tárhelyen futó megoldásával büszkén kínálunk valódi alternatívát – olyat, amely teljes mértékben az Ön kezébe adja digitális kommunikációja feletti irányítást.
 
-Hiszünk abban, hogy az adatvédelem nem csak egy szolgáltatás; ez alapvető jog. Saját hosztolt e-mail lehetőségünkkel pedig minden eddiginél elérhetőbbé tesszük ezt a jogot.
+Úgy gondoljuk, hogy az adatvédelem nem csupán egy tulajdonság, hanem alapvető jog. Saját tárhelyen elérhető e-mail opciónkkal ezt a jogot minden eddiginél elérhetőbbé tesszük.
 
 Készen állsz, hogy átvedd az irányítást az e-mailed felett? [Kezdje el még ma](https://forwardemail.net/self-hosted) vagy tekintsd meg a [GitHub adattár](https://github.com/forwardemail/forwardemail.net) oldalunkat, ha többet szeretnél megtudni.
 
-## Hivatkozások {#references}
+## Referenciák {#references}
 
-\[1] E-mail továbbítása GitHub adattárba: <https://github.com/forwardemail/forwardemail.net>
+\[1] E-mail továbbítása GitHub adattárba: <IDEIGLENES_PLACEHOLDER_0
 
 \[2] Saját tárhelyen tárolt dokumentáció: <https://forwardemail.net/en/self-hosted>
 

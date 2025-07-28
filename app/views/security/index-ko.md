@@ -17,9 +17,9 @@
   * [백업 및 복구](#backup-and-recovery)
 * [서비스 제공자](#service-providers)
 * [규정 준수 및 감사](#compliance-and-auditing)
-  * [정기적인 보안 평가](#regular-security-assessments)
+  * [정기 보안 평가](#regular-security-assessments)
   * [규정 준수](#compliance)
-* [사건 대응](#incident-response)
+* [사고 대응](#incident-response)
 * [보안 개발 라이프사이클](#security-development-lifecycle)
 * [서버 강화](#server-hardening)
 * [서비스 수준 계약](#service-level-agreement)
@@ -30,13 +30,13 @@
 
 ## 서문 {#foreword}
 
-Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이메일 커뮤니케이션과 개인 데이터를 보호하기 위해 포괄적인 보안 조치를 구현했습니다. 이 문서는 당사의 보안 관행과 귀하의 이메일의 기밀성, 무결성 및 가용성을 보장하기 위해 취하는 단계를 설명합니다.
+Forward Email은 보안을 최우선으로 생각합니다. 고객님의 이메일 커뮤니케이션과 개인 정보를 보호하기 위해 포괄적인 보안 조치를 시행하고 있습니다. 본 문서에서는 Forward Email의 보안 관행과 고객님의 이메일의 기밀성, 무결성, 그리고 가용성을 보장하기 위한 조치를 간략하게 설명합니다.
 
 ## 인프라 보안 {#infrastructure-security}
 
 ### 보안 데이터 센터 {#secure-data-centers}
 
-당사 인프라는 다음과 같은 SOC 2 호환 데이터 센터에 호스팅됩니다.
+당사의 인프라는 다음과 같은 SOC 2 규격을 준수하는 데이터 센터에 호스팅됩니다.
 
 * 24시간 연중무휴 물리적 보안 및 감시
 * 생체 인식 출입 통제
@@ -46,7 +46,7 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 
 ### 네트워크 보안 {#network-security}
 
-우리는 여러 계층의 네트워크 보안을 구현합니다:
+우리는 여러 계층의 네트워크 보안을 구현합니다.
 
 * 엄격한 접근 제어 목록을 갖춘 엔터프라이즈급 방화벽
 * DDoS 차단 및 완화
@@ -56,7 +56,7 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 * 의심스러운 활동 자동 차단 기능을 갖춘 포트 스캐닝 보호
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> 전송 중인 모든 데이터는 최신 암호화 제품군을 사용하는 TLS 1.2+를 사용하여 암호화됩니다.
 
 ## 이메일 보안 {#email-security}
 
@@ -69,7 +69,7 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 * **종합적인 보호**: 저장 중 암호화, 메모리 내 암호화, 전송 중 암호화를 구현합니다.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> 저희는 **[양자 저항 및 개별 암호화된 SQLite 사서함](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**을 사용하는 세계 최초이자 유일한 이메일 서비스입니다.
 
 ### 인증 및 권한 부여 {#authentication-and-authorization}
 
@@ -93,7 +93,7 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 우리는 데이터 최소화 원칙을 따릅니다.
 
 * 당사는 서비스 제공에 필요한 데이터만 수집합니다.
-* 이메일 콘텐츠는 메모리에서 처리되며 IMAP/POP3 전송에 필요한 경우를 제외하고는 영구적으로 저장되지 않습니다.
+* 이메일 내용은 메모리에서 처리되며 IMAP/POP3 전송에 필요한 경우를 제외하고는 영구적으로 저장되지 않습니다.
 * 로그는 익명으로 처리되며 필요한 기간 동안만 보관됩니다.
 
 ### 백업 및 복구 {#backup-and-recovery}
@@ -105,7 +105,7 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 
 ## 서비스 제공자 {#service-providers}
 
-우리는 서비스 제공자를 신중하게 선택하여 높은 보안 기준을 충족하도록 합니다. 아래는 국제 데이터 전송에 사용하는 제공자와 GDPR 준수 상태입니다.
+저희는 엄격한 보안 기준을 충족하는 서비스 제공업체를 엄선하여 선정합니다. 국제 데이터 전송에 사용하는 제공업체와 GDPR 준수 여부는 다음과 같습니다.
 
 | 공급자 | 목적 | DPF 인증 | GDPR 준수 페이지 |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
@@ -116,13 +116,13 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 | [Stripe](https://stripe.com) | 결제 처리 | ✅ 네 | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | 결제 처리 | ❌ 아니요 | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-우리는 이러한 공급업체를 사용하여 국제 데이터 보호 규정을 준수하는 동시에 안정적이고 안전한 서비스 제공을 보장합니다. 모든 데이터 전송은 귀하의 개인 정보를 보호하기 위해 적절한 보호 조치를 취하여 수행됩니다.
+당사는 국제 데이터 보호 규정을 준수하는 동시에 안정적이고 안전한 서비스 제공을 보장하기 위해 이러한 공급업체를 이용합니다. 모든 데이터 전송은 귀하의 개인 정보를 보호하기 위한 적절한 안전장치를 갖추고 진행됩니다.
 
 ## 규정 준수 및 감사 {#compliance-and-auditing}
 
 ### 정기 보안 평가 {#regular-security-assessments}
 
-저희 팀은 정기적으로 코드베이스, 서버, 인프라 및 관행을 모니터링, 검토 및 평가합니다. 저희는 다음을 포함하는 포괄적인 보안 프로그램을 구현합니다.
+저희 팀은 코드베이스, 서버, 인프라 및 보안 관행을 정기적으로 모니터링, 검토 및 평가합니다. 또한, 다음을 포함하는 포괄적인 보안 프로그램을 구현합니다.
 
 * SSH 키 정기 교체
 * 액세스 로그 지속적 모니터링
@@ -130,9 +130,9 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 * 선제적 취약점 관리
 * 모든 팀원을 대상으로 정기적인 보안 교육 실시
 
-### 준수 {#compliance}
+### 규정 준수 {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr) 규정 준수 데이터 처리 관행
+* [GDPR](https://forwardemail.net/gdpr) 데이터 처리 관행 준수
 * [데이터 처리 계약(DPA)](https://forwardemail.net/dpa) 비즈니스 고객용 제공
 * CCPA 준수 개인정보 보호 관리
 * SOC 2 Type II 감사 프로세스
@@ -149,7 +149,7 @@ Forward Email에서 보안은 최우선 순위입니다. 당사는 귀하의 이
 6. **사고 후 분석**: 종합적인 검토 및 개선
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> 보안 취약점을 발견하시면 즉시 <security@forwardemail.net>으로 신고해 주세요.
 
 ## 보안 개발 라이프사이클 {#security-development-lifecycle}
 
@@ -179,7 +179,7 @@ flowchart LR
 
 ## 서버 강화 {#server-hardening}
 
-당사의 [Ansible 구성](https://github.com/forwardemail/forwardemail.net/tree/master/ansible)는 다양한 서버 강화 조치를 구현합니다.
+[Ansible 구성](https://github.com/forwardemail/forwardemail.net/tree/master/ansible)은 다양한 서버 강화 조치를 구현합니다.
 
 * **USB 액세스 비활성화**: USB 스토리지 커널 모듈을 블랙리스트에 추가하여 물리적 포트를 비활성화합니다.
 * **방화벽 규칙**: 엄격한 iptables 규칙을 적용하여 필요한 연결만 허용합니다.
@@ -199,7 +199,7 @@ flowchart LR
 
 ## 서비스 수준 계약 {#service-level-agreement}
 
-저희는 높은 수준의 서비스 가용성과 안정성을 유지합니다. 저희 인프라는 중복성과 내결함성을 위해 설계되어 이메일 서비스가 계속 작동할 수 있도록 합니다. 저희는 공식적인 SLA 문서를 게시하지 않지만, 다음을 위해 최선을 다하고 있습니다.
+저희는 높은 수준의 서비스 가용성과 안정성을 유지합니다. 저희 인프라는 중복성과 내결함성을 고려하여 설계되어 이메일 서비스가 중단 없이 운영될 수 있도록 보장합니다. 공식적인 SLA 문서는 공개하지 않지만, 저희는 다음과 같은 사항을 준수합니다.
 
 * 모든 서비스 99.9% 이상 가동 시간
 * 서비스 중단 시 신속한 대응
@@ -208,7 +208,7 @@ flowchart LR
 
 ## 오픈 소스 보안 {#open-source-security}
 
-[오픈소스 서비스](https://github.com/forwardemail/forwardemail.net)으로서 당사의 보안은 다음과 같은 이점을 갖습니다.
+[오픈소스 서비스](https://github.com/forwardemail/forwardemail.net)의 경우 다음과 같은 보안 이점이 있습니다.
 
 * 누구나 감사할 수 있는 투명한 코드
 * 커뮤니티 주도 보안 개선

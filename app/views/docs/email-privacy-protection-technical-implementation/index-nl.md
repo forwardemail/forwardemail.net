@@ -10,30 +10,30 @@
   * [Het e-mail doorstuurproces](#the-email-forwarding-process)
   * [De rol van SRS (Sender Rewriting Scheme)](#the-role-of-srs-sender-rewriting-scheme)
 * [Hoe e-mail doorsturen werkt: de eenvoudige uitleg](#how-email-forwarding-works-the-simple-explanation)
-* [E-mail doorsturen instellen met E-mail doorsturen](#setting-up-email-forwarding-with-forward-email)
+* [E-mail doorsturen instellen met Forward Email](#setting-up-email-forwarding-with-forward-email)
   * [1. Meld u aan voor een account](#1-sign-up-for-an-account)
   * [2. Voeg uw domein toe](#2-add-your-domain)
   * [3. DNS-records configureren](#3-configure-dns-records)
-  * [4. E-mail doorsturen maken](#4-create-email-forwards)
+  * [4. E-mail doorsturen aanmaken](#4-create-email-forwards)
   * [5. Begin met het gebruiken van uw nieuwe e-mailadressen](#5-start-using-your-new-email-addresses)
-* [Geavanceerde functies van het doorsturen van e-mail](#advanced-features-of-forward-email)
+* [Geavanceerde functies van e-mail doorsturen](#advanced-features-of-forward-email)
   * [Wegwerpadressen](#disposable-addresses)
   * [Meerdere ontvangers en jokers](#multiple-recipients-and-wildcards)
   * [Integratie van 'E-mail verzenden als'](#send-mail-as-integration)
   * [Quantum-resistente beveiliging](#quantum-resistant-security)
-  * [Individueel gecodeerde SQLite-mailboxen](#individually-encrypted-sqlite-mailboxes)
+  * [Individueel versleutelde SQLite-mailboxen](#individually-encrypted-sqlite-mailboxes)
 * [Waarom Forward Email kiezen boven concurrenten](#why-choose-forward-email-over-competitors)
-  * [1. 100% open-source](#1-100-open-source)
+  * [1. 100% open source](#1-100-open-source)
   * [2. Privacygericht](#2-privacy-focused)
   * [3. Geen afhankelijkheid van derden](#3-no-third-party-reliance)
   * [4. Kosteneffectieve prijzen](#4-cost-effective-pricing)
-  * [5. Onbeperkte bronnen](#5-unlimited-resources)
+  * [5. Onbeperkte hulpbronnen](#5-unlimited-resources)
   * [6. Vertrouwd door grote organisaties](#6-trusted-by-major-organizations)
-* [Veelvoorkomende use cases voor e-maildoorsturing](#common-use-cases-for-email-forwarding)
+* [Veelvoorkomende gebruiksscenario's voor e-maildoorsturen](#common-use-cases-for-email-forwarding)
   * [Voor bedrijven](#for-businesses)
   * [Voor ontwikkelaars](#for-developers)
   * [Voor privacybewuste personen](#for-privacy-conscious-individuals)
-* [Best practices voor e-maildoorsturen](#best-practices-for-email-forwarding)
+* [Aanbevolen procedures voor e-maildoorsturen](#best-practices-for-email-forwarding)
   * [1. Gebruik beschrijvende adressen](#1-use-descriptive-addresses)
   * [2. Implementeer de juiste authenticatie](#2-implement-proper-authentication)
   * [3. Bekijk uw forwards regelmatig](#3-regularly-review-your-forwards)
@@ -43,9 +43,9 @@
 
 ## Voorwoord {#foreword}
 
-E-mail forwarding is een krachtige tool die de manier waarop u uw online communicatie beheert, kan transformeren. Of u nu een bedrijfseigenaar bent die professionele e-mailadressen met uw eigen domein wilt maken, een privacybewust individu dat zijn primaire e-mail wil beschermen, of een ontwikkelaar die flexibel e-mailbeheer nodig heeft, het begrijpen van e-mail forwarding is essentieel in het digitale landschap van vandaag.
+E-maildoorsturing is een krachtige tool die de manier waarop u uw online communicatie beheert, kan transformeren. Of u nu een bedrijfseigenaar bent die professionele e-mailadressen met uw eigen domein wilt aanmaken, een privacybewuste persoon die zijn primaire e-mailadres wil beschermen, of een ontwikkelaar die flexibel e-mailbeheer nodig heeft, inzicht in e-maildoorsturing is essentieel in het huidige digitale landschap.
 
-Bij Forward Email hebben we 's werelds veiligste, meest privé en flexibele e-mail doorstuurservice gebouwd. In deze uitgebreide gids leggen we uit hoe e-mail doorsturen werkt (zowel vanuit technisch als praktisch oogpunt), leiden we u door ons eenvoudige installatieproces en benadrukken we waarom onze service zich onderscheidt van concurrenten.
+Bij Forward Email hebben we 's werelds veiligste, meest private en flexibele e-maildoorstuurservice ontwikkeld. In deze uitgebreide handleiding leggen we uit hoe e-maildoorsturen werkt (zowel vanuit technisch als praktisch perspectief), begeleiden we je door ons eenvoudige installatieproces en benadrukken we waarom onze service zich onderscheidt van de concurrentie.
 
 ## Wat is e-mail doorsturen {#what-is-email-forwarding}
 
@@ -60,9 +60,9 @@ Deze ogenschijnlijk eenvoudige mogelijkheid biedt krachtige voordelen:
 
 ## Hoe e-mail doorsturen werkt: de technische uitleg {#how-email-forwarding-works-the-technical-explanation}
 
-Voor degenen die geïnteresseerd zijn in de technische details, gaan we kijken wat er achter de schermen gebeurt wanneer een e-mail wordt doorgestuurd.
+Als u geïnteresseerd bent in de technische details, gaan we kijken wat er achter de schermen gebeurt wanneer een e-mail wordt doorgestuurd.
 
-### Het e-mail doorstuurproces {#the-email-forwarding-process}
+### Het e-maildoorstuurproces {#the-email-forwarding-process}
 
 1. **DNS-configuratie**: Het proces begint met de DNS-records van uw domein. Wanneer u e-mailforwarding instelt, configureert u MX-records (Mail Exchange) die het internet laten weten waar e-mails voor uw domein moeten worden afgeleverd. Deze records verwijzen naar onze e-mailservers.
 
@@ -81,15 +81,15 @@ Voor degenen die geïnteresseerd zijn in de technische details, gaan we kijken w
 
 ### De rol van SRS (Sender Rewriting Scheme) {#the-role-of-srs-sender-rewriting-scheme}
 
-SRS verdient speciale aandacht omdat het essentieel is voor betrouwbare e-maildoorsturing. Wanneer een e-mail wordt doorgestuurd, moet het adres van de afzender worden herschreven om ervoor te zorgen dat de e-mail de SPF-controles op de uiteindelijke bestemming doorstaat.
+SRS verdient speciale aandacht omdat het essentieel is voor betrouwbare e-maildoorsturing. Wanneer een e-mail wordt doorgestuurd, moet het adres van de afzender worden herschreven om ervoor te zorgen dat de e-mail de SPF-controles op de eindbestemming doorstaat.
 
-Zonder SRS mislukken doorgestuurde e-mails vaak de SPF-verificatie en worden ze gemarkeerd als spam of helemaal afgewezen. Onze implementatie van SRS zorgt ervoor dat uw doorgestuurde e-mails betrouwbaar worden afgeleverd, terwijl de oorspronkelijke afzenderinformatie op een voor u transparante manier wordt bewaard.
+Zonder SRS komen doorgestuurde e-mails vaak niet door de SPF-verificatie en worden ze als spam gemarkeerd of zelfs helemaal afgewezen. Onze SRS-implementatie zorgt ervoor dat uw doorgestuurde e-mails betrouwbaar worden afgeleverd, terwijl de oorspronkelijke afzendergegevens op een voor u transparante manier behouden blijven.
 
 ## Hoe e-mail doorsturen werkt: de eenvoudige uitleg {#how-email-forwarding-works-the-simple-explanation}
 
 Als de technische details te overweldigend lijken, volgt hier een eenvoudigere manier om e-mail doorsturen te begrijpen:
 
-Denk aan e-mail doorsturen als het doorsturen van fysieke post. Wanneer u naar een nieuw huis verhuist, kunt u de postdienst vragen om alle post van uw oude adres door te sturen naar uw nieuwe adres. E-mail doorsturen werkt op een vergelijkbare manier, maar dan voor digitale berichten.
+Beschouw e-maildoorsturen als het doorsturen van fysieke post. Wanneer u naar een nieuw huis verhuist, kunt u de postdienst vragen om alle post van uw oude adres door te sturen naar uw nieuwe adres. E-maildoorsturen werkt op een vergelijkbare manier, maar dan voor digitale berichten.
 
 Met doorsturen van e-mail:
 
@@ -97,51 +97,51 @@ Met doorsturen van e-mail:
 2. U geeft aan waar u deze e-mails wilt laten bezorgen (bijvoorbeeld uw Gmail- of Outlook-account).
 3. Wij regelen alle technische details om ervoor te zorgen dat e-mails die naar uw aangepaste adressen worden verzonden, veilig in uw opgegeven inbox aankomen.
 
-Zo simpel is het! U kunt professionele e-mailadressen gebruiken zonder uw bestaande e-mailworkflow te wijzigen.
+Zo eenvoudig is het! U kunt professionele e-mailadressen gebruiken zonder uw bestaande e-mailworkflow te wijzigen.
 
 ## E-mail doorsturen instellen met Forward Email {#setting-up-email-forwarding-with-forward-email}
 
-Een van de grootste voordelen van Forward Email is hoe makkelijk het is om in te stellen. Hier is een stapsgewijze handleiding:
+Een van de grootste voordelen van Forward Email is hoe eenvoudig het is in te stellen. Hier is een stapsgewijze handleiding:
 
 ### 1. Registreer voor een account {#1-sign-up-for-an-account}
 
-Ga naar [forwardemail.net](https://forwardemail.net) en maak een gratis account aan. Het aanmelden duurt minder dan een minuut.
+Bezoek [forwardemail.net](https://forwardemail.net) en maak een gratis account aan. Het aanmelden duurt minder dan een minuut.
 
 ### 2. Voeg uw domein toe {#2-add-your-domain}
 
-Zodra u bent ingelogd, voegt u het domein toe dat u wilt gebruiken voor e-mailforwarding. Als u nog geen domein bezit, moet u er eerst een kopen bij een domeinregistrar.
+Nadat u bent ingelogd, voegt u het domein toe dat u wilt gebruiken voor e-maildoorsturing. Als u nog geen domein heeft, moet u er eerst een aanschaffen bij een domeinregistrar.
 
 ### 3. DNS-records configureren {#3-configure-dns-records}
 
-Wij geven u de exacte DNS-records die u aan uw domein moet toevoegen. Dit omvat doorgaans:
+We geven u de exacte DNS-records die u aan uw domein moet toevoegen. Dit houdt doorgaans het volgende in:
 
 * MX-records toevoegen die naar onze e-mailservers verwijzen
 * TXT-records toevoegen voor verificatie en beveiliging
 
-De meeste domeinregistrars hebben een eenvoudige interface om deze records toe te voegen. Wij bieden gedetailleerde handleidingen voor alle grote domeinregistrars om dit proces zo soepel mogelijk te laten verlopen.
+De meeste domeinregistrars hebben een eenvoudige interface voor het toevoegen van deze records. We bieden gedetailleerde handleidingen voor alle grote domeinregistrars om dit proces zo soepel mogelijk te laten verlopen.
 
 ### 4. E-mail doorsturen maken {#4-create-email-forwards}
 
-Nadat uw DNS-records zijn geverifieerd (wat meestal maar een paar minuten duurt), kunt u e-mailforwards maken. Geef gewoon het volgende op:
+Nadat uw DNS-records zijn geverifieerd (wat meestal slechts een paar minuten duurt), kunt u e-mail doorsturen instellen. Geef hiervoor het volgende op:
 
 * Het e-mailadres op uw domein (bijv. <contact@uwdomein.com>)
 * De bestemming waar u e-mails naartoe wilt sturen (bijv. uw persoonlijke Gmail-adres)
 
 ### 5. Begin met het gebruiken van uw nieuwe e-mailadressen {#5-start-using-your-new-email-addresses}
 
-Dat is alles! E-mails die naar uw aangepaste domeinadressen worden verzonden, worden nu doorgestuurd naar uw opgegeven bestemming. U kunt zoveel doorsturingen maken als u nodig hebt, inclusief catch-all-adressen die alle e-mails doorsturen die naar elk adres op uw domein worden verzonden.
+Dat is alles! E-mails die naar uw eigen domeinadressen worden verzonden, worden nu doorgestuurd naar de door u opgegeven bestemming. U kunt zoveel doorsturingen aanmaken als u nodig hebt, inclusief catch-all-adressen die alle e-mails doorsturen die naar elk adres binnen uw domein worden verzonden.
 
 ## Geavanceerde functies van doorsturen van e-mail {#advanced-features-of-forward-email}
 
-Hoewel de basisfunctie voor het doorsturen van e-mail op zichzelf al krachtig is, biedt Forward Email verschillende geavanceerde functies waarmee we ons onderscheiden:
+Hoewel de basisfunctionaliteit voor het doorsturen van e-mail op zichzelf al krachtig is, biedt Forward Email verschillende geavanceerde functies waarmee we ons onderscheiden:
 
 ### Wegwerpadressen {#disposable-addresses}
 
-Maak specifieke of anonieme e-mailadressen die doorsturen naar uw hoofdaccount. U kunt labels toewijzen aan deze adressen en ze op elk gewenst moment in- of uitschakelen om uw inbox georganiseerd te houden. Uw werkelijke e-mailadres wordt nooit blootgesteld.
+Maak specifieke of anonieme e-mailadressen aan die berichten doorsturen naar je hoofdaccount. Je kunt labels aan deze adressen toewijzen en ze op elk moment in- of uitschakelen om je inbox overzichtelijk te houden. Je echte e-mailadres wordt nooit zichtbaar.
 
 ### Meerdere ontvangers en jokers {#multiple-recipients-and-wildcards}
 
-Stuur één adres door naar meerdere ontvangers, zodat u eenvoudig informatie kunt delen met een team. U kunt ook wildcardadressen (catch-all forwarding) gebruiken om e-mails te ontvangen die naar elk adres op uw domein zijn verzonden.
+Stuur één adres door naar meerdere ontvangers, zodat u eenvoudig informatie met een team kunt delen. U kunt ook wildcardadressen (catch-all forwarding) gebruiken om e-mails te ontvangen die naar elk adres binnen uw domein zijn verzonden.
 
 ### Integratie van "E-mail verzenden als" {#send-mail-as-integration}
 
@@ -149,43 +149,43 @@ Je hoeft je inbox nooit te verlaten om e-mails te versturen vanaf je eigen domei
 
 ### Quantum-resistente beveiliging {#quantum-resistant-security}
 
-Wij zijn de eerste en enige e-mailservice ter wereld die gebruikmaakt van kwantumbestendige encryptie. Zo zijn uw communicatie zelfs beschermd tegen de meest geavanceerde toekomstige bedreigingen.
+Wij zijn de eerste en enige e-mailservice ter wereld die gebruikmaakt van kwantumbestendige encryptie. Zo bent u beschermd tegen zelfs de meest geavanceerde toekomstige bedreigingen.
 
 ### Individueel gecodeerde SQLite-mailboxen {#individually-encrypted-sqlite-mailboxes}
 
-In tegenstelling tot andere aanbieders, die alle e-mailadressen van gebruikers in gedeelde databases opslaan, gebruiken wij individueel gecodeerde SQLite-mailboxen voor ongeëvenaarde privacy en beveiliging.
+In tegenstelling tot andere aanbieders, die de e-mailadressen van alle gebruikers in gedeelde databases opslaan, gebruiken wij individueel gecodeerde SQLite-mailboxen voor ongeëvenaarde privacy en beveiliging.
 
 ## Waarom Forward Email kiezen boven concurrenten {#why-choose-forward-email-over-competitors}
 
-Er zijn meerdere spelers op de markt voor e-mail doorsturing, maar Forward Email onderscheidt zich op een aantal belangrijke punten:
+Er zijn meerdere spelers op de markt voor e-mail doorsturen, maar Forward Email onderscheidt zich op een aantal belangrijke punten:
 
 ### 1. 100% open source {#1-100-open-source}
 
-Wij zijn de enige e-maildoorstuurservice die volledig open-source is, inclusief onze backendcode. Deze transparantie bouwt vertrouwen op en maakt onafhankelijke beveiligingsaudits mogelijk. Andere services beweren misschien open-source te zijn, maar geven hun backendcode niet vrij.
+Wij zijn de enige e-maildoorstuurservice die volledig open source is, inclusief onze backendcode. Deze transparantie schept vertrouwen en maakt onafhankelijke beveiligingsaudits mogelijk. Andere services beweren misschien open source te zijn, maar geven hun backendcode niet vrij.
 
-### 2. Privacygericht {#2-privacy-focused}
+### 2. Privacygerichte {#2-privacy-focused}
 
-We hebben deze service gemaakt omdat u recht hebt op privacy. We gebruiken robuuste encryptie met TLS, slaan geen SMTP-logs op (behalve fouten en uitgaande SMTP) en schrijven uw e-mails niet naar schijfopslag.
+We hebben deze service ontwikkeld omdat u recht hebt op privacy. We gebruiken robuuste encryptie met TLS, slaan geen SMTP-logs op (behalve fouten en uitgaande SMTP) en schrijven uw e-mails niet naar schijfruimte.
 
-### 3. Geen vertrouwen van derden {#3-no-third-party-reliance}
+### 3. Geen afhankelijkheid van derden {#3-no-third-party-reliance}
 
-In tegenstelling tot concurrenten die afhankelijk zijn van Amazon SES of andere externe diensten, behouden wij volledige controle over onze infrastructuur, waardoor zowel de betrouwbaarheid als de privacy worden verbeterd.
+In tegenstelling tot concurrenten die afhankelijk zijn van Amazon SES of andere externe diensten, behouden wij de volledige controle over onze infrastructuur, waardoor zowel de betrouwbaarheid als de privacy worden verbeterd.
 
-### 4. Kosteneffectieve prijzen {#4-cost-effective-pricing}
+### 4. Kosteneffectieve prijsstelling {#4-cost-effective-pricing}
 
-Met ons prijsmodel kunt u kosteneffectief schalen. We rekenen niet per gebruiker en u kunt betalen voor opslag. Voor $ 3/maand bieden we meer functies voor een lagere prijs dan concurrenten zoals Gandi ($ 3,99/maand).
+Met ons prijsmodel kunt u kosteneffectief schalen. We rekenen geen kosten per gebruiker en u kunt betalen voor opslag naar gebruik. Voor $ 3 per maand bieden we meer functionaliteit voor een lagere prijs dan concurrenten zoals Gandi ($ 3,99 per maand).
 
 ### 5. Onbeperkte bronnen {#5-unlimited-resources}
 
-Wij leggen geen kunstmatige limieten op aan domeinen, aliassen of e-mailadressen, zoals veel concurrenten doen.
+Wij leggen geen kunstmatige limieten op voor domeinen, aliassen of e-mailadressen, zoals veel concurrenten doen.
 
 ### 6. Vertrouwd door grote organisaties {#6-trusted-by-major-organizations}
 
 Onze service wordt gebruikt door meer dan 500.000 domeinen, waaronder bekende organisaties zoals [De Amerikaanse Marine Academie](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [De Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [Canoniek/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales en vele anderen.
 
-## Veelvoorkomende gebruiksgevallen voor e-maildoorsturen {#common-use-cases-for-email-forwarding}
+## Veelvoorkomende use cases voor e-maildoorsturen {#common-use-cases-for-email-forwarding}
 
-E-mail doorsturen biedt een oplossing voor talloze uitdagingen voor verschillende soorten gebruikers:
+E-mail doorsturen is de oplossing voor talloze uitdagingen voor verschillende soorten gebruikers:
 
 ### Voor bedrijven {#for-businesses}
 
@@ -218,30 +218,30 @@ Maak e-mailadressen aan waarvan het doel duidelijk is aangegeven (bijvoorbeeld <
 
 ### 2. Implementeer de juiste authenticatie {#2-implement-proper-authentication}
 
-Zorg ervoor dat uw domein de juiste SPF-, DKIM- en DMARC-records heeft om de afleverbaarheid te maximaliseren. Forward Email maakt dit eenvoudig met onze begeleide installatie.
+Zorg ervoor dat je domein de juiste SPF-, DKIM- en DMARC-records heeft om de afleverbaarheid te maximaliseren. Forward Email maakt dit eenvoudig met onze begeleide installatie.
 
-### 3. Controleer uw forwards regelmatig {#3-regularly-review-your-forwards}
+### 3. Controleer regelmatig uw forwards {#3-regularly-review-your-forwards}
 
-Controleer regelmatig of uw e-mailberichten zijn doorgestuurd en schakel de berichten uit die niet langer nodig zijn of die veel spam ontvangen.
+Controleer regelmatig of uw e-mail doorsturingen kloppen en schakel de doorsturingen uit die niet langer nodig zijn of die veel spam ontvangen.
 
 ### 4. Stel 'E-mail verzenden als' in voor naadloze antwoorden {#4-set-up-send-mail-as-for-seamless-replies}
 
-Configureer uw belangrijkste e-mailclient om e-mails te versturen vanaf uw aangepaste domeinadressen. Zo krijgt u een consistente ervaring bij het beantwoorden van doorgestuurde e-mails.
+Configureer uw belangrijkste e-mailclient om e-mails te versturen als uw aangepaste domeinadressen. Zo krijgt u een consistente ervaring bij het beantwoorden van doorgestuurde e-mails.
 
 ### 5. Gebruik catch-all-adressen voorzichtig {#5-use-catch-all-addresses-cautiously}
 
-Hoewel catch-all-adressen handig zijn, kunnen ze potentieel meer spam ontvangen. Overweeg om specifieke forwards te maken voor belangrijke communicatie.
+Hoewel verzameladressen handig zijn, kunnen ze mogelijk meer spam ontvangen. Overweeg om specifieke doorstuuradressen in te stellen voor belangrijke berichten.
 
 ## Conclusie {#conclusion}
 
-E-mail forwarding is een krachtige tool die professionaliteit, privacy en eenvoud brengt in uw e-mailcommunicatie. Met Forward Email krijgt u de meest veilige, privé en flexibele e-mail forwarding service die er is.
+E-maildoorsturen is een krachtige tool die professionaliteit, privacy en eenvoud in uw e-mailcommunicatie brengt. Met Forward Email krijgt u de veiligste, meest persoonlijke en flexibele e-maildoorstuurservice die er is.
 
 Als enige 100% open-sourceprovider met kwantumbestendige encryptie en een focus op privacy, hebben we een service ontwikkeld die uw rechten respecteert en tegelijkertijd uitzonderlijke functionaliteit biedt.
 
-Of u nu professionele e-mailadressen voor uw bedrijf wilt maken, uw privacy wilt beschermen met wegwerpadressen of het beheer van meerdere e-mailaccounts wilt vereenvoudigen, Forward Email biedt de perfecte oplossing.
+Of u nu professionele e-mailadressen voor uw bedrijf wilt maken, uw privacy wilt beschermen met wegwerpadressen of het beheer van meerdere e-mailaccounts wilt vereenvoudigen: Forward Email biedt de perfecte oplossing.
 
 Klaar om uw e-mailervaring te transformeren? [Meld je gratis aan](https://forwardemail.net) vandaag nog en sluit u aan bij de meer dan 500.000 domeinen die al profiteren van onze service.
 
 ---
 
-*Deze blogpost is geschreven door het Forward Email-team, de makers van 's werelds veiligste, meest privé en flexibele e-maildoorstuurservice. Ga naar [forwardemail.net](https://forwardemail.net) voor meer informatie over onze service en begin met het vol vertrouwen doorsturen van e-mails.*
+*Deze blogpost is geschreven door het Forward Email-team, de makers van 's werelds veiligste, meest privé en flexibele e-maildoorstuurservice. Ga naar [forwardemail.net](https://forwardemail.net) voor meer informatie over onze service en begin vol vertrouwen met het doorsturen van e-mails.*

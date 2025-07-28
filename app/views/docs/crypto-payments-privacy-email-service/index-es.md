@@ -19,7 +19,7 @@
 
 ## Prólogo {#foreword}
 
-En [Reenviar correo electrónico](https://forwardemail.net), buscamos constantemente maneras de mejorar su [privacidad](https://en.wikipedia.org/wiki/Privacy) y seguridad, a la vez que hacemos nuestro servicio más accesible. Hoy nos complace anunciar que ahora aceptamos pagos [criptomoneda](https://en.wikipedia.org/wiki/Cryptocurrency) mediante la integración de pagos con criptomonedas [De Stripe](https://stripe.com).
+En [Reenviar correo electrónico](https://forwardemail.net), buscamos constantemente maneras de mejorar su seguridad y [privacidad](https://en.wikipedia.org/wiki/Privacy), a la vez que hacemos nuestro servicio más accesible. Hoy nos complace anunciar que ahora aceptamos pagos [criptomoneda](https://en.wikipedia.org/wiki/Cryptocurrency) a través de la integración de pagos con criptomonedas [Rayas](https://stripe.com).
 
 ## Por qué son importantes los pagos con criptomonedas {#why-crypto-payments-matter}
 
@@ -32,7 +32,7 @@ En [Reenviar correo electrónico](https://forwardemail.net), buscamos constantem
 
 ## Cómo funciona {#how-it-works}
 
-Hemos integrado el sistema de pago con criptomonedas [De Stripe](https://docs.stripe.com/crypto) para que el proceso sea lo más sencillo posible. Así es como puedes pagar los servicios de Reenvío de Correo Electrónico con criptomonedas:
+Hemos integrado el sistema de pago con criptomonedas [Rayas](https://docs.stripe.com/crypto) para que el proceso sea lo más sencillo posible. Así es como puedes pagar los servicios de Reenvío de Correo Electrónico con criptomonedas:
 
 ```mermaid
 flowchart LR
@@ -46,7 +46,7 @@ flowchart LR
 
 1. **Seleccione Crypto como su método de pago**: Al realizar el pago, verá "Crypto" como opción de pago junto con los métodos tradicionales como tarjetas de crédito.
 
-2. **Elige tu criptomoneda**: Actualmente, aceptamos [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) en múltiples cadenas de bloques, incluyendo [Ethereum](https://ethereum.org), [Solana](https://solana.com) y [Polígono](https://polygon.technology). USDC es una criptomoneda estable que mantiene un valor de 1:1 con el dólar estadounidense.
+2. **Elige tu criptomoneda**: Actualmente, aceptamos [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) en varias cadenas de bloques, incluyendo [Ethereum](https://ethereum.org), [Solana](https://solana.com) y [Polígono](https://polygon.technology). USDC es una criptomoneda estable que mantiene un valor de 1:1 con el dólar estadounidense.
 
 3. **Conecta tu billetera**: Serás redirigido a una página segura donde podrás conectar tu billetera de criptomonedas preferida. Admitimos varias opciones de billetera, incluyendo:
 * [MetaMask](https://metamask.io)
@@ -75,20 +75,20 @@ graph TD
     end
 ```
 
-**Información Personal Reducida**: A diferencia de los pagos con tarjeta de crédito, las transacciones con criptomonedas no requieren tu nombre, dirección de facturación ni otros datos personales. Obtén más información sobre [privacidad de las transacciones](https://en.wikipedia.org/wiki/Privacy_coin).
-* **Separación de la Banca Tradicional**: Tu pago no se puede vincular a tu cuenta bancaria ni a tu historial crediticio. Lee sobre [privacidad financiera](https://en.wikipedia.org/wiki/Financial_privacy).
-* **Privacidad en Blockchain**: Si bien las transacciones en blockchain son públicas, son seudónimas y no están directamente vinculadas a tu identidad real. Consulta [técnicas de privacidad de blockchain](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
-* **Conforme a Nuestros Valores**: Como servicio de correo electrónico centrado en la privacidad, creemos en darte control sobre tu información personal en cada paso. Consulta nuestro [política de privacidad](/privacy).
+**Información Personal Reducida**: A diferencia de los pagos con tarjeta de crédito, las transacciones con criptomonedas no requieren su nombre, dirección de facturación ni otros datos personales. Obtenga más información sobre [privacidad de las transacciones](https://en.wikipedia.org/wiki/Privacy_coin).
+* **Separación de la banca tradicional**: Su pago no se puede vincular a su cuenta bancaria ni a su historial crediticio. Lea sobre [privacidad financiera](https://en.wikipedia.org/wiki/Financial_privacy).
+* **Privacidad en Blockchain**: Si bien las transacciones en blockchain son públicas, son seudónimas y no están directamente vinculadas a su identidad real. Consulte [técnicas de privacidad de blockchain](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
+* **Conforme a nuestros valores**: Como servicio de correo electrónico centrado en la privacidad, creemos en brindarle control sobre su información personal en cada paso. Consulte nuestro [política de privacidad](/privacy).
 
 ## Detalles técnicos {#technical-details}
 
 Para aquellos interesados en los aspectos técnicos:
 
-* Utilizamos la infraestructura de pagos criptográficos [De Stripe](https://docs.stripe.com/crypto/stablecoin-payments), que gestiona toda la complejidad de las transacciones en blockchain.
+* Utilizamos la infraestructura de pagos de criptomonedas [Rayas](https://docs.stripe.com/crypto/stablecoin-payments), que gestiona toda la complejidad de las transacciones en blockchain.
 * Los pagos se realizan en [USDC](https://www.circle.com/en/usdc) en múltiples blockchains, incluyendo [Ethereum](https://ethereum.org), [Solana](https://solana.com) y [Polígono](https://polygon.technology).
 * Si usted paga en criptomonedas, recibimos el valor equivalente en USD, lo que nos permite mantener precios estables.
 
-## Configuración de su billetera de criptomonedas {#setting-up-your-crypto-wallet}
+## Configuración de su billetera criptográfica {#setting-up-your-crypto-wallet}
 
 ¿Eres nuevo en criptomonedas? Aquí te explicamos cómo configurar las billeteras compatibles:
 
@@ -100,7 +100,7 @@ flowchart LR
     D --> E[Ready for Payment]
 ```
 
-__URL_PROTEGIDA_18__ MetaMáscara {__URL_PROTEGIDA_19__
+MARCADOR DE TEMPERATURA 0 MetaMask {MARCADOR DE TEMPERATURA 1
 
 [MetaMask](https://metamask.io) es una de las billeteras Ethereum más populares.
 
@@ -111,7 +111,7 @@ __URL_PROTEGIDA_18__ MetaMáscara {__URL_PROTEGIDA_19__
 5. Agrega ETH o USDC a tu billetera a través de un exchange o compra directa
 6. [Guía detallada de configuración de MetaMask](https://metamask.io/faqs/)
 
-### Fantasma {#phantom}
+MARCADOR DE TEMPERATURA 0 Fantasma {MARCADOR DE TEMPERATURA 1
 
 [Fantasma](https://phantom.app) es una billetera Solana líder.
 
@@ -127,12 +127,12 @@ __URL_PROTEGIDA_18__ MetaMáscara {__URL_PROTEGIDA_19__
 [Monedero Coinbase](https://www.coinbase.com/wallet) admite múltiples cadenas de bloques.
 
 1. Descarga [Monedero Coinbase](https://www.coinbase.com/wallet/downloads)
-2. Crea una nueva billetera (separada de tu cuenta de Coinbase)
+2. Crea una nueva billetera (separada de la cuenta de Coinbase)
 3. Asegura tu frase de recuperación
 4. Transfiere o compra criptomonedas directamente en la app
 5. [Guía de billetera de Coinbase](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
 
-### Conexión de billetera {#walletconnect}
+MARCADOR DE TEMPERATURA 0 WalletConnect {MARCADOR DE TEMPERATURA 1
 
 [Conexión de billetera](https://walletconnect.com) es un protocolo que conecta billeteras a sitios web.
 

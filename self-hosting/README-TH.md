@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# การเผยแพร่ที่โฮสต์ด้วยตนเอง {#self-hosted-releases}
 
-หัวข้อนี้อธิบายเวิร์กโฟลว์ CI/CD สำหรับโซลูชันโฮสต์ด้วยตนเองของ ForwardEmail โดยอธิบายถึงวิธีการสร้าง เผยแพร่ และปรับใช้ภาพ Docker
+ส่วนนี้แสดงเอกสารเวิร์กโฟลว์ CI/CD สำหรับโซลูชันโฮสต์ด้วยตนเองของ ForwardEmail โดยอธิบายถึงวิธีการสร้าง เผยแพร่ และปรับใช้ภาพ Docker
 
-## Table of Contents {#table-of-contents}
+## สารบัญ {#table-of-contents}
 
 * [ภาพรวม](#overview)
 * [เวิร์กโฟลว์ CI/CD](#cicd-workflow)
@@ -12,25 +12,25 @@
   * [การติดตั้ง](#installation)
   * [การกำหนดค่า Docker Compose](#docker-compose-configuration)
 * [คุณสมบัติการบำรุงรักษา](#maintenance-features)
-  * [การอัพเดทอัตโนมัติ](#automatic-updates)
+  * [การอัปเดตอัตโนมัติ](#automatic-updates)
   * [การสำรองข้อมูลและกู้คืน](#backup-and-restore)
   * [การต่ออายุใบรับรอง](#certificate-renewal)
 * [การกำหนดเวอร์ชัน](#versioning)
 * [การเข้าถึงรูปภาพ](#accessing-images)
 * [การมีส่วนสนับสนุน](#contributing)
 
-## Overview {#overview}
+## ภาพรวม {#overview}
 
-โซลูชันโฮสต์ด้วยตนเองของ ForwardEmail ใช้ GitHub Actions เพื่อสร้างและเผยแพร่ภาพ Docker โดยอัตโนมัติทุกครั้งที่มีการสร้างเวอร์ชันใหม่ จากนั้นผู้ใช้จะสามารถใช้ภาพเหล่านี้เพื่อปรับใช้บนเซิร์ฟเวอร์ของตนเองโดยใช้สคริปต์การตั้งค่าที่ให้มา
+โซลูชันที่โฮสต์ด้วยตนเองของ ForwardEmail ใช้ GitHub Actions เพื่อสร้างและเผยแพร่อิมเมจ Docker โดยอัตโนมัติทุกครั้งที่มีการสร้างเวอร์ชันใหม่ อิมเมจเหล่านี้พร้อมให้ผู้ใช้นำไปปรับใช้บนเซิร์ฟเวอร์ของตนเองโดยใช้สคริปต์การตั้งค่าที่ให้มา
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> นอกจากนี้ยังมี [บล็อกที่โฮสต์ด้วยตนเอง](https://forwardemail.net/blog/docs/self-hosted-solution) และ [คู่มือนักพัฒนาที่โฮสต์ด้วยตนเอง](https://forwardemail.net/self-hosted) ของเราด้วย
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> และสำหรับเวอร์ชันแบบทีละขั้นตอนโดยละเอียด โปรดดูคู่มือที่อ้างอิง [อูบุนตู](https://forwardemail.net/guides/selfhosted-on-ubuntu) หรือ [เดเบียน](https://forwardemail.net/guides/selfhosted-on-debian)
 
-## CI/CD Workflow {#cicd-workflow}
+## เวิร์กโฟลว์ CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### เวิร์กโฟลว์การดำเนินการ GitHub {#github-actions-workflow}
 
 กระบวนการสร้างและเผยแพร่อิมเมจ Docker ที่โฮสต์ด้วยตนเองถูกกำหนดไว้ใน `.github/workflows/docker-image-build-publish.yml` เวิร์กโฟลว์นี้:
 
@@ -71,7 +71,7 @@ jobs:
 
 ### โครงสร้างภาพ Docker {#docker-image-structure}
 
-อิมเมจ Docker ถูกสร้างขึ้นโดยใช้วิธีการหลายขั้นตอนตามที่กำหนดไว้ใน `self-hosting/Dockerfile-selfhosted`:
+ภาพ Docker ถูกสร้างขึ้นโดยใช้วิธีการหลายขั้นตอนที่กำหนดไว้ใน `self-hosting/Dockerfile-selfhosted`:
 
 1. **ขั้นตอนการสร้าง**:
 * ใช้ Node.js 20 เป็นอิมเมจพื้นฐาน
@@ -80,12 +80,12 @@ jobs:
 * สร้างแอปพลิเคชันในโหมดการผลิต
 
 2. **ขั้นตอนสุดท้าย**:
-* ใช้ภาพ Node.js 20 ที่เล็กกว่า
-* ติดตั้งเฉพาะส่วนที่ต้องพึ่งพาของระบบ
+* ใช้อิมเมจ Node.js 20 ที่เล็กลง
+* ติดตั้งเฉพาะส่วนที่ต้องพึ่งพาระบบเท่านั้น
 * สร้างไดเร็กทอรีที่จำเป็นสำหรับการจัดเก็บข้อมูล
 * คัดลอกแอปพลิเคชันที่สร้างแล้วจากขั้นตอนการสร้าง
 
-แนวทางนี้ช่วยให้มั่นใจว่าภาพสุดท้ายมีขนาดและความปลอดภัยที่เหมาะสมที่สุด
+แนวทางนี้ช่วยให้แน่ใจว่าภาพสุดท้ายได้รับการปรับขนาดและความปลอดภัยให้เหมาะสม
 
 ## กระบวนการปรับใช้ {#deployment-process}
 
@@ -101,9 +101,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 1. โคลนที่เก็บข้อมูล
 2. ตั้งค่าสภาพแวดล้อม
-3. กำหนดค่า DNS และการตั้งค่าไฟร์วอลล์
+3. กำหนดค่า DNS และไฟร์วอลล์
 4. สร้างใบรับรอง SSL
-5. ดึงภาพ Docker ล่าสุด
+5. ดึงอิมเมจ Docker ล่าสุด
 6. เริ่มบริการโดยใช้ Docker Compose
 
 ### การกำหนดค่า Docker Compose {#docker-compose-configuration}
@@ -111,9 +111,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 ไฟล์ `docker-compose-self-hosted.yml` กำหนดบริการทั้งหมดที่จำเป็นสำหรับโซลูชันโฮสต์ด้วยตนเอง:
 
 * **เว็บ**: อินเทอร์เฟซเว็บหลัก
-* **API**: เซิร์ฟเวอร์ API สำหรับการเข้าถึงตามโปรแกรม
+* **API**: เซิร์ฟเวอร์ API สำหรับการเข้าถึงด้วยโปรแกรม
 * **SMTP**: บริการส่งอีเมล
-* **IMAP/POP3**: บริการดึงอีเมล
+* **IMAP/POP3**: บริการดึงข้อมูลอีเมล
 * **MX**: บริการแลกเปลี่ยนอีเมล
 * **CalDAV**: บริการปฏิทิน
 * **CardDAV**: บริการรายชื่อติดต่อ
@@ -121,18 +121,18 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **Redis**: ที่จัดเก็บข้อมูลในหน่วยความจำ
 * **SQLite**: ฐานข้อมูลสำหรับจัดเก็บอีเมล
 
-บริการแต่ละรายการจะใช้ภาพ Docker เดียวกัน แต่มีจุดเข้าที่แตกต่างกัน ช่วยให้มีสถาปัตยกรรมแบบโมดูลาร์และลดความซับซ้อนในการบำรุงรักษา
+บริการแต่ละรายการจะใช้ Docker image เดียวกัน แต่มีจุดเข้าที่แตกต่างกัน ช่วยให้มีสถาปัตยกรรมแบบโมดูลาร์และลดความซับซ้อนในการบำรุงรักษา
 
 ## คุณสมบัติการบำรุงรักษา {#maintenance-features}
 
-โซลูชันโฮสต์ด้วยตนเองมีคุณสมบัติการบำรุงรักษาหลายประการ:
+โซลูชันโฮสต์ด้วยตนเองประกอบด้วยคุณลักษณะการบำรุงรักษาหลายประการ:
 
 ### การอัปเดตอัตโนมัติ {#automatic-updates}
 
 ผู้ใช้สามารถเปิดใช้งานการอัปเดตอัตโนมัติที่จะ:
 
-* ดึงภาพ Docker ล่าสุดทุกคืน
-* รีสตาร์ทบริการด้วยภาพอัปเดต
+* ดึงอิมเมจ Docker ล่าสุดทุกคืน
+* รีสตาร์ทเซอร์วิสด้วยอิมเมจที่อัปเดตแล้ว
 * บันทึกกระบวนการอัปเดต
 
 ```bash
@@ -142,15 +142,15 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### สำรองและกู้คืน {#backup-and-restore}
 
-การตั้งค่ามีตัวเลือกให้:
+การตั้งค่านี้มีตัวเลือกให้:
 
-* การกำหนดค่าการสำรองข้อมูลปกติไปยังที่เก็บข้อมูลที่รองรับ S3
+* การกำหนดค่าการสำรองข้อมูลปกติไปยังพื้นที่จัดเก็บข้อมูลที่เข้ากันได้กับ S3
 * การสำรองข้อมูล MongoDB, Redis และ SQLite
-* การคืนค่าจากการสำรองข้อมูลในกรณีที่เกิดความล้มเหลว
+* การกู้คืนจากข้อมูลสำรองในกรณีที่เกิดความล้มเหลว
 
 ### การต่ออายุใบรับรอง {#certificate-renewal}
 
-ใบรับรอง SSL ได้รับการจัดการโดยอัตโนมัติ โดยมีตัวเลือกดังนี้:
+ใบรับรอง SSL จะถูกจัดการโดยอัตโนมัติด้วยตัวเลือกดังนี้:
 
 * สร้างใบรับรองใหม่ระหว่างการตั้งค่า
 * ต่ออายุใบรับรองเมื่อจำเป็น
@@ -158,7 +158,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## การกำหนดเวอร์ชัน {#versioning}
 
-แต่ละรุ่นของ GitHub จะสร้างภาพ Docker ใหม่ที่มีแท็กดังนี้:
+GitHub Release แต่ละครั้งจะสร้างภาพ Docker ใหม่ที่มีแท็ก:
 
 1. เวอร์ชันที่เผยแพร่เฉพาะ (เช่น `v1.0.0`)
 2. แท็ก `latest` สำหรับเวอร์ชันล่าสุด
@@ -174,7 +174,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ไม่จำเป็นต้องมีการตรวจสอบสิทธิ์เพื่อดึงภาพเหล่านี้
 
-## การสนับสนุน {#contributing}
+## มีส่วนร่วม {#contributing}
 
 เพื่อมีส่วนสนับสนุนโซลูชันโฮสต์ด้วยตนเอง:
 

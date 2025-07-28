@@ -16,7 +16,7 @@
 
 ## Áttekintés {#overview}
 
-A Forward Email aktívan értékeli a kiberbiztonsági kutatócégeket, hogy átfogó auditokat végezzenek a [GitHub](https://github.com/forwardemail) rendszeren futó nyílt forráskódú kódbázisunkon és a szerverinfrastruktúránkon. Az elmúlt évek kiterjedt kutatásai és értékelései után számos kivételes biztonsági auditcéget azonosítottunk, amelyek következetesen magas színvonalú munkát, műszaki szakértelmet és az adatvédelemre összpontosító értékeinkkel való összhangot mutatnak.
+A Forward Email aktívan értékeli a kiberbiztonsági kutatócégeket, hogy átfogó auditokat végezzenek a [GitHub](https://github.com/forwardemail) szerveren és a szerverinfrastruktúránkon található nyílt forráskódú kódbázisunkon. Az elmúlt években végzett kiterjedt kutatások és értékelések után számos kivételes biztonsági auditcéget azonosítottunk, amelyek következetesen magas színvonalú munkát, műszaki szakértelmet és az adatvédelemre összpontosító értékeinkkel való összhangot mutatnak.
 
 Ez a dokumentum a professzionális biztonsági audit szolgáltatásokat kereső szervezetek számára tett megállapításainkat és ajánlásainkat tartalmazza. Az itt felsorolt vállalatok kivételes képességeket mutattak be a penetrációs tesztelés, a kódáttekintés, az infrastruktúra-felmérés és a biztonsági kutatás területén.
 
@@ -28,13 +28,13 @@ Fontos megjegyezni, hogy az alább felsorolt vállalatok nincsenek rangsorolva. 
 
 ## Ajánlott biztonsági auditcégek {#recommended-security-audit-companies}
 
-### Cure53 {#cure53}
+IDEIGLENES_PLACE_HOLDER_0 Cure53 {IDEIGLENES_PLACE_HOLDER_1
 
 **Helyszín**: Berlin, Németország
 **Weboldal**: <https://cure53.de/>
 **Szakterület**: "Finom behatolási tesztek megbízható weboldalakhoz"
 
-A Cure53 egy német kiberbiztonsági cég, amely a webes alkalmazások biztonsági tesztelésének és penetrációs tesztelésének aprólékos megközelítéséről ismert. A berlini székhelyű cég átfogó tesztelési módszertanaik és részletes jelentéstételi gyakorlatuk révén vezető szerepet töltött be a területen.
+A Cure53 egy német kiberbiztonsági cég, amely a webes alkalmazások biztonsági tesztelésének és penetrációs tesztelésének aprólékos megközelítéséről ismert. A berlini székhelyű cég átfogó tesztelési módszertanainak és részletes jelentéstételi gyakorlatának köszönhetően vezető szerepet töltött be a területen.
 
 A cég lenyűgöző biztonsági értékelési portfóliót épített ki nagy hírű ügyfelek és nyílt forráskódú projektek számára. Munkájuk a modern webes technológiák, a kriptográfiai implementációk és az infrastruktúra biztonságának mélyreható ismeretét mutatja. A Cure53 jelentései különösen figyelemre méltóak technikai mélységük és gyakorlatias ajánlásaik miatt.
 
@@ -57,10 +57,10 @@ Nonprofit modelljük lehetővé teszi számukra, hogy kizárólag a biztonsági 
 **Nevezetes publikációk és jelentések**:
 
 * [Droid2Tracking biztonsági értékelés](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Mobilkövetési elemzés
-* [Tauri Program Biztonsági Felmérése 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Többplatformos alkalmazáskeretrendszer értékelése
-* [Mullvad VPN biztonsági felmérés 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN szolgáltatás biztonsági elemzése
+* [Tauri Program Biztonsági Felmérése 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Többplatformos alkalmazáskeretrendszer-értékelés
+* [Mullvad VPN biztonsági felmérés 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN-szolgáltatás biztonsági elemzése
 
-### Assured AB {#assured-ab}
+### Biztosított AB {#assured-ab}
 
 **Helyszín**: Göteborg, Svédország
 **Weboldal**: <https://www.assured.se/>
@@ -68,7 +68,7 @@ Nonprofit modelljük lehetővé teszi számukra, hogy kizárólag a biztonsági 
 
 Az Assured AB egy svéd kiberbiztonsági tanácsadó cég, amely vezető szerepet tölt be a műszaki kiberbiztonsági értékelések terén. Göteborgban található székhelyük mélyreható műszaki szakértelemmel állnak hozzá az összetett biztonsági kihívásokhoz, különösen az e-mail infrastruktúra, a DNS-biztonság és az API-értékelések területén.
 
-A vállalat megközelítése az alapos technikai elemzést hangsúlyozza, amelyet a gyakorlatias, megvalósítható ajánlások ötvöznek. Jelentésük kivételes odafigyelést mutat a részletekre, valamint a modern biztonsági fenyegetések és azok enyhítésére irányuló stratégiák átfogó ismeretét.
+A vállalat megközelítése az alapos műszaki elemzést hangsúlyozza, amelyet a gyakorlatias, megvalósítható ajánlások ötvöznek. Jelentésük kivételes odafigyelést mutat a részletekre, valamint a modern biztonsági fenyegetések és azok enyhítésére irányuló stratégiák átfogó ismeretét.
 
 **Nevezetes publikációk és jelentések**:
 
@@ -76,15 +76,15 @@ A vállalat megközelítése az alapos technikai elemzést hangsúlyozza, amelye
 * [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API biztonsági felmérése
 * [Mullvad DNS-kiszolgáló biztonsági audit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - DNS infrastruktúra felmérése
 
-### Bitekből álló nyomvonal {#trail-of-bits}
+### Bitsorozat {#trail-of-bits}
 
 **Helyszín**: New York, New York, Egyesült Államok
 **Weboldal**: <https://www.trailofbits.com/>
 **Szakterület**: „Nem csak hibákat javítunk, szoftvereket is.”
 
-A Trail of Bits egy kiemelkedő amerikai kiberbiztonsági cég, amely elismerést szerzett innovatív szoftverbiztonsági megközelítéséért. New York-i székhelyű cégük élvonalbeli eszközöket és módszertanokat fejlesztett ki, amelyek a teljes kiberbiztonsági területet előremozdították. Mottójuk: „Nem csak hibákat javítunk, szoftvereket is javítunk” – ez tükrözi elkötelezettségüket a rendszerszintű biztonsági problémák, nem pedig a felszíni szintű sebezhetőségek kezelése iránt.
+A Trail of Bits egy kiemelkedő amerikai kiberbiztonsági cég, amely elismerést szerzett innovatív szoftverbiztonsági megközelítéséért. New York-i székhelyű cégük élvonalbeli eszközöket és módszertanokat fejlesztett ki, amelyek a teljes kiberbiztonsági területet előremozdították. Mottójuk: „Nem csak hibákat javítunk, szoftvereket is javítunk” – tükrözi elkötelezettségüket a rendszerszintű biztonsági problémák, nem pedig a felszíni szintű sebezhetőségek kezelése iránt.
 
-A vállalat különös szakértelemmel rendelkezik a blokklánc-biztonság, a kriptográfiai implementációk és az összetett szoftverrendszerek terén. A Trail of Bits ismert a nyílt forráskódú biztonsági eszközökhöz való hozzájárulásáról és a feltörekvő biztonsági területeken betöltött gondolatvezető szerepéről is.
+A vállalat különös szakértelemmel rendelkezik a blokklánc-biztonság, a kriptográfiai implementációk és az összetett szoftverrendszerek területén. A Trail of Bits ismert a nyílt forráskódú biztonsági eszközökhöz való hozzájárulásáról és a feltörekvő biztonsági területeken betöltött gondolatvezető szerepéről is.
 
 **Nevezetes publikációk és jelentések**:
 

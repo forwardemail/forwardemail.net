@@ -22,4 +22,4 @@ Als uw internetprovider uitgaande poort 25 blokkeert, moet u een alternatieve op
 
 ## Hoe kan ik controleren of mijn internetprovider de poorten {#how-can-i-check-if-my-isp-blocks-ports} blokkeert?
 
-U kunt `telnet smtp.forwardemail.net 25` vanaf de opdrachtregel of terminal uitvoeren om te controleren of uw uitgaande poort 25-verbinding is geblokkeerd.
+U kunt `telnet smtp.forwardemail.net 25` uitvoeren vanaf de opdrachtregel of terminal om te controleren of uw uitgaande poort 25-verbinding is geblokkeerd.

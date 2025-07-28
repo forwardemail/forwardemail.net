@@ -16,7 +16,7 @@
 
 ## Visão geral {#overview}
 
-A Forward Email tem avaliado ativamente empresas de pesquisa em segurança cibernética para conduzir auditorias abrangentes de nossa base de código aberto em [GitHub](https://github.com/forwardemail) e infraestrutura de servidores. Após extensa pesquisa e avaliação nos últimos anos, identificamos diversas empresas de auditoria de segurança excepcionais que demonstram consistentemente trabalho de alta qualidade, expertise técnica e alinhamento com nossos valores de privacidade.
+A Forward Email tem avaliado ativamente empresas de pesquisa em segurança cibernética para conduzir auditorias abrangentes de nossa base de código aberto em [GitHub](https://github.com/forwardemail) e na infraestrutura de servidores. Após extensa pesquisa e avaliação nos últimos anos, identificamos diversas empresas de auditoria de segurança excepcionais que demonstram consistentemente trabalho de alta qualidade, expertise técnica e alinhamento com nossos valores de privacidade.
 
 Este documento apresenta nossas descobertas e recomendações para organizações que buscam serviços profissionais de auditoria de segurança. As empresas listadas aqui demonstraram capacidades excepcionais em testes de penetração, revisão de código, avaliação de infraestrutura e pesquisa de segurança.
 
@@ -28,7 +28,7 @@ Nosso processo de avaliação se concentrou em diversos fatores-chave essenciais
 
 ## Empresas de auditoria de segurança recomendadas {#recommended-security-audit-companies}
 
-__URL_PROTEGIDA_10__ Cure53 {__URL_PROTEGIDA_11__
+### Cure53 {#cure53}
 
 **Local**: Berlim, Alemanha
 **Site**: <https://cure53.de/>
@@ -40,7 +40,7 @@ A empresa construiu um portfólio impressionante de avaliações de segurança p
 
 **Publicações e relatórios notáveis**:
 
-* [Avaliação de Segurança de Servidores Mullvad 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Avaliação abrangente de segurança de infraestrutura
+* [Avaliação de Segurança de Servidores Mullvad 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Avaliação abrangente de segurança da infraestrutura
 * [Avaliação de Segurança de Aplicativos/API Mullvad 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Análise de segurança de aplicativos e APIs
 * [Avaliação de Segurança de Servidores Mullvad 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Avaliação de infraestrutura de acompanhamento
 
@@ -57,8 +57,8 @@ Seu modelo sem fins lucrativos permite que se concentrem exclusivamente em resul
 **Publicações e relatórios notáveis**:
 
 * [Avaliação de segurança do Droid2Tracking](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Análise de rastreamento móvel
-* [Avaliação de Segurança do Programa Tauri 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Avaliação de framework de aplicativos multiplataforma
-* [Avaliação de Segurança VPN Mullvad 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Análise de segurança de serviços VPN
+* [Avaliação de Segurança do Programa Tauri 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Avaliação de framework de aplicativo multiplataforma
+* [Avaliação de Segurança VPN Mullvad 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Análise de segurança de serviço VPN
 
 ### Assegurado AB {#assured-ab}
 
@@ -78,9 +78,9 @@ A abordagem da empresa enfatiza a análise técnica completa combinada com recom
 
 ### Trilha de Bits {#trail-of-bits}
 
-**Localização**: Nova York, Nova York, Estados Unidos
+**Local**: Nova York, Nova York, Estados Unidos
 **Site**: <https://www.trailofbits.com/>
-**Especialização**: "Não apenas corrigimos bugs, mas também corrigimos softwares."
+**Especialização**: "Não apenas corrigimos bugs, nós corrigimos software."
 
 A Trail of Bits é uma importante empresa americana de segurança cibernética, reconhecida por sua abordagem inovadora à segurança de software. Com sede em Nova York, a empresa desenvolveu ferramentas e metodologias de ponta que impulsionaram todo o campo da segurança cibernética. Seu lema, "Não apenas corrigimos bugs, corrigimos software", reflete seu compromisso em abordar problemas de segurança sistêmicos, em vez de apenas vulnerabilidades superficiais.
 
@@ -92,7 +92,7 @@ A empresa possui expertise específica em segurança de blockchain, implementaç
 * [Hey Security Review](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Avaliação de segurança do serviço de e-mail
 * [Revisão de Segurança cURL 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Análise de segurança da biblioteca de rede
 
-Comparação de empresas ## {#company-comparison}
+## Comparação de empresas {#company-comparison}
 
 | Empresa | Localização | Área de Foco | Pontos fortes notáveis | Relatórios Públicos |
 | --------------------------- | ---------------------- | ------------------------ | ----------------------------------------------------- | -------------------------- |

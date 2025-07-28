@@ -2,53 +2,53 @@
 
 <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_25__ Obsah {__CHRÁNĚNÁ_URL_26__
+## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
-* [Výzva: Více zpracovatelů plateb, jeden zdroj pravdy](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Výzva: Více platebních procesorů, jeden zdroj pravdy](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [Přístup Trifecta: Tři vrstvy spolehlivosti](#the-trifecta-approach-three-layers-of-reliability)
-* [Vrstva 1: Přesměrování po pokladně](#layer-1-post-checkout-redirects)
+* [Vrstva 1: Přesměrování po dokončení objednávky](#layer-1-post-checkout-redirects)
   * [Implementace Stripe Checkout](#stripe-checkout-implementation)
-  * [Tok plateb PayPal](#paypal-payment-flow)
-* [Vrstva 2: Webhook Handlers s ověřením podpisu](#layer-2-webhook-handlers-with-signature-verification)
+  * [Platební proces PayPal](#paypal-payment-flow)
+* [Vrstva 2: Obslužné rutiny webhooků s ověřováním podpisu](#layer-2-webhook-handlers-with-signature-verification)
   * [Implementace Stripe Webhooku](#stripe-webhook-implementation)
-  * [Implementace PayPal Webhooku](#paypal-webhook-implementation)
+  * [Implementace webhooku PayPal](#paypal-webhook-implementation)
 * [Vrstva 3: Automatizované úlohy s Bree](#layer-3-automated-jobs-with-bree)
   * [Kontrola přesnosti předplatného](#subscription-accuracy-checker)
   * [Synchronizace předplatného PayPal](#paypal-subscription-synchronization)
-* [Manipulace s pouzdry Edge](#handling-edge-cases)
+* [Řešení okrajových případů](#handling-edge-cases)
   * [Odhalování a prevence podvodů](#fraud-detection-and-prevention)
   * [Řešení sporů](#dispute-handling)
 * [Opětovné použití kódu: Principy KISS a DRY](#code-reuse-kiss-and-dry-principles)
 * [Implementace požadavků na předplatné VISA](#visa-subscription-requirements-implementation)
-  * [Automatická e-mailová upozornění před obnovením](#automated-pre-renewal-email-notifications)
-  * [Manipulace s pouzdry Edge](#handling-edge-cases-1)
+  * [Automatická e-mailová oznámení před obnovením](#automated-pre-renewal-email-notifications)
+  * [Řešení okrajových případů](#handling-edge-cases-1)
   * [Zkušební období a podmínky předplatného](#trial-periods-and-subscription-terms)
 * [Závěr: Výhody našeho přístupu Trifecta](#conclusion-the-benefits-of-our-trifecta-approach)
 
-__CHRÁNĚNÁ_URL_27__ Předmluva {__CHRÁNĚNÁ_URL_28__
+## Předmluva {#foreword}
 
-Ve Forward Email jsme vždy upřednostňovali vytváření systémů, které jsou spolehlivé, přesné a uživatelsky přívětivé. Když došlo na implementaci našeho systému zpracování plateb, věděli jsme, že potřebujeme řešení, které zvládne více zpracovatelů plateb a zároveň zachová perfektní konzistenci dat. Tento blogový příspěvek podrobně popisuje, jak náš vývojový tým integroval Stripe i PayPal pomocí přístupu trifecta, který zajišťuje přesnost 1:1 v reálném čase v celém našem systému.
+Ve společnosti Forward Email jsme vždy kladli důraz na vytváření systémů, které jsou spolehlivé, přesné a uživatelsky přívětivé. Při implementaci našeho systému pro zpracování plateb jsme věděli, že potřebujeme řešení, které zvládne více platebních procesorů a zároveň zachová dokonalou konzistenci dat. Tento blogový příspěvek podrobně popisuje, jak náš vývojový tým integroval Stripe a PayPal pomocí trojitého přístupu, který zajišťuje přesnost 1:1 v reálném čase v celém našem systému.
 
 ## Výzva: Více platebních procesorů, jeden zdroj pravdy {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Jako e-mailová služba zaměřená na soukromí jsme chtěli našim uživatelům poskytnout platební možnosti. Někteří preferují jednoduchost plateb kreditní kartou prostřednictvím Stripe, zatímco jiní oceňují další vrstvu oddělení, kterou PayPal poskytuje. Podpora více zpracovatelů plateb však přináší značnou složitost:
+Jako e-mailová služba zaměřená na soukromí jsme chtěli našim uživatelům nabídnout možnosti platby. Někteří preferují jednoduchost plateb kreditní kartou přes Stripe, zatímco jiní oceňují dodatečnou vrstvu oddělení, kterou PayPal poskytuje. Podpora více platebních procesorů však s sebou nese značnou složitost:
 
 1. Jak zajišťujeme konzistentní data napříč různými platebními systémy?
 2. Jak řešíme okrajové případy, jako jsou spory, vrácení peněz nebo neúspěšné platby?
 3. Jak udržujeme v naší databázi jeden zdroj pravdivých informací?
 
-Naším řešením bylo implementovat to, co nazýváme „trifecta approach“ – třívrstvý systém, který poskytuje redundanci a zajišťuje konzistenci dat bez ohledu na to, co se stane.
+Naším řešením bylo implementovat to, čemu říkáme „trifecta přístup“ – třívrstvý systém, který poskytuje redundanci a zajišťuje konzistenci dat bez ohledu na to, co se stane.
 
 ## Přístup Trifecta: Tři vrstvy spolehlivosti {#the-trifecta-approach-three-layers-of-reliability}
 
-Náš platební systém se skládá ze tří kritických komponent, které spolupracují na zajištění dokonalé synchronizace dat:
+Náš platební systém se skládá ze tří klíčových komponent, které spolupracují a zajišťují dokonalou synchronizaci dat:
 
 1. **Přesměrování po dokončení platby** - Zachycení platebních informací ihned po dokončení platby
 2. **Obsluha webhooků** - Zpracování událostí v reálném čase od platebních procesorů
 3. **Automatizované úlohy** - Pravidelné ověřování a odsouhlasování platebních údajů
 
-Pojďme se ponořit do jednotlivých komponent a podívat se, jak spolu fungují.
+Pojďme se ponořit do jednotlivých komponent a podívat se, jak spolupracují.
 
 ```mermaid
 flowchart TD
@@ -112,11 +112,11 @@ flowchart TD
 
 ## Vrstva 1: Přesměrování po dokončení objednávky {#layer-1-post-checkout-redirects}
 
-První vrstva našeho přístupu trifecta nastává okamžitě poté, co uživatel dokončí platbu. Stripe i PayPal poskytují mechanismy pro přesměrování uživatelů zpět na naše stránky s informacemi o transakcích.
+První vrstva našeho trifecta přístupu se aktivuje ihned poté, co uživatel dokončí platbu. Stripe i PayPal poskytují mechanismy pro přesměrování uživatelů zpět na naše stránky s informacemi o transakci.
 
 ### Implementace Stripe Checkout {#stripe-checkout-implementation}
 
-Pro Stripe používáme jejich rozhraní Checkout Sessions API k vytvoření bezproblémového platebního prostředí. Když si uživatel vybere plán a rozhodne se zaplatit kreditní kartou, vytvoříme relaci pokladny s konkrétním úspěchem a zrušíme adresy URL:
+Pro Stripe používáme jejich Checkout Sessions API k vytvoření bezproblémového platebního procesu. Když si uživatel vybere tarif a rozhodne se platit kreditní kartou, vytvoříme Checkout Sessions s konkrétními úspěšnými kroky a zrušíme URL adresy:
 
 ```javascript
 const options = {
@@ -156,7 +156,7 @@ if (ctx.accepts('html')) {
 
 Kritickou částí je zde parametr `success_url`, který jako parametr dotazu obsahuje `session_id`. Když Stripe po úspěšné platbě přesměruje uživatele zpět na naše stránky, můžeme toto ID relace použít k ověření transakce a odpovídající aktualizaci naší databáze.
 
-### Platební proces přes PayPal {#paypal-payment-flow}
+### Platební proces PayPal {#paypal-payment-flow}
 
 Pro PayPal používáme podobný přístup s jejich Orders API:
 
@@ -283,13 +283,13 @@ sequenceDiagram
 
 ## Vrstva 2: Obslužné rutiny webhooků s ověřováním podpisu {#layer-2-webhook-handlers-with-signature-verification}
 
-I když přesměrování po pokladně funguje dobře pro většinu scénářů, nejsou spolehlivá. Uživatelé mohou před přesměrováním zavřít svůj prohlížeč nebo v dokončení přesměrování mohou zabránit problémy se sítí. Zde přichází na řadu webhooky.
+Přestože přesměrování po dokončení platby funguje ve většině scénářů dobře, není zcela spolehlivé. Uživatelé mohou před přesměrováním zavřít prohlížeč nebo problémy se sítí mohou zabránit dokončení přesměrování. A právě zde přicházejí na řadu webhooky.
 
-Stripe i PayPal poskytují webhook systémy, které odesílají oznámení o platebních událostech v reálném čase. Implementovali jsme robustní obslužné nástroje webhooku, které ověřují pravost těchto oznámení a podle toho je zpracovávají.
+Stripe i PayPal poskytují systémy webhooků, které odesílají oznámení o platbách v reálném čase. Implementovali jsme robustní obslužné rutiny webhooků, které ověřují pravost těchto oznámení a odpovídajícím způsobem je zpracovávají.
 
 ### Implementace webhooku Stripe {#stripe-webhook-implementation}
 
-Náš obslužný program webhooku Stripe ověřuje podpis příchozích událostí webhooku, aby se ujistil, že jsou legitimní:
+Náš obslužný program Stripe webhook ověřuje podpis příchozích událostí webhooku, aby se ujistil, že jsou legitimní:
 
 ```javascript
 async function webhook(ctx) {
@@ -338,7 +338,7 @@ Funkce `stripe.webhooks.constructEvent` ověřuje podpis pomocí našeho tajnéh
 
 ### Implementace webhooku PayPal {#paypal-webhook-implementation}
 
-Podobně náš webhook pro PayPal ověřuje pravost příchozích oznámení:
+Podobně náš obslužný program webhooku PayPal ověřuje pravost příchozích oznámení:
 
 ```javascript
 async function webhook(ctx) {
@@ -377,15 +377,15 @@ async function webhook(ctx) {
 }
 ```
 
-Oba obslužné nástroje webhooku se řídí stejným vzorem: ověřte podpis, potvrďte přijetí a zpracujte událost asynchronně. To zajišťuje, že nikdy nezmeškáme žádnou platební událost, i když se přesměrování po pokladně nezdaří.
+Oba obslužné rutiny webhooků fungují stejným způsobem: ověřují podpis, potvrzují příjem a asynchronně zpracovávají událost. To zajišťuje, že nikdy nezmeškáme platební událost, a to ani v případě, že přesměrování po dokončení platby selže.
 
 ## Vrstva 3: Automatizované úlohy s Bree {#layer-3-automated-jobs-with-bree}
 
-Poslední vrstvou našeho přístupu trifecta je sada automatizovaných úloh, které pravidelně ověřují a slaďují platební údaje. Ke spouštění těchto úloh v pravidelných intervalech používáme Bree, plánovač úloh pro Node.js.
+Poslední vrstvou našeho trifecta přístupu je sada automatizovaných úloh, které pravidelně ověřují a slučují platební data. Ke spouštění těchto úloh v pravidelných intervalech používáme Bree, plánovač úloh pro Node.js.
 
 ### Kontrola přesnosti předplatného {#subscription-accuracy-checker}
 
-Jednou z našich klíčových úloh je kontrola přesnosti předplatného, která zajišťuje, že naše databáze přesně odráží stav předplatného v Stripe:
+Jednou z našich klíčových úloh je kontrola přesnosti předplatného, která zajišťuje, že naše databáze přesně odráží stav předplatného ve Stripe:
 
 ```javascript
 async function mapper(customer) {
@@ -452,11 +452,11 @@ async function mapper(customer) {
 }
 ```
 
-Tato úloha kontroluje nesrovnalosti mezi naší databází a Stripe, jako jsou například neshodné e-mailové adresy nebo více aktivních odběrů. Pokud zjistí nějaké problémy, zaznamená je a zašle upozornění našemu týmu administrátorů.
+Tato úloha kontroluje nesrovnalosti mezi naší databází a Stripe, jako jsou neshodné e-mailové adresy nebo více aktivních předplatných. Pokud zjistí nějaké problémy, zaznamená je a odešle upozornění našemu administrátorskému týmu.
 
 ### Synchronizace předplatného PayPal {#paypal-subscription-synchronization}
 
-Máme podobnou práci pro předplatné PayPal:
+Podobnou práci nabízíme i pro předplatné PayPal:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +487,15 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Tyto automatizované úlohy slouží jako naše konečná záchranná síť, která zajišťuje, že naše databáze vždy odráží skutečný stav předplatného a plateb v Stripe i PayPal.
+Tyto automatizované úlohy slouží jako naše poslední záchranná síť a zajišťují, aby naše databáze vždy odrážela skutečný stav předplatného a plateb ve Stripe i PayPalu.
 
-## Řešení hraničních případů {#handling-edge-cases}
+## Zpracování okrajových případů {#handling-edge-cases}
 
-Robustní platební systém musí zvládat hraniční případy elegantně. Podívejme se, jak řešíme některé běžné scénáře.
+Robustní platební systém musí elegantně zvládat okrajové případy. Podívejme se, jak řešíme některé běžné scénáře.
 
-### Odhalování a prevence podvodů {#fraud-detection-and-prevention}
+### Detekce a prevence podvodů {#fraud-detection-and-prevention}
 
-Implementovali jsme sofistikované mechanismy odhalování podvodů, které automaticky identifikují a zpracovávají podezřelé platební aktivity:
+Zavedli jsme sofistikované mechanismy pro detekci podvodů, které automaticky identifikují a řeší podezřelé platební aktivity:
 
 ```javascript
 case 'charge.failed': {
@@ -540,11 +540,11 @@ case 'charge.failed': {
 }
 ```
 
-Tento kód automaticky zablokuje uživatele, kteří mají více neúspěšných poplatků a nemají ověřené domény, což je silný indikátor podvodné činnosti.
+Tento kód automaticky zablokuje uživatele, kteří mají několik neúspěšných plateb a nemají ověřené domény, což je silný indikátor podvodné aktivity.
 
 ### Řešení sporů {#dispute-handling}
 
-Když uživatel zpochybní platbu, automaticky přijmeme nárok a podnikneme příslušné kroky:
+Když uživatel vznese námitku proti platbě, automaticky reklamaci přijmeme a podnikneme příslušné kroky:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
@@ -583,7 +583,7 @@ Tento přístup minimalizuje dopad sporů na naše podnikání a zároveň zaji�
 
 ## Opětovné použití kódu: Principy KISS a DRY {#code-reuse-kiss-and-dry-principles}
 
-V celém našem platebním systému jsme se drželi zásad KISS (Keep It Simple, Stupid) a DRY (Don't Repeat Yourself). Zde je několik příkladů:
+V celém našem platebním systému se držíme zásad KISS (Keep It Simple, Stupid) a DRY (Don't Repeat Yourself). Zde je několik příkladů:
 
 1. **Sdílené pomocné funkce**: Vytvořili jsme opakovaně použitelné pomocné funkce pro běžné úkoly, jako je synchronizace plateb a odesílání e-mailů.
 
@@ -689,13 +689,13 @@ graph TD
 
 ## Implementace požadavků na předplatné VISA {#visa-subscription-requirements-implementation}
 
-Kromě našeho přístupu trifecta jsme implementovali specifické funkce, abychom vyhověli požadavkům na předplatné VISA a zároveň zlepšili uživatelskou zkušenost. Jedním z klíčových požadavků společnosti VISA je, že uživatelé musí být informováni dříve, než jim bude účtováno předplatné, zejména při přechodu ze zkušebního na placené předplatné.
+Kromě našeho trifecta přístupu jsme implementovali specifické funkce, které splňují požadavky na předplatné společnosti VISA a zároveň vylepšují uživatelský zážitek. Jedním z klíčových požadavků společnosti VISA je, že uživatelé musí být informováni předtím, než jim bude předplatné naúčtováno, zejména při přechodu ze zkušebního na placené předplatné.
 
 ### Automatická e-mailová oznámení před obnovením {#automated-pre-renewal-email-notifications}
 
-Vybudovali jsme automatický systém, který identifikuje uživatele s aktivním zkušebním odběrem a pošle jim e-mail s upozorněním, než dojde k prvnímu poplatku. To nám nejen udržuje shodu s požadavky VISA, ale také snižuje zpětné zúčtování a zvyšuje spokojenost zákazníků.
+Vytvořili jsme automatizovaný systém, který identifikuje uživatele s aktivním zkušebním předplatným a zasílá jim e-mail s oznámením před první platbou. Díky tomu nejen dodržujeme požadavky společnosti VISA, ale také snižujeme počet storna plateb a zvyšujeme spokojenost zákazníků.
 
-Tuto funkci jsme implementovali takto:
+Zde je návod, jak jsme tuto funkci implementovali:
 
 ```javascript
 // Find users with trial subscriptions who haven't received a notification yet
@@ -776,18 +776,18 @@ for (const user of users) {
 }
 ```
 
-Tato implementace zajišťuje, že uživatelé jsou vždy informováni o nadcházejících poplatcích s jasnými podrobnostmi o:
+Tato implementace zajišťuje, že uživatelé jsou vždy informováni o nadcházejících platbách s jasnými podrobnostmi o:
 
 1. Kdy dojde k první platbě
 2. Četnost budoucích plateb (měsíčně, ročně atd.)
 3. Přesná částka, která jim bude účtována
 4. Které domény jsou zahrnuty v jejich předplatném
 
-Automatizací tohoto procesu udržujeme dokonalý soulad s požadavky společnosti VISA (které nařizují oznámení nejméně 7 dní před zpoplatněním), přičemž snižujeme požadavky na podporu a zlepšujeme celkovou uživatelskou zkušenost.
+Automatizací tohoto procesu dosahujeme dokonalého souladu s požadavky společnosti VISA (které nařizují oznámení alespoň 7 dní před provedením platby), a zároveň snižujeme počet dotazů na podporu a zlepšujeme celkovou uživatelskou zkušenost.
 
-### Řešení hraničních případů {#handling-edge-cases-1}
+### Zpracování okrajových případů {#handling-edge-cases-1}
 
-Naše implementace také zahrnuje robustní zpracování chyb. Pokud se během procesu oznámení něco pokazí, náš systém automaticky upozorní náš tým:
+Naše implementace zahrnuje také robustní ošetření chyb. Pokud se během procesu oznamování něco pokazí, náš systém automaticky upozorní náš tým:
 
 ```javascript
 try {
@@ -813,13 +813,13 @@ try {
 }
 ```
 
-Tím je zajištěno, že i když dojde k problému s oznamovacím systémem, náš tým jej dokáže rychle vyřešit a zajistit soulad s požadavky společnosti VISA.
+Díky tomu je zajištěno, že i v případě problému s notifikačním systémem jej náš tým dokáže rychle vyřešit a zajistit soulad s požadavky společnosti VISA.
 
-Oznamovací systém předplatného VISA je dalším příkladem toho, jak jsme vybudovali naši platební infrastrukturu s ohledem na dodržování předpisů i na uživatelskou zkušenost a doplňuje náš přístup trifecta k zajištění spolehlivého a transparentního zpracování plateb.
+Systém oznámení o předplatném VISA je dalším příkladem toho, jak jsme vybudovali naši platební infrastrukturu s ohledem na dodržování předpisů i uživatelskou zkušenost, a doplňuje náš komplexní přístup k zajištění spolehlivého a transparentního zpracování plateb.
 
 ### Zkušební období a podmínky předplatného {#trial-periods-and-subscription-terms}
 
-Pro uživatele, kteří povolí automatické obnovení stávajících plánů, vypočítáme vhodné zkušební období, abychom zajistili, že jim nebudou účtovány poplatky, dokud nevyprší jejich aktuální plán:
+Pro uživatele, kteří si u stávajících tarifů povolí automatické obnovení, vypočítáme odpovídající zkušební dobu, abychom zajistili, že jim nebude účtován poplatek, dokud nevyprší jejich aktuální tarif:
 
 ```javascript
 if (
@@ -836,11 +836,11 @@ if (
 }
 ```
 
-Poskytujeme také jasné informace o podmínkách předplatného, včetně frekvence fakturace a zásad zrušení, a ke každému předplatnému uvádíme podrobná metadata, abychom zajistili správné sledování a správu.
+Také poskytujeme jasné informace o podmínkách předplatného, včetně četnosti fakturace a zásad zrušení, a ke každému předplatnému přikládáme podrobná metadata, abychom zajistili správné sledování a správu.
 
 ## Závěr: Výhody našeho přístupu Trifecta {#conclusion-the-benefits-of-our-trifecta-approach}
 
-Náš přístup trifecta ke zpracování plateb poskytuje několik klíčových výhod:
+Náš komplexní přístup ke zpracování plateb nám přinesl několik klíčových výhod:
 
 1. **Spolehlivost**: Implementací tří vrstev ověřování plateb zajišťujeme, že žádná platba nebude zmeškána nebo nesprávně zpracována.
 
@@ -850,8 +850,8 @@ Náš přístup trifecta ke zpracování plateb poskytuje několik klíčových 
 
 4. **Robustnost**: Náš systém elegantně zvládá okrajové případy, od selhání sítě až po podvodné aktivity.
 
-Pokud implementujete platební systém, který podporuje více procesorů, důrazně doporučujeme tento přístup trifecta. Vyžaduje to více počátečního vývoje, ale dlouhodobé výhody, pokud jde o spolehlivost a přesnost, za to stojí.
+Pokud implementujete platební systém, který podporuje více procesorů, důrazně doporučujeme tento trojitý přístup. Vyžaduje sice více počátečního vývojového úsilí, ale dlouhodobé výhody z hlediska spolehlivosti a přesnosti za to rozhodně stojí.
 
-Více informací o službě Forward Email a našich e-mailových službách zaměřených na ochranu soukromí naleznete na našich stránkách [webové stránky](https://forwardemail.net).
+Další informace o službě Forward Email a našich e-mailových službách zaměřených na ochranu soukromí naleznete na stránce [webové stránky](https://forwardemail.net).
 
 <!-- *Klíčová slova: zpracování plateb, integrace Stripe, integrace PayPal, zpracování webhooků, synchronizace plateb, správa předplatného, prevence podvodů, řešení sporů, platební systém Node.js, víceprocesorový platební systém, integrace platební brány, ověřování plateb v reálném čase, konzistence platebních dat, fakturace předplatného, zabezpečení plateb, automatizace plateb, platební webhooky, odsouhlasení plateb, případy plateb na okraji, zpracování chyb při platbě, požadavky na předplatné VISA, oznámení o předběžném obnovení, dodržování předpisů pro předplatné* -->

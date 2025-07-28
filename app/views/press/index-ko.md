@@ -16,9 +16,9 @@ Forward Email은 보안과 개인정보 보호에 중점을 둔 유일한 100% �
 
 저희 서비스는 2017년에 설립되었으며 [미국 해군사관학교](/blog/docs/federal-government-email-service-section-889-compliant), [캐노니컬/우분투](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix 게임, [리눅스 재단](/blog/docs/linux-foundation-email-enterprise-case-study), [여러 대학](/blog/docs/alumni-email-forwarding-university-case-study), 정부 등 유명 사용자를 포함하여 50만 개 이상의 도메인에 이메일을 제공하고 있습니다.
 
-당사의 목표는 기업용 이메일 및 보안 인프라 플랫폼이 되는 것입니다. 이를 위해 당사는 [여러 가지 원칙](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)를 준수합니다.
+당사의 목표는 엔터프라이즈급 이메일 및 보안 인프라 플랫폼이 되는 것입니다. 이를 위해 [여러 가지 원칙](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)을 준수합니다.
 
-언론인, 기자 또는 미디어 담당자로서 저희와 대화하거나, 질문하거나, 자세한 내용을 알고 싶으시다면 `press@forwardemail.net`으로 연락해 주세요.
+언론인, 기자 또는 미디어 담당자로서 저희와 대화하거나, 질문을 하거나, 자세한 내용을 알고 싶으시다면 `press@forwardemail.net`으로 연락해 주세요.
 
 ## 글꼴 {#fonts}
 
@@ -29,9 +29,9 @@ Forward Email은 보안과 개인정보 보호에 중점을 둔 유일한 100% �
 
 ## 색상 {#colors}
 
-* **파란색:** `#0066FF` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
-* **시안색:** `#9DE5F9` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
-* **녹색:** `#269C32` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
+* **파란색:** 임시 자리 표시자_0 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
+* **시안색:** 임시 자리 표시자_2 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
+* **녹색:** 임시 자리 표시자_4 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
 
 ## 로고 {#logos}
 

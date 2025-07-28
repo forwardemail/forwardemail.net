@@ -50,9 +50,9 @@
   * [Alan adı oluştur](#create-domain)
   * [Alan adını al](#retrieve-domain)
   * [Alan adı kayıtlarını doğrulayın](#verify-domain-records)
-  * [Alan adı SMTP kayıtlarını doğrulayın](#verify-domain-smtp-records)
+  * [Alan SMTP kayıtlarını doğrulayın](#verify-domain-smtp-records)
   * [Alan adı genelindeki tüm parolaları listele](#list-domain-wide-catch-all-passwords)
-  * [Alan genelinde kapsayıcı parola oluşturun](#create-domain-wide-catch-all-password)
+  * [Alan adı genelinde kapsayıcı parola oluşturun](#create-domain-wide-catch-all-password)
   * [Alan adı genelinde geçerli olan genel parolayı kaldırın](#remove-domain-wide-catch-all-password)
   * [Alan adını güncelle](#update-domain)
   * [Alan adını sil](#delete-domain)
@@ -73,14 +73,14 @@
 * [Şifrele](#encrypt)
   * [TXT Kaydını Şifrele](#encrypt-txt-record)
 
-## Kütüphaneler {#libraries}
+## Kitaplıklar {#libraries}
 
 Şu anda herhangi bir API sarmalayıcısı yayınlamadık, ancak yakın gelecekte yayınlamayı planlıyoruz. Belirli bir programlama dilinin API sarmalayıcısı yayınlandığında bildirim almak isterseniz <api@forwardemail.net> adresine e-posta gönderin. Bu arada, uygulamanızda bu önerilen HTTP istek kitaplıklarını kullanabilir veya aşağıdaki örneklerde olduğu gibi [bukle](https://stackoverflow.com/a/27442239/3586413) kullanabilirsiniz.
 
 | Dil | Kütüphane |
 | ---------- | ---------------------------------------------------------------------- |
 | Yakut | [Faraday](https://github.com/lostisland/faraday) |
-| piton | [requests](https://github.com/psf/requests) |
+| Python | [requests](https://github.com/psf/requests) |
 | Cava | [OkHttp](https://github.com/square/okhttp/) |
 | PHP | [guzzle](https://github.com/guzzle/guzzle) |
 | JavaScript | [superagent](https://github.com/ladjs/superagent) (biz bakımcıyız) |
@@ -94,13 +94,13 @@ Mevcut HTTP taban URI yolu: `BASE_URI`.
 
 ## Kimlik Doğrulaması {#authentication}
 
-Tüm uç noktalar, isteğin [Temel Yetkilendirme](https://en.wikipedia.org/wiki/Basic_access_authentication) başlığının "kullanıcı adı" değeri olarak [API anahtarı](https://forwardemail.net/my-account/security) değerini ayarlamanızı gerektirir ([Takma Ad Kişileri](#alias-contacts), [Takma Adlı Takvimler](#alias-calendars) ve [Takma Adlı Posta Kutuları](#alias-mailboxes) hariç, bunlar [oluşturulan takma ad kullanıcı adı ve şifresi](/faq#do-you-support-receiving-email-with-imap) kullanır).
+Tüm uç noktalar, [API anahtarı](https://forwardemail.net/my-account/security)'ınızın isteğin [Temel Yetkilendirme](https://en.wikipedia.org/wiki/Basic_access_authentication) başlığının "kullanıcı adı" değeri olarak ayarlanmasını gerektirir ([oluşturulan takma ad kullanıcı adı ve şifresi](/faq#do-you-support-receiving-email-with-imap) kullanan [Takma Ad Kişileri](#alias-contacts), [Takma Adlı Takvimler](#alias-calendars) ve [Takma Adlı Posta Kutuları](#alias-mailboxes) hariç).
 
 Endişelenmeyin, eğer bunun ne olduğunu bilmiyorsanız aşağıda sizin için örnekler verilmiştir.
 
 ## Hataları {#errors}
 
-Herhangi bir hata oluşması durumunda API isteğinin yanıt gövdesi ayrıntılı bir hata mesajı içerecektir.
+Herhangi bir hata oluşursa, API isteğinin yanıt gövdesi ayrıntılı bir hata mesajı içerecektir.
 
 | Kod | İsim |
 | ---- | --------------------- |
@@ -117,22 +117,22 @@ Herhangi bir hata oluşması durumunda API isteğinin yanıt gövdesi ayrıntıl
 | 504 | Ağ Geçidi Zaman Aşımı |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> 5xx durum kodunu alırsanız (ki bu olmamalı), lütfen <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> adresinden bizimle iletişime geçin; sorununuzu hemen çözmenize yardımcı olacağız.
 
 ## Yerelleştirme {#localization}
 
-Hizmetimiz 25'ten fazla farklı dile çevrilmiştir. Tüm API yanıt mesajları, API isteğinde bulunan kullanıcının algıladığı son yerel ayara çevrilir. Özel bir `Accept-Language` başlığı göndererek bunu geçersiz kılabilirsiniz. Bu sayfanın alt kısmındaki dil açılır menüsünü kullanarak deneyebilirsiniz.
+Hizmetimiz 25'ten fazla farklı dile çevrilmiştir. Tüm API yanıt mesajları, API isteğinde bulunan kullanıcının algıladığı son yerel ayara çevrilir. Özel bir `Accept-Language` başlığı geçirerek bunu geçersiz kılabilirsiniz. Bu sayfanın alt kısmındaki dil açılır menüsünü kullanarak deneyebilirsiniz.
 
 ## Sayfalama {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> 1 Kasım 2024 itibarıyla [Alan adlarını listele](#list-domains) ve [Alan adı takma adlarını listeleyin](#list-domain-aliases) API uç noktaları, sayfa başına maksimum `1000` sonuç değerine ayarlanacaktır. Bu davranışı erkenden etkinleştirmek isterseniz, uç nokta sorgusu için URL'ye ek bir sorgu dizesi parametresi olarak `?paginate=true` değerini iletebilirsiniz.
 
 Sayfalandırma, sonuçları listeleyen tüm API uç noktaları tarafından desteklenir.
 
-Sadece sorgu dizesi özelliklerini `page` (ve isteğe bağlı olarak `limit`) sağlayın.
+Sadece `page` (ve isteğe bağlı olarak `limit`) sorgu dizesi özelliklerini sağlayın.
 
-`page` özelliği, `1` değerinden büyük veya ona eşit bir sayı olmalıdır. `limit` (aynı zamanda bir sayı) sağlarsanız, minimum değer `10`, maksimum değer ise `50` olur (aksi belirtilmedikçe).
+`page` özelliği, `1`'den büyük veya ona eşit bir sayı olmalıdır. `limit` (aynı zamanda bir sayı) sağlarsanız, minimum değer `10`, maksimum değer ise `50` olur (aksi belirtilmedikçe).
 
 | Sorgu Dize Parametreleri | Gerekli | Tip | Tanım |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -156,15 +156,15 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
-## Günlükler {#logs}
+## Günlükleri {#logs}
 
 ### Günlükleri al {#retrieve-logs}
 
 API'miz, hesabınız için günlükleri programatik olarak indirmenize olanak tanır. Bu uç noktaya bir istek gönderdiğinizde, hesabınızdaki tüm günlükler işlenir ve tamamlandığında ek olarak ([Gzip](https://en.wikipedia.org/wiki/Gzip) sıkıştırılmış [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) elektronik tablo dosyası) size e-posta ile gönderilir.
 
-Bu, [Cron işi](https://en.wikipedia.org/wiki/Cron) ile arka plan işleri oluşturmanıza veya istediğiniz zaman günlükleri almak için [Node.js iş planlama yazılımı Bree](https://github.com/breejs/bree) uygulamamızı kullanmanıza olanak tanır. Bu uç noktanın günlük `10` isteğiyle sınırlı olduğunu unutmayın.
+Bu, [Cron işi](https://en.wikipedia.org/wiki/Cron) ile arka plan işleri oluşturmanıza veya istediğiniz zaman günlükleri almak için [Node.js iş planlama yazılımı Bree](https://github.com/breejs/bree)'imizi kullanmanıza olanak tanır. Bu uç noktanın günde `10` istekle sınırlı olduğunu unutmayın.
 
-Ek, `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` ifadesinin küçük harfli halidir ve e-postanın kendisi, alınan günlüklerin kısa bir özetini içerir. Ayrıca, günlükleri istediğiniz zaman [Hesabım → Günlükler](/my-account/logs) adresinden indirebilirsiniz.
+Ek, `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` dosyasının küçük harfli halidir ve e-postanın kendisi, alınan günlüklerin kısa bir özetini içerir. Ayrıca, günlükleri istediğiniz zaman [Hesabım → Günlükler](/my-account/logs) adresinden indirebilirsiniz.
 
 > `GET /v1/logs/download`
 
@@ -188,9 +188,9 @@ curl BASE_URI/v1/logs/download \
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-Cron iş ifadenizin sözdizimini doğrulamak için [Crontab.guru](https://crontab.guru/) gibi servisleri kullanabileceğinizi unutmayın.
+Cron iş ifadesi sözdizimini doğrulamak için [Crontab.guru](https://crontab.guru/) gibi servisleri kullanabileceğinizi unutmayın.
 
-> Örnek Cron işi (her gün gece yarısı **ve bir önceki güne ait günlüklerle**):
+> Örnek Cron işi (her gün gece yarısı **ve bir önceki güne ait kayıtlarla**):
 
 MacOS için:
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Takma Ad Kişileri (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak [Kimlik doğrulama](#authentication) "kullanıcı adı"nın takma ad kullanıcı adına eşit ve "şifre"nin takma ad tarafından oluşturulan parolaya eşit olmasını gerektirir.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bu uç nokta bölümü üzerinde çalışılmaktadır ve (umarız) 2024 yılında yayınlanacaktır. Bu arada, lütfen web sitemizin gezinme bölümündeki "Uygulamalar" açılır menüsünden bir IMAP istemcisi kullanın.
 
 ### Kişileri listele {#list-contacts}
 
@@ -267,19 +267,19 @@ curl -X PUT BASE_URI/v1/account \
 
 **Yakında gelecek**
 
-### Kişi oluştur {#create-contact}
+### Kişiyi oluştur {#create-contact}
 
 > `POST /v1/contacts`
 
 **Yakında gelecek**
 
-### Kişiyi al {#retrieve-contact}
+### {#retrieve-contact} kişisini al
 
 > `GET /v1/contacts/:id`
 
 **Yakında gelecek**
 
-### İletişim bilgilerini güncelle {#update-contact}
+### Kişiyi güncelle {#update-contact}
 
 > `PUT /v1/contacts/:id`
 
@@ -291,13 +291,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **Yakında gelecek**
 
-## Takma Adlı Takvimler (CalDAV) {#alias-calendars-caldav}
+## Takma Ad Takvimleri (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak [Kimlik doğrulama](#authentication) "kullanıcı adı"nın takma ad kullanıcı adına eşit ve "şifre"nin takma ad tarafından oluşturulan parolaya eşit olmasını gerektirir.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bu uç nokta bölümü üzerinde çalışılmaktadır ve (umarız) 2024 yılında yayınlanacaktır. Bu arada, lütfen web sitemizin gezinme bölümündeki "Uygulamalar" açılır menüsünden bir IMAP istemcisi kullanın.
 
 ### Takvimleri listele {#list-calendars}
 
@@ -332,14 +332,14 @@ curl -X PUT BASE_URI/v1/account \
 ## Takma Ad Mesajları (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Diğer API uç noktalarından farklı olarak, bunlar Temel Yetkilendirme başlıkları olarak [Kimlik doğrulama](#authentication) "kullanıcı adı"nın takma ad kullanıcı adına eşit ve "şifre"nin takma ad tarafından oluşturulan parolaya eşit olmasını gerektirir.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bu uç nokta bölümü üzerinde çalışılmaktadır ve (umarız) 2024 yılında yayınlanacaktır. Bu arada, lütfen web sitemizin gezinme bölümündeki "Uygulamalar" açılır menüsünden bir IMAP istemcisi kullanın.
 
 Lütfen alan adınız için kurulum talimatlarını izlediğinizden emin olun.
 
-Bu talimatlar SSS bölümümüzde [E-postaların IMAP ile alınmasını destekliyor musunuz?](/faq#do-you-support-receiving-email-with-imap) bulunabilir.
+Bu talimatlara SSS bölümümüzden ulaşabilirsiniz [E-postaların IMAP ile alınmasını destekliyor musunuz?](/faq#do-you-support-receiving-email-with-imap).
 
 ### Mesajları listele ve ara {#list-and-search-for-messages}
 
@@ -347,10 +347,10 @@ Bu talimatlar SSS bölümümüzde [E-postaların IMAP ile alınmasını destekli
 
 **Yakında gelecek**
 
-### Mesajı oluştur {#create-message}
+### {#create-message} mesajını oluştur
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Bu, bir e-posta **GÖNDERMEZ**; yalnızca mesajı posta kutusu klasörünüze ekler (örneğin, bu, IMAP `APPEND` komutuna benzer). Bir e-posta göndermek istiyorsanız, aşağıdaki [Giden SMTP e-postası oluşturun](#create-outbound-smtp-email) komutuna bakın. Giden SMTP e-postasını oluşturduktan sonra, depolama amacıyla bu uç noktayı kullanarak bir kopyasını takma adınızın posta kutusuna ekleyebilirsiniz.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Bu talimatlar SSS bölümümüzde [E-postaların IMAP ile alınmasını destekli
 ## Takma Ad Klasörleri (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Bir klasörün yolunu <code>/v1/folders/:path</code> uç noktası olarak kullanan klasör uç noktaları, klasörün kimliği <code>:id</code> ile değiştirilebilir. Bu, klasöre <code>path</code> veya <code>id</code> değeriyle başvurabileceğiniz anlamına gelir.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bu uç nokta bölümü üzerinde çalışılmaktadır ve (umarız) 2024 yılında yayınlanacaktır. Bu arada, lütfen web sitemizin gezinme bölümündeki "Uygulamalar" açılır menüsünden bir IMAP istemcisi kullanın.
 
 ### Klasörleri listele {#list-folders}
 
@@ -422,7 +422,7 @@ Bu talimatlar SSS bölümümüzde [E-postaların IMAP ile alınmasını destekli
 
 Lütfen alan adınız için kurulum talimatlarını izlediğinizden emin olun.
 
-Bu talimatlara [Hesabım → Alan Adları → Ayarlar → Giden SMTP Yapılandırması](/my-account/domains) adresinden ulaşabilirsiniz. Alan adınızla giden SMTP göndermek için DKIM, Return-Path ve DMARC ayarlarının doğru olduğundan emin olmanız gerekir.
+Bu talimatlar [Hesabım → Alan Adları → Ayarlar → Giden SMTP Yapılandırması](/my-account/domains) adresinde bulunabilir. Alan adınızla giden SMTP göndermek için DKIM, Return-Path ve DMARC ayarlarının doğru olduğundan emin olmanız gerekir.
 
 ### Giden SMTP e-posta sınırını al {#get-outbound-smtp-email-limit}
 
@@ -462,13 +462,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Giden SMTP e-postası oluştur {#create-outbound-smtp-email}
 
-E-posta oluşturma API'miz, Nodemailer'ın mesaj seçeneği yapılandırmasından esinlenmiştir ve bu yapılandırmayı kullanır. Lütfen aşağıdaki tüm gövde parametreleri için [Nodemailer mesaj yapılandırması](https://nodemailer.com/message/)'ya bakın.
+E-posta oluşturma API'miz, Nodemailer'ın mesaj seçeneği yapılandırmasından esinlenmiştir ve bu yapılandırmayı kullanır. Lütfen aşağıdaki tüm gövde parametreleri için [Nodemailer mesaj yapılandırması](https://nodemailer.com/message/) parametresini kullanın.
 
-`envelope` ve `dkim` hariç (bunları sizin için otomatik olarak ayarladığımız için), tüm Nodemailer seçeneklerini desteklediğimizi unutmayın. Güvenlik amacıyla `disableFileAccess` ve `disableUrlAccess` seçeneklerini otomatik olarak `true` olarak ayarlıyoruz.
+`envelope` ve `dkim` hariç (bunları sizin için otomatik olarak ayarladığımız için), tüm Nodemailer seçeneklerini desteklediğimizi unutmayın. Güvenlik nedeniyle `disableFileAccess` ve `disableUrlAccess` seçeneklerini otomatik olarak `true` olarak ayarlıyoruz.
 
-Başlıklar dahil ham tam e-postanızla birlikte `raw` seçeneğini tek bir seçenek olarak iletmelisiniz **veya** aşağıdaki bireysel gövde parametre seçeneklerini iletmelisiniz.
+`raw` seçeneğini, başlıklar dahil olmak üzere ham tam e-postanızla birlikte iletmelisiniz **veya** aşağıdaki bireysel gövde parametre seçeneklerini iletmelisiniz.
 
-Bu API uç noktası, başlıklarda bulunan emojileri sizin için otomatik olarak kodlayacaktır (örneğin, `Subject: 🤓 Hello` konu satırı otomatik olarak `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`'e dönüştürülür). Amacımız, son derece geliştirici dostu ve sahtekarlara karşı dayanıklı bir e-posta API'si oluşturmaktı.
+Bu API uç noktası, başlıklarda bulunan emojileri sizin için otomatik olarak kodlayacaktır (örneğin, `Subject: 🤓 Hello` konu satırı otomatik olarak `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`'e dönüştürülür). Amacımız, son derece geliştirici dostu ve sahte metinlere karşı dayanıklı bir e-posta API'si oluşturmaktı.
 
 > `POST /v1/emails`
 
@@ -485,7 +485,7 @@ Bu API uç noktası, başlıklarda bulunan emojileri sizin için otomatik olarak
 | `sender` | HAYIR | Sicim | "Gönderen" başlığı için e-posta adresi (bkz. [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)). |
 | `replyTo` | HAYIR | Sicim | "Yanıtla" başlığı için e-posta adresi. |
 | `inReplyTo` | HAYIR | Sicim | Mesajın cevap olarak gönderildiği Mesaj Kimliği. |
-| `references` | HAYIR | Dize veya Dizi | Boşlukla ayrılmış liste veya Mesaj Kimliklerinin Dizisi. |
+| `references` | HAYIR | Dize veya Dizi | Boşluklarla ayrılmış liste veya Mesaj Kimliklerinin Dizisi. |
 | `attachDataUrls` | HAYIR | Boolean | `true` ise mesajın HTML içeriğindeki `data:` görsellerini gömülü eklere dönüştürür. |
 | `watchHtml` | HAYIR | Sicim | Mesajın Apple Watch'a özgü HTML sürümü ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), en son saatlerde bunun ayarlanması gerekmez). |
 | `amp` | HAYIR | Sicim | Mesajın AMP4EMAIL'e özgü HTML sürümü (bkz. [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
@@ -532,7 +532,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Giden SMTP e-postasını sil {#delete-outbound-smtp-email}
 
-E-posta silme işlemi, yalnızca geçerli durum `"pending"`, `"queued"` veya `"deferred"` ise durumu `"rejected"` olarak ayarlar (ve daha sonra kuyrukta işlemez). E-postaları oluşturulduktan ve/veya gönderildikten 30 gün sonra otomatik olarak temizleyebiliriz; bu nedenle, giden SMTP e-postalarının bir kopyasını istemcinizde, veritabanınızda veya uygulamanızda saklamalısınız. İsterseniz veritabanınızda e-posta kimliği değerimize başvurabilirsiniz; bu değer hem [E-posta oluştur](#create-email) hem de [E-postayı al](#retrieve-email) uç noktalarından döndürülür.
+E-posta silme işlemi, yalnızca geçerli durum `"pending"`, `"queued"` veya `"deferred"`'ten biriyse durumu `"rejected"` olarak ayarlar (ve daha sonra kuyrukta işlemez). E-postaları oluşturulduktan ve/veya gönderildikten 30 gün sonra otomatik olarak temizleyebiliriz; bu nedenle, giden SMTP e-postalarının bir kopyasını istemcinizde, veritabanınızda veya uygulamanızda saklamalısınız. İsterseniz veritabanınızda e-posta kimliği değerimize başvurabilirsiniz; bu değer hem [E-posta oluştur](#create-email) hem de [E-postayı al](#retrieve-email) uç noktalarından döndürülür.
 
 > `DELETE /v1/emails/:id`
 
@@ -543,15 +543,15 @@ curl -X DELETE BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-## Alan Adları {#domains}
+## Etki Alanları {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> <code>/v1/domains/:domain_name</code> alan adını uç nokta olarak kullanan alan adı uç noktaları, <code>:domain_id</code> alan adı kimliğiyle değiştirilebilir. Bu, alan adına <code>name</code> veya <code>id</code> değeriyle başvurabileceğiniz anlamına gelir.
 
 ### Alan adlarını listele {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 1 Kasım 2024 itibarıyla [Alan adlarını listele](#list-domains) ve [Alan adı takma adlarını listeleyin](#list-domain-aliases) API uç noktaları, sayfa başına maksimum `1000` sonuç değerine ayarlanacaktır. Bu davranışı erkenden etkinleştirmek isterseniz, uç nokta sorgusu için URL'ye ek bir sorgu dizesi parametresi olarak `?paginate=true` değerini iletebilirsiniz. Daha fazla bilgi için [Sayfalandırma](#pagination)'e bakın.
 
 > `GET /v1/domains`
 
@@ -599,7 +599,7 @@ curl -X POST BASE_URI/v1/domains \
   -d plan=free
 ```
 
-### Alan adını al {#retrieve-domain}
+### {#retrieve-domain} etki alanını al
 
 > `GET /v1/domains/DOMAIN_NAME`
 
@@ -621,7 +621,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
-### Alan adı SMTP kayıtlarını doğrulayın {#verify-domain-smtp-records}
+### Etki alanı SMTP kayıtlarını doğrulayın {#verify-domain-smtp-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
@@ -649,7 +649,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
 
 | Vücut Parametresi | Gerekli | Tip | Tanım |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | HAYIR | Sicim | Alan genelindeki genel parola için kullanılacak özel yeni parolanız. Rastgele oluşturulmuş ve güçlü bir parola almak istiyorsanız, bunu API istek gövdenizden boş veya tamamen eksik bırakabileceğinizi unutmayın. |
+| `new_password` | HAYIR | Sicim | Alan adı genelinde geçerli parola için kullanacağınız özel yeni parolanız. Rastgele oluşturulmuş ve güçlü bir parola almak istiyorsanız, API istek gövdenizde bu alanı boş bırakabilir veya tamamen silebilirsiniz. |
 | `description` | HAYIR | Sicim | Açıklama yalnızca organizasyon amaçlıdır. |
 
 > Örnek Talep:
@@ -659,7 +659,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Alan adı genelindeki genel parolayı kaldır {#remove-domain-wide-catch-all-password}
+### Alan adı genelindeki tüm parolayı kaldır {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
@@ -670,7 +670,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
   -u API_TOKEN:
 ```
 
-### Alan adını güncelle {#update-domain}
+### Etki alanını güncelle {#update-domain}
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
@@ -705,9 +705,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-## Davetler {#invites}
+## {#invites} adlı kişiyi davet eder
 
-### Alan adı davetini kabul et {#accept-domain-invite}
+### Alan davetini kabul et {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
@@ -718,7 +718,7 @@ curl BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
-### Alan adı daveti oluştur {#create-domain-invite}
+### Etki alanı daveti oluştur {#create-domain-invite}
 
 > `POST /v1/domains/DOMAIN_NAME/invites`
 
@@ -737,9 +737,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Davet edilen kullanıcı, davet eden yöneticinin üyesi olduğu başka bir alan adının kabul edilmiş bir üyesiyse, daveti otomatik olarak kabul edecek ve e-posta göndermeyecektir.
 
-### Alan adı davetini kaldır {#remove-domain-invite}
+### Alan davetini kaldır {#remove-domain-invite}
 
 > `DELETE /v1/domains/:domain_name/invites`
 
@@ -754,7 +754,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
   -u API_TOKEN:
 ```
 
-## Üyeler {#members}
+## Üyeleri {#members}
 
 ### Etki alanı üyesini güncelle {#update-domain-member}
 
@@ -786,7 +786,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 ### Bir takma ad parolası oluşturun {#generate-an-alias-password}
 
-Talimatları e-postayla göndermezseniz, kullanıcı adı ve parola başarılı bir isteğin JSON yanıt gövdesinde `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` biçiminde yer alacaktır.
+Talimatları e-postayla göndermezseniz, kullanıcı adı ve parolanın başarılı bir isteğin JSON yanıt gövdesinde `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` biçiminde olacağını unutmayın.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Alan adı takma adlarını listele {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 1 Kasım 2024 itibarıyla [Alan adlarını listele](#list-domains) ve [Alan adı takma adlarını listeleyin](#list-domain-aliases) API uç noktaları, sayfa başına maksimum `1000` sonuç değerine ayarlanacaktır. Bu davranışı erkenden etkinleştirmek isterseniz, uç nokta sorgusu için URL'ye ek bir sorgu dizesi parametresi olarak `?paginate=true` değerini iletebilirsiniz. Daha fazla bilgi için [Sayfalandırma](#pagination)'e bakın.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -827,7 +827,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
   -u API_TOKEN:
 ```
 
-### Yeni alan adı takma adı oluştur {#create-new-domain-alias}
+### Yeni alan adı takma adı {#create-new-domain-alias} oluşturun
 
 > `POST /v1/domains/DOMAIN_NAME/aliases`
 
@@ -839,12 +839,12 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `labels` | HAYIR | Dize veya Dizi | Etiketlerin listesi (satır sonu/boşluk/virgülle ayrılmış Dize veya Dizi olmalıdır) |
 | `has_recipient_verification` | HAYIR | Boolean | E-postaların iletilmesi için alıcıların bir e-posta doğrulama bağlantısına tıklamasını gerektir (istek gövdesinde açıkça belirtilmemişse varsayılan olarak etki alanının ayarı kullanılır) |
 | `is_enabled` | HAYIR | Boolean | Bu takma adın etkinleştirilip etkinleştirilmeyeceği (devre dışı bırakılırsa, e-postalar hiçbir yere yönlendirilmez, ancak başarılı durum kodları döndürülür). Bir değer geçirilirse, [boolean](https://github.com/thenativeweb/boolean#quick-start) kullanılarak bir Boole değerine dönüştürülür.) |
-| `error_code_if_disabled` | HAYIR | Sayı (__HÜCRE_KODU_0__, __HÜCRE_KODU_1__ veya __HÜCRE_KODU_2__) | Bu takma ada gelen e-posta, `is_enabled` değeri `false` ise ve `250` (hiçbir yere sessizce iletilmez, örn. kara delik veya `/dev/null`), `421` (yumuşak reddetme; ve ~5 güne kadar yeniden deneme) veya `550` kalıcı başarısızlık ve reddetme durumunda reddedilecektir. Varsayılan olarak `250` kullanılır. |
+| `error_code_if_disabled` | HAYIR | Sayı (__HÜCRE_KODU_0__, __HÜCRE_KODU_1__ veya __HÜCRE_KODU_2__) | Bu takma ada gelen e-posta, `is_enabled` değeri `false` ise ve `250` (hiçbir yere sessizce iletilmez, örneğin kara delik veya `/dev/null`), `421` (yumuşak reddetme; ve ~5 güne kadar yeniden deneme) veya `550` kalıcı başarısızlık ve reddetme durumunda reddedilecektir. Varsayılan olarak `250` kullanılır. |
 | `has_imap` | HAYIR | Boolean | Bu takma ad için IMAP depolamanın etkinleştirilip etkinleştirilmeyeceği (devre dışı bırakılırsa, alınan gelen e-postalar [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service)'a kaydedilmez. Bir değer geçirilirse, [boolean](https://github.com/thenativeweb/boolean#quick-start) kullanılarak bir Boole değerine dönüştürülür) |
 | `has_pgp` | HAYIR | Boolean | [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) için `public_key` takma adını kullanarak [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)'ın etkinleştirilmesi veya devre dışı bırakılması. |
 | `public_key` | HAYIR | Sicim | ASCII Armor formatında OpenPGP genel anahtarı ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); örneğin `support@forwardemail.net` için GPG anahtarı). Bu yalnızca `has_pgp` değerini `true` olarak ayarladıysanız geçerlidir. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | HAYIR | Sicim | Bu takma ad için maksimum depolama kotası. Alan adının geçerli maksimum kotasına sıfırlamak için boş bırakın veya [bytes](https://github.com/visionmedia/bytes.js) tarafından ayrıştırılacak "1 GB" gibi bir değer girin. Bu değer yalnızca alan adı yöneticileri tarafından ayarlanabilir. |
-| `vacation_responder_is_enabled` | HAYIR | Boolean | Otomatik tatil yanıtlayıcısını etkinleştirmek veya devre dışı bırakmak. |
+| `vacation_responder_is_enabled` | HAYIR | Boolean | Otomatik tatil yanıtlayıcısının etkinleştirilmesi veya devre dışı bırakılması. |
 | `vacation_responder_start_date` | HAYIR | Sicim | Tatil yanıtlayıcısı için başlangıç tarihi (etkinleştirilmişse ve burada bir başlangıç tarihi ayarlanmamışsa, yanıtlayıcının zaten başlatıldığı varsayılır). `MM/DD/YYYY`, `YYYY-MM-DD` ve `dayjs` kullanarak akıllı ayrıştırma yoluyla diğer tarih biçimlerini destekliyoruz. |
 | `vacation_responder_end_date` | HAYIR | Sicim | Tatil yanıtlayıcısı için bitiş tarihi (etkinleştirilmişse ve burada bir bitiş tarihi ayarlanmamışsa, yanıtlayıcının asla bitmeyeceği varsayılır ve sonsuza kadar yanıt verir). `MM/DD/YYYY`, `YYYY-MM-DD` ve `dayjs` kullanarak akıllı ayrıştırma yoluyla diğer tarih biçimlerini destekliyoruz. |
 | `vacation_responder_subject` | HAYIR | Sicim | Tatil yanıtlayıcısı için konu düz metin olarak, örneğin "Ofis Dışında". Burada tüm HTML kodunu kaldırmak için `striptags` kullanıyoruz. |
@@ -859,7 +859,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 ### Alan adı takma adını al {#retrieve-domain-alias}
 
-Bir alan takma adını `id` veya `name` değerinden alabilirsiniz.
+Bir alan takma adını `id` veya `name` değeriyle alabilirsiniz.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
@@ -891,12 +891,12 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `labels` | HAYIR | Dize veya Dizi | Etiketlerin listesi (satır sonu/boşluk/virgülle ayrılmış Dize veya Dizi olmalıdır) |
 | `has_recipient_verification` | HAYIR | Boolean | E-postaların iletilmesi için alıcıların bir e-posta doğrulama bağlantısına tıklamasını gerektir (istek gövdesinde açıkça belirtilmemişse varsayılan olarak etki alanının ayarı kullanılır) |
 | `is_enabled` | HAYIR | Boolean | Bu takma adın etkinleştirilip etkinleştirilmeyeceği (devre dışı bırakılırsa, e-postalar hiçbir yere yönlendirilmez, ancak başarılı durum kodları döndürülür). Bir değer geçirilirse, [boolean](https://github.com/thenativeweb/boolean#quick-start) kullanılarak bir Boole değerine dönüştürülür.) |
-| `error_code_if_disabled` | HAYIR | Sayı (__HÜCRE_KODU_0__, __HÜCRE_KODU_1__ veya __HÜCRE_KODU_2__) | Bu takma ada gelen e-posta, `is_enabled` değeri `false` ise ve `250` (hiçbir yere sessizce iletilmez, örn. kara delik veya `/dev/null`), `421` (yumuşak reddetme; ve ~5 güne kadar yeniden deneme) veya `550` kalıcı başarısızlık ve reddetme durumunda reddedilecektir. Varsayılan olarak `250` kullanılır. |
+| `error_code_if_disabled` | HAYIR | Sayı (__HÜCRE_KODU_0__, __HÜCRE_KODU_1__ veya __HÜCRE_KODU_2__) | Bu takma ada gelen e-posta, `is_enabled` değeri `false` ise ve `250` (hiçbir yere sessizce iletilmez, örneğin kara delik veya `/dev/null`), `421` (yumuşak reddetme; ve ~5 güne kadar yeniden deneme) veya `550` kalıcı başarısızlık ve reddetme durumunda reddedilecektir. Varsayılan olarak `250` kullanılır. |
 | `has_imap` | HAYIR | Boolean | Bu takma ad için IMAP depolamanın etkinleştirilip etkinleştirilmeyeceği (devre dışı bırakılırsa, alınan gelen e-postalar [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service)'a kaydedilmez. Bir değer geçirilirse, [boolean](https://github.com/thenativeweb/boolean#quick-start) kullanılarak bir Boole değerine dönüştürülür) |
 | `has_pgp` | HAYIR | Boolean | [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) için `public_key` takma adını kullanarak [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd)'ın etkinleştirilmesi veya devre dışı bırakılması. |
 | `public_key` | HAYIR | Sicim | ASCII Armor formatında OpenPGP genel anahtarı ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); örneğin `support@forwardemail.net` için GPG anahtarı). Bu yalnızca `has_pgp` değerini `true` olarak ayarladıysanız geçerlidir. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | HAYIR | Sicim | Bu takma ad için maksimum depolama kotası. Alan adının geçerli maksimum kotasına sıfırlamak için boş bırakın veya [bytes](https://github.com/visionmedia/bytes.js) tarafından ayrıştırılacak "1 GB" gibi bir değer girin. Bu değer yalnızca alan adı yöneticileri tarafından ayarlanabilir. |
-| `vacation_responder_is_enabled` | HAYIR | Boolean | Otomatik tatil yanıtlayıcısını etkinleştirmek veya devre dışı bırakmak. |
+| `vacation_responder_is_enabled` | HAYIR | Boolean | Otomatik tatil yanıtlayıcısının etkinleştirilmesi veya devre dışı bırakılması. |
 | `vacation_responder_start_date` | HAYIR | Sicim | Tatil yanıtlayıcısı için başlangıç tarihi (etkinleştirilmişse ve burada bir başlangıç tarihi ayarlanmamışsa, yanıtlayıcının zaten başlatıldığı varsayılır). `MM/DD/YYYY`, `YYYY-MM-DD` ve `dayjs` kullanarak akıllı ayrıştırma yoluyla diğer tarih biçimlerini destekliyoruz. |
 | `vacation_responder_end_date` | HAYIR | Sicim | Tatil yanıtlayıcısı için bitiş tarihi (etkinleştirilmişse ve burada bir bitiş tarihi ayarlanmamışsa, yanıtlayıcının asla bitmeyeceği varsayılır ve sonsuza kadar yanıt verir). `MM/DD/YYYY`, `YYYY-MM-DD` ve `dayjs` kullanarak akıllı ayrıştırma yoluyla diğer tarih biçimlerini destekliyoruz. |
 | `vacation_responder_subject` | HAYIR | Sicim | Tatil yanıtlayıcısı için konu düz metin olarak, örneğin "Ofis Dışında". Burada tüm HTML kodunu kaldırmak için `striptags` kullanıyoruz. |
@@ -920,9 +920,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
   -u API_TOKEN:
 ```
 
-## {#encrypt} adresini şifrele
+## {#encrypt}'i şifrele
 
-Ücretsiz planda bile kayıtlarınızı ücretsiz olarak şifrelemenize olanak tanıyoruz. Gizlilik bir özellik olmamalı, ürünün tüm yönlerine entegre edilmelidir. [Gizlilik Kılavuzları tartışması](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ve [GitHub sorunlarımız](https://github.com/forwardemail/forwardemail.net/issues/254)'da yoğun talep üzerine bunu ekledik.
+Ücretsiz planda bile kayıtlarınızı ücretsiz olarak şifrelemenize olanak tanıyoruz. Gizlilik bir özellik olmamalı, ürünün tüm yönlerine entegre edilmelidir. [Gizlilik Kılavuzları tartışması](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ve [GitHub sorunlarımız](https://github.com/forwardemail/forwardemail.net/issues/254)'de yoğun talep üzerine bunu ekledik.
 
 ### TXT Kaydını Şifrele {#encrypt-txt-record}
 

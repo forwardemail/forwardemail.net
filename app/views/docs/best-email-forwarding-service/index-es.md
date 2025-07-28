@@ -42,7 +42,7 @@ A diferencia de muchos proveedores de correo electrónico que escanean sus mensa
 
 ## Implementación de SQLite: durabilidad y portabilidad para sus datos {#sqlite-implementation-durability-and-portability-for-your-data}
 
-Una de las ventajas de privacidad más significativas de Forward Email es nuestra implementación [SQLite](https://en.wikipedia.org/wiki/SQLite), cuidadosamente diseñada. Hemos optimizado SQLite con configuraciones PRAGMA específicas y [Registro de escritura anticipada (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) para garantizar la durabilidad y la portabilidad de sus datos, manteniendo los más altos estándares de privacidad y seguridad.
+Una de las ventajas de privacidad más significativas de Forward Email es nuestra implementación de [SQLite](https://en.wikipedia.org/wiki/SQLite), cuidadosamente diseñada. Hemos optimizado SQLite con configuraciones PRAGMA específicas y [Registro de escritura anticipada (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) para garantizar la durabilidad y la portabilidad de sus datos, manteniendo los más altos estándares de privacidad y seguridad.
 
 A continuación se muestra cómo implementamos SQLite con [ChaCha20-Poli1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) como cifrado para cifrado resistente a los datos cuánticos:
 
@@ -81,13 +81,13 @@ db.pragma('optimize=0x10002;');
 db.pragma('temp_store=1;');
 ```
 
-Esta implementación garantiza que sus datos no solo estén seguros, sino también sean portátiles. Puede recuperar su correo electrónico en cualquier momento exportándolo en los formatos [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) o SQLite. Y cuando quiera eliminar sus datos, desaparecerán por completo: simplemente eliminamos los archivos del almacenamiento en disco en lugar de ejecutar comandos SQL DELETE ROW, que pueden dejar rastros en la base de datos.
+Esta implementación garantiza que sus datos no solo estén seguros, sino también sean portátiles. Puede recuperar su correo electrónico en cualquier momento exportándolo en los formatos [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) o SQLite. Y cuando desee eliminar sus datos, desaparecerán por completo: simplemente eliminamos los archivos del almacenamiento en disco en lugar de ejecutar comandos SQL DELETE ROW, que pueden dejar rastros en la base de datos.
 
 El aspecto de cifrado cuántico de nuestra implementación utiliza ChaCha20-Poly1305 como cifrado cuando inicializamos la base de datos, lo que proporciona una sólida protección contra amenazas actuales y futuras a la privacidad de sus datos.
 
 ## Mecanismo de cola inteligente y reintento: garantizar la entrega del correo electrónico {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-En lugar de centrarnos únicamente en la gestión de encabezados, hemos implementado un sofisticado mecanismo inteligente de cola y reintento con nuestro método `getBounceInfo`. Este sistema garantiza que sus correos electrónicos tengan la mayor probabilidad de entrega, incluso ante problemas temporales.
+En lugar de centrarnos únicamente en la gestión de encabezados, hemos implementado un sofisticado mecanismo inteligente de cola y reintento con nuestro método `getBounceInfo`. Este sistema garantiza que sus correos electrónicos tengan la mayor probabilidad de entregarse, incluso ante problemas temporales.
 
 ```javascript
 function getBounceInfo(err) {
@@ -121,9 +121,9 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> This is an excerpt of the `getBounceInfo` method and not the actual extensive implementation. For the complete code, you can review it on [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+> Este es un extracto del método `getBounceInfo` y no la implementación completa. Para ver el código completo, puede consultarlo en [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-Reintentamos la entrega del correo durante 5 días, similar a los estándares de la industria como [Sufijo](https://en.wikipedia.org/wiki/Postfix_\(software\)), lo que permite que los problemas temporales se resuelvan por sí solos. Este enfoque mejora significativamente las tasas de entrega, a la vez que protege la privacidad.
+Reintentamos la entrega del correo durante 5 días, similar a los estándares de la industria como [Sufijo](https://en.wikipedia.org/wiki/Postfix_\(software\), lo que permite que los problemas temporales se resuelvan por sí solos. Este enfoque mejora significativamente las tasas de entrega, a la vez que protege la privacidad.
 
 De forma similar, también redactamos el contenido de los correos electrónicos SMTP salientes tras su entrega. Esto está configurado en nuestro sistema de almacenamiento con un periodo de retención predeterminado de 30 días, que puede ajustar en la configuración avanzada de su dominio. Transcurrido este periodo, el contenido del correo electrónico se redacta y elimina automáticamente, quedando únicamente un mensaje provisional:
 
@@ -161,7 +161,7 @@ Este enfoque equilibrado le brinda la flexibilidad de crear tantas direcciones d
 
 Nuestro exclusivo enfoque de cifrado en espacio aislado ofrece una ventaja de seguridad crucial que muchos usuarios pasan por alto al elegir un servicio de correo electrónico. Analicemos por qué es tan importante el aislamiento de datos, especialmente el correo electrónico.
 
-Es muy probable que servicios como Gmail y Proton utilicen [bases de datos relacionales](https://en.wikipedia.org/wiki/Relational_database) compartido, lo que crea una vulnerabilidad de seguridad fundamental. En un entorno de base de datos compartida, si alguien accede a los datos de un usuario, potencialmente también tendrá acceso a los de otros. Esto se debe a que todos los datos de los usuarios residen en las mismas tablas de la base de datos, separados únicamente por identificadores de usuario o similares.
+Es muy probable que servicios como Gmail y Proton utilicen [bases de datos relacionales](https://en.wikipedia.org/wiki/Relational_database) compartido, lo que crea una vulnerabilidad de seguridad fundamental. En un entorno de base de datos compartida, si alguien accede a los datos de un usuario, potencialmente también tendrá acceso a los datos de otros usuarios. Esto se debe a que todos los datos de los usuarios residen en las mismas tablas de la base de datos, separados únicamente por sus ID de usuario o identificadores similares.
 
 Forward Email adopta un enfoque fundamentalmente diferente con nuestro cifrado en espacio aislado:
 
@@ -212,7 +212,7 @@ Este enfoque significa que, incluso si nuestros servidores se vieran comprometid
 
 ## Cifrado de extremo a extremo con OpenPGP para una privacidad completa {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-Para los usuarios que requieren el máximo nivel de protección de la privacidad frente a la vigilancia del correo electrónico, ofrecemos [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) para el cifrado de extremo a extremo. A diferencia de muchos proveedores de correo electrónico que requieren puentes o aplicaciones propietarias, nuestra implementación funciona con clientes de correo electrónico estándar, lo que facilita la comunicación segura para todos.
+Para los usuarios que requieren el máximo nivel de protección de la privacidad frente a la vigilancia del correo electrónico, ofrecemos compatibilidad con [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) para el cifrado de extremo a extremo. A diferencia de muchos proveedores de correo electrónico que requieren puentes o aplicaciones propietarias, nuestra implementación funciona con clientes de correo electrónico estándar, lo que facilita el acceso a la comunicación segura para todos.
 
 Así es como implementamos el cifrado OpenPGP:
 
@@ -260,15 +260,15 @@ Forward Email ofrece múltiples capas de protección de contenido que están hab
 
 A diferencia de muchos proveedores que permiten habilitar estas funciones, nosotros las hemos deshabilitado, lo que garantiza que todos los usuarios se beneficien de estas protecciones por defecto. Este enfoque refleja nuestro compromiso con la privacidad y la seguridad, ofreciendo un equilibrio que muchos servicios de correo electrónico no logran.
 
-## En qué nos diferenciamos de otros servicios de correo electrónico: la ventaja de la privacidad técnica {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
+## En qué nos diferenciamos de otros servicios de correo electrónico: la ventaja técnica de la privacidad {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
 Al comparar Forward Email con otros servicios de correo electrónico, varias diferencias técnicas clave resaltan nuestro enfoque de privacidad primero:
 
 ### Transparencia de código abierto para una privacidad verificable {#open-source-transparency-for-verifiable-privacy}
 
-Aunque muchos proveedores de correo electrónico afirman ser de código abierto, suelen mantener su código backend cerrado. Forward Email es 100 % [código abierto](https://en.wikipedia.org/wiki/Open_source), incluyendo tanto el código frontend como el backend. Esta transparencia permite una auditoría de seguridad independiente de todos los componentes, lo que garantiza que cualquier persona pueda verificar nuestras declaraciones de privacidad.
+Aunque muchos proveedores de correo electrónico afirman ser de código abierto, suelen mantener su código backend cerrado. Forward Email es 100% [código abierto](https://en.wikipedia.org/wiki/Open_source), incluyendo tanto el código frontend como el backend. Esta transparencia permite una auditoría de seguridad independiente de todos los componentes, lo que garantiza que cualquier persona pueda verificar nuestras declaraciones de privacidad.
 
-### Sin ataduras a proveedores para una privacidad sin concesiones {#no-vendor-lock-in-for-privacy-without-compromise}
+### Sin dependencia de proveedores para una privacidad sin concesiones {#no-vendor-lock-in-for-privacy-without-compromise}
 
 Muchos proveedores de correo electrónico que priorizan la privacidad requieren el uso de sus aplicaciones o puentes propietarios. Forward Email funciona con cualquier cliente de correo electrónico estándar mediante los protocolos [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) y [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol), lo que le da la libertad de elegir su software de correo electrónico preferido sin comprometer la privacidad.
 
@@ -294,7 +294,7 @@ La mayoría de los sistemas de detección de [correo basura](https://en.wikipedi
 
 ### Manteniendo la compatibilidad con el diseño que prioriza la privacidad {#maintaining-compatibility-with-privacy-first-design}
 
-Garantizar la compatibilidad con todos los clientes de correo electrónico, a la vez que se implementan funciones avanzadas de privacidad, ha requerido soluciones de ingeniería creativas. Nuestro equipo ha trabajado incansablemente para que la privacidad sea perfecta, para que no tenga que elegir entre comodidad y seguridad al proteger sus comunicaciones por correo electrónico.
+Garantizar la compatibilidad con todos los clientes de correo electrónico e implementar funciones avanzadas de privacidad ha requerido soluciones de ingeniería creativas. Nuestro equipo ha trabajado incansablemente para que la privacidad sea perfecta, para que no tenga que elegir entre comodidad y seguridad al proteger sus comunicaciones por correo electrónico.
 
 ## Mejores prácticas de privacidad para usuarios de correo electrónico de reenvío {#privacy-best-practices-for-forward-email-users}
 

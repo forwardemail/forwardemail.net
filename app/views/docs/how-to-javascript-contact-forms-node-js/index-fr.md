@@ -13,7 +13,7 @@ Vous devrez installer la dépendance npm `nodemailer` :
 npm install nodemailer
 ```
 
-## Code source et exemple {#source-code-and-example}
+## Code source et exemple de {#source-code-and-example}
 
 Cet exemple utilise la bibliothèque **[Nodemailer](https://github.com/nodemailer/nodemailer)** et son sponsor officiel **[Transférer un e-mail](https://forwardemail.net)** pour envoyer et prévisualiser le courrier sortant.
 

@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Selbst gehostete Releases {#self-hosted-releases}
 
 Dieser Abschnitt dokumentiert den CI/CD-Workflow für die selbstgehostete Lösung von ForwardEmail und erklärt, wie Docker-Images erstellt, veröffentlicht und bereitgestellt werden.
 
-## Table of Contents {#table-of-contents}
+## Inhaltsverzeichnis {#table-of-contents}
 
 * [Überblick](#overview)
 * [CI/CD-Workflow](#cicd-workflow)
@@ -19,18 +19,18 @@ Dieser Abschnitt dokumentiert den CI/CD-Workflow für die selbstgehostete Lösun
 * [Zugriff auf Bilder](#accessing-images)
 * [Beitragen](#contributing)
 
-## Overview {#overview}
+## Übersicht {#overview}
 
 Die selbstgehostete Lösung von ForwardEmail nutzt GitHub Actions, um Docker-Images automatisch zu erstellen und zu veröffentlichen, sobald eine neue Version erstellt wird. Diese Images stehen Benutzern dann zur Bereitstellung auf ihren eigenen Servern mithilfe des bereitgestellten Setup-Skripts zur Verfügung.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Es gibt auch unsere [selbst gehosteter Blog](https://forwardemail.net/blog/docs/self-hosted-solution) und [selbstgehostetes Entwicklerhandbuch](https://forwardemail.net/self-hosted).
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Detailliertere Schritt-für-Schritt-Anleitungen finden Sie in den Anleitungen zu [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) und [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD-Workflow {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub Actions-Workflow {#github-actions-workflow}
 
 Der Build- und Veröffentlichungsprozess für selbstgehostete Docker-Images ist in `.github/workflows/docker-image-build-publish.yml` definiert. Dieser Workflow:
 
@@ -161,7 +161,7 @@ SSL-Zertifikate werden automatisch verwaltet und bieten folgende Optionen:
 Jede GitHub-Version erstellt ein neues Docker-Image mit den Tags:
 
 1. Die spezifische Release-Version (z. B. `v1.0.0`)
-2. Das `latest`-Tag für die neueste Version
+2. Das `latest`-Tag für das neueste Release
 
 Benutzer können aus Stabilitätsgründen eine bestimmte Version verwenden oder das Tag `latest` verwenden, um immer die neuesten Funktionen zu erhalten.
 

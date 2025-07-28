@@ -15,7 +15,7 @@
   * [7. Konfigurasikan Forward Email SMTP di Listmonk](#7-configure-forward-email-smtp-in-listmonk)
   * [8. Konfigurasikan Pemrosesan Pantulan](#8-configure-bounce-processing)
 * [Pengujian](#testing)
-  * [Buat Mailing List](#create-a-mailing-list)
+  * [Buat Milis](#create-a-mailing-list)
   * [Tambahkan Pelanggan](#add-subscribers)
   * [Buat dan Kirim Kampanye](#create-and-send-a-campaign)
 * [Verifikasi](#verification)
@@ -24,20 +24,20 @@
 
 ## Ikhtisar {#overview}
 
-Panduan ini memberikan petunjuk langkah demi langkah kepada pengembang untuk menyiapkan [biksu daftar](https://listmonk.app/), pengelola buletin dan milis sumber terbuka yang andal, untuk menggunakan [Teruskan Email](https://forwardemail.net/) sebagai penyedia SMTP-nya. Kombinasi ini memungkinkan Anda mengelola kampanye secara efektif sekaligus memastikan pengiriman email yang aman, privat, dan andal.
+Panduan ini memberikan petunjuk langkah demi langkah kepada pengembang untuk menyiapkan [Listmonk](https://listmonk.app/), pengelola buletin dan milis sumber terbuka yang andal, untuk menggunakan [Teruskan Email](https://forwardemail.net/) sebagai penyedia SMTP-nya. Kombinasi ini memungkinkan Anda mengelola kampanye secara efektif sekaligus memastikan pengiriman email yang aman, privat, dan andal.
 
 * **Listmonk**: Menangani manajemen pelanggan, pengaturan daftar, pembuatan kampanye, dan pelacakan kinerja.
-* **Forward Email**: Bertindak sebagai server SMTP yang aman, menangani pengiriman email yang sebenarnya dengan fitur keamanan bawaan seperti enkripsi SPF, DKIM, DMARC, dan TLS.
+* **Forward Email**: Berfungsi sebagai server SMTP yang aman, menangani pengiriman email dengan fitur keamanan bawaan seperti enkripsi SPF, DKIM, DMARC, dan TLS.
 
 Dengan mengintegrasikan keduanya, Anda mempertahankan kontrol penuh atas data dan infrastruktur Anda sambil memanfaatkan sistem pengiriman Forward Email yang tangguh.
 
 ## Mengapa Listmonk dan Meneruskan Email {#why-listmonk-and-forward-email}
 
-* **Open Source**: Baik Listmonk maupun prinsip di balik Forward Email menekankan transparansi dan kontrol. Anda sendiri yang mengelola Listmonk, dan memiliki data Anda sendiri.
-* **Berfokus pada Privasi**: Forward Email dibangun dengan privasi sebagai intinya, meminimalkan penyimpanan data, dan berfokus pada transmisi yang aman.
-* **Hemat Biaya**: Listmonk gratis, dan Forward Email menawarkan paket gratis yang banyak dan paket berbayar yang terjangkau, sehingga menjadikannya solusi yang ramah anggaran.
-* **Skalabilitas**: Listmonk berkinerja tinggi, dan infrastruktur Forward Email dirancang untuk pengiriman yang andal dalam skala besar.
-* **Ramah bagi Pengembang**: Listmonk menawarkan API yang tangguh, dan Forward Email menyediakan integrasi SMTP dan webhook yang mudah.
+* **Sumber Terbuka**: Baik Listmonk maupun prinsip-prinsip di balik Forward Email menekankan transparansi dan kontrol. Anda sendiri yang mengelola Listmonk, dan data Anda sendiri yang menjadi milik Anda.
+* **Berfokus pada Privasi**: Forward Email dibangun dengan mengutamakan privasi, meminimalkan retensi data, dan berfokus pada transmisi yang aman.
+* **Hemat Biaya**: Listmonk gratis, dan Forward Email menawarkan paket gratis yang berlimpah dan paket berbayar yang terjangkau, menjadikannya solusi yang ramah anggaran.
+* **Skalabilitas**: Listmonk berkinerja tinggi, dan infrastruktur Forward Email dirancang untuk pengiriman yang andal dan berskala besar.
+* **Ramah Pengembang**: Listmonk menawarkan API yang tangguh, dan Forward Email menyediakan integrasi SMTP dan webhook yang mudah.
 
 ## Prasyarat {#prerequisites}
 
@@ -81,9 +81,9 @@ curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/mas
 
 Berkas ini mendefinisikan wadah aplikasi Listmonk dan wadah basis data PostgreSQL yang diperlukan.
 
-### 4. Konfigurasi Firewall (UFW) {#4-configure-firewall-ufw}
+### 4. Konfigurasikan Firewall (UFW) {#4-configure-firewall-ufw}
 
-Izinkan lalu lintas penting (SSH, HTTP, HTTPS) melalui firewall. Jika SSH Anda berjalan pada port nonstandar, sesuaikan sebagaimana mestinya.
+Izinkan lalu lintas penting (SSH, HTTP, HTTPS) melewati firewall. Jika SSH Anda berjalan pada port non-standar, sesuaikan.
 
 ```bash
 sudo ufw allow ssh
@@ -96,13 +96,13 @@ Konfirmasikan pengaktifan firewall saat diminta.
 
 ### 5. Konfigurasikan Akses HTTPS {#5-configure-https-access}
 
-Menjalankan Listmonk melalui HTTPS sangat penting untuk keamanan. Anda memiliki dua pilihan utama:
+Menjalankan Listmonk melalui HTTPS sangat penting untuk keamanan. Ada dua pilihan utama:
 
-#### Opsi A: Menggunakan Proxy Cloudflare (Disarankan karena Kesederhanaan) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### Opsi A: Menggunakan Proxy Cloudflare (Disarankan untuk Kesederhanaan) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
 Jika DNS domain Anda dikelola oleh Cloudflare, Anda dapat memanfaatkan fitur proksi mereka untuk HTTPS yang mudah.
 
-1. **Point DNS**: Buat rekaman `A` di Cloudflare untuk subdomain Listmonk Anda (misalnya, `listmonk.yourdomain.com`) yang mengarah ke alamat IP VPS Anda. Pastikan **Status Proksi** diatur ke **Proksi** (awan oranye).
+1. **Point DNS**: Buat rekaman `A` di Cloudflare untuk subdomain Listmonk Anda (misalnya, `listmonk.yourdomain.com`) yang mengarah ke alamat IP VPS Anda. Pastikan **Status Proksi** diatur ke **Diproksi** (awan oranye).
 2. **Ubah Docker Compose**: Edit berkas `docker-compose.yml` yang Anda unduh:
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
@@ -113,7 +113,7 @@ Ini membuat Listmonk dapat diakses secara internal pada port 80, yang kemudian d
 
 Alternatifnya, Anda dapat menyiapkan proxy terbalik seperti Nginx atau Caddy pada VPS Anda untuk menangani penghentian HTTPS dan permintaan proxy ke Listmonk (berjalan pada port 9000 secara default).
 
-* Pertahankan nilai default `ports: - "127.0.0.1:9000:9000"` di `docker-compose.yml` untuk memastikan Listmonk hanya dapat diakses secara lokal.
+* Pertahankan `ports: - "127.0.0.1:9000:9000"` default di `docker-compose.yml` untuk memastikan Listmonk hanya dapat diakses secara lokal.
 * Konfigurasikan proxy terbalik pilihan Anda untuk mendengarkan port 80 dan 443, menangani akuisisi sertifikat SSL (misalnya, melalui Let's Encrypt), dan meneruskan lalu lintas ke `http://127.0.0.1:9000`.
 * Pengaturan proxy terbalik yang terperinci berada di luar cakupan panduan ini, tetapi banyak tutorial tersedia daring.
 
@@ -126,7 +126,7 @@ cd ~/listmonk # Or the directory where you saved docker-compose.yml
 docker compose up -d
 ```
 
-Docker akan mengunduh gambar yang diperlukan dan memulai aplikasi Listmonk serta kontainer basis data. Mungkin perlu waktu satu atau dua menit untuk pertama kalinya.
+Docker akan mengunduh citra yang diperlukan dan memulai aplikasi Listmonk serta kontainer basis data. Proses ini mungkin memakan waktu satu atau dua menit untuk pertama kalinya.
 
 ✅ **Akses Listmonk**: Anda sekarang dapat mengakses antarmuka web Listmonk melalui domain yang Anda konfigurasikan (misalnya, `https://listmonk.yourdomain.com`).
 
@@ -134,7 +134,7 @@ Docker akan mengunduh gambar yang diperlukan dan memulai aplikasi Listmonk serta
 
 Berikutnya, konfigurasikan Listmonk untuk mengirim email menggunakan akun Teruskan Email Anda.
 
-1. **Aktifkan SMTP di Email Terusan**: Pastikan Anda telah membuat kredensial SMTP di dasbor akun Email Terusan Anda. Ikuti [Panduan Penerusan Email untuk mengirim email dengan domain khusus melalui SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) jika belum.
+1. **Aktifkan SMTP di Email Terusan**: Pastikan Anda telah membuat kredensial SMTP di dasbor akun Email Terusan Anda. Ikuti [Panduan Meneruskan Email untuk mengirim email dengan domain khusus melalui SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) jika belum.
 2. **Konfigurasi Listmonk**: Masuk ke panel admin Listmonk Anda.
 * Buka **Pengaturan -> SMTP**.
 
@@ -150,14 +150,14 @@ Berikutnya, konfigurasikan Listmonk untuk mengirim email menggunakan akun Terusk
 | **TLS** | `SSL/TLS` |
 | **Dari email** | Alamat `From` yang Anda inginkan (misalnya, `newsletter@yourdomain.com`). Pastikan domain ini dikonfigurasi di Forward Email. |
 
-**Penting**: Selalu gunakan Port `465` dengan `SSL/TLS` untuk koneksi aman dengan Forward Email. Jangan gunakan STARTTLS (port 587).
+**Penting**: Selalu gunakan port `465` dengan `SSL/TLS` untuk koneksi aman dengan Forward Email. Jangan gunakan STARTTLS (port 587).
 
 * Klik **Simpan**.
-3. **Kirim Email Uji Coba**: Gunakan tombol "Kirim Email Uji Coba" di halaman pengaturan SMTP. Masukkan alamat penerima yang dapat Anda akses dan klik **Kirim**. Pastikan email masuk ke kotak masuk penerima.
+3. **Kirim Email Uji Coba**: Gunakan tombol "Kirim Email Uji Coba" di halaman pengaturan SMTP. Masukkan alamat penerima yang dapat Anda akses dan klik **Kirim**. Pastikan email telah sampai di kotak masuk penerima.
 
 ### 8. Konfigurasikan Pemrosesan Pantulan {#8-configure-bounce-processing}
 
-Pemrosesan pantulan memungkinkan Listmonk untuk secara otomatis menangani email yang tidak dapat dikirim (misalnya, karena alamat tidak valid). Email Terusan menyediakan webhook untuk memberi tahu Listmonk tentang pantulan.
+Pemrosesan pantulan memungkinkan Listmonk menangani email yang tidak terkirim secara otomatis (misalnya, karena alamat tidak valid). Email Terusan menyediakan webhook untuk memberi tahu Listmonk tentang pantulan.
 
 #### Penyiapan Penerusan Email {#forward-email-setup}
 
@@ -187,7 +187,7 @@ Pemrosesan pantulan memungkinkan Listmonk untuk secara otomatis menangani email 
 
 ## Menguji {#testing}
 
-Berikut ini ikhtisar singkat fungsi inti Listmonk:
+Berikut ikhtisar singkat fungsi inti Listmonk:
 
 ### Buat Milis {#create-a-mailing-list}
 
@@ -197,13 +197,13 @@ Berikut ini ikhtisar singkat fungsi inti Listmonk:
 
 ### Tambahkan Pelanggan {#add-subscribers}
 
-* Navigasi ke bagian **Pelanggan**.
+* Buka bagian **Pelanggan**.
 * Anda dapat menambahkan pelanggan:
-* **Secara Manual**: Klik **Pelanggan Baru**.
-* **Impor**: Klik **Impor Pelanggan** untuk mengunggah file CSV.
+* **Manual**: Klik **Pelanggan Baru**.
+* **Impor**: Klik **Impor Pelanggan** untuk mengunggah berkas CSV.
 * **API**: Gunakan API Listmonk untuk penambahan terprogram.
-* Tetapkan pelanggan ke satu atau beberapa daftar selama pembuatan atau impor.
-* **Praktik Terbaik**: Gunakan proses keikutsertaan ganda. Konfigurasikan ini di bawah **Pengaturan -> Keikutsertaan & Langganan**.
+* Tetapkan pelanggan ke satu atau beberapa daftar saat pembuatan atau impor.
+* **Praktik Terbaik**: Gunakan proses keikutsertaan ganda. Konfigurasikan ini di **Pengaturan -> Keikutsertaan & Langganan**.
 
 ### Buat dan Kirim Kampanye {#create-and-send-a-campaign}
 
@@ -216,22 +216,22 @@ Berikut ini ikhtisar singkat fungsi inti Listmonk:
 
 ## Verifikasi {#verification}
 
-* **Pengiriman SMTP**: Kirim email uji coba secara berkala melalui halaman pengaturan SMTP Listmonk dan uji kampanye untuk memastikan email terkirim dengan benar.
-* **Penanganan Pentalan**: Kirim kampanye uji coba ke alamat email yang diketahui tidak valid (misalnya, `bounce-test@yourdomain.com` jika Anda tidak memiliki alamat email asli, meskipun hasilnya mungkin berbeda). Periksa statistik kampanye di Listmonk setelah beberapa saat untuk melihat apakah pantulan terdaftar.
+* **Pengiriman SMTP**: Kirim email uji secara berkala melalui halaman pengaturan SMTP Listmonk dan uji kampanye untuk memastikan email terkirim dengan benar.
+* **Penanganan Pentalan**: Kirim kampanye uji ke alamat email yang diketahui tidak valid (misalnya, `bounce-test@yourdomain.com` jika Anda tidak memiliki alamat email asli, meskipun hasilnya mungkin berbeda). Periksa statistik kampanye di Listmonk setelah beberapa saat untuk melihat apakah pantulan terdaftar.
 * **Header Email**: Gunakan alat seperti [Penguji Surat](https://www.mail-tester.com/) atau periksa header email secara manual untuk memverifikasi bahwa SPF, DKIM, dan DMARC lolos, yang menunjukkan pengaturan yang tepat melalui Penerusan Email.
 * **Log Penerusan Email**: Periksa log dasbor Penerusan Email Anda jika Anda mencurigai masalah pengiriman berasal dari server SMTP.
 
 ## Catatan Pengembang {#developer-notes}
 
-* **Templating**: Listmonk menggunakan mesin templating Go. Jelajahi dokumentasinya untuk personalisasi tingkat lanjut: `{{ .Subscriber.Attribs.your_custom_field }}`.
+* **Templating**: Listmonk menggunakan mesin templating Go. Jelajahi dokumentasinya untuk personalisasi lanjutan: `{{ .Subscriber.Attribs.your_custom_field }}`.
 * **API**: Listmonk menyediakan REST API yang komprehensif untuk mengelola daftar, pelanggan, kampanye, templat, dan lainnya. Temukan tautan dokumentasi API di footer instans Listmonk Anda.
 * **Bidang Kustom**: Tentukan bidang pelanggan kustom di bawah **Pengaturan -> Bidang Pelanggan** untuk menyimpan data tambahan.
 * **Webhook**: Selain bounce, Listmonk dapat mengirimkan webhook untuk kejadian lain (misalnya, langganan), yang memungkinkan integrasi dengan sistem lain.
 
 ## Kesimpulan {#conclusion}
 
-Dengan memadukan kekuatan Listmonk yang dihosting sendiri dengan pengiriman Forward Email yang aman dan menghargai privasi, Anda menciptakan platform pemasaran email yang tangguh dan etis. Anda mempertahankan kepemilikan penuh atas data audiens Anda sekaligus mendapatkan keuntungan dari fitur keamanan otomatis dan pengiriman yang tinggi.
+Dengan mengintegrasikan kekuatan Listmonk yang dihosting sendiri dengan pengiriman Forward Email yang aman dan menjaga privasi, Anda menciptakan platform pemasaran email yang tangguh dan etis. Anda mempertahankan kepemilikan penuh atas data audiens Anda sekaligus memanfaatkan fitur keamanan otomatis dan tingkat pengiriman yang tinggi.
 
-Pengaturan ini menyediakan alternatif layanan email berpemilik yang dapat diskalakan, hemat biaya, dan ramah pengembang, selaras sempurna dengan etos perangkat lunak sumber terbuka dan privasi pengguna.
+Pengaturan ini menyediakan alternatif layanan email berpemilik yang skalabel, hemat biaya, dan ramah pengembang, selaras sempurna dengan etos perangkat lunak sumber terbuka dan privasi pengguna.
 
-Selamat mengirim! 🚀
+Selamat Mengirim! 🚀

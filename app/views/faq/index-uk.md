@@ -5,13 +5,13 @@
 ## Зміст {#table-of-contents}
 
 * [Швидкий старт](#quick-start)
-* [вступ](#introduction)
+* [Вступ](#introduction)
   * [Що таке пересилання електронної пошти](#what-is-forward-email)
   * [Хто користується послугою пересилання електронної пошти](#who-uses-forward-email)
   * [Яка історія пересилання електронної пошти](#what-is-forward-emails-history)
   * [Як швидко працює ця послуга](#how-fast-is-this-service)
 * [Поштові клієнти](#email-clients)
-  * [Thunderbird](#thunderbird)
+  * [Тандерберд](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [Мобільні пристрої](#mobile-devices)
@@ -30,11 +30,11 @@
   * [Де розташовані ваші сервери](#where-are-your-servers-located)
   * [Як експортувати та створити резервну копію моєї поштової скриньки](#how-do-i-export-and-backup-my-mailbox)
   * [Як імпортувати та перенести мою існуючу поштову скриньку](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Чи підтримуєте ви самостійне розміщення](#do-you-support-self-hosting)
+  * [Ви підтримуєте самостійний хостинг?](#do-you-support-self-hosting)
 * [Конфігурація електронної пошти](#email-configuration)
   * [Як розпочати та налаштувати пересилання електронної пошти](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Чи можу я використовувати кілька MX-бірж та серверів для розширеної переадресації?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [Як налаштувати автовідповідач у відпустці (автовідповідач поза офісом)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Як налаштувати автовідповідач у відпустці (автовідповідач «поза офісом»)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [Як налаштувати SPF для пересилання електронної пошти](#how-do-i-set-up-spf-for-forward-email)
   * [Як налаштувати DKIM для пересилання електронної пошти](#how-do-i-set-up-dkim-for-forward-email)
   * [Як налаштувати DMARC для пересилання електронної пошти](#how-do-i-set-up-dmarc-for-forward-email)
@@ -88,7 +88,7 @@
   * [Як обробляти електронний лист для пересилання](#how-do-you-process-an-email-for-forwarding)
   * [Як ви вирішуєте проблеми з доставкою електронної пошти](#how-do-you-handle-email-delivery-issues)
   * [Як ви реагуєте на блокування IP-адрес?](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Що таке адреси начальника пошти](#what-are-postmaster-addresses)
+  * [Що таке адреси поштмейстерів](#what-are-postmaster-addresses)
   * [Що таке адреси без відповіді](#what-are-no-reply-addresses)
   * [Які IP-адреси вашого сервера](#what-are-your-servers-ip-addresses)
   * [У вас є білий список](#do-you-have-an-allowlist)
@@ -139,24 +139,24 @@
 
 1. **Створіть обліковий запис** за адресою [forwardemail.net/register](https://forwardemail.net/register)
 
-2. **Додайте та підтвердьте свій домен** за адресою [Мій обліковий запис → Домени](/my-account/domains)
+2. **Додайте та підтвердьте свій домен** у розділі [Мій обліковий запис → Домени](/my-account/domains)
 
 3. **Додайте та налаштуйте псевдоніми електронної пошти/поштові скриньки** у розділі [Мій обліковий запис → Домени](/my-account/domains) → Псевдоніми
 
 4. **Перевірте свою конфігурацію**, надіславши електронного листа на один із ваших нових псевдонімів
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> Зміни DNS можуть бути застосовані до 24-48 годин до глобального поширення, хоча часто вони набувають чинності набагато раніше.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Для покращення доставки рекомендуємо налаштувати записи [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) та [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
 ## Вступ {#introduction}
 
 ### Що таке пересилання електронної пошти {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Функція «Пересилання електронної пошти» ідеально підходить для окремих осіб, малого бізнесу та розробників, яким потрібні професійні адреси електронної пошти без витрат на повноцінне рішення для хостингу електронної пошти та без необхідності його обслуговування.
 
 Forward Email — це **повнофункціональний постачальник послуг електронної пошти** та **постачальник хостингу електронної пошти для користувацьких доменних імен**.
 
@@ -177,9 +177,9 @@ Forward Email — це **повнофункціональний постачал
 Ви можете порівняти нас з більш ніж 56 іншими постачальниками послуг електронної пошти на [наша сторінка порівняння електронних адрес](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Дізнайтеся більше про пересилання електронних листів, прочитавши наш безкоштовний [Технічний документ](/technical-whitepaper.pdf)
 
-### Хто користується послугою пересилання електронної пошти {#who-uses-forward-email}
+### Хто використовує функцію пересилання електронної пошти {#who-uses-forward-email}
 
 Ми надаємо послуги хостингу та пересилання електронної пошти для понад 500 000 доменів та таких відомих користувачів:
 
@@ -194,9 +194,9 @@ Forward Email — це **повнофункціональний постачал
 | Продажі реклами Disney |  |
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
-| Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| У людяності | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Убунту | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Безкоштовно | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Лубунту | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Кембриджський університет | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Університет Меріленду | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Університет Вашингтона | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
@@ -211,12 +211,12 @@ Forward Email — це **повнофункціональний постачал
 
 ### Що таке історія пересилання електронних листів {#what-is-forward-emails-history}
 
-Ви можете дізнатися більше про пересилання електронних листів за посиланням [наша сторінка «Про нас»](/about).
+Ви можете дізнатися більше про пересилання електронної пошти на сторінці [наша сторінка «Про нас»](/about).
 
-### Яка швидкість цього сервісу {#how-fast-is-this-service}
+### Яка швидкість цього рейсу {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Наша система розроблена для швидкості та надійності, з кількома резервними серверами, щоб забезпечити своєчасну доставку ваших електронних листів.
 
 Функція «Пересилання електронної пошти» доставляє повідомлення з мінімальною затримкою, зазвичай протягом кількох секунд після отримання.
 
@@ -235,7 +235,7 @@ Forward Email — це **повнофункціональний постачал
 
 ## Поштові клієнти {#email-clients}
 
-__ЗАХИЩЕНА_URL_463__ Тандерберд {__ЗАХИЩЕНА_URL_464__
+### Тандерберд {#thunderbird}
 
 1. Створіть новий псевдонім і згенеруйте пароль на панелі керування пересиланням електронної пошти.
 2. Відкрийте Thunderbird і перейдіть до **Редагувати → Налаштування облікового запису → Дії облікового запису → Додати обліковий запис пошти**.
@@ -245,7 +245,7 @@ __ЗАХИЩЕНА_URL_463__ Тандерберд {__ЗАХИЩЕНА_URL_464__
 * Вихідні: SMTP, `smtp.forwardemail.net`, порт 587, STARTTLS.
 5. Натисніть **Готово**.
 
-__ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
+### Microsoft Outlook {#microsoft-outlook}
 
 1. Створіть новий псевдонім та згенеруйте пароль на панелі керування пересиланням електронної пошти.
 2. Перейдіть до **Файл → Додати обліковий запис**.
@@ -263,11 +263,11 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 1. Створіть новий псевдонім та згенеруйте пароль на панелі керування пересиланням електронної пошти.
 2. Перейдіть до **Пошта → Налаштування → Облікові записи → +**.
 3. Виберіть **Інший обліковий запис пошти**.
-4. Введіть своє ім’я, адресу пересилання електронної пошти та пароль.
+4. Введіть своє ім'я, адресу пересилання електронної пошти та пароль.
 5. Для налаштувань сервера введіть:
 * Вхідні: `imap.forwardemail.net`
 * Вихідні: `smtp.forwardemail.net`
-* Ім’я користувача: Ваша повна адреса електронної пошти.
+* Ім'я користувача: Ваша повна адреса електронної пошти.
 * Пароль: Ваш згенерований пароль.
 6. Натисніть **Увійти**.
 
@@ -311,7 +311,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 Важливо:
 </strong>
 <span>
-Будь ласка, переконайтеся, що ви прочитали наші <a href="/terms" class="alert-link" target="_blank">Умови</a>, <a href="/privacy" class="alert-link" target="_blank">Політику конфіденційності</a> та <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Обмеження вихідного SMTP</a> – ваше використання вважається підтвердженням та згодою.
+Будь ласка, переконайтеся, що ви прочитали наші <a href="/terms" class="alert-link" target="_blank">Умови</a>, <a href="/privacy" class="alert-link" target="_blank">Політику конфіденційності</a> та <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Ліміти вихідного SMTP</a> – ваше використання вважається підтвердженням та згодою.
 </span>
 </div>
 
@@ -331,7 +331,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 3. Натисніть кнопку <strong class="text-success"><i class="fa fa-key"></i> «Згенерувати пароль»</strong> поруч із щойно створеним псевдонімом. Скопіюйте його в буфер обміну та надійно збережіть згенерований пароль, який відображається на екрані.
 
-4. Перейдіть за посиланням [Gmail](https://gmail.com) та в розділі [Налаштування <i class="fa fa-angle-right"></i> Облікові записи та імпорт <i class="fa fa-angle-right"></i> Надіслати пошту як](https://mail.google.com/mail/u/0/#settings/accounts) натисніть «Додати іншу адресу електронної пошти».
+4. Перейдіть до розділу [Gmail](https://gmail.com) та в розділі [Налаштування <i class="fa fa-angle-right"></i> Облікові записи та імпорт <i class="fa fa-angle-right"></i> Надіслати пошту як](https://mail.google.com/mail/u/0/#settings/accounts) натисніть «Додати іншу адресу електронної пошти».
 
 5. Коли з’явиться запит на ім’я, введіть ім’я, під яким ви хочете бачити свою електронну пошту як «Від» (наприклад, «Лінус Торвальдс»).
 
@@ -351,7 +351,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 13. Натисніть кнопку «Додати обліковий запис», щоб продовжити
 
-14. Відкрийте нову вкладку на сторінці [Gmail](https://gmail.com) та зачекайте на надходження електронного листа з підтвердженням (ви отримаєте код підтвердження, який підтверджує, що ви є власником адреси електронної пошти, з якої ви намагаєтеся "Надіслати пошту від імені")
+14. Відкрийте нову вкладку [Gmail](https://gmail.com) та зачекайте на надходження електронного листа з підтвердженням (ви отримаєте код підтвердження, який підтверджує, що ви є власником адреси електронної пошти, з якої ви намагаєтеся "Надіслати пошту від імені")
 
 15. Щойно він надійде, скопіюйте та вставте код підтвердження у відповідь на запит, отриманий на попередньому кроці.
 
@@ -373,7 +373,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 ### Що таке застарілий безкоштовний посібник з надсилання пошти за допомогою Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Важливо:</strong> Цей застарілий безкоштовний посібник припинено з травня 2023 року, оскільки <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we тепер підтримує вихідний SMTP</a>. Якщо ви використовуєте наведений нижче посібник, то <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this призведе до того, що ваш вихідний електронний лист</a> відображатиметься як "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" у Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Важливо:</strong> Цей застарілий безкоштовний посібник припинено з травня 2023 року, оскільки <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we тепер підтримує вихідний SMTP</a>. Якщо ви використовуєте наведений нижче посібник, то <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this призведе до того, що ваші вихідні електронні листи</a> відображатимуться як "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" у Gmail.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -395,16 +395,16 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 <div id="legacy-free-guide">
 
-1. Щоб це працювало, вам потрібно ввімкнути [двофакторну автентифікацію Gmail][gmail-2fa]. Якщо вона не ввімкнена, відвідайте <https://www.google.com/landing/2step/>.
+1. Щоб це працювало, вам потрібно ввімкнути [двофакторну автентифікацію Gmail][gmail-2fa]. Якщо вона не ввімкнена, перейдіть за посиланням <https://www.google.com/landing/2step/>.
 
-2. Після ввімкнення двофакторної автентифікації (або якщо вона вже була ввімкнена), відвідайте <https://myaccount.google.com/apppasswords>.
+2. Після ввімкнення двофакторної автентифікації (або якщо вона вже була ввімкнена), перейдіть на сторінку <https://myaccount.google.com/apppasswords>.
 
 3. Коли з’явиться запит «Виберіть програму та пристрій, для яких потрібно згенерувати пароль програми»:
 * Виберіть «Пошта» у розкривному списку «Виберіть програму»
 * Виберіть «Інше» у розкривному списку «Виберіть пристрій»
 * Коли з’явиться запит на введення тексту, введіть адресу електронної пошти вашого власного домену, з якого ви пересилаєте (наприклад, <code><hello@example.com></code> – це допоможе вам відстежувати, якщо ви використовуєте цю службу для кількох облікових записів)
 
-4. Скопіюйте пароль у буфер обміну, який згенеровано автоматично
+4. Скопіюйте пароль у буфер обміну, який буде згенеровано автоматично
 <div class="alert my-3 alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -415,7 +415,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </span>
 </div>
 
-5. Перейдіть за посиланням [Gmail](https://gmail.com) та в розділі [Налаштування <i class="fa fa-angle-right"></i> Облікові записи та імпорт <i class="fa fa-angle-right"></i> Надіслати пошту як](https://mail.google.com/mail/u/0/#settings/accounts) натисніть «Додати іншу адресу електронної пошти».
+5. Перейдіть до розділу [Gmail](https://gmail.com) та в розділі [Налаштування <i class="fa fa-angle-right"></i> Облікові записи та імпорт <i class="fa fa-angle-right"></i> Надіслати пошту як](https://mail.google.com/mail/u/0/#settings/accounts) натисніть «Додати іншу адресу електронної пошти».
 
 6. Коли з’явиться запит на «Ім’я», введіть ім’я, під яким ви хочете бачити свою електронну пошту як «Від» (наприклад, «Лінус Торвальдс»).
 
@@ -444,15 +444,15 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 14. Натисніть кнопку «Додати обліковий запис», щоб продовжити
 
-15. Відкрийте нову вкладку на сторінці [Gmail](https://gmail.com) та зачекайте на надходження електронного листа з підтвердженням (ви отримаєте код підтвердження, який підтверджує, що ви є власником адреси електронної пошти, з якої ви намагаєтеся "Надіслати пошту від імені")
+15. Відкрийте нову вкладку [Gmail](https://gmail.com) та зачекайте на надходження електронного листа з підтвердженням (ви отримаєте код підтвердження, який підтверджує, що ви є власником адреси електронної пошти, з якої ви намагаєтеся "Надіслати пошту від імені")
 
 16. Щойно він надійде, скопіюйте та вставте код підтвердження у відповідь на запит, отриманий на попередньому кроці.
 
-17. Після цього поверніться до електронного листа та натисніть посилання, щоб «підтвердити запит». Найімовірніше, вам потрібно буде виконати цей і попередній кроки, щоб правильно налаштувати електронну пошту.
+17. Після цього поверніться до електронного листа та натисніть посилання, щоб «підтвердити запит». Найімовірніше, вам потрібно буде виконати цей і попередній кроки, щоб електронна пошта була правильно налаштована.
 
 </div>
 
-### Розширене налаштування маршрутизації Gmail {#advanced-gmail-routing-configuration}
+### Розширена конфігурація маршрутизації Gmail {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -473,7 +473,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 **Шаблони одержувачів конвертів:**
 
-* Додайте шаблон, який відповідає всім неіснуючим поштовим скринькам (наприклад, `.*@yourdomain.com`)
+* Додати шаблон, який відповідає всім неіснуючим поштовим скринькам (наприклад, `.*@yourdomain.com`)
 
 **Налаштування сервера електронної пошти:**
 
@@ -493,7 +493,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </span>
 </div>
 
-### Розширене налаштування маршрутизації Outlook {#advanced-outlook-routing-configuration}
+### Розширена конфігурація маршрутизації Outlook {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -516,18 +516,18 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 * Введіть `mx1.forwardemail.net` та порт 25
 * Додайте `mx2.forwardemail.net` як резервний сервер
 7. У розділі **За винятком випадків** виберіть:
-* «Одержувач...»
-* Додайте всі наявні поштові скриньки, які не слід переслано
-8. Встановіть пріоритет правила, щоб воно виконувалося після інших правил потоку пошти
+* «Одержувач —...»
+* Додайте всі наявні поштові скриньки, які не слід пересилати
+8. Встановіть пріоритет правила, щоб воно працювало після інших правил потоку пошти
 9. Натисніть **Зберегти**, щоб активувати правило
 
 ## Виправлення неполадок {#troubleshooting}
 
-### Чому я не отримую свої тестові електронні листи {#why-am-i-not-receiving-my-test-emails}
+### Чому я не отримую тестові електронні листи {#why-am-i-not-receiving-my-test-emails}
 
 Якщо ви надсилаєте тестовий електронний лист самому собі, він може не відображатися у вашій поштовій скриньці, оскільки має той самий заголовок "Message-ID".
 
-Це широко відома проблема, яка також впливає на такі сервіси, як Gmail. <a href="https://support.google.com/a/answer/1703601">Here" – це офіційна відповідь Gmail щодо цієї проблеми</a>.
+Це широко відома проблема, яка також впливає на такі сервіси, як Gmail. <a href="https://support.google.com/a/answer/1703601">Here – офіційна відповідь Gmail щодо цієї проблеми</a>.
 
 Якщо проблеми продовжуються, то, найімовірніше, проблема пов’язана з поширенням DNS. Вам потрібно буде трохи зачекати та спробувати ще раз (або спробувати встановити менше значення TTL для ваших записів <strong class="notranslate">TXT</strong>).
 
@@ -571,7 +571,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 У цьому розділі ви знайдете інструкції щодо того, чи ваша вихідна пошта використовує наші SMTP-сервери (наприклад, `smtp.forwardemail.net`) (або пересилається через `mx1.forwardemail.net` або `mx2.forwardemail.net`), і чи доставляється вона до папки «Спам» або «Небажана пошта» одержувачів.
 
-Ми регулярно перевіряємо наш [IP-адреси](#what-are-your-servers-ip-addresses) на відповідність [усі авторитетні списки заборонених DNS-адрес](#how-do-you-handle-your-ip-addresses-becoming-blocked), **тому, найімовірніше, це проблема, пов’язана з репутацією домену**.
+Ми регулярно порівнюємо наш [IP-адреси](#what-are-your-servers-ip-addresses) з [усі авторитетні списки заборонених DNS-адрес](#how-do-you-handle-your-ip-addresses-becoming-blocked), **тому, найімовірніше, це проблема, пов’язана з репутацією домену**.
 
 Листи можуть потрапляти до папки «Спам» з кількох причин:
 
@@ -593,31 +593,31 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 | Пошук IP-адрес та репутації домену Barracuda | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
 | Перевірка чорного списку MX Toolbox | <https://mxtoolbox.com/blacklists.aspx> | Чорний список |
 | Інструменти Google Postmaster | <https://www.gmail.com/postmaster/> | Репутація |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Репутація |
+| Центр відправників Yahoo | <https://senders.yahooinc.com/> | Репутація |
 | Перевірка чорного списку MultiRBL.valli.org | <https://multirbl.valli.org/lookup/> | DNSBL |
 | Оцінка відправника | <https://senderscore.org/act/blocklist-remover/> | Репутація |
-| Неоцінка | <https://www.invaluement.com/lookup/> | DNSBL |
+| Знецінення | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Видалення IP-адреси Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | Видалення |
-| Видалення IP Cloudmark | <https://csi.cloudmark.com/en/reset/> | Видалення |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Видалення IP-адреси Microsoft Outlook і Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Видалення |
-| Рівні 1, 2 і 3 UCEPROTECT | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| Backscatterer.org UCEPROTECT | <https://www.backscatterer.org/> | Захист від зворотного розсіювання |
-| whitelisted.org UCEPROTECT | <https://www.whitelisted.org/> (потрібна плата) | DNSWL |
+| Видалення IP-адрес Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | Видалення |
+| Видалення IP-адреси Cloudmark | <https://csi.cloudmark.com/en/reset/> | Видалення |
+| СпамКоп | <https://www.spamcop.net/bl.shtml> | DNSBL |
+| Видалення IP-адрес Microsoft Outlook та Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Видалення |
+| Рівні UCEPROTECT 1, 2 та 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
+| Backscatterer.org від UCEPROTECT | <https://www.backscatterer.org/> | Захист від зворотного розсіювання |
+| Білий список UCEPROTECT.org | <https://www.whitelisted.org/> (потрібна плата) | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | Видалення |
 | AOL/Verizon (наприклад, `[IPTS04]`) | <https://senders.yahooinc.com/> | Видалення |
 | Кокс Комунікейшнз | `unblock.request@cox.net` | Видалення |
 | t-online.de (німецька/T-Mobile) | `tobr@rx.t-online.de` | Видалення |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Почніть з невеликої кількості високоякісних електронних листів, щоб створити позитивну репутацію, перш ніж надсилати більші обсяги.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Якщо ваш домен перебуває у чорному списку, кожен чорний список має власну процедуру видалення. Перегляньте інструкції на їхніх вебсайтах.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Якщо вам потрібна додаткова допомога або ви виявите, що певний постачальник послуг електронної пошти помилково визначив нас як спам, будь ласка, <a href="/help">зв’яжіться з нами</a>.
 
 ### Що робити, якщо я отримую спам-листи {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -627,7 +627,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 **Адреса електронної пошти для пересилання спаму:** <abuse@forwardemail.net>
 
-### Чому тестові електронні листи, надіслані мені в Gmail, відображаються як «підозрілі» {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Чому мої тестові електронні листи, надіслані мені в Gmail, відображаються як "підозрілі" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
 Якщо ви бачите це повідомлення про помилку в Gmail, коли надсилаєте собі тестове повідомлення, або коли людина, якій ви листуєтеся під своїм псевдонімом, вперше бачить ваш електронний лист, то **не хвилюйтеся** – це вбудована функція безпеки Gmail.
 
@@ -635,13 +635,13 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 Однак, якщо вони побачать це повідомлення, це тому, що вони звикли бачити ваші електронні листи з адреси <john@gmail.com>, а не <john@customdomain.com> (просто приклад). Gmail попередить користувачів про це, щоб переконатися в безпеці, про всяк випадок, немає жодного обхідного шляху.
 
-### Чи можна видалити параметр "via forwardemail" у Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Чи можна видалити функцію "via forwardemail" у Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-Ця тема пов’язана з [широко відома проблема в Gmail, коли поруч з іменем відправника відображається додаткова інформація](https://support.google.com/mail/answer/1311182).
+Ця тема пов'язана з [широко відома проблема в Gmail, коли поруч з іменем відправника відображається додаткова інформація](https://support.google.com/mail/answer/1311182).
 
 Станом на травень 2023 року ми підтримуємо надсилання електронної пошти через SMTP як додатковий модуль для всіх платних користувачів, а це означає, що ви можете видалити <span class="notranslate">через forwardemail dot net</span> у Gmail.
 
-Зверніть увагу, що ця тема поширених запитань стосується саме тих, хто користується функцією [Як надсилати пошту за допомогою Gmail](#how-to-send-mail-as-using-gmail).
+Зверніть увагу, що ця тема поширених запитань стосується саме тих, хто використовує функцію [Як надсилати пошту за допомогою Gmail](#how-to-send-mail-as-using-gmail).
 
 Будь ласка, дивіться розділ про [Чи підтримуєте ви надсилання електронної пошти через SMTP?](#do-you-support-sending-email-with-smtp) для отримання інструкцій щодо налаштування.
 
@@ -650,11 +650,11 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 ### Де розташовані ваші сервери {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Незабаром ми можемо оголосити про розташування нашого центру обробки даних у ЄС під назвою [forwardemail.eu](https://forwardemail.eu). Підпишіться на обговорення за адресою <https://github.com/orgs/forwardemail/discussions/336>, щоб отримувати оновлення.
 
 Наші сервери розташовані переважно в Денвері, штат Колорадо – повний список IP-адрес див. за посиланням <https://forwardemail.net/ips>.
 
-Ви можете дізнатися більше про наших субпідрядників на наших сторінках [GDPR](/gdpr), [DPA](/dpa) та [Конфіденційність](/privacy).
+Ви можете дізнатися більше про наших субпідрядників на сторінках [GDPR](/gdpr), [DPA](/dpa) та [Конфіденційність](/privacy).
 
 ### Як експортувати та створити резервну копію моєї поштової скриньки {#how-do-i-export-and-backup-my-mailbox}
 
@@ -672,15 +672,15 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 | --------------- | :----: | ------------- | --------------------------------------------------- |
 | Переглядач MBox | Mbox | Вікна | <https://github.com/eneam/mboxviewer> |
 | mbox-web-viewer | Mbox | Усі платформи | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Вікна | <https://github.com/ayamadori/EmlReader> |
+| Зчитувач Eml | EML | Вікна | <https://github.com/ayamadori/EmlReader> |
 | Переглядач електронної пошти | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
 | eml-reader | EML | Усі платформи | <https://github.com/s0ph1e/eml-reader> |
 
-Крім того, якщо вам потрібно конвертувати файл Mbox у файл EML, ви можете скористатися <https://github.com/noelmartinon/mboxzilla>.
+Крім того, якщо вам потрібно конвертувати файл Mbox у файл EML, ви можете використовувати <https://github.com/noelmartinon/mboxzilla>.
 
 ### Як імпортувати та перенести мою існуючу поштову скриньку {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-Ви можете легко імпортувати свою електронну пошту до функції «Пересилання електронної пошти» (наприклад, за допомогою [Thunderbird](https://www.thunderbird.net)), виконавши наведені нижче інструкції:
+Ви можете легко імпортувати свою електронну пошту до функції «Пересилати електронну пошту» (наприклад, за допомогою [Тандерберд](https://www.thunderbird.net)), виконавши наведені нижче інструкції:
 
 <div class="alert alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -694,23 +694,23 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 1. Експортуйте свою електронну пошту з вашого поточного постачальника послуг електронної пошти:
 
-| Постачальник послуг електронної пошти | Формат експорту | Інструкції з експорту |
+| Постачальник електронної пошти | Формат експорту | Інструкції з експорту |
 | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
 | Перспективи | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Порада:</strong> <span>Якщо ви використовуєте Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">формат експорту PST</a>), ви можете просто виконати інструкції в розділі «Інше» нижче. Однак, нижче ми надали посилання для конвертації PST у формат MBOX/EML залежно від вашої операційної системи:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba для Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst для Windows cygwin</a> – (наприклад, <code>readpst -u -o $OUT_DIR $IN_DIR</code> замінюючи <code>$OUT_DIR</code> та <code>$IN_DIR</code> на вихідний каталог та шляхи до вхідних каталогів відповідно).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst для Ubuntu/Linux</a> – (наприклад, <code>sudo apt-get install readpst</code>, а потім <code>readpst -u -o $OUT_DIR $IN_DIR</code>, замінивши <code>$OUT_DIR</code> та <code>$IN_DIR</code> на шляхи до вихідного каталогу та вхідного каталогу відповідно).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst для macOS (через brew)</a> – (наприклад, <code>brew install libpst</code>, а потім <code>readpst -u -o $OUT_DIR $IN_DIR</code>, замінивши <code>$OUT_DIR</code> та <code>$IN_DIR</code> зі шляхами до вихідного каталогу та вхідного каталогу відповідно).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST-конвертер для Windows (GitHub)</a></li></ul><br /></span></div> |
 | Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
+| Швидка пошта | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
 | Протонна пошта | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
 | Тутанота | EML | <https://github.com/crepererum-oss/tatutanatata> |
 | Подумайте | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
 | Зохо | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
 | Інше | [Use Thunderbird](https://www.thunderbird.net) | Налаштуйте свій існуючий обліковий запис електронної пошти в Thunderbird, а потім скористайтеся плагіном [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) для експорту та імпорту електронної пошти. **Ви також можете просто копіювати/вставляти або перетягувати електронні листи між обліковими записами.** |
 
-2. Завантажте, встановіть та відкрийте [Thunderbird](https://www.thunderbird.net).
+2. Завантажте, встановіть та відкрийте [Тандерберд](https://www.thunderbird.net).
 
 3. Створіть новий обліковий запис, використовуючи повну адресу електронної пошти вашого псевдоніма (наприклад, <code><you@yourdomain.com></code>) та згенерований пароль. <strong>Якщо у вас ще немає згенерованого пароля, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">зверніться до наших інструкцій з налаштування</a></strong>.
 
-4. Завантажте та встановіть плагін [Інструменти імпорту та експорту](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird.
+4. Завантажте та встановіть плагін Thunderbird [Інструменти імпорту та експорту](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/).
 
 5. Створіть нову локальну папку в Thunderbird, а потім клацніть на ній правою кнопкою миші → виберіть опцію `ImportExportTools NG` → виберіть `Import mbox file` (для формату експорту MBOX) – або – `Import messages` / `Import all messages from a directory` (для формату експорту EML).
 
@@ -722,7 +722,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 Порада:
 </strong>
 <span>
-Якщо ви не знаєте, як імпортувати в Thunderbird, ви можете звернутися до офіційних інструкцій за адресами <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> та <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>."
+Якщо ви не знаєте, як імпортувати дані в Thunderbird, ви можете звернутися до офіційних інструкцій за адресами <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> та <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>."
 </span>
 </div>
 
@@ -748,11 +748,11 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </div>
 </div>
 
-### Чи підтримуєте ви самостійний хостинг {#do-you-support-self-hosting}
+### Чи підтримуєте ви самостійне розміщення {#do-you-support-self-hosting}
 
-Так, станом на березень 2025 року ми підтримуємо варіант самостійного розміщення. Прочитайте блог [тут](https://forwardemail.net/blog/docs/self-hosted-solution). Перегляньте [власний путівник](https://forwardemail.net/self-hosted), щоб розпочати. А для тих, хто зацікавлений у більш детальній покроковій версії, перегляньте наші посібники на основі [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) або [Дебіан](https://forwardemail.net/guides/selfhosted-on-debian).
+Так, станом на березень 2025 року ми підтримуємо варіант самостійного розміщення. Прочитайте блог [тут](https://forwardemail.net/blog/docs/self-hosted-solution). Перегляньте [самостійно розміщений путівник](https://forwardemail.net/self-hosted), щоб розпочати. А для тих, хто зацікавлений у більш детальній покроковій версії, перегляньте наші посібники на основі [Убунту](https://forwardemail.net/guides/selfhosted-on-ubuntu) або [Дебіан](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## Налаштування електронної пошти {#email-configuration}
+## Конфігурація електронної пошти {#email-configuration}
 
 ### Як розпочати роботу та налаштувати пересилання електронної пошти {#how-do-i-get-started-and-set-up-email-forwarding}
 
@@ -797,8 +797,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </thead>
 <tbody>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-<td>Увійти <i class="fa fa-angle-right"></i> Центр доменів <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Редагувати налаштування DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td> <td>Увійти <i class="fa fa-angle-right"></i> Центр доменів <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Редагувати налаштування DNS</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Маршрут 53</a></td>
@@ -810,7 +809,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>ДЛЯ ROCK: Увійти <i class="fa fa-angle-right"></i> Домени <i class="fa fa-angle-right"></i> (Натисніть значок ▼ поруч із керувати) <i class="fa fa-angle-right"></i> DNS
+<td>ДЛЯ ROCK: Увійти <i class="fa fa-angle-right"></i> Домени <i class="fa fa-angle-right"></i> (Натисніть значок ▼ поруч із пунктом керування) <i class="fa fa-angle-right"></i> DNS
 <br />
 ДЛЯ СТАРІШОЇ ВЕРСІЇ: Увійти <i class="fa fa-angle-right"></i> Домени <i class="fa fa-angle-right"></i> Редактор зони <i class="fa fa-angle-right"></i> (Виберіть свій домен)</td>
 </tr>
@@ -820,7 +819,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Зроблено легко</a></td>
-<td>Увійти <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Виберіть ваш домен)</td>
+<td>Увійти <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Виберіть свій домен)</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
@@ -832,94 +831,91 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>Увійти <i class="fa fa-angle-right"></i> У режимі перегляду карток натисніть "керувати" для вашого домену <i class="fa fa-angle-right"></i> У режимі перегляду списку натисніть
-значок шестерні <i class="fa fa-angle-right"></i> DNS та сервери імен <i class="fa fa-angle-right"></i> Записи DNS</td>
+<td>Увійти <i class="fa fa-angle-right"></i> У режимі перегляду карток натисніть "керувати" для вашого домену <i class="fa fa-angle-right"></i> У режимі перегляду списку натисніть значок шестерні <i class="fa fa-angle-right"></i> DNS та сервери імен <i class="fa fa-angle-right"></i> DNS-записи</td>
 </tr>
 <tr>
 <td>
 <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Дивитися</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Дивитися</a>
 </td>
-<td>Увійти <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Керування <i class="fa fa-angle-right"></i> (натисніть на значок шестерні) <i class="fa fa-angle-right"></i> Натисніть на DNS та сервери імен у меню ліворуч</td>
+<td>Увійти <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Керування <i class="fa fa-angle-right"></i> (натисніть значок шестерні) <i class="fa fa-angle-right"></i> Натисніть на DNS та сервери імен у меню ліворуч</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
 <td>Увійти <i class="fa fa-angle-right"></i> Панель <i class="fa fa-angle-right"></i> Домени <i class="fa fa-angle-right"></i> Керування доменами <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
 <td>Увійти <i class="fa fa-angle-right"></i> Огляд <i class="fa fa-angle-right"></i> Керування <i class="fa fa-angle-right"></i> Простий редактор <i class="fa fa-angle-right"></i> Записи</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
 <td>Увійти <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Керування <i class="fa fa-angle-right"></i> Редагувати зону</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Дивитися</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Дивитися</a>
 </td>
 <td>Увійти <i class="fa fa-angle-right"></i> Керування моїми доменами <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Керування DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Домени</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Домени</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Дивитися</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Дивитися</a>
 </td>
-<td>Увійти <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Налаштувати DNS</td>
+<td>Увійти <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Налаштування DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Дивитися</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8 <br />
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Дивитися</a>
 </td>
-<td>Увійти <i class="fa fa-angle-right"></i> Список доменів <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Керувати <i class="fa fa-angle-right"></i> Розширений DNS</td>
+<td>Увійти <i class="fa fa-angle-right"></i> Список доменів <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Керування <i class="fa fa-angle-right"></i> Розширений DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
 <td>Увійти <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Налаштувати DNS Netlify</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Рішення</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Рішення</a></td>
 <td>Увійти <i class="fa fa-angle-right"></i> Менеджер облікових записів <i class="fa fa-angle-right"></i> Мої доменні імена <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Керування <i class="fa fa-angle-right"></i> Зміна напрямку домену <i class="fa fa-angle-right"></i> Розширений DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Дивитися</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2 <br />
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Дивитися</a>
 </td>
 <td>Увійти <i class="fa fa-angle-right"></i> Керовані домени <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> Налаштування DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
 <td>Увійти <i class="fa fa-angle-right"></i> Головне меню <i class="fa fa-angle-right"></i> Налаштування <i class="fa fa-angle-right"></i> Домени <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i>
 Додаткові налаштування <i class="fa fa-angle-right"></i> Користувацькі записи</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Зараз</a></td>
-<td>Використання CLI "now" <i class="fa fa-angle-right"></i> <code>now dns add [домен] '@' MX [значення запису] [пріоритет]</code></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Зараз</a></td>
+<td>Використання "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [домен] '@' MX [значення запису] [пріоритет]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>Увійти <i class="fa fa-angle-right"></i> Сторінка доменів <i class="fa fa-angle-right"></i> (Виберіть свій домен) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
 <td>Увійти <i class="fa fa-angle-right"></i> Сторінка доменів <i class="fa fa-angle-right"></i> (Натисніть значок <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Виберіть «Керування записами DNS»</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>Увійти <i class="fa fa-angle-right"></i> Домени <i class="fa fa-angle-right"></i> Мої домени</td>
 </tr>
 <tr>
 <td>Інше</td>
 <td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Важливо:</strong> Не бачите тут імені вашого реєстратора? Просто знайдіть в Інтернеті "як змінити записи DNS на $REGISTRAR" (замініть $REGISTRAR на ім'я вашого реєстратора – наприклад, "як змінити записи DNS на GoDaddy", якщо ви використовуєте GoDaddy).</div>
+<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Важливо:</strong> Не бачите тут імені вашого реєстратора? Просто знайдіть в Інтернеті "як змінити записи DNS на $REGISTRAR" (замініть $REGISTRAR на ім'я вашого реєстратора – наприклад, "як змінити записи DNS на GoDaddy", якщо ви користуєтеся GoDaddy).</div>
 </td>
 </tr>
 </tbody>
@@ -1227,7 +1223,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 Варіант G:
 </strong>
 <span>
-Ви навіть можете використовувати регулярні вирази ("regex") для зіставлення псевдонімів та обробки замін для пересилання електронних листів. Дивіться приклади та повний розділ про регулярні вирази під назвою <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Чи підтримуєте ви регулярні вирази чи регулярні вирази</a> нижче.
+Ви навіть можете використовувати регулярні вирази ("regex") для зіставлення псевдонімів та обробки підстановок для пересилання електронних листів. Дивіться приклади та повний розділ про регулярні вирази під назвою <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Чи підтримуєте ви регулярні вирази чи регулярні вирази</a> нижче.
 </span>
 </div>
 
@@ -1344,7 +1340,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 Якщо ви не отримуєте тестові електронні листи або отримуєте тестовий лист із написом «Будьте обережні з цим повідомленням», перегляньте відповіді на запитання <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Чому я не отримую свої тестові електронні листи</a> та <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Чому мої тестові електронні листи, надіслані мені в Gmail, відображаються як «підозрілі»</a> відповідно.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Якщо ви бажаєте «Надсилати пошту від імені» з Gmail, вам потрібно <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">переглянути це відео</a></strong> або виконати кроки, наведені в розділі <a href="#how-to-send-mail-as-using-gmail">How для надсилання пошти від імені за допомогою Gmail</a> нижче.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Якщо ви хочете «Надсилати пошту від імені» з Gmail, вам потрібно <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">переглянути це відео</a></strong> або виконати кроки, наведені в розділі <a href="#how-to-send-mail-as-using-gmail">How, щоб надсилати пошту від імені за допомогою Gmail</a> нижче.
 
 </li></ol>
 
@@ -1380,13 +1376,13 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </span>
 </div>
 
-### Чи можу я використовувати кілька MX-бірж та серверів для розширеної переадресації {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Чи можу я використовувати кілька бірж та серверів MX для розширеного переадресування {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
 Так, але **у ваших DNS-записах має бути зазначено лише один обмін MX**.
 
 Не намагайтеся використовувати "Пріоритет" як спосіб налаштування кількох обмінів MX.
 
-Натомість вам потрібно налаштувати вашу існуючу біржу MX для пересилання пошти для всіх невідповідних псевдонімів на біржі нашого сервісу (`mx1.forwardemail.net` та/або `mx2.forwardemail.net`).
+Натомість вам потрібно налаштувати вашу існуючу біржу MX на пересилання пошти для всіх невідповідних псевдонімів на біржі нашого сервісу (`mx1.forwardemail.net` та/або `mx2.forwardemail.net`).
 
 Якщо ви користуєтеся Google Workspace і хочете переадресувати всі невідповідні псевдоніми до нашого сервісу, див. <https://support.google.com/a/answer/6297084>.
 
@@ -1396,40 +1392,41 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 Перейдіть до розділу <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій обліковий запис <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Псевдоніми та створіть або відредагуйте псевдонім, для якого ви хочете налаштувати автовідповідач під час відпустки.
 
-У вас є можливість налаштувати дату початку, дату завершення, тему та повідомлення, а також увімкнути або вимкнути їх у будь-який час:
+Ви можете налаштувати дату початку, дату завершення, тему та повідомлення, а також увімкнути або вимкнути їх у будь-який час:
 
-* Наразі підтримуються тема та повідомлення у вигляді простого тексту (ми використовуємо пакет `striptags` для внутрішнього видалення будь-якого HTML).
+* Наразі підтримуються тема та повідомлення у вигляді простого тексту (ми використовуємо пакет `striptags` для видалення будь-якого HTML-коду).
 * Довжина теми обмежена 100 символами. * Довжина повідомлення обмежена 1000 символами.
 * Для налаштування потрібне налаштування вихідного SMTP (наприклад, вам потрібно буде налаштувати записи DNKIM, DMARC та Return-Path).
 * Перейдіть до розділу <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Мій обліковий запис <i class="fa fa-angle-right"></i> Домени</a> <i class="fa fa-angle-right"></i> Налаштування <i class="fa fa-angle-right"></i> Налаштування вихідного SMTP та дотримуйтесь інструкцій з налаштування.
 * Автовідповідач не можна ввімкнути для глобальних доменних імен (наприклад, [одноразові адреси](/disposable-addresses) не підтримуються).
-* Автоматичну відповідь не можна ввімкнути для псевдонімів із шаблонами/загальними символами (`*`) або регулярними виразами.
+* Автоматичну відповідь не можна ввімкнути для псевдонімів із символами підстановки/загальними символами (`*`) або регулярними виразами.
 
 На відміну від поштових систем, таких як `postfix` (наприклад, що використовують розширення фільтра відпусток `sieve`), функція «Пересилання електронної пошти» автоматично додає ваш підпис DKIM, виправляє проблеми з підключенням до відповідей про відпустку (наприклад, через поширені проблеми з підключенням SSL/TLS та застарілі сервери) і навіть підтримує шифрування Open WKD та PGP для відповідей про відпустку.
 
-<!--* Щоб запобігти зловживанням, за кожне надіслане повідомлення автовідповідача у відпустці буде стягуватися 1 кредит вихідного SMTP.
+<!--* Щоб запобігти зловживанням, за кожне надіслане повідомлення автовідповідача у відпустці буде списано 1 кредит вихідного SMTP.
 * Усі платні облікові записи за замовчуванням включають 300 кредитів на день. Якщо вам потрібна більша сума, будь ласка, зв’яжіться з нами.
 -->
 
-1. Ми надсилаємо повідомлення кожному [у білому списку](#do-you-have-an-allowlist) відправнику лише один раз кожні 4 дні (що схоже на поведінку Gmail).
+1. Ми надсилаємо повідомлення кожному відправнику [у білому списку](#do-you-have-an-allowlist) лише раз на 4 дні (що схоже на поведінку Gmail).
 
 * Наш кеш Redis використовує відбиток `alias_id` та `sender`, тоді як `alias_id` – це псевдонім MongoDB ID, а `sender` – це або адреса відправника (якщо в дозволеному списку), або кореневий домен в адресі відправника (якщо не в дозволеному списку). Для спрощення термін дії цього відбитка в кеші встановлено на 4 дні.
 
 * Наш підхід, що використовує кореневий домен, проаналізований в адресі відправника, для відправників, які не входять до білого списку, запобігає зловживанням з боку відносно невідомих відправників (наприклад, зловмисників) шляхом переповнення повідомлень автовідповідача про відпустку.
 
-2. Ми надсилаємо листи лише тоді, коли поля ВІД ПОШТИ та/або Відправника не є порожніми та не містять (без урахування регістру) [ім'я користувача postmaster](#what-are-postmaster-addresses) (частина перед символом @ в електронному листі).
+2. Ми надсилаємо листи лише тоді, коли поля MAIL FROM та/або From не є порожніми та не містять (без урахування регістру) [ім'я користувача поштмейстера](#what-are-postmaster-addresses) (частина перед символом @ в електронному листі).
 
 3. Ми не надсилаємо повідомлення, якщо воно містило будь-який із наступних заголовків (без урахування регістру):
 
-* Заголовок `auto-submitted` зі значенням, відмінним від `no`. * Заголовок `x-auto-response-suppress` зі значенням `dr`, `autoreply`, `auto-reply`, `auto_reply` або `all`
-* Заголовок `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` або `x-auto-respond` (незалежно від значення).
-* Заголовок `precedence` зі значенням `bulk`, `autoreply`, `auto-reply`, `auto_reply` або `list`.
+* Заголовок `auto-submitted` зі значенням, відмінним від `no`.
+* Заголовок `x-auto-response-suppress` зі значенням `dr`, `autoreply`, `auto-reply`, `auto_reply` або `all`
+* Заголовок `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 або `no`7 (незалежно від значення).
+* Заголовок `no`8 зі значенням `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 або `x-auto-response-suppress`3.
 
 4. Ми не надсилаємо листи, якщо адреса електронної пошти MAIL FROM або From закінчується на `+donotreply`, `-donotreply`, `+noreply` або `-noreply`.
 
-5. Ми не надсилаємо повідомлення, якщо частина імені користувача в адресі електронної пошти відправника мала вигляд `mdaemon`, а заголовок `X-MDDSN-Message` не враховував регістр.
+5. Ми не надсилаємо повідомлення, якщо частина імені користувача в адресі електронної пошти відправника мала значення `mdaemon`, а заголовок `X-MDDSN-Message` не враховував регістр.
 
-6. Ми не надсилаємо повідомлення, якщо заголовок `content-type` не враховував регістр символів у полі `multipart/report`.
+6. Ми не надсилаємо, якщо в заголовку `multipart/report` був регістронечутливий заголовок `content-type`.
 
 ### Як налаштувати SPF для пересилання електронної пошти {#how-do-i-set-up-spf-for-forward-email}
 
@@ -1505,11 +1502,11 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 ### Як підключити та налаштувати мої контакти {#how-do-i-connect-and-configure-my-contacts}
 
-**Щоб налаштувати контакти, використовуйте URL-адресу CardDAV:** `https://carddav.forwardemail.net` (або просто `carddav.forwardemail.net`, якщо ваш клієнт це дозволяє)
+**Щоб налаштувати контакти, використовуйте URL-адресу CardDAV:** `https://carddav.forwardemail.net` (або просто `carddav.forwardemail.net`, якщо ваш клієнт це дозволяє)**
 
 ### Як підключити та налаштувати мої календарі {#how-do-i-connect-and-configure-my-calendars}
 
-**Щоб налаштувати календар, використовуйте URL-адресу CalDAV:** `https://caldav.forwardemail.net` (або просто `caldav.forwardemail.net`, якщо ваш клієнт це дозволяє)
+Щоб налаштувати календар, використовуйте URL-адресу CalDAV: ** `https://caldav.forwardemail.net` (або просто `caldav.forwardemail.net`, якщо ваш клієнт це дозволяє)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Приклад налаштування пересилання електронної пошти в календарі CalDAV Thunderbird" />
 
@@ -1517,7 +1514,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 Якщо ви хочете додати додаткові календарі, просто додайте нову URL-адресу календаря: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**обов’язково замініть `calendar-name` на потрібну назву календаря**)
 
-Ви можете змінити назву та колір календаря після створення – просто скористайтеся улюбленою програмою календаря (наприклад, Apple Mail або [Thunderbird](https://thunderbird.net)).
+Ви можете змінити назву та колір календаря після його створення – просто скористайтеся улюбленою програмою календаря (наприклад, Apple Mail або [Тандерберд](https://thunderbird.net)).
 
 ### Як налаштувати SRS для пересилання електронної пошти {#how-do-i-set-up-srs-for-forward-email}
 
@@ -1531,28 +1528,28 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 Якщо ви користуєтеся Gmail, виконайте наведені нижче дії.
 
-1. Перейдіть за посиланням <https://google.com> та вийдіть з усіх облікових записів електронної пошти.
-2. Натисніть «Увійти», а у випадаючому списку виберіть «інший обліковий запис».
-3. Виберіть «Використати інший обліковий запис».
-4. Виберіть «Створити обліковий запис».
-5. Виберіть «Використовувати мою поточну адресу електронної пошти».
-6. Введіть адресу електронної пошти вашого власного доменного імені.
-7. Отримайте електронний лист із підтвердженням, надісланий на вашу адресу електронної пошти.
-8. Введіть код підтвердження з цього листа.
-9. Заповніть інформацію профілю для вашого нового облікового запису Google.
-10. Погодьтеся з усіма політиками конфіденційності та Умовами використання.
-11. Перейдіть за посиланням <https://google.com> та у верхньому правому куті натисніть на значок вашого профілю, а потім натисніть кнопку «змінити».
-12. Завантажте нове фото або аватар для вашого облікового запису.
-13. Зміни набудуть чинності приблизно через 1-2 години, але іноді це може бути дуже швидко.
+1. Перейдіть до <https://google.com> та вийдіть з усіх облікових записів електронної пошти
+2. Натисніть «Увійти» та у випадаючому списку виберіть «інший обліковий запис»
+3. Виберіть «Використати інший обліковий запис»
+4. Виберіть «Створити обліковий запис»
+5. Виберіть «Використовувати мою поточну адресу електронної пошти»
+6. Введіть адресу електронної пошти вашого власного доменного імені
+7. Отримайте електронний лист із підтвердженням, надісланий на вашу адресу електронної пошти
+8. Введіть код підтвердження з цього листа
+9. Заповніть інформацію профілю для вашого нового облікового запису Google
+10. Погодьтеся з усіма політиками конфіденційності та Умовами використання
+11. Перейдіть до <https://google.com> та у верхньому правому куті натисніть на значок вашого профілю, а потім натисніть кнопку «змінити»
+12. Завантажте нове фото або аватар для вашого облікового запису
+13. Зміни займуть приблизно 1-2 години, але іноді це може бути дуже швидко.
 14. Надішліть тестовий електронний лист, і фотографія профілю має з’явитися.
 
 ## Розширені функції {#advanced-features}
 
-### Чи підтримуєте ви розсилку новин або списків розсилки для маркетингової електронної пошти {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+### Чи підтримуєте ви розсилку новин або списків розсилки для маркетингової електронної пошти? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
 Так, ви можете прочитати більше за адресою <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Зверніть увагу, що для підтримки репутації IP-адреси та забезпечення доставки, Forward Email має ручний процес перевірки для кожного домену для **схвалення розсилки**. Надішліть електронного листа на адресу <support@forwardemail.net> або відкрийте [запит на допомогу](https://forwardemail.net/help) для схвалення. Зазвичай це займає менше 24 годин, більшість запитів обробляються протягом 1-2 годин. Найближчим часом ми плануємо зробити цей процес миттєвим, додавши додаткові засоби контролю спаму та сповіщення. Цей процес гарантує, що ваші електронні листи потраплять до папки "Вхідні", і ваші повідомлення не будуть позначені як спам.
+Зверніть увагу, що для підтримки репутації IP-адреси та забезпечення доставки, Forward Email має ручний процес перевірки для кожного домену для **схвалення розсилки**. Надішліть електронного листа на адресу <support@forwardemail.net> або створіть [запит на допомогу](https://forwardemail.net/help) для схвалення. Зазвичай це займає менше 24 годин, більшість запитів обробляються протягом 1-2 годин. Найближчим часом ми плануємо зробити цей процес миттєвим, додавши додаткові засоби контролю спаму та сповіщення. Цей процес гарантує, що ваші електронні листи потраплять до папки "Вхідні", і ваші повідомлення не будуть позначені як спам.
 
 ### Чи підтримуєте ви надсилання електронної пошти за допомогою API {#do-you-support-sending-email-with-api}
 
@@ -1570,9 +1567,9 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 Будь ласка, перегляньте розділ про [Електронні листи](/email-api#outbound-emails) у нашій документації API, щоб отримати доступ до опцій, прикладів та додаткової інформації.
 
-Щоб надсилати вихідні електронні листи за допомогою нашого API, вам потрібно використовувати свій токен API, доступний за адресою [Моя безпека](/my-account/security).
+Щоб надсилати вихідні електронні листи за допомогою нашого API, вам потрібно використовувати свій токен API, доступний у розділі [Моя безпека](/my-account/security).
 
-### Чи підтримуєте ви отримання електронної пошти через IMAP {#do-you-support-receiving-email-with-imap}
+### Чи підтримується отримання електронної пошти через IMAP {#do-you-support-receiving-email-with-imap}
 
 Так, станом на 16 жовтня 2023 року ми підтримуємо отримання електронної пошти через IMAP як додатковий додаток для всіх платних користувачів. **Будь ласка, прочитайте нашу детальну статтю** про [як працює наша функція зашифрованого сховища поштових скриньок SQLite](/blog/docs/best-quantum-safe-encrypted-email-service).
 
@@ -1598,7 +1595,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 <strong class="font-weight-bold">
 Порада:
 </strong>
-<span>Ми рекомендуємо використовувати <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> або <a href="/blog/open-source" class="alert-link" target="_blank">альтернатива з відкритим вихідним кодом та орієнтована на конфіденційність</a>.</span>
+<span>Ми рекомендуємо використовувати <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> або <a href="/blog/open-source" class="alert-link" target="_blank">альтернатива з відкритим вихідним кодом, орієнтована на конфіденційність</a>.</span>
 </div>
 
 4. Коли буде запропоновано ввести ім'я сервера IMAP, введіть `imap.forwardemail.net`
@@ -1630,7 +1627,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 </div>
 
-### Ви підтримуєте POP3 {#do-you-support-pop3}
+### Чи підтримуєте ви POP3 {#do-you-support-pop3}
 
 Так, станом на 4 грудня 2023 року ми підтримуємо [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) як доповнення для всіх платних користувачів. **Будь ласка, прочитайте нашу детальну статтю** про [як працює наша функція зашифрованого сховища поштових скриньок SQLite](/blog/docs/best-quantum-safe-encrypted-email-service).
 
@@ -1650,13 +1647,13 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 2. Натисніть кнопку <strong class="text-success"><i class="fa fa-key"></i> «Згенерувати пароль»</strong> поруч із щойно створеним псевдонімом. Скопіюйте його в буфер обміну та надійно збережіть згенерований пароль, який відображається на екрані.
 
-3. Використовуючи бажаний застосунок електронної пошти, додайте або налаштуйте обліковий запис із щойно створеним псевдонімом (наприклад, <code><hello@example.com></code>)
+3. Використовуючи бажаний поштовий додаток, додайте або налаштуйте обліковий запис із щойно створеним псевдонімом (наприклад, <code><hello@example.com></code>)
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 Порада:
 </strong>
-<span>Ми рекомендуємо використовувати <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> або <a href="/blog/open-source" class="alert-link" target="_blank">альтернатива з відкритим вихідним кодом та орієнтована на конфіденційність</a>.</span>
+<span>Ми рекомендуємо використовувати <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> або <a href="/blog/open-source" class="alert-link" target="_blank">альтернатива з відкритим вихідним кодом, орієнтована на конфіденційність</a>.</span>
 </div>
 
 4. Коли буде запропоновано ввести ім'я POP3-сервера, введіть `pop3.forwardemail.net`
@@ -1690,7 +1687,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 ### Чи підтримуєте ви календарі (CalDAV) {#do-you-support-calendars-caldav}
 
-Так, станом на 5 лютого 2024 року ми додали цю функцію. Наш сервер має код `caldav.forwardemail.net` і також відстежується на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
+Так, станом на 5 лютого 2024 року ми додали цю функцію. Наш сервер має ім’я `caldav.forwardemail.net`, і його стан також відстежується на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
 
 Він підтримує як IPv4, так і IPv6 і доступний через порт `443` (HTTPS).
 
@@ -1703,7 +1700,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 ### Чи підтримуєте ви контакти (CardDAV) {#do-you-support-contacts-carddav}
 
-Так, станом на 12 червня 2025 року ми додали цю функцію. Наш сервер має код `carddav.forwardemail.net` і також відстежується на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
+Так, станом на 12 червня 2025 року ми додали цю функцію. Наш сервер має ім’я `carddav.forwardemail.net`, і його стан також відстежується на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
 
 Він підтримує як IPv4, так і IPv6 і доступний через порт `443` (HTTPS).
 
@@ -1714,7 +1711,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 Щоб скористатися підтримкою контактів, **користувач** має бути адресою електронної пошти псевдоніма, що існує для домену в розділі <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Мій обліковий запис <i class="fa fa-angle-right"></i> Домени</a>, а **пароль** має бути паролем, згенерованим для певного псевдоніма.
 
-### Чи підтримуєте ви надсилання електронної пошти через SMTP {#do-you-support-sending-email-with-smtp}
+### Чи підтримується надсилання електронної пошти через SMTP {#do-you-support-sending-email-with-smtp}
 
 Так, станом на травень 2023 року ми підтримуємо надсилання електронної пошти через SMTP як додатковий сервіс для всіх платних користувачів.
 
@@ -1726,7 +1723,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 Важливо:
 </strong>
 <span>
-Будь ласка, переконайтеся, що ви прочитали наші <a href="/terms" class="alert-link" target="_blank">Умови</a>, <a href="/privacy" class="alert-link" target="_blank">Політику конфіденційності</a> та <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Обмеження вихідного SMTP</a> – ваше використання вважається підтвердженням та згодою.
+Будь ласка, переконайтеся, що ви прочитали наші <a href="/terms" class="alert-link" target="_blank">Умови</a>, <a href="/privacy" class="alert-link" target="_blank">Політику конфіденційності</a> та <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">Ліміти вихідного SMTP</a> – ваше використання вважається підтвердженням та згодою.
 </span>
 </div>
 
@@ -1746,13 +1743,13 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 3. Натисніть кнопку <strong class="text-success"><i class="fa fa-key"></i> «Згенерувати пароль»</strong> поруч із щойно створеним псевдонімом. Скопіюйте його в буфер обміну та надійно збережіть згенерований пароль, який відображається на екрані.
 
-4. Використовуючи бажаний застосунок електронної пошти, додайте або налаштуйте обліковий запис із щойно створеним псевдонімом (наприклад, <code><hello@example.com></code>)
+4. Використовуючи бажаний поштовий додаток, додайте або налаштуйте обліковий запис із щойно створеним псевдонімом (наприклад, <code><hello@example.com></code>)
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 Порада:
 </strong>
-<span>Ми рекомендуємо використовувати <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> або <a href="/blog/open-source" class="alert-link" target="_blank">альтернатива з відкритим вихідним кодом та орієнтована на конфіденційність</a>.</span>
+<span>Ми рекомендуємо використовувати <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> або <a href="/blog/open-source" class="alert-link" target="_blank">альтернатива з відкритим вихідним кодом, орієнтована на конфіденційність</a>.</span>
 </div>
 
 5. Коли буде запропоновано ввести ім'я SMTP-сервера, введіть `smtp.forwardemail.net`
@@ -1812,7 +1809,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 <strong class="font-weight-bold">
 Автоматичне шифрування:
 </strong>
-<span>Якщо ви використовуєте нашу <a href="#do-you-support-sending-email-with-smtp" class="alert-link">вихідну SMTP-службу</a> та надсилаєте незашифровані повідомлення, ми автоматично намагатимемося зашифрувати повідомлення для кожного одержувача, використовуючи <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web каталог ключів ("WKD")</a>.</span>
+<span>Якщо ви використовуєте нашу <a href="#do-you-support-sending-email-with-smtp" class="alert-link">вихідну SMTP-службу</a> та надсилаєте незашифровані повідомлення, ми автоматично намагатимемося зашифрувати повідомлення для кожного одержувача, використовуючи <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Каталог ключів ("WKD")</a>.</span>
 </div>
 
 <div class="alert alert-warning">
@@ -1829,15 +1826,15 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 | Поштовий клієнт | Платформа | Рекомендований плагін | Нотатки |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | Робочий стіл | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird має вбудовану підтримку OpenPGP. |
+| Тандерберд | Робочий стіл | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird має вбудовану підтримку OpenPGP. |
 | Gmail | Браузер | [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download) (ліцензія на власність) | Gmail не підтримує OpenPGP, проте ви можете завантажити плагін з відкритим кодом [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download). |
 | Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail не підтримує OpenPGP, проте ви можете завантажити плагін з відкритим кодом [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
 | Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) або [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (ліцензія на власність) | Apple Mail не підтримує OpenPGP, проте ви можете завантажити плагін з відкритим кодом [PGPro](https://github.com/opensourceios/PGPro/) або [FlowCrypt](https://flowcrypt.com/download). |
 | Перспективи | Вікна | [gpg4win](https://www.gpg4win.de/index.html) | Поштовий клієнт Outlook для настільних комп’ютерів не підтримує OpenPGP, проте ви можете завантажити плагін з відкритим кодом [gpg4win](https://www.gpg4win.de/index.html). |
 | Перспективи | Браузер | [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download) (ліцензія на власність) | Веб-клієнт поштового клієнта Outlook не підтримує OpenPGP, проте ви можете завантажити плагін з відкритим кодом [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download). |
-| Android | Мобільний | [OpenKeychain](https://www.openkeychain.org/) або [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients), такі як [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) та [FairEmail](https://github.com/M66B/FairEmail), підтримують плагін з відкритим кодом [OpenKeychain](https://www.openkeychain.org/). Ви також можете використовувати плагін з відкритим кодом (власна ліцензія) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+| Андроїд | Мобільний | [OpenKeychain](https://www.openkeychain.org/) або [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients), такі як [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) та [FairEmail](https://github.com/M66B/FairEmail), підтримують плагін з відкритим кодом [OpenKeychain](https://www.openkeychain.org/). Ви також можете використовувати плагін з відкритим кодом (власна ліцензія) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
 | Google Chrome | Браузер | [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download) (ліцензія на власність) | Ви можете завантажити розширення для браузера з відкритим кодом [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download). |
-| Mozilla Firefox | Браузер | [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download) (ліцензія на власність) | Ви можете завантажити розширення для браузера з відкритим кодом [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download). |
+| Мозіла Фаєрфокс | Браузер | [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download) (ліцензія на власність) | Ви можете завантажити розширення для браузера з відкритим кодом [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download). |
 | Microsoft Edge | Браузер | [Mailvelope](https://mailvelope.com/) | Ви можете завантажити розширення для браузера з відкритим кодом [Mailvelope](https://mailvelope.com/). |
 | Хоробрий | Браузер | [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download) (ліцензія на власність) | Ви можете завантажити розширення для браузера з відкритим кодом [Mailvelope](https://mailvelope.com/) або [FlowCrypt](https://flowcrypt.com/download). |
 | Бальза | Робочий стіл | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa має вбудовану підтримку OpenPGP. |
@@ -1908,7 +1905,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </div>
 </div>
 
-### Ви підтримуєте MTA-STS {#do-you-support-mta-sts}
+### Чи підтримуєте ви MTA-STS {#do-you-support-mta-sts}
 
 Так, станом на 2 березня 2023 року ми підтримуємо [MTA-STS](https://www.hardenize.com/blog/mta-sts). Ви можете використовувати [цей шаблон](https://github.com/jpawlowski/mta-sts.template), якщо хочете ввімкнути його у своєму домені.
 
@@ -1930,7 +1927,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 * [Використання ключів доступу для входу в програми та на веб-сайти на iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Стаття Вікіпедії про паролі](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
-### Чи підтримуєте ви найкращі практики роботи з електронною поштою {#do-you-support-email-best-practices}
+### Чи підтримуєте ви найкращі методи роботи з електронною поштою {#do-you-support-email-best-practices}
 
 Так. У всіх планах вбудована підтримка SPF, DKIM, DMARC, ARC та SRS. Ми також активно співпрацювали з оригінальними авторами цих специфікацій та іншими експертами з електронної пошти, щоб забезпечити досконалість та високу якість доставки.
 
@@ -1957,19 +1954,19 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 * `list_unsubscribe` (Рядок) – значення заголовка `List-Unsubscribe` (без урахування регістру), якщо є, з оригінального вихідного електронного листа
 * `feedback_id` (Рядок) – значення заголовка `Feedback-ID` (без урахування регістру), якщо є, з оригінального вихідного електронного листа
 * `recipient` (Рядок) – адреса електронної пошти одержувача, який повернувся або отримав помилку
-* `message` (Рядок) – детальне повідомлення про помилку для відмовки
+* `message` (Рядок) – детальне повідомлення про помилку для повернення
 * `response` (Рядок) – повідомлення відповіді SMTP
-* `response_code` (Число) – проаналізований код відповіді SMTP
-* `truth_source` (Рядок) – якщо код відповіді надійшов з надійного джерела, це значення буде заповнено іменем кореневого домену (наприклад, `google.com` або `yahoo.com`)
-* `bounce` (Об'єкт) – об'єкт, що містить такі властивості, що детально описують статус відмовки та відхилення
-* `action` (Рядок) – дія відмовки (наприклад, `"reject"`)
-* `message` (Рядок) – причина відмов (наприклад, `"Message Sender Blocked By Receiving Server"`)
-* `category` (Рядок) – категорія відмов (наприклад, `"block"`)
-* `code` (Число) – код стану відмов (наприклад, `554`)
-* `status` (Рядок) – код відмов з повідомлення-відповіді (наприклад, `5.7.1`)
-* `line` (Число) – номер проаналізованого рядка, якщо такий є, [зі списку розбору відмов Zone-MTA](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (наприклад, `526`)
-* `headers` (Об'єкт) – пара заголовків типу «ключ-значення» для вихідного електронного листа
-* `bounced_at` (Рядок) – [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) дата у форматі, що відображає помилку повернення
+* `list_id`0 (Число) – проаналізований Код відповіді SMTP
+* `list_id`1 (Рядок) – якщо код відповіді надійшов з надійного джерела, це значення буде заповнено іменем кореневого домену (наприклад, `list_id`2 або `list_id`3)
+* `list_id`4 (Об'єкт) – об'єкт, що містить такі властивості, що детально описують статус відхилення та повернення
+* `list_id`5 (Рядок) – дія повернення (наприклад, `list_id`6)
+* `list_id`7 (Рядок) – причина повернення (наприклад, `list_id`8)
+* `list_id`9 (Рядок) – категорія повернення (наприклад, `List-ID`0)
+* `List-ID`1 (Число) – код статусу повернення (наприклад, `List-ID`2)
+* `List-ID`3 (Рядок) – код повернення з повідомлення відповіді (наприклад, `List-ID`4)
+* `List-ID`5 (Число) – номер проаналізованого рядка, якщо такий є, `List-ID`6 (наприклад, `List-ID`7)
+* `List-ID`8 (Об’єкт) – пара ключ-значення заголовків для вихідного електронного листа
+* `List-ID`9 (Рядок) – дата у форматі `list_unsubscribe`0, коли сталася помилка повернення
 
 Наприклад:
 
@@ -1996,16 +1993,15 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 Ось кілька додаткових зауважень щодо вебхуків-відмов:
 
-* Якщо корисне навантаження вебхука містить значення `list_id`, `list_unsubscribe` або `feedback_id`, тоді слід вжити відповідних заходів, щоб видалити `recipient` зі списку, якщо це необхідно.
-* Якщо значення `bounce.category` було одиницею `"block"`, `"recipient"`, `"spam"` або `"virus"`, тоді обов'язково слід видалити користувача зі списку.
-* Якщо вам потрібно перевірити корисні навантаження вебхука (щоб переконатися, що вони дійсно надходять з нашого сервера), ви можете скористатися [визначити IP-адресу віддаленого клієнта, ім'я хоста клієнта, за допомогою зворотного пошуку](https://nodejs.org/api/dns.html#dnspromisesreverseip) – це має бути `smtp.forwardemail.net`.
-* Ви також можете перевірити IP-адресу за [наші опубліковані IP-адреси](#what-are-your-servers-ip-addresses).
-* Перейдіть до Мій обліковий запис → Домени → Налаштування → Ключ перевірки корисного навантаження підпису вебхука, щоб отримати ключ вашого вебхука.
-* Ви можете будь-коли повернути цей ключ з міркувань безпеки.
-* Обчисліть та порівняйте значення `X-Webhook-Signature` з нашого запиту вебхука з обчисленим значенням тіла за допомогою цього ключа. Приклад того, як це зробити, доступний за адресою [цей пост на Stack Overflow](https://stackoverflow.com/a/68885281).
-* Дивіться обговорення за адресою <https://github.com/forwardemail/free-email-forwarding/issues/235> для отримання додаткової інформації.
-* Ми чекатимемо до `5` секунд, поки кінцева точка вашого вебхука надішле код стану `200`, і повторюватимемо спробу до `1` разів.
-* Якщо ми виявимо, що URL-адреса вашого вебхука для відмов містить помилку під час спроби надіслати запит, ми надсилатимемо вам електронний лист раз на тиждень.
+* Якщо корисне навантаження вебхука містить значення `list_id`, `list_unsubscribe` або `feedback_id`, тоді вам слід вжити відповідних заходів, щоб видалити `recipient` зі списку, якщо це необхідно.
+* Якщо значення `bounce.category` було одиницею `"block"`, `"recipient"`, `"spam"` або `"virus"`, тоді вам обов'язково слід видалити користувача зі списку.
+* Якщо вам потрібно перевірити корисні навантаження вебхука (щоб переконатися, що вони дійсно надходять з нашого сервера), тоді ви можете [визначити IP-адресу віддаленого клієнта, ім'я хоста клієнта, за допомогою зворотного пошуку](https://nodejs.org/api/dns.html#dnspromisesreverseip) – це має бути `list_unsubscribe`0.
+* Ви також можете перевірити IP-адресу на `list_unsubscribe`1.
+* Перейдіть до Мій обліковий запис → Домени → Налаштування → Ключ перевірки корисного навантаження підпису вебхука, щоб отримати свій ключ вебхука.
+* Ви можете будь-коли змінити цей ключ з міркувань безпеки.
+* Обчисліть та порівняйте значення `list_unsubscribe`2 з нашого запиту вебхука з обчисленим значенням тіла за допомогою цього ключа. Приклад того, як це зробити, доступний за посиланням `list_unsubscribe`3.
+* Дивіться обговорення за посиланням <`list_unsubscribe`4 для отримання додаткової інформації.
+* Ми чекатимемо до `list_unsubscribe`5 секунд, поки кінцева точка вашого вебхука відповість із кодом стану `list_unsubscribe`6, і ми повторимо спробу до `list_unsubscribe`7 разів. * Якщо ми виявимо, що ваша URL-адреса вебхука для відмов містить помилку під час спроби надіслати запит до неї, ми надсилатимемо вам електронний лист раз на тиждень.
 
 ### Чи підтримуєте ви вебхуки {#do-you-support-webhooks}
 
@@ -2046,7 +2042,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </thead>
 <tbody>
 <tr>
-<td><em>"@", ".", або пусте</em></td>
+<td><em>"@", ".", або пусто</em></td>
 <td class="text-center">3600</td>
 <td class="notranslate">TXT</td>
 <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
@@ -2054,7 +2050,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </tbody>
 </table>
 
-Або, можливо, ви хочете, щоб усі електронні листи, що надходять на адресу `example.com`, пересилалися на цю кінцеву точку:
+Або, можливо, ви хочете, щоб усі електронні листи, що надходять до `example.com`, пересилалися на цю кінцеву точку:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -2077,24 +2073,24 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 **Ось додаткові примітки щодо вебхуків:**
 
-* Якщо вам потрібно перевірити корисні навантаження вебхука (щоб переконатися, що вони дійсно надходять з нашого сервера), ви можете скористатися [визначити IP-адресу віддаленого клієнта, ім'я хоста клієнта, за допомогою зворотного пошуку](https://nodejs.org/api/dns.html#dnspromisesreverseip) – це має бути або `mx1.forwardemail.net`, або `mx2.forwardemail.net`.
+* Якщо вам потрібно перевірити корисні навантаження вебхука (щоб переконатися, що вони дійсно надходять з нашого сервера), ви можете скористатися [визначити IP-адресу віддаленого клієнта, ім'я хоста клієнта, за допомогою зворотного пошуку](https://nodejs.org/api/dns.html#dnspromisesreverseip) – це має бути `mx1.forwardemail.net` або `mx2.forwardemail.net`.
 * Ви також можете перевірити IP-адресу за [наші опубліковані IP-адреси](#what-are-your-servers-ip-addresses).
 * Якщо у вас платний план, перейдіть до Мій обліковий запис → Домени → Налаштування → Ключ перевірки корисного навантаження підпису вебхука, щоб отримати ключ вебхука.
 * Ви можете будь-коли повернути цей ключ з міркувань безпеки.
-* Обчисліть та порівняйте значення `X-Webhook-Signature` з нашого запиту вебхука з обчисленим значенням тіла за допомогою цього ключа. Приклад того, як це зробити, доступний за адресою [цей пост на Stack Overflow](https://stackoverflow.com/a/68885281). * Дивіться обговорення за адресою <https://github.com/forwardemail/free-email-forwarding/issues/235> для отримання додаткової інформації.
+* Обчисліть та порівняйте значення `X-Webhook-Signature` з нашого запиту вебхука з обчисленим значенням тіла за допомогою цього ключа. Приклад того, як це зробити, доступний за посиланням [цей пост на Stack Overflow](https://stackoverflow.com/a/68885281). * Дивіться обговорення за посиланням <https://github.com/forwardemail/free-email-forwarding/issues/235> для отримання додаткової інформації.
 * Якщо вебхук не відповідає кодом стану `200`, ми збережемо його відповідь у [створено журнал помилок](#do-you-store-error-logs) – що корисно для налагодження.
-* HTTP-запити вебхука повторюватимуть до 3 разів під час кожної спроби SMTP-з’єднання з максимальним тайм-аутом 60 секунд на кожен POST-запит кінцевої точки. **Зверніть увагу, що це не означає, що він повторює лише 3 спроби**, він фактично повторюватиме спроби безперервно протягом певного часу, надсилаючи SMTP-код 421 (який вказує відправнику на пізнішу спробу) після 3-ї невдалої спроби POST-запиту HTTP. Це означає, що електронна пошта повторюватиметься безперервно протягом кількох днів, доки не буде досягнуто коду стану 200.
-* Ми повторюватимемо спробу автоматично на основі кодів стану та помилок за замовчуванням, що використовуються в [метод повторної спроби суперагента](https://ladjs.github.io/superagent/#retrying-requests) (ми є розробниками).
-* Ми групуємо HTTP-запити вебхука до однієї кінцевої точки в один запит (а не кілька), щоб заощадити ресурси та пришвидшити час відповіді. Наприклад, якщо ви надсилаєте електронний лист на адреси <webhook1@example.com>, <webhook2@example.com> та <webhook3@example.com>, і всі вони налаштовані на потрапляння до *точної* URL-адреси кінцевої точки, тоді буде здійснено лише один запит. Ми групуємо разом за допомогою точного зіставлення кінцевих точок зі строгою рівністю.
-* Зверніть увагу, що ми використовуємо метод "simpleParser" бібліотеки [поштовий аналізатор](https://nodemailer.com/extras/mailparser/) для розбору повідомлення в об'єкт, сумісну з JSON.
+* HTTP-запити вебхука повторюватимуть до 3 разів за кожну спробу SMTP-з’єднання з максимальним тайм-аутом 60 секунд на кожен POST-запит кінцевої точки. **Зверніть увагу, що це не означає, що спроба повторюється лише 3 рази**, насправді спроба повторюватиметься безперервно, надсилаючи SMTP-код 421 (який вказує відправнику на пізнішу спробу) після 3-ї невдалої спроби POST-запиту HTTP. Це означає, що електронна пошта повторюватиметься безперервно протягом кількох днів, доки не буде досягнуто коду стану 200.
+* Ми автоматично повторюватимемо спробу на основі кодів стану та помилок за замовчуванням, що використовуються в [метод повторної спроби суперагента](https://ladjs.github.io/superagent/#retrying-requests) (ми є розробниками).
+* Ми групуємо HTTP-запити вебхука до однієї кінцевої точки в один запит (а не кілька), щоб заощадити ресурси та пришвидшити час відповіді. Наприклад, якщо ви надсилаєте електронний лист на адреси <webhook1@example.com>, <webhook2@example.com> та <webhook3@example.com>, і всі вони налаштовані на потрапляння до *точно однієї* URL-адреси кінцевої точки, тоді буде зроблено лише один запит. Ми групуємо за допомогою точного зіставлення кінцевих точок із суворою рівністю.
+* Зверніть увагу, що ми використовуємо метод "simpleParser" бібліотеки `mx1.forwardemail.net`0 для розбору повідомлення в об'єкт, дружній до JSON.
 * Необроблене значення електронної пошти у вигляді рядка задається як властивість "raw".
 * Результати автентифікації задаються як властивості "dkim", "spf", "arc", "dmarc" та "bimi".
-* Розібрані заголовки електронного листа задаються як властивість "headers", але також зверніть увагу, що ви можете використовувати "headerLines" для легшої ітерації та розбору.
+* Розібрані заголовки електронної пошти задаються як властивість "headers", але також зверніть увагу, що ви можете використовувати "headerLines" для легшої ітерації та розбору.
 * Згруповані одержувачі для цього вебхука групуються разом та задаються як властивість "recipients".
-* Інформація про сеанс SMTP надається як властивість "session". Вона містить інформацію про відправника повідомлення, час його надходження, HELO та ім'я хоста клієнта. Значення імені хоста клієнта як `session.clientHostname` є або повним доменом (FQDN) (зі зворотного пошуку PTR), або `session.remoteAddress`, взятим у дужки (наприклад, `"[127.0.0.1]"`).
-* Якщо вам потрібен швидкий спосіб отримати значення `X-Original-To`, ви можете використовувати значення `session.recipient` (див. приклад нижче). Заголовок `X-Original-To` – це заголовок, який ми додаємо до повідомлень для налагодження з початковим одержувачем (перед маскованою пересилкою) повідомлення.
-* Якщо вам потрібно видалити властивості `attachments` та/або `raw` з тіла корисного навантаження, просто додайте `?attachments=false`, `?raw=false` або `?attachments=false&raw=false` до кінцевої точки вашого вебхука як параметр рядка запиту (наприклад, `https://example.com/webhook?attachments=false&raw=false`).
-* Якщо є вкладення, вони будуть додані до масиву `attachments` зі значеннями буфера. Ви можете розібрати їх назад у контент, використовуючи підхід з JavaScript, такий як:
+* Інформація про сеанс SMTP задається як властивість "session". Вона містить інформацію про відправника повідомлення, час його надходження, HELO та ім'я хоста клієнта. Значення імені хоста клієнта `mx1.forwardemail.net`1 є або повним доменом (FQDN) (зі зворотного пошуку PTR), або `mx1.forwardemail.net`2, обгорнутим у дужки (наприклад, `mx1.forwardemail.net`3).
+* Якщо вам потрібен швидкий спосіб отримати значення `mx1.forwardemail.net`4, ви можете використовувати значення `mx1.forwardemail.net`5 (див. приклад нижче). Заголовок `mx1.forwardemail.net`6 – це заголовок, який ми додаємо до повідомлень для налагодження з початковим одержувачем (перед маскованою пересилкою) повідомлення.
+* Якщо вам потрібно видалити властивості `mx1.forwardemail.net`7 та/або `mx1.forwardemail.net`8 з тіла корисного навантаження, просто додайте `mx1.forwardemail.net`9, `mx2.forwardemail.net`0 або `mx2.forwardemail.net`1 до кінцевої точки вебхука як параметр рядка запиту (наприклад, `mx2.forwardemail.net`2).
+* Якщо є вкладення, вони будуть додані до масиву `mx2.forwardemail.net`3 зі значеннями буфера. Ви можете перетворити їх назад на контент, використовуючи підхід до JavaScript, наприклад:
 
   ```js
   const data = [
@@ -2309,15 +2305,15 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 }
 ```
 
-### Ви підтримуєте регулярні вирази чи regex {#do-you-support-regular-expressions-or-regex}
+### Чи підтримуєте ви регулярні вирази? {#do-you-support-regular-expressions-or-regex}
 
 Так, станом на 27 вересня 2021 року ми додали цю функцію. Ви можете просто написати регулярні вирази ("regex") для зіставлення псевдонімів та виконання підстановок.
 
-Псевдоніми, що підтримуються регулярними виразами, – це ті, що починаються з `/` та закінчуються на `/`, а їхні одержувачі – це адреси електронної пошти або вебхуки. Одержувачі також можуть включати підтримку підстановки регулярних виразів (наприклад, `$1`, `$2`).
+Псевдоніми, що підтримуються регулярними виразами, – це ті, що починаються з `/` та закінчуються на `/`, а їхніми одержувачами є адреси електронної пошти або вебхуки. Одержувачі також можуть включати підтримку підстановки регулярних виразів (наприклад, `$1`, `$2`).
 
 Ми підтримуємо два прапорці регулярних виразів, зокрема `i` та `g`. Прапорець `i` без урахування регістру є постійним значенням за замовчуванням і завжди застосовується. Глобальний прапорець `g` можна додати, додавши закінчення `/` до `/g`.
 
-Зверніть увагу, що ми також підтримуємо нашу функцію <a href="#can-i-disable-specific-aliases">disabled аліасів</a> для частини одержувача з підтримкою регулярних виразів.
+Зверніть увагу, що ми також підтримуємо функцію псевдонімів <a href="#can-i-disable-specific-aliases">disabled</a> для частини одержувача з підтримкою регулярних виразів.
 
 Регулярні вирази не підтримуються на <a href="/disposable-addresses" target="_blank">глобальних доменах</a> (оскільки це може бути вразливістю системи безпеки).
 
@@ -2359,7 +2355,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Приклад підстановки імені та прізвища:</strong> Уявіть, що всі електронні адреси вашої компанії мають шаблон `firstname.lastname@example.com`. Якщо я хочу, щоб усі електронні листи, що надходять за шаблоном `firstname.lastname@example.com`, пересилалися на `firstname.lastname@company.com` з підтримкою підстановки (<a href="https://regexr.com/66hnu" class="alert-link">переглянути тест на RegExr</a>):
+<strong>Приклад підстановки імені та прізвища:</strong> Уявіть, що всі адреси електронної пошти вашої компанії мають шаблон `firstname.lastname@example.com`. Якщо я хочу, щоб усі електронні листи, що надходять за шаблоном `firstname.lastname@example.com`, пересилалися на `firstname.lastname@company.com` з підтримкою підстановки (<a href="https://regexr.com/66hnu" class="alert-link">переглянути тест на RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2383,7 +2379,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Приклад підстановки фільтра символом «плюс»:</strong> Якщо я хочу, щоб усі електронні листи, що надходять на `info@example.com` або `support@example.com`, пересилалися на `user+info@gmail.com` або `user+support@gmail.com` відповідно (з підтримкою підстановки) (<a href="https://regexr.com/66ho7" class="alert-link">переглянути тест на RegExr</a>):
+<strong>Приклад підстановки фільтра символом "плюс":</strong> Якщо я хочу, щоб усі електронні листи, що надходять на адресу `info@example.com` або `support@example.com`, пересилалися на адресу `user+info@gmail.com` або `user+support@gmail.com` відповідно (з підтримкою підстановки) (<a href="https://regexr.com/66ho7" class="alert-link">переглянути тест на RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2407,7 +2403,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Приклад підстановки рядка запиту вебхука:</strong> Можливо, ви хочете, щоб усі електронні листи, що надходять на адресу `example.com`, надходили на <a href="#do-you-support-webhooks" class="alert-link">вебхук</a> та мали динамічний ключ рядка запиту "to" зі значенням частини імені користувача адреси електронної пошти (<a href="https://regexr.com/66ho4" class="alert-link">переглянути тест на RegExr</a>):
+<strong>Приклад підстановки рядка запиту вебхука:</strong> Можливо, ви хочете, щоб усі електронні листи, що надходять до `example.com`, надходили до <a href="#do-you-support-webhooks" class="alert-link">вебхука</a> та мали динамічний ключ рядка запиту "to" зі значенням частини імені користувача адреси електронної пошти (<a href="https://regexr.com/66ho4" class="alert-link">переглянути тест на RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2455,7 +2451,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Приклад м’якого відхилення:</strong> Якщо ви хочете, щоб усі електронні листи, що відповідають певному шаблону, були вимкнені та м’яко відхилені з кодом статусу `421` (див. <a href="#can-i-disable-specific-aliases" class="alert-link">Чи можна вимкнути певні псевдоніми</a>), просто скористайтеся тим самим підходом із подвійним знаком оклику "!!". Це вказує відправнику на необхідність повторити спробу надсилання електронного листа, і електронні листи на цей псевдонім будуть повторюватися приблизно 5 днів, а потім будуть відхилені назавжди.</div>
+<strong>Приклад м’якого відхилення:</strong> Якщо ви хочете, щоб усі електронні листи, що відповідають певному шаблону, були вимкнені та м’яко відхилені з кодом статусу `421` (див. <a href="#can-i-disable-specific-aliases" class="alert-link">Чи можна вимкнути певні псевдоніми</a>), просто скористайтеся тим самим підходом із подвійним знаком оклику "!!". Це вказує відправнику на необхідність повторити спробу надсилання електронного листа, і електронні листи на цей псевдонім будуть повторюватися протягом приблизно 5 днів, а потім будуть відхилені назавжди.</div>
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -2511,15 +2507,15 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 ### Які ваші ліміти вихідних SMTP-повідомлень {#what-are-your-outbound-smtp-limits}
 
-Ми обмежуємо користувачів та домени до 300 вихідних SMTP-повідомлень на день. В середньому це становить понад 9000 електронних листів на календарний місяць. Якщо вам потрібно перевищити цю кількість або ви постійно отримуєте великі електронні листи, будь ласка, [зв'яжіться з нами](https://forwardemail.net/help).
+Ми обмежуємо користувачів та домени до 300 вихідних SMTP-повідомлень на день. В середньому це становить понад 9000 електронних листів на календарний місяць. Якщо вам потрібно перевищити цю кількість або у вас постійно великий обсяг електронних листів, будь ласка, [зв'яжіться з нами](https://forwardemail.net/help).
 
 ### Чи потрібне мені схвалення для ввімкнення SMTP {#do-i-need-approval-to-enable-smtp}
 
-Так, зверніть увагу, що для підтримки репутації IP-адреси та забезпечення доставки, Forward Email має процес ручної перевірки для кожного домену для схвалення вихідних SMTP-повідомлень. Надішліть електронного листа на адресу <support@forwardemail.net> або відкрийте [запит на допомогу](https://forwardemail.net/help) для схвалення. Зазвичай це займає менше 24 годин, більшість запитів обробляються протягом 1-2 годин. Найближчим часом ми плануємо зробити цей процес миттєвим, додавши додаткові засоби контролю спаму та сповіщення. Цей процес гарантує, що ваші електронні листи потраплять до папки "Вхідні", і ваші повідомлення не будуть позначені як спам.
+Так, зверніть увагу, що для підтримки репутації IP-адреси та забезпечення доставки, Forward Email має процес ручної перевірки для кожного домену для схвалення вихідних SMTP-повідомлень. Надішліть електронного листа на адресу <support@forwardemail.net> або створіть [запит на допомогу](https://forwardemail.net/help) для схвалення. Зазвичай це займає менше 24 годин, більшість запитів обробляються протягом 1-2 годин. Найближчим часом ми плануємо зробити цей процес миттєвим, додавши додаткові засоби контролю спаму та сповіщення. Цей процес гарантує, що ваші електронні листи потраплять до папки "Вхідні", і ваші повідомлення не будуть позначені як спам.
 
 ### Які налаштування конфігурації вашого SMTP-сервера {#what-are-your-smtp-server-configuration-settings}
 
-Наш сервер має `smtp.forwardemail.net` і також контролюється на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
+Наш сервер має ім’я `smtp.forwardemail.net`, і його стан також контролюється на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
 
 Він підтримує як IPv4, так і IPv6 і доступний через порти `465` та `2465` для SSL/TLS та `587`, `2587`, `2525` та `25` для TLS (STARTTLS).
 
@@ -2539,7 +2535,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 ### Які налаштування конфігурації вашого IMAP-сервера {#what-are-your-imap-server-configuration-settings}
 
-Наш сервер має `imap.forwardemail.net` і також контролюється на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
+Наш сервер має ім’я `imap.forwardemail.net`, і його стан також контролюється на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
 
 Він підтримує як IPv4, так і IPv6 і доступний через порти `993` та `2993` для SSL/TLS.
 
@@ -2558,7 +2554,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 
 ### Які налаштування конфігурації вашого POP3-сервера {#what-are-your-pop3-server-configuration-settings}
 
-Наш сервер має `pop3.forwardemail.net` і також контролюється на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
+Наш сервер має ім’я `pop3.forwardemail.net`, і його стан також контролюється на нашій <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">сторінці стану</a>.
 
 Він підтримує як IPv4, так і IPv6 і доступний через порти `995` та `2995` для SSL/TLS.
 
@@ -2594,7 +2590,7 @@ __ЗАХИЩЕНА_URL_465__ Microsoft Outlook {__ЗАХИЩЕНА_URL_466__
 </span>
 </div>
 
-#### Встановлення {#installation}
+#### Інсталяція {#installation}
 
 1. Встановіть Postfix на свій сервер:
 
@@ -2669,7 +2665,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### Розширені методи захисту сервера {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Дізнайтеся більше про нашу інфраструктуру безпеки на [наша сторінка безпеки](/security).
 
 Forward Email впроваджує численні методи посилення захисту сервера для забезпечення безпеки нашої інфраструктури та ваших даних:
 
@@ -2706,21 +2702,21 @@ Forward Email впроваджує численні методи посилен�
 * Процедури реагування на інциденти
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Наші методи безпеки постійно оновлюються для реагування на нові загрози та вразливості.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Для максимальної безпеки ми рекомендуємо використовувати наш сервіс із наскрізним шифруванням через OpenPGP.
 
-### Чи маєте ви сертифікати SOC 2 або ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
+### Чи маєте ви сертифікати SOC 2 або ISO 27001? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Функція пересилання електронної пошти працює на інфраструктурі, наданій сертифікованими субпідрядниками, для забезпечення відповідності галузевим стандартам.
 
 Forward Email не має безпосередньої сертифікації SOC 2 Type II або ISO 27001. Однак сервіс працює на інфраструктурі, що надається сертифікованими субпідрядниками:
 
 * **DigitalOcean**: Сертифіковано SOC 2 Type II та SOC 3 Type II (аудит Schellman & Company LLC), сертифіковано ISO 27001 у кількох центрах обробки даних. Деталі: <https://www.digitalocean.com/trust/certification-reports>
 
-* **Vultr**: сертифіковано SOC 2+ (HIPAA), сертифікати ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Деталі: <https://www.vultr.com/legal/compliance/>
+* **Vultr**: Сертифіковано SOC 2+ (HIPAA), сертифікати ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Деталі: <https://www.vultr.com/legal/compliance/>
 
 * **DataPacket**: сумісний з SOC 2 (зверніться безпосередньо до DataPacket, щоб отримати сертифікацію), постачальник інфраструктури корпоративного рівня (локація в Денвері). Деталі: <https://www.datapacket.com/datacenters/denver>
 
@@ -2731,10 +2727,10 @@ Forward Email дотримується найкращих галузевих п�
 Так. Функція «Пересилання електронної пошти» суворо застосовує TLS 1.2+ для всіх з’єднань (HTTPS, SMTP, IMAP, POP3) та реалізує MTA-STS для покращеної підтримки TLS. Реалізація включає:
 
 * Застосування TLS 1.2+ для всіх з'єднань електронної пошти
-* Обмін ключами ECDHE (еліптична крива Діффі-Хеллмана ефемерна) для ідеальної прямої секретності
+* Обмін ключами ECDHE (еліптична крива Діффі-Хеллмана з ефемерними ключами) для ідеальної прямої секретності
 * Сучасні набори шифрів з регулярними оновленнями безпеки
 * Підтримка HTTP/2 для покращеної продуктивності та безпеки
-* HSTS (HTTP Strict Transport Security) з попереднім завантаженням в основних браузерах
+* HSTS (HTTP Strict Transport Security) з попереднім завантаженням у основних браузерах
 * **MTA-STS (Mail Transfer Agent Strict Transport Security)** для суворого застосування TLS
 
 Джерело: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
@@ -2744,9 +2740,9 @@ Forward Email дотримується найкращих галузевих п�
 * Виявлення помилок TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
 * Застосування MTA-STS у помічнику надсилання електронної пошти: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-Перевірка третьою стороною: <https://www.hardenize.com/report/forwardemail.net/1750312779> показує оцінки «Добре» для всіх заходів безпеки TLS та транспортування.
+Перевірка третьою стороною: <https://www.hardenize.com/report/forwardemail.net/1750312779> показує оцінки "Добре" для всіх заходів безпеки TLS та транспортування.
 
-### Чи зберігаєте ви заголовки автентифікації електронної пошти {#do-you-preserve-email-authentication-headers}
+### Чи зберігаються заголовки автентифікації електронної пошти {#do-you-preserve-email-authentication-headers}
 
 Так. Функція «Пересилання електронної пошти» комплексно реалізує та зберігає заголовки автентифікації електронної пошти:
 
@@ -2757,12 +2753,12 @@ Forward Email дотримується найкращих галузевих п�
 
 Джерело: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Перевірка: Тест пошти Internet.nl показує 100/100 балів, зокрема, за реалізацію "SPF, DKIM та DMARC". Оцінка Hardenize підтверджує рейтинги "Добре" для SPF та DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+Перевірка: Тест пошти Internet.nl показує 100/100 балів, зокрема, для реалізації "SPF, DKIM та DMARC". Оцінка Hardenize підтверджує рейтинги "Добре" для SPF та DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-### Чи зберігаєте ви оригінальні заголовки електронних листів та запобігаєте підміні {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### Чи зберігаєте ви оригінальні заголовки електронних листів та запобігаєте підміні? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Функція «Пересилати електронні листи» реалізує складний захист від спуфінгу, щоб запобігти зловживанню електронною поштою.
 
 Функція «Пересилання електронної пошти» зберігає оригінальні заголовки електронних листів, одночасно реалізуючи комплексний захист від спуфінгу через кодову базу MX:
 
@@ -2776,7 +2772,7 @@ Forward Email дотримується найкращих галузевих п�
 * Основний обробник даних MX: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 * Фільтрація довільної електронної пошти (захист від спуфінгу): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-Допоміжний модуль `isArbitrary` реалізує складні правила захисту від спуфінгу, включаючи виявлення іменування домену, заблокованих фраз та різних шаблонів фішингу.
+Допоміжний засіб `isArbitrary` реалізує складні правила захисту від спуфінгу, включаючи виявлення іменування домену, заблокованих фраз та різних шаблонів фішингу.
 
 Джерело: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
@@ -2797,10 +2793,10 @@ Forward Email реалізує комплексний багаторівневи
 * <https://www.datapacket.com/datacenters/denver> (деталі захисту від DDoS-атак)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Ви зберігаєте вміст електронної пошти на диску {#do-you-store-email-content-on-disk}
+### Чи зберігаєте ви вміст електронної пошти на диску {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Функція пересилання електронної пошти використовує архітектуру з нульовим розголошенням, яка запобігає запису вмісту електронної пошти на диск.
 
 * **Архітектура нульового розкриття інформації**: Індивідуально зашифровані поштові скриньки SQLite означають, що служба Forward Email не може отримати доступ до вмісту електронної пошти.
 * **Обробка в пам'яті**: Обробка електронної пошти повністю відбувається в пам'яті, уникаючи зберігання на диску.
@@ -2813,9 +2809,9 @@ Forward Email реалізує комплексний багаторівневи
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Анотація)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Деталі з нульовим розголошенням)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Шифрування в ізоляційному середовищі)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Шифрування в ізольованому середовищі)
 
-### Чи може вміст електронної пошти бути розкритим під час збоїв системи {#can-email-content-be-exposed-during-system-crashes}
+### Чи може вміст електронної пошти бути розкритий під час збоїв системи {#can-email-content-be-exposed-during-system-crashes}
 
 Ні. Forward Email реалізує комплексні заходи захисту від розкриття даних, пов’язаного зі збоями:
 
@@ -2826,7 +2822,7 @@ Forward Email реалізує комплексний багаторівневи
 * **Фізична безпека**: Зашифровані диски LUKS v2 запобігають фізичному доступу до даних
 * **USB-накопичувач вимкнено**: Запобігає несанкціонованому вилученню даних
 
-**Обробка помилок для системних проблем**: Функція пересилання електронної пошти використовує допоміжні функції `isCodeBug` та `isTimeoutError`, щоб гарантувати, що у разі виникнення будь-яких проблем з підключенням до бази даних, проблем із мережею/блокованим списком DNS або проблем з підключенням до вищестоящого потоку система повертатиме коди стану 421 SMTP, щоб гарантувати, що електронні листи будуть повторно надіслані пізніше, а не втрачені чи розкриті.
+**Обробка помилок для системних проблем**: Функція пересилання електронної пошти використовує допоміжні функції `isCodeBug` та `isTimeoutError`, щоб гарантувати, що у разі виникнення проблем із підключенням до бази даних, проблем із мережею/блокованим списком DNS або проблем із підключенням до вищого ешелону система повертатиме коди стану 421 SMTP, щоб гарантувати, що електронні листи будуть повторно надіслані пізніше, а не втрачені чи розкриті.
 
 Деталі впровадження:
 
@@ -2859,7 +2855,7 @@ Forward Email впроваджує комплексний контроль до�
 ### Якими постачальниками інфраструктури ви користуєтеся {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Пересилання електронної пошти використовує кількох субпідрядників інфраструктури з комплексними сертифікатами відповідності.
 
 Повна інформація доступна на нашій сторінці відповідності GDPR: <https://forwardemail.net/gdpr>
 
@@ -2893,7 +2889,7 @@ Forward Email впроваджує комплексний контроль до�
 
 **Пакет даних**
 
-* Відповідність SOC 2 (зверніться безпосередньо до DataPacket для отримання сертифікації)
+* Відповідність SOC 2 (зверніться безпосередньо до DataPacket, щоб отримати сертифікацію)
 * Інфраструктура корпоративного рівня (локація в Денвері)
 * Захист від DDoS-атак завдяки стеку кібербезпеки Shield
 * Цілодобова технічна підтримка
@@ -2924,7 +2920,7 @@ Forward Email впроваджує комплексний контроль до�
 ### Як ви обробляєте сповіщення про порушення безпеки даних {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Архітектура нульового розголошення пересилання електронної пошти значно обмежує вплив порушень.
 
 * **Обмежений доступ до даних**: Немає доступу до зашифрованого вмісту електронної пошти через архітектуру з нульовим розголошенням
 * **Мінімальний збір даних**: Лише базова інформація про підписника та обмежені журнали IP-адрес для безпеки
@@ -2987,30 +2983,30 @@ Osano UK Compliance LTD
 * <https://forwardemail.net> (Відображення моніторингу в режимі реального часу)
 * <https://github.com/forwardemail/forwardemail.net> (Реалізація моніторингу)
 
-### Як ви забезпечуєте високу доступність {#how-do-you-ensure-high-availability}
+### Як забезпечити високу доступність {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Функція «Пересилання електронної пошти» реалізує комплексне резервування для кількох постачальників інфраструктури.
 
 * **Розподілена інфраструктура**: Кілька провайдерів (DigitalOcean, Vultr, DataPacket) у різних географічних регіонах
 * **Географічне балансування навантаження**: Геолокаційне балансування навантаження на основі Cloudflare з автоматичним перемиканням на резервний рахунок
 * **Автоматичне масштабування**: Динамічне налаштування ресурсів залежно від попиту
-* **Багаторівневий захист від DDoS**: Через систему Shield від DataPacket та Cloudflare
+* **Багаторівневий захист від DDoS-атак**: Через систему Shield від DataPacket та Cloudflare
 * **Резервування серверів**: Кілька серверів у регіоні з автоматичним перемиканням на резервний рахунок
 * **Реплікація бази даних**: Синхронізація даних у режимі реального часу в кількох місцях
 * **Моніторинг та оповіщення**: Цілодобовий моніторинг з автоматичним реагуванням на інциденти
 
-**Гарантія безвідмовної роботи**: доступність послуг понад 99,9% із прозорим моніторингом, доступним за адресою <https://forwardemail.net>
+**Гарантія безвідмовної роботи**: доступність послуг понад 99,9% з прозорим моніторингом, доступним за адресою <https://forwardemail.net>
 
 Джерела:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Чи відповідаєте ви вимогам розділу 889 Закону про національний оборонний бюджет (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Чи відповідаєте ви вимогам розділу 889 Закону про національний оборонний бюджет (NDAA)? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Пересилання електронної пошти повністю відповідає Розділу 889 завдяки ретельному відбору партнерів з інфраструктури.
 
 Так, функція «Пересилання електронної пошти» **відповідає вимогам розділу 889**. Розділ 889 Закону про національний оборонний бюджет (NDAA) забороняє державним установам використовувати або укладати договори з організаціями, які використовують телекомунікаційне обладнання та обладнання для відеоспостереження від певних компаній (Huawei, ZTE, Hikvision, Dahua та Hytera).
 
@@ -3030,7 +3026,7 @@ Osano UK Compliance LTD
 
 ## Системні та технічні деталі {#system-and-technical-details}
 
-### Ви зберігаєте електронні листи та їхній вміст {#do-you-store-emails-and-their-contents}
+### Чи зберігаєте ви електронні листи та їх вміст {#do-you-store-emails-and-their-contents}
 
 Ні, ми не записуємо на диск і не зберігаємо журнали – за допомогою [виняток помилок](#do-you-store-error-logs) та [вихідний SMTP](#do-you-support-sending-email-with-smtp) (див. наш [Політика конфіденційності](/privacy)).
 
@@ -3038,21 +3034,21 @@ Osano UK Compliance LTD
 
 ### Як працює ваша система пересилання електронної пошти {#how-does-your-email-forwarding-system-work}
 
-Електронна пошта використовує [SMTP-протокол](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Цей протокол складається з команд, що надсилаються на сервер (найчастіше на порту 25). Спочатку встановлюється з’єднання, потім відправник вказує, від кого надходить лист («MAIL FROM»), далі куди він прямує («RCPT TO»), і нарешті, заголовки та тіло самого листа («DATA»). Нижче описано процес пересилання електронної пошти для кожної команди протоколу SMTP:
+Електронна пошта залежить від [SMTP-протокол](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Цей протокол складається з команд, що надсилаються на сервер (найчастіше на порту 25). Спочатку встановлюється з'єднання, потім відправник вказує, від кого надходить лист ("MAIL FROM"), далі куди він прямує ("RCPT TO"), і нарешті, заголовки та тіло самого листа ("DATA"). Нижче описано процес пересилання електронної пошти для кожної команди протоколу SMTP:
 
-* Початкове підключення (без назви команди, наприклад, `telnet example.com 25`) – це початкове підключення. Ми перевіряємо відправників, яких немає в нашому [білий список](#do-you-have-an-allowlist), на відповідність нашому [заборонений список](#do-you-have-a-denylist). Зрештою, якщо відправника немає в нашому білому списку, ми перевіряємо, чи було його [сірий список](#do-you-have-a-greylist).
+* Початкове підключення (без назви команди, наприклад, `telnet example.com 25`) – це початкове підключення. Ми перевіряємо відправників, яких немає в нашому [білий список](#do-you-have-an-allowlist), на відповідність нашому [заборонений список](#do-you-have-a-denylist). Зрештою, якщо відправника немає в нашому білому списку, ми перевіряємо, чи був він [сірий список](#do-you-have-a-greylist).
 
 * `HELO` – це вітання для ідентифікації повного доменного імені відправника, IP-адреси або імені обробника пошти. Це значення може бути підробленим, тому ми не покладаємося на ці дані, а натомість використовуємо зворотний пошук імені хоста IP-адреси з’єднання.
 
-* `MAIL FROM` – Це вказує на адресу відправника конверта електронної пошти. Якщо введено значення, це має бути дійсна адреса електронної пошти RFC 5322. Дозволені порожні значення. Ми [перевірити зворотне розсіювання](#how-do-you-protect-against-backscatter) тут, а також перевіряємо MAIL FROM на відповідність нашому [заборонений список](#do-you-have-a-denylist). Нарешті, ми перевіряємо відправників, яких немає в білому списку, на обмеження швидкості (див. розділи про [Обмеження швидкості](#do-you-have-rate-limiting) та [білий список](#do-you-have-an-allowlist) для отримання додаткової інформації).
+* `MAIL FROM` – Це вказує на адресу відправника конверта електронної пошти. Якщо введено значення, це має бути дійсна адреса електронної пошти RFC 5322. Дозволені порожні значення. Ми використовуємо [перевірити зворотне розсіювання](#how-do-you-protect-against-backscatter) тут, а також перевіряємо MAIL FROM на відповідність нашому [заборонений список](#do-you-have-a-denylist). Нарешті, ми перевіряємо відправників, яких немає в білому списку, на обмеження швидкості (див. розділи про [Обмеження швидкості](#do-you-have-rate-limiting) та [білий список](#do-you-have-an-allowlist) для отримання додаткової інформації).
 
-* `RCPT TO` – Це вказує на одержувача(ів) електронного листа. Це мають бути дійсні адреси електронної пошти RFC 5322. Ми дозволяємо до 50 одержувачів конверта на одне повідомлення (це відрізняється від заголовка «Кому» в електронному листі). Ми також перевіряємо наявність дійсної адреси [Схема перезапису відправника](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) («SRS») тут, щоб захиститися від спуфінгу з нашим доменним іменем SRS.
+* `RCPT TO` – Це вказує на одержувача(ів) електронного листа. Це мають бути дійсні адреси електронної пошти RFC 5322. Ми дозволяємо до 50 одержувачів конверта на одне повідомлення (це відрізняється від заголовка «Кому» в електронному листі). Ми також перевіряємо наявність дійсної адреси [Схема перезапису відправника](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) («SRS») тут, щоб захиститися від спуфінгу з використанням нашого доменного імені SRS.
 
-* `DATA` – Це основна частина нашого сервісу, яка обробляє електронні листи. Див. розділ [Як обробляти електронний лист для пересилання](#how-do-you-process-an-email-for-forwarding) нижче для отримання додаткової інформації.
+* `DATA` – це основна частина нашого сервісу, яка обробляє електронні листи. Див. розділ [Як обробляти електронний лист для пересилання](#how-do-you-process-an-email-for-forwarding) нижче для отримання додаткової інформації.
 
 ### Як обробляється електронний лист для пересилання {#how-do-you-process-an-email-for-forwarding}
 
-У цьому розділі описано наш процес, пов’язаний із командою протоколу SMTP `DATA` у розділі [Як працює ваша система пересилання електронної пошти](#how-does-your-email-forwarding-system-work) вище – це те, як ми обробляємо заголовки, тіло та безпеку електронного листа, визначаємо, куди його потрібно доставити, та як ми обробляємо з’єднання.
+У цьому розділі описано наш процес, пов’язаний із командою протоколу SMTP `DATA`, описаною у розділі [Як працює ваша система пересилання електронної пошти](#how-does-your-email-forwarding-system-work) вище – це те, як ми обробляємо заголовки, тіло та безпеку електронного листа, визначаємо, куди його потрібно доставити, та як ми обробляємо з’єднання.
 
 1. Якщо повідомлення перевищує максимальний розмір 50 МБ, воно відхиляється з кодом помилки 552.
 
@@ -3070,55 +3066,56 @@ Osano UK Compliance LTD
 
 * `Received` – ми додаємо цей стандартний заголовок Received з IP-адресою та хостом джерела, типом передачі, інформацією про TLS-з’єднання, датою/часом та одержувачем.
 * `X-Original-To` – оригінальний одержувач повідомлення:
-* Це корисно для визначення місця, куди електронний лист було спочатку доставлено (на додаток до заголовка «Received»).
+* Це корисно для визначення місця доставки електронного листа (на додаток до заголовка "Received").
 * Це додається для кожного одержувача під час IMAP та/або маскованої пересилки (для захисту конфіденційності).
 * `X-Forward-Email-Website` – містить посилання на наш веб-сайт <https://forwardemail.net>
 * `X-Forward-Email-Version` – поточна версія [SemVer](https://semver.org/) з `package.json` нашої кодової бази.
 * `X-Forward-Email-Session-ID` – значення ідентифікатора сеансу, що використовується для налагодження (застосовується лише в невиробничих середовищах).
-* `X-Forward-Email-Sender` – список, розділений комами, що містить оригінальну адресу конверта MAIL FROM (якщо вона не була порожньою), зворотне повне доменне ім'я клієнта PTR (якщо воно існує) та IP-адресу відправника.
+* `X-Forward-Email-Sender` – список, розділений комами, що містить оригінальну адресу ПОШТИ ВІДПРАВНИКА конверта (якщо вона не була порожньою), повне доменне ім'я клієнта зворотного PTR (якщо воно існує) та IP-адресу відправника.
 * `X-Forward-Email-ID` – це стосується лише вихідного SMTP та відповідає ідентифікатору електронної пошти, що зберігається в розділі «Мій обліковий запис» → «Електронні листи».
-* `X-Report-Abuse` – зі значенням `abuse@forwardemail.net`.
-* `X-Report-Abuse-To` – зі значенням `abuse@forwardemail.net`.
-* `X-Complaints-To` – зі значенням `abuse@forwardemail.net`.
+* `X-Original-To`0 – зі значенням `X-Original-To`1.
+* `X-Original-To`2 – зі значенням `X-Original-To`3.
+* `X-Original-To`4 – зі значенням `X-Original-To`5.
 
 8. Потім ми перевіряємо повідомлення на наявність [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) та [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* Якщо повідомлення не пройшло перевірку DMARC, а домен мав політику відхилення (наприклад, `p=reject` [було в політиці DMARC](https://wikipedia.org/wiki/DMARC)), тоді воно відхиляється з кодом помилки 550. Зазвичай політику DMARC для домену можна знайти в записі <strong class="notranslate">TXT</strong> піддомену `_dmarc` (наприклад, `dig _dmarc.example.com txt`).
-* Якщо повідомлення не пройшло перевірку SPF, а домен мав політику жорсткої помилки (наприклад, `-all` було в політиці SPF, на відміну від `~all` або взагалі не мало політики), тоді воно відхиляється з кодом помилки 550. Зазвичай політику SPF для домену можна знайти в записі <strong class="notranslate">TXT</strong> для кореневого домену (наприклад, `dig example.com txt`). Див. цей розділ для отримання додаткової інформації про [надсилання пошти, як у Gmail](#can-i-send-mail-as-in-gmail-with-this) щодо SPF.
+* Якщо повідомлення не пройшло перевірку DMARC, а домен мав політику відхилення (наприклад, `p=reject` [було в політиці DMARC](https://wikipedia.org/wiki/DMARC)), воно відхиляється з кодом помилки 550. Зазвичай політику DMARC для домену можна знайти в записі <strong class="notranslate">TXT</strong> піддомену `_dmarc` (наприклад, `dig _dmarc.example.com txt`).
+* Якщо повідомлення не пройшло перевірку SPF, а домен мав політику жорсткої помилки (наприклад, `-all` був у політиці SPF, на відміну від `~all` або взагалі не мав політики), воно відхиляється з кодом помилки 550. Зазвичай політику SPF для домену можна знайти в записі <strong class="notranslate">TXT</strong> для кореневого домену (наприклад, `dig example.com txt`). Див. цей розділ для отримання додаткової інформації про [надсилання пошти, як у Gmail](#can-i-send-mail-as-in-gmail-with-this) щодо SPF.
 
 9. Тепер обробляємо дані одержувачів повідомлення, зібрані за допомогою команди `RCPT TO` у розділі [Як працює ваша система пересилання електронної пошти](#how-does-your-email-forwarding-system-work) вище. Для кожного одержувача виконуємо такі операції:
 
-* Ми шукаємо записи <strong class="notranslate">TXT</strong> доменного імені (частина після символу `@`, наприклад, `example.com`, якщо адреса електронної пошти була `test@example.com`). Наприклад, якщо домен `example.com`, ми виконуємо пошук DNS, такий як `dig example.com txt`. * Ми аналізуємо всі записи <strong class="notranslate">TXT</strong>, які починаються з `forward-email=` (безкоштовні плани) або `forward-email-site-verification=` (платні плани). Зверніть увагу, що ми аналізуємо обидва варіанти, щоб обробляти електронні листи, поки користувач оновлює або знижує версію планів.
-* З цих проаналізованих записів <strong class="notranslate">TXT</strong> ми перебираємо їх, щоб витягти конфігурацію пересилання (як описано в розділі [Як розпочати та налаштувати пересилання електронної пошти](#how-do-i-get-started-and-set-up-email-forwarding) вище). Зверніть увагу, що ми підтримуємо лише одне значення `forward-email-site-verification=`, і якщо їх буде надано більше одного, виникне помилка 550, і відправник отримає повідомлення про повернення для цього одержувача.
-* Рекурсивно ми перебираємо витягнуту конфігурацію пересилання, щоб визначити глобальне пересилання, пересилання на основі регулярних виразів та всі інші підтримувані конфігурації пересилання, які тепер відомі як наші «Адреси пересилання».
-* Для кожної адреси пересилання ми підтримуємо один рекурсивний пошук (який розпочне цю серію операцій спочатку для заданої адреси). Якщо знайдено рекурсивний збіг, батьківський результат буде видалено з адрес пересилання, а дочірні будуть додані.
-* Адреси пересилання аналізуються на унікальність (оскільки ми не хочемо надсилати дублікати на одну адресу або створювати додаткові непотрібні SMTP-клієнтські з’єднання).
-* Для кожної адреси пересилання ми шукаємо її доменне ім'я за кінцевою точкою API `/v1/max-forwarded-addresses` (щоб визначити, на скільки адрес домену дозволено пересилати електронні листи за псевдонімом, наприклад, 10 за замовчуванням – див. розділ про [максимальна кількість переадресацій на псевдонім](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Якщо цей ліміт перевищено, виникне помилка 550, і відправник отримає повідомлення про повернення для цього одержувача.
-* Ми шукаємо налаштування початкового одержувача за кінцевою точкою API `/v1/settings`, яка підтримує пошук для платних користувачів (з резервним варіантом для безкоштовних користувачів). Це повертає об'єкт конфігурації для розширених налаштувань для `port` (число, наприклад, `25`), `has_adult_content_protection` (логічне значення), `has_phishing_protection` (логічне значення), `has_executable_protection` (логічне значення) та `has_virus_protection` (логічне значення).
-* На основі цих налаштувань ми перевіряємо результати сканування спаму, і якщо виникають помилки, повідомлення відхиляється з кодом помилки 554 (наприклад, якщо `has_virus_protection` увімкнено, ми перевіряємо результати сканування спаму на наявність вірусів). Зверніть увагу, що всі користувачі безкоштовного плану будуть увімкнені для перевірок на наявність контенту для дорослих, фішингу, виконуваних файлів та вірусів. За замовчуванням усі користувачі платного плану також увімкнені, але цю конфігурацію можна змінити на сторінці налаштувань для домену на панелі інструментів «Пересилання електронної пошти»).
+* Ми шукаємо записи <strong class="notranslate">TXT</strong> доменного імені (частина після символу `@`, наприклад, `example.com`, якщо адреса електронної пошти була `test@example.com`). Наприклад, якщо домен `example.com`, ми виконуємо пошук DNS, такий як `dig example.com txt`.
+* Ми аналізуємо всі записи <strong class="notranslate">TXT</strong>, які починаються з `forward-email=` (безкоштовні плани) або `forward-email-site-verification=` (платні плани). Зверніть увагу, що ми аналізуємо обидва, щоб обробляти електронні листи, поки користувач оновлює або знижує тарифні плани.
+* З цих проаналізованих записів <strong class="notranslate">TXT</strong> ми перебираємо їх, щоб витягти конфігурацію переадресації (як описано в розділі [Як розпочати та налаштувати пересилання електронної пошти](#how-do-i-get-started-and-set-up-email-forwarding) вище). Зверніть увагу, що ми підтримуємо лише одне значення `forward-email-site-verification=`, і якщо їх буде вказано більше одного, виникне помилка 550, і відправник отримає повідомлення про повернення для цього одержувача.
+* Рекурсивно ми перебираємо витягнуту конфігурацію переадресації, щоб визначити глобальну переадресацію, переадресацію на основі регулярних виразів та всі інші підтримувані конфігурації переадресації, які тепер відомі як наші «Адреси переадресації».
+* Для кожної адреси переадресації ми підтримуємо один рекурсивний пошук (який розпочне цю серію операцій спочатку для заданої адреси). Якщо знайдено рекурсивний збіг, батьківський результат буде видалено з адрес переадресації, а дочірні адреси будуть додані.
+* Адреси переадресації аналізуються на унікальність (оскільки ми не хочемо надсилати дублікати на одну адресу або створювати додаткові непотрібні SMTP-клієнтські з’єднання).
+* Для кожної адреси пересилання ми шукаємо її доменне ім'я за кінцевою точкою API `/v1/max-forwarded-addresses` (щоб визначити, на скільки адрес домену дозволено пересилати електронну пошту за псевдонімом, наприклад, 10 за замовчуванням – див. розділ про `example.com`0). Якщо це обмеження перевищено, виникне помилка 550, і відправник отримає повідомлення про відмову для цього одержувача.
+* Ми шукаємо налаштування початкового одержувача за кінцевою точкою API `example.com`1, яка підтримує пошук для платних користувачів (з резервним варіантом для безкоштовних користувачів). Це повертає об'єкт конфігурації для розширених налаштувань для `example.com`2 (число, наприклад, `example.com`3), `example.com`4 (логічне значення), `example.com`5 (логічне значення), `example.com`6 (логічне значення) та `example.com`7 (логічне значення).
+* На основі цих налаштувань ми перевіряємо результати сканування спаму, і якщо виникають помилки, повідомлення відхиляється з кодом помилки 554 (наприклад, якщо ввімкнено `example.com`8, ми перевіряємо результати сканування спаму на наявність вірусів). Зверніть увагу, що всі користувачі безкоштовного плану будуть увімкнені для перевірок на наявність контенту для дорослих, фішингу, виконуваних файлів та вірусів. За замовчуванням усі користувачі платного плану також увімкнені, але цю конфігурацію можна змінити на сторінці налаштувань для домену на панелі інструментів «Пересилання електронної пошти»).
 
 10. Для кожної обробленої адреси пересилання одержувача ми виконуємо такі операції:
 
-* Адреса перевіряється на відповідність нашому [заборонений список](#do-you-have-a-denylist), і якщо вона була вказана, то виникне код помилки 421 (сповіщає відправнику повторити спробу пізніше).
+* Адреса перевіряється за нашим [заборонений список](#do-you-have-a-denylist), і якщо вона була вказана, то виникне код помилки 421 (сповіщає відправнику повторити спробу пізніше).
 * Якщо адреса є вебхуком, то ми встановлюємо логічне значення для майбутніх операцій (див. нижче – ми групуємо схожі вебхуки, щоб зробити один POST-запит, а не кілька для доставки).
 * Якщо адреса є адресою електронної пошти, то ми аналізуємо хост для майбутніх операцій (див. нижче – ми групуємо схожі хости, щоб зробити одне з’єднання, а не кілька окремих з’єднань для доставки).
 
 11. Якщо немає одержувачів і немає повернень, ми видаємо помилку 550 «Недійсні одержувачі».
 
-12. Якщо є одержувачі, ми перебираємо їх (згрупованих разом тим самим хостом) та доставляємо електронні листи. Див. розділ [Як ви вирішуєте проблеми з доставкою електронної пошти](#how-do-you-handle-email-delivery-issues) нижче для отримання додаткової інформації.
+12. Якщо є одержувачі, ми перебираємо їх (згрупованих разом одним хостом) та доставляємо електронні листи. Див. розділ [Як ви вирішуєте проблеми з доставкою електронної пошти](#how-do-you-handle-email-delivery-issues) нижче для отримання додаткової інформації.
 
 * Якщо під час надсилання електронних листів виникнуть помилки, ми збережемо їх у пам'яті для подальшої обробки.
 * Ми візьмемо найменший код помилки (якщо такий є) з надсилання електронних листів і використаємо його як код відповіді на команду `DATA`. Це означає, що електронні листи, які не були доставлені, зазвичай будуть повторно надіслані початковим відправником, проте електронні листи, які вже були доставлені, не будуть повторно надіслані під час наступного надсилання повідомлення (оскільки ми використовуємо [Зняття відбитків пальців](#how-do-you-determine-an-email-fingerprint)).
 * Якщо помилок не виникло, ми надішлемо код статусу відповіді SMTP 250 successful.
 * Відмовою вважається будь-яка спроба доставки, яка призводить до коду статусу >= 500 (постійні збої).
 
-13. Якщо повернення не відбулося (постійні збої), ми повернемо код стану відповіді SMTP з найнижчим кодом помилки з тимчасових збоїв (або код стану 250 успішно, якщо їх не було).
+13. Якщо повернення не відбулося (постійних збоїв), ми повернемо код стану відповіді SMTP з найнижчим кодом помилки з непостійних збоїв (або код стану 250 успішно, якщо їх не було).
 
 14. Якщо повідомлення про повернення все ж таки відбулися, ми надсилатимемо електронні листи про повернення у фоновому режимі після повернення відправнику найнижчого з усіх кодів помилок. Однак, якщо найнижчий код помилки >= 500, ми не надсилатимемо жодних електронних листів про повернення. Це тому, що якби ми це зробили, відправники отримали б подвійний електронний лист про повернення (наприклад, один від свого вихідного MTA, такого як Gmail, а також один від нас). Дивіться розділ про [Як захиститися від зворотного розсіювання](#how-do-you-protect-against-backscatter) нижче для отримання додаткової інформації.
 
 ### Як ви вирішуєте проблеми з доставкою електронної пошти {#how-do-you-handle-email-delivery-issues}
 
-Зауважте, що ми будемо виконувати переписування «Friendly-From» в електронних листах тоді і тільки якщо політика DMARC відправника не проходила І жодні підписи DKIM не були узгоджені із заголовком «From».  Це означає, що ми змінимо заголовок «Від» у повідомленні, встановимо «X-Original-From», а також встановимо «Reply-To», якщо його ще не було встановлено.  Ми також повторно запечатаємо печатку ARC на повідомленні після зміни цих заголовків.
+Зверніть увагу, що ми перезаписуватимемо листи з функцією «Дружній відправник» тоді і лише тоді, коли політика DMARC відправника не була дотримана ТА жодні підписи DKIM не були узгоджені із заголовком «Від». Це означає, що ми змінимо заголовок «Від» у повідомленні, встановимо «X-Original-From», а також встановимо «Відповісти на», якщо він ще не був налаштований. Ми також повторно запечатаємо ARC-печатку на повідомленні після зміни цих заголовків.
 
 Ми також використовуємо інтелектуальний парсинг повідомлень про помилки на кожному рівні нашого стеку – у нашому коді, DNS-запитах, внутрішніх функціях Node.js, HTTP-запитах (наприклад, 408, 413 та 429 зіставляються з кодом відповіді SMTP 421, якщо одержувач є вебхуком) та відповідях поштового сервера (наприклад, відповіді з "defer" або "slowdown" будуть повторені як помилки 421).
 
@@ -3128,11 +3125,11 @@ Osano UK Compliance LTD
 
 В іншому випадку, якщо одержувачем є адреса електронної пошти, ми спробуємо надіслати електронний лист з опортуністичним TLS (ми намагаємося використовувати STARTTLS, якщо він доступний на поштовому сервері одержувача). Якщо під час спроби надсилання електронного листа виникає помилка SSL/TLS, ми спробуємо надіслати електронний лист без TLS (без використання STARTTLS).
 
-Якщо виникнуть будь-які помилки DNS або підключення, ми повернемо команді `DATA` код відповіді SMTP з кодом 421, інакше, якщо буде помилок рівня >= 500, будуть надіслані відмовлені повідомлення.
+Якщо виникнуть будь-які помилки DNS або підключення, ми повернемо команді `DATA` код відповіді SMTP з кодом 421, інакше, якщо буде помилок рівня >= 500, будуть надіслані відмовки.
 
 Якщо ми виявимо, що на поштовому сервері, на який ми намагаємося доставити повідомлення, заблоковано одну або кілька IP-адрес нашого поштового обміну (наприклад, будь-якою технологією, яку вони використовують для відстеження спамерів), ми надішлемо відправнику код відповіді SMTP з кодом 421, щоб він спробував надіслати повідомлення пізніше (і ми отримаємо сповіщення про проблему, щоб, сподіваємося, вирішити її до наступної спроби).
 
-### Як ви справляєтеся з блокуванням ваших IP-адрес {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Як ви реагуєте на блокування IP-адрес {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
 Ми регулярно відстежуємо всі основні заборонені списки DNS, і якщо будь-яка з наших IP-адрес для обміну поштою ("MX") потрапить до основного забороненого списку, ми, якщо можливо, вилучимо її з відповідного запису DNS A за циклічним алгоритмом, доки проблему не буде вирішено.
 
@@ -3142,7 +3139,7 @@ Osano UK Compliance LTD
 
 ### Що таке адреси поштмейстерів {#what-are-postmaster-addresses}
 
-Щоб запобігти неправильним відправленням і надсиланню повідомлень автовідповідача на неконтрольовані або неіснуючі поштові скриньки, ми підтримуємо список імен користувачів, подібних до демона поштової програми:
+Щоб запобігти неправильному перенаправленню відмов та надсиланню повідомлень про відпустку на неконтрольовані або неіснуючі поштові скриньки, ми ведемо список імен користувачів, подібних до демонів поштової служби:
 
 * `automailer`
 * `autoresponder`
@@ -3161,9 +3158,9 @@ Osano UK Compliance LTD
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [і будь-яка адреса, на яку не можна відповідати](#what-are-no-reply-addresses)
+* [та будь-яку адресу, на яку не надійшло відповіді](#what-are-no-reply-addresses)
 
-Див. [RFC 5320 Розділ 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) для отримання додаткової інформації про те, як такі списки використовуються для створення ефективних систем електронної пошти.
+Див. [Розділ 4.6 RFC 5320](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) для отримання додаткової інформації про те, як такі списки використовуються для створення ефективних систем електронної пошти.
 
 ### Що таке адреси для відсутності відповіді {#what-are-no-reply-addresses}
 
@@ -3188,7 +3185,7 @@ Osano UK Compliance LTD
 * `noreply`
 * `noreplys`
 
-Цей список підтримується [як проєкт з відкритим кодом на GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Цей список підтримується з індексом [як проєкт з відкритим кодом на GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
 ### Які IP-адреси вашого сервера {#what-are-your-servers-ip-addresses}
 
@@ -3317,7 +3314,7 @@ Osano UK Compliance LTD
 <li class="list-inline-item"><code class="notranslate">gob.ar</code></li>
 <li class="list-inline-item"><code class="notranslate">gob.cl</code></li>
 <li class="list-inline-item"><code class="notranslate">gob.es</code></li>
-class="list-inline-item"><code class="notranslate">gob.mx</code></li>
+<li class="list-inline-item"><code class="notranslate">gob.mx</code></li>
 <!--<li class="list-inline-item"><code class="notranslate">gob.pe</code></li>-->
 <li class="list-inline-item"><code class="notranslate">gob.ve</code></li>
 <li class="list-inline-item"><code class="notranslate">gob.sv</code></li>
@@ -3671,7 +3668,7 @@ class="list-inline-item"><code class="notranslate">gov.za</code></li>
 <li class="list-inline-item"><code class="notranslate">metlife</code></li>
 <li class="list-inline-item"><code class="notranslate">microsoft</code></li>
 <li class="list-inline-item"><code class="notranslate">міні</code></li>
-<li class="list-inline-item"><code class="notranslate">мітіс</code></li>
+<li class="list-inline-item"><code class="notranslate">міт</code></li>
 <li class="list-inline-item"><code class="notranslate">mitsubishi</code></li>
 <li class="list-inline-item"><code class="notranslate">mlb</code></li>
 <li class="list-inline-item"><code class="notranslate">mma</code></li>
@@ -3887,14 +3884,14 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 ### Які критерії вашого білого списку {#what-is-your-allowlist-criteria}
 
-У нас є статичний список [розширення доменних імен у білому списку за замовчуванням](#what-domain-name-extensions-are-allowlisted-by-default), а також ми підтримуємо динамічний, кешований, оновлюваний список дозволених адрес, який базується на таких суворих критеріях:
+У нас є статичний список [розширення доменних імен у білому списку за замовчуванням](#what-domain-name-extensions-are-allowlisted-by-default), а також ми підтримуємо динамічний, кешований, ковзний список дозволених адрес, який базується на таких суворих критеріях:
 
-* Кореневий домен відправника має бути [розширення доменного імені, яке відповідає списку, який ми пропонуємо в нашому безкоштовному плані](#what-domain-name-extensions-can-be-used-for-free) (з додаванням `biz` та `info`). Ми також включаємо часткові збіги `edu`, `gov` та `mil`, такі як `xyz.gov.au` та `xyz.edu.au`.
+* Кореневий домен відправника має бути типу [розширення доменного імені, яке відповідає списку, який ми пропонуємо в нашому безкоштовному плані](#what-domain-name-extensions-can-be-used-for-free) (з додаванням `biz` та `info`). Ми також включаємо часткові збіги `edu`, `gov` та `mil`, такі як `xyz.gov.au` та `xyz.edu.au`.
 * Кореневий домен відправника має бути серед 100 000 найкращих результатів аналізу унікальних кореневих доменів з [Список популярності Umbrella](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Кореневий домен відправника має бути серед 50 000 найкращих результатів пошуку унікальних кореневих доменів, що з'являються принаймні в 4 з останніх 7 днів UPL (~50%+).
+* Кореневий домен відправника має бути серед 50 000 найкращих результатів пошуку унікальних кореневих доменів, що з'являються принаймні в 4 за останні 7 днів UPL (~50%+).
 * Кореневий домен відправника не повинен бути [категоризований](https://radar.cloudflare.com/categorization-feedback/) як контент для дорослих або шкідливе програмне забезпечення від Cloudflare.
 * Кореневий домен відправника повинен мати встановлені записи A або MX.
-* Кореневий домен відправника повинен мати записи A, MX, DMARC з `p=reject` або `p=quarantine`, або SPF з кваліфікатором `-all` або `~all`.
+* Кореневий домен відправника повинен мати запис(и) A, запис(и) MX, запис DMARC з кваліфікатором `biz`0 або `biz`1, або запис SPF з кваліфікатором `biz`2 або `biz`3.
 
 Якщо цей критерій виконано, кореневий домен відправника буде кешовано протягом 7 днів. Зверніть увагу, що наше автоматизоване завдання виконується щодня, тому це кеш білого списку, який постійно оновлюється.
 
@@ -3902,7 +3899,7 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Звичайно ж, сюди входять популярні на момент написання цієї статті домени, такі як Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify та інші.
 
-Якщо ви є відправником, якого немає в нашому білому списку, то під час першого надсилання електронного листа з вашого кореневого домену FQDN або IP-адреси вам буде надано статус [обмежена ставка](#do-you-have-rate-limiting) та [сірий список](#do-you-have-a-greylist). Зверніть увагу, що це стандартна практика, прийнята як стандарт електронної пошти. Більшість клієнтів поштових серверів намагатимуться повторити спробу, якщо отримають помилку обмеження швидкості або сірого списку (наприклад, код стану помилки рівня 421 або 4xx).
+Якщо ви є відправником, якого немає в нашому білому списку, то під час першого надсилання електронного листа з вашого кореневого домену FQDN або IP-адреси вам будуть надані статуси [обмежена ставка](#do-you-have-rate-limiting) та [сірий список](#do-you-have-a-greylist). Зверніть увагу, що це стандартна практика, прийнята як стандарт електронної пошти. Більшість клієнтів поштових серверів спробують повторити спробу, якщо отримають помилку обмеження швидкості або сірого списку (наприклад, код стану помилки рівня 421 або 4xx).
 
 **Зверніть увагу, що певні відправники, такі як `a@gmail.com`, `b@xyz.edu` та `c@gov.au`, все ще можуть бути [заборонено](#do-you-have-a-denylist)** (наприклад, якщо ми автоматично виявляємо спам, фішинг або шкідливе програмне забезпечення від цих відправників).
 
@@ -4005,7 +4002,7 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 ### У вас є сірий список {#do-you-have-a-greylist}
 
-Так, у нас дуже слабка політика [сірий список електронної пошти](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Сірі списки застосовуються лише до відправників, яких немає в нашому білому списку, і зберігаються в нашому кеші протягом 30 днів.
+Так, у нас дуже слабка політика [сірий список електронної пошти](https://en.wikipedia.org/wiki/Greylisting_\(email\)). Внесення до сірого списку застосовується лише до відправників, яких немає в нашому білому списку, і зберігається в нашому кеші 30 днів.
 
 Для кожного нового відправника ми зберігаємо ключ у нашій базі даних Redis протягом 30 днів зі значенням, встановленим на початковий час надходження їхнього першого запиту. Потім ми відхиляємо їхній електронний лист із кодом статусу повторної спроби 450 і дозволяємо йому пройти лише через 5 хвилин.
 
@@ -4013,17 +4010,17 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Ключ складається або з кореневого домену FQDN, або з IP-адреси відправника. Це означає, що будь-який піддомен, який проходить сірий список, також буде прийнятий для кореневого домену, і навпаки (саме це ми маємо на увазі під «дуже слабкою» політикою).
 
-Наприклад, якщо електронний лист надходить від `test.example.com` до того, як ми побачимо лист від `example.com`, то будь-який електронний лист від `test.example.com` та/або `example.com` доведеться чекати 5 хвилин з моменту початкового часу прибуття з’єднання. Ми не змушуємо `test.example.com` та `example.com` чекати окремо протягом 5 хвилин (наша політика сірого списку застосовується на рівні кореневого домену).
+Наприклад, якщо електронний лист від `test.example.com` надходить раніше, ніж ми бачимо лист від `example.com`, то будь-який електронний лист від `test.example.com` та/або `example.com` повинен буде чекати 5 хвилин з моменту початкового часу прибуття з’єднання. Ми не змушуємо `test.example.com` та `example.com` чекати окремо протягом 5 хвилин (наша політика сірого списку застосовується на рівні кореневого домену).
 
-Зверніть увагу, що сірий список не застосовується до жодного відправника на нашому [білий список](#do-you-have-an-allowlist) (наприклад, Meta, Amazon, Netflix, Google, Microsoft на момент написання цього тексту).
+Зверніть увагу, що сірий список не застосовується до жодного відправника в нашому [білий список](#do-you-have-an-allowlist) (наприклад, Meta, Amazon, Netflix, Google, Microsoft на момент написання цього тексту).
 
 ### У вас є заборонений список {#do-you-have-a-denylist}
 
 Так, ми ведемо власний список заборонених адрес та оновлюємо його автоматично в режимі реального часу, а також вручну на основі виявленого спаму та шкідливої активності.
 
-Ми також щогодини витягуємо всі IP-адреси зі забороненого списку UCEPROTECT рівня 1 за адресою <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> та вносимо їх до нашого забороненого списку з 7-денним терміном дії.
+Ми також щогодини витягуємо всі IP-адреси зі забороненого списку UCEPROTECT рівня 1 о <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> та вносимо їх до нашого забороненого списку з 7-денним терміном дії.
 
-Відправники, знайдені у забороненому списку, отримають код помилки 421 (сповіщає відправнику про необхідність повторити спробу пізніше), якщо вони [не входять до білого списку](#do-you-have-an-allowlist).
+Відправники, знайдені у забороненому списку, отримають код помилки 421 (сповіщає відправнику про необхідність повторити спробу пізніше), якщо вони мають значення [не входять до білого списку](#do-you-have-an-allowlist).
 
 Використовуючи код стану 421 замість коду стану 554, можна зменшити потенційні хибнопозитивні результати в режимі реального часу, а потім повідомлення можна успішно доставити під час наступної спроби.
 
@@ -4031,46 +4028,46 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Усі запити на видалення зі забороненого списку відстежуються адміністраторами в режимі реального часу (наприклад, щоб адміністратори могли назавжди додавати до білого списку повторювані хибнопозитивні результати).
 
-Запити на видалення зі списку заборонених можна подати за адресою <https://forwardemail.net/denylist>.. Платні користувачі миттєво обробляють свої запити на видалення зі списку заборонених, тоді як неплатні користувачі повинні чекати, поки адміністратори оброблять їхні запити.
+Запити на видалення зі списку заборонених можна подати за адресою <https://forwardemail.net/denylist>.. Запити на видалення зі списку заборонених користувачів, що мають платну підписку, обробляються миттєво, тоді як користувачі, що не мають платної підписки, повинні чекати, поки адміністратори оброблять їхні запити.
 
 Відправники, у яких виявлено спам або вірусний контент, будуть додані до забороненого списку таким чином:
 
 1. [відбиток початкового повідомлення](#how-do-you-determine-an-email-fingerprint) потрапляє до сірого списку після виявлення спаму або блокування від «довіреного» відправника (наприклад, `gmail.com`, `microsoft.com`, `apple.com`).
 * Якщо відправник був у білому списку, повідомлення потрапляє до сірого списку на 1 годину.
 * Якщо відправник не в білому списку, повідомлення потрапляє до сірого списку на 6 годин.
-2. Ми аналізуємо ключі забороненого списку з інформації від відправника та повідомлення, і для кожного з цих ключів створюємо (якщо такого ще не існує) лічильник, збільшуємо його на 1 та кешуємо його на 24 години.
+2. Ми аналізуємо ключі забороненого списку з інформації від відправника та повідомлення, і для кожного з цих ключів ми створюємо (якщо такого ще не існує) лічильник, збільшуємо його на 1 та кешуємо на 24 години.
 * Для відправників у білому списку:
-* Додайте ключ для адреси електронної пошти конверта "MAIL FROM", якщо вона мала прохідний SPF або не мала SPF, і не була [ім'я користувача postmaster](#what-are-postmaster-addresses) або [ім'я користувача без відповіді](#what-are-no-reply-addresses).
-* Якщо заголовок "From" був у білому списку, додайте ключ для адреси електронної пошти заголовка "From", якщо вона мала прохідний SPF або прохідний та вирівняний DKIM.
-* Якщо заголовок "From" не був у білому списку, додайте ключ для адреси електронної пошти заголовка "From" та його кореневого доменного імені.
-* Для відправників без білого списку:
-* Додайте ключ для адреси електронної пошти конверта "MAIL FROM", якщо вона мала прохідний SPF.
-* Якщо заголовок "From" був у білому списку, додайте ключ для адреси електронної пошти заголовка "From", якщо вона мала прохідний SPF або прохідний та вирівняний DKIM.
-* Якщо заголовок "From" не був у білому списку, додайте ключ для адреси електронної пошти заголовка "From" та його кореневого доменного імені.
-* Додати ключ для віддаленої IP-адреси відправника.
-* Додати ключ для імені хоста, визначеного клієнтом, шляхом зворотного пошуку з IP-адреси відправника (якщо така є).
-* Додати ключ для кореневого домену імені хоста, визначеного клієнтом (якщо така є, і якщо він відрізняється від імені хоста, визначеного клієнтом).
-3. Якщо лічильник досягає 5 для відправника та ключа, що не входять до білого списку, ми забороняємо ключ на 30 днів, а нашій команді з питань зловживань надсилається електронний лист. Ці цифри можуть змінюватися, і оновлення відображатимуться тут, оскільки ми відстежуємо зловживання.
-4. Якщо лічильник досягає 10 для відправника та ключа, що входять до білого списку, ми забороняємо ключ на 7 днів, а нашій команді з питань зловживань надсилається електронний лист. Ці цифри можуть змінюватися, і оновлення відображатимуться тут, оскільки ми відстежуємо зловживання.
+* Додаємо ключ для адреси електронної пошти конверта «MAIL FROM», якщо вона мала SPF, що пройшов, або не мала SPF, і це не [ім'я користувача поштмейстера](#what-are-postmaster-addresses) або [ім'я користувача, яке не відповідає](#what-are-no-reply-addresses).
+* Якщо заголовок "From" був у білому списку, додайте ключ для адреси електронної пошти заголовка "From", якщо він мав прохідний SPF або прохідний та вирівняний DKIM.
+* Якщо заголовок "From" не був у білому списку, додайте ключ для адреси електронної пошти заголовка "From" та його кореневого проаналізованого доменного імені.
+* Для відправників, які не входять до білого списку:
+* Додайте ключ для адреси електронної пошти конверта "MAIL FROM", якщо він мав прохідний SPF.
+* Якщо заголовок "From" був у білому списку, додайте ключ для адреси електронної пошти заголовка "From", якщо він мав прохідний SPF або прохідний та вирівняний DKIM.
+* Якщо заголовок "From" не був у білому списку, додайте ключ для адреси електронної пошти заголовка "From" та його кореневого проаналізованого доменного імені.
+* Додайте ключ для віддаленої IP-адреси відправника.
+* Додайте ключ для імені хоста клієнта, визначеного за допомогою зворотного пошуку з IP-адреси відправника (якщо є).
+* Додайте ключ для кореневого домену імені хоста клієнта, визначеного за допомогою вирівняного заголовка (якщо є, і якщо він відрізняється від імені хоста клієнта).
+3. Якщо лічильник досягає 5 для відправника та ключа, які не входять до білого списку, ми забороняємо ключ на 30 днів, а нашій команді з питань зловживань надсилається електронний лист. Ці цифри можуть змінюватися, і оновлення відображатимуться тут, оскільки ми відстежуємо зловживання.
+4. Якщо лічильник досягає 10 для відправника та ключа, які входять до білого списку, ми забороняємо ключ на 7 днів, а нашій команді з питань зловживань надсилається електронний лист. Ці цифри можуть змінюватися, і оновлення відображатимуться тут, оскільки ми відстежуємо зловживання.
 
 > **ПРИМІТКА:** Найближчим часом ми запровадимо моніторинг репутації. Натомість моніторинг репутації розраховуватиме, коли забороняти відправника, на основі відсоткового порогу (на відміну від рудиментарного лічильника, як зазначалося вище).
 
-### У вас є обмеження швидкості {#do-you-have-rate-limiting}
+### Чи є у вас обмеження швидкості {#do-you-have-rate-limiting}
 
-Обмеження швидкості відправників здійснюється або кореневим доменом, отриманим за допомогою зворотного PTR-запиту на IP-адресу відправника, або, якщо це не дає результату, просто використовується IP-адреса відправника. Зверніть увагу, що нижче ми називаємо це `Sender`.
+Обмеження швидкості відправлення здійснюється або кореневим доменом, отриманим за допомогою зворотного PTR-пошуку IP-адреси відправника, або, якщо це не дає результату, просто використовується IP-адреса відправника. Зверніть увагу, що нижче ми називаємо це `Sender`.
 
 Наші MX-сервери мають щоденні ліміти для вхідної пошти, отриманої для [зашифроване сховище IMAP](/blog/docs/best-quantum-safe-encrypted-email-service):
 
 * Замість обмеження швидкості вхідної пошти, отриманої на основі окремого псевдоніма (наприклад, `you@yourdomain.com`), ми обмежуємо швидкість за самим доменним ім'ям псевдоніма (наприклад, `yourdomain.com`). Це запобігає одночасному переповненню поштових скриньок усіх псевдонімів у вашому домені `Senders`.
 * У нас є загальні обмеження, які застосовуються до всіх `Senders` у нашому сервісі незалежно від одержувача:
 * `Senders`, які ми вважаємо «надійними» як джерело достовірності (наприклад, `gmail.com`, `microsoft.com`, `apple.com`), обмежені надсиланням 100 ГБ на день.
-* `Senders`, що мають [у білому списку](#do-you-have-an-allowlist), обмежені надсиланням 10 ГБ на день.
-* Усі інші `Senders` обмежені надсиланням 1 ГБ та/або 1000 повідомлень на день.
-* У нас є спеціальне обмеження для `Sender` та `yourdomain.com` – 1 ГБ та/або 1000 повідомлень на день.
+* `Senders`, які є [у білому списку](#do-you-have-an-allowlist), обмежені надсиланням 10 ГБ на день.
+* Усі інші `yourdomain.com`0 обмежені надсиланням 1 ГБ та/або 1000 повідомлень на день.
+* У нас є певний ліміт для `yourdomain.com`1 та `yourdomain.com`2 – 1 ГБ та/або 1000 повідомлень на день.
 
 Сервери MX також обмежують пересилання повідомлень одному або кільком одержувачам за допомогою обмеження швидкості, але це стосується лише `Senders`, який не знаходиться на [білий список](#do-you-have-an-allowlist):
 
-* Ми дозволяємо лише до 100 підключень на годину на кожен `Sender` визначений кореневий домен FQDN (або) `Sender` віддалену IP-адресу (якщо зворотний PTR недоступний) та на кожного одержувача конверта. Ми зберігаємо ключ для обмеження швидкості як криптографічний хеш у нашій базі даних Redis.
+* Ми дозволяємо лише до 100 підключень на годину на кожен кореневий домен `Sender` з визначеним FQDN (або) віддалену IP-адресу `Sender` (якщо зворотний PTR недоступний) та на кожного одержувача конверта. Ми зберігаємо ключ для обмеження швидкості як криптографічний хеш у нашій базі даних Redis.
 
 * Якщо ви надсилаєте електронні листи через нашу систему, переконайтеся, що у вас налаштовано зворотний PTR для всіх ваших IP-адрес (інакше кожен унікальний кореневий домен FQDN або IP-адреса, з якої ви надсилаєте, буде обмежений швидкістю).
 
@@ -4088,17 +4085,17 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Неправильно спрямовані повернення або спам-повідомлення про повернення (відомі як "[Зворотне розсіювання](https://en.wikipedia.org/wiki/Backscatter_\(email\))") можуть негативно вплинути на репутацію IP-адрес відправника.
 
-Ми вживаємо двох заходів для захисту від зворотного розсіювання, які детально описані в наступних розділах [Запобігання поверненню відомих ПОШТОВИХ ВІДПРАВНИКІВ](#prevent-bounces-from-known-mail-from-spammers) та [Запобігання непотрібним відскокам для захисту від зворотного розсіювання](#prevent-unnecessary-bounces-to-protect-against-backscatter) нижче.
+Ми робимо два кроки для захисту від зворотного розсіювання, які детально описані в наступних розділах [Запобігання поверненню відомих ПОШТОВИХ ВІДПРАВНИКІВ](#prevent-bounces-from-known-mail-from-spammers) та [Запобігання непотрібним відскокам для захисту від зворотного розсіювання](#prevent-unnecessary-bounces-to-protect-against-backscatter) нижче.
 
-### Запобігання поверненню відомих ПОШТОВИХ ЛИСТІВ ВІД спамерів {#prevent-bounces-from-known-mail-from-spammers}
+### Запобігання поверненню відомих ПОШТ ВІД спамерів {#prevent-bounces-from-known-mail-from-spammers}
 
-Ми щогодини отримуємо список з [Backscatter.org](https://www.backscatterer.org/) (на базі [UCEPROTECT](https://www.uceprotect.net/)) за адресою <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> та вносимо його до нашої бази даних Redis (ми також порівнюємо різницю заздалегідь; на випадок, якщо якісь IP-адреси було видалено та потрібно їх зберегти).
+Ми щогодини о <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> отримуємо список з [Backscatter.org](https://www.backscatterer.org/) (за підтримки [UCEPROTECT](https://www.uceprotect.net/)) та завантажуємо його в нашу базу даних Redis (також порівнюємо різницю заздалегідь; на випадок, якщо якісь IP-адреси було видалено та потрібно їх врахувати).
 
-Якщо поле MAIL FROM пусте АБО дорівнює (без урахування регістру) будь-якому з [адреси начальника пошти](#what-are-postmaster-addresses) (частина перед символом @ в електронному листі), то ми перевіряємо, чи відповідає IP-адреса відправника одній із цих адрес.
+Якщо поле MAIL FROM пусте АБО дорівнює (без урахування регістру) будь-якому з [адреси поштмейстерів](#what-are-postmaster-addresses) (частина перед символом @ в електронному листі), то ми перевіряємо, чи відповідає IP-адреса відправника одній із цих списків.
 
-Якщо IP-адреса відправника вказана (а не в нашому [білий список](#do-you-have-an-allowlist)), ми надсилаємо помилку 554 з повідомленням `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Ми отримаємо сповіщення, якщо відправник знаходиться як у списку Backscatterer, так і в нашому білому списку, щоб ми могли вирішити проблему, якщо необхідно.
+Якщо IP-адреса відправника вказана (а не в нашому [білий список](#do-you-have-an-allowlist)), ми надсилаємо повідомлення про помилку 554 з повідомленням `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Ми отримаємо сповіщення, якщо відправник знаходиться як у списку Backscatterer, так і в нашому білому списку, щоб ми могли вирішити проблему, якщо необхідно.
 
-Методи, описані в цьому розділі, відповідають рекомендації «БЕЗПЕЧНИЙ РЕЖИМ» за адресою <https://www.backscatterer.org/?target=usage> – де ми перевіряємо IP-адресу відправника, лише якщо певні умови вже виконано.
+Методи, описані в цьому розділі, відповідають рекомендації "БЕЗПЕЧНИЙ РЕЖИМ" за адресою <https://www.backscatterer.org/?target=usage> – де ми перевіряємо IP-адресу відправника, лише якщо певні умови вже виконано.
 
 ### Запобігання непотрібним відскокам для захисту від зворотного розсіювання {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
@@ -4108,36 +4105,37 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 1. Ми надсилаємо повідомлення лише тоді, коли виникає >= 500 помилок коду стану (коли спроби пересилання електронних листів не вдалися, наприклад, Gmail відповідає помилкою рівня 500).
 
-2. Ми надсилаємо повідомлення лише один раз (ми використовуємо розрахований ключ відбитка повернення та зберігаємо його в кеші, щоб запобігти надсиланню дублікатів). Відбиток повернення – це ключ, який являє собою відбиток повідомлення в поєднанні з хешем адреси повернення та її кодом помилки). Див. розділ [Зняття відбитків пальців](#how-do-you-determine-an-email-fingerprint) для отримання додаткової інформації про те, як розраховується відбиток повідомлення. Успішно надіслані відбитки повернення закінчуються через 7 днів у нашому кеші Redis.
+2. Ми надсилаємо повідомлення лише один раз (ми використовуємо розрахований ключ відбитка повернення та зберігаємо його в кеші, щоб запобігти надсиланню дублікатів). Відбиток повернення – це ключ, який являє собою відбиток повідомлення в поєднанні з хешем адреси повернення та її кодом помилки). Див. розділ про [Зняття відбитків пальців](#how-do-you-determine-an-email-fingerprint) для отримання додаткової інформації про те, як розраховується відбиток повідомлення. Успішно надіслані відбитки повернення закінчуються через 7 днів у нашому кеші Redis.
 
-3. Ми надсилаємо листи лише тоді, коли поля ВІД ПОШТИ та/або Відправника не є порожніми та не містять (без урахування регістру) [ім'я користувача postmaster](#what-are-postmaster-addresses) (частина перед символом @ в електронному листі).
+3. Ми надсилаємо листи лише тоді, коли поля MAIL FROM та/або From не є порожніми та не містять (без урахування регістру) [ім'я користувача поштмейстера](#what-are-postmaster-addresses) (частина перед символом @ в електронному листі).
 
 4. Ми не надсилаємо повідомлення, якщо воно містило будь-який із наступних заголовків (без урахування регістру):
 
-* Заголовок `auto-submitted` зі значенням, не рівним `no`. * Заголовок `x-auto-response-suppress` зі значенням `dr`, `autoreply`, `auto-reply`, `auto_reply` або `all`
-* Заголовок `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` або `x-auto-respond` (незалежно від значення).
-* Заголовок `precedence` зі значенням `bulk`, `autoreply`, `auto-reply`, `auto_reply` або `list`.
+* Заголовок `auto-submitted` зі значенням, відмінним від `no`.
+* Заголовок `x-auto-response-suppress` зі значенням `dr`, `autoreply`, `auto-reply`, `auto_reply` або `all`
+* Заголовок `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 або `no`7 (незалежно від значення).
+* Заголовок `no`8 зі значенням `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 або `x-auto-response-suppress`3.
 
 5. Ми не надсилаємо листи, якщо адреса електронної пошти MAIL FROM або From закінчується на `+donotreply`, `-donotreply`, `+noreply` або `-noreply`.
 
-6. Ми не надсилаємо повідомлення, якщо частина імені користувача в адресі електронної пошти відправника мала вигляд `mdaemon`, а заголовок `X-MDDSN-Message` не враховував регістр.
+6. Ми не надсилаємо повідомлення, якщо частина імені користувача в адресі електронної пошти відправника мала значення `mdaemon`, а заголовок `X-MDDSN-Message` не враховував регістр.
 
-7. Ми не надсилаємо повідомлення, якщо заголовок `content-type` у полі `multipart/report` не враховував регістр.
+7. Ми не надсилаємо, якщо в заголовку `multipart/report` був регістронечутливий заголовок `content-type`.
 
 ### Як визначити відбиток електронної пошти {#how-do-you-determine-an-email-fingerprint}
 
-Відбиток електронної пошти використовується для визначення унікальності електронного листа та запобігання доставці дублікатів повідомлень і надсиланню [дублікати відмов](#prevent-unnecessary-bounces-to-protect-against-backscatter).
+Відбиток електронної пошти використовується для визначення унікальності електронної пошти та запобігання доставці дублікатів повідомлень і надсиланню [дублікати відмов](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
 Відбиток пальця розраховується з наступного списку:
 
-* Клієнт розпізнав повне доменне ім'я хоста або IP-адресу
-* `Message-ID` значення заголовка (якщо є)
-* `Date` значення заголовка (якщо є)
-* `From` значення заголовка (якщо є)
-* `To` значення заголовка (якщо є)
-* `Cc` значення заголовка (якщо є)
-* `Subject` значення заголовка (якщо є)
-* `Body` значення (якщо є)
+* Ім'я хоста FQDN або IP-адреса, визначені клієнтом
+* Значення заголовка `Message-ID` (якщо є)
+* Значення заголовка `Date` (якщо є)
+* Значення заголовка `From` (якщо є)
+* Значення заголовка `To` (якщо є)
+* Значення заголовка `Cc` (якщо є)
+* Значення заголовка `Subject` (якщо є)
+* Значення `Body` (якщо є)
 
 ### Чи можу я пересилати електронні листи на порти, відмінні від 25 (наприклад, якщо мій інтернет-провайдер заблокував порт 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
@@ -4155,7 +4153,7 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Якщо у вас безкоштовний план, просто додайте новий DNS-запис <strong class="notranslate">TXT</strong>, як показано нижче, але змініть порт з 25 на вибраний вами порт.
 
-Наприклад, якщо я хочу, щоб усі електронні листи, що надходять на адресу `example.com`, пересилалися на SMTP-порт псевдонімів одержувачів 1337 замість 25:
+Наприклад, якщо я хочу, щоб усі електронні листи, що надходять на адресу `example.com`, пересилалися на SMTP-порт псевдонімів одержувачів з портом 1337 замість 25:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4213,27 +4211,27 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Так, звичайно. Замість використання "@", "." або порожнього символу як імені/хоста/псевдоніма, ви просто використовуєте ім'я піддомену як значення.
 
-Якщо ви хочете, щоб `foo.example.com` пересилав електронні листи, введіть `foo` як значення імені/хоста/псевдоніма в налаштуваннях DNS (як для записів MX, так і для <strong class="notranslate">TXT</strong>).
+Якщо ви хочете, щоб `foo.example.com` пересилав електронні листи, введіть `foo` як значення імені/хоста/псевдоніма в налаштуваннях DNS (як для записів MX, так і для записів <strong class="notranslate">TXT</strong>).
 
 ### Чи пересилає це заголовки моїх електронних листів {#does-this-forward-my-emails-headers}
 
 Так, абсолютно.
 
-### Це добре перевірено {#is-this-well-tested}
+### Чи це добре перевірено? {#is-this-well-tested}
 
 Так, у нього є тести, написані з використанням [ава](https://github.com/avajs/ava), а також є покриття коду.
 
 ### Чи передаєте ви повідомлення та коди відповідей SMTP {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Так, звичайно. Наприклад, якщо ви надсилаєте електронний лист на адресу `hello@example.com`, і він зареєстрований для пересилання на `user@gmail.com`, тоді повідомлення відповіді SMTP та код із SMTP-сервера "gmail.com" будуть повернуті замість проксі-сервера за адресою "mx1.forwardemail.net" або "mx2.forwardemail.net".
+Так, звичайно. Наприклад, якщо ви надсилаєте електронний лист на адресу `hello@example.com`, і він зареєстрований для пересилання на адресу `user@gmail.com`, тоді повідомлення відповіді SMTP та код із SMTP-сервера "gmail.com" будуть повернуті замість проксі-сервера за адресою "mx1.forwardemail.net" або "mx2.forwardemail.net".
 
 ### Як ви запобігаєте спамерам та забезпечуєте добру репутацію пересилання електронної пошти {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Дивіться наші розділи про [Як працює ваша система пересилання електронної пошти](#how-does-your-email-forwarding-system-work), [Як ви вирішуєте проблеми з доставкою електронної пошти](#how-do-you-handle-email-delivery-issues) та [Як ви реагуєте на блокування IP-адрес?](#how-do-you-handle-your-ip-addresses-becoming-blocked) вище.
 
-### Як виконувати DNS-запит для доменних імен {#how-do-you-perform-dns-lookups-on-domain-names}
+### Як виконувати DNS-пошук для доменних імен {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Ми створили проєкт із відкритим вихідним кодом :tangerine: [Мандарин](https://github.com/forwardemail/tangerine) та використовуємо його для DNS-пошуку. DNS-сервери за замовчуванням – `1.1.1.1` та `1.0.0.1`, а DNS-запити здійснюються через [DNS через HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") на рівні програми.
+Ми створили проєкт з відкритим вихідним кодом :tangerine: [Мандарин](https://github.com/forwardemail/tangerine) та використовуємо його для DNS-пошуку. DNS-сервери за замовчуванням – `1.1.1.1` та `1.0.0.1`, а DNS-запити здійснюються через [DNS через HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") на рівні програми.
 
 :tangerine: [Мандарин](https://github.com/tangerine) використовує [службу DNS для споживачів CloudFlare, що забезпечує конфіденційність за замовчуванням][cloudflare-dns].
 
@@ -4243,13 +4241,13 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Так! Автоматичне повернення коштів відбувається, коли ви підвищуєте, знижуєте тарифний план або скасовуєте свій обліковий запис протягом 30 днів з моменту початку дії вашого плану. Це стосується лише нових клієнтів.
 
-### Якщо я зміню план, чи повернете ви різницю пропорційно до попереднього тарифу {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### Якщо я зміню план, чи ви розрахуєте суму пропорційно та повернете різницю? {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-Ми не перераховуємо кошти пропорційно та не повертаємо різницю, коли ви змінюєте плани. Натомість ми конвертуємо тривалість, що залишилася від дати закінчення терміну дії вашого поточного плану, у найближчу відносну тривалість вашого нового плану (округлену до меншого числа на місяць).
+Ми не перераховуємо кошти пропорційно та не повертаємо різницю під час зміни вашого плану. Натомість ми конвертуємо тривалість, що залишилася від дати закінчення терміну дії вашого поточного плану, у найближчу відносну тривалість вашого нового плану (округлену до меншого числа на місяць).
 
 Зверніть увагу, що якщо ви перейдете на інший платний план протягом 30 днів з моменту його початку, ми автоматично повернемо вам повну суму з вашого поточного плану.
 
-### Чи можу я використовувати цей сервіс пересилання електронної пошти як резервний MX-сервер {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### Чи можу я використовувати цей сервіс пересилання електронної пошти як резервний MX-сервер? {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
 Ні, це не рекомендується, оскільки ви можете використовувати лише один поштовий сервер одночасно. Резервні варіанти зазвичай ніколи не повторюються через неправильні налаштування пріоритетів та поштові сервери, які не враховують перевірку пріоритетів обміну MX.
 
@@ -4269,13 +4267,13 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Зверніть увагу, що вам *слід* зберегти зіставлення ":", оскільки це потрібно, якщо ви коли-небудь вирішите вимкнути цю функцію (а також воно використовується для імпорту, якщо ви переходите на один із наших платних планів).
 
-**Для тихого відхилення (відправнику здається, що повідомлення успішно надіслано, але насправді воно нікуди не піде) (код статусу `250`):** Якщо перед псевдонімом поставити "!" (один знак оклику), то відправникам, які намагаються надіслати повідомлення на цю адресу, буде повернуто код успішного відхилення `250`, але самі електронні листи нікуди не підуть (наприклад, до чорної діри або `/dev/null`).
+**Для тихого відхилення (відправнику здається, що повідомлення успішно надіслано, але насправді воно нікуди не йде) (код статусу `250`):** Якщо перед псевдонімом поставити "!" (один знак оклику), то відправникам, які намагаються надіслати повідомлення на цю адресу, буде повернуто код успішного відхилення `250`, але самі електронні листи нікуди не підуть (наприклад, до чорної діри або `/dev/null`).
 
-**Для м’якого відхилення (код статусу `421`):** Якщо перед псевдонімом додати "!!" (подвійний знак оклику), то відправникам, які намагаються надіслати лист на цю адресу, буде повернуто м’який код статусу помилки `421`, і електронні листи часто повторюються до 5 днів, перш ніж їх буде відхилено та повернено.
+**Для м’якого відхилення (код статусу `421`):** Якщо перед псевдонімом додати "!!" (подвійний знак оклику), то відправникам, які намагаються надіслати лист на цю адресу, повертатиметься м’який код статусу помилки `421`, і електронні листи часто повторюються до 5 днів, перш ніж їх буде відхилено та повернено.
 
-**Для жорсткого відхилення (код статусу `550`):** Якщо перед псевдонімом поставити "!!!" (потрійний знак оклику), то відправникам, які намагаються надіслати лист на цю адресу, повертатиметься постійний код статусу помилки `550`, а електронні листи будуть відхилені та повернені.
+**Для жорсткого відхилення (код статусу `550`):** Якщо перед псевдонімом поставити "!!!" (потрійний знак оклику), то відправникам, які намагаються надіслати лист на цю адресу, повертатиметься постійний код статусу помилки `550`, а електронні листи будуть відхилені та повернені назад.
 
-Наприклад, якщо я хочу, щоб усі електронні листи, що надходять на адресу `alias@example.com`, припинили надходження на адресу `user@gmail.com`, а також були відхилені та повернуті назад (наприклад, використовую три знаки оклику):
+Наприклад, якщо я хочу, щоб усі електронні листи, що надходять на адресу `alias@example.com`, перестали надходити на адресу `user@gmail.com`, були відхилені та повернуті (наприклад, використовувати три знаки оклику):
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4412,7 +4410,7 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Так, можете. Просто вкажіть кількох глобальних одержувачів для всіх адрес у ваших записах <strong class="notranslate">TXT</strong>.
 
-Наприклад, якщо я хочу, щоб кожен електронний лист, що надходить на адресу `*@example.com` (зірочка означає підстановку, тобто загальний код), пересилався на адреси `user+a@gmail.com` та `user+b@gmail.com`, тоді мій запис <strong class="notranslate">TXT</strong> виглядатиме так:
+Наприклад, якщо я хочу, щоб кожен електронний лист, що надходить на адресу `*@example.com` (зірочка означає підстановку, тобто загальний символ), пересилався на адреси `user+a@gmail.com` та `user+b@gmail.com`, тоді мій запис <strong class="notranslate">TXT</strong> виглядатиме так:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4462,9 +4460,9 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 Це залежить від вас!
 
-### Чи існує максимальне обмеження на кількість адрес електронної пошти, на які я можу пересилати листи на псевдонім {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+### Чи існує максимальне обмеження на кількість адрес електронної пошти, на які я можу пересилати повідомлення для кожного псевдоніма {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-Так, обмеження за замовчуванням становить 10. Це НЕ означає, що ви можете мати лише 10 псевдонімів для свого доменного імені. Ви можете мати скільки завгодно псевдонімів (необмежена кількість). Це означає, що ви можете пересилати лише один псевдонім на 10 унікальних адрес електронної пошти. Ви можете мати `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (від 1 до 10) – і будь-які електронні листи на адресу `hello@example.com` будуть пересилатися на `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (від 1 до 10).
+Так, обмеження за замовчуванням становить 10. Це НЕ означає, що ви можете мати лише 10 псевдонімів для свого доменного імені. Ви можете мати скільки завгодно псевдонімів (необмежена кількість). Це означає, що ви можете пересилати лише один псевдонім на 10 унікальних адрес електронної пошти. Ви можете мати `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (від 1 до 10) – а будь-які електронні листи на адресу `hello@example.com` будуть пересилатися на `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (від 1 до 10).
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4478,7 +4476,7 @@ class="list-inline-item"><code class="notranslate">Вальтер</code></li>
 
 ### Чи можу я рекурсивно пересилати електронні листи {#can-i-recursively-forward-emails}
 
-Так, ви можете, проте ви все одно повинні дотримуватися максимального ліміту. Якщо у вас є `hello:linus@example.com` та `linus:user@gmail.com`, то електронні листи на адресу `hello@example.com` будуть переслані на `linus@example.com` та `user@gmail.com`. Зверніть увагу, що якщо ви спробуєте рекурсивно переслати електронні листи, що перевищують максимальний ліміт, виникне помилка.
+Так, ви можете, проте ви все одно повинні дотримуватися максимального ліміту. Якщо у вас є `hello:linus@example.com` та `linus:user@gmail.com`, то електронні листи на адресу `hello@example.com` будуть пересилатися на адреси `linus@example.com` та `user@gmail.com`. Зверніть увагу, що якщо ви спробуєте рекурсивно пересилати електронні листи, що перевищують максимальний ліміт, виникне помилка.
 
 ### Чи можуть люди скасувати реєстрацію або зареєструвати мою пересилку електронної пошти без мого дозволу {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
@@ -4499,10 +4497,10 @@ Forward Email пропонує безкоштовний рівень завдя�
 4. **Обмеження розумного використання**: Безкоштовний рівень має політику добросовісного використання для запобігання зловживанням.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Ми прагнемо зберегти базову переадресацію електронної пошти безкоштовною, пропонуючи преміум-функції для користувачів із більш просунутими потребами.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Якщо ви вважаєте наш сервіс цінним, розгляньте можливість переходу на платний план для підтримки постійної розробки та обслуговування.
 
 ### Який максимальний розмір електронного листа {#what-is-the-max-email-size-limit}
 
@@ -4510,15 +4508,15 @@ Forward Email пропонує безкоштовний рівень завдя�
 
 Якщо перевищено обмеження розміру файлу, повертається помилка з правильним кодом відповіді.
 
-### Ви зберігаєте журнали електронних листів {#do-you-store-logs-of-emails}
+### Чи зберігаєте ви журнали електронних листів {#do-you-store-logs-of-emails}
 
 Ні, ми не записуємо на диск і не зберігаємо журнали – за допомогою [виняток помилок](#do-you-store-error-logs) та [вихідний SMTP](#do-you-support-sending-email-with-smtp) (див. наш [Політика конфіденційності](/privacy)).
 
 Все робиться в пам'яті та [наш вихідний код знаходиться на GitHub](https://github.com/forwardemail).
 
-### Ви зберігаєте журнали помилок {#do-you-store-error-logs}
+### Чи зберігаєте ви журнали помилок {#do-you-store-error-logs}
 
-**Так. Ви можете отримати доступ до журналів помилок за посиланнями [Мій обліковий запис → Журнали](/my-account/logs) або [Мій обліковий запис → Домени](/my-account/domains).**
+**Так. Ви можете отримати доступ до журналів помилок за допомогою [Мій обліковий запис → Журнали](/my-account/logs) або [Мій обліковий запис → Домени](/my-account/domains).**
 
 Станом на лютий 2023 року ми зберігаємо журнали помилок для кодів відповідей SMTP `4xx` та `5xx` протягом 7 днів, які містять помилку SMTP, конверт і заголовки електронного листа (ми **не** зберігаємо тіло електронного листа та вкладення).
 
@@ -4526,17 +4524,17 @@ Forward Email пропонує безкоштовний рівень завдя�
 
 Журнали помилок для [обмеження швидкості](#do-you-have-rate-limiting) та [сірий список](#do-you-have-a-greylist) недоступні, оскільки з'єднання завершується передчасно (наприклад, до того, як команди `RCPT TO` та `MAIL FROM` можуть бути передані).
 
-Дивіться наше [Політика конфіденційності](/privacy) для отримання додаткової інформації.
+Дивіться наш [Політика конфіденційності](/privacy) для отримання додаткової інформації.
 
 ### Ви читаєте мої електронні листи {#do-you-read-my-emails}
 
-Ні, абсолютно ні. Дивіться наше [Політика конфіденційності](/privacy).
+Ні, абсолютно ні. Дивіться наш [Політика конфіденційності](/privacy).
 
 Багато інших сервісів пересилання електронної пошти зберігають і потенційно можуть читати вашу електронну пошту. Немає жодної причини, чому переслані електронні листи потрібно зберігати на диску, тому ми розробили перше рішення з відкритим кодом, яке робить все це в оперативній пам'яті.
 
-Ми вважаємо, що ви повинні мати право на конфіденційність, і ми суворо його поважаємо. Код, розгорнутий на сервері, має [програмне забезпечення з відкритим вихідним кодом на GitHub](https://github.com/forwardemail) для прозорості та зміцнення довіри.
+Ми вважаємо, що ви повинні мати право на конфіденційність, і ми суворо його поважаємо. Код, розгорнутий на сервері, має назву [програмне забезпечення з відкритим вихідним кодом на GitHub](https://github.com/forwardemail) для прозорості та зміцнення довіри.
 
-### Чи можна "надсилати пошту від імені" в Gmail за допомогою цього {#can-i-send-mail-as-in-gmail-with-this}
+### Чи можу я "надсилати пошту від імені" в Gmail за допомогою цього {#can-i-send-mail-as-in-gmail-with-this}
 
 Так! З 2 жовтня 2018 року ми додали цю функцію. Див. [Як надсилати пошту за допомогою Gmail](#how-to-send-mail-as-using-gmail) вище!
 
@@ -4554,7 +4552,7 @@ Forward Email пропонує безкоштовний рівень завдя�
 </span>
 </div>
 
-### Чи можна "надсилати пошту від імені" в Outlook за допомогою цього {#can-i-send-mail-as-in-outlook-with-this}
+### Чи можу я "надсилати пошту від імені" в Outlook за допомогою цього {#can-i-send-mail-as-in-outlook-with-this}
 
 Так! З 2 жовтня 2018 року ми додали цю функцію. Просто перегляньте ці два посилання від Microsoft нижче:
 
@@ -4575,7 +4573,7 @@ Forward Email пропонує безкоштовний рівень завдя�
 </span>
 </div>
 
-### Чи можна "надсилати пошту від імені" в Apple Mail та iCloud Mail за допомогою цього {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### Чи можу я "надсилати пошту від імені" в Apple Mail та iCloud Mail за допомогою цього {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
 Якщо ви є передплатником iCloud+, ви можете використовувати власний домен. [Наш сервіс також сумісний з Apple Mail](#apple-mail).
 
@@ -4595,29 +4593,29 @@ Forward Email пропонує безкоштовний рівень завдя�
 
 ### Які способи оплати ви приймаєте {#which-payment-methods-do-you-accept}
 
-Пересилання електронної пошти приймає такі одноразові або щомісячні/щоквартальні/річні способи оплати:
+«Пересилання електронної пошти» приймає такі одноразові або щомісячні/щоквартальні/річні способи оплати:
 
 1. **Кредитні/дебетові картки/банківські перекази**: Visa, Mastercard, American Express, Discover, JCB, Diners Club тощо.
 2. **PayPal**: підключіть свій обліковий запис PayPal для зручних платежів.
 3. **Криптовалюта**: ми приймаємо платежі через стейблкоїни Stripe в мережах Ethereum, Polygon та Solana.
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Ми зберігаємо обмежену платіжну інформацію на наших серверах, яка включає лише ідентифікатори платежів та посилання на ідентифікатори транзакцій, клієнтів, підписок та платежів [Смуга](https://stripe.com/global) та [PayPal](https://www.paypal.com).
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Для максимальної конфіденційності розгляньте можливість використання платежів у криптовалюті.
 
 Усі платежі обробляються безпечно через Stripe або PayPal. Ваші платіжні дані ніколи не зберігаються на наших серверах.
 
 ## Додаткові ресурси {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Наші статті нижче регулярно оновлюються новими посібниками, порадами та технічною інформацією. Часто перевіряйте останні новини.
 
 * [Тематичні дослідження та документація для розробників](/blog/docs)
 * [Ресурси](/resources)
 * [Путівники](/guides)
 
-[gmail-2fa]: __ЗАХИЩЕНА_URL_868__
+[gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
-[cloudflare-dns]: __ЗАХИЩЕНА_URL_869__
+[cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/

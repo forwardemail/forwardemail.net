@@ -1,4 +1,4 @@
-# Eksempel på JavaScript-kontaktformularer til Node.js-kode {#javascript-contact-forms-nodejs-code-example}
+# Eksempel på JavaScript-kontaktformularer i Node.js-kode {#javascript-contact-forms-nodejs-code-example}
 
 ## Indholdsfortegnelse {#table-of-contents}
 
@@ -17,7 +17,7 @@ npm install nodemailer
 
 Dette eksempel bruger biblioteket **[Nodemailer](https://github.com/nodemailer/nodemailer)** og dets officielle sponsor **[Videresend e-mail](https://forwardemail.net)** til at sende og forhåndsvise udgående post.
 
-Du skal <strong class="text-success"><i class="fa fa-key"></i> generere en adgangskode</strong> for at sende udgående e-mail – følg venligst vores **[Send e-mail med brugerdefineret domæne SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
+Du skal <strong class="text-success"><i class="fa fa-key"></i>Generere en adgangskode</strong> for at sende udgående e-mail – følg venligst vores **[Send e-mail med brugerdefineret domæne SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,6 +51,6 @@ Kør appen for at sende e-mailen:
 node app
 ```
 
-Nu kan du gå til **[Min konto → E-mails](/my-account/emails)** for at se din e-mailleveringsstatus i realtid, e-mailleveringslogfiler og forhåndsvisninger af HTML/klartekst/vedhæftede filer.
+Nu kan du gå til **[Min konto → E-mails](/my-account/emails)** for at se din leveringsstatus for e-mails i realtid, leveringslogfiler for e-mails og forhåndsvisninger af HTML/klartekst/vedhæftede filer.
 
 > P.S. :tada: Du kan også **[forhåndsvisning af e-mails i browsere og iOS-simulatoren](/docs/test-preview-email-rendering-browsers-ios-simulator)** og **[Opret e-mailskabeloner med Node.js](/docs/send-emails-with-node-js-javascript)**.

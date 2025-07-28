@@ -46,7 +46,7 @@ Herkömmliche E-Mail-Dienste stellen datenschutzbewusste Benutzer vor mehrere gr
 4. **Eingeschränkte Transparenz**: Die meisten Dienste verwenden proprietäre Closed-Source-Software.
 5. **Anbieterabhängigkeit**: Die Migration von diesen Diensten kann schwierig oder unmöglich sein.
 
-Selbst datenschutzorientierte E-Mail-Anbieter scheitern oft, indem sie ihre Frontend-Anwendungen nur als Open Source anbieten, während ihre Backend-Systeme proprietär und geschlossen bleiben. Dies schafft eine erhebliche Vertrauenslücke: Man wird gebeten, ihren Datenschutzversprechen Glauben zu schenken, ohne sie überprüfen zu können.
+Selbst datenschutzorientierte E-Mail-Anbieter scheitern oft, indem sie ihre Frontend-Anwendungen nur als Open Source anbieten, während ihre Backend-Systeme proprietär und geschlossen bleiben. Dies schafft eine erhebliche Vertrauenslücke: Man soll ihren Datenschutzversprechen Glauben schenken, ohne sie überprüfen zu können.
 
 ### Die selbstgehostete Alternative {#the-self-hosted-alternative}
 
@@ -86,7 +86,7 @@ Die Architektur umfasst Container für:
 * SQLite für sichere, verschlüsselte Postfachspeicherung
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Schauen Sie sich unbedingt unseren [selbstgehostetes Entwicklerhandbuch](https://forwardemail.net/self-hosted) an
 
 ### Bash-Skriptinstallation: Zugänglichkeit trifft Sicherheit {#bash-script-installation-accessibility-meets-security}
 
@@ -107,7 +107,7 @@ Dieser einzelne Befehl:
 
 Wenn Sie Bedenken hinsichtlich der Weiterleitung von Skripten an Bash haben (und das sollten Sie auch!), empfehlen wir Ihnen, das Skript vor der Ausführung zu überprüfen. Es ist vollständig Open Source und steht zur Einsichtnahme zur Verfügung.
 
-### Quantensichere Verschlüsselung für zukunftssichere Privatsphäre {#quantum-safe-encryption-for-future-proof-privacy}
+### Quantensichere Verschlüsselung für zukunftssicheren Datenschutz {#quantum-safe-encryption-for-future-proof-privacy}
 
 Wie unser gehosteter Dienst implementiert auch unsere selbstgehostete Lösung eine quantenresistente Verschlüsselung mit ChaCha20-Poly1305 als Chiffre für SQLite-Datenbanken. Dieser Ansatz schützt Ihre E-Mail-Daten nicht nur vor aktuellen Bedrohungen, sondern auch vor zukünftigen Quantencomputer-Angriffen.
 
@@ -136,7 +136,7 @@ Auf diese Dienstprogramme kann über ein einfaches interaktives Menü zugegriffe
 7. Exit
 ```
 
-## Die Open-Source-Verpflichtung {#the-open-source-commitment}
+## Das Open-Source-Engagement {#the-open-source-commitment}
 
 Unsere selbst gehostete E-Mail-Lösung ist, wie alle unsere Produkte, zu 100 % Open Source – sowohl im Frontend als auch im Backend. Das bedeutet:
 
@@ -145,23 +145,23 @@ Unsere selbst gehostete E-Mail-Lösung ist, wie alle unsere Produkte, zu 100 % O
 3. **Sicherheit durch Offenheit**: Schwachstellen können von einer globalen Community identifiziert und behoben werden.
 4. **Keine Abhängigkeit von einem Anbieter**: Sie sind nicht von der Existenz unseres Unternehmens abhängig.
 
-Der gesamte Code ist auf GitHub unter <https://github.com/forwardemail/forwardemail.net>. verfügbar.
+Die gesamte Codebasis ist auf GitHub unter <https://github.com/forwardemail/forwardemail.net>. verfügbar
 
 ## Selbst gehostet vs. verwaltet: Die richtige Wahl treffen {#self-hosted-vs-managed-making-the-right-choice}
 
 Wir sind stolz darauf, eine selbst gehostete Option anbieten zu können, wissen aber, dass sie nicht für jeden die richtige Wahl ist. Selbst gehostete E-Mails bringen echte Verantwortung und Herausforderungen mit sich:
 
-### Die Realität von Self-Hosting-E-Mails {#the-reality-of-self-hosting-email}
+### Die Realität des Self-Hosting von E-Mails {#the-reality-of-self-hosting-email}
 
 #### Technische Überlegungen {#technical-considerations}
 
 * **Serververwaltung**: Sie müssen einen VPS oder dedizierten Server verwalten.
 * **DNS-Konfiguration**: Eine korrekte DNS-Einrichtung ist entscheidend für die Zustellbarkeit.
-* **Sicherheitsupdates**: Die Aktualisierung der Sicherheitspatches ist unerlässlich.
+* **Sicherheitsupdates**: Die Verwendung aktueller Sicherheitspatches ist unerlässlich.
 * **Spam-Management**: Sie müssen sich um die Spam-Filterung kümmern.
 * **Backup-Strategie**: Die Implementierung zuverlässiger Backups liegt in Ihrer Verantwortung.
 
-#### Zeitinvestition {#time-investment}
+#### Zeitaufwand {#time-investment}
 
 * **Ersteinrichtung**: Zeitaufwand für Einrichtung, Überprüfung und Lesen der Dokumentation
 * **Laufende Wartung**: Gelegentliche Updates und Überwachung
@@ -196,11 +196,11 @@ Sind Sie bereit, die Kontrolle über Ihre E-Mail-Infrastruktur zu übernehmen? S
 * 20 GB Speicherplatz empfohlen
 * Ein Domänenname Ihrer Wahl
 * Öffentliche IP-Adresse mit Unterstützung für Port 25
-* Möglichkeit zur Festlegung von [umgekehrter PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
+* Möglichkeit, [umgekehrter PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) festzulegen
 * IPv4- und IPv6-Unterstützung
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> Wir empfehlen verschiedene Mailserver-Anbieter unter <https://forwardemail.net/blog/docs/best-mail-server-providers> (Quelle unter <https://github.com/forwardemail/awesome-mail-server-providers>)
 
 ### Installationsschritte {#installation-steps}
 
@@ -239,13 +239,13 @@ E-Mail ist zu wichtig, um von geschlossenen, proprietären Systemen kontrolliert
 
 Wir glauben, dass Datenschutz nicht nur ein Feature ist, sondern ein Grundrecht. Und mit unserer selbst gehosteten E-Mail-Option machen wir dieses Recht zugänglicher als je zuvor.
 
-Sind Sie bereit, die Kontrolle über Ihre E-Mails zu übernehmen? [Starten Sie noch heute](https://forwardemail.net/self-hosted) oder erkunden Sie unser [GitHub-Repository](https://github.com/forwardemail/forwardemail.net), um mehr zu erfahren.
+Bereit, die Kontrolle über Ihre E-Mails zu übernehmen? [Starten Sie noch heute](https://forwardemail.net/self-hosted) oder erkunden Sie unseren [GitHub-Repository](https://github.com/forwardemail/forwardemail.net), um mehr zu erfahren.
 
 ## Referenzen {#references}
 
 \[1] E-Mail weiterleiten GitHub-Repository: <https://github.com/forwardemail/forwardemail.net>
 
-\[2] Selbst gehostete Dokumentation: <https://forwardemail.net/en/self-hosted>
+\[2] Selbstgehostete Dokumentation: <https://forwardemail.net/en/self-hosted>
 
 \[3] Technische Implementierung des E-Mail-Datenschutzes: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
 

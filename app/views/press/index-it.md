@@ -14,7 +14,7 @@
 
 Forward Email è l'unico servizio di hosting email open source al 100%, incentrato su sicurezza e privacy. Scopri di più sulla nostra storia su [la nostra pagina Chi siamo](/about).
 
-Il nostro servizio è stato fondato nel 2017 e gestisce la posta elettronica di oltre 500.000 domini, tra cui utenti illustri come [L'Accademia Navale degli Stati Uniti](/blog/docs/federal-government-email-service-section-889-compliant), [Canonico/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [La Fondazione Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [diverse università](/blog/docs/alumni-email-forwarding-university-case-study), governi e altri ancora.
+Il nostro servizio è stato fondato nel 2017 e gestisce la posta elettronica di oltre 500.000 domini, tra cui utenti illustri come [L'Accademia Navale degli Stati Uniti](/blog/docs/federal-government-email-service-section-889-compliant), [Canonico/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [La Fondazione Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [diverse università](/blog/docs/alumni-email-forwarding-university-case-study), enti governativi e altri ancora.
 
 Il nostro obiettivo è essere una piattaforma infrastrutturale di sicurezza ed e-mail di livello aziendale e aderiamo a [diversi principi](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
@@ -22,9 +22,9 @@ Se sei un membro della stampa, un giornalista o un rappresentante dei media e de
 
 ## Caratteri {#fonts}
 
-* **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (grassetto; peso 700)
-* **Corpo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normale; peso 400)
-* **Titoli:** [Miele VC](https://verycoolstudio.com/typefaces/honey) (grassetto; peso 700)
+* **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (grassetto; spessore 700)
+* **Corpo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normale; spessore 400)
+* **Titoli:** [Miele VC](https://verycoolstudio.com/typefaces/honey) (grassetto; spessore 700)
 * **Icone:** [Font Awesome 5](https://fontawesome.com/)
 
 ## Colori {#colors}
@@ -61,7 +61,7 @@ Se sei un membro della stampa, un giornalista o un rappresentante dei media e de
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif>
 
-"Freddy saluta in un campo erboso"
+"Freddy che saluta in un campo erboso"
 
 ![Freddy saluta in un campo erboso](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
 

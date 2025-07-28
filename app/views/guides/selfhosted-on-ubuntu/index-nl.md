@@ -17,7 +17,7 @@
   * [Stap 9: Omgevingsconfiguratie instellen](#step-9-set-up-environment-configuration)
   * [Stap 10: Configureer uw domein](#step-10-configure-your-domain)
   * [Stap 11: SSL-certificaten genereren](#step-11-generate-ssl-certificates)
-  * [Stap 12: Genereer encryptiesleutels](#step-12-generate-encryption-keys)
+  * [Stap 12: Encryptiesleutels genereren](#step-12-generate-encryption-keys)
   * [Stap 13: SSL-paden bijwerken in Configuratie](#step-13-update-ssl-paths-in-configuration)
   * [Stap 14: Basisverificatie instellen](#step-14-set-up-basic-authentication)
   * [Stap 15: Implementeren met Docker Compose](#step-15-deploy-with-docker-compose)
@@ -32,7 +32,7 @@
 * [Onderhoud en monitoring](#maintenance-and-monitoring)
   * [Logboeklocaties](#log-locations)
   * [Regelmatige onderhoudswerkzaamheden](#regular-maintenance-tasks)
-  * [Certificaat Vernieuwing](#certificate-renewal)
+  * [Certificaatvernieuwing](#certificate-renewal)
 * [Probleemoplossing](#troubleshooting)
   * [Veelvoorkomende problemen](#common-issues)
   * [Hulp krijgen](#getting-help)
@@ -69,7 +69,7 @@ Voordat u met de installatie begint, moet u ervoor zorgen dat u het volgende hee
 
 ## Stapsgewijze installatie {#step-by-step-installation}
 
-### Stap 1: Eerste systeeminstallatie {#step-1-initial-system-setup}
+### Stap 1: Initiële systeeminstallatie {#step-1-initial-system-setup}
 
 Zorg er eerst voor dat uw systeem up-to-date is en schakel over naar rootgebruiker:
 
@@ -221,7 +221,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-Stap 8: Kloon de doorstuur-e-mailrepository {#step-8-clone-forward-email-repository}
+### Stap 8: Kloon doorstuur-e-mailrepository {#step-8-clone-forward-email-repository}
 
 Download de broncode van Forward Email:
 
@@ -449,7 +449,7 @@ sleep 10
 docker compose -f "$DOCKER_COMPOSE_FILE" ps
 ```
 
-### Stap 16: Controleer de installatie {#step-16-verify-installation}
+### Stap 16: Controleer installatie {#step-16-verify-installation}
 
 Controleer of alle services correct werken:
 
@@ -479,7 +479,7 @@ U moet de volgende DNS-records voor uw domein configureren:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Een record {#a-records}
+#### A registreert {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -521,10 +521,10 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Eerste aanmelding {#first-login}
 
-1. Open uw webbrowser en ga naar `https://yourdomain.com`
-2. Voer de basisauthenticatiegegevens in die u eerder hebt opgeslagen.
-3. Voltooi de wizard voor de eerste installatie.
-4. Maak uw eerste e-mailaccount aan.
+1. Open je webbrowser en ga naar `https://yourdomain.com`
+2. Voer de basisauthenticatiegegevens in die je eerder hebt opgeslagen
+3. Voltooi de wizard voor de eerste installatie
+4. Maak je eerste e-mailaccount aan
 
 ## Back-upconfiguratie {#backup-configuration}
 
@@ -595,11 +595,11 @@ crontab -l
 * **Back-uplogs**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Logs voor automatische updates**: `/var/log/autoupdate.log`
 
-### Regelmatige onderhoudswerkzaamheden {#regular-maintenance-tasks}
+### Regelmatige onderhoudstaken {#regular-maintenance-tasks}
 
 1. **Schijfruimte controleren**: `df -h`
 2. **Servicestatus controleren**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
-3. **Logboeken controleren**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
+3. **Logboeken bekijken**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Systeempakketten bijwerken**: `apt update && apt upgrade`
 5. **Certificaten vernieuwen**: Certificaten worden automatisch verlengd, maar de vervaldatum wordt gecontroleerd
 
@@ -618,7 +618,7 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
 
-## Problemen oplossen {#troubleshooting}
+## Problemen oplossen met {#troubleshooting}
 
 ### Veelvoorkomende problemen {#common-issues}
 

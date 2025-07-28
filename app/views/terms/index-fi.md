@@ -20,7 +20,7 @@
 * [Sovellettava laki](#governing-law)
 * [Lisätiedot](#additional-disclosures)
 
-Vastuuvapauslauseke {##
+## Vastuuvapauslauseke {#disclaimer}
 
 Käyttämällä tätä verkkosivustoa sitoudut noudattamaan näitä käyttöehtoja, kaikkia sovellettavia lakeja ja määräyksiä ja hyväksyt, että olet vastuussa kaikkien sovellettavien paikallisten lakien noudattamisesta.
 
@@ -34,29 +34,28 @@ Forward Email ei anna mitään takuita, ei suoria eikä epäsuoria, ja kiistää
 
 Lisäksi Forward Email ei takaa eikä anna mitään vakuutuksia Palvelussaan olevien materiaalien tai muutoin näihin materiaaleihin tai tähän sivustoon linkitettyjen sivustojen käytön tarkkuudesta, todennäköisistä tuloksista tai luotettavuudesta.
 
-<u>**Sitoudut nimenomaisesti siihen, ettet käytä Palvelua mihinkään liiketoimintaan tai siihen liittyvään materiaaliin, joka on tarkoitettu sekä [Stripen kielletyt yritykset](https://stripe.com/legal/restricted-businesses) että [PayPalin kielletyt toiminnot](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
+<u>**Sitoudut nimenomaisesti siihen, ettet käytä Palvelua mihinkään liiketoimintaan tai siihen liittyvään materiaaliin, joka on tarkoitettu sekä [Stripen kielletyt yritykset](https://stripe.com/legal/restricted-businesses):lle että [PayPalin kielletyt toiminnot](https://www.paypal.com/us/legalhub/acceptableuse-full):lle.**</u>
 
 <u>**Käyttämällä Palvelua hyväksyt nimenomaisesti, että Forward Email ei ole vastuussa, ei ole korvausvelvollinen, etkä luo, lue, muokkaa tai lähetä Palvelun kautta mitään seuraavista:**</u>
 
-* **Et käytä palveluamme sellaisen palvelun ylläpitämiseen, joka sallii kolmansien osapuolten (muiden kuin omien työntekijöidesi ja urakoitsijoiden) käyttää palveluamme tai hyötyä siitä. Jos haluat meidän tekevän sinulle poikkeuksen tässä asiassa, ota meihin yhteyttä keskustellaksesi yrityssopimuksesta. Katso lisätietoja [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md)-sivustostamme.**
+* **Et käytä palveluamme sellaisen palvelun ylläpitämiseen, joka sallii kolmansien osapuolten (muiden kuin omien työntekijöidesi ja urakoitsijoiden) käyttää palveluamme tai hyötyä siitä. Jos haluat meidän tekevän sinulle poikkeuksen tässä asiassa, ota meihin yhteyttä keskustellaksesi yrityssopimuksesta. Katso lisätietoja [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md)-palvelustamme.**
 * Jos käytät [Lähtevä SMTP](/faq#do-you-support-sending-email-with-smtp)-palveluamme, hyväksyt seuraavat ehdot:
-* Sinulla on lupa käyttää sitä [transaktiosähköposti](https://wikipedia.org/wiki/Email_marketing#Transactional_emails)- ja [sähköpostimarkkinointi](https://en.wikipedia.org/wiki/Email_marketing)-palveluissa.
+* Sinulla on lupa käyttää sitä [tapahtumasähköposti](https://wikipedia.org/wiki/Email_marketing#Transactional_emails)- ja [sähköpostimarkkinointi](https://en.wikipedia.org/wiki/Email_marketing)-palveluissa.
 * Jos lähetät sähköpostimarkkinointimateriaalia, sinun on sisällytettävä `List-Unsubscribe`-otsikko ja tilaajiesi on oltava suostumuksella.
-* Suosittelemme, että käytät avoimen lähdekoodin uutiskirjeiden hallintaohjelmaa, kuten [ListMonk](https://github.com/knadh/listmonk)-sivustolla osoitteessa <https://github.com/knadh/listmonk>.
-* Huomaa, että aiomme julkaista oman uutiskirjeiden hallintaohjelman tulevaisuudessa.
-* Sähköpostimarkkinointimateriaali sisältää mainos-, joukko- tai kaupallisia sähköposteja yhteystietoluettelolle, joilla on samanlainen sisältö, otsikko ja viesti (esim. uutiskirjeet ja ilmoitukset).
-* Sinun on noudatettava [Vuoden 2003 CAN-SPAM-laki](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003) -käytäntöä.
+* Suosittelemme käyttämään avoimen lähdekoodin uutiskirjeiden hallintaohjelmaa, kuten [ListMonk](https://github.com/knadh/listmonk) osoitteessa <https://github.com/knadh/listmonk>.
+* Huomaa, että aiomme julkaista oman uutiskirjeiden hallintaohjelman tulevaisuudessa. * Sähköpostimarkkinointimateriaali sisältää mainos-, joukko- tai kaupallisia sähköposteja yhteystietoluettelolle, joilla on samanlainen sisältö, otsikko ja viesti (esim. uutiskirjeet ja ilmoitukset).
+* Sinun on noudatettava [Vuoden 2003 CAN-SPAM-laki](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003)-sääntöä.
 * Sinun on poistettava käyttäjät, jotka ovat kieltäytyneet uutiskirjeestä, peruuttaneet tilauksen tai merkinneet sähköpostisi roskapostiksi joko välittömästi tai 24 tunnin kuluessa.
 * Kun verkkotunnuksesi yrittää lähettää uutiskirjeen ensimmäistä kertaa, ylläpitäjä tarkistaa ja hyväksyy verkkotunnuksesi uutiskirjeiden lähettämiseen (yleensä 2–4 tunnin kuluessa, mutta joskus se voi kestää kauemmin).
 * Mikä tahansa, mikä häiritsee Palvelua, sen toimintaa ja/tai sen asiakkaita.
-* Materiaalit, jotka ovat loukkaavia, herjaavia, vääriä, häiritseviä, säädyttömiä, kunnianloukkaavia, harhaanjohtavia, vastenmielisiä, säädyttömiä, loukkaavia, rienaavia, uhkaavia, laittomia ja/tai vulgaareja.
+* Materiaalit, jotka ovat loukkaavia, herjaavia, vääriä, häiritseviä, säädyttömiä, kunnianloukkaavia, harhaanjohtavia, vastenmielisiä, säädyttömiä, loukkaavia, uhkaavia, laittomia ja/tai vulgaareja.
 * Luvattomat tekijänoikeuksin suojatut tai luottamukselliset materiaalit ja/tai materiaalit, jotka loukkaavat muiden immateriaalioikeuksia, liikesalaisuuksia ja/tai yksityisyyttä. * Mikä tahansa, mikä kannustaa rikolliseen toimintaan, voi aiheuttaa siviilioikeudellista vastuuta ja/tai rikkoo lainkäyttöalueiden lakeja tai määräyksiä.
 * Materiaalit, jotka aiheuttavat vahinkoa tai voivat aiheuttaa vahinkoa alaikäisille, esiintyvät toisena henkilönä tai yhteisönä ja/tai esittävät väärin yhteyttä henkilöön tai yhteisöön.
 * Materiaalit, jotka sisältävät roskapostia, viruksia, haittaohjelmia, sopimatonta, provosoivaa tai rivoa sisältöä, vioittuneita tiedostoja ja/tai muita ohjelmistoja tai ohjelmia, jotka voivat vahingoittaa tai voivat aiheuttaa vahinkoa yksilölle, yhteisölle, tietokoneelle, verkolle, hallitukselle, palvelulle ja/tai mille tahansa muulle asialle.
 
 Tämän verkkosivuston materiaalit ovat sovellettavien tekijänoikeus- ja tavaramerkkilakien suojaamia.
 
-Käyttämällä verkkosivustoamme ja palveluitamme olet hyväksynyt [Tietosuojakäytäntö](/privacy) ja [Tietojenkäsittelysopimus](/dpa) (esim. GDPR-vaatimustenmukaisuuden vuoksi).
+Verkkosivustomme käyttö ja palvelumme käyttö osoittavat, että olet hyväksynyt [Tietosuojakäytäntö](/privacy)- ja [Tietojenkäsittelysopimus](/dpa)-käyttöehtomme (esim. GDPR-vaatimustenmukaisuuden vuoksi).
 
 ## Rajoittamaton käyttö {#unlimited-usage}
 
@@ -78,7 +77,7 @@ Emme hyvitä emmekä jaa erotusta, kun vaihdat sopimusta. Sen sijaan muunnamme j
 
 Huomaa, että jos päivität tai alennat maksullista tilausta 30 päivän sisällä maksullisen tilauksen aloittamisesta, hyvitämme automaattisesti koko summan olemassa olevasta tilauksestasi.
 
-## Riitautukset {#disputes}
+## Kiistat {#disputes}
 
 Ota meihin yhteyttä, jos haluat riitauttaa palvelumme tapahtuman tai veloituksen. Älä ota yhteyttä luottokorttiyhtiöösi, pankkiisi tai PayPaliin.
 
@@ -93,7 +92,7 @@ Tilisi suljetaan automaattisesti ja pysyvästi, jos avaat riidan luottokorttiyht
 
 ### Sopimus {#agreement}
 
-Forward Email pyrkii kaikin kohtuullisin kaupallisin keinoin (vähintään hyväksyttävien ja kohtuullisten alan standardien mukaisesti) varmistamaan, että Forward Email -palvelu on maksavien asiakkaiden käytettävissä 99,99 % ajasta missä tahansa kalenterikuukaudessa. Jos näin ei ole, saatat olla oikeutettu saamaan alla kuvattua [Tekijät](#credits) -palvelua [Kelpoisuus](#eligibility) -palvelun mukaisesti.
+Forward Email pyrkii kaikin kohtuullisin kaupallisin keinoin (vähintään hyväksyttävien ja kohtuullisten alan standardien mukaisesti) varmistamaan, että Forward Email -palvelu on maksavien asiakkaiden käytettävissä 99,99 % ajasta missä tahansa kalenterikuukaudessa. Jos näin ei ole, saatat olla oikeutettu saamaan alla kuvatun [Tekijät](#credits)-edun [Kelpoisuus](#eligibility)-edun mukaisesti.
 
 ### Tekijät {#credits}
 
@@ -107,9 +106,9 @@ Forward Email pyrkii kaikin kohtuullisin kaupallisin keinoin (vähintään hyvä
 
 ### Kelpoisuus {#eligibility}
 
-Hyvityksen vähimmäismäärän on oltava vähintään 1,00 dollaria, jotta se on oikeutettu hyvitykseen. Hyvityksen enimmäismäärä on 30 päivää tai asiakkaan viimeisimmän kalenterikuukauden aikana maksama kokonaissumma seisokista (kumpi tahansa on suurempi). Maksavien asiakkaiden, joihin seisokit vaikuttavat, on pyydettävä hyvitystä jättämällä [Avunpyyntö](/help) 30 päivän kuluessa seisokin päivämäärästä. Hyvityksiä sovelletaan vain seisokkiin liittyviin tekijöihin, jotka ovat Forward Emailin ensisijaisessa hallinnassa.
+Hyvityksen vähimmäismäärän on oltava vähintään 1,00 dollaria, jotta se on oikeutettu hyvitykseen. Hyvityksen enimmäismäärä on 30 päivää tai asiakkaan viimeisimmän kalenterikuukauden seisokkiajasta maksama kokonaissumma (kumpi tahansa on suurempi). Maksavien asiakkaiden, joihin seisokki vaikuttaa, on pyydettävä hyvitystä lähettämällä [Avunpyyntö](/help)-lomake 30 päivän kuluessa seisokkiajan alkamispäivästä. Hyvityksiä sovelletaan vain seisokkiaikaan liittyviin tekijöihin, jotka ovat sähköpostin edelleenlähetyksen ensisijaisessa hallinnassa.
 
-## Tarkistukset ja virheet {#revisions-and-errata}
+## Muutokset ja virheilmoitukset {#revisions-and-errata}
 
 Forward Emailin verkkosivustolla näkyvät materiaalit saattavat sisältää teknisiä, typografisia tai valokuvauksellisia virheitä. Forward Email ei takaa, että mikään sen verkkosivustolla oleva materiaali on tarkkaa, täydellistä tai ajantasaista. Forward Email voi tehdä muutoksia verkkosivustollaan olevaan materiaaliin milloin tahansa ilman erillistä ilmoitusta. Forward Email ei kuitenkaan sitoudu päivittämään materiaaleja.
 
@@ -129,4 +128,4 @@ Verkkosivuston käyttöön sovellettavat yleiset ehdot.
 
 ## Lisätiedot {#additional-disclosures}
 
-Tätä sivustoa suojaa Cloudflare, ja sen [Tietosuojakäytäntö](https://www.cloudflare.com/privacypolicy/) ja [Palveluehdot](https://www.cloudflare.com/website-terms/) ovat voimassa.
+Tämä sivusto on suojattu Cloudflaren avulla, ja sen [Tietosuojakäytäntö](https://www.cloudflare.com/privacypolicy/)- ja [Palveluehdot](https://www.cloudflare.com/website-terms/)-ominaisuudet ovat voimassa.

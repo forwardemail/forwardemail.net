@@ -51,7 +51,7 @@
   * [Отримати домен](#retrieve-domain)
   * [Перевірка записів домену](#verify-domain-records)
   * [Перевірка SMTP-записів домену](#verify-domain-smtp-records)
-  * [Список загальних паролів для всього домену](#list-domain-wide-catch-all-passwords)
+  * [Список універсальних паролів для всього домену](#list-domain-wide-catch-all-passwords)
   * [Створити універсальний пароль для всього домену](#create-domain-wide-catch-all-password)
   * [Видалити загальний пароль для всього домену](#remove-domain-wide-catch-all-password)
   * [Оновити домен](#update-domain)
@@ -75,13 +75,13 @@
 
 ## Бібліотеки {#libraries}
 
-Наразі ми ще не випустили жодних API-обгорток, але плануємо зробити це найближчим часом. Надішліть електронного листа на адресу <api@forwardemail.net>, якщо ви хочете отримувати сповіщення про випуск API-обгортки для певної мови програмування. Тим часом ви можете використовувати ці рекомендовані бібліотеки HTTP-запитів у своїй програмі або просто використовувати [завиток](https://stackoverflow.com/a/27442239/3586413), як у наведених нижче прикладах.
+Наразі ми ще не випустили жодних API-обгорток, але плануємо зробити це найближчим часом. Надішліть електронного листа на адресу <api@forwardemail.net>, якщо ви хочете отримувати сповіщення про випуск API-обгортки певної мови програмування. Тим часом ви можете використовувати ці рекомендовані бібліотеки HTTP-запитів у своїй програмі або просто використовувати [завиток](https://stackoverflow.com/a/27442239/3586413), як у наведених нижче прикладах.
 
 | Мова | Бібліотека |
 | ---------- | ---------------------------------------------------------------------- |
 | Рубі | [Faraday](https://github.com/lostisland/faraday) |
 | Пітон | [requests](https://github.com/psf/requests) |
-| Java | [OkHttp](https://github.com/square/okhttp/) |
+| Ява | [OkHttp](https://github.com/square/okhttp/) |
 | PHP | [guzzle](https://github.com/guzzle/guzzle) |
 | JavaScript | [superagent](https://github.com/ladjs/superagent) (ми є відповідальними за обслуговування) |
 | Node.js | [superagent](https://github.com/ladjs/superagent) (ми є відповідальними за обслуговування) |
@@ -117,7 +117,7 @@
 | 504 | Час очікування шлюзу |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Якщо ви отримали код статусу 5xx (чого не повинно траплятися), зв’яжіться з нами за адресою <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>, і ми негайно допоможемо вам вирішити вашу проблему.
 
 ## Локалізація {#localization}
 
@@ -126,11 +126,11 @@
 ## Пагінація {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> З 1 листопада 2024 року кінцеві точки API для [Список доменів](#list-domains) та [Список псевдонімів доменів](#list-domain-aliases) за замовчуванням матимуть максимальну кількість результатів на сторінці: `1000`. Якщо ви хочете ввімкнути цю функцію раніше, ви можете передати `?paginate=true` як додатковий параметр рядка запиту до URL-адреси для запиту кінцевої точки.
 
 Пагінація підтримується всіма кінцевими точками API, які виводять результати.
 
-Просто надайте властивості рядка запиту `page` (і за бажанням `limit`).
+Просто надайте властивості рядка запиту `page` (і, за бажанням, `limit`).
 
 Властивість `page` має бути числом, більшим або рівним `1`. Якщо ви надаєте `limit` (також число), то мінімальне значення – `10`, а максимальне – `50` (якщо не зазначено інше).
 
@@ -160,11 +160,11 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ### Отримати журнали {#retrieve-logs}
 
-Наш API програмно дозволяє вам завантажувати журнали для вашого облікового запису. Надсилання запиту до цієї кінцевої точки призведе до обробки всіх журналів для вашого облікового запису та надсилання їх вам електронною поштою як вкладення ([Gzip](https://en.wikipedia.org/wiki/Gzip) стиснутий файл електронної таблиці [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) після завершення.
+Наш API програмно дозволяє вам завантажувати журнали для вашого облікового запису. Надсилання запиту до цієї кінцевої точки призведе до обробки всіх журналів для вашого облікового запису та надсилання їх вам електронною поштою як вкладення (стиснутий файл електронної таблиці [Gzip](https://en.wikipedia.org/wiki/Gzip) [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) після завершення.
 
-Це дозволяє створювати фонові завдання за допомогою [Cron-завдання](https://en.wikipedia.org/wiki/Cron) або використовувати наш [Програмне забезпечення для планування завдань Node.js Bree](https://github.com/breejs/bree) для отримання журналів у будь-який час. Зверніть увагу, що ця кінцева точка обмежена кількістю запитів `10` на день.
+Це дозволяє створювати фонові завдання з [Cron-завдання](https://en.wikipedia.org/wiki/Cron) або використовувати наш [Програмне забезпечення для планування завдань Node.js Bree](https://github.com/breejs/bree) для отримання журналів, коли вам це потрібно. Зверніть увагу, що ця кінцева точка обмежена кількістю запитів `10` на день.
 
-Вкладення є файлом у формі нижнього регістру `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, а сам електронний лист містить короткий опис отриманих журналів. Ви також можете завантажити журнали будь-коли за посиланням [Мій обліковий запис → Журнали](/my-account/logs)
+Вкладення – це нижня літера `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`, а сам електронний лист містить короткий опис отриманих журналів. Ви також можете завантажити журнали будь-коли з [Мій обліковий запис → Журнали](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Псевдонім контактів (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> На відміну від інших кінцевих точок API, ці вимагають [Автентифікація](#authentication) "ім'я користувача", що дорівнює псевдоніму імені користувача, та "пароль", що дорівнює паролю, згенерованому псевдонімом, як заголовки базової авторизації.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Цей розділ кінцевих точок знаходиться в процесі розробки та буде випущено (сподіваємося) у 2024 році. Тим часом, будь ласка, використовуйте клієнт IMAP зі спадного меню «Програми» в навігації нашого веб-сайту.
 
 ### Список контактів {#list-contacts}
 
@@ -291,13 +291,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **Скоро**
 
-## Календарі-псевдоніми (CalDAV) {#alias-calendars-caldav}
+## Псевдонімні календарі (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> На відміну від інших кінцевих точок API, ці вимагають [Автентифікація](#authentication) "ім'я користувача", що дорівнює псевдоніму імені користувача, та "пароль", що дорівнює паролю, згенерованому псевдонімом, як заголовки базової авторизації.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Цей розділ кінцевих точок знаходиться в процесі розробки та буде випущено (сподіваємося) у 2024 році. Тим часом, будь ласка, використовуйте клієнт IMAP зі спадного меню «Програми» в навігації нашого веб-сайту.
 
 ### Список календарів {#list-calendars}
 
@@ -329,13 +329,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **Скоро**
 
-## Повідомлення-псевдоніми (IMAP/POP3) {#alias-messages-imappop3}
+## Псевдонім повідомлень (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> На відміну від інших кінцевих точок API, ці вимагають [Автентифікація](#authentication) "ім'я користувача", що дорівнює псевдоніму імені користувача, та "пароль", що дорівнює паролю, згенерованому псевдонімом, як заголовки базової авторизації.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Цей розділ кінцевих точок знаходиться в процесі розробки та буде випущено (сподіваємося) у 2024 році. Тим часом, будь ласка, використовуйте клієнт IMAP зі спадного меню «Програми» в навігації нашого веб-сайту.
 
 Будь ласка, переконайтеся, що ви виконали інструкції з налаштування вашого домену.
 
@@ -350,7 +350,7 @@ curl -X PUT BASE_URI/v1/account \
 ### Створити повідомлення {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Це **НЕ** надішле електронний лист – воно лише додасть повідомлення до папки вашої поштової скриньки (наприклад, це схоже на команду IMAP `APPEND`). Якщо ви хочете надіслати електронний лист, див. [Створення вихідної SMTP-електронної пошти](#create-outbound-smtp-email) нижче. Після створення вихідного SMTP-електронного листа ви можете додати його копію за допомогою цієї кінцевої точки до поштової скриньки вашого псевдоніма для цілей зберігання.
 
 > `POST /v1/messages`
 
@@ -362,7 +362,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Скоро**
 
-### Повідомлення про оновлення {#update-message}
+### Оновити повідомлення {#update-message}
 
 > `PUT /v1/messages/:id`
 
@@ -377,10 +377,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Папки-псевдоніми (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Кінцеві точки папок зі шляхом <code>/v1/folders/:path</code> як кінцевою точкою взаємозамінні з ідентифікатором папки <code>:id</code>. Це означає, що ви можете посилатися на папку за її значенням <code>path</code> або <code>id</code>.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Цей розділ кінцевих точок знаходиться в процесі розробки та буде випущено (сподіваємося) у 2024 році. Тим часом, будь ласка, використовуйте клієнт IMAP зі спадного меню «Програми» в навігації нашого веб-сайту.
 
 ### Список папок {#list-folders}
 
@@ -437,7 +437,7 @@ curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### Список вихідних SMTP-листів {#list-outbound-smtp-emails}
+### Список вихідних SMTP-повідомлень {#list-outbound-smtp-emails}
 
 Зверніть увагу, що ця кінцева точка не повертає значення властивостей для `message`, `headers` та `rejectedErrors` електронного листа.
 
@@ -464,7 +464,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 Наш API для створення електронних листів натхненний та використовує конфігурацію параметрів повідомлень Nodemailer. Будь ласка, зверніться до [Конфігурація повідомлень Nodemailer](https://nodemailer.com/message/) для всіх параметрів тіла листа нижче.
 
-Зверніть увагу, що за винятком `envelope` та `dkim` (оскільки ми встановлюємо їх автоматично), ми підтримуємо всі опції Nodemailer. Ми автоматично встановлюємо для опцій `disableFileAccess` та `disableUrlAccess` значення `true` з міркувань безпеки.
+Зверніть увагу, що за винятком `envelope` та `dkim` (оскільки ми встановлюємо їх автоматично), ми підтримуємо всі опції Nodemailer. З міркувань безпеки ми автоматично встановлюємо для опцій `disableFileAccess` та `disableUrlAccess` значення `true`.
 
 Вам слід або передати єдиний параметр `raw` разом із повним необробленим електронним листом, включаючи заголовки, **або** передати окремі параметри тіла нижче.
 
@@ -519,7 +519,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "raw=`cat file.eml`"
 ```
 
-### Отримання вихідної SMTP-електронної пошти {#retrieve-outbound-smtp-email}
+### Отримання вихідної електронної пошти SMTP {#retrieve-outbound-smtp-email}
 
 > `GET /v1/emails/:id`
 
@@ -532,7 +532,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Видалити вихідну електронну пошту SMTP {#delete-outbound-smtp-email}
 
-Видалення електронної пошти встановить статус `"rejected"` (і згодом не оброблятиметься в черзі), якщо поточний статус є одним із `"pending"`, `"queued"` або `"deferred"`. Ми можемо автоматично видаляти електронні листи через 30 днів після їх створення та/або відправлення, тому вам слід зберігати копію вихідних SMTP-листів у вашому клієнті, базі даних або програмі. За потреби ви можете посилатися на значення нашого ідентифікатора електронної пошти у вашій базі даних – це значення повертається з кінцевих точок [Створити електронний лист](#create-email) та [Отримати електронну пошту](#retrieve-email).
+Видалення електронної пошти встановить статус `"rejected"` (і, відповідно, не оброблятиметься в черзі), якщо поточний статус – один із `"pending"`, `"queued"` або `"deferred"`. Ми можемо автоматично видаляти електронні листи через 30 днів після їх створення та/або відправлення, тому вам слід зберігати копію вихідних SMTP-листів у вашому клієнті, базі даних або програмі. За потреби ви можете посилатися на значення нашого ідентифікатора електронної пошти у вашій базі даних – це значення повертається з кінцевих точок [Створити електронний лист](#create-email) та [Отримати електронну пошту](#retrieve-email).
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Домени {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Кінцеві точки домену з іменем домену <code>/v1/domains/:domain_name</code> як кінцевою точкою взаємозамінні з ідентифікатором домену <code>:domain_id</code>. Це означає, що ви можете посилатися на домен за його значенням <code>name</code> або <code>id</code>.
 
 ### Список доменів {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> З 1 листопада 2024 року кінцеві точки API для [Список доменів](#list-domains) та [Список псевдонімів доменів](#list-domain-aliases) за замовчуванням використовуватимуть максимальну кількість результатів `1000` на сторінці. Якщо ви хочете ввімкнути цю функцію раніше, ви можете передати `?paginate=true` як додатковий параметр рядка запиту до URL-адреси для запиту кінцевої точки. Див. [Пагінація](#pagination) для отримання додаткової інформації.
 
 > `GET /v1/domains`
 
@@ -577,7 +577,7 @@ curl BASE_URI/v1/domains \
 | Параметр тіла | Обов'язково | Тип | Опис |
 | ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain` | Так | Рядок (FQDN або IP-адреса) | Повне доменне ім'я ("FQDN") або IP-адреса |
-| `team_domain` | Ні | Рядок (ідентифікатор домену або доменне ім’я; FQDN) | Автоматично призначити цей домен тій самій команді з іншого домену. Це означає, що всі учасники з цього домену будуть призначені як учасники команди, а `plan` також автоматично буде встановлено на `team`. Ви можете встановити це значення на `"none"`, якщо потрібно явно вимкнути це, але це не обов'язково. |
+| `team_domain` | Ні | Рядок (ідентифікатор домену або доменне ім'я; FQDN) | Автоматично призначити цей домен тій самій команді з іншого домену. Це означає, що всі учасники з цього домену будуть призначені як учасники команди, а `plan` також автоматично буде встановлено на `team`. Ви можете встановити це значення на `"none"`, якщо потрібно явно вимкнути це, але це не обов'язково. |
 | `plan` | Ні | Рядок (перелічуваний) | Тип плану (має бути `"free"`, `"enhanced_protection"` або `"team"`, за замовчуванням `"free"` або поточний платний план користувача, якщо він є) |
 | `catchall` | Ні | Рядок (адреси електронної пошти з роздільниками) або логічне значення | Створити псевдонім за замовчуванням, за замовчуванням `true` (якщо `true`, як одержувач використовуватиметься адреса електронної пошти користувача API, а якщо `false`, загальний псевдонім створюватися не буде). Якщо передається рядок, то це список адрес електронної пошти, які будуть використовуватися як одержувачі (розділені розривом рядка, пробілом та/або комою). |
 | `has_adult_content_protection` | Ні | Булеве значення | Чи вмикати захист від контенту для дорослих за допомогою сканера спаму на цьому домені |
@@ -649,7 +649,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
 
 | Параметр тіла | Обов'язково | Тип | Опис |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | Ні | Рядок | Ваш новий власний пароль, який використовуватиметься як універсальний пароль для всього домену. Зверніть увагу, що ви можете залишити це поле порожнім або взагалі не включати його до тіла запиту API, якщо хочете отримати випадково згенерований та надійний пароль. |
+| `new_password` | Ні | Рядок | Ваш новий власний пароль, який використовуватиметься як універсальний пароль для домену. Зверніть увагу, що ви можете залишити це поле порожнім або взагалі не включати його до тіла запиту API, якщо хочете отримати випадково згенерований та надійний пароль. |
 | `description` | Ні | Рядок | Опис лише для цілей організації. |
 
 > Приклад запиту:
@@ -707,7 +707,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
 
 ## Запрошення {#invites}
 
-### Прийняти запрошення до домену {#accept-domain-invite}
+### Прийняти запрошення домену {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
@@ -737,9 +737,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Якщо користувач, якого запрошують, вже є прийнятим членом будь-якого іншого домену, членом якого є адміністратор, який його запрошує, то запрошення буде автоматично прийнято, а електронний лист не буде надіслано.
 
-### Видалити запрошення до домену {#remove-domain-invite}
+### Видалити запрошення домену {#remove-domain-invite}
 
 > `DELETE /v1/domains/:domain_name/invites`
 
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Список псевдонімів доменів {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> З 1 листопада 2024 року кінцеві точки API для [Список доменів](#list-domains) та [Список псевдонімів доменів](#list-domain-aliases) за замовчуванням використовуватимуть максимальну кількість результатів `1000` на сторінці. Якщо ви хочете ввімкнути цю функцію раніше, ви можете передати `?paginate=true` як додатковий параметр рядка запиту до URL-адреси для запиту кінцевої точки. Див. [Пагінація](#pagination) для отримання додаткової інформації.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -840,11 +840,11 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `has_recipient_verification` | Ні | Булеве значення | Вимагати від одержувачів натискання посилання для підтвердження електронної пошти для надсилання електронних листів (за замовчуванням використовуються налаштування домену, якщо вони явно не встановлені в тілі запиту) |
 | `is_enabled` | Ні | Булеве значення | Увімкнути чи вимкнути цей псевдонім (якщо вимкнено, електронні листи не будуть перенаправлятися нікуди, а повертатимуться коди успішного завершення). Якщо передається значення, воно перетворюється на логічне значення за допомогою [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `error_code_if_disabled` | Ні | Номер (або `250`, `421`, або `550`) | Вхідні електронні листи на цей псевдонім будуть відхилені, якщо `is_enabled` має значення `false` з `250` (тиха доставка в нікуди, наприклад, чорна діра або `/dev/null`), `421` (м’яке відхилення; та повторна спроба протягом ~5 днів) або `550` постійна невдача та відхилення. За замовчуванням `250`. |
-| `has_imap` | Ні | Булеве значення | Увімкнути чи вимкнути сховище IMAP для цього псевдоніма (якщо вимкнено, то вхідні електронні листи не зберігатимуться в [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Якщо передається значення, воно перетворюється на логічне значення за допомогою [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_imap` | Ні | Булеве значення | Увімкнути чи вимкнути сховище IMAP для цього псевдоніма (якщо вимкнено, то отримані вхідні електронні листи не зберігатимуться в [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Якщо передається значення, воно перетворюється на логічне значення за допомогою [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `has_pgp` | Ні | Булеве значення | Чи вмикати, чи вимикати [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) для [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service), використовуючи псевдонім `public_key`. |
 | `public_key` | Ні | Рядок | Відкритий ключ OpenPGP у форматі ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); наприклад, ключ GPG для `support@forwardemail.net`). Це застосовується лише якщо для `has_pgp` встановлено значення `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Ні | Рядок | Максимальна квота сховища для цього псевдоніма. Залиште поле порожнім, щоб скинути поточну максимальну квоту домену, або введіть значення, наприклад "1 ГБ", яке буде проаналізовано [bytes](https://github.com/visionmedia/bytes.js). Це значення можуть змінити лише адміністратори домену. |
-| `vacation_responder_is_enabled` | Ні | Булеве значення | Увімкнути чи вимкнути автоматичний автовідповідач. |
+| `vacation_responder_is_enabled` | Ні | Булеве значення | Чи вмикати, чи вимикати автоматичну відповідь у разі відпустки. |
 | `vacation_responder_start_date` | Ні | Рядок | Дата початку роботи автовідповідача у відпустці (якщо ввімкнено і тут не встановлено дату початку, тоді вважається, що він уже запущений). Ми підтримуємо такі формати дати, як `MM/DD/YYYY`, `YYYY-MM-DD` та інші формати дати за допомогою розумного розбору з використанням `dayjs`. |
 | `vacation_responder_end_date` | Ні | Рядок | Дата завершення для автовідповідача у відпустці (якщо ввімкнено і тут не встановлено дату завершення, тоді вважається, що він ніколи не завершується та відповідає вічно). Ми підтримуємо такі формати дати, як `MM/DD/YYYY`, `YYYY-MM-DD` та інші формати дати за допомогою розумного розбору з використанням `dayjs`. |
 | `vacation_responder_subject` | Ні | Рядок | Тема повідомлення у відкритому тексті для автовідповідача, наприклад, «Не на роботі». Ми використовуємо `striptags`, щоб видалити тут весь HTML-код. |
@@ -892,11 +892,11 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `has_recipient_verification` | Ні | Булеве значення | Вимагати від одержувачів натискання посилання для підтвердження електронної пошти для надсилання електронних листів (за замовчуванням використовуються налаштування домену, якщо вони явно не встановлені в тілі запиту) |
 | `is_enabled` | Ні | Булеве значення | Увімкнути чи вимкнути цей псевдонім (якщо вимкнено, електронні листи не будуть перенаправлятися нікуди, а повертатимуться коди успішного завершення). Якщо передається значення, воно перетворюється на логічне значення за допомогою [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `error_code_if_disabled` | Ні | Номер (або `250`, `421`, або `550`) | Вхідні електронні листи на цей псевдонім будуть відхилені, якщо `is_enabled` має значення `false` з `250` (тиха доставка в нікуди, наприклад, чорна діра або `/dev/null`), `421` (м’яке відхилення; та повторна спроба протягом ~5 днів) або `550` постійна невдача та відхилення. За замовчуванням `250`. |
-| `has_imap` | Ні | Булеве значення | Увімкнути чи вимкнути сховище IMAP для цього псевдоніма (якщо вимкнено, то вхідні електронні листи не зберігатимуться в [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Якщо передається значення, воно перетворюється на логічне значення за допомогою [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_imap` | Ні | Булеве значення | Увімкнути чи вимкнути сховище IMAP для цього псевдоніма (якщо вимкнено, то отримані вхідні електронні листи не зберігатимуться в [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Якщо передається значення, воно перетворюється на логічне значення за допомогою [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `has_pgp` | Ні | Булеве значення | Чи вмикати, чи вимикати [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) для [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service), використовуючи псевдонім `public_key`. |
 | `public_key` | Ні | Рядок | Відкритий ключ OpenPGP у форматі ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); наприклад, ключ GPG для `support@forwardemail.net`). Це застосовується лише якщо для `has_pgp` встановлено значення `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Ні | Рядок | Максимальна квота сховища для цього псевдоніма. Залиште поле порожнім, щоб скинути поточну максимальну квоту домену, або введіть значення, наприклад "1 ГБ", яке буде проаналізовано [bytes](https://github.com/visionmedia/bytes.js). Це значення можуть змінити лише адміністратори домену. |
-| `vacation_responder_is_enabled` | Ні | Булеве значення | Увімкнути чи вимкнути автоматичний автовідповідач. |
+| `vacation_responder_is_enabled` | Ні | Булеве значення | Чи вмикати, чи вимикати автоматичну відповідь у разі відпустки. |
 | `vacation_responder_start_date` | Ні | Рядок | Дата початку роботи автовідповідача у відпустці (якщо ввімкнено і тут не встановлено дату початку, тоді вважається, що він уже запущений). Ми підтримуємо такі формати дати, як `MM/DD/YYYY`, `YYYY-MM-DD` та інші формати дати за допомогою розумного розбору з використанням `dayjs`. |
 | `vacation_responder_end_date` | Ні | Рядок | Дата завершення для автовідповідача у відпустці (якщо ввімкнено і тут не встановлено дату завершення, тоді вважається, що він ніколи не завершується та відповідає вічно). Ми підтримуємо такі формати дати, як `MM/DD/YYYY`, `YYYY-MM-DD` та інші формати дати за допомогою розумного розбору з використанням `dayjs`. |
 | `vacation_responder_subject` | Ні | Рядок | Тема повідомлення у відкритому тексті для автовідповідача, наприклад, «Не на роботі». Ми використовуємо `striptags`, щоб видалити тут весь HTML-код. |
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Зашифрувати {#encrypt}
 
-Ми дозволяємо вам шифрувати записи навіть у безкоштовному плані безкоштовно. Конфіденційність не повинна бути функцією, вона має бути вбудованою в усі аспекти продукту. Як наполегливо просили в [Обговорення Посібників з конфіденційності](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) та [наші проблеми з GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), ми додали це.
+Ми дозволяємо вам шифрувати записи навіть у безкоштовному плані безкоштовно. Конфіденційність не повинна бути функцією, вона має бути вбудованою в усі аспекти продукту. Ми додали це, як наполегливо просили в [Обговорення Посібників з конфіденційності](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) та [наші проблеми з GitHub](https://github.com/forwardemail/forwardemail.net/issues/254).
 
 ### Зашифрувати TXT-запис {#encrypt-txt-record}
 
@@ -930,7 +930,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 | Параметр тіла | Обов'язково | Тип | Опис |
 | -------------- | -------- | ------ | -------------------------------------------- |
-| `input` | Так | Рядок | Будь-який дійсний запис відкритого тексту пересилання електронної пошти |
+| `input` | Так | Рядок | Будь-який дійсний запис відкритого тексту для пересилання електронної пошти |
 
 > Приклад запиту:
 

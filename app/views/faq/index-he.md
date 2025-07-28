@@ -2,7 +2,7 @@
 
 <img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [התחלה מהירה](#quick-start)
 * [מָבוֹא](#introduction)
@@ -11,7 +11,7 @@
   * [מהי היסטוריית העברת דוא"ל](#what-is-forward-emails-history)
   * [כמה מהיר השירות הזה](#how-fast-is-this-service)
 * [לקוחות דוא"ל](#email-clients)
-  * [Thunderbird](#thunderbird)
+  * [ת'אנדרברד](#thunderbird)
   * [מיקרוסופט אאוטלוק](#microsoft-outlook)
   * [אפל מייל](#apple-mail)
   * [מכשירים ניידים](#mobile-devices)
@@ -30,11 +30,11 @@
   * [היכן ממוקמים השרתים שלכם](#where-are-your-servers-located)
   * [כיצד אוכל לייצא ולגבות את תיבת הדואר שלי](#how-do-i-export-and-backup-my-mailbox)
   * [כיצד אוכל לייבא ולהעביר את תיבת הדואר הקיימת שלי](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [האם אתה תומך באירוח עצמי](#do-you-support-self-hosting)
+  * [האם אתם תומכים באירוח עצמי?](#do-you-support-self-hosting)
 * [תצורת דוא"ל](#email-configuration)
   * [איך מתחילים ומגדירים העברת דוא"ל](#how-do-i-get-started-and-set-up-email-forwarding)
   * [האם ניתן להשתמש במספר מרכזיות ושרתים של MX לצורך העברה מתקדמת](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [כיצד אוכל להגדיר משיב חופשה (משיב אוטומטי מחוץ למשרד)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [כיצד אוכל להגדיר הודעה אוטומטית לחופשה (הודעה אוטומטית לחופשה)?](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [כיצד אוכל להגדיר SPF עבור העברת דוא"ל](#how-do-i-set-up-spf-for-forward-email)
   * [כיצד ניתן להגדיר DKIM עבור העברת דוא"ל](#how-do-i-set-up-dkim-for-forward-email)
   * [כיצד אוכל להגדיר DMARC עבור העברת דוא"ל](#how-do-i-set-up-dmarc-for-forward-email)
@@ -88,7 +88,7 @@
   * [איך מעבדים אימייל לצורך העברה](#how-do-you-process-an-email-for-forwarding)
   * [כיצד אתם מטפלים בבעיות משלוח דוא"ל](#how-do-you-handle-email-delivery-issues)
   * [איך אתם מטפלים בחסימה של כתובות ה-IP שלכם](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [מהן כתובות מנהל הדואר](#what-are-postmaster-addresses)
+  * [מהן כתובות של מנהלי דואר](#what-are-postmaster-addresses)
   * [מהן כתובות ללא מענה](#what-are-no-reply-addresses)
   * [מהן כתובות ה-IP של השרת שלך](#what-are-your-servers-ip-addresses)
   * [האם יש לך רשימת היתרים](#do-you-have-an-allowlist)
@@ -116,7 +116,7 @@
   * [האם אני יכול להשתמש בשירות העברת הדוא"ל הזה כשרת MX "חלופה" או "חלופה"?](#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server)
   * [האם אני יכול להשבית כינויים ספציפיים](#can-i-disable-specific-aliases)
   * [האם ניתן להעביר מיילים למספר נמענים](#can-i-forward-emails-to-multiple-recipients)
-  * [האם אוכל לקבל מספר נמענים גלובליים מסוג "capture all"](#can-i-have-multiple-global-catch-all-recipients)
+  * [האם אני יכול/ה לקבל מספר נמענים גלובליים מסוג "capture all"](#can-i-have-multiple-global-catch-all-recipients)
   * [האם יש מגבלה מקסימלית על מספר כתובות הדוא"ל שאליהן אני יכול להעביר הודעות לפי כינוי](#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)
   * [האם ניתן להעביר מיילים באופן רקורסיבי](#can-i-recursively-forward-emails)
   * [האם אנשים יכולים לבטל את הרישום שלי או לרשום את העברת הדוא"ל שלי ללא רשותי](#can-people-unregister-or-register-my-email-forwarding-without-my-permission)
@@ -146,17 +146,17 @@
 4. **בדוק את ההגדרה שלך** על ידי שליחת דוא"ל לאחד מהשמות הבדויים החדשים שלך
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> שינויי DNS יכולים להימשך עד 24-48 שעות עד שהם מתפשטים ברחבי העולם, אם כי לעתים קרובות הם נכנסים לתוקף הרבה יותר מוקדם.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> לשיפור יכולת המסירה, אנו ממליצים להגדיר רשומות [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) ו-[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
 ## מבוא {#introduction}
 
-### מהי דוא"ל עתידי {#what-is-forward-email}
+### מהי העברה בדוא"ל {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> העברת דוא"ל מושלמת עבור יחידים, עסקים קטנים ומפתחים שרוצים כתובות דוא"ל מקצועיות ללא העלות והתחזוקה של פתרון אירוח דוא"ל מלא.
 
 Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק אירוח דוא"ל עבור שמות דומיין מותאמים אישית**.
 
@@ -177,7 +177,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 ניתן להשוות אותנו ליותר מ-56 ספקי שירותי דוא"ל אחרים ב-[דף השוואת הדוא"ל שלנו](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> למידע נוסף על העברת דוא"ל על ידי קריאת [נייר עמדה טכני](/technical-whitepaper.pdf) החינמית שלנו
 
 ### מי משתמש בהעברת דוא"ל {#who-uses-forward-email}
 
@@ -193,7 +193,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 | רדיו פוקס ניוז |  |
 | מכירות פרסומות של דיסני |  |
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
+| מערכת הפעלה LineageOS |  |
 | אובונטו | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | לְשַׁחְרֵר | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | לובונטו | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
@@ -216,7 +216,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 ### כמה מהיר השירות הזה {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> המערכת שלנו מתוכננת למהירות ואמינות, עם מספר שרתים מיותרים כדי להבטיח שהאימיילים שלך יימסרו במהירות.
 
 העברת דוא"ל שולחת הודעות עם עיכוב מינימלי, בדרך כלל תוך שניות מקבלתן.
 
@@ -229,9 +229,9 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 אנו פועלים בזמן אמת, בניגוד לספקים אחרים אשר מסתמכים על תורים מושהים.
 
-איננו כותבים לדיסק או מאחסנים יומני רישום – עם [למעט שגיאות](#do-you-store-error-logs) ו-[SMTP יוצא](#do-you-support-sending-email-with-smtp) (ראו את [מדיניות פרטיות](/privacy) שלנו).
+איננו כותבים לדיסק או מאחסנים יומני רישום – עם ה-[למעט שגיאות](#do-you-store-error-logs) ו-[SMTP יוצא](#do-you-support-sending-email-with-smtp) (ראו את ה-[מדיניות פרטיות](/privacy) שלנו).
 
-הכל נעשה בזיכרון ו-[קוד המקור שלנו נמצא ב-GitHub](https://github.com/forwardemail).
+הכל נעשה בזיכרון וב-[קוד המקור שלנו נמצא ב-GitHub](https://github.com/forwardemail).
 
 ## לקוחות דוא"ל {#email-clients}
 
@@ -239,7 +239,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 1. צור כינוי חדש וצור סיסמה בלוח המחוונים של העברת דוא"ל
 2. פתח את Thunderbird ועבור אל **עריכה ← הגדרות חשבון ← פעולות חשבון ← הוסף חשבון דוא"ל**
-3. הזן את שמך, כתובת הדוא"ל להעברה והסיסמה
+3. הזן את שמך, כתובת הדוא"ל להעברה והסיסמה שלך
 4. לחץ על **הגדרה ידנית** והזן:
 * נכנס: IMAP, `imap.forwardemail.net`, יציאה 993, SSL/TLS
 * יוצא: SMTP, `smtp.forwardemail.net`, יציאה 587, STARTTLS
@@ -260,10 +260,10 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 ### אפל מייל {#apple-mail}
 
-1. צור כינוי חדש וצור סיסמה בלוח המחוונים של העברת דוא"ל
+1. צור כינוי חדש וצור סיסמה בלוח המחוונים להעברת דוא"ל
 2. עבור אל **דואר ← העדפות ← חשבונות ← +**
 3. בחר **חשבון דואר אחר**
-4. הזן את שמך, כתובת הדוא"ל להעברה והסיסמה שלך
+4. הזן את שמך, כתובת הדוא"ל להעברת דוא"ל והסיסמה שלך
 5. עבור הגדרות השרת, הזן:
 * נכנס: `imap.forwardemail.net`
 * יוצא: `smtp.forwardemail.net`
@@ -299,7 +299,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 תחילת העבודה:
 </strong>
 <span>
-אם עקבת אחר ההוראות לעיל תחת <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">כיצד אוכל להתחיל ולהגדיר העברת דוא"ל</a>, תוכל להמשיך לקרוא למטה.
+אם עקבת אחר ההוראות לעיל תחת <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">כיצד להתחיל ולהגדיר העברת דוא"ל</a>, תוכל להמשיך לקרוא למטה.
 </span>
 </div>
 
@@ -311,7 +311,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 חשוב:
 </strong>
 <span>
-אנא ודאו שקראתם את <a href="/terms" class="alert-link" target="_blank">התנאים</a> שלנו, <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a> שלנו, ואת <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">מגבלות ה-SMTP היוצא</a> שלנו & השימוש שלכם נחשב כהכרה והסכמה.
+אנא ודאו שקראתם את <a href="/terms" class="alert-link" target="_blank">התנאים</a> שלנו, <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a> שלנו, ואת <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">מגבלות ה-SMTP היוצא</a> שלנו – השימוש שלכם נחשב כהכרה והסכמה.
 </span>
 </div>
 
@@ -321,7 +321,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 חשוב:
 </strong>
 <span>
-אם אתה מפתח, עיין ב<a class="alert-link" href="/email-api#outbound-emails" target="_blank">מסמכי ה-API של הדוא"ל</a> שלנו.
+אם אתה מפתח, עיין ב<a class="alert-link" href="/email-api#outbound-emails" target="_blank">מסמכי ה-API של דוא"ל</a> שלנו.
 </span>
 </div>
 
@@ -331,7 +331,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 3. לחצו על <strong class="text-success"><i class="fa fa-key"></i>צור סיסמה</strong> ליד הכינוי החדש שנוצר. העתיקו ללוח שלכם ושמרו בצורה מאובטחת את הסיסמה שנוצרה המוצגת על המסך.
 
-4. עבור אל [Gmail](https://gmail.com) ותחת [הגדרות <i class="fa fa-angle-right"></i> חשבונות וייבוא <i class="fa fa-angle-right"></i> שלח דואר כ](https://mail.google.com/mail/u/0/#settings/accounts), לחץ על "הוסף כתובת דוא"ל נוספת"
+4. עבור אל [ג'ימייל](https://gmail.com) ותחת [הגדרות <i class="fa fa-angle-right"></i> חשבונות וייבוא <i class="fa fa-angle-right"></i> שלח דואר כ](https://mail.google.com/mail/u/0/#settings/accounts), לחץ על "הוסף כתובת דוא"ל נוספת".
 
 5. כאשר תתבקשו להזין "שם", הזינו את השם שברצונכם שהאימייל שלכם יוצג כ"מאת" (לדוגמה, "לינוס טורוואלדס").
 
@@ -351,7 +351,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 13. לחץ על "הוסף חשבון" כדי להמשיך
 
-14. פתחו כרטיסייה חדשה ב-[Gmail](https://gmail.com) והמתנו להגעת אימייל האימות (תקבלו קוד אימות המאשר שאתם הבעלים של כתובת האימייל שאתם מנסים "לשלוח דואר בשם")
+14. פתח כרטיסייה חדשה אל [ג'ימייל](https://gmail.com) והמתן להגעת דוא"ל האימות שלך (תקבל קוד אימות המאשר שאתה הבעלים של כתובת הדוא"ל שאתה מנסה "לשלוח דואר בשם")
 
 15. לאחר הגעתו, העתיקו והדביקו את קוד האימות כפי שקיבלת בשלב הקודם
 
@@ -371,7 +371,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 </div>
 
-### מהו המדריך החינמי הישן ל"שלח דואר כ" באמצעות Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### מהו המדריך החינמי הישן ל'שלח דואר כ' באמצעות Gmail' {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">חשוב:</strong> מדריך חינמי זה הוצא משימוש החל ממאי 2023 מכיוון ש-<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we תומך כעת ב-SMTP יוצא</a>. אם תשתמש במדריך שלהלן, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this יגרום לדוא"ל היוצא שלך</a> להראות "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" ב-Gmail.</a></div>
 
@@ -387,7 +387,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 תחילת העבודה:
 </strong>
 <span>
-אם עקבת אחר ההוראות לעיל תחת <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">כיצד אוכל להתחיל ולהגדיר העברת דוא"ל</a>, תוכל להמשיך לקרוא למטה.
+אם עקבת אחר ההוראות לעיל תחת <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">כיצד להתחיל ולהגדיר העברת דוא"ל</a>, תוכל להמשיך לקרוא למטה.
 </span>
 </div>
 
@@ -395,16 +395,16 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 <div id="מדריך-חינמי-ל-מורשה">
 
-1. עליך להפעיל את [אימות דו-שלבי של Gmail][gmail-2fa] כדי שזה יעבוד. בקר ב- <https://www.google.com/landing/2step/> אם עדיין לא הפעלת אותו.
+1. עליך להפעיל את [אימות דו-שלבי של Gmail][gmail-2fa] כדי שזה יעבוד. בקר ב-<https://www.google.com/landing/2step/> אם הוא עדיין לא מופעל.
 
-2. לאחר שאימות דו-שלבי מופעל (או אם כבר הפעלתם אותו), בקרו ב-<https://myaccount.google.com/apppasswords>.
+2. לאחר הפעלת אימות דו-שלבי (או אם כבר הפעלתם אותו), בקרו באתר <https://myaccount.google.com/apppasswords>.
 
 3. כאשר תתבקשו "בחרו את האפליקציה והמכשיר שעבורם ברצונכם ליצור את סיסמת האפליקציה":
 * בחרו "דואר" תחת התפריט הנפתח עבור "בחרו אפליקציה"
 * בחרו "אחר" תחת התפריט הנפתח עבור "בחרו מכשיר"
 * כאשר תתבקשו להזין טקסט, הזינו את כתובת הדוא"ל של הדומיין המותאם אישית שלכם שממנה אתם מעבירים (לדוגמה <code><hello@example.com></code> - זה יעזור לכם לעקוב אם אתם משתמשים בשירות זה עבור מספר חשבונות)
 
-4. העתיקו את הסיסמה ללוח שלכם שנוצר אוטומטית
+4. העתיקו את הסיסמה ללוח שנוצר אוטומטית
 <div class="alert my-3 alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -415,7 +415,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 </span>
 </div>
 
-5. עבור אל [Gmail](https://gmail.com) ותחת [הגדרות <i class="fa fa-angle-right"></i> חשבונות וייבוא <i class="fa fa-angle-right"></i> שלח דואר כ](https://mail.google.com/mail/u/0/#settings/accounts), לחץ על "הוסף כתובת דוא"ל נוספת"
+5. עבור אל [ג'ימייל](https://gmail.com) ותחת [הגדרות <i class="fa fa-angle-right"></i> חשבונות וייבוא <i class="fa fa-angle-right"></i> שלח דואר כ](https://mail.google.com/mail/u/0/#settings/accounts), לחץ על "הוסף כתובת דוא"ל נוספת".
 
 6. כאשר תתבקשו להזין "שם", הזינו את השם שברצונכם שהאימייל שלכם יוצג כ"מאת" (לדוגמה, "לינוס טורוואלדס")
 
@@ -444,7 +444,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 14. לחץ על "הוסף חשבון" כדי להמשיך
 
-15. פתחו כרטיסייה חדשה ב-[Gmail](https://gmail.com) והמתנו להגעת אימייל האימות שלכם (תקבלו קוד אימות המאשר שאתם הבעלים של כתובת האימייל שאתם מנסים "לשלוח דואר בשם")
+15. פתח כרטיסייה חדשה אל [ג'ימייל](https://gmail.com) והמתן להגעת דוא"ל האימות שלך (תקבל קוד אימות המאשר שאתה הבעלים של כתובת הדוא"ל שאתה מנסה "לשלוח דואר בשם")
 
 16. לאחר הגעתו, העתיקו והדביקו את קוד האימות כפי שקיבלת בשלב הקודם
 
@@ -452,7 +452,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 </div>
 
-### הגדרות ניתוב מתקדמות של Gmail {#advanced-gmail-routing-configuration}
+### הגדרת ניתוב מתקדמת של Gmail {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -461,9 +461,9 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 אם ברצונך להגדיר ניתוב מתקדם ב-Gmail כך שכינויים שאינם תואמים לתיבת דואר יעבירו לבורסות הדואר של Forward Email, בצע את השלבים הבאים:
 
-1. התחברו למסוף ניהול המנהלים של גוגל שלכם בכתובת [admin.google.com](https://admin.google.com)
-2. עברו אל **אפליקציות ← Google Workspace ← Gmail ← מסלול**
-3. לחצו על **הוספת מסלול** והגדירו את ההגדרות הבאות:
+1. התחברו למסוף ניהול המנהלים של גוגל בכתובת [admin.google.com](https://admin.google.com)
+2. גשו אל **אפליקציות ← Google Workspace ← Gmail ← מסלול**
+3. לחצו על **הוספת מסלול** וקבעו את ההגדרות הבאות:
 
 **הגדרות נמען יחיד:**
 
@@ -478,7 +478,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 * בחר "נתב למארח" והזן `mx1.forwardemail.net` כשרת הראשי
 * הוסף `mx2.forwardemail.net` כשרת הגיבוי
-* הגדר פורט ל-25
+* הגדר את הפורט ל-25
 * בחר "דרוש TLS" לצורך אבטחה
 
 4. לחצו על **שמור** כדי ליצור את המסלול
@@ -516,9 +516,9 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 * הוסף `mx2.forwardemail.net` כשרת גיבוי
 7. תחת **למעט אם**, בחר:
 * "הנמען הוא..."
-* הוסף את כל תיבות הדואר הקיימות שלך שלא אמורות להיות הועבר
+* הוסף את כל תיבות הדואר הקיימות שלך שלא אמורות להיות מועברות
 8. הגדר את עדיפות הכלל כדי להבטיח שהוא יפעל לאחר כללי זרימת דואר אחרים
-9. לחץ על **שמור** כדי להפעיל את הכלל
+9. לחץ על **שמור** ל הפעל את הכלל
 
 ## פתרון בעיות {#troubleshooting}
 
@@ -532,7 +532,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 **עדיין נתקלים בבעיות?** אנא <a href="/help">צרו איתנו קשר</a> כדי שנוכל לעזור לחקור את הבעיה ולמצוא פתרון מהיר.
 
-### כיצד אוכל להגדיר את תוכנת הדוא"ל שלי לעבודה עם העברת דוא"ל {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### כיצד אוכל להגדיר את תוכנת הדוא"ל שלי לעבוד עם העברת דוא"ל {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
 השירות שלנו עובד עם תוכנות דוא"ל פופולריות כגון:
@@ -570,11 +570,11 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 סעיף זה ידריך אותך אם הדואר היוצא שלך משתמש בשרתי ה-SMTP שלנו (לדוגמה, `smtp.forwardemail.net`) (או מועבר דרך `mx1.forwardemail.net` או `mx2.forwardemail.net`) והוא מועבר לתיקיית הספאם או הדואר הזבל של הנמענים.
 
-אנו עוקבים באופן שוטף אחר [כתובות IP](#what-are-your-servers-ip-addresses) שלנו מול [כל רשימות דחיית ה-DNS המכובדות](#how-do-you-handle-your-ip-addresses-becoming-blocked), **לכן סביר להניח שמדובר בבעיה ספציפית למוניטין של הדומיין**.
+אנו עוקבים באופן שגרתי אחר ה-[כתובות IP](#what-are-your-servers-ip-addresses) שלנו מול [כל רשימות דחיית ה-DNS המכובדות](#how-do-you-handle-your-ip-addresses-becoming-blocked), **לכן סביר להניח שמדובר בבעיה ספציפית למוניטין של הדומיין**.
 
 מיילים יכולים להגיע לתיקיות ספאם מכמה סיבות:
 
-1. **אימות חסר**: הגדר רשומות [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) ו-[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
+1. **אימות חסר**: הגדר את הרשומות [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) ו-[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
 2. **מוניטין של דומיין**: לדומיינים חדשים יש לעיתים קרובות מוניטין ניטרלי עד שהם יוצרים היסטוריית שליחה.
 
@@ -588,35 +588,35 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 | ------------------------------------------- | ---------------------------------------------------------------- | ---------------------- |
 | משוב על סיווג דומיינים ב-Cloudflare | <https://radar.cloudflare.com/domains/feedback> | סיווג |
 | בודק IP ודומיין של Spamhaus | <https://check.spamhaus.org/> | DNSBL |
-| Cisco Talos IP and Domain Reputation Center | <https://talosintelligence.com/reputation_center> | מוֹנֵיטִין |
+| מרכז מוניטין IP ותחום של Cisco Talos | <https://talosintelligence.com/reputation_center> | מוֹנֵיטִין |
 | חיפוש IP ומוניטין של דומיין של Barracuda | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
 | בדיקת רשימה שחורה של ארגז הכלים של MX | <https://mxtoolbox.com/blacklists.aspx> | רשימה שחורה |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | מוֹנֵיטִין |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | מוֹנֵיטִין |
+| כלי מנהל הדואר של גוגל | <https://www.gmail.com/postmaster/> | מוֹנֵיטִין |
+| מרכז השולחים של יאהו | <https://senders.yahooinc.com/> | מוֹנֵיטִין |
 | בדיקת רשימה שחורה של MultiRBL.valli.org | <https://multirbl.valli.org/lookup/> | DNSBL |
 | ציון השולח | <https://senderscore.org/act/blocklist-remover/> | מוֹנֵיטִין |
-| הערכה | <https://www.invaluement.com/lookup/> | DNSBL |
+| ירידת ערך | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| הסרת IP של Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | הֲסָרָה |
+| הסרת כתובת IP של Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | הֲסָרָה |
 | הסרת IP של Cloudmark | <https://csi.cloudmark.com/en/reset/> | הֲסָרָה |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| הסרת IP של Microsoft Outlook ו-Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | הֲסָרָה |
+| ספאם-קופ | <https://www.spamcop.net/bl.shtml> | DNSBL |
+| הסרת כתובת IP של Microsoft Outlook ו-Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | הֲסָרָה |
 | רמות 1, 2 ו-3 של UCEPROTECT | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
 | backscatterer.org של UCEPROTECT | <https://www.backscatterer.org/> | הגנה מפני פיזור אחורי |
-| ה-whitelisted.org של UCEPROTECT | <https://www.whitelisted.org/> (בתשלום) | DNSWL |
+| אתר UCEPROTECT ברשימה הלבנה.org | <https://www.whitelisted.org/> (בתשלום) | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | הֲסָרָה |
 | AOL/Verizon (לדוגמה `[IPTS04]`) | <https://senders.yahooinc.com/> | הֲסָרָה |
 | קוקס תקשורת | `unblock.request@cox.net` | הֲסָרָה |
 | t-online.de (גרמנית/T-Mobile) | `tobr@rx.t-online.de` | הֲסָרָה |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> התחל עם כמות נמוכה של מיילים איכותיים כדי לבנות מוניטין חיובי לפני שליחת כמויות גדולות יותר.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> אם הדומיין שלך נמצא ברשימה שחורה, לכל רשימה שחורה יש תהליך הסרה משלה. בדוק את אתרי האינטרנט שלהם לקבלת הוראות.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> אם אתם זקוקים לעזרה נוספת או מגלים שספק שירות דוא"ל מסוים רשום כספאם בתוצאה חיובית שגויה, אנא <a href="/help">צרו איתנו קשר</a>.
 
 ### מה עליי לעשות אם אני מקבל הודעות דואר זבל {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -634,7 +634,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 עם זאת, אם הם רואים את ההודעה הזו, זה בגלל שהם היו רגילים לראות את האימיילים שלך מגיעים מ-<john@gmail.com> במקום מ-<john@customdomain.com> (רק דוגמה). ג'ימייל יתריע בפני המשתמשים רק כדי לוודא שהדברים בטוחים למקרה שאין פתרון עוקף.
 
-### האם ניתן להסיר את ה-via forwardemail dot net ב-Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### האם ניתן להסיר את ה-via forwardemail dot net ב-Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}}
 
 נושא זה קשור ל-[בעיה מוכרת ב-Gmail שבה מידע נוסף מופיע ליד שם השולח](https://support.google.com/mail/answer/1311182).
 
@@ -642,22 +642,22 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 שימו לב שנושא שאלות נפוצות זה מיועד ספציפית למשתמשים בתכונה [איך לשלוח דואר כ-"דרך ג'ימייל"](#how-to-send-mail-as-using-gmail).
 
-אנא עיין בסעיף [האם אתם תומכים בשליחת דוא"ל באמצעות SMTP](#do-you-support-sending-email-with-smtp) לקבלת הוראות תצורה.
+עיין בסעיף [האם אתם תומכים בשליחת דוא"ל באמצעות SMTP](#do-you-support-sending-email-with-smtp) לקבלת הוראות תצורה.
 
 ## ניהול נתונים {#data-management}
 
 ### היכן ממוקמים השרתים שלך {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> ייתכן שבקרוב נכריז על מיקום מרכז הנתונים שלנו באיחוד האירופי תחת [forwardemail.eu](https://forwardemail.eu). הירשמו לדיון ב-<https://github.com/orgs/forwardemail/discussions/336> לקבלת עדכונים.
 
 השרתים שלנו ממוקמים בעיקר בדנוור, קולורדו – ראה <https://forwardemail.net/ips> לרשימה המלאה של כתובות ה-IP שלנו.
 
-באפשרותך ללמוד על מעבדי המשנה שלנו בדפים [GDPR](/gdpr), [DPA](/dpa) ו- [פְּרָטִיוּת](/privacy) שלנו.
+ניתן למצוא מידע על מעבדי המשנה שלנו בדפים [GDPR](/gdpr), [DPA](/dpa) ו-[פְּרָטִיוּת](/privacy) שלנו.
 
 ### כיצד אוכל לייצא ולגבות את תיבת הדואר שלי {#how-do-i-export-and-backup-my-mailbox}
 
-בכל עת תוכל לייצא את תיבות הדואר שלך בפורמטים [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), או [SQLite](https://en.wikipedia.org/wiki/SQLite) מוצפנים.
+בכל עת ניתן לייצא את תיבות הדואר שלך בפורמטים [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), או [SQLite](https://en.wikipedia.org/wiki/SQLite) מוצפן.
 
 עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i>דומיינים</a> <i class="fa fa-angle-right"></i>כינויים <i class="fa fa-angle-right"></i> הורד גיבוי ובחר את סוג פורמט הייצוא המועדף עליך.
 
@@ -669,17 +669,17 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 | שֵׁם | פוּרמָט | פּלַטפוֹרמָה | כתובת אתר של גיטהאב |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | חלונות | <https://github.com/ename/mboxviewer> |
-| mbox-web-viewer | Mbox | כל הפלטפורמות | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | חלונות | <https://github.com/ayamadori/EmlReader> |
-| מציג אימיילים | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
-| eml-reader | EML | כל הפלטפורמות | <https://github.com/s0ph1e/eml-reader> |
+| מציג MBox | Mbox | חלונות | <https://github.com/ename/mboxviewer> |
+| מציג-אינטרנט-mbox | Mbox | כל הפלטפורמות | <https://github.com/PHMRanger/mbox-web-viewer> |
+| קורא Eml | EML | חלונות | <https://github.com/ayamadori/EmlReader> |
+| מציג אימיילים | EML | קוד VS | <https://github.com/joelharkes/vscode_email_viewer> |
+| קורא eml | EML | כל הפלטפורמות | <https://github.com/s0ph1e/eml-reader> |
 
-בנוסף, אם עליך להמיר קובץ Mbox לקובץ EML, תוכל להשתמש ב- <https://github.com/noelmartinon/mboxzilla>.
+בנוסף, אם עליך להמיר קובץ Mbox לקובץ EML, תוכל להשתמש ב-<https://github.com/noelmartinon/mboxzilla>.
 
 ### כיצד אוכל לייבא ולהעביר את תיבת הדואר הקיימת שלי {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-ניתן לייבא בקלות את האימייל שלך ל"העברת אימייל" (למשל, באמצעות [Thunderbird](https://www.thunderbird.net)) לפי ההוראות הבאות:
+ניתן לייבא בקלות את האימייל שלך ל"העברת אימייל" (למשל, באמצעות [ת'אנדרברד](https://www.thunderbird.net)) לפי ההוראות הבאות:
 
 <div class="alert alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -695,23 +695,23 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 | ספק דוא"ל | פורמט ייצוא | הוראות ייצוא |
 | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
+| ג'ימייל | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
 | הַשׁקָפָה | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">טיפ:</strong> <span>אם אתם משתמשים ב-Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">פורמט ייצוא PST</a>), תוכלו פשוט לבצע את ההוראות תחת "אחר" למטה. עם זאת, סיפקנו קישורים למטה להמרת PST לפורמט MBOX/EML בהתבסס על מערכת ההפעלה שלך:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba עבור Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst עבור Windows cygwin</a> – (לדוגמה, <code>readpst -u -o $OUT_DIR $IN_DIR</code> מחליף את <code>$OUT_DIR</code> ו-<code>$IN_DIR</code> בספריית הפלט ובספריית הקלט). נתיבים בהתאמה).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst עבור אובונטו/לינוקס</a> – (לדוגמה, <code>sudo apt-get install readpst</code> ולאחר מכן <code>readpst -u -o $OUT_DIR $IN_DIR</code>, תוך החלפת <code>$OUT_DIR</code> ו-<code>$IN_DIR</code> בנתיבי ספריית הפלט ובנתיבי ספריית הקלט בהתאמה).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst עבור macOS (דרך brew)</a> – (לדוגמה, <code>brew install libpst</code> ולאחר מכן <code>readpst -u -o $OUT_DIR $IN_DIR</code>, תוך החלפת <code>$OUT_DIR</code> ו- <code>$IN_DIR</code> עם נתיבי ספריית הפלט וספריית הקלט בהתאמה).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">ממיר PST עבור Windows (GitHub)</a></li></ul><br /></span></div> |
 | אפל מייל | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
+| פאסטמייל | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
 | דואר פרוטון | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
 | טוטנוטה | EML | <https://github.com/crepererum-oss/tatutanatata> |
 | לַחשׁוֹב | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
 | זוהו | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
 | אַחֵר | [Use Thunderbird](https://www.thunderbird.net) | הגדר את חשבון הדוא"ל הקיים שלך ב-Thunderbird ולאחר מכן השתמש בתוסף [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) כדי לייצא ולייבא את הדוא"ל שלך. **ייתכן שתוכל גם פשוט להעתיק/להדביק או לגרור/לשחרר דוא"ל בין חשבון אחד למשנהו.** |
 
-2. הורד, התקן ופתח את [Thunderbird](https://www.thunderbird.net).
+2. הורד, התקן ופתח את [ת'אנדרברד](https://www.thunderbird.net).
 
-3. צור חשבון חדש באמצעות כתובת הדוא"ל המלאה של הכינוי שלך (לדוגמה <code><you@yourdomain.com></code>) והסיסמה שיצרת. <strong>אם עדיין אין לך סיסמה שיצרת, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">עיין בהוראות ההתקנה שלנו</a></strong>.
+3. צור חשבון חדש באמצעות כתובת הדוא"ל המלאה של הכינוי שלך (לדוגמה <code><you@yourdomain.com></code>) והסיסמה שנוצרה. <strong>אם עדיין אין לך סיסמה שנוצרה, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">עיין בהוראות ההתקנה שלנו</a></strong>.
 
 4. הורד והתקן את התוסף [ייבוא וייצוא כלים של](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) של Thunderbird.
 
-5. צור תיקייה מקומית חדשה ב-Thunderbird, ולאחר מכן לחץ לחיצה ימנית עליה ← בחר באפשרות `ImportExportTools NG` → בחר `Import mbox file` (לפורמט ייצוא MBOX) – או – `Import messages` / `Import all messages from a directory` (לפורמט ייצוא EML).
+5. צרו תיקייה מקומית חדשה ב-Thunderbird, ולאחר מכן לחצו עליה לחיצה ימנית → בחרו באפשרות `ImportExportTools NG` → בחרו `Import mbox file` (לפורמט ייצוא MBOX) – או – `Import messages` / `Import all messages from a directory` (לפורמט ייצוא EML).
 
 6. גרור/שחרר מהתיקייה המקומית לתיקיית IMAP חדשה (או קיימת) ב-Thunderbird שאליה ברצונך להעלות הודעות באחסון IMAP עם השירות שלנו. פעולה זו תבטיח שהן יגובו באופן מקוון עם אחסון SQLite מוצפן שלנו.
 
@@ -721,7 +721,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 טיפ:
 </strong>
 <span>
-אם אינך בטוח כיצד לייבא לתוך Thunderbird, תוכל לעיין בהוראות הרשמיות בכתובות <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> ו- <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+אם אינך בטוח כיצד לייבא לתוך Thunderbird, תוכל לעיין בהוראות הרשמיות ב-<a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> ו-<a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
 </span>
 </div>
 
@@ -747,13 +747,13 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 </div>
 </div>
 
-### האם אתם תומכים באירוח עצמי {#do-you-support-self-hosting}
+### האם אתה תומך באירוח עצמי {#do-you-support-self-hosting}
 
-כן, החל ממרץ 2025, אנו תומכים באפשרות של אירוח עצמי. קראו את הבלוג [כָּאן](https://forwardemail.net/blog/docs/self-hosted-solution). בדקו את [מדריך באירוח עצמי](https://forwardemail.net/self-hosted) כדי להתחיל. ולמי שמעוניין בגרסה מפורטת יותר שלב אחר שלב, עיינו במדריכים שלנו המבוססים על [אובונטו](https://forwardemail.net/guides/selfhosted-on-ubuntu) או [דביאן](https://forwardemail.net/guides/selfhosted-on-debian).
+כן, החל ממרץ 2025, אנו תומכים באפשרות של אירוח עצמי. קראו את הבלוג [כָּאן](https://forwardemail.net/blog/docs/self-hosted-solution). בדקו את [מדריך בהנחיית צוות](https://forwardemail.net/self-hosted) כדי להתחיל. ולמי שמעוניין בגרסה מפורטת יותר שלב אחר שלב, עיינו במדריכים שלנו המבוססים על [אובונטו](https://forwardemail.net/guides/selfhosted-on-ubuntu) או [דביאן](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## הגדרת דוא"ל {#email-configuration}
+## תצורת דוא"ל {#email-configuration}
 
-### איך מתחילים ומגדירים העברת דוא"ל {#how-do-i-get-started-and-set-up-email-forwarding}
+### כיצד אוכל להתחיל ולהגדיר העברת דוא"ל {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -790,9 +790,10 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
 <thead class="thead-dark">
 <tr> <th>רשם</th> <th>שלבים להגדרה</th>
-</tr> </thead> <tbody> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
+</tr> </thead> <tbody> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>">
 <td>התחברות <i class="fa fa-angle-right"></i> מרכז דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> עריכת הגדרות DNS</td>
-</tr> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon מסלול 53</a></td>
+</tr>
+<tr> <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon כביש 53</a></td>
 <td>התחברות <i class="fa fa-angle-right"></i> אזורים מתארחים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך)</td>
 </tr>
 <tr>
@@ -814,102 +815,96 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 <td>התחברות <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך)</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>"
 <td>התחברות <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> ניהול</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>התחברות <i class="fa fa-angle-right"></i> רשת <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> (בחר הדומיין שלך) <i class="fa fa-angle-right"></i> עוד <i class="fa fa-angle-right"></i> ניהול דומיין</td>
+<td>התחברות <i class="fa fa-angle-right"></i> רשת <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> עוד <i class="fa fa-angle-right"></i> ניהול דומיין</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>התחברות <i class="fa fa-angle-right"></i> בתצוגת כרטיס, לחץ על ניהול בדומיין שלך <i class="fa fa-angle-right"></i> בתצוגת רשימה, לחץ על סמל גלגל השיניים <i class="fa fa-angle-right"></i> DNS ושרתי שמות <i class="fa fa-angle-right"></i> רשומות DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>"
+<td>התחברות <i class="fa fa-angle-right"></i> בתצוגת כרטיסים, לחץ על ניהול בדומיין שלך <i class="fa fa-angle-right"></i> בתצוגת רשימה, לחץ על
+סמל גלגל השיניים <i class="fa fa-angle-right"></i> DNS ושרתי שמות <i class="fa fa-angle-right"></i> רשומות DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>"
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> צפייה</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> צפייה</a>
 </td>
-<td>התחברות <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> ניהול <i class="fa fa-angle-right"></i> (לחץ על סמל גלגל השיניים) <i class="fa fa-angle-right"></i> לחץ על DNS ושרתי שמות בתפריט השמאלי</td>
+<td>התחברות <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> נהל <i class="fa fa-angle-right"></i> (לחץ על סמל גלגל השיניים) <i class="fa fa-angle-right"></i> לחץ על DNS ושרתי שמות בתפריט השמאלי</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
-<td>התחברות <i class="fa fa-angle-right"></i> פאנל <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> ניהול דומיינים <i class="fa fa-angle-right"></i> DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
+<td>התחברות <i class="fa fa-angle-right"></i> פאנל <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> נהל דומיינים <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
 <td>התחברות <i class="fa fa-angle-right"></i> סקירה כללית <i class="fa fa-angle-right"></i> ניהול <i class="fa fa-angle-right"></i> עורך פשוט <i class="fa fa-angle-right"></i> רשומות</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
 <td>התחברות <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> ניהול <i class="fa fa-angle-right"></i> עריכת האזור</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> צפייה</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> צפה</a>
 </td>
 <td>התחברות <i class="fa fa-angle-right"></i> ניהול הדומיינים שלי <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> ניהול DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google דומיינים</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 דומיינים</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> צפייה</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> צפה</a>
 </td>
-<td>התחברות <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> הגדרת DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i>צפייה</a>
-</td>
-<td>התחברות <i class="fa fa-angle-right"></i> רשימת דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> נהל <i class="fa fa-angle-right"></i> DNS מתקדם</td>
-</tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+<td>התחברות <i class="fa fa-angle-right"></i> (בחר (הדומיין שלך) <i class="fa fa-angle-right"></i> הגדר DNS</td>
+</tr> <tr> <td> <a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
+<br /> <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> צפה</a>
+</td> <td>התחברות <i class="fa fa-angle-right"></i> רשימת דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> ניהול <i class="fa fa-angle-right"></i> DNS מתקדם</td>
+</tr> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0"
 <td>התחברות <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> הגדרת DNS של Netlify</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network פתרונות</a></td>
-<td>התחברות <i class="fa fa-angle-right"></i> מנהל חשבון <i class="fa fa-angle-right"></i> שמות הדומיין שלי <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> נהל <i class="fa fa-angle-right"></i> שנה היכן הדומיין מצביע <i class="fa fa-angle-right"></i> DNS מתקדם</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 פתרונות</a></td>
+<td>התחברות <i class="fa fa-angle-right"></i> מנהל חשבון <i class="fa fa-angle-right"></i> שמות הדומיין שלי <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> ניהול <i class="fa fa-angle-right"></i> שינוי מיקום הדומיין <i class="fa fa-angle-right"></i> DNS מתקדם</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener" noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> צפה</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> צפייה</a>
 </td>
-<td>התחברות <i class="fa fa-angle-right"></i> דומיינים מנוהלים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> DNS הגדרות</td>
+<td>התחברות <i class="fa fa-angle-right"></i> דומיינים מנוהלים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> הגדרות DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
 <td>התחברות <i class="fa fa-angle-right"></i> תפריט ראשי <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i>
 הגדרות מתקדמות <i class="fa fa-angle-right"></i> רשומות מותאמות אישית</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's עכשיו</a></td>
-<td>שימוש בממשק שורת פקודה של "now" <i class="fa fa-angle-right"></i> <code>now dns הוסף [דומיין] '@' MX [ערך-רשומה] [עדיפות]</code></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 עכשיו</a></td>
+<td>שימוש בממשק שורת פקודה "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>התחברות <i class="fa fa-angle-right"></i> דף דומיינים <i class="fa fa-angle-right"></i> (בחר את הדומיין שלך) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
 <td>התחברות <i class="fa fa-angle-right"></i> דף דומיינים <i class="fa fa-angle-right"></i> (לחץ על סמל <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> בחר ניהול רשומות DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>התחברות <i class="fa fa-angle-right"></i> דומיינים <i class="fa fa-angle-right"></i> הדומיינים שלי</td>
 </tr>
 <tr>
 <td>אחר</td>
 <td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">חשוב:</strong> לא רואה את שם הרשם שלך רשום כאן? פשוט חפש באינטרנט "כיצד לשנות רשומות DNS ב-$REGISTRAR" (החלפת $REGISTRAR בשם הרשם שלך &ndash; לדוגמה "כיצד לשנות רשומות DNS ב-GoDaddy" אם אתם משתמשים ב-GoDaddy).</div>
+<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">חשוב:</strong> לא רואים את שם הרשם שלכם רשום כאן? פשוט חפשו באינטרנט "איך לשנות רשומות DNS ב-$REGISTRAR" (החליפו את $REGISTRAR בשם הרשם שלכם - לדוגמה, "איך לשנות רשומות DNS ב-GoDaddy" אם אתם משתמשים ב-GoDaddy).</div>
 </td>
 </tr>
 </tbody>
@@ -964,7 +959,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 טיפ:
 </strong>
 <span>
-ודאו שאתם מחליפים את הערכים לעיל בעמודה "ערך" בכתובת הדוא"ל שלכם. ערך ה-"TTL" אינו חייב להיות 3600, הוא יכול להיות ערך נמוך או גבוה יותר במידת הצורך. ערך TTL נמוך יותר יבטיח שכל שינוי עתידי שבוצע ברשומות ה-DNS שלכם יופץ ברחבי האינטרנט מהר יותר - חשבו על זה כמשך הזמן שבו הן יישמרו במטמון (בשניות). אתם יכולים ללמוד עוד על <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL בוויקיפדיה</a>.
+ודאו שאתם מחליפים את הערכים לעיל בעמודה "ערך" בכתובת הדוא"ל שלכם. ערך ה-"TTL" אינו חייב להיות 3600, הוא יכול להיות ערך נמוך או גבוה יותר במידת הצורך. ערך TTL נמוך יותר יבטיח שכל שינוי עתידי שבוצע ברשומות ה-DNS שלכם יופץ ברחבי האינטרנט מהר יותר - חשבו על זה כמשך הזמן שבו הן יישמרו במטמון (בשניות). תוכלו ללמוד עוד על <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL בוויקיפדיה</a>.
 </span>
 </div>
 
@@ -1057,13 +1052,13 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 אפשרות G:
 </strong>
 <span>
-ניתן אפילו להשתמש בביטויים רגולריים ("regex") להתאמת כינויים ולטיפול בהחלפות להעברת מיילים. ראה את הדוגמאות ואת הסעיף המלא על regex שכותרתו <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">האם אתה תומך בביטויים רגולריים או ב-regex</a> למטה.
+ניתן אפילו להשתמש בביטויים רגולריים ("regex") להתאמת כינויים ולטיפול בהחלפות להעברת מיילים. ראה את הדוגמאות ואת הסעיף המלא על regex שכותרתו <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">האם אתם תומכים בביטויים רגולריים או ב-regex</a> למטה.
 </span>
 </div>
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>זקוקים לביטוי רגולרי מתקדם עם החלפה?</strong> עיינו בדוגמאות ובסעיף המלא בנושא ביטוי רגולרי שכותרתו <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">האם אתם תומכים בביטויים רגולריים או בביטויים רגולריים</a> למטה.
+<strong>זקוקים לביטוי רגולרי מתקדם עם החלפה?</strong> עיין בדוגמאות ובסעיף המלא בנושא ביטוי רגולרי שכותרתו <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">האם אתם תומכים בביטויים רגולריים או בביטוי רגולרי</a> למטה.
 </div>
 
 <div class="alert my-3 alert-secondary">
@@ -1138,10 +1133,10 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 </strong>
 <span>
 </span>
-אם אינך מקבל/ת הודעות דוא"ל לניסיון, או מקבל/ת הודעה דוא"ל לניסיון שאומרת "היזהר/י עם הודעה זו", עיין/י בתשובות ל-<a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">מדוע איני מקבל/ת את הודעות הדוא"ל לניסיון</a> ו-<a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">מדוע הודעות הדוא"ל לניסיון שנשלחו אליי ב-Gmail מוצגות כ"חשודות"</a> בהתאמה.
+אם אינך מקבל הודעות דוא"ל לניסיון, או מקבל הודעה דוא"ל לניסיון שאומרת "היזהר עם הודעה זו", עיין בתשובות ל-<a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">מדוע איני מקבל את הודעות הדוא"ל לניסיון</a> ו-<a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">מדוע הודעות הדוא"ל לניסיון שנשלחו אליי ב-Gmail מוצגות כ"חשודות"</a> בהתאמה.
 </div>
 
-אם ברצונך "לשלוח דואר כ" מ-Gmail, תצטרך <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">לצפות בסרטון זה</a></strong>, או לבצע את השלבים המופיעים תחת <a href="#how-to-send-mail-as-using-gmail">How לשליחת דואר כ"באמצעות Gmail</a> להלן.
+אם ברצונך "לשלוח דואר כ" מ-Gmail, תצטרך <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">לצפות בסרטון זה</a></strong>, או לבצע את השלבים המופיעים תחת <a href="#how-to-send-mail-as-using-gmail">How לשליחת דואר כ" באמצעות Gmail</a> למטה.
 
 </li></ol>
 
@@ -1173,7 +1168,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 תוסף אופציונלי:
 </strong>
 <span>
-אם אתם משתמשים בתכונה <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How כדי לשלוח דואר כ- באמצעות Gmail</a>, ייתכן שתרצו להוסיף את עצמכם לרשימת היתרים. עיינו ב<a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">הוראות אלה של Gmail</a> בנושא זה.
+אם אתם משתמשים בתכונה <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How לשליחת דואר כ- באמצעות Gmail</a>, ייתכן שתרצו להוסיף את עצמכם לרשימת היתרים. עיינו ב-<a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">הוראות אלה של Gmail</a> בנושא זה.
 </span>
 </div>
 
@@ -1183,7 +1178,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 אל תנסה להשתמש ב-"Priority" כדרך להגדרת מספר בורסות MX.
 
-במקום זאת, עליך להגדיר את בורסת ה-MX הקיימת שלך כך שתעביר דואר עבור כל הכינויים שאינם תואמים לבורסות השירות שלנו (`mx1.forwardemail.net` ו/או `mx2.forwardemail.net`).
+במקום זאת, עליך להגדיר את בורסת ה-MX הקיימת שלך להעביר דואר עבור כל הכינויים שאינם תואמים לבורסות השירות שלנו (`mx1.forwardemail.net` ו/או `mx2.forwardemail.net`).
 
 אם אתם משתמשים ב-Google Workspace וברצונכם להעביר את כל הכינויים שאינם תואמים לשירות שלנו, עיינו ב-<https://support.google.com/a/answer/6297084>.
 
@@ -1193,7 +1188,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i>דומיינים</a> <i class="fa fa-angle-right"></i> כינויים וצר או ערוך את הכינוי שברצונך להגדיר עבורו מענה אוטומטי לחופשה.
 
-יש לך את היכולת להגדיר תאריך התחלה, תאריך סיום, נושא והודעה, ולהפעיל או להשבית אותם בכל עת:
+יש לך אפשרות להגדיר תאריך התחלה, תאריך סיום, נושא והודעה, ולהפעיל או להשבית אותם בכל עת:
 
 * נושא והודעה בטקסט רגיל נתמכים כעת (אנו משתמשים בחבילת `striptags` באופן פנימי כדי להסיר כל HTML).
 * הנושא מוגבל ל-100 תווים.
@@ -1203,34 +1198,35 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 * לא ניתן להפעיל את תוכנת ה-Vacation Responder בשמות דומיין גלובליים (לדוגמה, [כתובות חד פעמיות](/disposable-addresses) אינם נתמכים).
 לא ניתן להפעיל את תו החופשה עבור כינויים עם תווים כלליים/ביטויים כלליים (`*`) וגם לא עבור ביטויים רגולריים.
 
-בניגוד למערכות דואר אלקטרוני כמו `postfix` (למשל, המשתמשות בתוסף סינון החופשות `sieve`) – Forward Email מוסיף אוטומטית את חתימת ה-DKIM שלך, מאבטח בעיות חיבור בעת שליחת תגובות חופשה (למשל, עקב בעיות חיבור נפוצות של SSL/TLS ושרתים מתוחזקים מדור קודם), ואף תומך בהצפנת Open WKD ו-PGP עבור תגובות חופשה.
+בניגוד למערכות דואר אלקטרוני כמו `postfix` (למשל, המשתמשות בתוסף מסנן החופשות `sieve`) – Forward Email מוסיף אוטומטית את חתימת ה-DKIM שלך, מאתר בעיות חיבור בעת שליחת תגובות חופשה (למשל, עקב בעיות חיבור נפוצות של SSL/TLS ושרתים מתוחזקים מדור קודם), ואף תומך בהצפנת Open WKD ו-PGP עבור תגובות חופשה.
 
 <!--
 * על מנת למנוע שימוש לרעה, ינוכה זיכוי SMTP יוצא אחד עבור כל הודעת מענה חופשה שנשלחת.
 * כל החשבונות בתשלום כוללים 300 זיכויים ליום כברירת מחדל. אם אתם זקוקים לסכום גדול יותר, אנא צרו איתנו קשר.
 -->
 
-1. אנו שולחים הודעה פעם אחת בלבד לכל [רשימת היתרים](#do-you-have-an-allowlist) שולח כל 4 ימים (בדומה להתנהגות של Gmail).
+1. אנו שולחים הודעה פעם אחת בלבד לכל שולח [רשימת היתרים](#do-you-have-an-allowlist) כל 4 ימים (בדומה להתנהגות של Gmail).
 
-* מטמון Redis שלנו משתמש בטביעת אצבע של `alias_id` ו-`sender`, בעוד ש-`alias_id` הוא מזהה MongoDB הכינוי ו-`sender` הוא כתובת ה-From (אם היא רשומה ברשימת ההיתרים) או דומיין הבסיס בכתובת ה-From (אם לא רשומה ברשימת ההיתרים). לשם הפשטות, תוקף טביעת האצבע הזו במטמון נקבע ל-4 ימים.
+* מטמון Redis שלנו משתמש בטביעת אצבע של `alias_id` ו-`sender`, בעוד ש-`alias_id` הוא מזהה MongoDB הכינוי ו-`sender` הוא כתובת ה-From (אם היא רשומה ברשימת ההיתרים) או הדומיין הבסיסי בכתובת ה-From (אם לא רשומה ברשימת ההיתרים). לשם הפשטות, תוקף טביעת האצבע הזו במטמון נקבע ל-4 ימים.
 
 * הגישה שלנו, המשתמשת בדומיין הבסיסי המותח בכתובת "מאת" עבור שולחים שאינם ברשימת ההיתרים, מונעת שימוש לרעה מצד שולחים לא מוכרים יחסית (למשל, גורמים זדוניים) מלציף הודעות מענה חופשה.
 
-2. אנו שולחים רק כאשר ה-MAIL FROM ו/או From אינם ריקים ואינם מכילים (ללא תלות באותיות גדולות/קטנות) [שם המשתמש של postmaster](#what-are-postmaster-addresses) (החלק שלפני ה-@ בהודעת דוא"ל).
+2. אנו שולחים רק כאשר השדות MAIL FROM ו/או From אינם ריקים ואינם מכילים (ללא תלות באותיות גדולות/קטנות) [שם משתמש של מנהל הדואר](#what-are-postmaster-addresses) (החלק שלפני ה-@ בהודעת דוא"ל).
 
 3. איננו שולחים אם ההודעה המקורית הכילה אחת מהכותרות הבאות (לא תלויות רישיות):
 
-* כותרת של `auto-submitted` עם ערך שאינו שווה ל-`no`. * כותרת של `x-auto-response-suppress` עם ערך של `dr`, `autoreply`, `auto-reply`, `auto_reply`, או `all`
-* כותרת של `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, או `x-auto-respond` (ללא קשר לערך).
-* כותרת של `precedence` עם ערך של `bulk`, `autoreply`, `auto-reply`, `auto_reply`, או `list`.
+* כותרת של `auto-submitted` עם ערך שאינו שווה ל-`no`.
+* כותרת של `x-auto-response-suppress` עם ערך של `dr`, `autoreply`, `auto-reply`, `auto_reply`, או `all`.
+* כותרת של `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6, או `no`7 (ללא קשר לערך).
+* כותרת של `no`8 עם ערך של `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2, או `x-auto-response-suppress`3.
 
-4. איננו שולחים אם כתובת הדוא"ל MAIL FROM או From מסתיימת ב-`+donotreply`, `-donotreply`, `+noreply`, או `-noreply`.
+4. איננו שולחים אם כתובת הדוא"ל MAIL FROM או From מסתיימת ב-`+donotreply`, `-donotreply`, `+noreply` או `-noreply`.
 
 5. איננו שולחים אם חלק שם המשתמש של כתובת הדוא"ל "מאת" היה `mdaemon` והיה לו כותרת שאינה תלוית רישיות של `X-MDDSN-Message`.
 
 6. איננו שולחים אם הייתה כותרת `content-type` שאינה רגישה לאותיות גדולות/קטנות של `multipart/report`.
 
-### כיצד אוכל להגדיר SPF עבור דוא"ל מורחב {#how-do-i-set-up-spf-for-forward-email}
+### כיצד אוכל להגדיר SPF עבור דוא"ל העברת דוא"ל {#how-do-i-set-up-spf-for-forward-email}
 
 באמצעות דף ניהול ה-DNS של הרשם שלך, הגדר את רשומת ה-<strong class="notranslate">TXT</strong> הבאה:
 
@@ -1285,7 +1281,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 עבור אל <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i>דומיינים</a> <i class="fa fa-angle-right"></i> הגדרות <i class="fa fa-angle-right"></i> תצורת SMTP יוצא ופעל לפי הוראות ההגדרה.
 
-### איך אני מחבר ומגדיר את אנשי הקשר שלי {#how-do-i-connect-and-configure-my-contacts}
+### כיצד ניתן לחבר ולקבוע את הגדרות אנשי הקשר שלי {#how-do-i-connect-and-configure-my-contacts}
 
 **כדי להגדיר את אנשי הקשר שלך, השתמש בכתובת האתר של CardDAV של:** `https://carddav.forwardemail.net` (או פשוט `carddav.forwardemail.net` אם הלקוח שלך מאפשר זאת)**
 
@@ -1299,17 +1295,17 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 אם תרצו להוסיף יומנים נוספים, פשוט הוסיפו כתובת URL חדשה ליומן: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**ודאו להחליף את `calendar-name` בשם היומן הרצוי**)
 
-ניתן לשנות את שם וצבע לוח שנה לאחר יצירתו – פשוט השתמשו באפליקציית לוח השנה המועדפת עליכם (למשל, Apple Mail או [Thunderbird](https://thunderbird.net)).
+ניתן לשנות את שם וצבע לוח שנה לאחר יצירתו - פשוט השתמשו באפליקציית לוח השנה המועדפת עליכם (למשל, Apple Mail או [ת'אנדרברד](https://thunderbird.net)).
 
 ### כיצד אוכל להגדיר SRS עבור העברת דוא"ל {#how-do-i-set-up-srs-for-forward-email}
 
-אנו מגדירים אוטומטית את [תוכנית כתיבה מחדש של השולח](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – אינך צריך לעשות זאת בעצמך.
+אנו מגדירים באופן אוטומטי את [תוכנית כתיבה מחדש של השולח](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – אינך צריך לעשות זאת בעצמך.
 
 ### כיצד אוכל להגדיר MTA-STS עבור העברת דוא"ל {#how-do-i-set-up-mta-sts-for-forward-email}
 
-אנא עיינו ב-[המדור שלנו על MTA-STS](#do-you-support-mta-sts) לקבלת תובנות נוספות.
+אנא עיין ב-[המדור שלנו על MTA-STS](#do-you-support-mta-sts) לקבלת תובנות נוספות.
 
-### איך אני מוסיף תמונת פרופיל לכתובת הדוא"ל שלי {#how-do-i-add-a-profile-picture-to-my-email-address}
+### כיצד אוכל להוסיף תמונת פרופיל לכתובת הדוא"ל שלי {#how-do-i-add-a-profile-picture-to-my-email-address}
 
 אם אתם משתמשים ב-Gmail, בצעו את השלבים הבאים:
 
@@ -1323,7 +1319,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 8. הזן את קוד האימות מהדוא"ל הזה
 9. מלא את פרטי הפרופיל עבור חשבון Google החדש שלך
 10. הסכים לכל מדיניות הפרטיות ותנאי השימוש
-11. עבור אל <https://google.com> ובפינה הימנית העליונה, לחץ על סמל הפרופיל שלך ולחץ על כפתור "שנה"
+11. עבור אל <https://google.com> ובפינה הימנית העליונה, לחץ על סמל הפרופיל שלך ולחץ על כפתור "שינוי"
 12. העלה תמונה או אווטאר חדשים עבור החשבון שלך
 13. השינויים ייקח כ-1-2 שעות להטמעה, אך לפעמים הם עשויים להיות מהירים מאוד.
 14. שלח דוא"ל ניסיון ותמונת הפרופיל אמורה להופיע.
@@ -1332,11 +1328,11 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 ### האם אתם תומכים בניוזלטרים או ברשימות תפוצה עבור דוא"ל שיווקי? {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
-כן, ניתן לקרוא עוד בכתובת <https://forwardemail.net/guides/newsletter-with-listmonk>.
+כן, ניתן לקרוא עוד ב-<https://forwardemail.net/guides/newsletter-with-listmonk>.
 
 שימו לב שעל מנת לשמור על מוניטין IP ולהבטיח את יכולת המסירה, ל-Forward Email יש תהליך בדיקה ידני על בסיס כל דומיין לאישור **ניוזלטר**. שלחו דוא"ל לכתובת <support@forwardemail.net> או פתחו [בקשת עזרה](https://forwardemail.net/help) לאישור. תהליך זה אורך בדרך כלל פחות מ-24 שעות, כאשר רוב הבקשות מטופלות תוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך את התהליך הזה למיידי עם בקרות נוספות והתראות על ספאם. תהליך זה מבטיח שהאימיילים שלכם יגיעו לתיבת הדואר הנכנס וההודעות שלכם לא יסומנו כספאם.
 
-### האם אתם תומכים בשליחת דוא"ל באמצעות API {#do-you-support-sending-email-with-api}
+### האם אתם תומכים בשליחת דוא"ל באמצעות API {#do-you-support-sending-email-with-api}}
 
 כן, החל ממאי 2023 אנו תומכים בשליחת דוא"ל עם API כתוסף לכל המשתמשים בתשלום.
 
@@ -1350,13 +1346,13 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 </span>
 </div>
 
-אנא עיינו בסעיף שלנו בנושא [אימיילים](/email-api#outbound-emails) בתיעוד ה-API שלנו לקבלת אפשרויות, דוגמאות ותובנות נוספות.
+אנא עיין בסעיף שלנו בנושא [אימיילים](/email-api#outbound-emails) בתיעוד ה-API שלנו לקבלת אפשרויות, דוגמאות ותובנות נוספות.
 
 כדי לשלוח דוא"ל יוצא באמצעות ה-API שלנו, עליך להשתמש באסימון ה-API שלך הזמין תחת [האבטחה שלי](/my-account/security).
 
-### האם אתם תומכים בקבלת דוא"ל באמצעות IMAP {#do-you-support-receiving-email-with-imap}
+### האם אתה תומך בקבלת דוא"ל באמצעות IMAP {#do-you-support-receiving-email-with-imap}
 
-כן, החל מ-16 באוקטובר 2023 אנו תומכים בקבלת דוא"ל דרך IMAP כתוסף עבור כל המשתמשים בתשלום. **אנא קראו את המאמר המעמיק שלנו** בנושא [כיצד פועלת תכונת אחסון תיבת הדואר המוצפנת שלנו של SQLite](/blog/docs/best-quantum-safe-encrypted-email-service).
+כן, החל מ-16 באוקטובר 2023 אנו תומכים בקבלת דוא"ל דרך IMAP כתוסף עבור כל המשתמשים בתשלום. **אנא קראו את המאמר המעמיק שלנו** בנושא [כיצד פועלת תכונת אחסון תיבת הדואר המוצפנת של SQLite שלנו](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="הוראות-imap">
 
@@ -1380,7 +1376,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 <strong class="font-weight-bold">
 טיפ:
 </strong>
-<span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">חלופה בקוד פתוח המתמקדת בפרטיות</a>.</span>
+<span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">אלטרנטיבה בקוד פתוח המתמקדת בפרטיות</a>.</span>
 </div>
 
 4. כאשר תתבקש להזין שם שרת IMAP, הזן `imap.forwardemail.net`
@@ -1414,7 +1410,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 ### האם אתה תומך ב-POP3 {#do-you-support-pop3}
 
-כן, החל מ-4 בדצמבר 2023 אנו תומכים ב-[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) כתוסף לכל המשתמשים בתשלום. **אנא קראו את המאמר המעמיק שלנו** בנושא [כיצד פועלת תכונת אחסון תיבת הדואר המוצפנת שלנו של SQLite](/blog/docs/best-quantum-safe-encrypted-email-service).
+כן, החל מ-4 בדצמבר 2023 אנו תומכים ב-[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) כתוסף לכל המשתמשים בתשלום. **אנא קראו את המאמר המעמיק שלנו** בנושא [כיצד פועלת תכונת אחסון תיבת הדואר המוצפנת של SQLite שלנו](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="הוראות-pop3">
 
@@ -1438,10 +1434,10 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 <strong class="font-weight-bold">
 טיפ:
 </strong>
-<span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">חלופה בקוד פתוח המתמקדת בפרטיות</a>.</span>
+<span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">אלטרנטיבה בקוד פתוח המתמקדת בפרטיות</a>.</span>
 </div>
 
-4. כאשר תתבקש להזין שם שרת POP3, הזן `pop3.forwardemail.net`
+4. כאשר תתבקשו להזין שם שרת POP3, הזינו `pop3.forwardemail.net`
 
 5. כאשר תתבקשו להזין יציאת שרת POP3, הזינו `995` (SSL/TLS) – ראו [יציאות POP3 חלופיות](/faq#what-are-your-pop3-server-configuration-settings) במידת הצורך
 <div class="alert my-3 alert-warning">
@@ -1470,9 +1466,9 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 </div>
 
-### האם אתם תומכים בלוחות שנה (CalDAV) {#do-you-support-calendars-caldav}
+### האם אתם תומכים ביומנים (CalDAV) {#do-you-support-calendars-caldav}
 
-כן, החל מ-5 בפברואר 2024 הוספנו תכונה זו. השרת שלנו הוא `caldav.forwardemail.net` והוא גם מנוטר ב<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">דף הסטטוס</a> שלנו.
+כן, החל מ-5 בפברואר 2024 הוספנו תכונה זו. השרת שלנו הוא `caldav.forwardemail.net` והוא מנוטר גם ב<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">דף הסטטוס</a> שלנו.
 
 הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך פורט `443` ‏(HTTPS).
 
@@ -1481,11 +1477,11 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 | שם משתמש | `user@example.com` | כתובת דוא"ל של כינוי שקיים עבור הדומיין ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">החשבון שלי <i class="fa fa-angle-right"></i> דומיינים</a>. |
 | סִיסמָה | `************************` | סיסמה שנוצרה ספציפית לשם חיבה. |
 
-כדי להשתמש בתמיכה בלוח שנה, ה- **משתמש** חייב להיות כתובת הדוא"ל של כינוי שקיים עבור הדומיין ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">דומיינים של החשבון שלי</a> – וה- **סיסמה** חייבת להיות סיסמה ספציפית לכינוי שנוצרה.
+כדי להשתמש בתמיכה בלוח שנה, ה-**משתמש** חייב להיות כתובת הדוא"ל של כינוי שקיים עבור הדומיין ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">דומיינים של החשבון שלי<i class="fa fa-angle-right"></i></a> – וה-**סיסמה** חייבת להיות סיסמה ספציפית לכינוי שנוצרה.
 
-### האם אתם תומכים באנשי קשר (CardDAV) {#do-you-support-contacts-carddav}
+### האם אתה תומך באנשי קשר (CardDAV) {#do-you-support-contacts-carddav}
 
-כן, החל מ-12 ביוני 2025 הוספנו תכונה זו. השרת שלנו הוא `carddav.forwardemail.net` והוא גם מנוטר ב<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">דף הסטטוס</a> שלנו.
+כן, החל מ-12 ביוני 2025 הוספנו תכונה זו. השרת שלנו הוא `carddav.forwardemail.net` והוא מנוטר גם ב<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">דף הסטטוס</a> שלנו.
 
 הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך פורט `443` ‏(HTTPS).
 
@@ -1496,7 +1492,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 כדי להשתמש בתמיכה באנשי קשר, ה- **משתמש** חייב להיות כתובת הדוא"ל של כינוי שקיים עבור הדומיין ב-<a href="/my-account/domains" target="_blank" rel="noopener noreferrer">דומיינים של החשבון שלי <i class="fa fa-angle-right"></i></a> – וה- **סיסמה** חייבת להיות סיסמה ספציפית לכינוי שנוצרה.
 
-### האם אתם תומכים בשליחת דוא"ל באמצעות SMTP {#do-you-support-sending-email-with-smtp}
+### האם אתה תומך בשליחת דוא"ל באמצעות SMTP {#do-you-support-sending-email-with-smtp}
 
 כן, החל ממאי 2023 אנו תומכים בשליחת דוא"ל עם SMTP כתוסף לכל המשתמשים בתשלום.
 
@@ -1508,7 +1504,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 חשוב:
 </strong>
 <span>
-אנא ודאו שקראתם את <a href="/terms" class="alert-link" target="_blank">התנאים</a> שלנו, <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a> שלנו, ואת <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">מגבלות ה-SMTP היוצא</a> שלנו - השימוש שלכם נחשב כהכרה והסכמה.
+אנא ודאו שקראתם את <a href="/terms" class="alert-link" target="_blank">התנאים</a> שלנו, <a href="/privacy" class="alert-link" target="_blank">מדיניות הפרטיות</a> שלנו, ואת <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">מגבלות ה-SMTP היוצא</a> שלנו – השימוש שלכם נחשב כהכרה והסכמה.
 </span>
 </div>
 
@@ -1534,7 +1530,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 <strong class="font-weight-bold">
 טיפ:
 </strong>
-<span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">חלופה בקוד פתוח המתמקדת בפרטיות</a>.</span>
+<span>אנו ממליצים להשתמש ב-<a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>, או <a href="/blog/open-source" class="alert-link" target="_blank">אלטרנטיבה בקוד פתוח המתמקדת בפרטיות</a>.</span>
 </div>
 
 5. כאשר תתבקש להזין שם שרת SMTP, הזן `smtp.forwardemail.net`
@@ -1587,7 +1583,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 * אם יש לכם מספר כינויים התואמים לכתובת העברה נתונה (למשל, regex/wildcard/exact combo) ואם יותר מאחד מהם מכיל מפתח PGP שהועלה ו-PGP מסומן →, נשלח לכם דוא"ל התראת שגיאה ולא נצפין את ההודעה עם מפתח ה-PGP שהעליתם. זה נדיר מאוד ובדרך כלל חל רק על משתמשים מתקדמים עם כללי כינויים מורכבים.
 **הצפנת PGP לא תחול על העברת דוא"ל דרך שרתי ה-MX שלנו אם לשולח הייתה מדיניות DMARC של דחייה. אם אתם זקוקים להצפנת PGP על *כל* הדואר, אנו ממליצים להשתמש בשירות IMAP שלנו ולהגדיר את מפתח ה-PGP שלכם עבור הכינוי שלכם לדואר נכנס.**
 
-ניתן לאמת את הגדרת מדריך מפתחות האינטרנט שלך בכתובת <https://wkd.chimbosonic.com/> (קוד פתוח) או <https://www.webkeydirectory.com/> (קנייני).
+**ניתן לאמת את הגדרת מדריך מפתחות האינטרנט שלך ב-<https://wkd.chimbosonic.com/> (קוד פתוח) או ב-<https://www.webkeydirectory.com/> (קנייני).**
 
 <div class="alert my-3 alert-success">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1611,8 +1607,8 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 | לקוח דוא"ל | פּלַטפוֹרמָה | תוסף מומלץ | הערות |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Thunderbird | שולחן עבודה | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | ל-Thunderbird יש תמיכה מובנית ב-OpenPGP. |
-| Gmail | דפדפן | [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download) (רישיון קנייני) | Gmail אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download). |
+| ת'אנדרברד | שולחן עבודה | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | ל-Thunderbird יש תמיכה מובנית ב-OpenPGP. |
+| ג'ימייל | דפדפן | [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download) (רישיון קנייני) | Gmail אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [Mailvelope](https://mailvelope.com/) או [FlowCrypt](https://flowcrypt.com/download). |
 | אפל מייל | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
 | אפל מייל | iOS | [PGPro](https://github.com/opensourceios/PGPro/) או [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (רישיון קנייני) | Apple Mail אינו תומך ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [PGPro](https://github.com/opensourceios/PGPro/) או [FlowCrypt](https://flowcrypt.com/download). |
 | הַשׁקָפָה | חלונות | [gpg4win](https://www.gpg4win.de/index.html) | תוכנת הדואר השולחנית של Outlook אינה תומכת ב-OpenPGP, אך ניתן להוריד את התוסף בקוד פתוח [gpg4win](https://www.gpg4win.de/index.html). |
@@ -1629,14 +1625,14 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 2. פתחו את התוסף, צרו את המפתח הציבורי שלכם והגדירו את תוכנת הדוא"ל שלכם לשימוש בו.
 
-3. העלה את המפתח הציבורי שלך לכתובת <https://keys.openpgp.org/upload>.
+3. העלה את המפתח הציבורי שלך בכתובת <https://keys.openpgp.org/upload>.
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 טיפ:
 </strong>
-<span>תוכל לבקר ב-<a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> כדי לנהל את המפתח שלך בעתיד.</span>
+<span>תוכל לבקר באתר <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a>" כדי לנהל את המפתח שלך בעתיד.</span>
 </div>
 
 <div class="alert my-3 alert-secondary">
@@ -1645,7 +1641,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 תוסף אופציונלי:
 </strong>
 <span>
-אם אתם משתמשים בשירות האחסון המוצפן שלנו (IMAP/POP3) שלנו וברצונכם שכל הדוא"ל המאוחסן במסד הנתונים SQLite (שכבר מוצפן) שלכם יוצפן באמצעות המפתח הציבורי שלכם, גשו אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i>דומיינים</a> <i class="fa fa-angle-right"></i>כינויים (לדוגמה <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> ערוך את <i class="fa fa-angle-right"></i> OpenPGP והעלה את המפתח הציבורי שלך.
+אם אתם משתמשים בשירות האחסון המוצפן שלנו (IMAP/POP3) שלנו וברצונכם שכל הדוא"ל המאוחסן במסד הנתונים של SQLite (שכבר מוצפן) שלכם יוצפן באמצעות המפתח הציבורי שלכם, גשו אל <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">החשבון שלי <i class="fa fa-angle-right"></i>דומיינים</a> <i class="fa fa-angle-right"></i>כינויים (לדוגמה <code>hello@example.com</code>) <i class="fa fa-angle-right"></i> ערוך את <i class="fa fa-angle-right"></i> OpenPGP והעלה את המפתח הציבורי שלך.
 </span>
 </div>
 
@@ -1675,13 +1671,13 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 ### האם אתה תומך ב-MTA-STS {#do-you-support-mta-sts}
 
-כן, החל מ-2 במרץ 2023 אנו תומכים ב-[MTA-STS](https://www.hardenize.com/blog/mta-sts). באפשרותך להשתמש ב-[תבנית זו](https://github.com/jpawlowski/mta-sts.template) אם ברצונך להפעיל אותו בדומיין שלך.
+כן, החל מ-2 במרץ 2023 אנו תומכים ב-[MTA-STS](https://www.hardenize.com/blog/mta-sts). ניתן להשתמש ב-[תבנית זו](https://github.com/jpawlowski/mta-sts.template) אם ברצונך להפעיל אותו בדומיין שלך.
 
 ניתן למצוא את התצורה שלנו באופן ציבורי ב-GitHub בכתובת <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
-### האם אתם תומכים במפתחות וב-WebAuthn {#do-you-support-passkeys-and-webauthn}
+### האם אתם תומכים במפתחות סיסמה וב-WebAuthn {#do-you-support-passkeys-and-webauthn}
 
-כן! החל מ-13 בדצמבר 2023 הוספנו תמיכה במפתחות [עקב ביקוש גבוה](https://github.com/orgs/forwardemail/discussions/182).
+כן! החל מ-13 בדצמבר 2023 הוספנו תמיכה עבור מפתחות [עקב ביקוש גבוה](https://github.com/orgs/forwardemail/discussions/182).
 
 סיסמות מאפשרות לך להתחבר בצורה מאובטחת ללא צורך בסיסמה ואימות דו-שלבי.
 
@@ -1699,42 +1695,42 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 כן. יש לנו תמיכה מובנית ב-SPF, DKIM, DMARC, ARC ו-SRS בכל התוכניות. עבדנו גם בהרחבה עם המחברים המקוריים של מפרטים אלה ועם מומחי דוא"ל אחרים כדי להבטיח שלמות ומסירה גבוהה.
 
-### האם אתם תומכים ב-webhooks של ניתוק (bounce webhooks) {#do-you-support-bounce-webhooks}
+### האם אתם תומכים ב-webhooks של bounce {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 טיפ:
 </strong>
-מחפשים תיעוד על webhooks לדוא"ל? ראו <a href="/faq#do-you-support-webhooks" class="alert-link">האם אתם תומכים ב-webhooks?</a> למידע נוסף.
+מחפש תיעוד על webhooks לדוא"ל? ראה <a href="/faq#do-you-support-webhooks" class="alert-link">האם אתם תומכים ב-webhooks?</a> לקבלת תובנות נוספות.
 <span>
 </span>
 </div>
 
-כן, החל מ-14 באוגוסט 2024 הוספנו תכונה זו. כעת ניתן לגשת לחשבון שלי ← דומיינים ← הגדרות ← כתובת URL של Webhook חוזרת ולהגדיר כתובת URL של `http://` או `https://` שאליה נשלח בקשה של `POST` בכל פעם שהודעות דוא"ל SMTP יוצאות חוזרות.
+כן, החל מ-14 באוגוסט 2024 הוספנו תכונה זו. כעת ניתן לעבור אל החשבון שלי ← דומיינים ← הגדרות ← כתובת URL של Webhook חוזרת ולהגדיר כתובת URL של `http://` או `https://` שאליה נשלח בקשת `POST` בכל פעם שהודעות דוא"ל SMTP יוצאות חוזרות.
 
 זה שימושי עבורך לניהול ומעקב אחר ה-SMTP היוצא שלך - וניתן להשתמש בו כדי לשמור על מנויים, לבטל הסכמה ולזהות מתי מתרחשות חזרות.
 
 מטענים של webhook של Bounce נשלחים כ-JSON עם המאפיינים הבאים:
 
-* `email_id` (מחרוזת) - מזהה דוא"ל התואם לדוא"ל ב"החשבון שלי" → "דוא"ל" (SMTP יוצא)
+* `email_id` (מחרוזת) - מזהה דוא"ל התואם לדוא"ל בחשבון שלי → דוא"ל (SMTP יוצא)
 * `list_id` (מחרוזת) - ערך הכותרת `List-ID` (לא רגיש לאותיות גדולות/קטנות), אם קיים, מהדוא"ל היוצא המקורי
 * `list_unsubscribe` (מחרוזת) - ערך הכותרת `List-Unsubscribe` (לא רגיש לאותיות גדולות/קטנות), אם קיים, מהדוא"ל היוצא המקורי
 * `feedback_id` (מחרוזת) - ערך הכותרת `Feedback-ID` (לא רגיש לאותיות גדולות/קטנות), אם קיים, מהדוא"ל היוצא המקורי
-* `recipient` (מחרוזת) - כתובת הדוא"ל של הנמען שהוחזר או שקיבל שגיאה
-* `message` (מחרוזת) - הודעת שגיאה מפורטת עבור הניתור
-* `response` (מחרוזת) - הודעת תגובת ה-SMTP
-* `response_code` (מספר) - קוד תגובת ה-SMTP שעבר ניתוח
-* `truth_source` (מחרוזת) - אם קוד התגובה הגיע ממקור מהימן, ערך זה יאוכלס בשם הדומיין הבסיסי (לדוגמה `google.com` או `yahoo.com`)
-* `bounce` (אובייקט) - אובייקט המכיל את המאפיינים הבאים המפרטים את סטטוס הניתור והדחייה
-* `action` (מחרוזת) - פעולת ניתור (לדוגמה `"reject"`)
-* `message` (מחרוזת) - סיבת ניתור (לדוגמה `"Message Sender Blocked By Receiving Server"`)
-* `category` (מחרוזת) - קטגוריית ניתור (לדוגמה `"block"`)
-* `code` (מספר) - קוד סטטוס ניתור (לדוגמה `554`)
-* `status` (מחרוזת) - קוד ניתור מהודעת תגובה (לדוגמה `5.7.1`)
-* `line` (מספר) - מספר שורה מנותח, אם קיים, [מרשימת ניתוח יציאות של Zone-MTA](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (לדוגמה `526`)
-* `headers` (אובייקט) - זוג ערכי מפתח של כותרות עבור הדוא"ל היוצא
-* `bounced_at` (מחרוזת) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) מעוצב תאריך בו התרחשה שגיאת הניתור החוזר
+* `recipient` (מחרוזת) - כתובת הדוא"ל של הנמען שהחזיר או שגיאתו
+* `message` (מחרוזת) - הודעת שגיאה מפורטת עבור ההחזרה
+* `response` (מחרוזת) - הודעת התגובה של ה-SMTP
+* `list_id`0 (מספר) - ה- קוד תגובה של SMTP מנותח
+* `list_id`1 (מחרוזת) - אם קוד התגובה הגיע ממקור מהימן, ערך זה יאוכלס בשם הדומיין הבסיסי (לדוגמה, `list_id`2 או `list_id`3)
+* `list_id`4 (אובייקט) - אובייקט המכיל את המאפיינים הבאים המפרטים את סטטוס הניתור והדחייה
+* `list_id`5 (מחרוזת) - פעולת ניתור (לדוגמה, `list_id`6)
+* `list_id`7 (מחרוזת) - סיבת ניתור (לדוגמה, `list_id`8)
+* `list_id`9 (מחרוזת) - קטגוריית ניתור (לדוגמה, `List-ID`0)
+* `List-ID`1 (מספר) - קוד סטטוס ניתור (לדוגמה, `List-ID`2)
+* `List-ID`3 (מחרוזת) - קוד ניתור מהודעת תגובה (לדוגמה, `List-ID`4)
+* `List-ID`5 (מספר) - מספר שורה מנותח, אם קיים, `List-ID`6 (לדוגמה, `List-ID`7)
+* `List-ID`8 (אובייקט) - זוג ערכי מפתח של כותרות עבור הדוא"ל היוצא
+* `List-ID`9 (מחרוזת) - `list_unsubscribe`0 מעוצב תאריך שבו התרחשה שגיאת הניתור
 
 לְדוּגמָה:
 
@@ -1761,16 +1757,16 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 הנה כמה הערות נוספות בנוגע ל-webhooks של bounce:
 
-* אם מטען ה-webhook מכיל ערך `list_id`, `list_unsubscribe`, או `feedback_id`, עליך לנקוט בפעולה מתאימה כדי להסיר את `recipient` מהרשימה במידת הצורך.
-* אם הערך `bounce.category` היה אחד `"block"`, `"recipient"`, `"spam"`, או `"virus"`, עליך בהחלט להסיר את המשתמש מהרשימה.
-* אם עליך לאמת עומסי webhook (כדי לוודא שהם אכן מגיעים מהשרת שלנו), תוכל להשתמש ב-[פתרון כתובת ה-IP של הלקוח המרוחק ושם המארח של הלקוח באמצעות חיפוש הפוך](https://nodejs.org/api/dns.html#dnspromisesreverseip) – זה אמור להיות `smtp.forwardemail.net`.
-* תוכל גם לבדוק את כתובת ה-IP מול [כתובות ה-IP שפרסמנו](#what-are-your-servers-ip-addresses).
+* אם מטען ה-webhook מכיל ערך `list_id`, `list_unsubscribe` או `feedback_id`, עליך לנקוט בפעולה מתאימה כדי להסיר את `recipient` מהרשימה במידת הצורך.
+* אם ערך `bounce.category` היה `"block"`, `"recipient"`, `"spam"` או `"virus"`, עליך בהחלט להסיר את המשתמש מהרשימה.
+* אם עליך לאמת עומסי webhook (כדי לוודא שהם אכן מגיעים מהשרת שלנו), תוכל להשתמש ב-[פתרון כתובת ה-IP של הלקוח המרוחק ושם המארח של הלקוח באמצעות חיפוש הפוך](https://nodejs.org/api/dns.html#dnspromisesreverseip) - זה אמור להיות `list_unsubscribe`0.
+* תוכל גם לבדוק את כתובת ה-IP מול `list_unsubscribe`1.
 * עבור אל החשבון שלי ← דומיינים ← הגדרות ← מפתח אימות עומס חתימת Webhook כדי לקבל את מפתח ה-webhook שלך.
 * תוכל לסובב מפתח זה בכל עת מסיבות אבטחה.
-* חשב והשווה את הערך `X-Webhook-Signature` מבקשת ה-webhook שלנו עם ערך הגוף המחושב באמצעות מפתח זה. דוגמה כיצד לעשות זאת זמינה ב-[פוסט Stack Overflow הזה](https://stackoverflow.com/a/68885281).
-* עיין בדיון ב-<https://github.com/forwardemail/free-email-forwarding/issues/235> לקבלת תובנות נוספות.
-* נמתין עד `5` שניות עד שנקודת הקצה של ה-webhook שלך תגיב עם קוד סטטוס `200`, וננסה שוב עד `1`.
-* אם נזהה שכתובת האתר של ה-webhook הנפתחת שלך מכילה שגיאה בזמן שאנו מנסים לשלוח אליה בקשה, נשלח לך אימייל מחמיא פעם בשבוע.
+* חשב והשווה את הערך `list_unsubscribe`2 מבקשת ה-webhook שלנו עם ערך הגוף המחושב באמצעות מפתח זה. דוגמה כיצד לעשות זאת זמינה ב-`list_unsubscribe`3.
+* עיין בדיון ב-<`list_unsubscribe`4 לקבלת תובנות נוספות.
+* נמתין עד `list_unsubscribe`5 שניות עד שנקודת הקצה של ה-webhook שלך תגיב עם קוד סטטוס `list_unsubscribe`6, וננסה שוב עד `list_unsubscribe`7 שניות.
+* אם נזהה שכתובת ה-URL של ה-webhook הנפתחת שלך מכילה שגיאה בזמן שאנו מנסים לשלוח אליה בקשה, נשלח לך דוא"ל מחמיא פעם בשבוע.
 
 ### האם אתם תומכים ב-webhooks {#do-you-support-webhooks}
 
@@ -1798,13 +1794,13 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 אם אתם בתוכנית החינמית, פשוט הוסיפו רשומת DNS חדשה <strong class="notranslate">TXT</strong> כפי שמוצג להלן:
 
-לדוגמה, אם אני רוצה שכל האימיילים שמגיעים אל `alias@example.com` יועברו לנקודת קצה חדשה של בדיקה [סל בקשות](https://requestbin.com/r/en8pfhdgcculn?inspect):
+לדוגמה, אם אני רוצה שכל האימיילים שמגיעים ל-`alias@example.com` יועברו לנקודת קצה חדשה של [סל בקשות](https://requestbin.com/r/en8pfhdgcculn?inspect):
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
 </tr> </tbody>
 </table>
 
-או שאולי אתם רוצים שכל האימיילים שמגיעים אל `example.com` יועברו לנקודת קצה זו:
+או שאולי אתם רוצים שכל האימיילים שמגיעים ל-`example.com` יועברו לנקודת קצה זו:
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
 </tr> </tbody>
@@ -1812,24 +1808,25 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 **להלן הערות נוספות בנוגע ל-webhooks:**
 
-* אם עליכם לאמת עומסי webhook (כדי לוודא שהם אכן מגיעים מהשרת שלנו), תוכלו להשתמש ב-[פתרון כתובת ה-IP של הלקוח המרוחק ושם המארח של הלקוח באמצעות חיפוש הפוך](https://nodejs.org/api/dns.html#dnspromisesreverseip) – זה צריך להיות `mx1.forwardemail.net` או `mx2.forwardemail.net`.
-* תוכלו גם לבדוק את כתובת ה-IP מול [כתובות ה-IP שפרסמנו](#what-are-your-servers-ip-addresses).
-* אם אתם בתוכנית בתשלום, גשו לחשבון שלי ← דומיינים ← הגדרות ← מפתח אימות עומס חתימת Webhook כדי לקבל את מפתח ה-webhook שלכם.
-* תוכלו לסובב מפתח זה בכל עת מסיבות אבטחה.
-* חשבו והשוו את הערך `X-Webhook-Signature` מבקשת ה-webhook שלנו עם ערך הגוף המחושב באמצעות מפתח זה. דוגמה כיצד לעשות זאת זמינה ב-[פוסט Stack Overflow הזה](https://stackoverflow.com/a/68885281).
-* עיינו בדיון ב-<https://github.com/forwardemail/free-email-forwarding/issues/235> לקבלת תובנות נוספות.
-* אם Webhook אינו מגיב עם קוד סטטוס `200`, נאחסן את תגובתו בקובץ [נוצר יומן שגיאות](#do-you-store-error-logs) – דבר שימושי לאיתור שגיאות.
-* בקשות HTTP של Webhook ינסו שוב עד 3 פעמים בכל ניסיון חיבור SMTP, עם זמן קצוב מקסימלי של 60 שניות לכל בקשת POST של נקודת קצה. **שימו לב שזה לא אומר שהוא ינסה שוב רק 3 פעמים**, הוא למעשה ינסה שוב ברציפות לאורך זמן על ידי שליחת קוד SMTP של 421 (המצביע לשולח על ניסיון חוזר מאוחר יותר) לאחר ניסיון בקשת ה-HTTP POST השלישי שנכשל. משמעות הדבר היא שהאימייל ינסה שוב ברציפות במשך ימים עד להשגת קוד סטטוס 200.
-* ננסה שוב באופן אוטומטי בהתבסס על קודי הסטטוס וקודי השגיאה המוגדרים כברירת מחדל המשמשים ב-[שיטת ניסיון חוזר של סוכן-על](https://ladjs.github.io/superagent/#retrying-requests) (אנחנו המתחזקים).
-* אנו מקבצים בקשות HTTP של Webhook לאותה נקודת קצה בבקשה אחת במקום במספר) על מנת לחסוך משאבים ולהאיץ את זמן התגובה. לדוגמה, אם תשלחו אימייל אל <webhook1@example.com>, <webhook2@example.com> ו-<webhook3@example.com>, וכל אלה מוגדרים להגיע לאותה כתובת URL *מדויקת* של נקודת הקצה, אז תתבצע רק בקשה אחת. אנו מקבצים יחד לפי התאמה מדויקת של נקודת הקצה עם שוויון קפדני.
-* שימו לב שאנו משתמשים בשיטת "simpleParser" של ספריית [mailparser](https://nodemailer.com/extras/mailparser/) כדי לנתח את ההודעה לאובייקט ידידותי ל-JSON.
-* ערך אימייל גולמי כמחרוזת ניתן כמאפיין "raw".
-* תוצאות אימות ניתנות כמאפיינים "dkim", "spf", "arc", "dmarc" ו-"bimi".
-* כותרות האימייל המותחות ניתנות כמאפיין "headers" - אך שימו לב שניתן להשתמש ב-"headerLines" לצורך איטרציה וניתוח קלים יותר.
+* אם עליך לאמת עומסי webhook (כדי לוודא שהם אכן מגיעים מהשרת שלנו), תוכל להשתמש ב-[פתרון כתובת ה-IP של הלקוח המרוחק ושם המארח של הלקוח באמצעות חיפוש הפוך](https://nodejs.org/api/dns.html#dnspromisesreverseip) – זה צריך להיות `mx1.forwardemail.net` או `mx2.forwardemail.net`.
+* תוכל גם לבדוק את ה-IP מול [כתובות ה-IP שפרסמנו](#what-are-your-servers-ip-addresses).
+* אם אתה בתוכנית בתשלום, עבור אל החשבון שלי ← דומיינים ← הגדרות ← מפתח אימות עומס חתימת Webhook כדי לקבל את מפתח ה-webhook שלך.
+* תוכל לסובב מפתח זה בכל עת מסיבות אבטחה.
+* חשב והשווה את הערך `X-Webhook-Signature` מבקשת ה-webhook שלנו עם ערך הגוף המחושב באמצעות מפתח זה. דוגמה כיצד לעשות זאת זמינה ב-[פוסט Stack Overflow הזה](https://stackoverflow.com/a/68885281).
+* עיין בדיון ב-<https://github.com/forwardemail/free-email-forwarding/issues/235> לקבלת תובנות נוספות.
+* אם webhook אינו מגיב עם קוד סטטוס `200`, נאחסן את תגובתו ב-[נוצר יומן שגיאות](#do-you-store-error-logs) – דבר שימושי לאיתור באגים.
+* בקשות HTTP של Webhook ינסו שוב עד 3 פעמים בכל ניסיון חיבור SMTP, עם זמן קצוב מקסימלי של 60 שניות לכל בקשת POST של נקודת קצה. **שימו לב שזה לא אומר שזה ינסה שוב רק 3 פעמים**, זה למעשה ינסה שוב ברציפות לאורך זמן על ידי שליחת קוד SMTP של 421 (המצביע לשולח על ניסיון חוזר מאוחר יותר) לאחר ניסיון בקשת HTTP POST השלישי שנכשל. משמעות הדבר היא שהאימייל ינסה שוב ברציפות במשך ימים עד להשגת קוד סטטוס 200.
+* ננסה שוב באופן אוטומטי בהתבסס על קודי הסטטוס והשגיאה המוגדרים כברירת מחדל המשמשים ב-[שיטת ניסיון חוזר של סוכן-על](https://ladjs.github.io/superagent/#retrying-requests) (אנחנו המתחזקים).
+* אנו מקבצים יחד בקשות HTTP של Webhook לאותה נקודת קצה בבקשה אחת במקום מספר) על מנת לחסוך משאבים ולהאיץ את זמן התגובה. לדוגמה, אם תשלחו אימייל אל <webhook1@example.com>, <webhook2@example.com> ו-<webhook3@example.com>, וכל אלה מוגדרים להגיע לאותה כתובת URL *מדויקת* של נקודת קצה, אז תבוצע רק בקשה אחת. אנו מקבצים יחד לפי התאמת נקודות קצה מדויקת עם שוויון קפדני.
+* שימו לב שאנו משתמשים בשיטת "simpleParser" של ספריית `mx1.forwardemail.net`0 כדי לנתח את ההודעה לאובייקט ידידותי ל-JSON.
+* ערך הדוא"ל הגולמי כמחרוזת ניתן כמאפיין "raw".
+* תוצאות האימות ניתנות כמאפיינים "dkim", "spf", "arc", "dmarc" ו-"bimi".
+* כותרות הדוא"ל המותחות ניתנות כמאפיין "headers" - אך שימו לב שניתן להשתמש ב-"headerLines" לצורך איטרציה וניתוח קלים יותר.
 * הנמענים המקובצים עבור webhook זה מקובצים יחד וניתנים כמאפיין "recipients".
-* פרטי סשן ה-SMTP ניתנים כמאפיין "session". זה מכיל מידע על שולח ההודעה, זמן ההגעה של ההודעה, HELO ושם מארח הלקוח. ערך שם מארח הלקוח כ-`session.clientHostname` הוא או ה-FQDN (מחיפוש PTR הפוך) או שהוא `session.remoteAddress` עטוף בסוגריים (לדוגמה `"[127.0.0.1]"`).
-* אם אתם זקוקים לדרך מהירה לקבל את הערך של `X-Original-To`, תוכלו להשתמש בערך של `session.recipient` (ראו דוגמה למטה). הכותרת `X-Original-To` היא כותרת שאנו מוסיפים להודעות לצורך איתור באגים עם הנמען המקורי (לפני העברה מוסתרת) עבור ההודעה. * אם עליך להסיר את המאפיינים `attachments` ו/או `raw` מגוף המטען, פשוט הוסף `?attachments=false`, `?raw=false`, או `?attachments=false&raw=false` לנקודת הקצה של ה-webhook שלך כפרמטר מחרוזת שאילתה (לדוגמה, `https://example.com/webhook?attachments=false&raw=false`).
-* אם ישנם קבצים מצורפים, הם יצורפו למערך `attachments` עם ערכי Buffer. ניתן לנתח אותם בחזרה לתוכן באמצעות גישה עם JavaScript כגון:
+* פרטי סשן ה-SMTP ניתנים כמאפיין "session". זה מכיל מידע על שולח ההודעה, זמן ההגעה של ההודעה, HELO ושם המארח של הלקוח. ערך שם המארח של הלקוח כ-`mx1.forwardemail.net`1 הוא או ה-FQDN (מחיפוש PTR הפוך) או שהוא `mx1.forwardemail.net`2 עטוף בסוגריים (לדוגמה, `mx1.forwardemail.net`3).
+* אם אתם זקוקים לדרך מהירה לקבל את הערך של `mx1.forwardemail.net`4, תוכלו להשתמש בערך של `mx1.forwardemail.net`5 (ראו דוגמה למטה). הכותרת `mx1.forwardemail.net`6 היא כותרת שאנו מוסיפים להודעות לצורך ניפוי שגיאות עם הנמען המקורי (לפני העברה מוסכמת) עבור ההודעה.
+* אם עליכם להסיר את המאפיינים `mx1.forwardemail.net`7 ו/או `mx1.forwardemail.net`8 מגוף המטען, פשוט הוסיפו `mx1.forwardemail.net`9, `mx2.forwardemail.net`0 או `mx2.forwardemail.net`1 לנקודת הקצה של webhook שלכם כפרמטר מחרוזת שאילתה (לדוגמה, `mx2.forwardemail.net`2).
+* אם ישנם קבצים מצורפים, הם יצורפו למערך `mx2.forwardemail.net`3 עם ערכי Buffer. ניתן לנתח אותם בחזרה לתוכן באמצעות גישה עם JavaScript כגון:
 
   ```js
   const data = [
@@ -2050,9 +2047,9 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 כינויים הנתמכים על ידי ביטויים רגולריים הם כאלה שמתחילים ב-`/` ומסתיימים ב-`/` והנמענים שלהם הם כתובות דוא"ל או Webhooks. הנמענים יכולים לכלול גם תמיכה בהחלפת ביטויים רגולריים (למשל `$1`, `$2`).
 
-אנו תומכים בשני דגלי ביטוי רגולרי, כולל `i` ו-`g`. הדגל שאינו תלוי רישיות של `i` הוא ברירת מחדל קבועה והוא נאכף תמיד. ניתן להוסיף את הדגל הגלובלי `g` על ידי הוספת הסיומת `/` עם `/g`.
+אנו תומכים בשני דגלי ביטוי רגולרי, כולל `i` ו-`g`. הדגל שאינו תלוי רישיות של `i` הוא ברירת מחדל קבועה והוא נאכף תמיד. ניתן להוסיף את הדגל הגלובלי של `g` על ידי הוספת הסיומת `/` ל-`/g`.
 
-שים לב שאנו תומכים גם בתכונת <a href="#can-i-disable-specific-aliases">disabled" כינוי</a> עבור חלק הנמען עם תמיכת ה-regex שלנו.
+שים לב שאנו תומכים גם בתכונת <a href="#can-i-disable-specific-aliases">disabled alias</a> שלנו עבור חלק הנמען עם התמיכה שלנו בביטויים רגולריים.
 
 ביטויים רגולריים אינם נתמכים ב-<a href="/disposable-addresses" target="_blank">דומיינים גלובליים מסוג vanity</a> (מכיוון שזו עלולה להיות פגיעות אבטחה).
 
@@ -2070,7 +2067,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>דוגמה פשוטה:</strong> אם אני רוצה שכל האימיילים שמגיעים אל `linus@example.com` או `torvalds@example.com` יועברו אל `user@gmail.com`:
+<strong>דוגמה פשוטה:</strong> אם אני רוצה שכל האימיילים שמגיעים ל-`linus@example.com` או `torvalds@example.com` יועברו ל-`user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:user@gmail.com</code></td> </tr> </tbody>
@@ -2078,7 +2075,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>דוגמה להחלפת שם פרטי ושם משפחה:</strong> דמיינו שכל כתובות הדוא"ל של החברה שלכם הן מהתבנית `firstname.lastname@example.com`. אם אני רוצה שכל האימיילים שמגיעים לתבנית `firstname.lastname@example.com` יועברו ל-`firstname.lastname@company.com` עם תמיכה בהחלפה (<a href="https://regexr.com/66hnu" class="alert-link">הצג בדיקה ב-RegExr</a>):
+<strong>דוגמה להחלפת שם פרטי בשם משפחה:</strong> דמיינו שכל כתובות הדוא"ל של החברה שלכם הן מהתבנית `firstname.lastname@example.com`. אם אני רוצה שכל האימיילים שמגיעים לתבנית `firstname.lastname@example.com` יועברו ל-`firstname.lastname@company.com` עם תמיכה בהחלפה (<a href="https://regexr.com/66hnu" class="alert-link">הצג בדיקה ב-RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2097,7 +2094,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>דוגמה להחלפת מחרוזת שאילתה ב-Webhook:</strong> אולי אתה רוצה שכל האימיילים שמגיעים ל-`example.com` יגיעו ל-<a href="#do-you-support-webhooks" class="alert-link">webhook</a> ויהיו בעלי מפתח מחרוזת שאילתה דינמי של "to" עם ערך של חלק שם המשתמש של כתובת האימייל (<a href="https://regexr.com/66ho4" class="alert-link">הצג בדיקה ב-RegExr</a>):
+<strong>דוגמה להחלפת מחרוזת שאילתה ב-Webhook:</strong> אולי אתה רוצה שכל האימיילים שמגיעים ל-`example.com` יגיעו ל-<a href="#do-you-support-webhooks" class="alert-link">webhook</a> ויהיו להם מפתח מחרוזת שאילתה דינמי של "to" עם ערך של חלק שם המשתמש של כתובת האימייל (<a href="https://regexr.com/66ho4" class="alert-link">הצג בדיקה ב-RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
@@ -2114,7 +2111,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>דוגמה לדחייה רכה:</strong> אם ברצונך שכל האימיילים התואמים לתבנית מסוימת יושבתו ויידחו רכה עם קוד סטטוס `421` (ראה <a href="#can-i-disable-specific-aliases" class="alert-link">האם ניתן להשבית כינויים ספציפיים</a>), פשוט השתמש באותה גישה עם סימן קריאה כפול "!!". זה מציין לשולח לנסות שוב את האימייל שלו, ואימיילים לכינוי זה ייבדקו שוב במשך כ-5 ימים ולאחר מכן ידחו לצמיתות.
+<strong>דוגמה לדחייה רכה:</strong> אם ברצונך שכל האימיילים התואמים לתבנית מסוימת יושבתו ויידחו בעדינות עם קוד סטטוס `421` (ראה <a href="#can-i-disable-specific-aliases" class="alert-link">האם ניתן להשבית כינויים ספציפיים</a>), פשוט השתמש באותה גישה עם סימן קריאה כפול "!!". זה מציין לשולח לנסות שוב את האימייל שלו, ואימיילים לכינוי זה ייבדקו שוב במשך כ-5 ימים ולאחר מכן ידחו לצמיתות.
 </div>
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:!!</code></td> </tr> </tbody>
@@ -2122,7 +2119,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>דוגמה לדחייה קשה:</strong> אם ברצונך שכל האימיילים התואמים לתבנית מסוימת יושבתו ויידחו באופן קשה עם קוד סטטוס `550` (ראה <a href="#can-i-disable-specific-aliases" class="alert-link">האם ניתן להשבית כינויים ספציפיים</a>), פשוט השתמש באותה גישה עם סימן קריאה משולש "!!!". זה מציין לשולח שגיאה קבועה ואימיילים לא ינסו שוב, הם יידחו עבור כינוי זה.
+<strong>דוגמה לדחייה קשה:</strong> אם ברצונך שכל האימיילים התואמים לתבנית מסוימת יושבתו ודחו באופן קשה עם קוד סטטוס `550` (ראה <a href="#can-i-disable-specific-aliases" class="alert-link">האם ניתן להשבית כינויים ספציפיים</a>), פשוט השתמש באותה גישה עם סימן קריאה משולש "!!!". זה מציין לשולח שגיאה קבועה ואימיילים לא ינסו שוב, הם יידחו עבור כינוי זה.
 </div>
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td> </tr> </tr>
@@ -2134,24 +2131,24 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 <strong class="font-weight-bold">
 טיפ:
 </strong>
-סקרנים לדעת כיצד לכתוב ביטוי רגולרי או צריכים לבדוק את ההחלפה שלכם? אתם יכולים לגשת לאתר האינטרנט החינמי לבדיקת ביטויים רגולריים <a href="https://regexr.com" class="alert-link">RegExr</a> בכתובת <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+סקרנים לדעת כיצד לכתוב ביטוי רגולרי או צריכים לבדוק את ההחלפה שלכם? ניתן לגשת לאתר האינטרנט החינמי לבדיקת ביטויים רגולריים <a href="https://regexr.com" class="alert-link">RegExr</a> בכתובת <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
 <span>
 </span>
 </div>
 
 ### מהן מגבלות ה-SMTP היוצא שלך {#what-are-your-outbound-smtp-limits}
 
-אנו מגבילים משתמשים ודומיינים ל-300 הודעות SMTP יוצאות ביום. ממוצע זה הוא מעל 9000 אימיילים בחודש קלנדרי. אם אתם צריכים לחרוג מכמות זו או שיש לכם אימיילים גדולים באופן עקבי, אנא [צרו קשר](https://forwardemail.net/help).
+אנו מגבילים משתמשים ודומיינים ל-300 הודעות SMTP יוצאות ביום. ממוצע זה הוא מעל 9000 אימיילים בחודש קלנדרי. אם עליך לחרוג מכמות זו או שיש לך אימיילים גדולים באופן עקבי, אנא צור קשר עם [צרו קשר](https://forwardemail.net/help).
 
 ### האם אני צריך אישור כדי להפעיל SMTP {#do-i-need-approval-to-enable-smtp}
 
-כן, שימו לב שעל מנת לשמור על מוניטין ה-IP ולהבטיח את יכולת המסירה, ל-Forward Email יש תהליך סקירה ידני על בסיס כל דומיין לאישור SMTP יוצא. שלחו דוא"ל לכתובת <support@forwardemail.net> או פתחו [בקשת עזרה](https://forwardemail.net/help) לאישור. תהליך זה אורך בדרך כלל פחות מ-24 שעות, כאשר רוב הבקשות מטופלות תוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך את התהליך הזה למיידי עם בקרות נוספות והתראות על ספאם. תהליך זה מבטיח שהאימיילים שלכם יגיעו לתיבת הדואר הנכנס וההודעות שלכם לא יסומנו כספאם.
+כן, שימו לב שעל מנת לשמור על מוניטין ה-IP ולהבטיח מסירה, ל-Forward Email יש תהליך סקירה ידני על בסיס כל דומיין לאישור SMTP יוצא. שלחו דוא"ל לכתובת <support@forwardemail.net> או פתחו [בקשת עזרה](https://forwardemail.net/help) לאישור. תהליך זה אורך בדרך כלל פחות מ-24 שעות, כאשר רוב הבקשות מטופלות תוך 1-2 שעות. בעתיד הקרוב אנו שואפים להפוך את התהליך הזה למיידי עם בקרות נוספות והתראות על ספאם. תהליך זה מבטיח שהאימיילים שלכם יגיעו לתיבת הדואר הנכנס וההודעות שלכם לא יסומנו כספאם.
 
 ### מהן הגדרות התצורה של שרת ה-SMTP שלך {#what-are-your-smtp-server-configuration-settings}
 
 השרת שלנו הוא `smtp.forwardemail.net` והוא גם מנוטר ב<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">דף הסטטוס</a> שלנו.
 
-הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `465` ו- `2465` עבור SSL/TLS ו- `587`, `2587`, `2525`, ו- `25` עבור TLS ‏(STARTTLS).
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `465` ו-`2465` עבור SSL/TLS ו-`587`, `2587`, `2525` ו-`25` עבור TLS ‏(STARTTLS).
 
 | פּרוֹטוֹקוֹל | שם מארח | נמלים | IPv4 | IPv6 |
 | :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
@@ -2171,7 +2168,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 השרת שלנו הוא `imap.forwardemail.net` והוא גם מנוטר ב<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">דף הסטטוס</a> שלנו.
 
-הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `993` ו- `2993` עבור SSL/TLS.
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `993` ו-`2993` עבור SSL/TLS.
 
 | פּרוֹטוֹקוֹל | שם מארח | נמלים | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
@@ -2190,7 +2187,7 @@ Forward Email הוא **ספק שירותי דוא"ל מלא** ו**ספק איר�
 
 השרת שלנו הוא `pop3.forwardemail.net` והוא גם מנוטר ב<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">דף הסטטוס</a> שלנו.
 
-הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `995` ו- `2995` עבור SSL/TLS.
+הוא תומך גם ב-IPv4 וגם ב-IPv6 וזמין דרך הפורטים `995` ו-`2995` עבור SSL/TLS.
 
 | פּרוֹטוֹקוֹל | שם מארח | נמלים | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
@@ -2300,7 +2297,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### טכניקות מתקדמות להקשחת שרתים {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> למידע נוסף על תשתית האבטחה שלנו ב-[דף האבטחה שלנו](/security).
 
 "Forward Email" מיישמת טכניקות רבות להקשחת שרתים כדי להבטיח את אבטחת התשתית שלנו והנתונים שלך:
 
@@ -2337,25 +2334,25 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * נהלי תגובה לאירועים
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> נוהלי האבטחה שלנו מתעדכנים באופן שוטף כדי לטפל באיומים ופגיעויות מתפתחות.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> לאבטחה מרבית, אנו ממליצים להשתמש בשירות שלנו עם הצפנה מקצה לקצה דרך OpenPGP.
 
 ### האם יש לך הסמכות SOC 2 או ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> העברת דוא"ל פועלת על תשתית המסופקת על ידי מעבדי משנה מוסמכים כדי להבטיח עמידה בתקני התעשייה.
 
 לשירות "העברת דוא"ל" אין ישירות הסמכות SOC 2 Type II או ISO 27001. עם זאת, השירות פועל על תשתית המסופקת על ידי מעבדי משנה מוסמכים:
 
 * **DigitalOcean**: הסמכת SOC 2 Type II ו-SOC 3 Type II (מבוקר על ידי Schellman & Company LLC), הסמכת ISO 27001 במרכזי נתונים מרובים. פרטים: <https://www.digitalocean.com/trust/certification-reports>
 
-* **Vultr**: מוסמך SOC 2+ (HIPAA), אישורי ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. פרטים: <https://www.vultr.com/legal/compliance/>
+* **Vultr**: בעל הסמכת SOC 2+ (HIPAA), אישורי ISO/IEC: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. פרטים: <https://www.vultr.com/legal/compliance/>
 
 * **DataPacket**: תואם SOC 2 (צרו קשר ישירות עם DataPacket לקבלת הסמכה), ספק תשתית ברמה ארגונית (מיקום דנבר). פרטים: <https://www.datapacket.com/datacenters/denver>
 
-"העברת דוא"ל" פועלת לפי שיטות העבודה המומלצות בתעשייה לביקורות אבטחה ומקיימת שיתוף פעולה קבוע עם חוקרי אבטחה עצמאיים. מקור: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+"העברת דוא"ל" פועלת לפי שיטות העבודה המומלצות בתעשייה לביקורות אבטחה ומשתפת פעולה באופן קבוע עם חוקרי אבטחה עצמאיים. מקור: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
 ### האם אתה משתמש בהצפנת TLS להעברת דוא"ל {#do-you-use-tls-encryption-for-email-forwarding}
 
@@ -2375,7 +2372,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * זיהוי שגיאות TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
 * אכיפת MTA-STS בעוזר שליחת דוא"ל: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-אימות צד שלישי: <https://www.hardenize.com/report/forwardemail.net/1750312779> מציג דירוגים "טוב" עבור כל TLS ואמצעי אבטחת התעבורה.
+אימות צד שלישי: <https://www.hardenize.com/report/forwardemail.net/1750312779> מציג דירוגים "טוב" עבור כל אמצעי אבטחת ה-TLS והתחבורה.
 
 ### האם אתם שומרים על כותרות אימות דוא"ל {#do-you-preserve-email-authentication-headers}
 
@@ -2393,7 +2390,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### האם אתם שומרים על כותרות דוא"ל מקוריות ומונעים זיופים? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> העברת דוא"ל מיישמת הגנה מתוחכמת מפני זיופים כדי למנוע שימוש לרעה בדוא"ל.
 
 העברת דוא"ל שומרת על כותרות דוא"ל מקוריות תוך יישום הגנה מקיפה מפני זיופים דרך בסיס הקוד של MX:
 
@@ -2407,11 +2404,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * מטפל נתוני MX ראשי: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 * סינון דוא"ל שרירותי (נגד זיופים): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-העוזר `isArbitrary` מיישם כללי הגנה מתוחכמים נגד זיופים, כולל זיהוי התחזות לדומיין, ביטויים חסומים ודפוסי פישינג שונים.
+העוזר `isArbitrary` מיישם כללי מניעת זיופים מתוחכמים, כולל זיהוי התחזות לדומיין, ביטויים חסומים ודפוסי פישינג שונים.
 
 מקור: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
-### כיצד אתם מגנים מפני ספאם וניצול לרעה {#how-do-you-protect-against-spam-and-abuse}
+### כיצד אתם מגנים מפני ספאם ושימוש לרעה {#how-do-you-protect-against-spam-and-abuse}
 
 העברת דוא"ל מיישמת הגנה מקיפה מרובת שכבות:
 
@@ -2425,13 +2422,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 מקורות:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
-* <https://www.datapacket.com/datacenters/denver> (פרטי הגנה מפני DDoS)
+* <https://www.datapacket.com/datacenters/denver> (פרטי הגנת DDoS)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### האם אתם מאחסנים תוכן דוא"ל בדיסק {#do-you-store-email-content-on-disk}
+### האם אתה מאחסן תוכן דוא"ל בדיסק {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> העברת דוא"ל משתמשת בארכיטקטורת ידע אפס המונעת כתיבת תוכן דוא"ל לדיסק.
 
 * **ארכיטקטורת אפס ידע**: תיבות דואר של SQLite מוצפנות בנפרד פירושן שדואר אלקטרוני מורחב אינו יכול לגשת לתוכן הדוא"ל
 * **עיבוד בזיכרון**: עיבוד הדוא"ל מתרחש כולו בזיכרון, תוך הימנעות מאחסון בדיסק
@@ -2443,7 +2440,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 מקורות:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=10> (תקציר)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (פרטי אפס ידע)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (פרטי ידע אפס)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=21> (הצפנה בארגז חול)
 
 ### האם תוכן דוא"ל יכול להיחשף במהלך קריסות מערכת {#can-email-content-be-exposed-during-system-crashes}
@@ -2457,7 +2454,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * **Physical Security**: דיסקים מוצפנים של LUKS v2 מונעים גישה פיזית לנתונים
 * **USB Storage מושבת**: מונע חילוץ נתונים לא מורשה
 
-**טיפול בשגיאות בבעיות מערכת**: העברת דוא"ל משתמשת בפונקציות העזר `isCodeBug` ו- `isTimeoutError` כדי להבטיח שאם מתרחשות בעיות קישוריות למסד נתונים, בעיות ברשת/רשימת חסימות DNS או בעיות קישוריות במעלה הזרם, המערכת מחזירה קודי סטטוס SMTP 421 כדי להבטיח שאימיילים ינסו לשלוח אותם מאוחר יותר ולא יאבדו או יחשפו.
+**טיפול בשגיאות בבעיות מערכת**: העברת דוא"ל משתמשת בפונקציות העזר `isCodeBug` ו-`isTimeoutError` כדי להבטיח שאם מתרחשות בעיות קישוריות למסד נתונים, בעיות ברשת/רשימת חסימות DNS או בעיות קישוריות במעלה הזרם, המערכת מחזירה קודי סטטוס SMTP 421 כדי להבטיח שאימיילים ינסו שוב מאוחר יותר ולא יאבדו או יחשפו.
 
 פרטי יישום:
 
@@ -2485,14 +2482,14 @@ Forward Email מיישמת בקרות גישה מקיפות לצוות ההנד�
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (בקרות הרשאה)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (אבטחת רשת)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (מניעת התקפת "Evil Maid")
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (מניעת התקפת Evil Maid)
 
 ### אילו ספקי תשתית אתה משתמש בהם {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> העברת דוא"ל משתמשת במספר מעבדי משנה של תשתית עם אישורי תאימות מקיפים.
 
-פרטים מלאים זמינים בדף התאימות שלנו לתקנות ה-GDPR: <https://forwardemail.net/gdpr>
+פרטים מלאים זמינים בדף התאימות שלנו ל-GDPR: <https://forwardemail.net/gdpr>
 
 **מעבדי משנה ראשיים של התשתית:**
 
@@ -2536,7 +2533,7 @@ Forward Email מיישמת בקרות גישה מקיפות לצוות ההנד�
 * **Stripe**: מאושר על ידי מסגרת פרטיות הנתונים - <https://stripe.com/legal/privacy-center>
 * **PayPal**: לא מאושר על ידי DPF - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### האם אתם מציעים הסכם עיבוד נתונים (DPA)? {#do-you-offer-a-data-processing-agreement-dpa}
+### האם אתם מציעים הסכם עיבוד נתונים (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
 כן, Forward Email מציעה הסכם עיבוד נתונים (DPA) מקיף שניתן לחתום עליו עם הסכם הארגון שלנו. עותק של ה-DPA שלנו זמין בכתובת: <https://forwardemail.net/dpa>
 
@@ -2548,14 +2545,14 @@ Forward Email מיישמת בקרות גישה מקיפות לצוות ההנד�
 * הסדרי הסכם הגנה על מידע מותאמים אישית זמינים דרך רישיון ארגוני
 
 **מסגרת תאימות ל-GDPR:**
-הסכם עיבוד הנתונים שלנו מפרט את תאימות ה-GDPR וכן את דרישות העברת הנתונים הבינלאומיות. מידע מלא זמין בכתובת: <https://forwardemail.net/gdpr>
+חוק העברת הנתונים שלנו מפרט את תאימותו ל-GDPR וכן את דרישות העברת הנתונים הבינלאומיות. מידע מלא זמין בכתובת: <https://forwardemail.net/gdpr>
 
 עבור לקוחות ארגוניים הזקוקים לתנאי DPA מותאמים אישית או להסדרים חוזיים ספציפיים, ניתן לטפל בהם באמצעות תוכנית **רישיון ארגוני (250 דולר לחודש)** שלנו.
 
 ### כיצד אתם מטפלים בהודעות על פרצות נתונים {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> ארכיטקטורת אפס הידע של העברת דוא"ל מגבילה משמעותית את השפעת הפריצה.
 
 * **חשיפה מוגבלת לנתונים**: לא ניתן לגשת לתוכן דוא"ל מוצפן עקב ארכיטקטורת אפס ידע
 * **איסוף נתונים מינימלי**: רק מידע בסיסי על המנוי ויומני IP מוגבלים לצורך אבטחה
@@ -2621,7 +2618,7 @@ Osano UK Compliance LTD
 ### כיצד מבטיחים זמינות גבוהה {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> העברת דוא"ל מיישמת יתירות מקיפה על פני ספקי תשתית מרובים.
 
 * **תשתית מבוזרת**: ספקים מרובים (DigitalOcean, Vultr, DataPacket) על פני אזורים גיאוגרפיים
 * **איזון עומסים גיאוגרפי**: איזון עומסים מבוסס Cloudflare עם גיבוי אוטומטי
@@ -2631,17 +2628,17 @@ Osano UK Compliance LTD
 * **שכפול מסד נתונים**: סנכרון נתונים בזמן אמת על פני מיקומים מרובים
 * **ניטור והתראות**: ניטור 24/7 עם תגובה אוטומטית לאירועים
 
-**התחייבות לזמן פעולה**: זמינות שירות של 99.9%+ עם ניטור שקוף זמין בכתובת <https://forwardemail.net>
+**התחייבות לזמן פעולה**: זמינות שירות של 99.9%+ עם ניטור שקוף זמין ב-<https://forwardemail.net>
 
 מקורות:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### האם אתה עומד בדרישות סעיף 889 של חוק הרשאות ההגנה הלאומית (NDAA)? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### האם אתה עומד בסעיף 889 של חוק הרשאות ההגנה הלאומית (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> העברת דוא"ל תואמת לחלוטין את סעיף 889 באמצעות בחירה קפדנית של שותפי תשתית.
 
 כן, העברת דוא"ל עומדת בדרישות **סעיף 889**. סעיף 889 בחוק הרשאות ההגנה הלאומי (NDAA) אוסר על סוכנויות ממשלתיות להשתמש או להתקשר עם גופים המשתמשים בציוד תקשורת ומעקב וידאו מחברות ספציפיות (Huawei, ZTE, Hikvision, Dahua ו-Hytera).
 
@@ -2661,29 +2658,29 @@ Osano UK Compliance LTD
 
 ## פרטים טכניים ומערכת {#system-and-technical-details}
 
-### האם אתם מאחסנים אימיילים ותוכנם? {#do-you-store-emails-and-their-contents}
+### האם אתם מאחסנים אימיילים ואת תוכנם? {#do-you-store-emails-and-their-contents}
 
 לא, אנחנו לא כותבים לדיסק או מאחסנים יומני רישום – עם [למעט שגיאות](#do-you-store-error-logs) ו-[SMTP יוצא](#do-you-support-sending-email-with-smtp) (ראו את [מדיניות פרטיות](/privacy) שלנו).
 
-הכל נעשה בזיכרון ו-[קוד המקור שלנו נמצא ב-GitHub](https://github.com/forwardemail).
+הכל נעשה בזיכרון וב-[קוד המקור שלנו נמצא ב-GitHub](https://github.com/forwardemail).
 
 ### כיצד פועלת מערכת העברת הדוא"ל שלך {#how-does-your-email-forwarding-system-work}
 
 דוא"ל מסתמך על [פרוטוקול SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). פרוטוקול זה מורכב מפקודות הנשלחות לשרת (הפועל לרוב על פורט 25). יש חיבור ראשוני, לאחר מכן השולח מציין ממי הדוא"ל מגיע ("MAIL FROM"), לאחר מכן לאן הוא מגיע ("RCPT TO"), ולבסוף הכותרות וגוף הדוא"ל עצמו ("DATA"). זרימת מערכת העברת הדוא"ל שלנו מתוארת ביחס לכל פקודת פרוטוקול SMTP להלן:
 
-* חיבור ראשוני (ללא שם פקודה, לדוגמה `telnet example.com 25`) - זהו החיבור הראשוני. אנו בודקים שולחים שאינם נמצאים ב-[רשימת היתרים](#do-you-have-an-allowlist) שלנו מול [רשימת הסירובים](#do-you-have-a-denylist) שלנו. לבסוף, אם שולח אינו ברשימת ההיתרים שלנו, אנו בודקים אם הוא היה [ברשימה אפורה](#do-you-have-a-greylist).
+* חיבור ראשוני (ללא שם פקודה, לדוגמה `telnet example.com 25`) - זהו החיבור הראשוני. אנו בודקים שולחים שאינם נמצאים ב-[רשימת היתרים](#do-you-have-an-allowlist) שלנו מול [רשימת הסירובים](#do-you-have-a-denylist) שלנו. לבסוף, אם שולח אינו ברשימת ההיתרים שלנו, אנו בודקים אם הוא נרשם ב-[ברשימה אפורה](#do-you-have-a-greylist).
 
-* `HELO` - קוד זה מציין ברכה לזיהוי ה-FQDN, כתובת ה-IP או שם מטפל הדואר של השולח. ערך זה יכול להיות מזויף, לכן איננו מסתמכים על נתונים אלה ובמקום זאת משתמשים בחיפוש שם מארח הפוך של כתובת ה-IP של החיבור.
+* `HELO` - הודעה זו מציינת ברכה לזיהוי ה-FQDN, כתובת ה-IP או שם מטפל הדואר של השולח. ערך זה יכול להיות מזויף, כך שאיננו מסתמכים על נתונים אלה ובמקום זאת משתמשים בחיפוש שם מארח הפוך של כתובת ה-IP של החיבור.
 
-* `MAIL FROM` - ערך זה מציין את כתובת הדואר המוגשת במעטפה של האימייל. אם מוזן ערך, הוא חייב להיות כתובת דוא"ל חוקית מסוג RFC 5322. ערכים ריקים מותרים. אנו [בדיקת פיזור אחורי](#how-do-you-protect-against-backscatter) כאן, וגם בודקים את ה-MAIL FROM מול ה-[רשימת הסירובים](#do-you-have-a-denylist) שלנו. לבסוף, אנו בודקים שולחים שאינם ברשימת ההיתרים לצורך הגבלת תעריפים (ראו את הסעיף בנושא [הגבלת קצב](#do-you-have-rate-limiting) ו-[רשימת היתרים](#do-you-have-an-allowlist) למידע נוסף).
+* `MAIL FROM` - ערך זה מציין את כתובת הדואר הנשלחת במעטפה של האימייל. אם מוזן ערך, הוא חייב להיות כתובת דוא"ל חוקית מסוג RFC 5322. ערכים ריקים מותרים. אנו בודקים את [בדיקת פיזור אחורי](#how-do-you-protect-against-backscatter) כאן, וגם את ה-MAIL FROM מול ה-[רשימת הסירובים](#do-you-have-a-denylist) שלנו. לבסוף, אנו בודקים שולחים שאינם ברשימת ההיתרים לצורך הגבלת תעריפים (ראו סעיף [הגבלת קצב](#do-you-have-rate-limiting) ו-[רשימת היתרים](#do-you-have-an-allowlist) למידע נוסף).
 
-* `RCPT TO` - קוד זה מציין את הנמענים של האימייל. אלה חייבות להיות כתובות אימייל תקפות מסוג RFC 5322. אנו מתירים עד 50 נמעני מעטפה לכל הודעה (זה שונה מכותרת ה"אל" באימייל). אנו בודקים גם כתובת [תוכנית כתיבה מחדש של השולח](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") תקפה כאן כדי להגן מפני זיופים עם שם הדומיין SRS שלנו.
+* `RCPT TO` - קוד זה מציין את הנמען/ים של האימייל. אלה חייבות להיות כתובות אימייל תקפות מסוג RFC 5322. אנו מתירים רק עד 50 נמעני מעטפה לכל הודעה (זה שונה מכותרת "אל" באימייל). אנו בודקים גם אם יש כאן כתובת [תוכנית כתיבה מחדש של השולח](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") תקפה כדי להגן מפני זיופים עם שם הדומיין SRS שלנו.
 
-* `DATA` - זהו החלק המרכזי של השירות שלנו, אשר מעבד דוא"ל. עיין בסעיף [איך מעבדים אימייל לצורך העברה](#how-do-you-process-an-email-for-forwarding) להלן לקבלת תובנות נוספות.
+* `DATA` - זהו החלק המרכזי בשירות שלנו, אשר מעבד דוא"ל. עיין בסעיף [איך מעבדים אימייל לצורך העברה](#how-do-you-process-an-email-for-forwarding) להלן לקבלת תובנות נוספות.
 
 ### כיצד מעבדים אימייל לצורך העברה {#how-do-you-process-an-email-for-forwarding}
 
-סעיף זה מתאר את התהליך שלנו הקשור לפקודת פרוטוקול ה-SMTP `DATA` בסעיף [כיצד פועלת מערכת העברת הדוא"ל שלכם](#how-does-your-email-forwarding-system-work) לעיל – זהו האופן שבו אנו מעבדים את הכותרות, הגוף והאבטחה של אימייל, קובעים לאן יש לשלוח אותו וכיצד אנו מטפלים בחיבורים.
+סעיף זה מתאר את התהליך שלנו הקשור לפקודת פרוטוקול ה-SMTP `DATA` בסעיף [כיצד פועלת מערכת העברת הדוא"ל שלכם](#how-does-your-email-forwarding-system-work) לעיל - זהו האופן שבו אנו מעבדים את הכותרות, הגוף והאבטחה של אימייל, קובעים לאן יש לשלוח אותו וכיצד אנו מטפלים בחיבורים.
 
 1. אם ההודעה חורגת מהגודל המרבי של 50 מגה-בייט, היא נדחית עם קוד שגיאה 552.
 
@@ -2691,7 +2688,7 @@ Osano UK Compliance LTD
 
 3. אם להודעה היו יותר מ-25 כותרות "התקבל", נקבע שהיא נתקעה בלולאת הפניה מחדש, והיא נדחתה עם קוד שגיאה 550.
 
-4. באמצעות טביעת האצבע של האימייל (ראו את הסעיף בנושא [טביעות אצבע](#how-do-you-determine-an-email-fingerprint)), נבדוק אם בוצע ניסיון לשלוח מחדש את ההודעה במשך יותר מ-5 ימים (מה שתואם ל-[התנהגות ברירת מחדל של תיקון פוסט](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), ואם כן, היא תידחה עם קוד שגיאה 550.
+4. באמצעות טביעת האצבע של האימייל (ראה את הסעיף בנושא [טביעות אצבע](#how-do-you-determine-an-email-fingerprint)), נבדוק אם בוצע ניסיון לשלוח מחדש את ההודעה במשך יותר מ-5 ימים (מה שתואם ל-[התנהגות ברירת מחדל של תיקון פוסט](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), ואם כן, היא תידחה עם קוד שגיאה 550.
 
 5. אנו מאחסנים בזיכרון את תוצאות סריקת האימייל באמצעות [סורק ספאם](https://spamscanner.net).
 
@@ -2704,33 +2701,37 @@ Osano UK Compliance LTD
 * זה שימושי לקביעת היכן נמסרה הודעת דוא"ל במקור (בנוסף לכותרת "Received").
 * זה נוסף על בסיס נמען בנפרד בזמן IMAP ו/או העברה מוסתרת (על מנת להגן על הפרטיות).
 * `X-Forward-Email-Website` - מכיל קישור לאתר האינטרנט שלנו <https://forwardemail.net>
-* `X-Forward-Email-Version` - הגרסה הנוכחית של [SemVer](https://semver.org/) מ-`package.json` של בסיס הקוד שלנו.
+* `X-Forward-Email-Version` - גרסת [סמוור](https://semver.org/) הנוכחית מ-`package.json` של בסיס הקוד שלנו.
 * `X-Forward-Email-Session-ID` - ערך מזהה סשן המשמש למטרות ניפוי באגים (חל רק בסביבות שאינן סביבות ייצור).
 * `X-Forward-Email-Sender` - רשימה מופרדת בפסיקים המכילה את כתובת המעטפה המקורית של MAIL FROM (אם היא לא הייתה ריקה), את ה-FQDN של לקוח PTR הפוך (אם קיים) ואת כתובת ה-IP של השולח.
 * `X-Forward-Email-ID` - זה חל רק על SMTP יוצא ומקושר למזהה הדוא"ל המאוחסן בחשבון שלי → דוא"ל.
-* `X-Report-Abuse` - עם ערך של `abuse@forwardemail.net`.
-* `X-Report-Abuse-To` - עם ערך של `abuse@forwardemail.net`.
-* `X-Complaints-To` - עם ערך של `abuse@forwardemail.net`.
+* `X-Original-To`0 - עם ערך של `X-Original-To`1.
+* `X-Original-To`2 - עם ערך של `X-Original-To`3.
+* `X-Original-To`4 - עם ערך של `X-Original-To`5.
 
-8. לאחר מכן נבדוק את ההודעה עבור [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), ו-[DMARC](https://en.wikipedia.org/wiki/DMARC).
+8. לאחר מכן נבדוק את ההודעה עבור [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) ו-[DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* אם ההודעה נכשלה ב-DMARC ולדומיין הייתה מדיניות דחייה (לדוגמה, `p=reject` [היה במדיניות DMARC](https://wikipedia.org/wiki/DMARC)), היא נדחית עם קוד שגיאה 550. בדרך כלל ניתן למצוא מדיניות DMARC עבור דומיין ברשומת <strong class="notranslate">TXT</strong> של תת-דומיין `_dmarc` (לדוגמה, `dig _dmarc.example.com txt`).
-* אם ההודעה נכשלה ב-SPF ולדומיין הייתה מדיניות כשל קשה (לדוגמה, `-all` היה במדיניות SPF בניגוד ל-`~all` או ללא מדיניות כלל), היא נדחית עם קוד שגיאה 550. בדרך כלל, ניתן למצוא מדיניות SPF עבור דומיין ברשומת ה-<strong class="notranslate">TXT</strong> עבור דומיין הבסיס (לדוגמה, `dig example.com txt`). עיין בסעיף זה למידע נוסף על [שליחת דואר כמו בג'ימייל](#can-i-send-mail-as-in-gmail-with-this) בנוגע ל-SPF.
+* אם ההודעה נכשלה ב-DMARC ולדומיין הייתה מדיניות דחייה (לדוגמה, `p=reject` [היה במדיניות DMARC](https://wikipedia.org/wiki/DMARC)), היא נדחית עם קוד שגיאה 550. בדרך כלל ניתן למצוא מדיניות DMARC עבור דומיין ברשומת ה-<strong class="notranslate">TXT</strong> של תת-דומיין `_dmarc` (לדוגמה, `dig _dmarc.example.com txt`).
 
-9. כעת אנו מעבדים את נמעני ההודעה כפי שנאספו מהפקודה `RCPT TO` בסעיף [כיצד פועלת מערכת העברת הדוא"ל שלכם](#how-does-your-email-forwarding-system-work) לעיל. עבור כל נמען, אנו מבצעים את הפעולות הבאות:
+* אם ההודעה נכשלה ב-SPF ולדומיין הייתה מדיניות כשל קשיח (לדוגמה, `-all` היה במדיניות SPF במקום `~all` או ללא מדיניות כלל), היא נדחית עם קוד שגיאה 550. בדרך כלל ניתן למצוא מדיניות SPF עבור דומיין ברשומת ה-<strong class="notranslate">TXT</strong> עבור דומיין הבסיס (לדוגמה, `dig example.com txt`). עיין בסעיף זה למידע נוסף על [שליחת דואר כמו בג'ימייל](#can-i-send-mail-as-in-gmail-with-this) בנוגע ל-SPF.
 
-* אנו מחפשים את רשומות ה-<strong class="notranslate">TXT</strong> של שם הדומיין (החלק שאחרי הסמל `@`, לדוגמה `example.com` אם כתובת הדוא"ל הייתה `test@example.com`). לדוגמה, אם הדומיין הוא `example.com` אנו מבצעים חיפוש DNS כגון `dig example.com txt`.
-* אנו מנתחים את כל רשומות ה-<strong class="notranslate">TXT</strong> שמתחילות ב-`forward-email=` (תוכניות חינמיות) או `forward-email-site-verification=` (תוכניות בתשלום). שימו לב שאנו מנתחים את שתיהן, על מנת לעבד דוא"ל בזמן שמשתמש משדרג או משדרג תוכניות. * מרשומות ה-<strong class="notranslate">TXT</strong> המותחות, אנו מבצעים איטרציות עליהן כדי לחלץ את תצורת ההעברה (כמתואר בסעיף [איך מתחילים ומגדירים העברת דוא"ל](#how-do-i-get-started-and-set-up-email-forwarding) לעיל). שימו לב שאנו תומכים רק בערך `forward-email-site-verification=` אחד, ואם יסופק יותר מאחד, תתרחש שגיאת 550 והשולח יקבל הודעה חוזרת עבור נמען זה.
-* באופן רקורסיבי אנו מבצעים איטרציות על תצורת ההעברה שחולצה כדי לקבוע העברה גלובלית, העברה מבוססת ביטוי רגולרי וכל תצורות ההעברה הנתמכות האחרות - המכונות כעת "כתובות ההעברה" שלנו.
+9. כעת נעבד את נמעני ההודעה כפי שנאספו מהפקודה `RCPT TO` בסעיף [כיצד פועלת מערכת העברת הדוא"ל שלכם](#how-does-your-email-forwarding-system-work) לעיל. עבור כל נמען, נבצע את הפעולות הבאות:
+
+* אנו מחפשים את רשומות ה-<strong class="notranslate">TXT</strong> של שם הדומיין (החלק שאחרי הסמל `@`, לדוגמה `example.com` אם כתובת הדוא"ל הייתה `test@example.com`). לדוגמה, אם הדומיין הוא `example.com`, אנו מבצעים חיפוש DNS כגון `dig example.com txt`.
+* אנו מנתחים את כל רשומות ה-<strong class="notranslate">TXT</strong> שמתחילות ב-`forward-email=` (תוכניות חינמיות) או ב-`forward-email-site-verification=` (תוכניות בתשלום). שימו לב שאנו מנתחים את שתיהן, על מנת לעבד דוא"ל בזמן שמשתמש משדרג או משדרג לאחור תוכניות.
+* מרשומות ה-<strong class="notranslate">TXT</strong> המנותחות, אנו עוברים עליהן שוב ושוב כדי לחלץ את תצורת ההעברה (כמתואר בסעיף [איך מתחילים ומגדירים העברת דוא"ל](#how-do-i-get-started-and-set-up-email-forwarding) לעיל). שימו לב שאנו תומכים רק בערך `forward-email-site-verification=` אחד, ואם יסופק יותר מאחד, תתרחש שגיאת 550 והשולח יקבל הודעה חוזרת עבור נמען זה.
+* באופן רקורסיבי אנו מבצעים איטרציה על תצורת ההעברה שחולצה כדי לקבוע העברה גלובלית, העברה מבוססת ביטוי רגולרי וכל תצורות ההעברה הנתמכות האחרות - המכונות כעת "כתובות ההעברה" שלנו.
 * עבור כל כתובת העברה, אנו תומכים בחיפוש רקורסיבי אחד (אשר יתחיל את סדרת הפעולות הזו מחדש על הכתובת הנתונה). אם נמצאה התאמה רקורסיבית, תוצאת האב תוסר מכתובות ההעברה, והצאצאים יתווספו.
-* כתובות העברה מנותחות לייחודיות (מכיוון שאנחנו לא רוצים לשלוח כפילויות לכתובת אחת או ליצור חיבורי לקוח SMTP מיותרים נוספים).
-* עבור כל כתובת העברה, אנו מחפשים את שם הדומיין שלה מול נקודת הקצה של ה-API שלנו `/v1/max-forwarded-addresses` (על מנת לקבוע לכמה כתובות הדומיין רשאי להעביר דוא"ל לפי כינוי, לדוגמה 10 כברירת מחדל - ראו את הסעיף על [מגבלה מקסימלית על העברה לפי כינוי](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). אם חורגים ממגבלה זו, תתרחש שגיאה 550 והשולח יקבל הודעה חוזרת עבור נמען זה.
-* אנו מחפשים את הגדרות הנמען המקורי מול נקודת הקצה של ה-API שלנו `/v1/settings`, התומכת בחיפוש עבור משתמשים בתשלום (עם גיבוי עבור משתמשים חינמיים). פעולה זו מחזירה אובייקט תצורה עבור הגדרות מתקדמות עבור `port` (מספר, לדוגמה `25`), `has_adult_content_protection` (בוליאני), `has_phishing_protection` (בוליאני), `has_executable_protection` (בוליאני), ו-`has_virus_protection` (בוליאני).
-* בהתבסס על הגדרות אלו, אנו בודקים את תוצאות סריקת הספאם, ואם מתרחשות שגיאות כלשהן, ההודעה נדחית עם קוד שגיאה 554 (לדוגמה, אם `has_virus_protection` מופעל, נבדוק את תוצאות סריקת הספאם לאיתור וירוסים). שימו לב שכל משתמשי התוכנית החינמית יקבלו אישור לבדיקות נגד תוכן למבוגרים, פישינג, קבצי הרצה ווירוסים. כברירת מחדל, כל משתמשי התוכנית בתשלום רשומים גם הם, אך ניתן לשנות תצורה זו תחת דף ההגדרות עבור דומיין בלוח המחוונים של העברת דוא"ל).
+* כתובות ההעברה מנותחות לייחודיות (מכיוון שאיננו רוצים לשלוח כפילויות לכתובת אחת או ליצור חיבורי לקוח SMTP מיותרים נוספים).
+* עבור כל כתובת העברה, אנו מחפשים את שם הדומיין שלה מול נקודת הקצה של ה-API שלנו `/v1/max-forwarded-addresses` (על מנת לקבוע לכמה כתובות הדומיין רשאי להעביר דוא"ל לפי כינוי, לדוגמה 10 כברירת מחדל - ראה את הסעיף על `example.com`0). אם חורגים ממגבלה זו, תתרחש שגיאה 550 והשולח יקבל הודעה חוזרת עבור נמען זה.
+
+* אנו מחפשים את הגדרות הנמען המקורי מול נקודת הקצה של ה-API שלנו `example.com`1, התומכת בחיפוש עבור משתמשים בתשלום (עם אפשרות גיבוי עבור משתמשים חינמיים). זה מחזיר אובייקט תצורה עבור הגדרות מתקדמות עבור `example.com`2 (מספר, לדוגמה `example.com`3), `example.com`4 (בוליאני), `example.com`5 (בוליאני), `example.com`6 (בוליאני) ו-`example.com`7 (בוליאני).
+
+* בהתבסס על הגדרות אלו, אנו בודקים את תוצאות סריקת הספאם, ואם מתרחשות שגיאות כלשהן, ההודעה נדחית עם קוד שגיאה 554 (לדוגמה, אם `example.com`8 מופעל, נבדוק את תוצאות סריקת הספאם לאיתור וירוסים). שימו לב שכל משתמשי התוכנית החינמית יירשמו לבדיקות נגד תוכן למבוגרים, פישינג, קבצי הרצה ווירוסים. כברירת מחדל, כל משתמשי התוכנית בתשלום יירשמו גם הם, אך ניתן לשנות תצורה זו תחת דף ההגדרות עבור דומיין בלוח המחוונים של העברת דוא"ל).
 
 10. עבור כל כתובת העברה של נמען שעברה עיבוד, אנו מבצעים את הפעולות הבאות:
 
-* הכתובת נבדקת מול ה-[רשימת הסירובים](#do-you-have-a-denylist) שלנו, ואם היא רשומה, אז יופיע קוד שגיאה 421 (מציין לשולח לנסות שוב מאוחר יותר).
+* הכתובת נבדקת מול ה-[רשימת הסירובים](#do-you-have-a-denylist) שלנו, ואם היא רשומה, אז יופיע קוד שגיאה 421 (מצביע על כך לשולח לנסות שוב מאוחר יותר).
 * אם הכתובת היא webhook, אז נגדיר ערך בוליאני לפעולות עתידיות (ראה להלן - אנו מקבצים יחד webhooks דומים כדי לבצע בקשת POST אחת לעומת מספר בקשות למשלוח).
 * אם הכתובת היא כתובת דוא"ל, אז אנו מנתחים את המארח לפעולות עתידיות (ראה להלן - אנו מקבצים יחד מארחים דומים כדי ליצור חיבור אחד לעומת מספר חיבורים בודדים למשלוח).
 
@@ -2738,18 +2739,18 @@ Osano UK Compliance LTD
 
 12. אם ישנם נמענים, אנו עוברים עליהם שוב ושוב (מקובצים יחד על ידי אותו מארח) ומספקים את האימיילים. עיין בסעיף [כיצד אתם מטפלים בבעיות משלוח דוא"ל](#how-do-you-handle-email-delivery-issues) להלן לקבלת תובנות נוספות.
 
-* אם מתרחשות שגיאות כלשהן בעת שליחת מיילים, נאחסן אותן בזיכרון לעיבוד מאוחר יותר.
-* ניקח את קוד השגיאה הנמוך ביותר (אם קיים) משליחת מיילים - ונשתמש בו כקוד התגובה לפקודה `DATA`. משמעות הדבר היא שמיילים שלא נמסרו בדרך כלל יישלחו שוב על ידי השולח המקורי, אך מיילים שכבר נמסרו לא יישלחו שוב בפעם הבאה שההודעה תישלח (כפי שאנו משתמשים ב-[טביעות אצבע](#how-do-you-determine-an-email-fingerprint)).
-* אם לא אירעו שגיאות, נשלח קוד סטטוס תגובה מוצלח של 250 ב-SMTP.
+* אם מתרחשות שגיאות כלשהן בעת שליחת אימיילים, נאחסן אותן בזיכרון לעיבוד מאוחר יותר.
+* ניקח את קוד השגיאה הנמוך ביותר (אם קיים) משליחת אימיילים - ונשתמש בו כקוד התגובה לפקודה `DATA`. משמעות הדבר היא שאימיילים שלא נמסרו בדרך כלל יישלחו שוב על ידי השולח המקורי, אך אימיילים שכבר נמסרו לא יישלחו שוב בפעם הבאה שההודעה תישלח (כפי שאנו משתמשים ב-[טביעות אצבע](#how-do-you-determine-an-email-fingerprint)).
+* אם לא אירעו שגיאות, נשלח קוד סטטוס תגובה מוצלח של SMTP 250.
 * ניסיון מסירה מוחזר נחשב לכל ניסיון מסירה שמביא לקוד סטטוס של >= 500 (כשלים קבועים).
 
 13. אם לא התרחשו החזרות (כשלים קבועים), נחזיר קוד סטטוס תגובת SMTP של קוד השגיאה הנמוך ביותר מכשלים לא קבועים (או קוד סטטוס מוצלח של 250 אם לא היו כאלה).
 
-14. אם אכן התרחשו הודעות החזרה, נשלח הודעות החזרה ברקע לאחר שנחזיר לשולח את קוד השגיאה הנמוך ביותר מבין כל קוד השגיאה. עם זאת, אם קוד השגיאה הנמוך ביותר הוא >= 500, לא נשלח הודעות החזרה. הסיבה לכך היא שאם כן, השולחים יקבלו הודעות החזרה כפולות (למשל, אחת מ-MTA היוצא שלהם, כגון Gmail - וגם אחת מאיתנו). עיין בסעיף [איך מגנים מפני פיזור לאחור](#how-do-you-protect-against-backscatter) להלן לקבלת תובנות נוספות.
+14. אם אכן התרחשו הודעות החזרה, נשלח אימיילים עם הודעות החזרה ברקע לאחר שנחזיר לשולח את קוד השגיאה הנמוך ביותר מבין כל קוד השגיאה. עם זאת, אם קוד השגיאה הנמוך ביותר הוא >= 500, לא נשלח אימיילים עם הודעות החזרה. הסיבה לכך היא שאם כן, השולחים יקבלו אימייל החזרה כפול (למשל, אחד מ-MTA היוצא שלהם, כגון Gmail - וגם אחד מאיתנו). עיין בסעיף [איך מגנים מפני פיזור לאחור](#how-do-you-protect-against-backscatter) להלן לקבלת תובנות נוספות.
 
 ### כיצד אתם מטפלים בבעיות משלוח דוא"ל {#how-do-you-handle-email-delivery-issues}
 
-שים לב שאנו נבצע שכתוב "Friendly-From" על המיילים אם ורק אם מדיניות ה-DMARC של השולח לא עברה ולא היו חתימות DKIM מיושרות עם הכותרת "מאת".  המשמעות היא שנשנה את הכותרת "מאת" בהודעה, נגדיר "X-Original-From", וגם נגדיר "Reply-To" אם היא לא הוגדרה כבר.  אנו גם נסגור מחדש את חותמת ARC בהודעה לאחר שינוי הכותרות הללו.
+שימו לב שנכתוב מחדש את האימיילים מסוג "Friendly-From" אם ורק אם מדיניות DMARC של השולח לא עברה וגם לא היו חתימות DKIM מיושרות עם כותרת ה-"From". משמעות הדבר היא שנשנה את כותרת ה-"From" בהודעה, נגדיר "X-Original-From", וגם נגדיר "Reply-To" אם היא עדיין לא הוגדרה. נסגור מחדש את חותם ה-ARC בהודעה לאחר שינוי כותרות אלו.
 
 אנו משתמשים גם בניתוח חכם של הודעות שגיאה בכל רמה של המחסנית שלנו - בקוד שלנו, בקשות DNS, רכיבים פנימיים של Node.js, בקשות HTTP (למשל 408, 413 ו-429 ממופות לקוד תגובת ה-SMTP 421 אם הנמען הוא webhook), ותגובות שרת דואר (למשל תגובות עם "defer" או "slowdown" יעברו ניסיון חוזר כשגיאות 421).
 
@@ -2763,7 +2764,7 @@ Osano UK Compliance LTD
 
 אם נזהה ששרת דוא"ל שאליו אנו מנסים לשלוח הודעות חסום אחת או יותר מכתובות ה-IP של חילופי הדואר שלנו (למשל, על ידי טכנולוגיה כלשהי בה הם משתמשים לדחיית שולחי דואר זבל), נשלח קוד תגובה SMTP של 421 כדי שהשולח ינסה שוב את ההודעה שלו מאוחר יותר (ונקבל התראה על הבעיה כדי שנוכל לפתור אותה לפני הניסיון הבא).
 
-### כיצד אתה מטפל בחסימת כתובות ה-IP שלך {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### כיצד אתם מטפלים בחסימת כתובות ה-IP שלכם {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
 אנו עוקבים באופן שוטף אחר כל רשימות מניעות ה-DNS העיקריות, ואם אחת מכתובות ה-IP של חילופי הדואר שלנו ("MX") רשומה ברשימת מניעות מרכזית, נסיר אותה מרשומת DNS A הרלוונטית במידת האפשר עד שהבעיה תיפתר.
 
@@ -2773,7 +2774,7 @@ Osano UK Compliance LTD
 
 ### מהן כתובות של מנהלי דואר {#what-are-postmaster-addresses}
 
-על מנת למנוע הקפצות מכוונות שגויות ושליחת הודעות מגיבים לחופשה לתיבות דואר לא מפוקחות או לא קיימות, אנו מנהלים רשימה של שמות משתמש דואר-דימון:
+על מנת למנוע החזרות שגויות ושליחת הודעות מענה לחופשה לתיבות דואר שאינן מנוטרות או שאינן קיימות, אנו מתחזקים רשימה של שמות משתמש דמויי mailer-daemon:
 
 * `automailer`
 * `autoresponder`
@@ -2794,7 +2795,7 @@ Osano UK Compliance LTD
 * `postmaster`
 * [וכל כתובת ללא מענה](#what-are-no-reply-addresses)
 
-ראה [RFC 5320 סעיף 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) לקבלת תובנות נוספות כיצד רשימות כגון אלה משמשות ליצירת מערכות דוא"ל יעילות.
+ראה [סעיף 4.6 ב-RFC 5320](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) לקבלת תובנות נוספות כיצד רשימות כגון אלה משמשות ליצירת מערכות דוא"ל יעילות.
 
 ### מהן כתובות ללא מענה {#what-are-no-reply-addresses}
 
@@ -2819,7 +2820,7 @@ Osano UK Compliance LTD
 * `noreply`
 * `noreplys`
 
-רשימה זו מתוחזקת על ידי [כפרויקט קוד פתוח ב-GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+רשימה זו מתוחזקת [כפרויקט קוד פתוח ב-GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
 ### מהן כתובות ה-IP של השרת שלך {#what-are-your-servers-ip-addresses}
 
@@ -2831,7 +2832,7 @@ Osano UK Compliance LTD
 
 כל האימיילים, הדומיינים והנמענים של לקוחות בתוכניות בתשלום מתווספים אוטומטית לרשימת ההיתרים שלנו.
 
-### אילו סיומות שם דומיין רשומות כברירת מחדל ברשימת ההיתרים {#what-domain-name-extensions-are-allowlisted-by-default}
+### אילו סיומות שם דומיין רשומות כברירת מחדל {#what-domain-name-extensions-are-allowlisted-by-default}
 
 סיומות שמות הדומיין הבאות נחשבות כרשומות ברשימת היתרים כברירת מחדל (בין אם הן נמצאות ברשימת הפופולריות של Umbrella ובין אם לאו):
 
@@ -2853,7 +2854,7 @@ Osano UK Compliance LTD
 <li class="list-inline-item"><code class="notranslate">gov.ad</code></li> <li class="list-inline-item"><code class="notranslate">gov.af</code></li> <li class="list-inline-item"><code class="notranslate">gov.ai</code></li> <li class="list-inline-item"><code class="notranslate">gov.al</code></li> <li class="list-inline-item"><code class="notranslate">gov.am</code></li> <li class="list-inline-item"><code class="notranslate">gov.ao</code></li> <li class="list-inline-item"><code class="notranslate">gov.au</code></li> <li class="list-inline-item"><code class="notranslate">gov.aw</code></li> <li class="list-inline-item"><code class="notranslate">gov.ax</code></li> <li class="list-inline-item"><code class="notranslate">gov.az</code></li> <li class="list-inline-item"><code class="notranslate">gov.bd</code></li> <li class="list-inline-item"><code class="notranslate">gov.be</code></li> <li class="list-inline-item"><code class="notranslate">gov.bg</code></li> <li class="list-inline-item"><code class="notranslate">gov.bm</code></li> <!--<li class="list-inline-item"><code class="notranslate">gov.br</code></li>--> <li class="list-inline-item"><code class="notranslate">gov.by</code></li> <li class="list-inline-item"><code class="notranslate">gov.cl</code></li> <li class="list-inline-item"><code class="notranslate">gov.cn</code></li> <li class="list-inline-item"><code class="notranslate">gov.co</code></li> <li class="list-inline-item"><code class="notranslate">gov.cy</code></li> <li class="list-inline-item"><code class="notranslate">gov.cz</code></li> <li class="list-inline-item"><code class="notranslate">gov.dz</code></li> <li class="list-inline-item"><code class="notranslate">gov.eg</code></li> <li class="list-inline-item"><code class="notranslate">gov.fi</code></li> <li class="list-inline-item"><code class="notranslate">gov.fk</code></li> <li class="list-inline-item"><code class="notranslate">gov.gg</code></li> <li class="list-inline-item"><code class="notranslate">gov.gr</code></li> <li class="list-inline-item"><code class="notranslate">gov.hk</code></li> <li class="list-inline-item"><code class="notranslate">gov.hr</code></li> <li class="list-inline-item"><code class="notranslate">gov.hu</code></li> <li class="list-inline-item"><code class="notranslate">gov.ie</code></li> <li class="list-inline-item"><code class="notranslate">gov.il</code></li> <li class="list-inline-item"><code class="notranslate">gov.im</code></li> <li class="list-inline-item"><code class="notranslate">gov.in</code></li> <li class="list-inline-item"><code class="notranslate">gov.iq</code></li> <li class="list-inline-item"><code class="notranslate">gov.ir</code></li> <li class="list-inline-item"><code class="notranslate">gov.it</code></li> <li class="list-inline-item"><code class="notranslate">gov.je</code></li> <li class="list-inline-item"><code class="notranslate">gov.kp</code></li> <li class="list-inline-item"><code class="notranslate">gov.krd</code></li> <li class="list-inline-item"><code class="notranslate">gov.ky</code></li> <li class="list-inline-item"><code class="notranslate">gov.kz</code></li> <li class="list-inline-item"><code class="notranslate">gov.lb</code></li> <li class="list-inline-item"><code class="notranslate">gov.lk</code></li> <li class="list-inline-item"><code class="notranslate">gov.lt</code></li> <li class="list-inline-item"><code class="notranslate">gov.lv</code></li> <li class="list-inline-item"><code class="notranslate">gov.ma</code></li> <li class="list-inline-item"><code class="notranslate">gov.mm</code></li> <li class="list-inline-item"><code class="notranslate">gov.mo</code></li> <li class="list-inline-item"><code class="notranslate">gov.mt</code></li> <li class="list-inline-item"><code class="notranslate">gov.my</code></li> <li class="list-inline-item"><code class="notranslate">gov.ng</code></li> <li class="list-inline-item"><code class="notranslate">gov.np</code></li> <li class="list-inline-item"><code class="notranslate">gov.ph</code></li> <li class="list-inline-item"><code class="notranslate">gov.pk</code></li> <li class="list-inline-item"><code class="notranslate">gov.pl</code></li> <li class="list-inline-item"><code class="notranslate">gov.pt</code></li> <li class="list-inline-item"><code class="notranslate">gov.py</code></li> <li class="list-inline-item"><code class="notranslate">gov.ro</code></li> <li class="list-inline-item"><code class="notranslate">gov.ru</code></li> <li class="list-inline-item"><code class="notranslate">gov.scot</code></li> <li class="list-inline-item"><code class="notranslate">gov.se</code></li> <li class="list-inline-item"><code class="notranslate">gov.sg</code></li> <li class="list-inline-item"><code class="notranslate">gov.si</code></li> <li class="list-inline-item"><code class="notranslate">gov.sk</code></li> <li class="list-inline-item"><code class="notranslate">gov.tr</code></li> <li class="list-inline-item"><code class="notranslate">gov.tt</code></li> <li class="list-inline-item"><code class="notranslate">gov.tw</code></li> <li class="list-inline-item"><code class="notranslate">gov.ua</code></li> <li class="list-inline-item"><code class="notranslate">gov.uk</code></li> <li class="list-inline-item"><code class="notranslate">gov.vn</code></li> <li class="list-inline-item"><code class="notranslate">gov.wales</code></li> <li class="list-inline-item"><code class="notranslate">gov.za</code></li> <li class="list-inline-item"><code class="notranslate">government.pn</code></li> <li class="list-inline-item"><code class="notranslate">govt.nz</code></li> <!--<li class="list-inline-item"><code class="notranslate">gub.uy</code></li>--> <li class="list-inline-item"><code class="notranslate">gv.at</code></li> <li class="list-inline-item"><code class="notranslate">ac.uk</code></li> <li class="list-inline-item"><code class="notranslate">bl.uk</code></li> <li class="list-inline-item"><code class="notranslate">judiciary.uk</code></li> <li class="list-inline-item"><code class="notranslate">mod.uk</code></li> <li class="list-inline-item"><code class="notranslate">nhs.uk</code></li> <li class="list-inline-item"><code class="notranslate">parliament.uk</code></li> <li class="list-inline-item"><code class="notranslate">police.uk</code></li> <li class="list-inline-item"><code class="notranslate">rct.uk</code></li> <li class="list-inline-item"><code class="notranslate">royal.uk</code></li> <li class="list-inline-item"><code class="notranslate">sch.uk</code></li> <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-בנוסף, [מותג ודומיינים ברמה עליונה של החברה](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) אלה מופיעים ברשימת היתרים כברירת מחדל (לדוגמה, `apple` עבור `applecard.apple` עבור דפי חשבון בנק של Apple Card):
+בנוסף, [מותג ודומיינים ברמה עליונה של החברה](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) אלה מופיעים ברשימת ההיתרים כברירת מחדל (למשל, `apple` עבור `applecard.apple` עבור דפי בנק של Apple Card):
 
 <ul class="list-inline"> <li class="list-inline-item"><code class="notranslate">aaa</code></li> <li class="list-inline-item"><code class="notranslate">aarp</code></li> <li class="list-inline-item"><code class="notranslate">abarth</code></li> <li class="list-inline-item"><code class="notranslate">abb</code></li> <li class="list-inline-item"><code class="notranslate">abbott</code></li> <li class="list-inline-item"><code class="notranslate">abbvie</code></li> <li class="list-inline-item"><code class="notranslate">abc</code></li> <li class="list-inline-item"><code class="notranslate">accenture</code></li>
 <li class="list-inline-item"><code class="notranslate">aco</code></li> <li class="list-inline-item"><code class="notranslate">aeg</code></li> <li class="list-inline-item"><code class="notranslate">atna</code></li> <li class="list-inline-item"><code class="notranslate">afl</code></li> <li class="list-inline-item"><code class="notranslate">agakhan</code></li> <li class="list-inline-item"><code class="notranslate">aig</code></li> <li class="list-inline-item"><code class="notranslate">aigo</code></li> <li class="list-inline-item"><code class="notranslate">איירבוס</code></li> <li class="list-inline-item"><code class="notranslate">איירטל</code></li> <li class="list-inline-item"><code class="notranslate">אקדן</code></li> <li class="list-inline-item"><code class="notranslate">אלפארומאו</code></li> <li class="list-inline-item"><code class="notranslate">אליבאבא</code></li> <li class="list-inline-item"><code class="notranslate">אליפיי</code></li> <li class="list-inline-item"><code class="notranslate">אלפיננזה</code></li> <li class="list-inline-item"><code class="notranslate">אלסטייט</code></li> <li class="list-inline-item"><code class="notranslate">אלי</code></li> <li class="list-inline-item"><code class="notranslate">אלסטום</code></li> <li class="list-inline-item"><code class="notranslate">אמזון</code></li> <li class="list-inline-item"><code class="notranslate">אמריקן אקספרס</code></li> <li class="list-inline-item"><code class="notranslate">אמריקן אקספרס</code></li> <li class="list-inline-item"><code class="notranslate">אמריקן אקספרס</code></li> <li class="list-inline-item"><code class="notranslate">אמריקן אקספרס</code></li> <li class="list-inline-item"><code class="notranslate">אמריקן אקספרס</code></li> <li class="list-inline-item"><code class="notranslate">אנדרואיד</code></li> <li class="list-inline-item"><code class="notranslate">אנז</code></li> <li class="list-inline-item"><code class="notranslate">אאול</code></li> <li class="list-inline-item"><code class="notranslate">אפל</code></li> <li class="list-inline-item"><code class="notranslate">אקוורל</code></li> <li class="list-inline-item"><code class="notranslate">ארמקו</code></li> <li class="list-inline-item"><code class="notranslate">אאודי</code></li> <li class="list-inline-item"><code class="notranslate">אוספוסט</code></li> <li class="list-inline-item"><code class="notranslate">אוס</code></li> <li class="list-inline-item"><code class="notranslate">אקסה</code></li> <li class="list-inline-item"><code class="notranslate">תכלת</code></li> <li class="list-inline-item"><code class="notranslate">באידו</code></li> <li class="list-inline-item"><code class="notranslate">בננה רפובליק</code></li> <li class="list-inline-item"><code class="notranslate">ברקלייקארד</code></li> <li class="list-inline-item"><code class="notranslate">ברקליס</code></li> <li class="list-inline-item"><code class="notranslate">כדורסל</code></li> <li class="list-inline-item"><code class="notranslate">באוהאוס</code></li> <li class="list-inline-item"><code class="notranslate">בי.בי.סי.</code></li> <li class="list-inline-item"><code class="notranslate">בי.בי.סי.</code></li> <li class="list-inline-item"><code class="notranslate">בי.בי.סי.</code></li> <li class="list-inline-item"><code class="notranslate">בי.בי.סי.</code></li> <li class="list-inline-item"><code class="notranslate">bbva</code></li> <li class="list-inline-item"><code class="notranslate">bcg</code></li> <li class="list-inline-item"><code class="notranslate">בנטלי</code></li> <li class="list-inline-item"><code class="notranslate">בהארטי</code></li> <li class="list-inline-item"><code class="notranslate">בינג</code></li> <li class="list-inline-item"><code class="notranslate">בלאנקו</code></li> <li class="list-inline-item"><code class="notranslate">בלומברג</code></li> <li class="list-inline-item"><code class="notranslate">bms</code></li> <li class="list-inline-item"><code class="notranslate">bmw</code></li> <li class="list-inline-item"><code class="notranslate">bnl</code></li> <li class="list-inline-item"><code class="notranslate">bnpparibas</code></li> <li class="list-inline-item"><code class="notranslate">boehringer</code></li> <li class="list-inline-item"><code class="notranslate">bond</code></li> <li class="list-inline-item"><code class="notranslate">הזמנה</code></li> <li class="list-inline-item"><code class="notranslate">בוש</code></li> <li class="list-inline-item"><code class="notranslate">בוסטיק</code></li> <li class="list-inline-item"><code class="notranslate">ברידסקו</code></li> <li class="list-inline-item"><code class="notranslate">ברידג'סטון</code></li> <li class="list-inline-item"><code class="notranslate">בראדר</code></li> <li class="list-inline-item"><code class="notranslate">בוגאטי</code></li> <li class="list-inline-item"><code class="notranslate">קאלווינקליין</code></li> <li class="list-inline-item"><code class="notranslate">קאנון</code></li> <li class="list-inline-item"><code class="notranslate">קפיטאלון</code></li> <li class="list-inline-item"><code class="notranslate">קרוואן</code></li> <li class="list-inline-item"><code class="notranslate">קרטייה</code></li> <li class="list-inline-item"><code class="notranslate">cba</code></li> <li class="list-inline-item"><code class="notranslate">cbn</code></li> <li class="list-inline-item"><code class="notranslate">cbre</code></li> <li class="list-inline-item"><code class="notranslate">cbs</code></li> <li class="list-inline-item"><code class="notranslate">cern</code></li> <li class="list-inline-item"><code class="notranslate">cfa</code></li> <li class="list-inline-item"><code class="notranslate">שאנל</code></li> <li class="list-inline-item"><code class="notranslate">צ'ייס</code></li> <li class="list-inline-item"><code class="notranslate">צ'ינטאי</code></li> <li class="list-inline-item"><code class="notranslate">כרום</code></li> <li class="list-inline-item"><code class="notranslate">קרייזלר</code></li> <li class="list-inline-item"><code class="notranslate">ציפריאני</code></li> <li class="list-inline-item"><code class="notranslate">סיסקו</code></li> <li class="list-inline-item"><code class="notranslate">מצודה</code></li> <li class="list-inline-item"><code class="notranslate">citi</code></li> <li class="list-inline-item"><code class="notranslate">citic</code></li> <li class="list-inline-item"><code class="notranslate">clubmed</code></li> <li class="list-inline-item"><code class="notranslate">comcast</code></li> <li class="list-inline-item"><code class="notranslate">commbank</code></li> <li class="list-inline-item"><code class="notranslate">קרדיטיוניון</code></li> <li class="list-inline-item"><code class="notranslate">כתר</code></li> <li class="list-inline-item"><code class="notranslate">crs</code></li> <li class="list-inline-item"><code class="notranslate">csc</code></li> <li class="list-inline-item"><code class="notranslate">קויזינלה</code></li> <li class="list-inline-item"><code class="notranslate">דאבור</code></li> <li class="list-inline-item"><code class="notranslate">דאטסון</code></li> <li class="list-inline-item"><code class="notranslate">סוחר</code></li> <li class="list-inline-item"><code class="notranslate">דל</code></li> <li class="list-inline-item"><code class="notranslate">דלויט</code></li> <li class="list-inline-item"><code class="notranslate">דלתא</code></li> <li class="list-inline-item"><code class="notranslate">דלתא</code></li> <li class="list-inline-item"><code class="notranslate">dhl</code></li> <li class="list-inline-item"><code class="notranslate">דיסקבר</code></li> <li class="list-inline-item"><code class="notranslate">דיש</code></li> <li class="list-inline-item"><code class="notranslate">דנפ</code></li> <li class="list-inline-item"><code class="notranslate">דונלופ</code></li> <li class="list-inline-item"><code class="notranslate">דופונט</code></li> <li class="list-inline-item"><code class="notranslate">דוואג</code></li> <li class="list-inline-item"><code class="notranslate">אדקה</code></li> <li class="list-inline-item"><code class="notranslate">אמריק</code></li> <li class="list-inline-item"><code class="notranslate">אפסון</code></li> <li class="list-inline-item"><code class="notranslate">אריקסון</code></li> <li class="list-inline-item"><code class="notranslate">ארני</code></li> <li class="list-inline-item"><code class="notranslate">ביטוח</code></li> <li class="list-inline-item"><code class="notranslate">אטיסלט</code></li> <li class="list-inline-item"><code class="notranslate">אירוויזיון</code></li> <li class="list-inline-item"><code class="notranslate">everbank</code></li> <li class="list-inline-item"><code class="notranslate">extraspace</code></li> <li class="list-inline-item"><code class="notranslate">fage</code></li> <li class="list-inline-item"><code class="notranslate">fairwinds</code></li> <li class="list-inline-item"><code class="notranslate">farmers</code></li> <li class="list-inline-item"><code class="notranslate">fedex</code></li> <li class="list-inline-item"><code class="notranslate">פרארי</code></li> <li class="list-inline-item"><code class="notranslate">פררו</code></li> <li class="list-inline-item"><code class="notranslate">פיאט</code></li> <li class="list-inline-item"><code class="notranslate">פידליטי</code></li> <li class="list-inline-item"><code class="notranslate">פיירסטון</code></li> <li class="list-inline-item"><code class="notranslate">פירמדייל</code></li> <li class="list-inline-item"><code class="notranslate">פליקר</code></li> <li class="list-inline-item"><code class="notranslate">פלייר</code></li> <li class="list-inline-item"><code class="notranslate">פלסמידט</code></li> <li class="list-inline-item"><code class="notranslate">פורד</code></li> <li class="list-inline-item"><code class="notranslate">פוקס</code></li> <li class="list-inline-item"><code class="notranslate">פרזניוס</code></li> <li class="list-inline-item"><code class="notranslate">פורקס</code></li> <li class="list-inline-item"><code class="notranslate">צפרדעים</code></li> <li class="list-inline-item"><code class="notranslate">פרונטיר</code></li> <li class="list-inline-item"><code class="notranslate">פוג'יטסו</code></li> <li class="list-inline-item"><code class="notranslate">פוג'יקסרוקס</code></li> <li class="list-inline-item"><code class="notranslate">גאלו</code></li> <li class="list-inline-item"><code class="notranslate">גאלופ</code></li> <li class="list-inline-item"><code class="notranslate">פער</code></li> <li class="list-inline-item"><code class="notranslate">gibiz</code></li> <li class="list-inline-item"><code class="notranslate">גיה</code></li> <li class="list-inline-item"><code class="notranslate">מתן</code></li> <li class="list-inline-item"><code class="notranslate">גלו</code></li> <li class="list-inline-item"><code class="notranslate">גלובו</code></li> <li class="list-inline-item"><code class="notranslate">ג'ימייל</code></li>
@@ -2883,18 +2884,22 @@ Osano UK Compliance LTD
 <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-לא כללנו במפורש את `cz`, `ru`, ו-`ua` עקב פעילות ספאם גבוהה.
+לא כללנו במפורש את `cz`, `ru` ו-`ua` עקב פעילות ספאם גבוהה.
 
 ### מהם קריטריוני רשימת ההיתרים שלך {#what-is-your-allowlist-criteria}
 
-יש לנו רשימה סטטית של [סיומות שם דומיין רשומות כברירת מחדל](#what-domain-name-extensions-are-allowlisted-by-default) – ואנחנו גם מתחזקים רשימת היתרים דינמית, מאוחסנת במטמון ומתגלגלת המבוססת על הקריטריונים המחמירים הבאים:
+יש לנו רשימה סטטית של [סיומות שם דומיין רשומות כברירת מחדל](#what-domain-name-extensions-are-allowlisted-by-default) - ואנחנו גם מתחזקים רשימת היתרים דינמית, מאוחסנת במטמון ומתגלגלת המבוססת על הקריטריונים המחמירים הבאים:
 
-* דומיין השורש של השולח חייב להיות של [סיומת שם הדומיין שתואמת לרשימה שאנו מציעים בתוכנית החינמית שלנו](#what-domain-name-extensions-can-be-used-for-free) (עם תוספת של `biz` ו-`info`). אנו כוללים גם התאמות חלקיות של `edu`, `gov`, ו-`mil`, כגון `xyz.gov.au` ו-`xyz.edu.au`.
-* דומיין השורש של השולח חייב להיות בין 100,000 התוצאות המובילות של דומיין השורש הייחודי שנבדקו מ-[רשימת פופולריות של מטריות](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* דומיין השורש של השולח חייב להיות בין 50,000 התוצאות המובילות של דומייני שורש ייחודיים המופיעים בלפחות 4 מתוך 7 הימים האחרונים של UPL (\~50%+).
-* דומיין הבסיס של השולח אינו יכול להיות [מסווג](https://radar.cloudflare.com/categorization-feedback/) כתוכן למבוגרים או תוכנה זדונית על ידי Cloudflare.
-* דומיין הבסיס של השולח חייב להיות בעל רשומות A או MX מוגדרות.
-* דומיין הבסיס של השולח חייב להיות בעל רשומה/ות A, רשומה/ות MX, רשומת DMARC עם `p=reject` או `p=quarantine`, או רשומת SPF עם אישור `-all` או `~all`.
+* דומיין השורש של השולח חייב להיות של [סיומת שם הדומיין התואמת לרשימה שאנו מציעים בתוכנית החינמית שלנו](#what-domain-name-extensions-can-be-used-for-free) (עם תוספת של `biz` ו-`info`). אנו כוללים גם התאמות חלקיות של `edu`, `gov` ו-`mil`, כגון `xyz.gov.au` ו-`xyz.edu.au`.
+
+* דומיין השורש של השולח חייב להיות בין 100,000 התוצאות המובילות של דומיין השורש הייחודי שפורסמו מ-[רשימת פופולריות של מטריות](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+
+* דומיין השורש של השולח חייב להיות בין 50,000 התוצאות המובילות של דומייני שורש ייחודיים שהופיעו בלפחות 4 מתוך 7 הימים האחרונים של UPL (~50%+).
+
+* דומיין השורש של השולח לא יכול להיות [מסווג](https://radar.cloudflare.com/categorization-feedback/) כתוכן למבוגרים או תוכנה זדונית של Cloudflare.
+
+* דומיין השורש של השולח חייב להיות בעל רשומות A או MX מוגדרות.
+* תחום השורש של השולח חייב לכלול רשומת/ות A, רשומת/ות MX, רשומת DMARC עם `biz`0 או `biz`1, או רשומת SPF עם מזהה `biz`2 או `biz`3.
 
 אם קריטריון זה מתקיים, דומיין הבסיס של השולח יאוחסן במטמון למשך 7 ימים. שימו לב שהמשימה האוטומטית שלנו פועלת מדי יום - לכן זהו מטמון מתגלגל של רשימת היתרים שמתעדכן מדי יום.
 
@@ -2902,9 +2907,9 @@ Osano UK Compliance LTD
 
 דומיינים פופולריים בזמן כתיבת שורות אלה כגון גוגל, יאהו, מיקרוסופט, אמזון, מטא, טוויטר, נטפליקס, ספוטיפיי ועוד - כלולים כמובן.
 
-אם אתה שולח שאינו ברשימת ההיתרים שלנו, אז בפעם הראשונה שדומיין הבסיס של ה-FQDN או כתובת ה-IP שלך שולחים אימייל, תסווג כ-[שיעור מוגבל](#do-you-have-rate-limiting) ו-[ברשימה אפורה](#do-you-have-a-greylist). שים לב שזהו נוהג סטנדרטי שאומץ כסטנדרט אימייל. רוב לקוחות שרת האימייל ינסו לנסות שוב אם יקבלו שגיאת מגבלת קצב או רשימה אפורה (למשל, קוד סטטוס שגיאה ברמה 421 או 4xx).
+אם אתה שולח שאינו ברשימת ההיתרים שלנו, אז בפעם הראשונה שדומיין הבסיס של ה-FQDN או כתובת ה-IP שלך שולחים אימייל, אתה תהיה [שיעור מוגבל](#do-you-have-rate-limiting) ו-[ברשימה אפורה](#do-you-have-a-greylist). שים לב שזהו נוהג סטנדרטי שאומץ כסטנדרט אימייל. רוב לקוחות שרת האימייל ינסו לנסות שוב אם הם מקבלים שגיאת מגבלת קצב או רשימה אפורה (למשל קוד סטטוס שגיאה ברמה 421 או 4xx).
 
-**שימו לב ששולחים ספציפיים כגון `a@gmail.com`, `b@xyz.edu`, ו-`c@gov.au` עדיין יכולים להיות [נדחה ברשימה](#do-you-have-a-denylist)** (לדוגמה, אם נזהה אוטומטית ספאם, פישינג או תוכנות זדוניות מאותם שולחים).**
+**שימו לב ששולחים ספציפיים כגון `a@gmail.com`, `b@xyz.edu` ו-`c@gov.au` עדיין יכולים להיות [נדחה ברשימה](#do-you-have-a-denylist)** (לדוגמה, אם אנו מזהים אוטומטית ספאם, פישינג או תוכנות זדוניות מאותם שולחים).**
 
 ### אילו סיומות שם דומיין ניתן להשתמש בהן בחינם {#what-domain-name-extensions-can-be-used-for-free}
 
@@ -2921,7 +2926,7 @@ Osano UK Compliance LTD
 
 ### האם יש לך רשימה אפורה {#do-you-have-a-greylist}
 
-כן, יש לנו מדיניות [רשימה אפורה של אימיילים](https://en.wikipedia.org/wiki/Greylisting_\(email\)) רופפת מאוד. רשימת הודעות אפורה חלה רק על שולחים שאינם ברשימת ההיתרים שלנו ונשארת במטמון שלנו למשך 30 יום.
+כן, יש לנו מדיניות [רשימה אפורה של אימיילים](https://en.wikipedia.org/wiki/Greylisting_\(email\)) רופפת מאוד. רשימת תפוצה אפורה חלה רק על שולחים שאינם ברשימת ההיתרים שלנו ונשארת במטמון שלנו למשך 30 יום.
 
 עבור כל שולח חדש, אנו מאחסנים מפתח במסד הנתונים של Redis שלנו למשך 30 יום עם ערך המוגדר לזמן ההגעה הראשוני של הבקשה הראשונה שלהם. לאחר מכן אנו דוחים את האימייל שלהם עם קוד סטטוס ניסיון חוזר של 450 ומאפשרים לו לעבור רק לאחר שעברו 5 דקות.
 
@@ -2929,7 +2934,7 @@ Osano UK Compliance LTD
 
 המפתח מורכב מדומיין הבסיס של ה-FQDN או מכתובת ה-IP של השולח. משמעות הדבר היא שכל תת-דומיין שעובר את הרשימה האפורה יעבור גם לדומיין הבסיס, ולהיפך (זו הכוונה במדיניות "רפה מאוד").
 
-לדוגמה, אם אימייל מגיע מ-`test.example.com` לפני שאנחנו רואים אימייל שמגיע מ-`example.com`, אז כל אימייל מ-`test.example.com` ו/או `example.com` יצטרך להמתין 5 דקות ממועד ההגעה הראשוני של החיבור. אנחנו לא גורמים גם ל-`test.example.com` וגם ל-`example.com` להמתין כל אחד לפרקי זמן משלו של 5 דקות (מדיניות הרשימה האפורה שלנו חלה ברמת הדומיין הבסיסי).
+לדוגמה, אם אימייל מגיע מ-`test.example.com` לפני שאנחנו רואים אימייל שמגיע מ-`example.com`, אז כל אימייל מ-`test.example.com` ו/או `example.com` יצטרך להמתין 5 דקות ממועד ההגעה הראשוני של החיבור. איננו גורמים גם ל-`test.example.com` וגם ל-`example.com` להמתין כל אחד מהם למשך 5 דקות (מדיניות הרישום האפור שלנו חלה ברמת הדומיין הבסיסי).
 
 שים לב שרשימה אפורה אינה חלה על אף שולח ב-[רשימת היתרים](#do-you-have-an-allowlist) שלנו (למשל, Meta, Amazon, Netflix, Google, Microsoft נכון למועד כתיבת שורות אלה).
 
@@ -2937,7 +2942,7 @@ Osano UK Compliance LTD
 
 כן, אנו מפעילים רשימת דחייה משלנו ומעדכנים אותה באופן אוטומטי בזמן אמת ובאופן ידני על סמך ספאם ופעילות זדונית שזוהו.
 
-אנו גם שולפים את כל כתובות ה-IP מרשימת המניעים של UCEPROTECT Level 1 בכתובת <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> בכל שעה ומזינים אותן לרשימת המניעים שלנו עם תוקף של 7 ימים.
+אנו גם שולפים את כל כתובות ה-IP מרשימת המניעים של UCEPROTECT Level 1 ב-<http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> בכל שעה ומזינים אותן לרשימת המניעים שלנו עם תוקף של 7 ימים.
 
 שולחים שנמצאים ברשימת המניעים יקבלו קוד שגיאה 421 (מציין לשולח לנסות שוב מאוחר יותר) אם הם [לא נמצאים ברשימת ההיתרים](#do-you-have-an-allowlist).
 
@@ -2947,72 +2952,74 @@ Osano UK Compliance LTD
 
 כל בקשות ההסרה מרשימת דחייה מנוטרות בזמן אמת על ידי מנהלים (למשל, כך שתוצאות חיוביות שגויות חוזרות ונשנות יוכלו להיכלל ברשימת היתרים לצמיתות על ידי מנהלים).
 
-ניתן לבקש בקשות להסרת קבצים מרשימת דחייה בכתובת <https://forwardemail.net/denylist>. משתמשים בתשלום יקבלו עיבוד מיידי של בקשות הסרת קבצים מרשימת דחייה, בעוד שמשתמשים שאינם בתשלום חייבים להמתין עד שמנהלים יעבדו את בקשתם.
+ניתן לבקש בקשות להסרת מודעות מרשימת דחייה בכתובת <https://forwardemail.net/denylist>.. בקשות להסרת מודעות מרשימת דחייה מעובדות באופן מיידי עבור משתמשים בתשלום, בעוד שמשתמשים שאינם בתשלום חייבים להמתין עד שמנהלי המערכת יעבדו את בקשתם.
 
 שולחים שיזוהו כשליחת תוכן ספאם או וירוס יתווספו לרשימת המניעים בגישה הבאה:
 
-1. ה-[טביעת אצבע של ההודעה הראשונית](#how-do-you-determine-an-email-fingerprint) מופיע ברשימה אפורה בעת זיהוי ספאם או רשימת חסימה משולח "מהימן" (לדוגמה, `gmail.com`, `microsoft.com`, `apple.com`).
-* אם השולח היה ברשימת היתרים, ההודעה מופיעה ברשימה אפורה למשך שעה אחת.
-* אם השולח אינו מופיע ברשימת היתרים, ההודעה מופיעה ברשימה אפורה למשך 6 שעות.
+1. ה-[טביעת אצבע של ההודעה הראשונית](#how-do-you-determine-an-email-fingerprint) מופיע ברשימה אפורה לאחר גילוי ספאם או רשימת חסימה משולח "מהימן" (למשל `gmail.com`, `microsoft.com`, `apple.com`).
+* אם השולח היה ברשימת ההיתרים, ההודעה מופיעה ברשימה אפורה למשך שעה אחת.
+* אם השולח אינו מופיע ברשימת ההיתרים, ההודעה מופיעה ברשימה אפורה למשך 6 שעות.
 2. אנו מנתחים מפתחות רשימת דחייה ממידע מהשולח ומההודעה, ועבור כל אחד מהמפתחות הללו אנו יוצרים (אם עדיין אין כזה) מונה, מעלים אותו ב-1 ומאחסנים אותו במטמון למשך 24 שעות.
-* עבור שולחים ברשימת היתרים:
-* הוסיפו מפתח עבור כתובת הדוא"ל של המעטפה "MAIL FROM" אם היה לה SPF עובר או ללא SPF, והיא לא הייתה [שם משתמש של postmaster](#what-are-postmaster-addresses) או [שם משתמש ללא תשובה](#what-are-no-reply-addresses).
-* אם כותרת "From" הייתה ברשימת היתרים, הוסיפו מפתח עבור כתובת הדוא"ל של כותרת "From" אם היה לה SPF עובר או DKIM עובר ומיושר.
-* אם כותרת "From" לא הייתה ברשימת היתרים, הוסיפו מפתח עבור כתובת הדוא"ל של כותרת "From" ושם הדומיין המנותח בבסיס שלה.
+* עבור שולחים ברשימת ההיתרים:
+* הוסיפו מפתח עבור כתובת הדוא"ל "MAIL FROM" במעטפה אם היה לה SPF עובר או ללא SPF, והיא לא הייתה [שם משתמש של מנהל דואר](#what-are-postmaster-addresses) או [שם משתמש ללא מענה](#what-are-no-reply-addresses).
+
+* אם כותרת "From" הייתה ברשימת היתרים, הוסף מפתח עבור כתובת הדוא"ל של כותרת "From" אם הייתה לה SPF עובר או DKIM עובר ומיושר.
+* אם כותרת "From" לא הייתה ברשימת היתרים, הוסף מפתח עבור כתובת הדוא"ל של כותרת "From" ושם הדומיין הבסיסי שלה שעבר ניתוח.
 * עבור שולחים שאינם ברשימת היתרים:
-* הוסיפו מפתח עבור כתובת הדוא"ל של המעטפה "MAIL FROM" אם היה לה SPF עובר.
-* אם כותרת "From" הייתה ברשימת היתרים, הוסיפו מפתח עבור כתובת הדוא"ל של כותרת "From" אם היה לה SPF עובר או DKIM עובר ומיושר.
-* אם כותרת "From" לא הייתה ברשימת היתרים, הוסיפו מפתח עבור כתובת הדוא"ל של כותרת "From" ושם הדומיין המנותח בבסיס שלה.
+* הוסף מפתח עבור כתובת הדוא"ל של המעטפה "MAIL FROM" אם הייתה לה SPF עובר.
+* אם כותרת "From" הייתה ברשימת היתרים, הוסף מפתח עבור כתובת הדוא"ל של כותרת "From" אם הייתה לה SPF עובר או DKIM עובר ומיושר.
+* אם כותרת "From" לא הייתה ברשימת היתרים, הוסף מפתח עבור כתובת הדוא"ל של כותרת "From" ושם הדומיין הבסיסי שלה שעבר ניתוח.
 * הוסף מפתח עבור כתובת ה-IP המרוחקת של השולח.
 * הוסף מפתח עבור שם המארח שזוהה על ידי הלקוח על ידי חיפוש הפוך מכתובת ה-IP של השולח (אם קיים).
 * הוסף מפתח עבור הדומיין הבסיסי של שם המארח שזוהה על ידי הלקוח (אם קיים, ואם הוא שונה משם המארח שזוהה על ידי הלקוח).
-3. אם המונה מגיע ל-5 עבור שולח ומפתח שאינם ברשימת ההיתרים, אנו דוחים את המפתח ל-30 יום ונשלח אימייל לצוות ההתעללות שלנו. מספרים אלה עשויים להשתנות ועדכונים ישתקפו כאן בזמן שאנו עוקבים אחר התעללות.
-4. אם המונה מגיע ל-10 עבור שולח ומפתח ברשימת ההיתרים, אנו דוחים את המפתח ל-7 ימים ונשלח אימייל לצוות ההתעללות שלנו. מספרים אלה עשויים להשתנות ועדכונים ישתקפו כאן בזמן שאנו עוקבים אחר התעללות.
+3. אם המונה מגיע ל-5 עבור שולח ומפתח שאינם ברשימת ההיתרים, אנו דוחים את המפתח ל-30 יום ונשלח אימייל לצוות ההתעללות שלנו. מספרים אלה עשויים להשתנות ועדכונים ישתקפו כאן בזמן שאנו עוקבים אחר ההתעללות.
+
+4. אם המונה מגיע ל-10 עבור שולח ומפתח ברשימת ההיתרים, אנו דוחים את המפתח ל-7 ימים ונשלח אימייל לצוות ההתעללות שלנו. מספרים אלה עשויים להשתנות ועדכונים ישתקפו כאן בזמן שאנו עוקבים אחר ההתעללות.
 
 > **הערה:** בעתיד הקרוב נציג ניטור מוניטין. ניטור מוניטין יחשב במקום זאת מתי לדחות הוספה של שולח לרשימה על סמך סף אחוזים (בניגוד למונה בסיסי כפי שצוין לעיל).
 
 ### האם יש לך הגבלת קצב {#do-you-have-rate-limiting}
 
-הגבלת קצב השולח היא על ידי דומיין הבסיס המנתח מחיפוש PTR הפוך על כתובת ה-IP של השולח - או שאם זה לא מניב תוצאה, אז היא פשוט משתמשת בכתובת ה-IP של השולח. שים לב שאנו מתייחסים לזה כ-`Sender` להלן.
+הגבלת קצב השולח היא על ידי דומיין הבסיס שמנתח מחיפוש PTR הפוך על כתובת ה-IP של השולח - או שאם זה לא מניב תוצאה, אז היא פשוט משתמשת בכתובת ה-IP של השולח. שים לב שאנו מתייחסים לזה כ-`Sender` להלן.
 
-לשרתי ה-MX שלנו יש מגבלות יומיות על דואר נכנס שמתקבל עבור [אחסון IMAP מוצפן](/blog/docs/best-quantum-safe-encrypted-email-service):
+לשרתי ה-MX שלנו יש מגבלות יומיות על דואר נכנס שהתקבל עבור [אחסון IMAP מוצפן](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-* במקום להגביל את התעריף של דואר נכנס המתקבל על בסיס כינויים אישיים (למשל `you@yourdomain.com`) – אנו מגבילים את התעריף לפי שם הדומיין של הכינוי עצמו (למשל `yourdomain.com`). זה מונע מ-`Senders` להציף את תיבות הדואר הנכנס של כל הכינויים בדומיין שלך בו זמנית.
-* יש לנו מגבלות כלליות החלות על כל `Senders` בשירות שלנו ללא קשר לנמען:
-* `Senders` שאנו מחשיבים כ"מהימנים" כמקור אמת (למשל `gmail.com`, `microsoft.com`, `apple.com`) מוגבלים לשליחת 100 ג'יגה-בייט ליום.
+* במקום להגביל את קצב הדואר הנכנס המתקבל על בסיס כינויים אישיים (למשל, `you@yourdomain.com`) – אנו מגבילים את הקצב לפי שם הדומיין של הכינוי עצמו (למשל, `yourdomain.com`). זה מונע מ-`Senders` להציף את תיבות הדואר הנכנס של כל הכינויים בדומיין שלך בו זמנית.
+* יש לנו מגבלות כלליות שחלות על כל `Senders` בשירות שלנו ללא קשר לנמען:
+* `Senders` שאנו מחשיבים כ"מהימנים" כמקור אמת (למשל, `gmail.com`, `microsoft.com`, `apple.com`) מוגבלים לשליחת 100 ג'יגה-בייט ליום.
 * `Senders` שהם [רשימת היתרים](#do-you-have-an-allowlist) מוגבלים לשליחת 10 ג'יגה-בייט ליום.
-* כל שאר `Senders` מוגבלים לשליחת 1 ג'יגה-בייט ו/או 1000 הודעות ליום.
-* יש לנו מגבלה ספציפית של 1 ג'יגה-בייט ו/או 1000 הודעות ליום לכל `Sender` ו-`yourdomain.com`.
+* כל שאר `yourdomain.com`0 מוגבלים לשליחת 1 ג'יגה-בייט ו/או 1000 הודעות ליום.
+* יש לנו מגבלה ספציפית של 1 ג'יגה-בייט ו/או 1000 הודעות מדי יום לכל `yourdomain.com`1 ו-`yourdomain.com`2.
 
-שרתי ה-MX גם מגבילים את העברת ההודעות לנמען אחד או יותר באמצעות הגבלת קצב - אך זה חל רק על `Senders` שאינו על [רשימת היתרים](#do-you-have-an-allowlist):
+שרתי ה-MX גם מגבילים את העברת ההודעות לנמען אחד או יותר באמצעות הגבלת קצב - אך זה חל רק על `Senders` ולא על [רשימת היתרים](#do-you-have-an-allowlist):
 
-אנו מתירים רק עד 100 חיבורים לשעה, לכל תחום שורש FQDN `Sender` (או) `Sender` כתובת IP מרוחקת (אם אין PTR הפוך זמין), ולכל נמען מעטפה. אנו מאחסנים את המפתח להגבלת קצב כגיבוב קריפטוגרפי במסד הנתונים של Redis שלנו.
+אנו מתירים רק עד 100 חיבורים לשעה, לכל תחום שורש FQDN מפוזרת `Sender` (או) כתובת IP מרוחקת `Sender` (אם אין PTR הפוך זמין), ולכל נמען מעטפה. אנו מאחסנים את המפתח להגבלת קצב כגיבוב קריפטוגרפי במסד הנתונים של Redis שלנו.
 
 * אם אתם שולחים דוא"ל דרך המערכת שלנו, אנא ודאו שהגדרתם PTR הפוך עבור כל כתובות ה-IP שלכם (אחרת כל דומיין FQDN או כתובת IP ייחודית שתשלחו ממנה תהיה מוגבלת בתדירות).
 
 * שימו לב שאם אתם שולחים דרך מערכת פופולרית כמו Amazon SES, לא תוגבל קצב העברת הכספים מכיוון ש(נכון לכתיבת שורות אלה) Amazon SES מופיע ברשימת ההיתרים שלנו.
 
-* אם אתם שולחים מדומיין כגון `test.abc.123.example.com`, אזי מגבלת התעריף תוטל על `example.com`. שולחי ספאם רבים משתמשים במאות תת-דומיינים כדי לעקוף מסנני ספאם נפוצים שמגבילים את התעריף רק שמות מארחים ייחודיים במקום דומייני שורש FQDN ייחודיים.
+* אם אתם שולחים מדומיין כגון `test.abc.123.example.com`, מגבלת הקצב תוטל על `example.com`. שולחי ספאם רבים משתמשים במאות תת-דומיינים כדי לעקוף מסנני ספאם נפוצים שמגבילים את הקצב רק שמות מארח ייחודיים במקום דומייני שורש FQDN ייחודיים.
 
 * `Senders` שחורגים ממגבלת הקצב יידחו עם שגיאת 421.
 
-שרתי ה-IMAP וה-SMTP שלנו מגבילים את הכינויים שלך מלקיים יותר מ-`60` חיבורים בו זמנית.
+שרתי ה-IMAP וה-SMTP שלנו מגבילים את הכינויים שלך מלכלול יותר מ-`60` חיבורים בו זמנית.
 
-שרתי ה-MX שלנו מגבילים את [לא ברשימת ההיתרים](#do-you-have-an-allowlist) שולחים מלהקים יותר מ-10 חיבורים בו זמנית (עם תפוגת מטמון של 3 דקות עבור המונה, המשקפת את זמן הקצוב שלנו ל-socket של 3 דקות).
+שרתי ה-MX שלנו מגבילים את שולחי [לא ברשימת ההיתרים](#do-you-have-an-allowlist) מליצור יותר מ-10 חיבורים בו זמנית (עם תפוגת מטמון של 3 דקות עבור המונה, המשקפת את זמן הקצוב של 3 דקות עבור השקע שלנו).
 
 ### כיצד ניתן להגן מפני פיזור לאחור {#how-do-you-protect-against-backscatter}
 
-החזרות שגויות או ספאם של החזרות (הידוע בשם "[פיזור אחורי](https://en.wikipedia.org/wiki/Backscatter_\(email\))") עלולות לגרום לפגיעות במוניטין של כתובות ה-IP של השולח.
+החזרות שגויות או ספאם של החזרות (הידוע בשם "[פיזור אחורי](https://en.wikipedia.org/wiki/Backscatter_\(email\))") עלולות לגרום לפגיעה במוניטין של כתובות ה-IP של השולח.
 
-אנו נוקטים בשני צעדים כדי להגן מפני פיזור לאחור, המפורטים בסעיפים [מניעת החזרות של דואר זבל ידוע](#prevent-bounces-from-known-mail-from-spammers) ו- [מניעת קפיצות מיותרות כדי להגן מפני פיזור אחורי](#prevent-unnecessary-bounces-to-protect-against-backscatter) להלן.
+אנו נוקטים בשני צעדים כדי להגן מפני פיזור לאחור, כפי שמפורט בסעיפים הבאים [מניעת החזרות של דואר זבל ידוע](#prevent-bounces-from-known-mail-from-spammers) ו- [מניעת קפיצות מיותרות כדי להגן מפני פיזור אחורי](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
-### מניעת החזרות של דואר אלקטרוני ידוע משולחי ספאם {#prevent-bounces-from-known-mail-from-spammers}
+### מניעת החזרות של דואר זבל ידוע {#prevent-bounces-from-known-mail-from-spammers}
 
-אנו שולפים את הרשימה מ-[Backscatter.org](https://www.backscatterer.org/) (מופעל על ידי [UCEPROTECT](https://www.uceprotect.net/)) בכתובת <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> בכל שעה ומזינים אותה למסד הנתונים של Redis שלנו (אנו גם משווים את ההפרש מראש; במקרה שהוסרו כתובות IP שיש לכבד).
+אנו שולפים את הרשימה מ-[Backscatter.org](https://www.backscatterer.org/) (מופעל על ידי [UCEPROTECT](https://www.uceprotect.net/)) ב-<http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> בכל שעה ומזינים אותה למסד הנתונים של Redis שלנו (אנו גם משווים את ההפרש מראש; במקרה שהוסרו כתובות IP שיש לכבד).
 
-אם ה-MAIL FROM ריק או שווה ל- (ללא תלות באותיות גדולות/קטנות) כל אחד מה-[כתובות מנהל הדואר](#what-are-postmaster-addresses) (החלק שלפני ה-@ בהודעת דוא"ל), נבדוק אם כתובת ה-IP של השולח תואמת לאחד מהרשימה הזו.
+אם ה-MAIL FROM ריק או שווה ל- (ללא תלות בקטנות/רישיות) אחד מה-[כתובות מנהלי הדואר](#what-are-postmaster-addresses) (החלק שלפני ה-@ בהודעת דוא"ל), נבדוק אם כתובת ה-IP של השולח תואמת לאחת מהרשימה הזו.
 
-אם כתובת ה-IP של השולח רשומה (ואינה ב-[רשימת היתרים](#do-you-have-an-allowlist) שלנו), אנו שולחים שגיאת 554 עם ההודעה `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. נקבל התראה אם שולח נמצא גם ברשימת Backscatterer וגם ברשימת ההיתרים שלנו כדי שנוכל לפתור את הבעיה במידת הצורך.
+אם כתובת ה-IP של השולח רשומה (ולא ב-[רשימת היתרים](#do-you-have-an-allowlist) שלנו), אז נשלח שגיאת 554 עם ההודעה `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. נקבל התראה אם שולח נמצא גם ברשימת Backscatterer וגם ברשימת ההיתרים שלנו כדי שנוכל לפתור את הבעיה במידת הצורך.
 
 הטכניקות המתוארות בסעיף זה פועלות בהתאם להמלצת "מצב בטוח" ב-<https://www.backscatterer.org/?target=usage> – שם אנו בודקים את כתובת ה-IP של השולח רק אם תנאים מסוימים כבר מולאו.
 
@@ -3020,33 +3027,34 @@ Osano UK Compliance LTD
 
 הודעות דוא"ל חוזרות הן הודעות דוא"ל המצביעות על כך שהעברת הדוא"ל לנמען נכשלה לחלוטין ולא ייעשה ניסיון חוזר.
 
-סיבה נפוצה להופעה ברשימת Backscatterer היא ניתוקי חוצות שגויות או ספאם של ניתוקי חוצות, לכן עלינו להגן מפני כך בכמה דרכים:
+סיבה נפוצה להופעה ברשימת Backscatterer היא ניתוקי רשת (bounces) שפונים בצורה שגויה או ספאם (bounce spam), לכן עלינו להגן מפני כך בכמה דרכים:
 
 1. אנו שולחים רק כאשר מתרחשות שגיאות קוד סטטוס של >= 500 (כאשר ניסיון העברה של אימיילים נכשל, לדוגמה, Gmail מגיב עם שגיאה ברמה 500).
 
-2. אנו שולחים רק פעם אחת, ופעם אחת בלבד (אנו משתמשים במפתח טביעת אצבע של יציאה מחושב (bounce finger key) ומאחסנים אותו במטמון כדי למנוע שליחת כפילויות). טביעת האצבע של היציאה היא מפתח שהוא טביעת האצבע של ההודעה בשילוב עם גיבוב (hash) של כתובת היציאה וקוד השגיאה שלה). עיין בסעיף [טביעות אצבע](#how-do-you-determine-an-email-fingerprint) לקבלת תובנות נוספות לגבי אופן חישוב טביעת האצבע של ההודעה. טביעות אצבע של יציאה שנשלחו בהצלחה יפוגו לאחר 7 ימים במטמון Redis שלנו.
+2. אנו שולחים רק פעם אחת, ופעם אחת בלבד (אנו משתמשים במפתח טביעת אצבע מחושב של יציאה מהודעה ומאחסנים אותו במטמון כדי למנוע שליחת כפילויות). טביעת האצבע של ההודעה היא מפתח שהוא טביעת האצבע של ההודעה בשילוב עם גיבוב של כתובת היציאה מהודעה וקוד השגיאה שלה). עיין בסעיף [טביעות אצבע](#how-do-you-determine-an-email-fingerprint) לקבלת תובנות נוספות לגבי אופן חישוב טביעת האצבע של ההודעה. טביעות אצבע של יציאה מהודעה שנשלחו בהצלחה יפוגו לאחר 7 ימים במטמון Redis שלנו.
 
-3. אנו שולחים רק כאשר השדות MAIL FROM ו/או From אינם ריקים ואינם מכילים (ללא תלות באותיות גדולות/קטנות) [שם המשתמש של postmaster](#what-are-postmaster-addresses) (החלק שלפני ה-@ בהודעת דוא"ל).
+3. אנו שולחים רק כאשר השדות MAIL FROM ו/או From אינם ריקים ואינם מכילים (ללא תלות באותיות גדולות/קטנות) [שם משתמש של מנהל הדואר](#what-are-postmaster-addresses) (החלק שלפני ה-@ בהודעת דוא"ל).
 
 4. איננו שולחים אם ההודעה המקורית הכילה אחת מהכותרות הבאות (לא תלויות רישיות):
 
-* כותרת של `auto-submitted` עם ערך שאינו שווה ל-`no`. * כותרת של `x-auto-response-suppress` עם ערך של `dr`, `autoreply`, `auto-reply`, `auto_reply`, או `all`
-* כותרת של `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, או `x-auto-respond` (ללא קשר לערך).
-* כותרת של `precedence` עם ערך של `bulk`, `autoreply`, `auto-reply`, `auto_reply`, או `list`.
+* כותרת של `auto-submitted` עם ערך שאינו שווה ל-`no`.
+* כותרת של `x-auto-response-suppress` עם ערך של `dr`, `autoreply`, `auto-reply`, `auto_reply`, או `all`.
+* כותרת של `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6, או `no`7 (ללא קשר לערך).
+* כותרת של `no`8 עם ערך של `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2, או `x-auto-response-suppress`3.
 
-5. איננו שולחים אם כתובת הדוא"ל MAIL FROM או From מסתיימת ב-`+donotreply`, `-donotreply`, `+noreply`, או `-noreply`.
+5. איננו שולחים אם כתובת הדוא"ל MAIL FROM או From מסתיימת ב-`+donotreply`, `-donotreply`, `+noreply` או `-noreply`.
 
 6. איננו שולחים אם חלק שם המשתמש של כתובת הדוא"ל "מאת" היה `mdaemon` והיה לו כותרת שאינה תלוית רישיות של `X-MDDSN-Message`.
 
 7. איננו שולחים אם הייתה כותרת `content-type` שאינה רגישה לאותיות גדולות/קטנות של `multipart/report`.
 
-### כיצד ניתן לזהות טביעת אצבע של דוא"ל {#how-do-you-determine-an-email-fingerprint}
+### כיצד ניתן לקבוע טביעת אצבע של דוא"ל {#how-do-you-determine-an-email-fingerprint}
 
-טביעת האצבע של אימייל משמשת לקביעת ייחודיותה ולמניעת מסירת הודעות כפולות ושליחה של [החזרות כפולות](#prevent-unnecessary-bounces-to-protect-against-backscatter).
+טביעת האצבע של אימייל משמשת לקביעת ייחודיותה ולמניעת מסירת הודעות כפולות ושליחתן של [החזרות כפולות](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
 טביעת האצבע מחושבת מהרשימה הבאה:
 
-* שם מארח או כתובת IP של FQDN שפותחו על ידי הלקוח
+* שם מארח או כתובת IP של FQDN שפותחה על ידי הלקוח
 * ערך כותרת `Message-ID` (אם קיים)
 * ערך כותרת `Date` (אם קיים)
 * ערך כותרת `From` (אם קיים)
@@ -3071,7 +3079,7 @@ Osano UK Compliance LTD
 
 אם אתם בתוכנית החינמית, פשוט הוסיפו רשומת DNS חדשה <strong class="notranslate">TXT</strong> כפי שמוצג למטה, אך שנו את הפורט מ-25 לפורט שתבחרו.
 
-לדוגמה, אם אני רוצה שכל האימיילים שמגיעים אל `example.com` יועברו ליציאת ה-SMTP של נמעני הכינוי 1337 במקום 25:
+לדוגמה, אם אני רוצה שכל האימיילים שמגיעים ל-`example.com` יועברו ליציאת ה-SMTP של נמעני הכינוי 1337 במקום 25:
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email-port=1337</code></td> </tr> </tbody>
 </table>
@@ -3089,7 +3097,7 @@ Osano UK Compliance LTD
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=example.com</code></td> </tr> </tbody>
 </table>
 
-### האם זה תומך בסמל הפלוס + עבור כינויים של Gmail {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### האם זה תומך בסמל הפלוס + עבור כינויי Gmail {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
 כן, בהחלט.
 
@@ -3097,7 +3105,7 @@ Osano UK Compliance LTD
 
 כן, בהחלט. במקום להשתמש ב-"@", ".", או ריק כשם/מארח/כינוי, פשוט השתמשו בשם תת-הדומיין כערך.
 
-אם ברצונך ש-`foo.example.com` יעביר אימיילים, הזן `foo` כערך השם/מארח/כינוי בהגדרות ה-DNS שלך (גם עבור רשומות MX וגם עבור רשומות <strong class="notranslate">TXT</strong>).
+אם ברצונך ש-`foo.example.com` יעביר אימיילים, הזן את `foo` כערך השם/מארח/כינוי בהגדרות ה-DNS שלך (גם עבור רשומות MX וגם עבור רשומות <strong class="notranslate">TXT</strong>).
 
 ### האם זה מעביר את כותרות האימייל שלי {#does-this-forward-my-emails-headers}
 
@@ -3105,21 +3113,21 @@ Osano UK Compliance LTD
 
 ### האם זה נבדק היטב {#is-this-well-tested}
 
-כן, יש לו בדיקות שנכתבו עם [ava](https://github.com/avajs/ava) וגם כיסוי קוד.
+כן, יש לו בדיקות שנכתבו עם [אווה](https://github.com/avajs/ava) וגם כיסוי קוד.
 
 ### האם אתם מעבירים הודעות וקודי תגובה של SMTP {#do-you-pass-along-smtp-response-messages-and-codes}
 
-כן, בהחלט. לדוגמה, אם אתם שולחים אימייל אל `hello@example.com` והוא רשום להעברה אל `user@gmail.com`, אז הודעת התגובה של ה-SMTP והקוד משרת ה-SMTP "gmail.com" יוחזרו במקום שרת ה-proxy ב-"mx1.forwardemail.net" או "mx2.forwardemail.net".
+כן, בהחלט. לדוגמה, אם אתם שולחים אימייל אל `hello@example.com` והוא רשום להעברה אל `user@gmail.com`, אז הודעת התגובה והקוד של SMTP משרת ה-SMTP "gmail.com" יוחזרו במקום שרת ה-proxy בכתובת "mx1.forwardemail.net" או "mx2.forwardemail.net".
 
-### כיצד מונעים ספאמרים ומבטיחים מוניטין טוב של העברת דוא"ל {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### כיצד מונעים שולחי דואר זבל ומבטיחים מוניטין טוב של העברת דוא"ל {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-עיין בסעיפים שלנו בנושא [כיצד פועלת מערכת העברת הדוא"ל שלכם](#how-does-your-email-forwarding-system-work), [כיצד אתם מטפלים בבעיות משלוח דוא"ל](#how-do-you-handle-email-delivery-issues), ו-[איך אתם מטפלים בחסימה של כתובות ה-IP שלכם](#how-do-you-handle-your-ip-addresses-becoming-blocked) לעיל.
+עיין בסעיפים שלנו בנושא [כיצד פועלת מערכת העברת הדוא"ל שלכם](#how-does-your-email-forwarding-system-work), [כיצד אתם מטפלים בבעיות משלוח דוא"ל](#how-do-you-handle-email-delivery-issues) ו-[איך אתם מטפלים בחסימה של כתובות ה-IP שלכם](#how-do-you-handle-your-ip-addresses-becoming-blocked) לעיל.
 
 ### כיצד מבצעים חיפושי DNS על שמות דומיין {#how-do-you-perform-dns-lookups-on-domain-names}
 
 יצרנו פרויקט תוכנה בקוד פתוח בשם :tangerine: [מַנדָרִינָה](https://github.com/forwardemail/tangerine) ומשתמשים בו לחיפושי DNS. שרתי ה-DNS המוגדרים כברירת מחדל הם `1.1.1.1` ו-`1.0.0.1`, ושאילתות DNS מתבצעות דרך [DNS דרך HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") בשכבת האפליקציה.
 
-:tangerine: [מַנדָרִינָה](https://github.com/tangerine) משתמש ב[שירות DNS לצרכנים של CloudFlare, שמתמקד קודם כל בפרטיות, כברירת מחדל][cloudflare-dns].
+:tangerine: [מַנדָרִינָה](https://github.com/tangerine) משתמש ב[שירות DNS לצרכנים של CloudFlare, המתמקד קודם כל בפרטיות, כברירת מחדל][cloudflare-dns].
 
 ## חשבון וחיוב {#account-and-billing}
 
@@ -3127,9 +3135,9 @@ Osano UK Compliance LTD
 
 כן! החזרים אוטומטיים מתרחשים בעת שדרוג, שדרוג לאחור או ביטול החשבון תוך 30 יום מתחילת התוכנית. זה חל רק על לקוחות חדשים.
 
-### אם אני מחליף תוכניות, האם אתם משלמים את ההפרש באופן יחסי ומחזירים אותו? {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### אם אעבור לתוכנית, האם אתם משלמים את ההפרש באופן יחסי ומחזירים אותו? {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-איננו מבצעים חישוב יחסי ואיננו מחזירים את ההפרש בעת מעבר לתוכנית. במקום זאת, אנו ממירים את משך הזמן שנותר מתאריך התפוגה של התוכנית הקיימת שלך למשך הזמן הקרוב ביותר לתוכנית החדשה שלך (מעוגל כלפי מטה לפי חודש).
+איננו מבצעים חישוב יחסי ואיננו מחזירים את ההפרש בעת מעבר לתוכנית. במקום זאת, אנו ממירים את משך הזמן שנותר מתאריך התפוגה של התוכנית הקיימת למשך הזמן הקרוב ביותר לתוכנית החדשה (מעוגל כלפי מטה לפי חודש).
 
 שים לב שאם תשדרג או תרד בין תוכניות בתשלום בתוך חלון זמן של 30 יום מאז תחילת תוכנית בתשלום, נחזיר לך באופן אוטומטי את מלוא הסכום מהתוכנית הקיימת.
 
@@ -3153,13 +3161,13 @@ Osano UK Compliance LTD
 
 שימו לב שעליכם *לשמור* את המיפוי ":", מכיוון שהוא נדרש אם אי פעם תחליטו לכבות אותו (והוא משמש גם לייבוא אם תשדרגו לאחת מהתוכניות בתשלום שלנו).
 
-**לדחייה שקטה (נראה לשולח כאילו ההודעה נשלחה בהצלחה, אך למעשה לא מגיעה לשום מקום) (קוד סטטוס `250`):** אם תוסיף קידומת "!" (סימן קריאה יחיד) לכינוי, ההודעה תחזיר קוד סטטוס מוצלח של `250` לשולחים המנסים לשלוח לכתובת זו, אך האימיילים עצמם לא יגיעו לשום מקום (לדוגמה, חור שחור או `/dev/null`).
+**לדחייה שקטה (נראה לשולח כאילו ההודעה נשלחה בהצלחה, אך למעשה לא מגיעה לשום מקום) (קוד סטטוס `250`):** אם תוסיף קידומת "!" (סימן קריאה בודד) לכינוי, ההודעה תחזיר קוד סטטוס מוצלח של `250` לשולחים המנסים לשלוח לכתובת זו, אך האימיילים עצמם לא יגיעו לשום מקום (לדוגמה, חור שחור או `/dev/null`).
 
-**לדחייה רכה (קוד סטטוס `421`):** אם תוסיף קידומת "!!" (סימן קריאה כפול) לכינוי, יוחזר קוד סטטוס שגיאה רכה של `421` לשולחים המנסים לשלוח לכתובת זו, ודחייה חוזרת תתבצע לעיתים קרובות עד 5 ימים לפני דחייה והחזרה.
+**לדחייה רכה (קוד סטטוס `421`):** אם תסמנו קידומת של "!!" (סימן קריאה כפול) כינוי, יוחזר קוד סטטוס שגיאה רכה של `421` לשולחים המנסים לשלוח לכתובת זו, והודעות הדוא"ל יעברו לעיתים קרובות ניסיון חוזר עד 5 ימים לפני דחייה והחזרה.
 
-**לדחייה קשה (קוד סטטוס `550`):** אם תוסיף קידומת "!!!" (סימן קריאה משולש) לכינוי, יוחזר קוד סטטוס שגיאה קבוע של `550` לשולחים המנסים לשלוח לכתובת זו והאימיילים יידחו ויוחזרו.
+**לדחייה קשה (קוד סטטוס `550`):** אם תוסיף קידומת של "!!!" (סימן קריאה משולש) לכינוי, יוחזר קוד סטטוס שגיאה קבוע של `550` לשולחים המנסים לשלוח לכתובת זו והאימיילים יידחו ויוחזרו.
 
-לדוגמה, אם אני רוצה שכל האימיילים שמגיעים אל `alias@example.com` יפסיקו לזרום דרך `user@gmail.com` ויידחו ויוחזרו (למשל, השתמשו בשלושה סימני קריאה):
+לדוגמה, אם אני רוצה שכל האימיילים שמגיעים ל-`alias@example.com` יפסיקו לזרום ל-`user@gmail.com` ויידחו ויוחזרו (למשל, השתמשו בשלושה סימני קריאה):
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=!!!alias:user@gmail.com</code></td> </tr> </tbody>
 </table>
@@ -3194,7 +3202,7 @@ Osano UK Compliance LTD
 
 כן, בהחלט. פשוט ציין מספר נמענים ברשומות ה-<strong class="notranslate">טקסט</strong> שלך.
 
-לדוגמה, אם אני רוצה שאימייל שמגיע לכתובת `hello@example.com` יועבר ל-`user+a@gmail.com` ול-`user+b@gmail.com`, אז רשומת ה-<strong class="notranslate">TXT</strong> שלי תיראה כך:
+לדוגמה, אם אני רוצה שאימייל שמגיע ל-`hello@example.com` יועבר ל-`user+a@gmail.com` ול-`user+b@gmail.com`, אז רשומת ה-<strong class="notranslate">TXT</strong> שלי תיראה כך:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -3211,11 +3219,11 @@ Osano UK Compliance LTD
 
 זה תלוי בך!
 
-### האם ניתן לכלול מספר נמענים גלובליים מסוג "captch-all" {#can-i-have-multiple-global-catch-all-recipients}
+### האם ניתן לכלול מספר נמענים גלובליים מסוג "capture-all" {#can-i-have-multiple-global-catch-all-recipients}
 
 כן, אתה יכול. פשוט ציין מספר נמענים גלובליים מרובים ברשומות ה-<strong class="notranslate">TXT</strong> שלך.
 
-לדוגמה, אם אני רוצה שכל אימייל שמגיע ל-`*@example.com` (הכוכבית משמעה תו כללי, כלומר קביעה כללית) יועבר ל-`user+a@gmail.com` ול-`user+b@gmail.com`, אז רשומת ה-<strong class="notranslate">TXT</strong> שלי תיראה כך:
+לדוגמה, אם אני רוצה שכל אימייל שמגיע ל-`*@example.com` (הכוכבית משמעה תו כללי, כלומר קובץ "captch all") יועבר ל-`user+a@gmail.com` ול-`user+b@gmail.com`, אז רשומת ה-<strong class="notranslate">TXT</strong> שלי תיראה כך:
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>שם/מארח/כינוי</th> <th class="text-center">TTL</th> <th>סוג</th> <th>תשובה/ערך</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", או ריק</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td> </tr> </tbody>
 </table>
@@ -3229,9 +3237,9 @@ Osano UK Compliance LTD
 
 זה תלוי בך!
 
-### האם יש מגבלה מקסימלית על מספר כתובות הדוא"ל שאליהן אני יכול להעביר הודעות לפי כינוי {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+### האם יש מגבלה מקסימלית על מספר כתובות הדוא"ל שאליהן אני יכול להעביר לפי כינוי {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-כן, מגבלת ברירת המחדל היא 10. זה לא אומר שאתה יכול להכיל רק 10 כינויים בשם הדומיין שלך. אתה יכול להכיל כמה כינויים שתרצה (מספר בלתי מוגבל). משמעות הדבר היא שאתה יכול להעביר כינוי אחד בלבד ל-10 כתובות דוא"ל ייחודיות. אתה יכול להכיל `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, ... (מ-1-10) - וכל דוא"ל אל `hello@example.com` יועבר אל `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, ... (מ-1-10).
+כן, מגבלת ברירת המחדל היא 10. זה לא אומר שאתה יכול להכיל רק 10 כינויים בשם הדומיין שלך. אתה יכול להכיל כמה כינויים שתרצה (מספר בלתי מוגבל). משמעות הדבר היא שאתה יכול להעביר כינוי אחד בלבד ל-10 כתובות דוא"ל ייחודיות. אתה יכול להכיל את `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, ... (מ-1-10) - וכל דוא"ל ל-`hello@example.com` יועבר ל-`user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, ... (מ-1-10).
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -3245,7 +3253,7 @@ Osano UK Compliance LTD
 
 ### האם ניתן להעביר אימיילים באופן רקורסיבי {#can-i-recursively-forward-emails}
 
-כן, אתה יכול, אך עדיין עליך לדבוק במגבלה המקסימלית. אם יש לך `hello:linus@example.com` ו-`linus:user@gmail.com`, אז אימיילים אל `hello@example.com` יועברו אל `linus@example.com` ו-`user@gmail.com`. שים לב שתוזרק שגיאה אם תנסה להעביר אימיילים באופן רקורסיבי מעבר למגבלה המקסימלית.
+כן, אתה יכול, אך עדיין עליך לדבוק במגבלה המקסימלית. אם יש לך `hello:linus@example.com` ו-`linus:user@gmail.com`, אז אימיילים אל `hello@example.com` יועברו אל `linus@example.com` ו-`user@gmail.com`. שים לב שתופיע שגיאה אם תנסה להעביר אימיילים באופן רקורסיבי מעבר למגבלה המקסימלית.
 
 ### האם אנשים יכולים לבטל את הרישום או לרשום את העברת הדוא"ל שלי ללא רשותי {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
@@ -3266,10 +3274,10 @@ Forward Email מציעה שכבה חינמית באמצעות שילוב של פ
 4. **מגבלות שימוש סבירות**: לרמה החינמית יש מדיניות שימוש הוגן למניעת שימוש לרעה.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> אנו מחויבים לשמור על העברת דוא"ל בסיסית בחינם, תוך הצעת תכונות פרימיום למשתמשים עם צרכים מתקדמים יותר.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> אם השירות שלנו חשוב לך, שקול לשדרג לתוכנית בתשלום כדי לתמוך בפיתוח ותחזוקה שוטפים.
 
 ### מהו גודל האימייל המקסימלי המותר {#what-is-the-max-email-size-limit}
 
@@ -3281,13 +3289,13 @@ Forward Email מציעה שכבה חינמית באמצעות שילוב של פ
 
 לא, אנחנו לא כותבים לדיסק או מאחסנים יומני רישום – עם [למעט שגיאות](#do-you-store-error-logs) ו-[SMTP יוצא](#do-you-support-sending-email-with-smtp) (ראו את [מדיניות פרטיות](/privacy) שלנו).
 
-הכל נעשה בזיכרון ו-[קוד המקור שלנו נמצא ב-GitHub](https://github.com/forwardemail).
+הכל נעשה בזיכרון וב-[קוד המקור שלנו נמצא ב-GitHub](https://github.com/forwardemail).
 
 ### האם אתם מאחסנים יומני שגיאות {#do-you-store-error-logs}
 
 כן. ניתן לגשת ליומני שגיאות תחת [החשבון שלי → יומנים](/my-account/logs) או [החשבון שלי → דומיינים](/my-account/domains).
 
-החל מפברואר 2023, אנו מאחסנים יומני שגיאות עבור קודי תגובה של SMTP `4xx` ו- `5xx` למשך 7 ימים - המכילים את שגיאת ה-SMTP, המעטפה וכותרות הדוא"ל (אנחנו **לא** מאחסנים את גוף הדוא"ל או את הקבצים המצורפים).
+החל מפברואר 2023, אנו מאחסנים יומני שגיאות עבור קודי תגובה של SMTP מסוג `4xx` ו-`5xx` למשך 7 ימים - המכילים את שגיאת ה-SMTP, המעטפה וכותרות הדוא"ל (אנחנו **לא** מאחסנים את גוף הדוא"ל או את הקבצים המצורפים).
 
 יומני שגיאות מאפשרים לך לבדוק אם חסרים הודעות דוא"ל חשובות ולצמצם תוצאות חיוביות שגויות של ספאם עבור [הדומיינים שלך](/my-account/domains). הם גם משאב נהדר לאיתור בעיות עם [וובים של דוא"ל](#do-you-support-webhooks) (מכיוון שיומני השגיאות מכילים את תגובת נקודת הקצה של webhook).
 
@@ -3297,13 +3305,13 @@ Forward Email מציעה שכבה חינמית באמצעות שילוב של פ
 
 ### האם אתה קורא את האימיילים שלי {#do-you-read-my-emails}
 
-לא, בהחלט לא. ראה את [מדיניות פרטיות](/privacy) שלנו.
+לא, בהחלט לא. ראה את ה-[מדיניות פרטיות](/privacy) שלנו.
 
 שירותי העברת דוא"ל רבים אחרים מאחסנים ויכולים לקרוא את הדוא"ל שלך. אין סיבה שדוא"ל מועבר צריך להיות מאוחסן בכונן קשיח - ולכן עיצבנו את פתרון הקוד הפתוח הראשון שעושה את הכל בזיכרון.
 
 אנו מאמינים שמגיעה לך הזכות לפרטיות ואנו מכבדים אותה בקפדנות. הקוד שנפרס בשרת הוא [תוכנה בקוד פתוח ב-GitHub](https://github.com/forwardemail) לשם שקיפות ובניית אמון.
 
-### האם ניתן "לשלוח דואר כ" ב-Gmail עם {#can-i-send-mail-as-in-gmail-with-this} זה?
+### האם ניתן "לשלוח דואר כ" ב-Gmail עם ה-{#can-i-send-mail-as-in-gmail-with-this} הזה?
 
 כן! החל מ-2 באוקטובר 2018 הוספנו תכונה זו. ראה [איך לשלוח דואר כ-"דרך ג'ימייל"](#how-to-send-mail-as-using-gmail) לעיל!
 
@@ -3321,7 +3329,7 @@ Forward Email מציעה שכבה חינמית באמצעות שילוב של פ
 </span>
 </div>
 
-### האם ניתן "לשלוח דואר כ" באאוטלוק עם {#can-i-send-mail-as-in-outlook-with-this} זה?
+### האם ניתן "לשלוח דואר כ" באאוטלוק עם ה-{#can-i-send-mail-as-in-outlook-with-this} הזה?
 
 כן! החל מ-2 באוקטובר 2018 הוספנו תכונה זו. פשוט עיינו בשני הקישורים הבאים ממיקרוסופט:
 
@@ -3342,17 +3350,17 @@ Forward Email מציעה שכבה חינמית באמצעות שילוב של פ
 </span>
 </div>
 
-### האם ניתן "לשלוח דואר כ" ב-Apple Mail וב-iCloud Mail עם {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} זה?
+### האם ניתן "לשלוח דואר כ" ב-Apple Mail וב-iCloud Mail עם ה-{#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} הזה?
 
-אם אתם מנויים ל-iCloud+‎, תוכלו להשתמש בדומיין מותאם אישית. [השירות שלנו תואם גם ל-Apple Mail](#apple-mail).
+אם אתה מנוי ל-iCloud+‎, תוכל להשתמש בדומיין מותאם אישית. [השירות שלנו תואם גם ל-Apple Mail](#apple-mail).
 
-למידע נוסף, אנא עיינו ב-<https://support.apple.com/en-us/102540>.
+למידע נוסף, עיין ב-<https://support.apple.com/en-us/102540>.
 
-### האם ניתן להעביר אימיילים ללא הגבלה באמצעות {#can-i-forward-unlimited-emails-with-this}
+### האם ניתן להעביר אימיילים ללא הגבלה עם ה-{#can-i-forward-unlimited-emails-with-this} הזה
 
 כן, אולם שולחים "יחסית לא ידועים" מוגבלים ל-100 חיבורים לשעה לכל שם מארח או IP. ראה את הסעיף [הגבלת קצב](#do-you-have-rate-limiting) ו-[רשימה אפורה](#do-you-have-a-greylist) לעיל.
 
-כשאנחנו אומרים "יחסית לא ידוע", אנחנו מתכוונים לשולחים שאינם מופיעים ב-[רשימת היתרים](#do-you-have-an-allowlist).
+כשאנחנו אומרים "יחסית לא ידוע", אנחנו מתכוונים לשולחים שאינם מופיעים בקובץ [רשימת היתרים](#do-you-have-an-allowlist).
 
 אם חורגים ממגבלה זו, אנו שולחים קוד תגובה 421 המורה לשרת הדואר של השולח לנסות שוב מאוחר יותר.
 
@@ -3369,17 +3377,17 @@ Forward Email מציעה שכבה חינמית באמצעות שילוב של פ
 3. **מטבעות קריפטוגרפיים**: אנו מקבלים תשלומים באמצעות stablecoin של Stripe ברשתות Ethereum, Polygon ו-Solana
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> אנו מאחסנים מידע מוגבל על תשלום בשרתים שלנו, הכולל רק מזהי תשלום והפניות לעסקות, לקוח, מנוי ומזהי תשלום של [פַּס](https://stripe.com/global) ו-[פייפאל](https://www.paypal.com).
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> לפרטיות מרבית, שקלו להשתמש בתשלומי קריפטו.
 
 כל התשלומים מעובדים בצורה מאובטחת דרך Stripe או PayPal. פרטי התשלום שלך לעולם לא נשמרים בשרתים שלנו.
 
 ## משאבים נוספים {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> המאמרים שלנו מתעדכנים באופן קבוע עם מדריכים, טיפים ומידע טכני חדשים. בדקו לעתים קרובות את התוכן העדכני ביותר.
 
 * [מקרי בוחן ותיעוד למפתחים](/blog/docs)
 * [אֶמְצָעִי](/resources)

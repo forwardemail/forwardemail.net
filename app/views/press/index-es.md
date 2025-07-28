@@ -29,11 +29,11 @@ Si es miembro de la prensa, periodista o representante de los medios y desea hab
 
 ## Colores {#colors}
 
-* **Azul:** __CÓDIGO EN LÍNEA PROTEGIDO_1__ <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
-* **Cian:** __CÓDIGO EN LÍNEA PROTEGIDO_2__ <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
-* **Verde:** __CÓDIGO EN LÍNEA PROTEGIDO_3__ <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
+* **Azul:** RETENEDOR DE TEMPERATURA_0 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
+* **Cian:** RETENEDOR DE TEMPERATURA_2 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
+* **Verde:** RETENEDOR DE TEMPERATURA_4 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
 
-## Logotipos {#logos}
+MARCADOR DE TEMPERATURA 0 Logotipos {MARCADOR DE TEMPERATURA 1
 
 "Logotipo de reenvío de correo electrónico"
 

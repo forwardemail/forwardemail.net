@@ -3,27 +3,27 @@
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
-* [Kuinka edelleenlähetyksen sähköpostin SMTP-käsittely toimii](#how-forward-emails-smtp-processing-works)
+* [Miten sähköpostin edelleenlähetyksen SMTP-käsittely toimii](#how-forward-emails-smtp-processing-works)
   * [Sähköpostijono ja uudelleenyritysjärjestelmä](#email-queue-and-retry-system)
-  * [Nukke-suojattu luotettavuuden vuoksi](#dummy-proofed-for-reliability)
-* [Node.js-integrointi](#nodejs-integration)
-  * [Nodemailerin käyttö](#using-nodemailer)
+  * [Luotettavuus on testattu testitestillä](#dummy-proofed-for-reliability)
+* [Node.js-integraatio](#nodejs-integration)
+  * [Nodemailerin käyttäminen](#using-nodemailer)
   * [Express.js:n käyttö](#using-expressjs)
 * [Python-integraatio](#python-integration)
-  * [Käyttämällä smtplib](#using-smtplib)
+  * [smtplibin käyttäminen](#using-smtplib)
   * [Djangon käyttö](#using-django)
-* [PHP integraatio](#php-integration)
+* [PHP-integraatio](#php-integration)
   * [PHPMailerin käyttö](#using-phpmailer)
   * [Laravelin käyttö](#using-laravel)
 * [Ruby-integraatio](#ruby-integration)
-  * [Käyttämällä Ruby Mail Gem](#using-ruby-mail-gem)
+  * [Ruby Mail Gemin käyttö](#using-ruby-mail-gem)
 * [Java-integraatio](#java-integration)
-  * [JavaMail API:n käyttö](#using-javamail-api)
-* [Sähköpostiohjelman asetukset](#email-client-configuration)
+  * [Java Mail -rajapinnan käyttäminen](#using-javamail-api)
+* [Sähköpostiohjelman määritys](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (Lähetä sähköposti nimellä)](#gmail-send-mail-as)
-* [Vianetsintä](#troubleshooting)
+  * [Gmail (Lähetä sähköpostia nimellä)](#gmail-send-mail-as)
+* [Vianmääritys](#troubleshooting)
   * [Yleisiä ongelmia ja ratkaisuja](#common-issues-and-solutions)
   * [Avun saaminen](#getting-help)
 * [Lisäresurssit](#additional-resources)
@@ -31,30 +31,30 @@
 
 ## Esipuhe {#foreword}
 
-Tämä opas sisältää yksityiskohtaisia esimerkkejä siitä, miten voit integroida Forward Emailin SMTP-palvelun käyttämällä erilaisia ohjelmointikieliä, kehyksiä ja sähköpostiohjelmia. SMTP-palvelumme on suunniteltu luotettavaksi, turvalliseksi ja helposti integroitavaksi olemassa oleviin sovelluksiisi.
+Tämä opas tarjoaa yksityiskohtaisia esimerkkejä siitä, miten Forward Emailin SMTP-palvelu integroidaan käyttämällä erilaisia ohjelmointikieliä, kehyksiä ja sähköpostiohjelmia. SMTP-palvelumme on suunniteltu luotettavaksi, turvalliseksi ja helposti integroitavaksi olemassa oleviin sovelluksiisi.
 
 ## Sähköpostin edelleenlähetyksen SMTP-käsittelyn toimintaperiaate {#how-forward-emails-smtp-processing-works}
 
-Ennen kuin sukeltaa integrointiesimerkkeihin, on tärkeää ymmärtää, kuinka SMTP-palvelumme käsittelee sähköposteja:
+Ennen integraatioesimerkkien syventämistä on tärkeää ymmärtää, miten SMTP-palvelumme käsittelee sähköposteja:
 
 ### Sähköpostijono ja uudelleenyritysjärjestelmä {#email-queue-and-retry-system}
 
-Kun lähetät sähköpostin SMTP:n kautta palvelimillemme:
+Kun lähetät sähköpostin palvelimillemme SMTP:n kautta:
 
 1. **Alkukäsittely**: Sähköposti validoidaan, skannataan haittaohjelmien varalta ja tarkistetaan roskapostisuodattimia vasten.
 2. **Älykäs jonotus**: Sähköpostit asetetaan kehittyneeseen jonotusjärjestelmään toimitusta varten.
 3. **Älykäs uudelleenyritysmekanismi**: Jos toimitus epäonnistuu tilapäisesti, järjestelmämme:
-* Analysoi virhevastauksen käyttämällä `getBounceInfo` -funktiotamme.
+* Analysoi virhevastauksen `getBounceInfo`-funktiolla.
 * Määrittää, onko ongelma tilapäinen (esim. "yritä myöhemmin uudelleen", "tilapäisesti lykätty") vai pysyvä (esim. "käyttäjä tuntematon").
 * Tilapäisten ongelmien tapauksessa merkitsee sähköpostin uudelleenyritystä varten.
 * Pysyvien ongelmien tapauksessa luo palautusilmoituksen.
-4. **5 päivän uudelleenyritysjakso**: Yritämme toimitusta uudelleen jopa 5 päivän ajan (samanlainen kuin alan standardit, kuten Postfix), jolloin tilapäisille ongelmille annetaan aikaa ratkaista ne.
+4. **5 päivän uudelleenyritysjakso**: Yritämme toimitusta uudelleen jopa 5 päivän ajan (samanlainen kuin alan standardit, kuten Postfix), jolloin tilapäisille ongelmille annetaan aikaa ratkaista.
 5. **Toimituksen tilailmoitukset**: Lähettäjät saavat ilmoituksia sähköpostiensa tilasta (toimitettu, viivästynyt tai palautettu).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Onnistuneen toimituksen jälkeen lähtevän SMTP-sähköpostin sisältö sensuroidaan määritettävän säilytysajan (oletusarvo 30 päivää) jälkeen turvallisuus- ja yksityisyyssyistä. Jäljelle jää vain paikkamerkkiviesti, joka osoittaa toimituksen onnistumisen.
 
-### Luotettavuustestattu kokeellisesti {#dummy-proofed-for-reliability}
+### Luotettavuuden varmistamiseksi tehty testitestaus {#dummy-proofed-for-reliability}
 
 Järjestelmämme on suunniteltu käsittelemään erilaisia reunatapauksia:
 
@@ -63,7 +63,7 @@ Järjestelmämme on suunniteltu käsittelemään erilaisia reunatapauksia:
 * Jos vastaanottajan postilaatikko on täynnä, järjestelmä yrittää uudelleen myöhemmin.
 * Jos vastaanottava palvelin on tilapäisesti poissa käytöstä, jatkamme yrittämistä.
 
-Tämä lähestymistapa parantaa merkittävästi toimitusnopeutta ja säilyttää samalla yksityisyyden ja turvallisuuden.
+Tämä lähestymistapa parantaa merkittävästi toimitusnopeuksia säilyttäen samalla yksityisyyden ja turvallisuuden.
 
 ## Node.js-integraatio {#nodejs-integration}
 
@@ -107,7 +107,7 @@ sendEmail();
 
 ### Käytetään Express.js:ää {#using-expressjs}
 
-Voit integroida Forward Email SMTP:n Express.js-sovellukseen seuraavasti:
+Näin integroit Forward Email SMTP:n Express.js-sovellukseen:
 
 ```javascript
 const express = require('express');
@@ -161,7 +161,7 @@ app.listen(port, () => {
 
 ## Python-integraatio {#python-integration}
 
-### Käytetään smtplib:tä {#using-smtplib}
+### Käytetään smtplib-tiedostoa {#using-smtplib}
 
 ```python
 import smtplib
@@ -202,9 +202,9 @@ except Exception as e:
     print(f"Error sending email: {e}")
 ```
 
-### Djangon käyttö {#using-django}
+### Käytetään Djangoa {#using-django}
 
-Django-sovelluksissa lisää seuraava `settings.py`-koodiisi:
+Django-sovelluksissa lisää seuraava `settings.py`-kohtaan:
 
 ```python
 # Email settings
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Lähetä sitten sähköpostit näkymissäsi:
+Lähetä sitten sähköposteja näkymissäsi:
 
 ```python
 from django.core.mail import send_mail
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Lähetä sitten sähköpostit Laravel's Mail -julkisivulla:
+Lähetä sitten sähköposteja Laravelin Mail-fasadilla:
 
 ```php
 <?php
@@ -314,7 +314,7 @@ class EmailController extends Controller
 
 ## Ruby-integraatio {#ruby-integration}
 
-### Ruby Mail Gemin käyttö {#using-ruby-mail-gem}
+### Käytetään Ruby Mail Gemiä {#using-ruby-mail-gem}
 
 ```ruby
 require 'mail'
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## Sähköpostiohjelman määritys {#email-client-configuration}
 
-### Thunderbird {#thunderbird}
+VÄLIAIKAINEN_PAIKKAPIDÄN_0 Thunderbird {VÄLIAIKAINEN_PAIKKAPIDÄN_1
 
 ```mermaid
 flowchart TD
@@ -465,7 +465,7 @@ flowchart TD
 * Salasana: salasanasi
 6. Viimeistele asennus napsauttamalla "Kirjaudu sisään".
 
-### Gmail (Lähetä viesti osoitteeseen) {#gmail-send-mail-as}
+### Gmail (Lähetä viesti osoitteena) {#gmail-send-mail-as}
 
 1. Avaa Gmail ja siirry kohtaan Asetukset > Tilit ja tuonti.
 2. Napsauta Lähetä sähköpostia osoitteena -kohdassa Lisää toinen sähköpostiosoite.
@@ -504,21 +504,21 @@ flowchart TD
 
 ### Avun saaminen {#getting-help}
 
-Jos kohtaat ongelmia, joita ei käsitellä tässä, ole hyvä:
+Jos kohtaat ongelmia, joita ei ole käsitelty tässä:
 
-1. Katso usein kysytyt kysymykset [UKK-sivu](/faq)-sivultamme.
+1. Katso yleisiä kysymyksiä [Usein kysytyt kysymykset -sivu](/faq)-sivultamme.
 2. Katso lisätietoja [blogikirjoitus sähköpostin toimituksesta](/blog/docs/best-email-forwarding-service)-sivultamme.
 3. Ota yhteyttä tukitiimiimme osoitteessa <support@forwardemail.net>.
 
 ## Lisäresurssit {#additional-resources}
 
-* [Lähetä sähköpostidokumentaatio eteenpäin](/docs)
-* [SMTP-palvelimen rajoitukset ja määritykset](/faq#what-are-your-outbound-smtp-limits)
-* [Sähköposti parhaiden käytäntöjen opas](/blog/docs/best-email-forwarding-service)
+* [Sähköpostin välitysdokumentaatio](/docs)
+* [SMTP-palvelimen rajoitukset ja konfigurointi](/faq#what-are-your-outbound-smtp-limits)
+* [Sähköpostin parhaiden käytäntöjen opas](/blog/docs/best-email-forwarding-service)
 * [Turvallisuuskäytännöt](/security)
 
-## Yhteenveto {#conclusion}
+## Johtopäätös {#conclusion}
 
-Forward Emailin SMTP-palvelu tarjoaa luotettavan, turvallisen ja yksityisyyteen keskittyvän tavan lähettää sähköpostiviestejä sovelluksistasi ja sähköpostiohjelmistasi. Älykkään jonojärjestelmämme, 5 päivän uudelleenyritysmekanismimme ja kattavien toimitustilailmoitusten ansiosta voit olla varma, että sähköpostisi saapuvat perille.
+Forward Emailin SMTP-palvelu tarjoaa luotettavan, turvallisen ja yksityisyyttä kunnioittavan tavan lähettää sähköposteja sovelluksistasi ja sähköpostiohjelmistasi. Älykkään jonotusjärjestelmämme, viiden päivän uudelleenyritysmekanismimme ja kattavien toimitustilailmoitusten ansiosta voit olla varma, että sähköpostisi saapuvat perille.
 
-Jos tarvitset kehittyneempiä käyttötapauksia tai mukautettuja integraatioita, ota yhteyttä tukitiimiimme.
+Edistyneempien käyttötapausten tai mukautettujen integraatioiden osalta ota yhteyttä tukitiimiimme.

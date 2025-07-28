@@ -1,36 +1,36 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# מהדורות באחסון עצמי {#self-hosted-releases}
 
-סעיף זה מתעד את זרימת העבודה של CI/CD עבור הפתרון המתארח בעצמו של ForwardEmail, ומסביר כיצד נבנות, מפורסמות ופורסים תמונות Docker.
+סעיף זה מתעד את זרימת העבודה של CI/CD עבור פתרון האחסון העצמי של ForwardEmail, ומסביר כיצד תמונות Docker נבנות, מתפרסמות ונפרסות.
 
-## Table of Contents {#table-of-contents}
+## תוכן עניינים
 
 * [סקירה כללית](#overview)
 * [זרימת עבודה של CI/CD](#cicd-workflow)
   * [זרימת עבודה של פעולות GitHub](#github-actions-workflow)
-  * [מבנה תמונה של Docker](#docker-image-structure)
-* [תהליך פריסה](#deployment-process)
+  * [מבנה תמונת Docker](#docker-image-structure)
+* [תהליך הפריסה](#deployment-process)
   * [הַתקָנָה](#installation)
   * [תצורת Docker Compose](#docker-compose-configuration)
 * [תכונות תחזוקה](#maintenance-features)
   * [עדכונים אוטומטיים](#automatic-updates)
   * [גיבוי ושחזור](#backup-and-restore)
   * [חידוש תעודה](#certificate-renewal)
-* [גירסאות](#versioning)
+* [ניהול גרסאות](#versioning)
 * [גישה לתמונות](#accessing-images)
-* [תורם](#contributing)
+* [תרומה](#contributing)
 
-## Overview {#overview}
+## סקירה כללית של {#overview}
 
-הפתרון המתארח בעצמו של ForwardEmail משתמש ב-GitHub Actions כדי לבנות ולפרסם תמונות Docker באופן אוטומטי בכל פעם שנוצרת מהדורה חדשה. תמונות אלה זמינות לאחר מכן למשתמשים לפריסה בשרתים שלהם באמצעות סקריפט ההתקנה שסופק.
+הפתרון העצמי של ForwardEmail משתמש ב-GitHub Actions כדי לבנות ולפרסם תמונות Docker באופן אוטומטי בכל פעם שנוצרת גרסה חדשה. תמונות אלו זמינות לאחר מכן למשתמשים לפריסה בשרתים שלהם באמצעות סקריפט ההתקנה שסופק.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> יש גם את [בלוג באחסון עצמי](https://forwardemail.net/blog/docs/self-hosted-solution) ואת [מדריך למפתחים המאוחסנים בעצמם](https://forwardemail.net/self-hosted) שלנו.
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> ולגרסאות מפורטות יותר שלב אחר שלב, עיינו במדריכים המבוססים על [אובונטו](https://forwardemail.net/guides/selfhosted-on-ubuntu) או [דביאן](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## זרימת עבודה של CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### זרימת עבודה של פעולות GitHub {#github-actions-workflow}
 
 תהליך הבנייה והפרסום של תמונת Docker המתארחת בעצמה מוגדר ב-`.github/workflows/docker-image-build-publish.yml`. תהליך עבודה זה:
 
@@ -42,7 +42,7 @@
 * מתחבר לרישום המכולות של GitHub (GHCR)
 * מעדכן את הסכימה לפריסה עצמאית
 * בונה את תמונת Docker באמצעות `self-hosting/Dockerfile-selfhosted`
-* מתייג את התמונה הן עם גרסת הגרסה והן עם `latest`
+* מתייג את התמונה עם גרסת הגרסה וגם עם `latest`
 * דוחף את התמונות לרישום המכולות של GitHub
 
 ```yaml
@@ -85,7 +85,7 @@ jobs:
 * יצירת ספריות נדרשות לאחסון נתונים
 * העתקת האפליקציה שנבנתה משלב הבונה
 
-גישה זו מבטיחה שהתמונה הסופית מותאמת לגודל ואבטחה.
+גישה זו מבטיחה שהתמונה הסופית ממוטבת מבחינת גודל ואבטחה.
 
 ## תהליך פריסה {#deployment-process}
 
@@ -97,7 +97,7 @@ jobs:
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
-התסריט הזה:
+הסקריפט הזה:
 
 1. משכפל את המאגר
 2. מגדיר את הסביבה
@@ -125,11 +125,11 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## תכונות תחזוקה {#maintenance-features}
 
-הפתרון המתארח בעצמו כולל מספר תכונות תחזוקה:
+הפתרון המאוחסן בעצמו כולל מספר תכונות תחזוקה:
 
 ### עדכונים אוטומטיים {#automatic-updates}
 
-משתמשים יכולים להפעיל עדכונים אוטומטיים שיעשו:
+משתמשים יכולים להפעיל עדכונים אוטומטיים אשר:
 
 * משיכת תמונת Docker העדכנית ביותר מדי לילה
 * הפעלת שירותים מחדש עם התמונה המעודכנת
@@ -142,7 +142,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### גיבוי ושחזור {#backup-and-restore}
 
-ההגדרה מספקת אפשרויות עבור:
+ההתקנה מספקת אפשרויות עבור:
 
 * הגדרת גיבויים קבועים לאחסון תואם S3
 * גיבוי נתוני MongoDB, Redis ו-SQLite
@@ -150,7 +150,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### חידוש תעודה {#certificate-renewal}
 
-תעודות SSL מנוהלות אוטומטית עם אפשרויות:
+תעודות SSL מנוהלות אוטומטית עם אפשרויות ל:
 
 * יצירת אישורים חדשים במהלך ההתקנה
 * חידוש אישורים בעת הצורך
@@ -158,7 +158,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## ניהול גרסאות {#versioning}
 
-כל מהדורת GitHub יוצרת תמונת Docker חדשה המתויגת עם:
+כל גרסת GitHub יוצרת תמונת Docker חדשה עם התגיות הבאות:
 
 1. גרסת הגרסה הספציפית (לדוגמה, `v1.0.0`)
 2. התג `latest` עבור הגרסה האחרונה
@@ -170,13 +170,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 תמונות Docker זמינות לציבור בכתובת:
 
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
-* `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (דוגמה לתג גרסה)
+* `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (תג גרסה לדוגמה)
 
-אין צורך באימות כדי למשוך את התמונות הללו.
+לא נדרש אימות כדי לשלוף תמונות אלה.
 
 ## תורם {#contributing}
 
-כדי לתרום לפתרון המארח בעצמך:
+כדי לתרום לפתרון האחסון העצמי:
 
 1. בצע שינויים בקבצים הרלוונטיים בספריית `self-hosting`
 2. בדוק באופן מקומי או על VPS מבוסס אובונטו באמצעות הסקריפט `setup.sh` שסופק

@@ -25,7 +25,7 @@
 
 ## Avant-propos {#foreword}
 
-Dans le monde des logiciels open source, peu de noms ont autant de poids que [Canonique](https://en.wikipedia.org/wiki/Canonical_\(company\)), l'entreprise à l'origine de [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), l'une des distributions Linux les plus populaires au monde. Avec un vaste écosystème couvrant plusieurs distributions, dont Ubuntu, [Dans l'humanité](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) et d'autres, Canonical a dû relever des défis uniques pour gérer les adresses e-mail sur ses nombreux domaines. Cette étude de cas explore comment Canonical s'est associé à Forward Email pour créer une solution de gestion des e-mails d'entreprise transparente, sécurisée et respectueuse de la confidentialité, parfaitement en phase avec ses valeurs open source.
+Dans le monde des logiciels open source, peu de noms ont autant de poids que [Canonique](https://en.wikipedia.org/wiki/Canonical_\(company\), l'entreprise à l'origine de [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), l'une des distributions Linux les plus populaires au monde. Avec un vaste écosystème couvrant plusieurs distributions, dont Ubuntu, [Gratuit](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) et d'autres, Canonical a dû relever des défis uniques pour gérer les adresses e-mail sur ses nombreux domaines. Cette étude de cas explore comment Canonical s'est associé à Forward Email pour créer une solution de gestion des e-mails d'entreprise transparente, sécurisée et respectueuse de la confidentialité, parfaitement en phase avec ses valeurs open source.
 
 ## Le défi : gérer un écosystème de messagerie complexe {#the-challenge-managing-a-complex-email-ecosystem}
 
@@ -47,13 +47,13 @@ Avant de mettre en œuvre Forward Email, Canonical rencontrait des difficultés 
 * Le chiffrement quantique garantit la sécurité à long terme de toutes les communications par e-mail.
 * La solution s'adapte de manière rentable à la base croissante de contributeurs de Canonical.
 
-## Pourquoi transférer un e-mail {#why-forward-email}
+## Pourquoi transférer un e-mail ? {#why-forward-email}
 
-En tant que seul fournisseur de services de messagerie 100 % open source axé sur la confidentialité et la sécurité, Forward Email était la solution idéale pour répondre aux besoins de Canonical en matière de transfert d'e-mails d'entreprise. Nos valeurs s'accordaient parfaitement avec l'engagement de Canonical en faveur des logiciels open source et de la confidentialité.
+En tant que seul fournisseur de services de messagerie 100 % open source axé sur la confidentialité et la sécurité, Forward Email était la solution idéale pour répondre aux besoins de Canonical en matière de transfert d'e-mails d'entreprise. Nos valeurs correspondaient parfaitement à l'engagement de Canonical en faveur des logiciels open source et de la confidentialité.
 
 Les facteurs clés qui ont fait de Forward Email le choix idéal comprenaient :
 
-1. **Base de code open source complète** : L'intégralité de notre plateforme est open source et disponible sur [GitHub](https://en.wikipedia.org/wiki/GitHub), ce qui favorise la transparence et les contributions de la communauté. Contrairement à de nombreux fournisseurs de messagerie « privilégiant la confidentialité » qui ne publient en open source que leurs interfaces et maintiennent leurs back-ends fermés, nous avons mis à disposition de tous l'intégralité de notre base de code (interface et back-end) pour consultation sur [GitHub](https://github.com/forwardemail/forwardemail.net).
+1. **Base de code open source complète** : L'intégralité de notre plateforme est open source et disponible sur [GitHub](https://en.wikipedia.org/wiki/GitHub), ce qui favorise la transparence et les contributions de la communauté. Contrairement à de nombreux fournisseurs de messagerie soucieux de la confidentialité qui ne publient en open source que leurs interfaces et maintiennent leurs back-ends fermés, nous avons mis à disposition de tous notre base de code (interface et back-end) pour consultation sur [GitHub](https://github.com/forwardemail/forwardemail.net).
 
 2. **Approche axée sur la confidentialité** : Contrairement à d’autres fournisseurs, nous ne stockons pas les e-mails dans des bases de données partagées et utilisons un chiffrement robuste avec TLS. Notre philosophie fondamentale en matière de confidentialité est simple : **vos e-mails vous appartiennent, à vous seul**. Ce principe guide chacune de nos décisions techniques, de la gestion du transfert des e-mails à la mise en œuvre du chiffrement.
 
@@ -63,7 +63,7 @@ Les facteurs clés qui ont fait de Forward Email le choix idéal comprenaient :
 
 5. **Chiffrement résistant aux attaques quantiques** : Nous utilisons des boîtes aux lettres SQLite chiffrées individuellement avec [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) comme chiffrement pour [cryptage résistant aux quanta](/blog/docs/best-quantum-safe-encrypted-email-service). Chaque boîte aux lettres est un fichier chiffré distinct, ce qui signifie que l'accès aux données d'un utilisateur ne donne pas accès aux autres.
 
-## La mise en œuvre : intégration SSO transparente {#the-implementation-seamless-sso-integration}
+## L'implémentation : intégration SSO transparente {#the-implementation-seamless-sso-integration}
 
 L'un des aspects les plus critiques de la mise en œuvre a été l'intégration avec le système SSO Ubuntu One de Canonical. Cette intégration permettrait aux contributeurs principaux de gérer leurs adresses e-mail @ubuntu.com avec leurs identifiants Ubuntu One existants.
 
@@ -111,7 +111,7 @@ flowchart TD
     end
 ```
 
-### Détails de mise en œuvre technique {#technical-implementation-details}
+### Détails de mise en œuvre technique de {#technical-implementation-details}
 
 L'intégration entre Forward Email et Ubuntu One SSO a été réalisée grâce à une implémentation personnalisée de la stratégie d'authentification passport-ubuntu. Cela a permis un flux d'authentification fluide entre les systèmes Ubuntu One et Forward Email.
 
@@ -119,7 +119,7 @@ L'intégration entre Forward Email et Ubuntu One SSO a été réalisée grâce �
 
 Le processus d’authentification fonctionne comme suit :
 
-1. Les utilisateurs consultent la page dédiée à la gestion des e-mails Ubuntu à l'adresse [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu)
+1. Les utilisateurs consultent la page dédiée à la gestion des e-mails Ubuntu à l'adresse [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu).
 2. Ils cliquent sur « Se connecter avec Ubuntu One » et sont redirigés vers le service SSO Ubuntu.
 3. Après s'être authentifiés avec leurs identifiants Ubuntu One, ils sont redirigés vers la page de transfert d'e-mails avec leur profil authentifié.
 4. La page de transfert d'e-mails vérifie leur statut de contributeur et gère leur adresse e-mail en conséquence.
@@ -263,7 +263,7 @@ ubuntu.com.             600     IN      TXT     "forward-email-site-verification
 
 Cet enregistrement de vérification confirme la propriété du domaine et permet à notre système de gérer les e-mails de ces domaines en toute sécurité. Canonical achemine le courrier via Postfix, qui fournit une infrastructure de distribution d'e-mails fiable et sécurisée.
 
-## Résultats : gestion simplifiée des e-mails et sécurité renforcée {#results-streamlined-email-management-and-enhanced-security}
+Résultats ## : gestion simplifiée des e-mails et sécurité renforcée {#results-streamlined-email-management-and-enhanced-security}
 
 La mise en œuvre de la solution d'entreprise Forward Email a apporté des avantages significatifs à la gestion des e-mails de Canonical dans tous ses domaines :
 
@@ -323,7 +323,7 @@ Nos solutions d'entreprise sont conçues pour répondre aux besoins spécifiques
 * Domaine personnalisé [gestion des e-mails](/) sur plusieurs domaines
 * Intégration transparente aux systèmes d'authentification existants
 * Canal d'assistance Matrix dédié par chat
-* Fonctionnalités de sécurité améliorées, dont [cryptage résistant aux quanta](/blog/docs/best-quantum-safe-encrypted-email-service)
+* Fonctionnalités de sécurité améliorées, notamment [cryptage résistant aux quanta](/blog/docs/best-quantum-safe-encrypted-email-service)
 * Portabilité et propriété complètes des données
 * Infrastructure 100 % open source pour plus de transparence et de confiance
 
@@ -332,11 +332,11 @@ Nos solutions d'entreprise sont conçues pour répondre aux besoins spécifiques
 Si votre organisation a des besoins en matière de messagerie d'entreprise ou si vous souhaitez en savoir plus sur la manière dont Forward Email peut vous aider à rationaliser la gestion de votre messagerie tout en améliorant la confidentialité et la sécurité, nous aimerions avoir de vos nouvelles :
 
 * Envoyez-nous un e-mail directement à `support@forwardemail.net`
-* Soumettez une demande d'assistance via notre [page d'aide](https://forwardemail.net/help)
-* Consultez notre [page de tarification](https://forwardemail.net/pricing) pour les forfaits Entreprise
+* Soumettez une demande d'assistance à [page d'aide](https://forwardemail.net/help)
+* Consultez [page de tarification](https://forwardemail.net/pricing) pour les forfaits Entreprise
 
 Notre équipe est prête à discuter de vos besoins spécifiques et à développer une solution personnalisée qui correspond aux valeurs et aux besoins techniques de votre organisation.
 
-### À propos du transfert d'e-mail {#about-forward-email}
+### À propos de Transférer un e-mail {#about-forward-email}
 
-Forward Email est un service de messagerie 100 % open source et respectueux de la confidentialité. Nous proposons des services de transfert d'e-mails personnalisés, SMTP, IMAP et POP3, axés sur la sécurité, la confidentialité et la transparence. L'intégralité de notre code source est disponible sur [GitHub](https://github.com/forwardemail/forwardemail.net) et nous nous engageons à fournir des services de messagerie respectueux de la confidentialité et de la sécurité des utilisateurs. En savoir plus sur [pourquoi le courrier électronique open source est l'avenir](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [comment fonctionne notre transfert d'e-mails](https://forwardemail.net/blog/docs/best-email-forwarding-service) et [notre approche de la protection de la confidentialité des e-mails](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).
+Forward Email est un service de messagerie 100 % open source et respectueux de la confidentialité. Nous proposons des services de transfert d'e-mails personnalisés, SMTP, IMAP et POP3, axés sur la sécurité, la confidentialité et la transparence. L'intégralité de notre code source est disponible sur [GitHub](https://github.com/forwardemail/forwardemail.net), et nous nous engageons à fournir des services de messagerie respectueux de la confidentialité et de la sécurité des utilisateurs. En savoir plus sur [pourquoi le courrier électronique open source est l'avenir](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [comment fonctionne notre transfert d'e-mails](https://forwardemail.net/blog/docs/best-email-forwarding-service) et [notre approche de la protection de la confidentialité des e-mails](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).

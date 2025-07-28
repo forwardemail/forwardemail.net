@@ -1,4 +1,4 @@
-Guía de instalación de alojamiento propio de correo electrónico de reenvío para Debian {#forward-email-self-hosting-installation-guide-for-debian}
+Guía de instalación de autohospedaje de correo electrónico de reenvío para Debian {#forward-email-self-hosting-installation-guide-for-debian}
 
 ## Tabla de contenido {#table-of-contents}
 
@@ -590,7 +590,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 3. Complete el asistente de configuración inicial
 4. Cree su primera cuenta de correo electrónico
 
-## Configuración de copia de seguridad {#backup-configuration}
+## Configuración de respaldo {#backup-configuration}
 
 ### Configurar copia de seguridad compatible con S3 {#set-up-s3-compatible-backup}
 
@@ -804,7 +804,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * Verificar los registros SPF, DKIM y DMARC
 * Asegurarse de que el puerto 25 no esté bloqueado por el proveedor de hosting
 
-### Obteniendo ayuda {#getting-help}
+### Obtención de ayuda {#getting-help}
 
 * **Documentación**: <https://forwardemail.net/self-hosted>
 * **Problemas de GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>

@@ -5,48 +5,48 @@
 ## Spis treści {#table-of-contents}
 
 * [Przedmowa](#foreword)
-* [Wyzwanie: wiele procesorów płatności, jedno źródło prawdy](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Wyzwanie: Wiele procesorów płatności, jedno źródło prawdy](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [Podejście Trifecta: trzy warstwy niezawodności](#the-trifecta-approach-three-layers-of-reliability)
 * [Warstwa 1: przekierowania po dokonaniu zakupu](#layer-1-post-checkout-redirects)
   * [Wdrożenie usługi Stripe Checkout](#stripe-checkout-implementation)
   * [Przepływ płatności PayPal](#paypal-payment-flow)
-* [Warstwa 2: Obsługujący webhooki z weryfikacją podpisu](#layer-2-webhook-handlers-with-signature-verification)
-  * [Implementacja Stripe Webhook](#stripe-webhook-implementation)
-  * [Implementacja webhook PayPal](#paypal-webhook-implementation)
+* [Warstwa 2: Obsługa webhooków z weryfikacją podpisu](#layer-2-webhook-handlers-with-signature-verification)
+  * [Implementacja webhooka Stripe](#stripe-webhook-implementation)
+  * [Implementacja webhooka PayPal](#paypal-webhook-implementation)
 * [Warstwa 3: Zautomatyzowane zadania z Bree](#layer-3-automated-jobs-with-bree)
   * [Sprawdzanie dokładności subskrypcji](#subscription-accuracy-checker)
   * [Synchronizacja subskrypcji PayPal](#paypal-subscription-synchronization)
-* [Obsługa przypadków skrajnych](#handling-edge-cases)
+* [Obsługa przypadków brzegowych](#handling-edge-cases)
   * [Wykrywanie i zapobieganie oszustwom](#fraud-detection-and-prevention)
   * [Rozwiązywanie sporów](#dispute-handling)
 * [Ponowne wykorzystanie kodu: zasady KISS i DRY](#code-reuse-kiss-and-dry-principles)
 * [Wdrażanie wymagań subskrypcji VISA](#visa-subscription-requirements-implementation)
   * [Automatyczne powiadomienia e-mail przed odnowieniem](#automated-pre-renewal-email-notifications)
-  * [Obsługa przypadków skrajnych](#handling-edge-cases-1)
+  * [Obsługa przypadków brzegowych](#handling-edge-cases-1)
   * [Okresy próbne i warunki subskrypcji](#trial-periods-and-subscription-terms)
-* [Wnioski: Korzyści z naszego podejścia Trifecta](#conclusion-the-benefits-of-our-trifecta-approach)
+* [Wnioski: Korzyści płynące z naszego podejścia Trifecta](#conclusion-the-benefits-of-our-trifecta-approach)
 
 ## Przedmowa {#foreword}
 
-W Forward Email zawsze priorytetowo traktowaliśmy tworzenie systemów, które są niezawodne, dokładne i przyjazne dla użytkownika. Kiedy wdrażaliśmy nasz system przetwarzania płatności, wiedzieliśmy, że potrzebujemy rozwiązania, które mogłoby obsłużyć wiele procesorów płatności, zachowując jednocześnie idealną spójność danych. Ten wpis na blogu szczegółowo opisuje, w jaki sposób nasz zespół programistów zintegrował Stripe i PayPal, stosując podejście trifecta, które zapewnia dokładność 1:1 w czasie rzeczywistym w całym naszym systemie.
+W Forward Email zawsze priorytetowo traktowaliśmy tworzenie systemów, które są niezawodne, dokładne i przyjazne dla użytkownika. Wdrażając nasz system przetwarzania płatności, wiedzieliśmy, że potrzebujemy rozwiązania, które obsłuży wiele systemów płatności, zachowując jednocześnie idealną spójność danych. Ten wpis na blogu szczegółowo opisuje, jak nasz zespół programistów zintegrował Stripe i PayPal, stosując podejście trifecta, które zapewnia dokładność danych w czasie rzeczywistym 1:1 w całym naszym systemie.
 
 ## Wyzwanie: Wiele procesorów płatności, jedno źródło prawdy {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Jako usługa poczty e-mail nastawiona na prywatność chcieliśmy dać naszym użytkownikom opcje płatności. Niektórzy wolą prostotę płatności kartą kredytową za pośrednictwem Stripe, podczas gdy inni cenią dodatkową warstwę separacji, którą zapewnia PayPal. Jednak obsługa wielu procesorów płatności wprowadza znaczną złożoność:
+Jako firma oferująca usługi poczty elektronicznej nastawione na prywatność, chcieliśmy zapewnić naszym użytkownikom opcje płatności. Niektórzy preferują prostotę płatności kartą kredytową za pośrednictwem Stripe, podczas gdy inni cenią sobie dodatkową warstwę separacji, jaką zapewnia PayPal. Jednak obsługa wielu procesorów płatności wiąże się ze znaczną złożonością:
 
 1. Jak zapewniamy spójność danych w różnych systemach płatności?
-2. Jak radzimy sobie z przypadkami skrajnymi, takimi jak spory, zwroty pieniędzy lub nieudane płatności?
-3. Jak utrzymujemy jedno źródło prawdy w naszej bazie danych?
+2. Jak radzimy sobie z przypadkami skrajnymi, takimi jak spory, zwroty pieniędzy czy nieudane płatności?
+3. Jak utrzymujemy jedno źródło informacji w naszej bazie danych?
 
 Naszym rozwiązaniem było wdrożenie tego, co nazywamy „podejściem trifecta” – trójwarstwowego systemu zapewniającego redundancję i spójność danych bez względu na wszystko.
 
 ## Podejście Trifecta: trzy warstwy niezawodności {#the-trifecta-approach-three-layers-of-reliability}
 
-Nasz system płatności składa się z trzech kluczowych komponentów, które współpracują ze sobą, aby zapewnić doskonałą synchronizację danych:
+Nasz system płatności składa się z trzech kluczowych komponentów, które współpracując ze sobą, zapewniają doskonałą synchronizację danych:
 
-1. **Przekierowania po dokonaniu płatności** — przechwytywanie informacji o płatnościach bezpośrednio po dokonaniu płatności
-2. **Obsługa webhooków** — przetwarzanie zdarzeń w czasie rzeczywistym z procesorów płatności
-3. **Zadania automatyczne** — okresowe weryfikowanie i uzgadnianie danych dotyczących płatności
+1. **Przekierowania po dokonaniu płatności** – Przechwytywanie informacji o płatnościach bezpośrednio po dokonaniu płatności
+2. **Obsługa webhooków** – Przetwarzanie zdarzeń w czasie rzeczywistym z procesorów płatności
+3. **Zadania automatyczne** – Okresowe weryfikowanie i uzgadnianie danych płatności
 
 Przyjrzyjmy się bliżej każdemu z komponentów i zobaczmy, jak one ze sobą współdziałają.
 
@@ -110,13 +110,13 @@ flowchart TD
     class FraudCheck,DisputeHandler tertiary;
 ```
 
-## Warstwa 1: przekierowania po dokonaniu zakupu {#layer-1-post-checkout-redirects}
+## Warstwa 1: przekierowania po realizacji transakcji {#layer-1-post-checkout-redirects}
 
 Pierwsza warstwa naszego podejścia trifecta ma miejsce natychmiast po dokonaniu płatności przez użytkownika. Zarówno Stripe, jak i PayPal zapewniają mechanizmy przekierowujące użytkowników z powrotem do naszej witryny z informacjami o transakcji.
 
-### Implementacja usługi Stripe Checkout {#stripe-checkout-implementation}
+### Implementacja płatności Stripe {#stripe-checkout-implementation}
 
-W przypadku Stripe używamy ich interfejsu API Checkout Sessions, aby stworzyć płynne doświadczenie płatności. Gdy użytkownik wybiera plan i decyduje się zapłacić kartą kredytową, tworzymy sesję Checkout z określonymi adresami URL powodzenia i anulowania:
+W przypadku Stripe korzystamy z ich API sesji płatności (Checkout Sessions API), aby zapewnić płynny proces płatności. Gdy użytkownik wybiera plan i decyduje się na płatność kartą kredytową, tworzymy sesję płatności z określonymi adresami URL potwierdzającymi pomyślne zakończenie transakcji i anulowanie:
 
 ```javascript
 const options = {
@@ -154,7 +154,7 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Krytyczną częścią jest tutaj parametr `success_url`, który zawiera `session_id` jako parametr zapytania. Kiedy Stripe przekieruje użytkownika z powrotem do naszej witryny po pomyślnej płatności, możemy użyć tego identyfikatora sesji, aby zweryfikować transakcję i odpowiednio zaktualizować naszą bazę danych.
+Kluczowym elementem jest tutaj parametr `success_url`, który zawiera parametr `session_id` jako parametr zapytania. Gdy Stripe przekieruje użytkownika z powrotem na naszą stronę po pomyślnej płatności, możemy użyć tego identyfikatora sesji do weryfikacji transakcji i odpowiedniej aktualizacji naszej bazy danych.
 
 ### Przepływ płatności PayPal {#paypal-payment-flow}
 
@@ -210,7 +210,7 @@ const requestBody = {
 };
 ```
 
-Podobnie jak w Stripe, określamy parametry `return_url` i `cancel_url`, aby obsługiwać przekierowania po dokonaniu płatności. Kiedy PayPal przekieruje użytkownika z powrotem do naszej witryny, możemy przechwycić szczegóły płatności i zaktualizować naszą bazę danych.
+Podobnie jak w Stripe, określamy parametry `return_url` i `cancel_url` do obsługi przekierowań po dokonaniu płatności. Gdy PayPal przekieruje użytkownika z powrotem na naszą stronę, możemy przechwycić dane dotyczące płatności i zaktualizować naszą bazę danych.
 
 ```mermaid
 sequenceDiagram
@@ -283,13 +283,13 @@ sequenceDiagram
 
 ## Warstwa 2: Obsługa webhooków z weryfikacją podpisu {#layer-2-webhook-handlers-with-signature-verification}
 
-Chociaż przekierowania po dokonaniu zakupu działają dobrze w większości scenariuszy, nie są niezawodne. Użytkownicy mogą zamknąć przeglądarkę przed przekierowaniem lub problemy z siecią mogą uniemożliwić ukończenie przekierowania. Tutaj właśnie pojawiają się webhooki.
+Chociaż przekierowania po finalizacji zakupu działają dobrze w większości scenariuszy, nie są niezawodne. Użytkownicy mogą zamknąć przeglądarkę przed przekierowaniem lub problemy z siecią mogą uniemożliwić ukończenie przekierowania. Właśnie tutaj pojawiają się webhooki.
 
-Zarówno Stripe, jak i PayPal udostępniają systemy webhook, które wysyłają powiadomienia w czasie rzeczywistym o zdarzeniach płatniczych. Wdrożyliśmy solidne programy obsługi webhook, które weryfikują autentyczność tych powiadomień i odpowiednio je przetwarzają.
+Zarówno Stripe, jak i PayPal oferują systemy webhooków, które wysyłają powiadomienia w czasie rzeczywistym o zdarzeniach związanych z płatnościami. Wdrożyliśmy solidne mechanizmy obsługi webhooków, które weryfikują autentyczność tych powiadomień i odpowiednio je przetwarzają.
 
 ### Implementacja webhooka Stripe {#stripe-webhook-implementation}
 
-Nasz moduł obsługi webhooków Stripe weryfikuje podpisy przychodzących zdarzeń webhook, aby upewnić się, że są one prawidłowe:
+Nasz moduł obsługi webhooków Stripe weryfikuje podpis przychodzących zdarzeń webhooków, aby upewnić się, że są one prawidłowe:
 
 ```javascript
 async function webhook(ctx) {
@@ -334,7 +334,7 @@ async function webhook(ctx) {
 }
 ```
 
-Funkcja `stripe.webhooks.constructEvent` weryfikuje podpis przy użyciu naszego sekretu punktu końcowego. Jeśli podpis jest prawidłowy, przetwarzamy zdarzenie asynchronicznie, aby uniknąć zablokowania odpowiedzi webhook.
+Funkcja `stripe.webhooks.constructEvent` weryfikuje podpis za pomocą naszego tajnego klucza punktu końcowego. Jeśli podpis jest prawidłowy, przetwarzamy zdarzenie asynchronicznie, aby uniknąć zablokowania odpowiedzi webhooka.
 
 ### Implementacja webhooka PayPal {#paypal-webhook-implementation}
 
@@ -377,11 +377,11 @@ async function webhook(ctx) {
 }
 ```
 
-Oba handlery webhook działają według tego samego schematu: weryfikują podpis, potwierdzają odbiór i przetwarzają zdarzenie asynchronicznie. Dzięki temu nigdy nie przegapimy zdarzenia płatności, nawet jeśli przekierowanie po zakończeniu płatności się nie powiedzie.
+Oba handlery webhooków działają według tego samego schematu: weryfikują podpis, potwierdzają odbiór i przetwarzają zdarzenie asynchronicznie. Dzięki temu nigdy nie przegapimy zdarzenia płatności, nawet jeśli przekierowanie po finalizacji zamówienia się nie powiedzie.
 
 ## Warstwa 3: Zautomatyzowane zadania z Bree {#layer-3-automated-jobs-with-bree}
 
-Ostatnią warstwą naszego podejścia trifecta jest zestaw zautomatyzowanych zadań, które okresowo weryfikują i uzgadniają dane dotyczące płatności. Używamy Bree, harmonogramu zadań dla Node.js, aby uruchamiać te zadania w regularnych odstępach czasu.
+Ostatnią warstwą naszego podejścia trifecta jest zestaw zautomatyzowanych zadań, które okresowo weryfikują i uzgadniają dane dotyczące płatności. Do regularnego uruchamiania tych zadań w regularnych odstępach czasu używamy Bree, narzędzia do planowania zadań dla Node.js.
 
 ### Sprawdzanie dokładności subskrypcji {#subscription-accuracy-checker}
 
@@ -452,11 +452,11 @@ async function mapper(customer) {
 }
 ```
 
-To zadanie sprawdza rozbieżności między naszą bazą danych a Stripe, takie jak niedopasowane adresy e-mail lub wiele aktywnych subskrypcji. Jeśli znajdzie jakiekolwiek problemy, rejestruje je i wysyła alerty do naszego zespołu administracyjnego.
+To zadanie sprawdza rozbieżności między naszą bazą danych a Stripe, takie jak niezgodne adresy e-mail lub wiele aktywnych subskrypcji. Jeśli wykryje jakiekolwiek problemy, rejestruje je i wysyła alerty do naszego zespołu administracyjnego.
 
 ### Synchronizacja subskrypcji PayPal {#paypal-subscription-synchronization}
 
-Podobną pracę mamy w przypadku subskrypcji PayPal:
+Podobną pracę wykonujemy w przypadku subskrypcji PayPal:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -489,13 +489,13 @@ async function syncPayPalSubscriptionPayments() {
 
 Te zautomatyzowane zadania stanowią naszą ostateczną siatkę bezpieczeństwa, gwarantując, że nasza baza danych zawsze odzwierciedla rzeczywisty stan subskrypcji i płatności zarówno w Stripe, jak i PayPal.
 
-## Obsługa przypadków skrajnych {#handling-edge-cases}
+## Obsługa przypadków brzegowych {#handling-edge-cases}
 
-Solidny system płatności musi obsługiwać przypadki skrajne z wdziękiem. Przyjrzyjmy się, jak radzimy sobie z niektórymi typowymi scenariuszami.
+Solidny system płatności musi sprawnie obsługiwać przypadki skrajne. Przyjrzyjmy się, jak radzimy sobie z typowymi scenariuszami.
 
 ### Wykrywanie i zapobieganie oszustwom {#fraud-detection-and-prevention}
 
-Wdrożyliśmy zaawansowane mechanizmy wykrywania oszustw, które automatycznie identyfikują i obsługują podejrzane działania płatnicze:
+Wdrożyliśmy zaawansowane mechanizmy wykrywania oszustw, które automatycznie identyfikują i reagują na podejrzane działania płatnicze:
 
 ```javascript
 case 'charge.failed': {
@@ -540,9 +540,9 @@ case 'charge.failed': {
 }
 ```
 
-Kod ten automatycznie blokuje użytkowników, którzy mają na swoim koncie wiele nieudanych płatności i nie mają zweryfikowanych domen, co jest wyraźnym wskaźnikiem oszustwa.
+Ten kod automatycznie blokuje użytkowników, którzy mają na swoim koncie wiele nieudanych płatności i nie posiadają zweryfikowanych domen, co jest silnym wskaźnikiem oszustwa.
 
-### Rozwiązywanie sporów {#dispute-handling}
+### Rozpatrywanie sporów {#dispute-handling}
 
 Gdy użytkownik kwestionuje opłatę, automatycznie akceptujemy roszczenie i podejmujemy odpowiednie działania:
 
@@ -587,11 +587,11 @@ W całym naszym systemie płatności przestrzegamy zasad KISS (Keep It Simple, S
 
 1. **Współdzielone funkcje pomocnicze**: Stworzyliśmy wielokrotnego użytku funkcje pomocnicze do typowych zadań, takich jak synchronizacja płatności i wysyłanie wiadomości e-mail.
 
-2. **Spójna obsługa błędów**: Zarówno obsługa webhooków Stripe, jak i PayPal korzysta z tego samego wzorca obsługi błędów i powiadomień administratora.
+2. **Spójna obsługa błędów**: Zarówno obsługa webhooków Stripe, jak i PayPal wykorzystuje ten sam wzorzec obsługi błędów i powiadomień administratora.
 
 3. **Ujednolicony schemat bazy danych**: Nasz schemat bazy danych został zaprojektowany tak, aby pomieścić zarówno dane Stripe, jak i PayPal, ze wspólnymi polami dotyczącymi statusu płatności, kwoty i informacji o planie.
 
-4. **Konfiguracja scentralizowana**: Konfiguracja dotycząca płatności jest scentralizowana w jednym pliku, co ułatwia aktualizację cen i informacji o produktach.
+4. **Konfiguracja scentralizowana**: Konfiguracja związana z płatnościami jest scentralizowana w jednym pliku, co ułatwia aktualizację cen i informacji o produktach.
 
 ```mermaid
 graph TD
@@ -687,13 +687,13 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
-## Wdrożenie wymagań subskrypcji VISA {#visa-subscription-requirements-implementation}
+## Implementacja wymagań subskrypcji VISA {#visa-subscription-requirements-implementation}
 
-Oprócz naszego podejścia trifecta wdrożyliśmy określone funkcje, aby spełnić wymagania subskrypcji VISA, jednocześnie ulepszając doświadczenie użytkownika. Jednym z kluczowych wymagań VISA jest to, że użytkownicy muszą zostać powiadomieni przed pobraniem opłaty za subskrypcję, szczególnie podczas przechodzenia z wersji próbnej na płatną subskrypcję.
+Oprócz naszego podejścia trifecta, wdrożyliśmy konkretne funkcje, aby spełnić wymagania VISA dotyczące subskrypcji, jednocześnie poprawiając komfort użytkowania. Jednym z kluczowych wymagań VISA jest powiadomienie użytkowników przed naliczeniem opłaty za subskrypcję, zwłaszcza w przypadku przejścia z okresu próbnego na subskrypcję płatną.
 
 ### Automatyczne powiadomienia e-mail przed odnowieniem {#automated-pre-renewal-email-notifications}
 
-Zbudowaliśmy zautomatyzowany system, który identyfikuje użytkowników z aktywnymi subskrypcjami próbnymi i wysyła im powiadomienie e-mail przed pierwszym obciążeniem. To nie tylko pozwala nam zachować zgodność z wymogami VISA, ale także zmniejsza liczbę obciążeń zwrotnych i poprawia zadowolenie klientów.
+Stworzyliśmy zautomatyzowany system, który identyfikuje użytkowników z aktywnymi subskrypcjami próbnymi i wysyła im powiadomienie e-mail przed pierwszym obciążeniem. To nie tylko pozwala nam zachować zgodność z wymogami VISA, ale także zmniejsza liczbę obciążeń zwrotnych i poprawia zadowolenie klientów.
 
 Oto jak wdrożyliśmy tę funkcję:
 
@@ -776,18 +776,18 @@ for (const user of users) {
 }
 ```
 
-Dzięki temu wdrożeniu użytkownicy są zawsze informowani o nadchodzących opłatach, z zachowaniem jasnych szczegółów dotyczących:
+Dzięki temu wdrożeniu użytkownicy są zawsze informowani o nadchodzących opłatach, z zachowaniem przejrzystości i szczegółów dotyczących:
 
-1. Kiedy nastąpi pierwsza opłata
+1. Kiedy nastąpi pierwsze obciążenie
 2. Częstotliwość przyszłych opłat (miesięczna, roczna itd.)
 3. Dokładna kwota, jaką zostaną pobrane
-4. Które domeny są objęte ich subskrypcją
+4. Które domeny są objęte subskrypcją
 
-Automatyzując ten proces, zachowujemy pełną zgodność z wymogami VISA (które nakazują powiadomienie co najmniej 7 dni przed pobraniem opłaty), jednocześnie ograniczając liczbę zapytań o pomoc techniczną i poprawiając ogólne wrażenia użytkownika.
+Automatyzując ten proces, zachowujemy pełną zgodność z wymogami VISA (które nakazują powiadomienie co najmniej 7 dni przed obciążeniem karty), jednocześnie ograniczając liczbę zapytań o pomoc techniczną i poprawiając ogólne doświadczenie użytkownika.
 
 ### Obsługa przypadków brzegowych {#handling-edge-cases-1}
 
-Nasza implementacja obejmuje również solidną obsługę błędów. Jeśli coś pójdzie nie tak podczas procesu powiadamiania, nasz system automatycznie powiadomi nasz zespół:
+Nasza implementacja obejmuje również solidną obsługę błędów. Jeśli w procesie powiadamiania wystąpi jakikolwiek problem, nasz system automatycznie powiadomi nasz zespół:
 
 ```javascript
 try {
@@ -813,9 +813,9 @@ try {
 }
 ```
 
-Dzięki temu nawet jeśli wystąpi problem z systemem powiadomień, nasz zespół może szybko się nim zająć i zachować zgodność z wymogami VISA.
+Dzięki temu mamy pewność, że nawet jeśli wystąpi jakiś problem z systemem powiadomień, nasz zespół będzie mógł szybko się nim zająć i zachować zgodność z wymogami VISA.
 
-System powiadomień o subskrypcji VISA to kolejny przykład tego, jak budujemy naszą infrastrukturę płatniczą, mając na uwadze zarówno zgodność z przepisami, jak i wygodę użytkownika, uzupełniając nasze potrójne podejście mające na celu zapewnienie niezawodnego i przejrzystego przetwarzania płatności.
+System powiadomień o subskrypcjach VISA to kolejny przykład tego, jak zbudowaliśmy naszą infrastrukturę płatności, mając na uwadze zarówno zgodność z przepisami, jak i doświadczenie użytkownika, uzupełniając nasze potrójne podejście w celu zapewnienia niezawodnego i przejrzystego przetwarzania płatności.
 
 ### Okresy próbne i warunki subskrypcji {#trial-periods-and-subscription-terms}
 
@@ -836,7 +836,7 @@ if (
 }
 ```
 
-Podajemy także przejrzyste informacje o warunkach subskrypcji, obejmujące częstotliwość rozliczeń i zasady anulowania, a także dołączamy szczegółowe metadane do każdej subskrypcji, aby zapewnić właściwe śledzenie i zarządzanie.
+Zapewniamy również przejrzyste informacje o warunkach subskrypcji, w tym o częstotliwości rozliczeń i zasadach anulowania, a do każdej subskrypcji dołączamy szczegółowe metadane, aby zapewnić właściwe śledzenie i zarządzanie.
 
 ## Wnioski: Korzyści z naszego podejścia Trifecta {#conclusion-the-benefits-of-our-trifecta-approach}
 
@@ -848,10 +848,10 @@ Nasze potrójne podejście do przetwarzania płatności zapewniło nam szereg kl
 
 3. **Elastyczność**: Użytkownicy mogą wybrać preferowaną metodę płatności, nie narażając przy tym niezawodności naszego systemu.
 
-4. **Solidność**: Nasz system sprawnie radzi sobie z przypadkami ekstremalnymi, od awarii sieci po działania oszukańcze.
+4. **Solidność**: Nasz system bez problemu radzi sobie z przypadkami ekstremalnymi, od awarii sieci po działania oszukańcze.
 
-Jeśli wdrażasz system płatności obsługujący wiele procesorów, zdecydowanie polecamy to podejście trifecta. Wymaga ono większego wysiłku w zakresie rozwoju początkowego, ale długoterminowe korzyści w zakresie niezawodności i dokładności są tego warte.
+Jeśli wdrażasz system płatności obsługujący wiele procesorów, zdecydowanie polecamy to trifecta. Wymaga ono większego nakładu pracy na początku, ale długoterminowe korzyści w zakresie niezawodności i dokładności są tego warte.
 
-Aby uzyskać więcej informacji na temat usługi Forward Email i naszych usług poczty e-mail zapewniających prywatność, odwiedź stronę [strona internetowa](https://forwardemail.net).
+Aby uzyskać więcej informacji na temat usługi Forward Email i naszych usług poczty e-mail zapewniających prywatność, odwiedź naszą stronę [strona internetowa](https://forwardemail.net).
 
-<!-- *Słowa kluczowe: przetwarzanie płatności, integracja Stripe, integracja PayPal, obsługa webhooków, synchronizacja płatności, zarządzanie subskrypcjami, zapobieganie oszustwom, obsługa sporów, system płatności Node.js, wieloprocesorowy system płatności, integracja bramki płatniczej, weryfikacja płatności w czasie rzeczywistym, spójność danych płatniczych, rozliczanie subskrypcji, bezpieczeństwo płatności, automatyzacja płatności, webhooki płatności, uzgadnianie płatności, skrajne przypadki płatności, obsługa błędów płatności, wymagania subskrypcji VISA, powiadomienia przed odnowieniem, zgodność subskrypcji* -->
+<!-- *Słowa kluczowe: przetwarzanie płatności, integracja ze Stripe, integracja z PayPal, obsługa webhooków, synchronizacja płatności, zarządzanie subskrypcjami, zapobieganie oszustwom, obsługa sporów, system płatności Node.js, wieloprocesorowy system płatności, integracja z bramką płatniczą, weryfikacja płatności w czasie rzeczywistym, spójność danych płatniczych, rozliczanie subskrypcji, bezpieczeństwo płatności, automatyzacja płatności, webhooki płatnicze, uzgadnianie płatności, skrajne przypadki płatności, obsługa błędów płatności, wymagania dotyczące subskrypcji VISA, powiadomienia przed odnowieniem, zgodność subskrypcji* -->

@@ -7,7 +7,7 @@
 * [Yêu cầu hệ thống](#system-requirements)
 * [Cài đặt từng bước](#step-by-step-installation)
   * [Bước 1: Thiết lập hệ thống ban đầu](#step-1-initial-system-setup)
-  * [Bước 2: Cấu hình DNS Resolver](#step-2-configure-dns-resolvers)
+  * [Bước 2: Cấu hình Bộ giải quyết DNS](#step-2-configure-dns-resolvers)
   * [Bước 3: Cài đặt các phụ thuộc hệ thống](#step-3-install-system-dependencies)
   * [Bước 4: Cài đặt Snap Packages](#step-4-install-snap-packages)
   * [Bước 5: Cài đặt Docker](#step-5-install-docker)
@@ -18,8 +18,8 @@
   * [Bước 10: Cấu hình tên miền của bạn](#step-10-configure-your-domain)
   * [Bước 11: Tạo chứng chỉ SSL](#step-11-generate-ssl-certificates)
   * [Bước 12: Tạo khóa mã hóa](#step-12-generate-encryption-keys)
-  * [Bước 13: Cập nhật Đường dẫn SSL trong Cấu hình](#step-13-update-ssl-paths-in-configuration)
-  * [Bước 14: Thiết lập Xác thực Cơ bản](#step-14-set-up-basic-authentication)
+  * [Bước 13: Cập nhật đường dẫn SSL trong cấu hình](#step-13-update-ssl-paths-in-configuration)
+  * [Bước 14: Thiết lập xác thực cơ bản](#step-14-set-up-basic-authentication)
   * [Bước 15: Triển khai với Docker Compose](#step-15-deploy-with-docker-compose)
   * [Bước 16: Xác minh cài đặt](#step-16-verify-installation)
 * [Cấu hình sau khi cài đặt](#post-installation-configuration)
@@ -29,17 +29,17 @@
   * [Thiết lập sao lưu tương thích với S3](#set-up-s3-compatible-backup)
   * [Thiết lập công việc sao lưu Cron](#set-up-backup-cron-jobs)
 * [Cấu hình tự động cập nhật](#auto-update-configuration)
-* [Bảo trì và giám sát](#maintenance-and-monitoring)
+* [Bảo trì và Giám sát](#maintenance-and-monitoring)
   * [Vị trí nhật ký](#log-locations)
   * [Nhiệm vụ bảo trì thường xuyên](#regular-maintenance-tasks)
   * [Gia hạn chứng chỉ](#certificate-renewal)
 * [Xử lý sự cố](#troubleshooting)
-  * [Các vấn đề thường gặp](#common-issues)
+  * [Các vấn đề chung](#common-issues)
   * [Nhận trợ giúp](#getting-help)
 * [Thực hành bảo mật tốt nhất](#security-best-practices)
 * [Phần kết luận](#conclusion)
 
-## Tổng quan {#overview}
+## Tổng quan về {#overview}
 
 Hướng dẫn này cung cấp hướng dẫn từng bước để cài đặt giải pháp tự lưu trữ của Forward Email trên hệ thống Ubuntu. Hướng dẫn này được thiết kế riêng cho các phiên bản Ubuntu 20.04, 22.04 và 24.04 LTS.
 
@@ -48,17 +48,17 @@ Hướng dẫn này cung cấp hướng dẫn từng bước để cài đặt g
 Trước khi bắt đầu cài đặt, hãy đảm bảo bạn có:
 
 * **Ubuntu Server**: 20.04, 22.04 hoặc 24.04 LTS
-* **Quyền truy cập gốc**: Bạn phải có thể chạy lệnh dưới dạng gốc (quyền truy cập sudo)
-* **Tên miền**: Một tên miền mà bạn kiểm soát bằng quyền truy cập quản lý DNS
-* **Máy chủ sạch**: Nên sử dụng bản cài đặt Ubuntu mới
+* **Quyền truy cập gốc**: Bạn phải có khả năng chạy lệnh dưới quyền root (truy cập sudo)
+* **Tên miền**: Tên miền mà bạn kiểm soát bằng quyền quản lý DNS
+* **Máy chủ sạch**: Khuyến nghị sử dụng bản cài đặt Ubuntu mới
 * **Kết nối Internet**: Cần thiết để tải xuống các gói và hình ảnh Docker
 
 ## Yêu cầu hệ thống {#system-requirements}
 
 * **RAM**: Tối thiểu 2GB (khuyến nghị 4GB cho sản xuất)
-* **Lưu trữ**: Tối thiểu 20GB dung lượng khả dụng (khuyến nghị 50GB+ cho sản xuất)
+* **Lưu trữ**: Tối thiểu 20GB dung lượng trống (khuyến nghị 50GB trở lên cho sản xuất)
 * **CPU**: Tối thiểu 1 vCPU (khuyến nghị 2+ vCPU cho sản xuất)
-* **Mạng**: Địa chỉ IP công khai có thể truy cập các cổng sau:
+* **Mạng**: Địa chỉ IP công cộng với các cổng sau có thể truy cập:
 * 22 (SSH)
 * 25 (SMTP)
 * 80 (HTTP)
@@ -67,7 +67,7 @@ Trước khi bắt đầu cài đặt, hãy đảm bảo bạn có:
 * 993 (IMAPS)
 * 995 (POP3S)
 
-## Cài đặt từng bước {#step-by-step-installation}
+## Hướng dẫn cài đặt từng bước {#step-by-step-installation}
 
 ### Bước 1: Thiết lập hệ thống ban đầu {#step-1-initial-system-setup}
 
@@ -83,7 +83,7 @@ sudo su -
 
 ### Bước 2: Cấu hình Bộ giải quyết DNS {#step-2-configure-dns-resolvers}
 
-Cấu hình hệ thống của bạn để sử dụng máy chủ DNS của Cloudflare nhằm tạo chứng chỉ đáng tin cậy:
+Cấu hình hệ thống của bạn để sử dụng máy chủ DNS của Cloudflare để tạo chứng chỉ đáng tin cậy:
 
 ```bash
 # Stop and disable systemd-resolved if running
@@ -128,7 +128,7 @@ apt-get install -y \
 
 ### Bước 4: Cài đặt các gói Snap {#step-4-install-snap-packages}
 
-Cài đặt AWS CLI và Certbot thông qua snap:
+Cài đặt AWS CLI và Certbot qua snap:
 
 ```bash
 # Install AWS CLI
@@ -318,7 +318,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Quan trọng**: Khi được nhắc, bạn sẽ cần tạo bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều thử thách cho cùng một tên miền - **hãy tạo TẤT CẢ các thử thách đó**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
+**Quan trọng**: Khi được nhắc, bạn sẽ cần tạo bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều yêu cầu cho cùng một tên miền - **hãy tạo TẤT CẢ các yêu cầu đó**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
 
 #### Tùy chọn B: Cloudflare DNS (Nếu bạn sử dụng Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -345,7 +345,7 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Sao chép chứng chỉ {#copy-certificates}
+#### Bản sao chứng chỉ {#copy-certificates}
 
 Sau khi tạo chứng chỉ, hãy sao chép chúng vào thư mục ứng dụng:
 
@@ -357,7 +357,7 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### Bước 12: Tạo khóa mã hóa {#step-12-generate-encryption-keys}
+### Bước 12: Tạo Khóa Mã hóa {#step-12-generate-encryption-keys}
 
 Tạo các khóa mã hóa khác nhau cần thiết cho hoạt động an toàn:
 
@@ -427,7 +427,7 @@ echo ""
 
 ### Bước 15: Triển khai với Docker Compose {#step-15-deploy-with-docker-compose}
 
-Bắt đầu tất cả các dịch vụ Chuyển tiếp Email:
+Khởi động tất cả các dịch vụ Chuyển tiếp Email:
 
 ```bash
 # Set Docker Compose file path
@@ -479,7 +479,7 @@ Bạn cần cấu hình các bản ghi DNS sau cho tên miền của mình:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Bản ghi A {#a-records}
+#### A Bản ghi {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -492,7 +492,7 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-#### Bản ghi SPF {#spf-record}
+Bản ghi #### SPF {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
@@ -521,8 +521,8 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Đăng nhập lần đầu {#first-login}
 
-1. Mở trình duyệt web của bạn và điều hướng đến `https://yourdomain.com`
-2. Nhập thông tin xác thực cơ bản mà bạn đã lưu trước đó
+1. Mở trình duyệt web và điều hướng đến `https://yourdomain.com`
+2. Nhập thông tin xác thực cơ bản bạn đã lưu trước đó
 3. Hoàn tất trình hướng dẫn thiết lập ban đầu
 4. Tạo tài khoản email đầu tiên của bạn
 
@@ -554,7 +554,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Thiết lập tác vụ sao lưu Cron {#set-up-backup-cron-jobs}
+### Thiết lập công việc sao lưu Cron {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -571,7 +571,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## Cấu hình tự động cập nhật {#auto-update-configuration}
+## Tự động cập nhật cấu hình {#auto-update-configuration}
 
 Thiết lập cập nhật tự động cho cài đặt Forward Email của bạn:
 
@@ -600,7 +600,7 @@ crontab -l
 1. **Theo dõi dung lượng đĩa**: `df -h`
 2. **Kiểm tra trạng thái dịch vụ**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Xem lại nhật ký**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
-4. **Cập nhật các gói hệ thống**: `apt update && apt upgrade`
+4. **Cập nhật gói hệ thống**: `apt update && apt upgrade`
 5. **Gia hạn chứng chỉ**: Chứng chỉ tự động gia hạn, nhưng theo dõi thời hạn hết hạn
 
 ### Gia hạn chứng chỉ {#certificate-renewal}
@@ -622,7 +622,7 @@ docker compose -f "$DOCKER_COMPOSE_FILE" restart
 
 ### Các vấn đề thường gặp {#common-issues}
 
-#### 1. Dịch vụ Docker không khởi động được {#1-docker-service-wont-start}
+#### 1. Dịch vụ Docker không khởi động {#1-docker-service-wont-start}
 
 ```bash
 # Check Docker status
@@ -632,7 +632,7 @@ systemctl status docker
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Việc tạo chứng chỉ không thành công {#2-certificate-generation-fails}
+#### 2. Không tạo được chứng chỉ {#2-certificate-generation-fails}
 
 * Đảm bảo cổng 80 và 443 có thể truy cập được
 * Xác minh bản ghi DNS trỏ đến máy chủ của bạn
@@ -640,11 +640,11 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 #### 3. Sự cố gửi email {#3-email-delivery-issues}
 
-* Xác minh bản ghi MX là chính xác
+* Kiểm tra bản ghi MX có chính xác không
 * Kiểm tra bản ghi SPF, DKIM và DMARC
 * Đảm bảo cổng 25 không bị nhà cung cấp dịch vụ lưu trữ của bạn chặn
 
-#### 4. Giao diện web không thể truy cập được {#4-web-interface-not-accessible}
+#### 4. Giao diện web không thể truy cập {#4-web-interface-not-accessible}
 
 * Kiểm tra cài đặt tường lửa: `ufw status`
 * Xác minh chứng chỉ SSL: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
@@ -654,25 +654,25 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * **Tài liệu**: <https://forwardemail.net/self-hosted>
 * **Vấn đề GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Hỗ trợ cộng đồng**: Xem các thảo luận của dự án trên GitHub
+* **Hỗ trợ cộng đồng**: Xem các thảo luận trên GitHub của dự án
 
 ## Thực hành bảo mật tốt nhất {#security-best-practices}
 
-1. **Luôn cập nhật hệ thống**: Cập nhật Ubuntu và các gói thường xuyên
-2. **Theo dõi nhật ký**: Thiết lập theo dõi nhật ký và cảnh báo
+1. **Luôn cập nhật hệ thống**: Thường xuyên cập nhật Ubuntu và các gói
+2. **Theo dõi nhật ký**: Thiết lập giám sát nhật ký và cảnh báo
 3. **Sao lưu thường xuyên**: Kiểm tra quy trình sao lưu và khôi phục
-4. **Sử dụng mật khẩu mạnh**: Tạo mật khẩu mạnh cho tất cả các tài khoản
+4. **Sử dụng mật khẩu mạnh**: Tạo mật khẩu mạnh cho tất cả tài khoản
 5. **Bật Fail2Ban**: Cân nhắc cài đặt fail2ban để tăng cường bảo mật
-6. **Kiểm tra bảo mật thường xuyên**: Xem xét cấu hình của bạn theo định kỳ
+6. **Kiểm tra bảo mật thường xuyên**: Định kỳ xem xét cấu hình của bạn
 
 ## Kết luận {#conclusion}
 
-Cài đặt tự lưu trữ Forward Email của bạn hiện đã hoàn tất và đang chạy trên Ubuntu. Hãy nhớ:
+Quá trình cài đặt Forward Email tự lưu trữ của bạn hiện đã hoàn tất và đang chạy trên Ubuntu. Hãy nhớ:
 
-1. Cấu hình bản ghi DNS của bạn đúng cách
+1. Cấu hình đúng bản ghi DNS
 2. Kiểm tra việc gửi và nhận email
 3. Thiết lập sao lưu thường xuyên
-4. Theo dõi hệ thống của bạn thường xuyên
-5. Giữ cho cài đặt của bạn được cập nhật
+4. Theo dõi hệ thống thường xuyên
+5. Cập nhật cài đặt
 
 Để biết thêm các tùy chọn cấu hình và tính năng nâng cao, hãy tham khảo tài liệu chính thức về Chuyển tiếp Email tại <https://forwardemail.net/self-hosted#configuration>.

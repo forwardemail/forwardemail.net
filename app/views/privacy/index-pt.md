@@ -33,25 +33,25 @@ Para transparência, a qualquer momento você pode <a href="https://github.com/f
 * Observe que, se você estiver usando apenas nossos serviços de encaminhamento de e-mail, nenhum e-mail será armazenado em disco ou banco de dados, conforme descrito em [Informações não coletadas](#information-not-collected).
 * Nossos serviços de encaminhamento de e-mail operam apenas na memória (sem gravação em disco ou bancos de dados).
 * O armazenamento IMAP/POP3/CalDAV/CardDAV é criptografado em repouso, criptografado em trânsito e armazenado em um disco criptografado LUKS.
-* Os backups do seu armazenamento IMAP/POP3/CalDAV/CardDAV são criptografados em repouso, criptografados em trânsito e armazenados em [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
+* Os backups do seu armazenamento IMAP/POP3/CalDAV/CardDAV são criptografados em repouso, criptografado em trânsito e armazenados em [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
 * Armazenamos um cookie em uma sessão para o tráfego do seu site.
 * Armazenamos o endereço de e-mail que você nos fornece.
-* Armazenamos os nomes de domínio, aliases e configurações que você nos fornece.
+* Armazenamos seus nomes de domínio, aliases e configurações que você nos fornece.
 * Armazenamos os códigos de resposta SMTP `4xx` e `5xx` [registros de erros](/faq#do-you-store-error-logs) por 7 dias.
 * Armazenamos [e-mails SMTP de saída](/faq#do-you-support-sending-email-with-smtp) por aproximadamente 30 dias.
 * Esse período varia de acordo com o cabeçalho "Data", pois permitimos o envio de e-mails no futuro, caso exista um cabeçalho "Data" no futuro.
-
 * **Observe que, assim que um e-mail for entregue com sucesso ou apresentar erros permanentes, removeremos e removeremos o corpo da mensagem.**
 * Se desejar configurar o corpo da mensagem de e-mail SMTP de saída para ser retido por mais tempo do que o padrão de 0 dias (após a entrega com sucesso ou erro permanente), acesse as Configurações Avançadas do seu domínio e insira um valor entre `0` e `30`.
-* Alguns usuários gostam de usar o recurso de visualização [Minha conta > E-mails](/my-account/emails) para ver como seus e-mails são renderizados; portanto, oferecemos suporte a um período de retenção configurável.
-* Observe que também oferecemos suporte a [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+
+* Alguns usuários gostam de usar o recurso de visualização [Minha conta > E-mails](/my-account/emails) para ver como seus e-mails são renderizados, portanto, oferecemos suporte a um período de retenção configurável.
+* Observe que também oferecemos suporte a __PROTECTED_LINK_30__0.
 * Quaisquer informações adicionais que você nos fornecer voluntariamente, como comentários ou perguntas enviadas por e-mail ou em nossa página de <a href="/help">ajuda</a>.
 
 ## Informações compartilhadas {#information-shared}
 
 Não compartilhamos suas informações com terceiros. Também não utilizamos nenhum serviço de software de análise ou telemetria de terceiros.
 
-Poderemos precisar e cumpriremos solicitações legais determinadas pelo tribunal (mas tenha em mente [não coletamos as informações mencionadas acima em "Informações Não Coletadas"](#information-not-collected), portanto, não poderemos fornecê-las para começar).
+Poderemos precisar e cumpriremos solicitações legais determinadas pelo tribunal (mas tenha em mente [não coletamos as informações mencionadas acima em "Informações Não Coletadas"](#information-not-collected), portanto, não poderemos fornecê-lo para começar).
 
 ## Remoção de informações {#information-removal}
 

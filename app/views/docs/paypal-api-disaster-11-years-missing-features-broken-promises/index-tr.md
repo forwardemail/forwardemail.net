@@ -2,8 +2,8 @@
 
 <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
-<p class="lead mt-3">Forward Email'de, on yıldan uzun süredir PayPal'ın bozuk API'leriyle uğraşıyoruz. Küçük hayal kırıklıkları olarak başlayan şey, bizi kendi çözüm yollarımızı oluşturmaya, kimlik avı şablonlarını engellemeye ve en sonunda kritik bir hesap geçişi sırasında tüm PayPal ödemelerini durdurmaya zorlayan tam bir felakete dönüştü.</p>
-<p class="lead mt-3">Bu, platformlarının çalışması için her şeyi denediğimiz sırada PayPal'ın temel geliştirici ihtiyaçlarını görmezden geldiği 11 yıllık hikayedir.</p>
+<p class="lead mt-3">Forward Email olarak, on yılı aşkın süredir PayPal'ın bozuk API'leriyle uğraşıyoruz. Küçük hayal kırıklıklarıyla başlayan süreç, bizi kendi çözümlerimizi oluşturmaya, kimlik avı şablonlarını engellemeye ve nihayetinde kritik bir hesap geçişi sırasında tüm PayPal ödemelerini durdurmaya zorlayan tam bir felakete dönüştü.</p>
+<p class="lead mt-3">Bu, platformlarını çalışır hale getirmek için her şeyi denediğimiz sırada PayPal'ın temel geliştirici ihtiyaçlarını görmezden geldiği 11 yıllık sürecin hikayesi.</p>
 
 ## İçindekiler {#table-of-contents}
 
@@ -69,7 +69,7 @@
   * [Webhook Güvenilirlik Felaketi](#the-webhook-reliability-disaster)
   * [Sistematik İhmal Örneği](#the-pattern-of-systematic-negligence)
   * [Belgelenmemiş Gereksinim](#the-undocumented-requirement)
-* [PayPal'ın Daha Geniş Aldatma Modeli](#paypals-broader-pattern-of-deception)
+* [PayPal'ın Daha Geniş Aldatmaca Modeli](#paypals-broader-pattern-of-deception)
   * [New York Mali Hizmetler Departmanı Eylemi](#the-new-york-department-of-financial-services-action)
   * [Bal Davası: Ortaklık Bağlantılarını Yeniden Yazmak](#the-honey-lawsuit-rewriting-affiliate-links)
   * [PayPal'ın İhmalinin Maliyeti](#the-cost-of-paypals-negligence)
@@ -78,9 +78,9 @@
 
 ## Eksik Parça: Abonelikleri Listelemenin Bir Yolu Yok {#the-missing-piece-no-way-to-list-subscriptions}
 
-Aklımızı karıştıran şey şu: PayPal 2014'ten beri abonelik faturalandırması kullanıyor, ancak satıcıların kendi aboneliklerini listelemelerine hiçbir zaman olanak sağlamadı.
+İşte aklımızı başımızdan alan şey: PayPal 2014'ten beri abonelik faturalandırması kullanıyor, ancak satıcıların kendi aboneliklerini listelemelerine olanak sağlayan bir yol hiçbir zaman sağlamadı.
 
-Bunu bir saniye düşünün. Abonelikler oluşturabilirsiniz, ID'niz varsa iptal edebilirsiniz, ancak hesabınız için tüm aktif aboneliklerin listesini alamazsınız. SELECT ifadesi olmayan bir veritabanına sahip olmak gibidir.
+Bunu bir saniye düşünün. Abonelikler oluşturabilir, ID'niz varsa iptal edebilirsiniz, ancak hesabınızdaki tüm aktif aboneliklerin listesini alamazsınız. SELECT ifadesi olmayan bir veritabanına sahip olmak gibi.
 
 Temel iş operasyonlarımız için buna ihtiyacımız var:
 
@@ -89,41 +89,41 @@ Temel iş operasyonlarımız için buna ihtiyacımız var:
 * Otomatik faturalama yönetimi
 * Uyumluluk ve denetim
 
-Peki ya PayPal? Onlar... onu hiç inşa etmediler.
+Peki ya PayPal? Onu hiç... inşa etmediler.
 
 ## 2014-2017: Sorun Ortaya Çıkıyor {#2014-2017-the-problem-emerges}
 
 Abonelik listeleme sorunu ilk olarak 2017 yılında PayPal'ın topluluk forumlarında ortaya çıktı. Geliştiriciler şu soruyu soruyorlardı: "Tüm aboneliklerimin listesini nasıl alabilirim?"
 
-PayPal'ın cevabı? Cırcır böcekleri.
+PayPal'ın cevabı mı? Cırcır böcekleri.
 
-Topluluk üyeleri sinirlenmeye başladı:
+Topluluk üyeleri hayal kırıklığına uğramaya başladı:
 
-> "Bir tüccar tüm aktif Sözleşmeleri listeleyemiyorsa çok garip bir ihmal. Sözleşme Kimliği kaybolursa bu yalnızca kullanıcının bir sözleşmeyi iptal edebileceği veya askıya alabileceği anlamına gelir." - leafspider
+> "Bir satıcı tüm aktif Sözleşmeleri listeleyemiyorsa bu çok garip bir eksiklik. Sözleşme Kimliği kaybolursa, bu yalnızca kullanıcının sözleşmeyi iptal edebileceği veya askıya alabileceği anlamına gelir." - leafspider
 
-> "+1. Neredeyse 3 yıl oldu." - laudukang (sorunun \~2014'ten beri var olduğu anlamına geliyor)
+> "+1. Neredeyse 3 yıl oldu." - laudukang (sorunun 2014'ten beri var olduğu anlamına geliyor)
 
-2017'deki [orijinal topluluk gönderisi](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066), geliştiricilerin bu temel işlevi talep ettiğini gösteriyor. PayPal'ın cevabı ise, insanların sorunu bildirdiği deponun arşivlenmesi oldu.
+2017'den kalma [orijinal topluluk gönderisi](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066), geliştiricilerin bu temel işlevselliği talep ettiğini gösteriyor. PayPal'ın cevabı ise, insanların sorunu bildirdiği deponun arşivlenmesi oldu.
 
 ## 2020: Onlara Kapsamlı Geri Bildirim Veriyoruz {#2020-we-give-them-extensive-feedback}
 
-Ekim 2020'de PayPal resmi bir geri bildirim oturumu için bize ulaştı. Bu sıradan bir sohbet değildi - Sri Shivananda (CTO), Edwin Aoki, Jim Magats, John Kunze ve diğerleri de dahil olmak üzere 8 PayPal yöneticisiyle 45 dakikalık bir Microsoft Teams görüşmesi düzenlediler.
+Ekim 2020'de PayPal, resmi bir geri bildirim oturumu için bizimle iletişime geçti. Bu sıradan bir sohbet değildi; Sri Shivananda (CTO), Edwin Aoki, Jim Magats, John Kunze ve diğerleri de dahil olmak üzere 8 PayPal yöneticisiyle 45 dakikalık bir Microsoft Teams görüşmesi organize ettiler.
 
 ### 27 Maddelik Geri Bildirim Listesi {#the-27-item-feedback-list}
 
-Hazırlıklı geldik. API'leriyle entegre olmaya çalıştığımız 6 saatin ardından 27 belirli sorun derledik. PayPal Checkout ekibinden Mark Stuart şunları söyledi:
+Hazırlıklı geldik. API'leriyle entegrasyon için 6 saat uğraştıktan sonra 27 spesifik sorun tespit ettik. PayPal Checkout ekibinden Mark Stuart şunları söyledi:
 
-> Hey Nick, bugün herkesle paylaştığın için teşekkürler! Bence bu, ekibimizin bu şeyleri düzeltmesi için daha fazla destek ve yatırım almanın katalizörü olacak. Şimdiye kadar bize bıraktığın gibi zengin geri bildirimler almak zordu.
+> Hey Nick, bugün herkesle paylaştığın için teşekkürler! Sanırım bu, ekibimizin bu sorunları çözmesi için daha fazla destek ve yatırım almamızı sağlayacak bir katalizör olacak. Şimdiye kadar bize bıraktığın gibi zengin geri bildirimler almak zordu.
 
 Geri bildirim teorik değildi; gerçek entegrasyon girişimlerinden geldi:
 
 1. **Erişim belirteci oluşturma çalışmıyor**:
 
-> Erişim belirteci üretimi çalışmıyor. Ayrıca, sadece cURL örneklerinden daha fazlası olmalı.
+> Erişim belirteci oluşturma çalışmıyor. Ayrıca, yalnızca cURL örneklerinden daha fazlası olmalı.
 
 2. **Abonelik oluşturma için web kullanıcı arayüzü yok**:
 
-> cURL kullanmadan abonelikleri nasıl oluşturabilirsiniz? Bunu yapmak için bir web kullanıcı arayüzü yok gibi görünüyor (Stripe'ınki gibi)
+> cURL kullanmadan abonelikleri nasıl oluşturabilirsiniz? Bunu yapmak için bir web arayüzü yok gibi görünüyor (Stripe'ınki gibi)
 
 Mark Stuart, erişim belirteci sorununu özellikle endişe verici buldu:
 
@@ -131,7 +131,7 @@ Mark Stuart, erişim belirteci sorununu özellikle endişe verici buldu:
 
 ### Ekipler Katıldı, Sözler Verildi {#teams-got-involved-promises-were-made}
 
-Daha fazla sorun keşfettikçe PayPal sohbete daha fazla ekip eklemeye devam etti. Abonelik yönetimi kullanıcı arayüzü ekibinden Darshan Raju katıldı ve şunları söyledi:
+Daha fazla sorun keşfettikçe, PayPal sohbete daha fazla ekip eklemeye devam etti. Abonelik yönetimi kullanıcı arayüzü ekibinden Darshan Raju katıldı ve şunları söyledi:
 
 > Boşluğu kabul edin. Bunu takip edip çözeceğiz. Geri bildiriminiz için tekrar teşekkürler!
 
@@ -141,7 +141,7 @@ Oturumun amacı şu şekilde tanımlandı:
 
 ile:
 
-> PayPal'ı geliştiriciler için olması gerektiği hale getirmek.
+> PayPal'ı geliştiriciler için olması gereken hale getirmek.
 
 ### Sonuç? Hiçbir şey. {#the-result-nothing}
 
@@ -149,61 +149,61 @@ Resmi geri bildirim oturumuna, 27 maddelik kapsamlı listeye, birden fazla ekibi
 
 > takip et ve adresle
 
-sorunlar, kesinlikle hiçbir şey düzeltilmedi.
+Sorunlar, kesinlikle hiçbir şey düzeltilmedi.
 
 ## Yöneticilerin Göçü: PayPal Tüm Kurumsal Hafızasını Nasıl Kaybetti? {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
-İşte asıl ilginç olan nokta burası. 2020 geri bildirimlerimizi alan her bir kişi PayPal'dan ayrıldı:
+İşte asıl ilginç nokta burada başlıyor. 2020 geri bildirimlerimizi alan her kişi PayPal'dan ayrıldı:
 
 **Liderlik Değişiklikleri:**
 
 * [Dan Schulman (9 yıldır CEO) → Alex Chriss](https://www.fastcompany.com/90938418/paypal-ceo-alex-chriss-dan-schulman-what-to-know/) (Eylül 2023)
 * [Sri Shivananda (geri bildirimi organize eden CTO) → JPMorgan Chase](https://www.pymnts.com/personnel/2024/jpmorgan-names-paypal-vet-shivananda-as-new-tech-chief/) (Ocak 2024)
 
-**Söz Veren, Sonra Giden Teknik Liderler:**
+**Söz Veren, Sonra Ayrılan Teknik Liderler:**
 
 * **Mark Stuart** (geri bildirimin "katalizör" olacağı sözü verildi) → [Şimdi Ripple'da](https://www.linkedin.com/in/markstuartsf)
 * **Jim Magats** (18 yıllık PayPal çalışanı) → [MX'in CEO'su](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
 * **John Kunze** (Küresel Tüketici Ürünleri Başkan Yardımcısı) → [Emekli](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
 * **Edwin Aoki** (kalan son kişilerden biri) → [Az önce Nasdaq'a doğru yola çıktım](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (Ocak 2025)
 
-PayPal, yöneticilerin geliştiricilerden geri bildirim topladığı, sözler verdiği ve daha sonra JPMorgan, Ripple ve diğer fintech şirketleri gibi daha iyi şirketlere geçtiği bir döner kapı haline geldi.
+PayPal, yöneticilerin geliştiricilerden geri bildirim topladığı, sözler verdiği ve daha sonra JPMorgan, Ripple ve diğer fintech firmaları gibi daha iyi şirketlere geçtiği bir dönen kapı haline geldi.
 
-Bu, 2025 GitHub sorunu yanıtının 2020 geri bildirimlerimizden tamamen kopuk görünmesinin nedenini açıklıyor - bu geri bildirimi alan herkes PayPal'dan ayrıldı.
+Bu, 2025 GitHub sorunu yanıtının 2020 geri bildirimlerimizden tamamen kopuk görünmesinin nedenini açıklıyor; bu geri bildirimi alan herkes PayPal'dan ayrıldı.
 
 ## 2025: Yeni Liderlik, Aynı Sorunlar {#2025-new-leadership-same-problems}
 
-2025'e hızlıca ilerleyelim ve aynı desen ortaya çıkıyor. Yıllarca ilerleme kaydedilememişken, PayPal'ın yeni liderliği tekrar elini uzatıyor.
+2025 yılına geldiğimizde ise aynı durumla karşılaşıyoruz. Yıllardır hiçbir ilerleme kaydedilemeyen PayPal'ın yeni yönetimi, tekrar harekete geçiyor.
 
-### Yeni CEO Devreye Giriyor {#the-new-ceo-gets-involved}
+### Yeni CEO Göreve Başlıyor {#the-new-ceo-gets-involved}
 
-30 Haziran 2025'te doğrudan PayPal'ın yeni CEO'su Alex Chriss'e ulaştık. Cevabı kısaydı:
+30 Haziran 2025'te konuyu doğrudan PayPal'ın yeni CEO'su Alex Chriss'e ilettik. Yanıtı kısaydı:
 
-> Merhaba Nick – Ulaştığınız ve geri bildirimde bulunduğunuz için teşekkür ederim. Michelle (cc'd) ekibiyle birlikte sizinle etkileşime geçmek ve bu konuda çalışmak konusunda tam yerinde. Teşekkürler -A
+> Merhaba Nick, bize ulaştığınız ve geri bildirimde bulunduğunuz için teşekkür ederiz. Michelle (cc'lendi), ekibiyle birlikte bu konuyu sizinle birlikte ele alıp birlikte çalışmak konusunda çok başarılı. Teşekkürler -A
 
 ### Michelle Gill'in Yanıtı {#michelle-gills-response}
 
 Küçük İşletmeler ve Finansal Hizmetler İcra Başkan Yardımcısı ve Genel Müdürü Michelle Gill şu yanıtı verdi:
 
-> Çok teşekkürler Nick, Alex'i bcc'ye taşıdık. Önceki gönderinizden beri bu konuyu araştırıyorduk. Hafta bitmeden sizi arayacağız. Lütfen bana iletişim bilgilerinizi gönderin, böylece meslektaşlarımdan biri size ulaşabilir. Michelle
+> Çok teşekkürler Nick, Alex'i gizli cc'ye taşıdın. Önceki gönderinden beri bu konuyu araştırıyorduk. Hafta bitmeden seni arayacağız. Meslektaşlarımdan birinin sana ulaşabilmesi için lütfen iletişim bilgilerini bana gönderebilir misin? Michelle.
 
-### Yanıtımız: Toplantı Yok Artık {#our-response-no-more-meetings}
+### Yanıtımız: Toplantı Yok {#our-response-no-more-meetings}
 
-Başka bir toplantıyı reddettik ve hayal kırıklığımızı dile getirdik:
+Hayal kırıklığımızı dile getirerek başka bir görüşmeyi reddettik:
 
-> Teşekkür ederim. Ancak bir çağrıya katılmanın hiçbir işe yarayacağını düşünmüyorum. İşte nedeni... Geçmişte bir çağrıya katıldım ve hiçbir yere varamadı. Tüm ekip ve liderlikle konuşarak 2+ saatimi boşa harcadım ve hiçbir şey yapılmadı... Bir sürü e-posta ileri geri. Kesinlikle hiçbir şey yapılmadı. Geri bildirimler hiçbir yere varmadı. Yıllarca denedim, dinlendim ve sonra hiçbir yere varmadı.
+> Teşekkür ederim. Ancak bir görüşmeye katılmanın hiçbir işe yarayacağını düşünmüyorum. İşte nedeni... Geçmişte bir görüşmeye katıldım ve hiçbir işe yaramadı. Tüm ekip ve liderlerle konuşarak 2 saatten fazla zamanımı boşa harcadım ve hiçbir şey yapılmadı... Bir sürü e-posta alışverişi. Hiçbir şey yapılmadı. Geri bildirimler hiçbir işe yaramadı. Yıllarca uğraştım, dinlendim, sonra da hiçbir işe yaramadı.
 
 ### Marty Brodbeck'in Aşırı Mühendislik Yanıtı {#marty-brodbecks-overengineering-response}
 
 Daha sonra PayPal'da tüketici mühendisliğinin başında bulunan Marty Brodbeck bize ulaştı:
 
-> Merhaba Nick, ben Marty Brodbeck. PayPal'da tüm tüketici mühendisliğinin başındayım ve şirket için API geliştirmeyi yürütüyorum. Karşılaştığınız sorun ve burada nasıl yardımcı olabileceğimiz konusunda sizinle iletişim kurabilir miyiz?
+> Merhaba Nick, ben Marty Brodbeck. PayPal'da tüm tüketici mühendisliğinin başındayım ve şirketin API geliştirme süreçlerini yönetiyorum. Karşılaştığınız sorun ve size nasıl yardımcı olabileceğimiz konusunda sizinle görüşebilir miyiz?
 
-Abonelik listeleme uç noktasına olan basit ihtiyacı açıkladığımızda, verdiği yanıt tam da sorunu ortaya koydu:
+Abonelik listeleme uç noktasına olan basit ihtiyacı açıkladığımızda, verdiği yanıt tam olarak sorunu ortaya koydu:
 
-> Teşekkürler Nick, tam SDK'lı (tam hata işleme, olay tabanlı abonelik takibi, sağlam çalışma süresi desteği) tek bir abonelik API'si oluşturma sürecindeyiz; bu sayede faturalama da satıcıların tek bir yanıt almak için birden fazla uç noktayı düzenlemesine gerek kalmadan gidebilecekleri ayrı bir API olarak bölünüyor.
+> Teşekkürler Nick, tam SDK'lı (tam hata işleme, olay tabanlı abonelik takibi, sağlam çalışma süresi desteği) tek bir abonelik API'si oluşturma sürecindeyiz; bu sayede faturalama, satıcıların tek bir yanıt almak için birden fazla uç noktayı düzenlemelerine gerek kalmadan gidebilecekleri ayrı bir API olarak bölünüyor.
 
-Bu tam olarak yanlış yaklaşımdır. Aylarca süren karmaşık mimariye ihtiyacımız yok. Abonelikleri listeleyen basit bir REST uç noktasına ihtiyacımız var - 2014'ten beri var olması gereken bir şey.
+Bu kesinlikle yanlış bir yaklaşım. Aylarca süren karmaşık bir mimariye ihtiyacımız yok. Abonelikleri listeleyen basit bir REST uç noktasına ihtiyacımız var; 2014'ten beri var olması gereken bir şey.
 
 ```http
 GET /v1/billing/subscriptions
@@ -212,125 +212,125 @@ Authorization: Bearer {access_token}
 
 ### "Basit CRUD" Çelişkisi {#the-simple-crud-contradiction}
 
-Bunun 2014'ten beri var olması gereken temel CRUD işlevselliği olduğunu belirttiğimizde Marty'nin cevabı şuydu:
+Bunun 2014'ten beri var olması gereken temel CRUD işlevselliği olduğunu belirttiğimizde Marty'nin yanıtı şuydu:
 
-> Basit Crud işlemleri çekirdek API'nin bir parçasıdır dostum, bu yüzden aylarca geliştirme gerekmeyecek
+> Basit Crud işlemleri çekirdek API'nin bir parçasıdır dostum, bu yüzden aylarca geliştirme gerektirmez
 
-Aylar süren geliştirme sürecinin ardından şu anda yalnızca üç uç noktayı destekleyen PayPal TypeScript SDK, tarihsel zaman çizelgesiyle birlikte bu tür projelerin tamamlanmasının birkaç aydan fazla zaman aldığını açıkça ortaya koyuyor.
+Aylar süren geliştirme sürecinin ardından şu anda yalnızca üç uç noktayı destekleyen PayPal TypeScript SDK'sı ve geçmiş zaman çizelgesi, bu tür projelerin tamamlanmasının birkaç aydan fazla zaman aldığını açıkça ortaya koyuyor.
 
-Bu yanıt, kendi API'sini anlamadığını gösteriyor. "Basit CRUD işlemleri çekirdek API'nin bir parçasıysa", o zaman abonelik listeleme uç noktası nerede? Biz yanıtladık:
+Bu yanıt, kendi API'sini anlamadığını gösteriyor. "Basit CRUD işlemleri temel API'nin bir parçasıysa", abonelik listeleme uç noktası nerede? Yanıtımız şu:
 
-> 'Basit CRUD işlemleri çekirdek API'nin bir parçasıysa' o zaman abonelik listeleme uç noktası nerede? Geliştiriciler 2014'ten beri bu 'basit CRUD işlemini' istiyorlardı. 11 yıl oldu. Diğer tüm ödeme işlemcileri ilk günden beri bu temel işlevselliğe sahipti.
+> 'Basit CRUD işlemleri çekirdek API'nin bir parçasıysa', abonelik listeleme uç noktası nerede? Geliştiriciler 2014'ten beri bu 'basit CRUD işlemini' talep ediyor. 11 yıl oldu. Diğer tüm ödeme işlemcileri ilk günden beri bu temel işlevselliğe sahip.
 
-### Kopukluk Ortaya Çıkıyor {#the-disconnect-becomes-clear}
+### Bağlantı Kesikliği Netleşiyor {#the-disconnect-becomes-clear}
 
 Alex Chriss, Michelle Gill ve Marty Brodbeck ile 2025'teki görüşmeler aynı örgütsel işlev bozukluğunu gösteriyor:
 
-1. **Yeni liderlik önceki geri bildirim oturumları hakkında hiçbir bilgiye sahip değil**
+1. **Yeni liderlik, önceki geri bildirim oturumları hakkında hiçbir bilgiye sahip değil**
 2. **Aynı aşırı mühendislik çözümlerini öneriyorlar**
-3. **Kendi API sınırlamalarını anlamıyorlar**
-4. **Sadece sorunu düzeltmek yerine daha fazla toplantı istiyorlar**
+3. **Kendi API sınırlamalarını anlamıyor**
+4. **Sorunu çözmek yerine daha fazla toplantı istiyorlar**
 
 Bu model, 2025'teki PayPal ekiplerinin 2020'de sağlanan kapsamlı geri bildirimlerden neden tamamen kopuk göründüğünü açıklıyor; bu geri bildirimi alan kişiler artık yok ve yeni liderlik aynı hataları tekrarlıyor.
 
 ## Yıllardır Görmezden Geldikleri Hata Raporları {#years-of-bug-reports-they-ignored}
 
-Sadece eksik özelliklerden şikayet etmedik. Hataları aktif olarak bildirdik ve bunların iyileştirilmesine yardımcı olmaya çalıştık. İşte belgelediğimiz sorunların kapsamlı bir zaman çizelgesi:
+Sadece eksik özelliklerden şikayet etmedik. Hataları aktif olarak bildirdik ve iyileştirmelerine yardımcı olmaya çalıştık. İşte belgelediğimiz sorunların kapsamlı bir zaman çizelgesi:
 
-### 2016: İlk UI/UX Şikayetleri {#2016-early-uiux-complaints}
+### 2016: Erken UI/UX Şikayetleri {#2016-early-uiux-complaints}
 
-2016'da bile, Dan Schulman dahil PayPal yönetimine arayüz sorunları ve kullanılabilirlik sorunları hakkında açıkça ulaşıyorduk. Bu 9 yıl önceydi ve aynı UI/UX sorunları bugün de devam ediyor.
+2016 yılında bile, Dan Schulman da dahil olmak üzere PayPal yönetimine arayüz sorunları ve kullanılabilirlik sorunları hakkında kamuoyuyla iletişime geçiyorduk. Bu 9 yıl önceydi ve aynı kullanıcı arayüzü/kullanıcı deneyimi sorunları bugün de devam ediyor.
 
 ### 2021: İş E-postası Hata Raporu {#2021-business-email-bug-report}
 
-Mart 2021'de PayPal'ın iş e-posta sisteminin yanlış iptal bildirimleri gönderdiğini bildirmiştik. E-posta şablonunda değişkenler yanlış şekilde işlenmişti ve müşterilere kafa karıştırıcı mesajlar gösteriyordu.
+Mart 2021'de, PayPal'ın iş e-posta sisteminin hatalı iptal bildirimleri gönderdiğini bildirmiştik. E-posta şablonundaki değişkenler hatalı bir şekilde oluşturulmuş ve müşterilere kafa karıştırıcı mesajlar gösteriyordu.
 
-Mark Stuart bu konuyu kabul etti:
+Mark Stuart bu konuyu şöyle kabul etti:
 
-> Teşekkürler Nick! BCC'ye taşınıyoruz. @Prasy, ekibiniz bu e-postadan sorumlu mu veya kim olduğunu biliyor musunuz? "Niftylettuce, LLC, artık size fatura kesmeyeceğiz" ifadesi, kime hitap edildiği ve e-postanın içeriği konusunda bir karışıklık olduğunu düşünmeme neden oluyor.
+> Teşekkürler Nick! Gizli Bilgi'ye (BCC) geçiyoruz. @Prasy, bu e-postadan ekibiniz mi sorumlu veya kim sorumlu biliyor musunuz? "Niftylettuce, LLC, artık size fatura kesmeyeceğiz" ifadesi, kime gönderildiği ve e-postanın içeriği arasında bir karışıklık olduğunu düşündürüyor.
 
 **Sonuç**: Bunu gerçekten düzelttiler! Mark Stuart doğruladı:
 
-> Bildirim ekibinden e-posta şablonunun düzeltildiğini ve kullanıma sunulduğunu duydum. Bunu bildirmek için bize ulaştığınız için teşekkür ederiz. Teşekkürler!
+> Bildirim ekibinden, e-posta şablonunun düzeltildiğini ve kullanıma sunulduğunu duydum. Bize bildirdiğiniz için teşekkür ederiz. Teşekkürler!
 
-Bu, istedikleri zaman sorunları düzeltebileceklerini gösteriyor; sadece çoğu sorun için bunu yapmamayı seçiyorlar.
+Bu, istedikleri zaman sorunları düzeltebileceklerini gösteriyor; sadece çoğu sorun için bunu tercih etmiyorlar.
 
 ### 2021: Kullanıcı Arayüzü İyileştirme Önerileri {#2021-ui-improvement-suggestions}
 
-Şubat 2021'de, özellikle "PayPal Son Aktivite" bölümü olmak üzere, panolarının kullanıcı arayüzü hakkında ayrıntılı geri bildirimler sağladık:
+Şubat 2021'de, özellikle "PayPal Son Aktiviteler" bölümü olmak üzere, panolarının kullanıcı arayüzü hakkında ayrıntılı geri bildirimler sağladık:
 
-> Paypal.com'daki panonun, özellikle "PayPal Son Aktivite"nin geliştirilmesi gerektiğini düşünüyorum. 0$ Tekrarlayan ödeme "Oluşturuldu" durum satırlarını göstermemeniz gerektiğini düşünüyorum - bu sadece bir ton ekstra satır ekliyor ve gün/geçtiğimiz birkaç gün için ne kadar gelir elde ettiğinizi bir bakışta kolayca göremiyorsunuz.
+> PayPal.com'daki panonun, özellikle de "PayPal Son Aktiviteler" bölümünün iyileştirilmesi gerektiğini düşünüyorum. 0$ Tekrarlayan ödeme "Oluşturuldu" durum satırlarını göstermemeniz gerektiğini düşünüyorum; bu, bir sürü ek satır ekliyor ve gün/son birkaç gün içinde ne kadar gelir elde ettiğinizi bir bakışta kolayca göremiyorsunuz.
 
 Mark Stuart bunu tüketici ürünleri ekibine iletti:
 
-> Teşekkürler! Activity'den hangi ekibin sorumlu olduğundan emin değilim, ancak doğru ekibi bulmak için tüketici ürünleri başkanına ilettim. 0,00$ tutarındaki tekrarlayan ödeme bir hata gibi görünüyor. Muhtemelen filtrelenmeli.
+> Teşekkürler! Aktivite'den hangi ekibin sorumlu olduğundan emin değilim, ancak doğru ekibi bulmak için tüketici ürünleri müdürüne ilettim. 0,00$ tutarındaki tekrarlayan ödeme bir hata gibi görünüyor. Muhtemelen filtrelenmeli.
 
-**Sonuç**: Hiçbir zaman düzeltilmedi. Kullanıcı arayüzü hala bu işe yaramaz $0 girişlerini gösteriyor.
+**Sonuç**: Hiçbir zaman düzeltilmedi. Kullanıcı arayüzü hâlâ bu işe yaramaz $0 girişlerini gösteriyor.
 
 ### 2021: Sandbox Ortamı Arızaları {#2021-sandbox-environment-failures}
 
-Kasım 2021'de PayPal'ın deneme ortamıyla ilgili kritik sorunlar bildirmiştik:
+Kasım 2021'de PayPal'ın deneme ortamıyla ilgili kritik sorunları bildirmiştik:
 
 * Sandbox gizli API anahtarları rastgele değiştirildi ve devre dışı bırakıldı
-* Tüm sandbox test hesapları bildirim yapılmadan silindi
+* Tüm sandbox test hesapları bildirimde bulunulmadan silindi
 * Sandbox hesap ayrıntılarını görüntülemeye çalışırken hata mesajları
 * Aralıklı yükleme hataları
 
-> Bazı sebeplerden dolayı sandbox gizli API anahtarım değiştirildi ve Devre Dışı bırakıldı. Ayrıca tüm eski Sandbox test hesaplarım silindi.
+> Bilinmeyen bir sebepten dolayı Sandbox gizli API anahtarım değiştirildi ve Devre Dışı bırakıldı. Ayrıca tüm eski Sandbox test hesaplarım silindi.
 
-> Bazen yükleniyorlar, bazen de yüklenmiyorlar. Bu inanılmaz derecede sinir bozucu.
+> Bazen yükleniyor, bazen yüklenmiyor. Bu inanılmaz derecede sinir bozucu.
 
-**Sonuç**: Cevap yok, düzeltme yok. Geliştiriciler hala sandbox güvenilirlik sorunlarıyla karşı karşıya.
+**Sonuç**: Yanıt yok, çözüm yok. Geliştiriciler hâlâ deneme ortamı güvenilirliği sorunlarıyla karşı karşıya.
 
 ### 2021: Rapor Sistemi Tamamen Bozuk {#2021-reports-system-completely-broken}
 
 Mayıs 2021'de PayPal'ın işlem raporları için indirme sisteminin tamamen bozulduğunu bildirmiştik:
 
-> Görünüşe göre indirmeleri bildirmek şu anda çalışmıyor ve tüm gün de çalışmadı. Ayrıca başarısız olursa muhtemelen bir e-posta bildirimi almalıyım.
+> Görünüşe göre indirme raporlaması şu anda çalışmıyor ve tüm gün de çalışmadı. Ayrıca, başarısız olursa muhtemelen bir e-posta bildirimi alırım.
 
-Ayrıca oturum yönetimi felaketine de dikkat çektik:
+Oturum yönetimi felaketine de dikkat çektik:
 
-> Ayrıca PayPal'a 5 dakika kadar giriş yapmışken aktif olmazsanız çıkış yaparsınız. Bu yüzden durumunu kontrol etmek istediğiniz raporun yanındaki butonu tekrar yenilediğinizde (sonsuza kadar bekledikten sonra), tekrar giriş yapmak zorunda kalmak can sıkıcı bir durum.
+> Ayrıca PayPal'a 5 dakika kadar giriş yapmadığınızda oturumunuz kapatılıyor. Dolayısıyla, durumunu kontrol etmek istediğiniz raporun yanındaki butonu tekrar yenilediğinizde (sonsuza kadar bekledikten sonra), tekrar giriş yapmak zorunda kalmak can sıkıcı oluyor.
 
 Mark Stuart oturum zaman aşımı sorununu kabul etti:
 
-> Geçmişte, oturumunuzun sık sık sona erdiğini ve IDE'niz ile developer.paypal.com veya satıcı panonuz arasında geçiş yaparken geliştirme akışınızın kesintiye uğradığını, daha sonra geri döndüğünüzde tekrar çıkış yaptığınızı bildirdiğinizi hatırlıyorum.
+> Geçmişte, IDE'niz ile developer.paypal.com veya satıcı panonuz arasında geçiş yaparken oturumunuzun sık sık sona erdiğini ve geliştirme akışınızın kesintiye uğradığını, daha sonra geri döndüğünüzde tekrar çıkış yaptığınızı bildirdiğinizi hatırlıyorum.
 
-**Sonuç**: Oturum zaman aşımı süreleri hala 60 saniye. Rapor sistemi hala düzenli olarak başarısız oluyor.
+**Sonuç**: Oturum zaman aşımı süreleri hala 60 saniye. Raporlama sistemi hala düzenli olarak başarısız oluyor.
 
-### 2022: Temel API Özelliği Eksik (Yine) {#2022-core-api-feature-missing-again}
+### 2022: Çekirdek API Özelliği Eksik (Yine) {#2022-core-api-feature-missing-again}
 
 Ocak 2022'de abonelik listeleme sorununu tekrar gündeme getirdik, bu sefer belgelerinin nasıl yanlış olduğuna dair daha da fazla ayrıntı verdik:
 
-> Tüm abonelikleri (önceden faturalama anlaşmaları olarak adlandırılırdı) listeleyen bir GET yoktur
+> Tüm abonelikleri (önceden faturalandırma anlaşmaları olarak adlandırılıyordu) listeleyen bir GET yok
 
 Resmi belgelerinin tamamen yanlış olduğunu keşfettik:
 
-> API belgeleri de tamamen yanlış. Abonelik kimliklerinin sabit kodlanmış bir listesini indirerek bir çözüm yolu bulabileceğimizi düşündük. Ama bu bile işe yaramıyor!
+> API belgeleri de tamamen hatalı. Abonelik kimliklerinin sabit kodlanmış bir listesini indirerek geçici bir çözüm bulabileceğimizi düşündük. Ama bu bile işe yaramıyor!
 
-> Buradaki resmi belgelerden... Bunu yapabileceğinizi söylüyor... İşte en önemli nokta, işaretlenebilecek bir "Abonelik Kimliği" alanının hiçbir yerde bulunmaması.
+> Buradaki resmi belgelerden... Bunu yapabileceğinizi söylüyor... İşte en can alıcı nokta, işaretlenebilecek bir "Abonelik Kimliği" alanının hiçbir yerde bulunmaması.
 
-PayPal'dan Christina Monti şu şekilde yanıt verdi:
+PayPal'dan Christina Monti şu yanıtı verdi:
 
 > Bu adımların yanlış olmasından kaynaklanan hayal kırıklıklarından dolayı özür dileriz, bu sorunu bu hafta düzelteceğiz.
 
 Sri Shivananda (CTO) bize teşekkür etti:
 
-> Bizi daha iyi hale getirmek için verdiğiniz sürekli yardım için teşekkürler. Çok takdir ediyorum.
+> Bizi daha iyi hale getirmek için verdiğiniz sürekli yardım için teşekkür ederiz. Çok takdir ediyorum.
 
 **Sonuç**: Belgeler hiçbir zaman düzeltilmedi. Abonelik listeleme uç noktası hiçbir zaman oluşturulmadı.
 
 ## Geliştirici Deneyimi Kabusu {#the-developer-experience-nightmare}
 
-PayPal'ın API'leriyle çalışmak, 10 yıl geriye gitmek gibi. İşte belgelediğimiz teknik sorunlar:
+PayPal API'leriyle çalışmak, 10 yıl öncesine gitmek gibi. İşte belgelediğimiz teknik sorunlar:
 
 ### Bozuk Kullanıcı Arayüzü {#broken-user-interface}
 
-PayPal geliştirici panosu bir felaket. İşte günlük olarak uğraştığımız şeyler:
+PayPal geliştirici paneli tam bir felaket. İşte her gün karşılaştığımız sorunlar:
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-PayPal'ın kullanıcı arayüzü o kadar bozuk ki bildirimleri bile kapatamıyorsunuz
+PayPal'ın kullanıcı arayüzü o kadar bozuk ki bildirimleri bile kapatamıyorsunuz.
 </div></figcaption>
 <video class="lazyframe-bordered" loading="lazy" controls>
 <source src="/img/articles/pypl-notifications.mp4" type="video/mp4">
@@ -340,7 +340,7 @@ Tarayıcınız video etiketini desteklemiyor.
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Geliştirici panosu kelimenin tam anlamıyla bir kaydırıcıyı sürüklemenizi sağlıyor ve 60 saniye sonra sizi oturumdan çıkarıyor
+Geliştirici panosu, bir kaydırıcıyı sürüklemenizi ve 60 saniye sonra oturumunuzu kapatmanızı sağlıyor.
 </div></figcaption>
 <video class="lazyframe-bordered" loading="lazy" controls>
 <source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
@@ -350,7 +350,7 @@ Tarayıcınız video etiketini desteklemiyor.
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Bozuk iş akışlarını gösteren PayPal geliştirici arayüzünde daha fazla kullanıcı arayüzü felaketi
+PayPal geliştirici arayüzünde bozuk iş akışlarını gösteren daha fazla kullanıcı arayüzü felaketi
 </div></figcaption>
 <video class="lazyframe-bordered" loading="lazy" controls>
 <source src="/img/articles/pypl-kapture-2.mp4" type="video/mp4">
@@ -360,49 +360,49 @@ Tarayıcınız video etiketini desteklemiyor.
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Abonelik yönetimi arayüzü - arayüz o kadar kötü ki ürünler ve abonelik planları oluşturmak için koda güvenmek zorunda kaldık
+Abonelik yönetimi arayüzü - arayüz o kadar kötü ki, ürün ve abonelik planları oluşturmak için koda güvenmek zorunda kaldık.
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-İşlevselliği eksik olan bozuk abonelik arayüzünün bir görünümü (ürünleri/planları/abonelikleri kolayca oluşturamazsınız ve kullanıcı arayüzünde oluşturulduktan sonra ürünleri veya planları silmenin bir yolu yok gibi görünüyor)
+Eksik işlevlere sahip bozuk abonelik arayüzünün bir görünümü (ürünleri/planları/abonelikleri kolayca oluşturamıyorsunuz ve kullanıcı arayüzünde oluşturulduktan sonra ürünleri veya planları silmenin bir yolu yok gibi görünüyor)
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Tipik PayPal hata mesajları - gizemli ve yararsız
+Tipik PayPal hata mesajları - gizemli ve yardımcı olmayan
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
 </figure>
 
 ### SDK Sorunları {#sdk-problems}
 
-* Komut dosyası etiketleriyle SDK'yı yeniden yüklerken düğmeleri değiştirme ve yeniden oluşturmayı içeren karmaşık geçici çözümler olmadan hem tek seferlik ödemeleri hem de abonelikleri işleyemez
-* JavaScript SDK temel kuralları ihlal eder (küçük harfli sınıf adları, örnek denetimi yok)
-* Hata mesajları hangi alanların eksik olduğunu belirtmez
-* Tutarlı olmayan veri türleri (sayılar yerine dize miktarları gerektirir)
+* SDK'yı betik etiketleriyle yeniden yüklerken düğmeleri değiştirme ve yeniden oluşturma gibi karmaşık geçici çözümler olmadan hem tek seferlik ödemeleri hem de abonelikleri işleyemez.
+* JavaScript SDK'sı temel kuralları ihlal ediyor (küçük harfli sınıf adları, örnek denetimi yok)
+* Hata mesajları hangi alanların eksik olduğunu belirtmiyor.
+* Tutarsız veri türleri (sayılar yerine dize miktarları gerektiriyor)
 
 ### İçerik Güvenlik Politikası İhlalleri {#content-security-policy-violations}
 
-SDK'ları CSP'nizde unsafe-inline ve unsafe-eval gerektirir ve **sitenizin güvenliğini tehlikeye atmaya** zorlar.
+SDK'ları CSP'nizde unsafe-inline ve unsafe-eval gerektirir ve **sitenizin güvenliğini tehlikeye atmanıza** neden olur.
 
 ### Belgeleme Kaosu {#documentation-chaos}
 
 Mark Stuart'ın kendisi de itiraf etti:
 
-> Absürt miktarda eski ve yeni API'ler olduğu konusunda hemfikirim. Ne arayacağını bulmak gerçekten zor (burada çalışan bizler için bile).
+> Çok fazla eski ve yeni API olduğu konusunda hemfikirim. Ne aradığımızı bulmak gerçekten zor (burada çalışan bizler için bile).
 
 ### Güvenlik Açıkları {#security-vulnerabilities}
 
-**PayPal'ın 2FA uygulaması geriye dönüktür**. TOTP uygulamaları etkinleştirilmiş olsa bile, SMS doğrulamasını zorunlu kılarlar - hesapları SIM takas saldırılarına karşı savunmasız hale getirirler. TOTP etkinleştirilmişse, yalnızca onu kullanmalıdır. Geri dönüş e-posta olmalı, SMS değil.
+**PayPal'ın 2FA uygulaması geriye dönüktür**. TOTP uygulamaları etkin olsa bile, SMS doğrulamasını zorunlu kılarak hesapları SIM kart değiştirme saldırılarına karşı savunmasız hale getirir. TOTP etkinse, yalnızca bunu kullanmalıdır. Yedek çözüm SMS değil, e-posta olmalıdır.
 
 ### Oturum Yönetimi Felaketi {#session-management-disaster}
 
-**Geliştirici kontrol panelleri 60 saniyelik bir işlem yapılmadığında oturumunuzu kapatır**. Üretken bir şey yapmaya çalıştığınızda sürekli olarak şu adımları izlersiniz: giriş → captcha → 2FA → çıkış → tekrar. VPN mi kullanıyorsunuz? İyi şanslar.
+**Geliştirici kontrol panelleri 60 saniyelik bir işlem yapılmadığında oturumunuzu kapatır**. Üretken bir şey yapmaya çalıştığınızda sürekli şu adımları izlersiniz: giriş → captcha → 2FA → çıkış → tekrar. VPN mi kullanıyorsunuz? İyi şanslar.
 
 ## Temmuz 2025: Son Damla {#july-2025-the-final-straw}
 
@@ -418,7 +418,7 @@ Basit olması gereken şey tam bir felakete dönüştü:
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Müşterilerin ödeme yapmaya çalışırken karşılaştıkları hata - açıklama yok, kayıt yok, hiçbir şey yok
+Müşterilerin ödeme yapmaya çalışırken karşılaştığı hata - açıklama yok, kayıt yok, hiçbir şey yok
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-something-went-wrong.png" alt="" class="rounded-lg" />
 </figure>
@@ -463,11 +463,11 @@ Tüm bu sorunlara rağmen, bazı müşterilerimiz yalnızca PayPal'ı ödeme se�
 
 **PayPal'ın belirli kullanıcılar için bir ödeme tekeli yaratması nedeniyle, bozuk bir platformu desteklemek zorunda kalıyoruz.**
 
-## Topluluk Çözümü {#the-community-workaround}
+## Topluluk Geçici Çözümü {#the-community-workaround}
 
-PayPal temel abonelik listeleme işlevselliğini sağlamadığından, geliştirici topluluğu geçici çözümler geliştirdi. PayPal aboneliklerini yönetmeye yardımcı olan bir betik oluşturduk: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
+PayPal temel abonelik listeleme işlevselliğini sağlamayacağı için, geliştirici topluluğu geçici çözümler geliştirdi. PayPal aboneliklerini yönetmeye yardımcı olan bir betik oluşturduk: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Bu betik, geliştiricilerin çözümleri paylaştığı [topluluk özeti](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) bağlantısına atıfta bulunuyor. Kullanıcılar ise aslında PayPal'ın yıllar önce oluşturması gereken şeyi sağladıkları için [bize teşekkür ediyor](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) konumundalar.
+Bu betik, geliştiricilerin çözüm paylaştığı bir [topluluk özeti](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)'a atıfta bulunur. Kullanıcılar ise aslında PayPal'ın yıllar önce oluşturması gereken şeyi sağladıkları için [bize teşekkür ediyor](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)'dir.
 
 ## Kimlik Avı Nedeniyle PayPal Şablonlarının Engellenmesi {#blocking-paypal-templates-due-to-phishing}
 
@@ -483,7 +483,7 @@ Bu e-posta, bir kimlik avı girişimi gibi göründüğü için `abuse@microsoft
 
 ### Uygulamamız {#our-implementation}
 
-PayPal'a özel filtrelememizin [e-posta filtreleme kodu](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) sayfamızda nasıl uygulandığını görebilirsiniz:
+[e-posta filtreleme kodu](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172)'da uygulanan PayPal'a özgü filtrelemeyi görebilirsiniz:
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -526,13 +526,13 @@ Spam filtreleme kayıtlarımız, her gün işlediğimiz PayPal fatura spam'lerin
 * "\[ŞİRKET ADI] (\[SİPARİŞ KİMLİĞİ]) tarafından gönderilen fatura"
 * Farklı telefon numaraları ve sahte sipariş kimlikleriyle birden fazla varyasyon
 
-Bu e-postalar genellikle `outlook.com` sunucularından gelir, ancak PayPal'ın meşru sistemlerinden geliyormuş gibi görünür ve bu da onları özellikle tehlikeli hale getirir. E-postalar, PayPal'ın gerçek altyapısı üzerinden gönderildikleri için SPF, DKIM ve DMARC kimlik doğrulamasından geçer.
+Bu e-postalar genellikle `outlook.com` sunucularından geliyor, ancak PayPal'ın meşru sistemlerinden geliyormuş gibi görünüyor ve bu da onları özellikle tehlikeli kılıyor. E-postalar, PayPal'ın gerçek altyapısı üzerinden gönderildikleri için SPF, DKIM ve DMARC kimlik doğrulamasından geçiyor.
 
 Teknik kayıtlarımız, bu spam e-postalarının meşru PayPal başlıkları içerdiğini gösteriyor:
 
 * `X-Email-Type-Id: RT000238` (engellediğimiz kimlik)
 * `From: "service@paypal.com" <service@paypal.com>`
-* `paypal.com` adresinden geçerli DKIM imzaları
+* `paypal.com`'den geçerli DKIM imzaları
 * PayPal'ın posta sunucularını gösteren uygun SPF kayıtları
 
 Bu da imkânsız bir durum yaratıyor: Yasal PayPal e-postaları ve spam'lerin her ikisinin de teknik özellikleri aynı.
@@ -541,11 +541,11 @@ Bu da imkânsız bir durum yaratıyor: Yasal PayPal e-postaları ve spam'lerin h
 
 Finansal dolandırıcılıkla mücadelede öncü olması gereken PayPal'ın e-posta şablonları o kadar kötü tasarlanmış ki, kimlik avı önleme sistemlerini tetikliyor. Dolandırıcılıklardan ayırt edilemedikleri için meşru PayPal e-postalarını engellemek zorunda kalıyoruz.
 
-Bu durum güvenlik araştırmasında belgelenmiştir: [PayPal yeni adres dolandırıcılığına dikkat edin](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - PayPal'ın kendi sistemlerinin dolandırıcılık amacıyla nasıl istismar edildiğini göstermektedir.
+Bu durum güvenlik araştırmasında belgelenmiştir: [PayPal yeni adres dolandırıcılığına dikkat edin](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - PayPal'ın kendi sistemlerinin dolandırıcılık için nasıl istismar edildiğini göstermektedir.
 
 ### Gerçek Dünya Etkisi: Yeni PayPal Dolandırıcılıkları {#real-world-impact-novel-paypal-scams}
 
-Sorun, kötü şablon tasarımının ötesine uzanıyor. PayPal'ın fatura sistemi o kadar kolay suistimal ediliyor ki, dolandırıcılar bunu düzenli olarak meşru görünen sahte faturalar göndermek için kullanıyor. Güvenlik araştırmacısı Gavin Anderegg, dolandırıcıların tüm kimlik doğrulama kontrollerinden geçen gerçek PayPal faturaları gönderdiği [Yeni Bir PayPal Dolandırıcılığı](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) adlı belgeyi yayınladı:
+Sorun, kötü şablon tasarımının ötesine uzanıyor. PayPal'ın fatura sistemi o kadar kolay suistimal ediliyor ki, dolandırıcılar bunu düzenli olarak meşru görünen sahte faturalar göndermek için kullanıyor. Güvenlik araştırmacısı Gavin Anderegg, dolandırıcıların tüm kimlik doğrulama kontrollerini geçen gerçek PayPal faturaları gönderdiği [Yeni Bir PayPal Dolandırıcılığı](https://anderegg.ca/2023/02/01/a-novel-paypal-scam)'ı belgeledi:
 
 > "Kaynağı incelediğimde, e-postanın gerçekten PayPal'dan gelmiş gibi göründüğünü fark ettim (SPF, DKIM ve DMARC hepsi onaylanmış). Düğme ayrıca meşru bir PayPal URL'sine de bağlantı veriyordu... Meşru bir e-posta olduğunu anlamam bir saniye sürdü. Bir dolandırıcıdan rastgele bir 'fatura' gelmişti."
 
@@ -613,11 +613,11 @@ PayPal'ın uyumluluk yaklaşımı, işletmelerin nasıl işlediğine dair temel 
 
 Bu geriye doğru işleyiş, PayPal'ın daha geniş kapsamlı organizasyonel sorunlarının bir göstergesi: Satıcı ve müşteri deneyiminin önüne kendi iç süreçlerini koyuyorlar ve bu da işletmeleri platformlarından uzaklaştıran türden operasyonel felaketlere yol açıyor.
 
-## Diğer Ödeme İşlemcilerinin Yaptığı Doğru İşlem {#how-every-other-payment-processor-does-it-right}
+## Diğer Ödeme İşlemcilerinin Bunu Doğru Yapması {#how-every-other-payment-processor-does-it-right}
 
 PayPal'ın uygulamayı reddettiği abonelik listeleme işlevi, sektörde on yılı aşkın süredir standart olarak sunuluyor. Diğer ödeme işlemcilerinin bu temel gereksinimi nasıl karşıladığına bir bakalım:
 
-### Stripe {#stripe}
+### Çizgisi {#stripe}
 
 Stripe, API'si kullanıma sunulduğundan beri abonelik listeleme özelliğine sahip. Dokümantasyonları, bir müşteri veya satıcı hesabı için tüm aboneliklerin nasıl alınacağını açıkça gösteriyor. Bu, temel CRUD işlevi olarak kabul ediliyor.
 
@@ -643,7 +643,7 @@ Her modern ödeme işlemcisi şunları sağlar:
 * Abonelik değişiklikleri için webhook bildirimleri
 * Çalışan örneklerle kapsamlı dokümantasyon
 
-### Diğer İşlemciler PayPal'a Karşı Ne Sunuyor? {#what-other-processors-provide-vs-paypal}
+### Diğer İşlemcilerin Sağladığı ve PayPal'a Karşı Olan Özellikler {#what-other-processors-provide-vs-paypal}
 
 **Stripe - Tüm Abonelikleri Listele:**
 
@@ -695,7 +695,7 @@ Authorization: Bearer access_token
 **PayPal'ın Kullanılabilir Uç Noktaları:**
 
 * `POST /v1/billing/subscriptions` - Abonelik oluştur
-* `GET /v1/billing/subscriptions/{id}` - BİR abonelik al (ID'yi biliyorsan)
+* `GET /v1/billing/subscriptions/{id}` - BİR abonelik al (kimliğini biliyorsan)
 * `PATCH /v1/billing/subscriptions/{id}` - Aboneliği güncelle
 * `POST /v1/billing/subscriptions/{id}/cancel` - Aboneliği iptal et
 * `POST /v1/billing/subscriptions/{id}/suspend` - Aboneliği askıya al
@@ -709,19 +709,19 @@ Authorization: Bearer access_token
 
 PayPal, geliştiricilerin abonelik kimliklerini kendi veritabanlarında manuel olarak takip etmesini zorunlu kılan tek büyük ödeme işlemcisidir.
 
-## PayPal'ın Sistematik Örtbas Etme Operasyonu: 6 Milyon Sesi Susturmak {#paypals-systematic-cover-up-silencing-6-million-voices}
+## PayPal'ın Sistematik Örtbas Etme Operasyonu: 6 Milyon Sesi Susturma {#paypals-systematic-cover-up-silencing-6-million-voices}
 
 PayPal'ın eleştirilere yaklaşımını mükemmel bir şekilde özetleyen bir hamleyle, yakın zamanda tüm topluluk forumunu çevrimdışı hale getirdiler, 6 milyondan fazla üyeyi susturdular ve başarısızlıklarını belgeleyen yüz binlerce gönderiyi sildi.
 
 ### Büyük Silme {#the-great-erasure}
 
-`paypal-community.com` adresindeki orijinal PayPal Topluluğu **6.003.558 üyeye** ev sahipliği yapmış ve PayPal'ın API arızalarıyla ilgili yüz binlerce gönderi, hata raporu, şikayet ve tartışma barındırmıştır. Bu, PayPal'ın sistematik sorunlarına dair on yılı aşkın süredir belgelenmiş bir kanıt teşkil etmektedir.
+`paypal-community.com` adresindeki orijinal PayPal Topluluğu **6.003.558 üyeye** ev sahipliği yapmış ve PayPal'ın API arızalarıyla ilgili yüz binlerce gönderi, hata raporu, şikayet ve tartışma içeriyordu. Bu, PayPal'ın sistematik sorunlarına dair on yılı aşkın süredir belgelenmiş bir kanıttı.
 
 PayPal, 30 Haziran 2025'te tüm forumu sessizce çevrimdışı hale getirdi. Tüm `paypal-community.com` bağlantıları artık 404 hatası veriyor. Bu bir geçiş veya yükseltme değildi.
 
 ### Üçüncü Taraf Kurtarma {#the-third-party-rescue}
 
-Neyse ki, [ppl.lithium.com](https://ppl.lithium.com/) adresindeki bir üçüncü taraf hizmeti, içeriğin bir kısmını koruyarak PayPal'ın gizlemeye çalıştığı tartışmalara erişmemizi sağladı. Ancak, bu üçüncü taraf koruması eksiktir ve herhangi bir zamanda ortadan kaybolabilir.
+Neyse ki, [ppl.lithium.com](https://ppl.lithium.com/) adresindeki bir üçüncü taraf hizmeti, içeriğin bir kısmını koruyarak PayPal'ın gizlemeye çalıştığı tartışmalara erişmemizi sağladı. Ancak, bu üçüncü taraf koruması eksik ve her an ortadan kalkabilir.
 
 Bu delil gizleme yöntemi PayPal için yeni değil. Belgelenmiş bir geçmişleri var:
 
@@ -736,7 +736,7 @@ Forumun kapatılması, kamuoyunun incelemesinden sistematik başarısızlıklar�
 
 PayPal geri bildirim oturumları düzenlemek ve vaatlerde bulunmakla meşgulken, temel ödeme işleme sistemleri 11 yıldan uzun süredir temelden bozuktu. Kanıtlar yıkıcı.
 
-### E-postanın 1.899 Dolarlık Kaybını İletin {#forward-emails-1899-loss}
+### E-postanın 1.899 Dolarlık Kaybını İlet {#forward-emails-1899-loss}
 
 Üretim sistemlerimizde, PayPal'ın yakalama hataları nedeniyle kaybolan toplam **1.899$** tutarında 108 PayPal ödemesi tespit ettik. Bu ödemeler tutarlı bir model göstermektedir:
 
@@ -754,7 +754,7 @@ Bunu keşfetmemizin tek sebebi inanılmaz derecede titiz ve veri odaklı olmamı
 
 ### 2013 Orijinal Raporu: 11+ Yıllık İhmal {#the-2013-original-report-11-years-of-negligence}
 
-Bu sorunun en erken belgelenmiş raporu [Kasım 2013'te Stack Overflow](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([arşivlendi](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)) adresinde yer almaktadır:
+Bu sorunun en erken belgelenmiş raporu [Kasım 2013'te Stack Overflow](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([arşivlendi](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)) üzerinde görünmektedir:
 
 > "Yakalama yaparken Rest API ile 404 Hatası almaya devam ediyorum"
 
@@ -777,7 +777,7 @@ Bu sorunun en erken belgelenmiş raporu [Kasım 2013'te Stack Overflow](https://
 
 ### 2016 Kabulü: PayPal Kendi SDK'sını Kırıyor {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-2016 yılında, PayPal'ın kendi GitHub deposu, resmi PHP SDK'larını etkileyen [büyük yakalama başarısızlıkları](https://github.com/paypal/PayPal-PHP-SDK/issues/660)'yı belgeledi. Ölçek şaşırtıcıydı:
+2016 yılında, PayPal'ın kendi GitHub deposu, [büyük yakalama başarısızlıkları](https://github.com/paypal/PayPal-PHP-SDK/issues/660)'ın resmi PHP SDK'sını etkilediğini belgeledi. Ölçek şaşırtıcıydı:
 
 > "20.09.2016'dan bu yana, tüm PayPal yakalama girişimleri 'INVALID_RESOURCE_ID - İstenen kaynak kimliği bulunamadı' hatasıyla başarısız oluyor. 19.09 ile 20.09 arasında API entegrasyonunda hiçbir değişiklik yapılmadı. **20.09'dan bu yana yapılan yakalama girişimlerinin %100'ü bu hatayı döndürdü.**"
 
@@ -806,13 +806,13 @@ PayPal Topluluğu'ndan gelen son raporlar, sorunun aslında daha da kötüleşti
 
 > "Sorun yaklaşık 2 hafta önce ortaya çıkmaya başladı ve tüm siparişleri etkilemiyor. **Daha yaygın olanı, yakalama sırasında 404 hatası gibi görünüyor.**"
 
-Tüccar, Forward Email'in deneyimlediği aynı örüntüyü şöyle anlatıyor:
+Tüccar, Forward Email'in deneyimlediği aynı modeli şöyle anlatıyor:
 
 > "Siparişi yakalamaya çalıştıktan sonra PayPal 404 hatası döndürüyor. Siparişin Ayrıntıları alınırken: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **Bu, bizim tarafımızda başarılı bir yakalamanın izine rastlanmamıştır.**"
 
 ### Webhook Güvenilirlik Felaketi {#the-webhook-reliability-disaster}
 
-Başka bir [korunan topluluk tartışması](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) PayPal'ın webhook sisteminin temelde güvenilmez olduğunu ortaya koyuyor:
+Başka bir [korunan topluluk tartışması](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446), PayPal'ın webhook sisteminin temelde güvenilmez olduğunu ortaya koyuyor:
 
 > "Teorik olarak, Webhook olayından iki olay (CHECKOUT.ORDER.APPROVED ve PAYMENT.CAPTURE.COMPLETED) olması gerekir. Aslında, **bu iki olay nadiren hemen alınır, PAYMENT.CAPTURE.COMPLETED çoğu zaman alınamaz veya birkaç saat içinde alınır.**"
 
@@ -846,7 +846,7 @@ Bu bir hata değil - **bu sistematik bir ihmaldir.** PayPal, bu kritik ödeme i�
 
 PayPal'ın resmi belgelerinde, satıcıların yakalama işlemleri için yeniden deneme mantığı uygulaması gerektiğinden hiçbir yerde bahsedilmiyor. Belgelerde, satıcıların "onaydan hemen sonra yakalama yapmaları" gerektiği belirtiliyor, ancak API'lerinin karmaşık yeniden deneme mekanizmaları gerektiren rastgele 404 hataları döndürdüğünden bahsedilmiyor.
 
-Bu durum her tüccarı şu hususa zorlamaktadır:
+Bu durum her tüccarı şuna zorlar:
 
 * Üstel geri çekilme yeniden deneme mantığını uygulayın
 * Tutarsız webhook teslimatını yönetin
@@ -855,19 +855,19 @@ Bu durum her tüccarı şu hususa zorlamaktadır:
 
 **Diğer tüm ödeme işlemcileri ilk seferde çalışan güvenilir yakalama API'leri sağlar.**
 
-## PayPal'ın Daha Geniş Aldatmaca Modeli {#paypals-broader-pattern-of-deception}
+## PayPal'ın Daha Geniş Aldatma Modeli {#paypals-broader-pattern-of-deception}
 
 Yakalama hatası felaketi, PayPal'ın müşterileri aldatma ve hatalarını gizleme konusundaki sistematik yaklaşımının sadece bir örneğidir.
 
 ### New York Mali Hizmetler Departmanı Eylemi {#the-new-york-department-of-financial-services-action}
 
-Ocak 2025'te New York Mali Hizmetler Departmanı, aldatıcı uygulamalar nedeniyle [PayPal'a karşı yaptırım eylemi](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) raporu yayınladı ve PayPal'ın aldatma modelinin API'lerinin çok ötesine uzandığını gösterdi.
+Ocak 2025'te New York Mali Hizmetler Departmanı aldatıcı uygulamalar için [PayPal'a karşı yaptırım eylemi](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) yayınladı ve PayPal'ın aldatma modelinin API'lerinin çok ötesine uzandığını gösterdi.
 
 Bu düzenleyici eylem, PayPal'ın yalnızca geliştirici araçlarında değil, tüm iş kolunda aldatıcı uygulamalara girme isteğini gösteriyor.
 
 ### Bal Davası: Ortaklık Bağlantılarının Yeniden Yazılması {#the-honey-lawsuit-rewriting-affiliate-links}
 
-PayPal'ın Honey'i satın alması, içerik üreticilerinden ve etkili kişilerden komisyon çalan [Honey'nin ortaklık bağlantılarını yeniden yazdığı iddiasıyla açılan davalar](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) ile sonuçlandı. Bu, PayPal'ın başkalarına gitmesi gereken geliri yönlendirerek kâr elde ettiği sistematik bir aldatmacanın başka bir biçimini temsil ediyor.
+PayPal'ın Honey'i satın alması, içerik üreticilerinden ve etkileyicilerden komisyon çalan [Honey'nin ortaklık bağlantılarını yeniden yazdığı iddiasıyla açılan davalar](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer)'ın ortaya çıkmasına neden oldu. Bu, PayPal'ın başkalarına gitmesi gereken geliri yönlendirerek kâr elde ettiği sistematik bir aldatmacanın başka bir biçimini temsil ediyor.
 
 Desen açıktır:
 
@@ -915,8 +915,8 @@ Desen açıktır:
 
 Bu arada geliştiriciler, ödemeleri kabul etmek için geçici çözümler üretmek, güvenliği tehlikeye atmak ve bozuk kullanıcı arayüzleriyle uğraşmak zorunda kalıyor.
 
-Bir ödeme sistemi oluşturuyorsanız, deneyimlerimizden ders çıkarın: [üçlü yaklaşım](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) sisteminizi birden fazla işlemciyle kurun, ancak PayPal'ın ihtiyaç duyduğunuz temel işlevleri sağlamasını beklemeyin. İlk günden itibaren geçici çözümler geliştirmeyi planlayın.
+Bir ödeme sistemi oluşturuyorsanız, deneyimlerimizden ders çıkarın: [üçlü yaklaşım](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal)'ınızı birden fazla işlemciyle oluşturun, ancak PayPal'ın ihtiyaç duyduğunuz temel işlevleri sağlamasını beklemeyin. İlk günden itibaren geçici çözümler üretmeyi planlayın.
 
 > Bu gönderi, Forward Email'de PayPal API'leriyle ilgili 11 yıllık deneyimimizi belgeliyor. Tüm kod örnekleri ve bağlantılar gerçek üretim sistemlerimizden alınmıştır. Bazı müşterilerimizin başka seçeneği olmadığı için bu sorunlara rağmen PayPal ödemelerini desteklemeye devam ediyoruz.
 
-<img loading="tembel" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

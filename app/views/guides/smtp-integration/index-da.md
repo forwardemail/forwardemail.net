@@ -3,39 +3,39 @@
 ## Indholdsfortegnelse {#table-of-contents}
 
 * [Forord](#foreword)
-* [Sådan fungerer videresend e-mails SMTP-behandling](#how-forward-emails-smtp-processing-works)
-  * [E-mail-kø og system igen](#email-queue-and-retry-system)
-  * [Dummy-sikret for pålidelighed](#dummy-proofed-for-reliability)
-* [Node.js Integration](#nodejs-integration)
+* [Sådan fungerer SMTP-behandling af videresendte e-mails](#how-forward-emails-smtp-processing-works)
+  * [E-mailkø og gentagne forsøgssystem](#email-queue-and-retry-system)
+  * [Dummy-proofed for pålidelighed](#dummy-proofed-for-reliability)
+* [Node.js-integration](#nodejs-integration)
   * [Brug af Nodemailer](#using-nodemailer)
   * [Brug af Express.js](#using-expressjs)
 * [Python-integration](#python-integration)
-  * [Bruger smtplib](#using-smtplib)
-  * [Bruger Django](#using-django)
-* [PHP integration](#php-integration)
-  * [Bruger PHPMailer](#using-phpmailer)
+  * [Brug af smtplib](#using-smtplib)
+  * [Brug af Django](#using-django)
+* [PHP-integration](#php-integration)
+  * [Brug af PHPMailer](#using-phpmailer)
   * [Brug af Laravel](#using-laravel)
-* [Ruby integration](#ruby-integration)
+* [Ruby-integration](#ruby-integration)
   * [Brug af Ruby Mail Gem](#using-ruby-mail-gem)
-* [Java integration](#java-integration)
-  * [Bruger JavaMail API](#using-javamail-api)
-* [E-mail-klientkonfiguration](#email-client-configuration)
+* [Java-integration](#java-integration)
+  * [Brug af Java Mail API'en](#using-javamail-api)
+* [Konfiguration af e-mailklient](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Send mail som)](#gmail-send-mail-as)
 * [Fejlfinding](#troubleshooting)
-  * [Fælles problemer og løsninger](#common-issues-and-solutions)
+  * [Almindelige problemer og løsninger](#common-issues-and-solutions)
   * [Få hjælp](#getting-help)
 * [Yderligere ressourcer](#additional-resources)
 * [Konklusion](#conclusion)
 
 ## Forord {#foreword}
 
-Denne vejledning giver detaljerede eksempler på, hvordan man integrerer med Forward Emails SMTP-tjeneste ved hjælp af forskellige programmeringssprog, rammer og e-mail-klienter. Vores SMTP-tjeneste er designet til at være pålidelig, sikker og nem at integrere med dine eksisterende applikationer.
+Denne vejledning giver detaljerede eksempler på, hvordan man integrerer med Forward Emails SMTP-tjeneste ved hjælp af forskellige programmeringssprog, frameworks og e-mailklienter. Vores SMTP-tjeneste er designet til at være pålidelig, sikker og nem at integrere med dine eksisterende applikationer.
 
 ## Sådan fungerer SMTP-behandling af videresendelse af e-mail {#how-forward-emails-smtp-processing-works}
 
-Før du dykker ned i integrationseksemplerne, er det vigtigt at forstå, hvordan vores SMTP-tjeneste behandler e-mails:
+Før vi dykker ned i integrationseksemplerne, er det vigtigt at forstå, hvordan vores SMTP-tjeneste behandler e-mails:
 
 ### E-mailkø og gentagne forsøgssystem {#email-queue-and-retry-system}
 
@@ -45,25 +45,25 @@ Når du sender en e-mail via SMTP til vores servere:
 2. **Smart køstyring**: E-mails placeres i et sofistikeret køsystem til levering
 3. **Intelligent gentagelsesmekanisme**: Hvis leveringen mislykkes midlertidigt, vil vores system:
 * Analysere fejlresponsen ved hjælp af vores `getBounceInfo`-funktion
-* Afgøre, om problemet er midlertidigt (f.eks. "prøv igen senere", "midlertidigt udskudt") eller permanent (f.eks. "bruger ukendt")
+* Bestemme, om problemet er midlertidigt (f.eks. "prøv igen senere", "midlertidigt udskudt") eller permanent (f.eks. "bruger ukendt")
 * Ved midlertidige problemer markeres e-mailen til gentagelse
 * Ved permanente problemer genereres en afvisningsmeddelelse
 4. **5-dages gentagelsesperiode**: Vi forsøger levering igen i op til 5 dage (svarende til branchestandarder som Postfix), hvilket giver midlertidige problemer tid til at løse
 5. **Leveringsstatusmeddelelser**: Afsendere modtager meddelelser om status for deres e-mails (leveret, forsinket eller afvist)
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Efter vellykket levering redigeres udgående SMTP-e-mailindhold efter en konfigurerbar opbevaringsperiode (standard 30 dage) af sikkerheds- og privatlivsmæssige årsager. Kun en pladsholdermeddelelse vises, der angiver vellykket levering.
 
 ### Dummy-sikret for pålidelighed {#dummy-proofed-for-reliability}
 
-Vores system er designet til at håndtere forskellige kantsager:
+Vores system er designet til at håndtere forskellige edge cases:
 
 * Hvis der registreres en blokeringsliste, forsøges e-mailen automatisk at sende den igen.
 * Hvis der opstår netværksproblemer, forsøges levering igen.
 * Hvis modtagerens postkasse er fuld, forsøger systemet igen senere.
 * Hvis den modtagende server midlertidigt ikke er tilgængelig, fortsætter vi med at forsøge.
 
-Denne tilgang forbedrer leveringshastighederne betydeligt, samtidig med at privatlivets fred og sikkerhed bevares.
+Denne tilgang forbedrer leveringsraterne betydeligt, samtidig med at privatlivets fred og sikkerhed opretholdes.
 
 ## Node.js-integration {#nodejs-integration}
 
@@ -107,7 +107,7 @@ sendEmail();
 
 ### Brug af Express.js {#using-expressjs}
 
-Sådan integrerer du Forward Email SMTP med en Express.js-applikation:
+Sådan integrerer du Videresend Email SMTP med en Express.js-applikation:
 
 ```javascript
 const express = require('express');
@@ -161,7 +161,7 @@ app.listen(port, () => {
 
 ## Python-integration {#python-integration}
 
-### Brug af smtplib {#using-smtplib}
+### Bruger smtplib {#using-smtplib}
 
 ```python
 import smtplib
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Send derefter e-mails i dine synspunkter:
+Send derefter e-mails i dine visninger:
 
 ```python
 from django.core.mail import send_mail
@@ -353,7 +353,7 @@ puts "Email sent successfully!"
 
 ## Java-integration {#java-integration}
 
-### Brug af JavaMail API {#using-javamail-api}
+### Bruger JavaMail API {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -506,19 +506,19 @@ flowchart TD
 
 Hvis du støder på problemer, der ikke er dækket her, bedes du:
 
-1. Se vores [FAQ side](/faq) for almindelige spørgsmål
-2. Gennemgå vores [blogindlæg om levering af e-mail](/blog/docs/best-email-forwarding-service) for detaljerede oplysninger
+1. Se vores [FAQ-side](/faq) for almindelige spørgsmål
+2. Gennemgå vores [blogindlæg om e-maillevering](/blog/docs/best-email-forwarding-service) for detaljerede oplysninger
 3. Kontakt vores supportteam på <support@forwardemail.net>
 
 ## Yderligere ressourcer {#additional-resources}
 
-* [Videresend e-mail dokumentation](/docs)
-* [SMTP-servergrænser og -konfiguration](/faq#what-are-your-outbound-smtp-limits)
-* [Vejledning til bedste praksis via e-mail](/blog/docs/best-email-forwarding-service)
+* [Dokumentation for videresendelse af e-mail](/docs)
+* [SMTP-serverbegrænsninger og -konfiguration](/faq#what-are-your-outbound-smtp-limits)
+* [Vejledning til bedste praksis for e-mail](/blog/docs/best-email-forwarding-service)
 * [Sikkerhedspraksis](/security)
 
 ## Konklusion {#conclusion}
 
-Forward Emails SMTP-tjeneste giver en pålidelig, sikker og privatlivsfokuseret måde at sende e-mails fra dine applikationer og e-mail-klienter på. Med vores intelligente køsystem, 5-dages genforsøgsmekanisme og omfattende leveringsstatusmeddelelser kan du være sikker på, at dine e-mails når frem til deres destination.
+SMTP-tjenesten i Forward Email tilbyder en pålidelig, sikker og privatlivsfokuseret måde at sende e-mails fra dine applikationer og e-mailklienter. Med vores intelligente køsystem, 5-dages gentagelsesmekanisme og omfattende meddelelser om leveringsstatus kan du være sikker på, at dine e-mails når frem til deres destination.
 
-For mere avancerede brugssager eller tilpassede integrationer, kontakt venligst vores supportteam.
+For mere avancerede brugsscenarier eller brugerdefinerede integrationer, kontakt venligst vores supportteam.

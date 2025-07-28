@@ -51,6 +51,6 @@ await transporter.sendMail({
 node app
 ```
 
-**[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信ステータス、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できます。
+**[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信ステータス、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できるようになりました。
 
-> P.S. :tada: **[ブラウザとiOSシミュレータでメールをプレビューする](/docs/test-preview-email-rendering-browsers-ios-simulator)** と **[Node.jsでメールテンプレートを作成する](/docs/send-emails-with-node-js-javascript)** も可能です。
+> P.S. :tada: **[ブラウザとiOSシミュレータでメールをプレビューする](/docs/test-preview-email-rendering-browsers-ios-simulator)** と **[Node.jsでメールテンプレートを作成する](/docs/send-emails-with-node-js-javascript)** も使用できます。

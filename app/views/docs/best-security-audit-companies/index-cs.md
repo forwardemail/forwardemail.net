@@ -2,21 +2,21 @@
 
 <img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_2__ Obsah {__CHRÁNĚNÁ_URL_3__
+## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
 * [Náš proces hodnocení](#our-evaluation-process)
 * [Doporučené společnosti pro bezpečnostní audity](#recommended-security-audit-companies)
-  * [Lék53](#cure53)
-  * [Radikálně otevřené zabezpečení](#radically-open-security)
-  * [Zajištěno AB](#assured-ab)
-  * [Trail of Bits](#trail-of-bits)
+  * [Cure53](#cure53)
+  * [Radikálně otevřená bezpečnost](#radically-open-security)
+  * [Zajištěná AB](#assured-ab)
+  * [Stezka bitů](#trail-of-bits)
 * [Porovnání společností](#company-comparison)
 * [Kritéria výběru](#selection-criteria)
 
 ## Přehled {#overview}
 
-Společnost Forward Email aktivně vyhodnocuje společnosti zabývající se výzkumem kybernetické bezpečnosti, aby provedla komplexní audity naší open-source kódové základny na [GitHub](https://github.com/forwardemail) a serverové infrastruktuře. Po rozsáhlém výzkumu a hodnocení v posledních několika letech jsme identifikovali několik výjimečných firem zabývajících se bezpečnostním auditem, které trvale prokazují vysoce kvalitní práci, technické znalosti a soulad s našimi hodnotami zaměřenými na ochranu soukromí.
+Společnost Forward Email aktivně vyhodnocuje výzkumné společnosti v oblasti kybernetické bezpečnosti, aby mohla provádět komplexní audity naší open-source kódové základny na platformě [GitHub](https://github.com/forwardemail) a serverové infrastruktuře. Po rozsáhlém výzkumu a hodnocení v posledních několika letech jsme identifikovali několik výjimečných firem zabývajících se bezpečnostním auditem, které trvale prokazují vysoce kvalitní práci, technické znalosti a soulad s našimi hodnotami zaměřenými na ochranu soukromí.
 
 Tento dokument představuje naše zjištění a doporučení pro organizace, které hledají profesionální služby bezpečnostního auditu. Všechny zde uvedené společnosti prokázaly výjimečné schopnosti v oblasti penetračního testování, kontroly kódu, hodnocení infrastruktury a bezpečnostního výzkumu.
 
@@ -28,7 +28,7 @@ Je důležité poznamenat, že níže uvedené společnosti nejsou seřazeny v �
 
 ## Doporučené společnosti pro bezpečnostní audit {#recommended-security-audit-companies}
 
-__CHRÁNĚNÁ_URL_10__ Cure53 {__CHRÁNĚNÁ_URL_11__
+### Cure53 {#cure53}
 
 **Místo**: Berlín, Německo
 **Web**: <https://cure53.de/>
@@ -60,7 +60,7 @@ Jejich neziskový model jim umožňuje zaměřit se čistě na bezpečnostní v�
 * [Bezpečnostní hodnocení programu Tauri 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Vyhodnocení platformy pro aplikace napříč platformami
 * [Hodnocení bezpečnosti VPN Mullvad 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Analýza zabezpečení služby VPN
 
-__CHRÁNĚNÁ_URL_16__ Zaručeno AB {__CHRÁNĚNÁ_URL_17__
+### Zajištěno AB {#assured-ab}
 
 **Místo**: Göteborg, Švédsko
 **Webové stránky**: <https://www.assured.se/>
@@ -76,7 +76,7 @@ Přístup společnosti klade důraz na důkladnou technickou analýzu v kombinac
 * [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Posouzení zabezpečení API
 * [Audit zabezpečení DNS serveru Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Posouzení infrastruktury DNS
 
-__CHRÁNĚNÁ_URL_19__ Stopa bitů {__CHRÁNĚNÁ_URL_20__
+### Stopa bitů {#trail-of-bits}
 
 **Místo**: New York, New York, Spojené státy americké
 **Web**: <https://www.trailofbits.com/>
@@ -105,7 +105,7 @@ Společnost má zvláštní odborné znalosti v oblasti zabezpečení blockchain
 
 Při hodnocení těchto společností provádějících bezpečnostní audit jsme zvážili několik kritických faktorů, které by organizace měly posoudit při výběru bezpečnostního partnera:
 
-**Technické znalosti**: Všechny doporučené společnosti prokazují hluboké technické znalosti v různých oblastech, včetně zabezpečení webových aplikací, hodnocení infrastruktury, kryptografických implementací a nově vznikajících technologií.
+**Technické znalosti**: Všechny doporučené společnosti prokazují hluboké technické znalosti v různých oblastech, včetně zabezpečení webových aplikací, hodnocení infrastruktury, kryptografických implementací a nových technologií.
 
 **Transparentnost a reporting**: Každá firma poskytuje komplexní a praktické zprávy, které jasně sdělují zjištění, posouzení rizik a strategie nápravy. Mnohé také přispívají k širší bezpečnostní komunitě prostřednictvím veřejného výzkumu a nástrojů s otevřeným zdrojovým kódem.
 

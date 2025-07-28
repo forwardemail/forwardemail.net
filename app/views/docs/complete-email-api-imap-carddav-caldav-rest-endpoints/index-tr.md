@@ -3,7 +3,7 @@
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>ÖZET:</strong> Başka hiçbir hizmetin sunmadığı gelişmiş arama özelliklerine sahip, e-posta yönetimi için dünyanın ilk eksiksiz REST API'sini oluşturduk. Gmail, Outlook ve Apple, geliştiricileri IMAP cehennemine veya hız sınırlı API'lere zorlarken, Forward Email, 15'ten fazla arama parametresine sahip birleşik bir REST arayüzü aracılığıyla mesajlar, klasörler, kişiler ve takvimler için son derece hızlı CRUD işlemleri sunar. İşte e-posta API'si geliştiricilerinin beklediği şey.
+<strong>ÖZET:</strong> Başka hiçbir hizmetin sunmadığı gelişmiş arama özelliklerine sahip, e-posta yönetimi için dünyanın ilk eksiksiz REST API'sini oluşturduk. Gmail, Outlook ve Apple, geliştiricileri IMAP cehennemine veya hız sınırlı API'lere zorlarken, Forward Email, 15'ten fazla arama parametresine sahip birleşik bir REST arayüzü aracılığıyla mesajlar, klasörler, kişiler ve takvimler için inanılmaz hızlı CRUD işlemleri sunar. İşte e-posta API'si geliştiricilerinin beklediği şey.
 </p>
 
 ## İçindekiler {#table-of-contents}
@@ -78,12 +78,12 @@ E-posta API'leri temelden bozuk. Nokta.
 Her büyük e-posta sağlayıcısı geliştiricileri iki korkunç seçimden birine zorluyor:
 
 1. **IMAP Cehennemi**: Modern uygulamalar için değil, masaüstü istemcileri için tasarlanmış 30 yıllık bir protokolle boğuşmak
-2. **Sakat API'ler**: Gerçek e-posta verilerinizi yönetemeyen, hız sınırlı, salt okunur, OAuth-karmaşık API'ler
+2. **Çökmüş API'ler**: Gerçek e-posta verilerinizi yönetemeyen, hız sınırlı, salt okunur, OAuth-karmaşık API'ler
 
 Sonuç mu? Geliştiriciler ya e-posta entegrasyonunu tamamen terk ediyor ya da sürekli bozulan kırılgan IMAP paketleri oluşturmak için haftalarını harcıyor.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Kirli Sır**: Çoğu "e-posta API'si" yalnızca gönderme API'leridir. Basit bir REST arayüzü üzerinden klasörleri programatik olarak düzenleyemez, kişileri senkronize edemez veya takvimleri yönetemezsiniz. Ta ki şimdiye kadar.
 
 ## Geliştiricilerin Aslında Söyledikleri {#what-developers-are-actually-saying}
 
@@ -103,13 +103,13 @@ Hayal kırıklığı gerçektir ve her yerde belgelenmiştir:
 
 > "Gmail API'yi IMAP'den daha verimli kılan nedir? Gmail API'nin çok daha verimli olmasının bir diğer nedeni de her mesajı yalnızca bir kez indirmesi gerekmesidir. IMAP ile her mesajın indirilmesi ve dizine eklenmesi gerekir..."
 >
-> *- [Stack Overflow sorusu](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) 47 oy*
+> *- [Stack Overflow sorusu](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) 47 oy aldı*
 
 Kanıtlar her yerde:
 
-* **WordPress SMTP sorunları**: E-posta teslim hataları hakkında [631 GitHub sorunu](https://github.com/awesomemotive/WP-Mail-SMTP/issues)
-* **Zapier sınırlamaları**: Saatte 10 e-posta sınırı ve IMAP algılama hataları hakkında [Topluluk şikayetleri](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-* **IMAP API projeleri**: [Çoklu](https://github.com/ewildgoose/imap-api) [açık kaynak](https://emailengine.app/) [projeler](https://www.npmjs.com/package/imapflow) özellikle "IMAP'yi REST'e dönüştürmek" için mevcuttur çünkü hiçbir sağlayıcı bunu sunmaz
+* **WordPress SMTP sorunları**: [631 GitHub sorunu](https://github.com/awesomemotive/WP-Mail-SMTP/issues) e-posta teslim hataları hakkında
+* **Zapier sınırlamaları**: [Topluluk şikayetleri](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) yaklaşık 10 e-posta/saat sınırı ve IMAP algılama hataları
+* **IMAP API projeleri**: [Çoklu](https://github.com/ewildgoose/imap-api) [açık kaynaklı](https://emailengine.app/) [projeler](https://www.npmjs.com/package/imapflow) özellikle "IMAP'yi REST'e dönüştürmek" için mevcuttur çünkü hiçbir sağlayıcı bunu sunmaz
 * **Gmail API sorunları**: [Stack Overflow](https://stackoverflow.com/questions/tagged/gmail-api), hız sınırları ve karmaşıklık hakkında yaygın şikayetleri olan "gmail-api" etiketli 4.847 soruya sahip
 
 ## E-postayı İletmenin Devrim Niteliğindeki Çözümü {#forward-emails-revolutionary-solution}
@@ -120,7 +120,7 @@ Bu, sıradan bir gönderim API'si değil. Bu, aşağıdakiler üzerinde tam bir 
 
 * **Mesajlar**: Oluşturma, okuma, güncelleme, silme, arama, taşıma, işaretleme
 * **Klasörler**: REST uç noktaları aracılığıyla tam IMAP klasör yönetimi
-* **Kişiler**: [KartDAV](https://tools.ietf.org/html/rfc6352) kişi depolama ve senkronizasyon
+* **Kişiler**: [CardDAV](https://tools.ietf.org/html/rfc6352) kişi depolama ve senkronizasyon
 * **Takvimler**: [CalDAV](https://tools.ietf.org/html/rfc4791) takvim etkinlikleri ve planlama
 
 ### Bunu Neden Oluşturduk? {#why-we-built-this}
@@ -140,7 +140,7 @@ curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
 
-## Her Şeyi Değiştiren 20 Son Nokta {#20-endpoints-that-change-everything}
+## Her Şeyi Değiştiren 20 Uç Nokta {#20-endpoints-that-change-everything}
 
 ### Mesajlar (5 uç nokta) {#messages-5-endpoints}
 
@@ -168,11 +168,11 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Takvimler (5 uç nokta) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - Takvim etkinliklerini tarih filtrelemesiyle listele
-* `POST /v1/calendars` - Katılımcılar ve tekrarlama içeren takvim etkinliği oluştur
-* `GET /v1/calendars/:id` - Saat dilimi işlemeyle etkinlik ayrıntılarını al
+* `GET /v1/calendars` - Tarih filtrelemesiyle takvim etkinliklerini listele
+* `POST /v1/calendars` - Katılımcılar ve tekrarlama ile takvim etkinliği oluştur
+* `GET /v1/calendars/:id` - Saat dilimi işleme ile etkinlik ayrıntılarını al
 * `PUT /v1/calendars/:id` - Çakışma algılama ile etkinliği güncelle
-* `DELETE /v1/calendars/:id` - Katılımcı bildirimleri içeren etkinliği sil
+* `DELETE /v1/calendars/:id` - Katılımcı bildirimleri olan etkinliği sil
 
 ## Gelişmiş Arama: Başka Hiçbir Hizmet {#advanced-search-no-other-service-compares} ile Karşılaştırılamaz
 
@@ -189,7 +189,7 @@ Diğer sağlayıcılar en iyi ihtimalle temel filtreleme sunarken, biz şimdiye 
 * ❌ Tarih aralığı filtrelemesi yok
 * ❌ Boyuta dayalı filtreleme yok
 * ❌ Ek filtrelemesi yok
-* ❌ Gmail'in arama sözdizimiyle sınırlı
+* ❌ Gmail'in arama sözdizimiyle sınırlıdır
 
 **Outlook API Arama Sınırlamaları:**
 
@@ -209,7 +209,7 @@ Diğer sağlayıcılar en iyi ihtimalle temel filtreleme sunarken, biz şimdiye 
 * ❌ Genel API yok
 * ❌ Programatik arama yeteneği yok
 
-### E-postanın Devrim Niteliğindeki Arama API'sini Yönlendirin {#forward-emails-revolutionary-search-api}
+### E-postayı İletmenin Devrim Niteliğindeki Arama API'si {#forward-emails-revolutionary-search-api}
 
 **Başka hiçbir hizmetin sunmadığı 15'ten fazla arama parametresi sunuyoruz:**
 
@@ -280,7 +280,7 @@ GET /me/messages?$search="quarterly"
 * 🐌 **Outlook API**: Karmaşık geri çekilme gereksinimleriyle agresif kısıtlama
 * 🐌 **Diğerleri**: Karşılaştırılacak API yok
 
-### Başka Kimsenin Sahip Olmadığı Arama Özellikleri {#search-features-no-one-else-has}
+### Başka Kimsede Olmayan Arama Özellikleri {#search-features-no-one-else-has}
 
 #### 1. Başlığa Özel Arama {#1-header-specific-search}
 
@@ -290,7 +290,7 @@ GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. Boyuta Dayalı Zekâ {#2-size-based-intelligence}
+#### 2. Boyuta Dayalı Zeka {#2-size-based-intelligence}
 
 ```bash
 # Find newsletter emails (typically large)
@@ -362,9 +362,9 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Geliştirici Avantajı**: Forward Email'in arama API'si ile, REST API'lerinin basitliğini korurken işlevsellik açısından masaüstü istemcileriyle rekabet edebilecek e-posta uygulamaları oluşturabilirsiniz.
 
-## Son Derece Hızlı Performans Mimarisi {#blazing-fast-performance-architecture}
+## Yıldırım Hızında Performans Mimarisi {#blazing-fast-performance-architecture}
 
 Teknik yığınımız hız ve güvenilirlik için oluşturulmuştur:
 
@@ -398,7 +398,7 @@ graph LR
 
 ### Gizlilik Öncelikli Mimari {#privacy-first-architecture}
 
-**Sıfır Bilgi Tasarımı**: IMAP şifrenizle yalnızca siz erişebilirsiniz; e-postalarınızı okuyamayız. [sıfır bilgi mimarisi](https://forwardemail.net/en/security) ile olağanüstü performans sunarken tam gizlilik sağlıyoruz.
+**Sıfır Bilgi Tasarımı**: IMAP şifrenizle yalnızca siz erişebilirsiniz; e-postalarınızı okuyamayız. [sıfır bilgi mimarisi](https://forwardemail.net/en/security), göz alıcı performans sunarken tam gizlilik sağlar.
 
 ## Neden Farklıyız: Tam Karşılaştırma {#why-were-different-the-complete-comparison}
 
@@ -413,7 +413,7 @@ graph LR
 | **Toplam** | API Yok, Yanıltıcı Şeffaflık | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) ancak [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) standart entegrasyonları engeller |
 | **Zapier E-postası** | Ciddi Oran Sınırlamaları | • __HÜCRE_BAĞLANTISI_0__<br>• __HÜCRE_BAĞLANTISI_1__<br>• __HÜCRE_BAĞLANTISI_2__ |
 
-### E-posta İletmenin Avantajları {#forward-email-advantages}
+### E-postayı İletmenin Avantajları {#forward-email-advantages}
 
 | Özellik | E-postayı İlet | Yarışma |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -425,17 +425,17 @@ graph LR
 | **Mahremiyet** | ✅ Sıfır bilgi, şifreli, özel | ❌ Veri madenciliği ve gizlilik endişeleri |
 | **Performans** | ✅ 50 ms'nin altındaki yanıtlar, NVMe depolama | ❌ Ağ gecikmesi, kısıtlama gecikmeleri |
 
-### Açık Kaynak Şeffaflık Sorunu {#the-open-source-transparency-problem}
+### Açık Kaynaklı Şeffaflık Sorunu {#the-open-source-transparency-problem}
 
 **ProtonMail ve Tuta kendilerini "açık kaynaklı" ve "şeffaf" olarak pazarlıyorlar, ancak bu, modern gizlilik ilkelerini ihlal eden yanıltıcı bir pazarlama yöntemidir.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Yanlış Şeffaflık İddiaları**: Hem ProtonMail hem de Tuta, en kritik sunucu tarafı kodlarını özel ve kapalı tutarken, "açık kaynaklı" kimlik bilgilerini açıkça duyuruyor.
 
 **ProtonMail'in Aldatmacası:**
 
 * **İddialar**: ["Biz açık kaynak kodluyuz"](https://proton.me/blog/open-source) pazarlamada öne çıkan bir özelliktir
-* **Gerçeklik**: [Sunucu kodu tamamen tescillidir](https://github.com/ProtonMail) - yalnızca istemci uygulamaları açık kaynaklıdır
+* **Gerçeklik**: [Sunucu kodu tamamen özeldir](https://github.com/ProtonMail) - yalnızca istemci uygulamaları açık kaynaklıdır
 * **Etkisi**: Kullanıcılar sunucu tarafı şifreleme, veri işleme veya gizlilik iddialarını doğrulayamaz
 * **Şeffaflık İhlali**: Gerçek e-posta işleme ve depolama sistemlerini denetlemenin bir yolu yoktur
 
@@ -464,14 +464,14 @@ graph LR
 * ✅ **Tedarikçi bağımlılığı yok** - verileriniz, kontrolünüz
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Gerçek açık kaynak, her iddiayı doğrulayabileceğiniz anlamına gelir.** Forward Email ile şifrelememizi denetleyebilir, veri işleme sürecimizi inceleyebilir ve hatta kendi örneğinizi çalıştırabilirsiniz. İşte gerçek şeffaflık budur.
 
-## 30'dan Fazla Gerçek Dünya Entegrasyon Örneği {#30-real-world-integration-examples}
+## 30+ Gerçek Dünya Entegrasyon Örneği {#30-real-world-integration-examples}
 
 ### 1. WordPress İletişim Formu Geliştirmesi {#1-wordpress-contact-form-enhancement}
 
 **Sorun**: [WordPress SMTP yapılandırma hataları](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 GitHub sorunu](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**Çözüm**: Doğrudan API entegrasyonu [SMTP](https://tools.ietf.org/html/rfc5321) bağlantısını tamamen atlıyor
+**Çözüm**: Doğrudan API entegrasyonu [SMTP](https://tools.ietf.org/html/rfc5321)'yi tamamen atlıyor
 
 ```javascript
 // WordPress contact form that saves to Sent folder
@@ -510,7 +510,7 @@ for (const message of messages) {
 ### 3. CRM E-posta Senkronizasyonu {#3-crm-email-synchronization}
 
 **Sorun**: E-posta ve [CRM sistemleri](https://en.wikipedia.org/wiki/Customer_relationship_management) arasında manuel iletişim yönetimi
-**Çözüm**: [KartDAV](https://tools.ietf.org/html/rfc6352) iletişim API'si ile çift yönlü senkronizasyon
+**Çözüm**: [CardDAV](https://tools.ietf.org/html/rfc6352) iletişim API'siyle çift yönlü senkronizasyon
 
 ```javascript
 // Sync new email contacts to CRM
@@ -548,7 +548,7 @@ for (const order of orderEmails) {
 
 ### 5. Destek Talebi Entegrasyonu {#5-support-ticket-integration}
 
-**Sorun**: E-posta dizileri [yardım masası platformları](https://en.wikipedia.org/wiki/Help_desk_software)'e dağılmış durumda
+**Sorun**: E-posta dizileri [yardım masası platformları](https://en.wikipedia.org/wiki/Help_desk_software)'a dağılmış durumda
 **Çözüm**: Tam e-posta dizisi takibi
 
 ```javascript
@@ -591,7 +591,7 @@ for (const msg of unsubscribes) {
 
 ### 7. E-posta Tabanlı Görev Yönetimi {#7-email-based-task-management}
 
-**Sorun**: Gelen kutusu aşırı yükleniyor ve [görev takibi](https://en.wikipedia.org/wiki/Task_management)
+**Sorun**: Gelen kutusu doluluğu ve [görev takibi](https://en.wikipedia.org/wiki/Task_management)
 **Çözüm**: E-postaları eyleme dönüştürülebilir görevlere dönüştürün
 
 ```javascript
@@ -609,7 +609,7 @@ for (const email of messages) {
 
 ### 8. Çoklu Hesap E-posta Toplama {#8-multi-account-email-aggregation}
 
-**Sorun**: [birden fazla e-posta hesabı](https://en.wikipedia.org/wiki/Email_client) sağlayıcılar arasında yönetiliyor
+**Sorun**: [birden fazla e-posta hesabı](https://en.wikipedia.org/wiki/Email_client)'ı sağlayıcılar arasında yönetme
 **Çözüm**: Birleşik gelen kutusu arayüzü
 
 ```javascript
@@ -627,7 +627,7 @@ for (const account of accounts) {
 
 ### 9. Gelişmiş E-posta Analizi Panosu {#9-advanced-email-analytics-dashboard}
 
-**Sorun**: Gelişmiş filtrelemeyle [e-posta kalıpları](https://en.wikipedia.org/wiki/Email_analytics) bağlantısına dair hiçbir bilgi yok
+**Sorun**: Gelişmiş filtrelemeyle [e-posta kalıpları](https://en.wikipedia.org/wiki/Email_analytics) hakkında bilgi yok
 **Çözüm**: Gelişmiş arama özellikleri kullanılarak özel e-posta analitiği
 
 ```javascript
@@ -696,7 +696,7 @@ for (const email of oldEmails) {
 }
 ```
 
-### 11. E-posta-Takvim Entegrasyonu {#11-email-to-calendar-integration}
+### 11. E-postadan Takvime Entegrasyon {#11-email-to-calendar-integration}
 
 **Sorun**: E-postalardan manuel [takvim etkinliği](https://tools.ietf.org/html/rfc4791) oluşturma
 **Çözüm**: Otomatik olay ayıklama ve oluşturma
@@ -788,7 +788,7 @@ await fetch('/v1/messages', {
 
 ### 15. E-posta Tabanlı İş Akışı Otomasyonu {#15-email-based-workflow-automation}
 
-**Sorun**: E-posta yoluyla [onay süreçleri](https://en.wikipedia.org/wiki/Workflow) kılavuzu
+**Sorun**: E-posta yoluyla manuel [onay süreçleri](https://en.wikipedia.org/wiki/Workflow)
 **Çözüm**: Otomatik iş akışı tetikleyicileri
 
 ```javascript
@@ -808,7 +808,7 @@ for (const approval of approvals) {
 }
 ```
 
-### 16. E-posta Güvenliği İzleme {#16-email-security-monitoring}
+### 16. E-posta Güvenlik İzleme {#16-email-security-monitoring}
 
 **Sorun**: Manuel [güvenlik tehdidi tespiti](https://en.wikipedia.org/wiki/Email_security)
 **Çözüm**: Otomatik tehdit analizi
@@ -830,7 +830,7 @@ for (const email of recentEmails) {
 
 ### 17. E-posta Tabanlı Anket Toplama {#17-email-based-survey-collection}
 
-**Sorun**: Manuel [anket yanıtı](https://en.wikipedia.org/wiki/Survey_methodology) işleme
+**Sorun**: [anket yanıtı](https://en.wikipedia.org/wiki/Survey_methodology)'ın manuel işlenmesi
 **Çözüm**: Otomatik yanıt toplama
 
 ```javascript
@@ -867,7 +867,7 @@ await updateDashboard(deliveryStats);
 ### 19. E-posta Tabanlı Potansiyel Müşteri Niteliği {#19-email-based-lead-qualification}
 
 **Sorun**: E-posta etkileşimlerinden manuel [puanlama liderliği](https://en.wikipedia.org/wiki/Lead_scoring)
-**Çözüm**: Otomatik potansiyel müşteri değerlendirme süreci
+**Çözüm**: Otomatik potansiyel müşteri yeterlilik süreci
 
 ```javascript
 // Score leads based on email engagement
@@ -964,7 +964,7 @@ for (const email of invoiceEmails) {
 
 ### 23. E-posta Tabanlı Etkinlik Kaydı {#23-email-based-event-registration}
 
-**Sorun**: E-posta yanıtlarından manuel [etkinlik kaydı](https://en.wikipedia.org/wiki/Event_management) işleme
+**Sorun**: E-posta yanıtlarından [etkinlik kaydı](https://en.wikipedia.org/wiki/Event_management)'ın manuel işlenmesi
 **Çözüm**: Otomatik katılımcı yönetimi ve takvim entegrasyonu
 
 ```javascript
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. E-posta Tabanlı Sosyal Medya İzleme {#30-email-based-social-media-monitoring}
 
-**Sorun**: Manuel [sosyal medya](https://en.wikipedia.org/wiki/Social_media_monitoring) bildirim takibi ve yanıt
+**Sorun**: [sosyal medya](https://en.wikipedia.org/wiki/Social_media_monitoring) bildirimlerinin manuel takibi ve yanıtlanması
 **Çözüm**: Otomatik sosyal medya uyarı işleme ve yanıt koordinasyonu
 
 ```javascript
@@ -1281,20 +1281,20 @@ curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/contacts
 ```
 
-### 4. Belgeleri inceleyin {#4-explore-the-documentation}
+### 4. {#4-explore-the-documentation} Belgelerini inceleyin
 
-Etkileşimli örneklerle birlikte eksiksiz API dokümantasyonu için [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) adresini ziyaret edin.
+Etkileşimli örneklerle birlikte tam API dokümantasyonu için [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) adresini ziyaret edin.
 
 ## Teknik Kaynaklar {#technical-resources}
 
 * **[Tam API Dokümantasyonu](https://forwardemail.net/en/email-api)** - Etkileşimli OpenAPI 3.0 spesifikasyonu
-* **[Kendi Kendine Barındırma Rehberi](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Altyapınızda Yönlendirme E-postası Dağıtın
+* **[Kendi Kendine Barındırma Rehberi](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Altyapınıza Yönlendirme E-postası Dağıtın
 * **[Güvenlik Beyaz Bülteni](https://forwardemail.net/technical-whitepaper.pdf)** - Teknik mimari ve güvenlik ayrıntıları
 * **[GitHub Deposu](https://github.com/forwardemail/forwardemail.net)** - Açık kaynak kod tabanı
 * **[Geliştirici Desteği](mailto:api@forwardemail.net)** - Mühendislik ekibimize doğrudan erişim
 
 ---
 
-**E-posta entegrasyonunuzu kökten değiştirmeye hazır mısınız?** [Bugün Forward Email'in API'sini kullanarak oluşturmaya başlayın](https://forwardemail.net/en/email-api) ve geliştiriciler için tasarlanmış ilk eksiksiz e-posta yönetim platformunu deneyimleyin.
+**E-posta entegrasyonunuzu devrim niteliğinde değiştirmeye hazır mısınız?** [Bugün Forward Email'in API'sini kullanarak oluşturmaya başlayın](https://forwardemail.net/en/email-api) ve geliştiriciler için tasarlanmış ilk eksiksiz e-posta yönetim platformunu deneyimleyin.
 
 *E-postayı İlet: API'leri nihayet doğru hale getiren e-posta hizmeti.*

@@ -1,36 +1,36 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Zelf-gehoste releases {#self-hosted-releases}
 
-In dit gedeelte wordt de CI/CD-workflow voor de zelfgehoste oplossing van ForwardEmail beschreven en wordt uitgelegd hoe Docker-images worden gebouwd, gepubliceerd en geïmplementeerd.
+In dit gedeelte wordt de CI/CD-workflow voor de zelfgehoste oplossing van ForwardEmail gedocumenteerd en uitgelegd hoe Docker-images worden gebouwd, gepubliceerd en geïmplementeerd.
 
-## Table of Contents {#table-of-contents}
+## Inhoudsopgave {#table-of-contents}
 
 * [Overzicht](#overview)
 * [CI/CD-workflow](#cicd-workflow)
-  * [GitHub-actiesworkflow](#github-actions-workflow)
-  * [Docker-afbeeldingstructuur](#docker-image-structure)
+  * [GitHub Acties Workflow](#github-actions-workflow)
+  * [Docker-afbeeldingsstructuur](#docker-image-structure)
 * [Implementatieproces](#deployment-process)
   * [Installatie](#installation)
   * [Docker Compose-configuratie](#docker-compose-configuration)
 * [Onderhoudsfuncties](#maintenance-features)
   * [Automatische updates](#automatic-updates)
   * [Back-up en herstel](#backup-and-restore)
-  * [Certificaat Vernieuwing](#certificate-renewal)
+  * [Certificaatvernieuwing](#certificate-renewal)
 * [Versiebeheer](#versioning)
 * [Toegang tot afbeeldingen](#accessing-images)
 * [Bijdragen](#contributing)
 
-## Overview {#overview}
+## Overzicht {#overview}
 
-De zelfgehoste oplossing van ForwardEmail gebruikt GitHub Actions om automatisch Docker-images te bouwen en te publiceren wanneer een nieuwe release wordt gemaakt. Deze images zijn vervolgens beschikbaar voor gebruikers om te implementeren op hun eigen servers met behulp van het meegeleverde installatiescript.
+De zelfgehoste oplossing van ForwardEmail gebruikt GitHub Actions om automatisch Docker-images te bouwen en te publiceren wanneer er een nieuwe release wordt gemaakt. Deze images kunnen gebruikers vervolgens op hun eigen servers implementeren met behulp van het meegeleverde installatiescript.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Er zijn ook onze [zelf-gehoste blog](https://forwardemail.net/blog/docs/self-hosted-solution) en [zelf-gehoste ontwikkelaarsgids](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> En voor de meer gedetailleerde stapsgewijze versies, zie de handleidingen gebaseerd op [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) of [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD-workflow {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub Acties Workflow {#github-actions-workflow}
 
 Het zelf-gehoste Docker-image-build- en publicatieproces is gedefinieerd in `.github/workflows/docker-image-build-publish.yml`. Deze workflow:
 
@@ -85,7 +85,7 @@ De Docker-image is gebouwd met behulp van een meerfasenbenadering die is gedefin
 * Maakt de vereiste mappen aan voor gegevensopslag
 * Kopieert de gebouwde applicatie vanuit de builder-fase
 
-Deze aanpak zorgt ervoor dat de uiteindelijke afbeelding qua formaat en beveiliging geoptimaliseerd is.
+Deze aanpak zorgt ervoor dat het uiteindelijke beeld optimaal is qua formaat en beveiliging.
 
 ## Implementatieproces {#deployment-process}
 
@@ -121,11 +121,11 @@ Het bestand `docker-compose-self-hosted.yml` definieert alle services die nodig 
 * **Redis**: In-memory gegevensopslag
 * **SQLite**: Database voor het opslaan van e-mails
 
-Elke service gebruikt dezelfde Docker-image, maar met verschillende toegangspunten. Dit zorgt voor een modulaire architectuur en vereenvoudigt het onderhoud.
+Elke service gebruikt dezelfde Docker-image, maar met verschillende toegangspunten. Dit maakt een modulaire architectuur mogelijk en vereenvoudigt tegelijkertijd het onderhoud.
 
 ## Onderhoudsfuncties {#maintenance-features}
 
-De zelfgehoste oplossing omvat verschillende onderhoudsfuncties:
+De zelf-gehoste oplossing omvat verschillende onderhoudsfuncties:
 
 ### Automatische updates {#automatic-updates}
 
@@ -163,7 +163,7 @@ Elke GitHub-release creëert een nieuwe Docker-image met de volgende tags:
 1. De specifieke releaseversie (bijv. `v1.0.0`)
 2. De tag `latest` voor de meest recente release
 
-Gebruikers kunnen ervoor kiezen om een specifieke versie te gebruiken voor stabiliteit of de `latest` tag om altijd de nieuwste functies te krijgen.
+Gebruikers kunnen ervoor kiezen om een specifieke versie te gebruiken voor stabiliteit of de tag `latest` om altijd de nieuwste functies te krijgen.
 
 ## Toegang tot afbeeldingen {#accessing-images}
 
@@ -178,7 +178,7 @@ Er is geen authenticatie vereist om deze afbeeldingen op te halen.
 
 Bijdragen aan de zelf-gehoste oplossing:
 
-1. Breng wijzigingen aan in de relevante bestanden in de map `self-hosting`
-2. Test lokaal of op een Ubuntu-gebaseerde VPS met behulp van het meegeleverde script `setup.sh`
-3. Dien een pull-aanvraag in
-4. Zodra de bestanden zijn samengevoegd en er een nieuwe release is aangemaakt, bouwt en publiceert de CI-workflow automatisch de bijgewerkte Docker-image
+1. Breng wijzigingen aan in de relevante bestanden in de map `self-hosting`.
+2. Test lokaal of op een Ubuntu-gebaseerde VPS met behulp van het meegeleverde `setup.sh`-script.
+3. Dien een pull-aanvraag in.
+4. Zodra de bestanden zijn samengevoegd en er een nieuwe release is aangemaakt, bouwt en publiceert de CI-workflow automatisch de bijgewerkte Docker-image.

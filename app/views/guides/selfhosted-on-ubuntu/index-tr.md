@@ -2,7 +2,7 @@
 
 ## İçindekiler {#table-of-contents}
 
-* [Genel bakış](#overview)
+* [Genel Bakış](#overview)
 * [Ön koşullar](#prerequisites)
 * [Sistem Gereksinimleri](#system-requirements)
 * [Adım Adım Kurulum](#step-by-step-installation)
@@ -13,9 +13,9 @@
   * [Adım 5: Docker'ı yükleyin](#step-5-install-docker)
   * [Adım 6: Docker Hizmetini Yapılandırın](#step-6-configure-docker-service)
   * [Adım 7: Güvenlik Duvarını Yapılandırın](#step-7-configure-firewall)
-  * [Adım 8: Forward E-posta Deposunu Klonla](#step-8-clone-forward-email-repository)
+  * [Adım 8: Forward E-posta Deposunu Klonlayın](#step-8-clone-forward-email-repository)
   * [Adım 9: Ortam Yapılandırmasını Ayarlayın](#step-9-set-up-environment-configuration)
-  * [Adım 10: Etki Alanınızı Yapılandırın](#step-10-configure-your-domain)
+  * [Adım 10: Alan Adınızı Yapılandırın](#step-10-configure-your-domain)
   * [Adım 11: SSL Sertifikaları Oluşturun](#step-11-generate-ssl-certificates)
   * [Adım 12: Şifreleme Anahtarlarını Oluşturun](#step-12-generate-encryption-keys)
   * [Adım 13: Yapılandırmada SSL Yollarını Güncelleyin](#step-13-update-ssl-paths-in-configuration)
@@ -26,8 +26,8 @@
   * [DNS Kayıtları Kurulumu](#dns-records-setup)
   * [İlk Giriş](#first-login)
 * [Yedekleme Yapılandırması](#backup-configuration)
-  * [S3 Uyumlu Yedeklemeyi Ayarlayın](#set-up-s3-compatible-backup)
-  * [Yedekleme Cron İşlerini Ayarla](#set-up-backup-cron-jobs)
+  * [S3 Uyumlu Yedekleme Kurulumu](#set-up-s3-compatible-backup)
+  * [Yedekleme Cron İşlerini Ayarlayın](#set-up-backup-cron-jobs)
 * [Otomatik Güncelleme Yapılandırması](#auto-update-configuration)
 * [Bakım ve İzleme](#maintenance-and-monitoring)
   * [Günlük Konumları](#log-locations)
@@ -41,7 +41,7 @@
 
 ## Genel Bakış {#overview}
 
-Bu kılavuz, Forward Email'in kendi kendine barındırılan çözümünün Ubuntu sistemlerine kurulumu için adım adım talimatlar sağlar. Bu kılavuz özellikle Ubuntu 20.04, 22.04 ve 24.04 LTS sürümleri için tasarlanmıştır.
+Bu kılavuz, Forward Email'in kendi barındırdığı çözümün Ubuntu sistemlerine kurulumu için adım adım talimatlar sağlar. Bu kılavuz, özellikle Ubuntu 20.04, 22.04 ve 24.04 LTS sürümleri için tasarlanmıştır.
 
 ## Önkoşullar {#prerequisites}
 
@@ -51,7 +51,7 @@ Kuruluma başlamadan önce şunlara sahip olduğunuzdan emin olun:
 * **Kök Erişimi**: Komutları kök olarak çalıştırabilmeniz gerekir (sudo erişimi)
 * **Alan Adı**: DNS yönetim erişimiyle kontrol ettiğiniz bir alan
 * **Temiz Sunucu**: Yeni bir Ubuntu kurulumu kullanmanız önerilir
-* **İnternet Bağlantısı**: Paketleri ve Docker görüntülerini indirmek için gereklidir
+* **İnternet Bağlantısı**: Paketleri ve Docker imajlarını indirmek için gereklidir
 
 ## Sistem Gereksinimleri {#system-requirements}
 
@@ -109,7 +109,7 @@ EOF
 
 ### Adım 3: Sistem Bağımlılıklarını Yükleyin {#step-3-install-system-dependencies}
 
-Forward Email için gerekli paketleri yükleyin:
+E-postayı İletmek için gerekli paketleri yükleyin:
 
 ```bash
 # Update package list
@@ -221,7 +221,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-### Adım 8: Yönlendirme E-posta Deposunu Klonla {#step-8-clone-forward-email-repository}
+### Adım 8: İletme E-posta Deposunu Klonla {#step-8-clone-forward-email-repository}
 
 Forward Email kaynak kodunu indirin:
 
@@ -261,7 +261,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Adım 10: Alan Adınızı Yapılandırın {#step-10-configure-your-domain}
+### Adım 10: Etki Alanınızı Yapılandırın {#step-10-configure-your-domain}
 
 Alan adınızı ayarlayın ve ortam değişkenlerini güncelleyin:
 
@@ -318,7 +318,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Önemli**: İstendiğinde, DNS'inizde TXT kayıtları oluşturmanız gerekecektir. Aynı alan adı için birden fazla zorluk görebilirsiniz - **TÜMÜNÜ oluşturun**. İkincisini eklerken ilk TXT kaydını kaldırmayın.
+**Önemli**: İstendiğinde, DNS'inizde TXT kayıtları oluşturmanız gerekecektir. Aynı alan adı için birden fazla sorgu görebilirsiniz - **TÜMÜNÜ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını kaldırmayın.
 
 #### Seçenek B: Cloudflare DNS (Cloudflare kullanıyorsanız) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -359,7 +359,7 @@ ls -la "$SELF_HOST_DIR/ssl/"
 
 ### Adım 12: Şifreleme Anahtarlarını Oluşturun {#step-12-generate-encryption-keys}
 
-Güvenli işlem için gerekli çeşitli şifreleme anahtarlarını oluşturun:
+Güvenli işlem için gereken çeşitli şifreleme anahtarlarını oluşturun:
 
 ```bash
 # Generate helper encryption key
@@ -388,7 +388,7 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 echo "✅ All encryption keys generated successfully"
 ```
 
-### Adım 13: Yapılandırmada SSL Yollarını Güncelleyin {#step-13-update-ssl-paths-in-configuration}
+### Adım 13: {#step-13-update-ssl-paths-in-configuration} Yapılandırmasında SSL Yollarını Güncelleyin
 
 Ortam dosyasında SSL sertifika yollarını yapılandırın:
 
@@ -471,7 +471,7 @@ netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ### DNS Kayıtları Kurulumu {#dns-records-setup}
 
-Alan adınız için aşağıdaki DNS kayıtlarını yapılandırmanız gerekiyor:
+Alan adınız için aşağıdaki DNS kayıtlarını yapılandırmanız gerekir:
 
 #### MX Kaydı {#mx-record}
 
@@ -507,7 +507,7 @@ DKIM genel anahtarınızı alın:
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-DKIM DNS kaydı oluştur:
+DKIM DNS kaydı oluşturun:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
@@ -521,14 +521,14 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### İlk Giriş {#first-login}
 
-1. Web tarayıcınızı açın ve `https://yourdomain.com` adresine gidin
-2. Daha önce kaydettiğiniz temel kimlik doğrulama bilgilerini girin
-3. İlk kurulum sihirbazını tamamlayın
-4. İlk e-posta hesabınızı oluşturun
+1. Web tarayıcınızı açın ve `https://yourdomain.com` adresine gidin.
+2. Daha önce kaydettiğiniz temel kimlik doğrulama bilgilerini girin.
+3. İlk kurulum sihirbazını tamamlayın.
+4. İlk e-posta hesabınızı oluşturun.
 
 ## Yedekleme Yapılandırması {#backup-configuration}
 
-### S3 Uyumlu Yedeklemeyi Ayarlayın {#set-up-s3-compatible-backup}
+### S3 Uyumlu Yedeklemeyi Ayarla {#set-up-s3-compatible-backup}
 
 S3 uyumlu depolamaya otomatik yedeklemeleri yapılandırın:
 
@@ -554,7 +554,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Yedekleme Cron İşlerini Ayarlayın {#set-up-backup-cron-jobs}
+### Yedekleme Cron İşlerini Ayarla {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -592,7 +592,7 @@ crontab -l
 
 * **Docker Compose günlükleri**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
 * **Sistem günlükleri**: `/var/log/syslog`
-* **Yedek günlükleri**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Yedekleme günlükleri**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Otomatik güncelleme günlükleri**: `/var/log/autoupdate.log`
 
 ### Düzenli Bakım Görevleri {#regular-maintenance-tasks}
@@ -622,7 +622,7 @@ docker compose -f "$DOCKER_COMPOSE_FILE" restart
 
 ### Yaygın Sorunlar {#common-issues}
 
-#### 1. Docker Hizmeti Başlamıyor {#1-docker-service-wont-start}
+#### 1. Docker Servisi Başlamıyor {#1-docker-service-wont-start}
 
 ```bash
 # Check Docker status
@@ -635,7 +635,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 #### 2. Sertifika Oluşturma Başarısız {#2-certificate-generation-fails}
 
 * 80 ve 443 portlarının erişilebilir olduğundan emin olun
-* DNS kayıtlarının sunucunuzu işaret ettiğini doğrulayın
+* DNS kayıtlarının sunucunuzu gösterdiğini doğrulayın
 * Güvenlik duvarı ayarlarını kontrol edin
 
 #### 3. E-posta Teslimat Sorunları {#3-email-delivery-issues}
@@ -648,7 +648,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * Güvenlik duvarı ayarlarını kontrol edin: `ufw status`
 * SSL sertifikalarını doğrulayın: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* Temel kimlik doğrulama kimlik bilgilerini kontrol edin
+* Temel kimlik doğrulama bilgilerini kontrol edin
 
 ### Yardım Alma {#getting-help}
 
@@ -667,9 +667,9 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 ## Sonuç {#conclusion}
 
-Forward Email self-hosted kurulumunuz artık tamamlanmış ve Ubuntu'da çalışıyor olmalı. Şunları unutmayın:
+Kendi barındırdığınız Forward Email kurulumunuz artık tamamlanmış ve Ubuntu'da çalışıyor olmalı. Unutmayın:
 
-1. DNS kayıtlarınızı düzgün bir şekilde yapılandırın
+1. DNS kayıtlarınızı doğru şekilde yapılandırın
 2. E-posta gönderme ve alma işlemlerini test edin
 3. Düzenli yedeklemeler ayarlayın
 4. Sisteminizi düzenli olarak izleyin

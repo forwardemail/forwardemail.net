@@ -9,7 +9,7 @@
   * [Étape 1 : Configuration initiale du système](#step-1-initial-system-setup)
   * [Étape 2 : Configurer les résolveurs DNS](#step-2-configure-dns-resolvers)
   * [Étape 3 : installer les dépendances système](#step-3-install-system-dependencies)
-  * [Étape 4 : Installer les packages Snap](#step-4-install-snap-packages)
+  * [Étape 4 : installer les packages Snap](#step-4-install-snap-packages)
   * [Étape 5 : Installer Docker](#step-5-install-docker)
   * [Étape 6 : Configurer le service Docker](#step-6-configure-docker-service)
   * [Étape 7 : Configurer le pare-feu](#step-7-configure-firewall)
@@ -39,11 +39,11 @@
 * [Meilleures pratiques de sécurité](#security-best-practices)
 * [Conclusion](#conclusion)
 
-## Présentation {#overview}
+## Présentation de {#overview}
 
 Ce guide fournit des instructions étape par étape pour installer la solution auto-hébergée de Forward Email sur les systèmes Ubuntu. Ce guide est spécialement conçu pour les versions Ubuntu 20.04, 22.04 et 24.04 LTS.
 
-## Conditions préalables {#prerequisites}
+## Prérequis {#prerequisites}
 
 Avant de commencer l'installation, assurez-vous d'avoir :
 
@@ -53,7 +53,7 @@ Avant de commencer l'installation, assurez-vous d'avoir :
 * **Serveur propre** : Il est recommandé d'utiliser une nouvelle installation d'Ubuntu
 * **Connexion Internet** : Requise pour télécharger les paquets et les images Docker
 
-Configuration requise pour ## {#system-requirements}
+## Configuration requise pour {#system-requirements}
 
 * **RAM** : 2 Go minimum (4 Go recommandés pour la production)
 * **Stockage** : 20 Go minimum d’espace disponible (50 Go minimum recommandés pour la production)
@@ -427,7 +427,7 @@ echo ""
 
 ### Étape 15 : Déployer avec Docker Compose {#step-15-deploy-with-docker-compose}
 
-Démarrez tous les services de transfert de courrier électronique :
+Démarrer tous les services de transfert de courrier électronique :
 
 ```bash
 # Set Docker Compose file path
@@ -469,11 +469,11 @@ netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ## Configuration post-installation {#post-installation-configuration}
 
-Configuration des enregistrements DNS ### {#dns-records-setup}
+### Configuration des enregistrements DNS {#dns-records-setup}
 
 Vous devez configurer les enregistrements DNS suivants pour votre domaine :
 
-Enregistrement MX #### {#mx-record}
+#### Enregistrement MX {#mx-record}
 
 ```
 @ MX 10 mx.yourdomain.com
@@ -492,13 +492,13 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-Enregistrement SPF #### {#spf-record}
+#### Enregistrement SPF {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
-Enregistrement DKIM #### {#dkim-record}
+#### Enregistrement DKIM {#dkim-record}
 
 Obtenez votre clé publique DKIM :
 
@@ -513,7 +513,7 @@ Créer un enregistrement DNS DKIM :
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-Enregistrement DMARC #### {#dmarc-record}
+#### Enregistrement DMARC {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -522,9 +522,9 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 ### Première connexion {#first-login}
 
 1. Ouvrez votre navigateur web et accédez à `https://yourdomain.com`
-2. Saisissez les identifiants d'authentification de base enregistrés précédemment.
-3. Suivez l'assistant de configuration initiale.
-4. Créez votre premier compte e-mail.
+2. Saisissez les identifiants d'authentification de base enregistrés précédemment
+3. Suivez l'assistant de configuration initiale
+4. Créez votre premier compte e-mail
 
 ## Configuration de sauvegarde {#backup-configuration}
 
@@ -554,7 +554,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Configurer les tâches de sauvegarde cron {#set-up-backup-cron-jobs}
+### Configurer les tâches de sauvegarde Cron {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -618,7 +618,7 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
 
-## Dépannage {#troubleshooting}
+## Dépannage de {#troubleshooting}
 
 ### Problèmes courants {#common-issues}
 
@@ -632,7 +632,7 @@ systemctl status docker
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. La génération du certificat échoue {#2-certificate-generation-fails}
+#### 2. Échec de la génération du certificat {#2-certificate-generation-fails}
 
 * Assurez-vous que les ports 80 et 443 sont accessibles
 * Vérifiez que les enregistrements DNS pointent vers votre serveur
@@ -656,7 +656,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * **Problèmes GitHub** : <https://github.com/forwardemail/forwardemail.net/issues>
 * **Support communautaire** : Consultez les discussions GitHub du projet
 
-## Meilleures pratiques de sécurité {#security-best-practices}
+## Bonnes pratiques de sécurité {#security-best-practices}
 
 1. **Maintenir le système à jour** : Mettre à jour régulièrement Ubuntu et ses paquets
 2. **Surveiller les journaux** : Configurer la surveillance et les alertes des journaux
@@ -665,7 +665,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 5. **Activer Fail2Ban** : Envisager d'installer Fail2Ban pour plus de sécurité
 6. **Audits de sécurité réguliers** : Vérifier régulièrement votre configuration
 
-Conclusion
+## Conclusion {#conclusion}
 
 Votre installation auto-hébergée de Forward Email devrait maintenant être terminée et opérationnelle sur Ubuntu. N'oubliez pas :
 

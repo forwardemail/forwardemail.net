@@ -51,6 +51,6 @@ await transporter.sendMail({
 node app
 ```
 
-现在您可以前往**[我的账户 → 电子邮件](/my-account/emails)**查看您的实时电子邮件传递状态、电子邮件传递日志以及 HTML/纯文本/附件预览。
+现在您可以前往**[我的账户 → 电子邮件](/my-account/emails)**查看实时电子邮件传递状态、电子邮件传递日志以及 HTML/纯文本/附件预览。
 
 > 附言：tada：您还可以**[在浏览器和 iOS 模拟器中预览电子邮件](/docs/test-preview-email-rendering-browsers-ios-simulator)**和**[使用 Node.js 创建电子邮件模板](/docs/send-emails-with-node-js-javascript)**。

@@ -2,7 +2,7 @@
 
 <img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [הַקדָמָה](#foreword)
 * [מהפכת אופטימיזציית הביצועים שלנו בליבת ליבה יחידה ב-573%](#our-573-single-core-performance-optimization-revolution)
@@ -62,16 +62,16 @@
 
 ## הקדמה {#foreword}
 
-ב-Forward Email, בילינו שנים בשכלול סביבת הייצור של Node.js שלנו. מדריך מקיף זה משתף את שיטות העבודה המומלצות שלנו לפריסת ייצור של Node.js, המוכחות היטב, תוך התמקדות באופטימיזציה של ביצועים, ניטור והלקחים שלמדנו מהגדלת יישומי Node.js לטיפול במיליוני עסקאות יומיות.
+ב-Forward Email, בילינו שנים בשכלול סביבת הייצור של Node.js שלנו. מדריך מקיף זה משתף את שיטות העבודה המומלצות שלנו לפריסת ייצור של Node.js, אשר הוכחו היטב, תוך התמקדות באופטימיזציה של ביצועים, ניטור והלקחים שלמדנו מהגדלת יישומי Node.js לטיפול במיליוני עסקאות יומיות.
 
-## מהפכת אופטימיזציית הביצועים שלנו בליבה יחידה, בשיעור של 573% {#our-573-single-core-performance-optimization-revolution}
+## מהפכת אופטימיזציית הביצועים שלנו ב-573% של ליבה יחידה {#our-573-single-core-performance-optimization-revolution}
 
 כאשר עברנו ממעבדי אינטל למעבדי AMD Ryzen, השגנו **שיפור ביצועים של 573%** ביישומי Node.js שלנו. זו לא הייתה רק אופטימיזציה קלה - היא שינתה באופן מהותי את אופן ביצועי יישומי Node.js שלנו בייצור ומדגימה את החשיבות של אופטימיזציה של ביצועי ליבה יחידה עבור כל יישום Node.js.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> עבור שיטות עבודה מומלצות לפריסת Node.js, בחירת החומרה היא קריטית. בחרנו במיוחד באירוח DataPacket בשל זמינותם של מעבדי AMD Ryzen, מכיוון שביצועי ליבה יחידה הם קריטיים עבור יישומי Node.js, מכיוון שריצת JavaScript היא בעלת הליך הליך יחיד.
 
-### מדוע אופטימיזציית ביצועים של ליבה יחידה חשובה עבור Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
+### מדוע אופטימיזציה של ביצועי ליבה יחידה חשובה עבור Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
 המעבר שלנו מאינטל ל-AMD Ryzen הביא ל:
 
@@ -93,7 +93,7 @@
 
 שיטות העבודה המומלצות שלנו לפריסת Node.js כוללות בחירות טכנולוגיות מכוונות המבוססות על שנים של ניסיון בייצור. הנה מה שאנו משתמשים בו ומדוע בחירות אלו חלות על כל יישום Node.js:
 
-### מנהל חבילות: pnpm ליעילות ייצור {#package-manager-pnpm-for-production-efficiency}
+מנהל חבילות ###: pnpm ליעילות ייצור {#package-manager-pnpm-for-production-efficiency}
 
 **מה אנחנו משתמשים בו:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (גרסה מוצמדת)
 
@@ -105,14 +105,14 @@
 * **ביצועים טובים יותר** בפריסות ייצור
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> כחלק משיטות העבודה המומלצות שלנו לפריסת Node.js, אנו מצמידים גרסאות מדויקות של כלים קריטיים כמו pnpm כדי להבטיח התנהגות עקבית בכל הסביבות ובכל המכונות של חברי הצוות.
 
 **פרטי יישום:**
 
 * [תצורת package.json שלנו](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [פוסט בבלוג של מערכת האקולוגיה של NPM](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 
-### מסגרת אינטרנט: Koa לייצור Node.js מודרני {#web-framework-koa-for-modern-nodejs-production}
+### מסגרת אינטרנט: Koa עבור ייצור Node.js מודרני {#web-framework-koa-for-modern-nodejs-production}
 
 **מה אנחנו משתמשים בו:**
 
@@ -120,7 +120,7 @@
 * [`@koa/multer`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/koa-simple-ratelimit`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-בחרנו ב-Koa על פני Express עבור תשתית הייצור של Node.js שלנו בגלל התמיכה המודרנית שלה ב-async/await והרכב התוכנה הנקי יותר. המייסד שלנו, ניק בו, תרם גם ל-Express וגם ל-Koa, ונתן לנו תובנות מעמיקות לגבי שתי המסגרות לשימוש בייצור.
+בחרנו ב-Koa על פני Express עבור תשתית הייצור של Node.js שלנו בגלל התמיכה המודרנית ב-async/await והרכב התוכנה הנקי יותר. המייסד שלנו, ניק בו, תרם גם ל-Express וגם ל-Koa, ונתן לנו תובנות מעמיקות לגבי שתי המסגרות לשימוש בייצור.
 
 דפוסים אלה חלים בין אם אתם בונים ממשקי API של REST, שרתי GraphQL, יישומי אינטרנט או מיקרו-שירותים.
 
@@ -132,7 +132,7 @@
 
 ### עיבוד משימות ברקע: Bree לאמינות ייצור {#background-job-processing-bree-for-production-reliability}
 
-**במה אנו משתמשים:** מתזמן [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**מה אנחנו משתמשים בו:** מתזמן [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 יצרנו ומתחזקים את Bree מכיוון שמתזמני משימות קיימים לא עמדו בדרישות שלנו לתמיכה ב-worker threads ותכונות JavaScript מודרניות בסביבות Node.js ייצור. זה חל על כל יישום Node.js שזקוק לעיבוד ברקע, משימות מתוזמנות או worker threads.
 
@@ -143,9 +143,9 @@
 * [עבודת בדיקת בריאות PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 * [יישום משימת ניקוי](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### טיפול בשגיאות: @hapi/boom לאמינות ייצור {#error-handling-hapiboom-for-production-reliability}
+### טיפול בשגיאות: @hapi/boom עבור אמינות ייצור {#error-handling-hapiboom-for-production-reliability}
 
-**במה אנו משתמשים:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**מה אנחנו משתמשים בו:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 אנו משתמשים ב-@hapi/boom עבור תגובות שגיאה מובנות בכל יישומי הייצור של Node.js. תבנית זו עובדת עבור כל יישום Node.js הדורש טיפול עקבי בשגיאות.
 
@@ -162,7 +162,7 @@
 
 **היישום המרכזי שלנו:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-**במה אנו משתמשים:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**מה אנחנו משתמשים בו:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 ספי ניטור הייצור שלנו (מקוד הייצור בפועל שלנו):
 
@@ -172,7 +172,7 @@
 * **סף אזהרה של 75% ניצול דיסק**
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> ערכי ספים אלה מתאימים לתצורת החומרה הספציפית שלנו. בעת יישום ניטור הייצור של Node.js, סקור את יישום monitor-server.js שלנו כדי להבין את הלוגיקה המדויקת ולהתאים את הערכים להגדרה שלך.
 
 ### ניטור ברמת היישום עבור ייצור Node.js {#application-level-monitoring-for-nodejs-production}
 
@@ -217,7 +217,7 @@
 * **מונע לולאות הפעלה מחדש** באמצעות בדיקת תקינות חכמה
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> עבור שיטות עבודה מומלצות לפריסת Node.js, אנו דורשים זמן פעולה של 15+ דקות לפני שאנו קובעים שתהליך תקין, כדי למנוע לולאות הפעלה מחדש. זה מונע כשלים מדורגים כאשר תהליכים מתקשים בזיכרון או בבעיות אחרות.
 
 ### תצורת הייצור של PM2 שלנו {#our-pm2-production-configuration}
 
@@ -259,7 +259,7 @@
 
 הלוגם שלנו משתמש ב-`isCodeBug` כדי לקבוע רמות התראה והסרת שדות, מה שמבטיח שנקבל הודעות על בעיות אמיתיות תוך סינון רעשים בסביבת הייצור של Node.js.
 
-### תוכן קשור {#related-content-1}
+### תוכן קשור
 
 למידע נוסף על דפוסי טיפול בשגיאות שלנו:
 
@@ -274,13 +274,13 @@
 
 **כלים שאנו ממליצים עליהם:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - ליצירת תמונות מצב של heap ופרופילי CPU
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - לניתוח פרופילי CPU ותמונות מצב של heap
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - ליצירת תמונות מצב של ערימה ופרופילי CPU
+* [`cpupro`](https://github.com/discoveryjs/cpupro) - לניתוח פרופילי CPU ותמונות מצב של ערימה
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> אנו משתמשים ב-v8-profiler-next וב-cpupro יחד כדי ליצור תהליך עבודה מלא של ניפוי ביצועים עבור יישומי Node.js שלנו. שילוב זה עוזר לנו לזהות דליפות זיכרון, צווארי בקבוק בביצועים ולמטב את קוד הייצור שלנו.
 
-### כיצד אנו מיישמים ניתוח Heap Snapshot {#how-we-implement-heap-snapshot-analysis}
+### כיצד אנו מיישמים ניתוח תמונת מצב של Heap {#how-we-implement-heap-snapshot-analysis}
 
 **יישום הניטור שלנו:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
@@ -293,15 +293,15 @@
 * **מדיניות שמירה** לניהול אחסון תמונות מצב
 * **שילוב עם עבודות הניקוי שלנו** לתחזוקה אוטומטית
 
-### תהליך עבודה של ניפוי שגיאות ביצועים {#performance-debugging-workflow}
+### זרימת עבודה של ניפוי שגיאות ביצועים {#performance-debugging-workflow}
 
 **למדו את היישום בפועל שלנו:**
 
-* [ניטור יישום שרת](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - ניטור ערימה ויצירת תמונות מצב
-* [עבודת ניקיון](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - שמירת וניקוי תמונות מצב
+* [ניטור יישום שרת](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - ניטור ערימה ויצירת תמונות בזק
+* [עבודת ניקיון](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - שמירת וניקוי תמונות בזק
 * [שילוב לוגר](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - רישום ביצועים
 
-### הטמעה מומלצת עבור אפליקציית Node.js שלך {#recommended-implementation-for-your-nodejs-application}
+### יישום מומלץ עבור יישום Node.js שלך {#recommended-implementation-for-your-nodejs-application}
 
 **לניתוח תמונת מצב של ערימה:**
 
@@ -319,7 +319,7 @@
 4. **ניטור שיפורי ביצועים לפני/אחרי**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> יצירת תמונות מצב של ערימה ופרופילי CPU יכולה להשפיע על הביצועים. אנו ממליצים ליישם ויסות ולהפעיל פרופילים רק בעת חקירת בעיות ספציפיות או במהלך חלונות תחזוקה.
 
 ### שילוב עם ניטור הייצור שלנו {#integration-with-our-production-monitoring}
 
@@ -338,7 +338,7 @@
 
 ### אבטחה ברמת המערכת עבור ייצור Node.js {#system-level-security-for-nodejs-production}
 
-**הטמעת Ansible שלנו:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+**הטמעה שלנו ב-Ansible:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 
 אמצעי האבטחה העיקריים שלנו עבור סביבות ייצור של Node.js:
 
@@ -348,11 +348,11 @@
 * **כוונון פרמטרי ליבה** הן לאבטחה והן לביצועים
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> בעת יישום שיטות עבודה מומלצות לפריסת Node.js, השבתת swap עלולה לגרום לכיבוי עקב חוסר זיכרון אם היישום שלך חורג מכמות ה-RAM הזמין. אנו עוקבים בקפידה אחר ניצול הזיכרון ומגדילים את השרתים שלנו בהתאם.
 
 ### אבטחת יישומים עבור יישומי Node.js {#application-security-for-nodejs-applications}
 
-**הסרה של שדות היומן שלנו:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+**הסרה של שדה היומן שלנו:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
 אנו מסירים שדות רגישים מיומני רישום, כולל סיסמאות, טוקנים, מפתחות API ומידע אישי. פעולה זו מגנה על פרטיות המשתמש תוך שמירה על יכולות ניפוי שגיאות בכל סביבת ייצור של Node.js.
 
@@ -395,7 +395,7 @@
 
 תבנית זו עובדת היטב עבור יישומי SaaS, מערכות מרובות דיירים, או כל יישום Node.js הזקוק לבידוד נתונים.
 
-### הטמעת MongoDB עבור Node.js Production {#mongodb-implementation-for-nodejs-production}
+### יישום MongoDB עבור ייצור Node.js {#mongodb-implementation-for-nodejs-production}
 
 **מה אנחנו משתמשים בו:**
 
@@ -415,7 +415,7 @@
 * **שפת שאילתות עשירה**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> הגישה ההיברידית שלנו מתאימה את עצמה למקרה השימוש הספציפי שלנו. למד את דפוסי השימוש בפועל של מסד הנתונים שלנו בבסיס הקוד כדי להבין אם גישה זו מתאימה לצורכי יישום Node.js שלך.
 
 ## עיבוד משימת רקע של ייצור Node.js {#nodejs-production-background-job-processing}
 
@@ -442,7 +442,7 @@
 * ניטור ותחזוקת תקינות
 * ניצול של Worker Thread עבור משימות עתירות CPU
 
-### דפוסי תזמון העבודות שלנו עבור ייצור Node.js {#our-job-scheduling-patterns-for-nodejs-production}
+### דפוסי תזמון המשימות שלנו עבור ייצור Node.js {#our-job-scheduling-patterns-for-nodejs-production}
 
 למדו את דפוסי תזמון העבודה בפועל שלנו במדריך המשרות שלנו כדי להבין:
 
@@ -485,7 +485,7 @@
 
 ## מדריך יישום לפריסת Node.js Production {#nodejs-production-deployment-implementation-guide}
 
-### למדו את הקוד שלנו לקבלת שיטות עבודה מומלצות לייצור {#study-our-actual-code-for-production-best-practices}
+### למד את הקוד בפועל שלנו עבור שיטות עבודה מומלצות לייצור {#study-our-actual-code-for-production-best-practices}
 
 **התחל עם קבצי המפתח הבאים עבור הגדרת סביבת הייצור של Node.js:**
 
@@ -505,7 +505,7 @@
 * [טפסי יצירת קשר ב-JavaScript](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 * [אינטגרציה של ריאקט אימייל](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
-### אוטומציה של תשתיות עבור ייצור Node.js {#infrastructure-automation-for-nodejs-production}
+### אוטומציה של תשתית עבור ייצור Node.js {#infrastructure-automation-for-nodejs-production}
 
 **ספרי ההדרכה שלנו ב-Ansible ללימוד עבור פריסת Node.js בייצור:**
 
@@ -517,7 +517,7 @@
 
 **הטמעות הארגוניות שלנו:**
 
-* [מקרה בוחן של קרן לינוקס](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
+* [מקרה בוחן של לינוקס קרן](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
 * [מקרה בוחן של אובונטו קנונית](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * [העברת דוא"ל של בוגרים](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 

@@ -59,11 +59,11 @@
 
 Detta dokument är en derivation av [Vanliga standardvillkor för dataskyddsavtal (version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) och följande ändringar har gjorts:
 
-1. [Tillämplig lag och valda domstolar](#11-governing-law-and-chosen-courts) har inkluderats som ett avsnitt nedan med `Governing State` identifierad ovan.
+1. [Tillämplig lag och valda domstolar](#11-governing-law-and-chosen-courts) har inkluderats som ett avsnitt nedan, med `Governing State` identifierad ovan.
 
 2. [Relation till tjänsteleverantör](#12-service-provider-relationship) har inkluderats som ett avsnitt nedan.
 
-## 1. Relationer mellan personuppgiftsbehandlare och underpersonuppgiftsbehandlare {#1-processor-and-subprocessor-relationships}
+## 1. Relationer mellan processorer och underprocessorer {#1-processor-and-subprocessor-relationships}
 
 ### 1. Leverantör som personuppgiftsbehandlare {#1-provider-as-processor}
 
@@ -75,7 +75,7 @@ I situationer där **Kunden** är personuppgiftsbehandlare för kundens personup
 
 ## 2. Bearbetning av {#2-processing}
 
-### 1. Bearbetningsuppgifter {#1-processing-details}
+### 1. Bearbetningsdetaljer {#1-processing-details}
 
 Bilaga I(B) på försättsbladet beskriver föremålet för, arten, syftet och varaktigheten av denna behandling, samt de **kategorier av personuppgifter** som samlas in och de **kategorier av registrerade**.
 
@@ -87,7 +87,7 @@ Kunden instruerar Leverantören att Behandla Kundens Personuppgifter: (a) för a
 
 Leverantören kommer endast att behandla kundens personuppgifter i enlighet med detta databehandlingsavtal, inklusive informationen på försättsbladet. Om Leverantören uppdaterar Tjänsten för att uppdatera befintliga eller inkludera nya produkter, funktioner eller funktionalitet, kan Leverantören ändra <strong>Kategorier av registrerade</strong>, <strong>Kategorier av personuppgifter</strong>, <strong>Särskild kategori av uppgifter</strong>, <strong>Begränsningar eller skyddsåtgärder för särskild kategori av uppgifter</strong>, <strong>Överfrågningsfrekvens</strong>, <strong>Behandlingens art och syfte</strong> och <strong>Behandlingens varaktighet</strong> efter behov för att återspegla uppdateringarna genom att meddela Kunden om uppdateringarna och ändringarna.
 
-### 4. Kundbehandling {#4-customer-processing}
+### 4. Kundbearbetning {#4-customer-processing}
 
 Om <strong>Kunden</strong> är ett personuppgiftsbehandlare och <strong>Leverantören</strong> är ett underpersonuppgiftsbehandlare, ska <strong>Kunden</strong> följa alla tillämpliga lagar som gäller för <strong>Kundens</strong> behandling av kundens personuppgifter. <strong>Kundens</strong> avtal med sin personuppgiftsbehandlare kommer på liknande sätt att kräva att <strong>Kunden</strong> följer alla tillämpliga lagar som gäller för <strong>Kunden</strong> som personuppgiftsbehandlare. Dessutom ska <strong>Kunden</strong> följa kraven för underpersonuppgiftsbehandlare i <strong>Kundens</strong> avtal med sin personuppgiftsbehandlare.
 
@@ -95,7 +95,7 @@ Om <strong>Kunden</strong> är ett personuppgiftsbehandlare och <strong>Leverant
 
 Kunden har följt och kommer att fortsätta att följa alla tillämpliga dataskyddslagar avseende tillhandahållandet av kundens personuppgifter till Leverantören och/eller Tjänsten, inklusive att göra alla upplysningar, inhämta alla samtycken, tillhandahålla lämpliga valmöjligheter och implementera relevanta skyddsåtgärder som krävs enligt tillämpliga dataskyddslagar.
 
-### 6. Underleverantörer {#6-subprocessors}
+### 6. Underprocessorer {#6-subprocessors}
 
 a. Leverantören kommer inte att tillhandahålla, överföra eller överlämna några kundpersonuppgifter till en underbiträde om inte Kunden har godkänt underbiträdet. Den nuvarande listan över Godkända underbiträden inkluderar underbiträdenas identiteter, deras land och deras förväntade behandlingsuppgifter. Leverantören kommer att informera Kunden minst 10 arbetsdagar i förväg och skriftligen om eventuella planerade ändringar av Godkända underbiträden, oavsett om det sker genom tillägg eller ersättning av en underbiträde, vilket ger Kunden tillräckligt med tid att invända mot ändringarna innan Leverantören börjar använda den/de nya underbiträdena. Leverantören kommer att ge Kunden den information som krävs för att Kunden ska kunna utöva sin rätt att invända mot ändringen av Godkända underbiträden. Kunden har 30 dagar efter meddelande om en ändring av de godkända underleverantörerna att invända, annars anses Kunden ha accepterat ändringarna. Om Kunden invänder mot ändringen inom 30 dagar efter meddelandet ska Kunden och Leverantören samarbeta i god tro för att lösa Kundens invändning eller farhåga.
 
@@ -177,13 +177,13 @@ Om Leverantören får någon förfrågan eller begäran från någon annan om be
 
 Om det krävs enligt tillämpliga dataskyddslagar ska Leverantören rimligen bistå Kunden med att genomföra obligatoriska konsekvensbedömningar avseende dataskydd eller konsekvensbedömningar avseende dataöverföring och samråd med relevanta dataskyddsmyndigheter, med beaktande av behandlingens art och Kundens personuppgifter.
 
-## 7. Radering av kundens personuppgifter {#7-deletion-of-customer-personal-data}
+## 7. Radering av kundpersonuppgifter {#7-deletion-of-customer-personal-data}
 
 ### 1. Borttagning av kund {#1-deletion-by-customer}
 
 Leverantören kommer att göra det möjligt för kunden att radera kundens personuppgifter på ett sätt som överensstämmer med tjänsternas funktionalitet. Leverantören kommer att följa denna instruktion så snart som det är rimligen möjligt, förutom i de fall där ytterligare lagring av kundens personuppgifter krävs enligt tillämplig lag.
 
-### 2. Radering vid DPA-utgång {#2-deletion-at-dpa-expiration}
+### 2. Borttagning vid DPA-utgång {#2-deletion-at-dpa-expiration}
 
 a. Efter att dataskyddsavtalet löper ut kommer Leverantören att återlämna eller radera Kundens Personuppgifter på Kundens instruktioner, såvida inte ytterligare lagring av Kundens Personuppgifter krävs eller är godkänt enligt tillämplig lag. Om återlämnande eller förstöring är ogenomförbart eller förbjudet enligt tillämplig lag kommer Leverantören att vidta rimliga åtgärder för att förhindra ytterligare Behandling av Kundens Personuppgifter och fortsätta att skydda de Kundens Personuppgifter som finns kvar i Leverantörens besittning, förvar eller kontroll. Till exempel kan tillämplig lag kräva att Leverantören fortsätter att lagra eller behandla Kundens Personuppgifter.
 
@@ -215,9 +215,9 @@ Detta DPA (Data Procedure Procedure) träder i kraft när **Leverantören** och 
 
 Oaktat gällande lag eller liknande klausuler i **Avtalet** ska alla tolkningar och tvister gällande detta dataskyddsavtal regleras av lagarna i **Styrande staten** utan hänsyn till dess bestämmelser om lagkonflikter. Dessutom, och utan hinder av forumval, jurisdiktion eller liknande klausuler i **Avtalet**, samtycker parterna till att väcka talan, talan eller förfaranden gällande detta dataskyddsavtal i, och varje part underkastar sig oåterkalleligen domstolarnas exklusiva jurisdiktion.
 
-## 12. Relation mellan tjänsteleverantör {#12-service-provider-relationship}
+## 12. Relation till tjänsteleverantör {#12-service-provider-relationship}
 
-I den utsträckning California Consumer Privacy Act, Cal. Civ. Code § 1798.100 et seq ("CCPA") är tillämplig, bekräftar och samtycker parterna till att Leverantören är en tjänsteleverantör och tar emot personuppgifter från Kunden för att tillhandahålla Tjänsten enligt överenskommelsen i Avtalet, vilket utgör ett affärssyfte. Leverantören kommer inte att sälja några personuppgifter som tillhandahålls av Kunden enligt Avtalet. Dessutom kommer Leverantören inte att behålla, använda eller lämna ut några personuppgifter som tillhandahålls av Kunden enligt Avtalet, förutom i den utsträckning det är nödvändigt för att tillhandahålla Tjänsten för Kunden, i enlighet med Avtalet, eller i den utsträckning det är tillåtet enligt tillämpliga dataskyddslagar. Leverantören intygar att den förstår begränsningarna i detta stycke.
+I den utsträckning California Consumer Privacy Act, Cal. Civ. Code § 1798.100 et seq ("CCPA") är tillämplig, bekräftar och samtycker parterna till att Leverantören är en tjänsteleverantör och tar emot personuppgifter från Kunden för att tillhandahålla Tjänsten enligt överenskommelsen i Avtalet, vilket utgör ett affärssyfte. Leverantören kommer inte att sälja några personuppgifter som tillhandahålls av Kunden enligt Avtalet. Dessutom kommer Leverantören inte att behålla, använda eller lämna ut några personuppgifter som tillhandahålls av Kunden enligt Avtalet, förutom i den utsträckning det är nödvändigt för att tillhandahålla Tjänsten för Kunden, enligt vad som anges i Avtalet, eller enligt vad som är tillåtet enligt tillämpliga dataskyddslagar. Leverantören intygar att den förstår begränsningarna i detta stycke.
 
 ## 13. Definitioner {#13-definitions}
 
@@ -259,8 +259,8 @@ I den utsträckning California Consumer Privacy Act, Cal. Civ. Code § 1798.100 
 
 19. **”UK GDPR”** avser Europeiska unionens förordning 2016/679 såsom den genomförts genom avsnitt 3 i Storbritanniens utträdeslag från 2018 i Storbritannien.
 
-20. **"Tillägg till Storbritannien"** avser det internationella tillägget för dataöverföring till EES-standardkontraktsklausulerna som utfärdats av informationskommissionären för parter som gör begränsade överföringar enligt S119A(1) i dataskyddslagen från 2018.
+20. **"Tillägg till Storbritannien"** avser det internationella tillägget för dataöverföring till EES-standardkontraktsklausulerna utfärdat av informationskommissionären för parter som gör begränsade överföringar enligt S119A(1) i dataskyddslagen från 2018.
 
-## Medverkande {#credits}
+## Krediter {#credits}
 
-Detta dokument är en härledning av [Vanliga standardvillkor för dataskyddsavtal (version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) och är licensierat under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Detta dokument är en derivation av [Vanliga standardvillkor för dataskyddsavtal (version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) och är licensierat under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

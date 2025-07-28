@@ -6,7 +6,7 @@
 
 * [Prefacio](#foreword)
 * [¿Qué es el reenvío de correo electrónico?](#what-is-email-forwarding)
-* [Cómo funciona el reenvío de correo electrónico: la explicación técnica](#how-email-forwarding-works-the-technical-explanation)
+* [Cómo funciona el reenvío de correo electrónico: explicación técnica](#how-email-forwarding-works-the-technical-explanation)
   * [El proceso de reenvío de correo electrónico](#the-email-forwarding-process)
   * [El papel del SRS (Sender Rewriting Scheme)](#the-role-of-srs-sender-rewriting-scheme)
 * [Cómo funciona el reenvío de correo electrónico: una explicación sencilla](#how-email-forwarding-works-the-simple-explanation)
@@ -43,7 +43,7 @@
 
 ## Prólogo {#foreword}
 
-El reenvío de correo electrónico es una herramienta poderosa que puede transformar la forma en que gestionas tus comunicaciones en línea. Ya seas propietario de un negocio que busca crear direcciones de correo electrónico profesionales con tu dominio personalizado, una persona preocupada por la privacidad que busca proteger su correo electrónico principal o un desarrollador que necesita una gestión flexible del correo electrónico, comprender el reenvío de correo electrónico es esencial en el panorama digital actual.
+El reenvío de correo electrónico es una herramienta poderosa que puede transformar la gestión de tus comunicaciones en línea. Ya seas propietario de un negocio que busca crear direcciones de correo electrónico profesionales con tu dominio personalizado, una persona preocupada por la privacidad que busca proteger su correo electrónico principal o un desarrollador que necesita una gestión flexible del correo electrónico, comprender el reenvío de correo electrónico es esencial en el panorama digital actual.
 
 En Forward Email, hemos creado el servicio de reenvío de correo electrónico más seguro, privado y flexible del mundo. En esta guía completa, explicaremos cómo funciona el reenvío (tanto desde una perspectiva técnica como práctica), le guiaremos a través de nuestro sencillo proceso de configuración y le explicaremos por qué nuestro servicio destaca entre la competencia.
 
@@ -79,13 +79,13 @@ Para aquellos interesados en los detalles técnicos, exploremos qué sucede detr
 
 6. **Entrega**: El correo electrónico llega a su bandeja de entrada, apareciendo como si hubiera sido enviado a su dirección de reenvío, manteniendo la apariencia profesional de su dominio personalizado.
 
-### La función del SRS (Esquema de reescritura del remitente) {#the-role-of-srs-sender-rewriting-scheme}
+### La función de SRS (Esquema de reescritura del remitente) {#the-role-of-srs-sender-rewriting-scheme}
 
 El SRS merece especial atención, ya que es esencial para un reenvío de correo electrónico fiable. Al reenviar un correo electrónico, es necesario reescribir la dirección del remitente para garantizar que el correo pase las comprobaciones SPF en el destino final.
 
 Sin SRS, los correos electrónicos reenviados suelen no superar la verificación SPF y se marcan como spam o se rechazan por completo. Nuestra implementación de SRS garantiza la entrega fiable de sus correos electrónicos reenviados, conservando la información del remitente original de forma transparente para usted.
 
-## Cómo funciona el reenvío de correo electrónico: la explicación sencilla {#how-email-forwarding-works-the-simple-explanation}
+## Cómo funciona el reenvío de correo electrónico: la explicación simple {#how-email-forwarding-works-the-simple-explanation}
 
 Si los detalles técnicos parecen abrumadores, aquí hay una forma más sencilla de entender el reenvío de correo electrónico:
 
@@ -105,7 +105,7 @@ Una de las mayores ventajas de Forward Email es su facilidad de configuración. 
 
 ### 1. Regístrese para obtener una cuenta {#1-sign-up-for-an-account}
 
-Visita [forwardemail.net](https://forwardemail.net) y crea una cuenta gratuita. Nuestro proceso de registro toma menos de un minuto.
+Visita [forwardemail.net](https://forwardemail.net) y crea una cuenta gratuita. El proceso de registro toma menos de un minuto.
 
 ### 2. Agregue su dominio {#2-add-your-domain}
 
@@ -124,8 +124,8 @@ La mayoría de los registradores de dominios ofrecen una interfaz sencilla para 
 
 Una vez verificados sus registros DNS (lo que suele tardar solo unos minutos), puede crear reenvíos de correo electrónico. Simplemente especifique:
 
-* La dirección de correo electrónico de su dominio (p. ej., <contact@yourdomain.com>)
-* El destino al que desea enviar los correos electrónicos (p. ej., su dirección personal de Gmail)
+* La dirección de correo electrónico de tu dominio (p. ej., <contact@yourdomain.com>)
+* El destino al que quieres enviar los correos electrónicos (p. ej., tu dirección personal de Gmail)
 
 ### 5. Comience a usar sus nuevas direcciones de correo electrónico {#5-start-using-your-new-email-addresses}
 
@@ -139,7 +139,7 @@ Si bien el reenvío de correo electrónico básico es potente por sí solo, Forw
 
 Crea direcciones de correo electrónico específicas o anónimas que redirijan a tu cuenta principal. Puedes asignarles etiquetas y activarlas o desactivarlas en cualquier momento para mantener tu bandeja de entrada organizada. Tu dirección de correo electrónico real nunca se divulga.
 
-### Varios destinatarios y comodines {#multiple-recipients-and-wildcards}
+### Múltiples destinatarios y comodines {#multiple-recipients-and-wildcards}
 
 Reenvía una sola dirección a varios destinatarios, lo que facilita compartir información con un equipo. También puedes usar direcciones comodín (reenvío general) para recibir correos electrónicos enviados a cualquier dirección de tu dominio.
 
@@ -147,7 +147,7 @@ Reenvía una sola dirección a varios destinatarios, lo que facilita compartir i
 
 Nunca tendrás que salir de tu bandeja de entrada para enviar correos desde tu dominio personalizado. Envía y responde mensajes como si fueran de <tú@tudominio.com> directamente desde tu cuenta de Gmail o Outlook.
 
-### Seguridad resistente a los ataques cuánticos {#quantum-resistant-security}
+### Seguridad resistente a los efectos cuánticos {#quantum-resistant-security}
 
 Somos el primer y único servicio de correo electrónico del mundo que utiliza cifrado resistente a la tecnología cuántica, protegiendo sus comunicaciones incluso contra las amenazas futuras más avanzadas.
 
@@ -173,7 +173,7 @@ A diferencia de los competidores que dependen de Amazon SES u otros servicios de
 
 ### 4. Precios rentables {#4-cost-effective-pricing}
 
-Nuestro modelo de precios te permite escalar de forma rentable. No cobramos por usuario y puedes pagar por almacenamiento según lo uses. Por $3 al mes, ofrecemos más funciones a un precio más bajo que competidores como Gandi ($3.99 al mes).
+Nuestro modelo de precios te permite escalar de forma rentable. No cobramos por usuario y puedes pagar por almacenamiento según el uso. Por $3 al mes, ofrecemos más funciones a un precio más bajo que competidores como Gandi ($3.99 al mes).
 
 ### 5. Recursos ilimitados {#5-unlimited-resources}
 
@@ -212,19 +212,19 @@ El reenvío de correo electrónico resuelve numerosos desafíos para diferentes 
 
 Para aprovechar al máximo el reenvío de correo electrónico, tenga en cuenta estas prácticas recomendadas:
 
-### 1. Utilice direcciones descriptivas {#1-use-descriptive-addresses}
+### 1. Usar direcciones descriptivas {#1-use-descriptive-addresses}
 
 Cree direcciones de correo electrónico que indiquen claramente su propósito (por ejemplo, <newsletter@yourdomain.com>, <shopping@yourdomain.com>) para ayudar a organizar su correo entrante.
 
 ### 2. Implementar la autenticación adecuada {#2-implement-proper-authentication}
 
-Asegúrese de que su dominio cuente con los registros SPF, DKIM y DMARC correctos para maximizar la entregabilidad. Forward Email lo facilita con nuestra configuración guiada.
+Asegúrese de que su dominio cuente con los registros SPF, DKIM y DMARC adecuados para maximizar la entregabilidad. Forward Email lo facilita con nuestra configuración guiada.
 
 ### 3. Revise periódicamente sus reenvíos {#3-regularly-review-your-forwards}
 
 Audite periódicamente sus reenvíos de correo electrónico para deshabilitar aquellos que ya no sean necesarios o que reciban spam excesivo.
 
-### 4. Configurar "Enviar correo como" para respuestas sin problemas {#4-set-up-send-mail-as-for-seamless-replies}
+### 4. Configurar "Enviar correo como" para respuestas sin interrupciones {#4-set-up-send-mail-as-for-seamless-replies}
 
 Configure su cliente de correo electrónico principal para enviar correos como sus direcciones de dominio personalizadas para disfrutar de una experiencia consistente al responder correos electrónicos reenviados.
 

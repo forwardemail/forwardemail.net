@@ -48,7 +48,7 @@
   * [Schijfruimtebeheer voor Node.js-productie](#disk-space-management-for-nodejs-production)
   * [Automatisering van infrastructuuronderhoud](#infrastructure-maintenance-automation)
 * [Implementatiehandleiding voor Node.js-productie-implementatie](#nodejs-production-deployment-implementation-guide)
-  * [Bestudeer onze daadwerkelijke code voor de beste productiepraktijken](#study-our-actual-code-for-production-best-practices)
+  * [Bestudeer onze actuele code voor de beste productiepraktijken](#study-our-actual-code-for-production-best-practices)
   * [Leer van onze blogberichten](#learn-from-our-blog-posts)
   * [Infrastructuurautomatisering voor Node.js-productie](#infrastructure-automation-for-nodejs-production)
   * [Onze casestudies](#our-case-studies)
@@ -69,14 +69,14 @@ Bij Forward Email hebben we jarenlang gewerkt aan het perfectioneren van de conf
 Toen we migreerden van Intel- naar AMD Ryzen-processors, behaalden we een **573% prestatieverbetering** in onze Node.js-applicaties. Dit was niet zomaar een kleine optimalisatie: het veranderde fundamenteel de prestaties van onze Node.js-applicaties in productie en toont het belang aan van single-core prestatieoptimalisatie voor elke Node.js-applicatie.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Voor best practices voor Node.js-productie-implementaties is de hardwarekeuze cruciaal. We hebben specifiek gekozen voor DataPacket-hosting vanwege de beschikbaarheid van hun AMD Ryzen, omdat single-core prestaties cruciaal zijn voor Node.js-applicaties, aangezien JavaScript single-threaded wordt uitgevoerd.
 
 ### Waarom Single Core-prestatieoptimalisatie belangrijk is voor Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Onze migratie van Intel naar AMD Ryzen resulteerde in:
 
-* **573% prestatieverbetering** bij aanvraagverwerking (gedocumenteerd in [GitHub-probleem #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671 op onze statuspagina)
-* **Verwerkingsvertragingen geëlimineerd** tot vrijwel directe reacties (genoemd in [GitHub-probleem #298](https://github.com/forwardemail/forwardemail.net/issues/298))
+* **573% prestatieverbetering** bij aanvraagverwerking (gedocumenteerd in [GitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671)) op onze statuspagina
+* **Verwerkingsvertragingen geëlimineerd** tot vrijwel directe reacties (genoemd in [GitHub Issue #298](https://github.com/forwardemail/forwardemail.net/issues/298))
 * **Betere prijs-prestatieverhouding** voor Node.js-productieomgevingen
 * **Verbeterde responstijden** voor al onze applicatie-endpoints
 
@@ -105,7 +105,7 @@ We hebben voor pnpm gekozen boven npm en yarn voor onze Node.js-productieomgevin
 * **Betere prestaties** in productie-implementaties
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Als onderdeel van onze best practices voor Node.js-productie-implementaties, pinnen we exacte versies van kritieke tools zoals pnpm om consistent gedrag in alle omgevingen en op alle machines van teamleden te garanderen.
 
 **Implementatiedetails:**
 
@@ -120,7 +120,7 @@ We hebben voor pnpm gekozen boven npm en yarn voor onze Node.js-productieomgevin
 * [`@koa/multer`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/koa-simple-ratelimit`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-We kozen Koa boven Express voor onze Node.js-productie-infrastructuur vanwege de moderne async/await-ondersteuning en overzichtelijke middleware-samenstelling. Onze oprichter Nick Baugh heeft bijgedragen aan zowel Express als Koa, waardoor we diepgaand inzicht hebben gekregen in beide frameworks voor gebruik in productie.
+We kozen Koa boven Express voor onze Node.js-productie-infrastructuur vanwege de moderne async/await-ondersteuning en overzichtelijke middleware-compositie. Onze oprichter Nick Baugh heeft bijgedragen aan zowel Express als Koa, waardoor we diepgaand inzicht hebben gekregen in beide frameworks voor gebruik in productie.
 
 Deze patronen zijn van toepassing ongeacht of u REST API's, GraphQL-servers, webapplicaties of microservices bouwt.
 
@@ -158,7 +158,7 @@ We gebruiken @hapi/boom voor gestructureerde foutreacties in onze Node.js-produc
 
 Onze aanpak voor het monitoren van Node.js-applicaties in productie is geëvolueerd door de jaren heen, waarin we applicaties op schaal hebben uitgevoerd. We implementeren monitoring op meerdere lagen om de betrouwbaarheid en prestaties van elk type Node.js-applicatie te garanderen.
 
-### Systeemniveau Node.js productiebewaking {#system-level-nodejs-production-monitoring}
+### Node.js-productiebewaking op systeemniveau {#system-level-nodejs-production-monitoring}
 
 **Onze kernimplementatie:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
@@ -172,7 +172,7 @@ Onze productiebewakingsdrempels (op basis van onze daadwerkelijke productiecode)
 * **Waarschuwingsdrempel voor 75% schijfgebruik**
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Deze drempelwaarden werken voor onze specifieke hardwareconfiguratie. Bekijk bij de implementatie van Node.js-productiemonitoring onze monitor-server.js-implementatie om de exacte logica te begrijpen en de waarden aan te passen aan uw configuratie.
 
 ### Monitoring op applicatieniveau voor Node.js-productie {#application-level-monitoring-for-nodejs-production}
 
@@ -188,7 +188,7 @@ Dit patroon is van toepassing op alle Node.js-toepassingen: webapps, API's, micr
 
 **Onze logging-implementatie:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-We maken gebruik van uitgebreide veldredactie om gevoelige informatie te beschermen, terwijl we tegelijkertijd nuttige foutopsporingsmogelijkheden in onze Node.js-productieomgeving behouden.
+We maken gebruik van uitgebreide veldredactie om gevoelige informatie te beschermen, terwijl we tegelijkertijd nuttige debugmogelijkheden in onze Node.js-productieomgeving behouden.
 
 ### Toepassingsspecifieke monitoring {#application-specific-monitoring}
 
@@ -217,7 +217,7 @@ Onze Node.js-productiemonitoring met PM2-statuscontroles omvat:
 * **Voorkomt herstartlussen** door middel van intelligente statuscontrole
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Voor de best practices voor Node.js-productie-implementaties vereisen we een uptime van minimaal 15 minuten voordat een proces als gezond wordt beschouwd om herstartlussen te voorkomen. Dit voorkomt opeenvolgende fouten wanneer processen problemen hebben met geheugen of andere problemen.
 
 ### Onze PM2-productieconfiguratie {#our-pm2-production-configuration}
 
@@ -249,7 +249,7 @@ Deze helper biedt intelligente foutclassificatie voor Node.js-toepassingen in pr
 * **Prioriteit geven aan daadwerkelijke bugs** boven gebruikersfouten
 * **Onze incidentrespons verbeteren** door ons te richten op echte problemen
 * **Minder waarschuwingsmoeheid** door verwachte gebruikersfouten
-* **Beter inzicht** in problemen die door applicaties worden gegenereerd versus problemen die door gebruikers worden gegenereerd
+* **Beter inzicht** in applicatie- versus door gebruikers gegenereerde problemen
 
 Dit patroon werkt voor alle Node.js-toepassingen, of u nu e-commercesites, SaaS-platforms, API's of microservices bouwt.
 
@@ -263,10 +263,10 @@ Onze logger gebruikt `isCodeBug` om waarschuwingsniveaus en veldredactie te bepa
 
 Meer informatie over onze foutverwerkingspatronen:
 
-* [Het bouwen van een betrouwbaar betalingssysteem](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Patronen voor foutverwerking
+* [Het bouwen van een betrouwbaar betalingssysteem](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Patronen voor foutafhandeling
 * [E-mailprivacybescherming](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Afhandeling van beveiligingsfouten
 
-## Geavanceerd prestatiedebuggen met v8-profiler-next en cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
+## Geavanceerde prestatie-debugging met v8-profiler-next en cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
 We gebruiken geavanceerde profileringstools om heap snapshots te analyseren en OOM (Out of Memory)-problemen, prestatieknelpunten en Node.js-geheugenproblemen in onze productieomgeving te debuggen. Deze tools zijn essentieel voor elke Node.js-applicatie die geheugenlekken of prestatieproblemen ondervindt.
 
@@ -274,13 +274,13 @@ We gebruiken geavanceerde profileringstools om heap snapshots te analyseren en O
 
 **Door ons aanbevolen gereedschap:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Voor het genereren van heap snapshots en CPU-profielen
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - Voor het analyseren van CPU-profielen en heap snapshots
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Voor het genereren van heap-snapshots en CPU-profielen
+* [`cpupro`](https://github.com/discoveryjs/cpupro) - Voor het analyseren van CPU-profielen en heap-snapshots
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> We gebruiken v8-profiler-next en cpupro samen om een complete performance debugging workflow voor onze Node.js-applicaties te creëren. Deze combinatie helpt ons geheugenlekken en prestatieknelpunten te identificeren en onze productiecode te optimaliseren.
 
-### Hoe we heap snapshot-analyse implementeren {#how-we-implement-heap-snapshot-analysis}
+### Hoe we heap-snapshotanalyse implementeren {#how-we-implement-heap-snapshot-analysis}
 
 **Onze monitoring-implementatie:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
@@ -319,7 +319,7 @@ Onze productiemonitoring omvat het automatisch genereren van heap snapshots wann
 4. **Monitor prestatieverbeteringen voor/na**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> Het genereren van heap snapshots en CPU-profielen kan de prestaties beïnvloeden. We raden aan om throttling te implementeren en profilering alleen in te schakelen bij het onderzoeken van specifieke problemen of tijdens onderhoudsperiodes.
 
 ### Integratie met onze productiemonitoring {#integration-with-our-production-monitoring}
 
@@ -330,7 +330,7 @@ Onze profileringshulpmiddelen integreren met onze bredere monitoringstrategie:
 * **Historische analyse** om prestatietrends in de loop van de tijd te volgen
 * **Correlatie met applicatiestatistieken** voor uitgebreide foutopsporing
 
-Deze aanpak heeft ons geholpen geheugenlekken te identificeren en op te lossen, hot code-paden te optimaliseren en stabiele prestaties te garanderen in onze Node.js-productieomgeving.
+Dankzij deze aanpak konden we geheugenlekken identificeren en oplossen, hot code-paden optimaliseren en stabiele prestaties in onze Node.js-productieomgeving garanderen.
 
 ## Node.js Productie-infrastructuurbeveiliging {#nodejs-production-infrastructure-security}
 
@@ -348,7 +348,7 @@ Onze belangrijkste beveiligingsmaatregelen voor Node.js-productieomgevingen:
 * **Kernelparameterafstemming** voor zowel beveiliging als prestaties
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Bij het implementeren van best practices voor Node.js-productie-implementaties kan het uitschakelen van swap-bewerkingen leiden tot geheugenuitval als uw applicatie het beschikbare RAM-geheugen overschrijdt. We monitoren het geheugengebruik zorgvuldig en passen onze servers hierop aan.
 
 ### Toepassingsbeveiliging voor Node.js-toepassingen {#application-security-for-nodejs-applications}
 
@@ -415,13 +415,13 @@ Wij gebruiken MongoDB voor applicatiegegevens in onze Node.js-productieomgeving 
 * **Rijke querytaal**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Onze hybride aanpak is geoptimaliseerd voor onze specifieke use case. Bestudeer onze daadwerkelijke databasegebruikspatronen in de codebase om te zien of deze aanpak past bij de behoeften van uw Node.js-applicatie.
 
 ## Node.js Productie Achtergrondtaakverwerking {#nodejs-production-background-job-processing}
 
 We hebben onze achtergrondtaakarchitectuur rond Bree gebouwd voor een betrouwbare Node.js-productie-implementatie. Dit geldt voor elke Node.js-applicatie die achtergrondverwerking nodig heeft:
 
-### Onze Bree-serveropstelling voor productie {#our-bree-server-setup-for-production}
+### Onze Bree-serverinstallatie voor productie {#our-bree-server-setup-for-production}
 
 **Onze belangrijkste implementatie:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
@@ -431,7 +431,7 @@ We hebben onze achtergrondtaakarchitectuur rond Bree gebouwd voor een betrouwbar
 
 **Gezondheidsmonitoring:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
-**Automatisering van opschonen:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+**Automatisering van opruiming:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
 **Al onze vacatures:** [Blader door onze volledige vacaturebank](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
 
@@ -527,7 +527,7 @@ Onze Node.js-productie-infrastructuur laat zien dat Node.js-applicaties betrouwb
 
 * **Bewezen hardwarekeuzes** (AMD Ryzen voor 573% single-core prestatie-optimalisatie)
 * **In de praktijk geteste Node.js-productiemonitoring** met specifieke drempels en geautomatiseerde reacties
-* **Slimme foutclassificatie** om de incidentrespons in productieomgevingen te verbeteren
+* **Slimme foutclassificatie** om de respons op incidenten in productieomgevingen te verbeteren
 * **Geavanceerde prestatiedebugging** met v8-profiler-next en cpupro voor OOM-preventie
 * **Uitgebreide beveiligingsversterking** door Ansible-automatisering
 * **Hybride databasearchitectuur** geoptimaliseerd voor applicatiebehoeften

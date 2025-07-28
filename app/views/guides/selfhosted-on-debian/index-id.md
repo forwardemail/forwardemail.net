@@ -21,14 +21,14 @@
   * [Langkah 13: Hasilkan Kunci Enkripsi](#step-13-generate-encryption-keys)
   * [Langkah 14: Perbarui Jalur SSL dalam Konfigurasi](#step-14-update-ssl-paths-in-configuration)
   * [Langkah 15: Siapkan Autentikasi Dasar](#step-15-set-up-basic-authentication)
-  * [Langkah 16: Terapkan dengan Docker Compose](#step-16-deploy-with-docker-compose)
+  * [Langkah 16: Deploy dengan Docker Compose](#step-16-deploy-with-docker-compose)
   * [Langkah 17: Verifikasi Instalasi](#step-17-verify-installation)
-* [Konfigurasi Pasca Instalasi](#post-installation-configuration)
-  * [Pengaturan Rekaman DNS](#dns-records-setup)
+* [Konfigurasi Pasca-Instalasi](#post-installation-configuration)
+  * [Pengaturan Catatan DNS](#dns-records-setup)
   * [Login Pertama](#first-login)
 * [Konfigurasi Cadangan](#backup-configuration)
   * [Siapkan Cadangan yang Kompatibel dengan S3](#set-up-s3-compatible-backup)
-  * [Menyiapkan Pekerjaan Cron Cadangan](#set-up-backup-cron-jobs)
+  * [Siapkan Pekerjaan Cron Cadangan](#set-up-backup-cron-jobs)
 * [Konfigurasi Pembaruan Otomatis](#auto-update-configuration)
 * [Pertimbangan Khusus Debian](#debian-specific-considerations)
   * [Perbedaan Manajemen Paket](#package-management-differences)
@@ -36,18 +36,18 @@
   * [Konfigurasi Jaringan](#network-configuration)
 * [Pemeliharaan dan Pemantauan](#maintenance-and-monitoring)
   * [Lokasi Log](#log-locations)
-  * [Tugas Perawatan Rutin](#regular-maintenance-tasks)
+  * [Tugas Pemeliharaan Rutin](#regular-maintenance-tasks)
   * [Perpanjangan Sertifikat](#certificate-renewal)
-* [Penyelesaian Masalah](#troubleshooting)
+* [Pemecahan Masalah](#troubleshooting)
   * [Masalah Khusus Debian](#debian-specific-issues)
   * [Masalah Umum](#common-issues)
   * [Mendapatkan Bantuan](#getting-help)
-* [Praktik Keamanan Terbaik](#security-best-practices)
+* [Praktik Terbaik Keamanan](#security-best-practices)
 * [Kesimpulan](#conclusion)
 
 ## Ikhtisar {#overview}
 
-Panduan ini menyediakan petunjuk langkah demi langkah untuk menginstal solusi Forward Email yang dihosting sendiri pada sistem Debian. Panduan ini secara khusus dirancang untuk Debian 11 (Bullseye) dan Debian 12 (Bookworm).
+Panduan ini memberikan petunjuk langkah demi langkah untuk menginstal solusi self-hosted Forward Email di sistem Debian. Panduan ini dirancang khusus untuk Debian 11 (Bullseye) dan Debian 12 (Bookworm).
 
 ## Prasyarat {#prerequisites}
 
@@ -56,13 +56,13 @@ Sebelum memulai instalasi, pastikan Anda memiliki:
 * **Server Debian**: Versi 11 (Bullseye) atau 12 (Bookworm)
 * **Akses Root**: Anda harus dapat menjalankan perintah sebagai root (akses sudo)
 * **Nama Domain**: Domain yang Anda kendalikan dengan akses manajemen DNS
-* **Server Bersih**: Disarankan untuk menggunakan instalasi Debian baru
-* **Koneksi Internet**: Diperlukan untuk mengunduh paket dan gambar Docker
+* **Server Bersih**: Disarankan menggunakan instalasi Debian baru
+* **Koneksi Internet**: Diperlukan untuk mengunduh paket dan image Docker
 
 ## Persyaratan Sistem {#system-requirements}
 
 * **RAM**: Minimal 2GB (disarankan 4GB untuk produksi)
-* **Penyimpanan**: Minimal 20GB ruang yang tersedia (disarankan 50GB+ untuk produksi)
+* **Penyimpanan**: Minimal 20GB ruang kosong (disarankan 50GB+ untuk produksi)
 * **CPU**: Minimal 1 vCPU (disarankan 2+ vCPU untuk produksi)
 * **Jaringan**: Alamat IP publik dengan port berikut yang dapat diakses:
 * 22 (SSH)
@@ -214,7 +214,7 @@ systemctl start docker
 docker info
 ```
 
-Jika Docker gagal untuk memulai, coba memulainya secara manual:
+Jika Docker gagal memulai, coba memulainya secara manual:
 
 ```bash
 # Alternative startup method if systemctl fails
@@ -267,7 +267,7 @@ ufw status numbered
 
 ### Langkah 9: Kloning Repositori Email Penerusan {#step-9-clone-forward-email-repository}
 
-Unduh kode sumber Email Terusan:
+Unduh kode sumber Email Teruskan:
 
 ```bash
 # Set up variables
@@ -362,7 +362,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Penting**: Saat diminta, Anda harus membuat rekaman TXT di DNS Anda. Anda mungkin melihat beberapa tantangan untuk domain yang sama - **buat SEMUANYA**. Jangan hapus rekaman TXT pertama saat menambahkan yang kedua.
+**Penting**: Saat diminta, Anda perlu membuat data TXT di DNS Anda. Anda mungkin melihat beberapa tantangan untuk domain yang sama - **buat SEMUANYA**. Jangan hapus data TXT pertama saat menambahkan yang kedua.
 
 #### Opsi B: DNS Cloudflare (Jika Anda menggunakan Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -391,7 +391,7 @@ certbot certonly \
 
 #### Salin Sertifikat {#copy-certificates}
 
-Setelah pembuatan sertifikat, salin ke direktori aplikasi:
+Setelah sertifikat dibuat, salin ke direktori aplikasi:
 
 ```bash
 # Copy certificates to application SSL directory
@@ -434,7 +434,7 @@ echo "✅ All encryption keys generated successfully"
 
 ### Langkah 14: Perbarui Jalur SSL dalam Konfigurasi {#step-14-update-ssl-paths-in-configuration}
 
-Konfigurasikan jalur sertifikat SSL di file lingkungan:
+Konfigurasikan jalur sertifikat SSL dalam file lingkungan:
 
 ```bash
 # Update SSL paths to point to the correct certificate files
@@ -533,7 +533,7 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ## Konfigurasi Pasca-Instalasi {#post-installation-configuration}
 
-### Pengaturan Rekaman DNS {#dns-records-setup}
+### Penyiapan Rekaman DNS {#dns-records-setup}
 
 Anda perlu mengonfigurasi catatan DNS berikut untuk domain Anda:
 
@@ -543,7 +543,7 @@ Anda perlu mengonfigurasi catatan DNS berikut untuk domain Anda:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Rekaman A {#a-records}
+Rekaman A {####
 
 ```
 @ A YOUR_SERVER_IP
@@ -660,8 +660,8 @@ crontab -l
 
 * **Snapd**: Tidak terinstal secara default di Debian, memerlukan instalasi manual
 * **Docker**: Menggunakan repositori khusus Debian dan kunci GPG
-* **UFW**: Mungkin tidak disertakan dalam instalasi Debian minimal
-* **systemd**: Perilaku mungkin sedikit berbeda dari Ubuntu
+* **UFW**: Mungkin tidak disertakan dalam instalasi minimal Debian
+* **systemd**: Perilakunya mungkin sedikit berbeda dari Ubuntu
 
 ### Manajemen Layanan {#service-management}
 
@@ -695,11 +695,11 @@ nslookup google.com
 
 ### Lokasi Log {#log-locations}
 
-* **Log Docker Compose**: Gunakan perintah docker compose yang sesuai berdasarkan instalasi
-* **Log sistem**: `/var/log/syslog`
-* **Log cadangan**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Log pembaruan otomatis**: `/var/log/autoupdate.log`
-* **Log snapd**: `journalctl -u snapd`
+**Log Docker Compose**: Gunakan perintah Docker Compose yang sesuai berdasarkan instalasi
+* **Log Sistem**: `/var/log/syslog`
+* **Log Cadangan**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Log Pembaruan Otomatis**: `/var/log/autoupdate.log`
+* **Log Snapd**: `journalctl -u snapd`
 
 ### Tugas Pemeliharaan Reguler {#regular-maintenance-tasks}
 
@@ -709,7 +709,7 @@ nslookup google.com
 4. **Perbarui paket sistem**: `apt update && apt upgrade`
 5. **Pantau snapd**: `snap list` dan `snap refresh`
 
-### Perpanjangan Sertifikat {#certificate-renewal}
+### Pembaruan Sertifikat {#certificate-renewal}
 
 Sertifikat harus diperbarui secara otomatis, tetapi Anda dapat memperbaruinya secara manual jika diperlukan:
 
@@ -795,42 +795,42 @@ nohup dockerd >/dev/null 2>/dev/null &
 #### 2. Pembuatan Sertifikat Gagal {#2-certificate-generation-fails}
 
 * Pastikan port 80 dan 443 dapat diakses
-* Verifikasi bahwa rekaman DNS mengarah ke server Anda
+* Pastikan data DNS mengarah ke server Anda
 * Periksa pengaturan firewall dengan `ufw status`
 
 #### 3. Masalah Pengiriman Email {#3-email-delivery-issues}
 
-* Verifikasi apakah catatan MX sudah benar
-* Periksa catatan SPF, DKIM, dan DMARC
+* Pastikan data MX sudah benar
+* Periksa data SPF, DKIM, dan DMARC
 * Pastikan port 25 tidak diblokir oleh penyedia hosting Anda
 
 ### Mendapatkan Bantuan {#getting-help}
 
-* **Dokumentasi**: <https://forwardemail.net/self-hosted>
+**Dokumentasi**: <https://forwardemail.net/self-hosted>
 * **Masalah GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Dokumentasi Debian**: <https://www.debian.org/doc/>
 
 ## Praktik Terbaik Keamanan {#security-best-practices}
 
-1. **Tetap Perbarui Sistem**: Perbarui Debian dan paket secara berkala
-2. **Pantau Log**: Siapkan pemantauan dan pemberitahuan log
+1. **Pastikan Sistem Tetap Terkini**: Perbarui Debian dan paket secara berkala
+2. **Pantau Log**: Atur pemantauan dan pemberitahuan log
 3. **Cadangkan Secara Berkala**: Uji prosedur pencadangan dan pemulihan
 4. **Gunakan Kata Sandi yang Kuat**: Buat kata sandi yang kuat untuk semua akun
 5. **Aktifkan Fail2Ban**: Pertimbangkan untuk menginstal fail2ban untuk keamanan tambahan
 6. **Audit Keamanan Berkala**: Tinjau konfigurasi Anda secara berkala
-7. **Pantau Snapd**: Tetap perbarui paket snap dengan `snap refresh`
+7. **Pantau Snapd**: Pastikan paket snap selalu diperbarui dengan `snap refresh`
 
 ## Kesimpulan {#conclusion}
 
-Instalasi Forward Email yang Anda hosting sendiri sekarang sudah lengkap dan berjalan di Debian. Ingatlah untuk:
+Instalasi Forward Email self-hosted Anda sekarang sudah selesai dan berjalan di Debian. Jangan lupa untuk:
 
 1. Konfigurasikan rekaman DNS Anda dengan benar
 2. Uji pengiriman dan penerimaan email
-3. Siapkan cadangan rutin
-4. Pantau sistem Anda secara teratur
-5. Jaga agar instalasi Anda tetap mutakhir
+3. Siapkan pencadangan rutin
+4. Pantau sistem Anda secara berkala
+5. Selalu perbarui instalasi Anda
 6. Pantau paket snapd dan snap
 
-Perbedaan utama dari Ubuntu adalah instalasi snapd dan konfigurasi repositori Docker. Setelah keduanya diatur dengan benar, aplikasi Forward Email akan berfungsi sama pada kedua sistem.
+Perbedaan utama dari Ubuntu terletak pada instalasi snapd dan konfigurasi repositori Docker. Setelah keduanya diatur dengan benar, aplikasi Forward Email akan berfungsi sama di kedua sistem.
 
 Untuk opsi konfigurasi tambahan dan fitur lanjutan, lihat dokumentasi Forward Email resmi di <https://forwardemail.net/self-hosted#configuration>.

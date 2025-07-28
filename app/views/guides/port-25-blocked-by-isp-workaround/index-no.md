@@ -16,7 +16,7 @@ Siden du ikke kan ha utgående trafikk på port 25, vil du mest sannsynlig helle
 
 Forutsatt at du bruker tjenesten vår til å videresende e-poster, [Du kan løse dette problemet gjennom våre FAQ-svar her](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
 
-## Slik omgår du internettleverandørens blokkering av utgående SMTP på port 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
+## Slik omgår du at internettleverandøren blokkerer utgående SMTP på port 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 
 Hvis internettleverandøren din blokkerer utgående port 25, må du finne en alternativ løsning eller kontakte dem.
 

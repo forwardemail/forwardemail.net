@@ -6,18 +6,18 @@
 
 * [Forord](#foreword)
 * [Hvorfor selvhostede e-mails er vigtige](#why-self-hosted-email-matters)
-  * [Problemet med traditionelle e-mail-tjenester](#the-problem-with-traditional-email-services)
-  * [Det Self-Hosted Alternativ](#the-self-hosted-alternative)
-* [Vores Self-Hosted Implementering: Teknisk oversigt](#our-self-hosted-implementation-technical-overview)
+  * [Problemet med traditionelle e-mailtjenester](#the-problem-with-traditional-email-services)
+  * [Det selvhostede alternativ](#the-self-hosted-alternative)
+* [Vores selvhostede implementering: Teknisk oversigt](#our-self-hosted-implementation-technical-overview)
   * [Docker-baseret arkitektur for enkelhed og bærbarhed](#docker-based-architecture-for-simplicity-and-portability)
-  * [Bash Script Installation: Tilgængelighed møder sikkerhed](#bash-script-installation-accessibility-meets-security)
+  * [Installation af Bash-script: Tilgængelighed møder sikkerhed](#bash-script-installation-accessibility-meets-security)
   * [Kvantesikker kryptering for fremtidssikret privatliv](#quantum-safe-encryption-for-future-proof-privacy)
   * [Automatiseret vedligeholdelse og opdateringer](#automated-maintenance-and-updates)
-* [Open Source-forpligtelsen](#the-open-source-commitment)
-* [Selvvært vs. administreret: At træffe det rigtige valg](#self-hosted-vs-managed-making-the-right-choice)
-  * [Virkeligheden af selvhostende e-mail](#the-reality-of-self-hosting-email)
+* [Open source-forpligtelsen](#the-open-source-commitment)
+* [Selvhostet vs. administreret: Træf det rigtige valg](#self-hosted-vs-managed-making-the-right-choice)
+  * [Virkeligheden ved selvhosting af e-mails](#the-reality-of-self-hosting-email)
   * [Hvornår skal du vælge vores administrerede service](#when-to-choose-our-managed-service)
-* [Kom godt i gang med Self-Hosted Videresend e-mail](#getting-started-with-self-hosted-forward-email)
+* [Kom godt i gang med selvhostet videresendelse af e-mail](#getting-started-with-self-hosted-forward-email)
   * [Systemkrav](#system-requirements)
   * [Installationstrin](#installation-steps)
 * [Fremtiden for selvhostet e-mail](#the-future-of-self-hosted-email)
@@ -26,19 +26,19 @@
 
 ## Forord {#foreword}
 
-I nutidens digitale landskab er e-mail fortsat rygraden i vores online identitet og kommunikation. Men efterhånden som bekymringerne for privatlivets fred vokser, står mange brugere over for et vanskeligt valg: bekvemmelighed på bekostning af privatlivets fred eller privatliv på bekostning af bekvemmelighed. Hos Forward Email har vi altid ment, at du ikke skal vælge mellem de to.
+I dagens digitale landskab er e-mail stadig rygraden i vores online identitet og kommunikation. Men i takt med at bekymringerne om privatlivets fred vokser, står mange brugere over for et vanskeligt valg: bekvemmelighed på bekostning af privatlivets fred eller privatliv på bekostning af bekvemmelighed. Hos Forward Email har vi altid ment, at du ikke burde skulle vælge mellem de to.
 
-I dag er vi glade for at kunne annoncere en vigtig milepæl på vores rejse: lanceringen af vores selvhostede e-mail-løsning. Denne funktion repræsenterer vores dybeste forpligtelse til open source-principper, privatlivsfokuseret design og brugerindflydelse. Med vores selv-hostede mulighed lægger vi den fulde magt og kontrol over din e-mail-kommunikation direkte i dine hænder.
+I dag er vi glade for at kunne annoncere en vigtig milepæl i vores rejse: lanceringen af vores selvhostede e-mailløsning. Denne funktion repræsenterer vores dybeste engagement i open source-principper, privatlivsfokuseret design og brugerindflydelse. Med vores selvhostede løsning giver vi dig den fulde magt og kontrol over din e-mailkommunikation direkte.
 
-Dette blogindlæg udforsker filosofien bag vores selvhostede løsning, dens tekniske implementering, og hvorfor det er vigtigt for brugere, der prioriterer både privatliv og ejerskab i deres digitale kommunikation.
+Dette blogindlæg udforsker filosofien bag vores selvhostede løsning, dens tekniske implementering, og hvorfor den er vigtig for brugere, der prioriterer både privatliv og ejerskab i deres digitale kommunikation.
 
 ## Hvorfor selvhostede e-mails er vigtige {#why-self-hosted-email-matters}
 
-Vores selvhostede e-mail-løsning er det klareste udtryk for vores tro på, at ægte privatliv betyder kontrol, og kontrol starter med open source. For brugere, der kræver fuldt ejerskab over deres digitale kommunikation, er selvhosting ikke længere en udkantside – det er en væsentlig rettighed. Vi er stolte af at stå bag denne tro med en fuldt åben, verificerbar platform, du kan køre på dine egne præmisser.
+Vores selvhostede e-mailløsning er det klareste udtryk for vores overbevisning om, at ægte privatliv betyder kontrol, og kontrol starter med open source. For brugere, der kræver fuldt ejerskab over deres digitale kommunikation, er selvhosting ikke længere en marginal idé – det er en essentiel rettighed. Vi er stolte af at stå bag denne overbevisning med en fuldt åben, verificerbar platform, du kan køre på dine egne præmisser.
 
 ### Problemet med traditionelle e-mailtjenester {#the-problem-with-traditional-email-services}
 
-Traditionelle e-mail-tjenester præsenterer flere grundlæggende udfordringer for privatlivsbevidste brugere:
+Traditionelle e-mailtjenester præsenterer flere grundlæggende udfordringer for privatlivsbevidste brugere:
 
 1. **Tillidskrav**: Du skal have tillid til, at udbyderen ikke tilgår, analyserer eller deler dine data.
 2. **Centraliseret kontrol**: Din adgang kan til enhver tid tilbagekaldes af en hvilken som helst grund.
@@ -46,7 +46,7 @@ Traditionelle e-mail-tjenester præsenterer flere grundlæggende udfordringer fo
 4. **Begrænset gennemsigtighed**: De fleste tjenester bruger proprietær, lukket software.
 5. **Leverandørfastlåsning**: Det kan være vanskeligt eller umuligt at migrere væk fra disse tjenester.
 
-Selv "privatlivsfokuserede" e-mail-udbydere kommer ofte til kort ved kun at åbne deres frontend-applikationer, mens de holder deres backend-systemer proprietære og lukkede. Dette skaber et betydeligt tillidsgab – du bliver bedt om at tro på deres løfter om privatliv uden mulighed for at bekræfte dem.
+Selv "privatlivsfokuserede" e-mailudbydere kommer ofte til kort ved kun at open-source deres frontend-applikationer, mens de holder deres backend-systemer proprietære og lukkede. Dette skaber et betydeligt tillidskløft – du bliver bedt om at tro på deres privatlivsløfter uden muligheden for at verificere dem.
 
 ### Det selvhostede alternativ {#the-self-hosted-alternative}
 
@@ -58,15 +58,15 @@ Selvhosting af din e-mail giver en fundamentalt anderledes tilgang:
 4. **Tilpasningsfrihed**: Tilpas systemet til dine specifikke behov
 5. **Modstandsdygtighed**: Din service fortsætter uanset virksomhedens beslutninger
 
-Som en bruger udtrykte det: "Selvhosting af min e-mail er det digitale svar til at dyrke min egen mad - det kræver mere arbejde, men jeg ved præcis, hvad der er i det."
+Som en bruger udtrykte det: "At hoste min e-mail selv er den digitale ækvivalent til at dyrke min egen mad – det kræver mere arbejde, men jeg ved præcis, hvad der er i det."
 
 ## Vores selvhostede implementering: Teknisk oversigt {#our-self-hosted-implementation-technical-overview}
 
-Vores selvhostede e-mail-løsning er bygget på de samme principper om privatlivets fred, som guider alle vores produkter. Lad os undersøge den tekniske implementering, der gør dette muligt.
+Vores selvhostede e-mailløsning er bygget på de samme principper om privatliv først, som styrer alle vores produkter. Lad os udforske den tekniske implementering, der gør dette muligt.
 
 ### Docker-baseret arkitektur for enkelhed og bærbarhed {#docker-based-architecture-for-simplicity-and-portability}
 
-Vi har pakket hele vores e-mail-infrastruktur ved hjælp af Docker, hvilket gør det nemt at implementere på stort set alle Linux-baserede systemer. Denne containeriserede tilgang giver flere vigtige fordele:
+Vi har pakket hele vores e-mailinfrastruktur ved hjælp af Docker, hvilket gør det nemt at implementere det på stort set alle Linux-baserede systemer. Denne containeriserede tilgang giver flere vigtige fordele:
 
 1. **Forenklet implementering**: En enkelt kommando konfigurerer hele infrastrukturen
 2. **Konsistent miljø**: Eliminerer problemer med "virker på min maskine"
@@ -74,7 +74,7 @@ Vi har pakket hele vores e-mail-infrastruktur ved hjælp af Docker, hvilket gør
 4. **Nemme opdateringer**: Enkle kommandoer til at opdatere hele stakken
 5. **Minimale afhængigheder**: Kræver kun Docker og Docker Compose
 
-Arkitekturen omfatter containere til:
+Arkitekturen inkluderer containere til:
 
 * Webgrænseflade til administration
 * SMTP-server til udgående e-mail
@@ -86,9 +86,9 @@ Arkitekturen omfatter containere til:
 * SQLite til sikker, krypteret postkasselagring
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Sørg for at tjekke vores [guide til selvhostede udviklere](https://forwardemail.net/self-hosted)
 
-### Installation af Bash-script: Tilgængelighed møder sikkerhed {#bash-script-installation-accessibility-meets-security}
+### Bash-scriptinstallation: Tilgængelighed møder sikkerhed {#bash-script-installation-accessibility-meets-security}
 
 Vi har designet installationsprocessen til at være så enkel som muligt, samtidig med at vi opretholder bedste praksis for sikkerhed:
 
@@ -96,7 +96,7 @@ Vi har designet installationsprocessen til at være så enkel som muligt, samtid
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-Denne enkelte kommando:
+Denne ene kommando:
 
 1. Bekræfter systemkrav
 2. Guider dig gennem konfigurationen
@@ -105,24 +105,24 @@ Denne enkelte kommando:
 5. Implementerer Docker-containere
 6. Udfører indledende sikkerhedshærdning
 
-For dem, der er bekymrede for at lægge scripts til bash (som du burde være!), opfordrer vi til at gennemgå scriptet før udførelse. Det er fuldt open source og tilgængeligt for inspektion.
+For dem der er bekymrede for at manipulere scripts med piping til bash (som I burde være!), opfordrer vi til at gennemgå scriptet før udførelse. Det er fuldt open source og tilgængeligt til inspektion.
 
 ### Kvantesikker kryptering for fremtidssikret privatliv {#quantum-safe-encryption-for-future-proof-privacy}
 
-Ligesom vores hostede service implementerer vores selvhostede løsning kvantebestandig kryptering ved hjælp af ChaCha20-Poly1305 som chiffer for SQLite-databaser. Denne tilgang beskytter ikke kun dine e-mail-data mod aktuelle trusler, men også mod fremtidige kvantecomputerangreb.
+Ligesom vores hostede tjeneste implementerer vores selvhostede løsning kvanteresistent kryptering ved hjælp af ChaCha20-Poly1305 som kryptering til SQLite-databaser. Denne tilgang beskytter dine e-maildata ikke kun mod aktuelle trusler, men også mod fremtidige kvanteberegningsangreb.
 
-Hver postkasse er gemt i sin egen krypterede SQLite-databasefil, hvilket giver fuldstændig isolation mellem brugerne - en væsentlig sikkerhedsfordel i forhold til traditionelle delte databasetilgange.
+Hver postkasse gemmes i sin egen krypterede SQLite-databasefil, hvilket giver fuldstændig isolation mellem brugerne – en betydelig sikkerhedsfordel i forhold til traditionelle delte databasemetoder.
 
 ### Automatiseret vedligeholdelse og opdateringer {#automated-maintenance-and-updates}
 
-Vi har bygget omfattende vedligeholdelsesværktøjer direkte ind i den selvhostede løsning:
+Vi har indbygget omfattende vedligeholdelsesværktøjer direkte i den selvhostede løsning:
 
 1. **Automatiske sikkerhedskopier**: Planlagte sikkerhedskopier af alle kritiske data
 2. **Certifikatfornyelse**: Automatiseret Let's Encrypt-certifikatadministration
 3. **Systemopdateringer**: Enkel kommando til at opdatere til den nyeste version
 4. **Sundhedsovervågning**: Indbyggede kontroller for at sikre systemintegritet
 
-Disse hjælpeprogrammer er tilgængelige via en simpel interaktiv menu:
+Disse værktøjer er tilgængelige via en simpel interaktiv menu:
 
 ```bash
 # script prompt
@@ -138,7 +138,7 @@ Disse hjælpeprogrammer er tilgængelige via en simpel interaktiv menu:
 
 ## Forpligtelsen til åben kildekode {#the-open-source-commitment}
 
-Vores selvhostede e-mail-løsning, som alle vores produkter, er 100 % open source – både frontend og backend. Det betyder:
+Vores selvhostede e-mailløsning er, ligesom alle vores produkter, 100% open source – både frontend og backend. Det betyder:
 
 1. **Fuldstændig gennemsigtighed**: Hver linje kode, der behandler dine e-mails, er tilgængelig for offentlighedens gennemsyn.
 2. **Bidrag fra fællesskabet**: Alle kan bidrage med forbedringer eller løse problemer.
@@ -147,9 +147,9 @@ Vores selvhostede e-mail-løsning, som alle vores produkter, er 100 % open sourc
 
 Hele kodebasen er tilgængelig på GitHub på <https://github.com/forwardemail/forwardemail.net>.
 
-## Selvhostet vs. administreret: Sådan træffer du det rigtige valg {#self-hosted-vs-managed-making-the-right-choice}
+## Selvhostet vs. administreret: Det rigtige valg {#self-hosted-vs-managed-making-the-right-choice}
 
-Selvom vi er stolte af at tilbyde en mulighed for selvvært, erkender vi, at det ikke er det rigtige valg for alle. Selvhostende e-mail kommer med reelle ansvar og udfordringer:
+Selvom vi er stolte af at kunne tilbyde en selvhostet løsning, erkender vi, at det ikke er det rigtige valg for alle. Selvhosting af e-mails indebærer et reelt ansvar og udfordringer:
 
 ### Virkeligheden ved selvhosting af e-mail {#the-reality-of-self-hosting-email}
 
@@ -175,7 +175,7 @@ Selvom vi er stolte af at tilbyde en mulighed for selvvært, erkender vi, at det
 
 ### Hvornår skal man vælge vores administrerede tjeneste {#when-to-choose-our-managed-service}
 
-For mange brugere er vores administrerede service fortsat den bedste mulighed:
+For mange brugere er vores administrerede tjeneste stadig den bedste løsning:
 
 1. **Bekvemmelighed**: Vi håndterer al vedligeholdelse, opdateringer og overvågning
 2. **Pålidelighed**: Drag fordel af vores etablerede infrastruktur og ekspertise
@@ -183,11 +183,11 @@ For mange brugere er vores administrerede service fortsat den bedste mulighed:
 4. **Leverbarhed**: Udnyt vores etablerede IP-omdømme
 5. **Omkostningseffektivitet**: Når man tager tidsomkostninger med i betragtning, er vores service ofte mere økonomisk
 
-Begge muligheder giver de samme privatlivsfordele og open source-gennemsigtighed – forskellen er simpelthen, hvem der administrerer infrastrukturen.
+Begge muligheder giver de samme fordele ved privatlivets fred og open source-transparens – forskellen er blot, hvem der administrerer infrastrukturen.
 
-## Kom godt i gang med selvhostet videresendelse af e-mail {#getting-started-with-self-hosted-forward-email}
+## Introduktion til selvhostet videresendelse af e-mail {#getting-started-with-self-hosted-forward-email}
 
-Klar til at tage kontrol over din e-mail-infrastruktur? Sådan kommer du i gang:
+Klar til at tage kontrol over din e-mailinfrastruktur? Sådan kommer du i gang:
 
 ### Systemkrav {#system-requirements}
 
@@ -200,7 +200,7 @@ Klar til at tage kontrol over din e-mail-infrastruktur? Sådan kommer du i gang:
 * IPv4- og IPv6-understøttelse
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> Vi anbefaler flere mailserverudbydere på <https://forwardemail.net/blog/docs/best-mail-server-providers> (kilde på <https://github.com/forwardemail/awesome-mail-server-providers>)
 
 ### Installationstrin {#installation-steps}
 
@@ -232,13 +232,13 @@ Vores selvhostede løsning er kun begyndelsen. Vi er forpligtet til løbende at 
 
 ## Konklusion: E-mailfrihed for alle {#conclusion-email-freedom-for-everyone}
 
-Lanceringen af vores selvhostede e-mail-løsning repræsenterer en væsentlig milepæl i vores mission om at levere privatlivsfokuserede, gennemsigtige e-mail-tjenester. Uanset om du vælger vores administrerede service eller selv-hostede mulighed, drager du fordel af vores urokkelige forpligtelse til open source-principper og privatliv-først-design.
+Lanceringen af vores selvhostede e-mailløsning repræsenterer en vigtig milepæl i vores mission om at levere privatlivsfokuserede, transparente e-mailtjenester. Uanset om du vælger vores administrerede tjeneste eller selvhostede løsning, drager du fordel af vores urokkelige engagement i open source-principper og design, der sætter privatlivets fred først.
 
-E-mail er for vigtig til at blive kontrolleret af lukkede, proprietære systemer, der prioriterer dataindsamling frem for brugernes privatliv. Med Forward Emails selvhostede løsning er vi stolte af at tilbyde et ægte alternativ – et, der giver dig fuld kontrol over din digitale kommunikation.
+E-mail er for vigtig til at blive kontrolleret af lukkede, proprietære systemer, der prioriterer dataindsamling over brugernes privatliv. Med Forward Emails selvhostede løsning er vi stolte af at kunne tilbyde et ægte alternativ – et alternativ, der giver dig fuld kontrol over din digitale kommunikation.
 
-Vi mener, at privatlivets fred ikke kun er en funktion; det er en grundlæggende rettighed. Og med vores selvhostede e-mail-mulighed gør vi denne ret mere tilgængelig end nogensinde før.
+Vi mener, at privatliv ikke bare er en funktion; det er en grundlæggende rettighed. Og med vores selvhostede e-mail-mulighed gør vi denne rettighed mere tilgængelig end nogensinde før.
 
-Klar til at tage kontrol over din e-mail? [Kom i gang i dag](https://forwardemail.net/self-hosted) eller udforsk vores [GitHub-depot](https://github.com/forwardemail/forwardemail.net) for at få mere at vide.
+Klar til at tage kontrol over din e-mail? [Kom i gang i dag](https://forwardemail.net/self-hosted) eller udforsk vores [GitHub-arkivet](https://github.com/forwardemail/forwardemail.net) for at få mere at vide.
 
 ## Referencer {#references}
 

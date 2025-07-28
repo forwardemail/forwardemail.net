@@ -20,6 +20,6 @@
 
 如果您的 ISP 阻止了出站端口 25，那么您将必须寻找替代解决方案或联系他们。
 
-## 我如何检查我的 ISP 是否阻止了端口 {#how-can-i-check-if-my-isp-blocks-ports}
+## 如何检查我的 ISP 是否阻止了端口 {#how-can-i-check-if-my-isp-blocks-ports}
 
-您可以从命令行或终端运行`telnet smtp.forwardemail.net 25`来查看您的出站端口 25 连接是否被阻止。
+您可以从命令行或终端运行 `telnet smtp.forwardemail.net 25` 来查看您的出站端口 25 连接是否被阻止。

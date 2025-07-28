@@ -50,7 +50,7 @@ En Forward Email, nos hemos asociado con algunas de las instituciones educativas
 
 Esta entrada de blog explora cómo nuestro servicio de reenvío de correo electrónico centrado en la privacidad [código abierto](https://en.wikipedia.org/wiki/Open-source_software) se ha convertido en la solución preferida de estas instituciones, las implementaciones técnicas que lo hacen posible y el impacto transformador que ha tenido tanto en la eficiencia administrativa como en la satisfacción de los exalumnos.
 
-## Ahorros de costos dramáticos con precios estables {#dramatic-cost-savings-with-stable-pricing}
+## Ahorros de costos drásticos con precios estables {#dramatic-cost-savings-with-stable-pricing}
 
 Los beneficios financieros de nuestra solución son sustanciales, especialmente cuando se comparan con los precios en constante aumento de los proveedores de correo electrónico tradicionales:
 
@@ -75,10 +75,10 @@ Esto es lo que ahorran anualmente nuestras universidades asociadas al elegir For
 | Universidad de Maryland | 25,000 | $75,000 | $3,000 | $72,000 |
 
 > \[!NOTE]
-> Forward Email enterprise only costs $250/month typically, with no extra cost per user, whitelisted API rate limitations, and the only additional cost is storage if you need additional GB/TB for students (+$3 per 10 GB additional storage). We use NVMe SSD drives for fast support of IMAP/POP3/SMTP/CalDAV/CardDAV as well.
+> El reenvío de correo electrónico empresarial suele costar solo $250 al mes, sin costo adicional por usuario, con limitaciones de velocidad de API permitidas y el único costo adicional es el almacenamiento si necesita GB/TB adicionales para estudiantes (+$3 por cada 10 GB de almacenamiento adicional). También utilizamos unidades SSD NVMe para una rápida compatibilidad con IMAP/POP3/SMTP/CalDAV/CardDAV.
 
 > \[!IMPORTANT]
-> Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
+> A diferencia de Google y Microsoft, que han aumentado repetidamente sus precios al integrar funciones de IA que analizan tus datos, Forward Email mantiene precios estables con un estricto enfoque en la privacidad. No utilizamos IA, no rastreamos patrones de uso ni almacenamos registros ni correos electrónicos en disco (todo el procesamiento se realiza en memoria), lo que garantiza la total privacidad de tus comunicaciones con exalumnos.
 
 Esto representa una reducción significativa de costos en comparación con las soluciones tradicionales de alojamiento de correo electrónico: fondos que las universidades pueden redirigir a becas, investigación u otras actividades esenciales. Según un análisis de 2023 de Email Vendor Selection, las instituciones educativas buscan cada vez más alternativas rentables a los proveedores de correo electrónico tradicionales, ya que los precios siguen aumentando con la integración de funciones de IA ([Selección de proveedores de correo electrónico, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
 
@@ -86,7 +86,7 @@ Esto representa una reducción significativa de costos en comparación con las s
 
 Para las universidades, proporcionar direcciones de correo electrónico vitalicias a exalumnos presenta un conjunto único de desafíos que las soluciones de correo electrónico tradicionales tienen dificultades para abordar eficazmente. Como se señaló en un debate exhaustivo sobre ServerFault, las universidades con una gran base de usuarios requieren soluciones de correo electrónico especializadas que equilibren rendimiento, seguridad y rentabilidad ([Fallo del servidor, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)).
 
-### El valor de la identidad del correo electrónico de los exalumnos {#the-value-of-alumni-email-identity}
+### El valor de la identidad del correo electrónico de exalumnos {#the-value-of-alumni-email-identity}
 
 Las direcciones de correo electrónico de exalumnos (como `firstname.lastname@cl.cam.ac.uk` o `username@terpalum.umd.edu`) cumplen múltiples funciones importantes:
 
@@ -99,7 +99,7 @@ Las direcciones de correo electrónico de exalumnos (como `firstname.lastname@cl
 Una investigación de Tekade (2020) destaca que las direcciones de correo electrónico educativas brindan numerosos beneficios a los exalumnos, incluido el acceso a recursos académicos, credibilidad profesional y descuentos exclusivos en diversos servicios ([Medium, 2020](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05)).
 
 > \[!TIP]
-> Visit our new [AlumniEmail.com](https://alumniemail.com) directory for a comprehensive resource on university alumni email services, including setup guides, best practices, and a searchable directory of alumni email domains. It serves as a central hub for all alumni email information.
+> Visite nuestro nuevo directorio [AlumniEmail.com](https://alumniemail.com) para obtener un recurso completo sobre los servicios de correo electrónico para exalumnos universitarios, incluyendo guías de configuración, mejores prácticas y un directorio con función de búsqueda de dominios de correo electrónico para exalumnos. Sirve como un centro central para toda la información sobre correo electrónico de exalumnos.
 
 ### Las soluciones tradicionales se quedan cortas {#traditional-solutions-fall-short}
 
@@ -139,7 +139,7 @@ El sistema de reenvío de correo electrónico consta de varios componentes clave
 
 Según los profesionales de TI de ServerFault, para las universidades que buscan implementar sus propias soluciones de correo electrónico, Postfix se recomienda como el mejor Agente de Transferencia de Correo (MTA), mientras que Courier o Dovecot son los preferidos para el acceso IMAP/POP3 ([Fallo del servidor, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)). Sin embargo, nuestra solución elimina la necesidad de que las universidades gestionen estos complejos sistemas por sí mismas.
 
-### Integración con sistemas universitarios {#integration-with-university-systems}
+### Integración con los sistemas universitarios {#integration-with-university-systems}
 
 Hemos desarrollado vías de integración perfecta con la infraestructura universitaria existente:
 
@@ -174,18 +174,18 @@ Una configuración correcta del DNS es fundamental para la entrega de correo ele
 
 * Configuración de [DNS](https://en.wikipedia.org/wiki/Domain_Name_System), incluyendo registros MX
 * Implementación integral de seguridad de correo electrónico mediante nuestro paquete de código abierto [autenticación de correo](https://www.npmjs.com/package/mailauth), una herramienta esencial para la autenticación de correo electrónico que gestiona:
-* [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Marco de Políticas del Remitente) para evitar la suplantación de identidad (spoofing)
-* [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (Correo Identificado por Claves de Dominio) para la autenticación de correo electrónico
-* [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Autenticación, Informes y Conformidad de Mensajes Basados en Dominio) para la aplicación de políticas
-* [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (Seguridad de Transporte Estricta SMTP MTA) para aplicar el cifrado TLS
-* [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Cadena de Recepción Autenticada) para mantener la autenticación durante el reenvío de mensajes
-* [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Esquema de Reescritura del Remitente) para preservar la validación SPF durante el reenvío
-* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Indicadores de marca para la identificación de mensajes) para la visualización del logotipo en clientes de correo electrónico compatibles
-* Verificación del registro DNS TXT para la propiedad del dominio
+* [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Marco de políticas del remitente) para evitar la suplantación de identidad (spoofing)
+* [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (Correo identificado con claves de dominio) para la autenticación de correo electrónico
+* [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Autenticación, informes y conformidad de mensajes basada en dominio) para la aplicación de políticas
+* [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (Seguridad de transporte estricta SMTP MTA) para aplicar el cifrado TLS
+* [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Cadena de recepción autenticada) para mantener la autenticación durante el reenvío de mensajes
+* [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Esquema de reescritura del remitente) para preservar la validación SPF durante el reenvío
+* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Indicadores de marca para la identificación de mensajes) para Visualización del logotipo en clientes de correo electrónico compatibles
+* Verificación del registro TXT de DNS para la propiedad del dominio
 
 El paquete `mailauth` (<http://npmjs.com/package/mailauth>) es una solución completamente de código abierto que gestiona todos los aspectos de la autenticación de correo electrónico en una biblioteca integrada. A diferencia de las soluciones propietarias, este enfoque garantiza transparencia, actualizaciones de seguridad periódicas y control total sobre el proceso de autenticación de correo electrónico.
 
-### Pruebas y control de calidad {#testing-and-quality-assurance}
+### Pruebas y garantía de calidad {#testing-and-quality-assurance}
 
 Antes de la implementación completa, realizamos pruebas rigurosas:
 
@@ -319,7 +319,7 @@ La implementación generó beneficios significativos:
 
 Nuestra solución ofrece beneficios tangibles tanto para las instituciones como para sus graduados.
 
-### Para Universidades {#for-universities}
+### Para universidades {#for-universities}
 
 * **Rentabilidad**: Precio fijo independientemente del número de exalumnos
 * **Simplicidad administrativa**: Gestión automatizada mediante API
@@ -327,7 +327,7 @@ Nuestra solución ofrece beneficios tangibles tanto para las instituciones como 
 * **Consistencia de marca**: Direcciones de correo electrónico institucionales de por vida
 * **Participación de exalumnos**: Conexiones fortalecidas mediante un servicio continuo
 
-Según BulkSignature (2023), las plataformas de correo electrónico para instituciones educativas ofrecen beneficios significativos, incluida la rentabilidad a través de planes gratuitos o de bajo costo, eficiencia de tiempo a través de capacidades de comunicación masiva y funciones de seguimiento para monitorear la entrega y la participación en el correo electrónico ([Firma masiva, 2023](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/)).
+Según BulkSignature (2023), las plataformas de correo electrónico para instituciones educativas ofrecen beneficios significativos que incluyen rentabilidad a través de planes gratuitos o de bajo costo, eficiencia de tiempo a través de capacidades de comunicación masiva y funciones de seguimiento para monitorear la entrega y la participación del correo electrónico ([Firma masiva, 2023](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/)).
 
 ### Para exalumnos {#for-alumni}
 
@@ -362,7 +362,7 @@ Nuestra solución incorpora múltiples capas de seguridad:
 * Código abierto y transparente para la verificación de la seguridad
 
 > \[!WARNING]
-> Many email providers scan email content for advertising purposes or to train AI models. This practice raises serious privacy concerns, especially for professional and academic communications. Forward Email never scans email content and processes all emails in-memory to ensure complete privacy.
+> Muchos proveedores de correo electrónico escanean el contenido con fines publicitarios o para entrenar modelos de IA. Esta práctica plantea serias preocupaciones sobre la privacidad, especialmente en las comunicaciones profesionales y académicas. Forward Email nunca escanea el contenido y procesa todos los correos electrónicos en memoria para garantizar la privacidad total.
 
 ### Marco de cumplimiento {#compliance-framework}
 
@@ -399,4 +399,4 @@ flowchart LR
     A -->|SSO Authentication| F
 ```
 
-Las universidades interesadas en explorar cómo Forward Email puede transformar sus servicios de correo electrónico para exalumnos pueden comunicarse con nuestro equipo en <support@forwardemail.net> o visitar [forwardemail.net](https://forwardemail.net) para obtener más información sobre nuestras soluciones empresariales.
+Para las universidades interesadas en explorar cómo Forward Email puede transformar sus servicios de correo electrónico para exalumnos, comuníquese con nuestro equipo en <support@forwardemail.net> o visite [forwardemail.net](https://forwardemail.net) para obtener más información sobre nuestras soluciones empresariales.

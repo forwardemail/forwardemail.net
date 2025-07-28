@@ -26,7 +26,7 @@ Vår forpliktelse til **samsvar med myndighetenes e-postregler** ble nylig omsat
 Hva er paragraf 889? Enkelt sagt er det en amerikansk føderal lov som forbyr offentlige etater å bruke eller inngå kontrakter med enheter som bruker visse typer telekommunikasjons- og videoovervåkingsutstyr eller -tjenester fra bestemte selskaper (som Huawei, ZTE, Hikvision, Dahua og Hytera). Denne regelen, ofte assosiert med **Huawei-forbudet** og **ZTE-forbudet**, bidrar til å beskytte nasjonal sikkerhet.
 
 > \[!NOTE]
-> Section 889 specifically targets equipment and services from Huawei, ZTE, Hytera, Hikvision, and Dahua, including their subsidiaries and affiliates.
+> Paragraf 889 retter seg spesifikt mot utstyr og tjenester fra Huawei, ZTE, Hytera, Hikvision og Dahua, inkludert deres datterselskaper og tilknyttede selskaper.
 
 For en **tjeneste for videresending av e-post for offentlige kontrakter** som **Videresend e-post**, betyr dette at ingen av våre underliggende infrastrukturleverandører bruker dette forbudte utstyret, noe som gjør oss i samsvar med **paragraf 889**.
 
@@ -39,7 +39,7 @@ Så, **hvordan er Videresendt E-post i samsvar med Seksjon 889?** Vi oppnår det
 2. **[Datapakke](https://datapacket.com/):** Vår primære leverandør for serverinfrastruktur (vi bruker [Digitalt hav](https://www.digitalocean.com/) og/eller [Vultr](https://www.vultr.com/) for failover og vil snart gå over til utelukkende å bruke DataPacket – vi bekreftet selvfølgelig samsvar med paragraf 889 skriftlig fra begge disse failover-leverandørene).
 
 > \[!IMPORTANT]
-> Our exclusive reliance on Cloudflare and DataPacket, neither of which uses Section 889 prohibited equipment, is the cornerstone of our compliance.
+> Vår utelukkende avhengighet av Cloudflare og DataPacket, som ikke bruker utstyr som er forbudt i henhold til paragraf 889, er hjørnesteinen i vår overholdelse av regelverket.
 
 Både [Cloudflare](https://www.cloudflare.com/) og [Datapakke](https://datapacket.com/) er forpliktet til høye sikkerhetsstandarder og bruker ikke utstyr som er forbudt i henhold til paragraf 889. **Bruk av Cloudflare og DataPacket for samsvar med paragraf 889** er grunnleggende for tjenesten vår.
 
@@ -57,18 +57,18 @@ Denne klare uttalelsen bekrefter at [Cloudflares](https://www.cloudflare.com/)-i
 
 [Datapakke](https://datapacket.com/), vår serverleverandør, bruker nettverksutstyr utelukkende fra **Arista Networks** og **Cisco**. Verken Arista eller Cisco er blant selskapene som er forbudt i henhold til paragraf 889. Begge er etablerte leverandører som er mye brukt i sikre bedrifts- og myndighetsmiljøer, kjent for å overholde strenge sikkerhets- og samsvarsstandarder.
 
-Ved å kun bruke [Cloudflare](https://www.cloudflare.com/) og [Datapakke](https://datapacket.com/), sikrer **Videresend e-post** at hele tjenesteleveringskjeden er fri for utstyr som er forbudt i henhold til paragraf 889, og tilbyr **sikker videresending av e-post for føderale etater** og andre sikkerhetsbevisste brukere.
+Ved å kun bruke [Cloudflare](https://www.cloudflare.com/) og [Datapakke](https://datapacket.com/), sikrer **Videresend e-post** at hele tjenesteleveringskjeden er fri for utstyr som er forbudt i henhold til paragraf 889, og gir **sikker videresending av e-post for føderale etater** og andre sikkerhetsbevisste brukere.
 
 ## Utover paragraf 889: Bredere samsvar med myndighetene {#beyond-section-889-broader-government-compliance}
 
-Vår forpliktelse til **myndighetenes e-postsikkerhet** og samsvar med regelverket strekker seg utover paragraf 889. Selv om **Videresend e-post** i seg selv ikke direkte behandler eller lagrer sensitive myndighetsdata slik som [Kontrollert uklassifisert informasjon (CUI)](https://en.wikipedia.org/wiki/Controlled_Unclassified_Information) på samme måte som en stor SaaS-plattform ville gjort, er vår **arkitektur for videresending av e-post med åpen kildekode** og vår avhengighet av sikre, kompatible leverandører i samsvar med prinsippene i andre viktige forskrifter:
+Vår forpliktelse til **myndighetenes e-postsikkerhet** og samsvar med regelverket strekker seg utover paragraf 889. Selv om **Videresend e-post** i seg selv ikke direkte behandler eller lagrer sensitive myndighetsdata som [Kontrollert uklassifisert informasjon (CUI)](https://en.wikipedia.org/wiki/Controlled_Unclassified_Information) på samme måte som en stor SaaS-plattform ville gjort, er vår **åpen kildekode-arkitektur for videresending av e-post** og avhengigheten av sikre, kompatible leverandører i samsvar med prinsippene i andre viktige forskrifter:
 
 * **[FAR (føderal anskaffelsesforskrift)](https://en.wikipedia.org/wiki/Federal_Acquisition_Regulation):** Ved å bruke kompatibel infrastruktur og tilby en enkel kommersiell tjeneste, tilbyr vi **FAR-kompatible e-postvideresendingsprinsipper** som er egnet for offentlige leverandører.
-* **Personvernerklæringen og [FISMA](https://en.wikipedia.org/wiki/Federal_Information_Security_Management_Act_of\_2002):** Vi er **personvernfokuserte** i vår design, og tilbyr **Privacy Act-e-postprinsipper**. Vi lagrer ikke e-postene dine. E-poster videresendes direkte, noe som minimerer datahåndtering. Våre infrastrukturleverandører ([Cloudflare](https://www.cloudflare.com/), [Datapakke](https://datapacket.com/)) administrerer systemene sine i henhold til høye sikkerhetsstandarder som er i samsvar med **FISMA-kompatible e-postprinsipper**.
+* **Personvernerklæringen og [FISMA](https://en.wikipedia.org/wiki/Federal_Information_Security_Management_Act_of\_2002):** Vi er **personvernfokuserte** av design, og tilbyr **Privacy Act-e-postprinsipper**. Vi lagrer ikke e-postene dine. E-poster videresendes direkte, noe som minimerer datahåndtering. Våre infrastrukturleverandører ([Cloudflare](https://www.cloudflare.com/), [Datapakke](https://datapacket.com/)) administrerer systemene sine i henhold til høye sikkerhetsstandarder som er i samsvar med **FISMA-kompatible e-postprinsipper**.
 * **[HIPAA](https://en.wikipedia.org/wiki/Health_Insurance_Portability_and_Accountability_Act):** For organisasjoner som trenger **HIPAA-kompatibel e-postvideresending**, kan **Videresending av e-post** være en del av en kompatibel løsning. Siden vi ikke lagrer e-poster, ligger det primære samsvarsansvaret hos sluttpunkts-e-postsystemene. Vårt sikre transportlag støtter imidlertid HIPAA-krav når det brukes riktig.
 
 > \[!WARNING]
-> A [Business Associate Agreement (BAA)](https://en.wikipedia.org/wiki/Business_associate_agreement) might be needed with your final email provider, not **Forward Email** itself, as we do not store your email content (unless you use [our encrypted IMAP/POP3 storage layer](/blog/docs/best-quantum-safe-encrypted-email-service)).
+> En [Avtale for forretningspartnere (BAA)](https://en.wikipedia.org/wiki/Business_associate_agreement) kan være nødvendig hos din endelige e-postleverandør, ikke selve **Videresend e-post**, ettersom vi ikke lagrer e-postinnholdet ditt (med mindre du bruker [vårt krypterte IMAP/POP3-lagringslag](/blog/docs/best-quantum-safe-encrypted-email-service)).
 
 ## Vår vei videre: Utvidelse av samsvarshorisonter {#our-path-forward-expanding-compliance-horizons}
 
@@ -79,22 +79,23 @@ Vi erkjenner viktigheten av rammeverk og regelverk som:
 * **[System for tildelingshåndtering (SAM)](https://sam.gov/):** Essensielt for direkte føderal kontraktering.
 * **[FAR (føderal anskaffelsesforskrift)](https://www.acquisition.gov/browse/index/far):** Inkluderer standardklausuler som [FAR 52.212-4](https://www.acquisition.gov/far/52.212-4) for kommersielle tjenester.
 * **[DFARS (Tillegg til forsvarets føderale anskaffelsesforskrift)](https://en.wikipedia.org/wiki/Defense_Federal_Acquisition_Regulation_Supplement):** Spesielt [DFARS 252.239-7010](https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.) for DoD-skytjenester.
-* **[CMMC (sertifisering for modenhetsmodell for cybersikkerhet)](https://en.wikipedia.org/wiki/Cybersecurity_Maturity_Model_Certification):** Påkrevd for DoD-kontraktører som håndterer [Føderal kontraktsinformasjon (FCI)](https://en.wikipedia.org/wiki/Federal_Contract_Information) eller CUI.
+* **[CMMC (sertifisering for modenhetsmodell for cybersikkerhet)](https://en.wikipedia.org/wiki/Cybersecurity_Maturity_Model_Certification):** Kreves for DoD-kontraktører som håndterer [Føderal kontraktsinformasjon (FCI)](https://en.wikipedia.org/wiki/Federal_Contract_Information) eller CUI.
 * **[NIST SP 800-171](https://csrc.nist.gov/pubs/sp/800/171/r3/final):** Grunnlaget for CMMC nivå 2, fokusert på å beskytte CUI. ([NIST](https://en.wikipedia.org/wiki/National_Institute_of_Standards_and_Technology) - National Institute of Standards and Technology)
 * **[FedRAMP (føderalt program for risiko- og autorisasjonsstyring)](https://en.wikipedia.org/wiki/FedRAMP):** Standarden for skytjenester som brukes av føderale etater.
-* **[FISMA (føderal lov om modernisering av informasjonssikkerhet)](https://www.cisa.gov/topics/cybersecurity-best-practices/fisma):** Det overordnede rammeverket for føderal informasjonssikkerhet.
-* **[HIPAA (loven om helseforsikringsportabilitet og ansvarlighet)](https://www.hhs.gov/hipaa/index.html):** For håndtering av beskyttet helseinformasjon (PHI).
-* **[FERPA (Familieloven om utdanningsrettigheter og personvern)](https://en.wikipedia.org/wiki/Family_Educational_Rights_and_Privacy_Act):** For beskyttelse av elevjournaler.
-* **[COPPA (Lov om beskyttelse av barns personvern på nett)](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act):** For tjenester som omhandler barn under 13 år.
+* **__PROTECTED_LINK_77__0:** Det overordnede rammeverket for føderal informasjonssikkerhet.
+* **__PROTECTED_LINK_77__1:** For håndtering av beskyttet helseinformasjon (PHI).
+
+* **__PROTECTED_LINK_77__1:** For håndtering av beskyttet helseinformasjon (PHI). * **__PROTECTED_LINK_77__2:** For å beskytte elevenes utdanningsjournaler.
+* **__PROTECTED_LINK_77__3:** For tjenester som omhandler barn under 13 år.
 
 **Vår nåværende posisjon og fremtidige mål:**
 
 **Videresend e-post** sitt kjernedesign – å være **personvernfokusert**, **åpen kildekode** og minimere datahåndtering (spesielt i vår grunnleggende **e-postvideresendingstjeneste**) – samsvarer godt med *prinsippene* bak mange av disse forskriftene. Våre eksisterende sikkerhetspraksiser (kryptering, støtte for moderne e-poststandarder) og samsvar med paragraf 889 gir et sterkt utgangspunkt.
 
-Det er imidlertid en betydelig oppgave å oppnå formell sertifisering eller autorisasjon for rammeverk som **FedRAMP** eller **CMMC**. Det innebærer grundig dokumentasjon, implementering av spesifikke tekniske og prosedyremessige kontroller (ofte hundrevis av dem), uavhengige vurderinger (som [3PAO](https://www.fedramp.gov/glossary/#3pao) for FedRAMP – en tredjeparts vurderingsorganisasjon) og kontinuerlig overvåking.
+Det er imidlertid en betydelig oppgave å oppnå formell sertifisering eller autorisasjon for rammeverk som **FedRAMP** eller **CMMC**. Det innebærer grundig dokumentasjon, implementering av spesifikke tekniske og prosedyremessige kontroller (ofte hundrevis av dem), uavhengige vurderinger (som [3PAO](https://www.fedramp.gov/glossary/#3pao) for FedRAMP – tredjeparts vurderingsorganisasjon) og kontinuerlig overvåking.
 
 > \[!IMPORTANT]
-> Compliance isn't just about technology; it's about documented processes, policies, and ongoing vigilance. Achieving certifications like FedRAMP or CMMC requires substantial investment and time.
+> Samsvar handler ikke bare om teknologi; det handler om dokumenterte prosesser, retningslinjer og kontinuerlig årvåkenhet. Å oppnå sertifiseringer som FedRAMP eller CMMC krever betydelige investeringer og tid.
 
 **Vår forpliktelse:**
 
@@ -104,14 +105,14 @@ Etter hvert som **Videresendt e-post** vokser og kundenes behov utvikler seg, er
 
 2. **Formalisering av prosesser:** Forbedring av vår interne dokumentasjon og prosedyrer for å samsvare med standarder som NIST SP 800-171, som danner grunnlaget for CMMC.
 
-3. **Evaluering av FedRAMP-tiltak:** Vurdering av kravene og gjennomførbarheten av å søke FedRAMP-autorisasjon, sannsynligvis startende med et lavt eller moderat utgangspunkt, potensielt utnyttelse av [TO-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/)-modellen der det er aktuelt.
+3. **Evaluering av FedRAMP-tiltak:** Vurdering av kravene og gjennomførbarheten av å søke FedRAMP-autorisasjon, sannsynligvis startende med en lav eller moderat grunnlinje, potensielt utnyttelse av [TO-SaaS](https://www.fedramp.gov/blog/fedramp-releases-low-impact-saas-baseline/)-modellen der det er aktuelt.
 
 4. **Støtte spesifikke behov:** Håndtering av krav som HIPAA (potensielt gjennom BAA-er og spesifikke konfigurasjoner for lagrede data) og FERPA (gjennom passende kontraktsvilkår og kontroller) etter hvert som vi samarbeider mer med helse- og utdanningsinstitusjoner.
 
 Denne reisen krever nøye planlegging og investeringer. Selv om vi ikke har umiddelbare tidslinjer for alle sertifiseringer, er det en viktig del av vår plan å styrke vår samsvarsposisjon for å møte behovene til myndigheter og regulerte industrier.
 
 > \[!NOTE]
-> We believe our **open-source** nature provides unique transparency throughout this process, allowing our community and customers to see our commitment firsthand.
+> Vi tror at vår **åpen kildekode**-natur gir unik åpenhet gjennom hele denne prosessen, slik at fellesskapet og kundene våre kan se vår forpliktelse på nært hold.
 
 Vi vil fortsette å oppdatere fellesskapet vårt etter hvert som vi når viktige milepæler på vår compliance-reise.
 
@@ -127,9 +128,9 @@ Vi vil fortsette å oppdatere fellesskapet vårt etter hvert som vi når viktige
 
 ## Sikker og kompatibel videresending av e-post starter her {#secure-compliant-email-forwarding-starts-here}
 
-**Videresend e-post** er dedikert til å tilby en **sikker, privat og åpen kildekode-tjeneste for videresending av e-post**. Vår **samsvar med paragraf 889**, oppnådd gjennom vårt partnerskap med [Cloudflare](https://www.cloudflare.com/) og [Datapakke](https://datapacket.com/) (som gjenspeiler vårt **samsvar med videresending av e-post for US Naval Academy**), er et bevis på denne forpliktelsen. Enten du er en offentlig enhet, en entreprenør eller bare verdsetter **offentlig e-postsikkerhet**, er **Videresend e-post** bygget for deg.
+**Videresend e-post** er dedikert til å tilby en **sikker, privat og åpen kildekode-tjeneste for videresending av e-post**. Vår **samsvar med paragraf 889**, oppnådd gjennom vårt partnerskap med [Cloudflare](https://www.cloudflare.com/) og [Datapakke](https://datapacket.com/) (som gjenspeiler vårt **samsvar med videresending av e-post for US Naval Academy**), er et bevis på denne forpliktelsen. Enten du er en offentlig enhet, en entreprenør eller bare verdsetter **sikkerhet for offentlig e-post**, er **Videresend e-post** bygget for deg.
 
-Klar for **sikker og kompatibel videresending av e-post**? [Registrer deg gratis i dag!](https://forwardemail.net)
+Klar for **sikker, kompatibel videresending av e-post**? [Registrer deg gratis i dag!](https://forwardemail.net)
 
 ## Referanser {#references}
 
@@ -138,14 +139,14 @@ Klar for **sikker og kompatibel videresending av e-post**? [Registrer deg gratis
 * **Cloudflares tredjeparts etiske retningslinjer:** <https://cf-assets.www.cloudflare.com/slt3lc6tev37/284hiWkCYNc49GQpAeBvGN/e137cdac96d1c4cd403c6b525831d284/Third_Party_Code_of_Conduct.pdf>
 * **Datapakke:** <https://datapacket.com/>
 * **System for tildelingshåndtering (SAM):** <https://sam.gov/>
-* **Forbundsreglement for anskaffelse (FAR):** <https://www.acquisition.gov/browse/index/far>
+* **Forbundsforskrift om anskaffelse (FAR):** <https://www.acquisition.gov/browse/index/far>
 * **FAR 52.212-4:** <https://www.acquisition.gov/far/52.212-4>
-* **Tillegg til forsvarsreglement for føderal anskaffelse (DFARS):** <https://www.acquisition.gov/dfars>
+* **Tillegg til forsvarsforskrift om føderal anskaffelse (DFARS):** <https://www.acquisition.gov/dfars>
 * **DFARS 252.239-7010:** <https://www.acquisition.gov/dfars/252.239-7010-cloud-computing-services.>
 * **Sertifisering av modenhetsmodell for nettsikkerhet (CMMC):** <https://dodcio.defense.gov/cmmc/About/>
-* **NIST SP 800-171:** <https://csrc.nist.gov/pubs/sp/800/171/r3/final>
-* **Federalt program for risiko- og autorisasjonshåndtering (FedRAMP):** <https://www.fedramp.gov/>
-* **Federal lov om modernisering av informasjonssikkerhet (FISMA):** <https://www.cisa.gov/topics/cybersecurity-best-practices/fisma>
-* **Lov om bærbarhet og ansvarlighet for helseforsikring (HIPAA):** <https://www.hhs.gov/hipaa/index.html>
-* **Lov om familierettigheter og personvern i utdanning (FERPA):** <https://studentprivacy.ed.gov/ferpa>
-* **Lov om beskyttelse av barns personvern på nett (COPPA):** <https://www.ftc.gov/legal-library/browse/rules/childrens-online-privacy-protection-rule-coppa>
+* **NIST SP 800-171:** <https://www.cloudflare.com/>0
+* **Federalt program for risiko- og autorisasjonshåndtering (FedRAMP):** <https://www.cloudflare.com/>1
+* **Federal lov om modernisering av informasjonssikkerhet (FISMA):** <https://www.cloudflare.com/>2
+* **Lov om helseforsikringsportabilitet og ansvarlighet (HIPAA):** <https://www.cloudflare.com/>3
+* **Lov om familierettigheter og personvern i utdanning (FERPA):** <https://www.cloudflare.com/>4
+* **Lov om beskyttelse av barns personvern på nett (COPPA):** <https://www.cloudflare.com/>5

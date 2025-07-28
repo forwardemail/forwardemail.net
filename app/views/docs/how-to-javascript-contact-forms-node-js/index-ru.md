@@ -7,7 +7,7 @@
 
 ## Установка и требования {#install-and-requirements}
 
-Вам потребуется установить зависимость npm `nodemailer`:
+Вам потребуется установить npm-зависимость `nodemailer`:
 
 ```sh
 npm install nodemailer
@@ -15,9 +15,9 @@ npm install nodemailer
 
 ## Исходный код и пример {#source-code-and-example}
 
-В этом примере используется библиотека **[Nodemailer](https://github.com/nodemailer/nodemailer)** и ее официальный спонсор **[Переслать письмо](https://forwardemail.net)** для отправки и предварительного просмотра исходящей почты.
+В этом примере используется библиотека **[Nodemailer](https://github.com/nodemailer/nodemailer)** и ее официальный спонсор **[Переслать электронное письмо](https://forwardemail.net)** для отправки и предварительного просмотра исходящей почты.
 
-Вам потребуется <strong class="text-success"><i class="fa fa-key"></i> сгенерировать пароль</strong> для отправки исходящей почты — перейдите по нашей **[Руководство по отправке электронных писем с использованием пользовательского домена SMTP](/guides/send-email-with-custom-domain-smtp)**.
+Вам потребуется <strong class="text-success"><i class="fa fa-key"></i> сгенерировать пароль</strong> для отправки исходящей почты — пожалуйста, следуйте нашим **[Руководство по отправке электронной почты с использованием пользовательского домена SMTP](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,6 +51,6 @@ await transporter.sendMail({
 node app
 ```
 
-Теперь вы можете перейти по ссылке **[Мой аккаунт → Электронная почта](/my-account/emails)**, чтобы увидеть статус доставки электронной почты в режиме реального времени, журналы доставки электронной почты и предварительный просмотр HTML/обычного текста/вложений.
+Теперь вы можете перейти в **[Моя учетная запись → Электронная почта](/my-account/emails)**, чтобы увидеть статус доставки электронной почты в реальном времени, журналы доставки электронной почты и предварительный просмотр HTML/текста/вложений.
 
-> P.S. :tada: Вы также можете **[предварительный просмотр писем в браузерах и iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** и **[создание шаблонов электронной почты с помощью Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Вы также можете **[предварительный просмотр писем в браузерах и iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** и **[создавать шаблоны электронных писем с помощью Node.js](/docs/send-emails-with-node-js-javascript)**.

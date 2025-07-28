@@ -1,4 +1,4 @@
-# 최초의 완벽한 이메일 API: Forward Email이 이메일 관리에 혁신을 가져온 방법 {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
+# 최초의 완전한 이메일 API: Forward Email이 이메일 관리에 혁신을 가져온 방법 {#the-first-complete-email-api-how-forward-email-revolutionized-email-management}
 
 <img 로딩="게으른" src="/img/articles/complete-email-api.webp" alt="" 클래스="둥근-lg" />
 
@@ -83,13 +83,13 @@
 그 결과는? 개발자들은 이메일 통합을 완전히 포기하거나, 끊임없이 중단되는 취약한 IMAP 래퍼를 개발하는 데 몇 주를 허비하게 됩니다.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **불길한 비밀**: 대부분의 "이메일 API"는 단순히 전송 API일 뿐입니다. 간단한 REST 인터페이스를 통해 폴더를 프로그래밍 방식으로 정리하거나, 연락처를 동기화하거나, 캘린더를 관리할 수는 없습니다. 지금까지는 말이죠.
 
 ## 개발자들이 실제로 말하는 내용 {#what-developers-are-actually-saying}
 
 좌절감은 실제적이며 모든 곳에서 기록되어 있습니다.
 
-> "최근 Gmail을 앱에 통합하려고 했는데, 너무 많은 시간을 투자했습니다. Gmail을 지원하는 것이 가치 없다고 판단했습니다."
+> "최근 앱에 Gmail을 통합하려고 했는데, 너무 많은 시간을 투자했습니다. Gmail을 지원하는 것이 가치 없다고 판단했습니다."
 >
 > *- [해커 뉴스 개발자](https://news.ycombinator.com/item?id=42106944), 147개 추천*
 
@@ -99,7 +99,7 @@
 
 > "이메일 개발은 왜 이렇게 어려워야 하죠?"
 >
-> *- [레딧 r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 개발자들의 고민에 대한 댓글 89개*
+> *- [레딧 r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 개발자의 고민에 대한 댓글 89개*
 
 > "Gmail API가 IMAP보다 효율적인 이유는 무엇일까요? Gmail API가 훨씬 더 효율적인 또 다른 이유는 각 메시지를 한 번만 다운로드하면 되기 때문입니다. IMAP을 사용하면 각 메시지를 다운로드하고 색인을 생성해야 합니다..."
 >
@@ -108,8 +108,8 @@
 증거는 어디에나 있습니다.
 
 * **WordPress SMTP 문제**: 이메일 전송 실패 관련 [631개의 GitHub 이슈](https://github.com/awesomemotive/WP-Mail-SMTP/issues)
-* **Zapier 제한 사항**: 시간당 10개 이메일 제한 및 IMAP 감지 실패 관련 [지역 사회 불만](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
-* **IMAP API 프로젝트**: [다수의](https://github.com/ewildgoose/imap-api) [오픈소스](https://emailengine.app/) [프로젝트](https://www.npmjs.com/package/imapflow)는 "IMAP을 REST로 변환"하기 위한 프로젝트로, 이 기능을 제공하는 공급업체가 없습니다.
+* **Zapier 제한 사항**: [지역 사회 불만](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958): 시간당 최대 10개 이메일 제한 및 IMAP 감지 실패 관련
+* **IMAP API 프로젝트**: [다수의](https://github.com/ewildgoose/imap-api) [오픈소스](https://emailengine.app/) [프로젝트](https://www.npmjs.com/package/imapflow): "IMAP을 REST로 변환"을 위한 프로젝트로, 이 기능을 제공하는 공급업체가 없습니다.
 * **Gmail API 관련 불만 사항**: [스택 오버플로](https://stackoverflow.com/questions/tagged/gmail-api)에는 "gmail-api" 태그가 달린 질문 4,847개가 있으며, 속도 제한 및 복잡성에 대한 일반적인 불만이 있습니다.
 
 ## 이메일 전달의 혁신적인 솔루션 {#forward-emails-revolutionary-solution}
@@ -120,10 +120,10 @@
 
 * **메시지**: 생성, 읽기, 업데이트, 삭제, 검색, 이동, 플래그 지정
 * **폴더**: REST 엔드포인트를 통한 전체 IMAP 폴더 관리
-* **연락처**: [카드다브](https://tools.ietf.org/html/rfc6352) 연락처 저장 및 동기화
-* **캘린더**: [칼다브(CalDAV)](https://tools.ietf.org/html/rfc4791) 캘린더 이벤트 및 일정 예약
+* **연락처**: [카드다브](https://tools.ietf.org/html/rfc6352): 연락처 저장 및 동기화
+* **캘린더**: [칼다브](https://tools.ietf.org/html/rfc4791): 캘린더 이벤트 및 일정 관리
 
-### 이 {#why-we-built-this}를 만든 이유
+### 우리가 이것을 만든 이유 {#why-we-built-this}
 
 **문제**: 모든 이메일 제공업체는 이메일을 블랙박스처럼 취급합니다. 복잡한 OAuth를 사용하여 이메일을 보내고 읽을 수는 있지만, 이메일 데이터를 프로그래밍 방식으로 *관리*할 수는 없습니다.
 
@@ -133,7 +133,7 @@
 
 ### 간단 인증 {#simple-authentication}
 
-[OAuth 복잡성](https://oauth.net/2/)도 없고, [앱별 비밀번호](https://support.google.com/accounts/answer/185833)도 없습니다. 별칭 자격 증명만 있으면 됩니다.
+[OAuth 복잡성](https://oauth.net/2/)이 없습니다. [앱별 비밀번호](https://support.google.com/accounts/answer/185833)이 없습니다. 별칭 자격 증명만 있습니다.
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -144,9 +144,9 @@ curl -u "alias@yourdomain.com:password" \
 
 ### 메시지(5개 엔드포인트) {#messages-5-endpoints}
 
-* `GET /v1/messages` - 필터링(`?folder=`, `?is_unread=`, `?is_flagged=`)을 사용하여 메시지 목록 표시
+* `GET /v1/messages` - 필터링을 사용하여 메시지 목록 표시(`?folder=`, `?is_unread=`, `?is_flagged=`)
 * `POST /v1/messages` - 새 메시지를 폴더로 직접 전송
-* `GET /v1/messages/:id` - 전체 메타데이터를 사용하여 특정 메시지 검색
+* `GET /v1/messages/:id` - 전체 메타데이터를 포함한 특정 메시지 검색
 * `PUT /v1/messages/:id` - 메시지 업데이트(플래그, 폴더, 읽음 상태)
 * `DELETE /v1/messages/:id` - 메시지 영구 삭제
 
@@ -174,7 +174,7 @@ curl -u "alias@yourdomain.com:password" \
 * `PUT /v1/calendars/:id` - 충돌 감지를 사용하여 이벤트 업데이트
 * `DELETE /v1/calendars/:id` - 참석자 알림이 포함된 이벤트 삭제
 
-## 고급 검색: 다른 서비스는 비교할 수 없습니다. {#advanced-search-no-other-service-compares}
+## 고급 검색: 다른 서비스는 {#advanced-search-no-other-service-compares}과 비교할 수 없습니다.
 
 **Forward Email은 REST API를 통해 모든 메시지 필드에 대한 포괄적이고 프로그래밍적인 검색을 제공하는 유일한 이메일 서비스입니다.**
 
@@ -209,7 +209,7 @@ curl -u "alias@yourdomain.com:password" \
 * ❌ 공개 API 없음
 * ❌ 프로그래밍 방식 검색 기능 없음
 
-### 이메일의 혁신적인 검색 API 전달 {#forward-emails-revolutionary-search-api}
+### 이메일 전달의 혁신적인 검색 API {#forward-emails-revolutionary-search-api}
 
 **다른 서비스에서는 제공하지 않는 15개 이상의 검색 매개변수를 제공합니다:**
 
@@ -226,7 +226,7 @@ curl -u "alias@yourdomain.com:password" \
 | **대소문자 구분 안 함** | ✅ 모든 검색 | ✅ | ✅ | ❌ |
 | **페이지 매김 지원** | ✅ 모든 검색 매개변수와 함께 작동합니다 | ✅ | ✅ | ❌ |
 
-### 실제 검색 예시 {#real-world-search-examples}
+### 실제 검색 예 {#real-world-search-examples}
 
 **지난 분기의 모든 송장 찾기:**
 
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **개발자 이점**: Forward Email의 검색 API를 사용하면 REST API의 단순성을 유지하면서도 데스크톱 클라이언트에 버금가는 기능을 갖춘 이메일 애플리케이션을 구축할 수 있습니다.
 
 ## 초고속 성능 아키텍처 {#blazing-fast-performance-architecture}
 
@@ -398,7 +398,7 @@ graph LR
 
 ### 개인 정보 보호 우선 아키텍처 {#privacy-first-architecture}
 
-**영지식 설계**: IMAP 비밀번호를 통해 본인만 접근할 수 있으며, 저희는 귀하의 이메일을 읽을 수 없습니다. [제로 지식 아키텍처](https://forwardemail.net/en/security)는 뛰어난 성능을 제공하는 동시에 완벽한 개인 정보 보호를 보장합니다.
+**영지식 설계**: IMAP 비밀번호를 통해 본인만 접근할 수 있으며, 저희는 귀하의 이메일을 읽을 수 없습니다. [제로 지식 아키텍처](https://forwardemail.net/en/security)은 뛰어난 성능을 제공하는 동시에 완벽한 개인 정보 보호를 보장합니다.
 
 ## 우리가 다른 이유: 전체 비교 {#why-were-different-the-complete-comparison}
 
@@ -425,16 +425,16 @@ graph LR
 | **은둔** | ✅ 제로 지식, 암호화, 개인 정보 보호 | ❌ 데이터 마이닝과 개인정보 보호 문제 |
 | **성능** | ✅ 50ms 미만의 응답 속도, NVMe 스토리지 | ❌ 네트워크 지연, 지연 제한 |
 
-### 오픈 소스 투명성 문제 {#the-open-source-transparency-problem}
+### 오픈소스 투명성 문제 {#the-open-source-transparency-problem}
 
 **ProtonMail과 Tuta는 스스로를 "오픈 소스"이자 "투명한" 기업이라고 홍보하지만, 이는 현대의 개인정보 보호 원칙을 위반하는 오해의 소지가 있는 마케팅입니다.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **거짓된 투명성 주장**: ProtonMail과 Tuta는 모두 자사의 "오픈 소스" 자격 증명을 대대적으로 광고하는 반면, 가장 중요한 서버 측 코드는 독점적이고 비공개로 유지됩니다.
 
 **ProtonMail의 속임수:**
 
-* **주장**: ["우리는 오픈소스입니다"](https://proton.me/blog/open-source)이 마케팅에 두드러지게 등장
+* **주장**: ["우리는 오픈소스입니다"](https://proton.me/blog/open-source)이 마케팅에 눈에 띄게 등장
 * **실제**: [서버 코드는 완전히 독점적입니다.](https://github.com/ProtonMail) - 클라이언트 앱만 오픈 소스
 * **영향**: 사용자가 서버 측 암호화, 데이터 처리 또는 개인정보 보호 주장을 확인할 수 없음
 * **투명성 위반**: 실제 이메일 처리 및 저장 시스템을 감사할 방법 없음
@@ -444,7 +444,7 @@ graph LR
 * **주장**: 핵심 판매 포인트로 ["오픈소스 이메일"](https://tuta.com/blog/posts/open-source-email)
 * **실제**: [백엔드 인프라는 폐쇄 소스입니다](https://github.com/tutao/tutanota) - 프런트엔드만 사용 가능
 * **영향**: 독점 암호화로 인해 표준 이메일 프로토콜(IMAP/SMTP) 사용 불가
-* **락인 전략**: 맞춤형 암호화로 인해 공급업체 의존성 강화
+* **락인 전략**: 맞춤형 암호화로 인해 공급업체 종속성 강화
 
 **이것이 현대 개인 정보 보호에 중요한 이유:**
 
@@ -464,14 +464,14 @@ graph LR
 * ✅ **공급업체 종속 없음** - 데이터, 제어권은 사용자에게 있습니다
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **진정한 오픈 소스이므로 모든 클레임을 검증할 수 있습니다.** Forward Email을 사용하면 암호화 감사, 데이터 처리 검토, 심지어 자체 인스턴스 실행까지 가능합니다. 이것이 바로 진정한 투명성입니다.
 
-## 30개 이상의 실제 통합 사례 {#30-real-world-integration-examples}
+## 30개 이상의 실제 통합 예제 {#30-real-world-integration-examples}
 
 ### 1. WordPress 연락처 양식 개선 {#1-wordpress-contact-form-enhancement}
 
 **문제**: [WordPress SMTP 구성 실패](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631개의 GitHub 이슈](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**해결책**: API 직접 통합은 [SMTP](https://tools.ietf.org/html/rfc5321)를 완전히 우회합니다.
+**해결책**: API 직접 통합으로 [SMTP](https://tools.ietf.org/html/rfc5321)를 완전히 우회합니다.
 
 ```javascript
 // WordPress contact form that saves to Sent folder
@@ -510,7 +510,7 @@ for (const message of messages) {
 ### 3. CRM 이메일 동기화 {#3-crm-email-synchronization}
 
 **문제**: 이메일과 [CRM 시스템](https://en.wikipedia.org/wiki/Customer_relationship_management) 간의 수동 연락처 관리
-**해결책**: [카드다브](https://tools.ietf.org/html/rfc6352) 연락처 API를 통한 양방향 동기화
+**해결책**: [카드다브](https://tools.ietf.org/html/rfc6352) 연락처 API와의 양방향 동기화
 
 ```javascript
 // Sync new email contacts to CRM
@@ -549,7 +549,7 @@ for (const order of orderEmails) {
 ### 5. 지원 티켓 통합 {#5-support-ticket-integration}
 
 **문제**: 이메일 스레드가 [헬프데스크 플랫폼](https://en.wikipedia.org/wiki/Help_desk_software)에 분산되어 있습니다.
-**해결책**: 이메일 스레드 추적 완료
+**해결책**: 이메일 스레드 추적을 완료하세요.
 
 ```javascript
 // Create support ticket from email thread
@@ -571,7 +571,7 @@ for (const email of supportEmails) {
 ### 6. 뉴스레터 관리 시스템 {#6-newsletter-management-system}
 
 **문제**: [뉴스레터 플랫폼](https://en.wikipedia.org/wiki/Email_marketing) 통합 제한
-**해결책**: 구독자 라이프사이클 전체 관리
+**해결책**: 구독자 수명 주기 전체 관리
 
 ```javascript
 // Auto-manage newsletter subscriptions
@@ -726,7 +726,7 @@ for (const email of meetingEmails) {
 ### 12. 이메일 백업 및 규정 준수 {#12-email-backup-and-compliance}
 
 **문제**: [이메일 보존](https://en.wikipedia.org/wiki/Email_retention_policy) 및 규정 준수 요구 사항
-**해결 방법**: 메타데이터 보존을 통한 자동 백업
+**해결책**: 메타데이터 보존을 통한 자동 백업
 
 ```javascript
 // Backup emails with full metadata
@@ -747,7 +747,7 @@ await saveToComplianceStorage(backup);
 
 ### 13. 이메일 기반 콘텐츠 관리 {#13-email-based-content-management}
 
-**문제**: [CMS 플랫폼](https://en.wikipedia.org/wiki/Content_management_system)에 대한 이메일을 통한 콘텐츠 제출 관리
+**문제**: [CMS 플랫폼](https://en.wikipedia.org/wiki/Content_management_system)의 이메일을 통한 콘텐츠 제출 관리
 **해결책**: 이메일을 콘텐츠 관리 시스템으로 활용
 
 ```javascript
@@ -769,7 +769,7 @@ for (const submission of submissions) {
 
 ### 14. 이메일 템플릿 관리 {#14-email-template-management}
 
-**문제**: 팀 전체에서 [이메일 템플릿](https://en.wikipedia.org/wiki/Email_template)가 일관되지 않음
+**문제**: 팀 전체에서 [이메일 템플릿](https://en.wikipedia.org/wiki/Email_template)이 일치하지 않습니다.
 **해결책**: API를 활용한 중앙 집중식 템플릿 시스템
 
 ```javascript
@@ -850,7 +850,7 @@ await updateSurveyResults(surveyData);
 
 ### 18. 이메일 성능 모니터링 {#18-email-performance-monitoring}
 
-**문제**: [이메일 전달 성능](https://en.wikipedia.org/wiki/Email_deliverability)에 대한 가시성 없음
+**문제**: [이메일 전달 성능](https://en.wikipedia.org/wiki/Email_deliverability)을 확인할 수 없습니다.
 **해결책**: 실시간 이메일 지표
 
 ```javascript
@@ -864,7 +864,7 @@ const deliveryStats = {
 await updateDashboard(deliveryStats);
 ```
 
-### 19. 이메일 기반 리드 자격 {#19-email-based-lead-qualification}
+### 19. 이메일 기반 리드 자격 평가 {#19-email-based-lead-qualification}
 
 **문제**: 이메일 상호작용에서 수동 [리드 스코어링](https://en.wikipedia.org/wiki/Lead_scoring) 발생
 **해결책**: 자동화된 리드 선별 파이프라인
@@ -884,7 +884,7 @@ for (const prospect of prospects) {
 
 ### 20. 이메일 기반 프로젝트 관리 {#20-email-based-project-management}
 
-**문제**: [프로젝트 업데이트](https://en.wikipedia.org/wiki/Project_management)가 여러 이메일 스레드에 분산되어 있습니다.
+**문제**: [프로젝트 업데이트](https://en.wikipedia.org/wiki/Project_management)이 여러 이메일 스레드에 분산되어 있습니다.
 **해결책**: 중앙 집중식 프로젝트 커뮤니케이션 허브
 
 ```javascript
@@ -965,7 +965,7 @@ for (const email of invoiceEmails) {
 ### 23. 이메일 기반 이벤트 등록 {#23-email-based-event-registration}
 
 **문제**: 이메일 응답에서 [이벤트 등록](https://en.wikipedia.org/wiki/Event_management) 수동 처리
-**해결책**: 자동 참석자 관리 및 일정 통합
+**해결책**: 참석자 관리 및 캘린더 통합 자동화
 
 ```javascript
 // Process event registration emails
@@ -1063,7 +1063,7 @@ for (const email of feedbackEmails) {
 ### 26. 이메일 기반 채용 파이프라인 {#26-email-based-recruitment-pipeline}
 
 **문제**: 수동 [신병 모집](https://en.wikipedia.org/wiki/Recruitment) 및 후보자 추적
-**해결책**: 자동 후보자 관리 및 면접 일정 예약
+**해결책**: 후보자 관리 및 면접 일정 자동 조정
 
 ```javascript
 // Process job application emails
@@ -1213,8 +1213,8 @@ for (const email of vendorEmails) {
 
 ### 30. 이메일 기반 소셜 미디어 모니터링 {#30-email-based-social-media-monitoring}
 
-**문제**: 수동 [소셜 미디어](https://en.wikipedia.org/wiki/Social_media_monitoring) 멘션 추적 및 대응
-**해결책**: 자동화된 소셜 미디어 알림 처리 및 대응 조정
+**문제**: [소셜 미디어](https://en.wikipedia.org/wiki/Social_media_monitoring) 멘션 추적 및 대응 수동 설정
+**해결책**: 소셜 미디어 알림 처리 자동화 및 대응 조정
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1260,7 +1260,7 @@ for (const alert of socialAlerts) {
 
 ### 1. 전달 이메일 계정 만들기 {#1-create-your-forward-email-account}
 
-[forwardemail.net](https://forwardemail.net)에 가입하여 도메인을 확인하세요.
+[forwardemail.net](https://forwardemail.net)에 가입하고 도메인을 확인하세요.
 
 ### 2. API 자격 증명 생성 {#2-generate-api-credentials}
 

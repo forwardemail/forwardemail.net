@@ -83,13 +83,13 @@ API ของอีเมลมีปัญหาพื้นฐาน จบน
 ผลลัพธ์? นักพัฒนาจะละทิ้งการรวมอีเมลทั้งหมดหรือเสียเวลาหลายสัปดาห์ไปกับการสร้าง IMAP wrapper ที่เปราะบางและมีปัญหาอยู่ตลอดเวลา
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **ความลับสุดสกปรก**: "API อีเมล" ส่วนใหญ่เป็นเพียง API สำหรับส่งเท่านั้น คุณไม่สามารถจัดระเบียบโฟลเดอร์ ซิงค์รายชื่อติดต่อ หรือจัดการปฏิทินผ่านอินเทอร์เฟซ REST แบบง่ายๆ ได้ด้วยโปรแกรม จนกระทั่งบัดนี้
 
-## สิ่งที่นักพัฒนาพูดจริงๆ {#what-developers-are-actually-saying}
+## สิ่งที่นักพัฒนากำลังพูดอยู่จริงๆ {#what-developers-are-actually-saying}
 
 ความหงุดหงิดเป็นเรื่องจริงและมีการบันทึกไว้ทุกที่:
 
-> "เมื่อเร็วๆ นี้ฉันพยายามรวม Gmail ไว้ในแอปของฉัน และฉันก็เสียเวลากับมันมากเกินไป ฉันเลยตัดสินใจว่ามันไม่คุ้มค่าที่จะสนับสนุน Gmail"
+> "เมื่อเร็วๆ นี้ฉันพยายามรวม Gmail ไว้ในแอปของฉัน และใช้เวลากับมันมากเกินไป ฉันเลยตัดสินใจว่ามันไม่คุ้มค่าที่จะสนับสนุน Gmail"
 >
 > *- [ผู้พัฒนา Hacker News](https://news.ycombinator.com/item?id=42106944), 147 โหวต*
 
@@ -97,7 +97,7 @@ API ของอีเมลมีปัญหาพื้นฐาน จบน
 >
 > *- [การสนทนา Reddit r/SaaS](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> "ทำไมการพัฒนาอีเมลถึงต้องห่วยแตกด้วยล่ะ?"
+> "ทำไมการพัฒนาอีเมลถึงต้องห่วยแตกด้วย?"
 >
 > *- [เรดดิต r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 ความคิดเห็นที่ทำให้นักพัฒนาปวดหัว*
 
@@ -109,7 +109,7 @@ API ของอีเมลมีปัญหาพื้นฐาน จบน
 
 * **ปัญหา SMTP ของ WordPress**: [ปัญหา GitHub 631 รายการ](https://github.com/awesomemotive/WP-Mail-SMTP/issues) เกี่ยวกับความล้มเหลวในการส่งอีเมล
 * **ข้อจำกัดของ Zapier**: [การร้องเรียนของชุมชน](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) จำกัดอีเมลประมาณ 10 ฉบับต่อชั่วโมง และความล้มเหลวในการตรวจจับ IMAP
-* **โครงการ IMAP API**: [หลายรายการ](https://github.com/ewildgoose/imap-api) [โอเพ่นซอร์ส](https://emailengine.app/) [โครงการต่างๆ](https://www.npmjs.com/package/imapflow) มีไว้เพื่อ "แปลง IMAP เป็น REST" โดยเฉพาะ เนื่องจากไม่มีผู้ให้บริการรายใดเสนอบริการนี้
+* **โครงการ IMAP API**: [หลายรายการ](https://github.com/ewildgoose/imap-api) [โอเพนซอร์ส](https://emailengine.app/) [โครงการต่างๆ](https://www.npmjs.com/package/imapflow) มีไว้สำหรับ "แปลง IMAP เป็น REST" โดยเฉพาะ เนื่องจากไม่มีผู้ให้บริการรายใดเสนอบริการนี้
 * **ปัญหา Gmail API**: [สแต็คโอเวอร์โฟลว์](https://stackoverflow.com/questions/tagged/gmail-api) มีคำถาม 4,847 ข้อที่ติดแท็ก "gmail-api" พร้อมข้อร้องเรียนทั่วไปเกี่ยวกับขีดจำกัดอัตราและความซับซ้อน
 
 ## โซลูชันปฏิวัติวงการอีเมลส่งต่อ {#forward-emails-revolutionary-solution}
@@ -120,10 +120,10 @@ API ของอีเมลมีปัญหาพื้นฐาน จบน
 
 * **ข้อความ**: สร้าง อ่าน อัปเดต ลบ ค้นหา ย้าย ตั้งค่าสถานะ
 * **โฟลเดอร์**: การจัดการโฟลเดอร์ IMAP เต็มรูปแบบผ่านจุดปลายทาง REST
-* **รายชื่อติดต่อ**: [การ์ดเดฟ](https://tools.ietf.org/html/rfc6352) การจัดเก็บและการซิงโครไนซ์รายชื่อติดต่อ
-* **ปฏิทิน**: [คาลเดฟ](https://tools.ietf.org/html/rfc4791) กิจกรรมและการกำหนดตารางเวลาในปฏิทิน
+* **รายชื่อติดต่อ**: การจัดเก็บและซิงโครไนซ์รายชื่อติดต่อ [การ์ดเดฟ](https://tools.ietf.org/html/rfc6352)
+* **ปฏิทิน**: กิจกรรมและกำหนดการในปฏิทิน [คาลเดฟ](https://tools.ietf.org/html/rfc4791)
 
-### เหตุใดเราจึงสร้างสิ่งนี้ {#why-we-built-this}
+### เหตุใดเราจึงสร้าง {#why-we-built-this} นี้
 
 **ปัญหา**: ผู้ให้บริการอีเมลทุกรายถือว่าอีเมลเป็นกล่องดำ คุณสามารถส่งอีเมลหรืออ่านอีเมลด้วย OAuth ที่ซับซ้อนได้ แต่คุณไม่สามารถ *จัดการ* ข้อมูลอีเมลของคุณผ่านโปรแกรมได้อย่างแท้จริง
 
@@ -133,7 +133,7 @@ API ของอีเมลมีปัญหาพื้นฐาน จบน
 
 ### การตรวจสอบสิทธิ์แบบง่าย {#simple-authentication}
 
-ไม่มี [ความซับซ้อนของ OAuth](https://oauth.net/2/) ไม่มี [รหัสผ่านเฉพาะแอป](https://support.google.com/accounts/answer/185833) เพียงข้อมูลประจำตัวนามแฝงของคุณ:
+ไม่มี [ความซับซ้อนของ OAuth](https://oauth.net/2/) ไม่มี [รหัสผ่านเฉพาะแอป](https://support.google.com/accounts/answer/185833) มีเพียงข้อมูลประจำตัวนามแฝงของคุณ:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -142,7 +142,7 @@ curl -u "alias@yourdomain.com:password" \
 
 ## 20 จุดสิ้นสุดที่เปลี่ยนแปลงทุกสิ่ง {#20-endpoints-that-change-everything}
 
-### ข้อความ (5 จุดสิ้นสุด) {#messages-5-endpoints}
+ข้อความ ### (จุดสิ้นสุด 5 จุด) {#messages-5-endpoints}
 
 * `GET /v1/messages` - แสดงรายการข้อความพร้อมตัวกรอง (`?folder=`, `?is_unread=`, `?is_flagged=`)
 * `POST /v1/messages` - ส่งข้อความใหม่ไปยังโฟลเดอร์โดยตรง
@@ -174,13 +174,13 @@ curl -u "alias@yourdomain.com:password" \
 * `PUT /v1/calendars/:id` - อัปเดตกิจกรรมพร้อมการตรวจจับความขัดแย้ง
 * `DELETE /v1/calendars/:id` - ลบกิจกรรมพร้อมการแจ้งเตือนผู้เข้าร่วม
 
-## การค้นหาขั้นสูง: ไม่มีบริการอื่นที่เปรียบเทียบได้ {#advanced-search-no-other-service-compares}
+## การค้นหาขั้นสูง: ไม่มีบริการอื่นเปรียบเทียบ {#advanced-search-no-other-service-compares}
 
 **Forward Email เป็นบริการอีเมลเพียงบริการเดียวที่นำเสนอการค้นหาแบบโปรแกรมที่ครอบคลุมในทุกฟิลด์ข้อความผ่าน REST API**
 
 แม้ว่าผู้ให้บริการรายอื่นจะเสนอการกรองข้อมูลขั้นพื้นฐานที่ดีที่สุด แต่เราได้สร้าง API การค้นหาอีเมลที่ทันสมัยที่สุดเท่าที่เคยมีมา ไม่มี Gmail API, Outlook API หรือบริการอื่นใดที่เทียบเคียงได้กับความสามารถในการค้นหาของเรา
 
-### ภูมิทัศน์ API การค้นหาถูกทำลาย {#the-search-api-landscape-is-broken}
+### ภูมิทัศน์ API การค้นหาเสียหาย {#the-search-api-landscape-is-broken}
 
 **ข้อจำกัดในการค้นหา Gmail API:**
 
@@ -189,7 +189,7 @@ curl -u "alias@yourdomain.com:password" \
 * ❌ ไม่มีการกรองช่วงวันที่
 * ❌ ไม่มีการกรองตามขนาด
 * ❌ ไม่มีการกรองไฟล์แนบ
-* ❌ จำกัดเฉพาะไวยากรณ์การค้นหาของ Gmail
+* ❌ จำกัดเฉพาะรูปแบบการค้นหาของ Gmail
 
 **ข้อจำกัดในการค้นหา Outlook API:**
 
@@ -223,7 +223,7 @@ curl -u "alias@yourdomain.com:password" \
 | **การค้นหาส่วนหัว** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
 | **การค้นหา ID ข้อความ** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
 | **ตัวกรองรวม** | ✅ พารามิเตอร์หลายตัวพร้อมตรรกะ AND | ❌ | ❌ | ❌ |
-| **ไม่คำนึงถึงตัวพิมพ์เล็ก/ใหญ่** | ✅ การค้นหาทั้งหมด | ✅ | ✅ | ❌ |
+| **ไม่คำนึงถึงตัวพิมพ์เล็ก-ใหญ่** | ✅ การค้นหาทั้งหมด | ✅ | ✅ | ❌ |
 | **การรองรับการแบ่งหน้า** | ✅ ใช้งานได้กับพารามิเตอร์การค้นหาทั้งหมด | ✅ | ✅ | ❌ |
 
 ### ตัวอย่างการค้นหาในโลกแห่งความเป็นจริง {#real-world-search-examples}
@@ -265,7 +265,7 @@ GET /gmail/v1/users/me/messages?q=quarterly
 GET /me/messages?$search="quarterly"
 ```
 
-### ข้อได้เปรียบด้านประสิทธิภาพ {#performance-advantages}
+### ข้อได้เปรียบด้านประสิทธิภาพของ {#performance-advantages}
 
 **ประสิทธิภาพการค้นหาอีเมลแบบส่งต่อ:**
 
@@ -310,7 +310,7 @@ GET /v1/messages?to=legal&has_attachments=true&body=contract
 GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 ```
 
-#### 4. ตรรกะทางธุรกิจแบบรวม {#4-combined-business-logic}
+#### 4. ตรรกะทางธุรกิจรวม {#4-combined-business-logic}
 
 ```bash
 # Find urgent flagged messages from VIPs with attachments
@@ -362,9 +362,9 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **ข้อได้เปรียบสำหรับนักพัฒนา**: ด้วย API การค้นหาของ Forward Email คุณสามารถสร้างแอปพลิเคชันอีเมลที่มีฟังก์ชันการทำงานเทียบเท่าไคลเอนต์เดสก์ท็อปได้ ในขณะที่ยังคงความเรียบง่ายของ REST API
 
-## สถาปัตยกรรมประสิทธิภาพที่รวดเร็วฉับไว {#blazing-fast-performance-architecture}
+## สถาปัตยกรรมประสิทธิภาพอันรวดเร็ว {#blazing-fast-performance-architecture}
 
 สแต็กทางเทคนิคของเราสร้างขึ้นเพื่อความเร็วและความน่าเชื่อถือ:
 
@@ -393,16 +393,16 @@ graph LR
 * **เวลาตอบสนอง API**: น้อยกว่า 50 มิลลิวินาทีโดยเฉลี่ย
 * **การดึงข้อมูลข้อความ**: น้อยกว่า 10 มิลลิวินาทีสำหรับข้อความแคช
 * **การดำเนินการโฟลเดอร์**: น้อยกว่า 5 มิลลิวินาทีสำหรับการดำเนินการเมตาดาต้า
-* **การซิงค์ผู้ติดต่อ**: 1,000 ผู้ติดต่อขึ้นไป/วินาที
+* **การซิงค์ผู้ติดต่อ**: 1,000 ผู้ติดต่อ/วินาทีขึ้นไป
 * **เวลาทำงาน**: SLA 99.99% พร้อมโครงสร้างพื้นฐานแบบซ้ำซ้อน
 
 ### สถาปัตยกรรมที่ให้ความสำคัญกับความเป็นส่วนตัวเป็นอันดับแรก {#privacy-first-architecture}
 
-**การออกแบบแบบไร้ความรู้**: มีเพียงคุณเท่านั้นที่เข้าถึงได้ด้วยรหัสผ่าน IMAP ของคุณ เราจึงไม่สามารถอ่านอีเมลของคุณได้ [สถาปัตยกรรมความรู้เป็นศูนย์](https://forwardemail.net/en/security) ของเรารับประกันความเป็นส่วนตัวอย่างสมบูรณ์ พร้อมมอบประสิทธิภาพที่ยอดเยี่ยม
+**การออกแบบแบบไร้ความรู้**: มีเพียงคุณเท่านั้นที่เข้าถึงได้ด้วยรหัสผ่าน IMAP ของคุณ เราไม่สามารถอ่านอีเมลของคุณได้ [สถาปัตยกรรมความรู้เป็นศูนย์](https://forwardemail.net/en/security) ของเรารับประกันความเป็นส่วนตัวอย่างสมบูรณ์ พร้อมมอบประสิทธิภาพที่ยอดเยี่ยม
 
 ## เหตุใดเราจึงแตกต่าง: การเปรียบเทียบที่สมบูรณ์ {#why-were-different-the-complete-comparison}
 
-### ข้อจำกัดหลักของผู้ให้บริการ {#major-provider-limitations}
+### ข้อจำกัดของผู้ให้บริการหลัก {#major-provider-limitations}
 
 | ผู้ให้บริการ | ปัญหาหลัก | ข้อจำกัดเฉพาะ |
 | ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -430,7 +430,7 @@ graph LR
 **ProtonMail และ Tuta ทำการตลาดตัวเองโดยอ้างว่าเป็น "โอเพ่นซอร์ส" และ "โปร่งใส" แต่การกระทำดังกล่าวถือเป็นการตลาดที่เข้าใจผิดและละเมิดหลักการความเป็นส่วนตัวสมัยใหม่**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **ข้อกล่าวอ้างความโปร่งใสที่เป็นเท็จ**: ทั้ง ProtonMail และ Tuta ต่างโฆษณาข้อมูลประจำตัว "โอเพนซอร์ส" ของตนอย่างเด่นชัด ในขณะที่ยังคงรักษาโค้ดฝั่งเซิร์ฟเวอร์ที่สำคัญที่สุดไว้เป็นกรรมสิทธิ์และปิดเป็นความลับ
 
 **การหลอกลวงของ ProtonMail:**
 
@@ -441,10 +441,10 @@ graph LR
 
 **การตลาดที่ทำให้เข้าใจผิดของ Tuta:**
 
-* **คำกล่าวอ้าง**: ["อีเมลโอเพ่นซอร์ส"](https://tuta.com/blog/posts/open-source-email) เป็นจุดขายหลัก
-* **ความเป็นจริง**: [โครงสร้างพื้นฐานแบ็กเอนด์เป็นแหล่งปิด](https://github.com/tutao/tutanota) - ใช้ได้เฉพาะส่วนหน้าเท่านั้น
-* **ผลกระทบ**: การเข้ารหัสแบบมีกรรมสิทธิ์ป้องกันโปรโตคอลอีเมลมาตรฐาน (IMAP/SMTP)
-* **กลยุทธ์การล็อกอิน**: การเข้ารหัสแบบกำหนดเองบังคับให้ต้องพึ่งพาผู้ขาย
+* **ข้ออ้าง**: ["อีเมลโอเพ่นซอร์ส"](https://tuta.com/blog/posts/open-source-email) เป็นจุดขายหลัก
+* **ความเป็นจริง**: [โครงสร้างพื้นฐานแบ็กเอนด์เป็นแหล่งปิด](https://github.com/tutao/tutanota) - ใช้งานได้เฉพาะส่วนหน้าเท่านั้น
+* **ผลกระทบ**: การเข้ารหัสแบบมีกรรมสิทธิ์ทำให้โปรโตคอลอีเมลมาตรฐาน (IMAP/SMTP) ใช้งานไม่ได้
+* **กลยุทธ์การล็อกอิน**: การเข้ารหัสแบบกำหนดเองบังคับให้ต้องพึ่งพาผู้ให้บริการ
 
 **เหตุใดสิ่งนี้จึงสำคัญต่อความเป็นส่วนตัวในยุคใหม่:**
 
@@ -461,10 +461,10 @@ graph LR
 * ✅ **[สามารถโฮสต์ด้วยตนเองได้](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - รันอินสแตนซ์ของคุณเอง
 * ✅ **โปรโตคอลมาตรฐาน** - รองรับ IMAP, SMTP, CardDAV, CalDAV
 * ✅ **ความปลอดภัยที่ตรวจสอบได้** - สามารถตรวจสอบโค้ดได้ทุกบรรทัด
-* ✅ **ไม่มีการผูกมัดกับผู้ขาย** - ข้อมูลของคุณ การควบคุมของคุณ
+* ✅ **ไม่มีการล็อคอินจากผู้ขาย** - ข้อมูลของคุณ การควบคุมของคุณ
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **โอเพนซอร์สที่แท้จริงหมายความว่าคุณสามารถตรวจสอบทุกข้ออ้างได้** ด้วย Forward Email คุณสามารถตรวจสอบการเข้ารหัสของเรา ตรวจสอบการจัดการข้อมูลของเรา และแม้แต่รันอินสแตนซ์ของคุณเองได้ นั่นคือความโปร่งใสอย่างแท้จริง
 
 ## ตัวอย่างการรวมในโลกแห่งความเป็นจริงมากกว่า 30 รายการ {#30-real-world-integration-examples}
 
@@ -510,7 +510,7 @@ for (const message of messages) {
 ### 3. การซิงโครไนซ์อีเมล CRM {#3-crm-email-synchronization}
 
 **ปัญหา**: การจัดการการติดต่อด้วยตนเองระหว่างอีเมลและ [ระบบ CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**วิธีแก้ไข**: การซิงค์แบบสองทางด้วย API การติดต่อ [การ์ดเดฟ](https://tools.ietf.org/html/rfc6352)
+**วิธีแก้ไข**: การซิงค์แบบสองทางกับ API การติดต่อ [การ์ดเดฟ](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
 // Sync new email contacts to CRM
@@ -723,7 +723,7 @@ for (const email of meetingEmails) {
 }
 ```
 
-### 12. การสำรองข้อมูลอีเมลและการปฏิบัติตาม {#12-email-backup-and-compliance}
+### 12. การสำรองข้อมูลอีเมลและการปฏิบัติตามข้อกำหนด {#12-email-backup-and-compliance}
 
 **ปัญหา**: [การเก็บรักษาอีเมล](https://en.wikipedia.org/wiki/Email_retention_policy) และข้อกำหนดการปฏิบัติตาม
 **วิธีแก้ไข**: การสำรองข้อมูลอัตโนมัติพร้อมการเก็บรักษาข้อมูลเมตา
@@ -864,7 +864,7 @@ const deliveryStats = {
 await updateDashboard(deliveryStats);
 ```
 
-### 19. การประเมินคุณสมบัติลูกค้าเป้าหมายผ่านอีเมล {#19-email-based-lead-qualification}
+### 19. การประเมินคุณสมบัติผู้มีแนวโน้มจะเป็นลูกค้าผ่านอีเมล {#19-email-based-lead-qualification}
 
 **ปัญหา**: ตั้งค่า [การให้คะแนนลูกค้าเป้าหมาย](https://en.wikipedia.org/wiki/Lead_scoring) ด้วยตนเองจากการโต้ตอบทางอีเมล
 **วิธีแก้ไข**: ขั้นตอนการคัดกรองผู้มีโอกาสเป็นลูกค้าอัตโนมัติ
@@ -882,7 +882,7 @@ for (const prospect of prospects) {
 }
 ```
 
-### 20. การจัดการโครงการผ่านอีเมล {#20-email-based-project-management}
+### 20. การจัดการโครงการทางอีเมล {#20-email-based-project-management}
 
 **ปัญหา**: [อัพเดทโครงการ](https://en.wikipedia.org/wiki/Project_management) กระจายอยู่ในเธรดอีเมล
 **วิธีแก้ไข**: ศูนย์กลางการสื่อสารโครงการแบบรวมศูนย์
@@ -935,7 +935,7 @@ for (const email of inventoryEmails) {
 
 ### 22. การประมวลผลใบแจ้งหนี้ทางอีเมล {#22-email-based-invoice-processing}
 
-**ปัญหา**: การรวม [การประมวลผลใบแจ้งหนี้](https://en.wikipedia.org/wiki/Invoice_processing) ด้วยตนเองและการผสานรวมระบบบัญชี
+**ปัญหา**: การรวม [การประมวลผลใบแจ้งหนี้](https://en.wikipedia.org/wiki/Invoice_processing) ด้วยตนเองและการผสานรวมบัญชี
 **วิธีแก้ไข**: การดึงข้อมูลใบแจ้งหนี้และการซิงค์ระบบบัญชีอัตโนมัติ
 
 ```javascript
@@ -999,8 +999,8 @@ for (const registration of registrations) {
 
 ### 24. เวิร์กโฟลว์การอนุมัติเอกสารผ่านอีเมล {#24-email-based-document-approval-workflow}
 
-**ปัญหา**: เชน [การอนุมัติเอกสาร](https://en.wikipedia.org/wiki/Document_management_system) ที่ซับซ้อนผ่านอีเมล
-**วิธีแก้ไข**: การติดตามการอนุมัติอัตโนมัติและการจัดการเวอร์ชันเอกสาร
+**ปัญหา**: การเชื่อมต่อ [การอนุมัติเอกสาร](https://en.wikipedia.org/wiki/Document_management_system) ที่ซับซ้อนผ่านอีเมล
+**วิธีแก้ไข**: การติดตามการอนุมัติและการจัดการเวอร์ชันเอกสารอัตโนมัติ
 
 ```javascript
 // Track document approval workflow
@@ -1030,8 +1030,8 @@ for (const email of approvalEmails) {
 
 ### 25. การวิเคราะห์ความคิดเห็นของลูกค้าผ่านอีเมล {#25-email-based-customer-feedback-analysis}
 
-**ปัญหา**: การรวบรวมและวิเคราะห์ความรู้สึกด้วยตนเอง [ความคิดเห็นของลูกค้า](https://en.wikipedia.org/wiki/Customer_feedback)
-**วิธีแก้ไข**: การประมวลผลคำติชมและการติดตามความรู้สึกอัตโนมัติ
+**ปัญหา**: การรวบรวมและวิเคราะห์ความคิดเห็น [ความคิดเห็นของลูกค้า](https://en.wikipedia.org/wiki/Customer_feedback) ด้วยตนเอง
+**วิธีแก้ไข**: การประมวลผลข้อเสนอแนะและการติดตามความคิดเห็นอัตโนมัติ
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1060,9 +1060,9 @@ for (const email of feedbackEmails) {
 }
 ```
 
-### 26. ช่องทางการสรรหาบุคลากรผ่านอีเมล {#26-email-based-recruitment-pipeline}
+### 26. กระบวนการสรรหาบุคลากรผ่านอีเมล {#26-email-based-recruitment-pipeline}
 
-**ปัญหา**: การติดตามผู้สมัครด้วยตนเองผ่าน [การสรรหาบุคลากร](https://en.wikipedia.org/wiki/Recruitment)
+**ปัญหา**: [การสรรหาบุคลากร](https://en.wikipedia.org/wiki/Recruitment) และการติดตามผู้สมัครด้วยตนเอง
 **วิธีแก้ไข**: การจัดการผู้สมัครและกำหนดการสัมภาษณ์อัตโนมัติ
 
 ```javascript
@@ -1097,7 +1097,7 @@ for (const application of applications) {
 ### 27. การประมวลผลรายงานค่าใช้จ่ายทางอีเมล {#27-email-based-expense-report-processing}
 
 **ปัญหา**: การส่งและอนุมัติ [รายงานค่าใช้จ่าย](https://en.wikipedia.org/wiki/Expense_report) ด้วยตนเอง
-**วิธีแก้ไข**: เวิร์กโฟลว์การดึงค่าใช้จ่ายและอนุมัติอัตโนมัติ
+**วิธีแก้ไข**: เวิร์กโฟลว์การดึงข้อมูลค่าใช้จ่ายและอนุมัติอัตโนมัติ
 
 ```javascript
 // Process expense report emails
@@ -1171,7 +1171,7 @@ for (const report of bugReports) {
 
 ### 29. การจัดการผู้ขายผ่านอีเมล {#29-email-based-vendor-management}
 
-**ปัญหา**: การติดตามสัญญาและ [การสื่อสารกับผู้ขาย](https://en.wikipedia.org/wiki/Vendor_management) ด้วยตนเอง
+**ปัญหา**: [การสื่อสารกับผู้ขาย](https://en.wikipedia.org/wiki/Vendor_management) และการติดตามสัญญาด้วยตนเอง
 **วิธีแก้ไข**: การจัดการความสัมพันธ์กับผู้ขายอัตโนมัติ
 
 ```javascript
@@ -1211,7 +1211,7 @@ for (const email of vendorEmails) {
 }
 ```
 
-### 30. การตรวจสอบโซเชียลมีเดียผ่านอีเมล {#30-email-based-social-media-monitoring}
+### 30. การติดตามโซเชียลมีเดียผ่านอีเมล {#30-email-based-social-media-monitoring}
 
 **ปัญหา**: การติดตามและตอบกลับการกล่าวถึง [โซเชียลมีเดีย](https://en.wikipedia.org/wiki/Social_media_monitoring) ด้วยตนเอง
 **วิธีแก้ไข**: การประมวลผลการแจ้งเตือนทางโซเชียลมีเดียอัตโนมัติและการประสานงานการตอบกลับ
@@ -1290,7 +1290,7 @@ curl -u "your-alias@domain.com:password" \
 * **[เอกสาร API ที่สมบูรณ์](https://forwardemail.net/en/email-api)** - ข้อมูลจำเพาะ OpenAPI 3.0 แบบอินเทอร์แอคทีฟ
 * **[คู่มือการโฮสต์ด้วยตนเอง](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - ใช้งาน Forward Email บนโครงสร้างพื้นฐานของคุณ
 * **[เอกสารข้อมูลความปลอดภัย](https://forwardemail.net/technical-whitepaper.pdf)** - รายละเอียดสถาปัตยกรรมทางเทคนิคและความปลอดภัย
-* **[คลังเก็บข้อมูล GitHub](https://github.com/forwardemail/forwardemail.net)** - ฐานโค้ดโอเพนซอร์ส
+* **[คลังเก็บ GitHub](https://github.com/forwardemail/forwardemail.net)** - ฐานโค้ดโอเพนซอร์ส
 * **[การสนับสนุนนักพัฒนา](mailto:api@forwardemail.net)** - เข้าถึงทีมวิศวกรของเราได้โดยตรง
 
 ---

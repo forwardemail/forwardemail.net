@@ -1,4 +1,4 @@
-# Beispiele für SMTP-Integration {#smtp-integration-examples}
+# SMTP-Integrationsbeispiele {#smtp-integration-examples}
 
 ## Inhaltsverzeichnis {#table-of-contents}
 
@@ -18,7 +18,7 @@
 * [Ruby-Integration](#ruby-integration)
   * [Verwenden von Ruby Mail Gem](#using-ruby-mail-gem)
 * [Java-Integration](#java-integration)
-  * [Verwenden der JavaMail-API](#using-javamail-api)
+  * [Verwenden der Java Mail API](#using-javamail-api)
 * [E-Mail-Client-Konfiguration](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
@@ -33,7 +33,7 @@
 
 Diese Anleitung bietet detaillierte Beispiele zur Integration des SMTP-Dienstes von Forward Email mithilfe verschiedener Programmiersprachen, Frameworks und E-Mail-Clients. Unser SMTP-Dienst ist zuverlässig, sicher und lässt sich problemlos in Ihre bestehenden Anwendungen integrieren.
 
-## Funktionsweise der SMTP-Verarbeitung von Forward Email {#how-forward-emails-smtp-processing-works}
+## Funktionsweise der SMTP-Verarbeitung beim Weiterleiten von E-Mails {#how-forward-emails-smtp-processing-works}
 
 Bevor wir uns in die Integrationsbeispiele vertiefen, ist es wichtig zu verstehen, wie unser SMTP-Dienst E-Mails verarbeitet:
 
@@ -47,14 +47,14 @@ Wenn Sie eine E-Mail per SMTP an unsere Server senden:
 * Analyse der Fehlerantwort mithilfe unserer Funktion `getBounceInfo`
 * Feststellung, ob das Problem vorübergehend (z. B. „Später erneut versuchen“, „vorübergehend verschoben“) oder dauerhaft (z. B. „Benutzer unbekannt“) ist.
 * Bei vorübergehenden Problemen wird die E-Mail zur Wiederholung markiert.
-* Bei dauerhaften Problemen wird eine Benachrichtigung über eine Unzustellbarkeit generiert.
+* Bei dauerhaften Problemen wird eine Benachrichtigung über eine Zurückweisung generiert.
 4. **5-tägige Wiederholungsfrist**: Wir versuchen die Zustellung bis zu 5 Tage lang erneut (ähnlich wie bei Industriestandards wie Postfix), um vorübergehenden Problemen Zeit zur Behebung zu geben.
-5. **Benachrichtigungen zum Zustellungsstatus**: Absender erhalten Benachrichtigungen über den Status ihrer E-Mails (zugestellt, verzögert oder unzustellbar).
+5. **Benachrichtigungen zum Zustellungsstatus**: Absender erhalten Benachrichtigungen über den Status ihrer E-Mails (zugestellt, verzögert oder zurückgewiesen).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Nach erfolgreicher Zustellung werden ausgehende SMTP-E-Mail-Inhalte nach einer konfigurierbaren Aufbewahrungsfrist (standardmäßig 30 Tage) aus Sicherheits- und Datenschutzgründen redigiert. Es bleibt lediglich eine Platzhalternachricht mit der erfolgreichen Zustellung erhalten.
 
-### Auf Verlässlichkeit geprüft {#dummy-proofed-for-reliability}
+### Dummy-geprüft für Zuverlässigkeit {#dummy-proofed-for-reliability}
 
 Unser System ist für die Handhabung verschiedener Sonderfälle ausgelegt:
 
@@ -202,7 +202,7 @@ except Exception as e:
     print(f"Error sending email: {e}")
 ```
 
-### Django verwenden {#using-django}
+### Verwenden von Django {#using-django}
 
 Fügen Sie für Django-Anwendungen Folgendes zu Ihrem `settings.py` hinzu:
 
@@ -236,7 +236,7 @@ def send_email_view(request):
 
 ## PHP-Integration {#php-integration}
 
-### PHPMailer verwenden {#using-phpmailer}
+### Verwendung von PHPMailer {#using-phpmailer}
 
 ```php
 <?php
@@ -275,7 +275,7 @@ try {
 }
 ```
 
-### Laravel verwenden {#using-laravel}
+### Verwendung von Laravel {#using-laravel}
 
 Aktualisieren Sie für Laravel-Anwendungen Ihre Datei `.env`:
 

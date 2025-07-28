@@ -76,7 +76,7 @@
   * [Dokumentationslögnen](#the-documentation-lie)
 * [Vad detta innebär för utvecklare](#what-this-means-for-developers)
 
-## Den saknade biten: Inget sätt att lista prenumerationer {#the-missing-piece-no-way-to-list-subscriptions}
+## Den saknade delen: Inget sätt att lista prenumerationer {#the-missing-piece-no-way-to-list-subscriptions}
 
 Här är det som slår oss: PayPal har haft prenumerationsfakturering sedan 2014, men de har aldrig erbjudit ett sätt för handlare att lista sina egna prenumerationer.
 
@@ -151,7 +151,7 @@ Trots den formella feedbacksessionen, den omfattande listan med 27 punkter, fler
 
 problem, absolut ingenting åtgärdades.
 
-## Exodus för ledningen: Hur PayPal förlorade allt institutionellt minne {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
+## Exodus ur ledningen: Hur PayPal förlorade allt institutionellt minne {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
 Det är här det blir riktigt intressant. Varenda person som fick vår feedback för 2020 har lämnat PayPal:
 
@@ -193,7 +193,7 @@ Vi tackade nej till ytterligare ett möte och förklarade vår frustration:
 
 > Tack. Men jag känner inte att det kommer att göra någonting att ringa ett samtal. Här är anledningen... Jag fick ett samtal tidigare och det ledde absolut ingenstans. Jag slösade bort över 2 timmar av min tid på att prata med hela teamet och ledningen och ingenting blev gjort... Massor av mejl fram och tillbaka. Absolut ingenting blev gjort. Feedback ledde ingenstans. Jag försökte i åratal, bli lyssnad på, och sedan leder det ingenstans.
 
-### Marty Brodbecks överdrivna svar {#marty-brodbecks-overengineering-response}
+### Marty Brodbecks svar på överengineering {#marty-brodbecks-overengineering-response}
 
 Sedan kontaktade Marty Brodbeck, som är chef för konsumentteknik på PayPal:
 
@@ -210,7 +210,7 @@ GET /v1/billing/subscriptions
 Authorization: Bearer {access_token}
 ```
 
-### Den "enkla skitmotsägelsen" {#the-simple-crud-contradiction}
+### Motsägelsen om den "enkla CRUD" {#the-simple-crud-contradiction}
 
 När vi påpekade att detta var grundläggande CRUD-funktionalitet som borde ha funnits sedan 2014, var Martys svar talande:
 
@@ -233,7 +233,7 @@ Utbytena med Alex Chriss, Michelle Gill och Marty Brodbeck 2025 visar samma orga
 
 Detta mönster förklarar varför PayPal-teamen år 2025 verkar helt bortkopplade från den omfattande feedback som gavs 2020 – de personer som fick den feedbacken är borta, och det nya ledarskapet upprepar samma misstag.
 
-## Åratal av felrapporter som de ignorerade {#years-of-bug-reports-they-ignored}
+## År av felrapporter som de ignorerade {#years-of-bug-reports-they-ignored}
 
 Vi klagade inte bara på saknade funktioner. Vi rapporterade aktivt buggar och försökte hjälpa dem att förbättras. Här är en omfattande tidslinje över de problem vi dokumenterade:
 
@@ -241,7 +241,7 @@ Vi klagade inte bara på saknade funktioner. Vi rapporterade aktivt buggar och f
 
 Redan 2016 kontaktade vi PayPals ledning offentligt, inklusive Dan Schulman, om gränssnittsproblem och användbarhetsproblem. Detta var för 9 år sedan, och samma UI/UX-problem kvarstår än idag.
 
-### 2021: Felrapport om företags-e-post {#2021-business-email-bug-report}
+### 2021: Felrapport för företags-e-post {#2021-business-email-bug-report}
 
 I mars 2021 rapporterade vi att PayPals e-postsystem för företag skickade felaktiga aviseringsmeddelanden. E-postmallen hade variabler som återgavs felaktigt, vilket visade förvirrande meddelanden för kunderna.
 
@@ -404,7 +404,7 @@ Mark Stuart själv erkände:
 
 **Deras utvecklarpanel loggar ut dig efter 60 sekunders inaktivitet**. Försöker du göra något produktivt får du hela tiden: inloggning → captcha → 2FA → utloggning → upprepa. Använder du VPN? Lycka till.
 
-## Juli 2025: Droppen som får bägaren att falla {#july-2025-the-final-straw}
+## Juli 2025: Droppen som får bägaren att rinna ut {#july-2025-the-final-straw}
 
 Efter 11 år med samma problem kom brytpunkten under en rutinmässig kontomigrering. Vi behövde övergå till ett nytt PayPal-konto som matchade vårt företagsnamn "Forward Email LLC" för en renare redovisning.
 
@@ -465,7 +465,7 @@ Vi har fastnat med att stödja en trasig plattform eftersom PayPal har skapat et
 
 ## Lösningen för communityn {#the-community-workaround}
 
-Eftersom PayPal inte tillhandahåller grundläggande funktioner för prenumerationslistning har utvecklarcommunityn byggt lösningar. Vi skapade ett skript som hjälper till att hantera PayPal-prenumerationer: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
+Eftersom PayPal inte tillhandahåller grundläggande funktioner för prenumerationslistning har utvecklarcommunityn skapat lösningar. Vi skapade ett skript som hjälper till att hantera PayPal-prenumerationer: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
 Det här skriptet refererar till en [gemenskapskärnan](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) där utvecklare delar lösningar. Användare är faktiskt [tackar oss](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) för att de tillhandahåller det som PayPal borde ha byggt för flera år sedan.
 
@@ -477,7 +477,7 @@ Problemen går bortom API:erna. PayPals e-postmallar är så dåligt utformade a
 
 Vi får regelbundet rapporter om PayPal-mejl som ser exakt ut som nätfiskeförsök. Här är ett faktiskt exempel från våra rapporter om missbruk:
 
-**Ämne:** __SKYDDAD_INLINE_KOD_7__
+**Ämne:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
 Det här e-postmeddelandet vidarebefordrades till `abuse@microsoft.com` eftersom det verkade vara ett nätfiskeförsök. Problemet? Det kom faktiskt från PayPals sandbox-miljö, men deras malldesign är så dålig att den utlöser system för att upptäcka nätfiske.
 
@@ -545,7 +545,7 @@ Detta är dokumenterat i säkerhetsforskning: [Se upp för PayPals nya adressbed
 
 ### Verkliga effekter: Nya PayPal-bedrägerier {#real-world-impact-novel-paypal-scams}
 
-Problemet sträcker sig bortom bara dålig malldesign. PayPals fakturasystem är så lättutnyttjat att bedragare regelbundet missbrukar det för att skicka falska fakturor som ser legitima ut. Säkerhetsforskaren Gavin Anderegg dokumenterade [En ny PayPal-bluff](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) där bedragare skickar riktiga PayPal-fakturor som klarar alla autentiseringskontroller:
+Problemet sträcker sig bortom bara dålig malldesign. PayPals faktureringssystem är så lättutnyttjat att bedragare regelbundet missbrukar det för att skicka falska fakturor som ser legitima ut. Säkerhetsforskaren Gavin Anderegg dokumenterade [En ny PayPal-bluff](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) där bedragare skickar riktiga PayPal-fakturor som klarar alla autentiseringskontroller:
 
 > "Vid en kontroll av källan såg det ut som att e-postmeddelandet faktiskt kom från PayPal (SPF, DKIM och DMARC godkändes alla). Knappen länkade också till vad som såg ut som en legitim PayPal-URL... Det tog en sekund innan jag insåg att det var ett legitimt e-postmeddelande. Jag hade precis fått en slumpmässig 'faktura' från en bedragare."
 
@@ -590,7 +590,7 @@ PayPals process är helt omvänd:
 5. **Ge ingen anmälan till handlaren**
 6. **Låt kunderna upptäcka problemet och rapportera det**
 
-### Verkliga effekter {#the-real-world-impact}
+### Den verkliga effekten {#the-real-world-impact}
 
 Denna bakvända process skapar katastrofer för företag:
 
@@ -609,15 +609,15 @@ När vi kontaktade supporten fick vi motstridiga svar om vilken dokumentation so
 
 ### Varför detta är viktigt {#why-this-matters}
 
-PayPals tillvägagångssätt för efterlevnad visar på ett grundläggande missförstånd om hur företag fungerar. Korrekt KYC bör ske **före** produktionsintegration, inte efter att kunderna redan har försökt betala. Bristen på proaktiv kommunikation när problem uppstår visar PayPals brist på koppling till handlarnas behov.
+PayPals tillvägagångssätt för efterlevnad visar på ett grundläggande missförstånd om hur företag fungerar. Korrekt KYC bör ske **före** produktionsintegration, inte efter att kunderna redan har försökt betala. Bristen på proaktiv kommunikation när problem uppstår visar på PayPals brist på förståelse för handlarnas behov.
 
 Denna bakåtriktade process är symptomatisk för PayPals bredare organisatoriska problem: de prioriterar sina interna processer framför handlarnas och kundupplevelsen, vilket leder till den typ av operativa katastrofer som driver företag bort från deras plattform.
 
-## Hur alla andra betalningsleverantörer gör det rätt {#how-every-other-payment-processor-does-it-right}
+## Hur alla andra betalningsbehandlare gör det rätt {#how-every-other-payment-processor-does-it-right}
 
 Funktionen för prenumerationslistning som PayPal vägrar att implementera har varit standard i branschen i över ett decennium. Så här hanterar andra betalningsleverantörer detta grundläggande krav:
 
-### Stripe {#stripe}
+### Rand {#stripe}
 
 Stripe har haft prenumerationslistor sedan deras API lanserades. Deras dokumentation visar tydligt hur man hämtar alla prenumerationer för ett kund- eller handelskonto. Detta anses vara grundläggande CRUD-funktionalitet.
 
@@ -698,7 +698,7 @@ Authorization: Bearer access_token
 * `GET /v1/billing/subscriptions/{id}` - Skaffa EN prenumeration (om du vet ID:t)
 * `PATCH /v1/billing/subscriptions/{id}` - Uppdatera en prenumeration
 * `POST /v1/billing/subscriptions/{id}/cancel` - Avsluta prenumerationen
-* `POST /v1/billing/subscriptions/{id}/suspend` - Avbryt prenumerationen
+* `POST /v1/billing/subscriptions/{id}/suspend` - Pausa prenumerationen
 
 **Vad saknas från PayPal:**
 
@@ -713,13 +713,13 @@ PayPal är den enda större betalningsleverantören som tvingar utvecklare att m
 
 I ett drag som perfekt sammanfattar PayPals sätt att hantera kritik, tog de nyligen hela sitt communityforum offline, vilket effektivt tystade över 6 miljoner medlemmar och raderade hundratusentals inlägg som dokumenterade deras misslyckanden.
 
-### Den stora raderingen {#the-great-erasure}
+### Den stora utraderingen {#the-great-erasure}
 
 Den ursprungliga PayPal-communityn på `paypal-community.com` hade **6 003 558 medlemmar** och innehöll hundratusentals inlägg, felrapporter, klagomål och diskussioner om PayPals API-fel. Detta representerade över ett decennium av dokumenterade bevis på PayPals systematiska problem.
 
 Den 30 juni 2025 tog PayPal i tysthet hela forumet offline. Alla `paypal-community.com`-länkar returnerar nu 404-fel. Detta var inte en migrering eller uppgradering.
 
-### Tredjepartsräddning {#the-third-party-rescue}
+### Räddningstjänst från tredje part {#the-third-party-rescue}
 
 Lyckligtvis har en tredjepartstjänst på [ppl.lithium.com](https://ppl.lithium.com/) bevarat en del av innehållet, vilket gör att vi kan komma åt diskussionerna som PayPal försökte dölja. Denna tredjepartsbevaring är dock ofullständig och kan försvinna när som helst.
 
@@ -732,11 +732,11 @@ Detta mönster att dölja bevis är inte nytt för PayPal. De har en dokumentera
 
 Nedtagningen av forumet representerar det mest fräcka försöket hittills att dölja deras systematiska misslyckanden från offentlig granskning.
 
-## Den 11 år långa Capture-buggkatastrofen: 1 899 dollar och vi fortsätter {#the-11-year-capture-bug-disaster-1899-and-counting}
+## Den 11 år långa katastrofen med Capture-buggar: 1 899 dollar och vi fortsätter {#the-11-year-capture-bug-disaster-1899-and-counting}
 
 Medan PayPal var upptagna med att organisera feedbacksessioner och ge löften, har deras grundläggande betalningssystem varit fundamentalt trasigt i över 11 år. Bevisen är förödande.
 
-### Förlust på 1 899 USD för vidarebefordran av e-post {#forward-emails-1899-loss}
+### Vidarebefordra e-postmeddelandets förlust på 1 899 USD {#forward-emails-1899-loss}
 
 I våra produktionssystem upptäckte vi 108 PayPal-betalningar på totalt **1 899 USD** som förlorades på grund av PayPals insamlingsfel. Dessa betalningar visar ett konsekvent mönster:
 
@@ -775,7 +775,7 @@ Samhällets reaktioner 2013 var talande:
 
 **11+ år senare, de "jobbar fortfarande på det".**
 
-### 2016 års erkännande: PayPal knäcker sitt eget SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
+### 2016 års erkännande: PayPal bryter mot sitt eget SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
 
 År 2016 dokumenterade PayPals eget GitHub-arkiv att [massiva misslyckanden med att fånga in](https://github.com/paypal/PayPal-PHP-SDK/issues/660) påverkade deras officiella PHP SDK. Omfattningen var häpnadsväckande:
 
@@ -800,7 +800,7 @@ Detta medgivande avslöjar PayPals systematiska försummelse:
 
 > "Uppgraderade SDK:et till v1.7.4 och **problemet kvarstår.**"
 
-### Upptrappningen 2024: Fortfarande trasig {#the-2024-escalation-still-broken}
+### Eskaleringen 2024: Fortfarande trasig {#the-2024-escalation-still-broken}
 
 Nyligen publicerade rapporter från den bevarade PayPal-communityn visar att problemet faktiskt har förvärrats. En [Diskussion i september 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([arkiverad](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) dokumenterar exakt samma problem:
 
@@ -810,7 +810,7 @@ Handlaren beskriver samma mönster som Vidarebefordra e-post upplevde:
 
 > "Efter att ha försökt hämta beställningen returnerar PayPal ett 404-fel. Vid hämtning av orderuppgifter: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **Detta är utan spår av en lyckad inspelning från vår sida.**"
 
-### Webhooks tillförlitlighetskatastrof {#the-webhook-reliability-disaster}
+### Webhookens tillförlitlighetskatastrof {#the-webhook-reliability-disaster}
 
 En annan [bevarad samhällsdiskussion](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) avslöjar att PayPals webhook-system är fundamentalt opålitligt:
 
@@ -861,13 +861,13 @@ Katastrofen med infångningsbuggen är bara ett exempel på PayPals systematiska
 
 ### Åtgärder från New York Department of Financial Services {#the-new-york-department-of-financial-services-action}
 
-I januari 2025 utfärdade New York Department of Financial Services en [verkställighetsåtgärder mot PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) för vilseledande metoder, vilket visar att PayPals bedrägerimönster sträcker sig långt bortom deras API:er.
+I januari 2025 utfärdade New York Department of Financial Services en [verkställighetsåtgärder mot PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf)-förklaring för vilseledande metoder, vilket visar att PayPals bedrägerimönster sträcker sig långt bortom deras API:er.
 
 Denna regleringsåtgärd visar PayPals villighet att använda vilseledande metoder i hela sin verksamhet, inte bara i sina utvecklarverktyg.
 
-### Honey-rättegången: Omskrivning av affiliate-länkar {#the-honey-lawsuit-rewriting-affiliate-links}
+### Honungsrättegången: Omskrivning av affilialänkar {#the-honey-lawsuit-rewriting-affiliate-links}
 
-PayPals förvärv av Honey har resulterat i [stämningar som påstår att Honey skriver om affiliate-länkar](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), där man stjäl provisioner från innehållsskapare och influencers. Detta representerar ytterligare en form av systematiskt bedrägeri där PayPal tjänar pengar genom att omdirigera intäkter som borde gå till andra.
+PayPals förvärv av Honey har resulterat i att [stämningar som påstår att Honey skriver om affiliate-länkar](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) stjäl provisioner från innehållsskapare och influencers. Detta representerar ytterligare en form av systematiskt bedrägeri där PayPal tjänar pengar genom att omdirigera intäkter som borde gå till andra.
 
 Mönstret är tydligt:
 

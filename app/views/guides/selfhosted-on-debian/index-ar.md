@@ -1,4 +1,4 @@
-# دليل تثبيت استضافة البريد الإلكتروني الذاتية لنظام Debian {#forward-email-self-hosting-installation-guide-for-debian}
+# دليل تثبيت استضافة البريد الإلكتروني الذاتية لإعادة توجيه البريد الإلكتروني لنظام Debian {#forward-email-self-hosting-installation-guide-for-debian}
 
 ## جدول المحتويات {#table-of-contents}
 
@@ -39,13 +39,13 @@
   * [مهام الصيانة الدورية](#regular-maintenance-tasks)
   * [تجديد الشهادة](#certificate-renewal)
 * [استكشاف الأخطاء وإصلاحها](#troubleshooting)
-  * [المشكلات الخاصة بـ Debian](#debian-specific-issues)
+  * [مشاكل خاصة بـ Debian](#debian-specific-issues)
   * [القضايا الشائعة](#common-issues)
   * [الحصول على المساعدة](#getting-help)
 * [أفضل ممارسات الأمان](#security-best-practices)
 * [خاتمة](#conclusion)
 
-## نظرة عامة {#overview}
+## نظرة عامة على {#overview}
 
 يقدم هذا الدليل تعليمات خطوة بخطوة لتثبيت حل Forward Email المُستضاف ذاتيًا على أنظمة Debian. صُمم هذا الدليل خصيصًا لإصداري Debian 11 (Bullseye) وDebian 12 (Bookworm).
 
@@ -59,7 +59,7 @@
 * **خادم نظيف**: يُنصح باستخدام تثبيت ديبيان جديد
 * **اتصال إنترنت**: مطلوب لتنزيل الحزم وصور Docker
 
-## متطلبات النظام {#system-requirements}
+## متطلبات نظام {#system-requirements}
 
 * **ذاكرة الوصول العشوائي**: الحد الأدنى ٢ غيغابايت (يُنصح بـ ٤ غيغابايت للإنتاج)
 * **التخزين**: الحد الأدنى ٢٠ غيغابايت من المساحة المتوفرة (يُنصح بـ ٥٠ غيغابايت فأكثر للإنتاج)
@@ -75,7 +75,7 @@
 
 ## التثبيت خطوة بخطوة {#step-by-step-installation}
 
-### الخطوة 1: الإعداد الأولي للنظام {#step-1-initial-system-setup}
+### الخطوة 1: إعداد النظام الأولي {#step-1-initial-system-setup}
 
 أولاً، تأكد من تحديث نظامك والتبديل إلى المستخدم الجذر:
 
@@ -305,7 +305,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### الخطوة 11: تكوين نطاقك {#step-11-configure-your-domain}
+### الخطوة 11: تكوين المجال الخاص بك {#step-11-configure-your-domain}
 
 قم بتعيين اسم المجال الخاص بك وتحديث متغيرات البيئة:
 
@@ -543,7 +543,7 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 @ MX 10 mx.yourdomain.com
 ```
 
-#### سجلات A {#a-records}
+#### سجلات {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -562,7 +562,7 @@ carddav A YOUR_SERVER_IP
 @ TXT "v=spf1 mx ~all"
 ```
 
-سجل DKIM {#dkim-record}
+#### سجل DKIM {#dkim-record}
 
 احصل على مفتاح DKIM العام الخاص بك:
 
@@ -577,7 +577,7 @@ openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl bas
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-سجل DMARC {#dmarc-record}
+#### سجل DMARC {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -707,9 +707,9 @@ nslookup google.com
 ٢. **التحقق من حالة الخدمة**: استخدم أمر docker compose المناسب
 ٣. **مراجعة السجلات**: تحقق من سجلات التطبيق والنظام
 ٤. **تحديث حزم النظام**: `apt update && apt upgrade`
-٥. **مراقبة snapd**: `snap list` و `snap refresh`
+٥. **مراقبة snapd**: `snap list` و`snap refresh`
 
-### تجديد الشهادة {#certificate-renewal}
+### تجديد شهادة {#certificate-renewal}
 
 يجب أن يتم تجديد الشهادات تلقائيًا، ولكن يمكنك تجديدها يدويًا إذا لزم الأمر:
 
@@ -728,7 +728,7 @@ else
 fi
 ```
 
-## استكشاف الأخطاء وإصلاحها {#troubleshooting}
+استكشاف أخطاء ## وإصلاحها {#troubleshooting}
 
 ### مشكلات خاصة بـ Debian {#debian-specific-issues}
 
@@ -810,7 +810,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * **مشاكل GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **وثائق Debian**: <https://www.debian.org/doc/>
 
-## أفضل ممارسات الأمان {#security-best-practices}
+## أفضل ممارسات الأمان لـ {#security-best-practices}
 
 ١. **تحديث النظام باستمرار**: حدّث ديبيان والحزم بانتظام.
 ٢. **مراقبة السجلات**: جهّز مراقبة السجلات والتنبيهات.
@@ -818,9 +818,9 @@ nohup dockerd >/dev/null 2>/dev/null &
 ٤. **استخدام كلمات مرور قوية**: أنشئ كلمات مرور قوية لجميع الحسابات.
 ٥. **تفعيل Fail2Ban**: فكّر في تثبيت fail2ban لمزيد من الأمان.
 ٦. **عمليات تدقيق أمان منتظمة**: راجع إعداداتك بشكل دوري.
-٧. **مراقبة Snapd**: حافظ على تحديث حزم Snap باستخدام `snap refresh`
+٧. **مراقبة Snapd**: حافظ على تحديث حزم Snap باستخدام `snap refresh`.
 
-## الخاتمة {#conclusion}
+## الاستنتاج {#conclusion}
 
 يجب أن يكون تثبيت Forward Email المُستضاف ذاتيًا جاهزًا للعمل على Debian. تذكر:
 

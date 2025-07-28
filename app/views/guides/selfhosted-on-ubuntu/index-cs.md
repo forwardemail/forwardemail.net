@@ -1,6 +1,6 @@
 # Průvodce instalací samoobslužného hostingu pro přesměrování e-mailů v Ubuntu {#forward-email-self-hosting-installation-guide-for-ubuntu}
 
-__CHRÁNĚNÁ_URL_43__ Obsah {__CHRÁNĚNÁ_URL_44__
+## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
 * [Předpoklady](#prerequisites)
@@ -187,7 +187,7 @@ docker info
 
 ### Krok 7: Konfigurace firewallu {#step-7-configure-firewall}
 
-Nastavte firewall UFW pro zabezpečení serveru:
+Nastavte si firewall UFW pro zabezpečení serveru:
 
 ```bash
 # Set default policies
@@ -469,17 +469,17 @@ netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ## Konfigurace po instalaci {#post-installation-configuration}
 
-Nastavení DNS záznamů ### {#dns-records-setup}
+### Nastavení záznamů DNS {#dns-records-setup}
 
 Pro vaši doménu je potřeba nakonfigurovat následující DNS záznamy:
 
-Záznam MX #### {#mx-record}
+#### Záznam MX {#mx-record}
 
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
-__CHRÁNĚNÁ_URL_97__ Záznamy {__CHRÁNĚNÁ_URL_98__
+#### Záznamy A {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -492,13 +492,13 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-__CHRÁNĚNÁ_URL_99__ Záznam SPF {__CHRÁNĚNÁ_URL_100__
+#### Záznam SPF {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
-__CHRÁNĚNÁ_URL_101__ Záznam DKIM {__CHRÁNĚNÁ_URL_102__
+#### Záznam DKIM {#dkim-record}
 
 Získejte svůj veřejný klíč DKIM:
 
@@ -513,7 +513,7 @@ Vytvořit DNS záznam DKIM:
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-#### Záznam DMARC {#dmarc-record}
+Záznam #### DMARC {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -521,7 +521,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### První přihlášení {#first-login}
 
-1. Otevřete webový prohlížeč a přejděte na adresu `https://yourdomain.com`
+1. Otevřete webový prohlížeč a přejděte na `https://yourdomain.com`
 2. Zadejte základní ověřovací údaje, které jste si dříve uložili
 3. Dokončete průvodce počátečním nastavením
 4. Vytvořte si svůj první e-mailový účet
@@ -571,7 +571,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## Konfigurace automatických aktualizací {#auto-update-configuration}
+## Konfigurace automatické aktualizace {#auto-update-configuration}
 
 Nastavte automatické aktualizace pro instalaci služby Forward Email:
 
@@ -595,13 +595,13 @@ crontab -l
 * **Protokoly záloh**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Protokoly automatické aktualizace**: `/var/log/autoupdate.log`
 
-### Pravidelná údržba {#regular-maintenance-tasks}
+### Pravidelné úkoly údržby {#regular-maintenance-tasks}
 
 1. **Monitorování místa na disku**: `df -h`
-2. **Zkontrolovat stav služby**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
-3. **Zkontrolovat protokoly**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
-4. **Aktualizovat systémové balíčky**: `apt update && apt upgrade`
-5. **Obnovit certifikáty**: Certifikáty se automaticky obnovují, ale monitorují se jejich platnost.
+2. **Zkontrolování stavu služby**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
+3. **Zkontrolování protokolů**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
+4. **Aktualizace systémových balíčků**: `apt update && apt upgrade`
+5. **Obnovení certifikátů**: Certifikáty se automaticky obnovují, ale monitorují se jejich platnost.
 
 ### Obnovení certifikátu {#certificate-renewal}
 
@@ -620,7 +620,7 @@ docker compose -f "$DOCKER_COMPOSE_FILE" restart
 
 ## Řešení problémů {#troubleshooting}
 
-### Časté problémy {#common-issues}
+### Běžné problémy {#common-issues}
 
 #### 1. Služba Docker se nespustí {#1-docker-service-wont-start}
 

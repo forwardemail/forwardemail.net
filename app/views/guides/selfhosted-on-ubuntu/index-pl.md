@@ -11,7 +11,7 @@
   * [Krok 3: Zainstaluj zależności systemowe](#step-3-install-system-dependencies)
   * [Krok 4: Zainstaluj pakiety Snap](#step-4-install-snap-packages)
   * [Krok 5: Zainstaluj Dockera](#step-5-install-docker)
-  * [Krok 6: Konfigurowanie usługi Docker](#step-6-configure-docker-service)
+  * [Krok 6: Skonfiguruj usługę Docker](#step-6-configure-docker-service)
   * [Krok 7: Skonfiguruj zaporę sieciową](#step-7-configure-firewall)
   * [Krok 8: Klonuj repozytorium wiadomości e-mail](#step-8-clone-forward-email-repository)
   * [Krok 9: Skonfiguruj środowisko](#step-9-set-up-environment-configuration)
@@ -19,15 +19,15 @@
   * [Krok 11: Wygeneruj certyfikaty SSL](#step-11-generate-ssl-certificates)
   * [Krok 12: Wygeneruj klucze szyfrujące](#step-12-generate-encryption-keys)
   * [Krok 13: Aktualizacja ścieżek SSL w konfiguracji](#step-13-update-ssl-paths-in-configuration)
-  * [Krok 14: Skonfiguruj podstawowe uwierzytelnianie](#step-14-set-up-basic-authentication)
+  * [Krok 14: Skonfiguruj uwierzytelnianie podstawowe](#step-14-set-up-basic-authentication)
   * [Krok 15: Wdrażanie za pomocą Docker Compose](#step-15-deploy-with-docker-compose)
-  * [Krok 16: Sprawdź instalację](#step-16-verify-installation)
+  * [Krok 16: Zweryfikuj instalację](#step-16-verify-installation)
 * [Konfiguracja po instalacji](#post-installation-configuration)
   * [Konfiguracja rekordów DNS](#dns-records-setup)
   * [Pierwsze logowanie](#first-login)
 * [Konfiguracja kopii zapasowej](#backup-configuration)
-  * [Konfigurowanie kopii zapasowej zgodnej z S3](#set-up-s3-compatible-backup)
-  * [Konfigurowanie zadań kopii zapasowej Cron](#set-up-backup-cron-jobs)
+  * [Skonfiguruj kopię zapasową zgodną z S3](#set-up-s3-compatible-backup)
+  * [Skonfiguruj zadania Cron kopii zapasowej](#set-up-backup-cron-jobs)
 * [Konfiguracja automatycznej aktualizacji](#auto-update-configuration)
 * [Konserwacja i monitorowanie](#maintenance-and-monitoring)
   * [Lokalizacje dzienników](#log-locations)
@@ -41,7 +41,7 @@
 
 ## Przegląd {#overview}
 
-Ten przewodnik zawiera instrukcje krok po kroku dotyczące instalacji samodzielnie hostowanego rozwiązania Forward Email w systemach Ubuntu. Ten przewodnik jest specjalnie dostosowany do wersji Ubuntu 20.04, 22.04 i 24.04 LTS.
+Ten przewodnik zawiera instrukcje krok po kroku dotyczące instalacji samodzielnie hostowanego rozwiązania Forward Email w systemach Ubuntu. Przewodnik jest specjalnie dostosowany do wersji Ubuntu 20.04, 22.04 i 24.04 LTS.
 
 ## Wymagania wstępne {#prerequisites}
 
@@ -49,15 +49,15 @@ Przed rozpoczęciem instalacji upewnij się, że masz:
 
 * **Serwer Ubuntu**: 20.04, 22.04 lub 24.04 LTS
 * **Dostęp root**: Musisz mieć możliwość uruchamiania poleceń jako root (dostęp sudo)
-* **Nazwa domeny**: Domena, którą kontrolujesz z dostępem do zarządzania DNS
+* **Nazwa domeny**: Domena, którą kontrolujesz i posiadasz dostęp do zarządzania DNS
 * **Czysty serwer**: Zalecane jest użycie nowej instalacji Ubuntu
 * **Połączenie internetowe**: Wymagane do pobierania pakietów i obrazów Docker
 
 ## Wymagania systemowe {#system-requirements}
 
-* **RAM**: Minimum 2 GB (zalecane 4 GB do produkcji)
-* **Pamięć masowa**: Minimum 20 GB dostępnej przestrzeni (zalecane 50 GB+ do produkcji)
-* **CPU**: Minimum 1 vCPU (zalecane 2+ vCPU do produkcji)
+* **RAM**: Minimum 2 GB (zalecane 4 GB do zastosowań produkcyjnych)
+* **Pamięć masowa**: Minimum 20 GB dostępnej przestrzeni (zalecane 50 GB+ do zastosowań produkcyjnych)
+* **CPU**: Minimum 1 wirtualny procesor (zalecane 2 lub więcej wirtualnych procesorów do zastosowań produkcyjnych)
 * **Sieć**: Publiczny adres IP z następującymi dostępnymi portami:
 * 22 (SSH)
 * 25 (SMTP)
@@ -71,7 +71,7 @@ Przed rozpoczęciem instalacji upewnij się, że masz:
 
 ### Krok 1: Początkowa konfiguracja systemu {#step-1-initial-system-setup}
 
-Najpierw upewnij się, że system jest aktualny i zmień konto na użytkownika root:
+Najpierw upewnij się, że system jest aktualny i przełącz się na użytkownika root:
 
 ```bash
 # Update system packages
@@ -81,7 +81,7 @@ sudo apt update && sudo apt upgrade -y
 sudo su -
 ```
 
-### Krok 2: Skonfiguruj resolvery DNS {#step-2-configure-dns-resolvers}
+### Krok 2: Konfigurowanie resolverów DNS {#step-2-configure-dns-resolvers}
 
 Skonfiguruj swój system tak, aby korzystał z serwerów DNS Cloudflare w celu niezawodnego generowania certyfikatów:
 
@@ -164,7 +164,7 @@ docker compose version
 
 ### Krok 6: Skonfiguruj usługę Docker {#step-6-configure-docker-service}
 
-Upewnij się, że Docker uruchamia się automatycznie i działa:
+Upewnij się, że Docker uruchamia się automatycznie i jest uruchomiony:
 
 ```bash
 # Enable and start Docker service
@@ -185,7 +185,7 @@ sleep 5
 docker info
 ```
 
-### Krok 7: Skonfiguruj zaporę sieciową {#step-7-configure-firewall}
+### Krok 7: Skonfiguruj zaporę {#step-7-configure-firewall}
 
 Skonfiguruj zaporę UFW, aby zabezpieczyć swój serwer:
 
@@ -239,7 +239,7 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### Krok 9: Skonfiguruj środowisko {#step-9-set-up-environment-configuration}
+### Krok 9: Skonfiguruj konfigurację środowiska {#step-9-set-up-environment-configuration}
 
 Przygotuj konfigurację środowiska:
 
@@ -306,7 +306,7 @@ update_env_file "AUTH_BASIC_ENABLED" "true"
 
 ### Krok 11: Wygeneruj certyfikaty SSL {#step-11-generate-ssl-certificates}
 
-#### Opcja A: Ręczne sprawdzanie DNS (zalecane dla większości użytkowników) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Opcja A: Ręczne wyzwanie DNS (zalecane dla większości użytkowników) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -318,7 +318,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Ważne**: Gdy pojawi się monit, musisz utworzyć rekordy TXT w swoim DNS. Możesz zobaczyć wiele wyzwań dla tej samej domeny - **utwórz WSZYSTKIE**. Nie usuwaj pierwszego rekordu TXT podczas dodawania drugiego.
+**Ważne**: Gdy pojawi się monit, musisz utworzyć rekordy TXT w swoim systemie DNS. Możesz zobaczyć wiele wyzwań dla tej samej domeny – **utwórz WSZYSTKIE**. Nie usuwaj pierwszego rekordu TXT podczas dodawania drugiego.
 
 #### Opcja B: Cloudflare DNS (jeśli używasz Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -359,7 +359,7 @@ ls -la "$SELF_HOST_DIR/ssl/"
 
 ### Krok 12: Wygeneruj klucze szyfrujące {#step-12-generate-encryption-keys}
 
-Utwórz różne klucze szyfrujące wymagane do bezpiecznej pracy:
+Utwórz różne klucze szyfrujące wymagane do bezpiecznej operacji:
 
 ```bash
 # Generate helper encryption key
@@ -388,7 +388,7 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 echo "✅ All encryption keys generated successfully"
 ```
 
-### Krok 13: Zaktualizuj ścieżki SSL w konfiguracji {#step-13-update-ssl-paths-in-configuration}
+### Krok 13: Aktualizacja ścieżek SSL w konfiguracji {#step-13-update-ssl-paths-in-configuration}
 
 Skonfiguruj ścieżki certyfikatów SSL w pliku środowiskowym:
 
@@ -427,7 +427,7 @@ echo ""
 
 ### Krok 15: Wdrażanie za pomocą Docker Compose {#step-15-deploy-with-docker-compose}
 
-Uruchom wszystkie usługi przekazywania poczty e-mail:
+Uruchom wszystkie usługi przekazywania poczty elektronicznej:
 
 ```bash
 # Set Docker Compose file path
@@ -479,7 +479,7 @@ Musisz skonfigurować następujące rekordy DNS dla swojej domeny:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Rekordy A {#a-records}
+#### A Rekordy {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -522,15 +522,15 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 ### Pierwsze logowanie {#first-login}
 
 1. Otwórz przeglądarkę internetową i przejdź do `https://yourdomain.com`
-2. Wprowadź podstawowe dane uwierzytelniające, które wcześniej zapisałeś
-3. Ukończ kreatora konfiguracji początkowej
+2. Wprowadź zapisane wcześniej podstawowe dane uwierzytelniające
+3. Zakończ działanie kreatora konfiguracji początkowej
 4. Utwórz swoje pierwsze konto e-mail
 
 ## Konfiguracja kopii zapasowej {#backup-configuration}
 
 ### Skonfiguruj kopię zapasową zgodną z S3 {#set-up-s3-compatible-backup}
 
-Skonfiguruj automatyczne kopie zapasowe w pamięci masowej zgodnej ze standardem S3:
+Skonfiguruj automatyczne kopie zapasowe w pamięci masowej zgodnej z S3:
 
 ```bash
 # Create AWS credentials directory
@@ -590,22 +590,22 @@ crontab -l
 
 ### Lokalizacje dzienników {#log-locations}
 
-* **Dzienniki Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
-* **Dzienniki systemowe**: `/var/log/syslog`
-* **Dzienniki kopii zapasowych**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Dzienniki automatycznej aktualizacji**: `/var/log/autoupdate.log`
+* **Logi Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
+* **Logi systemowe**: `/var/log/syslog`
+* **Logi kopii zapasowych**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Logi automatycznej aktualizacji**: `/var/log/autoupdate.log`
 
 ### Regularne zadania konserwacyjne {#regular-maintenance-tasks}
 
-1. **Monitoruj przestrzeń dyskową**: `df -h`
+1. **Monitoruj miejsce na dysku**: `df -h`
 2. **Sprawdź stan usługi**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
-3. **Przejrzyj dzienniki**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
+3. **Przejrzyj logi**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Aktualizuj pakiety systemowe**: `apt update && apt upgrade`
 5. **Odnów certyfikaty**: Certyfikaty odnawiają się automatycznie, ale monitorują wygaśnięcie
 
 ### Odnowienie certyfikatu {#certificate-renewal}
 
-Certyfikaty powinny odnawiać się automatycznie, ale w razie potrzeby możesz to zrobić ręcznie:
+Certyfikaty powinny odnawiać się automatycznie, ale w razie potrzeby możesz dokonać odnowienia ręcznego:
 
 ```bash
 # Manual certificate renewal
@@ -636,43 +636,43 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * Upewnij się, że porty 80 i 443 są dostępne
 * Sprawdź, czy rekordy DNS wskazują na Twój serwer
-* Sprawdź ustawienia zapory
+* Sprawdź ustawienia zapory sieciowej
 
 #### 3. Problemy z dostarczaniem wiadomości e-mail {#3-email-delivery-issues}
 
-* Sprawdź, czy rekordy MX są poprawne
+* Sprawdź poprawność rekordów MX
 * Sprawdź rekordy SPF, DKIM i DMARC
 * Upewnij się, że port 25 nie jest blokowany przez Twojego dostawcę hostingu
 
 #### 4. Interfejs sieciowy niedostępny {#4-web-interface-not-accessible}
 
-* Sprawdź ustawienia zapory: `ufw status`
-* Sprawdź certyfikaty SSL: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
+* Sprawdź ustawienia zapory sieciowej: `ufw status`
+* Zweryfikuj certyfikaty SSL: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
 * Sprawdź podstawowe dane uwierzytelniające
 
 ### Uzyskiwanie pomocy {#getting-help}
 
 * **Dokumentacja**: <https://forwardemail.net/self-hosted>
-* **Problemy w GitHubie**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Wsparcie społeczności**: Sprawdź dyskusje projektu w GitHubie
+* **Problemy w GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
+* **Wsparcie społeczności**: Sprawdź dyskusje projektu w GitHub
 
 ## Najlepsze praktyki bezpieczeństwa {#security-best-practices}
 
 1. **Aktualizuj system**: Regularnie aktualizuj Ubuntu i pakiety
-2. **Monitoruj dzienniki**: Skonfiguruj monitorowanie dzienników i alerty
+2. **Monitoruj logi**: Skonfiguruj monitorowanie logów i alerty
 3. **Regularnie twórz kopie zapasowe**: Testuj procedury tworzenia kopii zapasowych i przywracania
-4. **Używaj silnych haseł**: Generuj silne hasła dla wszystkich kont
-5. **Włącz Fail2Ban**: Rozważ zainstalowanie fail2ban w celu zapewnienia dodatkowego bezpieczeństwa
-6. **Regularnie przeprowadzaj audyty bezpieczeństwa**: Okresowo przeglądaj swoją konfigurację
+4. **Używaj silnych haseł**: Wygeneruj silne hasła dla wszystkich kont
+5. **Włącz Fail2Ban**: Rozważ zainstalowanie fail2ban dla dodatkowego bezpieczeństwa
+6. **Regularne audyty bezpieczeństwa**: Okresowo sprawdzaj konfigurację
 
-## Wnioski {#conclusion}
+## Wniosek {#conclusion}
 
-Twoja instalacja Forward Email self-hosted powinna być teraz ukończona i działać na Ubuntu. Pamiętaj, aby:
+Instalacja Forward Email na własnym hostingu powinna być teraz ukończona i działać w systemie Ubuntu. Pamiętaj, aby:
 
-1. Skonfiguruj poprawnie swoje rekordy DNS
+1. Skonfiguruj poprawnie rekordy DNS
 2. Przetestuj wysyłanie i odbieranie wiadomości e-mail
 3. Skonfiguruj regularne kopie zapasowe
-4. Regularnie monitoruj swój system
-5. Aktualizuj swoją instalację
+4. Regularnie monitoruj system
+5. Aktualizuj instalację
 
 Aby uzyskać dodatkowe opcje konfiguracji i zaawansowane funkcje, zapoznaj się z oficjalną dokumentacją usługi Forward Email pod adresem <https://forwardemail.net/self-hosted#configuration>.

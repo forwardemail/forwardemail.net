@@ -17,7 +17,7 @@ npm install nodemailer
 
 Questo esempio utilizza la libreria **[Nodemailer](https://github.com/nodemailer/nodemailer)** e il suo sponsor ufficiale **[Inoltra e-mail](https://forwardemail.net)** per inviare e visualizzare in anteprima la posta in uscita.
 
-Sarà necessario <strong class="text-success"><i class="fa fa-key"></i>generare una password</strong> per inviare la posta in uscita: segui la nostra procedura **[Guida all'invio di email con SMTP di dominio personalizzato](/guides/send-email-with-custom-domain-smtp)**.
+Sarà necessario <strong class="text-success"><i class="fa fa-key"></i>generare una password</strong> per inviare la posta in uscita: seguire la nostra procedura **[Guida all'invio di email con SMTP di dominio personalizzato](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -45,7 +45,7 @@ await transporter.sendMail({
 });
 ```
 
-Esegui l'app per inviare l'email:
+Esegui l'app per inviare l'e-mail:
 
 ```sh
 node app

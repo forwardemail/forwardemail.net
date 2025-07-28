@@ -58,18 +58,18 @@ In de wereld van [JavaScript](https://en.wikipedia.org/wiki/JavaScript) en [Node
 
 ## De pioniers die ons vertrouwen: Isaac Z. Schlueter en Forward Email {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
 
-We zijn er trots op dat we [Isaac Z. Schlueter](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)) als gebruiker hebben. Isaac heeft [npm](https://en.wikipedia.org/wiki/Npm_\(software\)) ontwikkeld en heeft meegewerkt aan de ontwikkeling van [Node.js](https://en.wikipedia.org/wiki/Node.js). Zijn vertrouwen in Forward Email bewijst onze focus op kwaliteit en veiligheid. Isaac gebruikt Forward Email voor verschillende domeinen, waaronder izs.me.
+We zijn er trots op dat we [Isaac Z. Schlueter](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)) als gebruiker hebben. Isaac heeft [npm](https://en.wikipedia.org/wiki/Npm_\(software\)) ontwikkeld en heeft meegewerkt aan de ontwikkeling van [Node.js](https://en.wikipedia.org/wiki/Node.js). Zijn vertrouwen in Forward Email toont onze focus op kwaliteit en beveiliging. Isaac gebruikt Forward Email voor verschillende domeinen, waaronder izs.me.
 
-Isaacs impact op JavaScript is enorm. In 2009 was hij een van de eersten die de potentie van Node.js zag, in samenwerking met [Ryan Dahl](https://en.wikipedia.org/wiki/Ryan_Dahl), de ontwikkelaar van het platform. Zoals Isaac zei in een [interview met Increment magazine](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/): "Te midden van deze zeer kleine community van een groep mensen die probeerden uit te vinden hoe ze server-side JS konden realiseren, kwam Ryan Dahl met Node, wat gewoon heel duidelijk de juiste aanpak was. Ik heb mijn steentje daaraan bijgedragen en raakte er halverwege 2009 erg bij betrokken."
+Isaacs impact op JavaScript is enorm. In 2009 was hij een van de eersten die de potentie van Node.js zag, in samenwerking met [Ryan Dahl](https://en.wikipedia.org/wiki/Ryan_Dahl), de oprichter van het platform. Zoals Isaac zei in een [interview met Increment magazine](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/)-artikel: "Te midden van deze zeer kleine community van een groep mensen die probeerden uit te vinden hoe ze server-side JS konden realiseren, kwam Ryan Dahl met Node, wat gewoonweg de juiste aanpak was. Ik heb mijn steentje daaraan bijgedragen en raakte er halverwege 2009 erg bij betrokken."
 
 > \[!NOTE]
-> For those interested in the history of Node.js, there are excellent documentaries available that chronicle its development, including [The Story of Node.js](https://www.youtube.com/watch?v=LB8KwiiUGy0) and [10 Things I Regret About Node.js - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). Ryan Dahl's [personal website](https://tinyclouds.org/) also contains valuable insights into his work.
+> Voor wie geïnteresseerd is in de geschiedenis van Node.js zijn er uitstekende documentaires beschikbaar die de ontwikkeling ervan beschrijven, waaronder [Het verhaal van Node.js](https://www.youtube.com/watch?v=LB8KwiiUGy0) en [10 dingen waar ik spijt van heb over Node.js - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). Ryan Dahls [persoonlijke website](https://tinyclouds.org/) bevat ook waardevolle inzichten in zijn werk.
 
 ### Van de creatie van npm tot Node.js-leiderschap {#from-npms-creation-to-nodejs-leadership}
 
-Isaac creëerde npm in september 2009 en de eerste bruikbare versie werd begin 2010 uitgebracht. Deze pakketbeheerder voorzag in een belangrijke behoefte in Node.js, waardoor ontwikkelaars eenvoudig code konden delen en hergebruiken. Volgens de [Node.js Wikipedia-pagina](https://en.wikipedia.org/wiki/Node.js): "In januari 2010 werd een pakketbeheerder geïntroduceerd voor de Node.js-omgeving genaamd npm. De pakketbeheerder stelt programmeurs in staat om Node.js-pakketten te publiceren en te delen, samen met de bijbehorende broncode, en is ontworpen om de installatie, update en de-installatie van pakketten te vereenvoudigen."
+Isaac creëerde npm in september 2009 en de eerste bruikbare versie werd begin 2010 uitgebracht. Deze pakketbeheerder voorzag in een belangrijke behoefte in Node.js, waardoor ontwikkelaars eenvoudig code konden delen en hergebruiken. Volgens [Node.js Wikipedia-pagina](https://en.wikipedia.org/wiki/Node.js): "In januari 2010 werd een pakketbeheerder geïntroduceerd voor de Node.js-omgeving, genaamd npm. De pakketbeheerder stelt programmeurs in staat om Node.js-pakketten te publiceren en te delen, samen met de bijbehorende broncode, en is ontworpen om de installatie, update en de-installatie van pakketten te vereenvoudigen."
 
-Toen Ryan Dahl in januari 2012 afscheid nam van Node.js, nam Isaac het over als projectleider. Zoals vermeld op [zijn samenvatting](https://izs.me/resume), "leidde hij de ontwikkeling van verschillende fundamentele Node.js-kern-API's, waaronder het CommonJS-modulesysteem, bestandssysteem-API's en streams" en "fungeerde hij twee jaar lang als BDFL (Benevolent Dictator For Life) van het project, waarmee hij de steeds hogere kwaliteit en het betrouwbare buildproces voor Node.js-versies v0.6 tot en met v0.10 garandeerde."
+Toen Ryan Dahl in januari 2012 afscheid nam van Node.js, nam Isaac het over als projectleider. Zoals vermeld op [zijn samenvatting](https://izs.me/resume), "leidde hij de ontwikkeling van verschillende fundamentele Node.js kern-API's, waaronder het CommonJS modulesysteem, bestandssysteem-API's en streams" en "fungeerde hij twee jaar lang als BDFL (Benevolent Dictator For Life) van het project, waarmee hij zorgde voor een steeds hogere kwaliteit en een betrouwbaar buildproces voor Node.js-versies v0.6 tot en met v0.10."
 
 Isaac loodste Node.js door een belangrijke groeiperiode en zette standaarden die het platform vandaag de dag nog steeds vormgeven. Later, in 2014, richtte hij npm, Inc. op ter ondersteuning van de npm-registry, die hij voorheen zelfstandig had gerund.
 
@@ -79,22 +79,22 @@ We danken Isaac voor zijn enorme bijdragen aan JavaScript en gebruiken nog steed
 
 De kern van ons open source-succes is Nick Baugh, oprichter en eigenaar van Forward Email. Hij werkt al bijna 20 jaar in JavaScript en heeft de manier waarop talloze ontwikkelaars apps bouwen, vormgegeven. Zijn open source-avontuur getuigt van zowel technische vaardigheden als leiderschap in de community.
 
-### Express Technisch Comité en kernbijdragen {#express-technical-committee-and-core-contributions}
+### Express Technisch Comité en Kernbijdragen {#express-technical-committee-and-core-contributions}
 
-Nicks expertise in webframeworks leverde hem een plek op in de [Express Technisch Comité](https://expressjs.com/en/resources/community.html), waar hij meewerkte aan een van de meestgebruikte Node.js-frameworks. Nick staat nu vermeld als inactief lid in de [Express communitypagina](https://expressjs.com/en/resources/community.html).
+Nicks expertise in webframeworks leverde hem een plek op in de [Express Technisch Comité](https://expressjs.com/en/resources/community.html)-lijst, waar hij meewerkte aan een van de meestgebruikte Node.js-frameworks. Nick staat nu vermeld als inactief lid in de [Express communitypagina](https://expressjs.com/en/resources/community.html)-lijst.
 
 > \[!IMPORTANT]
-> Express was originally created by TJ Holowaychuk, a prolific open source contributor who has shaped much of the Node.js ecosystem. We're grateful for TJ's foundational work and respect his [decision to take a break](https://news.ycombinator.com/item?id=37687017) from his extensive open source contributions.
+> Express is oorspronkelijk ontwikkeld door TJ Holowaychuk, een productieve open-sourcebijdrager die een groot deel van het Node.js-ecosysteem heeft vormgegeven. We zijn TJ dankbaar voor zijn fundamentele werk en respecteren zijn [besluit om een pauze te nemen](https://news.ycombinator.com/item?id=37687017) vanwege zijn uitgebreide open-sourcebijdragen.
 
-Als lid van de [Express Technisch Comité](https://expressjs.com/en/resources/community.html) besteedde Nick veel aandacht aan details bij zaken als het verduidelijken van de documentatie van `req.originalUrl` en het oplossen van problemen met de verwerking van multipart-formulieren.
+Als lid van [Express Technisch Comité](https://expressjs.com/en/resources/community.html) besteedde Nick veel aandacht aan details bij zaken als het verduidelijken van de documentatie van `req.originalUrl` en het oplossen van problemen met de verwerking van multipart-formulieren.
 
 ### Koa Framework-bijdragen {#koa-framework-contributions}
 
-Nicks werk met de [Koa-framework](https://github.com/koajs/koa)—een modern, lichter alternatief voor Express, eveneens ontwikkeld door TJ Holowaychuk—onderbouwt zijn toewijding aan betere tools voor webontwikkeling. Zijn bijdragen aan Koa omvatten zowel problemen als code via pull-requests, waarbij hij zich richt op foutverwerking, contenttypebeheer en verbeteringen in de documentatie.
+Nicks werk met [Koa-framework](https://github.com/koajs/koa) – een modern, lichter alternatief voor Express, eveneens ontwikkeld door TJ Holowaychuk – onderstreept zijn toewijding aan betere tools voor webontwikkeling. Zijn bijdragen aan Koa omvatten zowel problemen als code via pull-requests, en richten zich op foutverwerking, contenttypebeheer en verbeteringen in de documentatie.
 
 Dankzij zijn werk bij zowel Express als Koa heeft hij een uniek inzicht in Node.js webontwikkeling. Hierdoor kan ons team pakketten creëren die goed samenwerken met meerdere framework-ecosystemen.
 
-### Van individuele bijdrager naar organisatie leider {#from-individual-contributor-to-organization-leader}
+### Van individuele medewerker naar organisatieleider {#from-individual-contributor-to-organization-leader}
 
 Wat begon als het helpen van bestaande projecten, groeide uit tot het creëren en onderhouden van complete pakketecosystemen. Nick richtte meerdere GitHub-organisaties op, waaronder [Cabine](https://github.com/cabinjs), [Spamscanner](https://github.com/spamscanner), [E-mail doorsturen](https://github.com/forwardemail), [Jongen](https://github.com/ladjs) en [Bree](https://github.com/breejs), die elk specifieke behoeften binnen de JavaScript-community aanpakken.
 
@@ -104,65 +104,65 @@ Deze verschuiving van bijdrager naar leider toont Nicks visie op goed ontworpen 
 
 We organiseren ons open source-werk rond gerichte GitHub-organisaties, die elk specifieke JavaScript-behoeften vervullen. Deze structuur creëert samenhangende pakketfamilies die goed samenwerken en toch modulair blijven.
 
-### Cabin: Gestructureerde logging voor moderne toepassingen {#cabin-structured-logging-for-modern-applications}
+### Cabine: Gestructureerde logging voor moderne toepassingen {#cabin-structured-logging-for-modern-applications}
 
 [Cabine organisatie](https://github.com/cabinjs) is onze versie van eenvoudige, krachtige app-logging. Het hoofdpakket [`cabin`](https://github.com/cabinjs/cabin) heeft bijna 900 GitHub-sterren en meer dan 100.000 wekelijkse downloads. Cabin biedt gestructureerde logging die werkt met populaire services zoals Sentry, LogDNA en Papertrail.
 
-Wat Cabin uniek maakt, is het doordachte API- en pluginsysteem. Ondersteuning van pakketten zoals [`axe`](https://github.com/cabinjs/axe) voor Express-middleware en [`parse-request`](https://github.com/cabinjs/parse-request) voor het parsen van HTTP-verzoeken, bewijst onze toewijding aan complete oplossingen in plaats van geïsoleerde tools.
+Wat Cabin uniek maakt, is het doordachte API- en pluginsysteem. Ondersteuning van pakketten zoals [`axe`](https://github.com/cabinjs/axe) voor Express middleware en [`parse-request`](https://github.com/cabinjs/parse-request) voor het parsen van HTTP-verzoeken, bewijst onze toewijding aan complete oplossingen in plaats van geïsoleerde tools.
 
-Het pakket [`bson-objectid`](https://github.com/cabinjs/bson-objectid) verdient een speciale vermelding, met meer dan 1,7 miljoen downloads in slechts twee maanden\[^2]. Deze lichte MongoDB ObjectID-implementatie is dé oplossing geworden voor ontwikkelaars die ID's nodig hebben zonder volledige MongoDB-afhankelijkheden.
+Het [`bson-objectid`](https://github.com/cabinjs/bson-objectid)-pakket verdient een speciale vermelding, met meer dan 1,7 miljoen downloads in slechts twee maanden. Deze lichte MongoDB ObjectID-implementatie is dé oplossing geworden voor ontwikkelaars die ID's nodig hebben zonder volledige MongoDB-afhankelijkheden.
 
-### Spamscanner: de strijd tegen e-mailmisbruik {#spam-scanner-fighting-email-abuse}
+### Spamscanner: e-mailmisbruik bestrijden {#spam-scanner-fighting-email-abuse}
 
 [Spam Scanner organisatie](https://github.com/spamscanner) toont onze toewijding aan het oplossen van echte problemen. Het hoofdpakket [`spamscanner`](https://github.com/spamscanner/spamscanner) biedt geavanceerde detectie van e-mailspam, maar het is het pakket [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe) dat een grote acceptatiegraad heeft.
 
-Met meer dan 1,2 miljoen downloads in twee maanden tijd\[^3] lost `url-regex-safe` kritieke beveiligingsproblemen op in andere reguliere expressies voor URL-detectie. Dit pakket toont onze aanpak van open source: het vinden van een veelvoorkomend probleem (in dit geval [Opnieuw doen](https://en.wikipedia.org/wiki/ReDoS) kwetsbaarheden in URL-validatie), het creëren van een solide oplossing en het zorgvuldig onderhouden ervan.
+Met meer dan 1,2 miljoen downloads in twee maanden tijd lost `url-regex-safe` kritieke beveiligingsproblemen op in andere reguliere expressies voor URL-detectie. Dit pakket toont onze aanpak van open source: het vinden van een veelvoorkomend probleem (in dit geval kwetsbaarheden van [Opnieuw doen](https://en.wikipedia.org/wiki/ReDoS) in URL-validatie), het creëren van een solide oplossing en het zorgvuldig onderhouden ervan.
 
 ### Bree: Moderne taakplanning met werkthreads {#bree-modern-job-scheduling-with-worker-threads}
 
-[Bree-organisatie](https://github.com/breejs) is ons antwoord op een veelvoorkomende Node.js-uitdaging: betrouwbare taakplanning. Het hoofdpakket [`bree`](https://github.com/breejs/bree), met meer dan 3100 GitHub-sterren, biedt een moderne taakplanner met Node.js-werkthreads voor betere prestaties en betrouwbaarheid.
+[Bree-organisatie](https://github.com/breejs) is ons antwoord op een veelvoorkomende Node.js-uitdaging: betrouwbare taakplanning. Het hoofdpakket [`bree`](https://github.com/breejs/bree), met meer dan 3100 GitHub-sterren, biedt een moderne taakplanner met Node.js-workerthreads voor betere prestaties en betrouwbaarheid.
 
 > \[!NOTE]
-> Bree was created after we helped maintain [Agenda](https://github.com/agenda/agenda), applying lessons learned to build a better job scheduler. Our Agenda contributions helped us find ways to improve job scheduling.
+> Bree is ontstaan nadat we [Agenda](https://github.com/agenda/agenda) hadden onderhouden, waarbij we de geleerde lessen toepasten om een betere taakplanner te bouwen. Onze bijdragen aan Agenda hebben ons geholpen manieren te vinden om de taakplanning te verbeteren.
 
 Wat maakt Bree anders dan andere planners zoals Agenda:
 
 * **Geen externe afhankelijkheden**: In tegenstelling tot Agenda, waarvoor MongoDB nodig is, heeft Bree geen Redis of MongoDB nodig om de taakstatus te beheren.
-* **Werkthreads**: Bree gebruikt Node.js-werkthreads voor sandboxprocessen, wat zorgt voor betere isolatie en betere prestaties.
+* **Werkthreads**: Bree gebruikt Node.js-werkthreads voor sandbox-processen, wat zorgt voor betere isolatie en betere prestaties.
 * **Eenvoudige API**: Bree biedt gedetailleerde en eenvoudige controle, waardoor het eenvoudiger is om complexe planningsbehoeften te implementeren.
 * **Ingebouwde ondersteuning**: Dingen zoals elegant herladen, cronjobs, datums en gebruiksvriendelijke tijden zijn standaard inbegrepen.
 
 Bree is een belangrijk onderdeel van [forwardemail.net](https://github.com/forwardemail/forwardemail.net) en verwerkt kritieke achtergrondtaken zoals e-mailverwerking, opschoning en gepland onderhoud. Het gebruik van Bree in Forward Email toont onze toewijding aan het gebruik van onze eigen tools in productie, zodat deze voldoen aan hoge betrouwbaarheidsnormen.
 
-We gebruiken en waarderen ook andere geweldige workerthread-pakketten zoals [zwembad](https://github.com/piscinajs/piscina) en HTTP-clients zoals [elf](https://github.com/nodejs/undici). Piscina gebruikt, net als Bree, Node.js-workerthreads voor efficiënte taakverwerking. We danken [Matthew Hill](https://github.com/mcollina), die zowel undici als piscina onderhoudt, voor zijn belangrijke bijdragen aan Node.js. Matteo is lid van de technische stuurgroep van Node.js en heeft de mogelijkheden van HTTP-clients in Node.js aanzienlijk verbeterd.
+We gebruiken en waarderen ook andere geweldige workerthread-pakketten zoals [zwembad](https://github.com/piscinajs/piscina) en HTTP-clients zoals [elf](https://github.com/nodejs/undici). Piscina gebruikt, net als Bree, Node.js-workerthreads voor efficiënte taakverwerking. We bedanken [Matthew Hill](https://github.com/mcollina), die zowel undici als piscina onderhoudt, voor zijn belangrijke bijdragen aan Node.js. Matteo is lid van de Technische Stuurgroep van Node.js en heeft de mogelijkheden van HTTP-clients in Node.js aanzienlijk verbeterd.
 
 ### E-mail doorsturen: Open Source e-mailinfrastructuur {#forward-email-open-source-email-infrastructure}
 
 Ons meest ambitieuze project is [E-mail doorsturen](https://github.com/forwardemail), een open-source e-mailservice die e-maildoorsturing, opslag en API-services biedt. De hoofdrepository heeft meer dan 1100 GitHub-sterren\[^^4], wat de waardering van de community voor dit alternatief voor propriëtaire e-mailservices aantoont.
 
-Het pakket [`preview-email`](https://github.com/forwardemail/preview-email) van deze organisatie, met meer dan 2,5 miljoen downloads in twee maanden\[^5], is een essentiële tool geworden voor ontwikkelaars die met e-mailsjablonen werken. Door een eenvoudige manier te bieden om e-mails te bekijken tijdens de ontwikkeling, lost het een veelvoorkomend probleem op bij het bouwen van e-mailapplicaties.
+Het [`preview-email`](https://github.com/forwardemail/preview-email)-pakket van deze organisatie, met meer dan 2,5 miljoen downloads in twee maanden tijd, is een essentiële tool geworden voor ontwikkelaars die met e-mailsjablonen werken. Door een eenvoudige manier te bieden om e-mails te bekijken tijdens de ontwikkeling, lost het een veelvoorkomend probleem op bij het bouwen van e-mailapplicaties.
 
 ### Lad: Essentiële Koa-hulpprogramma's en -tools {#lad-essential-koa-utilities-and-tools}
 
-De [Jongensorganisatie](https://github.com/ladjs) biedt een verzameling essentiële hulpprogramma's en tools die primair gericht zijn op het verbeteren van het Koa-frameworkecosysteem. Deze pakketten lossen veelvoorkomende uitdagingen in webontwikkeling op en zijn ontworpen om naadloos samen te werken en toch onafhankelijk van elkaar bruikbaar te blijven.
+[Jongensorganisatie](https://github.com/ladjs) biedt een verzameling essentiële hulpprogramma's en tools die primair gericht zijn op het verbeteren van het Koa-frameworkecosysteem. Deze pakketten lossen veelvoorkomende uitdagingen in webontwikkeling op en zijn ontworpen om naadloos samen te werken en toch onafhankelijk van elkaar bruikbaar te blijven.
 
 #### koa-better-error-handler: Verbeterde foutverwerking voor Koa {#koa-better-error-handler-improved-error-handling-for-koa}
 
-[`koa-better-error-handler`](https://github.com/ladjs/koa-better-error-handler) biedt een betere oplossing voor foutverwerking voor Koa-applicaties. Met meer dan 50 GitHub-sterren zorgt dit pakket ervoor dat `ctx.throw` gebruiksvriendelijke foutmeldingen genereert en tegelijkertijd een aantal beperkingen van Koa's ingebouwde foutverwerking aanpakt:
+[`koa-better-error-handler`](https://github.com/ladjs/koa-better-error-handler) biedt een betere oplossing voor foutverwerking voor Koa-applicaties. Met meer dan 50 GitHub-sterren zorgt dit pakket ervoor dat `ctx.throw` gebruiksvriendelijke foutmeldingen genereert en tegelijkertijd verschillende beperkingen van Koa's ingebouwde foutverwerking aanpakt:
 
-* Detecteert en verwerkt DNS-fouten, Mongoose-fouten en Redis-fouten in Node.js
-* Gebruikt [Boom](https://github.com/hapijs/boom) voor het creëren van consistente, goed geformatteerde foutreacties
-* Behoudt headers (in tegenstelling tot de ingebouwde handler van Koa)
-* Handhaaft de juiste statuscodes in plaats van standaard 500
-* Ondersteunt flashberichten en sessiebehoud
-* Biedt HTML-foutlijsten voor validatiefouten
-* Ondersteunt meerdere antwoordtypen (HTML, JSON en platte tekst)
+* Detecteert en verwerkt DNS-fouten in Node.js, Mongoose-fouten en Redis-fouten.
+* Gebruikt [Boom](https://github.com/hapijs/boom) voor het creëren van consistente, goed geformatteerde foutreacties.
+* Behoudt headers (in tegenstelling tot de ingebouwde handler van Koa).
+* Handhaaft de juiste statuscodes in plaats van standaard 500.
+* Ondersteunt flashberichten en sessiebehoud.
+* Biedt HTML-foutlijsten voor validatiefouten.
+* Ondersteunt meerdere antwoordtypen (HTML, JSON en platte tekst).
 
 Dit pakket is vooral waardevol in combinatie met [`koa-404-handler`](https://github.com/ladjs/koa-404-handler) voor uitgebreid foutbeheer in Koa-toepassingen.
 
 #### paspoort: Authenticatie voor Lad {#passport-authentication-for-lad}
 
-[`@ladjs/passport`](https://github.com/ladjs/passport) breidt de populaire authenticatiemiddleware Passport.js uit met specifieke verbeteringen voor moderne webapplicaties. Dit pakket ondersteunt direct meerdere authenticatiestrategieën:
+[`@ladjs/passport`](https://github.com/ladjs/passport) breidt de populaire Passport.js authenticatiemiddleware uit met specifieke verbeteringen voor moderne webapplicaties. Dit pakket ondersteunt direct meerdere authenticatiestrategieën:
 
 * Lokale authenticatie met e-mail
 * Inloggen met Apple
@@ -172,13 +172,13 @@ Dit pakket is vooral waardevol in combinatie met [`koa-404-handler`](https://git
 
 Het pakket is zeer aanpasbaar, waardoor ontwikkelaars veldnamen en -zinnen kunnen aanpassen aan de vereisten van hun applicatie. Het is ontworpen om naadloos te integreren met Mongoose voor gebruikersbeheer, waardoor het een ideale oplossing is voor Koa-gebaseerde applicaties die robuuste authenticatie vereisen.
 
-#### elegant: elegante afsluiting van de applicatie {#graceful-elegant-application-shutdown}
+#### elegant: elegante afsluiting van de toepassing {#graceful-elegant-application-shutdown}
 
 [`@ladjs/graceful`](https://github.com/ladjs/graceful) lost de cruciale uitdaging op van het netjes afsluiten van Node.js-applicaties. Met meer dan 70 GitHub-sterren zorgt dit pakket ervoor dat je applicatie netjes kan worden afgesloten zonder gegevensverlies of vastgelopen verbindingen. Belangrijkste kenmerken:
 
 * Ondersteuning voor het netjes sluiten van HTTP-servers (Express/Koa/Fastify)
-* Schone afsluiting van databaseverbindingen (MongoDB/Mongoose)
-* Correcte afsluiting van Redis-clients
+* Schoon afsluiten van databaseverbindingen (MongoDB/Mongoose)
+* Correct afsluiten van Redis-clients
 * Afhandeling van Bree-taakplanners
 * Ondersteuning voor aangepaste afsluithandlers
 * Configureerbare time-outinstellingen
@@ -188,7 +188,7 @@ Dit pakket is essentieel voor productietoepassingen waarbij onverwachte afsluiti
 
 ### Upptime: Open Source Uptime Monitoring {#upptime-open-source-uptime-monitoring}
 
-De [Upptime-organisatie](https://github.com/upptime) staat voor onze toewijding aan transparante, open source monitoring. De belangrijkste repository [`upptime`](https://github.com/upptime/upptime) heeft meer dan 13.000 GitHub-sterren, wat het een van de populairste projecten maakt waaraan we bijdragen. Upptime biedt een door GitHub aangestuurde uptimemonitor en statuspagina die volledig zonder server werkt.
+De [Upptime-organisatie](https://github.com/upptime) vertegenwoordigt onze toewijding aan transparante, open source monitoring. De belangrijkste repository van [`upptime`](https://github.com/upptime/upptime) heeft meer dan 13.000 GitHub-sterren, wat het een van de populairste projecten maakt waaraan we bijdragen. Upptime biedt een door GitHub aangestuurde uptimemonitor en statuspagina die volledig zonder server werkt.
 
 We gebruiken Upptime voor onze eigen statuspagina op <https://status.forwardemail.net> met de broncode beschikbaar op <https://github.com/forwardemail/status.forwardemail.net>.
 
@@ -200,7 +200,7 @@ Wat Upptime bijzonder maakt, is de architectuur:
 * **Automatische statuspagina**: Genereert een mooie statuspagina die kan worden gehost op GitHub Pages.
 * **Krachtige meldingen**: Integreert met verschillende meldingskanalen, waaronder e-mail, sms en Slack.
 
-Om de ervaring van onze gebruikers te verbeteren, hebben we [@octokit/core](https://github.com/octokit/core.js/) geïntegreerd in de codebase van forwardemail.net. Zo worden statusupdates en incidenten realtime direct op onze website weergegeven. Deze integratie biedt onze gebruikers duidelijke transparantie in geval van problemen in onze gehele stack (website, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree, enz.), met directe toastmeldingen, wijzigingen in badge-pictogrammen, waarschuwingskleuren en meer.
+Om de ervaring van onze gebruikers te verbeteren, hebben we [@octokit/core](https://github.com/octokit/core.js/) geïntegreerd in de codebase van forwardemail.net om realtime statusupdates en incidenten direct op onze website weer te geven. Deze integratie biedt onze gebruikers duidelijke transparantie in geval van problemen in onze gehele stack (website, API, MongoDB, Redis, SQLite, SMTP, POP3, IMAP, Bree, enz.), met directe toastmeldingen, wijzigingen in badge-pictogrammen, waarschuwingskleuren en meer.
 
 Met de @octokit/core-bibliotheek kunnen we realtime data uit onze Upptime GitHub-repository halen, verwerken en op een gebruiksvriendelijke manier weergeven. Wanneer een service uitvalt of de prestaties afnemen, worden gebruikers direct via visuele indicatoren op de hoogte gebracht, zonder de hoofdapplicatie te hoeven verlaten. Deze naadloze integratie zorgt ervoor dat onze gebruikers altijd over actuele informatie over de status van ons systeem beschikken, wat de transparantie en het vertrouwen vergroot.
 
@@ -225,7 +225,7 @@ Dit werk vertegenwoordigt duizenden uren aan ontwikkeling die verder gaan dan de
 
 Misschien wel het meest waardevolle aspect van het gebruik van onze eigen pakketten in productie is de feedbacklus die het creëert. Wanneer we beperkingen of randgevallen tegenkomen in Forward Email, lossen we die niet alleen lokaal op, maar verbeteren we ook de onderliggende pakketten, wat zowel onze service als de bredere community ten goede komt.
 
-Deze aanpak heeft geleid tot talrijke verbeteringen:
+Deze aanpak heeft tot talrijke verbeteringen geleid:
 
 * **Graceful Shutdown van Bree**: De behoefte van Forward Email aan implementaties zonder downtime leidde tot verbeterde graceful shutdown-mogelijkheden in Bree.
 * **Patroonherkenning van Spam Scanner**: Echte spampatronen die in Forward Email werden aangetroffen, hebben de detectiealgoritmen van Spam Scanner beïnvloed.
@@ -233,9 +233,9 @@ Deze aanpak heeft geleid tot talrijke verbeteringen:
 
 Door deze positieve cyclus tussen ons open source-werk en onze productieservices in stand te houden, zorgen we ervoor dat onze pakketten praktische, in de praktijk geteste oplossingen blijven en geen theoretische implementaties.
 
-## De kernprincipes van Forward Email: een basis voor uitmuntendheid {#forward-emails-core-principles-a-foundation-for-excellence}
+## Kernprincipes van Forward Email: een basis voor uitmuntendheid {#forward-emails-core-principles-a-foundation-for-excellence}
 
-Forward Email is ontworpen volgens een reeks kernprincipes die al onze ontwikkelingsbeslissingen sturen. Deze principes, die gedetailleerd worden beschreven in onze [website](/blog/docs/best-quantum-safe-encrypted-email-service#principles), zorgen ervoor dat onze service ontwikkelaarsvriendelijk, veilig en gericht op de privacy van gebruikers blijft.
+Forward Email is ontworpen volgens een reeks kernprincipes die al onze ontwikkelingsbeslissingen sturen. Deze principes, die gedetailleerd worden beschreven op onze [website](/blog/docs/best-quantum-safe-encrypted-email-service#principles), zorgen ervoor dat onze service ontwikkelaarsvriendelijk, veilig en gericht op de privacy van gebruikers blijft.
 
 ### Altijd ontwikkelaarsvriendelijk, beveiligingsgericht en transparant {#always-developer-friendly-security-focused-and-transparent}
 
@@ -247,7 +247,7 @@ Dit principe komt tot uiting in onze gedetailleerde documentatie, duidelijke fou
 
 Wij hanteren een aantal gevestigde softwareontwikkelingsprincipes die hun waarde al tientallen jaren bewijzen:
 
-* **[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Problemen scheiden via het Model-View-Controller-patroon
+* **[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Zorgen scheiden via het Model-View-Controller-patroon
 * **[Unix-filosofie](https://en.wikipedia.org/wiki/Unix_philosophy)**: Modulaire componenten creëren die één ding goed doen
 * **[KISS](https://en.wikipedia.org/wiki/KISS_principle)**: Het simpel en overzichtelijk houden
 * **[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)**: Niet herhalen, hergebruik van code bevorderen
@@ -258,9 +258,9 @@ Wij hanteren een aantal gevestigde softwareontwikkelingsprincipes die hun waarde
 
 Deze principes zijn niet zomaar theoretische concepten – ze zijn verankerd in onze dagelijkse ontwikkelpraktijken. Onze trouw aan de Unix-filosofie blijkt bijvoorbeeld uit de manier waarop we onze npm-pakketten hebben gestructureerd: kleine, gerichte modules die samen kunnen worden samengesteld om complexe problemen op te lossen.
 
-### Gericht op de scrappy, bootstrapped ontwikkelaar {#targeting-the-scrappy-bootstrapped-developer}
+### Richt zich op de scrappy, bootstrapped ontwikkelaar {#targeting-the-scrappy-bootstrapped-developer}
 
-We richten ons specifiek op de scrappy, bootstrapped en [ramen-winstgevend](https://www.paulgraham.com/ramenprofitable.html) developer. Deze focus bepaalt alles, van ons prijsmodel tot onze technische beslissingen. We begrijpen de uitdagingen van het bouwen van producten met beperkte middelen, omdat we er zelf ervaring mee hebben.
+We richten ons specifiek op de scrappy, bootstrapped en [ramen-winstgevend](https://www.paulgraham.com/ramenprofitable.html) ontwikkelaar. Deze focus bepaalt alles, van ons prijsmodel tot onze technische beslissingen. We begrijpen de uitdagingen van het bouwen van producten met beperkte middelen, omdat we er zelf ervaring mee hebben.
 
 Dit principe is met name belangrijk in onze aanpak van open source. We creëren en onderhouden pakketten die echte problemen oplossen voor ontwikkelaars zonder budget voor grote bedrijven, waardoor krachtige tools voor iedereen toegankelijk zijn, ongeacht hun middelen.
 
@@ -270,7 +270,7 @@ Deze principes zijn duidelijk zichtbaar in de codebase van Forward Email. Ons pa
 
 * Beveiligingsgerichte pakketten zoals `mailauth` voor e-mailauthenticatie
 * Ontwikkelaarsvriendelijke tools zoals `preview-email` voor eenvoudiger debuggen
-* Modulaire componenten zoals de verschillende `p-*` hulpprogramma's van Sindre Sorhus
+* Modulaire componenten zoals de verschillende `p-*`-hulpprogramma's van Sindre Sorhus
 
 Doordat we deze principes consequent in de loop der tijd hebben toegepast, hebben we een service ontwikkeld waaraan ontwikkelaars hun e-mailinfrastructuur kunnen toevertrouwen. Deze service is veilig, betrouwbaar en afgestemd op de waarden van de open source-community.
 
@@ -303,11 +303,11 @@ Als we het hebben over de impact van opensourcesoftware, bieden downloadstatisti
 ![Top npm-pakketten op basis van downloads](/img/art/top_packages_bar_chart.svg)
 
 > \[!IMPORTANT]
-> While we're proud to help maintain several highly-downloaded packages in the JavaScript ecosystem, we want to acknowledge that many of these packages were originally created by other talented developers. Packages like superagent and supertest were originally created by TJ Holowaychuk, whose prolific contributions to open source have been instrumental in shaping the Node.js ecosystem.
+> Hoewel we er trots op zijn dat we bijdragen aan het onderhoud van diverse veelgedownloade pakketten in het JavaScript-ecosysteem, willen we erkennen dat veel van deze pakketten oorspronkelijk door andere getalenteerde ontwikkelaars zijn ontwikkeld. Pakketten zoals superagent en supertest zijn oorspronkelijk ontwikkeld door TJ Holowaychuk, wiens productieve bijdragen aan open source een belangrijke rol hebben gespeeld bij de vormgeving van het Node.js-ecosysteem.
 
 ### Een vogelperspectief op onze impact {#a-birds-eye-view-of-our-impact}
 
-Alleen al in de periode van twee maanden van februari tot en met maart 2025 hebben de toppakketten waaraan we hebben bijgedragen en die we hebben helpen handhaven, verbluffende downloadaantallen opgeleverd:
+Alleen al in de periode van twee maanden van februari tot en met maart 2025 hebben de volgende toppakketten waaraan we hebben bijgedragen en die ons helpen verbluffende downloadaantallen te behouden:
 
 * **[superagent](https://www.npmjs.com/package/superagent)**: 84.575.829 downloads\[^7] (oorspronkelijk gemaakt door TJ Holowaychuk)
 * **[supertest](https://www.npmjs.com/package/supertest)**: 76.432.591 downloads\[^8] (oorspronkelijk gemaakt door TJ Holowaychuk)
@@ -319,15 +319,15 @@ Alleen al in de periode van twee maanden van februari tot en met maart 2025 hebb
 * **[cabine](https://www.npmjs.com/package/cabin)**: 1.800.000 downloads\[^10]
 * **[@breejs/later](https://www.npmjs.com/package/@breejs/later)**: 1.709.938 downloads\[^38]
 * **[e-mailsjablonen](https://www.npmjs.com/package/email-templates)**: 1.128.139 downloads\[^39]
-* **[get-paden](https://www.npmjs.com/package/get-paths)**: 1.124.686 downloads\[^40]
-* **[url-regex-veilig](https://www.npmjs.com/package/url-regex-safe)**: 1.200.000 downloads\[^11]
-* **[dotenv-parse-variabelen](https://www.npmjs.com/package/dotenv-parse-variables)**: 894.666 downloads\[^41]
-* **[@koa/multer](https://www.npmjs.com/package/@koa/multer)**: 839.585 downloads\[^42]
-* **[spamscanner](https://www.npmjs.com/package/spamscanner)**: 145.000 downloads\[^12]
-* **[Bree](https://www.npmjs.com/package/bree)**: 24.270 downloads\[^30]
+* **__PROTECTED_LINK_259__0**: 1.124.686 downloads\[^40]
+* **__PROTECTED_LINK_259__1**: 1.200.000 downloads\[^11]
+* **__PROTECTED_LINK_259__2**: 894.666 downloads\[^41]
+* **__PROTECTED_LINK_259__3**: 839.585 downloads\[^42]
+* **__PROTECTED_LINK_259__4**: 145.000 downloads\[^12]
+* **__PROTECTED_LINK_259__5**: 24.270 downloads\[^30]
 
 > \[!NOTE]
-> Several other packages we help maintain but didn't create have even higher download counts, including `form-data` (738M+ downloads), `toidentifier` (309M+ downloads), `stackframe` (116M+ downloads), and `error-stack-parser` (113M+ downloads). We're honored to contribute to these packages while respecting the work of their original authors.
+> Verschillende andere pakketten die we helpen onderhouden maar niet zelf hebben gemaakt, hebben zelfs nog hogere downloadaantallen, waaronder `form-data` (meer dan 738 miljoen downloads), `toidentifier` (meer dan 309 miljoen downloads), `stackframe` (meer dan 116 miljoen downloads) en `error-stack-parser` (meer dan 113 miljoen downloads). We zijn vereerd om aan deze pakketten bij te dragen, met respect voor het werk van hun oorspronkelijke auteurs.
 
 Dit zijn niet alleen indrukwekkende cijfers, het zijn ook de cijfers van echte ontwikkelaars die echte problemen oplossen met code die wij helpen onderhouden. Elke download is een voorbeeld van hoe deze pakketten iemand hebben geholpen iets zinvols te bouwen, van hobbyprojecten tot bedrijfsapplicaties die door miljoenen mensen worden gebruikt.
 
@@ -350,22 +350,22 @@ Hoewel de downloadstatistieken op zichzelf al indrukwekkend zijn, vertellen ze e
 
 De consistente groei in downloadaantallen door de tijd heen weerspiegelt het succes bij het nakomen van deze verplichtingen en het opbouwen van vertrouwen bij de ontwikkelaarscommunity via betrouwbare, goed onderhouden pakketten.
 
-## Ondersteuning van het ecosysteem: onze open source-sponsoring {#supporting-the-ecosystem-our-open-source-sponsorships}
+## Ondersteuning van het ecosysteem: onze open source-sponsorschappen {#supporting-the-ecosystem-our-open-source-sponsorships}
 
 > \[!TIP]
-> Open source sustainability isn't just about contributing code—it's also about supporting the developers who maintain critical infrastructure.
+> Duurzaamheid van open source gaat niet alleen over het leveren van code, maar ook over het ondersteunen van ontwikkelaars die kritieke infrastructuur beheren.
 
 Naast onze directe bijdragen aan het JavaScript-ecosysteem zijn we er trots op prominente Node.js-bijdragers te sponsoren, wier werk de basis vormt voor veel moderne applicaties. Onze sponsoring omvat:
 
 ### Andris Reinman: pionier op het gebied van e-mailinfrastructuur {#andris-reinman-email-infrastructure-pioneer}
 
-[Andris Reinman](https://github.com/andris9) is de maker van [Nodemailer](https://github.com/nodemailer/nodemailer), de populairste e-mailbibliotheek voor Node.js met meer dan 14 miljoen wekelijkse downloads\[^15]. Zijn werk omvat ook andere cruciale componenten van de e-mailinfrastructuur, zoals [SMTP-server](https://github.com/nodemailer/smtp-server), [Mailparser](https://github.com/nodemailer/mailparser) en [Wilde Eend](https://github.com/nodemailer/wildduck).
+[Andris Reinman](https://github.com/andris9) is de maker van [Nodemailer](https://github.com/nodemailer/nodemailer), de populairste e-mailbibliotheek voor Node.js met meer dan 14 miljoen wekelijkse downloads. Zijn werk omvat ook andere cruciale componenten van de e-mailinfrastructuur, zoals [SMTP-server](https://github.com/nodemailer/smtp-server), [Mailparser](https://github.com/nodemailer/mailparser) en [Wilde Eend](https://github.com/nodemailer/wildduck).
 
-Met onze sponsoring zorgen we ervoor dat deze essentiële tools, die e-mailcommunicatie mogelijk maken voor talloze Node.js-applicaties, waaronder onze eigen Forward Email-service, voortdurend worden onderhouden en ontwikkeld.
+Met onze sponsoring kunnen we het voortdurende onderhoud en de ontwikkeling van deze essentiële hulpmiddelen, die e-mailcommunicatie voor talloze Node.js-applicaties mogelijk maken, garanderen. Ook onze eigen Forward Email-service is hiervan een voorbeeld.
 
-### Sindre Sorhus: Meesterbrein in hulpprogramma's {#sindre-sorhus-utility-package-mastermind}
+### Sindre Sorhus: Mastermind hulpprogrammapakket {#sindre-sorhus-utility-package-mastermind}
 
-[Sindre Sorhus](https://github.com/sindresorhus) is een van de meest productieve open source-bijdragers in het JavaScript-ecosysteem, met meer dan 1000 npm-pakketten op zijn naam. Zijn hulpprogramma's zoals [p-kaart](https://github.com/sindresorhus/p-map), [opnieuw proberen](https://github.com/sindresorhus/p-retry) en [is-stream](https://github.com/sindresorhus/is-stream) zijn fundamentele bouwstenen die in het hele Node.js-ecosysteem worden gebruikt.
+[Sindre Sorhus](https://github.com/sindresorhus) is een van de meest productieve open-sourcebijdragers in het JavaScript-ecosysteem, met meer dan 1000 npm-pakketten op zijn naam. Zijn utilities zoals [p-kaart](https://github.com/sindresorhus/p-map), [opnieuw proberen](https://github.com/sindresorhus/p-retry) en [is-stream](https://github.com/sindresorhus/is-stream) zijn fundamentele bouwstenen die in het hele Node.js-ecosysteem worden gebruikt.
 
 Door het werk van Sindre te sponsoren, dragen we bij aan de ontwikkeling van deze cruciale hulpprogramma's die de ontwikkeling van JavaScript efficiënter en betrouwbaarder maken.
 
@@ -377,30 +377,30 @@ Onze toewijding aan open source gaat verder dan alleen de ontwikkeling van funct
 
 ### De Koa-Router Redding {#the-koa-router-rescue}
 
-In februari 2019 identificeerde Nick een kritiek probleem met het onderhoud van het populaire koa-router-pakket. Omdat hij [gerapporteerd op Hacker News](https://news.ycombinator.com/item?id=19156707) had, bleek het pakket door de oorspronkelijke beheerder te zijn verlaten, waardoor beveiligingsproblemen niet waren verholpen en de community geen updates kreeg.
+In februari 2019 ontdekte Nick een kritiek probleem met het onderhoud van het populaire koa-router-pakket. Als [gerapporteerd op Hacker News](https://news.ycombinator.com/item?id=19156707) was het pakket door de oorspronkelijke beheerder in de steek gelaten, waardoor beveiligingsproblemen niet werden aangepakt en de community geen updates kreeg.
 
 > \[!WARNING]
-> Abandoned packages with security vulnerabilities pose significant risks to the entire ecosystem, especially when they're downloaded millions of times weekly.
+> Verlaten pakketten met beveiligingsproblemen vormen een aanzienlijk risico voor het hele ecosysteem, vooral wanneer ze miljoenen keren per week worden gedownload.
 
 Nick reageerde hierop door [@koa/router](https://github.com/koajs/router) te creëren en de community te waarschuwen voor de situatie. Hij onderhoudt dit kritieke pakket sindsdien en zorgt ervoor dat Koa-gebruikers een veilige, goed onderhouden routeringsoplossing hebben.
 
 ### ReDoS-kwetsbaarheden aanpakken {#addressing-redos-vulnerabilities}
 
-In 2020 identificeerde en verhielp Nick een kritieke [Reguliere expressie Denial of Service (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) kwetsbaarheid in het veelgebruikte `url-regex` pakket. Deze kwetsbaarheid ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) kon aanvallers in staat stellen een denial-of-service te veroorzaken door speciaal ontworpen invoer te leveren die catastrofale backtracking in de reguliere expressie veroorzaakte.
+In 2020 identificeerde en verhielp Nick een kritieke [Reguliere expressie Denial of Service (ReDoS)](https://en.wikipedia.org/wiki/ReDoS)-kwetsbaarheid in het veelgebruikte `url-regex`-pakket. Deze kwetsbaarheid ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) kon aanvallers in staat stellen een denial-of-service te veroorzaken door speciaal ontworpen invoer te leveren die catastrofale backtracking in de reguliere expressie veroorzaakte.
 
-In plaats van simpelweg het bestaande pakket te patchen, creëerde Nick [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), een volledig herschreven implementatie die de kwetsbaarheid verhelpt en tegelijkertijd compatibel blijft met de oorspronkelijke API. Hij publiceerde ook een [uitgebreide blogpost](/blog/docs/url-regex-javascript-node-js) waarin de kwetsbaarheid werd uitgelegd en hoe deze kon worden verholpen.
+In plaats van simpelweg het bestaande pakket te patchen, creëerde Nick [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), een volledig herschreven implementatie die de kwetsbaarheid aanpakt en tegelijkertijd compatibel blijft met de oorspronkelijke API. Hij publiceerde ook een [uitgebreide blogpost](/blog/docs/url-regex-javascript-node-js)-bestand waarin de kwetsbaarheid werd uitgelegd en hoe deze kon worden verholpen.
 
 Dit werk illustreert onze aanpak van beveiliging: we lossen niet alleen problemen op, maar we informeren de community en bieden robuuste alternatieven waarmee we soortgelijke problemen in de toekomst kunnen voorkomen.
 
-### Pleidooi voor Node.js en Chromium-beveiliging {#advocating-for-nodejs-and-chromium-security}
+### Pleit voor Node.js en Chromium-beveiliging {#advocating-for-nodejs-and-chromium-security}
 
-Nick heeft zich ook actief ingezet voor beveiligingsverbeteringen in het bredere ecosysteem. In augustus 2020 identificeerde hij een significant beveiligingsprobleem in Node.js met betrekking tot de verwerking van HTTP-headers, wat werd gerapporteerd in [Het register](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/).
+Nick heeft zich ook actief ingezet voor beveiligingsverbeteringen in het bredere ecosysteem. In augustus 2020 identificeerde hij een significant beveiligingsprobleem in Node.js met betrekking tot de verwerking van HTTP-headers, wat werd gemeld in [Het register](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/).
 
 Dit probleem, dat voortkwam uit een patch in Chromium, zou aanvallers in staat kunnen stellen beveiligingsmaatregelen te omzeilen. Nicks inzet zorgde ervoor dat het probleem snel werd opgelost en miljoenen Node.js-applicaties werden beschermd tegen mogelijke misbruik.
 
-### Beveiliging van npm-infrastructuur {#securing-npm-infrastructure}
+### NPM-infrastructuur beveiligen {#securing-npm-infrastructure}
 
-Later diezelfde maand identificeerde Nick nog een kritiek beveiligingsprobleem, ditmaal in de e-mailinfrastructuur van npm. Zoals gemeld in [Het register](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/), implementeerde npm de DMARC-, SPF- en DKIM-e-mailauthenticatieprotocollen niet correct, waardoor aanvallers mogelijk phishingmails konden versturen die afkomstig leken te zijn van npm.
+Later diezelfde maand ontdekte Nick nog een kritiek beveiligingsprobleem, ditmaal in de e-mailinfrastructuur van npm. Zoals gemeld in [Het register](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/), implementeerde npm de DMARC-, SPF- en DKIM-e-mailauthenticatieprotocollen niet correct, waardoor aanvallers mogelijk phishingmails konden versturen die afkomstig leken te zijn van npm.
 
 Het rapport van Nick leidde tot verbeteringen in de e-mailbeveiliging van npm, waardoor de miljoenen ontwikkelaars die op npm vertrouwen voor pakketbeheer, worden beschermd tegen potentiële phishingaanvallen.
 
@@ -427,7 +427,7 @@ Deze bijdragen zorgen ervoor dat Nodemailer een betrouwbare basis blijft voor e-
 
 Dankzij deze verbeteringen is de nauwkeurigheid en betrouwbaarheid van e-mailverificatie gewaarborgd en worden gebruikers beschermd tegen phishing- en spoofingaanvallen.
 
-### Belangrijkste upptime-verbeteringen {#key-upptime-enhancements}
+### Verbeteringen in de belangrijkste upptime {#key-upptime-enhancements}
 
 Onze bijdragen aan Upptime omvatten:
 
@@ -441,7 +441,7 @@ Deze verbeteringen komen niet alleen de statusbewaking van Forward Email ten goe
 
 ## De lijm die alles bij elkaar houdt: aangepaste code op schaal {#the-glue-that-holds-it-all-together-custom-code-at-scale}
 
-Hoewel onze npm-pakketten en bijdragen aan bestaande projecten aanzienlijk zijn, is het de aangepaste code die deze componenten integreert die onze technische expertise echt laat zien. De codebase van Forward Email vertegenwoordigt een decennium aan ontwikkelingsinspanning, daterend uit 2017 toen het project begon als [gratis-e-mail-doorsturen](https://github.com/forwardemail/free-email-forwarding) en vervolgens werd samengevoegd tot een monorepo.
+Hoewel onze npm-pakketten en bijdragen aan bestaande projecten aanzienlijk zijn, is het de aangepaste code die deze componenten integreert die onze technische expertise echt laat zien. De codebase van Forward Email is het resultaat van tien jaar ontwikkeling, daterend uit 2017 toen het project begon als [gratis-e-mail-doorsturen](https://github.com/forwardemail/free-email-forwarding) en vervolgens werd samengevoegd tot een monorepo.
 
 ### Een enorme ontwikkelingsinspanning {#a-massive-development-effort}
 
@@ -472,7 +472,7 @@ Een cruciaal onderdeel van de infrastructuur van Forward Email is ons DNS-resolu
 
 * **[Mandarijn](https://github.com/forwardemail/nodejs-dns-over-https-tangerine)**: Onze Node.js DNS-over-HTTPS-implementatie biedt een direct te gebruiken vervanging voor de standaard DNS-resolver, met ingebouwde nieuwe pogingen, time-outs, slimme serverrotatie en caching-ondersteuning.
 
-* **[mx-verbinding](https://github.com/zone-eu/mx-connect)**: Dit pakket brengt TCP-verbindingen tot stand met MX-servers, waarbij een doeldomein of e-mailadres wordt gebruikt, de juiste MX-servers worden gevonden en er in prioriteitsvolgorde verbinding mee wordt gemaakt.
+* **[mx-connect](https://github.com/zone-eu/mx-connect)**: Dit pakket brengt TCP-verbindingen tot stand met MX-servers, waarbij een doeldomein of e-mailadres wordt gebruikt, de juiste MX-servers worden opgelost en er in prioriteitsvolgorde verbinding mee wordt gemaakt.
 
 We hebben Tangerine geïntegreerd met mx-connect via [pull-request #4](https://github.com/zone-eu/mx-connect/pull/4), die DNS-verzoeken op applicatielaag over HTTP-verzoeken in Forward Email garandeert. Dit biedt wereldwijde caching voor DNS op schaal met 1:1-consistentie in elke regio, app of proces – cruciaal voor betrouwbare e-mailbezorging in een gedistribueerd systeem.
 
@@ -482,13 +482,13 @@ Het hoogtepunt van onze decennialange reis in open source-ontwikkeling heeft For
 
 ### Casestudies in bedrijfskritische e-mailinfrastructuur {#case-studies-in-mission-critical-email-infrastructure}
 
-Onze toewijding aan betrouwbaarheid, privacy en open source-principes heeft Forward Email tot de vertrouwde keuze gemaakt voor organisaties met hoge e-mailvereisten:
+Onze toewijding aan betrouwbaarheid, privacy en open source-principes heeft Forward Email tot de vertrouwde keuze gemaakt voor organisaties met veeleisende e-mailvereisten:
 
-* **Onderwijsinstellingen**: Zoals beschreven in onze [casestudy over het doorsturen van e-mails van alumni](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study). Grote universiteiten vertrouwen op onze infrastructuur om levenslange verbindingen te onderhouden met honderdduizenden alumni via betrouwbare e-maildoorstuurservices.
+* **Onderwijsinstellingen**: Zoals beschreven in onze [casestudy over het doorsturen van e-mails door alumni]](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study). Grote universiteiten vertrouwen op onze infrastructuur om levenslange verbindingen te onderhouden met honderdduizenden alumni via betrouwbare e-maildoorstuurservices.
 
-* **Enterprise Linux Solutions**: De [Canonical Ubuntu e-mail zakelijke casestudy](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) laat zien hoe onze open source-aanpak perfect aansluit bij de behoeften van enterprise Linux-providers, en hen de transparantie en controle biedt die ze nodig hebben.
+* **Enterprise Linux Solutions**: [Canonical Ubuntu e-mail zakelijke casestudy](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) laat zien hoe onze open source-aanpak perfect aansluit bij de behoeften van enterprise Linux-providers, en hen de transparantie en controle biedt die ze nodig hebben.
 
-* **Open Source Foundations**: Misschien wel het meest validerend is onze samenwerking met de Linux Foundation, zoals vastgelegd in de [Casestudy over e-mail in bedrijven met Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), waar onze service de communicatie mogelijk maakt voor de organisatie die de Linux-ontwikkeling beheert.
+* **Open Source Foundations**: Misschien wel het meest validerend is onze samenwerking met de Linux Foundation, zoals vastgelegd in [Casestudy over e-mail in bedrijven met Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), waarbij onze service de communicatie mogelijk maakt voor de organisatie die de Linux-ontwikkeling beheert.
 
 Er zit een prachtige symmetrie in hoe onze opensourcepakketten, die we jarenlang met zorg hebben onderhouden, ons in staat hebben gesteld een e-mailservice te bouwen die nu precies de communities en organisaties ondersteunt die opensourcesoftware promoten. Deze complete reis – van het leveren van individuele pakketten tot het aansturen van e-mailinfrastructuur van ondernemingsniveau voor opensourceleiders – vormt de ultieme bevestiging van onze aanpak van softwareontwikkeling.
 
@@ -533,19 +533,19 @@ Hartelijk dank aan iedereen die onze pakketten heeft gebruikt, heeft bijgedragen
 \[^23]: <https://github.com/postalsys/mailauth/issues/74>
 \[^24]: <https://github.com/postalsys/mailauth/issues/75>
 \[^25]: <https://github.com/postalsys/mailauth/issues/60>
-\[^26]: <https://github.com/postalsys/mailauth/issues/73>
+\[^26]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>0
 \[^27]: Gebaseerd op GitHub-problemen in de Upptime-repository
 \[^28]: Gebaseerd op GitHub-problemen in de Upptime-repository
 \[^29]: Gebaseerd op GitHub-problemen in de Upptime-repository
 \[^30]: NPM-downloadstatistieken voor Bree, februari-maart 2025
-\[^31]: Gebaseerd op GitHub-pull-requests voor Upptime
-\[^32]: Gebaseerd op GitHub pull-requests voor Upptime
-\[^34]: npm downloadstatistieken voor koa, februari-maart 2025
-\[^35]: npm downloadstatistieken voor @koa/router, februari-maart 2025
-\[^36]: npm downloadstatistieken voor koa-router, februari-maart 2025
-\[^37]: npm downloadstatistieken voor url-regex, februari-maart 2025
-\[^38]: npm downloadstatistieken voor @breejs/later, februari-maart 2025
-\[^39]: npm downloadstatistieken voor e-mailsjablonen, februari-maart 2025
-\[^40]: npm downloadstatistieken voor get-paths, februari-maart 2025
-\[^41]: npm downloadstatistieken voor dotenv-parse-variabelen, februari-maart 2025
+\[^31]: Gebaseerd op GitHub-pullrequests naar Upptime
+\[^32]: Gebaseerd op GitHub-pullrequests naar Upptime
+\[^34]: NPM-downloadstatistieken voor Koa, februari-maart 2025
+\[^35]: npm-downloadstatistieken voor @koa/router, februari-maart 2025
+\[^36]: npm-downloadstatistieken voor koa-router, februari-maart 2025
+\[^37]: npm-downloadstatistieken voor url-regex, februari-maart 2025
+\[^38]: npm-downloadstatistieken voor @breejs/later, februari-maart 2025
+\[^39]: npm-downloadstatistieken voor e-mailsjablonen, februari-maart 2025
+\[^40]: npm-downloadstatistieken voor get-paths, februari-maart 2025
+\[^41]: npm-downloadstatistieken voor dotenv-parse-variables, februari-maart 2025
 \[^42]: npm-downloadstatistieken voor @koa/multer, februari-maart 2025

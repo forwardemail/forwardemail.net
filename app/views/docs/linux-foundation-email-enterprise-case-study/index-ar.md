@@ -1,4 +1,4 @@
-# دراسة حالة: كيف تعمل مؤسسة Linux على تحسين إدارة البريد الإلكتروني عبر أكثر من 250 نطاقًا باستخدام البريد الإلكتروني المباشر {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
+# دراسة حالة: كيف تعمل مؤسسة Linux على تحسين إدارة البريد الإلكتروني عبر أكثر من 250 نطاقًا باستخدام البريد الإلكتروني الأمامي {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
 <img تحميل="كسول" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
 
@@ -23,7 +23,7 @@
 
 ## مقدمة {#introduction}
 
-تُدير [مؤسسة لينكس](https://en.wikipedia.org/wiki/Linux_Foundation) أكثر من 900 مشروع مفتوح المصدر عبر أكثر من 250 نطاقًا، بما في ذلك [linux.com](https://www.linux.com/) و[jQuery.com](https://jquery.com/). تستكشف دراسة الحالة هذه كيف تعاونت مع [إعادة توجيه البريد الإلكتروني](https://forwardemail.net) لتبسيط إدارة البريد الإلكتروني مع الحفاظ على التوافق مع مبادئ المصدر المفتوح.
+يدير [مؤسسة لينكس](https://en.wikipedia.org/wiki/Linux_Foundation) أكثر من 900 مشروع مفتوح المصدر عبر أكثر من 250 نطاقًا، بما في ذلك [linux.com](https://www.linux.com/) و[jQuery.com](https://jquery.com/). تستكشف دراسة الحالة هذه كيفية تعاونهم مع [إعادة توجيه البريد الإلكتروني](https://forwardemail.net) لتبسيط إدارة البريد الإلكتروني مع الحفاظ على مبادئ المصدر المفتوح.
 
 ## التحدي {#the-challenge}
 
@@ -51,13 +51,13 @@ graph TD
     B --> G[README-First API Approach]
 ```
 
-### هندسة مفتوحة المصدر بنسبة 100% {#100-open-source-architecture}
+### بنية مفتوحة المصدر بنسبة 100% {#100-open-source-architecture}
 
-باعتبارها خدمة البريد الإلكتروني الوحيدة التي تعمل بنظام مفتوح المصدر بالكامل (واجهة أمامية وخلفية)، تتوافق خدمة Forward Email تمامًا مع التزام مؤسسة Linux Foundation بمبادئ المصدر المفتوح. وكما هو الحال مع تطبيقنا مع [كانونيكال/أوبونتو](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)، أتاحت هذه الشفافية لفريقهم الفني التحقق من تطبيقات الأمان، بل وحتى المساهمة في التحسينات.
+بصفتها خدمة البريد الإلكتروني الوحيدة التي تعمل بنظام مفتوح المصدر بالكامل (واجهة أمامية وخلفية)، تتوافق خدمة Forward Email تمامًا مع التزام مؤسسة Linux Foundation بمبادئ المصدر المفتوح. وكما هو الحال مع تطبيقنا لـ [كانونيكال/أوبونتو](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)، أتاحت هذه الشفافية لفريقهم الفني التحقق من تطبيقات الأمان، بل وحتى المساهمة في التحسينات.
 
 ### تصميم يركز على الخصوصية {#privacy-focused-design}
 
-يوفر نظام [سياسات الخصوصية](https://forwardemail.net/privacy) الصارم من Forward Email الأمان الذي تتطلبه مؤسسة Linux. يضمن نظامنا [التنفيذ الفني لحماية خصوصية البريد الإلكتروني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) أمان جميع الاتصالات، دون تسجيل أو مسح لمحتوى البريد الإلكتروني.
+يوفر معيار [سياسات الخصوصية](https://forwardemail.net/privacy) الصارم في خدمة Forward Email الأمان الذي تتطلبه مؤسسة Linux Foundation. يضمن معيار [التنفيذ الفني لحماية خصوصية البريد الإلكتروني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) الخاص بنا أمان جميع الاتصالات، دون تسجيل أو مسح لمحتوى البريد الإلكتروني.
 
 كما هو مفصل في وثائق التنفيذ الفني لدينا:
 
@@ -69,13 +69,13 @@ graph TD
 
 ### نموذج المؤسسة ذو السعر الثابت {#fixed-price-enterprise-model}
 
-وفّرت خدمة إعادة توجيه البريد الإلكتروني [تسعير المؤسسة](https://forwardemail.net/pricing) تكلفة شهرية ثابتة بغض النظر عن النطاقات أو المستخدمين. وقد وفّر هذا النهج وفورات كبيرة في التكاليف للمؤسسات الكبيرة الأخرى، كما هو موضح في [دراسة حالة البريد الإلكتروني لخريجي الجامعة](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، حيث وفّرت المؤسسات ما يصل إلى 99% مقارنةً بحلول البريد الإلكتروني التقليدية لكل مستخدم.
+وفّرت خاصية [تسعير المؤسسة](https://forwardemail.net/pricing) من خدمة إعادة توجيه البريد الإلكتروني تكلفة شهرية ثابتة بغض النظر عن النطاقات أو المستخدمين. وقد وفّر هذا النهج وفورات كبيرة في التكاليف للمؤسسات الكبيرة الأخرى، كما هو موضح في خاصية [دراسة حالة البريد الإلكتروني لخريجي الجامعة](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، حيث وفرت المؤسسات ما يصل إلى 99% مقارنةً بحلول البريد الإلكتروني التقليدية لكل مستخدم.
 
 ### واجهة برمجة تطبيقات صديقة للمطورين {#developer-friendly-api}
 
-بناءً على [نهج README أولاً](https://tom.preston-werner.com/2010/08/23/readme-driven-development) واستلهامًا من [تصميم واجهة برمجة التطبيقات RESTful الخاصة بـ Stripe](https://amberonrails.com/building-stripes-api)، مكّنت ميزة [API](https://forwardemail.net/api) من Forward Email التكامل العميق مع مركز التحكم في المشاريع التابع لمؤسسة Linux. كان هذا التكامل حاسمًا لأتمتة إدارة البريد الإلكتروني عبر محفظة مشاريعهم المتنوعة.
+باتباع [نهج README أولاً](https://tom.preston-werner.com/2010/08/23/readme-driven-development) واستلهامًا من [تصميم واجهة برمجة التطبيقات RESTful الخاصة بـ Stripe](https://amberonrails.com/building-stripes-api)، مكّن [API](https://forwardemail.net/api) من Forward Email التكامل العميق مع مركز التحكم في المشاريع التابع لمؤسسة Linux. كان هذا التكامل حاسمًا لأتمتة إدارة البريد الإلكتروني عبر محفظة مشاريعهم المتنوعة.
 
-عملية التنفيذ ## {#implementation-process}
+## عملية تنفيذ {#implementation-process}
 
 وقد تم التنفيذ وفقا لنهج منظم:
 
@@ -117,26 +117,26 @@ flowchart LR
 * إلغاء رسوم الترخيص لكل مستخدم
 * على غرار [دراسة حالة جامعية](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، حققت مؤسسة Linux وفورات كبيرة في التكلفة مقارنةً بالحلول التقليدية
 
-### أمان مُحسَّن {#enhanced-security}
+### أمان معزز {#enhanced-security}
 
 * تشفير مقاوم للكميات عبر جميع النطاقات
 * مصادقة شاملة للبريد الإلكتروني تمنع انتحال الهوية والتصيد الاحتيالي
 * اختبارات وممارسات أمنية عبر [ميزات الأمان](https://forwardemail.net/security)
-* حماية الخصوصية من خلال [التنفيذ الفني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* حماية الخصوصية عبر [التنفيذ الفني](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 
-### تجربة مستخدم مُحسّنة {#improved-user-experience}
+### تحسين تجربة المستخدم {#improved-user-experience}
 
 * إدارة بريد إلكتروني ذاتية الخدمة لمسؤولي المشاريع
 * تجربة متسقة في جميع نطاقات Linux Foundation
 * تسليم بريد إلكتروني موثوق مع مصادقة قوية
 
-## الخاتمة {#conclusion}
+## الاستنتاج {#conclusion}
 
 تُظهر شراكة مؤسسة لينكس مع فوروارد إيميل كيف يُمكن للمؤسسات مواجهة تحديات إدارة البريد الإلكتروني المعقدة مع الحفاظ على قيمها الأساسية. باختيارها حلاً يُعطي الأولوية لمبادئ المصادر المفتوحة والخصوصية والأمان، حوّلت مؤسسة لينكس إدارة البريد الإلكتروني من عبء إداري إلى ميزة استراتيجية.
 
-كما رأينا في عملنا مع كل من [كانونيكال/أوبونتو](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) و [الجامعات الكبرى](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، يمكن للمؤسسات التي لديها مجموعات نطاقات معقدة تحقيق تحسينات كبيرة في الكفاءة والأمان وإدارة التكاليف من خلال حل المؤسسة من Forward Email.
+كما رأينا في عملنا مع كل من [كانونيكال/أوبونتو](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) و[الجامعات الكبرى](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)، يمكن للمؤسسات التي لديها مجموعات نطاقات معقدة تحقيق تحسينات كبيرة في الكفاءة والأمان وإدارة التكاليف من خلال حل المؤسسة من Forward Email.
 
-لمزيد من المعلومات حول كيفية مساعدة ميزة إعادة توجيه البريد الإلكتروني مؤسستك في إدارة البريد الإلكتروني عبر نطاقات متعددة، تفضل بزيارة [forwardemail.net](https://forwardemail.net) أو استكشف قسمي [التوثيق](https://forwardemail.net/email-api) و[أدلة](https://forwardemail.net/guides) المفصلين.
+لمزيد من المعلومات حول كيفية مساعدة ميزة إعادة توجيه البريد الإلكتروني مؤسستك في إدارة البريد الإلكتروني عبر نطاقات متعددة، تفضل بزيارة [forwardemail.net](https://forwardemail.net) أو استكشف [التوثيق](https://forwardemail.net/email-api) و[أدلة](https://forwardemail.net/guides) المفصلين لدينا.
 
 ## المراجع {#references}
 

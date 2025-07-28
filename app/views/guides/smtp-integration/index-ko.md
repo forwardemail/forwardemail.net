@@ -3,7 +3,7 @@
 ## 목차 {#table-of-contents}
 
 * [머리말](#foreword)
-* [Forward Email의 SMTP 처리가 작동하는 방식](#how-forward-emails-smtp-processing-works)
+* [전달 이메일의 SMTP 처리 작동 방식](#how-forward-emails-smtp-processing-works)
   * [이메일 대기열 및 재시도 시스템](#email-queue-and-retry-system)
   * [신뢰성을 위한 더미 방지](#dummy-proofed-for-reliability)
 * [Node.js 통합](#nodejs-integration)
@@ -14,11 +14,11 @@
   * [Django 사용하기](#using-django)
 * [PHP 통합](#php-integration)
   * [PHPMailer 사용하기](#using-phpmailer)
-  * [Laravel 사용하기](#using-laravel)
+  * [라라벨 사용하기](#using-laravel)
 * [루비 통합](#ruby-integration)
-  * [Ruby Mail Gem 사용](#using-ruby-mail-gem)
+  * [Ruby Mail Gem 사용하기](#using-ruby-mail-gem)
 * [자바 통합](#java-integration)
-  * [JavaMail API 사용하기](#using-javamail-api)
+  * [Java Mail API 사용](#using-javamail-api)
 * [이메일 클라이언트 구성](#email-client-configuration)
   * [천둥새](#thunderbird)
   * [애플 메일](#apple-mail)
@@ -31,39 +31,39 @@
 
 ## 서문 {#foreword}
 
-이 가이드는 다양한 프로그래밍 언어, 프레임워크, 이메일 클라이언트를 사용하여 Forward Email의 SMTP 서비스와 통합하는 방법에 대한 자세한 예를 제공합니다. 당사의 SMTP 서비스는 안정적이고 안전하며 기존 애플리케이션과 쉽게 통합되도록 설계되었습니다.
+이 가이드에서는 다양한 프로그래밍 언어, 프레임워크 및 이메일 클라이언트를 사용하여 Forward Email의 SMTP 서비스와 통합하는 방법에 대한 자세한 예를 제공합니다. 당사의 SMTP 서비스는 안정적이고 안전하며 기존 애플리케이션과 쉽게 통합되도록 설계되었습니다.
 
 ## 전달 이메일의 SMTP 처리 작동 방식 {#how-forward-emails-smtp-processing-works}
 
-통합 예제를 살펴보기 전에 SMTP 서비스가 이메일을 처리하는 방식을 이해하는 것이 중요합니다.
+통합 사례를 살펴보기 전에 SMTP 서비스가 이메일을 처리하는 방식을 이해하는 것이 중요합니다.
 
 ### 이메일 대기열 및 재시도 시스템 {#email-queue-and-retry-system}
 
 SMTP를 통해 당사 서버로 이메일을 제출하는 경우:
 
 1. **초기 처리**: 이메일 유효성 검사, 맬웨어 검사, 스팸 필터 검사를 거칩니다.
-2. **스마트 큐잉**: 이메일은 전송을 위해 정교한 큐 시스템에 배치됩니다.
-3. **지능형 재시도 메커니즘**: 일시적으로 전송에 실패할 경우, 시스템에서는 다음을 수행합니다.
+2. **스마트 큐잉**: 이메일은 정교한 큐 시스템에 배치되어 전송됩니다.
+3. **지능형 재시도 메커니즘**: 일시적으로 전송이 실패할 경우, 시스템은 다음을 수행합니다.
 * `getBounceInfo` 함수를 사용하여 오류 응답을 분석합니다.
-* 문제가 일시적인지(예: "나중에 다시 시도", "일시적으로 지연됨") 또는 영구적인지(예: "사용자를 알 수 없음") 판단합니다.
+* 문제가 일시적인지(예: "나중에 다시 시도", "일시적으로 지연됨") 또는 영구적인지(예: "사용자 불명") 판단합니다.
 * 일시적인 문제의 경우, 이메일을 재시도 대상으로 표시합니다.
 * 영구적인 문제의 경우, 반송 알림을 생성합니다.
 4. **5일 재시도 기간**: Postfix와 같은 업계 표준과 유사하게 최대 5일 동안 전송을 재시도하여 일시적인 문제가 해결될 수 있도록 합니다.
 5. **전송 상태 알림**: 발신자는 이메일 상태(전송됨, 지연됨 또는 반송됨)에 대한 알림을 받습니다.
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> 전송이 완료되면, 보안 및 개인정보 보호를 위해 설정된 보관 기간(기본 30일) 후에 아웃바운드 SMTP 이메일 내용이 삭제됩니다. 전송 성공을 나타내는 플레이스홀더 메시지만 남습니다.
 
-### 신뢰성을 위한 더미 검증됨 {#dummy-proofed-for-reliability}
+### 신뢰성을 위한 더미 방지 {#dummy-proofed-for-reliability}
 
-우리 시스템은 다양한 예외 상황을 처리하도록 설계되었습니다.
+본 시스템은 다양한 예외 상황을 처리하도록 설계되었습니다.
 
 * 차단 목록이 감지되면 이메일이 자동으로 다시 시도됩니다.
 * 네트워크 문제가 발생하면 전송이 다시 시도됩니다.
 * 수신자의 메일함이 가득 찬 경우, 시스템은 나중에 다시 시도합니다.
 * 수신 서버를 일시적으로 사용할 수 없는 경우, 계속해서 시도합니다.
 
-이러한 접근 방식은 개인정보 보호와 보안을 유지하는 동시에 배달율을 크게 개선합니다.
+이러한 접근 방식은 개인정보 보호와 보안을 유지하면서도 배달률을 크게 향상시킵니다.
 
 ## Node.js 통합 {#nodejs-integration}
 
@@ -161,7 +161,7 @@ app.listen(port, () => {
 
 ## Python 통합 {#python-integration}
 
-### smtplib {#using-smtplib} 사용
+### smtplib 사용 {#using-smtplib}
 
 ```python
 import smtplib
@@ -202,7 +202,7 @@ except Exception as e:
     print(f"Error sending email: {e}")
 ```
 
-### Django {#using-django} 사용
+### Django 사용 {#using-django}
 
 Django 애플리케이션의 경우 `settings.py`에 다음을 추가하세요.
 
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-그런 다음 귀하의 의견에 따라 이메일을 보내세요.
+그런 다음 귀하의 견해에 따라 이메일을 보내세요.
 
 ```python
 from django.core.mail import send_mail
@@ -275,7 +275,7 @@ try {
 }
 ```
 
-### Laravel {#using-laravel} 사용
+### Laravel 사용 {#using-laravel}
 
 Laravel 애플리케이션의 경우 `.env` 파일을 업데이트하세요.
 
@@ -519,6 +519,6 @@ flowchart TD
 
 ## 결론 {#conclusion}
 
-Forward Email의 SMTP 서비스는 애플리케이션과 이메일 클라이언트에서 이메일을 보내는 안정적이고 안전하며 개인 정보 보호에 중점을 둔 방법을 제공합니다. 지능형 대기열 시스템, 5일 재시도 메커니즘, 포괄적인 배달 상태 알림을 통해 이메일이 목적지에 도착할 것이라고 확신할 수 있습니다.
+Forward Email의 SMTP 서비스는 애플리케이션과 이메일 클라이언트에서 이메일을 안전하고 안정적으로 전송하며 개인 정보 보호에 중점을 둔 서비스를 제공합니다. 지능형 대기열 시스템, 5일 재시도 메커니즘, 그리고 포괄적인 전송 상태 알림을 통해 이메일이 목적지에 도착할 것이라는 확신을 가질 수 있습니다.
 
-더욱 고급 사용 사례나 맞춤형 통합에 대한 내용은 당사 지원팀에 문의하세요.
+더욱 고급 사용 사례나 맞춤형 통합이 필요한 경우 당사 지원팀에 문의하세요.

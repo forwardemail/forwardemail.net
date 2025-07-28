@@ -4,7 +4,7 @@
 
 * [入门](#getting-started)
 * [要求](#requirements)
-  * [云初始化/用户数据](#cloud-init--user-data)
+  * [Cloud-init/用户数据](#cloud-init--user-data)
 * [安装](#install)
   * [调试安装脚本](#debug-install-script)
   * [提示](#prompts)
@@ -22,18 +22,18 @@
   * [我如何知道正在运行什么](#how-do-i-know-what-is-running)
   * [我如何知道应该运行的程序没有运行](#how-do-i-know-if-something-isnt-running-that-should-be)
   * [如何查找日志](#how-do-i-find-logs)
-  * [为什么我发送的电子邮件超时](#why-are-my-outgoing-emails-timing-out)
+  * [为什么我发送的电子邮件会超时](#why-are-my-outgoing-emails-timing-out)
 
-## 入门指南 {#getting-started}
+## 开始使用 {#getting-started}
 
-与我们的所有产品一样，我们的自托管电子邮件解决方案也是 100% 开源的（前端和后端均如此）。这意味着：
+我们的自托管电子邮件解决方案与我们的所有产品一样，前端和后端均 100% 开源。这意味着：
 
 1. **完全透明**：处理您电子邮件的每一行代码都接受公众审查
 2. **社区贡献**：任何人都可以贡献改进或修复问题
 3. **开放保障安全**：漏洞可由全球社区识别和修复
 4. **无供应商锁定**：您永远不会依赖我们公司的存在
 
-整个代码库可在 GitHub 上获取，网址为 <https://github.com/forwardemail/forwardemail.net>,，并根据 MIT 许可证进行授权。
+整个代码库可在 GitHub 上的 <https://github.com/forwardemail/forwardemail.net>, 上找到，并根据 MIT 许可证获得许可。
 
 该架构包括以下容器：
 
@@ -45,13 +45,13 @@
 * SQLite 用于安全加密的邮箱存储
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+> 请务必查看我们的 [自托管博客](https://forwardemail.net/blog/docs/self-hosted-solution)
 >
-> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> 如果您对更详细的分步版本感兴趣，请参阅我们基于 [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) 或 [Debian](https://forwardemail.net/guides/selfhosted-on-debian) 的指南。
 
 ## 要求 {#requirements}
 
-在运行安装脚本之前，请确保您具有以下信息：
+在运行安装脚本之前，请确保您具有以下内容：
 
 * **操作系统**：基于 Linux 的服务器（目前支持 Ubuntu 22.04+）。
 * **资源**：1 个 vCPU 和 2GB RAM
@@ -63,11 +63,11 @@
 * 支持 IPv4 和 IPv6
 
 > \[!TIP]
-> See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
+> 查看我们的 [优秀的邮件服务器提供商](https://github.com/forwardemail/awesome-mail-server-providers) 列表
 
-### 云初始化/用户数据 {#cloud-init--user-data}
+### 云初始化 / 用户数据 {#cloud-init--user-data}
 
-大多数云供应商都支持在配置虚拟专用服务器 (VPS) 时使用 cloud-init 配置。这是提前设置一些文件和环境变量以供脚本初始设置逻辑使用的好方法，这样就无需在脚本运行时提示其他信息。
+大多数云供应商都支持在配置虚拟专用服务器 (VPS) 时使用 cloud-init 配置。这是一种提前设置一些文件和环境变量的好方法，供脚本的初始设置逻辑使用，这样就无需在脚本运行时提示输入更多信息。
 
 **选项**
 
@@ -132,77 +132,77 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 
 ### 初始设置（选项 1）{#initial-setup-option-1}
 
-选择选项`1. Initial setup`开始。
+选择选项 `1. Initial setup` 开始。
 
-完成后，您应该会看到一条成功消息。您甚至可以运行 `docker ps` 来查看已启动的组件。更多关于组件的信息请见下文。
+完成后，您应该会看到一条成功消息。您甚至可以运行 `docker ps` 来查看组件的启动情况。更多关于组件的信息请见下文。
 
 ## 服务 {#services}
 
 | 服务名称 | 默认端口 | 描述 |
 | ------------ | :----------: | ------------------------------------------------------ |
-| 网页 | `443` | 所有管理员交互的 Web 界面 |
-| API | `4000` | 抽象数据库的 API 层 |
+| 网络 | `443` | 所有管理员交互的 Web 界面 |
+| API | `4000` | API 层抽象数据库 |
 | 布里 | 没有任何 | 后台作业和任务运行器 |
 | SMTP | `465/587` | 用于发送邮件的 SMTP 服务器 |
 | SMTP 布里 | 没有任何 | SMTP 后台作业 |
-| MX | `2525` | 用于接收电子邮件和转发电子邮件的邮件交换 |
+| MX | `2525` | 用于入站电子邮件和电子邮件转发的邮件交换 |
 | IMAP | `993/2993` | 用于入站电子邮件和邮箱管理的 IMAP 服务器 |
 | POP3 | `995/2995` | 用于入站电子邮件和邮箱管理的 POP3 服务器 |
 | SQLite | `3456` | SQLite 服务器，用于与 SQLite 数据库交互 |
-| SQLite 布里 | 没有任何 | SQLite 后台作业 |
+| SQLite Bree | 没有任何 | SQLite 后台作业 |
 | 卡尔达夫 | `5000` | 用于日历管理的 CalDAV 服务器 |
 | 卡达夫 | `6000` | 用于日历管理的 CardDAV 服务器 |
-| MongoDB | `27017` | MongoDB数据库用于大多数数据管理 |
+| MongoDB | `27017` | MongoDB 数据库用于大多数数据管理 |
 | Redis | `6379` | Redis 用于缓存和状态管理 |
 | SQLite | 没有任何 | 用于加密邮箱的 SQLite 数据库 |
 
 ### 重要文件路径 {#important-file-paths}
 
-注意：下面的*主机路径*与`/root/forwardemail.net/self-hosting/`相关。
+注意：下面的*主机路径*是相对于`/root/forwardemail.net/self-hosting/`的。
 
 | 成分 | 主机路径 | 容器路径 |
 | ---------------------- | :-------------------: | ---------------------------- |
 | MongoDB | `./mongo-backups` | `/backups` |
 | Redis | `./redis-data` | `/data` |
-| SQLite 库 | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
+| SQLite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
 | 环境文件 | `./.env` | `/app/.env` |
 | SSL 证书/密钥 | `./ssl` | `/app/ssl/` |
 | 私钥 | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| 全链条证书 | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| 认证 CA | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
+| 全链证书 | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
+| 认证的 CA | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
 | DKIM 私钥 | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
 
 > \[!IMPORTANT]
-> Save the `.env` file securely. It is critical for recovery in case of failure.
-> You can find this in `/root/forwardemail.net/self-hosting/.env`.
+> 安全保存 `.env` 文件。这对于故障时的恢复至关重要。
+> 您可以在 `/root/forwardemail.net/self-hosting/.env` 中找到它。
 
 ## 配置 {#configuration}
 
 ### 初始 DNS 设置 {#initial-dns-setup}
 
-在您选择的 DNS 提供商中，配置相应的 DNS 记录。请注意，括号 (`<>`) 中的任何内容都是动态的，需要根据您的值进行更新。
+在您选择的 DNS 提供商中，配置相应的 DNS 记录。请注意，括号 (`<>`) 内的内容都是动态的，需要根据您的值进行更新。
 
 | 类型 | 姓名 | 内容 | TTL |
 | ----- | ------------------ | ----------------------------- | ---- |
 | A | “@”、“.”或空白 | <IP 地址> | 汽车 |
-| CNAME | api | <域名> | 汽车 |
+| CNAME | API | <域名> | 汽车 |
 | CNAME | 卡尔达夫 | <域名> | 汽车 |
 | CNAME | 卡达夫 | <域名> | 汽车 |
-| CNAME | 铁反弹 | <域名> | 汽车 |
-| CNAME | 映射 | <域名> | 汽车 |
-| CNAME | 麦克 | <域名> | 汽车 |
+| CNAME | 铁弹跳 | <域名> | 汽车 |
+| CNAME | 映射表 | <域名> | 汽车 |
+| CNAME | MX | <域名> | 汽车 |
 | CNAME | pop3 | <域名> | 汽车 |
-| CNAME | 简体中文: | <域名> | 汽车 |
-| MX | “@”、“.”或空白 | mx.<域名> (优先级 0) | 汽车 |
+| CNAME | 邮件传输协议 | <域名> | 汽车 |
+| MX | “@”、“.”或空白 | mx.<域名>（优先级 0） | 汽车 |
 | TXT | “@”、“.”或空白 | “v=spf1 a-全部” | 汽车 |
 
 #### 反向 DNS/PTR 记录 {#reverse-dns--ptr-record}
 
-反向 DNS (rDNS) 或反向指针记录 (PTR 记录) 对于电子邮件服务器至关重要，因为它们有助于验证发送电子邮件的服务器的合法性。每个云提供商的做法都不同，因此您需要查找如何添加“反向 DNS”以将主机和 IP 映射到其相应的主机名。最有可能是在提供商的网络部分。
+反向 DNS (rDNS) 或反向指针记录 (PTR 记录) 对于电子邮件服务器至关重要，因为它们有助于验证发送电子邮件的服务器的合法性。每个云提供商的做法不同，因此您需要查找如何添加“反向 DNS”以将主机和 IP 映射到其对应的主机名。最有可能的方法是查看提供商的网络部分。
 
 #### 端口 25 被阻止 {#port-25-blocked}
 
-一些 ISP 和云提供商会屏蔽 25 端口以避免恶意行为者。您可能需要提交支持工单以开放端口 25 供 SMTP / 外发电子邮件使用。
+一些 ISP 和云提供商会屏蔽 25 端口，以防范恶意攻击者。您可能需要提交支持工单，以开放 25 端口用于 SMTP 或外发邮件。
 
 ## 入职培训 {#onboarding}
 
@@ -221,7 +221,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 * （可选）在“域名设置”中配置“用于出站电子邮件的 SMTP”功能。这需要额外的 DNS 记录。
 
 > \[!NOTE]
-> No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
+> 不会将任何信息发送到您的服务器之外。自托管选项和初始帐户仅用于管理员登录和网页视图，以管理域名、别名和相关的电子邮件配置。
 
 ## 测试 {#testing}
 
@@ -269,7 +269,7 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 #### 为什么这在 Ubuntu 和 Debian 之外不起作用{#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-我们目前正在努力支持 MacOS，并期待其他操作系统的支持。如果您希望其他操作系统也能获得支持，请创建 [讨论](https://github.com/orgs/forwardemail/discussions) 或贡献您的力量。
+我们目前正在寻求支持 MacOS，并期待其他操作系统的支持。如果您希望其他操作系统也能获得支持，请创建 [讨论](https://github.com/orgs/forwardemail/discussions) 或参与贡献。
 
 #### 为什么 certbot acme 挑战会失败 {#why-is-the-certbot-acme-challenge-failing}
 
@@ -280,32 +280,32 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-DNS 传播也可能尚未完成。您可以使用类似 `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>` 的工具。这将帮助您了解 TXT 记录更改是否应该反映出来。也可能是您的主机上的本地 DNS 缓存仍在使用旧的、过时的值，或者尚未获取最近的更改。
+DNS 传播也可能尚未完成。您可以使用类似 `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>` 的工具。这可以帮助您了解 TXT 记录更改是否应该反映出来。也可能是您的主机上的本地 DNS 缓存仍在使用旧的、过时的值，或者尚未获取最近的更改。
 
 另一种选择是使用 Cerbot 自动 DNS 更改，方法是在初始 VPS 设置时，使用 cloud-init / user-data 中的 api 令牌设置 `/root/.cloudflare.ini` 文件，或者创建此文件并再次运行脚本。这将自动管理 DNS 更改和质询更新。
 
 ### 基本身份验证用户名和密码是什么？{#what-is-the-basic-auth-username-and-password}
 
-对于自托管，我们添加了一个首次使用浏览器原生身份验证的弹窗，其中包含简单的用户名 (`admin`) 和密码（初始设置时随机生成）。我们添加此功能只是为了防止自动化/爬虫程序以某种方式抢先您完成首次注册。初始设置后，您可以在 `.env` 文件的 `AUTH_BASIC_USERNAME` 和 `AUTH_BASIC_PASSWORD` 下找到此密码。
+对于自托管，我们添加了一个首次浏览器原生身份验证弹窗，其中包含简单的用户名 (`admin`) 和密码（初始设置时随机生成）。我们添加此功能只是为了防止自动化/爬虫程序以某种方式抢先您注册网页。初始设置后，您可以在 `.env` 文件的 `AUTH_BASIC_USERNAME` 和 `AUTH_BASIC_PASSWORD` 下找到此密码。
 
 ### 我如何知道正在运行什么 {#how-do-i-know-what-is-running}
 
-您可以运行 `docker ps` 来查看所有正在运行的容器，这些容器是从 `docker-compose-self-hosting.yml` 文件启动的。您也可以运行 `docker ps -a` 来查看所有内容（包括未运行的容器）。
+您可以运行 `docker ps` 来查看所有正在运行的容器，这些容器是通过 `docker-compose-self-hosting.yml` 文件启动的。您也可以运行 `docker ps -a` 来查看所有内容（包括未运行的容器）。
 
 ### 我如何知道应该运行的程序是否没有运行{#how-do-i-know-if-something-isnt-running-that-should-be}
 
 您可以运行 `docker ps -a` 来查看所有内容（包括未运行的容器）。您可能会看到退出日志或注释。
 
-### 如何查找日志 {#how-do-i-find-logs}
+### 如何查找日志{#how-do-i-find-logs}
 
-您可以通过 `docker logs -f <container_name>` 获取更多日志。如果出现任何异常，则可能与 `.env` 文件配置不正确有关。
+您可以通过 `docker logs -f <container_name>` 获取更多日志。如果出现任何问题，则可能与 `.env` 文件配置不正确有关。
 
 在 Web UI 中，您可以分别查看出站电子邮件日志和错误日志的 `/admin/emails` 和 `/admin/logs`。
 
-### 为什么我的外发邮件会超时 {#why-are-my-outgoing-emails-timing-out}
+### 为什么我的外发电子邮件会超时 {#why-are-my-outgoing-emails-timing-out}
 
-如果您在连接到 MX 服务器时看到类似“连接超时”的消息，则可能需要检查端口 25 是否被阻止。ISP 或云提供商通常会默认阻止此端口，您可能需要联系支持人员/提交工单才能打开此端口。
+如果您看到类似“连接到 MX 服务器时连接超时...”的消息，则可能需要检查 25 端口是否被阻止。ISP 或云服务提供商通常会默认阻止此端口，您可能需要联系客服或提交工单来开通此端口。
 
-#### 我应该使用哪些工具来测试电子邮件配置最佳实践和 IP 信誉 {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### 我应该使用哪些工具来测试电子邮件配置最佳实践和 IP 信誉{#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-看看我们的[常见问题解答](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)。
+看看我们的[常见问题解答在这里](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)。

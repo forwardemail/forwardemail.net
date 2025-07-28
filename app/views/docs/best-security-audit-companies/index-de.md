@@ -42,13 +42,13 @@ Das Unternehmen verfügt über ein beeindruckendes Portfolio an Sicherheitsbewer
 
 * [Mullvad Servers Sicherheitsbewertung 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) – Umfassende Bewertung der Infrastruktursicherheit
 * [Mullvad Apps/API-Sicherheitsbewertung 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) – Anwendungs- und API-Sicherheitsanalyse
-* [Mullvad Servers Sicherheitsbewertung 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) – Nachträgliche Bewertung der Infrastruktur
+* [Mullvad Servers Sicherheitsbewertung 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) – Folgebewertung der Infrastruktur
 
 ### Radikal offene Sicherheit {#radically-open-security}
 
 **Standort**: Amsterdam, Niederlande
 **Website**: <https://www.radicallyopensecurity.com/>
-**Spezialisierung**: „Beratung für gemeinnützige Computersicherheit“
+**Spezialisierung**: „Gemeinnützige Computersicherheitsberatung“
 
 Radically Open Security (ROS) ist ein einzigartiges, gemeinnütziges Beratungsunternehmen für Computersicherheit, das sich perfekt an Open-Source-Prinzipien und Transparenzwerten orientiert. Das in Amsterdam ansässige Unternehmen ROS hat einen innovativen Ansatz in der Sicherheitsberatung entwickelt, indem es seine Methoden und Erkenntnisse, wann immer möglich, öffentlich zugänglich macht.
 
@@ -57,10 +57,10 @@ Ihr Non-Profit-Modell ermöglicht es ihnen, sich ausschließlich auf Sicherheits
 **Bemerkenswerte Veröffentlichungen und Berichte**:
 
 * [Droid2Tracking-Sicherheitsbewertung](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) – Mobile Tracking-Analyse
-* [Sicherheitsbewertung des Tauri-Programms 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) – Bewertung plattformübergreifender Anwendungsframeworks
-* [Mullvad VPN-Sicherheitsbewertung 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) – Sicherheitsanalyse von VPN-Diensten
+* [Sicherheitsbewertung des Tauri-Programms 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) – Bewertung des plattformübergreifenden Anwendungsframeworks
+* [Mullvad VPN-Sicherheitsbewertung 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) – Sicherheitsanalyse des VPN-Dienstes
 
-### Assured AB {#assured-ab}
+### Versicherter AB {#assured-ab}
 
 **Standort**: Göteborg, Schweden
 **Website**: <https://www.assured.se/>
@@ -76,7 +76,7 @@ Der Ansatz des Unternehmens legt Wert auf gründliche technische Analysen in Kom
 * [Mullvad API-Sicherheitsaudit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) – API-Sicherheitsbewertung
 * [Mullvad DNS-Server-Sicherheitsaudit 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) – DNS-Infrastrukturbewertung
 
-### Spur der Bits {#trail-of-bits}
+### Spur von Bits {#trail-of-bits}
 
 **Standort**: New York, New York, USA
 **Website**: <https://www.trailofbits.com/>
@@ -111,7 +111,7 @@ Transparenz und Berichterstattung: Jedes Unternehmen erstellt umfassende, umsetz
 
 **Erfolgsbilanz**: Die aufgeführten Unternehmen verfügen über eine nachweisliche Erfolgsbilanz bei namhaften Kunden und komplexen Sicherheitsherausforderungen. Ihre öffentlichen Berichte zeugen von gleichbleibender Qualität und Gründlichkeit.
 
-**Wertekonformität**: Diese Unternehmen legen bei Organisationen Wert auf Datenschutz, Open-Source-Prinzipien und Transparenz und haben durch ihre Arbeit und Geschäftspraktiken gezeigt, dass sie sich diesen Werten verpflichtet fühlen.
+**Wertekonformität**: Diese Unternehmen, die Datenschutz, Open-Source-Prinzipien und Transparenz priorisieren, haben durch ihre Arbeit und Geschäftspraktiken gezeigt, dass sie sich diesen Werten verpflichtet fühlen.
 
 **Kontinuierliche Verbesserung**: Alle empfohlenen Unternehmen bleiben hinsichtlich der sich entwickelnden Bedrohungslandschaften und neuen Technologien auf dem Laufenden und stellen sicher, dass ihre Bewertungen relevant und umfassend bleiben.
 

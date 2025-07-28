@@ -7,23 +7,23 @@
 * [Lời nói đầu](#foreword)
 * [Tại sao thanh toán bằng tiền điện tử lại quan trọng](#why-crypto-payments-matter)
 * [Nó hoạt động như thế nào](#how-it-works)
-* [Quyền lợi riêng tư](#privacy-benefits)
+* [Lợi ích về quyền riêng tư](#privacy-benefits)
 * [Chi tiết kỹ thuật](#technical-details)
 * [Thiết lập ví tiền điện tử của bạn](#setting-up-your-crypto-wallet)
   * [MetaMask](#metamask)
   * [Ma](#phantom)
   * [Ví Coinbase](#coinbase-wallet)
-  * [VíKết Nối](#walletconnect)
+  * [Ví Connect](#walletconnect)
 * [Bắt đầu](#getting-started)
 * [Nhìn về phía trước](#looking-forward)
 
 ## Lời nói đầu {#foreword}
 
-Tại [Chuyển tiếp Email](https://forwardemail.net), chúng tôi luôn tìm kiếm các giải pháp để cải thiện [sự riêng tư](https://en.wikipedia.org/wiki/Privacy) và bảo mật của bạn, đồng thời giúp dịch vụ của chúng tôi dễ tiếp cận hơn. Hôm nay, chúng tôi vui mừng thông báo rằng chúng tôi hiện chấp nhận thanh toán [tiền điện tử](https://en.wikipedia.org/wiki/Cryptocurrency) thông qua tích hợp thanh toán tiền điện tử [của Stripe](https://stripe.com).
+Tại [Chuyển tiếp Email](https://forwardemail.net), chúng tôi luôn tìm kiếm các giải pháp để cải thiện [sự riêng tư](https://en.wikipedia.org/wiki/Privacy) và bảo mật của bạn, đồng thời giúp dịch vụ dễ tiếp cận hơn. Hôm nay, chúng tôi vui mừng thông báo rằng chúng tôi hiện đã chấp nhận thanh toán [tiền điện tử](https://en.wikipedia.org/wiki/Cryptocurrency) thông qua tích hợp thanh toán tiền điện tử [của Stripe](https://stripe.com).
 
 ## Tại sao thanh toán bằng tiền điện tử lại quan trọng {#why-crypto-payments-matter}
 
-[Sự riêng tư](https://en.wikipedia.org/wiki/Internet_privacy) luôn là cốt lõi trong dịch vụ của chúng tôi. Mặc dù chúng tôi đã cung cấp nhiều phương thức thanh toán khác nhau trước đây, thanh toán bằng tiền điện tử cung cấp thêm một lớp bảo mật bổ sung, hoàn toàn phù hợp với sứ mệnh của chúng tôi. Bằng cách thanh toán bằng tiền điện tử, bạn có thể:
+[Sự riêng tư](https://en.wikipedia.org/wiki/Internet_privacy) luôn là cốt lõi trong dịch vụ của chúng tôi. Mặc dù chúng tôi đã cung cấp nhiều phương thức thanh toán khác nhau trong quá khứ, thanh toán bằng tiền điện tử cung cấp thêm một lớp bảo mật, hoàn toàn phù hợp với sứ mệnh của chúng tôi. Bằng cách thanh toán bằng tiền điện tử, bạn có thể:
 
 * Duy trì tính ẩn danh cao hơn khi mua dịch vụ email của chúng tôi
 * Giảm thiểu thông tin cá nhân liên quan đến tài khoản email của bạn
@@ -52,11 +52,11 @@ flowchart LR
 * [MetaMask](https://metamask.io)
 * [Ma](https://phantom.app)
 * [Ví Coinbase](https://www.coinbase.com/wallet)
-* [VíKết Nối](https://walletconnect.com) (tương thích với nhiều ví khác)
+* [Ví Connect](https://walletconnect.com) (tương thích với nhiều ví khác)
 
-4. **Hoàn tất thanh toán**: Xác nhận giao dịch trong ví của bạn và bạn đã hoàn tất! Thanh toán sẽ được xử lý và dịch vụ Forward Email của bạn sẽ được kích hoạt ngay lập tức.
+4. **Hoàn tất Thanh toán**: Xác nhận giao dịch trong ví của bạn và thế là xong! Thanh toán sẽ được xử lý và dịch vụ Chuyển tiếp Email của bạn sẽ được kích hoạt ngay lập tức.
 
-## Lợi ích về quyền riêng tư {#privacy-benefits}
+## Quyền lợi riêng tư {#privacy-benefits}
 
 Sử dụng tiền điện tử cho đăng ký Email Chuyển tiếp của bạn sẽ tăng cường quyền riêng tư của bạn theo nhiều cách:
 
@@ -75,9 +75,9 @@ graph TD
     end
 ```
 
-* **Thông tin Cá nhân được Giảm thiểu**: Không giống như thanh toán bằng thẻ tín dụng, giao dịch tiền điện tử không yêu cầu tên, địa chỉ thanh toán hoặc các thông tin cá nhân khác của bạn. Tìm hiểu thêm về [giao dịch riêng tư](https://en.wikipedia.org/wiki/Privacy_coin).
+* **Thông tin Cá nhân được Giảm thiểu**: Không giống như thanh toán bằng thẻ tín dụng, giao dịch tiền điện tử không yêu cầu tên, địa chỉ thanh toán hoặc các thông tin cá nhân khác của bạn. Tìm hiểu thêm về [quyền riêng tư giao dịch](https://en.wikipedia.org/wiki/Privacy_coin).
 * **Tách biệt với Ngân hàng Truyền thống**: Khoản thanh toán của bạn không thể được liên kết với tài khoản ngân hàng hoặc lịch sử tín dụng của bạn. Đọc thêm về [quyền riêng tư tài chính](https://en.wikipedia.org/wiki/Financial_privacy).
-* **Quyền riêng tư của Blockchain**: Mặc dù các giao dịch blockchain được công khai, nhưng chúng được ẩn danh và không liên quan trực tiếp đến danh tính ngoài đời thực của bạn. Xem [kỹ thuật bảo mật blockchain](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
+* **Quyền riêng tư của Blockchain**: Mặc dù các giao dịch Blockchain được công khai, nhưng chúng được ẩn danh và không liên quan trực tiếp đến danh tính ngoài đời thực của bạn. Xem [kỹ thuật bảo mật blockchain](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
 * **Phù hợp với các Giá trị của Chúng tôi**: Là một dịch vụ email tập trung vào quyền riêng tư, chúng tôi tin tưởng vào việc trao cho bạn quyền kiểm soát thông tin cá nhân của mình ở mọi bước. Hãy xem [chính sách bảo mật](/privacy) của chúng tôi.
 
 ## Chi tiết kỹ thuật {#technical-details}
@@ -90,7 +90,7 @@ graph TD
 
 ## Thiết lập ví tiền điện tử của bạn {#setting-up-your-crypto-wallet}
 
-Bạn mới biết đến tiền điện tử? Sau đây là cách thiết lập ví mà chúng tôi hỗ trợ:
+Bạn mới biết đến tiền điện tử? Sau đây là cách thiết lập các ví mà chúng tôi hỗ trợ:
 
 ```mermaid
 flowchart LR
@@ -100,7 +100,7 @@ flowchart LR
     D --> E[Ready for Payment]
 ```
 
-### Mặt nạ Meta {#metamask}
+### MetaMask {#metamask}
 
 [MetaMask](https://metamask.io) là một trong những ví Ethereum phổ biến nhất.
 
@@ -120,7 +120,7 @@ flowchart LR
 3. Tạo ví mới theo hướng dẫn trên màn hình
 4. Sao lưu cụm từ khôi phục của bạn một cách an toàn
 5. Thêm SOL hoặc USDC vào ví của bạn
-6. [Hướng dẫn về Phantom Wallet](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
+6. [Hướng dẫn về Ví Phantom](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
 
 ### Ví Coinbase {#coinbase-wallet}
 
@@ -134,17 +134,17 @@ flowchart LR
 
 ### Kết nối ví {#walletconnect}
 
-[VíKết Nối](https://walletconnect.com) là giao thức kết nối ví với các trang web.
+[Ví Connect](https://walletconnect.com) là giao thức kết nối ví với trang web.
 
 1. Trước tiên, hãy tải xuống ví tương thích với WalletConnect (có nhiều tùy chọn)
 2. Trong quá trình thanh toán, hãy chọn WalletConnect
 3. Quét mã QR bằng ứng dụng ví của bạn
 4. Chấp thuận kết nối
-5. [Ví tương thích WalletConnect](https://walletconnect.com/registry/wallets)
+5. [Ví tương thích với WalletConnect](https://walletconnect.com/registry/wallets)
 
 ## Bắt đầu {#getting-started}
 
-Sẵn sàng nâng cao quyền riêng tư của bạn bằng thanh toán bằng tiền điện tử? Chỉ cần chọn tùy chọn "Tiền điện tử" trong quá trình thanh toán vào lần tiếp theo bạn gia hạn đăng ký hoặc nâng cấp gói của mình.
+Bạn đã sẵn sàng nâng cao quyền riêng tư của mình với thanh toán bằng tiền điện tử chưa? Chỉ cần chọn tùy chọn "Tiền điện tử" khi thanh toán vào lần tiếp theo bạn gia hạn đăng ký hoặc nâng cấp gói cước.
 
 Để biết thêm thông tin về tiền điện tử và công nghệ blockchain, hãy xem các tài nguyên sau:
 
@@ -152,7 +152,7 @@ Sẵn sàng nâng cao quyền riêng tư của bạn bằng thanh toán bằng t
 * [Giải thích về Blockchain](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedia
 * [Hướng dẫn về quyền riêng tư kỹ thuật số](https://www.eff.org/issues/privacy) - Tổ chức Biên giới Điện tử
 
-## Mong chờ {#looking-forward}
+## Mong đợi {#looking-forward}
 
 Việc bổ sung thanh toán bằng tiền điện tử chỉ là một bước tiến nữa trong cam kết liên tục của chúng tôi đối với [sự riêng tư](https://en.wikipedia.org/wiki/Privacy), [bảo vệ](https://en.wikipedia.org/wiki/Computer_security) và quyền lựa chọn của người dùng. Chúng tôi tin rằng dịch vụ email của bạn phải tôn trọng quyền riêng tư của bạn ở mọi cấp độ—từ tin nhắn bạn gửi đến cách bạn thanh toán cho dịch vụ.
 
@@ -168,4 +168,4 @@ Như thường lệ, chúng tôi hoan nghênh phản hồi của bạn về phư
 4. [Chuỗi khối Solana](https://solana.com)
 5. [Mạng lưới đa giác](https://polygon.technology)
 6. [Electronic Frontier Foundation - Quyền riêng tư](https://www.eff.org/issues/privacy)
-7. [Chính sách bảo mật Email chuyển tiếp](/privacy)
+7. [Chính sách bảo mật email chuyển tiếp](/privacy)

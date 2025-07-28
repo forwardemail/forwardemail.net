@@ -51,7 +51,7 @@
   * [Ambil kembali domain](#retrieve-domain)
   * [Verifikasi catatan domain](#verify-domain-records)
   * [Verifikasi catatan SMTP domain](#verify-domain-smtp-records)
-  * [Daftar kata sandi yang dapat digunakan di seluruh domain](#list-domain-wide-catch-all-passwords)
+  * [Daftar kata sandi penangkap-semua di seluruh domain](#list-domain-wide-catch-all-passwords)
   * [Buat kata sandi penampung semua domain](#create-domain-wide-catch-all-password)
   * [Hapus kata sandi penangkap-semua di seluruh domain](#remove-domain-wide-catch-all-password)
   * [Perbarui domain](#update-domain)
@@ -73,7 +73,7 @@
 * [Enkripsi](#encrypt)
   * [Enkripsi Rekaman TXT](#encrypt-txt-record)
 
-## Perpustakaan {#libraries}
+## Pustaka {#libraries}
 
 Saat ini kami belum merilis pembungkus API apa pun, tetapi kami berencana untuk melakukannya dalam waktu dekat. Kirimkan email ke <api@forwardemail.net> jika Anda ingin mendapatkan notifikasi ketika pembungkus API untuk bahasa pemrograman tertentu dirilis. Sementara itu, Anda dapat menggunakan pustaka permintaan HTTP yang direkomendasikan ini di aplikasi Anda, atau cukup gunakan [keriting](https://stackoverflow.com/a/27442239/3586413) seperti pada contoh di bawah ini.
 
@@ -83,7 +83,7 @@ Saat ini kami belum merilis pembungkus API apa pun, tetapi kami berencana untuk 
 | Ular piton | [requests](https://github.com/psf/requests) |
 | Jawa | [OkHttp](https://github.com/square/okhttp/) |
 | PHP | [guzzle](https://github.com/guzzle/guzzle) |
-| Bahasa Indonesia: JavaScript | [superagent](https://github.com/ladjs/superagent) (kami adalah pengelola) |
+| JavaScript | [superagent](https://github.com/ladjs/superagent) (kami adalah pengelola) |
 | Node.js | [superagent](https://github.com/ladjs/superagent) (kami adalah pengelola) |
 | Pergi | [net/http](https://golang.org/pkg/net/http/) |
 | .NET | [RestSharp](https://github.com/restsharp/RestSharp) |
@@ -117,7 +117,7 @@ Jika terjadi kesalahan, badan respons permintaan API akan berisi pesan kesalahan
 | 504 | Waktu Habis Gerbang |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Jika Anda menerima kode status 5xx (yang seharusnya tidak terjadi), silakan hubungi kami di <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> dan kami akan segera membantu Anda menyelesaikan masalah tersebut.
 
 ## Lokalisasi {#localization}
 
@@ -126,20 +126,20 @@ Layanan kami telah diterjemahkan ke lebih dari 25 bahasa. Semua pesan respons AP
 ## Paginasi {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> Mulai 1 November 2024, titik akhir API untuk [Daftar domain](#list-domains) dan [Daftar alias domain](#list-domain-aliases) akan menggunakan hasil maksimal `1000` per halaman secara default. Jika Anda ingin mengaktifkan perilaku ini lebih awal, Anda dapat meneruskan `?paginate=true` sebagai parameter string kueri tambahan ke URL untuk kueri titik akhir.
 
 Paginasi didukung oleh semua titik akhir API yang mencantumkan hasil.
 
 Cukup berikan properti querystring `page` (dan opsional `limit`).
 
-Properti `page` harus berupa angka yang lebih besar atau sama dengan `1`. Jika Anda memasukkan `limit` (juga berupa angka), maka nilai minimumnya adalah `10` dan maksimumnya adalah `50` (kecuali dinyatakan lain).
+Properti `page` harus berupa angka yang lebih besar atau sama dengan `1`. Jika Anda memasukkan `limit` (yang juga berupa angka), maka nilai minimumnya adalah `10` dan maksimumnya adalah `50` (kecuali dinyatakan lain).
 
 | Parameter String Kueri | Diperlukan | Jenis | Keterangan |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `page` | TIDAK | Nomor | Halaman hasil yang akan dikembalikan. Jika tidak ditentukan, nilai `page` akan menjadi `1`. Harus berupa angka yang lebih besar atau sama dengan `1`. |
 | `limit` | TIDAK | Nomor | Jumlah hasil yang akan ditampilkan per halaman. Defaultnya adalah `10` jika tidak ditentukan. Harus berupa angka yang lebih besar atau sama dengan `1`, dan kurang dari atau sama dengan `50`. |
 
-Untuk menentukan apakah terdapat lebih banyak hasil yang tersedia atau tidak, kami berikan header respons HTTP berikut (yang dapat Anda parsing untuk melakukan paginasi secara terprogram):
+Untuk menentukan apakah terdapat lebih banyak hasil yang tersedia atau tidak, kami menyediakan header respons HTTP ini (yang dapat Anda uraikan untuk melakukan paginasi secara terprogram):
 
 | Header Respons HTTP | Contoh | Keterangan |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -160,11 +160,11 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ### Ambil log {#retrieve-logs}
 
-API kami secara terprogram memungkinkan Anda mengunduh log untuk akun Anda. Mengirimkan permintaan ke titik akhir ini akan memproses semua log untuk akun Anda dan mengirimkannya melalui email kepada Anda sebagai lampiran ([Bahasa Indonesia: Gzip](https://en.wikipedia.org/wiki/Gzip) file spreadsheet [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) terkompresi) setelah selesai.
+API kami secara terprogram memungkinkan Anda mengunduh log untuk akun Anda. Mengirimkan permintaan ke titik akhir ini akan memproses semua log untuk akun Anda dan mengirimkannya melalui email kepada Anda sebagai lampiran (file spreadsheet [Gzip](https://en.wikipedia.org/wiki/Gzip) terkompresi [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) setelah selesai.
 
 Ini memungkinkan Anda membuat pekerjaan latar belakang dengan [Pekerjaan cron](https://en.wikipedia.org/wiki/Cron) atau menggunakan [Perangkat lunak penjadwalan pekerjaan Node.js Bree](https://github.com/breejs/bree) kami untuk menerima log kapan pun Anda mau. Harap dicatat bahwa titik akhir ini dibatasi hingga `10` permintaan per hari.
 
-Lampirannya berupa huruf kecil dari `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` dan email itu sendiri berisi ringkasan singkat log yang diambil. Anda juga dapat mengunduh log kapan saja dari [Akun Saya → Log](/my-account/logs)
+Lampirannya berupa huruf kecil dari `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` dan email itu sendiri berisi ringkasan singkat log yang diambil. Anda juga dapat mengunduh log kapan saja dari [Akun Saya → Log](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Kontak Alias (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Tidak seperti titik akhir API lainnya, titik akhir API ini memerlukan [Autentikasi](#authentication) "nama pengguna" yang sama dengan alias nama pengguna dan "kata sandi" yang sama dengan alias kata sandi yang dihasilkan sebagai header Otorisasi Dasar.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bagian titik akhir ini masih dalam pengembangan dan akan dirilis (semoga) pada tahun 2024. Untuk sementara, silakan gunakan klien IMAP dari menu tarik-turun "Aplikasi" di navigasi situs web kami.
 
 ### Daftar kontak {#list-contacts}
 
@@ -291,13 +291,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **Segera hadir**
 
-## Kalender Alias (CalDAV) {#alias-calendars-caldav}
+## Alias Kalender (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Tidak seperti titik akhir API lainnya, titik akhir API ini memerlukan [Autentikasi](#authentication) "nama pengguna" yang sama dengan alias nama pengguna dan "kata sandi" yang sama dengan alias kata sandi yang dihasilkan sebagai header Otorisasi Dasar.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bagian titik akhir ini masih dalam pengembangan dan akan dirilis (semoga) pada tahun 2024. Untuk sementara, silakan gunakan klien IMAP dari menu tarik-turun "Aplikasi" di navigasi situs web kami.
 
 ### Daftar kalender {#list-calendars}
 
@@ -332,10 +332,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Pesan Alias (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Tidak seperti titik akhir API lainnya, titik akhir API ini memerlukan [Autentikasi](#authentication) "nama pengguna" yang sama dengan alias nama pengguna dan "kata sandi" yang sama dengan alias kata sandi yang dihasilkan sebagai header Otorisasi Dasar.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bagian titik akhir ini masih dalam pengembangan dan akan dirilis (semoga) pada tahun 2024. Untuk sementara, silakan gunakan klien IMAP dari menu tarik-turun "Aplikasi" di navigasi situs web kami.
 
 Pastikan Anda telah mengikuti petunjuk pengaturan untuk domain Anda.
 
@@ -350,7 +350,7 @@ Petunjuk ini dapat ditemukan di bagian FAQ kami [Apakah Anda mendukung penerimaa
 ### Buat pesan {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Perintah ini **TIDAK** akan mengirim email – perintah ini hanya akan menambahkan pesan ke folder kotak surat Anda (misalnya, perintah ini mirip dengan perintah IMAP `APPEND`). Jika Anda ingin mengirim email, lihat [Buat email SMTP keluar](#create-outbound-smtp-email) di bawah. Setelah membuat email SMTP keluar, Anda dapat menambahkan salinannya menggunakan titik akhir ini ke kotak surat alias Anda untuk tujuan penyimpanan.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Petunjuk ini dapat ditemukan di bagian FAQ kami [Apakah Anda mendukung penerimaa
 ## Folder Alias (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Titik akhir folder dengan jalur folder <code>/v1/folders/:path</code> sebagai titik akhirnya dapat dipertukarkan dengan ID folder <code>:id</code>. Ini berarti Anda dapat merujuk ke folder tersebut dengan nilai <code>path</code> atau <code>id</code>-nya.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Bagian titik akhir ini masih dalam pengembangan dan akan dirilis (semoga) pada tahun 2024. Untuk sementara, silakan gunakan klien IMAP dari menu tarik-turun "Aplikasi" di navigasi situs web kami.
 
 ### Daftar folder {#list-folders}
 
@@ -462,13 +462,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Buat email SMTP keluar {#create-outbound-smtp-email}
 
-API kami untuk membuat email terinspirasi oleh dan memanfaatkan konfigurasi opsi pesan Nodemailer. Silakan merujuk ke [Konfigurasi pesan Nodemailer](https://nodemailer.com/message/) untuk semua parameter isi di bawah ini.
+API kami untuk membuat email terinspirasi oleh dan memanfaatkan konfigurasi opsi pesan Nodemailer. Harap gunakan [Konfigurasi pesan Nodemailer](https://nodemailer.com/message/) untuk semua parameter isi di bawah ini.
 
 Harap dicatat bahwa kecuali `envelope` dan `dkim` (karena kami mengaturnya secara otomatis untuk Anda), kami mendukung semua opsi Nodemailer. Kami secara otomatis mengatur opsi `disableFileAccess` dan `disableUrlAccess` ke `true` demi keamanan.
 
-Anda harus meneruskan opsi tunggal `raw` dengan email lengkap mentah Anda termasuk tajuk **atau** meneruskan opsi parameter isi individual di bawah.
+Anda harus meneruskan opsi tunggal `raw` dengan email lengkap mentah Anda termasuk header **atau** meneruskan opsi parameter isi individual di bawah.
 
-Titik akhir API ini akan otomatis mengodekan emoji untuk Anda jika ditemukan di header (misalnya, baris subjek `Subject: 🤓 Hello` akan otomatis diubah menjadi `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tujuan kami adalah membuat API email yang sangat ramah pengembang dan anti-dummy.
+Titik akhir API ini akan otomatis mengodekan emoji untuk Anda jika ditemukan di header (misalnya, baris subjek `Subject: 🤓 Hello` akan otomatis dikonversi menjadi `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tujuan kami adalah membuat API email yang sangat ramah pengembang dan anti-dummy.
 
 > `POST /v1/emails`
 
@@ -486,7 +486,7 @@ Titik akhir API ini akan otomatis mengodekan emoji untuk Anda jika ditemukan di 
 | `replyTo` | TIDAK | Rangkaian | Alamat email untuk tajuk "Balas-Ke". |
 | `inReplyTo` | TIDAK | Rangkaian | ID Pesan tempat pesan tersebut dibalas. |
 | `references` | TIDAK | String atau Array | Daftar yang dipisahkan spasi atau Array ID Pesan. |
-| `attachDataUrls` | TIDAK | Bahasa Boolean | Jika `true` maka ubah gambar `data:` dalam konten HTML pesan menjadi lampiran yang disematkan. |
+| `attachDataUrls` | TIDAK | Boolean | Jika `true` maka ubah gambar `data:` dalam konten HTML pesan menjadi lampiran yang disematkan. |
 | `watchHtml` | TIDAK | Rangkaian | Versi HTML pesan khusus Apple Watch ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), jam tangan terbaru tidak memerlukan pengaturan ini). |
 | `amp` | TIDAK | Rangkaian | Versi HTML pesan spesifik AMP4EMAIL (lihat [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
 | `icalEvent` | TIDAK | Obyek | Peristiwa iCalendar untuk digunakan sebagai konten pesan alternatif (lihat [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
@@ -519,7 +519,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "raw=`cat file.eml`"
 ```
 
-### Mengambil email SMTP keluar {#retrieve-outbound-smtp-email}
+### Ambil email SMTP keluar {#retrieve-outbound-smtp-email}
 
 > `GET /v1/emails/:id`
 
@@ -532,7 +532,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Hapus email SMTP keluar {#delete-outbound-smtp-email}
 
-Penghapusan email akan menetapkan status ke `"rejected"` (dan selanjutnya tidak akan diproses dalam antrean) jika dan hanya jika status saat ini adalah salah satu dari `"pending"`, `"queued"`, atau `"deferred"`. Kami dapat menghapus email secara otomatis setelah 30 hari sejak dibuat dan/atau dikirim – oleh karena itu, Anda harus menyimpan salinan email SMTP keluar di klien, basis data, atau aplikasi Anda. Anda dapat merujuk nilai ID email kami di basis data Anda jika diinginkan – nilai ini dikembalikan dari titik akhir [Buat email](#create-email) dan [Ambil email](#retrieve-email).
+Penghapusan email akan menetapkan status ke `"rejected"` (dan selanjutnya tidak akan diproses dalam antrean) jika dan hanya jika status saat ini adalah `"pending"`, `"queued"`, atau `"deferred"`. Kami dapat menghapus email secara otomatis setelah 30 hari sejak email dibuat dan/atau dikirim – oleh karena itu, Anda sebaiknya menyimpan salinan email SMTP keluar di klien, basis data, atau aplikasi Anda. Anda dapat merujuk nilai ID email kami di basis data Anda jika diinginkan – nilai ini dikembalikan dari titik akhir [Buat email](#create-email) dan [Ambil email](#retrieve-email).
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Domain {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Titik akhir domain dengan nama domain <code>/v1/domains/:domain_name</code> sebagai titik akhirnya dapat dipertukarkan dengan ID domain <code>:domain_id</code>. Ini berarti Anda dapat merujuk ke domain tersebut dengan nilai <code>name</code> atau <code>id</code>.
 
 ### Daftar domain {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Mulai 1 November 2024, titik akhir API untuk [Daftar domain](#list-domains) dan [Daftar alias domain](#list-domain-aliases) akan menggunakan hasil maksimal `1000` per halaman secara default. Jika Anda ingin mengaktifkan perilaku ini lebih awal, Anda dapat meneruskan `?paginate=true` sebagai parameter querystring tambahan ke URL untuk kueri titik akhir. Lihat [Paginasi](#pagination) untuk informasi lebih lanjut.
 
 > `GET /v1/domains`
 
@@ -580,12 +580,12 @@ curl BASE_URI/v1/domains \
 | `team_domain` | TIDAK | String (ID domain atau nama domain; FQDN) | Tetapkan domain ini secara otomatis ke tim yang sama dari domain lain. Ini berarti semua anggota dari domain ini akan ditetapkan sebagai anggota tim, dan `plan` akan otomatis diatur ke `team` juga. Anda dapat mengaturnya ke `"none"` jika perlu untuk menonaktifkannya secara eksplisit, tetapi itu tidak wajib. |
 | `plan` | TIDAK | String (dapat dihitung) | Jenis paket (harus `"free"`, `"enhanced_protection"`, atau `"team"`, defaultnya adalah `"free"` atau paket berbayar pengguna saat ini jika menggunakan salah satunya) |
 | `catchall` | TIDAK | String (alamat email dibatasi) atau Boolean | Buat alias catch-all default, defaultnya adalah `true` (jika `true`, alamat email pengguna API akan digunakan sebagai penerima, dan jika `false`, catch-all tidak akan dibuat). Jika String dilewatkan, maka akan berupa daftar alamat email yang dibatasi untuk digunakan sebagai penerima (dipisahkan oleh baris baru, spasi, dan/atau koma). |
-| `has_adult_content_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan konten dewasa Spam Scanner di domain ini |
-| `has_phishing_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan phishing Spam Scanner pada domain ini |
-| `has_executable_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan eksekusi Spam Scanner pada domain ini |
-| `has_virus_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan virus Spam Scanner pada domain ini |
-| `has_recipient_verification` | TIDAK | Bahasa Boolean | Domain global default untuk mengharuskan penerima alias mengklik tautan verifikasi email agar email dapat mengalir |
-| `ignore_mx_check` | TIDAK | Bahasa Boolean | Apakah akan mengabaikan pemeriksaan data MX pada domain untuk verifikasi? Hal ini terutama berlaku bagi pengguna yang memiliki aturan konfigurasi pertukaran MX tingkat lanjut dan perlu mempertahankan pertukaran MX yang ada dan meneruskannya ke pertukaran MX kami. |
+| `has_adult_content_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan konten dewasa Spam Scanner di domain ini |
+| `has_phishing_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan phishing Spam Scanner pada domain ini |
+| `has_executable_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan eksekusi Spam Scanner pada domain ini |
+| `has_virus_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan virus Spam Scanner pada domain ini |
+| `has_recipient_verification` | TIDAK | Boolean | Domain global default untuk mengharuskan penerima alias mengklik tautan verifikasi email agar email dapat mengalir |
+| `ignore_mx_check` | TIDAK | Boolean | Apakah akan mengabaikan pemeriksaan data MX pada domain untuk verifikasi? Hal ini terutama berlaku bagi pengguna yang memiliki aturan konfigurasi pertukaran MX tingkat lanjut dan perlu mempertahankan pertukaran MX yang ada dan meneruskannya ke pertukaran MX kami. |
 | `retention_days` | TIDAK | Nomor | Bilangan bulat antara `0` dan `30` yang sesuai dengan jumlah hari penyimpanan untuk menyimpan email SMTP keluar setelah berhasil terkirim atau mengalami kesalahan permanen. Nilai default-nya adalah `0`, yang berarti email SMTP keluar akan segera dihapus dan disunting demi keamanan Anda. |
 | `bounce_webhook` | TIDAK | String (URL) atau Boolean (salah) | URL webhook `http://` atau `https://` pilihan Anda untuk menerima webhook bounce. Kami akan mengirimkan permintaan `POST` ke URL ini dengan informasi tentang kegagalan SMTP keluar (misalnya, kegagalan ringan atau berat – sehingga Anda dapat mengelola pelanggan dan mengelola email keluar secara terprogram). |
 | `max_quota_per_alias` | TIDAK | Rangkaian | Kuota penyimpanan maksimum untuk alias pada nama domain ini. Masukkan nilai seperti "1 GB" yang akan diurai oleh [bytes](https://github.com/visionmedia/bytes.js). |
@@ -610,7 +610,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### Verifikasi catatan domain {#verify-domain-records}
+### Verifikasi rekaman domain {#verify-domain-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-records`
 
@@ -621,7 +621,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
-### Verifikasi catatan SMTP domain {#verify-domain-smtp-records}
+### Verifikasi rekaman SMTP domain {#verify-domain-smtp-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
@@ -632,7 +632,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### Daftar kata sandi penangkap-semua di seluruh domain {#list-domain-wide-catch-all-passwords}
+### Daftar kata sandi tangkap-semua di seluruh domain {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
@@ -649,8 +649,8 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
 
 | Parameter Tubuh | Diperlukan | Jenis | Keterangan |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | TIDAK | Rangkaian | Kata sandi baru khusus Anda yang akan digunakan untuk kata sandi umum di seluruh domain. Perhatikan bahwa Anda dapat membiarkannya kosong atau tidak diisi sama sekali dari isi permintaan API jika Anda ingin mendapatkan kata sandi yang dibuat secara acak dan kuat. |
-| `description` | TIDAK | Rangkaian | Deskripsi hanya untuk tujuan organisasi. |
+| `new_password` | TIDAK | Rangkaian | Kata sandi baru khusus Anda yang akan digunakan untuk kata sandi catch-all di seluruh domain. Harap dicatat bahwa Anda dapat mengosongkan atau menghilangkannya sama sekali dari badan permintaan API jika Anda ingin mendapatkan kata sandi yang kuat dan dibuat secara acak. |
+| `description` | TIDAK | Rangkaian | Deskripsi hanya untuk tujuan pengorganisasian. |
 
 > Contoh Permintaan:
 
@@ -659,7 +659,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Hapus kata sandi penangkap-semua di seluruh domain {#remove-domain-wide-catch-all-password}
+### Hapus kata sandi tangkap-semua di seluruh domain {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
@@ -677,12 +677,12 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | Parameter Tubuh | Diperlukan | Jenis | Keterangan |
 | ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port` | TIDAK | String atau Angka | Port khusus untuk dikonfigurasi untuk penerusan SMTP (default adalah `"25"`) |
-| `has_adult_content_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan konten dewasa Spam Scanner di domain ini |
-| `has_phishing_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan phishing Spam Scanner pada domain ini |
-| `has_executable_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan eksekusi Spam Scanner pada domain ini |
-| `has_virus_protection` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan perlindungan virus Spam Scanner pada domain ini |
-| `has_recipient_verification` | TIDAK | Bahasa Boolean | Domain global default untuk mengharuskan penerima alias mengklik tautan verifikasi email agar email dapat mengalir |
-| `ignore_mx_check` | TIDAK | Bahasa Boolean | Apakah akan mengabaikan pemeriksaan data MX pada domain untuk verifikasi? Hal ini terutama berlaku bagi pengguna yang memiliki aturan konfigurasi pertukaran MX tingkat lanjut dan perlu mempertahankan pertukaran MX yang ada dan meneruskannya ke pertukaran MX kami. |
+| `has_adult_content_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan konten dewasa Spam Scanner di domain ini |
+| `has_phishing_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan phishing Spam Scanner pada domain ini |
+| `has_executable_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan eksekusi Spam Scanner pada domain ini |
+| `has_virus_protection` | TIDAK | Boolean | Apakah akan mengaktifkan perlindungan virus Spam Scanner pada domain ini |
+| `has_recipient_verification` | TIDAK | Boolean | Domain global default untuk mengharuskan penerima alias mengklik tautan verifikasi email agar email dapat mengalir |
+| `ignore_mx_check` | TIDAK | Boolean | Apakah akan mengabaikan pemeriksaan data MX pada domain untuk verifikasi? Hal ini terutama berlaku bagi pengguna yang memiliki aturan konfigurasi pertukaran MX tingkat lanjut dan perlu mempertahankan pertukaran MX yang ada dan meneruskannya ke pertukaran MX kami. |
 | `retention_days` | TIDAK | Nomor | Bilangan bulat antara `0` dan `30` yang sesuai dengan jumlah hari penyimpanan untuk menyimpan email SMTP keluar setelah berhasil terkirim atau mengalami kesalahan permanen. Nilai default-nya adalah `0`, yang berarti email SMTP keluar akan segera dihapus dan disunting demi keamanan Anda. |
 | `bounce_webhook` | TIDAK | String (URL) atau Boolean (salah) | URL webhook `http://` atau `https://` pilihan Anda untuk menerima webhook bounce. Kami akan mengirimkan permintaan `POST` ke URL ini dengan informasi tentang kegagalan SMTP keluar (misalnya, kegagalan ringan atau berat – sehingga Anda dapat mengelola pelanggan dan mengelola email keluar secara terprogram). |
 | `max_quota_per_alias` | TIDAK | Rangkaian | Kuota penyimpanan maksimum untuk alias pada nama domain ini. Masukkan nilai seperti "1 GB" yang akan diurai oleh [bytes](https://github.com/visionmedia/bytes.js). |
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Jika pengguna yang diundang sudah menjadi anggota yang diterima di domain lain tempat admin yang mengundang mereka menjadi anggota, maka undangan akan diterima secara otomatis dan tidak akan ada email yang dikirim.
 
 ### Hapus undangan domain {#remove-domain-invite}
 
@@ -794,7 +794,7 @@ Perhatikan bahwa jika Anda tidak mengirimkan instruksi melalui email, maka nama 
 | ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `new_password` | TIDAK | Rangkaian | Kata sandi baru khusus Anda untuk alias. Harap dicatat bahwa Anda dapat mengosongkan atau menghilangkannya sama sekali dari badan permintaan API jika Anda ingin mendapatkan kata sandi yang kuat dan dibuat secara acak. |
 | `password` | TIDAK | Rangkaian | Kata sandi yang ada untuk alias untuk mengubah kata sandi tanpa menghapus penyimpanan kotak surat IMAP yang ada (lihat opsi `is_override` di bawah jika Anda tidak lagi memiliki kata sandi yang ada). |
-| `is_override` | TIDAK | Bahasa Boolean | **GUNAKAN DENGAN HATI-HATI**: Tindakan ini akan sepenuhnya mengganti kata sandi dan basis data alias yang ada, serta akan menghapus penyimpanan IMAP yang ada secara permanen dan mereset basis data email SQLite alias sepenuhnya. Harap buat cadangan jika memungkinkan jika Anda memiliki kotak surat yang terhubung dengan alias ini. |
+| `is_override` | TIDAK | Boolean | **GUNAKAN DENGAN HATI-HATI**: Tindakan ini akan sepenuhnya mengganti kata sandi dan basis data alias yang ada, serta akan menghapus penyimpanan IMAP yang ada secara permanen dan mereset basis data email SQLite alias sepenuhnya. Harap buat cadangan jika memungkinkan jika Anda memiliki kotak surat yang terhubung dengan alias ini. |
 | `emailed_instructions` | TIDAK | Rangkaian | Alamat email untuk mengirim kata sandi alias dan petunjuk pengaturan. |
 
 > Contoh Permintaan:
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Daftar alias domain {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Mulai 1 November 2024, titik akhir API untuk [Daftar domain](#list-domains) dan [Daftar alias domain](#list-domain-aliases) akan menggunakan hasil maksimal `1000` per halaman secara default. Jika Anda ingin mengaktifkan perilaku ini lebih awal, Anda dapat meneruskan `?paginate=true` sebagai parameter querystring tambahan ke URL untuk kueri titik akhir. Lihat [Paginasi](#pagination) untuk informasi lebih lanjut.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -837,18 +837,18 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `recipients` | TIDAK | String atau Array | Daftar penerima (harus berupa String atau Array yang dipisahkan oleh baris baru/spasi/koma berisi alamat email yang valid, nama domain lengkap ("FQDN"), alamat IP, dan/atau URL webhook – dan jika tidak diberikan atau berupa Array kosong, maka email pengguna yang membuat permintaan API akan ditetapkan sebagai penerima) |
 | `description` | TIDAK | Rangkaian | Deskripsi alias |
 | `labels` | TIDAK | String atau Array | Daftar label (harus berupa String atau Array yang dipisahkan dengan jeda baris/spasi/koma) |
-| `has_recipient_verification` | TIDAK | Bahasa Boolean | Meminta penerima untuk mengklik tautan verifikasi email agar email dapat terkirim (default pada pengaturan domain jika tidak ditetapkan secara eksplisit di badan permintaan) |
-| `is_enabled` | TIDAK | Bahasa Boolean | Mengaktifkan atau menonaktifkan alias ini (jika dinonaktifkan, email tidak akan dirutekan ke mana pun tetapi akan mengembalikan kode status berhasil). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_recipient_verification` | TIDAK | Boolean | Meminta penerima untuk mengklik tautan verifikasi email agar email dapat terkirim (default pada pengaturan domain jika tidak ditetapkan secara eksplisit di badan permintaan) |
+| `is_enabled` | TIDAK | Boolean | Mengaktifkan atau menonaktifkan alias ini (jika dinonaktifkan, email tidak akan dirutekan ke mana pun tetapi akan mengembalikan kode status berhasil). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `error_code_if_disabled` | TIDAK | Nomor (baik `250`, `421`, atau `550`) | Email masuk ke alias ini akan ditolak jika `is_enabled` adalah `false` dengan `250` (tidak terkirim ke mana pun, misalnya lubang hitam atau `/dev/null`), `421` (penolakan sementara; dan coba lagi hingga ~5 hari), atau `550` kegagalan permanen dan penolakan. Default-nya adalah `250`. |
-| `has_imap` | TIDAK | Bahasa Boolean | Apakah penyimpanan IMAP untuk alias ini akan diaktifkan atau dinonaktifkan (jika dinonaktifkan, email masuk yang diterima tidak akan disimpan ke [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan atau menonaktifkan [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) untuk [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) menggunakan alias `public_key`. |
+| `has_imap` | TIDAK | Boolean | Apakah penyimpanan IMAP untuk alias ini akan diaktifkan atau dinonaktifkan (jika dinonaktifkan, email masuk yang diterima tidak akan disimpan ke [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_pgp` | TIDAK | Boolean | Apakah akan mengaktifkan atau menonaktifkan [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) untuk [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) menggunakan alias `public_key`. |
 | `public_key` | TIDAK | Rangkaian | Kunci publik OpenPGP dalam format ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); misalnya kunci GPG untuk `support@forwardemail.net`). Ini hanya berlaku jika Anda telah menyetel `has_pgp` ke `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | TIDAK | Rangkaian | Kuota penyimpanan maksimum untuk alias ini. Kosongkan untuk mengatur ulang ke kuota maksimum domain saat ini atau masukkan nilai seperti "1 GB" yang akan diurai oleh [bytes](https://github.com/visionmedia/bytes.js). Nilai ini hanya dapat disesuaikan oleh admin domain. |
-| `vacation_responder_is_enabled` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan atau menonaktifkan penjawab liburan otomatis. |
+| `vacation_responder_is_enabled` | TIDAK | Boolean | Apakah akan mengaktifkan atau menonaktifkan penjawab liburan otomatis. |
 | `vacation_responder_start_date` | TIDAK | Rangkaian | Tanggal mulai untuk penjawab liburan (jika diaktifkan dan tidak ada tanggal mulai yang ditetapkan di sini, maka diasumsikan sudah dimulai). Kami mendukung format tanggal seperti `MM/DD/YYYY`, `YYYY-MM-DD`, dan format tanggal lainnya melalui penguraian cerdas menggunakan `dayjs`. |
 | `vacation_responder_end_date` | TIDAK | Rangkaian | Tanggal akhir untuk penjawab liburan (jika diaktifkan dan tidak ada tanggal akhir yang ditetapkan di sini, maka diasumsikan tidak pernah berakhir dan merespons selamanya). Kami mendukung format tanggal seperti `MM/DD/YYYY`, `YYYY-MM-DD`, dan format tanggal lainnya melalui penguraian cerdas menggunakan `dayjs`. |
 | `vacation_responder_subject` | TIDAK | Rangkaian | Subjek dalam teks biasa untuk penjawab saat libur, misalnya "Di Luar Kantor". Kami menggunakan `striptags` untuk menghapus semua HTML di sini. |
-| `vacation_responder_message` | TIDAK | Rangkaian | Pesan dalam teks biasa untuk penjawab saat libur, misalnya "Saya akan cuti sampai Februari.". Kami menggunakan `striptags` untuk menghapus semua HTML di sini. |
+| `vacation_responder_message` | TIDAK | Rangkaian | Pesan dalam teks biasa untuk penjawab saat libur, misalnya "Saya akan keluar kantor sampai Februari.". Kami menggunakan `striptags` untuk menghapus semua HTML di sini. |
 
 > Contoh Permintaan:
 
@@ -859,7 +859,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 ### Ambil alias domain {#retrieve-domain-alias}
 
-Anda dapat mengambil alias domain berdasarkan nilai `id` atau nilai `name`.
+Anda dapat mengambil alias domain berdasarkan nilai `id` atau `name`.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
@@ -889,18 +889,18 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `recipients` | TIDAK | String atau Array | Daftar penerima (harus berupa String atau Array berisi alamat email yang valid, nama domain lengkap ("FQDN"), alamat IP, dan/atau URL webhook yang dipisahkan dengan baris baru/spasi/koma) |
 | `description` | TIDAK | Rangkaian | Deskripsi alias |
 | `labels` | TIDAK | String atau Array | Daftar label (harus berupa String atau Array yang dipisahkan dengan jeda baris/spasi/koma) |
-| `has_recipient_verification` | TIDAK | Bahasa Boolean | Meminta penerima untuk mengklik tautan verifikasi email agar email dapat terkirim (default pada pengaturan domain jika tidak ditetapkan secara eksplisit di badan permintaan) |
-| `is_enabled` | TIDAK | Bahasa Boolean | Mengaktifkan atau menonaktifkan alias ini (jika dinonaktifkan, email tidak akan dirutekan ke mana pun tetapi akan mengembalikan kode status berhasil). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_recipient_verification` | TIDAK | Boolean | Meminta penerima untuk mengklik tautan verifikasi email agar email dapat terkirim (default pada pengaturan domain jika tidak ditetapkan secara eksplisit di badan permintaan) |
+| `is_enabled` | TIDAK | Boolean | Mengaktifkan atau menonaktifkan alias ini (jika dinonaktifkan, email tidak akan dirutekan ke mana pun tetapi akan mengembalikan kode status berhasil). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `error_code_if_disabled` | TIDAK | Nomor (baik `250`, `421`, atau `550`) | Email masuk ke alias ini akan ditolak jika `is_enabled` adalah `false` dengan `250` (tidak terkirim ke mana pun, misalnya lubang hitam atau `/dev/null`), `421` (penolakan sementara; dan coba lagi hingga ~5 hari), atau `550` kegagalan permanen dan penolakan. Default-nya adalah `250`. |
-| `has_imap` | TIDAK | Bahasa Boolean | Apakah penyimpanan IMAP untuk alias ini akan diaktifkan atau dinonaktifkan (jika dinonaktifkan, email masuk yang diterima tidak akan disimpan ke [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan atau menonaktifkan [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) untuk [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) menggunakan alias `public_key`. |
+| `has_imap` | TIDAK | Boolean | Apakah penyimpanan IMAP untuk alias ini akan diaktifkan atau dinonaktifkan (jika dinonaktifkan, email masuk yang diterima tidak akan disimpan ke [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Jika suatu nilai dilewatkan, nilai tersebut akan dikonversi ke boolean menggunakan [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_pgp` | TIDAK | Boolean | Apakah akan mengaktifkan atau menonaktifkan [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) untuk [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) menggunakan alias `public_key`. |
 | `public_key` | TIDAK | Rangkaian | Kunci publik OpenPGP dalam format ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); misalnya kunci GPG untuk `support@forwardemail.net`). Ini hanya berlaku jika Anda telah menyetel `has_pgp` ke `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | TIDAK | Rangkaian | Kuota penyimpanan maksimum untuk alias ini. Kosongkan untuk mengatur ulang ke kuota maksimum domain saat ini atau masukkan nilai seperti "1 GB" yang akan diurai oleh [bytes](https://github.com/visionmedia/bytes.js). Nilai ini hanya dapat disesuaikan oleh admin domain. |
-| `vacation_responder_is_enabled` | TIDAK | Bahasa Boolean | Apakah akan mengaktifkan atau menonaktifkan penjawab liburan otomatis. |
+| `vacation_responder_is_enabled` | TIDAK | Boolean | Apakah akan mengaktifkan atau menonaktifkan penjawab liburan otomatis. |
 | `vacation_responder_start_date` | TIDAK | Rangkaian | Tanggal mulai untuk penjawab liburan (jika diaktifkan dan tidak ada tanggal mulai yang ditetapkan di sini, maka diasumsikan sudah dimulai). Kami mendukung format tanggal seperti `MM/DD/YYYY`, `YYYY-MM-DD`, dan format tanggal lainnya melalui penguraian cerdas menggunakan `dayjs`. |
 | `vacation_responder_end_date` | TIDAK | Rangkaian | Tanggal akhir untuk penjawab liburan (jika diaktifkan dan tidak ada tanggal akhir yang ditetapkan di sini, maka diasumsikan tidak pernah berakhir dan merespons selamanya). Kami mendukung format tanggal seperti `MM/DD/YYYY`, `YYYY-MM-DD`, dan format tanggal lainnya melalui penguraian cerdas menggunakan `dayjs`. |
 | `vacation_responder_subject` | TIDAK | Rangkaian | Subjek dalam teks biasa untuk penjawab saat libur, misalnya "Di Luar Kantor". Kami menggunakan `striptags` untuk menghapus semua HTML di sini. |
-| `vacation_responder_message` | TIDAK | Rangkaian | Pesan dalam teks biasa untuk penjawab saat libur, misalnya "Saya akan cuti sampai Februari.". Kami menggunakan `striptags` untuk menghapus semua HTML di sini. |
+| `vacation_responder_message` | TIDAK | Rangkaian | Pesan dalam teks biasa untuk penjawab saat libur, misalnya "Saya akan keluar kantor sampai Februari.". Kami menggunakan `striptags` untuk menghapus semua HTML di sini. |
 
 > Contoh Permintaan:
 
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Enkripsi {#encrypt}
 
-Kami mengizinkan Anda mengenkripsi data, bahkan dengan paket gratis, tanpa biaya. Privasi seharusnya bukan hanya sebuah fitur, melainkan sudah terintegrasi secara inheren dalam semua aspek produk. Sesuai permintaan yang tinggi pada [Diskusi Panduan Privasi](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) dan pada [masalah GitHub kami](https://github.com/forwardemail/forwardemail.net/issues/254), kami telah menambahkan fitur ini.
+Kami mengizinkan Anda mengenkripsi data, bahkan dengan paket gratis, tanpa biaya. Privasi seharusnya bukan hanya sebuah fitur, melainkan sudah terintegrasi secara inheren dalam semua aspek produk. Sesuai permintaan yang tinggi pada [Diskusi Panduan Privasi](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) dan [masalah GitHub kami](https://github.com/forwardemail/forwardemail.net/issues/254), kami telah menambahkan fitur ini.
 
 ### Enkripsi Rekaman TXT {#encrypt-txt-record}
 

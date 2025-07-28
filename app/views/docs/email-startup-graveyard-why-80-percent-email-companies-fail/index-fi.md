@@ -2,13 +2,13 @@
 
 <img loading="laiska" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
 
-<p class="lead mt-3">Vaikka monet sähköpostialan startup-yritykset ovat investoineet miljoonia havaittujen ongelmien ratkaisemiseen, me <a href="https://forwardemail.net">Forward Email</a>-sivustolla olemme keskittyneet luotettavan sähköpostiinfrastruktuurin rakentamiseen tyhjästä vuodesta 2017 lähtien. Tämä analyysi tutkii sähköpostialan startup-yritysten tulosten taustalla olevia malleja ja sähköpostiinfrastruktuurin perustavanlaatuisia haasteita.</p>
+<p class="lead mt-3">Vaikka monet sähköpostialan startup-yritykset ovat investoineet miljoonia havaittujen ongelmien ratkaisemiseen, me <a href="https://forwardemail.net">Forward Email</a>:ssa olemme keskittyneet luotettavan sähköpostiinfrastruktuurin rakentamiseen tyhjästä vuodesta 2017 lähtien. Tämä analyysi tarkastelee sähköpostialan startup-yritysten tulosten taustalla olevia malleja ja sähköpostiinfrastruktuurin perustavanlaatuisia haasteita.</p>
 
 > \[!NOTE]
-> **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
+> **Keskeinen havainto**: Useimmat sähköpostialan startup-yritykset eivät rakenna varsinaista sähköpostiinfrastruktuuria tyhjästä. Monet rakentavat olemassa olevien ratkaisujen, kuten Amazon SES:n, tai avoimen lähdekoodin järjestelmien, kuten Postfixin, päälle. Ydinprotokollat toimivat hyvin – haaste on toteutuksessa.
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **Tekninen syväsukellus**: Kattavat tiedot lähestymistavastamme, arkkitehtuuristamme ja tietoturvan toteutuksestamme löytyvät [Sähköpostin edelleenlähetyksen tekninen raportti](https://forwardemail.net/technical-whitepaper.pdf)- ja [Tietoja-sivu](https://forwardemail.net/en/about)-dokumenteistamme, jotka dokumentoivat koko kehitysaikataulumme vuodesta 2017 lähtien.
 
 ## Sisällysluettelo {#table-of-contents}
 
@@ -25,7 +25,7 @@
 * [Case-tutkimukset: Kun sähköpostialan startupit epäonnistuvat](#case-studies-when-email-startups-fail)
   * [Tapaustutkimus: Skiffin katastrofi](#case-study-the-skiff-disaster)
   * [Kiihdyttimen analyysi](#the-accelerator-analysis)
-  * [Riskipääoma-ansa](#the-venture-capital-trap)
+  * [Riskipääoman ansa](#the-venture-capital-trap)
 * [Tekninen todellisuus: Nykyaikaiset sähköpostipinot](#the-technical-reality-modern-email-stacks)
   * [Mikä todellisuudessa pyörittää "sähköpostialan startup-yrityksiä"](#what-actually-powers-email-startups)
   * [Suorituskykyongelmat](#the-performance-problems)
@@ -99,7 +99,7 @@
 ## Sähköpostin käynnistyksen virhematriisi {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Failure Rate Alert**: [Techstars alone has 28 email-related companies](https://www.techstars.com/portfolio) with only 5 exits - an exceedingly high failure rate (sometimes calculated to be 80%+).
+> **Virheprosenttihälytys**: [Pelkästään Techstarsilla on 28 sähköpostiin liittyvää yritystä.](https://www.techstars.com/portfolio), jossa on vain 5 poistumispistettä - erittäin korkea virheprosentti (joskus laskettu yli 80 %).
 
 Tässä on kaikki löytämämme merkittävät sähköpostialan startup-yritysten epäonnistumiset, jotka on järjestetty kiihdyttämön, rahoituksen ja lopputuloksen mukaan:
 
@@ -111,7 +111,7 @@ Tässä on kaikki löytämämme merkittävät sähköpostialan startup-yritysten
 | **VastaaLähetä** | 2012 | Techstars | ~120 000 dollaria (Techstarsin vakiohinta) | Epäonnistui | 😵 Kuollut | [Vague value proposition](https://www.f6s.com/company/replysend) |
 | **Kehitetty** | 2012 | Techstars | ~120 000 dollaria (Techstarsin vakiohinta) | Epäonnistui | 😵 Kuollut | ["Easy. Secure. Email"](https://www.geekwire.com/2012/techstars-spotlight-nveloped/) |
 | **Sekavuus** | 2015 | Techstars | ~120 000 dollaria (Techstarsin vakiohinta) | Epäonnistui | 😵 Kuollut | [Email encryption](https://www.siliconrepublic.com/start-ups/irish-start-up-jumble-one-of-11-included-in-techstars-cloud-accelerator) |
-| **Saapuneet-kansiokuume** | 2011 | Techstars | ~118 000 dollaria (Techstars 2011) | Epäonnistui | 😵 Kuollut | [API for email apps](https://twitter.com/inboxfever) |
+| **Saapuneet-kansio-kuume** | 2011 | Techstars | ~118 000 dollaria (Techstars 2011) | Epäonnistui | 😵 Kuollut | [API for email apps](https://twitter.com/inboxfever) |
 | **Sähköposti** | 2014 | YC | ~120 000 dollaria (YC-standardi) | Kääntynyt | 🧟 Zombi | [Mobile email → "wellness"](https://www.ycdb.co/company/emailio) |
 | **Postiaika** | 2016 | YC | ~120 000 dollaria (YC-standardi) | Kääntynyt | 🧟 Zombi | [Email client → analytics](https://www.ycdb.co/company/mailtime) |
 | **uudelleenpostitus** | 2009 | YC | ~$20K (YC 2009) | [Acquired by Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Sammutus | 😵 Kuollut | [iPhone email search](https://www.ycombinator.com/companies/remail) |
@@ -120,9 +120,9 @@ Tässä on kaikki löytämämme merkittävät sähköpostialan startup-yritysten
 ## Infrastruktuurin todellisuustarkistus {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **The Hidden Truth**: Every single "email startup" is just building UI on top of existing infrastructure. They're not building actual email servers - they're building apps that connect to real email infrastructure.
+> **Piilotettu totuus**: Jokainen "sähköpostialan startup" rakentaa vain käyttöliittymää olemassa olevan infrastruktuurin päälle. He eivät rakenna oikeita sähköpostipalvelimia – he rakentavat sovelluksia, jotka yhdistyvät oikeaan sähköpostiinfrastruktuuriin.
 
-### Mikä sähköpostia oikeastaan käyttää {#what-actually-runs-email}
+### Mikä sähköpostia oikeastaan suorittaa {#what-actually-runs-email}
 
 ```mermaid
 graph TD
@@ -139,7 +139,7 @@ graph TD
     F --> K[Authentication that works]
 ```
 
-### Mitä "sähköpostialan startupit" todellisuudessa rakentavat {#what-email-startups-actually-build}
+### Mitä "sähköpostiyritykset" todellisuudessa rakentavat {#what-email-startups-actually-build}
 
 ```mermaid
 graph LR
@@ -157,42 +157,42 @@ graph LR
 ```
 
 > \[!TIP]
-> **Key Pattern for Email Success**: The companies that actually succeed in email don't try to reinvent the wheel. Instead, they build **infrastructure and tools that enhance** existing email workflows. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), and [Postmark](https://postmarkapp.com/) became billion-dollar companies by providing reliable SMTP APIs and delivery services - they work **with** email protocols, not against them. This is the same approach we take at Forward Email.
+> **Sähköpostin menestyksen avainmalli**: Yritykset, jotka todella menestyvät sähköpostin saralla, eivät yritä keksiä pyörää uudelleen. Sen sijaan ne rakentavat **infrastruktuuria ja työkaluja, jotka parantavat** olemassa olevia sähköpostin työnkulkuja. [SendGrid](https://sendgrid.com/), [Postipyssy](https://www.mailgun.com/) ja [Postileima](https://postmarkapp.com/) nousivat miljardien dollarien yrityksiksi tarjoamalla luotettavia SMTP-rajapintoja ja toimituspalveluita – ne toimivat **sähköpostiprotokollien **kanssa**, eivät niitä vastaan. Tämä on sama lähestymistapa, jota me Forward Emaililla käytämme.
 
 ## Miksi useimmat sähköpostialan startupit epäonnistuvat {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **The Fundamental Pattern**: Email *client* startups typically fail because they try to replace working protocols, while email *infrastructure* companies can succeed by enhancing existing workflows. The key is understanding what users actually need versus what entrepreneurs think they need.
+> **Perusmalli**: Sähköpostiasiakasyritykset epäonnistuvat tyypillisesti, koska ne yrittävät korvata toimivia protokollia, kun taas sähköpostiinfrastruktuuriyritykset voivat menestyä parantamalla olemassa olevia työnkulkuja. Keskeistä on ymmärtää, mitä käyttäjät todella tarvitsevat, verrattuna siihen, mitä yrittäjät luulevat tarvitsevansa.
 
 ### 1. Sähköpostiprotokollat toimivat, toteutus usein ei {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Email Statistics**: [347.3 billion emails sent daily](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) without major issues, serving [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023.
+> **Sähköpostitilastot**: [347,3 miljardia sähköpostia lähetetään päivittäin](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) ilman merkittäviä ongelmia, palvelee [4,37 miljardia sähköpostin käyttäjää maailmanlaajuisesti](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/):ta vuodesta 2023 lähtien.
 
 Sähköpostin ydinprotokollat ovat vankkoja, mutta toteutuksen laatu vaihtelee suuresti:
 
-* **Universaali yhteensopivuus**: Jokainen laite, jokainen alusta tukee [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) ja [POP3](https://tools.ietf.org/html/rfc1939)
+* **Universaali yhteensopivuus**: Jokainen laite, jokainen alusta tukee [SMTP](https://tools.ietf.org/html/rfc5321):aa, [IMAP](https://tools.ietf.org/html/rfc3501):tä ja [POP3](https://tools.ietf.org/html/rfc1939):ta
 * **Hajautettu**: Ei yksittäistä vikaantumispistettä [miljardeja sähköpostipalvelimia maailmanlaajuisesti](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/):ssa
 * **Standardoitu**: SMTP, IMAP ja POP3 ovat taisteluissa testattuja protokollia 1980-1990-luvuilta
 * **Luotettava**: [347,3 miljardia sähköpostia lähetetään päivittäin](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) ilman suurempia ongelmia
 
 **Todellinen mahdollisuus**: Olemassa olevien protokollien parempi toteutus, ei protokollien korvaaminen.
 
-### 2. Verkkovaikutukset ovat murtamattomia {#2-network-effects-are-unbreakable}
+### 2. Verkkovaikutukset ovat rikkomattomia {#2-network-effects-are-unbreakable}
 
 Sähköpostin verkostovaikutus on absoluuttinen:
 
 * **Kaikilla on sähköposti**: [4,37 miljardia sähköpostin käyttäjää maailmanlaajuisesti](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) vuodesta 2023
 * **Alustariippumaton**: Toimii saumattomasti kaikkien palveluntarjoajien välillä
 * **Liiketoiminnalle kriittinen**: [99 % yrityksistä käyttää sähköpostia päivittäin](https://blog.hubspot.com/marketing/email-marketing-stats) toiminnan kannalta
-* **Vaihtokustannukset**: Sähköpostiosoitteen vaihtaminen rikkoo kaiken siihen liittyvän
+* **Vaihtamiskustannukset**: Sähköpostiosoitteen vaihtaminen rikkoo kaiken siihen liittyvän
 
 ### 3. Ne kohdistuvat usein vääriin ongelmiin {#3-they-often-target-the-wrong-problems}
 
 Monet sähköpostialan startupit keskittyvät havaittuihin ongelmiin todellisten kipukohtien sijaan:
 
-* **"Sähköposti on liian monimutkaista"**: Perustyönkulku on yksinkertainen - [lähetä, vastaanota, järjestä vuodesta 1971](https://en.wikipedia.org/wiki/History_of_email)
-* **"Sähköposti tarvitsee tekoälyä"**: [Gmailissa on jo tehokkaita älykkäitä ominaisuuksia](https://support.google.com/mail/answer/9116836) kuten Smart Reply ja Priority Inbox
+* **"Sähköposti on liian monimutkainen"**: Perustyönkulku on yksinkertainen - [lähetä, vastaanota, järjestä vuodesta 1971](https://en.wikipedia.org/wiki/History_of_email)
+* **"Sähköposti tarvitsee tekoälyä"**: [Gmailissa on jo tehokkaita älykkäitä ominaisuuksia](https://support.google.com/mail/answer/9116836), kuten Smart Reply ja Priority Inbox
 * **"Sähköposti tarvitsee paremman suojauksen"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) ja [DMARC](https://tools.ietf.org/html/rfc7489) tarjoavat vankan todennuksen
 * **"Sähköposti tarvitsee uuden käyttöliittymän"**: [Näkymät](https://outlook.com/) ja [Gmail](https://gmail.com/) käyttöliittymiä on hiottu vuosikymmenten käyttäjätutkimuksen tuloksena
 
@@ -204,8 +204,8 @@ Todellisen sähköpostiinfrastruktuurin rakentaminen edellyttää:
 
 * **SMTP-palvelimet**: Monimutkainen toimitus ja [maineenhallinta](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
 * **Roskapostin suodatus**: Jatkuvasti kehittyvä [uhkakuva](https://www.spamhaus.org/)
-* **Tallennusjärjestelmät**: Luotettava [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) toteutus
-* **Todennus**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617) vaatimustenmukaisuus
+* **Tallennusjärjestelmät**: Luotettava [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)-toteutus
+* **Todennus**: [DKIM](https://tools.ietf.org/html/rfc6376)-, [SPF](https://tools.ietf.org/html/rfc7208)-, [DMARC](https://tools.ietf.org/html/rfc7489)- ja [ARC](https://tools.ietf.org/html/rfc8617)-vaatimustenmukaisuus
 * **Toimitettavuus**: Internet-palveluntarjoajasuhteet ja [maineenhallinta](https://sendgrid.com/blog/what-is-email-deliverability/)
 
 ### 5. Infrastruktuuri on jo olemassa {#5-the-infrastructure-already-exists}
@@ -213,32 +213,32 @@ Todellisen sähköpostiinfrastruktuurin rakentaminen edellyttää:
 Miksi keksiä uudelleen, kun voit käyttää:
 
 * **[Amazon SES](https://aws.amazon.com/ses/)**: Todistettu toimitusinfrastruktuuri
-* **[Postfix](http://www.postfix.org/)**: Taisteluissa testattu SMTP-palvelin
-* **[Dovecot](https://www.dovecot.org/)**: Luotettava IMAP/POP3-palvelin
+* **[Jälkitunniste](http://www.postfix.org/)**: Taistelussa testattu SMTP-palvelin
+* **[Kyyhkyslakka](https://www.dovecot.org/)**: Luotettava IMAP/POP3-palvelin
 * **[SpamAssassin](https://spamassassin.apache.org/)**: Tehokas roskapostin suodatus
 * **Nykyiset palveluntarjoajat**: [Gmail](https://gmail.com/), [Näkymät](https://outlook.com/), [Pikaposti](https://www.fastmail.com/) toimivat hyvin
 
 ## Case-tutkimukset: Kun sähköpostialan startupit epäonnistuvat {#case-studies-when-email-startups-fail}
 
-### Tapaustutkimus: Skiffin onnettomuus {#case-study-the-skiff-disaster}
+### Tapaustutkimus: Skiffin katastrofi {#case-study-the-skiff-disaster}
 
 Skiff havainnollistaa täydellisesti kaikkea, mikä sähköpostialan startup-yrityksissä on vialla.
 
 #### Asennus {#the-setup}
 
-* **Paisunta**: "Yksityisyys etusijalla sähköposti- ja tuottavuusalusta"
+* **Paisunta**: "Yksityisyyttä etusijalla oleva sähköposti- ja tuottavuusalusta"
 * **Rahoitus**: [Merkittävä riskipääoma](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
 * **Lupaus**: Parempi sähköposti yksityisyyden ja salauksen avulla
 
 #### Hankinta {#the-acquisition}
 
-[Notion osti Skiffin helmikuussa 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) tyypillisillä yritysostolupauksilla integraatiosta ja jatkuvasta kehityksestä.
+[Notion osti Skiffin helmikuussa 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) tyypillisillä yrityskauppalupauksilla integraatiosta ja jatkuvasta kehityksestä.
 
 #### Todellisuus {#the-reality}
 
 * **Välitön sulkeminen**: [Skiff suljettiin kuukausien sisällä](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
-* **Perustajien lähtö**: [Skiffin perustajat jättivät Notionin ja liittyivät Cursoriin](https://x.com/skeptrune/status/1939763513695903946)
-* **Käyttäjien hylkääminen**: Tuhannet käyttäjät pakotettu siirtymään palveluun
+* **Perustajan lähtö**: [Skiffin perustajat jättivät Notionin ja liittyivät Cursoriin](https://x.com/skeptrune/status/1939763513695903946)
+* **Käyttäjän hylkääminen**: Tuhannet käyttäjät pakotettu siirtymään
 
 ### Kiihdytinanalyysi {#the-accelerator-analysis}
 
@@ -246,8 +246,8 @@ Skiff havainnollistaa täydellisesti kaikkea, mikä sähköpostialan startup-yri
 
 [Y-kombinaattori](https://www.ycombinator.com/) on rahoittanut kymmeniä sähköpostialan startup-yrityksiä. Tässä on kaava:
 
-* **[Sähköposti](https://www.ycdb.co/company/emailio)** (2014): Mobiilisähköpostiohjelma → siirretty "hyvinvointiin"
-* **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Chat-tyylinen sähköposti → siirretty analytiikkaan
+* **[Sähköposti](https://www.ycdb.co/company/emailio)** (2014): Mobiilisähköpostiohjelma → vaihdettu "hyvinvointiin"
+* **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Chat-tyylinen sähköposti → vaihdettu analytiikkaan
 * **[uudelleensähköposti](https://www.ycombinator.com/companies/remail)** (2009): iPhonen sähköpostihaku → [Googlen hankkima](https://techcrunch.com/2010/02/17/google-remail-iphone/) → sammutus
 * **[Lähestyvä](https://www.ycombinator.com/companies/rapportive)** (2012): Gmailin sosiaalisen median profiilit → [LinkedInin hankkima](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → sammutus
 
@@ -258,17 +258,17 @@ Skiff havainnollistaa täydellisesti kaikkea, mikä sähköpostialan startup-yri
 [Techstars](https://www.techstars.com/):lla on vielä huonompi historia:
 
 * **[Sähköpostin apupilotille](https://www.validity.com/everest/returnpath/)** (2012): Hankittu → sammutettu
-* **[VastaaLähetä](https://www.crunchbase.com/organization/replysend)** (2012): Epäonnistui täysin
+* **[VastaaLähetä](https://www.crunchbase.com/organization/replysend)** (2012): Epäonnistui kokonaan
 * **[Kehitetty](https://www.crunchbase.com/organization/nveloped)** (2012): "Helppo. Turvallinen. Sähköposti" → epäonnistui
 * **[Sekoitus](https://www.crunchbase.com/organization/jumble/technology)** (2015): Sähköpostin salaus → epäonnistui
 * **[InboxFever](https://www.crunchbase.com/organization/inboxfever)** (2011): Sähköposti-API → epäonnistui
 
 **Kaava**: Epämääräiset arvoehdotukset, ei todellista teknistä innovaatiota, nopeat epäonnistumiset.
 
-### Pääomasijoituksen ansa {#the-venture-capital-trap}
+### Riskipääomaansa {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
+> **Pääomasijoittajien rahoituksen paradoksi**: Pääomasijoittajat rakastavat sähköpostitse lähetettäviä startup-yrityksiä, koska ne kuulostavat yksinkertaisilta, mutta ovat itse asiassa mahdottomia. Juuri investointeja houkuttelevat perusoletukset takaavat epäonnistumisen.
 
 Pääomasijoittajat rakastavat sähköpostipohjaisia startup-yrityksiä, koska ne kuulostavat yksinkertaisilta, mutta ovat itse asiassa mahdottomia:
 
@@ -294,7 +294,7 @@ graph TD
 
 ## Tekninen todellisuus: Nykyaikaiset sähköpostipinot {#the-technical-reality-modern-email-stacks}
 
-### Mikä todellisuudessa pyörittää "sähköpostialan startupien" toimintaa {#what-actually-powers-email-startups}
+### Mikä itse asiassa pyörittää "sähköpostiyritysten" toimintaa {#what-actually-powers-email-startups}
 
 Katsotaanpa, mitä nämä yritykset oikeasti tekevät:
 
@@ -320,7 +320,7 @@ graph LR
 * **[Thunderbird](https://www.thunderbird.net/)**: [Korkea RAM-muistin käyttö jopa 90 %](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) järjestelmämuistia
 
 > \[!WARNING]
-> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
+> **Electronin suorituskykykriisi**: Nykyaikaiset Electronilla ja React Nativella rakennetut sähköpostiohjelmat kärsivät vakavasta muistin ylikuormituksesta ja suorituskykyongelmista. Nämä monialustaiset kehykset ovat käteviä kehittäjille, mutta ne luovat resursseja kuluttavia sovelluksia, jotka kuluttavat satoja megatavuja tai gigatavuja RAM-muistia sähköpostin perustoimintoihin.
 
 **Akun tyhjeneminen**: Jatkuva synkronointi ja tehoton koodi:
 
@@ -331,7 +331,7 @@ graph LR
 
 ## Hankintamallit: Onnistuminen vs. sulkeminen {#the-acquisition-patterns-success-vs-shutdown}
 
-### Kaksi mallia {#the-two-patterns}
+### Kaksi kuviota {#the-two-patterns}
 
 **Asiakassovelluksen malli (Yleensä epäonnistuu)**:
 
@@ -369,9 +369,9 @@ flowchart TD
 
 **Asiakassovelluksen virheet**:
 
-* **Postilaatikko → Dropbox → Sammutus** (2013-2015)
-* **[Varpunen → Google → Sammutus](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[uudelleensähköposti → Google → Sulkeminen](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
+* **Postilaatikko → Dropbox → Sammutus** (2013–2015)
+* **[Varpunen → Google → Sammutus](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012–2013)
+* **[uudelleensähköposti → Google → Sulkeminen](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010–2011)
 * **[Skiff → Käsite → Sammutus](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
 
 **Merkittävä poikkeus**:
@@ -384,7 +384,7 @@ flowchart TD
 * **[Mailgun → Sinch](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021): Strateginen integraatio
 * **[Postileima → ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022): Parannettu alusta
 
-## Alan kehitys ja konsolidoituminen {#industry-evolution-and-consolidation}
+## Alan kehitys ja konsolidointi {#industry-evolution-and-consolidation}
 
 ### Luonnollinen teollisuuden kehitys {#natural-industry-progression}
 
@@ -396,10 +396,10 @@ Kun sähköpostiyrityksiä ostetaan, käyttäjät kohtaavat usein:
 
 * **Palvelujen migraatiot**: Siirtyminen uusille alustoille
 * **Ominaisuuksien muutokset**: Erilaisten toimintojen menetys
-* **Hinnoittelumuutokset**: Eri tilausmallit
+* **Hinnoittelumuutokset**: Erilaiset tilausmallit
 * **Integraatiojaksot**: Tilapäiset palvelukatkokset
 
-### Käyttäjien huomioitavia asioita siirtymien aikana {#user-considerations-during-transitions}
+### Käyttäjän huomioitavia asioita siirtymien aikana {#user-considerations-during-transitions}
 
 Toimialan konsolidoinnin aikana käyttäjät hyötyvät seuraavista asioista:
 
@@ -409,7 +409,7 @@ Toimialan konsolidoinnin aikana käyttäjät hyötyvät seuraavista asioista:
 
 ## Hakkereiden uutisten todellisuustarkistus {#the-hacker-news-reality-check}
 
-Jokainen sähköpostialan startup saa samat kommentit [Hakkereiden uutiset](https://news.ycombinator.com/)-sivustolla:
+Jokainen sähköpostialan startup saa samat kommentit [Hakkereiden uutiset](https://news.ycombinator.com/)-kohteeseen:
 
 * ["Sähköposti toimii hyvin, tämä ratkaisee ongelman, joka ei ole ongelma"](https://news.ycombinator.com/item?id=35982757)
 * ["Käytä vain Gmailia/Outlookia kuten kaikki muutkin"](https://news.ycombinator.com/item?id=36001234)
@@ -426,7 +426,7 @@ Vuosi 2024 toi mukanaan uuden aallon "tekoälypohjaisia sähköposti" -startup-y
 
 * **[Yli-ihminen](https://superhuman.com/)**: [33 miljoonaa dollaria kerätty](https://superhuman.com/), [Grammarly onnistui hankkimaan](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - harvinainen onnistunut asiakassovelluksen sulkeminen
 * **[Lyhytaalto](https://www.shortwave.com/)**: Gmail-kääre tekoälyyhteenvedoilla
-* **[SaneBox](https://www.sanebox.com/)**: Tekoälyinen sähköpostisuodatus (toimii oikeasti, mutta ei mullistava)
+* **[SaneBox](https://www.sanebox.com/)**: Tekoälyinen sähköpostisuodatus (toimii itse asiassa, mutta ei mullistava)
 
 ### Samat vanhat ongelmat {#the-same-old-problems}
 
@@ -458,16 +458,16 @@ Vuosi 2024 toi mukanaan uuden aallon "tekoälypohjaisia sähköposti" -startup-y
 * **Me**: Yli 7 vuotta, kannattava, kasvava
 
 > \[!WARNING]
-> **The JMAP Investment Question**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with limited adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that many users request. This represents a strategic choice to prioritize protocol innovation over user-requested features. Whether JMAP will gain broader adoption remains to be seen, but the current email client ecosystem continues to rely primarily on IMAP/SMTP.
+> **JMAP-investointikysymys**: Vaikka Fastmail investoi resursseja [JMAP](https://jmap.io/)-protokollaan, joka on [10+ vuotta vanha, rajoitetusti käyttöönotettu](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)-protokolla, he samanaikaisesti [kieltäytyä PGP-salauksen käyttöönotosta](https://www.fastmail.com/blog/why-we-dont-offer-pgp/)-protokollaa käyttävät monet käyttäjät. Tämä on strateginen valinta asettaa protokollan innovaatiot etusijalle käyttäjien pyytämien ominaisuuksien sijaan. Jää nähtäväksi, saavuttaako JMAP laajempaa käyttöönottoa, mutta nykyinen sähköpostiohjelmaekosysteemi perustuu edelleen pääasiassa IMAP/SMTP-protokolliin.
 
 > \[!TIP]
-> **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
+> **Yrityksen menestys**: Sähköpostin edelleenlähetys tukee [alumnien sähköpostiratkaisut huippuyliopistoille](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study):tä, mukaan lukien Cambridgen yliopistoa, jolla on 30 000 alumniosoitetta, ja se tuo 87 000 dollarin vuosittaiset kustannussäästöt perinteisiin ratkaisuihin verrattuna.
 
 **Kaava**: Ne parantavat sähköpostia, eivät korvaa sitä.
 
 ### Poikkeus: Xobnin menestystarina {#the-exception-xobnis-success-story}
 
-[Hobney](https://en.wikipedia.org/wiki/Xobni) erottuu yhtenä harvoista sähköpostiin liittyvistä startup-yrityksistä, jotka todella menestyivät oikean lähestymistavan avulla.
+[Hobney](https://en.wikipedia.org/wiki/Xobni) erottuu yhtenä harvoista sähköpostiin liittyvistä startup-yrityksistä, jotka todella menestyivät oikealla lähestymistavalla.
 
 **Mitä Xobni teki oikein**:
 
@@ -478,7 +478,7 @@ Vuosi 2024 toi mukanaan uuden aallon "tekoälypohjaisia sähköposti" -startup-y
 
 **Menestys**: [Yahoo osti Xobnin 60 miljoonalla dollarilla vuonna 2013.](https://en.wikipedia.org/wiki/Xobni), joka tarjoaa sijoittajille vakaan tuoton ja perustajille onnistuneen exitin.
 
-#### Miksi Xobni onnistui siellä, missä muut epäonnistuivat {#why-xobni-succeeded-where-others-failed}
+#### Miksi Xobni onnistui siinä, missä muut epäonnistuivat {#why-xobni-succeeded-where-others-failed}
 
 1. **Rakennettu toimivaksi todistetun infrastruktuurin päälle**: Käytti Outlookin olemassa olevaa sähköpostin käsittelyä
 2. **Ratkaisi todelliset ongelmat**: Yhteystietojen hallinta oli todella rikki
@@ -489,11 +489,11 @@ Vuosi 2024 toi mukanaan uuden aallon "tekoälypohjaisia sähköposti" -startup-y
 
 [Matt Brezina](https://www.linkedin.com/in/mattbrezina/) ja [Adam Smith](https://www.linkedin.com/in/adamjsmith/) eivät pysähtyneet Xobnin jälkeen:
 
-* **Matt Brezina**: Aktiivinen [enkelisijoittaja](https://mercury.com/investor-database/matt-brezina) sijoittamalla Dropboxiin, Mailboxiin ja muihin
+* **Matt Brezina**: Aktiivinen [enkelisijoittaja](https://mercury.com/investor-database/matt-brezina) sijoituksilla Dropboxiin, Mailboxiin ja muihin
 * **Adam Smith**: Jatkoi menestyvien yritysten rakentamista tuottavuusalalla
 * **Molemmat perustajat**: Osoittivat, että sähköpostin menestys tulee parantamisesta, ei korvaamisesta
 
-### Kaava {#the-pattern}
+### Kuvio {#the-pattern}
 
 Yritykset menestyvät sähköpostin käytössä, kun ne:
 
@@ -512,24 +512,24 @@ Tarkastellaan sähköpostin innovaatioita viimeisten 20 vuoden ajalta:
 
 * **[Gmailin ketjutus](https://support.google.com/mail/answer/5900)**: Parannettu sähköpostin organisointi
 * **[Outlookin kalenteriintegraatio](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)**: Parannettu ajoitus
-* **Mobiilisähköpostisovellukset**: Parannettu esteettömyys
-* **[DKIM](https://tools.ietf.org/html/rfc6376)/[SPF](https://tools.ietf.org/html/rfc7208)/[DMARC](https://tools.ietf.org/html/rfc7489)**: Parannettu tietoturva
+* **Mobiilisähköpostisovellukset**: Parannettu helppokäyttöisyys
+* **[DKIM](https://tools.ietf.org/html/rfc6376)/[SPF](https://tools.ietf.org/html/rfc7208)/[DMARC](https://tools.ietf.org/html/rfc7489)**: Parannettu suojaus
 
 **Kaava**: Kaikki onnistuneet innovaatiot **paransivat** olemassa olevia sähköpostiprotokollia niiden korvaamisen sijaan.
 
-### Uudet työkalut täydentävät sähköpostia (mutta eivät korvaa sitä) {#new-tools-complement-email-but-dont-replace-it}
+### Uudet työkalut täydentävät sähköpostia (mutta älä korvaa sitä) {#new-tools-complement-email-but-dont-replace-it}
 
 * **[Slack](https://slack.com/)**: Erinomainen tiimikeskusteluun, mutta lähettää silti sähköposti-ilmoituksia
 * **[Eripura](https://discord.com/)**: Erinomainen yhteisöille, mutta käyttää sähköpostia tilin hallintaan
 * **[WhatsApp](https://www.whatsapp.com/)**: Täydellinen viestittelyyn, mutta yritykset käyttävät edelleen sähköpostia
 * **[Zoomaus](https://zoom.us/)**: Olennainen videopuheluissa, mutta kokouskutsut tulevat sähköpostitse
 
-### HEY-kokeilu {#the-hey-experiment}
+### HEY-koe {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Real-World Validation**: HEY's founder [DHH](https://dhh.dk/) actually uses our service at Forward Email for his personal domain `dhh.dk` and has for several years, demonstrating that even email innovators rely on proven infrastructure.
+> **Todennus käytännössä**: HEY:n perustaja [DHH](https://dhh.dk/) käyttää Forward Email -palveluamme henkilökohtaisella verkkotunnuksellaan `dhh.dk` jo useiden vuosien ajan, mikä osoittaa, että jopa sähköpostin innovaattorit luottavat toimivaksi todistettuun infrastruktuuriin.
 
-[HEY](https://hey.com/) by [Tukikohta](https://basecamp.com/) edustaa viimeaikaista vakavinta yritystä "keksiä" sähköposti uudelleen:
+[HEY](https://hey.com/), jonka on luonut [Tukikohta](https://basecamp.com/), edustaa viimeaikaista vakavinta yritystä "keksiä uudelleen" sähköposti:
 
 * **Julkaistu**: [Vuosi 2020 merkittävien fanfaarien merkeissä](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
 * **Lähestymistapa**: Täysin uusi sähköpostiparadigma seulonnalla, niputtamalla ja työnkuluilla
@@ -540,7 +540,7 @@ Tarkastellaan sähköpostin innovaatioita viimeisten 20 vuoden ajalta:
 
 Menestyksekkäimmät sähköposti-innovaatiot ovat olleet:
 
-1. **Parempi infrastruktuuri**: Nopeammat palvelimet, parempi roskapostin suodatus, parannettu toimitus
+1. **Parempi infrastruktuuri**: Nopeammat palvelimet, parempi roskapostin suodatus, parempi toimitus
 2. **Parannetut käyttöliittymät**: [Gmailin keskustelunäkymä](https://support.google.com/mail/answer/5900), [Outlookin kalenteriintegraatio](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
 3. **Kehittäjätyökalut**: API-rajapinnat sähköpostin lähettämiseen, webhookit seurantaan
 4. **Erikoistuneet työnkulut**: CRM-integraatio, markkinoinnin automatisointi, transaktiosähköpostit
@@ -551,7 +551,7 @@ Menestyksekkäimmät sähköposti-innovaatiot ovat olleet:
 
 Ennen kuin syvennymme epäonnistumisiin, on tärkeää ymmärtää, mikä sähköpostissa oikeasti toimii. Haaste ei ole se, että sähköposti on rikki, vaan se, että useimmat yritykset yrittävät "korjata" jotain, mikä jo toimii täydellisesti.
 
-### Sähköpostin innovaatioiden kirjo {#the-email-innovation-spectrum}
+### Sähköpostin innovaatiospektri {#the-email-innovation-spectrum}
 
 Sähköpostin innovaatiot voidaan jakaa kolmeen luokkaan:
 
@@ -586,13 +586,13 @@ Menestyksekäs toimintatapa on yksinkertainen: **paranna olemassa olevia sähkö
 
 ## Lähestymistapamme: Miksi olemme erilaisia {#our-approach-why-were-different}
 
-### Mitä teemme {#what-we-do}
+### Mitä me teemme {#what-we-do}
 
-* **Rakenna varsinainen infrastruktuuri**: Mukautetut SMTP/IMAP-palvelimet alusta alkaen
+* **Rakenna varsinainen infrastruktuuri**: Mukautettavat SMTP/IMAP-palvelimet alusta alkaen
 * **Keskity luotettavuuteen**: [99,99 % käyttöaika](https://status.forwardemail.net), asianmukainen virheiden käsittely
 * **Paranna olemassa olevia työnkulkuja**: Toimi kaikkien sähköpostiohjelmien kanssa
 * **Palvele kehittäjiä**: API:t ja työkalut, jotka todella toimivat
-* **Ylläpidä yhteensopivuutta**: Täysi [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) vaatimustenmukaisuus
+* **Ylläpidä yhteensopivuutta**: Täysi [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)-yhteensopivuus
 
 ### Mitä emme tee {#what-we-dont-do}
 
@@ -614,10 +614,10 @@ Samalla kun muut yritykset käyttävät miljoonia sähköpostin uudistamiseen, m
 ### Mikä tekee meistä erilaisia {#what-makes-us-different}
 
 > \[!TIP]
-> **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
+> **Viranomaisten vaatimustenmukaisuus**: Sähköpostin edelleenlähetys on [889-pykälän mukainen](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) ja palvelee organisaatioita, kuten Yhdysvaltain laivastoakatemiaa, osoittaen sitoutumisemme tiukkojen liittovaltion turvallisuusvaatimusten täyttämiseen.
 
 > \[!NOTE]
-> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+> **OpenPGP:n ja OpenWKD:n toteutus**: Toisin kuin Fastmail, joka [kieltäytyy ottamasta käyttöön PGP:tä](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) vedotti monimutkaisuusongelmiin, Forward Email tarjoaa täyden OpenPGP-tuen ja OpenWKD (Web Key Directory) -yhteensopivuuden, antaen käyttäjille heidän haluamansa salauksen pakottamatta heitä käyttämään kokeellisia protokollia, kuten JMAP:ia.
 
 **Teknisen pinon vertailu**:
 
@@ -640,7 +640,7 @@ graph TD
     H --> N[Web-native design]
 ```
 
-* \= [APNIC-blogikirjoitus](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) vahvistaa, että Proton käyttää postfix-mta-sts-resolveria, mikä viittaa siihen, että he käyttävät Postfix-pinoa
+* \= [APNIC-blogikirjoitus](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) vahvistaa, että Proton käyttää postfix-mta-sts-resolveria, mikä osoittaa, että he suorittavat Postfix-pinoa
 
 **Tärkeimmät erot**:
 
@@ -651,14 +651,14 @@ graph TD
 * **Ei vanhentunutta koodia**: Puhdas, moderni koodikanta ilman vuosikymmenten korjauksia
 
 > \[!NOTE]
-> **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
+> **Sisäänrakennettu tietosuoja**: [tietosuojakäytäntö](https://forwardemail.net/en/privacy)-ominaisuus varmistaa, ettemme tallenna edelleenlähetettyjä sähköposteja levylle tai tietokantoihin, sähköpostien metatietoja emmekä lokeja tai IP-osoitteita – se toimii muistissa vain sähköpostin edelleenlähetyspalveluita varten.
 
-**Tekninen dokumentaatio**: Kattavat tiedot lähestymistavastamme, arkkitehtuuristamme ja tietoturvan toteutuksestamme löytyvät [tekninen raportti](https://forwardemail.net/technical-whitepaper.pdf) -dokumentaatiostamme ja laajoista teknisistä tiedoistamme.
+**Tekninen dokumentaatio**: Kattavat tiedot lähestymistavastamme, arkkitehtuuristamme ja tietoturvan toteutuksestamme löytyvät [tekninen raportti](https://forwardemail.net/technical-whitepaper.pdf)-dokumentaatiostamme ja laajoista teknisistä dokumenteistamme.
 
-### Sähköpostipalveluntarjoajien vertailu: Kasvua toimiviksi todistettujen protokollien avulla {#email-service-provider-comparison-growth-through-proven-protocols}
+### Sähköpostipalveluntarjoajien vertailu: Kasvua toimivien protokollien avulla {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+> **Todelliset kasvuluvut**: Kun muut palveluntarjoajat jahtaavat kokeellisia protokollia, Forward Email keskittyy siihen, mitä käyttäjät todella haluavat – luotettavaa IMAP-, POP3-, SMTP-, CalDAV- ja CardDAV-protokollaa, joka toimii kaikissa laitteissa. Kasvumme osoittaa tämän lähestymistavan arvon.
 
 | Palveluntarjoaja | Verkkotunnukset (2024 [SecurityTrails](https://securitytrails.com/) kautta) | Verkkotunnukset (2025 [ViewDNS](https://viewdns.info/reversemx/) kautta) | Prosenttimuutos | MX-tietue |
 | ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
@@ -679,7 +679,7 @@ graph TD
 
 ### Tekninen aikajana {#the-technical-timeline}
 
-[virallinen yrityksen aikajana](https://forwardemail.net/en/about) -dokumenttimme perusteella olemme rakentaneet toimivan sähköpostiinfrastruktuurin seuraavasti:
+[virallinen yrityksen aikajana](https://forwardemail.net/en/about)-elementtimme perusteella olemme rakentaneet toimivan sähköpostiinfrastruktuurin seuraavasti:
 
 ```mermaid
 timeline
@@ -716,10 +716,10 @@ graph TD
     F --> J[Organic growth]
 ```
 
-## Sähköpostiinfrastruktuurin tietoturvahaasteet {#security-challenges-in-email-infrastructure}
+## Sähköposti-infrastruktuurin tietoturvahaasteet {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Quantum-Safe Email Security**: Forward Email is the [world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), providing unprecedented security against future quantum computing threats.
+> **Kvanttiturvallinen sähköpostin suojaus**: Sähköpostin edelleenlähetys on [maailman ensimmäinen ja ainoa sähköpostipalvelu, joka käyttää kvanttiherkkiä ja yksilöllisesti salattuja SQLite-postilaatikoita](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), joka tarjoaa ennennäkemättömän suojan tulevaisuuden kvanttilaskennan uhkia vastaan.
 
 Sähköpostin tietoturva on monimutkainen haaste, joka vaikuttaa kaikkiin alan tarjoajiin. Yksittäisten tapausten korostamisen sijaan on arvokkaampaa ymmärtää yhteiset tietoturvanäkökohdat, joihin kaikkien sähköpostiinfrastruktuurin tarjoajien on puututtava.
 
@@ -728,12 +728,12 @@ Sähköpostin tietoturva on monimutkainen haaste, joka vaikuttaa kaikkiin alan t
 Kaikki sähköpostipalveluntarjoajat kohtaavat samanlaisia tietoturvahaasteita:
 
 * **Tietosuojaus**: Käyttäjätietojen ja -viestinnän suojaaminen
-* **Käyttöoikeuksien hallinta**: Todennuksen ja valtuutusten hallinta
+* **Käyttöoikeuksien hallinta**: Todennuksen ja valtuutuksen hallinta
 * **Infrastruktuurin suojaus**: Palvelimien ja tietokantojen suojaaminen
 * **Vaatimustenmukaisuus**: Erilaisten sääntelyvaatimusten, kuten [GDPR](https://gdpr.eu/) ja [CCPA](https://oag.ca.gov/privacy/ccpa), täyttäminen
 
 > \[!NOTE]
-> **Advanced Encryption**: Our [security practices](https://forwardemail.net/en/security) include ChaCha20-Poly1305 encryption for mailboxes, full disk encryption with LUKS v2, and comprehensive protection with encryption-at-rest, encryption-in-memory, and encryption-in-transit.
+> **Edistynyt salaus**: [turvallisuuskäytännöt](https://forwardemail.net/en/security)-salaus sisältää ChaCha20-Poly1305-salauksen postilaatikoille, täyden levyn salauksen LUKS v2:lla ja kattavan suojauksen levossa tapahtuvalla salauksella, muistissa tapahtuvalla salauksella ja siirron aikaisella salauksella.
 
 ### Läpinäkyvyyden arvo {#the-value-of-transparency}
 
@@ -751,10 +751,10 @@ Nämä vastaukset hyödyttävät koko sähköpostiekosysteemiä edistämällä p
 Sähköpostiala kehittää jatkuvasti turvallisuuskäytäntöjään:
 
 * **Salausstandardit**: Parempien salausmenetelmien, kuten [TLS 1.3](https://tools.ietf.org/html/rfc8446), käyttöönotto
-* **Todennusprotokollat**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) ja [DMARC](https://tools.ietf.org/html/rfc7489) parantaminen
+* **Todennusprotokollat**: [DKIM](https://tools.ietf.org/html/rfc6376):n, [SPF](https://tools.ietf.org/html/rfc7208):n ja [DMARC](https://tools.ietf.org/html/rfc7489):n parantaminen
 * **Uhkien havaitseminen**: Parempien roskaposti- ja tietojenkalastelusuodattimien kehittäminen
 * **Infrastruktuurin vahvistaminen**: Palvelimien ja tietokantojen suojaaminen
-* **Verkkotunnuksen maineen hallinta**: [ennennäkemätöntä roskapostia Microsoftin onmicrosoft.com-verkkotunnuksesta](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) käsittely, joka vaatii [mielivaltaiset estosäännöt](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) ja [lisäkeskustelut MSP:stä](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
+* **Verkkotunnuksen maineen hallinta**: [ennennäkemätöntä roskapostia Microsoftin onmicrosoft.com-verkkotunnuksesta](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/):n käsittely, joka edellyttää [mielivaltaiset estosäännöt](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c):tä ja [lisäkeskustelut MSP:stä](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/):ta
 
 Nämä haasteet vaativat jatkuvia investointeja ja asiantuntemusta kaikilta alan toimijoilta.
 
@@ -778,7 +778,7 @@ Startup-yritysten mukaan sähköposti on ollut "kuolemassa" yli 20 vuotta:
 * **2008**: "Mobiiliviestit tappavat sähköpostin"
 * **2012**: "[Slack](https://slack.com/) korvaa sähköpostin"
 * **2016**: "Tekoäly mullistaa sähköpostin"
-* **2020**: "Etätyö tarvitsee uusia viestintävälineitä"
+* **2020**: "Etätyö tarvitsee uusia viestintätyökaluja"
 * **2024**: "Tekoäly korjaa vihdoin sähköpostin"
 
 **Sähköposti on edelleen olemassa**. Se kasvaa edelleen. Se on edelleen välttämätön.
@@ -787,27 +787,27 @@ Startup-yritysten mukaan sähköposti on ollut "kuolemassa" yli 20 vuotta:
 
 Opetus ei ole se, etteikö sähköpostia voisi parantaa. Kyse on oikean lähestymistavan valitsemisesta:
 
-1. **Sähköpostiprotokollat toimivat**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) ovat taistelukokeita
-2. **Infrastruktuurilla on väliä**: Luotettavuus ja suorituskyky voittavat näyttävät ominaisuudet
+1. **Sähköpostiprotokollat toimivat**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) ja [POP3](https://tools.ietf.org/html/rfc1939) ovat taistelukokeissa
+2. **Infrastruktuurilla on merkitystä**: Luotettavuus ja suorituskyky voittavat näyttävät ominaisuudet
 3. **Parannukset voittavat korvaamisen**: Käytä sähköpostia, älä taistele sitä vastaan
-4. **Kestävä kehitys voittaa kasvun**: Kannattavat yritykset kestävät pidempään kuin pääomasijoittajien rahoittamat yritykset
+4. **Kestävä kehitys voittaa kasvun**: Kannattavat yritykset kestävät pidempään kuin pääomasijoitettujen yritysten
 5. **Palvele kehittäjiä**: Työkalut ja API:t luovat enemmän arvoa kuin loppukäyttäjien sovellukset
 
 **Mahdollisuus**: Toimivien protokollien parempi käyttöönotto, ei protokollien korvaaminen.
 
 > \[!TIP]
-> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
+> **Kattava sähköpostipalveluanalyysi**: Katso kattava oppaamme [79 parasta sähköpostipalvelua](https://forwardemail.net/en/blog/best-email-service), josta löydät perusteellisen vertailun 79 sähköpostipalvelusta vuonna 2025, mukaan lukien yksityiskohtaiset arvostelut, kuvakaappaukset ja teknisen analyysin. Tämä analyysi osoittaa, miksi Forward Email on jatkuvasti suositeltu valinta luotettavuuden, turvallisuuden ja standardien noudattamisen kannalta.
 
 > \[!NOTE]
-> **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
+> **Toiminnan validointi**: Lähestymistapamme toimii organisaatioissa, jotka vaihtelevat tasosta [valtion virastot, jotka edellyttävät pykälän 889 noudattamista](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) tasoon ja tasosta [suuret yliopistot hallinnoivat kymmeniätuhansia alumniosoitteita](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study) tasoon, ja se osoittaa, että luotettavan infrastruktuurin rakentaminen on tie sähköpostin menestykseen.
 
 Jos harkitset sähköpostialan startupin perustamista, harkitse sen sijaan sähköpostiinfrastruktuurin rakentamista. Maailma tarvitsee parempia sähköpostipalvelimia, ei lisää sähköpostisovelluksia.
 
-## Sähköpostin pitkäaikainen hautausmaa: Lisää epäonnistumisia ja sulkemisia {#the-extended-email-graveyard-more-failures-and-shutdowns}
+## Laajennettu sähköpostihautausmaa: Lisää virheitä ja katkoksia {#the-extended-email-graveyard-more-failures-and-shutdowns}
 
 ### Googlen sähköpostikokeilut menivät pieleen {#googles-email-experiments-gone-wrong}
 
-Google, omistaessaan [Gmail](https://gmail.com/), on lopettanut useita sähköpostiprojekteja:
+Google, omistaessaan [Gmail](https://gmail.com/):n, on lopettanut useita sähköpostiprojekteja:
 
 * **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "Sähköpostin tappaja", jota kukaan ei ymmärtänyt
 * **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Sosiaalisen median sähköposti-integraation katastrofi
@@ -820,13 +820,13 @@ Google, omistaessaan [Gmail](https://gmail.com/), on lopettanut useita sähköpo
 
 [Newton Mail](https://en.wikipedia.org/wiki/CloudMagic) kuoli **kolme kertaa**:
 
-1. **[CloudMagia](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Newton osti sähköpostiohjelman
+1. **[CloudMagia](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Newtonin hankkima sähköpostiohjelma
 2. **Newton Mail** (2016-2018): Uudelleenbrändätty, tilausmalli epäonnistui
-3. **[Newtonin postin herätys](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Yritetty paluu epäonnistui jälleen
+3. **[Newtonin postin herätys](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Paluuyritys epäonnistui jälleen
 
 **Oppitunti**: Sähköpostiohjelmat eivät pysty ylläpitämään tilausmalleja.
 
-### Sovellukset, joita ei koskaan julkaistu {#the-apps-that-never-launched}
+### Sovellukset, joita ei koskaan käynnistetty {#the-apps-that-never-launched}
 
 Monet sähköpostialan startup-yritykset kuolivat ennen lanseeraustaan:
 
@@ -834,23 +834,23 @@ Monet sähköpostialan startup-yritykset kuolivat ennen lanseeraustaan:
 * **[Postivirta](https://mailstrom.co/)** (2011): Sähköpostin hallintatyökalu, hankittu ennen julkaisua
 * **Fluent** (2013): Sähköpostiohjelma, kehitys keskeytetty
 
-### Hankinnasta sulkemiseen -malli {#the-acquisition-to-shutdown-pattern}
+### Hankinnasta sammutukseen -malli {#the-acquisition-to-shutdown-pattern}
 
-* **[Varpunen → Google → Sammutus](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[uudelleensähköposti → Google → Sulkeminen](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **Postilaatikko → Dropbox → Sammutus** (2013-2015)
-* **[Saavuta → Microsoft → Sammutus](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (tuli Outlook Mobile)
+* **[Varpunen → Google → Sammutus](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012–2013)
+* **[uudelleensähköposti → Google → Sulkeminen](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010–2011)
+* **Postilaatikko → Dropbox → Sammutus** (2013–2015)
+* **[Saavuta → Microsoft → Sammutus](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (tuli Outlook Mobileksi)
 * **[Acompli → Microsoft → Integroitu](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (harvinainen onnistuminen)
 
 ### Sähköpostiinfrastruktuurin yhdistäminen {#email-infrastructure-consolidation}
 
-* **[Postilaatikko → Sähköpostiasiakas](https://www.postbox-inc.com/)** (2024): Postilaatikko suljettiin välittömästi yrityskaupan jälkeen
-* **Useita yritysostoja**: [ImprovMX](https://improvmx.com/) on hankittu useita kertoja, mukaan lukien [yksityisyyden suojaan liittyviä huolenaiheita](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [yritysostoilmoitukset](https://improvmx.com/blog/improvmx-has-been-acquired) ja [yritystiedot](https://quietlight.com/listings/15877422)
-* **Palvelun heikkeneminen**: Monet palvelut heikkenevät yrityskaupan jälkeen
+* **[Postilaatikko → Sähköpostiasiakas](https://www.postbox-inc.com/)** (2024): Postilaatikko suljettiin välittömästi hankinnan jälkeen
+* **Useita hankintoja**: [ImprovMX](https://improvmx.com/) on hankittu useita kertoja, sekä [yksityisyyden suojaan liittyviä huolenaiheita](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) että [yritysostoilmoitukset](https://improvmx.com/blog/improvmx-has-been-acquired) ja [yritystiedot](https://quietlight.com/listings/15877422)
+* **Palvelun heikkeneminen**: Monet palvelut heikkenevät hankinnan jälkeen
 
-## Avoimen lähdekoodin sähköpostien hautausmaa: Kun "ilmainen" ei ole kestävää {#the-open-source-email-graveyard-when-free-isnt-sustainable}
+## Avoimen lähdekoodin sähköpostien hautausmaa: Kun "ilmainen" ei ole kestävä {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
-### Nylas Mail → Mailspring: Haarukka, joka ei {#nylas-mail--mailspring-the-fork-that-couldnt}
+### Nylas Mail → Mailspring: Haarautuminen, joka ei onnistunut {#nylas-mail--mailspring-the-fork-that-couldnt}
 
 * **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Avoimen lähdekoodin sähköpostiohjelma, [lopetettu vuonna 2017](https://github.com/nylas/nylas-mail) ja jolla oli [massiiviset muistin käyttöongelmat](https://github.com/nylas/nylas-mail/issues/3501)
 * **[Mailspring](https://getmailspring.com/)**: Yhteisön haarautuminen, kamppailu ylläpidon kanssa ja [korkea RAM-käyttöongelmat](https://github.com/Foundry376/Mailspring/issues/1758)
@@ -864,7 +864,7 @@ Monet sähköpostialan startup-yritykset kuolivat ennen lanseeraustaan:
 * **2010**: Projekti hylätty
 * **Oppitunti**: Jopa onnistuneet sähköpostiohjelmat kuolevat lopulta
 
-### FairEmail: Google Playn politiikka tappoi sen {#fairemail-killed-by-google-play-politics}
+### FairEmail: Google Playn politiikka lopetti {#fairemail-killed-by-google-play-politics}
 
 * **[FairEmail](https://email.faircode.eu/)**: Tietosuojaan keskittyvä Android-sähköpostiohjelma
 * **Google Play**: [Kielletty "käytäntöjen rikkomisesta"](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
@@ -879,7 +879,7 @@ Avoimen lähdekoodin sähköpostiprojektit epäonnistuvat, koska:
 * **Yhteensopivuus**: Täytyy toimia kaikkien sähköpostipalveluntarjoajien kanssa.
 * **Resurssit**: Vapaaehtoisten kehittäjien loppuunpalaminen.
 
-## Tekoälyn avulla sähköpostialan startup-syöksy: Historia toistuu "älykkyyden" avulla {#the-ai-email-startup-surge-history-repeating-with-intelligence}
+## Tekoälyn sähköpostialan startupien nousukausi: Historia toistuu "älykkyyden" avulla {#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
 ### Nykyinen tekoälyn sähköpostikultaryntäys {#the-current-ai-email-gold-rush}
 
@@ -887,7 +887,7 @@ Vuoden 2024 tekoälysähköpostiyritykset:
 
 * **[Yli-ihminen](https://superhuman.com/)**: [33 miljoonaa dollaria kerätty](https://superhuman.com/), [Grammarlyn hankkima](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)
 * **[Lyhytaalto](https://www.shortwave.com/)**: Y-yhdistelmä, Gmail + tekoäly
-* **[SaneBox](https://www.sanebox.com/)**: Tekoälyllä toimiva sähköpostisuodatus (itse asiassa kannattavaa)
+* **[SaneBox](https://www.sanebox.com/)**: Tekoälyllä toimiva sähköpostisuodatus (itse asiassa kannattava)
 * **[Bumerangi](https://www.boomeranggmail.com/)**: Tekoälyllä toimiva aikataulutus ja vastaukset
 * **[Sähköposti-0/Nolla](https://github.com/Mail-0/Zero)**: Tekoälyllä toimiva sähköpostiohjelma-startup rakentaa jälleen uuden sähköpostikäyttöliittymän
 * **[Saapuneet-kansio nolla](https://github.com/elie222/inbox-zero)**: Avoimen lähdekoodin tekoälyllä toimiva sähköpostiavustaja yrittää automatisoida sähköpostien hallinnan
@@ -896,7 +896,7 @@ Vuoden 2024 tekoälysähköpostiyritykset:
 
 Pääomasijoittajat heittävät rahaa "tekoälyyn + sähköpostiin":
 
-* **[Yli 100 miljoonan dollarin sijoitukset](https://pitchbook.com/)** tekoälysähköpostin startup-yrityksissä vuonna 2024
+* **[Yli 100 miljoonan dollarin sijoitukset](https://pitchbook.com/)** tekoälysähköpostien startup-yrityksissä vuonna 2024
 * **Samat lupaukset**: "Vallankumouksellinen sähköpostikokemus"
 * **Samat ongelmat**: Rakentaminen olemassa olevan infrastruktuurin päälle
 * **Sama lopputulos**: Useimmat epäonnistuvat kolmen vuoden kuluessa
@@ -916,7 +916,7 @@ Pääomasijoittajat heittävät rahaa "tekoälyyn + sähköpostiin":
 * **2027**: Selviytyjät hankitaan, vaihtelevin tuloksin
 * **2028**: "Lohkoketjusähköposti" tai seuraava trendi nousee esiin
 
-## Yhdistämiskatastrofi: Kun "selviytyjistä" tulee katastrofeja {#the-consolidation-catastrophe-when-survivors-become-disasters}
+## Yhdistäytymiskatastrofi: Kun "selviytyjistä" tulee katastrofeja {#the-consolidation-catastrophe-when-survivors-become-disasters}
 
 ### Sähköpostipalveluiden yhdistäminen {#the-great-email-service-consolidation}
 
@@ -925,11 +925,11 @@ Sähköpostiala on keskittynyt dramaattisesti:
 * **[ActiveCampaign osti Postmarkin](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
 * **[Sinch osti Mailgunin](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
 * **[Twilio osti SendGridin](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **Useita [ImprovMX](https://improvmx.com/) yritysostoja** (käynnissä) [yksityisyysongelmat](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [yritysostoilmoitukset](https://improvmx.com/blog/improvmx-has-been-acquired) ja [yritystiedot](https://quietlight.com/listings/15877422) kanssa
+* **Useita [ImprovMX](https://improvmx.com/)-hankintoja** (käynnissä) [yksityisyysongelmat](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55):n, [yritysostoilmoitukset](https://improvmx.com/blog/improvmx-has-been-acquired):n ja [yritystiedot](https://quietlight.com/listings/15877422):n avulla
 
 ### Outlook: "Selviytyjä", joka ei voi lakata rikkomasta {#outlook-the-survivor-that-cant-stop-breaking}
 
-[Microsoft Outlook](https://outlook.com/) kärsii jatkuvista ongelmista, vaikka onkin "selviytyjä":
+Vaikka [Microsoft Outlook](https://outlook.com/) on "selviytyjä", sillä on jatkuvia ongelmia:
 
 * **Muistivuotoja**: [Outlook kuluttaa gigatavuja RAM-muistia](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) ja [vaatii usein uudelleenkäynnistyksiä](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
 * **Synkronointiongelmia**: Sähköpostit katoavat ja ilmestyvät uudelleen satunnaisesti
@@ -938,32 +938,32 @@ Sähköpostiala on keskittynyt dramaattisesti:
 
 **Kokemuksemme käytännössä**: Autamme säännöllisesti asiakkaita, joiden Outlook-asetukset eivät toimi täysin yhteensopivasti IMAP-toteutuksemme kanssa.
 
-### Postileimainfrastruktuuriongelma {#the-postmark-infrastructure-problem}
+### Postileiman infrastruktuuriongelma {#the-postmark-infrastructure-problem}
 
-[ActiveCampaignin hankinta](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign) jälkeen:
+[ActiveCampaignin hankinta](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):n jälkeen:
 
-* **SSL-varmenteen virhe**: [Lähes 10 tunnin sähkökatko syyskuussa 2024](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) vanhentuneiden SSL-varmenteiden vuoksi
+* **SSL-varmenteen epäonnistuminen**: [Lähes 10 tunnin sähkökatko syyskuussa 2024](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) vanhentuneiden SSL-varmenteiden vuoksi
 * **Käyttäjän hylkäykset**: [Marc Köhlbrugge hylättiin](https://x.com/marckohlbrugge/status/1935041134729769379) laillisesta käytöstä huolimatta
 * **Kehittäjän Exodus**: [@levelsio toteaa "Amazon SES on viimeinen toivomme"](https://x.com/levelsio/status/1934197733989999084)
 * **MailGun-ongelmat**: [Scott raportoi](https://x.com/\_SMBaxter/status/1934175626375704675): "Huonoin palvelu @Mail_Gunilta... emme ole pystyneet lähettämään sähköposteja kahteen viikkoon"
 
-### Viimeaikaiset sähköpostiasiakkaiden uhrit (2024–2025) {#recent-email-client-casualties-2024-2025}
+### Viimeaikaiset sähköpostiasiakkaiden tapaturmat (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-**[Postilaatikko → Sähköpostiasiakas](https://www.postbox-inc.com/) Yritysosto**: Vuonna 2024 eM Client osti Postboxin ja [sammuta se heti](https://www.postbox-inc.com/), mikä pakotti tuhannet käyttäjät siirtymään palveluun.
+**[Postilaatikko → Sähköpostiasiakas](https://www.postbox-inc.com/):n hankinta**: Vuonna 2024 eM Client osti Postboxin ja [sammuta se heti](https://www.postbox-inc.com/):n, mikä pakotti tuhannet käyttäjät siirtymään palveluun.
 
-**[Kanarian posti](https://canarymail.io/) Ongelmat**: [Sequoia-tausta](https://www.sequoiacap.com/) -ongelmista huolimatta käyttäjät raportoivat toimimattomista ominaisuuksista ja heikosta asiakastuesta.
+**[Kanarian posti](https://canarymail.io/) Ongelmat**: [Sequoia-tausta](https://www.sequoiacap.com/):stä huolimatta käyttäjät raportoivat toimimattomista ominaisuuksista ja heikosta asiakastuesta.
 
 **[Readdlen kipinä](https://sparkmailapp.com/)**: Käyttäjät raportoivat yhä useammin huonoista kokemuksista sähköpostiohjelman kanssa.
 
-**[Postilintu](https://www.getmailbird.com/) Lisenssiongelmat**: Windows-käyttäjät kohtaavat lisenssiongelmia ja hämmennystä tilausten kanssa.
+**[Postilintu](https://www.getmailbird.com/) Lisensointiongelmat**: Windows-käyttäjät kohtaavat lisensointiongelmia ja hämmennystä tilausten kanssa.
 
-**[Lentoposti](https://airmailapp.com/) Hylkää**: Epäonnistuneeseen Sparrow-koodikantaan perustuva Mac/iOS-sähköpostiohjelma saa edelleen [huonot arvostelut](https://airmailapp.com/) -virheen luotettavuusongelmien vuoksi.
+**[Lentoposti](https://airmailapp.com/) Hylkää**: Epäonnistuneeseen Sparrow-koodikantaan perustuva Mac/iOS-sähköpostiohjelma saa edelleen [huonot arvostelut](https://airmailapp.com/)-virheen luotettavuusongelmien vuoksi.
 
-### Sähköpostilaajennus ja palveluhankinnat {#email-extension-and-service-acquisitions}
+### Sähköpostilaajennus ja palveluiden hankinnat {#email-extension-and-service-acquisitions}
 
-**[HubSpot-apulainen](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Lopetettu**: HubSpotin sähköpostin seurantalaajennus [lopetettu vuonna 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) korvattiin nimellä "HubSpot Sales".
+**[HubSpot-apulainen](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Lopetettu**: HubSpotin sähköpostin seurantalaajennus oli [lopetettu vuonna 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) ja korvattiin laajennuksella "HubSpot Sales".
 
-**[Engage Gmailissa](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Poistettu**: Salesforcen Gmail-laajennus poistettiin käytöstä [eläkkeelle kesäkuussa 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), mikä pakotti käyttäjät siirtymään muihin ratkaisuihin.
+**[Engage Gmailissa](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Poistettu**: Salesforcen Gmail-laajennus oli [eläkkeelle kesäkuussa 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), mikä pakotti käyttäjät siirtymään muihin ratkaisuihin.
 
 ### Selviytyjät: Sähköpostiyritykset, jotka todella toimivat {#the-survivors-email-companies-that-actually-work}
 
@@ -971,21 +971,21 @@ Kaikki sähköpostiyritykset eivät epäonnistu. Tässä ovat ne, jotka todella 
 
 **[Mailmodo](https://www.mailmodo.com/)**: [Y Combinatorin menestystarina](https://www.ycombinator.com/companies/mailmodo), [2 miljoonaa dollaria Sequoia's Surgesta](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) keskittymällä interaktiivisiin sähköpostikampanjoihin.
 
-**[Mixmax](https://mixmax.com/)**: Kerätty [Kokonaisrahoitus 13,3 miljoonaa dollaria](https://www.mixmax.com/about) ja toimii edelleen menestyvänä myyntialustana.
+**[Mixmax](https://mixmax.com/)**: Nosti [Kokonaisrahoitus 13,3 miljoonaa dollaria](https://www.mixmax.com/about) -arvon ja jatkaa toimintaansa menestyvänä myyntialustana.
 
 **[Outreach.io](https://www.outreach.io/)**: Saavutti [Arvostus yli 4,4 miljardia dollaria](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) -tason ja valmistautuu mahdolliseen listautumisantiin myyntialustana.
 
-**[Apollo.io](https://www.apollo.io/)**: Saavutti [1,6 miljardin dollarin arvostus](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) tavoitteen 100 miljoonan dollarin D-sarjan investoinneilla vuonna 2023 myyntitiedustelualustalleen.
+**[Apollo.io](https://www.apollo.io/)**: Saavutti [1,6 miljardin dollarin arvostus](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/):n 100 miljoonan dollarin D-sarjan sijoituksilla myyntitiedustelualustalleen vuonna 2023.
 
-**[GMass](https://www.gmass.co/)**: Bootstrapin menestystarina, jossa [140 000 dollaria/kuukausi](https://www.indiehackers.com/product/gmass) luotiin Gmail-laajennukseksi sähköpostimarkkinointiin.
+**[GMass](https://www.gmass.co/)**: Bootstrapin menestystarina [140 000 dollaria/kuukausi](https://www.indiehackers.com/product/gmass):n luomisesta Gmail-laajennukseksi sähköpostimarkkinointia varten.
 
 **[Streak CRM](https://www.streak.com/)**: Onnistunut Gmail-pohjainen CRM, joka on toiminut [vuodesta 2012 lähtien](https://www.streak.com/about) ilman suurempia ongelmia.
 
-**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [Marketo osti sen vuonna 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) onnistui yli 15 miljoonan dollarin rahoituksen keräämisen jälkeen.
+**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: Tilapäinen tilaus [Marketo osti sen vuonna 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) saavutettiin onnistuneesti yli 15 miljoonan dollarin rahoituksen keräämisen jälkeen.
 
 **[Bananatag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Staffbasen ostoma vuonna 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) ja jatkaa toimintaansa nimellä "Staffbase Email".
 
-**Avainkuvio**: Nämä yritykset menestyvät, koska ne **parantavat olemassa olevia sähköpostin työnkulkuja** sen sijaan, että yrittäisivät korvata sähköpostia kokonaan. Ne rakentavat työkaluja, jotka toimivat **sähköpostiinfrastruktuurin kanssa**, eivät sitä vastaan.
+**Avainmalli**: Nämä yritykset menestyvät, koska ne **parantavat olemassa olevia sähköpostin työnkulkuja** sen sijaan, että yrittäisivät korvata sähköpostia kokonaan. Ne rakentavat työkaluja, jotka toimivat **sähköpostiinfrastruktuurin kanssa**, eivät sitä vastaan.
 
 > \[!TIP]
-> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight.
+> **Eikö tuntemaasi palveluntarjoajaa löydy täältä?** (esim. Posteo, Mailbox.org, Migadu jne.) Katso lisätietoja [kattava sähköpostipalveluiden vertailusivu](https://forwardemail.net/en/blog/best-email-service)-sivulta.

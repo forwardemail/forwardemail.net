@@ -16,7 +16,7 @@
 
 ## Descripción general {#overview}
 
-Forward Email ha estado evaluando activamente empresas de investigación en ciberseguridad para realizar auditorías exhaustivas de nuestro código fuente abierto en [GitHub](https://github.com/forwardemail) y de nuestra infraestructura de servidores. Tras una exhaustiva investigación y evaluación durante los últimos años, hemos identificado varias empresas de auditoría de seguridad excepcionales que demuestran constantemente un trabajo de alta calidad, experiencia técnica y alineamiento con nuestros valores de privacidad.
+Forward Email ha estado evaluando activamente empresas de investigación en ciberseguridad para realizar auditorías exhaustivas de nuestro código fuente abierto en [GitHub](https://github.com/forwardemail) y de la infraestructura de nuestros servidores. Tras una exhaustiva investigación y evaluación durante los últimos años, hemos identificado varias empresas de auditoría de seguridad excepcionales que demuestran constantemente un trabajo de alta calidad, experiencia técnica y alineamiento con nuestros valores de privacidad.
 
 Este documento presenta nuestras conclusiones y recomendaciones para organizaciones que buscan servicios profesionales de auditoría de seguridad. Las empresas aquí mencionadas han demostrado capacidades excepcionales en pruebas de penetración, revisión de código, evaluación de infraestructura e investigación de seguridad.
 
@@ -28,7 +28,7 @@ Es importante tener en cuenta que las empresas que se enumeran a continuación n
 
 ## Empresas de auditoría de seguridad recomendadas {#recommended-security-audit-companies}
 
-__URL_PROTEGIDA_10__ Cure53 {__URL_PROTEGIDA_11__
+MARCADOR DE TEMPERATURA 0 Cure53 {MARCADOR DE TEMPERATURA 1
 
 **Ubicación**: Berlín, Alemania
 **Sitio web**: <https://cure53.de/>
@@ -41,14 +41,14 @@ La empresa ha desarrollado una impresionante cartera de evaluaciones de segurida
 **Publicaciones e informes destacados**:
 
 * [Evaluación de seguridad de los servidores Mullvad 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Evaluación integral de la seguridad de la infraestructura
-* [Evaluación de seguridad de aplicaciones/API de Mullvad 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Análisis de la seguridad de aplicaciones y API
+* [Evaluación de seguridad de aplicaciones/API de Mullvad 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Análisis de seguridad de aplicaciones y API
 * [Evaluación de seguridad de los servidores Mullvad 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Evaluación de seguimiento de la infraestructura
 
 ### Seguridad radicalmente abierta {#radically-open-security}
 
 **Ubicación**: Ámsterdam, Países Bajos
 **Sitio web**: <https://www.radicallyopensecurity.com/>
-**Especialización**: Consultoría de seguridad informática sin fines de lucro
+**Especialización**: Consultoría de seguridad informática para organizaciones sin fines de lucro
 
 Radically Open Security (ROS) opera como una consultora de seguridad informática única sin fines de lucro que se alinea perfectamente con los principios de código abierto y los valores de transparencia. Con sede en Ámsterdam, ROS ha sido pionera en un enfoque innovador en consultoría de seguridad, poniendo sus metodologías y hallazgos a disposición del público siempre que es posible.
 
@@ -60,7 +60,7 @@ Su modelo sin fines de lucro les permite centrarse exclusivamente en resultados 
 * [Evaluación de seguridad del Programa Tauri 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluación del marco de aplicación multiplataforma
 * [Evaluación de seguridad de Mullvad VPN 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Análisis de seguridad del servicio VPN
 
-### Asegurado AB {#assured-ab}
+### AB asegurado {#assured-ab}
 
 **Ubicación**: Gotemburgo, Suecia
 **Sitio web**: <https://www.assured.se/>
@@ -72,15 +72,15 @@ El enfoque de la empresa se centra en un análisis técnico exhaustivo, combinad
 
 **Publicaciones e informes destacados**:
 
-* [Auditoría de seguridad de servidores de correo electrónico de Mullvad 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Evaluación de la seguridad de la infraestructura de correo electrónico
-* [Auditoría de seguridad de API de Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Evaluación de la seguridad de la API
+* [Auditoría de seguridad de servidores de correo electrónico de Mullvad 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Evaluación de seguridad de la infraestructura de correo electrónico
+* [Auditoría de seguridad de API de Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - Evaluación de seguridad de la API
 * [Auditoría de seguridad del servidor DNS de Mullvad 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Evaluación de la infraestructura de DNS
 
 ### Rastro de bits {#trail-of-bits}
 
 **Ubicación**: Nueva York, Nueva York, Estados Unidos
 **Sitio web**: <https://www.trailofbits.com/>
-**Especialización**: «No solo arreglamos errores, arreglamos software».
+**Especialización**: "No solo arreglamos errores, arreglamos software".
 
 Trail of Bits es una destacada firma estadounidense de ciberseguridad reconocida por su enfoque innovador en la seguridad del software. Con sede en Nueva York, ha desarrollado herramientas y metodologías de vanguardia que han impulsado el avance de la ciberseguridad. Su lema, «No solo corregimos errores, corregimos software», refleja su compromiso de abordar problemas de seguridad sistémicos, no solo vulnerabilidades superficiales.
 

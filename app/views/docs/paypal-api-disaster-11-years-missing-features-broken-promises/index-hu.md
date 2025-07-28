@@ -61,7 +61,7 @@
 * [A PayPal szisztematikus eltussolása: 6 millió hang elhallgattatása](#paypals-systematic-cover-up-silencing-6-million-voices)
   * [A nagy törlés](#the-great-erasure)
   * [A harmadik fél általi mentés](#the-third-party-rescue)
-* [A 11 éves capture bug katasztrófa: 1899 dollár és ez a szám is növekszik](#the-11-year-capture-bug-disaster-1899-and-counting)
+* [A 11 éves capture bug katasztrófa: 1899 dollár és ez a szám még csak növekszik](#the-11-year-capture-bug-disaster-1899-and-counting)
   * [Az e-mail továbbítása 1899 dolláros veszteséget jelent](#forward-emails-1899-loss)
   * [A 2013-as eredeti jelentés: Több mint 11 évnyi hanyagság](#the-2013-original-report-11-years-of-negligence)
   * [A 2016-os beismerés: A PayPal feltörte a saját SDK-ját](#the-2016-admission-paypal-breaks-their-own-sdk)
@@ -162,10 +162,10 @@ problémák, abszolút semmi sem lett megoldva.
 
 **Műszaki vezetők, akik ígéreteket tettek, majd távoztak:**
 
-* **Mark Stuart** (az ígéret szerint a visszajelzés „katalizátorként” fog szolgálni) → [Most a Ripple-nél](https://www.linkedin.com/in/markstuartsf)
-* **Jim Magats** (18 éves PayPal-veterán) → [Az MX vezérigazgatója](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
-* **John Kunze** (globális fogyasztási cikkekért felelős alelnök) → [Nyugdíjas](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
-* **Edwin Aoki** (az utolsók egyike) → [Épp most indultam a Nasdaqért](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (2025. január)
+* **Mark Stuart** (az ígért visszajelzés „katalizátorként” fog szolgálni) → IDEIGLENES_PLACEHOLDER_0
+* **Jim Magats** (18 éves PayPal-veterán) → IDEIGLENES_PLACEHOLDER_1 (2022)
+* **John Kunze** (globális fogyasztási cikkekért felelős alelnök) → IDEIGLENES_PLACEHOLDER_2 (2023)
+* **Edwin Aoki** (az utolsók egyike) → IDEIGLENES_PLACEHOLDER_3 (2025. január)
 
 A PayPal egy forgóajtóvá vált, ahol a vezetők fejlesztői visszajelzéseket gyűjtenek, ígéreteket tesznek, majd jobb cégekhez, például a JPMorganhoz, a Ripple-höz és más fintech cégekhez távoznak.
 
@@ -193,11 +193,11 @@ Elutasítottunk egy újabb találkozót, a következőképpen magyarázva csaló
 
 > Köszönöm. Azonban nem érzem úgy, hogy egy telefonhívás bármit is eredményezne. Íme, miért... Korábban már felhívtam, és az sehová sem vezetett. Több mint 2 órát pazaroltam arra, hogy az egész csapattal és a vezetőséggel beszéljek, és semmi sem történt... Rengeteg e-mail oda-vissza. Semmi sem történt. A visszajelzések sehová sem vezettek. Évekig próbálkoztam, meghallgattak, és aztán sehová sem jutottam.
 
-### Marty Brodbeck válasza a túlmérnöki munkára {#marty-brodbecks-overengineering-response}
+### Marty Brodbeck túlmérnöki válasza {#marty-brodbecks-overengineering-response}
 
 Aztán Marty Brodbeck, a PayPal fogyasztói mérnöki részlegének vezetője megkereste:
 
-> Szia Nick, Marty Brodbeck vagyok. Én vezetem a PayPal fogyasztói mérnöki feladatait, és én irányítottam a cég API-fejlesztését. Meg tudnánk beszélni veled és velem, hogy milyen problémával szembesülsz, és hogyan segíthetnénk?
+> Szia Nick, Marty Brodbeck vagyok. Én vezetem a PayPal fogyasztói mérnöki feladatait, és én irányítottam a cég API-fejlesztését. Meg tudnánk beszélni veled és velem, hogy milyen problémával szembesülsz, és hogyan segíthetünk?
 
 Amikor elmagyaráztuk az előfizetési listázási végpont egyszerű szükségességét, a válasza feltárta a pontos problémát:
 
@@ -210,7 +210,7 @@ GET /v1/billing/subscriptions
 Authorization: Bearer {access_token}
 ```
 
-### Az „egyszerű CRUD” ellentmondása {#the-simple-crud-contradiction}
+### Az „Egyszerű CRUD” ellentmondás {#the-simple-crud-contradiction}
 
 Amikor rámutattunk, hogy ez egy alapvető CRUD funkció, amelynek már 2014 óta léteznie kellett volna, Marty válasza sokatmondó volt:
 
@@ -233,11 +233,11 @@ A 2025-ös Alex Chriss, Michelle Gill és Marty Brodbeck közötti eszmecserék 
 
 Ez a minta magyarázza, hogy a PayPal csapatai miért tűnnek teljesen elszakadva a 2020-ban kapott kiterjedt visszajelzésektől – azok az emberek, akik ezt a visszajelzést kapták, már nem élnek, és az új vezetés ugyanazokat a hibákat követi el.
 
-## Évekig figyelmen kívül hagyott hibajelentések {#years-of-bug-reports-they-ignored}
+## Évek óta figyelmen kívül hagyott hibajelentések {#years-of-bug-reports-they-ignored}
 
 Nem csak hiányzó funkciókra panaszkodtunk. Aktívan jelentettük a hibákat, és megpróbáltunk segíteni a fejlesztésükben. Íme egy átfogó idővonal a dokumentált problémákról:
 
-### 2016: Korai felhasználói felülettel/felhasználói élménynel kapcsolatos panaszok {#2016-early-uiux-complaints}
+### 2016: Korai UI/UX panaszok {#2016-early-uiux-complaints}
 
 Már 2016-ban is nyilvánosan megkerestük a PayPal vezetőségét, köztük Dan Schulmant is, a felhasználói felülettel és a használhatósággal kapcsolatos problémákkal kapcsolatban. Ez 9 évvel ezelőtt történt, és ugyanazok a felhasználói felülettel/felhasználói élménynel kapcsolatos problémák ma is fennállnak.
 
@@ -247,7 +247,7 @@ Már 2016-ban is nyilvánosan megkerestük a PayPal vezetőségét, köztük Dan
 
 Mark Stuart elismerte a problémát:
 
-> Köszönöm Nick! Áttérek a BCC-re. @Prasy, a te csapatod felelős ezért az e-mailért, vagy tudod, hogy ki? A „Niftylettuce, LLC, többé nem számlázunk” szöveg arra enged következtetni, hogy összekeveredett a címzett és az e-mail tartalma.
+> Köszönöm Nick! Áttérek a BCC-re. @Prasy, a te csapatod felelős ezért az e-mailért, vagy tudod, hogy ki? A „Niftylettuce, LLC, többé nem számlázunk” szöveg miatt azt hiszem, hogy összekeveredett a címzett és az e-mail tartalma.
 
 **Eredmény**: Tényleg kijavították ezt! Mark Stuart megerősítette:
 
@@ -282,7 +282,7 @@ Mark Stuart továbbította a fogyasztói termékekért felelős csapatnak:
 
 **Eredmény**: Nincs válasz, nincs javítás. A fejlesztők továbbra is megbízhatósági problémákkal küzdenek a sandboxban.
 
-### 2021: A jelentéskészítő rendszer teljesen feltört {#2021-reports-system-completely-broken}
+### 2021: A jelentéskészítő rendszer teljesen összeomlott {#2021-reports-system-completely-broken}
 
 2021 májusában arról számoltunk be, hogy a PayPal tranzakciós jelentések letöltési rendszere teljesen összeomlott:
 
@@ -396,7 +396,7 @@ Maga Mark Stuart is elismerte:
 
 > Egyetértek, hogy abszurd mennyiségű régi és új API van. Nagyon nehéz megtalálni, amit keresni kellene (még nekünk is, akik itt dolgozunk).
 
-### Biztonsági sebezhetőségek {#security-vulnerabilities}
+### Biztonsági réseket {#security-vulnerabilities}
 
 **A PayPal 2FA implementációja fordított.** Még ha a TOTP alkalmazások engedélyezve is vannak, akkor SMS-ellenőrzést kényszerítenek ki, ami sebezhetővé teszi a fiókokat a SIM-kártya-csere támadásokkal szemben. Ha a TOTP engedélyezve van, akkor kizárólag azt kellene használnia. A tartalék megoldásnak e-mailnek kell lennie, nem SMS-nek.
 
@@ -455,21 +455,21 @@ Homályos üzenet és továbbra sincs megoldás. Semmilyen információ, értes�
 <img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
 </figure>
 
-## Miért nem hagyhatjuk csak úgy el a PayPalt {#why-we-cant-just-drop-paypal}
+## Miért nem tudjuk csak úgy elvetni a PayPalt {#why-we-cant-just-drop-paypal}
 
-Mindezen problémák ellenére sem hagyhatjuk el teljesen a PayPalt, mivel egyes ügyfelek csak a PayPalt választhatják fizetési lehetőségként. Ahogy az egyik ügyfelünk mondta a [állapotoldal](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515) oldalon:
+Mindezen problémák ellenére sem hagyhatjuk el teljesen a PayPalt, mivel egyes ügyfelek csak a PayPalt választhatják fizetési lehetőségként. Ahogy az egyik ügyfél mondta a [állapotoldal](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515) oldalon:
 
 > A PayPal az egyetlen fizetési lehetőségem
 
 **Megragadtunk egy hibás platform támogatásával, mert a PayPal fizetési monopóliumot hozott létre bizonyos felhasználók számára.**
 
-## A közösségi kerülő megoldás {#the-community-workaround}
+## Közösségi kerülő megoldás {#the-community-workaround}
 
 Mivel a PayPal nem biztosít alapvető előfizetési listázási funkciókat, a fejlesztői közösség megkerülő megoldásokat dolgozott ki. Létrehoztunk egy szkriptet, amely segít a PayPal-előfizetések kezelésében: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Ez a szkript egy [közösségi lényeg](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) linkre hivatkozik, ahol a fejlesztők megosztják a megoldásaikat. A felhasználók valójában [megköszönve nekünk](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) azért részesülnek __PROTECTED_LINK_239__ védelmet élveznek, mert olyan megoldásokat kínálnak, amiket a PayPalnak évekkel ezelőtt kellett volna létrehoznia.
+Ez a szkript egy [közösségi lényeg](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)-ra hivatkozik, ahol a fejlesztők megosztják a megoldásaikat. A felhasználók valójában [megköszönve nekünk](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)-ként szerepelnek, mert olyan dolgokat kínálnak, amiket a PayPalnak évekkel ezelőtt kellett volna létrehoznia.
 
-## PayPal sablonok blokkolása adathalászat miatt {#blocking-paypal-templates-due-to-phishing}
+## PayPal-sablonok blokkolása adathalászat miatt {#blocking-paypal-templates-due-to-phishing}
 
 A problémák túlmutatnak az API-kon. A PayPal e-mail sablonjai annyira rosszul vannak megtervezve, hogy speciális szűrést kellett bevezetnünk az e-mail szolgáltatásunkban, mivel ezek megkülönböztethetetlenek az adathalász kísérletektől.
 
@@ -477,13 +477,13 @@ A problémák túlmutatnak az API-kon. A PayPal e-mail sablonjai annyira rosszul
 
 Rendszeresen kapunk jelentéseket PayPal-os e-mailekről, amelyek pontosan adathalász kísérleteknek tűnnek. Íme egy valós példa a visszaélési jelentéseink közül:
 
-**Tárgy:** __VÉDETT_INLINE_KÓD_7__
+**Tárgy:** IDEIGLENES_HELYTARTÓ_0
 
-Ez az e-mail továbbításra került a `abuse@microsoft.com` címre, mert adathalász kísérletnek tűnt. Mi a probléma? Valójában a PayPal sandbox környezetéből származott, de a sablonjuk annyira gyenge, hogy beindítja az adathalászat-észlelő rendszereket.
+Ez az e-mail továbbításra került a `abuse@microsoft.com` címre, mert adathalász kísérletnek tűnt. Mi a probléma? Valójában a PayPal sandbox környezetéből érkezett, de a sablonjuk annyira gyenge, hogy elindítja az adathalászat-észlelő rendszereket.
 
-### Megvalósításunk {#our-implementation}
+### A mi implementációnk {#our-implementation}
 
-A PayPal-specifikus szűrésünket a [e-mail szűrőkód](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) dokumentumban tekintheti meg:
+A PayPal-specifikus szűrésünket a [e-mail szűrőkód](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) paraméterben láthatja:
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -522,18 +522,18 @@ Ezt azért vezettük be, mert a PayPal a visszaélésekkel foglalkozó csapatokn
 
 A spamszűrő naplóink azt mutatják, hogy naponta hatalmas mennyiségű PayPal-számlára érkező spam-et dolgozunk fel. A blokkolt témák például a következők:
 
-* „Számla a PayPal számlázási csapatától:- Ez a terhelés automatikusan terhelésre kerül a számlájáról. Kérjük, azonnal vegye fel velünk a kapcsolatot a következő telefonszámon: \[TELEFONSZÁM]”
+* „Számla a PayPal számlázási csapatától:- Ez a tétel automatikusan terhelésre kerül a számlájáról. Kérjük, azonnal vegye fel velünk a kapcsolatot a következő telefonszámon: \[TELEFONSZÁM]”
 * „Számla a következő cégtől: \[CÉGNÉV] (\[RENDELÉSI AZONOSÍTÓ])”
 * Több változat különböző telefonszámokkal és hamis rendelési azonosítókkal
 
-Ezek az e-mailek gyakran `outlook.com` tárhelyszolgáltatóktól érkeznek, de úgy tűnik, hogy a PayPal legitim rendszereiből származnak, ami különösen veszélyessé teszi őket. Az e-mailek SPF, DKIM és DMARC hitelesítésen esnek át, mivel a PayPal tényleges infrastruktúráján keresztül küldik őket.
+Ezek az e-mailek gyakran `outlook.com` hosztokról érkeznek, de úgy tűnik, hogy a PayPal legitim rendszereiből származnak, ami különösen veszélyessé teszi őket. Az e-mailek SPF, DKIM és DMARC hitelesítésen esnek át, mivel a PayPal tényleges infrastruktúráján keresztül küldik őket.
 
 Technikai naplóink szerint ezek a spam e-mailek érvényes PayPal-fejléceket tartalmaznak:
 
 * `X-Email-Type-Id: RT000238` (ugyanaz az azonosító, amit blokkolunk)
 * `From: "service@paypal.com" <service@paypal.com>`
-* Érvényes DKIM aláírások a `paypal.com`-tól
-* Megfelelő SPF rekordok, amelyek a PayPal levelezőszervereit mutatják
+* Érvényes DKIM aláírások a `paypal.com`-től
+* Megfelelő SPF-rekordok, amelyek a PayPal levelezőszervereit mutatják
 
 Ez lehetetlen helyzetet teremt: a legitim PayPal e-mailek és a spam technikai jellemzői megegyeznek.
 
@@ -541,11 +541,11 @@ Ez lehetetlen helyzetet teremt: a legitim PayPal e-mailek és a spam technikai j
 
 A PayPal, egy olyan vállalat, amelynek vezető szerepet kellene vállalnia a pénzügyi csalások elleni küzdelemben, olyan rosszul megtervezett e-mail sablonokkal rendelkezik, hogy adathalászat elleni rendszereket aktiválnak. Kénytelenek vagyunk blokkolni a legitim PayPal e-maileket, mivel azok megkülönböztethetetlenek a csalásoktól.
 
-Ez dokumentálva van a [Óvakodj a PayPal új címével kapcsolatos csalásoktól](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) számú biztonsági kutatásban, amely bemutatja, hogyan használják ki a PayPal saját rendszereit csalásokra.
+Ez a [Óvakodj a PayPal új címével kapcsolatos csalásoktól](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) biztonsági kutatásban dokumentálva van, amely bemutatja, hogyan használják ki a PayPal saját rendszereit csalásokra.
 
-### Valós hatás: Újszerű PayPal-csalások {#real-world-impact-novel-paypal-scams}
+### Valós hatás: Új PayPal-csalások {#real-world-impact-novel-paypal-scams}
 
-A probléma túlmutat a rossz sablontervezésen. A PayPal számlázási rendszerét annyira könnyű kihasználni, hogy a csalók rendszeresen visszaélnek vele, hogy legitimnek tűnő, csalárd számlákat küldjenek. Gavin Anderegg biztonsági kutató dokumentálta a [Egy újszerű PayPal-átverés](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) esetet, ahol a csalók valódi PayPal-számlákat küldtek, amelyek minden hitelesítési ellenőrzésen átmentek:
+A probléma túlmutat a rossz sablontervezésen. A PayPal számlázási rendszerét annyira könnyű kihasználni, hogy a csalók rendszeresen visszaélnek vele, hogy legitimnek tűnő, csalárd számlákat küldjenek. Gavin Anderegg biztonsági kutató dokumentálta a [Egy újszerű PayPal-átverés](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) esetet, ahol a csalók valódi PayPal-számlákat küldenek, amelyek minden hitelesítési ellenőrzésen átmennek:
 
 > „A forrást megvizsgálva úgy tűnt, hogy az e-mail valójában a PayPal-tól érkezett (az SPF, a DKIM és a DMARC is megfelelt). A gomb egy legitim PayPal URL-re is mutatott... Egy pillanatba telt, mire rájöttem, hogy ez egy legitim e-mail. Épp most kaptam egy véletlenszerű „számlát” egy csalótól.”
 
@@ -605,9 +605,9 @@ Ez a fordított folyamat katasztrófákat okoz a vállalkozások számára:
 
 Pontosan ez a forgatókönyv játszódott le a 2025 júliusi rutinszerű fiókmigrációnk során. A PayPal kezdetben engedélyezte a fizetéseket, majd hirtelen, mindenféle értesítés nélkül blokkolta azokat. Csak akkor vettük észre a problémát, amikor az ügyfelek elkezdték jelenteni, hogy nem tudnak fizetni.
 
-Amikor felvettük a kapcsolatot az ügyfélszolgálattal, ellentmondásos válaszokat kaptunk a szükséges dokumentációkról, és nem volt egyértelmű határidő a megoldásra. Emiatt kénytelenek voltunk teljesen leállítani a PayPal-fizetéseket, összezavarva azokat az ügyfeleket, akiknek nem volt más fizetési lehetőségük.
+Amikor felvettük a kapcsolatot az ügyfélszolgálattal, ellentmondásos válaszokat kaptunk a szükséges dokumentációkról, a megoldásra vonatkozó egyértelmű határidő nélkül. Emiatt kénytelenek voltunk teljesen leállítani a PayPal-fizetéseket, összezavarva azokat az ügyfeleket, akiknek nem volt más fizetési lehetőségük.
 
-### Miért fontos ez {#why-this-matters}
+### Miért fontos ez? {#why-this-matters}
 
 A PayPal megfelelési megközelítése alapvető félreértést mutat a vállalkozások működésével kapcsolatban. A megfelelő KYC-nek **a termelési integráció előtt** kell történnie, nem pedig azután, hogy az ügyfelek már megpróbálnak fizetni. A proaktív kommunikáció hiánya a problémák felmerülésekor a PayPal kereskedői igényektől való eltávolodását mutatja.
 
@@ -617,7 +617,7 @@ Ez a fordított folyamat a PayPal tágabb szervezeti problémáinak tünete: a b
 
 Az előfizetési lista funkció, amelyet a PayPal nem hajlandó bevezetni, több mint egy évtizede szabványos az iparágban. Így kezelik ezt az alapvető követelményt más fizetési szolgáltatók:
 
-### Csíkos {#stripe}
+### Csík {#stripe}
 
 A Stripe az API indulása óta rendelkezik előfizetési listázással. A dokumentációjuk világosan bemutatja, hogyan lehet lekérni egy ügyfél- vagy kereskedői fiók összes előfizetését. Ez alapvető CRUD funkciónak számít.
 
@@ -705,7 +705,7 @@ Authorization: Bearer access_token
 * ❌ Nincs `GET /v1/billing/subscriptions` (összes listázása)
 * ❌ Nincs keresési funkció
 * ❌ Nincs szűrés állapot, ügyfél, dátum szerint
-* ❌ Nincs oldaltördelési támogatás
+* ❌ Nincs oldalszámozás támogatás
 
 A PayPal az egyetlen jelentős fizetési szolgáltató, amely arra kényszeríti a fejlesztőket, hogy manuálisan kövessék nyomon az előfizetési azonosítókat a saját adatbázisaikban.
 
@@ -728,7 +728,7 @@ A bizonyítékok elrejtésének ez a mintája nem új a PayPal számára. Dokume
 * Kritikus hibajelentések eltávolítása a nyilvánosság elől
 * Fejlesztői eszközök értesítés nélküli megszüntetése
 * API-k megfelelő dokumentáció nélküli módosítása
-* A közösségi viták elhallgattatása a hibáikról
+* A hibáikról szóló közösségi viták elhallgattatása
 
 A fórumtörlés a legagyalázatosabb kísérlet arra, hogy a nyilvánosság elől elrejtsék a rendszerszintű hibáikat.
 
@@ -802,7 +802,7 @@ A probléma „megoldása” után is a kereskedők a következőkről számolta
 
 ### A 2024-es eszkaláció: Még mindig hibás {#the-2024-escalation-still-broken}
 
-A Preserved PayPal közösség legfrissebb jelentései szerint a probléma valójában rosszabbodott. Egy [2024. szeptemberi megbeszélés](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archivált](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) dokumentum pontosan ugyanezeket a problémákat dokumentálja:
+A megőrzött PayPal-közösség legfrissebb jelentései szerint a probléma valójában rosszabbodott. A [2024. szeptemberi megbeszélés](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archivált](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) pontosan ugyanazokat a problémákat dokumentálja:
 
 > „A probléma csak körülbelül 2 hete kezdett jelentkezni, és nem érinti az összes rendelést. **A sokkal gyakoribbnak tűnik a 404-es hiba a rögzítéskor.**”
 
@@ -842,7 +842,7 @@ Ez nem hiba – **ez szisztematikus hanyagság.** A PayPal több mint egy évtiz
 4. **Figyelmen kívül hagyták a vállalkozásokra gyakorolt pénzügyi hatásokat**
 5. **Bizonyítékokat rejtettek el a közösségi fórumok eltávolításával**
 
-### A dokumentálatlan követelmény {#the-undocumented-requirement}
+### A nem dokumentált követelmény {#the-undocumented-requirement}
 
 A PayPal hivatalos dokumentációjában sehol sem említik, hogy a kereskedőknek újrapróbálkozási logikát kellene alkalmazniuk a rögzítési műveletekhez. A dokumentációjuk szerint a kereskedőknek „a jóváhagyás után azonnal rögzíteniük kell”, de nem említik, hogy az API-juk véletlenszerűen 404-es hibákat ad vissza, amelyek összetett újrapróbálkozási mechanizmusokat igényelnek.
 
@@ -859,15 +859,15 @@ Ez minden kereskedőt arra kényszerít, hogy:
 
 A capture bug katasztrófa csak egy példa a PayPal szisztematikus megközelítésére az ügyfelek megtévesztésére és a hibáik eltitkolására.
 
-### A New York-i Pénzügyi Szolgáltatások Minisztériumának akciója {#the-new-york-department-of-financial-services-action}
+### A New York-i Pénzügyi Szolgáltatások Minisztériumának intézkedése {#the-new-york-department-of-financial-services-action}
 
-2025 januárjában a New York-i Pénzügyi Szolgáltatások Minisztériuma [végrehajtási intézkedés a PayPal ellen](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) számú büntetést adott ki megtévesztő gyakorlatok miatt, amely azt mutatja, hogy a PayPal megtévesztő gyakorlata messze túlmutat az API-jaikon.
+2025 januárjában a New York-i Pénzügyi Szolgáltatások Minisztériuma [végrehajtási intézkedés a PayPal ellen](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) számú figyelmeztetést adott ki megtévesztő gyakorlatok miatt, ami azt mutatja, hogy a PayPal megtévesztő gyakorlata messze túlmutat az API-jain.
 
 Ez a szabályozási intézkedés azt mutatja, hogy a PayPal hajlandó megtévesztő gyakorlatokat folytatni a teljes üzleti tevékenységében, nem csak a fejlesztői eszközeiben.
 
 ### A mézper: Partnerlinkek átírása {#the-honey-lawsuit-rewriting-affiliate-links}
 
-A PayPal Honey felvásárlása [perek, amelyek azt állítják, hogy Honey átírja affiliate linkeket](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer)-hoz vezetett, jutalékokat lopva tartalomkészítőktől és influenszerektől. Ez a szisztematikus megtévesztés egy másik formáját képviseli, ahol a PayPal olyan bevételek átirányításával profitál, amelyeknek másokhoz kellene kerülniük.
+A PayPal Honey felvásárlása [perek, amelyek azt állítják, hogy Honey átírja affiliate linkeket](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) címet eredményezett, jutalékokat lopva el tartalomkészítőktől és influenszerektől. Ez a szisztematikus megtévesztés egy másik formáját képviseli, ahol a PayPal olyan bevételek átirányításával profitál, amelyeknek másoknak kellene menniük.
 
 A minta egyértelmű:
 
@@ -898,7 +898,7 @@ A PayPal hivatalos dokumentációja következetesen nem említi a kereskedők á
 
 A kritikus információk szisztematikus elhallgatása arra kényszeríti a kereskedőket, hogy a termelési rendszerekben próbálgatással és hibákkal fedezzék fel a PayPal korlátait, ami gyakran pénzügyi veszteségekhez vezet.
 
-## Mit jelent ez a fejlesztők számára {#what-this-means-for-developers}
+## Mit jelent ez a fejlesztők számára? {#what-this-means-for-developers}
 
 A PayPal szisztematikus kudarca az alapvető fejlesztői igények kielégítésében, miközben kiterjedt visszajelzéseket gyűjt, egy alapvető szervezeti problémára utal. A visszajelzések gyűjtését a tényleges problémák megoldásának helyettesítőjeként kezelik.
 
@@ -915,7 +915,7 @@ A minta egyértelmű:
 
 Eközben a fejlesztők kénytelenek megkerülő megoldásokat találni, veszélyeztetni a biztonságot és hibás felhasználói felületekkel foglalkozni, csak hogy elfogadhassák a fizetéseket.
 
-Ha fizetési rendszert építesz, tanulj a tapasztalatainkból: építsd fel a [trifecta megközelítés](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) rendszeredet több processzorral, de ne várd el a PayPaltól, hogy biztosítsa a szükséges alapvető funkciókat. Tervezd meg a kerülő megoldások kidolgozását az első naptól kezdve.
+Ha fizetési rendszert építesz, tanulj a tapasztalatainkból: építsd fel a [trifecta megközelítés](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal)-dat több processzorral, de ne várd el a PayPaltól, hogy biztosítsa a szükséges alapvető funkciókat. Tervezd meg a kerülő megoldások kidolgozását az első naptól kezdve.
 
 > Ez a bejegyzés a Forward Email PayPal API-jaival szerzett 11 éves tapasztalatunkat dokumentálja. Minden kódpélda és link a tényleges éles rendszereinkből származik. A problémák ellenére továbbra is támogatjuk a PayPal-fizetéseket, mivel egyes ügyfeleknek nincs más lehetőségük.
 

@@ -24,7 +24,7 @@ En Forward Email, llevamos más de una década lidiando con las API defectuosas 
   * [2016: Primeras quejas sobre UI/UX](#2016-early-uiux-complaints)
   * [2021: Informe de errores de correo electrónico empresarial](#2021-business-email-bug-report)
   * [2021: Sugerencias para mejorar la interfaz de usuario](#2021-ui-improvement-suggestions)
-  * [2021: Fallas en el entorno sandbox](#2021-sandbox-environment-failures)
+  * [2021: Fallas en el entorno Sandbox](#2021-sandbox-environment-failures)
   * [2021: El sistema de informes está completamente roto](#2021-reports-system-completely-broken)
   * [2022: Falta una función de API principal (otra vez)](#2022-core-api-feature-missing-again)
 * [La pesadilla de la experiencia del desarrollador](#the-developer-experience-nightmare)
@@ -102,7 +102,7 @@ Es una omisión muy extraña que un comerciante no pueda listar todos los acuerd
 
 > "+1. Han pasado casi 3 años." - laudukang (lo que significa que el problema existía desde 2014)
 
-El [publicación original de la comunidad](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) de 2017 muestra a los desarrolladores pidiendo esta funcionalidad básica. La respuesta de PayPal fue archivar el repositorio donde se reportaba el problema.
+El [publicación original de la comunidad](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) de 2017 muestra a los desarrolladores solicitando esta funcionalidad básica. La respuesta de PayPal fue archivar el repositorio donde se reportaba el problema.
 
 ## 2020: Les brindamos comentarios exhaustivos {#2020-we-give-them-extensive-feedback}
 
@@ -136,7 +136,7 @@ Reconozca la brecha. Le daremos seguimiento y la abordaremos. ¡Gracias de nuevo
 
 La sesión se describió como la búsqueda de:
 
-> un recorrido sincero por tu experiencia
+> Un recorrido sincero por tu experiencia
 
 a:
 
@@ -162,9 +162,9 @@ Aquí es donde la cosa se pone realmente interesante. Todas las personas que rec
 **Líderes técnicos que hicieron promesas y luego se fueron:**
 
 * **Mark Stuart** (prometió que sus comentarios serían un catalizador) → [Ahora en Ripple](https://www.linkedin.com/in/markstuartsf)
-* **Jim Magats** (con 18 años de experiencia en PayPal) → [Director ejecutivo de MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
-* **John Kunze** (Vicepresidente de Productos de Consumo Global) → [Jubilado](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
-* **Edwin Aoki** (uno de los últimos que quedan) → [Recién salido para Nasdaq](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (enero de 2025)
+* **Jim Magats** (18 años en PayPal) → [Director ejecutivo de MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
+* **John Kunze** (Vicepresidente Global de Productos de Consumo) → [Jubilado](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
+* **Edwin Aoki** (uno de los últimos) → [Recién salido para Nasdaq](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (enero de 2025)
 
 PayPal se ha convertido en una puerta giratoria donde los ejecutivos recogen opiniones de los desarrolladores, hacen promesas y luego se van a empresas mejores como JPMorgan, Ripple y otras empresas de tecnología financiera.
 
@@ -192,11 +192,11 @@ Rechazamos otra reunión, explicando nuestra frustración:
 
 Gracias. Sin embargo, no creo que una llamada vaya a servir de nada. He aquí por qué... Hace tiempo, tuve una llamada y no me llevó a ninguna parte. Perdí más de dos horas hablando con todo el equipo y la directiva, y no se logró nada... Un montón de correos electrónicos. Absolutamente nada. La retroalimentación no llegó a nada. Intenté durante años que me escucharan, y luego no me llevó a ninguna parte.
 
-### La respuesta de sobreingeniería de Marty Brodbeck {#marty-brodbecks-overengineering-response}
+### Respuesta de sobreingeniería de Marty Brodbeck {#marty-brodbecks-overengineering-response}
 
 Luego, Marty Brodbeck, quien dirige ingeniería de consumo en PayPal, se puso en contacto:
 
-Hola Nick, soy Marty Brodbeck. Dirijo toda la ingeniería de consumo en PayPal y he estado impulsando el desarrollo de API para la empresa. ¿Podrías hablarnos sobre el problema que tienes y cómo podemos ayudarte?
+Hola Nick, soy Marty Brodbeck. Dirijo toda la ingeniería de consumo en PayPal y he estado impulsando el desarrollo de API para la empresa. ¿Podrías hablar sobre el problema que tienes y cómo podemos ayudarte?
 
 Cuando le explicamos la simple necesidad de un punto final de listado de suscripciones, su respuesta reveló el problema exacto:
 
@@ -209,7 +209,7 @@ GET /v1/billing/subscriptions
 Authorization: Bearer {access_token}
 ```
 
-### La contradicción del "CRUD simple" {#the-simple-crud-contradiction}
+### La contradicción "Simple CRUD" {#the-simple-crud-contradiction}
 
 Cuando señalamos que se trataba de una funcionalidad CRUD básica que debería haber existido desde 2014, la respuesta de Marty fue reveladora:
 
@@ -221,7 +221,7 @@ Esta respuesta demuestra que no comprende su propia API. Si "las operaciones CRU
 
 Si las operaciones CRUD simples forman parte de la API principal, ¿dónde está el punto final de la lista de suscripciones? Los desarrolladores llevan pidiendo esta "operación CRUD simple" desde 2014. Han pasado 11 años. Todos los demás procesadores de pagos han tenido esta funcionalidad básica desde el principio.
 
-### La desconexión se hace evidente {#the-disconnect-becomes-clear}
+### La desconexión se aclara {#the-disconnect-becomes-clear}
 
 Los intercambios de 2025 con Alex Chriss, Michelle Gill y Marty Brodbeck muestran la misma disfunción organizacional:
 
@@ -266,7 +266,7 @@ Mark Stuart lo envió al equipo de productos de consumo:
 
 **Resultado**: Nunca se solucionó. La interfaz de usuario sigue mostrando estas entradas inútiles de $0.
 
-### 2021: Errores del entorno Sandbox {#2021-sandbox-environment-failures}
+### 2021: Fallas en el entorno de pruebas {#2021-sandbox-environment-failures}
 
 En noviembre de 2021, informamos sobre problemas críticos con el entorno sandbox de PayPal:
 
@@ -281,7 +281,7 @@ A veces cargan y a veces no. Es frustrante.
 
 **Resultado**: Sin respuesta, sin solución. Los desarrolladores aún enfrentan problemas de confiabilidad en el entorno de pruebas.
 
-### 2021: Informa que el sistema está completamente roto {#2021-reports-system-completely-broken}
+### 2021: El sistema de informes está completamente dañado {#2021-reports-system-completely-broken}
 
 En mayo de 2021, informamos que el sistema de descarga de informes de transacciones de PayPal estaba completamente roto:
 
@@ -311,7 +311,7 @@ La documentación de la API también es totalmente inexacta. Pensamos que podrí
 
 Christina Monti de PayPal respondió:
 
-> Disculpas por las frustraciones causadas porque estos pasos están mal, lo solucionaremos esta semana.
+> Disculpas por las frustraciones causadas por estos pasos incorrectos, lo solucionaremos esta semana.
 
 Sri Shivananda (CTO) nos agradeció:
 
@@ -389,7 +389,7 @@ Mensajes de error típicos de PayPal: crípticos e inútiles
 
 Su SDK requiere unsafe-inline y unsafe-eval en su CSP, **lo que lo obliga a comprometer la seguridad de su sitio**.
 
-### Caos de documentación {#documentation-chaos}
+### Documentación Caos {#documentation-chaos}
 
 El propio Mark Stuart admitió:
 
@@ -466,7 +466,7 @@ A pesar de todos estos problemas, no podemos abandonar PayPal por completo, ya q
 
 Dado que PayPal no ofrece la funcionalidad básica de listado de suscripciones, la comunidad de desarrolladores ha creado soluciones alternativas. Creamos un script que ayuda a administrar las suscripciones de PayPal: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Este script hace referencia a un enlace protegido (PROTECTED_LINK_238) donde los desarrolladores comparten soluciones. Los usuarios reciben un enlace protegido (PROTECTED_LINK_239) por proporcionar lo que PayPal debería haber creado hace años.
+Este script hace referencia a un [esencia de la comunidad](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) donde los desarrolladores comparten soluciones. Los usuarios son, en realidad, [agradeciéndonos](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) por proporcionar lo que PayPal debería haber creado hace años.
 
 ## Bloqueo de plantillas de PayPal debido a phishing {#blocking-paypal-templates-due-to-phishing}
 
@@ -476,13 +476,13 @@ Los problemas van más allá de las API. Las plantillas de correo electrónico d
 
 Recibimos regularmente informes de correos electrónicos de PayPal que parecen ser intentos de phishing. Aquí hay un ejemplo real de nuestros informes de abuso:
 
-**Asunto:** __CÓDIGO EN LÍNEA PROTEGIDO_7__
+**Asunto:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
 Este correo electrónico se reenvió a `abuse@microsoft.com` porque parecía ser un intento de phishing. ¿El problema? En realidad, provenía del entorno de pruebas de PayPal, pero el diseño de su plantilla es tan deficiente que activa los sistemas de detección de phishing.
 
 ### Nuestra implementación {#our-implementation}
 
-Puede ver nuestro filtrado específico de PayPal implementado en nuestro [código de filtrado de correo electrónico](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172):
+Puedes ver nuestro filtrado específico de PayPal implementado en nuestro [código de filtrado de correo electrónico](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172):
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -525,7 +525,7 @@ Nuestros registros de filtrado de spam muestran el enorme volumen de spam de fac
 * "Factura de [NOMBRE DE LA EMPRESA] ([ID DEL PEDIDO])"
 * Varias variaciones con diferentes números de teléfono e ID de pedido falsos
 
-Estos correos electrónicos suelen provenir de servidores `outlook.com`, pero parecen provenir de los sistemas legítimos de PayPal, lo que los hace especialmente peligrosos. Los correos electrónicos superan la autenticación SPF, DKIM y DMARC porque se envían a través de la infraestructura de PayPal.
+Estos correos electrónicos suelen provenir de hosts `outlook.com`, pero parecen provenir de los sistemas legítimos de PayPal, lo que los hace especialmente peligrosos. Los correos electrónicos superan la autenticación SPF, DKIM y DMARC porque se envían a través de la infraestructura de PayPal.
 
 Nuestros registros técnicos muestran que estos correos electrónicos no deseados contienen encabezados legítimos de PayPal:
 
@@ -540,11 +540,11 @@ Esto crea una situación imposible: los correos electrónicos legítimos de PayP
 
 PayPal, una empresa que debería liderar la lucha contra el fraude financiero, tiene plantillas de correo electrónico tan mal diseñadas que activan los sistemas antiphishing. Nos vemos obligados a bloquear los correos electrónicos legítimos de PayPal porque son indistinguibles de las estafas.
 
-Esto está documentado en una investigación de seguridad: [Tenga cuidado con el fraude de nuevas direcciones de PayPal](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/), que muestra cómo se explotan los propios sistemas de PayPal para cometer fraudes.
+Esto está documentado en la investigación de seguridad: [Tenga cuidado con el fraude de nuevas direcciones de PayPal](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/), que muestra cómo se explotan los propios sistemas de PayPal para cometer fraudes.
 
 ### Impacto en el mundo real: Nuevas estafas de PayPal {#real-world-impact-novel-paypal-scams}
 
-El problema va más allá de un diseño deficiente de la plantilla. El sistema de facturación de PayPal es tan fácil de explotar que los estafadores lo utilizan con frecuencia para enviar facturas fraudulentas que parecen legítimas. El investigador de seguridad Gavin Anderegg documentó [Una nueva estafa de PayPal](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), donde los estafadores envían facturas de PayPal auténticas que superan todas las comprobaciones de autenticación:
+El problema va más allá de un diseño deficiente de la plantilla. El sistema de facturación de PayPal es tan fácil de explotar que los estafadores lo utilizan con frecuencia para enviar facturas fraudulentas que parecen legítimas. El investigador de seguridad Gavin Anderegg documentó el error [Una nueva estafa de PayPal](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), donde los estafadores envían facturas de PayPal auténticas que superan todas las comprobaciones de autenticación:
 
 Al revisar la fuente, el correo parecía provenir de PayPal (SPF, DKIM y DMARC pasaron todos). El botón también enlazaba a una URL aparentemente legítima de PayPal... Me llevó un segundo darme cuenta de que era un correo legítimo. Me acababan de enviar una "factura" aleatoria de un estafador.
 
@@ -616,19 +616,19 @@ Este proceso retrógrado es sintomático de los problemas organizacionales más 
 
 La función de listado de suscripciones que PayPal se niega a implementar ha sido estándar en la industria durante más de una década. Así es como otros procesadores de pagos gestionan este requisito básico:
 
-__URL_PROTEGIDA_115__ Raya {__URL_PROTEGIDA_116__
+MARCADOR DE TEMPERATURA 0 Stripe {MARCADOR DE TEMPERATURA 1
 
 Stripe ha incluido un listado de suscripciones desde el lanzamiento de su API. Su documentación muestra claramente cómo recuperar todas las suscripciones de una cuenta de cliente o comerciante. Esto se considera una funcionalidad CRUD básica.
 
-### Paleta {#paddle}
+MARCADOR DE TEMPERATURA_0 Paleta {MARCADOR DE TEMPERATURA_1
 
 Paddle ofrece API integrales para la gestión de suscripciones, que incluyen listados, filtros y paginación. Entienden que los comerciantes necesitan visualizar sus flujos de ingresos recurrentes.
 
-__URL_PROTEGIDA_119__ Comercio de Coinbase {__URL_PROTEGIDA_120__
+MARCADOR DE TEMPORADA 0 Coinbase Commerce {MARCADOR DE TEMPORADA 1
 
 Incluso los procesadores de pago de criptomonedas como Coinbase Commerce ofrecen una mejor gestión de suscripciones que PayPal.
 
-### Cuadrado {#square}
+MARCADOR DE TEMPERATURA 0 Cuadrado {MARCADOR DE TEMPERATURA 1
 
 La API de Square incluye el listado de suscripciones como una característica fundamental, no como una ocurrencia de último momento.
 
@@ -731,7 +731,7 @@ Este patrón de ocultar evidencia no es nuevo para PayPal. Tienen un historial d
 
 El cierre del foro representa el intento más descarado hasta el momento de ocultar sus fallas sistemáticas al escrutinio público.
 
-## El desastre de la captura de insectos de 11 años: $1,899 y contando {#the-11-year-capture-bug-disaster-1899-and-counting}
+## El desastre de la captura de errores de 11 años: $1,899 y contando {#the-11-year-capture-bug-disaster-1899-and-counting}
 
 Mientras PayPal organizaba sesiones de retroalimentación y hacía promesas, su sistema principal de procesamiento de pagos lleva más de 11 años fallando fundamentalmente. La evidencia es devastadora.
 
@@ -751,7 +751,7 @@ Esto representa solo una empresa. **Las pérdidas colectivas de miles de comerci
 
 La única razón por la que descubrimos esto es porque somos increíblemente meticulosos y nos basamos en los datos.
 
-### El informe original de 2013: Más de 11 años de negligencia {#the-2013-original-report-11-years-of-negligence}
+### El Informe Original de 2013: Más de 11 años de negligencia {#the-2013-original-report-11-years-of-negligence}
 
 El primer informe documentado de este problema exacto aparece en [Stack Overflow en noviembre de 2013](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([archivado](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)):
 
@@ -776,7 +776,7 @@ La respuesta de la comunidad en 2013 fue reveladora:
 
 ### La admisión de 2016: PayPal rompe su propio SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-En 2016, el repositorio de GitHub de PayPal documentó que [fallos de captura masivos](https://github.com/paypal/PayPal-PHP-SDK/issues/660) afectaba a su SDK oficial de PHP. La magnitud fue asombrosa:
+En 2016, el repositorio de GitHub de PayPal documentó que [fallos de captura masivos](https://github.com/paypal/PayPal-PHP-SDK/issues/660) afectaba a su SDK oficial de PHP. La magnitud era asombrosa:
 
 Desde el 20/9/2016, todos los intentos de captura de PayPal han fallado con el error 'INVALID_RESOURCE_ID - No se encontró el ID del recurso solicitado'. No se realizó ningún cambio entre el 19/9 y el 20/9 en la integración de la API. **El 100 % de los intentos de captura desde el 20/9 han devuelto este error.**
 
@@ -799,9 +799,9 @@ Incluso después de "solucionar" el problema, los comerciantes informaron:
 
 > "Actualicé el SDK a la versión 1.7.4 y **el problema persiste**."
 
-### La escalada de 2024: todavía rota {#the-2024-escalation-still-broken}
+### La escalada de 2024: sigue rota {#the-2024-escalation-still-broken}
 
-Informes recientes de la comunidad de PayPal preservada muestran que el problema ha empeorado. Un enlace [Discusión de septiembre de 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archivado](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) documenta exactamente los mismos problemas:
+Informes recientes de la comunidad de PayPal preservada muestran que el problema ha empeorado. Un [Discusión de septiembre de 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archivado](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) documenta exactamente los mismos problemas:
 
 El problema comenzó a aparecer hace apenas dos semanas y no afecta a todos los pedidos. **El más común parece ser el error 404 al capturar.**
 
@@ -841,7 +841,7 @@ Esto no es un error: **es una negligencia sistemática.** PayPal conoce estas fa
 4. **Ignoraron el impacto financiero en las empresas**
 5. **Ocultaron pruebas al eliminar foros de la comunidad**
 
-### El Requisito Indocumentado {#the-undocumented-requirement}
+### El requisito no documentado {#the-undocumented-requirement}
 
 En la documentación oficial de PayPal no se menciona que los comerciantes deban implementar la lógica de reintento para las operaciones de captura. Su documentación indica que los comerciantes deben "capturar inmediatamente después de la aprobación", pero no menciona que su API devuelve aleatoriamente errores 404, lo que requiere complejos mecanismos de reintento.
 
@@ -860,13 +860,13 @@ El desastre del error de captura es sólo un ejemplo del enfoque sistemático de
 
 ### Acción del Departamento de Servicios Financieros de Nueva York {#the-new-york-department-of-financial-services-action}
 
-En enero de 2025, el Departamento de Servicios Financieros de Nueva York emitió una multa [acción de cumplimiento contra PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) por prácticas engañosas, lo que demuestra que el patrón de engaño de PayPal se extiende mucho más allá de sus API.
+En enero de 2025, el Departamento de Servicios Financieros de Nueva York emitió un [acción de cumplimiento contra PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) por prácticas engañosas, lo que demuestra que el patrón de engaño de PayPal se extiende mucho más allá de sus API.
 
 Esta acción regulatoria demuestra la voluntad de PayPal de participar en prácticas engañosas en todo su negocio, no solo en sus herramientas para desarrolladores.
 
 ### La demanda de Honey: reescritura de enlaces de afiliados {#the-honey-lawsuit-rewriting-affiliate-links}
 
-La adquisición de Honey por parte de PayPal ha resultado en [Demandas que alegan que Honey reescribe los enlaces de afiliados](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), el robo de comisiones a creadores de contenido e influencers. Esto representa otra forma de engaño sistemático donde PayPal se beneficia al redirigir ingresos que deberían ir a otros.
+La adquisición de Honey por parte de PayPal ha resultado en [Demandas que alegan que Honey reescribe los enlaces de afiliados](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), que roba comisiones a creadores de contenido e influencers. Esto representa otra forma de engaño sistemático donde PayPal se beneficia al redirigir ingresos que deberían ir a otros.
 
 El patrón es claro:
 
@@ -897,7 +897,7 @@ La documentación oficial de PayPal omite sistemáticamente las limitaciones y e
 
 Esta omisión sistemática de información crítica obliga a los comerciantes a descubrir las limitaciones de PayPal a través de prueba y error en los sistemas de producción, lo que a menudo resulta en pérdidas financieras.
 
-## Lo que esto significa para los desarrolladores {#what-this-means-for-developers}
+## Qué significa esto para los desarrolladores {#what-this-means-for-developers}
 
 El fracaso sistemático de PayPal para atender las necesidades básicas de los desarrolladores al recopilar una amplia retroalimentación demuestra un problema organizativo fundamental. Consideran la recopilación de retroalimentación como un sustituto de la solución efectiva de los problemas.
 
@@ -914,7 +914,7 @@ El patrón es claro:
 
 Mientras tanto, los desarrolladores se ven obligados a crear soluciones alternativas, comprometer la seguridad y lidiar con interfaces de usuario rotas solo para aceptar pagos.
 
-Si está creando un sistema de pagos, aprenda de nuestra experiencia: cree su [enfoque trifecta](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) con varios procesadores, pero no espere que PayPal le ofrezca la funcionalidad básica que necesita. Planifique soluciones alternativas desde el primer día.
+Si está creando un sistema de pagos, aprenda de nuestra experiencia: cree su [enfoque trifecta](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) con varios procesadores, pero no espere que PayPal le proporcione la funcionalidad básica que necesita. Planifique soluciones alternativas desde el primer día.
 
 Esta publicación documenta nuestra experiencia de 11 años con las API de PayPal en Forward Email. Todos los ejemplos de código y enlaces provienen de nuestros sistemas de producción. Seguimos ofreciendo soporte para pagos con PayPal a pesar de estos problemas, ya que algunos clientes no tienen otra opción.
 

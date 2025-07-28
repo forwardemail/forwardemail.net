@@ -10,13 +10,13 @@
 * [ロゴ](#logos)
 * [グラフィック](#graphics)
 
-## 転送メールについて {#about-forward-email}
+## メール転送について {#about-forward-email}
 
-Forward Emailは、セキュリティとプライバシーに重点を置いた唯一の100%オープンソースのメールホスティングサービスです。当社の歴史については、[当社の「会社概要」ページ](/about)をご覧ください。
+Forward Emailは、セキュリティとプライバシーに重点を置いた唯一の100%オープンソースのメールホスティングサービスです。[当社の「会社概要」ページ](/about)で当社の歴史について詳しくご覧ください。
 
 当社のサービスは 2017 年に設立され、[アメリカ海軍兵学校](/blog/docs/federal-government-email-service-section-889-compliant)、[カノニカル/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study)、Netflix Games、[Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study)、[いくつかの大学](/blog/docs/alumni-email-forwarding-university-case-study)、政府機関などの著名なユーザーを含む 500,000 以上のドメインのメールをサポートしています。
 
-当社の目標は、エンタープライズ グレードの電子メールおよびセキュリティ インフラストラクチャ プラットフォームになることであり、[いくつかの原則](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles) に準拠しています。
+私たちの目標は、エンタープライズ グレードの電子メールおよびセキュリティ インフラストラクチャ プラットフォームになることであり、[いくつかの原則](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles) に準拠しています。
 
 報道関係者、ジャーナリスト、またはメディア関係者の方で、当社と話をしたり、質問したり、詳細を知りたい場合は、`press@forwardemail.net` までご連絡ください。
 

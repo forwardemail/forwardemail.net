@@ -51,8 +51,8 @@
   * [Pobierz domenę](#retrieve-domain)
   * [Zweryfikuj rekordy domeny](#verify-domain-records)
   * [Zweryfikuj rekordy SMTP domeny](#verify-domain-smtp-records)
-  * [Wyświetl listę haseł typu catch-all w całej domenie](#list-domain-wide-catch-all-passwords)
-  * [Utwórz hasło uniwersalne dla całej domeny](#create-domain-wide-catch-all-password)
+  * [Wyświetl listę haseł uniwersalnych dla całej domeny](#list-domain-wide-catch-all-passwords)
+  * [Utwórz uniwersalne hasło obejmujące całą domenę](#create-domain-wide-catch-all-password)
   * [Usuń hasło uniwersalne dla całej domeny](#remove-domain-wide-catch-all-password)
   * [Aktualizacja domeny](#update-domain)
   * [Usuń domenę](#delete-domain)
@@ -75,7 +75,7 @@
 
 ## Biblioteki {#libraries}
 
-W tej chwili nie udostępniliśmy jeszcze żadnych wrapperów API, ale planujemy to zrobić w najbliższej przyszłości. Wyślij wiadomość e-mail na adres <api@forwardemail.net>, jeśli chcesz otrzymywać powiadomienia o udostępnieniu wrappera API dla konkretnego języka programowania. W międzyczasie możesz korzystać z zalecanych bibliotek żądań HTTP w swojej aplikacji lub po prostu użyć [kędzior](https://stackoverflow.com/a/27442239/3586413), jak w poniższych przykładach.
+W tej chwili nie opublikowaliśmy jeszcze żadnych wrapperów API, ale planujemy to zrobić w najbliższej przyszłości. Wyślij wiadomość e-mail na adres <api@forwardemail.net>, jeśli chcesz otrzymywać powiadomienia o wydaniu wrappera API dla konkretnego języka programowania. W międzyczasie możesz korzystać z zalecanych bibliotek żądań HTTP w swojej aplikacji lub po prostu użyć [kędzior](https://stackoverflow.com/a/27442239/3586413), jak w poniższych przykładach.
 
 | Język | Biblioteka |
 | ---------- | ---------------------------------------------------------------------- |
@@ -94,7 +94,7 @@ Aktualna ścieżka bazowa URI HTTP to: `BASE_URI`.
 
 ## Uwierzytelnianie {#authentication}
 
-Wszystkie punkty końcowe wymagają, aby wartość [Klucz API](https://forwardemail.net/my-account/security) była ustawiona jako wartość „username” nagłówka [Podstawowa autoryzacja](https://en.wikipedia.org/wiki/Basic_access_authentication) żądania (z wyjątkiem [Alias Kontakty](#alias-contacts), [Kalendarze Alias](#alias-calendars) i [Skrzynki pocztowe Alias](#alias-mailboxes), które używają [wygenerowana nazwa użytkownika i hasło aliasu](/faq#do-you-support-receiving-email-with-imap)).
+Wszystkie punkty końcowe wymagają, aby zmienna [Klucz API](https://forwardemail.net/my-account/security) była ustawiona jako wartość „username” nagłówka [Podstawowa autoryzacja](https://en.wikipedia.org/wiki/Basic_access_authentication) żądania (z wyjątkiem [Alias Kontakty](#alias-contacts), [Kalendarze Alias](#alias-calendars) i [Skrzynki pocztowe Alias](#alias-mailboxes), które używają [wygenerowana nazwa użytkownika i hasło aliasu](/faq#do-you-support-receiving-email-with-imap)).
 
 Nie martw się – jeśli nie jesteś pewien, o co chodzi, poniżej znajdziesz przykłady.
 
@@ -106,7 +106,7 @@ Jeśli wystąpią jakiekolwiek błędy, treść odpowiedzi żądania API będzie
 | ---- | --------------------- |
 | 200 | OK |
 | 400 | Złe żądanie |
-| 401 | Nieautoryzowany |
+| 401 | Nieautoryzowane |
 | 403 | Zabroniony |
 | 404 | Nie znaleziono |
 | 429 | Zbyt wiele próśb |
@@ -117,7 +117,7 @@ Jeśli wystąpią jakiekolwiek błędy, treść odpowiedzi żądania API będzie
 | 504 | Przekroczenie limitu czasu bramy |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Jeśli otrzymasz kod statusu 5xx (co nie powinno mieć miejsca), skontaktuj się z nami pod adresem <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>, a natychmiast pomożemy Ci rozwiązać problem.
 
 ## Lokalizacja {#localization}
 
@@ -126,7 +126,7 @@ Nasza usługa jest przetłumaczona na ponad 25 różnych języków. Wszystkie ko
 ## Paginacja {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> Od 1 listopada 2024 r. punkty końcowe API dla [Wyświetl domeny](#list-domains) i [Wyświetl aliasy domen](#list-domain-aliases) będą domyślnie miały maksymalną liczbę wyników na stronę `1000`. Jeśli chcesz włączyć tę funkcję wcześniej, możesz przekazać `?paginate=true` jako dodatkowy parametr ciągu zapytania do adresu URL zapytania punktu końcowego.
 
 Paginacja jest obsługiwana przez wszystkie punkty końcowe API, które wyświetlają wyniki.
 
@@ -149,7 +149,7 @@ Aby ustalić, czy dostępnych jest więcej wyników, udostępniamy następujące
 | `X-Item-Count` | `X-Item-Count: 30` | Łączna liczba elementów dostępnych na wszystkich stronach. |
 | `Link` | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | Podajemy nagłówek odpowiedzi HTTP `Link`, który można przeanalizować, jak pokazano w przykładzie. Jest to [similar to GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) (np. nie wszystkie wartości zostaną podane, jeśli nie są istotne lub dostępne, np. `"next"` nie zostanie podane, jeśli nie ma innej strony). |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
@@ -158,13 +158,13 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ## Rejestruje {#logs}
 
-### Pobierz logi {#retrieve-logs}
+### Pobierz dzienniki {#retrieve-logs}
 
-Nasze API programowo umożliwia pobieranie logów dla Twojego konta. Wysłanie żądania do tego punktu końcowego spowoduje przetworzenie wszystkich logów dla Twojego konta i wysłanie ich do Ciebie e-mailem w postaci załącznika (skompresowanego pliku arkusza kalkulacyjnego [Gzip](https://en.wikipedia.org/wiki/Gzip) [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)).
+Nasze API programowo umożliwia pobieranie logów dla Twojego konta. Wysłanie żądania do tego punktu końcowego spowoduje przetworzenie wszystkich logów dla Twojego konta i wysłanie ich do Ciebie e-mailem w postaci załącznika (skompresowany plik arkusza kalkulacyjnego [Gzip](https://en.wikipedia.org/wiki/Gzip) [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) po zakończeniu.
 
-Dzięki temu możesz tworzyć zadania w tle z kodem [Zadanie cron](https://en.wikipedia.org/wiki/Cron) lub korzystać z kodu [Oprogramowanie do planowania zadań Node.js Bree](https://github.com/breejs/bree), aby odbierać logi w dowolnym momencie. Pamiętaj, że ten punkt końcowy jest ograniczony do `10` żądań dziennie.
+Dzięki temu możesz tworzyć zadania w tle z [Zadanie cron](https://en.wikipedia.org/wiki/Cron) lub korzystać z naszego [Oprogramowanie do planowania zadań Node.js Bree](https://github.com/breejs/bree), aby odbierać logi w dowolnym momencie. Pamiętaj, że ten punkt końcowy jest ograniczony do `10` żądań dziennie.
 
-Załącznik to kod `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` (pisany małymi literami), a sama wiadomość e-mail zawiera krótkie podsumowanie pobranych logów. Logi można również pobrać w dowolnym momencie z [Moje konto → Dzienniki](/my-account/logs).
+Załącznik to `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` (pisane małymi literami), a sama wiadomość e-mail zawiera krótkie podsumowanie pobranych logów. Możesz również pobrać logi w dowolnym momencie z [Moje konto → Dzienniki](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -175,22 +175,22 @@ Załącznik to kod `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` (pisan
 | `bounce_category` | NIE | Smyczkowy | Wyszukaj dzienniki według określonej kategorii zwrotów (np. `blocklist`). |
 | `response_code` | NIE | Numer | Przeszukaj dzienniki według określonego kodu odpowiedzi na błąd (np. `421` lub `550`). |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/logs/download \
   -u API_TOKEN:
 ```
 
-> Przykładowe zadanie Cron (codziennie o północy):
+> Przykładowe zadanie cron (codziennie o północy):
 
 ```sh
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-Należy pamiętać, że do weryfikacji składni wyrażeń zadań cron można użyć usług takich jak [Crontab.guru](https://crontab.guru/).
+Należy pamiętać, że do sprawdzenia składni wyrażenia zadania cron można użyć usług takich jak [Crontab.guru](https://crontab.guru/).
 
-> Przykładowe zadanie Cron (codziennie o północy **i z logami za poprzedni dzień**):
+> Przykładowe zadanie cron (codziennie o północy **i z logami za poprzedni dzień**):
 
 Dla systemu MacOS:
 
@@ -215,7 +215,7 @@ Dla systemów Linux i Ubuntu:
 | `email` | Tak | Ciąg (e-mail) | Adres e-mail |
 | `password` | Tak | Smyczkowy | Hasło |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/account \
@@ -227,14 +227,14 @@ curl -X POST BASE_URI/v1/account \
 
 > `GET /v1/account`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/account \
   -u API_TOKEN:
 ```
 
-### Zaktualizuj konto {#update-account}
+### Aktualizuj konto {#update-account}
 
 > `PUT /v1/account`
 
@@ -245,7 +245,7 @@ curl BASE_URI/v1/account \
 | `family_name` | NIE | Smyczkowy | Nazwisko |
 | `avatar_url` | NIE | Ciąg (URL) | Link do obrazu awatara |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X PUT BASE_URI/v1/account \
@@ -253,15 +253,15 @@ curl -X PUT BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-## Alias kontaktów (CardDAV) {#alias-contacts-carddav}
+## Alias Kontakty (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> W przeciwieństwie do innych punktów końcowych API, te wymagają nagłówków autoryzacji podstawowej [Uwierzytelnianie](#authentication) „username” równej nazwie użytkownika aliasu i „password” równemu hasłu wygenerowanemu przez alias.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ta sekcja punktu końcowego jest w trakcie opracowywania i zostanie wydana (mamy nadzieję) w 2024 roku. W międzyczasie prosimy o korzystanie z klienta IMAP z menu rozwijanego „Aplikacje” w nawigacji naszej witryny.
 
-### Lista kontaktów {#list-contacts}
+### Wyświetl listę kontaktów {#list-contacts}
 
 > `GET /v1/contacts`
 
@@ -291,15 +291,15 @@ curl -X PUT BASE_URI/v1/account \
 
 **Wkrótce**
 
-## Kalendarze aliasowe (CalDAV) {#alias-calendars-caldav}
+## Alias Kalendarze (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> W przeciwieństwie do innych punktów końcowych API, te wymagają nagłówków autoryzacji podstawowej [Uwierzytelnianie](#authentication) „username” równej nazwie użytkownika aliasu i „password” równemu hasłu wygenerowanemu przez alias.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ta sekcja punktu końcowego jest w trakcie opracowywania i zostanie wydana (mamy nadzieję) w 2024 roku. W międzyczasie prosimy o korzystanie z klienta IMAP z menu rozwijanego „Aplikacje” w nawigacji naszej witryny.
 
-### Lista kalendarzy {#list-calendars}
+### Wyświetl kalendarze {#list-calendars}
 
 > `GET /v1/calendars`
 
@@ -332,12 +332,12 @@ curl -X PUT BASE_URI/v1/account \
 ## Wiadomości aliasowe (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> W przeciwieństwie do innych punktów końcowych API, te wymagają nagłówków autoryzacji podstawowej [Uwierzytelnianie](#authentication) „username” równej nazwie użytkownika aliasu i „password” równemu hasłu wygenerowanemu przez alias.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ta sekcja punktu końcowego jest w trakcie opracowywania i zostanie wydana (mamy nadzieję) w 2024 roku. W międzyczasie prosimy o korzystanie z klienta IMAP z menu rozwijanego „Aplikacje” w nawigacji naszej witryny.
 
-Upewnij się, że wykonałeś/aś instrukcje konfiguracji dla swojej domeny.
+Upewnij się, że wykonałeś instrukcje konfiguracji dla swojej domeny.
 
 Instrukcje te można znaleźć w naszej sekcji FAQ [Czy obsługujesz odbieranie wiadomości e-mail za pomocą protokołu IMAP?](/faq#do-you-support-receiving-email-with-imap).
 
@@ -350,7 +350,7 @@ Instrukcje te można znaleźć w naszej sekcji FAQ [Czy obsługujesz odbieranie 
 ### Utwórz wiadomość {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> To polecenie **NIE** wyśle wiadomości e-mail – jedynie doda ją do folderu skrzynki pocztowej (np. działa to podobnie do polecenia IMAP `APPEND`). Jeśli chcesz wysłać wiadomość e-mail, zobacz [Utwórz wychodzącą pocztę e-mail SMTP](#create-outbound-smtp-email) poniżej. Po utworzeniu wychodzącej wiadomości e-mail SMTP możesz dołączyć jej kopię do skrzynki pocztowej swojego aliasu, używając tego punktu końcowego, w celu przechowywania.
 
 > `POST /v1/messages`
 
@@ -374,15 +374,15 @@ Instrukcje te można znaleźć w naszej sekcji FAQ [Czy obsługujesz odbieranie 
 
 **Wkrótce**
 
-## Foldery aliasów (IMAP/POP3) {#alias-folders-imappop3}
+## Foldery aliasowe (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Punkty końcowe folderów ze ścieżką <code>/v1/folders/:path</code> jako punktem końcowym są wymienne z identyfikatorem folderu <code>:id</code>. Oznacza to, że można odwołać się do folderu za pomocą wartości <code>path</code> lub <code>id</code>.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ta sekcja punktu końcowego jest w trakcie opracowywania i zostanie wydana (mamy nadzieję) w 2024 roku. W międzyczasie prosimy o korzystanie z klienta IMAP z menu rozwijanego „Aplikacje” w nawigacji naszej witryny.
 
-### Wyświetl listę folderów {#list-folders}
+### Wyświetla listę folderów {#list-folders}
 
 > `GET /v1/folders`
 
@@ -420,17 +420,17 @@ Instrukcje te można znaleźć w naszej sekcji FAQ [Czy obsługujesz odbieranie 
 
 ## Wiadomości e-mail wychodzące {#outbound-emails}
 
-Upewnij się, że wykonałeś/aś instrukcje konfiguracji dla swojej domeny.
+Upewnij się, że wykonałeś instrukcje konfiguracji dla swojej domeny.
 
-Instrukcje te znajdziesz pod adresem [Moje konto → Domeny → Ustawienia → Konfiguracja SMTP wychodzącego](/my-account/domains). Aby wysyłać wiadomości wychodzące SMTP z Twojej domeny, musisz skonfigurować DKIM, Return-Path i DMARC.
+Te instrukcje znajdziesz w [Moje konto → Domeny → Ustawienia → Konfiguracja SMTP wychodzącego](/my-account/domains). Musisz skonfigurować DKIM, Return-Path i DMARC, aby wysyłać wiadomości wychodzące SMTP z Twojej domeny.
 
-### Uzyskaj limit poczty wychodzącej SMTP {#get-outbound-smtp-email-limit}
+### Limit wiadomości e-mail SMTP wychodzących {#get-outbound-smtp-email-limit}
 
-Jest to prosty punkt końcowy, który zwraca obiekt JSON zawierający `count` i `limit` określający liczbę dziennych wiadomości wychodzących SMTP dla każdego konta.
+Jest to prosty punkt końcowy, który zwraca obiekt JSON zawierający wartości `count` i `limit` określające liczbę dziennych wiadomości wychodzących SMTP dla każdego konta.
 
 > `GET /v1/emails/limit`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/emails/limit \
@@ -453,22 +453,22 @@ Aby zwrócić te właściwości i ich wartości, użyj punktu końcowego [Pobier
 | `page` | NIE | Numer | Więcej informacji znajdziesz w [Pagination](#pagination) |
 | `limit` | NIE | Numer | Więcej informacji znajdziesz w [Pagination](#pagination) |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/emails?limit=1 \
   -u API_TOKEN:
 ```
 
-### Utwórz wychodzącą pocztę SMTP {#create-outbound-smtp-email}
+### Utwórz wychodzącą wiadomość e-mail SMTP {#create-outbound-smtp-email}
 
-Nasze API do tworzenia wiadomości e-mail jest inspirowane konfiguracją opcji wiadomości Nodemailer i wykorzystuje ją. Proszę zapoznać się z [Konfiguracja wiadomości Nodemailer](https://nodemailer.com/message/) dla wszystkich poniższych parametrów treści.
+Nasze API do tworzenia wiadomości e-mail jest inspirowane konfiguracją opcji wiadomości Nodemailer i wykorzystuje ją. Proszę odwołać się do [Konfiguracja wiadomości Nodemailer](https://nodemailer.com/message/) dla wszystkich poniższych parametrów treści.
 
-Pamiętaj, że z wyjątkiem `envelope` i `dkim` (ponieważ ustawiamy je automatycznie), obsługujemy wszystkie opcje Nodemailer. Ze względów bezpieczeństwa opcje `disableFileAccess` i `disableUrlAccess` są automatycznie ustawiane na `true`.
+Pamiętaj, że z wyjątkiem `envelope` i `dkim` (ponieważ ustawiamy je automatycznie), obsługujemy wszystkie opcje Nodemailera. Ze względów bezpieczeństwa opcje `disableFileAccess` i `disableUrlAccess` są automatycznie ustawiane na `true`.
 
 Należy przekazać pojedynczą opcję `raw` wraz z pełną treścią wiadomości e-mail, łącznie z nagłówkami **lub** przekazać poniższe opcje parametrów treści wiadomości.
 
-Ten punkt końcowy API automatycznie zakoduje emotikony, jeśli zostaną znalezione w nagłówkach (np. temat wiadomości e-mail w kodzie `Subject: 🤓 Hello` zostanie automatycznie przekonwertowany na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naszym celem było stworzenie niezwykle przyjaznego dla programistów i odpornego na błędy interfejsu API poczty e-mail.
+Ten punkt końcowy API automatycznie zakoduje emotikony, jeśli znajdą się w nagłówkach (np. temat wiadomości `Subject: 🤓 Hello` zostanie automatycznie przekonwertowany na `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Naszym celem było stworzenie niezwykle przyjaznego dla programistów i odpornego na błędy interfejsu API poczty e-mail.
 
 > `POST /v1/emails`
 
@@ -500,7 +500,7 @@ Ten punkt końcowy API automatycznie zakoduje emotikony, jeśli zostaną znalezi
 | `date` | NIE | Ciąg lub data | Opcjonalna wartość daty, która zostanie użyta, jeśli nagłówek daty nie zostanie przetworzony. W przeciwnym razie, jeśli nie zostanie ustawiony, zostanie użyty bieżący ciąg znaków UTC. Nagłówek daty nie może być wcześniejszy niż 30 dni od czasu bieżącego. |
 | `list` | NIE | Obiekt | Opcjonalny obiekt nagłówków `List-*` (patrz [Nodemailer's list headers](https://nodemailer.com/message/list-headers/)). |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -511,7 +511,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "text=test"
 ```
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/emails \
@@ -523,20 +523,20 @@ curl -X POST BASE_URI/v1/emails \
 
 > `GET /v1/emails/:id`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### Usuń wychodzącą pocztę SMTP {#delete-outbound-smtp-email}
+### Usuń wychodzącą wiadomość e-mail SMTP {#delete-outbound-smtp-email}
 
-Usunięcie wiadomości e-mail spowoduje ustawienie statusu na `"rejected"` (i nieprzetworzenie jej w kolejce) tylko wtedy, gdy aktualny status to `"pending"`, `"queued"` lub `"deferred"`. Możemy automatycznie usuwać wiadomości e-mail po 30 dniach od ich utworzenia i/lub wysłania – dlatego powinieneś zachować kopię wychodzących wiadomości SMTP w swoim kliencie, bazie danych lub aplikacji. W razie potrzeby możesz odwołać się do wartości naszego identyfikatora e-mail w swojej bazie danych – wartość ta jest zwracana zarówno z punktów końcowych [Utwórz e-mail](#create-email), jak i [Pobierz e-mail](#retrieve-email).
+Usunięcie wiadomości e-mail spowoduje ustawienie statusu na `"rejected"` (i nie będzie ona przetwarzana w kolejce) tylko wtedy, gdy aktualny status to `"pending"`, `"queued"` lub `"deferred"`. Możemy automatycznie usuwać wiadomości e-mail po 30 dniach od ich utworzenia i/lub wysłania – dlatego należy zachować kopię wychodzących wiadomości SMTP w kliencie, bazie danych lub aplikacji. W razie potrzeby można odwołać się do wartości naszego identyfikatora e-mail w bazie danych – wartość ta jest zwracana zarówno z punktów końcowych [Utwórz e-mail](#create-email), jak i [Pobierz e-mail](#retrieve-email).
 
 > `DELETE /v1/emails/:id`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X DELETE BASE_URI/v1/emails/:id \
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Domeny {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Punkty końcowe domeny z nazwą domeny <code>/v1/domains/:nazwa_domeny</code> jako punktem końcowym są wymienne z identyfikatorem domeny <code>:id_domeny</code>. Oznacza to, że można odwołać się do domeny za pomocą jej wartości <code>nazwa</code> lub <code>id</code>.
 
 ### Wyświetl listę domen {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Od 1 listopada 2024 r. punkty końcowe API dla [Wyświetl domeny](#list-domains) i [Wyświetl aliasy domen](#list-domain-aliases) będą domyślnie miały maksymalną liczbę wyników na stronę `1000`. Jeśli chcesz włączyć tę funkcję wcześniej, możesz przekazać `?paginate=true` jako dodatkowy parametr ciągu zapytania do adresu URL zapytania punktu końcowego. Więcej informacji znajdziesz w [Paginacja](#pagination).
 
 > `GET /v1/domains`
 
@@ -563,7 +563,7 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 | `page` | NIE | Numer | Więcej informacji znajdziesz w [Pagination](#pagination) |
 | `limit` | NIE | Numer | Więcej informacji znajdziesz w [Pagination](#pagination) |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains \
@@ -577,20 +577,20 @@ curl BASE_URI/v1/domains \
 | Parametr ciała | Wymagany | Typ | Opis |
 | ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain` | Tak | Ciąg (FQDN lub IP) | W pełni kwalifikowana nazwa domeny („FQDN”) lub adres IP |
-| `team_domain` | NIE | Ciąg (identyfikator domeny lub nazwa domeny; FQDN) | Automatycznie przypisz tę domenę do tego samego zespołu z innej domeny. Oznacza to, że wszyscy członkowie z tej domeny zostaną przypisani jako członkowie zespołu, a kod `plan` zostanie automatycznie ustawiony na `team`. W razie potrzeby możesz ustawić kod `"none"`, aby jawnie wyłączyć tę funkcję, ale nie jest to konieczne. |
-| `plan` | NIE | Ciąg (wyliczalny) | Typ planu (musi być `"free"`, `"enhanced_protection"` lub `"team"`, domyślnie `"free"` lub bieżący opłacony plan użytkownika, jeśli taki posiada) |
-| `catchall` | NIE | Ciąg (rozdzielone adresy e-mail) lub wartość logiczna | Utwórz domyślny alias typu catch-all, domyślnie `true` (jeśli `true`, adres e-mail użytkownika API zostanie użyty jako odbiorca, a jeśli `false`, alias typu catch-all nie zostanie utworzony). Jeśli zostanie przekazany ciąg znaków, będzie to lista adresów e-mail rozdzielonych podziałem wiersza, spacją i/lub przecinkiem, które będą używane jako odbiorcy. |
+| `team_domain` | NIE | Ciąg (ID domeny lub nazwa domeny; FQDN) | Automatycznie przypisz tę domenę do tego samego zespołu z innej domeny. Oznacza to, że wszyscy członkowie z tej domeny zostaną przypisani jako członkowie zespołu, a kod `plan` zostanie automatycznie ustawiony na `team`. W razie potrzeby możesz ustawić kod `"none"`, aby jawnie wyłączyć tę funkcję, ale nie jest to konieczne. |
+| `plan` | NIE | Ciąg (wyliczalny) | Typ planu (musi być `"free"`, `"enhanced_protection"` lub `"team"`, domyślnie `"free"` lub bieżący płatny plan użytkownika, jeśli taki posiada) |
+| `catchall` | NIE | Ciąg (rozdzielone adresy e-mail) lub wartość logiczna | Utwórz domyślny alias typu catch-all, domyślnie `true` (jeśli `true`, adres e-mail użytkownika API zostanie użyty jako odbiorca, a jeśli `false`, alias typu catch-all nie zostanie utworzony). Jeśli zostanie przekazany ciąg znaków, będzie to lista adresów e-mail, które będą używane jako odbiorcy (rozdzielonych podziałem wiersza, spacją i/lub przecinkiem). |
 | `has_adult_content_protection` | NIE | Boole'a | Czy włączyć ochronę antyspamową dla treści dla dorosłych w tej domenie? |
 | `has_phishing_protection` | NIE | Boole'a | Czy włączyć ochronę przed phishingiem za pomocą Spam Scanner w tej domenie? |
 | `has_executable_protection` | NIE | Boole'a | Czy włączyć ochronę pliku wykonywalnego skanera spamu w tej domenie |
 | `has_virus_protection` | NIE | Boole'a | Czy włączyć ochronę antywirusową Spam Scanner w tej domenie |
 | `has_recipient_verification` | NIE | Boole'a | Globalna domyślna domena, która określa, czy odbiorcy aliasów mają być zobowiązani do kliknięcia łącza weryfikacyjnego adresu e-mail, aby wiadomości e-mail mogły przez niego przepływać |
-| `ignore_mx_check` | NIE | Boole'a | Czy zignorować sprawdzanie rekordów MX w domenie w celu weryfikacji. Dotyczy to głównie użytkowników, którzy mają zaawansowane reguły konfiguracji wymiany MX i muszą zachować swoją istniejącą wymianę MX i przekierować ruch do naszej. |
+| `ignore_mx_check` | NIE | Boole'a | Czy zignorować sprawdzanie rekordu MX w domenie w celu weryfikacji. Dotyczy to głównie użytkowników, którzy mają zaawansowane reguły konfiguracji wymiany MX i muszą zachować swoją istniejącą wymianę MX i przekierować ją do naszej. |
 | `retention_days` | NIE | Numer | Liczba całkowita z zakresu od `0` do `30`, która odpowiada liczbie dni retencji wiadomości wychodzących SMTP po ich dostarczeniu lub trwałym błędzie. Domyślnie `0` oznacza, że wiadomości wychodzące SMTP są natychmiast usuwane i redagowane dla Twojego bezpieczeństwa. |
 | `bounce_webhook` | NIE | Ciąg (URL) lub wartość logiczna (fałsz) | Wybrany przez Ciebie adres URL webhooka `http://` lub `https://`, do którego mają być wysyłane webhooki z niedostarczonymi wiadomościami. Wyślemy na ten adres URL żądanie `POST` z informacjami o błędach SMTP wychodzących (np. awariach programowych lub sprzętowych – dzięki czemu będziesz mógł zarządzać swoimi subskrybentami i programowo zarządzać pocztą wychodzącą). |
 | `max_quota_per_alias` | NIE | Smyczkowy | Maksymalny limit miejsca dla aliasów w tej nazwie domeny. Wprowadź wartość, np. „1 GB”, która zostanie przeanalizowana przez [bytes](https://github.com/visionmedia/bytes.js). |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/domains \
@@ -603,7 +603,7 @@ curl -X POST BASE_URI/v1/domains \
 
 > `GET /v1/domains/DOMAIN_NAME`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME \
@@ -614,7 +614,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME \
 
 > `GET /v1/domains/DOMAIN_NAME/verify-records`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
@@ -625,7 +625,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
@@ -636,23 +636,23 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Utwórz uniwersalne hasło dla całej domeny {#create-domain-wide-catch-all-password}
+### Utwórz hasło uniwersalne dla całej domeny {#create-domain-wide-catch-all-password}
 
 > `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
 | Parametr ciała | Wymagany | Typ | Opis |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | NIE | Smyczkowy | Twoje nowe niestandardowe hasło do użycia jako hasło catch-all dla całej domeny. Pamiętaj, że możesz pozostawić to pole puste lub całkowicie je pominąć w treści żądania API, jeśli chcesz uzyskać losowo wygenerowane i silne hasło. |
+| `new_password` | NIE | Smyczkowy | Twoje nowe, niestandardowe hasło, które będzie używane jako hasło uniwersalne dla całej domeny. Pamiętaj, że możesz pozostawić to pole puste lub w ogóle go nie podawać w treści żądania API, jeśli chcesz uzyskać losowo wygenerowane i silne hasło. |
 | `description` | NIE | Smyczkowy | Opis ma wyłącznie charakter organizacyjny. |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
@@ -663,7 +663,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
@@ -682,12 +682,12 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | `has_executable_protection` | NIE | Boole'a | Czy włączyć ochronę pliku wykonywalnego skanera spamu w tej domenie |
 | `has_virus_protection` | NIE | Boole'a | Czy włączyć ochronę antywirusową Spam Scanner w tej domenie |
 | `has_recipient_verification` | NIE | Boole'a | Globalna domyślna domena, która określa, czy odbiorcy aliasów mają być zobowiązani do kliknięcia łącza weryfikacyjnego adresu e-mail, aby wiadomości e-mail mogły przez niego przepływać |
-| `ignore_mx_check` | NIE | Boole'a | Czy zignorować sprawdzanie rekordów MX w domenie w celu weryfikacji. Dotyczy to głównie użytkowników, którzy mają zaawansowane reguły konfiguracji wymiany MX i muszą zachować swoją istniejącą wymianę MX i przekierować ruch do naszej. |
+| `ignore_mx_check` | NIE | Boole'a | Czy zignorować sprawdzanie rekordu MX w domenie w celu weryfikacji. Dotyczy to głównie użytkowników, którzy mają zaawansowane reguły konfiguracji wymiany MX i muszą zachować swoją istniejącą wymianę MX i przekierować ją do naszej. |
 | `retention_days` | NIE | Numer | Liczba całkowita z zakresu od `0` do `30`, która odpowiada liczbie dni retencji wiadomości wychodzących SMTP po ich dostarczeniu lub trwałym błędzie. Domyślnie `0` oznacza, że wiadomości wychodzące SMTP są natychmiast usuwane i redagowane dla Twojego bezpieczeństwa. |
 | `bounce_webhook` | NIE | Ciąg (URL) lub wartość logiczna (fałsz) | Wybrany przez Ciebie adres URL webhooka `http://` lub `https://`, do którego mają być wysyłane webhooki z niedostarczonymi wiadomościami. Wyślemy na ten adres URL żądanie `POST` z informacjami o błędach SMTP wychodzących (np. awariach programowych lub sprzętowych – dzięki czemu będziesz mógł zarządzać swoimi subskrybentami i programowo zarządzać pocztą wychodzącą). |
 | `max_quota_per_alias` | NIE | Smyczkowy | Maksymalny limit miejsca dla aliasów w tej nazwie domeny. Wprowadź wartość, np. „1 GB”, która zostanie przeanalizowana przez [bytes](https://github.com/visionmedia/bytes.js). |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
@@ -698,20 +698,20 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
 
 > `DELETE /v1/domains/:domain_name`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-## Zaproszenia {#invites}
+## Zaprasza {#invites}
 
 ### Zaakceptuj zaproszenie do domeny {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/invites \
@@ -727,7 +727,7 @@ curl BASE_URI/v1/domains/:domain_name/invites \
 | `email` | Tak | Ciąg (e-mail) | Adres e-mail, na który należy wysłać zaproszenie do listy członków domeny |
 | `group` | Tak | Ciąg (wyliczalny) | Grupa, do której należy dodać użytkownika, aby był członkiem domeny (może to być jeden z kodów `"admin"` lub `"user"`) |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Jeśli zapraszany użytkownik jest już zaakceptowanym członkiem jakiejkolwiek innej domeny, do której należy zapraszający go administrator, zaproszenie zostanie automatycznie zaakceptowane i wiadomość e-mail nie zostanie wysłana.
 
 ### Usuń zaproszenie do domeny {#remove-domain-invite}
 
@@ -747,7 +747,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 | -------------- | -------- | -------------- | ------------------------------------------------ |
 | `email` | Tak | Ciąg (e-mail) | Adres e-mail do usunięcia z listy członków domeny |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
@@ -764,7 +764,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 | -------------- | -------- | ------------------- | -------------------------------------------------------------------------------------------- |
 | `group` | Tak | Ciąg (wyliczalny) | Grupa, do której ma zostać dodany użytkownik, aby uzyskać członkostwo w domenie (może to być jeden z kodów `"admin"` lub `"user"`) |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
@@ -775,7 +775,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
@@ -786,7 +786,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 ### Wygeneruj hasło aliasu {#generate-an-alias-password}
 
-Należy pamiętać, że jeśli nie wyślesz instrukcji e-mailem, nazwa użytkownika i hasło zostaną umieszczone w treści odpowiedzi JSON na pomyślne żądanie w formacie `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
+Należy pamiętać, że jeśli nie wyślesz instrukcji e-mailem, nazwa użytkownika i hasło zostaną umieszczone w treści odpowiedzi JSON pomyślnego żądania w formacie `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
@@ -797,7 +797,7 @@ Należy pamiętać, że jeśli nie wyślesz instrukcji e-mailem, nazwa użytkown
 | `is_override` | NIE | Boole'a | **UŻYWAJ OSTROŻNIE**: Spowoduje to całkowite zastąpienie istniejącego hasła i bazy danych aliasu, a także trwałe usunięcie istniejącej pamięci masowej IMAP i całkowite zresetowanie bazy danych e-mail SQLite aliasu. Jeśli masz istniejącą skrzynkę pocztową powiązaną z tym aliasem, wykonaj kopię zapasową, jeśli to możliwe. |
 | `emailed_instructions` | NIE | Smyczkowy | Adres e-mail, na który należy wysłać hasło aliasu i instrukcję konfiguracji. |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password \
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Wyświetl listę aliasów domen {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Od 1 listopada 2024 r. punkty końcowe API dla [Wyświetl domeny](#list-domains) i [Wyświetl aliasy domen](#list-domain-aliases) będą domyślnie miały maksymalną liczbę wyników na stronę `1000`. Jeśli chcesz włączyć tę funkcję wcześniej, możesz przekazać `?paginate=true` jako dodatkowy parametr ciągu zapytania do adresu URL zapytania punktu końcowego. Więcej informacji znajdziesz w [Paginacja](#pagination).
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -820,7 +820,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 | `page` | NIE | Numer | Więcej informacji znajdziesz w [Pagination](#pagination) |
 | `limit` | NIE | Numer | Więcej informacji znajdziesz w [Pagination](#pagination) |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
@@ -844,13 +844,13 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `has_pgp` | NIE | Boole'a | Czy włączyć lub wyłączyć [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) dla [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) przy użyciu aliasu `public_key`. |
 | `public_key` | NIE | Smyczkowy | Klucz publiczny OpenPGP w formacie ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); np. klucz GPG dla `support@forwardemail.net`). Dotyczy to tylko sytuacji, gdy `has_pgp` jest ustawione na `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | NIE | Smyczkowy | Maksymalny limit pamięci dla tego aliasu. Pozostaw puste pole, aby zresetować do bieżącego maksymalnego limitu domeny, lub wprowadź wartość, np. „1 GB”, która zostanie przeanalizowana przez [bytes](https://github.com/visionmedia/bytes.js). Tę wartość mogą zmienić tylko administratorzy domeny. |
-| `vacation_responder_is_enabled` | NIE | Boole'a | Czy włączyć lub wyłączyć automatyczną odpowiedź na wiadomość o nieobecności. |
+| `vacation_responder_is_enabled` | NIE | Boole'a | Czy włączyć lub wyłączyć automatyczną odpowiedź o nieobecności. |
 | `vacation_responder_start_date` | NIE | Smyczkowy | Data rozpoczęcia wysyłania wiadomości o nieobecności (jeśli jest włączona i nie ma tu ustawionej daty rozpoczęcia, zakłada się, że aplikacja została już uruchomiona). Obsługujemy formaty dat takie jak `MM/DD/YYYY`, `YYYY-MM-DD` i inne formaty dat poprzez inteligentne parsowanie z użyciem `dayjs`. |
 | `vacation_responder_end_date` | NIE | Smyczkowy | Data zakończenia dla funkcji „Odpowiedz na wiadomość o nieobecności” (jeśli ta opcja jest włączona i nie ma tu ustawionej daty zakończenia, funkcja zakłada, że funkcja nigdy się nie kończy i odpowiada w nieskończoność). Obsługujemy formaty dat takie jak `MM/DD/YYYY`, `YYYY-MM-DD` i inne formaty dat za pomocą inteligentnego parsowania z użyciem `dayjs`. |
 | `vacation_responder_subject` | NIE | Smyczkowy | Temat wiadomości w postaci zwykłego tekstu, np. „Poza biurem”. Używamy kodu `striptags`, aby usunąć cały kod HTML. |
 | `vacation_responder_message` | NIE | Smyczkowy | Wiadomość w postaci zwykłego tekstu dla wiadomości o nieobecności, np. „Będę poza biurem do lutego”. Używamy kodu `striptags`, aby usunąć cały kod HTML. |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
@@ -863,7 +863,7 @@ Alias domeny można pobrać według wartości `id` lub `name`.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
@@ -872,14 +872,14 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 > `GET /v1/domains/:domain_name/aliases/:alias_name`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
   -u API_TOKEN:
 ```
 
-### Aktualizacja aliasu domeny {#update-domain-alias}
+### Zaktualizuj alias domeny {#update-domain-alias}
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 
@@ -896,13 +896,13 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `has_pgp` | NIE | Boole'a | Czy włączyć lub wyłączyć [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) dla [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) przy użyciu aliasu `public_key`. |
 | `public_key` | NIE | Smyczkowy | Klucz publiczny OpenPGP w formacie ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); np. klucz GPG dla `support@forwardemail.net`). Dotyczy to tylko sytuacji, gdy `has_pgp` jest ustawione na `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | NIE | Smyczkowy | Maksymalny limit pamięci dla tego aliasu. Pozostaw puste pole, aby zresetować do bieżącego maksymalnego limitu domeny, lub wprowadź wartość, np. „1 GB”, która zostanie przeanalizowana przez [bytes](https://github.com/visionmedia/bytes.js). Tę wartość mogą zmienić tylko administratorzy domeny. |
-| `vacation_responder_is_enabled` | NIE | Boole'a | Czy włączyć lub wyłączyć automatyczną odpowiedź na wiadomość o nieobecności. |
+| `vacation_responder_is_enabled` | NIE | Boole'a | Czy włączyć lub wyłączyć automatyczną odpowiedź o nieobecności. |
 | `vacation_responder_start_date` | NIE | Smyczkowy | Data rozpoczęcia wysyłania wiadomości o nieobecności (jeśli jest włączona i nie ma tu ustawionej daty rozpoczęcia, zakłada się, że aplikacja została już uruchomiona). Obsługujemy formaty dat takie jak `MM/DD/YYYY`, `YYYY-MM-DD` i inne formaty dat poprzez inteligentne parsowanie z użyciem `dayjs`. |
 | `vacation_responder_end_date` | NIE | Smyczkowy | Data zakończenia dla funkcji „Odpowiedz na wiadomość o nieobecności” (jeśli ta opcja jest włączona i nie ma tu ustawionej daty zakończenia, funkcja zakłada, że funkcja nigdy się nie kończy i odpowiada w nieskończoność). Obsługujemy formaty dat takie jak `MM/DD/YYYY`, `YYYY-MM-DD` i inne formaty dat za pomocą inteligentnego parsowania z użyciem `dayjs`. |
 | `vacation_responder_subject` | NIE | Smyczkowy | Temat wiadomości w postaci zwykłego tekstu, np. „Poza biurem”. Używamy kodu `striptags`, aby usunąć cały kod HTML. |
 | `vacation_responder_message` | NIE | Smyczkowy | Wiadomość w postaci zwykłego tekstu dla wiadomości o nieobecności, np. „Będę poza biurem do lutego”. Używamy kodu `striptags`, aby usunąć cały kod HTML. |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
@@ -913,7 +913,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID \
 
 > `DELETE /v1/domains/:domain_name/aliases/:alias_id`
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
@@ -922,9 +922,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Zaszyfruj {#encrypt}
 
-Umożliwiamy szyfrowanie rekordów nawet w ramach darmowego planu, bez żadnych kosztów. Prywatność nie powinna być funkcją, lecz integralną częścią wszystkich aspektów produktu. Zgodnie z gorącymi prośbami w [Dyskusja na temat przewodników dotyczących prywatności](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) i [nasze problemy na GitHubie](https://github.com/forwardemail/forwardemail.net/issues/254) dodaliśmy tę funkcję.
+Umożliwiamy szyfrowanie rekordów nawet w ramach darmowego planu, bez żadnych kosztów. Prywatność nie powinna być funkcją, lecz integralną częścią wszystkich aspektów produktu. Zgodnie z gorącymi prośbami w [Dyskusja na temat przewodników dotyczących prywatności](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) i [nasze problemy na GitHubie](https://github.com/forwardemail/forwardemail.net/issues/254), dodaliśmy tę funkcję.
 
-### Zaszyfruj rekord TXT {#encrypt-txt-record}
+### Szyfruj rekord TXT {#encrypt-txt-record}
 
 > `POST /v1/encrypt`
 
@@ -932,7 +932,7 @@ Umożliwiamy szyfrowanie rekordów nawet w ramach darmowego planu, bez żadnych 
 | -------------- | -------- | ------ | -------------------------------------------- |
 | `input` | Tak | Smyczkowy | Dowolny prawidłowy rekord TXT w postaci zwykłego tekstu do przekazania wiadomości e-mail |
 
-> Przykładowa prośba:
+> Przykładowe żądanie:
 
 ```sh
 curl -X POST BASE_URI/v1/encrypt \

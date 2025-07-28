@@ -5,52 +5,52 @@
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [A nyílt forráskódú előny: több, mint marketing](#the-open-source-advantage-more-than-just-marketing)
-  * [Mit jelent a valódi nyílt forráskód?](#what-true-open-source-means)
-  * [A háttérprobléma: ahol a legtöbb „nyílt forráskódú” e-mail szolgáltatás elmarad](#the-backend-problem-where-most-open-source-email-services-fall-short)
-* [E-mail továbbítása: 100%-ban nyílt forráskódú, előtér és háttér](#forward-email-100-open-source-frontend-and-backend)
-  * [Egyedülálló műszaki megközelítésünk](#our-unique-technical-approach)
-* [A saját hosting lehetőség: a választás szabadsága](#the-self-hosting-option-freedom-of-choice)
-  * [Miért támogatjuk az öntárhely szolgáltatást?](#why-we-support-self-hosting)
-  * [Az önkiszolgáló e-mail valósága](#the-reality-of-self-hosting-email)
+* [A nyílt forráskódú szoftverek előnye: több, mint marketing](#the-open-source-advantage-more-than-just-marketing)
+  * [Mit jelent az igazi nyílt forráskód?](#what-true-open-source-means)
+  * [A háttérrendszer problémája: Ahol a legtöbb „nyílt forráskódú” e-mail szolgáltatás kudarcot vall](#the-backend-problem-where-most-open-source-email-services-fall-short)
+* [E-mail továbbítása: 100%-ban nyílt forráskódú, frontend ÉS backend felülettel is](#forward-email-100-open-source-frontend-and-backend)
+  * [Egyedi műszaki megközelítésünk](#our-unique-technical-approach)
+* [Az önálló tárhelyszolgáltatás lehetősége: A választás szabadsága](#the-self-hosting-option-freedom-of-choice)
+  * [Miért támogatjuk az önkiszolgáló tárhelyet?](#why-we-support-self-hosting)
+  * [Az önálló tárhelyszolgáltatással működő e-mailek valósága](#the-reality-of-self-hosting-email)
 * [Miért van értelme fizetős szolgáltatásunknak (annak ellenére, hogy nyílt forráskódúak vagyunk)](#why-our-paid-service-makes-sense-even-though-were-open-source)
   * [Költség-összehasonlítás](#cost-comparison)
-  * [Mindkét világ legjobbja](#the-best-of-both-worlds)
-* [A zárt forrású megtévesztés: amit a Proton és a Tutanota nem mond el neked](#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you)
-  * [A Proton Mail nyílt forráskódú követelései](#proton-mails-open-source-claims)
+  * [A két világ legjava](#the-best-of-both-worlds)
+* [A zárt forráskódú megtévesztés: Amit a Proton és a Tutanota nem mond el](#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you)
+  * [A Proton Mail nyílt forráskódú állításai](#proton-mails-open-source-claims)
   * [Tutanota hasonló megközelítése](#tutanotas-similar-approach)
-  * [Az adatvédelmi útmutatók vita](#the-privacy-guides-debate)
-* [A jövő nyílt forráskódú](#the-future-is-open-source)
-  * [Miért nyer a nyílt forráskód?](#why-open-source-is-winning)
-* [Váltás e-mail továbbításra](#making-the-switch-to-forward-email)
-* [Következtetés: Nyílt forráskódú e-mail a magánjövőért](#conclusion-open-source-email-for-a-private-future)
+  * [Az adatvédelmi útmutatókról szóló vita](#the-privacy-guides-debate)
+* [A jövő a nyílt forráskódú](#the-future-is-open-source)
+  * [Miért nyerő a nyílt forráskódú technológia?](#why-open-source-is-winning)
+* [Váltás az e-mail továbbítására](#making-the-switch-to-forward-email)
+* [Konklúzió: Nyílt forráskódú e-mail a privát jövőért](#conclusion-open-source-email-for-a-private-future)
 
 ## Előszó {#foreword}
 
-Egy olyan korszakban, amikor a digitális adatvédelemmel kapcsolatos aggodalmak minden korábbinál magasabbak, az általunk választott e-mail szolgáltatások minden eddiginél fontosabbak. Bár sok szolgáltató azt állítja, hogy az Ön magánéletét prioritásként kezeli, alapvető különbség van azok között, akik csak beszélnek a magánéletről, és azok között, akik valóban sétálnak. A Forward Emailnél szolgáltatásunkat a nyílt forráskódú fejlesztés révén a teljes átláthatóság alapjára építettük – nem csak a frontend alkalmazásainkban, hanem a teljes infrastruktúránkban.
+Egy olyan korban, amikor a digitális adatvédelemmel kapcsolatos aggodalmak minden eddiginél nagyobbak, az általunk választott e-mail szolgáltatások minden eddiginél fontosabbak. Míg sok szolgáltató azt állítja, hogy prioritásként kezeli az Ön adatainak védelmét, alapvető különbség van azok között, akik csupán beszélnek az adatvédelemről, és azok között, akik valóban megteszik a szükséges lépéseket. A Forward Emailnél szolgáltatásunkat a nyílt forráskódú fejlesztés révén a teljes átláthatóságra építettük – nemcsak a frontend alkalmazásainkban, hanem a teljes infrastruktúránkban is.
 
-Ez a blogbejegyzés azt mutatja be, hogy a nyílt forráskódú e-mail megoldások miért jobbak a zárt forráskódú alternatíváknál, miben tér el a mi megközelítésünk a versenytársaktól, például a Proton Mailtől és a Tutanotától, és miért kínálja fizetős szolgáltatásunk a legtöbb felhasználó számára a legjobb értéket – annak ellenére, hogy elköteleztük magunkat az önálló tárolási lehetőségek mellett.
+Ez a blogbejegyzés azt vizsgálja, hogy miért jobbak a nyílt forráskódú e-mail megoldások a zárt forráskódú alternatíváknál, miben különbözik a megközelítésünk a versenytársaktól, például a Proton Mailtől és a Tutanotától, és miért – az önálló tárhelyszolgáltatási lehetőségek iránti elkötelezettségünk ellenére – fizetős szolgáltatásunk kínálja a legjobb értéket a legtöbb felhasználó számára.
 
 ## A nyílt forráskódú szoftverek előnye: Több, mint marketing {#the-open-source-advantage-more-than-just-marketing}
 
 A „nyílt forráskódú” kifejezés az utóbbi években népszerű marketingszlogenné vált, a globális nyílt forráskódú szolgáltatások piaca várhatóan több mint 16%-os éves összetett növekedési rátával (CAGR) fog növekedni 2024 és 2032 között\[^1]. De mit is jelent valóban nyílt forráskódúnak lenni, és miért fontos ez az e-mail-adatvédelem szempontjából?
 
-### Mit jelent az igazi nyílt forráskódú szoftver {#what-true-open-source-means}
+### Mit jelent az igazi nyílt forráskód {#what-true-open-source-means}
 
-A nyílt forráskódú szoftver a teljes forráskódját szabadon hozzáférhetővé teszi bárki számára, hogy megtekinthesse, módosíthassa és javítsa. Ez az átláthatóság olyan környezetet teremt, ahol:
+A nyílt forráskódú szoftverek teljes forráskódját szabadon hozzáférhetővé teszik bárki számára, hogy megvizsgálhassa, módosíthassa és fejlessze. Ez az átláthatóság olyan környezetet teremt, ahol:
 
 * A biztonsági réseket a fejlesztők globális közössége azonosíthatja és kijavíthatja.
 * Az adatvédelmi igények független kódellenőrzéssel ellenőrizhetők.
 * A felhasználók nincsenek bezárva a saját fejlesztésű ökoszisztémákba.
 * Az innováció gyorsabban megvalósul az együttműködésen alapuló fejlesztés révén.
 
-Ami az e-mailt illeti – az online identitás gerincét képezi –, ez az átláthatóság nem csak jó dolog; elengedhetetlen a valódi magánélethez és biztonsághoz.
+Ami az e-mailt illeti – az online identitás gerincét –, ez az átláthatóság nemcsak jó, ha van, hanem elengedhetetlen a valódi adatvédelem és biztonság szempontjából.
 
 ### A háttérrendszer problémája: Ahol a legtöbb „nyílt forráskódú” e-mail szolgáltatás kudarcot vall {#the-backend-problem-where-most-open-source-email-services-fall-short}
 
 És itt kezd érdekessé válni a dolog. Sok népszerű, „adatvédelemre összpontosító” e-mail szolgáltató nyílt forráskódúként hirdeti magát, de van egy lényeges különbség, amit remélik, hogy nem fogsz észrevenni: **csak a frontendjeiket teszik nyílt forráskódúvá, miközben a backendjeik zárva maradnak**.
 
-Ez mit jelent? A frontend az, amit lát, és amivel kommunikál – a webes felület vagy a mobilalkalmazás. A háttérben történik az e-mailek tényleges feldolgozása – ahol az üzeneteket tárolják, titkosítják és továbbítják. Amikor egy szolgáltató zárt forráskódú háttérrendszert tart:
+Mit jelent ez? A frontend az, amit látsz és amivel kapcsolatba lépsz – a webes felület vagy a mobilalkalmazás. A backend az, ahol a tényleges e-mail-feldolgozás történik – itt tárolják, titkosítják és továbbítják az üzeneteidet. Amikor egy szolgáltató zárt forráskódú backendet biztosít:
 
 1. Nem tudod ellenőrizni, hogy az e-mailjeidet valójában hogyan dolgozzák fel.
 2. Nem tudod megerősíteni, hogy az adatvédelmi állításaik jogosak-e.
@@ -65,7 +65,7 @@ A Forward Emailnél alapvetően más megközelítést alkalmaztunk. A teljes kó
 
 Ez azt jelenti:
 
-1. **Teljes átláthatóság**: Az e-mailjeidet feldolgozó kód minden sora nyilvános ellenőrzésre rendelkezésre áll.
+1. **Teljes átláthatóság**: Minden egyes kódsor, amely az e-mailjeidet feldolgozza, nyilvánosan ellenőrizhető.
 
 2. **Ellenőrzhető adatvédelem**: Adatvédelmi állításaink nem marketingfogások – ezek ellenőrizhető tények, amelyeket bárki megerősíthet a kódunk vizsgálatával.
 
@@ -75,44 +75,44 @@ Ez azt jelenti:
 
 ### Egyedi technikai megközelítésünk {#our-unique-technical-approach}
 
-Az adatvédelem iránti elkötelezettségünk túlmutat a nyílt forráskóddal. Számos technikai újítást vezettünk be, amelyek megkülönböztetnek minket:
+Az adatvédelem iránti elkötelezettségünk túlmutat a nyílt forráskódú megoldásokon. Számos olyan technikai újítást vezettünk be, amelyek megkülönböztetnek minket a többitől:
 
 #### Egyedileg titkosított SQLite postaládák {#individually-encrypted-sqlite-mailboxes}
 
-Ellentétben a hagyományos e-mail szolgáltatókkal, amelyek megosztott relációs adatbázisokat használnak (ahol egyetlen incidens felfedheti az összes felhasználó adatait), mi egyedileg titkosított SQLite fájlokat használunk minden postafiókhoz. Ez azt jelenti:
+A hagyományos e-mail-szolgáltatókkal ellentétben, amelyek megosztott relációs adatbázisokat használnak (ahol egyetlen behatolás is az összes felhasználó adatait nyilvánosságra hozhatja), mi minden postaládához külön titkosított SQLite fájlokat használunk. Ez azt jelenti, hogy:
 
 * Minden postaláda külön titkosított fájl
 * Az egyik felhasználó adataihoz való hozzáférés nem biztosít hozzáférést másoknak
 * Még a saját alkalmazottaink sem férhetnek hozzá az adataidhoz – ez egy alapvető tervezési döntés
 
-Amint azt az Adatvédelmi útmutatók megbeszéléseiben kifejtettük:
+Ahogy az Adatvédelmi Útmutatókról szóló beszélgetésekben kifejtettük:
 
 > „A megosztott relációs adatbázisok (pl. MongoDB, SQL Server, PostgreSQL, Oracle, MySQL stb.) mind bejelentkezést igényelnek (felhasználónévvel/jelszóval) az adatbázis-kapcsolat létrehozásához. Ez azt jelenti, hogy bárki, aki rendelkezik ezzel a jelszóval, bármit lekérdezhet az adatbázisból. Legyen szó akár egy gazember alkalmazottról, akár egy gonosz szobalány támadásáról. Ez azt is jelenti, hogy ha hozzáférsz egy felhasználó adataihoz, akkor mindenki más adataihoz is hozzáférsz. Másrészt az SQLite tekinthető megosztott adatbázisnak, de ahogyan használjuk (minden postaláda = egyedi SQLite fájl), sandboxossá teszi.”\[^3]
 
 #### Kvantumálló titkosítás {#quantum-resistant-encryption}
 
-Míg más szolgáltatók még mindig felzárkóznak, mi már bevezettünk kvantumálló titkosítási módszereket, hogy megvédjük e-mailjeit a jövőben a kvantumszámítástechnikából származó fenyegetésekkel szemben.
+Míg más szolgáltatók még mindig utolérik a lemaradásukat, mi már bevezettünk kvantumrezisztens titkosítási módszereket, hogy biztosítsuk e-mail-adatvédelmed védelmét a kvantum-számítástechnika új fenyegetéseivel szemben.
 
 #### Nincsenek harmadik féltől származó függőségek {#no-third-party-dependencies}
 
-Ellentétben a versenytársakkal, akik olyan szolgáltatásokra támaszkodnak, mint az Amazon SES az e-mailek kézbesítéséhez, mi a teljes infrastruktúránkat házon belül építettük ki. Ez kiküszöböli a harmadik féltől származó szolgáltatásokon keresztüli esetleges adatszivárgást, és teljes ellenőrzést biztosít a teljes e-mail-folyamat felett.
+A versenytársainkkal ellentétben, akik olyan szolgáltatásokra támaszkodnak az e-mail kézbesítéshez, mint az Amazon SES, mi a teljes infrastruktúránkat házon belül építettük fel. Ez kiküszöböli a harmadik féltől származó szolgáltatásokon keresztüli adatvédelmi szivárgások lehetőségét, és teljes ellenőrzést biztosít számunkra a teljes e-mail folyamat felett.
 
 ## Az önálló tárhelyszolgáltatás lehetősége: A választás szabadsága {#the-self-hosting-option-freedom-of-choice}
 
-A nyílt forráskódú szoftverek egyik legerősebb aspektusa az általa nyújtott szabadság. Az e-mailek továbbítása révén soha nincs bezárva – ha úgy dönt, teljes platformunkat önállóan kezelheti.
+A nyílt forráskódú szoftverek egyik legerősebb aspektusa a szabadság, amit nyújtanak. A Forward Email segítségével soha nem leszel bezárva – akár a teljes platformunkat is saját tárhelyen üzemeltetheted, ha úgy döntesz.
 
 ### Miért támogatjuk az önálló tárhelyszolgáltatást {#why-we-support-self-hosting}
 
-Hiszünk abban, hogy a felhasználók teljes ellenőrzést biztosítsanak adataik felett. Ezért teljes körű dokumentációval és beállítási útmutatókkal teljes platformunkat önkiszolgálóvá tettük. Ez a megközelítés:
+Hiszünk abban, hogy a felhasználóknak teljes kontrollt kell adni az adataik felett. Ezért tettük teljes platformunkat önállóan tárhelyre állíthatóvá, átfogó dokumentációval és beállítási útmutatókkal. Ez a megközelítés:
 
 * Maximális kontrollt biztosít a technikailag beállítottságú felhasználók számára
 * Nincs szükség arra, hogy bennünk bízzon szolgáltatóként
 * Lehetővé teszi a testreszabást az adott igényeknek megfelelően
 * Biztosítja a szolgáltatás folytatását akkor is, ha cégünk nem működik
 
-### Az önállóan tárhelyszolgáltató e-mailek valósága {#the-reality-of-self-hosting-email}
+### Az önálló tárhelyszolgáltatású e-mailek valósága {#the-reality-of-self-hosting-email}
 
-Noha az önálló üzemeltetés hatékony lehetőség, fontos megérteni a tényleges költségeket:
+Bár az önálló tárhelyszolgáltatás egy hatékony megoldás, fontos megérteni a tényleges költségeket:
 
 #### Pénzügyi költségek {#financial-costs}
 
@@ -138,16 +138,16 @@ Ahogy egy tapasztalt, saját tárhelyen működő szolgáltató fogalmazott: „
 
 ## Miért van értelme fizetős szolgáltatásunknak (annak ellenére, hogy nyílt forráskódúak vagyunk) {#why-our-paid-service-makes-sense-even-though-were-open-source}
 
-Tekintettel a saját üzemeltetéssel járó kihívásokra, fizetős szolgáltatásunk mindkét világból a legjobbat kínálja: a nyílt forráskód átláthatóságát és biztonságát a felügyelt szolgáltatás kényelmével és megbízhatóságával.
+Tekintettel az önálló tárhelyszolgáltatás kihívásaira, fizetős szolgáltatásunk a két világ legjavát kínálja: a nyílt forráskódú szoftverek átláthatóságát és biztonságát a felügyelt szolgáltatás kényelmével és megbízhatóságával.
 
 ### Költség-összehasonlítás {#cost-comparison}
 
-Ha az anyagi és időköltségeket is figyelembe veszi, fizetős szolgáltatásunk kivételes értéket kínál:
+Ha figyelembe vesszük mind a pénzügyi, mind az időbeli költségeket, fizetős szolgáltatásunk kivételes értéket képvisel:
 
 * **Saját tárhelyszolgáltatás teljes költsége**: $56-$252/hó (beleértve a szerverköltségeket és az időértékelést)
-* **Fizetős e-mail-továbbítási csomagok**: $3-$9/hó
+* **Email továbbítási fizetős csomagok**: $3-$9/hó
 
-Fizetős szolgáltatásunk:
+Fizetős szolgáltatásunk a következőket kínálja:
 
 * Professzionális menedzsment és karbantartás
 * Megbízható IP-cím a jobb kézbesítés érdekében
@@ -157,18 +157,18 @@ Fizetős szolgáltatásunk:
 
 ### A két világ legjava {#the-best-of-both-worlds}
 
-Az E-mail továbbítása lehetőséget választva a következőket kapja:
+Az E-mail továbbítása opció kiválasztásával a következőket kapja:
 
 1. **Ellenőrizhető adatvédelem**: Nyílt forráskódú kódbázisunknak köszönhetően megbízhat adatvédelmi állításainkban.
 2. **Professzionális kezelés**: Nem kell e-mail szerver szakértővé válnia.
 3. **Költséghatékonyság**: Alacsonyabb összköltség, mint a saját tárhelyszolgáltatásnál.
-4. **A kötődésmentesség mentes**: Az önálló tárhelyszolgáltatás lehetősége mindig elérhető marad.
+4. **A ragaszkodástól való mentesség**: Az önálló tárhelyszolgáltatás lehetősége mindig elérhető marad.
 
-## A zárt forráskódú megtévesztés: Amit Proton és Tutanota nem mond el {#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you}
+## A zárt forráskódú rendszerek megtévesztése: Amit Proton és Tutanota nem mond el {#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you}
 
-Nézzük meg közelebbről, miben tér el megközelítésünk a népszerű „adatvédelmi központú” e-mail szolgáltatóktól.
+Vizsgáljuk meg közelebbről, hogy miben különbözik a megközelítésünk a népszerű, „adatvédelemre összpontosító” e-mail-szolgáltatóktól.
 
-### A Proton Mail nyílt forráskódú állításai {#proton-mails-open-source-claims}
+### A Proton Mail nyílt forráskódú szoftverekre vonatkozó állításai {#proton-mails-open-source-claims}
 
 A Proton Mail nyílt forráskódúként hirdeti magát, de ez csak a frontend alkalmazásaira vonatkozik. A backend rendszerük – ahol az e-maileket ténylegesen feldolgozzák és tárolják – továbbra is zárt forráskódú\[^7]. Ez azt jelenti:
 
@@ -185,29 +185,29 @@ A Proton Mailhez hasonlóan a Tutanota is csak a frontendjét teszi nyílt forr�
 
 ### Az adatvédelmi útmutatók vitája {#the-privacy-guides-debate}
 
-Ezek a korlátozások nem maradtak észrevétlenül az adatvédelmi közösségben. Az adatvédelmi útmutatókkal kapcsolatos megbeszélések során kiemeltük ezt a kritikus megkülönböztetést:
+Ezek a korlátozások nem maradtak észrevétlenek az adatvédelmi közösségben. Az adatvédelmi útmutatókról szóló megbeszélések során kiemeltük ezt a fontos különbséget:
 
 > „Azt állítja, hogy mind a Protonmail, mind a Tuta zárt forráskódú. Mert a backendjük valóban zárt forráskódú.”\[^9]
 
-Azt is közöltük:
+Azt is kijelentettük:
 
 > „A jelenleg jegyzett PG e-mail szolgáltatók háttér-infrastruktúráiról nem történt nyilvánosan megosztott audit, és nem osztottak meg nyílt forráskódú kódrészleteket arról, hogyan dolgozzák fel a bejövő e-maileket.”\[^10]
 
-Az átláthatóság hiánya alapvető bizalmi problémát okoz. Nyílt forráskódú háttérrendszerek nélkül a felhasználók kénytelenek az adatvédelmi igényeket a hitre, nem pedig az ellenőrzésre hivatkozni.
+Ez az átláthatóság hiánya alapvető bizalmi problémát okoz. Nyílt forráskódú háttérrendszerek nélkül a felhasználók kénytelenek a hitelesség, nem pedig az ellenőrzés alapján elfogadni az adatvédelmi igényeket.
 
 ## A jövő a nyílt forráskódú {#the-future-is-open-source}
 
-A nyílt forráskódú megoldások irányába mutató tendencia az egész szoftveriparban felgyorsul. A legújabb kutatások szerint:
+A nyílt forráskódú megoldások felé irányuló trend felgyorsul a szoftveriparban. A legújabb kutatások szerint:
 
 * A nyílt forráskódú szoftverek piaca 41,83 milliárd dollárról (2024) 48,92 milliárd dollárra (2025) növekszik\[^11]
 * A vállalatok 80%-a számolt be a nyílt forráskódú szoftverek használatának növekedéséről az elmúlt évben\[^12]
 * A nyílt forráskódú szoftverek elterjedése várhatóan továbbra is gyorsan fog bővülni
 
-Ez a növekedés alapvető változást tükröz a szoftverbiztonságról és adatvédelemről való gondolkodásunkban. Ahogy a felhasználók egyre tudatosabbá válnak a magánélet védelmében, a nyílt forráskódú megoldások révén ellenőrizhető adatvédelem iránti igény csak növekedni fog.
+Ez a növekedés alapvető változást tükröz a szoftverbiztonságról és adatvédelemről alkotott képünkben. Ahogy a felhasználók egyre inkább tudatossá válnak az adatvédelemmel kapcsolatban, a nyílt forráskódú megoldásokon keresztül ellenőrizhető adatvédelem iránti igény csak növekedni fog.
 
-### Miért nyer a nyílt forráskódú szoftverek? {#why-open-source-is-winning}
+### Miért nyer a nyílt forráskódú szoftver? {#why-open-source-is-winning}
 
-A nyílt forráskód előnyei egyre nyilvánvalóbbak:
+A nyílt forráskódú szoftverek előnyei egyre nyilvánvalóbbak:
 
 1. **Biztonság az átláthatóságon keresztül**: A nyílt forráskódú kódot több ezer szakértő is felülvizsgálhatja, nem csak egy belső csapat.
 2. **Gyorsabb innováció**: Az együttműködésen alapuló fejlesztés felgyorsítja a fejlődést.
@@ -215,9 +215,9 @@ A nyílt forráskód előnyei egyre nyilvánvalóbbak:
 4. **Szabadság a gyártóhoz való kötődéstől**: A felhasználók továbbra is kézben tartják adataik és szolgáltatásaik feletti ellenőrzést.
 5. **Közösségi támogatás**: Egy globális közösség segít a problémák azonosításában és megoldásában.
 
-## Átállás az e-mailek továbbítására {#making-the-switch-to-forward-email}
+## Váltás az e-mailek továbbítására {#making-the-switch-to-forward-email}
 
-A Továbbított e-mailre való átállás egyszerű, függetlenül attól, hogy egy olyan fő szolgáltatótól érkezik, mint a Gmail, vagy más, az adatvédelemre összpontosító szolgáltatást, például a Proton Mail vagy a Tutanota.
+Az e-mailek továbbítására való áttérés egyszerű, függetlenül attól, hogy egy mainstream szolgáltatótól, például a Gmailtől, vagy más adatvédelemre összpontosító szolgáltatástól, például a Proton Mailtől vagy a Tutanotától érkezel.
 
 Szolgáltatásunk a következőket kínálja:
 
@@ -225,38 +225,38 @@ Szolgáltatásunk a következőket kínálja:
 * Standard protokoll támogatás (SMTP, IMAP, POP3) saját hidak nélkül
 * Zökkenőmentes integráció a meglévő e-mail kliensekkel
 * Egyszerű beállítási folyamat átfogó dokumentációval
-* Megfizethető árcsomagok már havi 3 dollártól
+* Megfizethető árképzési csomagok már havi 3 dollártól
 
 ## Konklúzió: Nyílt forráskódú e-mail a privát jövőért {#conclusion-open-source-email-for-a-private-future}
 
-Egy olyan világban, ahol a digitális adatvédelem egyre nagyobb veszélyben van, a nyílt forráskódú megoldások átláthatósága kulcsfontosságú biztosítékot jelent. A Forward Emailnél büszkék vagyunk arra, hogy az e-mailek adatvédelmének teljes mértékben nyílt forráskódú megközelítésével élen járunk.
+Egy olyan világban, ahol a digitális adatvédelem egyre nagyobb veszélyben van, a nyílt forráskódú megoldások átláthatósága kulcsfontosságú védelmet nyújt. A Forward Emailnél büszkék vagyunk arra, hogy vezető szerepet töltünk be az e-mail adatvédelemmel kapcsolatos, teljesen nyílt forráskódú megközelítésünkkel.
 
-Ellentétben azokkal a versenytársakkal, akik csak részben alkalmazzák a nyílt forráskódot, a teljes platformunkat – a frontendet és a backendet – elérhetővé tettük nyilvános ellenőrzés számára. Ez az átláthatóság iránti elkötelezettség innovatív technikai megközelítésünkkel kombinálva olyan ellenőrizhető adatvédelmet biztosít, amelyhez a zárt forráskódú alternatívák egyszerűen nem férnek hozzá.
+A nyílt forráskódú technológiákat csak részben alkalmazó versenytársainkkal ellentétben mi a teljes platformunkat – a frontendet és a backendet egyaránt – nyilvános ellenőrzésre bocsátottuk. Ez az átláthatóság iránti elkötelezettségünk, innovatív technikai megközelítésünkkel kombinálva, olyan szintű ellenőrizhető adatvédelmet biztosít, amelyet a zárt forráskódú alternatívák egyszerűen nem tudnak elérni.
 
-Függetlenül attól, hogy felügyelt szolgáltatásunkat használja, vagy saját maga működteti platformunkat, élvezheti a valóban nyílt forráskódú e-mailek biztonságát, adatvédelmét és nyugalmát.
+Akár a felügyelt szolgáltatásunkat használja, akár saját maga üzemelteti platformunkat, élvezheti a valóban nyílt forráskódú e-mail által nyújtott biztonság, adatvédelem és nyugalom előnyeit.
 
-Az e-mail jövője nyitott, átlátható és az adatvédelemre összpontosít. A jövő az E-mail továbbítása.
+Az e-mail jövője a nyílt, átlátható és az adatvédelmet előtérbe helyező lesz. A jövő az e-mail továbbítása.
 
-\[^1]: SNS Insider. „A nyílt forráskódú szolgáltatások piacát 2023-ban 28,6 milliárd USD-re becsülték, és 2032-re eléri a 114,8 milliárd USD-t, 2032-re 16,70%-os éves összetett növekedési ütemmel.” [Nyílt forráskódú szolgáltatások piacának méretéről és elemzéséről szóló jelentés, 2032](https://www.snsinsider.com/reports/open-source-services-market-3322)
+\[^1]: SNS Insider. „A nyílt forráskódú szolgáltatások piacát 2023-ban 28,6 milliárd USD-re becsülték, és 2032-re eléri a 114,8 milliárd USD-t, 2032-re 16,70%-os éves összetett növekedési ütemmel.” [Nyílt forráskódú szolgáltatások piacának mérete és elemzése 2032](https://www.snsinsider.com/reports/open-source-services-market-3322)
 
 \[^2]: Adatvédelmi útmutatók közössége. „E-mail továbbítása (e-mail szolgáltató) – Webhelyfejlesztés / Eszközjavaslatok.” [Adatvédelmi útmutatók megbeszélése](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
 \[^3]: Adatvédelmi útmutatók közössége. „E-mail továbbítása (e-mail szolgáltató) – Webhelyfejlesztés / Eszközjavaslatok.” [Adatvédelmi útmutatók megbeszélése](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^4]: RunCloud. „Általánosságban elmondható, hogy havonta 5 és 50 dollár közötti összeget kell költeni egy alapvető virtuális magánszerverre (VPS), amely az e-mail szervert futtatja.” [A 10 legjobb saját üzemeltetésű e-mail szerverplatform 2025-ben](https://runcloud.io/blog/best-self-hosted-email-server)
+\[^4]: RunCloud. „Általánosságban elmondható, hogy havonta 5 és 50 dollár közötti összeget kell költeni egy alapvető virtuális magánszerverre (VPS), amely az e-mail szerver futtatásához szükséges.” [10 legjobb saját tárhelyen futó e-mail szerver platform 2025-ben](https://runcloud.io/blog/best-self-hosted-email-server)
 
-\[^5]: Postai úton küldött levelek fóruma. „A karbantartás talán 16 órámba telt abban az időszakban...” [Az önkiszolgáló levelezőszerver rosszallóan nézett rá](https://discourse.mailinabox.email/t/self-hosting-mail-server-frowned-upon/4143)
+\[^5]: Postai úton küldött levelek fóruma. „A karbantartás talán 16 órámba telt abban az időszakban...” [Saját tárhelyen működő levelezőszerver rosszallást kapott](https://discourse.mailinabox.email/t/self-hosting-mail-server-frowned-upon/4143)
 
-\[^6]: Reddit r/selfhosted. „TL:DR: Mint minden saját tárhelyen futó dolog, EZ IS IDŐT IGÉNYEL. Ha nincs rá időd, mindig jobb, ha egy saját tárhelyen futó platformnál maradsz...” [E-mail szerver saját üzemeltetése? Miért vagy miért nem? Mi a népszerű?](https://www.reddit.com/r/selfhosted/comments/1etb8jh/selfhosting_an_email_server_why_or_why_not_whats/)
+\[^6]: Reddit r/selfhosted. „TL:DR: Mint minden saját tárhelyen futó dolog, EZ IS IDŐT IGÉNYEL. Ha nincs rá időd, mindig jobb, ha egy saját tárhelyen futónál maradsz...” [Saját tárhelyen üzemeltetett e-mail szerver? Miért vagy miért nem? Mi a népszerű?](https://www.reddit.com/r/selfhosted/comments/1etb8jh/selfhosting_an_email_server_why_or_why_not_whats/)
 
-\[^7]: E-mail továbbítása. „A Proton Mail azt állítja magáról, hogy nyílt forráskódú, de a háttérrendszerük valójában zárt forráskódú.” [Tutanota vs Proton Mail összehasonlítás (2025)](https://forwardemail.net/blog/tutanota-vs-proton-mail-email-service-comparison)
+\[^7]: E-mail továbbítása. „A Proton Mail nyílt forráskódúnak vallja magát, de a háttérrendszerük valójában zárt forráskódú.” [Tutanota vs. Proton Mail összehasonlítás (2025)](https://forwardemail.net/blog/tutanota-vs-proton-mail-email-service-comparison)
 
-\[^8]: E-mail továbbítása. „A Tutanota nyílt forráskódúnak vallja magát, de a háttérrendszerük valójában zárt forráskódú.” [Proton Mail vs Tutanota összehasonlítás (2025)](https://forwardemail.net/blog/proton-mail-vs-tutanota-email-service-comparison)
+\[^8]: E-mail továbbítása. „A Tutanota nyílt forráskódúnak vallja magát, de a háttérrendszerük valójában zárt forráskódú.” [Proton Mail vs. Tutanota összehasonlítás (2025)](https://forwardemail.net/blog/proton-mail-vs-tutanota-email-service-comparison)
 
-\[^9]: Adatvédelmi útmutatók közössége. „Azt állítja, hogy mind a Protonmail, mind a Tuta zárt forráskódú. Mert a backendjük valóban zárt forráskódú.” [E-mail továbbítása (e-mail szolgáltató) – Webhelyfejlesztés / Eszközjavaslatok](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
+\[^9]: Adatvédelmi útmutatók közössége. „Azt állítja, hogy mind a Protonmail, mind a Tuta zárt forráskódú. Mert a backendjük valóban zárt forráskódú.” [E-mail továbbítása (e-mail szolgáltató) - Webhelyfejlesztés / Eszközjavaslatok](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^10]: Adatvédelmi útmutatók közössége. „A jelenleg jegyzett PG e-mail szolgáltatók háttér-infrastruktúráiról nem történt nyilvánosan megosztott audit, és nem osztottak meg nyílt forráskódú kódrészleteket arról, hogyan dolgozzák fel a bejövő e-maileket.” [E-mail továbbítása (e-mail szolgáltató) – Webhelyfejlesztés / Eszközjavaslatok](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
+\[^10]: Adatvédelmi útmutatók közössége. „A jelenleg listán szereplő PG e-mail szolgáltatók háttér-infrastruktúráiról nem történt nyilvánosan megosztott audit, és nem osztottak meg nyílt forráskódú kódrészleteket arról, hogyan dolgozzák fel a bejövő e-maileket.” [E-mail továbbítása (e-mail szolgáltató) - Webhelyfejlesztés / Eszközjavaslatok](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^11]: IBM. „A nyílt forráskódú szoftverek piaca 41,83 milliárd USD-ről (2024) 48,92 milliárd USD-re (2025) fog növekedni egy összetett...” [Mi az a nyílt forráskódú szoftver?](https://www.ibm.com/think/topics/open-source)
+\[^11]: IBM. „A nyílt forráskódú szoftverek piaca 41,83 milliárd USD-ről (2024) 48,92 milliárd USD-re (2025) fog növekedni, összetett...” [Mi a nyílt forráskódú szoftver?](https://www.ibm.com/think/topics/open-source)
 
-\[^12]: PingCAP. „Mivel a vállalatok 80%-a számolt be a nyílt forráskódú technológiák fokozott használatáról az elmúlt évben, ez...” [Feltörekvő trendek a nyílt forráskódú közösségekben 2024](https://www.pingcap.com/article/emerging-trends-open-source-communities-2024/)
+\[^12]: PingCAP. „Mivel a vállalatok 80%-a számolt be a nyílt forráskódú technológiák fokozott használatáról az elmúlt évben, ez...” [Feltörekvő trendek a nyílt forráskódú közösségekben 2024-ben](https://www.pingcap.com/article/emerging-trends-open-source-communities-2024/)

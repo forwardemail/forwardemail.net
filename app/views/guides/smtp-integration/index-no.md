@@ -3,23 +3,23 @@
 ## Innholdsfortegnelse {#table-of-contents}
 
 * [Forord](#foreword)
-* [Hvordan videresend e-posts SMTP-behandling fungerer](#how-forward-emails-smtp-processing-works)
-  * [E-postkø og prøv på nytt](#email-queue-and-retry-system)
+* [Hvordan SMTP-behandling av videresendt e-post fungerer](#how-forward-emails-smtp-processing-works)
+  * [E-postkø og nytt forsøkssystem](#email-queue-and-retry-system)
   * [Dummy-proofed for pålitelighet](#dummy-proofed-for-reliability)
 * [Node.js-integrasjon](#nodejs-integration)
-  * [Bruker Nodemailer](#using-nodemailer)
-  * [Bruker Express.js](#using-expressjs)
+  * [Bruk av Nodemailer](#using-nodemailer)
+  * [Bruk av Express.js](#using-expressjs)
 * [Python-integrasjon](#python-integration)
-  * [Bruker smtplib](#using-smtplib)
-  * [Bruker Django](#using-django)
+  * [Bruk av smtplib](#using-smtplib)
+  * [Bruk av Django](#using-django)
 * [PHP-integrasjon](#php-integration)
-  * [Bruker PHPMailer](#using-phpmailer)
-  * [Bruker Laravel](#using-laravel)
-* [Ruby integrasjon](#ruby-integration)
-  * [Bruker Ruby Mail Gem](#using-ruby-mail-gem)
+  * [Bruk av PHPMailer](#using-phpmailer)
+  * [Bruk av Laravel](#using-laravel)
+* [Ruby-integrasjon](#ruby-integration)
+  * [Bruk av Ruby Mail Gem](#using-ruby-mail-gem)
 * [Java-integrasjon](#java-integration)
-  * [Bruker JavaMail API](#using-javamail-api)
-* [E-postklientkonfigurasjon](#email-client-configuration)
+  * [Bruke Java Mail API-et](#using-javamail-api)
+* [Konfigurasjon av e-postklient](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Send e-post som)](#gmail-send-mail-as)
@@ -31,20 +31,20 @@
 
 ## Forord {#foreword}
 
-Denne veiledningen gir detaljerte eksempler på hvordan du integrerer med Forward Emails SMTP-tjeneste ved å bruke ulike programmeringsspråk, rammeverk og e-postklienter. Vår SMTP-tjeneste er utviklet for å være pålitelig, sikker og enkel å integrere med eksisterende applikasjoner.
+Denne veiledningen gir detaljerte eksempler på hvordan du integrerer med SMTP-tjenesten i Forward Email ved hjelp av ulike programmeringsspråk, rammeverk og e-postklienter. SMTP-tjenesten vår er utviklet for å være pålitelig, sikker og enkel å integrere med eksisterende applikasjoner.
 
-## Slik fungerer SMTP-behandling av videresendt e-post {#how-forward-emails-smtp-processing-works}
+## Slik fungerer SMTP-behandlingen av videresending av e-post {#how-forward-emails-smtp-processing-works}
 
-Før du dykker inn i integrasjonseksemplene, er det viktig å forstå hvordan SMTP-tjenesten vår behandler e-poster:
+Før vi dykker ned i integrasjonseksemplene, er det viktig å forstå hvordan SMTP-tjenesten vår behandler e-poster:
 
 ### E-postkø og nytt system {#email-queue-and-retry-system}
 
-Når du sender en e-post via SMTP til våre servere:
+Når du sender en e-post via SMTP til serverne våre:
 
 1. **Initial behandling**: E-posten valideres, skannes for skadelig programvare og kontrolleres mot spamfiltre
 2. **Smart køstyring**: E-poster plasseres i et sofistikert køsystem for levering
 3. **Intelligent gjentakelsesmekanisme**: Hvis leveringen mislykkes midlertidig, vil systemet vårt:
-* Analysere feilresponsen ved hjelp av vår `getBounceInfo`-funksjon
+* Analysere feilresponsen ved hjelp av `getBounceInfo`-funksjonen vår
 * Avgjøre om problemet er midlertidig (f.eks. "prøv igjen senere", "midlertidig utsatt") eller permanent (f.eks. "bruker ukjent")
 * Ved midlertidige problemer, merk e-posten for nytt forsøk
 * Ved permanente problemer, generer et varsel om avvisning
@@ -52,24 +52,24 @@ Når du sender en e-post via SMTP til våre servere:
 5. **Varsler om leveringsstatus**: Avsendere mottar varsler om statusen til e-postene sine (levert, forsinket eller avvist)
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Etter vellykket levering redigeres innholdet i utgående SMTP-e-post etter en konfigurerbar oppbevaringsperiode (standard 30 dager) av sikkerhets- og personvernhensyn. Bare en midlertidig melding som indikerer vellykket levering gjenstår.
 
 ### Dummy-sikker for pålitelighet {#dummy-proofed-for-reliability}
 
-Systemet vårt er designet for å håndtere ulike kantsaker:
+Systemet vårt er utviklet for å håndtere ulike kanttilfeller:
 
 * Hvis en blokkeringsliste oppdages, vil e-posten automatisk bli forsøkt levert på nytt.
 * Hvis det oppstår nettverksproblemer, vil leveringsforsøket bli gjort på nytt.
 * Hvis mottakerens postkasse er full, vil systemet prøve på nytt senere.
 * Hvis mottakerserveren midlertidig er utilgjengelig, vil vi fortsette å prøve.
 
-Denne tilnærmingen forbedrer leveringshastighetene betydelig samtidig som personvern og sikkerhet opprettholdes.
+Denne tilnærmingen forbedrer leveringsratene betydelig, samtidig som den ivaretar personvern og sikkerhet.
 
 ## Node.js-integrasjon {#nodejs-integration}
 
 ### Bruker Nodemailer {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) er en populær modul for å sende e-post fra Node.js-applikasjoner.
+[Nodemailer](https://nodemailer.com/) er en populær modul for å sende e-poster fra Node.js-applikasjoner.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -107,7 +107,7 @@ sendEmail();
 
 ### Bruker Express.js {#using-expressjs}
 
-Slik integrerer du Forward Email SMTP med en Express.js-applikasjon:
+Slik integrerer du Videresend e-post SMTP med et Express.js-program:
 
 ```javascript
 const express = require('express');
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Send deretter e-post i visningene dine:
+Send deretter e-poster i visningene dine:
 
 ```python
 from django.core.mail import send_mail
@@ -236,7 +236,7 @@ def send_email_view(request):
 
 ## PHP-integrasjon {#php-integration}
 
-### Bruk av PHPMailer {#using-phpmailer}
+### Bruker PHPMailer {#using-phpmailer}
 
 ```php
 <?php
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Send deretter e-post med Laravels Mail-fasade:
+Send deretter e-poster ved hjelp av Laravels Mail-fasade:
 
 ```php
 <?php
@@ -504,7 +504,7 @@ flowchart TD
 
 ### Få hjelp {#getting-help}
 
-Hvis du støter på problemer som ikke dekkes her, vennligst:
+Hvis du støter på problemer som ikke er dekket her, vennligst:
 
 1. Sjekk vår [FAQ-side](/faq) for vanlige spørsmål
 2. Se vår [blogginnlegg om e-postlevering](/blog/docs/best-email-forwarding-service) for detaljert informasjon
@@ -512,13 +512,13 @@ Hvis du støter på problemer som ikke dekkes her, vennligst:
 
 ## Ytterligere ressurser {#additional-resources}
 
-* [Videresend e-postdokumentasjon](/docs)
-* [SMTP-servergrenser og konfigurasjon](/faq#what-are-your-outbound-smtp-limits)
-* [Veiledning for gode fremgangsmåter for e-post](/blog/docs/best-email-forwarding-service)
+* [Dokumentasjon for videresending av e-post](/docs)
+* [SMTP-servergrenser og -konfigurasjon](/faq#what-are-your-outbound-smtp-limits)
+* [Veiledning for beste praksis for e-post](/blog/docs/best-email-forwarding-service)
 * [Sikkerhetspraksis](/security)
 
 ## Konklusjon {#conclusion}
 
-Forward Emails SMTP-tjeneste gir en pålitelig, sikker og personvernfokusert måte å sende e-post fra applikasjonene og e-postklientene dine på. Med vårt intelligente køsystem, 5-dagers prøvemekanisme og omfattende varsler om leveringsstatus, kan du være trygg på at e-postene dine når destinasjonen.
+SMTP-tjenesten i Forward Email gir en pålitelig, sikker og personvernfokusert måte å sende e-post fra applikasjonene og e-postklientene dine. Med vårt intelligente køsystem, 5-dagers mekanisme for nye forsøk og omfattende varsler om leveringsstatus, kan du være trygg på at e-postene dine kommer frem til destinasjonen.
 
-For mer avanserte brukstilfeller eller tilpassede integrasjoner, vennligst kontakt supportteamet vårt.
+For mer avanserte brukstilfeller eller tilpassede integrasjoner, vennligst kontakt vårt supportteam.

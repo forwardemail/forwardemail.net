@@ -154,7 +154,7 @@ if (ctx.accepts('html')) {
 }
 ```
 
-L'élément essentiel ici est le paramètre `success_url`, qui inclut le paramètre de requête `session_id`. Lorsque Stripe redirige l'utilisateur vers notre site après un paiement réussi, nous pouvons utiliser cet identifiant de session pour vérifier la transaction et mettre à jour notre base de données en conséquence.
+L'élément crucial ici est le paramètre `success_url`, qui inclut `session_id` comme paramètre de requête. Lorsque Stripe redirige l'utilisateur vers notre site après un paiement réussi, nous pouvons utiliser cet identifiant de session pour vérifier la transaction et mettre à jour notre base de données en conséquence.
 
 ### Flux de paiement PayPal {#paypal-payment-flow}
 
@@ -383,7 +383,7 @@ Les deux gestionnaires de webhooks suivent le même modèle : ils vérifient la
 
 La dernière couche de notre approche trifecta est un ensemble de tâches automatisées qui vérifient et rapprochent périodiquement les données de paiement. Nous utilisons Bree, un planificateur de tâches pour Node.js, pour exécuter ces tâches à intervalles réguliers.
 
-Vérificateur d'exactitude d'abonnement ### {#subscription-accuracy-checker}
+### Vérificateur de précision d'abonnement {#subscription-accuracy-checker}
 
 L'une de nos tâches principales est le vérificateur de précision des abonnements, qui garantit que notre base de données reflète avec précision l'état de l'abonnement dans Stripe :
 

@@ -16,7 +16,7 @@
 
 ## Yleiskatsaus {#overview}
 
-Forward Email on aktiivisesti arvioinut kyberturvallisuustutkimusyrityksiä suorittaakseen kattavia auditointeja avoimen lähdekoodin koodistamme [GitHub](https://github.com/forwardemail)- ja palvelininfrastruktuurista. Viime vuosien laajan tutkimuksen ja arvioinnin jälkeen olemme tunnistaneet useita poikkeuksellisia tietoturvatarkastusyrityksiä, jotka osoittavat jatkuvasti korkealaatuista työtä, teknistä asiantuntemusta ja yhdenmukaisuutta yksityisyyteen keskittyvien arvojemme kanssa.
+Forward Email on aktiivisesti arvioinut kyberturvallisuustutkimusyrityksiä suorittaakseen kattavia auditointeja avoimen lähdekoodin koodistamme [GitHub](https://github.com/forwardemail)- ja palvelininfrastruktuurissa. Viime vuosien laajan tutkimuksen ja arvioinnin jälkeen olemme tunnistaneet useita poikkeuksellisia tietoturvatarkastusyrityksiä, jotka osoittavat jatkuvasti korkealaatuista työtä, teknistä asiantuntemusta ja yhdenmukaisuutta yksityisyyteen keskittyvien arvojemme kanssa.
 
 Tämä asiakirja esittelee havaintojamme ja suosituksiamme organisaatioille, jotka etsivät ammattimaisia tietoturvatarkastuspalveluita. Tässä luetellut yritykset ovat kaikki osoittaneet poikkeuksellista kykyä penetraatiotestauksessa, koodikatselmuksessa, infrastruktuurin arvioinnissa ja tietoturvatutkimuksessa.
 
@@ -28,11 +28,11 @@ On tärkeää huomata, että alla luetellut yritykset eivät ole paremmuusjärje
 
 ## Suositellut tietoturvatarkastusyritykset {#recommended-security-audit-companies}
 
-### Cure53 {#cure53}
+VÄLIAIKAINEN_PAIKKAPIDÄN_0 Cure53 {VÄLIAIKAINEN_PAIKKAPIDÄN_1
 
 **Sijainti**: Berliini, Saksa
 **Verkkosivusto**: <https://cure53.de/>
-**Erikoistuminen**: "Hienoja penetraatiotestejä vaativille verkkosivustoille"
+**Erikoisala**: "Hienoja penetraatiotestejä vaativille verkkosivustoille"
 
 Cure53 on saksalainen kyberturvallisuusyritys, joka on tunnettu huolellisesta lähestymistavastaan verkkosovellusten tietoturvatestaukseen ja penetraatiotestaukseen. Berliinissä toimiva yritys on vakiinnuttanut asemansa alan johtajana kattavien testausmenetelmiensä ja yksityiskohtaisten raportointikäytäntöjensä ansiosta.
 
@@ -41,10 +41,10 @@ Yritys on rakentanut vaikuttavan portfolion tietoturva-arviointeja korkean profi
 **Merkittäviä julkaisuja ja raportteja**:
 
 * [Mullvad-palvelimien tietoturva-arviointi 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Kattava infrastruktuurin tietoturva-arviointi
-* [Mullvad-sovellusten/API-tietoturva-arviointi 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Sovellusten ja API-liittymien tietoturva-analyysi
+* [Mullvad-sovellusten/API-tietoturva-arviointi 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Sovellusten ja API:en tietoturva-analyysi
 * [Mullvad-palvelimien tietoturva-arviointi 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Infrastruktuurin seuranta-arviointi
 
-### Radikaalisti avoin tietoturva {#radically-open-security}
+### Radikaalisti avoin suojaus {#radically-open-security}
 
 **Sijainti**: Amsterdam, Alankomaat
 **Verkkosivusto**: <https://www.radicallyopensecurity.com/>
@@ -60,11 +60,11 @@ Heidän voittoa tavoittelematon mallinsa antaa heille mahdollisuuden keskittyä 
 * [Tauri-ohjelman turvallisuusarviointi 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Monialustaisen sovelluskehyksen arviointi
 * [Mullvad VPN:n tietoturva-arviointi 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN-palvelun tietoturva-analyysi
 
-### Assured AB {#assured-ab}
+### Taattu AB {#assured-ab}
 
 **Sijainti**: Göteborg, Ruotsi
 **Verkkosivusto**: <https://www.assured.se/>
-**Erikoistuminen**: "Teknisen kyberturvallisuuden asiantuntijat"
+**Erikoisala**: "Teknisen kyberturvallisuuden asiantuntijat"
 
 Assured AB on ruotsalainen kyberturvallisuuskonsultointiyritys, joka on vakiinnuttanut asemansa johtavana teknisten kyberturvallisuusarviointien tarjoajana. Göteborgissa toimiva yritys tuo syvällistä teknistä asiantuntemusta monimutkaisiin tietoturvahaasteisiin, erityisesti sähköposti-infrastruktuuriin, DNS-tietoturvaan ja API-arviointeihin liittyvillä aloilla.
 
@@ -72,8 +72,8 @@ Yrityksen lähestymistapa korostaa perusteellista teknistä analyysia yhdistetty
 
 **Merkittäviä julkaisuja ja raportteja**:
 
-* [Mullvad-sähköpostipalvelimien tietoturvatarkastus 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Sähköpostiinfrastruktuurin tietoturva-arviointi
-* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API-tietoturva-arviointi
+* [Mullvad-sähköpostipalvelimien tietoturvatarkastus 2024](https://www.assured.se/publications/Assured_Mullvad_email_server_audit\_2024.pdf) - Sähköpostin infrastruktuurin tietoturva-arviointi
+* [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API:n tietoturva-arviointi
 * [Mullvad DNS-palvelimen tietoturvatarkastus 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - DNS-infrastruktuurin arviointi
 
 ### Bittien kulku {#trail-of-bits}
@@ -115,4 +115,4 @@ Arvioidessamme näitä tietoturvatarkastusyrityksiä otimme huomioon useita krii
 
 **Jatkuva parantaminen**: Kaikki suositellut yritykset pysyvät ajan tasalla kehittyvien uhkakuvien ja uusien teknologioiden suhteen varmistaen, että niiden arvioinnit ovat edelleen relevantteja ja kattavia.
 
-Tietoturvatarkastusten maisema kehittyy jatkuvasti, ja suosittelemme, että organisaatiot suorittavat omat arviointinsa erityistarpeidensa, budjettirajoitustensa ja projektivaatimustensa perusteella. Mikä tahansa näistä yrityksistä tarjoaa kuitenkin poikkeuksellisia tietoturvatarkastuspalveluita organisaatioille, jotka suhtautuvat vakavasti infrastruktuurinsa ja käyttäjätietojensa suojaamiseen.
+Tietoturvatarkastusten maisema kehittyy jatkuvasti, ja suosittelemme, että organisaatiot suorittavat omat arviointinsa erityistarpeiden, budjettirajoitusten ja projektivaatimusten perusteella. Mikä tahansa näistä yrityksistä tarjoaa kuitenkin poikkeuksellisia tietoturvatarkastuspalveluita organisaatioille, jotka suhtautuvat vakavasti infrastruktuurinsa ja käyttäjätietojensa suojaamiseen.

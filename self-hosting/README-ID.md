@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Rilis yang Dihosting Sendiri {#self-hosted-releases}
 
 Bagian ini mendokumentasikan alur kerja CI/CD untuk solusi yang dihosting sendiri oleh ForwardEmail, yang menjelaskan cara gambar Docker dibuat, diterbitkan, dan disebarkan.
 
-## Table of Contents {#table-of-contents}
+## Daftar Isi {#table-of-contents}
 
 * [Ringkasan](#overview)
 * [Alur Kerja CI/CD](#cicd-workflow)
@@ -15,24 +15,24 @@ Bagian ini mendokumentasikan alur kerja CI/CD untuk solusi yang dihosting sendir
   * [Pembaruan Otomatis](#automatic-updates)
   * [Pencadangan dan Pemulihan](#backup-and-restore)
   * [Perpanjangan Sertifikat](#certificate-renewal)
-* [Pembuatan versi](#versioning)
+* [Versi](#versioning)
 * [Mengakses Gambar](#accessing-images)
 * [Berkontribusi](#contributing)
 
-## Overview {#overview}
+## Ikhtisar {#overview}
 
-Solusi ForwardEmail yang dihosting sendiri menggunakan GitHub Actions untuk secara otomatis membuat dan menerbitkan gambar Docker setiap kali rilis baru dibuat. Gambar-gambar ini kemudian tersedia bagi pengguna untuk disebarkan di server mereka sendiri menggunakan skrip penyiapan yang disediakan.
+Solusi self-hosted ForwardEmail menggunakan GitHub Actions untuk secara otomatis membangun dan menerbitkan image Docker setiap kali rilis baru dibuat. Image-image ini kemudian tersedia bagi pengguna untuk disebarkan di server mereka sendiri menggunakan skrip pengaturan yang disediakan.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Tersedia juga [blog yang dihosting sendiri](https://forwardemail.net/blog/docs/self-hosted-solution) dan [panduan pengembang yang dihosting sendiri](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Untuk versi langkah demi langkah yang lebih rinci, lihat panduan berbasis [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) atau [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Alur Kerja CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Alur Kerja Tindakan GitHub {#github-actions-workflow}
 
-Proses pembuatan dan penerbitan citra Docker yang dihosting sendiri dijelaskan dalam `.github/workflows/docker-image-build-publish.yml`. Alur kerja ini:
+Proses pembuatan dan penerbitan image Docker yang dihosting sendiri didefinisikan dalam `.github/workflows/docker-image-build-publish.yml`. Alur kerja ini:
 
 1. **Pemicu**: Berjalan otomatis ketika Rilis GitHub baru diterbitkan
 2. **Lingkungan**: Berjalan di Ubuntu dengan Node.js 18.20.4
@@ -83,11 +83,11 @@ Citra Docker dibangun menggunakan pendekatan multi-tahap yang didefinisikan dala
 * Menggunakan image Node.js 20 yang lebih ramping
 * Menginstal hanya dependensi sistem yang diperlukan
 * Membuat direktori yang diperlukan untuk penyimpanan data
-* Menyalin aplikasi yang dibangun dari tahap pembangun
+* Menyalin aplikasi yang telah dibangun dari tahap pembangun
 
 Pendekatan ini memastikan gambar akhir dioptimalkan untuk ukuran dan keamanan.
 
-## Proses Penyebaran {#deployment-process}
+## Proses Penerapan {#deployment-process}
 
 ### Instalasi {#installation}
 
@@ -103,7 +103,7 @@ Skrip ini:
 2. Menyiapkan lingkungan
 3. Mengonfigurasi pengaturan DNS dan firewall
 4. Membuat sertifikat SSL
-5. Mengambil gambar Docker terbaru
+5. Mengambil image Docker terbaru
 6. Memulai layanan menggunakan Docker Compose
 
 ### Konfigurasi Docker Compose {#docker-compose-configuration}
@@ -131,7 +131,7 @@ Solusi yang dihosting sendiri mencakup beberapa fitur pemeliharaan:
 
 Pengguna dapat mengaktifkan pembaruan otomatis yang akan:
 
-* Tarik gambar Docker terbaru setiap malam
+* Ambil gambar Docker terbaru setiap malam
 * Mulai ulang layanan dengan gambar yang diperbarui
 * Catat proses pembaruan
 
@@ -144,17 +144,17 @@ Pengguna dapat mengaktifkan pembaruan otomatis yang akan:
 
 Pengaturan ini menyediakan opsi untuk:
 
-* Mengonfigurasi cadangan rutin ke penyimpanan yang kompatibel dengan S3
+* Mengonfigurasi pencadangan rutin ke penyimpanan yang kompatibel dengan S3
 * Mencadangkan data MongoDB, Redis, dan SQLite
 * Memulihkan dari cadangan jika terjadi kegagalan
 
-### Perpanjangan Sertifikat {#certificate-renewal}
+### Pembaruan Sertifikat {#certificate-renewal}
 
 Sertifikat SSL dikelola secara otomatis dengan opsi untuk:
 
-* Hasilkan sertifikat baru selama penyiapan
+* Buat sertifikat baru selama penyiapan
 * Perbarui sertifikat bila diperlukan
-* Konfigurasikan DKIM untuk autentikasi email
+* Konfigurasi DKIM untuk autentikasi email
 
 ## Versi {#versioning}
 
@@ -181,4 +181,4 @@ Untuk berkontribusi pada solusi yang dihosting sendiri:
 1. Lakukan perubahan pada berkas terkait di direktori `self-hosting`
 2. Uji secara lokal atau di VPS berbasis Ubuntu menggunakan skrip `setup.sh` yang disediakan
 3. Ajukan permintaan tarik
-4. Setelah digabungkan dan rilis baru dibuat, alur kerja CI akan secara otomatis membangun dan menerbitkan citra Docker yang diperbarui.
+4. Setelah digabungkan dan rilis baru dibuat, alur kerja CI akan secara otomatis membangun dan menerbitkan citra Docker yang diperbarui

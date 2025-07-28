@@ -1,4 +1,4 @@
-# Listmonk met doorstuur-e-mail voor veilige nieuwsbriefbezorging {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+# Listmonk met doorstuurmail voor veilige nieuwsbriefbezorging {#listmonk-with-forward-email-for-secure-newsletter-delivery}
 
 ## Inhoudsopgave {#table-of-contents}
 
@@ -24,14 +24,14 @@
 
 ## Overzicht {#overview}
 
-Deze handleiding biedt ontwikkelaars stapsgewijze instructies voor het instellen van [Listmonk](https://listmonk.app/), een krachtige open-source nieuwsbrief- en mailinglijstbeheerder, om [E-mail doorsturen](https://forwardemail.net/) als SMTP-provider te gebruiken. Deze combinatie stelt u in staat uw campagnes effectief te beheren en tegelijkertijd veilige, privé en betrouwbare e-mailbezorging te garanderen.
+Deze handleiding biedt ontwikkelaars stapsgewijze instructies voor het instellen van [Listmonk](https://listmonk.app/), een krachtige open-source nieuwsbrief- en mailinglijstbeheerder, om [E-mail doorsturen](https://forwardemail.net/) als SMTP-provider te gebruiken. Deze combinatie stelt u in staat uw campagnes effectief te beheren en tegelijkertijd veilige, vertrouwelijke en betrouwbare e-mailbezorging te garanderen.
 
 * **Listmonk**: Verwerkt abonneebeheer, lijstorganisatie, campagnecreatie en prestatietracking.
 * **Forward Email**: Fungeert als de beveiligde SMTP-server en verwerkt de daadwerkelijke verzending van e-mails met ingebouwde beveiligingsfuncties zoals SPF, DKIM, DMARC en TLS-encryptie.
 
 Door deze twee te integreren, behoudt u de volledige controle over uw gegevens en infrastructuur, terwijl u tegelijkertijd gebruikmaakt van het robuuste bezorgsysteem van Forward Email.
 
-## Waarom Listmonk en e-mail doorsturen {#why-listmonk-and-forward-email}
+## Waarom Listmonk en doorsturen van e-mail {#why-listmonk-and-forward-email}
 
 * **Open source**: Zowel Listmonk als de principes achter Forward Email benadrukken transparantie en controle. U host Listmonk zelf en bent eigenaar van uw gegevens.
 * **Privacygericht**: Forward Email is gebouwd met privacy als kern, minimaliseert gegevensretentie en focust op veilige overdracht.
@@ -41,14 +41,14 @@ Door deze twee te integreren, behoudt u de volledige controle over uw gegevens e
 
 ## Vereisten {#prerequisites}
 
-Voordat u begint, moet u ervoor zorgen dat u over het volgende beschikt:
+Voordat u begint, moet u ervoor zorgen dat u het volgende heeft:
 
 * Een Virtual Private Server (VPS) met een recente Linux-distributie (Ubuntu 20.04+ aanbevolen) met minimaal 1 CPU en 1 GB RAM (2 GB aanbevolen).
-* Heb je een provider nodig? Bekijk de [aanbevolen VPS-lijst](https://github.com/forwardemail/awesome-mail-server-providers).
+* Heb je een provider nodig? Bekijk dan [aanbevolen VPS-lijst](https://github.com/forwardemail/awesome-mail-server-providers).
 * Een domeinnaam die je zelf beheert (DNS-toegang vereist).
 * Een actief account met [E-mail doorsturen](https://forwardemail.net/).
 * Root- of `sudo`-toegang tot je VPS.
-* Basiskennis van Linux-commandoregelbewerkingen.
+* Basiskennis van Linux-opdrachtregelbewerkingen.
 
 ## Installatie {#installation}
 
@@ -98,7 +98,7 @@ Bevestig dat u de firewall wilt inschakelen wanneer u daarom wordt gevraagd.
 
 Het is cruciaal voor de beveiliging om Listmonk via HTTPS te gebruiken. Je hebt twee primaire opties:
 
-#### Optie A: Cloudflare Proxy gebruiken (aanbevolen voor eenvoud) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### Optie A: Cloudflare-proxy gebruiken (aanbevolen voor eenvoud) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
 Als de DNS van uw domein wordt beheerd door Cloudflare, kunt u hun proxyfunctie gebruiken voor eenvoudige HTTPS.
 
@@ -113,7 +113,7 @@ Hierdoor is Listmonk intern toegankelijk via poort 80, die Cloudflare vervolgens
 
 U kunt er ook voor kiezen om een omgekeerde proxy zoals Nginx of Caddy op uw VPS in te stellen om HTTPS-beëindiging en proxyverzoeken naar Listmonk af te handelen (standaard draait deze op poort 9000).
 
-* Houd de standaard `ports: - "127.0.0.1:9000:9000"` aan in `docker-compose.yml` om ervoor te zorgen dat Listmonk alleen lokaal toegankelijk is.
+* Houd de standaard `ports: - "127.0.0.1:9000:9000"` in `docker-compose.yml` aan om ervoor te zorgen dat Listmonk alleen lokaal toegankelijk is.
 * Configureer de gekozen reverse proxy om te luisteren op poorten 80 en 443, de SSL-certificaatverwerving af te handelen (bijvoorbeeld via Let's Encrypt) en verkeer door te sturen naar `http://127.0.0.1:9000`.
 * Gedetailleerde reverse proxy-instellingen vallen buiten het bestek van deze handleiding, maar er zijn online veel tutorials beschikbaar.
 
@@ -130,11 +130,11 @@ Docker downloadt de benodigde images en start de Listmonk-applicatie en database
 
 ✅ **Toegang tot Listmonk**: U zou nu toegang moeten hebben tot de Listmonk-webinterface via het domein dat u hebt geconfigureerd (bijv. `https://listmonk.yourdomain.com`).
 
-### 7. Configureer SMTP voor het doorsturen van e-mail in Listmonk {#7-configure-forward-email-smtp-in-listmonk}
+### 7. Configureer SMTP voor doorsturen van e-mail in Listmonk {#7-configure-forward-email-smtp-in-listmonk}
 
 Configureer vervolgens Listmonk om e-mails te versturen via uw Forward Email-account.
 
-1. **SMTP inschakelen in Doorsturen van e-mail**: Zorg ervoor dat je SMTP-referenties hebt gegenereerd in het dashboard van je Doorsturen van e-mailaccount. Volg de [Handleiding voor het doorsturen van e-mail met een aangepast domein via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) als je dat nog niet hebt gedaan.
+1. **SMTP inschakelen in Doorsturen van e-mail**: Zorg ervoor dat je SMTP-referenties hebt gegenereerd in het dashboard van je Doorsturen van e-mailaccount. Volg de [Handleiding voor het doorsturen van e-mail met een aangepast domein via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp)-regel als je dat nog niet hebt gedaan.
 2. **Listmonk configureren**: Log in op je Listmonk-beheerpaneel.
 * Ga naar **Instellingen -> SMTP**.
 
@@ -164,7 +164,7 @@ Dankzij bounceverwerking kan Listmonk automatisch e-mails verwerken die niet kon
 1. Log in op je [Dashboard voor doorsturen van e-mail](https://forwardemail.net/).
 2. Navigeer naar **Domeinen**, selecteer het domein dat je gebruikt voor verzending en ga naar de pagina **Instellingen**.
 3. Scrol omlaag naar het gedeelte **Bounce Webhook URL**.
-4. Voer de volgende URL in, waarbij je `<your_listmonk_domain>` vervangt door het daadwerkelijke domein of subdomein waar je Listmonk-instantie toegankelijk is:
+4. Voer de volgende URL in, waarbij je `<your_listmonk_domain>` vervangt door het domein of subdomein waar je Listmonk-instantie toegang toe heeft:
 ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
@@ -203,7 +203,7 @@ Hier volgt een kort overzicht van de belangrijkste Listmonk-functies:
 * **Importeren**: Klik op **Abonnees importeren** om een CSV-bestand te uploaden.
 * **API**: Gebruik de Listmonk API voor programmatische toevoegingen.
 * Wijs abonnees toe aan een of meer lijsten tijdens het aanmaken of importeren.
-* **Best practice**: Gebruik een dubbel aanmeldingsproces. Configureer dit onder **Instellingen -> Aanmelding & Abonnementen**.
+* **Best practice**: Gebruik een dubbel aanmeldingsproces. Configureer dit onder **Instellingen -> Aanmeldingen & Abonnementen**.
 
 ### Een campagne maken en verzenden {#create-and-send-a-campaign}
 

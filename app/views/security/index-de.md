@@ -56,7 +56,7 @@ Wir implementieren mehrere Ebenen der Netzwerksicherheit:
 * Port-Scan-Schutz mit automatischer Blockierung verdächtiger Aktivitäten
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Alle übertragenen Daten werden mit TLS 1.2+ und modernen Verschlüsselungspaketen verschlüsselt.
 
 ## E-Mail-Sicherheit {#email-security}
 
@@ -69,7 +69,7 @@ Wir implementieren mehrere Ebenen der Netzwerksicherheit:
 * **Umfassender Schutz**: Wir implementieren Verschlüsselung im Ruhezustand, Verschlüsselung im Speicher und Verschlüsselung während der Übertragung.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Wir sind der weltweit erste und einzige E-Mail-Dienst, der **[quantenresistente und individuell verschlüsselte SQLite-Postfächer](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)** verwendet.
 
 ### Authentifizierung und Autorisierung {#authentication-and-authorization}
 
@@ -78,7 +78,7 @@ Wir implementieren mehrere Ebenen der Netzwerksicherheit:
 * **MTA-STS**: Unterstützung von MTA-STS zur Durchsetzung der TLS-Verschlüsselung.
 * **Multi-Faktor-Authentifizierung**: Verfügbar für alle Kontozugriffe.
 
-### Maßnahmen zur Missbrauchsbekämpfung {#anti-abuse-measures}
+### Maßnahmen gegen Missbrauch {#anti-abuse-measures}
 
 * **Spamfilterung**: Mehrschichtige Spam-Erkennung mit maschinellem Lernen
 * **Virenscan**: Echtzeit-Scan aller Anhänge
@@ -130,14 +130,14 @@ Unser Team überwacht, überprüft und bewertet regelmäßig Codebasis, Server, 
 * Proaktives Schwachstellenmanagement
 * Regelmäßige Sicherheitsschulungen für alle Teammitglieder
 
-### Einhaltung {#compliance}
+### Konformität {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr)-konforme Datenverarbeitung
+* [GDPR](https://forwardemail.net/gdpr)-konforme Datenverarbeitungspraktiken
 * [Datenverarbeitungsvereinbarung (DPA)](https://forwardemail.net/dpa) für Geschäftskunden verfügbar
 * CCPA-konforme Datenschutzkontrollen
 * SOC 2 Typ II-geprüfte Prozesse
 
-## Reaktion auf Vorfälle {#incident-response}
+## Vorfallreaktion {#incident-response}
 
 Unser Reaktionsplan für Sicherheitsvorfälle umfasst:
 
@@ -149,7 +149,7 @@ Unser Reaktionsplan für Sicherheitsvorfälle umfasst:
 6. **Analyse nach dem Vorfall**: Umfassende Überprüfung und Verbesserung
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Sollten Sie eine Sicherheitslücke entdecken, melden Sie diese bitte umgehend an <security@forwardemail.net>.
 
 ## Sicherheitsentwicklungslebenszyklus {#security-development-lifecycle}
 
@@ -173,9 +173,9 @@ Der gesamte Code wird folgenden Vorgängen unterzogen:
 * Erfassung von Sicherheitsanforderungen
 * Bedrohungsmodellierung während der Entwicklung
 * Sichere Programmierpraktiken
-* Statische und dynamische Anwendungssicherheitstests
+* Statische und dynamische Tests der Anwendungssicherheit
 * Codeüberprüfung mit Sicherheitsfokus
-* Abhängigkeits-Schwachstellen-Scan
+* Überprüfung von Abhängigkeitsschwachstellen
 
 ## Serverhärtung {#server-hardening}
 

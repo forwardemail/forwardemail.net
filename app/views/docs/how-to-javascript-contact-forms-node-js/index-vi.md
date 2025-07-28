@@ -2,22 +2,22 @@
 
 ## Mục lục {#table-of-contents}
 
-* [Cài đặt và yêu cầu](#install-and-requirements)
+* [Cài đặt và Yêu cầu](#install-and-requirements)
 * [Mã nguồn và ví dụ](#source-code-and-example)
 
 ## Cài đặt và Yêu cầu {#install-and-requirements}
 
-Bạn sẽ cần cài đặt phụ thuộc `nodemailer` npm:
+Bạn sẽ cần cài đặt `nodemailer` npm dependency:
 
 ```sh
 npm install nodemailer
 ```
 
-## Mã nguồn và Ví dụ {#source-code-and-example}
+## Mã nguồn và ví dụ {#source-code-and-example}
 
-Ví dụ này sử dụng thư viện **[Người gửi thư nút](https://github.com/nodemailer/nodemailer)** và nhà tài trợ chính thức của thư viện này là **[Chuyển tiếp Email](https://forwardemail.net)** để gửi và xem trước thư đi.
+Ví dụ này sử dụng thư viện **[Nodemailer](https://github.com/nodemailer/nodemailer)** và nhà tài trợ chính thức của nó là **[Chuyển tiếp Email](https://forwardemail.net)** để gửi và xem trước thư đi.
 
-Bạn sẽ cần <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> để gửi thư đi – vui lòng làm theo **[Gửi Email với Hướng dẫn SMTP tên miền tùy chỉnh](/guides/send-email-with-custom-domain-smtp)** của chúng tôi.
+Bạn sẽ cần <strong class="text-success"><i class="fa fa-key"></i> Tạo mật khẩu</strong> để gửi thư đi – vui lòng làm theo **[Hướng dẫn Gửi Email với SMTP Tên miền Tùy chỉnh](/guides/send-email-with-custom-domain-smtp)** của chúng tôi.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -53,4 +53,4 @@ node app
 
 Bây giờ bạn có thể truy cập **[Tài khoản của tôi → Email](/my-account/emails)** để xem trạng thái gửi email theo thời gian thực, nhật ký khả năng gửi email và bản xem trước HTML/văn bản thuần túy/tệp đính kèm.
 
-> P.S. :tada: Bạn cũng có thể **[xem trước email trong trình duyệt và iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** và **[tạo mẫu email bằng Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Bạn cũng có thể **[xem trước email trong trình duyệt và Trình mô phỏng iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** và **[tạo mẫu email bằng Node.js](/docs/send-emails-with-node-js-javascript)**.

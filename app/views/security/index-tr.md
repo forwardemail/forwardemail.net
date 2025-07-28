@@ -1,6 +1,6 @@
 # Güvenlik Uygulamaları {#security-practices}
 
-<img loading="tembel" src="/img/articles/security.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 
@@ -11,11 +11,11 @@
 * [E-posta Güvenliği](#email-security)
   * [Şifreleme](#encryption)
   * [Kimlik Doğrulama ve Yetkilendirme](#authentication-and-authorization)
-  * [İstismara Karşı Önlemler](#anti-abuse-measures)
-* [Veri Koruma](#data-protection)
+  * [İstismara Karşı Tedbirler](#anti-abuse-measures)
+* [Veri Koruması](#data-protection)
   * [Veri Minimizasyonu](#data-minimization)
   * [Yedekleme ve Kurtarma](#backup-and-recovery)
-* [Hizmet Sağlayıcılar](#service-providers)
+* [Hizmet Sağlayıcıları](#service-providers)
 * [Uyumluluk ve Denetim](#compliance-and-auditing)
   * [Düzenli Güvenlik Değerlendirmeleri](#regular-security-assessments)
   * [Uyumluluk](#compliance)
@@ -30,7 +30,7 @@
 
 ## Önsöz {#foreword}
 
-Forward Email'de güvenlik en büyük önceliğimizdir. E-posta iletişimlerinizi ve kişisel verilerinizi korumak için kapsamlı güvenlik önlemleri uyguladık. Bu belge, güvenlik uygulamalarımızı ve e-postanızın gizliliğini, bütünlüğünü ve kullanılabilirliğini sağlamak için attığımız adımları ana hatlarıyla açıklamaktadır.
+Forward Email'de güvenlik en önemli önceliğimizdir. E-posta iletişimlerinizi ve kişisel verilerinizi korumak için kapsamlı güvenlik önlemleri uyguladık. Bu belge, güvenlik uygulamalarımızı ve e-postalarınızın gizliliğini, bütünlüğünü ve erişilebilirliğini sağlamak için attığımız adımları özetlemektedir.
 
 ## Altyapı Güvenliği {#infrastructure-security}
 
@@ -51,38 +51,38 @@ Ağ güvenliğinin birden fazla katmanını uyguluyoruz:
 * Sıkı erişim kontrol listelerine sahip kurumsal düzeyde güvenlik duvarları
 * DDoS koruması ve azaltma
 * Düzenli ağ güvenlik açığı taraması
-* Saldırı algılama ve önleme sistemleri
+* Saldırı tespit ve önleme sistemleri
 * Tüm hizmet uç noktaları arasında trafik şifrelemesi
-* Şüpheli etkinliğin otomatik olarak engellenmesiyle port tarama koruması
+* Şüpheli etkinliklerin otomatik olarak engellendiği port tarama koruması
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Aktarım sırasında tüm veriler, modern şifre paketleri kullanılarak TLS 1.2+ kullanılarak şifrelenir.
 
 ## E-posta Güvenliği {#email-security}
 
 ### Şifreleme {#encryption}
 
-* **Taşıma Katmanı Güvenliği (TLS)**: Tüm e-posta trafiği TLS 1.2 veya üzeri kullanılarak aktarım sırasında şifrelenir
-* **Uçtan Uca Şifreleme**: OpenPGP/MIME ve S/MIME standartları desteği
-* **Depolama Şifreleme**: Tüm depolanan e-postalar SQLite dosyalarında ChaCha20-Poly1305 şifrelemesi kullanılarak hareketsizken şifrelenir
-* **Tam Disk Şifreleme**: Tüm disk için LUKS v2 şifrelemesi
-* **Kapsamlı Koruma**: Hareketsizken şifreleme, bellekte şifreleme ve aktarım sırasında şifreleme uygularız
+* **Taşıma Katmanı Güvenliği (TLS)**: Tüm e-posta trafiği, TLS 1.2 veya üzeri sürüm kullanılarak aktarım sırasında şifrelenir.
+* **Uçtan Uca Şifreleme**: OpenPGP/MIME ve S/MIME standartlarını destekler.
+* **Depolama Şifrelemesi**: Depolanan tüm e-postalar, SQLite dosyalarında ChaCha20-Poly1305 şifrelemesi kullanılarak bekleme sırasında şifrelenir.
+* **Tam Disk Şifrelemesi**: Tüm disk için LUKS v2 şifrelemesi.
+* **Kapsamlı Koruma**: Bekleme sırasında şifreleme, bellekte şifreleme ve aktarım sırasında şifreleme uyguluyoruz.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> **[kuantum dirençli ve ayrı ayrı şifrelenmiş SQLite posta kutuları](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**'i kullanan dünyanın ilk ve tek e-posta hizmetiyiz.
 
 ### Kimlik Doğrulama ve Yetkilendirme {#authentication-and-authorization}
 
-* **DKIM İmzalama**: Tüm giden e-postalar DKIM ile imzalanır
+* **DKIM İmzalama**: Tüm giden e-postalar DKIM ile imzalanır.
 * **SPF ve DMARC**: E-posta sahteciliğini önlemek için SPF ve DMARC için tam destek
 * **MTA-STS**: TLS şifrelemesini zorunlu kılmak için MTA-STS desteği
 * **Çok Faktörlü Kimlik Doğrulama**: Tüm hesap erişimleri için kullanılabilir
 
-### Kötüye Kullanım Önlemleri {#anti-abuse-measures}
+### İstismara Karşı Önlemler {#anti-abuse-measures}
 
-* **Spam Filtreleme**: Makine öğrenimiyle çok katmanlı spam tespiti
+* **Spam Filtreleme**: Makine öğrenimi ile çok katmanlı spam tespiti
 * **Virüs Tarama**: Tüm eklerin gerçek zamanlı taranması
-* **Oran Sınırlama**: Kaba kuvvet ve numaralandırma saldırılarına karşı koruma
+* **Hız Sınırlama**: Kaba kuvvet ve numaralandırma saldırılarına karşı koruma
 * **IP İtibarı**: Gönderen IP itibarının izlenmesi
 * **İçerik Filtreleme**: Kötü amaçlı URL'lerin ve kimlik avı girişimlerinin tespiti
 
@@ -92,20 +92,20 @@ Ağ güvenliğinin birden fazla katmanını uyguluyoruz:
 
 Veri minimizasyonu ilkesini benimsiyoruz:
 
-* Yalnızca hizmetimizi sağlamak için gerekli verileri topluyoruz
-* E-posta içeriği bellekte işlenir ve IMAP/POP3 teslimatı için gerekli olmadıkça kalıcı olarak saklanmaz
-* Günlükler anonimleştirilir ve yalnızca gerektiği kadar uzun süre saklanır
+* Yalnızca hizmetimizi sunmak için gerekli verileri topluyoruz.
+* E-posta içeriği bellekte işlenir ve IMAP/POP3 iletimi için gerekli olmadıkça kalıcı olarak saklanmaz.
+* Günlükler anonimleştirilir ve yalnızca gerekli olduğu sürece saklanır.
 
 ### Yedekleme ve Kurtarma {#backup-and-recovery}
 
-* Şifreleme ile otomatik günlük yedeklemeler
-* Coğrafi olarak dağıtılmış yedekleme depolama
-* Düzenli yedekleme restorasyon testi
+* Şifrelemeli otomatik günlük yedeklemeler
+* Coğrafi olarak dağıtılmış yedekleme depolaması
+* Düzenli yedekleme geri yükleme testleri
 * Tanımlı RPO ve RTO ile felaket kurtarma prosedürleri
 
-## Servis Sağlayıcıları {#service-providers}
+## Hizmet Sağlayıcıları {#service-providers}
 
-Yüksek güvenlik standartlarımızı karşıladıklarından emin olmak için hizmet sağlayıcılarımızı dikkatlice seçiyoruz. Aşağıda uluslararası veri transferi için kullandığımız sağlayıcılar ve GDPR uyumluluk durumları yer almaktadır:
+Yüksek güvenlik standartlarımızı karşıladıklarından emin olmak için hizmet sağlayıcılarımızı özenle seçiyoruz. Uluslararası veri aktarımı için kullandığımız sağlayıcılar ve GDPR uyumluluk durumları aşağıdadır:
 
 | Sağlayıcı | Amaç | DPF Sertifikalı | GDPR Uyumluluk Sayfası |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
@@ -116,16 +116,16 @@ Yüksek güvenlik standartlarımızı karşıladıklarından emin olmak için hi
 | [Stripe](https://stripe.com) | Ödeme işleme | ✅ Evet | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Ödeme işleme | ❌ Hayır | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Uluslararası veri koruma düzenlemelerine uyumu korurken güvenilir, güvenli hizmet sunumunu sağlamak için bu sağlayıcıları kullanırız. Tüm veri transferleri, kişisel bilgilerinizi korumak için uygun güvenlik önlemleri alınarak gerçekleştirilir.
+Uluslararası veri koruma düzenlemelerine uyum sağlarken güvenilir ve emniyetli hizmet sunumu sağlamak için bu sağlayıcıları kullanıyoruz. Tüm veri aktarımları, kişisel bilgilerinizi korumak için uygun güvenlik önlemleri alınarak gerçekleştirilmektedir.
 
 ## Uyumluluk ve Denetim {#compliance-and-auditing}
 
 ### Düzenli Güvenlik Değerlendirmeleri {#regular-security-assessments}
 
-Ekibimiz kod tabanını, sunucuları, altyapıyı ve uygulamaları düzenli olarak izler, inceler ve değerlendirir. Şunları içeren kapsamlı bir güvenlik programı uygularız:
+Ekibimiz kod tabanını, sunucuları, altyapıyı ve uygulamaları düzenli olarak izler, inceler ve değerlendirir. Kapsamlı bir güvenlik programı uyguluyoruz ve şunları sağlıyoruz:
 
 * SSH anahtarlarının düzenli rotasyonu
-* Erişim günlüklerinin sürekli izlenmesi
+* Erişim kayıtlarının sürekli izlenmesi
 * Otomatik güvenlik taraması
 * Proaktif güvenlik açığı yönetimi
 * Tüm ekip üyeleri için düzenli güvenlik eğitimi
@@ -139,17 +139,17 @@ Ekibimiz kod tabanını, sunucuları, altyapıyı ve uygulamaları düzenli olar
 
 ## Olay Yanıtı {#incident-response}
 
-Güvenlik olayına müdahale planımız şunları içerir:
+Güvenlik olayı müdahale planımız şunları içerir:
 
 1. **Tespit**: Otomatik izleme ve uyarı sistemleri
-2. **Kısıtlama**: Etkilenen sistemlerin anında izole edilmesi
+2. **Kontrol**: Etkilenen sistemlerin anında izole edilmesi
 3. **Eradikasyon**: Tehdidin ortadan kaldırılması ve temel neden analizi
 4. **Kurtarma**: Hizmetlerin güvenli bir şekilde geri yüklenmesi
 5. **Bildirim**: Etkilenen kullanıcılarla zamanında iletişim
 6. **Olay Sonrası Analiz**: Kapsamlı inceleme ve iyileştirme
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Bir güvenlik açığı tespit ederseniz, lütfen derhal <security@forwardemail.net> adresine bildirin.
 
 ## Güvenlik Geliştirme Yaşam Döngüsü {#security-development-lifecycle}
 
@@ -168,47 +168,47 @@ flowchart LR
     F -.-> K[Vulnerability Management]
 ```
 
-Tüm kodlar şunlardan geçer:
+Tüm kodlar şu işlemlerden geçer:
 
 * Güvenlik gereksinimlerinin toplanması
 * Tasarım sırasında tehdit modellemesi
 * Güvenli kodlama uygulamaları
-* Statik ve dinamik uygulama güvenlik testi
+* Statik ve dinamik uygulama güvenlik testleri
 * Güvenlik odaklı kod incelemesi
 * Bağımlılık güvenlik açığı taraması
 
-## Sunucu Güçlendirmesi {#server-hardening}
+## Sunucu Güçlendirme {#server-hardening}
 
 [Ansible yapılandırması](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) çok sayıda sunucu güçlendirme önlemi uygular:
 
-* **USB Erişimi Devre Dışı**: Fiziksel bağlantı noktaları, usb-storage çekirdek modülünü kara listeye alarak devre dışı bırakılır
-* **Güvenlik Duvarı Kuralları**: Yalnızca gerekli bağlantılara izin veren sıkı iptables kuralları
-* **SSH Güçlendirmesi**: Yalnızca anahtar tabanlı kimlik doğrulama, parola girişi yok, kök girişi devre dışı
-* **Hizmet Yalıtımı**: Her hizmet, gereken en az ayrıcalıkla çalışır
-* **Otomatik Güncellemeler**: Güvenlik yamaları otomatik olarak uygulanır
+* **USB Erişimi Devre Dışı**: USB depolama çekirdek modülü kara listeye alınarak fiziksel bağlantı noktaları devre dışı bırakılır.
+* **Güvenlik Duvarı Kuralları**: Yalnızca gerekli bağlantılara izin veren katı iptables kuralları
+* **SSH Güçlendirmesi**: Yalnızca anahtar tabanlı kimlik doğrulama, parola girişi yok, root girişi devre dışı
+* **Hizmet İzolasyonu**: Her hizmet, gereken minimum ayrıcalıklarla çalışır.
+* **Otomatik Güncellemeler**: Güvenlik yamaları otomatik olarak uygulanır.
 * **Güvenli Önyükleme**: Kurcalamayı önlemek için doğrulanmış önyükleme işlemi
 * **Çekirdek Güçlendirmesi**: Güvenli çekirdek parametreleri ve sysctl yapılandırmaları
 * **Dosya Sistemi Kısıtlamaları**: Uygun olan yerlerde noexec, nosuid ve nodev bağlama seçenekleri
-* **Çekirdek Dökümleri Devre Dışı**: Sistem, güvenlik için çekirdek dökümlerini önleyecek şekilde yapılandırıldı
-* **Değişim Devre Dışı**: Veri sızıntısını önlemek için değişim belleği devre dışı bırakıldı
+* **Çekirdek Dökümleri Devre Dışı**: Sistem, güvenlik için çekirdek dökümlerini engelleyecek şekilde yapılandırıldı.
+* **Değiştirme Devre Dışı**: Veri sızıntısını önlemek için bellek takası devre dışı bırakıldı.
 * **Bağlantı Noktası Tarama Koruması**: Bağlantı noktası tarama girişimlerinin otomatik olarak algılanması ve engellenmesi
-* **Şeffaf Büyük Sayfalar Devre Dışı Bırakıldı**: Geliştirilmiş performans ve güvenlik için THP devre dışı bırakıldı
+* **Şeffaf Büyük Sayfalar Devre Dışı Bırakıldı**: Gelişmiş performans ve güvenlik için THP devre dışı bırakıldı
 * **Sistem Hizmeti Güçlendirmesi**: Apport gibi temel olmayan hizmetler devre dışı bırakıldı
 * **Kullanıcı Yönetimi**: Ayrı dağıtım ve devops kullanıcıları ile en az ayrıcalık ilkesi
 * **Dosya Tanımlayıcı Sınırları**: Daha iyi performans ve güvenlik için artırılmış sınırlar
 
 ## Hizmet Düzeyi Sözleşmesi {#service-level-agreement}
 
-Yüksek düzeyde hizmet kullanılabilirliği ve güvenilirliğini sürdürüyoruz. Altyapımız, e-posta hizmetinizin çalışır durumda kalmasını sağlamak için yedeklilik ve hata toleransı için tasarlanmıştır. Resmi bir SLA belgesi yayınlamasak da, şunları taahhüt ediyoruz:
+Yüksek düzeyde hizmet kullanılabilirliği ve güvenilirliği sağlıyoruz. Altyapımız, e-posta hizmetinizin çalışır durumda kalmasını sağlamak için yedeklilik ve hata toleransı sağlayacak şekilde tasarlanmıştır. Resmi bir SLA belgesi yayınlamasak da, şunları taahhüt ediyoruz:
 
-* Tüm hizmetler için %99,9+ çalışma süresi
+* Tüm hizmetler için %99,9+ kesintisiz çalışma süresi
 * Hizmet kesintilerine hızlı yanıt
 * Olaylar sırasında şeffaf iletişim
-* Düşük trafik dönemlerinde düzenli bakım
+* Trafiğin düşük olduğu dönemlerde düzenli bakım
 
 ## Açık Kaynak Güvenliği {#open-source-security}
 
-[açık kaynaklı hizmet](https://github.com/forwardemail/forwardemail.net) olarak güvenliğimiz şunlardan yararlanır:
+[açık kaynaklı hizmet](https://github.com/forwardemail/forwardemail.net) olarak güvenliğimiz şunlardan faydalanır:
 
 * Herkes tarafından denetlenebilen şeffaf kod
 * Topluluk odaklı güvenlik iyileştirmeleri
@@ -218,17 +218,17 @@ Yüksek düzeyde hizmet kullanılabilirliği ve güvenilirliğini sürdürüyoru
 ## Çalışan Güvenliği {#employee-security}
 
 * Tüm çalışanlar için geçmiş kontrolleri
-* Güvenlik farkındalığı eğitimi
+* Güvenlik farkındalık eğitimi
 * En az ayrıcalıklı erişim ilkesi
-* Düzenli güvenlik eğitimi
+* Düzenli güvenlik eğitimleri
 
 ## Sürekli İyileştirme {#continuous-improvement}
 
-Güvenlik duruşumuzu şu şekilde sürekli olarak iyileştiriyoruz:
+Güvenlik duruşumuzu sürekli olarak şu şekilde iyileştiriyoruz:
 
 * Güvenlik eğilimlerinin ve ortaya çıkan tehditlerin izlenmesi
 * Güvenlik politikalarının düzenli olarak gözden geçirilmesi ve güncellenmesi
-* Güvenlik araştırmacıları ve kullanıcılarından geri bildirim
+* Güvenlik araştırmacıları ve kullanıcılarından geri bildirimler
 * Güvenlik topluluğuna katılım
 
 Güvenlik uygulamalarımız hakkında daha fazla bilgi edinmek veya güvenlik endişelerinizi bildirmek için lütfen <security@forwardemail.net> adresine başvurun.

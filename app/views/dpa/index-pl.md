@@ -10,7 +10,7 @@
 * [Zmiany w Umowie](#changes-to-the-agreement)
 * [1. Relacje między podmiotem przetwarzającym a podmiotem podprzetwarzającym](#1-processor-and-subprocessor-relationships)
   * [1. Dostawca jako podmiot przetwarzający](#1-provider-as-processor)
-  * [2. Dostawca jako Podprocesor](#2-provider-as-subprocessor)
+  * [2. Dostawca jako podprocesor](#2-provider-as-subprocessor)
 * [2. Przetwarzanie](#2-processing)
   * [1. Szczegóły przetwarzania](#1-processing-details)
   * [2. Instrukcje przetwarzania](#2-processing-instructions)
@@ -45,7 +45,7 @@
 * [13. Definicje](#13-definitions)
 * [Kredyty](#credits)
 
-## Kluczowe terminy {#key-terms}
+## Terminy kluczowe {#key-terms}
 
 | Termin | Wartość |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -59,10 +59,10 @@
 
 Niniejszy dokument jest pochodną dokumentu [Standardowe warunki umowy DPA (wersja 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) i wprowadzono w nim następujące zmiany:
 
-1. [Prawo właściwe i wybrane sądy](#11-governing-law-and-chosen-courts) został dodany jako sekcja poniżej z `Governing State` wskazanym powyżej.
+1. [Prawo właściwe i wybrane sądy](#11-governing-law-and-chosen-courts) został dodany jako sekcja poniżej, a `Governing State` został zidentyfikowany powyżej.
 2. [Relacja z dostawcą usług](#12-service-provider-relationship) został dodany jako sekcja poniżej.
 
-## 1. Relacje między podmiotem przetwarzającym a podmiotem podprzetwarzającym {#1-processor-and-subprocessor-relationships}
+## 1. Relacje między podmiotami przetwarzającymi i podprocesorami {#1-processor-and-subprocessor-relationships}
 
 ### 1. Dostawca jako podmiot przetwarzający {#1-provider-as-processor}
 
@@ -82,7 +82,7 @@ Załącznik I(B) na stronie tytułowej opisuje przedmiot, charakter, cel i czas 
 
 <strong>Klient</strong> zleca <strong>Dostawcy</strong> Przetwarzanie Danych Osobowych Klienta: (a) w celu świadczenia i utrzymywania Usługi; (b) zgodnie z dalszymi ustaleniami w trakcie korzystania przez <strong>Klienta</strong> z Usługi; (c) zgodnie z dokumentacją w <strong>Umowie</strong>; oraz (d) zgodnie z dokumentacją w innych pisemnych instrukcjach udzielonych przez <strong>Klienta</strong> i potwierdzonych przez <strong>Dostawcę</strong> dotyczących Przetwarzania Danych Osobowych Klienta na mocy niniejszej Umowy o Ochronie Danych Osobowych. <strong>Dostawca</strong> będzie przestrzegał tych instrukcji, chyba że zabraniają mu tego obowiązujące przepisy prawa. <strong>Dostawca</strong> niezwłocznie poinformuje <strong>Klienta</strong>, jeśli nie będzie w stanie zastosować się do instrukcji Przetwarzania. <strong>Klient</strong> wydał i będzie wydawał wyłącznie instrukcje zgodne z obowiązującymi przepisami prawa.
 
-### 3. Przetwarzanie przez Dostawcę {#3-processing-by-provider}
+### 3. Przetwarzanie przez dostawcę {#3-processing-by-provider}
 
 <strong>Dostawca</strong> będzie przetwarzał Dane Osobowe Klienta wyłącznie zgodnie z niniejszą Umową o przetwarzaniu danych (DPA), w tym ze szczegółami zawartymi na Stronie tytułowej. Jeśli <strong>Dostawca</strong> zaktualizuje Usługę w celu aktualizacji istniejących lub dodania nowych produktów, funkcji lub funkcjonalności, <strong>Dostawca</strong> może zmienić <strong>Kategorie Osób, których Dane dotyczą</strong>, <strong>Kategorie Danych Osobowych</strong>, <strong>Dane Szczególnej Kategorii</strong>, <strong>Ograniczenia lub Zabezpieczenia Danych Szczególnej Kategorii</strong>, <strong>Częstotliwość Przekazywania</strong>, <strong>Charakter i Cel Przetwarzania</strong> oraz <strong>Czas Przetwarzania</strong> w zakresie niezbędnym do odzwierciedlenia aktualizacji, powiadamiając <strong>Klienta</strong> o aktualizacjach i zmianach.
 
@@ -110,7 +110,7 @@ d. <strong>Dostawca</strong> ponosi pełną odpowiedzialność za wszystkie zobo
 
 <strong>Klient</strong> wyraża zgodę na to, że <strong>Dostawca</strong> może przekazywać Dane Osobowe Klienta poza EOG, Wielką Brytanię lub inne odpowiednie terytorium geograficzne, w zakresie niezbędnym do świadczenia Usługi. Jeżeli <strong>Dostawca</strong> przekaże Dane Osobowe Klienta na terytorium, dla którego Komisja Europejska lub inny właściwy organ nadzorczy nie wydał decyzji stwierdzającej odpowiedni stopień ochrony, <strong>Dostawca</strong> wdroży odpowiednie zabezpieczenia dotyczące przekazywania Danych Osobowych Klienta na to terytorium, zgodnie z obowiązującymi przepisami o ochronie danych.
 
-### 2. Transfery poza EOG {#2-ex-eea-transfers}
+### 2. Transfery z byłego EOG {#2-ex-eea-transfers}
 
 <strong>Klient</strong> i <strong>Dostawca</strong> zgadzają się, że jeśli RODO chroni przekazywanie Danych Osobowych Klienta, przekazywanie odbywa się od <strong>Klienta</strong> z obszaru EOG do <strong>Dostawcy</strong> spoza EOG i przekazywanie nie jest regulowane decyzją Komisji Europejskiej w sprawie adekwatności, wówczas poprzez zawarcie niniejszej Umowy o Ochronie Danych, <strong>Klient</strong> i <strong>Dostawca</strong> uznawani są za podpisujących Standardy Ubezpieczeń EOG wraz z załącznikami, które są włączone przez odniesienie. Każde takie przekazanie odbywa się zgodnie ze Standardami Ubezpieczeń EOG, które są uzupełniane w następujący sposób:
 
@@ -118,35 +118,35 @@ a. Moduł drugi (Od administratora do podmiotu przetwarzającego) Standardowych 
 
 b. Moduł trzeci (Podmiot przetwarzający do podprzetwarzającego) Standardowych Klauzuli Umownych EOG ma zastosowanie, gdy <strong>Klient</strong> jest Podmiotem przetwarzającym, a <strong>Dostawca</strong> przetwarza Dane osobowe Klienta w imieniu <strong>Klienta</strong> jako Podprzetwarzający.
 
-c. W przypadku każdego modułu stosuje się następujące zasady (jeśli ma to zastosowanie):
+c. W przypadku każdego modułu obowiązuje (jeśli ma to zastosowanie):
 
 1. Opcjonalna klauzula dokowania zawarta w klauzuli 7 nie ma zastosowania;
 
-2. W przypadku Klauzuli 9 zastosowanie ma Opcja 2 (ogólne pisemne upoważnienie), a minimalny okres czasu na wcześniejsze powiadomienie o zmianach Podmiotu Przetwarzającego wynosi 10 dni roboczych;
+2. W przypadku Klauzuli 9 zastosowanie ma Opcja 2 (ogólne pisemne upoważnienie), a minimalny okres na wcześniejsze powiadomienie o zmianach Podmiotu Przetwarzającego wynosi 10 dni roboczych;
 
-3. W klauzuli 11 nie stosuje się sformułowania opcjonalnego;
+3. W klauzuli 11 język opcjonalny nie ma zastosowania;
 
-4. W punkcie 13 usuwa się wszystkie nawiasy kwadratowe;
+4. Usuwa się wszystkie nawiasy kwadratowe w punkcie 13;
 
 5. W punkcie 17 (Opcja 1) Standardowe klauzule umowne EOG będą podlegać prawu <strong>Państwa członkowskiego sprawującego władzę</strong>;
 
 6. W przypadku postanowień ust. 18 lit. b) spory będą rozstrzygane przez sądy <strong>Państwa członkowskiego sprawującego władzę</strong>; i
 
-7. Strona tytułowa niniejszej Umowy o ochronie danych osobowych zawiera informacje wymagane w Załączniku I, Załączniku II i Załączniku III Standardów Handlowych EOG.
+7. Strona tytułowa niniejszej Umowy o ochronie danych osobowych zawiera informacje wymagane w Załączniku I, Załączniku II i Załączniku III Standardów Ubezpieczeń EOG.
 
 ### 3. Transfery poza Wielką Brytanię {#3-ex-uk-transfers}
 
 <strong>Klient</strong> i <strong>Dostawca</strong> zgadzają się, że jeśli brytyjskie rozporządzenie RODO chroni transfer Danych Osobowych Klienta, transfer odbywa się od <strong>Klienta</strong> z terytorium Zjednoczonego Królestwa do <strong>Dostawcy</strong> spoza Zjednoczonego Królestwa i transfer nie jest regulowany decyzją o adekwatności podjętą przez Sekretarza Stanu Zjednoczonego Królestwa, wówczas poprzez zawarcie niniejszej Umowy o Ochronie Danych, <strong>Klient</strong> i <strong>Dostawca</strong> są uznawani za podpisujących Aneks do Umowy o Ochronie Danych Osobowych Zjednoczonego Królestwa wraz z załącznikami, które są włączone przez odniesienie. Każde takie przeniesienie odbywa się zgodnie z Aneksem do Umowy o Ochronie Danych Osobowych Zjednoczonego Królestwa, który jest uzupełniony w następujący sposób:
 
-a. Sekcja 3.2 niniejszej Umowy o ochronie danych osobowych zawiera informacje wymagane w Tabeli 2 Aneksu dla Wielkiej Brytanii.
+a. Sekcja 3.2 niniejszej Umowy o przetwarzaniu danych osobowych zawiera informacje wymagane w Tabeli 2 Aneksu dla Wielkiej Brytanii.
 
-b. Tabela 4 Aneksu dla Wielkiej Brytanii zostaje zmieniona w następujący sposób: Żadna ze stron nie może wypowiedzieć Aneksu dla Wielkiej Brytanii zgodnie z postanowieniami Sekcji 19 Aneksu dla Wielkiej Brytanii; w zakresie, w jakim ICO wyda zmieniony Zatwierdzony Aneks na podstawie Sekcji 18 Aneksu dla Wielkiej Brytanii, strony będą działać w dobrej wierze, aby odpowiednio zmienić niniejszą Umowę o partnerstwie politycznym.
+b. Tabela 4 Aneksu dla Wielkiej Brytanii zostaje zmieniona w następujący sposób: Żadna ze stron nie może wypowiedzieć Aneksu dla Wielkiej Brytanii zgodnie z postanowieniami Sekcji 19 Aneksu dla Wielkiej Brytanii; w zakresie, w jakim ICO wyda zmieniony Zatwierdzony Aneks na podstawie Sekcji 18 Aneksu dla Wielkiej Brytanii, strony będą działać w dobrej wierze, aby odpowiednio zmienić niniejszą Umowę o partnerstwie gospodarczym.
 
-c. Strona tytułowa zawiera informacje wymagane w Załączniku 1A, Załączniku 1B, Załączniku II i Załączniku III Aneksu dla Wielkiej Brytanii.
+c. Strona tytułowa zawiera informacje wymagane w Załączniku 1A, Załączniku 1B, Załączniku II i Załączniku III Dodatku dla Wielkiej Brytanii.
 
 ### 4. Inne przelewy międzynarodowe {#4-other-international-transfers}
 
-W przypadku przekazywania danych osobowych, w przypadku którego do międzynarodowego charakteru przekazania stosuje się prawo szwajcarskie (a nie prawo żadnego państwa członkowskiego EOG ani Zjednoczonego Królestwa), odniesienia do RODO w klauzuli 4 SKU EOG są, w zakresie wymaganym przez prawo, zmieniane w celu odniesienia do szwajcarskiej federalnej ustawy o ochronie danych lub jej następcy, a koncepcja organu nadzorczego będzie obejmować szwajcarskiego federalnego komisarza ds. ochrony danych i informacji.
+W przypadku przekazywania danych osobowych, w przypadku którego do międzynarodowego charakteru przekazywania stosuje się prawo szwajcarskie (a nie prawo żadnego państwa członkowskiego EOG ani Zjednoczonego Królestwa), odniesienia do RODO w klauzuli 4 Standardowych Klauzul Ochronnych EOG zostają, w zakresie wymaganym prawnie, zmienione na odniesienia do szwajcarskiej federalnej ustawy o ochronie danych lub jej następcy, a koncepcja organu nadzorczego będzie obejmować szwajcarskiego federalnego komisarza ds. ochrony danych i informacji.
 
 ## 4. Reakcja na incydenty bezpieczeństwa {#4-security-incident-response}
 
@@ -154,7 +154,7 @@ W przypadku przekazywania danych osobowych, w przypadku którego do międzynarod
 
 ## 5. Audyt i raporty {#5-audit--reports}
 
-### 1. Prawa audytu {#1-audit-rights}
+### 1. Uprawnienia audytu {#1-audit-rights}
 
 <strong>Dostawca</strong> przekaże <strong>Klientowi</strong> wszelkie informacje w uzasadniony sposób niezbędne do wykazania zgodności z niniejszą Umową o ochronie danych osobowych (DPA), a także umożliwi i przyczyni się do przeprowadzenia audytów, w tym inspekcji przeprowadzanych przez <strong>Klienta</strong>, w celu oceny zgodności <strong>Dostawcy</strong> z niniejszą Umową o ochronie danych osobowych. <strong>Dostawca</strong> może jednak ograniczyć dostęp do danych lub informacji, jeśli dostęp <strong>Klienta</strong> do informacji mógłby negatywnie wpłynąć na prawa własności intelektualnej <strong>Dostawcy</strong>, zobowiązania do zachowania poufności lub inne zobowiązania wynikające z Obowiązujących Przepisów. <strong>Klient</strong> przyjmuje do wiadomości i zgadza się, że będzie korzystał ze swoich praw do audytu wynikających z niniejszej Umowy o ochronie danych osobowych oraz wszelkich praw do audytu przyznanych przez Obowiązujące Przepisy o Ochronie Danych Osobowych wyłącznie poprzez polecenie <strong>Dostawcy</strong> przestrzegania poniższych wymogów dotyczących raportowania i należytej staranności. <strong>Dostawca</strong> będzie przechowywać dokumentację dotyczącą przestrzegania postanowień niniejszej Umowy o przetwarzaniu danych przez 3 lata od zakończenia obowiązywania Umowy o przetwarzaniu danych.
 
@@ -190,7 +190,7 @@ b. Jeżeli <strong>Klient</strong> i <strong>Dostawca</strong> przystąpili do S
 
 ## 8. Ograniczenie odpowiedzialności {#8-limitation-of-liability}
 
-### 1. Limity odpowiedzialności i zrzeczenie się odszkodowania {#1-liability-caps-and-damages-waiver}
+### 1. Limity odpowiedzialności i zrzeczenie się odszkodowań {#1-liability-caps-and-damages-waiver}
 
 **W maksymalnym zakresie dozwolonym na mocy obowiązujących przepisów o ochronie danych, całkowita skumulowana odpowiedzialność każdej ze stron wobec drugiej strony wynikająca z niniejszej Umowy o ochronie danych osobowych lub z nią związana będzie podlegać zrzeczeniom, wyłączeniom i ograniczeniom odpowiedzialności określonym w <strong>Umowie</strong>.**
 
@@ -200,11 +200,11 @@ b. Jeżeli <strong>Klient</strong> i <strong>Dostawca</strong> przystąpili do S
 
 ### 3. Wyjątki {#3-exceptions}
 
-1. Niniejsza DPA nie ogranicza żadnej odpowiedzialności wobec osoby fizycznej w zakresie praw do ochrony danych osobowych na mocy obowiązujących przepisów o ochronie danych. Ponadto niniejsza DPA nie ogranicza żadnej odpowiedzialności między stronami za naruszenia SCC EOG lub dodatku brytyjskiego.
+1. Niniejsza Umowa o Ochronie Danych Osobowych nie ogranicza odpowiedzialności osoby fizycznej za jej prawa do ochrony danych osobowych wynikające z Obowiązujących Przepisów o Ochronie Danych Osobowych. Ponadto, niniejsza Umowa o Ochronie Danych Osobowych nie ogranicza odpowiedzialności stron za naruszenia Standardów Ubezpieczeń EOG ani Dodatku dla Wielkiej Brytanii.
 
 ## 9. Konflikty między dokumentami {#9-conflicts-between-documents}
 
-1. Niniejsza Umowa o Porozumieniu o Porozumieniu stanowi część Umowy i ją uzupełnia. W przypadku jakichkolwiek rozbieżności między niniejszą Umową o Porozumieniu o Porozumieniu, <strong>Umową</strong> lub którąkolwiek z ich części, część wymieniona wcześniej będzie miała pierwszeństwo przed częścią wymienioną później w zakresie tych rozbieżności: (1) Standardami Umów EOG lub Dodatkiem dla Wielkiej Brytanii, (2) niniejszą Umową o Porozumieniu o Porozumieniu o Porozumieniu, a następnie (3) <strong>Umową</strong>.
+1. Niniejsza Umowa o Porozumieniu o Poufności stanowi część Umowy i ją uzupełnia. W przypadku jakichkolwiek rozbieżności między niniejszą Umową o Poufności, <strong>Umową</strong> lub którąkolwiek z ich części, część wymieniona wcześniej będzie miała pierwszeństwo przed częścią wymienioną później w zakresie tych rozbieżności: (1) Standardami Umów EOG lub Dodatkiem dla Wielkiej Brytanii, (2) niniejszą Umową o Porozumieniu o Poufności, a następnie (3) <strong>Umową</strong>.
 
 ## 10. Okres obowiązywania umowy {#10-term-of-agreement}
 
@@ -212,19 +212,19 @@ Niniejsza Umowa o Porozumieniu ...
 
 ## 11. Prawo właściwe i wybrane sądy {#11-governing-law-and-chosen-courts}
 
-Niezależnie od prawa właściwego lub podobnych klauzul <strong>Umowy</strong>, wszelkie interpretacje i spory dotyczące niniejszej Umowy o partnerstwie w sprawie ochrony danych osobowych (DPA) będą podlegać prawu <strong>Państwa Władającego</strong>, bez względu na jego przepisy kolizyjne. Ponadto, niezależnie od wyboru forum, jurysdykcji lub podobnych klauzul <strong>Umowy</strong>, strony zgadzają się wnosić wszelkie pozwy, działania lub postępowania dotyczące niniejszej Umowy o partnerstwie w sprawie ochrony danych osobowych (DPA) do sądów <strong>Państwa Władającego</strong>, a każda ze stron nieodwołalnie poddaje się wyłącznej jurysdykcji sądów tego Państwa.
+Niezależnie od prawa właściwego lub podobnych klauzul <strong>Umowy</strong>, wszelkie interpretacje i spory dotyczące niniejszej Umowy DPA będą podlegać prawu <strong>Państwa Właściwego</strong>, bez względu na jego przepisy kolizyjne. Ponadto, niezależnie od wyboru forum, jurysdykcji lub podobnych klauzul <strong>Umowy</strong>, strony zgadzają się wnosić wszelkie pozwy, działania lub postępowania dotyczące niniejszej Umowy DPA do sądów <strong>Państwa Właściwego</strong>, a każda ze stron nieodwołalnie poddaje się wyłącznej jurysdykcji sądów <strong>Państwa Właściwego</strong>.
 
-## 12. Relacja z dostawcą usług {#12-service-provider-relationship}
+## 12. Relacja dostawcy usług {#12-service-provider-relationship}
 
 W zakresie, w jakim ma zastosowanie ustawa California Consumer Privacy Act, Kodeks cywilny Kalifornii § 1798.100 i następne („CCPA”), strony przyjmują do wiadomości i zgadzają się, że <strong>Dostawca</strong> jest dostawcą usług i otrzymuje Dane Osobowe od <strong>Klienta</strong> w celu świadczenia Usługi zgodnie z postanowieniami <strong>Umowy</strong>, co stanowi cel biznesowy. <strong>Dostawca</strong> nie będzie sprzedawał żadnych Danych Osobowych przekazanych przez <strong>Klienta</strong> na mocy <strong>Umowy</strong>. Ponadto <strong>Dostawca</strong> nie będzie przechowywał, wykorzystywał ani ujawniał żadnych Danych Osobowych przekazanych przez <strong>Klienta</strong> na mocy <strong>Umowy</strong>, z wyjątkiem sytuacji niezbędnych do świadczenia Usługi dla <strong>Klienta</strong>, zgodnie z postanowieniami <strong>Umowy</strong> lub zgodnie z obowiązującymi przepisami o ochronie danych. <strong>Dostawca</strong> oświadcza, że rozumie ograniczenia zawarte w niniejszym paragrafie.
 
 ## 13. Definicje {#13-definitions}
 
-1. **Obowiązujące przepisy prawa** oznaczają przepisy prawa, zasady, regulacje, orzeczenia sądowe i inne wiążące wymogi odpowiednich organów rządowych, które mają zastosowanie do strony lub je regulują.
+1. **Obowiązujące przepisy prawa** oznaczają przepisy prawa, zasady, regulacje, zarządzenia sądowe i inne wiążące wymogi właściwych organów rządowych, które mają zastosowanie do strony lub regulują jej działalność.
 
 2. **Obowiązujące przepisy o ochronie danych** oznaczają obowiązujące przepisy, które regulują sposób, w jaki Usługa może przetwarzać lub wykorzystywać dane osobowe danej osoby, dane osobowe, dane umożliwiające identyfikację osoby lub inne podobne terminy.
 
-3. Termin „Administrator” ma znaczenie nadane mu w obowiązujących przepisach o ochronie danych osobowych w odniesieniu do spółki, która ustala cel i zakres Przetwarzania Danych Osobowych.
+3. Termin „Administrator” ma znaczenie nadane mu w obowiązujących przepisach o ochronie danych osobowych w odniesieniu do spółki, która ustala cel i zakres przetwarzania danych osobowych.
 
 4. **„Strona tytułowa”** oznacza dokument podpisany lub elektronicznie zaakceptowany przez strony, który zawiera niniejsze Standardowe warunki DPA i identyfikuje <strong>Dostawcę</strong>, <strong>Klienta</strong> oraz przedmiot i szczegóły przetwarzania danych.
 
@@ -238,28 +238,28 @@ W zakresie, w jakim ma zastosowanie ustawa California Consumer Privacy Act, Kode
 
 9. **„RODO”** oznacza Rozporządzenie Unii Europejskiej 2016/679 wdrożone prawem lokalnym w danym państwie członkowskim EOG.
 
-10. Termin „Dane osobowe” ma znaczenie nadane w obowiązujących przepisach o ochronie danych w odniesieniu do informacji osobowych, danych osobowych lub innych podobnych terminów.
+10. Termin „Dane osobowe” ma znaczenie nadane mu w obowiązujących przepisach o ochronie danych osobowych w odniesieniu do informacji osobowych, danych osobowych lub innych podobnych terminów.
 
 11. Termin „Przetwarzanie” lub „Proces” ma znaczenie nadane w obowiązujących przepisach o ochronie danych w odniesieniu do jakiegokolwiek wykorzystania lub wykonania operacji komputerowej na Danych osobowych, w tym przy użyciu metod automatycznych.
 
-12. Termin „Podmiot przetwarzający” ma znaczenie nadane mu w obowiązujących przepisach o ochronie danych w odniesieniu do firmy przetwarzającej dane osobowe w imieniu Administratora.
+12. Termin „Podmiot przetwarzający” ma znaczenie nadane mu w obowiązujących przepisach o ochronie danych osobowych w odniesieniu do firmy przetwarzającej dane osobowe w imieniu Administratora.
 
 13. **„Raport”** oznacza raporty z audytu sporządzone przez inną firmę zgodnie ze standardami określonymi w Polityce Bezpieczeństwa w imieniu Dostawcy.
 
-14. **„Ograniczone przekazywanie”** oznacza (a) w przypadku zastosowania RODO, przekazywanie danych osobowych z EOG do kraju spoza EOG, który nie podlega ustaleniu adekwatności przez Komisję Europejską; oraz (b) w przypadku zastosowania RODO Wielkiej Brytanii, przekazywanie danych osobowych ze Zjednoczonego Królestwa do innego kraju, który nie podlega przepisom dotyczącym adekwatności przyjętym zgodnie z Sekcją 17A Ustawy o ochronie danych w Wielkiej Brytanii z 2018 r.
+14. **„Ograniczone przekazywanie”** oznacza (a) w przypadku zastosowania RODO, przekazywanie danych osobowych z EOG do kraju spoza EOG, który nie podlega ustaleniu odpowiedniego stopnia ochrony przez Komisję Europejską; oraz (b) w przypadku zastosowania brytyjskiego RODO, przekazywanie danych osobowych ze Zjednoczonego Królestwa do dowolnego innego kraju, który nie podlega przepisom dotyczącym odpowiedniego stopnia ochrony przyjętym zgodnie z Sekcją 17A Ustawy o ochronie danych osobowych w Wielkiej Brytanii z 2018 r.
 
-15. **Incydent Bezpieczeństwa** oznacza naruszenie danych osobowych w rozumieniu Artykułu 4 RODO.
+15. **Incydent bezpieczeństwa** oznacza naruszenie danych osobowych w rozumieniu artykułu 4 RODO.
 
 16. **Usługa** oznacza produkt i/lub usługi opisane w <strong>Umowie</strong>.
 
 17. **Dane szczególnej kategorii** mają znaczenie nadane w artykule 9 RODO.
 
-18. Termin „Podprocesor” ma znaczenie nadane w obowiązujących przepisach o ochronie danych w odniesieniu do firmy, która za zgodą i akceptacją Administratora pomaga Podmiotowi Przetwarzającemu w Przetwarzaniu Danych Osobowych w imieniu Administratora.
+18. Termin „Podprocesor” ma znaczenie nadane mu w obowiązujących przepisach o ochronie danych w odniesieniu do firmy, która za zgodą i akceptacją Kontrolera pomaga Podmiotowi Przetwarzającemu w Przetwarzaniu Danych Osobowych w imieniu Kontrolera.
 
-19. **„RODO w Wielkiej Brytanii”** oznacza rozporządzenie Unii Europejskiej 2016/679 wdrożone na mocy sekcji 3 ustawy Zjednoczonego Królestwa o wystąpieniu z Unii Europejskiej z 2018 r. w Zjednoczonym Królestwie.
+19. **„RODO w Wielkiej Brytanii”** oznacza Rozporządzenie Unii Europejskiej 2016/679 wdrożone na mocy sekcji 3 Ustawy Zjednoczonego Królestwa o wystąpieniu z Unii Europejskiej z 2018 r. w Zjednoczonym Królestwie.
 
-20. **„Dodatek brytyjski”** oznacza dodatek dotyczący międzynarodowego transferu danych do Standardów Handlowych EOG wydany przez Komisarza ds. Informacji dla Stron dokonujących ograniczonych transferów danych na mocy art. 119A(1) ustawy o ochronie danych z 2018 r.
+20. **„Dodatek brytyjski”** oznacza międzynarodowy dodatek dotyczący transferu danych do Standardów Umownych EOG, wydany przez Komisarza ds. Informacji dla Stron dokonujących ograniczonych transferów danych na mocy art. 119A(1) Ustawy o ochronie danych z 2018 r.
 
-## Podziękowania {#credits}
+## Kredyty {#credits}
 
 Niniejszy dokument jest pochodną dokumentu [Standardowe warunki umowy DPA (wersja 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) i jest licencjonowany na zasadach [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

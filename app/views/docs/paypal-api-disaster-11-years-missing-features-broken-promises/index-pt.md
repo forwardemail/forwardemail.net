@@ -91,7 +91,7 @@ Precisamos disso para operações comerciais básicas:
 
 Mas e o PayPal? Eles simplesmente... nunca o criaram.
 
-## 2014-2017: O problema surge {#2014-2017-the-problem-emerges}
+## 2014-2017: O Problema Surge {#2014-2017-the-problem-emerges}
 
 O problema com a listagem de assinaturas apareceu pela primeira vez nos fóruns da comunidade do PayPal em 2017. Os desenvolvedores estavam fazendo a pergunta óbvia: "Como obtenho uma lista de todas as minhas assinaturas?"
 
@@ -101,7 +101,7 @@ Os membros da comunidade começaram a ficar frustrados:
 
 > "Uma omissão muito estranha se um comerciante não consegue listar todos os Contratos ativos. Se o ID do Contrato for perdido, isso significa que somente o usuário pode cancelar ou suspender um contrato." - leafspider
 
-> "+1. Já se passaram quase 3 anos." - laudukang (significando que o problema existe desde \~2014)
+> "+1. Já se passaram quase 3 anos." - laudukang (significa que o problema existe desde \~2014)
 
 O [postagem original da comunidade](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) de 2017 mostra desenvolvedores implorando por essa funcionalidade básica. A resposta do PayPal foi arquivar o repositório onde as pessoas estavam relatando o problema.
 
@@ -237,7 +237,7 @@ Esse padrão explica por que as equipes do PayPal em 2025 parecem completamente 
 
 Não reclamamos apenas da falta de recursos. Relatamos bugs ativamente e tentamos ajudar a melhorar. Aqui está um cronograma completo dos problemas que documentamos:
 
-### 2016: Reclamações iniciais de UI/UX {#2016-early-uiux-complaints}
+### 2016: Primeiras reclamações sobre UI/UX {#2016-early-uiux-complaints}
 
 Já em 2016, entramos em contato publicamente com a liderança do PayPal, incluindo Dan Schulman, sobre problemas de interface e usabilidade. Isso aconteceu há 9 anos, e os mesmos problemas de UI/UX persistem até hoje.
 
@@ -263,11 +263,11 @@ Em fevereiro de 2021, fornecemos feedback detalhado sobre a interface do usuári
 
 Mark Stuart encaminhou para a equipe de produtos de consumo:
 
-> Obrigado! Não sei qual equipe é responsável pela Atividade, mas encaminhei para o chefe de produtos de consumo para encontrar a equipe correta. Um pagamento recorrente de US$ 0,00 parece um bug. Provavelmente deveria ser corrigido.
+> Obrigado! Não sei qual equipe é responsável pela Atividade, mas encaminhei para o chefe de produtos de consumo para encontrar a equipe correta. Um pagamento recorrente de US$ 0,00 parece um bug. Provavelmente deveria ser filtrado.
 
 **Resultado**: Nunca corrigido. A interface ainda mostra essas entradas inúteis de $0.
 
-### 2021: Falhas no ambiente de sandbox {#2021-sandbox-environment-failures}
+### 2021: Falhas no ambiente Sandbox {#2021-sandbox-environment-failures}
 
 Em novembro de 2021, relatamos problemas críticos com o ambiente sandbox do PayPal:
 
@@ -379,10 +379,10 @@ Mensagens de erro típicas do PayPal - enigmáticas e inúteis
 <img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
 </figure>
 
-Problemas com o SDK ### {#sdk-problems}
+### Problemas com o SDK {#sdk-problems}
 
 * Não é possível processar pagamentos únicos e assinaturas sem soluções alternativas complexas que envolvam a troca e a renderização de botões ao recarregar o SDK com tags de script.
-* O SDK JavaScript viola convenções básicas (nomes de classe em minúsculas, sem verificação de instâncias).
+* O SDK JavaScript viola convenções básicas (nomes de classe em minúsculas, sem verificação de instância).
 * As mensagens de erro não indicam quais campos estão faltando.
 * Tipos de dados inconsistentes (exigindo valores em string em vez de números).
 
@@ -390,7 +390,7 @@ Problemas com o SDK ### {#sdk-problems}
 
 O SDK deles exige unsafe-inline e unsafe-eval no seu CSP, **forçando você a comprometer a segurança do seu site**.
 
-### Caos na documentação {#documentation-chaos}
+### Documentação Caos {#documentation-chaos}
 
 O próprio Mark Stuart admitiu:
 
@@ -467,7 +467,7 @@ Apesar de todos esses problemas, não podemos abandonar completamente o PayPal, 
 
 Como o PayPal não oferece a funcionalidade básica de listagem de assinaturas, a comunidade de desenvolvedores criou soluções alternativas. Criamos um script que ajuda a gerenciar assinaturas do PayPal: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Este script faz referência a um [essência da comunidade](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) onde desenvolvedores compartilham soluções. Os usuários são, na verdade, [agradecendo-nos](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) por fornecerem o que o PayPal deveria ter criado anos atrás.
+Este script faz referência a um [essência da comunidade](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4), onde desenvolvedores compartilham soluções. Os usuários são, na verdade, [agradecendo-nos](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) por fornecerem o que o PayPal deveria ter criado anos atrás.
 
 ## Bloqueio de modelos do PayPal devido a phishing {#blocking-paypal-templates-due-to-phishing}
 
@@ -479,7 +479,7 @@ Recebemos regularmente relatos de e-mails do PayPal que se parecem exatamente co
 
 **Assunto:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-Este e-mail foi encaminhado para `abuse@microsoft.com` porque parecia ser uma tentativa de phishing. O problema? Na verdade, era do ambiente sandbox do PayPal, mas o design do modelo deles é tão ruim que aciona os sistemas de detecção de phishing.
+Este e-mail foi encaminhado para `abuse@microsoft.com` porque parecia ser uma tentativa de phishing. O problema? Na verdade, era do ambiente sandbox do PayPal, mas o design do modelo é tão ruim que aciona os sistemas de detecção de phishing.
 
 ### Nossa implementação {#our-implementation}
 
@@ -545,7 +545,7 @@ Isso está documentado na pesquisa de segurança: [Cuidado com a fraude de novos
 
 ### Impacto no mundo real: novos golpes do PayPal {#real-world-impact-novel-paypal-scams}
 
-O problema vai além do design ruim do modelo. O sistema de faturas do PayPal é tão facilmente explorado que golpistas o utilizam regularmente para enviar faturas fraudulentas com aparência legítima. O pesquisador de segurança Gavin Anderegg documentou [Um novo golpe do PayPal](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), onde golpistas enviam faturas reais do PayPal que passam por todas as verificações de autenticação:
+O problema vai além do design ruim do modelo. O sistema de faturas do PayPal é tão facilmente explorado que golpistas o utilizam regularmente para enviar faturas fraudulentas com aparência legítima. O pesquisador de segurança Gavin Anderegg documentou o [Um novo golpe do PayPal](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), onde golpistas enviam faturas reais do PayPal que passam por todas as verificações de autenticação:
 
 > "Ao verificar a fonte, o e-mail parecia ter vindo do PayPal (SPF, DKIM e DMARC foram aprovados). O botão também levava a um URL aparentemente legítimo do PayPal... Levei um segundo para perceber que era um e-mail legítimo. Eu tinha acabado de receber uma 'fatura' aleatória de um golpista."
 
@@ -603,7 +603,7 @@ Esse processo retrógrado cria desastres para as empresas:
 
 ### O desastre da migração de contas de julho de 2025 {#the-july-2025-account-migration-disaster}
 
-Esse mesmo cenário ocorreu durante nossa migração de rotina de conta em julho de 2025. O PayPal permitiu que os pagamentos funcionassem inicialmente, mas, de repente, os bloqueou sem qualquer notificação. Só descobrimos o problema quando os clientes começaram a relatar que não conseguiam pagar.
+Esse mesmo cenário ocorreu durante nossa migração de rotina de contas em julho de 2025. O PayPal permitiu que os pagamentos funcionassem inicialmente, mas, de repente, os bloqueou sem qualquer notificação. Só descobrimos o problema quando os clientes começaram a relatar que não conseguiam pagar.
 
 Quando entramos em contato com o suporte, recebemos respostas contraditórias sobre qual documentação era necessária, sem um prazo claro para resolução. Isso nos forçou a interromper completamente os pagamentos via PayPal, confundindo os clientes que não tinham outras opções de pagamento.
 
@@ -617,7 +617,7 @@ Esse processo retrógrado é sintomático dos problemas organizacionais mais amp
 
 A funcionalidade de listagem de assinaturas que o PayPal se recusa a implementar é padrão no setor há mais de uma década. Veja como outros processadores de pagamento lidam com esse requisito básico:
 
-__URL_PROTEGIDA_115__ Faixa {__URL_PROTEGIDA_116__
+### Faixa {#stripe}
 
 O Stripe oferece listagem de assinaturas desde o lançamento de sua API. A documentação mostra claramente como recuperar todas as assinaturas de uma conta de cliente ou comerciante. Isso é considerado uma funcionalidade CRUD básica.
 
@@ -625,7 +625,7 @@ O Stripe oferece listagem de assinaturas desde o lançamento de sua API. A docum
 
 A Paddle oferece APIs abrangentes de gerenciamento de assinaturas, incluindo listagem, filtragem e paginação. Eles entendem que os comerciantes precisam visualizar seus fluxos de receita recorrentes.
 
-__URL_PROTEGIDA_119__ Coinbase Comércio {__URL_PROTEGIDA_120__
+### Coinbase Comércio {#coinbase-commerce}
 
 Até mesmo processadores de pagamento com criptomoedas, como o Coinbase Commerce, oferecem melhor gerenciamento de assinaturas do que o PayPal.
 
@@ -697,8 +697,8 @@ Authorization: Bearer access_token
 * `POST /v1/billing/subscriptions` - Criar uma assinatura
 * `GET /v1/billing/subscriptions/{id}` - Obter UMA assinatura (se você souber o ID)
 * `PATCH /v1/billing/subscriptions/{id}` - Atualizar uma assinatura
-* `POST /v1/billing/subscriptions/{id}/cancel` - Cancelar a assinatura
-* `POST /v1/billing/subscriptions/{id}/suspend` - Suspender a assinatura
+* `POST /v1/billing/subscriptions/{id}/cancel` - Cancelar assinatura
+* `POST /v1/billing/subscriptions/{id}/suspend` - Suspender assinatura
 
 **O que está faltando no PayPal:**
 
@@ -713,7 +713,7 @@ O PayPal é o único grande processador de pagamentos que obriga os desenvolvedo
 
 Em uma atitude que resume perfeitamente a abordagem do PayPal para lidar com críticas, eles recentemente tiraram todo o fórum da comunidade do ar, silenciando efetivamente mais de 6 milhões de membros e apagando centenas de milhares de postagens que documentavam suas falhas.
 
-### A Grande Apagamento {#the-great-erasure}
+### O Grande Apagamento {#the-great-erasure}
 
 A Comunidade original do PayPal em `paypal-community.com` contava com **6.003.558 membros** e continha centenas de milhares de postagens, relatórios de bugs, reclamações e discussões sobre falhas na API do PayPal. Isso representou mais de uma década de evidências documentadas dos problemas sistemáticos do PayPal.
 
@@ -721,7 +721,7 @@ Em 30 de junho de 2025, o PayPal silenciosamente tirou todo o fórum do ar. Todo
 
 ### O Resgate de Terceiros {#the-third-party-rescue}
 
-Felizmente, um serviço terceirizado em [ppl.lithium.com](https://ppl.lithium.com/) preservou parte do conteúdo, permitindo-nos acessar as discussões que o PayPal tentou ocultar. No entanto, essa preservação de terceiros está incompleta e pode desaparecer a qualquer momento.
+Felizmente, um serviço terceirizado em [ppl.lithium.com](https://ppl.lithium.com/) preservou parte do conteúdo, permitindo-nos acessar as discussões que o PayPal tentou ocultar. No entanto, essa preservação terceirizada está incompleta e pode desaparecer a qualquer momento.
 
 Esse padrão de ocultação de evidências não é novidade para o PayPal. Eles têm um histórico documentado de:
 
@@ -831,7 +831,7 @@ As perguntas do comerciante revelam a profundidade dos problemas de confiabilida
 As evidências abrangem mais de 11 anos e mostram um padrão claro:
 
 * **2013**: "O PayPal está trabalhando nisso"
-* **2016**: O PayPal admite alteração drástica e fornece correção para o problema
+* **2016**: O PayPal admite uma mudança drástica e fornece uma correção para o problema
 * **2024**: Os mesmos erros continuam ocorrendo, afetando o Forward Email e inúmeros outros
 
 Isso não é um bug - **isso é negligência sistemática.** O PayPal sabe dessas falhas críticas de processamento de pagamentos há mais de uma década e consistentemente:
@@ -865,7 +865,7 @@ Em janeiro de 2025, o Departamento de Serviços Financeiros de Nova York emitiu 
 
 Essa ação regulatória mostra a disposição do PayPal de se envolver em práticas enganosas em todo o seu negócio, não apenas em suas ferramentas de desenvolvedor.
 
-### O Processo do Mel: Reescrevendo Links de Afiliados {#the-honey-lawsuit-rewriting-affiliate-links}
+### O processo do mel: reescrevendo links de afiliados {#the-honey-lawsuit-rewriting-affiliate-links}
 
 A aquisição da Honey pelo PayPal resultou em [ações judiciais alegando que Honey reescreve links de afiliados](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), roubando comissões de criadores de conteúdo e influenciadores. Isso representa outra forma de fraude sistemática, na qual o PayPal lucra redirecionando receitas que deveriam ser destinadas a terceiros.
 
@@ -887,7 +887,7 @@ O prejuízo de US$ 1.899 da Forward Email representa apenas a ponta do iceberg. 
 
 Se um pequeno serviço de e-mail perdeu quase US$ 2.000, e esse problema existe há mais de 11 anos, afetando milhares de comerciantes, o prejuízo financeiro coletivo provavelmente totaliza **centenas de milhões de dólares**.
 
-### A Mentira da Documentação {#the-documentation-lie}
+### A documentação está disponível {#the-documentation-lie}
 
 A documentação oficial do PayPal frequentemente não menciona as limitações e bugs críticos que os comerciantes encontrarão. Por exemplo:
 
@@ -915,7 +915,7 @@ O padrão é claro:
 
 Enquanto isso, os desenvolvedores são forçados a criar soluções alternativas, comprometer a segurança e lidar com interfaces de usuário quebradas apenas para aceitar pagamentos.
 
-Se você está construindo um sistema de pagamento, aprenda com a nossa experiência: construa seu [abordagem trifecta](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) com múltiplos processadores, mas não espere que o PayPal forneça a funcionalidade básica que você precisa. Planeje criar soluções alternativas desde o primeiro dia.
+Se você está construindo um sistema de pagamento, aprenda com a nossa experiência: construa seu [abordagem trifecta](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) com múltiplos processadores, mas não espere que o PayPal forneça a funcionalidade básica que você precisa. Planeje construir soluções alternativas desde o primeiro dia.
 
 > Esta publicação documenta nossa experiência de 11 anos com as APIs do PayPal na Forward Email. Todos os exemplos de código e links são de nossos sistemas de produção. Continuamos a oferecer suporte aos pagamentos do PayPal, apesar desses problemas, porque alguns clientes não têm outra opção.
 

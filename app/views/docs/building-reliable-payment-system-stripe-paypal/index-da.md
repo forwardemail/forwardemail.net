@@ -1,44 +1,44 @@
-# Sådan byggede vi et robust betalingssystem med Stripe og PayPal: En Trifecta-tilgang {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Sådan byggede vi et robust betalingssystem med Stripe og PayPal: En trifecta-tilgang {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
 <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
 
 ## Indholdsfortegnelse {#table-of-contents}
 
 * [Forord](#foreword)
-* [Udfordringen: Flere betalingsbehandlere, én kilde til sandhed](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Udfordringen: Flere betalingsudbydere, én kilde til sandhed](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [Trifecta-tilgangen: Tre lag af pålidelighed](#the-trifecta-approach-three-layers-of-reliability)
-* [Lag 1: Omdirigeringer efter kassen](#layer-1-post-checkout-redirects)
+* [Lag 1: Omdirigeringer efter betaling](#layer-1-post-checkout-redirects)
   * [Stripe Checkout Implementering](#stripe-checkout-implementation)
   * [PayPal-betalingsflow](#paypal-payment-flow)
-* [Lag 2: Webhook-handlere med signaturverifikation](#layer-2-webhook-handlers-with-signature-verification)
-  * [Stripe Webhook Implementering](#stripe-webhook-implementation)
+* [Lag 2: Webhook-håndterere med signaturbekræftelse](#layer-2-webhook-handlers-with-signature-verification)
+  * [Stripe Webhook-implementering](#stripe-webhook-implementation)
   * [PayPal Webhook-implementering](#paypal-webhook-implementation)
 * [Lag 3: Automatiserede job med Bree](#layer-3-automated-jobs-with-bree)
-  * [Kontrol af abonnementsnøjagtighed](#subscription-accuracy-checker)
+  * [Abonnementsnøjagtighedskontrol](#subscription-accuracy-checker)
   * [PayPal-abonnementssynkronisering](#paypal-subscription-synchronization)
-* [Håndtering af kantsager](#handling-edge-cases)
-  * [Svindel opdagelse og forebyggelse](#fraud-detection-and-prevention)
-  * [Håndtering af konflikter](#dispute-handling)
-* [Kode Genbrug: KISS og DRY principper](#code-reuse-kiss-and-dry-principles)
+* [Håndtering af Edge-sager](#handling-edge-cases)
+  * [Svigdetektion og -forebyggelse](#fraud-detection-and-prevention)
+  * [Håndtering af tvister](#dispute-handling)
+* [Genbrug af kode: KISS- og DRY-principperne](#code-reuse-kiss-and-dry-principles)
 * [Implementering af VISA-abonnementskrav](#visa-subscription-requirements-implementation)
-  * [Automatiserede e-mailmeddelelser før fornyelse](#automated-pre-renewal-email-notifications)
-  * [Håndtering af kantsager](#handling-edge-cases-1)
+  * [Automatiske e-mailnotifikationer før fornyelse](#automated-pre-renewal-email-notifications)
+  * [Håndtering af Edge-sager](#handling-edge-cases-1)
   * [Prøveperioder og abonnementsvilkår](#trial-periods-and-subscription-terms)
 * [Konklusion: Fordelene ved vores Trifecta-tilgang](#conclusion-the-benefits-of-our-trifecta-approach)
 
 ## Forord {#foreword}
 
-Hos Forward Email har vi altid prioriteret at skabe systemer, der er pålidelige, præcise og brugervenlige. Da det kom til at implementere vores betalingsbehandlingssystem, vidste vi, at vi havde brug for en løsning, der kunne håndtere flere betalingsbehandlere og samtidig bevare perfekt datakonsistens. Dette blogindlæg beskriver, hvordan vores udviklingsteam integrerede både Stripe og PayPal ved hjælp af en trifecta-tilgang, der sikrer 1:1-nøjagtighed i realtid på tværs af hele vores system.
+Hos Forward Email har vi altid prioriteret at skabe systemer, der er pålidelige, præcise og brugervenlige. Da det kom til implementeringen af vores betalingssystem, vidste vi, at vi havde brug for en løsning, der kunne håndtere flere betalingsprocessorer og samtidig opretholde perfekt datakonsistens. Dette blogindlæg beskriver, hvordan vores udviklingsteam integrerede både Stripe og PayPal ved hjælp af en trifecta-tilgang, der sikrer 1:1 nøjagtighed i realtid på tværs af hele vores system.
 
 ## Udfordringen: Flere betalingsudbydere, én kilde til sandhed {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Som en privatlivsfokuseret e-mail-tjeneste ønskede vi at give vores brugere betalingsmuligheder. Nogle foretrækker enkelheden ved kreditkortbetalinger gennem Stripe, mens andre værdsætter det ekstra lag af adskillelse, som PayPal giver. Men at understøtte flere betalingsprocessorer introducerer betydelig kompleksitet:
+Som en privatlivsfokuseret e-mailtjeneste ønskede vi at give vores brugere betalingsmuligheder. Nogle foretrækker den enkle kreditkortbetaling via Stripe, mens andre værdsætter det ekstra lag af adskillelse, som PayPal tilbyder. Understøttelse af flere betalingsudbydere introducerer dog betydelig kompleksitet:
 
 1. Hvordan sikrer vi ensartede data på tværs af forskellige betalingssystemer?
 2. Hvordan håndterer vi marginale sager som tvister, refusioner eller mislykkede betalinger?
 3. Hvordan opretholder vi en enkelt kilde til sandheden i vores database?
 
-Vores løsning var at implementere det, vi kalder "trifecta-tilgangen" - et tre-lags system, der giver redundans og sikrer datakonsistens uanset hvad der sker.
+Vores løsning var at implementere det, vi kalder "trifecta-tilgangen" - et trelagssystem, der giver redundans og sikrer datakonsistens, uanset hvad der sker.
 
 ## Trifecta-tilgangen: Tre lag af pålidelighed {#the-trifecta-approach-three-layers-of-reliability}
 
@@ -112,11 +112,11 @@ flowchart TD
 
 ## Lag 1: Omdirigeringer efter betaling {#layer-1-post-checkout-redirects}
 
-Det første lag af vores trifecta-tilgang sker umiddelbart efter, at en bruger har gennemført en betaling. Både Stripe og PayPal leverer mekanismer til at omdirigere brugere tilbage til vores websted med transaktionsoplysninger.
+Det første lag af vores trifecta-tilgang sker umiddelbart efter, at en bruger har gennemført en betaling. Både Stripe og PayPal tilbyder mekanismer til at omdirigere brugere tilbage til vores hjemmeside med transaktionsoplysninger.
 
-### Stripe Checkout Implementering {#stripe-checkout-implementation}
+### Stripe Checkout-implementering {#stripe-checkout-implementation}
 
-Til Stripe bruger vi deres Checkout Sessions API til at skabe en problemfri betalingsoplevelse. Når en bruger vælger en plan og vælger at betale med et kreditkort, opretter vi en betalingssession med specifik succes og annullerer webadresser:
+For Stripe bruger vi deres Checkout Sessions API til at skabe en problemfri betalingsoplevelse. Når en bruger vælger en plan og vælger at betale med et kreditkort, opretter vi en Checkout Session med specifikke succes- og annullerings-URL'er:
 
 ```javascript
 const options = {
@@ -158,7 +158,7 @@ Den kritiske del her er parameteren `success_url`, som inkluderer `session_id` s
 
 ### PayPal-betalingsflow {#paypal-payment-flow}
 
-For PayPal bruger vi en lignende tilgang med deres ordrer API:
+For PayPal bruger vi en lignende tilgang med deres Orders API:
 
 ```javascript
 const requestBody = {
@@ -283,13 +283,13 @@ sequenceDiagram
 
 ## Lag 2: Webhook-håndterere med signaturbekræftelse {#layer-2-webhook-handlers-with-signature-verification}
 
-Selvom omdirigeringer efter checkout fungerer godt i de fleste scenarier, er de ikke idiotsikre. Brugere kan lukke deres browser, før de bliver omdirigeret, eller netværksproblemer kan forhindre omdirigeringen i at fuldføre. Det er her webhooks kommer ind.
+Selvom omdirigeringer efter betaling fungerer godt i de fleste scenarier, er de ikke idiotsikre. Brugere kan lukke deres browser, før de bliver omdirigeret, eller netværksproblemer kan forhindre omdirigeringen i at fuldføres. Det er her, webhooks kommer ind i billedet.
 
-Både Stripe og PayPal leverer webhook-systemer, der sender realtidsmeddelelser om betalingsbegivenheder. Vi har implementeret robuste webhook-handlere, der bekræfter ægtheden af disse meddelelser og behandler dem i overensstemmelse hermed.
+Både Stripe og PayPal tilbyder webhook-systemer, der sender notifikationer i realtid om betalingshændelser. Vi har implementeret robuste webhook-håndterere, der verificerer ægtheden af disse notifikationer og behandler dem i overensstemmelse hermed.
 
 ### Stripe Webhook-implementering {#stripe-webhook-implementation}
 
-Vores Stripe webhook-handler verificerer signaturen af indgående webhook-begivenheder for at sikre, at de er legitime:
+Vores Stripe webhook-handler verificerer signaturen af indgående webhook-hændelser for at sikre, at de er legitime:
 
 ```javascript
 async function webhook(ctx) {
@@ -334,7 +334,7 @@ async function webhook(ctx) {
 }
 ```
 
-Funktionen `stripe.webhooks.constructEvent` verificerer signaturen ved hjælp af vores endpoint-hemmelighed. Hvis signaturen er gyldig, behandler vi hændelsen asynkront for at undgå at blokere webhook-svaret.
+Funktionen `stripe.webhooks.constructEvent` verificerer signaturen ved hjælp af vores slutpunktshemmelighed. Hvis signaturen er gyldig, behandler vi hændelsen asynkront for at undgå at blokere webhook-svaret.
 
 ### PayPal Webhook-implementering {#paypal-webhook-implementation}
 
@@ -377,15 +377,15 @@ async function webhook(ctx) {
 }
 ```
 
-Begge webhook-handlere følger det samme mønster: verificer signaturen, bekræft modtagelsen og bearbejd begivenheden asynkront. Dette sikrer, at vi aldrig går glip af en betalingsbegivenhed, selvom omdirigeringen efter checkout mislykkes.
+Begge webhook-handlere følger det samme mønster: verificerer signaturen, bekræfter modtagelsen og behandler hændelsen asynkront. Dette sikrer, at vi aldrig går glip af en betalingshændelse, selvom omdirigeringen efter betaling mislykkes.
 
 ## Lag 3: Automatiserede job med Bree {#layer-3-automated-jobs-with-bree}
 
-Det sidste lag af vores trifecta-tilgang er et sæt automatiserede job, der periodisk verificerer og afstemmer betalingsdata. Vi bruger Bree, en jobplanlægger for Node.js, til at køre disse job med jævne mellemrum.
+Det sidste lag i vores trifecta-tilgang er et sæt automatiserede job, der periodisk verificerer og afstemmer betalingsdata. Vi bruger Bree, en jobplanlægger til Node.js, til at køre disse job med jævne mellemrum.
 
-### Nøjagtighedstjekker for abonnement {#subscription-accuracy-checker}
+### Abonnementsnøjagtighedskontrol {#subscription-accuracy-checker}
 
-En af vores nøgleopgaver er kontrollen af abonnementsnøjagtighed, som sikrer, at vores database nøjagtigt afspejler abonnementsstatussen i Stripe:
+En af vores vigtigste opgaver er abonnementsnøjagtighedskontrollen, som sikrer, at vores database nøjagtigt afspejler abonnementsstatus i Stripe:
 
 ```javascript
 async function mapper(customer) {
@@ -452,11 +452,11 @@ async function mapper(customer) {
 }
 ```
 
-Dette job tjekker for uoverensstemmelser mellem vores database og Stripe, såsom uoverensstemmende e-mailadresser eller flere aktive abonnementer. Hvis den finder problemer, logger den dem og sender advarsler til vores administratorteam.
+Dette job tjekker for uoverensstemmelser mellem vores database og Stripe, såsom uoverensstemmelser i e-mailadresser eller flere aktive abonnementer. Hvis der findes problemer, logger det dem og sender advarsler til vores administratorteam.
 
 ### PayPal-abonnementssynkronisering {#paypal-subscription-synchronization}
 
-Vi har et lignende job for PayPal-abonnementer:
+Vi har en lignende opgave for PayPal-abonnementer:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -487,15 +487,15 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Disse automatiserede job fungerer som vores sidste sikkerhedsnet, der sikrer, at vores database altid afspejler den sande tilstand af abonnementer og betalinger i både Stripe og PayPal.
+Disse automatiserede job fungerer som vores sidste sikkerhedsnet og sikrer, at vores database altid afspejler den sande status for abonnementer og betalinger i både Stripe og PayPal.
 
 ## Håndtering af Edge-sager {#handling-edge-cases}
 
-Et robust betalingssystem skal håndtere kantsager med ynde. Lad os se på, hvordan vi håndterer nogle almindelige scenarier.
+Et robust betalingssystem skal håndtere edge-sager effektivt. Lad os se på, hvordan vi håndterer nogle almindelige scenarier.
 
 ### Svigdetektering og -forebyggelse {#fraud-detection-and-prevention}
 
-Vi har implementeret sofistikerede mekanismer til registrering af svindel, der automatisk identificerer og håndterer mistænkelige betalingsaktiviteter:
+Vi har implementeret sofistikerede mekanismer til svindelopdagelse, der automatisk identificerer og håndterer mistænkelige betalingsaktiviteter:
 
 ```javascript
 case 'charge.failed': {
@@ -540,11 +540,11 @@ case 'charge.failed': {
 }
 ```
 
-Denne kode forbyder automatisk brugere, der har flere mislykkede debiteringer og ingen verificerede domæner, hvilket er en stærk indikator for svigagtig aktivitet.
+Denne kode udelukker automatisk brugere, der har flere mislykkede debiteringer og ingen verificerede domæner, hvilket er en stærk indikator for svigagtig aktivitet.
 
 ### Håndtering af tvister {#dispute-handling}
 
-Når en bruger bestrider en debitering, accepterer vi automatisk kravet og træffer passende foranstaltninger:
+Når en bruger bestrider en opkrævning, accepterer vi automatisk kravet og træffer passende foranstaltninger:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
@@ -579,11 +579,11 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 }
 ```
 
-Denne tilgang minimerer indvirkningen af tvister på vores forretning, samtidig med at den sikrer en god kundeoplevelse.
+Denne tilgang minimerer virkningen af tvister på vores forretning, samtidig med at den sikrer en god kundeoplevelse.
 
-## Genbrug af kode: KISS- og DRY-principper {#code-reuse-kiss-and-dry-principles}
+## Kodegenbrug: KISS- og DRY-principperne {#code-reuse-kiss-and-dry-principles}
 
-Gennem hele vores betalingssystem har vi overholdt principperne KISS (Keep It Simple, Stupid) og DRY (Don't Repeat Yourself). Her er nogle eksempler:
+I hele vores betalingssystem har vi overholdt KISS-principperne (Keep It Simple, Stupid) og DRY-principperne (Don't Repeat Yourself). Her er nogle eksempler:
 
 1. **Delt hjælpefunktioner**: Vi har oprettet genbrugelige hjælpefunktioner til almindelige opgaver som synkronisering af betalinger og afsendelse af e-mails.
 
@@ -689,11 +689,11 @@ graph TD
 
 ## Implementering af VISA-abonnementskrav {#visa-subscription-requirements-implementation}
 
-Ud over vores trifecta-tilgang har vi implementeret specifikke funktioner for at overholde VISAs abonnementskrav og samtidig forbedre brugeroplevelsen. Et centralt krav fra VISA er, at brugerne skal have besked, før de opkræves for et abonnement, især når de skifter fra en prøveversion til et betalt abonnement.
+Ud over vores trifecta-tilgang har vi implementeret specifikke funktioner for at overholde VISAs abonnementskrav og samtidig forbedre brugeroplevelsen. Et vigtigt krav fra VISA er, at brugerne skal underrettes, før de bliver opkrævet betaling for et abonnement, især når de skifter fra en prøveperiode til et betalt abonnement.
 
 ### Automatiske e-mailnotifikationer før fornyelse {#automated-pre-renewal-email-notifications}
 
-Vi har bygget et automatiseret system, der identificerer brugere med aktive prøveabonnementer og sender dem en notifikations-e-mail, før deres første debitering sker. Dette holder os ikke kun i overensstemmelse med VISA-kravene, men reducerer også tilbageførsler og forbedrer kundetilfredsheden.
+Vi har bygget et automatiseret system, der identificerer brugere med aktive prøveabonnementer og sender dem en e-mail-besked, inden deres første opkrævning finder sted. Dette sikrer ikke kun, at vi overholder VISA-kravene, men reducerer også tilbageførsler og forbedrer kundetilfredsheden.
 
 Sådan implementerede vi denne funktion:
 
@@ -783,11 +783,11 @@ Denne implementering sikrer, at brugerne altid er informeret om kommende opkræv
 3. Det nøjagtige beløb, de vil blive opkrævet
 4. Hvilke domæner er dækket af deres abonnement
 
-Ved at automatisere denne proces opretholder vi perfekt overholdelse af VISAs krav (som giver besked om mindst 7 dage før opladning), samtidig med at vi reducerer supportforespørgsler og forbedrer den overordnede brugeroplevelse.
+Ved at automatisere denne proces opretholder vi perfekt overholdelse af VISAs krav (som kræver underretning mindst 7 dage før opkrævning), samtidig med at vi reducerer antallet af supportforespørgsler og forbedrer den samlede brugeroplevelse.
 
 ### Håndtering af Edge-sager {#handling-edge-cases-1}
 
-Vores implementering omfatter også robust fejlhåndtering. Hvis noget går galt under meddelelsesprocessen, advarer vores system automatisk vores team:
+Vores implementering inkluderer også robust fejlhåndtering. Hvis noget går galt under notifikationsprocessen, giver vores system automatisk vores team besked:
 
 ```javascript
 try {
@@ -815,11 +815,11 @@ try {
 
 Dette sikrer, at selvom der er et problem med notifikationssystemet, kan vores team hurtigt løse det og opretholde overholdelse af VISAs krav.
 
-VISA-abonnementsnotifikationssystemet er endnu et eksempel på, hvordan vi har bygget vores betalingsinfrastruktur med både overholdelse og brugeroplevelse i tankerne, som komplementerer vores trifecta-tilgang til at sikre pålidelig, gennemsigtig betalingsbehandling.
+VISA-abonnementsnotifikationssystemet er endnu et eksempel på, hvordan vi har bygget vores betalingsinfrastruktur med både compliance og brugeroplevelse i tankerne, hvilket supplerer vores trifecta-tilgang for at sikre pålidelig og transparent betalingsbehandling.
 
 ### Prøveperioder og abonnementsvilkår {#trial-periods-and-subscription-terms}
 
-For brugere, der aktiverer automatisk fornyelse på eksisterende planer, beregner vi den passende prøveperiode for at sikre, at de ikke bliver debiteret, før deres nuværende plan udløber:
+For brugere, der aktiverer automatisk fornyelse på eksisterende abonnementer, beregner vi den passende prøveperiode for at sikre, at de ikke bliver opkrævet betaling, før deres nuværende abonnement udløber:
 
 ```javascript
 if (
@@ -836,7 +836,7 @@ if (
 }
 ```
 
-Vi giver også klare oplysninger om abonnementsvilkår, herunder faktureringsfrekvens og annulleringspolitikker, og inkluderer detaljerede metadata med hvert abonnement for at sikre korrekt sporing og styring.
+Vi giver også klare oplysninger om abonnementsvilkår, herunder faktureringshyppighed og opsigelsespolitikker, og inkluderer detaljerede metadata med hvert abonnement for at sikre korrekt sporing og administration.
 
 ## Konklusion: Fordelene ved vores Trifecta-tilgang {#conclusion-the-benefits-of-our-trifecta-approach}
 
@@ -850,7 +850,7 @@ Vores trifecta-tilgang til betalingsbehandling har givet flere vigtige fordele:
 
 4. **Robusthed**: Vores system håndterer edge-sager problemfrit, lige fra netværksfejl til svigagtige aktiviteter.
 
-Hvis du implementerer et betalingssystem, der understøtter flere processorer, anbefaler vi stærkt denne trifecta-tilgang. Det kræver mere forudgående udviklingsindsats, men de langsigtede fordele i form af pålidelighed og nøjagtighed er det værd.
+Hvis du implementerer et betalingssystem, der understøtter flere processorer, anbefaler vi kraftigt denne trifecta-tilgang. Det kræver en større udviklingsindsats på forhånd, men de langsigtede fordele med hensyn til pålidelighed og nøjagtighed er det hele værd.
 
 For mere information om videresendelse af e-mail og vores privatlivsfokuserede e-mailtjenester, besøg vores [hjemmeside](https://forwardemail.net).
 

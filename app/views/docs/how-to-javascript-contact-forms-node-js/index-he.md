@@ -1,6 +1,6 @@
 # דוגמה לקוד Node.js של טפסי יצירת קשר ב-JavaScript {#javascript-contact-forms-nodejs-code-example}
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [התקנה ודרישות](#install-and-requirements)
 * [קוד מקור ודוגמה](#source-code-and-example)
@@ -13,9 +13,9 @@
 npm install nodemailer
 ```
 
-## קוד מקור ודוגמה {#source-code-and-example}
+## קוד מקור ודוגמה של {#source-code-and-example}
 
-דוגמה זו משתמשת בספרייה **[Nodemailer](https://github.com/nodemailer/nodemailer)** ובנותנת החסות הרשמי שלה **[העברת דוא"ל](https://forwardemail.net)** כדי לשלוח ולצפות בתצוגה מקדימה של דואר יוצא.
+דוגמה זו משתמשת בספרייה **[Nodemailer](https://github.com/nodemailer/nodemailer)** ובנותן החסות הרשמי שלה **[העברת דוא"ל](https://forwardemail.net)** כדי לשלוח ולצפות בתצוגה מקדימה של דואר יוצא.
 
 תצטרך <strong class="text-success"><i class="fa fa-key"></i>ליצור סיסמה</strong> כדי לשלוח דואר יוצא - אנא עקוב אחר **[מדריך לשליחת דוא"ל עם דומיין מותאם אישית (SMTP)](/guides/send-email-with-custom-domain-smtp)** שלנו.
 

@@ -7,25 +7,25 @@
 * [序文](#foreword)
 * [安定した価格で大幅なコスト削減](#dramatic-cost-savings-with-stable-pricing)
   * [現実世界の大学の節約](#real-world-university-savings)
-* [大学卒業生のメールチャレンジ](#the-university-alumni-email-challenge)
-  * [卒業生の電子メール ID の価値](#the-value-of-alumni-email-identity)
-  * [従来の解決策では不十分](#traditional-solutions-fall-short)
+* [大学卒業生メールチャレンジ](#the-university-alumni-email-challenge)
+  * [卒業生のメールIDの価値](#the-value-of-alumni-email-identity)
+  * [従来の解決策は不十分](#traditional-solutions-fall-short)
   * [メール転送ソリューション](#the-forward-email-solution)
-* [技術的実装: 仕組み](#technical-implementation-how-it-works)
+* [技術的実装：仕組み](#technical-implementation-how-it-works)
   * [コアアーキテクチャ](#core-architecture)
   * [大学システムとの統合](#integration-with-university-systems)
-  * [API 駆動型管理](#api-driven-management)
-  * [DNS の設定と検証](#dns-configuration-and-verification)
+  * [API駆動型管理](#api-driven-management)
+  * [DNSの設定と検証](#dns-configuration-and-verification)
   * [テストと品質保証](#testing-and-quality-assurance)
 * [実装タイムライン](#implementation-timeline)
-* [実装プロセス: 移行から保守まで](#implementation-process-from-migration-to-maintenance)
+* [実装プロセス：移行から保守まで](#implementation-process-from-migration-to-maintenance)
   * [初期評価と計画](#initial-assessment-and-planning)
   * [移行戦略](#migration-strategy)
   * [技術的なセットアップと構成](#technical-setup-and-configuration)
   * [ユーザーエクスペリエンスデザイン](#user-experience-design)
   * [トレーニングとドキュメント](#training-and-documentation)
   * [継続的なサポートと最適化](#ongoing-support-and-optimization)
-* [ケーススタディ: ケンブリッジ大学](#case-study-university-of-cambridge)
+* [ケーススタディ：ケンブリッジ大学](#case-study-university-of-cambridge)
   * [チャレンジ](#challenge)
   * [解決](#solution)
   * [結果](#results)
@@ -42,25 +42,25 @@
 
 ## 序文 {#foreword}
 
-私たちは、名門大学とその卒業生のために、世界で最も安全でプライベートかつ柔軟な電子メール転送サービスを構築しました。
+私たちは、名門大学とその卒業生のために、世界で最も安全で、プライベートで、柔軟なメール転送サービスを構築しました。
 
-高等教育の競争の激しい環境において、卒業生との生涯にわたるつながりを維持することは、単なる伝統ではなく、戦略的な必須事項です。大学がこうしたつながりを育む最も具体的な方法の 1 つは、卒業生の電子メール アドレスを通じて、学問的背景を反映したデジタル ID を卒業生に提供することです。
+競争の激しい高等教育環境において、卒業生との生涯にわたるつながりを維持することは、単なる伝統ではなく、戦略的に不可欠な要素です。大学がこうしたつながりを育む最も具体的な方法の一つは、卒業生のメールアドレスを提供することです。これは、卒業生にそれぞれの学問的背景を反映したデジタルアイデンティティを提供するものです。
 
-Forward Emailは、世界屈指の名門教育機関と提携し、卒業生向けメールサービスの管理方法に革命をもたらしました。当社のエンタープライズグレードのメール転送ソリューションは、現在、[ケンブリッジ大学](https://en.wikipedia.org/wiki/University_of_Cambridge)、[メリーランド大学](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park)、[タフツ大学](https://en.wikipedia.org/wiki/Tufts_University)、そして[スワースモア大学](https://en.wikipedia.org/wiki/Swarthmore_College)の卒業生向けメールシステムに導入されており、世界中の数千人の卒業生にサービスを提供しています。
+Forward Emailは、世界有数の名門教育機関と提携し、卒業生向けメールサービスの管理方法に革命をもたらしました。当社のエンタープライズグレードのメール転送ソリューションは、[ケンブリッジ大学](https://en.wikipedia.org/wiki/University_of_Cambridge)、[メリーランド大学](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park)、[タフツ大学](https://en.wikipedia.org/wiki/Tufts_University)、[スワースモア大学](https://en.wikipedia.org/wiki/Swarthmore_College)の卒業生向けメールシステムに導入され、世界中の数千人の卒業生にサービスを提供しています。
 
-このブログ投稿では、プライバシーを重視した当社のメール転送サービスである[オープンソース](https://en.wikipedia.org/wiki/Open-source_software)がどのようにしてこれらの教育機関にとって好ましいソリューションとなったのか、それを可能にした技術的な実装、そしてそれが管理効率と卒業生の満足度の両方にどのような変革をもたらしたのかについて説明します。
+このブログ投稿では、プライバシーを重視した当社の [オープンソース](https://en.wikipedia.org/wiki/Open-source_software) メール転送サービスがどのようにしてこれらの教育機関にとって好ましいソリューションとなったのか、それを可能にした技術的な実装、そしてそれが管理効率と卒業生の満足度の両方にどのような変革をもたらしたのかについて説明します。
 
 ## 安定した価格で大幅なコスト削減 {#dramatic-cost-savings-with-stable-pricing}
 
-当社のソリューションの経済的メリットは、特に従来の電子メール プロバイダーの継続的に上昇する価格と比較すると、非常に大きいです。
+当社のソリューションの経済的メリットは、特に従来のメールプロバイダーの継続的に上昇する価格と比較すると、非常に大きいです。
 
-| 解決 | 卒業生一人当たりの費用（年間） | 卒業生10万人にかかる費用 | 最近の価格上昇 |
+| 解決 | 卒業生一人当たりの費用（年間） | 卒業生10万人の費用 | 最近の価格上昇 |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ビジネス向け Google Workspace | $72 | $7,200,000 | • 2019 年: G Suite Basic が月額 5 ドルから 6 ドルに (+20%)<br>• 2023 年: フレキシブル プランが 20% 値上げ<br>• 2025 年: AI 機能搭載の Business Plus が月額 18 ドルから 26.40 ドルに (+47%) |
 | 教育向け Google Workspace | 無料（Education Fundamentals）<br>生徒 1 人あたり年間 3 ドル（Education Standard）<br>生徒 1 人あたり年間 5 ドル（Education Plus） | 無料 - 50万ドル | • ボリューム割引: 100～499 ライセンスの場合 5%<br>• ボリューム割引: 500 ライセンス以上の場合 10%<br>• 無料利用枠はコアサービスに限定されます |
 | Microsoft 365 ビジネス | $60 | $6,000,000 | • 2023年：年2回の価格改定を導入<br>• 2025年（1月）：Copilot AI搭載のパーソナルプランが月額6.99ドルから9.99ドル（43%増）に値上げ<br>• 2025年（4月）：月払いの年間契約が5%増額 |
 | Microsoft 365 教育 | 無料（A1）<br>1教員あたり年間38～55ドル（A3）<br>1教員あたり年間65～96ドル（A5） | 無料 - 96,000ドル | • 学生ライセンスは、多くの場合、教職員の購入に含まれています<br>• ボリュームライセンスによるカスタム価格設定<br>• 無料利用枠は Web バージョンに限定されています |
-| セルフホスト型取引所 | $45 | $4,500,000 | 継続的なメンテナンスとセキュリティコストは上昇し続けている |
+| セルフホスト型Exchange | $45 | $4,500,000 | 継続的なメンテナンスとセキュリティコストは上昇し続けている |
 | **メール転送エンタープライズ** | **月額250ドル固定** | **年間3,000ドル** | **発売以来価格上昇なし** |
 
 ### 現実世界の大学貯蓄 {#real-world-university-savings}
@@ -75,16 +75,16 @@ Forward Emailは、世界屈指の名門教育機関と提携し、卒業生向�
 | メリーランド大学 | 25,000 | $75,000 | $3,000 | $72,000 |
 
 > \[!NOTE]
-> Forward Email enterprise only costs $250/month typically, with no extra cost per user, whitelisted API rate limitations, and the only additional cost is storage if you need additional GB/TB for students (+$3 per 10 GB additional storage). We use NVMe SSD drives for fast support of IMAP/POP3/SMTP/CalDAV/CardDAV as well.
+> Forward Email Enterpriseは通常月額250ドルで、ユーザーあたりの追加料金は発生せず、APIのホワイトリストによる速度制限もありません。追加費用は、学生向けにストレージ容量を追加する必要がある場合（10GB/TB追加ごとに3ドル）のみです。IMAP/POP3/SMTP/CalDAV/CardDAVの高速サポートのために、NVMe SSDドライブも使用しています。
 
 > \[!IMPORTANT]
-> Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
+> GoogleやMicrosoftは、ユーザーのデータを分析するAI機能を統合しながら価格を繰り返し引き上げてきましたが、Forward Emailは厳格なプライバシー重視の姿勢を保ちながら、安定した価格設定を維持しています。AIは使用せず、利用パターンの追跡も行わず、ログやメールをディスクに保存することもありません（すべての処理はメモリ内で行われます）。そのため、卒業生とのコミュニケーションにおける完全なプライバシーが確保されます。
 
-これは従来のメールホスティングソリューションと比較して大幅なコスト削減を意味し、大学は奨学金、研究、その他のミッションクリティカルな活動に資金を振り向けることができます。Email Vendor Selectionによる2023年の分析によると、AI機能の統合に伴い価格が上昇し続ける中、教育機関は従来のメールプロバイダーに代わる費用対効果の高い代替手段を求める傾向が高まっています（[2023 年のメールベンダーの選択](https://www.emailvendorselection.com/email-service-provider-list/)）。
+これは従来のメールホスティングソリューションと比較して大幅なコスト削減を意味し、大学は奨学金、研究、その他のミッションクリティカルな活動に資金を振り向けることができます。Email Vendor Selectionによる2023年の分析によると、AI機能の統合に伴い価格が上昇し続ける中、教育機関は従来のメールプロバイダーに代わる費用対効果の高い代替手段を求める傾向が高まっています([2023年のメールベンダー選定](https://www.emailvendorselection.com/email-service-provider-list/))。
 
-## 大学卒業生メールチャレンジ {#the-university-alumni-email-challenge}
+## 大学卒業生向けメールチャレンジ {#the-university-alumni-email-challenge}
 
-大学にとって、卒業生に生涯有効なメールアドレスを提供することは、従来のメールソリューションでは効果的に対処しにくい、特有の課題を伴います。ServerFaultの包括的な議論で指摘されているように、大規模なユーザーベースを持つ大学では、パフォーマンス、セキュリティ、そして費用対効果のバランスが取れた、専用のメールソリューションが必要です（[サーバーフォールト、2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)）。
+大学にとって、卒業生に生涯有効なメールアドレスを提供することは、従来のメールソリューションでは効果的に対処することが難しい、特有の課題をもたらします。ServerFaultの包括的な議論で指摘されているように、大規模なユーザーベースを持つ大学では、パフォーマンス、セキュリティ、そしてコスト効率のバランスが取れた、専用のメールソリューションが必要です ([ServerFault、2009年](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users))。
 
 ### 卒業生のメールIDの価値 {#the-value-of-alumni-email-identity}
 
@@ -96,10 +96,10 @@ Forward Emailは、世界屈指の名門教育機関と提携し、卒業生向�
 * 同窓生ネットワークとコミュニティ構築の支援
 * 生涯にわたる安定した連絡先の提供
 
-Tekade (2020) の調査では、教育用メールアドレスは、学術リソースへのアクセス、専門家としての信頼性、さまざまなサービスの特別割引など、卒業生に多くのメリットをもたらすことが強調されています ([ミディアム、2020年](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05))。
+Tekade (2020) の調査では、教育用メール アドレスは、学術リソースへのアクセス、専門家としての信頼性、さまざまなサービスの特別割引など、卒業生に多くのメリットをもたらすことが強調されています ([ミディアム、2020年](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05))。
 
 > \[!TIP]
-> Visit our new [AlumniEmail.com](https://alumniemail.com) directory for a comprehensive resource on university alumni email services, including setup guides, best practices, and a searchable directory of alumni email domains. It serves as a central hub for all alumni email information.
+> 大学の卒業生向けメールサービスに関する包括的なリソースについては、新しい[AlumniEmail.com](https://alumniemail.com)ディレクトリをご覧ください。設定ガイド、ベストプラクティス、卒業生向けメールドメインの検索可能なディレクトリなどが含まれています。卒業生向けメールに関するあらゆる情報を集約したハブとして機能します。
 
 ### 従来のソリューションでは不十分 {#traditional-solutions-fall-short}
 
@@ -107,11 +107,11 @@ Tekade (2020) の調査では、教育用メールアドレスは、学術リソ
 
 * **コストが高すぎる**: ユーザー単位のライセンスモデルは、大規模な卒業生ベースでは経済的に維持不可能になります
 * **管理上の負担**: 数千、数百万のアカウントを管理するには、膨大なITリソースが必要です
-* **セキュリティ上の懸念**: 休眠アカウントのセキュリティを維持すると、脆弱性が高まります
-* **柔軟性の限界**: 硬直したシステムでは、卒業生のメール転送という特殊なニーズに対応できません
+* **セキュリティ上の懸念**: 休眠アカウントのセキュリティ維持は、脆弱性を高めます
+* **柔軟性の限界**: 硬直したシステムでは、卒業生メール転送の独自のニーズに対応できません
 * **プライバシーの問題**: 多くのプロバイダーが広告目的でメールの内容をスキャンしています
 
-Quora での大学のメールメンテナンスに関する議論では、未使用のアカウントはハッキングや個人情報の盗難の危険にさらされる可能性があるため、セキュリティ上の懸念が大学が卒業生のメール アドレスを制限またはキャンセルする主な理由であることが明らかになっています ([Quora、2011年](https://www.quora.com/Is-there-any-cost-for-a-college-or-university-to-maintain-edu-e-mail-addresses))。
+大学の電子メールメンテナンスに関する Quora のディスカッションでは、未使用のアカウントはハッキングや個人情報の盗難に対して脆弱である可能性があるため、セキュリティ上の懸念が大学が卒業生の電子メール アドレスを制限またはキャンセルする主な理由であることが明らかになっています ([Quora、2011年](https://www.quora.com/Is-there-any-cost-for-a-college-or-university-to-maintain-edu-e-mail-addresses))。
 
 ### メール転送ソリューション {#the-forward-email-solution}
 
@@ -137,20 +137,20 @@ Quora での大学のメールメンテナンスに関する議論では、未�
 * カスタムドメインとサブドメインのサポート
 * API駆動型のアカウント管理
 
-ServerFaultのIT専門家によると、独自のメールソリューションを導入しようとしている大学にとって、最適なメール転送エージェント（MTA）はPostfix、IMAP/POP3アクセスにはCourierまたはDovecotが推奨されています（[サーバーフォールト、2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)）。しかし、当社のソリューションを利用すれば、大学がこれらの複雑なシステムを自ら管理する必要がなくなります。
+ServerFaultのIT専門家によると、独自のメールソリューションを導入しようとしている大学にとって、最適なメール転送エージェント（MTA）はPostfix、IMAP/POP3アクセスにはCourierまたはDovecotが推奨されています（[ServerFault、2009年](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)）。しかし、当社のソリューションを利用すれば、大学がこれらの複雑なシステムを自ら管理する必要がなくなります。
 
 ### 大学システムとの統合 {#integration-with-university-systems}
 
-私たちは既存の大学インフラストラクチャとのシームレスな統合パスを開発しました。
+私たちは既存の大学インフラストラクチャとのシームレスな統合パスウェイを開発しました。
 
-* [RESTful API](https://forwardemail.net/email-api) との連携による自動プロビジョニング
+* [RESTful API](https://forwardemail.net/email-api) 統合による自動プロビジョニング
 * 大学ポータルのカスタムブランディングオプション
 * 部門や組織向けの柔軟なエイリアス管理
 * 効率的な管理のためのバッチ操作
 
 ### API駆動型管理 {#api-driven-management}
 
-当社の[RESTful API](https://forwardemail.net/email-api) により、大学は電子メール管理を自動化できます。
+当社の [RESTful API](https://forwardemail.net/email-api) により、大学は電子メール管理を自動化できます。
 
 ```javascript
 // Example: Creating a new alumni email address
@@ -168,26 +168,26 @@ const response = await fetch('https://forwardemail.net/api/v1/domains/example.ed
 });
 ```
 
-### DNS 構成と検証 {#dns-configuration-and-verification}
+### DNS の構成と検証 {#dns-configuration-and-verification}
 
-適切な DNS 構成は電子メールの配信に不可欠です。当社のチームは以下のサポートを提供します。
+メール配信には適切なDNS設定が不可欠です。弊社のチームが以下のサポートを提供します。
 
-* MXレコードを含む[DNS](https://en.wikipedia.org/wiki/Domain_Name_System)設定
-* オープンソースの[メール認証](https://www.npmjs.com/package/mailauth)パッケージを使用した包括的なメールセキュリティ実装。メール認証の万能ツールとして、以下の機能を処理します。
+* MXレコードを含む[DNS](https://en.wikipedia.org/wiki/Domain_Name_System)の設定
+* オープンソースの[メール認証](https://www.npmjs.com/package/mailauth)パッケージを使用した包括的なメールセキュリティ実装。メール認証のための万能ツールとして、以下の機能を処理します。
 * [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (送信者ポリシーフレームワーク)：メールのなりすましを防止
 * [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (DomainKeys Identified Mail)：メール認証
 * [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (ドメインベースメッセージ認証、レポート、適合)：ポリシー適用
 * [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (SMTP MTA Strict Transport Security)：TLS暗号化を強制
 * [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (認証済み受信チェーン)：メッセージ転送時の認証維持
-* [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (送信者書き換えスキーム)：SPF検証を維持転送
-* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (メッセージ識別のためのブランドインジケーター) 対応メールクライアントでのロゴ表示
+* [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (送信者書き換えスキーム)：転送時のSPF検証維持
+* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (ブランド対応メールクライアントでのロゴ表示のためのメッセージ識別情報（IdF）
 * ドメイン所有権のDNS TXTレコード検証
 
 `mailauth` パッケージ (<http://npmjs.com/package/mailauth>) は、メール認証のあらゆる側面を単一の統合ライブラリで処理する、完全にオープンソースのソリューションです。プロプライエタリソリューションとは異なり、このアプローチにより、透明性、定期的なセキュリティアップデート、そしてメール認証プロセスの完全な制御が保証されます。
 
 ### テストと品質保証 {#testing-and-quality-assurance}
 
-完全な展開の前に、厳格なテストを実施します。
+完全展開の前に、厳格なテストを実施します。
 
 * エンドツーエンドのメール配信テスト
 * 大容量シナリオの負荷テスト
@@ -221,11 +221,11 @@ gantt
 
 ## 実装プロセス: 移行から保守まで {#implementation-process-from-migration-to-maintenance}
 
-当社の構造化された実装プロセスにより、当社のソリューションを導入する大学ではスムーズな移行が保証されます。
+当社の構造化された実装プロセスにより、大学が当社のソリューションを導入する際のスムーズな移行が保証されます。
 
 ### 初期評価と計画 {#initial-assessment-and-planning}
 
-まず、大学の現在の電子メール システム、卒業生データベース、技術要件を総合的に評価します。このフェーズには次の内容が含まれます。
+まず、大学の現在のメールシステム、卒業生データベース、そして技術要件を包括的に評価します。このフェーズには以下の内容が含まれます。
 
 * IT部門、卒業生関係部門、管理部門との関係者インタビュー
 * 既存のメールインフラの技術監査
@@ -245,7 +245,7 @@ gantt
 
 ### 技術的なセットアップと構成 {#technical-setup-and-configuration}
 
-当社の技術チームは、システムセットアップのあらゆる側面を担当します。
+当社の技術チームがシステムセットアップのあらゆる側面を担当します。
 
 * DNS設定と検証
 * 大学システムとのAPI統合
@@ -254,7 +254,7 @@ gantt
 
 ### ユーザーエクスペリエンスデザイン {#user-experience-design}
 
-私たちは大学と緊密に協力し、管理者と卒業生の両方にとって直感的なインターフェースを作成します。
+私たちは大学と緊密に協力し、管理者と卒業生の両方にとって直感的なインターフェースを作成しています。
 
 * カスタムブランドの卒業生向けメールポータル
 * 簡素化されたメール転送管理
@@ -282,13 +282,13 @@ gantt
 * メールのベストプラクティスに関するコンサルティング
 * データ分析とレポート作成
 
-## ケーススタディ: ケンブリッジ大学 {#case-study-university-of-cambridge}
+## ケーススタディ：ケンブリッジ大学 {#case-study-university-of-cambridge}
 
-ケンブリッジ大学は、IT の諸経費とコストを削減しながら、卒業生に @cam.ac.uk の電子メール アドレスを提供するソリューションを模索していました。
+ケンブリッジ大学は、IT のオーバーヘッドとコストを削減しながら卒業生に @cam.ac.uk の電子メール アドレスを提供するソリューションを模索していました。
 
 ### チャレンジ {#challenge}
 
-ケンブリッジ大学は、以前の卒業生向け電子メール システムでいくつかの課題に直面していました。
+ケンブリッジ大学は、以前の卒業生向けメール システムでいくつかの課題に直面していました。
 
 * 個別のメールインフラを維持するための高い運用コスト
 * 数千ものアカウントを管理する管理負担
@@ -298,16 +298,16 @@ gantt
 
 ### ソリューション {#solution}
 
-Forward Email は包括的なソリューションを実装しました:
+Forward Email は包括的なソリューションを実装しました。
 
 * @cam.ac.uk の卒業生向けメールアドレスへのメール転送
 * 卒業生向けセルフサービスポータル
 * ケンブリッジ大学卒業生データベースとのAPI統合
 * 包括的なメールセキュリティ実装
 
-### 結果 {#results}
+### 件の結果 {#results}
 
-この実装により、次のような大きなメリットが得られました。
+この実装により、次のような大きなメリットがもたらされました。
 
 * 以前のソリューションと比較して大幅なコスト削減
 * 99.9%のメール配信信頼性
@@ -327,7 +327,7 @@ Forward Email は包括的なソリューションを実装しました:
 * **ブランドの一貫性**: 機関メールアドレスを永久的に使用可能
 * **卒業生エンゲージメント**: 継続的なサービス提供によるつながりの強化
 
-BulkSignature (2023) によると、教育機関向けの電子メール プラットフォームには、無料または低コストのプランによる費用対効果、大量通信機能による時間効率、電子メールの配信とエンゲージメントを監視する追跡機能など、大きなメリットがあります ([バルク署名、2023](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/))。
+BulkSignature (2023) によると、教育機関向けの電子メール プラットフォームには、無料または低コストのプランによる費用対効果、大量通信機能による時間効率、電子メールの配信とエンゲージメントを監視する追跡機能など、大きなメリットがあります ([バルクシグネチャー、2023年](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/))。
 
 ### 卒業生向け {#for-alumni}
 
@@ -341,15 +341,15 @@ International Journal of Education & Literacy Studies の研究では、学術�
 
 ### 卒業生の採用率 {#adoption-rates-among-alumni}
 
-大学は、卒業生コミュニティにおける採用率と満足度が高いと報告しています。
+大学は卒業生コミュニティの間で高い採用率と満足度を報告しています。
 
 ### 以前のソリューションと比較したコスト削減 {#cost-savings-compared-to-previous-solutions}
 
-財務面の影響は大きく、大学側は以前の電子メール ソリューションと比較して大幅なコスト削減を報告しています。
+財務的な影響は大きく、大学側は以前の電子メール ソリューションに比べて大幅なコスト削減を報告しています。
 
 ## セキュリティとプライバシーに関する考慮事項 {#security-and-privacy-considerations}
 
-教育機関にとって、卒業生のデータを保護することは単なる良い習慣ではなく、欧州の GDPR などの規制の下では法的に義務付けられていることがよくあります。
+教育機関にとって、卒業生のデータの保護は単なる良い習慣ではなく、欧州の GDPR などの規制では法的要件となることがよくあります。
 
 ### データ保護対策 {#data-protection-measures}
 
@@ -362,7 +362,7 @@ International Journal of Education & Literacy Studies の研究では、学術�
 * セキュリティ検証のための透明性のあるオープンソースコード
 
 > \[!WARNING]
-> Many email providers scan email content for advertising purposes or to train AI models. This practice raises serious privacy concerns, especially for professional and academic communications. Forward Email never scans email content and processes all emails in-memory to ensure complete privacy.
+> 多くのメールプロバイダーは、広告目的やAIモデルの学習のためにメールの内容をスキャンしています。この行為は、特に業務上および学術的なコミュニケーションにおいて深刻なプライバシー上の懸念を引き起こします。Forward Emailはメールの内容をスキャンすることはなく、すべてのメールをメモリ内で処理することで完全なプライバシーを確保しています。
 
 ### コンプライアンスフレームワーク {#compliance-framework}
 
@@ -376,7 +376,7 @@ International Journal of Education & Literacy Studies の研究では、学術�
 
 ## 今後の展開 {#future-developments}
 
-私たちは、新しい機能と性能を追加して、卒業生向けメール ソリューションを継続的に強化しています。
+当社では、新しい機能や性能を追加して卒業生向けメール ソリューションを継続的に強化しています。
 
 * 大学管理者向けの分析機能強化
 * 高度なフィッシング対策
@@ -385,9 +385,9 @@ International Journal of Education & Literacy Studies の研究では、学術�
 
 ## 結論 {#conclusion}
 
-Forward Email は、大学が卒業生向けメール サービスを提供および管理する方法に革命をもたらしました。コストのかかる複雑なメール ホスティングを、洗練された安全なメール転送に置き換えることで、大学はコストと管理オーバーヘッドを大幅に削減しながら、すべての卒業生に生涯メール アドレスを提供できるようになりました。
+Forward Emailは、大学における卒業生向けメールサービスの提供と管理に革命をもたらしました。費用と複雑なメールホスティングを、洗練された安全なメール転送サービスに置き換えることで、大学はすべての卒業生に生涯メールアドレスを提供しながら、コストと管理上のオーバーヘッドを大幅に削減できるようになりました。
 
-ケンブリッジ大学、メリーランド大学、タフツ大学、スワースモア大学などの名門大学との提携は、多様な教育環境における当社のアプローチの有効性を実証しています。大学はコストを抑えながら卒業生とのつながりを維持するというプレッシャーがますます高まっていますが、当社のソリューションは従来の電子メール システムに代わる魅力的な選択肢を提供します。
+ケンブリッジ大学、メリーランド大学、タフツ大学、スワースモア大学といった名門大学との提携は、多様な教育環境における当社のアプローチの有効性を実証しています。大学はコストを抑えながら卒業生とのつながりを維持するというプレッシャーがますます高まっており、当社のソリューションは従来のメールシステムに代わる魅力的な選択肢となります。
 
 ```mermaid
 flowchart LR

@@ -28,11 +28,11 @@ Forward Email은 [깃허브](https://github.com/forwardemail)의 오픈소스 �
 
 ## 추천 보안 감사 회사 {#recommended-security-audit-companies}
 
-__보호된_URL_10__ 큐어53 {__보호된_URL_11__
+### Cure53 {#cure53}
 
 **위치**: 독일 베를린
 **웹사이트**: <https://cure53.de/>
-**전문 분야**: "정밀 웹사이트에 대한 정밀 침투 테스트"
+**전문 분야**: "정밀 웹사이트를 위한 정밀 침투 테스트"
 
 Cure53은 웹 애플리케이션 보안 테스트 및 침투 테스트에 대한 꼼꼼한 접근 방식으로 유명한 독일 사이버 보안 회사입니다. 베를린에 본사를 둔 Cure53은 포괄적인 테스트 방법론과 상세한 보고 관행을 통해 해당 분야의 선두 주자로 자리매김했습니다.
 
@@ -44,7 +44,7 @@ Cure53은 웹 애플리케이션 보안 테스트 및 침투 테스트에 대한
 * [Mullvad 앱/API 보안 평가 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - 애플리케이션 및 API 보안 분석
 * [Mullvad 서버 보안 평가 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - 후속 인프라 평가
 
-### 근본적으로 개방된 보안 {#radically-open-security}
+### 급진적으로 개방된 보안 {#radically-open-security}
 
 **위치**: 네덜란드 암스테르담
 **웹사이트**: <https://www.radicallyopensecurity.com/>
@@ -76,9 +76,9 @@ Assured AB는 기술 사이버 보안 평가 분야의 선두주자로 자리매
 * [Mullvad API 보안 감사 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API 보안 평가
 * [Mullvad DNS 서버 보안 감사 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - DNS 인프라 평가
 
-### 비트의 흔적 {#trail-of-bits}
+### 비트 트레일 {#trail-of-bits}
 
-**위치**: 미국 뉴욕주 뉴욕주
+**위치**: 미국 뉴욕주 뉴욕
 **웹사이트**: <https://www.trailofbits.com/>
 **전문 분야**: "버그만 고치는 것이 아니라 소프트웨어를 고칩니다."
 
@@ -105,7 +105,7 @@ Assured AB는 기술 사이버 보안 평가 분야의 선두주자로 자리매
 
 이러한 보안 감사 회사를 평가할 때 우리는 조직이 보안 파트너를 선택할 때 평가해야 하는 몇 가지 중요한 요소를 고려했습니다.
 
-**기술 전문성**: 추천된 모든 회사는 웹 애플리케이션 보안, 인프라 평가, 암호화 구현, 신기술 등 여러 도메인에 걸쳐 심층적인 기술 지식을 입증했습니다.
+**기술 전문성**: 추천된 모든 회사는 웹 애플리케이션 보안, 인프라 평가, 암호화 구현, 신기술 등 여러 도메인에 걸쳐 심층적인 기술 지식을 입증합니다.
 
 **투명성 및 보고**: 각 회사는 결과, 위험 평가 및 해결 전략을 명확하게 전달하는 포괄적이고 실행 가능한 보고서를 제공합니다. 또한 많은 회사가 공개 연구 및 오픈소스 도구를 통해 더 넓은 보안 커뮤니티에 기여하고 있습니다.
 

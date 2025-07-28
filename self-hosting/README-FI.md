@@ -1,38 +1,38 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Itse isännöidyt julkaisut {#self-hosted-releases}
 
-Tässä osiossa dokumentoidaan CI/CD-työnkulku ForwardEmailin itseisännöimälle ratkaisulle ja kerrotaan, kuinka Docker-kuvat rakennetaan, julkaistaan ja otetaan käyttöön.
+Tässä osiossa dokumentoidaan ForwardEmailin itse isännöidyn ratkaisun CI/CD-työnkulku ja selitetään, miten Docker-levykuvat rakennetaan, julkaistaan ja otetaan käyttöön.
 
-## Table of Contents {#table-of-contents}
+## Sisällysluettelo {#table-of-contents}
 
 * [Yleiskatsaus](#overview)
-* [CI/CD työnkulku](#cicd-workflow)
-  * [GitHub Actions -työnkulku](#github-actions-workflow)
-  * [Docker-kuvarakenne](#docker-image-structure)
+* [CI/CD-työnkulku](#cicd-workflow)
+  * [GitHub-toimintojen työnkulku](#github-actions-workflow)
+  * [Docker-kuvan rakenne](#docker-image-structure)
 * [Käyttöönottoprosessi](#deployment-process)
   * [Asennus](#installation)
-  * [Docker Compose -kokoonpano](#docker-compose-configuration)
-* [Huoltoominaisuudet](#maintenance-features)
+  * [Docker Composen konfigurointi](#docker-compose-configuration)
+* [Huolto-ominaisuudet](#maintenance-features)
   * [Automaattiset päivitykset](#automatic-updates)
-  * [Varmuuskopioi ja palauta](#backup-and-restore)
-  * [Sertifikaatin uusiminen](#certificate-renewal)
+  * [Varmuuskopiointi ja palautus](#backup-and-restore)
+  * [Todistuksen uusiminen](#certificate-renewal)
 * [Versiointi](#versioning)
 * [Kuvien käyttö](#accessing-images)
 * [Osallistuminen](#contributing)
 
-## Overview {#overview}
+## Yleiskatsaus {#overview}
 
-ForwardEmailin itseisännöity ratkaisu käyttää GitHub Actionsia Docker-kuvien luomiseen ja julkaisemiseen automaattisesti aina, kun uusi julkaisu luodaan. Nämä kuvat ovat sitten käyttäjien käytettävissä omilla palvelimillaan mukana toimitetun asennuskomentosarjan avulla.
+ForwardEmailin itse isännöity ratkaisu käyttää GitHub Actionsia Docker-kuvien automaattiseen luomiseen ja julkaisemiseen aina, kun uusi julkaisu luodaan. Nämä kuvat ovat sitten käyttäjien käytettävissä omille palvelimilleen käyttöönotettavaksi toimitetun asennusskriptin avulla.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Löydät myös [itse isännöity blogi](https://forwardemail.net/blog/docs/self-hosted-solution)- ja [itse isännöidyn kehittäjän opas](https://forwardemail.net/self-hosted)-oppaat
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Tarkempia vaiheittaisia ohjeita varten katso [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)- tai [Debian](https://forwardemail.net/guides/selfhosted-on-debian)-pohjaiset oppaat.
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD-työnkulku {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub-toimintojen työnkulku {#github-actions-workflow}
 
-Itse isännöidyn Docker-kuvan rakennus- ja julkaisuprosessi on määritelty `.github/workflows/docker-image-build-publish.yml` -koodissa. Tämä työnkulku:
+Itse isännöidyn Docker-kuvan rakennus- ja julkaisuprosessi on määritelty `.github/workflows/docker-image-build-publish.yml`-kohteessa. Tämä työnkulku:
 
 1. **Käynnistimet**: Suoritetaan automaattisesti, kun uusi GitHub-julkaisu julkaistaan
 2. **Ympäristö**: Toimii Ubuntussa Node.js 18.20.4:n kanssa
@@ -41,8 +41,8 @@ Itse isännöidyn Docker-kuvan rakennus- ja julkaisuprosessi on määritelty `.g
 * Asettaa Docker Buildxin monialustaisille koonneille
 * Kirjauduu GitHub Container Registryyn (GHCR)
 * Päivittää skeeman itse isännöityä käyttöönottoa varten
-* Rakentaa Docker-kuvan käyttämällä `self-hosting/Dockerfile-selfhosted`
-* Merkitsee kuvan sekä julkaisuversiolla että `latest`
+* Rakentaa Docker-kuvan käyttämällä `self-hosting/Dockerfile-selfhosted`-tunnistetta
+* Merkitsee kuvan sekä julkaisuversiolla että `latest`-tunnisteella
 * Työntää kuvat GitHub Container Registryyn
 
 ```yaml
@@ -71,11 +71,11 @@ jobs:
 
 ### Docker-kuvan rakenne {#docker-image-structure}
 
-Docker-kuva rakennetaan käyttämällä monivaiheista lähestymistapaa, joka on määritelty `self-hosting/Dockerfile-selfhosted`:ssa:
+Docker-kuva rakennetaan käyttämällä `self-hosting/Dockerfile-selfhosted`-muuttujassa määriteltyä monivaiheista lähestymistapaa:
 
 1. **Rakentajavaihe**:
 * Käyttää Node.js 20:tä peruskuvana
-* Asettaa `SELF_HOSTED=true` -ympäristömuuttujan
+* Asettaa `SELF_HOSTED=true`-ympäristömuuttujan
 * Asentaa riippuvuudet pnpm:llä
 * Kääntää sovelluksen tuotantotilassa
 
@@ -83,15 +83,15 @@ Docker-kuva rakennetaan käyttämällä monivaiheista lähestymistapaa, joka on 
 * Käyttää suppeampaa Node.js 20 -levykuvaa
 * Asentaa vain tarvittavat järjestelmäriippuvuudet
 * Luo tarvittavat hakemistot tietojen tallennukseen
-* Kopioi rakennetun sovelluksen rakennusvaiheesta
+* Kopioi rakennetun sovelluksen rakentajavaiheesta
 
-Tämä lähestymistapa varmistaa, että lopullinen kuva on optimoitu koon ja turvallisuuden mukaan.
+Tämä lähestymistapa varmistaa, että lopullinen kuva on optimoitu koon ja turvallisuuden suhteen.
 
 ## Käyttöönottoprosessi {#deployment-process}
 
 ### Asennus {#installation}
 
-Käyttäjät voivat ottaa käyttöön itseisännöidyn ratkaisun mukana toimitetun asennuskomentosarjan avulla:
+Käyttäjät voivat ottaa käyttöön itse isännöidyn ratkaisun käyttämällä annettua asennusskriptiä:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
@@ -121,11 +121,11 @@ Tämä skripti:
 * **Redis**: Muistissa oleva tietovarasto
 * **SQLite**: Tietokanta sähköpostien tallentamiseen
 
-Jokainen palvelu käyttää samaa Docker-kuvaa, mutta eri aloituspisteillä, mikä mahdollistaa modulaarisen arkkitehtuurin ja yksinkertaistaa ylläpitoa.
+Jokainen palvelu käyttää samaa Docker-kuvaa, mutta eri aloituskohdilla, mikä mahdollistaa modulaarisen arkkitehtuurin ja yksinkertaistaa ylläpitoa.
 
 ## Ylläpito-ominaisuudet {#maintenance-features}
 
-Itse isännöity ratkaisu sisältää useita ylläpitoominaisuuksia:
+Itse isännöity ratkaisu sisältää useita ylläpito-ominaisuuksia:
 
 ### Automaattiset päivitykset {#automatic-updates}
 
@@ -150,7 +150,7 @@ Asennus tarjoaa vaihtoehtoja:
 
 ### Varmenteen uusiminen {#certificate-renewal}
 
-SSL-varmenteita hallitaan automaattisesti seuraavilla vaihtoehdoilla:
+SSL-varmenteita hallitaan automaattisesti, ja niissä on asetuksia:
 
 * Luo uusia varmenteita asennuksen aikana
 * Uudista varmenteet tarvittaessa
@@ -158,12 +158,12 @@ SSL-varmenteita hallitaan automaattisesti seuraavilla vaihtoehdoilla:
 
 ## Versiointi {#versioning}
 
-Jokainen GitHub-julkaisu luo uuden Docker-kuvan, johon on merkitty:
+Jokainen GitHub-julkaisu luo uuden Docker-kuvan, johon on merkitty seuraava tunniste:
 
 1. Tarkka julkaisuversio (esim. `v1.0.0`)
 2. Uusimman julkaisun `latest`-tunniste
 
-Käyttäjät voivat valita tietyn version vakauden takaamiseksi tai `latest` -tunnisteen saadakseen aina uusimmat ominaisuudet.
+Käyttäjät voivat valita tietyn version vakauden takaamiseksi tai `latest`-tunnisteen saadakseen aina uusimmat ominaisuudet.
 
 ## Kuvien käyttö {#accessing-images}
 
@@ -174,9 +174,9 @@ Docker-kuvat ovat julkisesti saatavilla osoitteessa:
 
 Näiden kuvien hakemiseen ei tarvita todennusta.
 
-## Avustaja {#contributing}
+## Avustava {#contributing}
 
-Voit osallistua itseisännöityyn ratkaisuun seuraavasti:
+Voit osallistua itse isännöityyn ratkaisuun seuraavasti:
 
 1. Tee muutokset asiaankuuluviin tiedostoihin `self-hosting`-hakemistossa.
 2. Testaa paikallisesti tai Ubuntu-pohjaisella VPS:llä käyttämällä annettua `setup.sh`-skriptiä.

@@ -10,7 +10,7 @@
   * [Etapa 2: Configurar resolvedores de DNS](#step-2-configure-dns-resolvers)
   * [Etapa 3: instalar dependências do sistema](#step-3-install-system-dependencies)
   * [Etapa 4: instalar pacotes Snap](#step-4-install-snap-packages)
-  * [Etapa 5: Instalar o Docker](#step-5-install-docker)
+  * [Etapa 5: instalar o Docker](#step-5-install-docker)
   * [Etapa 6: Configurar o serviço Docker](#step-6-configure-docker-service)
   * [Etapa 7: Configurar Firewall](#step-7-configure-firewall)
   * [Etapa 8: Clonar o repositório de e-mail encaminhado](#step-8-clone-forward-email-repository)
@@ -241,7 +241,7 @@ ls -la
 
 ### Etapa 9: Configurar o ambiente {#step-9-set-up-environment-configuration}
 
-Prepare a configuração do ambiente:
+Preparar a configuração do ambiente:
 
 ```bash
 # Set up directory variables
@@ -469,7 +469,7 @@ netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ## Configuração pós-instalação {#post-installation-configuration}
 
-Configuração de registros DNS ### {#dns-records-setup}
+### Configuração de registros DNS {#dns-records-setup}
 
 Você precisa configurar os seguintes registros DNS para seu domínio:
 
@@ -479,7 +479,7 @@ Você precisa configurar os seguintes registros DNS para seu domínio:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Registros A {#a-records}
+#### Um registro {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -590,10 +590,10 @@ crontab -l
 
 ### Locais de registro {#log-locations}
 
-* **Logs do Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
-* **Logs do sistema**: `/var/log/syslog`
-* **Logs de backup**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Logs de atualização automática**: `/var/log/autoupdate.log`
+* **Registros do Docker Compose**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
+* **Registros do sistema**: `/var/log/syslog`
+* **Registros de backup**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Registros de atualização automática**: `/var/log/autoupdate.log`
 
 ### Tarefas regulares de manutenção {#regular-maintenance-tasks}
 

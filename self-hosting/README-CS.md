@@ -1,13 +1,13 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Vlastní hostované verze {#self-hosted-releases}
 
-Tato část dokumentuje pracovní postup CI/CD pro samohostované řešení ForwardEmail a vysvětluje, jak se vytvářejí, publikují a nasazují obrazy Docker.
+Tato část dokumentuje pracovní postup CI/CD pro samoobslužné řešení ForwardEmail a vysvětluje, jak se vytvářejí, publikují a nasazují obrazy Dockeru.
 
-## Table of Contents {#table-of-contents}
+## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
 * [Pracovní postup CI/CD](#cicd-workflow)
-  * [Pracovní postup akcí GitHub](#github-actions-workflow)
-  * [Struktura obrázku Docker](#docker-image-structure)
+  * [Pracovní postup akcí GitHubu](#github-actions-workflow)
+  * [Struktura obrazu Dockeru](#docker-image-structure)
 * [Proces nasazení](#deployment-process)
   * [Instalace](#installation)
   * [Konfigurace Docker Compose](#docker-compose-configuration)
@@ -19,18 +19,17 @@ Tato část dokumentuje pracovní postup CI/CD pro samohostované řešení Forw
 * [Přístup k obrázkům](#accessing-images)
 * [Přispívání](#contributing)
 
-## Overview {#overview}
+## Přehled {#overview}
 
-Samoobslužné řešení ForwardEmail používá akce GitHub k automatickému vytváření a publikování obrázků Docker, kdykoli je vytvořeno nové vydání. Tyto obrazy jsou pak uživatelům k dispozici k nasazení na jejich vlastních serverech pomocí poskytnutého instalačního skriptu.
+Self-hostované řešení ForwardEmailu využívá akce GitHubu k automatickému vytváření a publikování obrazů Dockeru vždy, když je vytvořena nová verze. Tyto obrazy jsou pak k dispozici uživatelům k nasazení na jejich vlastní servery pomocí poskytnutého instalačního skriptu.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
->
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Existuje také naše [blog s vlastním hostingem](https://forwardemail.net/blog/docs/self-hosted-solution) a [průvodce pro vývojáře s vlastním hostingem](https://forwardemail.net/self-hosted)
+>> Podrobnější návody krok za krokem naleznete v příručkách založených na [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) nebo [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Pracovní postup CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Pracovní postup akcí GitHubu {#github-actions-workflow}
 
 Proces sestavení a publikování vlastního obrazu Dockeru je definován v `.github/workflows/docker-image-build-publish.yml`. Tento pracovní postup:
 
@@ -42,7 +41,7 @@ Proces sestavení a publikování vlastního obrazu Dockeru je definován v `.gi
 * Přihlásí se do registru kontejnerů GitHub (GHCR)
 * Aktualizuje schéma pro samoobslužné nasazení
 * Sestaví obraz Dockeru pomocí `self-hosting/Dockerfile-selfhosted`
-* Označí obraz jak verzí vydání, tak `latest`
+* Označí obraz jak verzí vydání, tak i `latest`
 * Odešle obrazy do registru kontejnerů GitHub
 
 ```yaml
@@ -85,13 +84,13 @@ Obraz Dockeru je sestaven pomocí vícestupňového přístupu definovaného v `
 * Vytvoří požadované adresáře pro ukládání dat
 * Zkopíruje sestavenou aplikaci z fáze builderu
 
-Tento přístup zajišťuje, že výsledný obraz je optimalizován pro velikost a zabezpečení.
+Tento přístup zajišťuje, že výsledný obrázek je optimalizován z hlediska velikosti a zabezpečení.
 
 ## Proces nasazení {#deployment-process}
 
-Instalace ### {#installation}
+### Instalace {#installation}
 
-Uživatelé mohou nasadit vlastní hostované řešení pomocí poskytnutého instalačního skriptu:
+Uživatelé mohou nasadit samoobslužné řešení pomocí poskytnutého instalačního skriptu:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
@@ -125,15 +124,15 @@ Každá služba používá stejný obraz Dockeru, ale s různými vstupními bod
 
 ## Funkce údržby {#maintenance-features}
 
-Samoobslužné řešení zahrnuje několik funkcí údržby:
+Samostatně hostované řešení zahrnuje několik funkcí údržby:
 
 ### Automatické aktualizace {#automatic-updates}
 
-Uživatelé mohou povolit automatické aktualizace, které:
+Uživatelé si mohou povolit automatické aktualizace, které budou:
 
-* Každý večer stáhnout nejnovější obraz Dockeru
+* Každý večer stahovat nejnovější obraz Dockeru
 * Restartovat služby s aktualizovaným obrazem
-* Zaznamenat proces aktualizace
+* Protokolovat proces aktualizace
 
 ```bash
 # Setup auto-updates (runs at 1 AM daily)
@@ -142,7 +141,7 @@ Uživatelé mohou povolit automatické aktualizace, které:
 
 ### Zálohování a obnovení {#backup-and-restore}
 
-Nastavení poskytuje možnosti pro:
+Nastavení nabízí možnosti pro:
 
 * Konfigurace pravidelných záloh na úložiště kompatibilní s S3
 * Zálohování dat MongoDB, Redis a SQLite
@@ -150,35 +149,35 @@ Nastavení poskytuje možnosti pro:
 
 ### Obnovení certifikátu {#certificate-renewal}
 
-Certifikáty SSL jsou spravovány automaticky s následujícími možnostmi:
+SSL certifikáty jsou automaticky spravovány s možnostmi:
 
 * Generování nových certifikátů během nastavení
 * Obnovení certifikátů v případě potřeby
 * Konfigurace DKIM pro ověřování e-mailů
 
-## Verze {#versioning}
+## Verzování {#versioning}
 
-Každá verze GitHubu vytvoří nový obrázek Dockeru označený:
+Každá verze GitHubu vytvoří nový obraz Dockeru s tagy:
 
-1. Konkrétní verze (např. `v1.0.0`)
-2. Tag `latest` pro nejnovější verzi
+1. Konkrétní verze vydání (např. `v1.0.0`)
+2. Tag `latest` pro nejnovější vydání
 
 Uživatelé si mohou zvolit použití konkrétní verze pro zajištění stability nebo tagu `latest`, aby vždy získali nejnovější funkce.
 
 ## Přístup k obrázkům {#accessing-images}
 
-Obrázky Dockeru jsou veřejně dostupné na:
+Obrazy Dockeru jsou veřejně dostupné na adrese:
 
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (příklad tagu verze)
 
-K získání těchto obrázků není vyžadováno žádné ověření.
+Pro stažení těchto obrázků není vyžadováno žádné ověření.
 
 ## Přispívá {#contributing}
 
-Chcete-li přispět k řešení s vlastním hostitelem:
+Chcete-li přispět k řešení hostovanému na vlastních serverech:
 
 1. Proveďte změny v příslušných souborech v adresáři `self-hosting`
 2. Otestujte lokálně nebo na VPS s Ubuntu pomocí poskytnutého skriptu `setup.sh`
-3. Odešlete žádost o stažení aktualizací (pull request)
-4. Po sloučení a vytvoření nové verze pracovní postup CI automaticky sestaví a publikuje aktualizovaný obraz Dockeru.
+3. Odešlete žádost o změnu (pull request)
+4. Po sloučení a vytvoření nové verze pracovní postup CI automaticky sestaví a publikuje aktualizovaný obraz Dockeru

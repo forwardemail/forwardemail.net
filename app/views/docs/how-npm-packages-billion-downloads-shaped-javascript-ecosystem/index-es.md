@@ -58,12 +58,12 @@ En el mundo de [JavaScript](https://en.wikipedia.org/wiki/JavaScript) y [Node.js
 
 ## Los pioneros que confían en nosotros: Isaac Z. Schlueter y Forward Email {#the-pioneers-who-trust-us-isaac-z-schlueter-and-forward-email}
 
-Nos enorgullece tener a [Isaac Z. Schlueter](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)) como usuario. Isaac creó [npm](https://en.wikipedia.org/wiki/Npm_\(software\)) y ayudó a construir [Node.js](https://en.wikipedia.org/wiki/Node.js). Su confianza en Forward Email demuestra nuestra prioridad por la calidad y la seguridad. Isaac usa Forward Email para varios dominios, incluido izs.me.
+Nos enorgullece tener a [Isaac Z. Schlueter](https://izs.me/) ([GitHub: isaacs](https://github.com/isaacs)) como usuario. Isaac creó [npm](https://en.wikipedia.org/wiki/Npm_\(software\) y ayudó a construir [Node.js](https://en.wikipedia.org/wiki/Node.js). Su confianza en Forward Email demuestra nuestra prioridad por la calidad y la seguridad. Isaac usa Forward Email para varios dominios, incluido izs.me.
 
-El impacto de Isaac en JavaScript es enorme. En 2009, fue de los primeros en ver el potencial de Node.js, trabajando con [Ryan Dahl](https://en.wikipedia.org/wiki/Ryan_Dahl), creador de la plataforma. Como dijo Isaac en un [Entrevista con la revista Increment](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/): «En medio de una comunidad muy pequeña de personas que intentaban descubrir cómo implementar JavaScript del lado del servidor, Ryan Dahl presentó Node, que era claramente el enfoque correcto. Aporté mi granito de arena y me involucré mucho a mediados de 2009».
+El impacto de Isaac en JavaScript es enorme. En 2009, fue de los primeros en ver el potencial de Node.js, trabajando con [Ryan Dahl](https://en.wikipedia.org/wiki/Ryan_Dahl), creador de la plataforma. Como dijo Isaac en un [Entrevista con la revista Increment](https://increment.com/development/interview-with-isaac-z-schlueter-ceo-of-npm/): «En medio de una comunidad muy pequeña de personas que intentaban descubrir cómo implementar JavaScript del lado del servidor, Ryan Dahl creó Node, que era claramente el enfoque correcto. Aporté mi granito de arena y me involucré mucho a mediados de 2009».
 
 > \[!NOTE]
-> For those interested in the history of Node.js, there are excellent documentaries available that chronicle its development, including [The Story of Node.js](https://www.youtube.com/watch?v=LB8KwiiUGy0) and [10 Things I Regret About Node.js - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). Ryan Dahl's [personal website](https://tinyclouds.org/) also contains valuable insights into his work.
+> Para quienes estén interesados en la historia de Node.js, existen excelentes documentales que narran su desarrollo, como [La historia de Node.js](https://www.youtube.com/watch?v=LB8KwiiUGy0) y [10 cosas que lamento sobre Node.js - Ryan Dahl](https://www.youtube.com/watch?v=jo_B4LTHi3I). [sitio web personal](https://tinyclouds.org/), de Ryan Dahl, también contiene valiosas reflexiones sobre su trabajo.
 
 ### De la creación de npm al liderazgo de Node.js {#from-npms-creation-to-nodejs-leadership}
 
@@ -84,13 +84,13 @@ En el corazón de nuestro éxito en código abierto se encuentra Nick Baugh, fun
 La experiencia de Nick con frameworks web le valió un puesto en [Comité Técnico Express](https://expressjs.com/en/resources/community.html), donde colaboró con uno de los frameworks Node.js más utilizados. Nick figura ahora como miembro inactivo en [Página de la comunidad Express](https://expressjs.com/en/resources/community.html).
 
 > \[!IMPORTANT]
-> Express was originally created by TJ Holowaychuk, a prolific open source contributor who has shaped much of the Node.js ecosystem. We're grateful for TJ's foundational work and respect his [decision to take a break](https://news.ycombinator.com/item?id=37687017) from his extensive open source contributions.
+> Express fue creado originalmente por TJ Holowaychuk, un prolífico colaborador de código abierto que ha dado forma a gran parte del ecosistema Node.js. Agradecemos el trabajo fundacional de TJ y respetamos su [decisión de tomar un descanso](https://news.ycombinator.com/item?id=37687017) por sus extensas contribuciones al código abierto.
 
 Como miembro de [Comité Técnico Express](https://expressjs.com/en/resources/community.html), Nick mostró gran atención a los detalles en cuestiones como aclarar la documentación de `req.originalUrl` y solucionar problemas de manejo de formularios multiparte.
 
 ### Contribuciones al marco Koa {#koa-framework-contributions}
 
-El trabajo de Nick con [Marco Koa](https://github.com/koajs/koa), una alternativa moderna y más ligera a Express, también creada por TJ Holowaychuk, demuestra aún más su compromiso con mejores herramientas de desarrollo web. Sus contribuciones a Koa incluyen la resolución de problemas y el código mediante solicitudes de extracción, la gestión de errores, la gestión de tipos de contenido y las mejoras en la documentación.
+El trabajo de Nick con [Marco Koa](https://github.com/koajs/koa) —una alternativa moderna y más ligera a Express, también creada por TJ Holowaychuk— demuestra aún más su compromiso con mejores herramientas de desarrollo web. Sus contribuciones a Koa incluyen la resolución de problemas y el código mediante solicitudes de extracción, la gestión de errores, la gestión de tipos de contenido y las mejoras en la documentación.
 
 Su trabajo tanto en Express como en Koa le brinda una visión única del desarrollo web con Node.js, lo que ayuda a nuestro equipo a crear paquetes que funcionan bien con múltiples ecosistemas de marco.
 
@@ -108,22 +108,22 @@ Organizamos nuestro trabajo de código abierto en torno a organizaciones de GitH
 
 [Organización de la cabina](https://github.com/cabinjs) es nuestra versión de un registro de aplicaciones simple y potente. El paquete principal, [`cabin`](https://github.com/cabinjs/cabin), cuenta con casi 900 estrellas en GitHub y más de 100 000 descargas semanales. Cabin ofrece un registro estructurado compatible con servicios populares como Sentry, LogDNA y Papertrail.
 
-Lo que hace especial a Cabin es su ingenioso sistema de API y plugins. Paquetes de soporte como [`axe`](https://github.com/cabinjs/axe) para middleware Express y [`parse-request`](https://github.com/cabinjs/parse-request) para análisis de solicitudes HTTP demuestran nuestro compromiso con soluciones integrales en lugar de herramientas aisladas.
+Lo que hace especial a Cabin es su ingenioso sistema de API y plugins. Los paquetes de soporte como [`axe`](https://github.com/cabinjs/axe) para middleware Express y [`parse-request`](https://github.com/cabinjs/parse-request) para el análisis de solicitudes HTTP demuestran nuestro compromiso con soluciones completas en lugar de herramientas aisladas.
 
-El paquete [`bson-objectid`](https://github.com/cabinjs/bson-objectid) merece una mención especial, con más de 1,7 millones de descargas en tan solo dos meses\[^2]. Esta ligera implementación de ObjectID de MongoDB se ha convertido en la opción predilecta para los desarrolladores que necesitan identificadores sin dependencias completas de MongoDB.
+El paquete [`bson-objectid`](https://github.com/cabinjs/bson-objectid) merece una mención especial, con más de 1,7 millones de descargas en tan solo dos meses. Esta ligera implementación de ObjectID de MongoDB se ha convertido en la opción predilecta para los desarrolladores que necesitan identificadores sin dependencias completas de MongoDB.
 
 ### Escáner de spam: lucha contra el abuso del correo electrónico {#spam-scanner-fighting-email-abuse}
 
-El paquete [Organización del escáner de spam](https://github.com/spamscanner) demuestra nuestro compromiso con la solución de problemas reales. El paquete principal, [`spamscanner`](https://github.com/spamscanner/spamscanner), ofrece detección avanzada de spam, pero es el paquete [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe) el que ha experimentado una adopción asombrosa.
+El paquete [Organización del escáner de spam](https://github.com/spamscanner) demuestra nuestro compromiso con la solución de problemas reales. El paquete principal, [`spamscanner`](https://github.com/spamscanner/spamscanner), proporciona detección avanzada de spam, pero es el paquete [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe) el que ha experimentado una adopción asombrosa.
 
-Con más de 1,2 millones de descargas en dos meses, `url-regex-safe` corrige problemas críticos de seguridad en otras expresiones regulares de detección de URL. Este paquete muestra nuestro enfoque hacia el código abierto: detectar un problema común (en este caso, las vulnerabilidades [Rehacer](https://en.wikipedia.org/wiki/ReDoS) en la validación de URL), crear una solución sólida y mantenerla cuidadosamente.
+Con más de 1,2 millones de descargas en dos meses, `url-regex-safe` corrige problemas críticos de seguridad en otras expresiones regulares de detección de URL. Este paquete muestra nuestro enfoque hacia el código abierto: identificar un problema común (en este caso, las vulnerabilidades de [Rehacer](https://en.wikipedia.org/wiki/ReDoS) en la validación de URL), crear una solución sólida y mantenerla cuidadosamente.
 
 ### Bree: Programación de trabajos moderna con subprocesos de trabajo {#bree-modern-job-scheduling-with-worker-threads}
 
-El paquete [Organización Bree](https://github.com/breejs) es nuestra respuesta a un desafío común en Node.js: la programación fiable de tareas. El paquete principal [`bree`](https://github.com/breejs/bree), con más de 3100 estrellas en GitHub, proporciona un programador de tareas moderno que utiliza hilos de trabajo de Node.js para un mejor rendimiento y fiabilidad.
+[Organización Bree](https://github.com/breejs) es nuestra respuesta a un desafío común en Node.js: la programación fiable de tareas. El paquete principal [`bree`](https://github.com/breejs/bree), con más de 3100 estrellas en GitHub, proporciona un programador de tareas moderno que utiliza hilos de trabajo de Node.js para un mejor rendimiento y fiabilidad.
 
 > \[!NOTE]
-> Bree was created after we helped maintain [Agenda](https://github.com/agenda/agenda), applying lessons learned to build a better job scheduler. Our Agenda contributions helped us find ways to improve job scheduling.
+> Bree se creó después de que ayudáramos a mantener [Orden del día](https://github.com/agenda/agenda), aplicando las lecciones aprendidas para desarrollar un mejor programador de tareas. Nuestras contribuciones a la Agenda nos ayudaron a encontrar maneras de mejorar la programación de tareas.
 
 ¿Qué hace que Bree sea diferente de otros programadores como Agenda?
 
@@ -132,7 +132,7 @@ El paquete [Organización Bree](https://github.com/breejs) es nuestra respuesta 
 * **API sencilla**: Bree ofrece un control detallado y sencillo, lo que facilita la implementación de necesidades de programación complejas.
 * **Soporte integrado**: Funciones como la recarga elegante, las tareas cron, las fechas y las horas intuitivas se incluyen por defecto.
 
-Bree es una parte clave de [forwardemail.net](https://github.com/forwardemail/forwardemail.net), ya que gestiona tareas críticas en segundo plano como el procesamiento de correo electrónico, la limpieza y el mantenimiento programado. El uso de Bree en Forward Email demuestra nuestro compromiso con el uso de nuestras propias herramientas en producción, garantizando que cumplan con altos estándares de fiabilidad.
+Bree es un componente clave de [forwardemail.net](https://github.com/forwardemail/forwardemail.net), ya que gestiona tareas críticas en segundo plano como el procesamiento de correo electrónico, la limpieza y el mantenimiento programado. El uso de Bree en Forward Email demuestra nuestro compromiso con el uso de nuestras propias herramientas en producción, garantizando así altos estándares de fiabilidad.
 
 También utilizamos y valoramos otros excelentes paquetes de hilos de trabajo como [piscina](https://github.com/piscinajs/piscina) y clientes HTTP como [once](https://github.com/nodejs/undici). Piscina, al igual que Bree, utiliza hilos de trabajo de Node.js para un procesamiento eficiente de tareas. Agradecemos a [Matthew Hill](https://github.com/mcollina), responsable del mantenimiento de undici y piscina, por sus importantes contribuciones a Node.js. Matteo forma parte del Comité Directivo Técnico de Node.js y ha mejorado considerablemente las capacidades de los clientes HTTP en Node.js.
 
@@ -140,11 +140,11 @@ También utilizamos y valoramos otros excelentes paquetes de hilos de trabajo co
 
 Nuestro proyecto más ambicioso es [Reenviar correo electrónico](https://github.com/forwardemail), un servicio de correo electrónico de código abierto que ofrece reenvío de correo electrónico, almacenamiento y servicios de API. El repositorio principal cuenta con más de 1100 estrellas en GitHub\[^4], lo que demuestra el aprecio de la comunidad por esta alternativa a los servicios de correo electrónico propietarios.
 
-El paquete [`preview-email`](https://github.com/forwardemail/preview-email) de esta organización, con más de 2,5 millones de descargas en dos meses\[^5], se ha convertido en una herramienta esencial para los desarrolladores que trabajan con plantillas de correo electrónico. Al ofrecer una forma sencilla de previsualizar los correos electrónicos durante el desarrollo, soluciona un problema común en la creación de aplicaciones compatibles con correo electrónico.
+El paquete [`preview-email`](https://github.com/forwardemail/preview-email) de esta organización, con más de 2,5 millones de descargas en dos meses\[^5], se ha convertido en una herramienta esencial para los desarrolladores que trabajan con plantillas de correo electrónico. Al proporcionar una forma sencilla de previsualizar los correos electrónicos durante el desarrollo, soluciona un problema común en la creación de aplicaciones compatibles con correo electrónico.
 
 ### Lad: Utilidades y herramientas esenciales de Koa {#lad-essential-koa-utilities-and-tools}
 
-[Organización de muchachos](https://github.com/ladjs) ofrece una colección de utilidades y herramientas esenciales, enfocadas principalmente en mejorar el ecosistema del framework Koa. Estos paquetes resuelven desafíos comunes en el desarrollo web y están diseñados para funcionar en conjunto a la perfección, manteniendo su utilidad independiente.
+[Organización de muchachos](https://github.com/ladjs) proporciona una colección de utilidades y herramientas esenciales, enfocadas principalmente en mejorar el ecosistema del framework Koa. Estos paquetes resuelven desafíos comunes en el desarrollo web y están diseñados para funcionar en conjunto a la perfección, manteniendo su utilidad independiente.
 
 #### koa-better-error-handler: Manejo de errores mejorado para Koa {#koa-better-error-handler-improved-error-handling-for-koa}
 
@@ -172,9 +172,9 @@ Este paquete es particularmente valioso cuando se utiliza junto con [`koa-404-ha
 
 El paquete es altamente personalizable, lo que permite a los desarrolladores ajustar los nombres de los campos y las frases según los requisitos de su aplicación. Está diseñado para integrarse a la perfección con Mongoose para la gestión de usuarios, lo que lo convierte en una solución ideal para aplicaciones basadas en Koa que requieren una autenticación robusta.
 
-#### elegante: Cierre elegante de la aplicación {#graceful-elegant-application-shutdown}
+#### graceful: Cierre elegante de la aplicación {#graceful-elegant-application-shutdown}
 
-[`@ladjs/graceful`](https://github.com/ladjs/graceful) resuelve el desafío crítico de cerrar aplicaciones Node.js correctamente. Con más de 70 estrellas en GitHub, este paquete garantiza que su aplicación pueda cerrarse correctamente sin perder datos ni dejar conexiones bloqueadas. Sus características principales incluyen:
+[`@ladjs/graceful`](https://github.com/ladjs/graceful) resuelve el desafío crítico de cerrar correctamente las aplicaciones Node.js. Con más de 70 estrellas en GitHub, este paquete garantiza que su aplicación pueda cerrarse correctamente sin perder datos ni dejar conexiones bloqueadas. Sus características principales incluyen:
 
 * Soporte para el cierre correcto de servidores HTTP (Express/Koa/Fastify)
 * Cierre limpio de conexiones de bases de datos (MongoDB/Mongoose)
@@ -188,7 +188,7 @@ Este paquete es esencial para aplicaciones de producción donde los apagados ine
 
 ### Upptime: Monitoreo del tiempo de actividad de código abierto {#upptime-open-source-uptime-monitoring}
 
-El [Organización del tiempo de actividad](https://github.com/upptime) representa nuestro compromiso con la monitorización transparente y de código abierto. El repositorio principal [`upptime`](https://github.com/upptime/upptime) cuenta con más de 13 000 estrellas en GitHub, lo que lo convierte en uno de los proyectos más populares a los que contribuimos. Upptime ofrece un monitor de actividad y una página de estado con tecnología de GitHub que funciona completamente sin servidor.
+[Organización del tiempo de actividad](https://github.com/upptime) representa nuestro compromiso con la monitorización transparente y de código abierto. El repositorio principal [`upptime`](https://github.com/upptime/upptime) cuenta con más de 13 000 estrellas en GitHub, lo que lo convierte en uno de los proyectos más populares a los que contribuimos. Upptime ofrece un monitor de actividad y una página de estado con tecnología de GitHub que funciona completamente sin servidor.
 
 Usamos Upptime para nuestra propia página de estado en <https://status.forwardemail.net> con el código fuente disponible en <https://github.com/forwardemail/status.forwardemail.net>.
 
@@ -233,7 +233,7 @@ Este enfoque ha dado lugar a numerosas mejoras:
 
 Al mantener este círculo virtuoso entre nuestro trabajo de código abierto y el servicio de producción, garantizamos que nuestros paquetes sigan siendo soluciones prácticas y probadas en batalla en lugar de implementaciones teóricas.
 
-## Principios básicos del reenvío de correo electrónico: una base para la excelencia {#forward-emails-core-principles-a-foundation-for-excellence}
+Principios básicos del reenvío de correo electrónico: una base para la excelencia {#forward-emails-core-principles-a-foundation-for-excellence}
 
 Forward Email está diseñado según un conjunto de principios fundamentales que guían todas nuestras decisiones de desarrollo. Estos principios, detallados en nuestro [sitio web](/blog/docs/best-quantum-safe-encrypted-email-service#principles), garantizan que nuestro servicio sea fácil de usar para desarrolladores, seguro y priorice la privacidad del usuario.
 
@@ -243,24 +243,24 @@ Nuestro principio fundamental es crear software fácil de usar para desarrollado
 
 Este principio se refleja en nuestra documentación detallada, mensajes de error claros y una comunicación abierta tanto sobre los éxitos como sobre los desafíos. Al hacer que todo nuestro código base sea de código abierto, invitamos al escrutinio y la colaboración, lo que fortalece tanto nuestro software como el ecosistema en general.
 
-### Adherencia a los principios de desarrollo de software probados en el tiempo {#adherence-to-time-tested-software-development-principles}
+### Adhesión a los principios de desarrollo de software probados en el tiempo {#adherence-to-time-tested-software-development-principles}
 
 Seguimos varios principios de desarrollo de software establecidos que han demostrado su valor durante décadas:
 
-* **[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Separando preocupaciones mediante el patrón Modelo-Vista-Controlador
-* **[Filosofía Unix](https://en.wikipedia.org/wiki/Unix_philosophy)**: Creando componentes modulares que hacen bien una función
-* **[KISS](https://en.wikipedia.org/wiki/KISS_principle)**: Manteniéndolo simple y directo
+**[MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)**: Separación de preocupaciones mediante el patrón Modelo-Vista-Controlador
+* **[Filosofía Unix](https://en.wikipedia.org/wiki/Unix_philosophy)**: Creación de componentes modulares que hacen bien una función
+* **[KISS](https://en.wikipedia.org/wiki/KISS_principle)**: Simplicidad y claridad
 * **[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)**: No te repitas, promoviendo la reutilización de código
-* **[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)**: No lo vas a necesitar, evitando la optimización prematura
+* **[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)**: No lo necesitarás, evitando la optimización prematura
 * **[Factor Doce](https://12factor.net/)**: Siguiendo las mejores prácticas para crear aplicaciones modernas y escalables
-* **[La navaja de Occam](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Eligiendo la solución más simple que cumpla con los requisitos
+* **[La navaja de Occam](https://en.wikipedia.org/wiki/Occam%27s_razor)**: Elección de la solución más sencilla que cumpla con los requisitos
 * **[Pruebas de perro](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)**: Uso extensivo de nuestros propios productos
 
 Estos principios no son solo conceptos teóricos, sino que están arraigados en nuestras prácticas diarias de desarrollo. Por ejemplo, nuestra adhesión a la filosofía Unix se evidencia en cómo hemos estructurado nuestros paquetes npm: módulos pequeños y específicos que pueden combinarse para resolver problemas complejos.
 
 ### Dirigido al desarrollador improvisado y con poco tiempo {#targeting-the-scrappy-bootstrapped-developer}
 
-Nos dirigimos específicamente al desarrollador con poca experiencia, con recursos propios y [ramen rentable](https://www.paulgraham.com/ramenprofitable.html). Este enfoque influye en todo, desde nuestro modelo de precios hasta nuestras decisiones técnicas. Entendemos los desafíos de desarrollar productos con recursos limitados porque hemos pasado por ello.
+Nos dirigimos específicamente al desarrollador con poca experiencia, con recursos propios y con un límite temporal de tiempo ([ramen rentable](https://www.paulgraham.com/ramenprofitable.html)). Este enfoque influye en todo, desde nuestro modelo de precios hasta nuestras decisiones técnicas. Entendemos los desafíos de desarrollar productos con recursos limitados porque hemos pasado por ello.
 
 Este principio es especialmente importante en nuestra estrategia de código abierto. Creamos y mantenemos paquetes que resuelven problemas reales para desarrolladores sin presupuestos empresariales, poniendo herramientas potentes al alcance de todos, independientemente de sus recursos.
 
@@ -303,9 +303,9 @@ Cuando hablamos del impacto del software de código abierto, las estadísticas d
 ![Los mejores paquetes npm por descargas](/img/art/top_packages_bar_chart.svg)
 
 > \[!IMPORTANT]
-> While we're proud to help maintain several highly-downloaded packages in the JavaScript ecosystem, we want to acknowledge that many of these packages were originally created by other talented developers. Packages like superagent and supertest were originally created by TJ Holowaychuk, whose prolific contributions to open source have been instrumental in shaping the Node.js ecosystem.
+> Si bien nos enorgullece ayudar a mantener varios paquetes con gran demanda en el ecosistema de JavaScript, queremos reconocer que muchos de estos paquetes fueron creados originalmente por otros desarrolladores talentosos. Paquetes como superagent y supertest fueron creados originalmente por TJ Holowaychuk, cuyas prolíficas contribuciones al código abierto han sido fundamentales para dar forma al ecosistema de Node.js.
 
-### Una vista aérea de nuestro impacto {#a-birds-eye-view-of-our-impact}
+### Una vista panorámica de nuestro impacto {#a-birds-eye-view-of-our-impact}
 
 Solo en el período de dos meses de febrero a marzo de 2025, los principales paquetes a los que contribuimos y ayudamos a mantener registraron cifras de descargas asombrosas:
 
@@ -314,20 +314,20 @@ Solo en el período de dos meses de febrero a marzo de 2025, los principales paq
 * **[también](https://www.npmjs.com/package/koa)**: 28.539.295 descargas\[^34] (creado originalmente por TJ Holowaychuk)
 * **[@koa/enrutador](https://www.npmjs.com/package/@koa/router)**: 11.007.327 descargas\[^35]
 * **[enrutador koa](https://www.npmjs.com/package/koa-router)**: 3.498.918 descargas\[^36]
-* **[expresión regular de URL](https://www.npmjs.com/package/url-regex)**: 2.819.520 Descargas\[^37]
+* **[expresión regular de URL](https://www.npmjs.com/package/url-regex)**: 2.819.520 descargas\[^37]
 * **[vista previa del correo electrónico](https://www.npmjs.com/package/preview-email)**: 2.500.000 descargas\[^9]
 * **[cabina](https://www.npmjs.com/package/cabin)**: 1.800.000 descargas\[^10]
 * **[@breejs/más tarde](https://www.npmjs.com/package/@breejs/later)**: 1.709.938 descargas\[^38]
 * **[plantillas de correo electrónico](https://www.npmjs.com/package/email-templates)**: 1.128.139 descargas\[^39]
-* **[obtener rutas](https://www.npmjs.com/package/get-paths)**: 1.124.686 descargas\[^40]
-* **[URL segura para expresiones regulares](https://www.npmjs.com/package/url-regex-safe)**: 1.200.000 descargas\[^11]
-* **[variables de análisis dotenv](https://www.npmjs.com/package/dotenv-parse-variables)**: 894.666 descargas\[^41]
-* **[@koa/multer](https://www.npmjs.com/package/@koa/multer)**: 839.585 descargas\[^42]
-* **[escáner de spam](https://www.npmjs.com/package/spamscanner)**: 145.000 descargas\[^12]
-* **[Bree](https://www.npmjs.com/package/bree)**: 24.270 descargas\[^30]
+* **__PROTECTED_LINK_259__0**: 1.124.686 descargas\[^40]
+* **__PROTECTED_LINK_259__1**: 1.200.000 descargas\[^11]
+* **__PROTECTED_LINK_259__2**: 894.666 descargas\[^41]
+* **__PROTECTED_LINK_259__3**: 839.585 Descargas\[^42]
+* **__PROTECTED_LINK_259__4**: 145.000 descargas\[^12]
+* **__PROTECTED_LINK_259__5**: 24.270 descargas\[^30]
 
 > \[!NOTE]
-> Several other packages we help maintain but didn't create have even higher download counts, including `form-data` (738M+ downloads), `toidentifier` (309M+ downloads), `stackframe` (116M+ downloads), and `error-stack-parser` (113M+ downloads). We're honored to contribute to these packages while respecting the work of their original authors.
+> Otros paquetes que ayudamos a mantener, pero que no creamos, tienen un número de descargas aún mayor, como `form-data` (más de 738 millones de descargas), `toidentifier` (más de 309 millones de descargas), `stackframe` (más de 116 millones de descargas) y `error-stack-parser` (más de 113 millones de descargas). Nos honra contribuir a estos paquetes, respetando el trabajo de sus autores originales.
 
 Estas no son solo cifras impresionantes, sino que representan a desarrolladores reales que resuelven problemas reales con código que ayudamos a mantener. Cada descarga es un ejemplo de cómo estos paquetes han ayudado a alguien a crear algo significativo, desde proyectos de aficionados hasta aplicaciones empresariales utilizadas por millones de personas.
 
@@ -353,17 +353,17 @@ El crecimiento constante en el número de descargas a lo largo del tiempo reflej
 ## Apoyando el ecosistema: nuestros patrocinios de código abierto {#supporting-the-ecosystem-our-open-source-sponsorships}
 
 > \[!TIP]
-> Open source sustainability isn't just about contributing code—it's also about supporting the developers who maintain critical infrastructure.
+> La sostenibilidad del código abierto no se trata solo de contribuir con código, sino también de apoyar a los desarrolladores que mantienen la infraestructura crítica.
 
 Además de nuestras contribuciones directas al ecosistema JavaScript, nos enorgullece patrocinar a destacados colaboradores de Node.js, cuyo trabajo constituye la base de muchas aplicaciones modernas. Nuestros patrocinios incluyen:
 
 ### Andris Reinman: pionero de la infraestructura de correo electrónico {#andris-reinman-email-infrastructure-pioneer}
 
-[Andris Reinman](https://github.com/andris9) es el creador de [Nodemailer](https://github.com/nodemailer/nodemailer), la biblioteca de envío de correo electrónico más popular para Node.js, con más de 14 millones de descargas semanales\[^15]. Su trabajo se extiende a otros componentes críticos de la infraestructura de correo electrónico, como [Servidor SMTP](https://github.com/nodemailer/smtp-server), [Analizador de correo](https://github.com/nodemailer/mailparser) y [Pato salvaje](https://github.com/nodemailer/wildduck).
+[Andris Reinman](https://github.com/andris9) es el creador de [Nodemailer](https://github.com/nodemailer/nodemailer), la biblioteca de envío de correo electrónico más popular para Node.js, con más de 14 millones de descargas semanales. Su trabajo se extiende a otros componentes críticos de la infraestructura de correo electrónico, como [Servidor SMTP](https://github.com/nodemailer/smtp-server), [Analizador de correo](https://github.com/nodemailer/mailparser) y [Pato salvaje](https://github.com/nodemailer/wildduck).
 
 Nuestro patrocinio ayuda a garantizar el mantenimiento y desarrollo continuos de estas herramientas esenciales que potencian la comunicación por correo electrónico para innumerables aplicaciones Node.js, incluido nuestro propio servicio de reenvío de correo electrónico.
 
-### Sindre Sorhus: Mente maestra del paquete de utilidades {#sindre-sorhus-utility-package-mastermind}
+### Sindre Sorhus: Cerebro del paquete de utilidades {#sindre-sorhus-utility-package-mastermind}
 
 [Sindre Sorhus](https://github.com/sindresorhus) es uno de los colaboradores de código abierto más prolíficos del ecosistema JavaScript, con más de 1000 paquetes npm a su nombre. Sus utilidades, como [p-mapa](https://github.com/sindresorhus/p-map), [p-retry](https://github.com/sindresorhus/p-retry) y [es-flujo](https://github.com/sindresorhus/is-stream), son componentes fundamentales del ecosistema Node.js.
 
@@ -371,36 +371,36 @@ Al patrocinar el trabajo de Sindre, ayudamos a sostener el desarrollo de estas u
 
 Estos patrocinios reflejan nuestro compromiso con el ecosistema de código abierto en general. Reconocemos que nuestro éxito se basa en las bases establecidas por estos y otros colaboradores, y nos dedicamos a garantizar la sostenibilidad de todo el ecosistema.
 
-## Descubriendo vulnerabilidades de seguridad en el ecosistema de JavaScript {#uncovering-security-vulnerabilities-in-the-javascript-ecosystem}
+## Descubrimiento de vulnerabilidades de seguridad en el ecosistema de JavaScript {#uncovering-security-vulnerabilities-in-the-javascript-ecosystem}
 
 Nuestro compromiso con el código abierto va más allá del desarrollo de funcionalidades e incluye la identificación y solución de vulnerabilidades de seguridad que podrían afectar a millones de desarrolladores. Varias de nuestras contribuciones más significativas al ecosistema JavaScript se han centrado en el ámbito de la seguridad.
 
 ### El rescate del Koa-Router {#the-koa-router-rescue}
 
-En febrero de 2019, Nick identificó un problema crítico con el mantenimiento del popular paquete koa-router. Según [reportado en Hacker News](https://news.ycombinator.com/item?id=19156707), el paquete había sido abandonado por su mantenedor original, lo que dejó vulnerabilidades de seguridad sin abordar y a la comunidad sin actualizaciones.
+En febrero de 2019, Nick identificó un problema crítico con el mantenimiento del popular paquete koa-router. Como [reportado en Hacker News](https://news.ycombinator.com/item?id=19156707), el paquete había sido abandonado por su mantenedor original, dejando vulnerabilidades de seguridad sin abordar y a la comunidad sin actualizaciones.
 
 > \[!WARNING]
-> Abandoned packages with security vulnerabilities pose significant risks to the entire ecosystem, especially when they're downloaded millions of times weekly.
+> Los paquetes abandonados con vulnerabilidades de seguridad representan riesgos significativos para todo el ecosistema, especialmente cuando se descargan millones de veces por semana.
 
 En respuesta, Nick creó [@koa/enrutador](https://github.com/koajs/router) y ayudó a alertar a la comunidad sobre la situación. Desde entonces, ha mantenido este paquete crítico, garantizando que los usuarios de Koa cuenten con una solución de enrutamiento segura y bien mantenida.
 
 ### Abordando vulnerabilidades de ReDoS {#addressing-redos-vulnerabilities}
 
-En 2020, Nick identificó y solucionó una vulnerabilidad crítica [Denegación de servicio por expresión regular (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) en el paquete `url-regex`, ampliamente utilizado. Esta vulnerabilidad ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) podría permitir a los atacantes causar una denegación de servicio al proporcionar una entrada especialmente diseñada que provocaba un retroceso catastrófico en la expresión regular.
+En 2020, Nick identificó y solucionó una vulnerabilidad crítica [Denegación de servicio por expresión regular (ReDoS)](https://en.wikipedia.org/wiki/ReDoS) en el paquete `url-regex`, ampliamente utilizado. Esta vulnerabilidad ([SNYK-JS-URLREGEX-569472](https://security.snyk.io/vuln/SNYK-JS-URLREGEX-569472)) podría permitir a los atacantes causar una denegación de servicio al proporcionar una entrada especialmente diseñada que causaba un retroceso catastrófico en la expresión regular.
 
-En lugar de simplemente parchear el paquete existente, Nick creó [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), una implementación completamente reescrita que soluciona la vulnerabilidad manteniendo la compatibilidad con la API original. También publicó un [entrada de blog completa](/blog/docs/url-regex-javascript-node-js) que explica la vulnerabilidad y cómo mitigarla.
+En lugar de simplemente parchear el paquete existente, Nick creó [`url-regex-safe`](https://github.com/spamscanner/url-regex-safe), una implementación completamente reescrita que soluciona la vulnerabilidad manteniendo la compatibilidad con la API original. También publicó [entrada de blog completa](/blog/docs/url-regex-javascript-node-js), que explica la vulnerabilidad y cómo mitigarla.
 
 Este trabajo muestra nuestro enfoque hacia la seguridad: no sólo solucionar problemas sino educar a la comunidad y brindar alternativas sólidas que eviten problemas similares en el futuro.
 
 ### Abogando por la seguridad de Node.js y Chromium {#advocating-for-nodejs-and-chromium-security}
 
-Nick también ha participado activamente en la promoción de mejoras de seguridad en el ecosistema en general. En agosto de 2020, identificó un problema de seguridad significativo en Node.js relacionado con el manejo de encabezados HTTP, el cual se reportó en [El Registro](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/).
+Nick también ha participado activamente en la promoción de mejoras de seguridad en el ecosistema en general. En agosto de 2020, identificó un problema de seguridad significativo en Node.js relacionado con el manejo de encabezados HTTP, reportado en [El Registro](https://www.theregister.com/2020/08/18/nodejs_chromium_patch/).
 
 Este problema, originado por un parche en Chromium, podría permitir a los atacantes eludir las medidas de seguridad. La defensa de Nick contribuyó a que el problema se abordara con prontitud, protegiendo así millones de aplicaciones Node.js de posibles ataques.
 
 ### Asegurando la infraestructura de npm {#securing-npm-infrastructure}
 
-Más tarde ese mismo mes, Nick identificó otro problema de seguridad crítico, esta vez en la infraestructura de correo electrónico de npm. Como se informó en [El Registro](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/), npm no estaba implementando correctamente los protocolos de autenticación de correo electrónico DMARC, SPF y DKIM, lo que potencialmente permitía a los atacantes enviar correos electrónicos de phishing que aparentemente provenían de npm.
+Más tarde ese mismo mes, Nick identificó otro problema de seguridad crítico, esta vez en la infraestructura de correo electrónico de npm. Como se informó en [El Registro](https://www.theregister.com/2020/08/25/nodejs_dmarc_phishing/), npm no implementaba correctamente los protocolos de autenticación de correo electrónico DMARC, SPF y DKIM, lo que potencialmente permitía a los atacantes enviar correos electrónicos de phishing que aparentemente provenían de npm.
 
 El informe de Nick condujo a mejoras en la postura de seguridad del correo electrónico de npm, protegiendo a los millones de desarrolladores que dependen de npm para la gestión de paquetes de posibles ataques de phishing.
 
@@ -470,23 +470,23 @@ Cada una de estas integraciones requiere una cuidadosa consideración de los cas
 
 Un componente crítico de la infraestructura de Forward Email es nuestro sistema de resolución de DNS, construido alrededor de dos paquetes clave:
 
-* **[Mandarina](https://github.com/forwardemail/nodejs-dns-over-https-tangerine)**: Nuestra implementación de DNS sobre HTTPS en Node.js proporciona un reemplazo directo para el solucionador de DNS estándar, con reintentos integrados, tiempos de espera, rotación inteligente de servidores y soporte de almacenamiento en caché.
+* **[Mandarina](https://github.com/forwardemail/nodejs-dns-over-https-tangerine)**: Nuestra implementación de DNS sobre HTTPS de Node.js proporciona un reemplazo directo para el solucionador de DNS estándar, con reintentos integrados, tiempos de espera, rotación inteligente de servidores y soporte de almacenamiento en caché.
 
-* **[mx-connect](https://github.com/zone-eu/mx-connect)**: Este paquete establece conexiones TCP con servidores MX, tomando un dominio o dirección de correo electrónico de destino, resolviendo los servidores MX apropiados y conectándose a ellos en orden de prioridad.
+* **[mx-connect](https://github.com/zone-eu/mx-connect)**: Este paquete establece conexiones TCP a servidores MX, tomando un dominio o dirección de correo electrónico de destino, resolviendo servidores MX apropiados y conectándose a ellos en orden de prioridad.
 
-Hemos integrado Tangerine con mx-connect a través de [Solicitud de extracción (#4](https://github.com/zone-eu/mx-connect/pull/4), lo que garantiza el DNS de la capa de aplicación sobre solicitudes HTTP en Forward Email. Esto proporciona almacenamiento en caché global para DNS a escala con consistencia 1:1 en cualquier región, aplicación o proceso, fundamental para la entrega confiable de correo electrónico en un sistema distribuido.
+Hemos integrado Tangerine con mx-connect a través de [Solicitud de extracción #4](https://github.com/zone-eu/mx-connect/pull/4), lo que garantiza el DNS sobre solicitudes HTTP en la capa de aplicación en Forward Email. Esto proporciona almacenamiento en caché global para DNS a escala con consistencia 1:1 en cualquier región, aplicación o proceso, fundamental para la entrega confiable de correo electrónico en un sistema distribuido.
 
-## Impacto Empresarial: Del Código Abierto a Soluciones Críticas {#enterprise-impact-from-open-source-to-mission-critical-solutions}
+## Impacto empresarial: Del código abierto a soluciones de misión crítica {#enterprise-impact-from-open-source-to-mission-critical-solutions}
 
-La culminación de nuestra trayectoria de una década en el desarrollo de código abierto ha permitido a Forward Email servir no solo a desarrolladores individuales, sino también a grandes empresas e instituciones educativas que conforman la columna vertebral del movimiento de código abierto.
+La culminación de nuestra trayectoria de una década en el desarrollo de código abierto ha permitido a Forward Email prestar servicio no solo a desarrolladores individuales, sino también a grandes empresas e instituciones educativas que conforman la columna vertebral del movimiento de código abierto.
 
-### Casos prácticos de infraestructura de correo electrónico de misión crítica {#case-studies-in-mission-critical-email-infrastructure}
+### Casos prácticos en infraestructura de correo electrónico de misión crítica {#case-studies-in-mission-critical-email-infrastructure}
 
-Nuestro compromiso con la fiabilidad, la privacidad y los principios de código abierto ha convertido a Forward Email en la opción de confianza para organizaciones con requisitos de correo electrónico exigentes:
+Nuestro compromiso con la confiabilidad, la privacidad y los principios de código abierto ha convertido a Forward Email en la opción de confianza para organizaciones con requisitos de correo electrónico exigentes:
 
 * **Instituciones educativas**: Como se detalla en nuestro [caso práctico de reenvío de correo electrónico a exalumnos]](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), las principales universidades confían en nuestra infraestructura para mantener conexiones permanentes con cientos de miles de ex alumnos a través de servicios confiables de reenvío de correo electrónico.
 
-* **Soluciones Linux empresariales**: [Caso práctico de correo electrónico empresarial de Canonical Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) demuestra cómo nuestro enfoque de código abierto se alinea perfectamente con las necesidades de los proveedores de Linux empresarial, ofreciéndoles la transparencia y el control que necesitan.
+* **Soluciones Linux empresariales**: [Caso práctico de correo electrónico empresarial de Canonical Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) demuestra cómo nuestro enfoque de código abierto se alinea perfectamente con las necesidades de los proveedores de Linux empresariales, ofreciéndoles la transparencia y el control que necesitan.
 
 * **Fundamentos de código abierto**: Quizás lo más validante sea nuestra asociación con la Fundación Linux, como se documenta en [Caso práctico de la empresa de correo electrónico de Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study), donde nuestro servicio potencia la comunicación para la misma organización que administra el desarrollo de Linux.
 
@@ -533,19 +533,19 @@ Gracias a todos los que han usado nuestros paquetes, contribuido a nuestros proy
 \[^23]: <https://github.com/postalsys/mailauth/issues/74>
 \[^24]: <https://github.com/postalsys/mailauth/issues/75>
 \[^25]: <https://github.com/postalsys/mailauth/issues/60>
-\[^26]: <https://github.com/postalsys/mailauth/issues/73>
+\[^26]: <https://github.com/nodemailer/smtp-server/issues/node-v12-requires-tls-min>0
 \[^27]: Basado en problemas de GitHub en el repositorio de Upptime
 \[^28]: Basado en problemas de GitHub en el repositorio de Upptime
 \[^29]: Basado en problemas de GitHub en el repositorio de Upptime
 \[^30]: Estadísticas de descargas de npm para bree, febrero-marzo de 2025
 \[^31]: Basado en solicitudes de extracción de GitHub a Upptime
-\[^32]: Basado en solicitudes de extracción de GitHub a Tiempo de actividad
-\[^34]: Estadísticas de descarga de npm para koa, febrero-marzo de 2025
+\[^32]: Basado en solicitudes de extracción de GitHub a Upptime
+\[^34]: Estadísticas de descargas de npm para koa, febrero-marzo 2025
 \[^35]: Estadísticas de descarga de npm para @koa/router, febrero-marzo de 2025
 \[^36]: Estadísticas de descarga de npm para koa-router, febrero-marzo de 2025
 \[^37]: Estadísticas de descarga de npm para url-regex, febrero-marzo de 2025
 \[^38]: Estadísticas de descarga de npm para @breejs/later, febrero-marzo de 2025
 \[^39]: Estadísticas de descarga de npm para email-templates, febrero-marzo de 2025
 \[^40]: Estadísticas de descarga de npm para get-paths, febrero-marzo de 2025
-\[^41]: Estadísticas de descarga de npm para dotenv-parse-variables, febrero-marzo 2025
-\[^42]: Estadísticas de descargas de npm para @koa/multer, febrero-marzo de 2025
+\[^41]: Estadísticas de descarga de npm para dotenv-parse-variables, febrero-marzo de 2025
+\[^42]: Estadísticas de descarga de npm para @koa/multer, febrero-marzo de 2025

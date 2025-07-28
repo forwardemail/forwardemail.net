@@ -6,7 +6,7 @@
 * [Cómo evitar que el ISP bloquee el SMTP saliente en el puerto 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
 * [¿Cómo puedo comprobar si mi ISP bloquea puertos?](#how-can-i-check-if-my-isp-blocks-ports)
 
-## Cómo evitar que el ISP bloquee el SMTP entrante en el puerto 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
+## Cómo solucionar el bloqueo del ISP de SMTP entrante en el puerto 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
 Si no tiene abierto el puerto 25 en la dirección IP de su servidor de correo, esta guía es para usted.
 
@@ -16,7 +16,7 @@ Dado que no puede tener tráfico saliente en el puerto 25, lo más probable es q
 
 Suponiendo que está utilizando nuestro servicio para reenviar correos electrónicos, [Puede solucionar este problema a través de nuestras respuestas a preguntas frecuentes aquí.](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
 
-## Cómo evitar que el ISP bloquee el SMTP saliente en el puerto 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
+## Cómo solucionar el bloqueo del ISP de SMTP saliente en el puerto 25 {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 
 Si su ISP bloquea el puerto de salida 25, tendrá que buscar una solución alternativa o contactarlo.
 

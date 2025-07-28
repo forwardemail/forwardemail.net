@@ -5,10 +5,10 @@
 <p class="lead mt-3">Embora muitas startups de e-mail tenham investido milhões na solução de problemas percebidos, nós da <a href="https://forwardemail.net">Forward Email</a> nos concentramos em construir uma infraestrutura de e-mail confiável do zero desde 2017. Esta análise explora os padrões por trás dos resultados de startups de e-mail e os desafios fundamentais da infraestrutura de e-mail.</p>
 
 > \[!NOTE]
-> **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
+> **Insight Principal**: A maioria das startups de e-mail não constrói uma infraestrutura de e-mail do zero. Muitas se baseiam em soluções existentes, como o Amazon SES, ou em sistemas de código aberto, como o Postfix. Os protocolos principais funcionam bem — o desafio está na implementação.
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **Análise Técnica Aprofundada**: Para obter detalhes completos sobre nossa abordagem, arquitetura e implementação de segurança, consulte nossos [Encaminhar e-mail - Whitepaper técnico](https://forwardemail.net/technical-whitepaper.pdf) e [Sobre a página](https://forwardemail.net/en/about), que documentam nosso cronograma completo de desenvolvimento desde 2017.
 
 ## Índice {#table-of-contents}
 
@@ -99,7 +99,7 @@
 ## A Matriz de Falhas de Inicialização de E-mail {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Failure Rate Alert**: [Techstars alone has 28 email-related companies](https://www.techstars.com/portfolio) with only 5 exits - an exceedingly high failure rate (sometimes calculated to be 80%+).
+> **Alerta de Taxa de Falha**: [Só a Techstars tem 28 empresas relacionadas com e-mail](https://www.techstars.com/portfolio) com apenas 5 saídas - uma taxa de falha extremamente alta (às vezes calculada em mais de 80%).
 
 Aqui estão todos os principais fracassos de startups de e-mail que conseguimos encontrar, organizados por aceleradora, financiamento e resultado:
 
@@ -107,7 +107,7 @@ Aqui estão todos os principais fracassos de startups de e-mail que conseguimos 
 | ----------------- | ---- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------------------------------------------- |
 | **Esquife** | 2024 | - | [$14.2M total](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/) | Adquirido pela Notion → Desligamento | 😵 Morto | [Founders left Notion for Cursor](https://x.com/skeptrune/status/1939763513695903946) |
 | **Pardal** | 2012 | - | [$247K seed](https://techcrunch.com/2012/07/20/google-acquires-iosmac-email-client-sparrow/), [<$25M acquisition](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client) | Adquirido pelo Google → Desligamento | 😵 Morto | [Talent acquisition only](https://money.cnn.com/2012/07/20/technology/google-acquires-sparrow/index.htm) |
-| **E-mail Copilot** | 2012 | Techstars | ~$ 120 mil (padrão Techstars) | Adquirido → Desligamento | 😵 Morto | [Now redirects to Validity](https://www.validity.com/blog/validity-return-path-announcement/) |
+| **E-mail do Copilot** | 2012 | Techstars | ~$ 120 mil (padrão Techstars) | Adquirido → Desligamento | 😵 Morto | [Now redirects to Validity](https://www.validity.com/blog/validity-return-path-announcement/) |
 | **ResponderEnviar** | 2012 | Techstars | ~$ 120 mil (padrão Techstars) | Fracassado | 😵 Morto | [Vague value proposition](https://www.f6s.com/company/replysend) |
 | **Envelopado** | 2012 | Techstars | ~$ 120 mil (padrão Techstars) | Fracassado | 😵 Morto | ["Easy. Secure. Email"](https://www.geekwire.com/2012/techstars-spotlight-nveloped/) |
 | **Confusão** | 2015 | Techstars | ~$ 120 mil (padrão Techstars) | Fracassado | 😵 Morto | [Email encryption](https://www.siliconrepublic.com/start-ups/irish-start-up-jumble-one-of-11-included-in-techstars-cloud-accelerator) |
@@ -117,10 +117,10 @@ Aqui estão todos os principais fracassos de startups de e-mail que conseguimos 
 | **reMail** | 2009 | YC | ~$20K (YC 2009) | [Acquired by Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Desligamento | 😵 Morto | [iPhone email search](https://www.ycombinator.com/companies/remail) |
 | **Mailhaven** | 2016 | 500 globais | ~$100K (500 padrão) | Saiu | Desconhecido | [Package tracking](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06) |
 
-## A verificação da realidade da infraestrutura {#the-infrastructure-reality-check}
+## A Verificação da Realidade da Infraestrutura {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **The Hidden Truth**: Every single "email startup" is just building UI on top of existing infrastructure. They're not building actual email servers - they're building apps that connect to real email infrastructure.
+> **A Verdade Oculta**: Toda "startup de e-mail" está apenas construindo uma interface de usuário sobre a infraestrutura existente. Elas não estão construindo servidores de e-mail de verdade, mas sim aplicativos que se conectam à infraestrutura de e-mail real.
 
 ### O que realmente executa o e-mail {#what-actually-runs-email}
 
@@ -157,24 +157,24 @@ graph LR
 ```
 
 > \[!TIP]
-> **Key Pattern for Email Success**: The companies that actually succeed in email don't try to reinvent the wheel. Instead, they build **infrastructure and tools that enhance** existing email workflows. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), and [Postmark](https://postmarkapp.com/) became billion-dollar companies by providing reliable SMTP APIs and delivery services - they work **with** email protocols, not against them. This is the same approach we take at Forward Email.
+> **Padrão-chave para o sucesso em e-mail**: As empresas que realmente obtêm sucesso em e-mail não tentam reinventar a roda. Em vez disso, elas criam **infraestrutura e ferramentas que aprimoram** os fluxos de trabalho de e-mail existentes. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/) e [Carimbo postal](https://postmarkapp.com/) se tornaram empresas bilionárias ao fornecer APIs SMTP e serviços de entrega confiáveis — elas trabalham **com** os protocolos de e-mail, não contra eles. Essa é a mesma abordagem que adotamos na Forward Email.
 
 ## Por que a maioria das startups de e-mail falham {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **The Fundamental Pattern**: Email *client* startups typically fail because they try to replace working protocols, while email *infrastructure* companies can succeed by enhancing existing workflows. The key is understanding what users actually need versus what entrepreneurs think they need.
+> **O Padrão Fundamental**: Startups de *clientes* de e-mail geralmente falham porque tentam substituir protocolos de trabalho, enquanto empresas de *infraestrutura* de e-mail podem ter sucesso aprimorando fluxos de trabalho existentes. A chave é entender o que os usuários realmente precisam em comparação com o que os empreendedores acham que eles precisam.
 
 ### 1. Os protocolos de e-mail funcionam, mas a implementação geralmente não funciona {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Email Statistics**: [347.3 billion emails sent daily](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) without major issues, serving [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023.
+> **Estatísticas de e-mail**: [347,3 bilhões de e-mails enviados diariamente](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) sem maiores problemas, atendendo [4,37 bilhões de usuários de e-mail em todo o mundo](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) em 2023.
 
 Os principais protocolos de e-mail são sólidos, mas a qualidade da implementação varia muito:
 
 * **Compatibilidade universal**: Todos os dispositivos e plataformas são compatíveis com [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) e [POP3](https://tools.ietf.org/html/rfc1939)
 * **Descentralizado**: Nenhum ponto único de falha em [bilhões de servidores de e-mail em todo o mundo](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
 * **Padronizado**: SMTP, IMAP e POP3 são protocolos testados em campo desde as décadas de 1980 e 1990
-* **Confiável**: [347,3 bilhões de e-mails enviados diariamente](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) sem maiores problemas
+* **Confiável**: [347,3 bilhões de e-mails enviados diariamente](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) sem grandes problemas
 
 **A verdadeira oportunidade**: Melhor implementação de protocolos existentes, não substituição de protocolos.
 
@@ -213,10 +213,10 @@ Construir uma infraestrutura de e-mail real requer:
 Por que reinventar quando você pode usar:
 
 * **[Amazon SES](https://aws.amazon.com/ses/)**: Infraestrutura de entrega comprovada
-* **[Pós-fixo](http://www.postfix.org/)**: Servidor SMTP testado em campo
+* **[Sufixo](http://www.postfix.org/)**: Servidor SMTP testado em campo
 * **[Pombal](https://www.dovecot.org/)**: Servidor IMAP/POP3 confiável
 * **[SpamAssassin](https://spamassassin.apache.org/)**: Filtragem de spam eficaz
-* **Provedores existentes**: [Gmail](https://gmail.com/), [Panorama](https://outlook.com/), [Correio rápido](https://www.fastmail.com/) funcionam perfeitamente
+* **Provedores existentes**: [Gmail](https://gmail.com/), [Panorama](https://outlook.com/) e [Correio rápido](https://www.fastmail.com/) funcionam perfeitamente
 
 ## Estudos de caso: Quando startups de e-mail falham {#case-studies-when-email-startups-fail}
 
@@ -240,7 +240,7 @@ Skiff exemplifica perfeitamente tudo o que há de errado com startups de e-mail.
 * **Êxodo de fundadores**: [Os fundadores do Skiff deixaram a Notion e se juntaram à Cursor](https://x.com/skeptrune/status/1939763513695903946)
 * **Abandono de usuários**: Milhares de usuários forçados a migrar
 
-### Análise do Acelerador {#the-accelerator-analysis}
+### A Análise do Acelerador {#the-accelerator-analysis}
 
 #### Y Combinator: A Fábrica de Aplicativos de E-mail {#y-combinator-the-email-app-factory}
 
@@ -248,8 +248,8 @@ Skiff exemplifica perfeitamente tudo o que há de errado com startups de e-mail.
 
 * **[E-mail](https://www.ycdb.co/company/emailio)** (2014): Cliente de e-mail móvel → adaptado para "bem-estar"
 * **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): E-mail estilo chat → adaptado para análise
-* **[reenviar e-mail](https://www.ycombinator.com/companies/remail)** (2009): Busca de e-mail no iPhone → [adquirida pelo Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → desativação
-* **[Rapportivo](https://www.ycombinator.com/companies/rapportive)** (2012): Perfis sociais do Gmail → [adquirido pelo LinkedIn](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → desativação
+* **[reenviar e-mail](https://www.ycombinator.com/companies/remail)** (2009): Busca de e-mail no iPhone → [adquirida pelo Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → desligamento
+* **[Rapportivo](https://www.ycombinator.com/companies/rapportive)** (2012): Perfis sociais do Gmail → [adquirido pelo LinkedIn](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → desligamento
 
 **Taxa de sucesso**: Resultados mistos com algumas saídas notáveis. Várias empresas realizaram aquisições bem-sucedidas (reMail para o Google, Rapportive para o LinkedIn), enquanto outras abandonaram o e-mail ou foram adquiridas para obter talentos.
 
@@ -259,7 +259,7 @@ Skiff exemplifica perfeitamente tudo o que há de errado com startups de e-mail.
 
 * **[E-mail Copilot](https://www.validity.com/everest/returnpath/)** (2012): Adquirido → desligamento
 * **[ResponderEnviar](https://www.crunchbase.com/organization/replysend)** (2012): Falha completa
-* **[Envelopado](https://www.crunchbase.com/organization/nveloped)** (2012): "E-mail fácil. Seguro." → falha
+* **[Envelopado](https://www.crunchbase.com/organization/nveloped)** (2012): "E-mail fácil. Seguro" → falha
 * **[Desordem](https://www.crunchbase.com/organization/jumble/technology)** (2015): Criptografia de e-mail → falha
 * **[Febre da caixa de entrada](https://www.crunchbase.com/organization/inboxfever)** (2011): API de e-mail → falha
 
@@ -268,7 +268,7 @@ Skiff exemplifica perfeitamente tudo o que há de errado com startups de e-mail.
 ### A armadilha do capital de risco {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
+> **Paradoxo do Financiamento de VC**: VCs adoram startups de e-mail porque parecem simples, mas na verdade são impossíveis. As premissas fundamentais que atraem investimentos são exatamente o que garante o fracasso.
 
 Os VCs adoram startups de e-mail porque elas parecem simples, mas na verdade são impossíveis:
 
@@ -320,7 +320,7 @@ graph LR
 * **[Pássaro Trovão](https://www.thunderbird.net/)**: [Alto uso de RAM de até 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) de memória do sistema
 
 > \[!WARNING]
-> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
+> **Crise de Desempenho do Electron**: Clientes de e-mail modernos desenvolvidos com Electron e React Native sofrem com graves problemas de memória e desempenho. Essas estruturas multiplataforma, embora convenientes para desenvolvedores, criam aplicativos com alto consumo de recursos que consomem centenas de megabytes a gigabytes de RAM para funcionalidades básicas de e-mail.
 
 **Drenagem de bateria**: Sincronização constante e código ineficiente:
 
@@ -386,7 +386,7 @@ flowchart TD
 
 ## Evolução e Consolidação da Indústria {#industry-evolution-and-consolidation}
 
-### Progressão da Indústria Natural {#natural-industry-progression}
+### Progressão Natural da Indústria {#natural-industry-progression}
 
 O setor de e-mail evoluiu naturalmente para a consolidação, com empresas maiores adquirindo empresas menores para integrar recursos ou eliminar a concorrência. Isso não é necessariamente negativo — é assim que a maioria dos setores maduros se desenvolve.
 
@@ -441,11 +441,11 @@ Adicionar "IA" não resolve os desafios fundamentais:
 
 ## O que realmente funciona: as histórias reais de sucesso de e-mail {#what-actually-works-the-real-email-success-stories}
 
-### Empresas de Infraestrutura (As Vencedoras) {#infrastructure-companies-the-winners}
+### Empresas de infraestrutura (as vencedoras) {#infrastructure-companies-the-winners}
 
 * **[SendGrid](https://sendgrid.com/)**: [Aquisição de US$ 3 bilhões pela Twilio](https://en.wikipedia.org/wiki/SendGrid)
-* **[Mailgun](https://www.mailgun.com/)**: [Receita de mais de US$ 50 milhões](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), adquirida pela Sinch
-* **[Carimbo postal](https://postmarkapp.com/)**: Lucrativa, [adquirida pela ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
+* **[Mailgun](https://www.mailgun.com/)**: [Receita de mais de US$ 50 milhões](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), adquirido pela Sinch
+* **[Carimbo postal](https://postmarkapp.com/)**: Lucrativo, [adquirida pela ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
 * **[Amazon SES](https://aws.amazon.com/ses/)**: Bilhões em receita
 
 **Padrão**: Eles constroem infraestrutura, não aplicativos.
@@ -458,10 +458,10 @@ Adicionar "IA" não resolve os desafios fundamentais:
 * **Nós**: Mais de 7 anos, lucrativo, em crescimento
 
 > \[!WARNING]
-> **The JMAP Investment Question**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with limited adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that many users request. This represents a strategic choice to prioritize protocol innovation over user-requested features. Whether JMAP will gain broader adoption remains to be seen, but the current email client ecosystem continues to rely primarily on IMAP/SMTP.
+> **A Questão do Investimento em JMAP**: Enquanto o Fastmail investe recursos em [JMAP](https://jmap.io/), um protocolo que é [Mais de 10 anos com adoção limitada](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), ele simultaneamente investe em [recusar-se a implementar a criptografia PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/), que muitos usuários solicitam. Isso representa uma escolha estratégica para priorizar a inovação do protocolo em detrimento dos recursos solicitados pelos usuários. Ainda não se sabe se o JMAP ganhará uma adoção mais ampla, mas o ecossistema atual de clientes de e-mail continua a depender principalmente de IMAP/SMTP.
 
 > \[!TIP]
-> **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
+> **Sucesso Empresarial**: O Forward Email impulsiona o [soluções de e-mail para ex-alunos das principais universidades](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), incluindo a Universidade de Cambridge, com 30.000 endereços de ex-alunos, gerando uma economia de custos anual de US$ 87.000 em comparação com soluções tradicionais.
 
 **Padrão**: Eles aprimoram o e-mail, não o substituem.
 
@@ -487,7 +487,7 @@ Adicionar "IA" não resolve os desafios fundamentais:
 
 #### O sucesso contínuo dos fundadores {#the-founders-continued-success}
 
-[Matt Brezina](https://www.linkedin.com/in/mattbrezina/) e [Adam Smith](https://www.linkedin.com/in/adamjsmith/) não pararam depois de Xobni:
+[Matt Brezina](https://www.linkedin.com/in/mattbrezina/) e [Adam Smith](https://www.linkedin.com/in/adamjsmith/) não pararam após Xobni:
 
 * **Matt Brezina**: Tornou-se um [investidor anjo](https://mercury.com/investor-database/matt-brezina) ativo com investimentos no Dropbox, Mailbox e outros
 * **Adam Smith**: Continuou a construir empresas de sucesso no setor de produtividade
@@ -500,7 +500,7 @@ As empresas têm sucesso no e-mail quando:
 1. **Construir infraestrutura** ([SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/))
 2. **Aprimorar fluxos de trabalho existentes** ([Hobney](https://en.wikipedia.org/wiki/Xobni), [Correio rápido](https://www.fastmail.com/))
 3. **Focar na confiabilidade** ([Amazon SES](https://aws.amazon.com/ses/), [Carimbo postal](https://postmarkapp.com/))
-4. **Atender aos desenvolvedores** (APIs e ferramentas, não aplicativos para o usuário final)
+4. **Atender desenvolvedores** (APIs e ferramentas, não aplicativos para o usuário final)
 
 ## Alguém já reinventou o e-mail com sucesso? {#has-anyone-successfully-reinvented-email}
 
@@ -527,13 +527,13 @@ Analisando as inovações em e-mail nos últimos 20 anos:
 ### O Experimento HEY {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Real-World Validation**: HEY's founder [DHH](https://dhh.dk/) actually uses our service at Forward Email for his personal domain `dhh.dk` and has for several years, demonstrating that even email innovators rely on proven infrastructure.
+> **Validação no Mundo Real**: O fundador da HEY, [DHH](https://dhh.dk/), usa nosso serviço na Forward Email para seu domínio pessoal `dhh.dk` há vários anos, demonstrando que até mesmo os inovadores em e-mail contam com uma infraestrutura comprovada.
 
 [HEY](https://hey.com/) de [Acampamento base](https://basecamp.com/) representa a tentativa mais séria e recente de "reinventar" o e-mail:
 
 * **Lançamento**: [2020 com grande alarde](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
 * **Abordagem**: Um paradigma de e-mail completamente novo com triagem, agrupamento e fluxos de trabalho
-* **Recepção**: Mista - alguns gostaram, a maioria continua com o e-mail existente
+* **Recepção**: Mista - alguns gostam, a maioria continua com o e-mail existente
 * **Realidade**: Ainda é e-mail (SMTP/IMAP) com uma interface diferente
 
 ### O que realmente funciona {#what-actually-works}
@@ -573,7 +573,7 @@ Escolhemos construir uma infraestrutura de e-mail moderna porque:
 * **Protocolos de e-mail são comprovados**: [O SMTP funciona de forma confiável desde 1982](https://tools.ietf.org/html/rfc821)
 * **O problema é a implementação**: A maioria dos serviços de e-mail usa pilhas de software desatualizadas
 * **Usuários querem confiabilidade**: Não novos recursos que interrompam os fluxos de trabalho existentes
-* **Desenvolvedores precisam de ferramentas**: Melhores APIs e interfaces de gerenciamento
+* **Desenvolvedores precisam de ferramentas**: APIs e interfaces de gerenciamento melhores
 
 ### O que realmente funciona no e-mail {#what-actually-works-in-email}
 
@@ -591,7 +591,7 @@ O padrão de sucesso é simples: **aprimorar os fluxos de trabalho de e-mail exi
 * **Construir infraestrutura real**: Servidores SMTP/IMAP personalizados do zero
 * **Foco na confiabilidade**: [99,99% de tempo de atividade](https://status.forwardemail.net), tratamento adequado de erros
 * **Aprimorar fluxos de trabalho existentes**: Trabalhar com todos os clientes de e-mail
-* **Atender desenvolvedores**: APIs e ferramentas que realmente funcionam
+* **Servir desenvolvedores**: APIs e ferramentas que realmente funcionam
 * **Manter compatibilidade**: Conformidade total com [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
 
 ### O que não fazemos {#what-we-dont-do}
@@ -614,10 +614,10 @@ Enquanto outras empresas gastam milhões tentando reinventar o e-mail, nós nos 
 ### O que nos torna diferentes {#what-makes-us-different}
 
 > \[!TIP]
-> **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
+> **Conformidade de Nível Governamental**: O Forward Email é [Em conformidade com a Seção 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) e atende a organizações como a Academia Naval dos EUA, demonstrando nosso compromisso em atender aos rigorosos requisitos federais de segurança.
 
 > \[!NOTE]
-> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+> **Implementação de OpenPGP e OpenWKD**: Diferentemente do Fastmail, que [recusa-se a implementar o PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) cita preocupações com complexidade, o Forward Email oferece suporte completo a OpenPGP em conformidade com OpenWKD (Web Key Directory), oferecendo aos usuários a criptografia que eles realmente desejam, sem forçá-los a usar protocolos experimentais como o JMAP.
 
 **Comparação de pilha técnica**:
 
@@ -651,14 +651,14 @@ graph TD
 * **Sem dívidas legadas**: Base de código limpa e moderna, sem décadas de patches
 
 > \[!NOTE]
-> **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
+> **Privacidade desde a concepção**: Nosso [política de Privacidade](https://forwardemail.net/en/privacy) garante que não armazenamos e-mails encaminhados em disco ou bancos de dados, não armazenamos metadados sobre e-mails e não armazenamos logs ou endereços IP — operando na memória apenas para serviços de encaminhamento de e-mails.
 
 **Documentação técnica**: Para obter detalhes abrangentes sobre nossa abordagem, arquitetura e implementação de segurança, consulte nosso [whitepaper técnico](https://forwardemail.net/technical-whitepaper.pdf) e a extensa documentação técnica.
 
 Comparação de provedores de serviços de e-mail ###: crescimento por meio de protocolos comprovados {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+> **Números Reais de Crescimento**: Enquanto outros provedores buscam protocolos experimentais, o Forward Email se concentra no que os usuários realmente desejam: IMAP, POP3, SMTP, CalDAV e CardDAV confiáveis e que funcionam em todos os dispositivos. Nosso crescimento demonstra o valor dessa abordagem.
 
 | Provedor | Nomes de Domínio (2024 via [SecurityTrails](https://securitytrails.com/)) | Nomes de Domínio (2025 via [ViewDNS](https://viewdns.info/reversemx/)) | Mudança percentual | Registro MX |
 | ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
@@ -677,7 +677,7 @@ Comparação de provedores de serviços de e-mail ###: crescimento por meio de p
 * **Colapso da Skiff**: A startup extinta perdeu 55,2% dos domínios, demonstrando o fracasso das abordagens "revolucionárias" de e-mail
 * **Validação de mercado**: O crescimento da contagem de domínios reflete a adoção real de usuários, não métricas de marketing
 
-### Cronograma técnico {#the-technical-timeline}
+### O cronograma técnico {#the-technical-timeline}
 
 Com base em nosso [cronograma oficial da empresa](https://forwardemail.net/en/about), veja como construímos uma infraestrutura de e-mail que realmente funciona:
 
@@ -719,7 +719,7 @@ graph TD
 ## Desafios de segurança na infraestrutura de e-mail {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Quantum-Safe Email Security**: Forward Email is the [world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), providing unprecedented security against future quantum computing threats.
+> **Segurança de E-mail Quantum-Safe**: O Forward Email é o [o primeiro e único serviço de e-mail do mundo a usar caixas de correio SQLite resistentes a quantum e criptografadas individualmente](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), oferecendo segurança sem precedentes contra futuras ameaças da computação quântica.
 
 A segurança de e-mail é um desafio complexo que afeta todos os provedores do setor. Em vez de destacar incidentes individuais, é mais importante entender as considerações comuns de segurança que todos os provedores de infraestrutura de e-mail devem abordar.
 
@@ -733,7 +733,7 @@ Todos os provedores de e-mail enfrentam desafios de segurança semelhantes:
 * **Conformidade**: Atendendo a diversos requisitos regulatórios, como [GDPR](https://gdpr.eu/) e [CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Advanced Encryption**: Our [security practices](https://forwardemail.net/en/security) include ChaCha20-Poly1305 encryption for mailboxes, full disk encryption with LUKS v2, and comprehensive protection with encryption-at-rest, encryption-in-memory, and encryption-in-transit.
+> **Criptografia Avançada**: Nosso [práticas de segurança](https://forwardemail.net/en/security) inclui criptografia ChaCha20-Poly1305 para caixas de correio, criptografia completa de disco com LUKS v2 e proteção abrangente com criptografia em repouso, criptografia na memória e criptografia em trânsito.
 
 ### O Valor da Transparência {#the-value-of-transparency}
 
@@ -746,15 +746,15 @@ Quando ocorrem incidentes de segurança, a resposta mais valiosa é a transparê
 
 Essas respostas beneficiam todo o ecossistema de e-mail ao promover as melhores práticas e incentivar outros provedores a manter altos padrões de segurança.
 
-### Desafios de segurança contínuos {#ongoing-security-challenges}
+### Desafios de segurança em andamento {#ongoing-security-challenges}
 
 O setor de e-mail continua a evoluir suas práticas de segurança:
 
-* **Padrões de criptografia**: Implementando melhores métodos de criptografia, como [TLS 1.3](https://tools.ietf.org/html/rfc8446)
+* **Padrões de criptografia**: Implementando métodos de criptografia aprimorados, como [TLS 1.3](https://tools.ietf.org/html/rfc8446)
 * **Protocolos de autenticação**: Aprimorando [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) e [DMARC](https://tools.ietf.org/html/rfc7489)
-* **Detecção de ameaças**: Desenvolvendo melhores filtros de spam e phishing
+* **Detecção de ameaças**: Desenvolvendo filtros de spam e phishing aprimorados
 * **Fortalecimento da infraestrutura**: Protegendo servidores e bancos de dados
-* **Gerenciamento de reputação de domínio**: Lidando com [spam sem precedentes do domínio onmicrosoft.com da Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) que exigem [regras de bloqueio arbitrárias](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) e [discussões adicionais sobre MSP](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
+* **Gerenciamento de reputação de domínio**: Lidando com [spam sem precedentes do domínio onmicrosoft.com da Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) que requer [regras de bloqueio arbitrárias](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) e [discussões adicionais sobre MSP](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
 
 Esses desafios exigem investimento contínuo e conhecimento especializado de todos os provedores do setor.
 
@@ -766,7 +766,7 @@ Após analisar centenas de startups de e-mail:
 
 * **[Taxa de falha de mais de 80%](https://www.techstars.com/portfolio)**: A maioria das startups de e-mail fracassa completamente (este número provavelmente é MUITO maior que 80%; estamos sendo gentis)
 * **Aplicativos clientes geralmente falham**: Ser adquirido geralmente significa a morte de clientes de e-mail
-* **A infraestrutura pode dar certo**: Empresas que criam serviços SMTP/API frequentemente prosperam
+* **A infraestrutura pode dar certo**: Empresas que criam serviços SMTP/API geralmente prosperam
 * **Financiamento de capital de risco cria pressão**: Capital de risco cria expectativas de crescimento irreais
 * **Dívida técnica se acumula**: Construir infraestrutura de e-mail é mais difícil do que parece
 
@@ -787,42 +787,42 @@ De acordo com startups, o e-mail está "morrendo" há mais de 20 anos:
 
 A lição não é que o e-mail não pode ser melhorado. A questão é escolher a abordagem certa:
 
-1. **Os protocolos de e-mail funcionam**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) são testados em campo
-2. **A infraestrutura importa**: Confiabilidade e desempenho superam recursos chamativos
+1. **Protocolos de e-mail funcionam**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) e [POP3](https://tools.ietf.org/html/rfc1939) são testados em campo
+2. **Infraestrutura importa**: Confiabilidade e desempenho superam recursos chamativos
 3. **Aprimoramento supera substituição**: Trabalhe com e-mail, não lute contra ele
 4. **Sustentabilidade supera crescimento**: Negócios lucrativos duram mais que aqueles financiados por capital de risco
-5. **Atender aos desenvolvedores**: Ferramentas e APIs criam mais valor do que aplicativos para o usuário final
+5. **Atender desenvolvedores**: Ferramentas e APIs criam mais valor do que aplicativos para o usuário final
 
 **A oportunidade**: Melhor implementação de protocolos comprovados, não substituição de protocolos.
 
 > \[!TIP]
-> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
+> **Análise Abrangente de Serviços de E-mail**: Para uma comparação aprofundada de 79 serviços de e-mail em 2025, incluindo avaliações detalhadas, capturas de tela e análise técnica, consulte nosso guia completo: [79 melhores serviços de e-mail](https://forwardemail.net/en/blog/best-email-service). Esta análise demonstra por que o Forward Email é consistentemente classificado como a escolha recomendada em termos de confiabilidade, segurança e conformidade com os padrões.
 
 > \[!NOTE]
-> **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
+> **Validação no Mundo Real**: Nossa abordagem funciona para organizações que variam de [agências governamentais que exigem conformidade com a Seção 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) a [grandes universidades que administram dezenas de milhares de endereços de ex-alunos](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), comprovando que construir uma infraestrutura confiável é o caminho para o sucesso no e-mail.
 
 Se você está pensando em criar uma startup de e-mail, considere construir uma infraestrutura de e-mail. O mundo precisa de servidores de e-mail melhores, não de mais aplicativos de e-mail.
 
 ## O Cemitério de E-mails Estendido: Mais Falhas e Desligamentos {#the-extended-email-graveyard-more-failures-and-shutdowns}
 
-### Experimentos de e-mail do Google deram errado {#googles-email-experiments-gone-wrong}
+### Os experimentos de e-mail do Google deram errado {#googles-email-experiments-gone-wrong}
 
 O Google, apesar de possuir [Gmail](https://gmail.com/), encerrou vários projetos de e-mail:
 
 * **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "O assassino de e-mails" que ninguém entendia
 * **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Desastre na integração de e-mails com redes sociais
 * **[Caixa de entrada do Gmail](https://killedbygoogle.com/)** (2014-2019): O sucessor "inteligente" do Gmail, abandonado
-* **[Google+](https://killedbygoogle.com/)** recursos de e-mail (2011-2019): Integração de e-mails com redes sociais
+* **[Google+](https://killedbygoogle.com/)** Recursos de e-mail (2011-2019): Integração de e-mails com redes sociais
 
 **Padrão**: Nem mesmo o Google conseguiu reinventar o e-mail com sucesso.
 
-### O fracasso em série: as três mortes de Newton Mail {#the-serial-failure-newton-mails-three-deaths}
+### O fracasso em série: as três mortes do Newton Mail {#the-serial-failure-newton-mails-three-deaths}
 
 [Newton Mail](https://en.wikipedia.org/wiki/CloudMagic) morreu **três vezes**:
 
 1. **[CloudMagic](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): Cliente de e-mail adquirido pela Newton
 2. **Newton Mail** (2016-2018): Renomeado, modelo de assinatura falhou
-3. **[Reavivamento do Newton Mail](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Tentativa de retorno, falha novamente
+3. **[Reavivamento do Newton Mail](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Tentativa de retorno, falhou novamente
 
 **Lição**: Clientes de e-mail não podem sustentar modelos de assinatura.
 
@@ -834,7 +834,7 @@ Muitas startups de e-mail morreram antes de serem lançadas:
 * **[Fluxo de correio](https://mailstrom.co/)** (2011): Ferramenta de gerenciamento de e-mail, adquirida antes do lançamento
 * **Fluent** (2013): Cliente de e-mail, desenvolvimento interrompido
 
-### O Padrão de Aquisição para Desligamento {#the-acquisition-to-shutdown-pattern}
+### O padrão de aquisição para desligamento {#the-acquisition-to-shutdown-pattern}
 
 * **[Sparrow → Google → Desligamento](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → Desligamento](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
@@ -844,11 +844,11 @@ Muitas startups de e-mail morreram antes de serem lançadas:
 
 ### Consolidação de infraestrutura de e-mail {#email-infrastructure-consolidation}
 
-* **[Caixa de Correio → Cliente eM](https://www.postbox-inc.com/)** (2024): Caixa de correio fechada imediatamente após aquisição
-* **Múltiplas aquisições**: [ImprovMX](https://improvmx.com/) foi adquirido diversas vezes, com [preocupações com a privacidade levantadas](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [anúncios de aquisição](https://improvmx.com/blog/improvmx-has-been-acquired) e [listagens de empresas](https://quietlight.com/listings/15877422)
+* **[Caixa de Correio → eM Cliente](https://www.postbox-inc.com/)** (2024): Caixa de correio fechada imediatamente após aquisição
+* **Múltiplas aquisições**: [ImprovMX](https://improvmx.com/) foi adquirido diversas vezes, juntamente com [preocupações com a privacidade levantadas](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [anúncios de aquisição](https://improvmx.com/blog/improvmx-has-been-acquired) e [listagens de empresas](https://quietlight.com/listings/15877422)
 * **Degradação do serviço**: Muitos serviços pioram após a aquisição
 
-## O Cemitério de E-mails de Código Aberto: Quando "Grátis" Não É Sustentável {#the-open-source-email-graveyard-when-free-isnt-sustainable}
+## O cemitério de e-mails de código aberto: quando "grátis" não é sustentável {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
 ### Nylas Mail → Mailspring: O Fork Que Não Conseguiu {#nylas-mail--mailspring-the-fork-that-couldnt}
 
@@ -866,7 +866,7 @@ Muitas startups de e-mail morreram antes de serem lançadas:
 
 ### FairEmail: Eliminado pela política do Google Play {#fairemail-killed-by-google-play-politics}
 
-* **[FairEmail](https://email.faircode.eu/)**: Cliente de e-mail para Android com foco em privacidade
+* **[FairEmail](https://email.faircode.eu/)**: Cliente de e-mail Android com foco em privacidade
 * **Google Play**: [Banido por "violar políticas"](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
 * **Realidade**: Políticas de plataforma podem desativar aplicativos de e-mail instantaneamente
 
@@ -879,7 +879,7 @@ Projetos de e-mail de código aberto falham porque:
 * **Compatibilidade**: Deve funcionar com todos os provedores de e-mail
 * **Recursos**: Esgotamento de desenvolvedores voluntários
 
-## O crescimento das startups de e-mail com IA: a história se repete com a "inteligência" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
+## O aumento de startups de e-mail com IA: a história se repete com a "inteligência" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
 ### A atual corrida do ouro do e-mail da IA {#the-current-ai-email-gold-rush}
 
@@ -913,7 +913,7 @@ VCs estão investindo em "IA + Email":
 
 * **2025**: [Superhuman adquirido com sucesso pela Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) - uma rara saída bem-sucedida para um cliente de e-mail
 * **2025-2026**: A maioria das startups de e-mail com IA restantes mudará de direção ou fechará.
-* **2027**: As empresas sobreviventes serão adquiridas, com resultados mistos.
+* **2027**: As sobreviventes serão adquiridas, com resultados mistos.
 * **2028**: "E-mail blockchain" ou a próxima tendência surgirá.
 
 ## A Catástrofe da Consolidação: Quando os "Sobreviventes" se Tornam Desastres {#the-consolidation-catastrophe-when-survivors-become-disasters}
@@ -947,23 +947,23 @@ Após [Aquisição da ActiveCampaign](https://postmarkapp.com/blog/postmark-and-
 * **Êxodo de Desenvolvedores**: [@levelsio afirmando que "Amazon SES é nossa última esperança"](https://x.com/levelsio/status/1934197733989999084)
 * **Problemas com o MailGun**: [Scott relatou](https://x.com/\_SMBaxter/status/1934175626375704675): "O pior serviço do @Mail_Gun... não conseguimos enviar e-mails há 2 semanas"
 
-### Vítimas recentes de clientes de e-mail (2024-2025) {#recent-email-client-casualties-2024-2025}
+### Baixas recentes de clientes de e-mail (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-**[Caixa de Correio → Cliente eM](https://www.postbox-inc.com/) Aquisição**: Em 2024, a eM Client adquiriu a Postbox e a [desligue-o imediatamente](https://www.postbox-inc.com/), forçando milhares de usuários a migrarem.
+**Aquisição do [Caixa de Correio → eM Cliente](https://www.postbox-inc.com/)**: Em 2024, a eM Client adquiriu o Postbox e o [desligue-o imediatamente](https://www.postbox-inc.com/), forçando milhares de usuários a migrarem.
 
-**[Correio Canário](https://canarymail.io/) Problemas**: Apesar do [Apoio de sequoia](https://www.sequoiacap.com/), usuários relatam recursos que não funcionam e suporte ao cliente ruim.
+**Problemas com [Correio Canário](https://canarymail.io/)**: Apesar do [Apoio de sequoia](https://www.sequoiacap.com/), usuários relatam recursos que não funcionam e suporte ao cliente ruim.
 
 **[Spark por Readdle](https://sparkmailapp.com/)**: Usuários relatam cada vez mais experiências ruins com o cliente de e-mail.
 
 **[Mailbird](https://www.getmailbird.com/) Problemas de licenciamento**: Usuários do Windows enfrentam problemas de licenciamento e confusão de assinatura.
 
-**[Correio aéreo](https://airmailapp.com/) Recusar**: O cliente de e-mail Mac/iOS, baseado na base de código Sparrow com falha, continua recebendo [avaliações ruins](https://airmailapp.com/) por problemas de confiabilidade.
+**[Correio aéreo](https://airmailapp.com/) Recusado**: O cliente de e-mail Mac/iOS, baseado na base de código Sparrow com falha, continua recebendo [avaliações ruins](https://airmailapp.com/) por problemas de confiabilidade.
 
 ### Extensão de e-mail e aquisições de serviços {#email-extension-and-service-acquisitions}
 
-**[HubSpot Sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Descontinuada**: A extensão de rastreamento de e-mail da HubSpot foi [descontinuado em 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) e substituída por "HubSpot Sales".
+**[HubSpot Sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Descontinuado**: A extensão de rastreamento de e-mail da HubSpot era [descontinuado em 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) e foi substituída por "HubSpot Sales".
 
-**[Engajar para Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Descontinuada**: A extensão do Gmail da Salesforce foi [aposentado em junho de 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), forçando os usuários a migrarem para outras soluções.
+**[Engajar para Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Descontinuada**: A extensão do Gmail da Salesforce era [aposentado em junho de 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), forçando os usuários a migrarem para outras soluções.
 
 ### Os sobreviventes: empresas de e-mail que realmente funcionam {#the-survivors-email-companies-that-actually-work}
 
@@ -973,19 +973,19 @@ Nem todas as empresas de e-mail falham. Aqui estão as que realmente funcionam:
 
 **[Mixmax](https://mixmax.com/)**: Arrecadou [Financiamento total de US$ 13,3 milhões](https://www.mixmax.com/about) e continua operando como uma plataforma de engajamento de vendas bem-sucedida.
 
-**[Outreach.io](https://www.outreach.io/)**: Alcançou [Avaliação de mais de US$ 4,4 bilhões](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) e está se preparando para um potencial IPO como uma plataforma de engajamento de vendas.
+**[Outreach.io](https://www.outreach.io/)**: Atingiu [Avaliação de mais de US$ 4,4 bilhões](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) e está se preparando para um possível IPO como uma plataforma de engajamento de vendas.
 
 **[Apollo.io](https://www.apollo.io/)**: Alcançou [Avaliação de US$ 1,6 bilhão](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) com US$ 100 milhões da Série D em 2023 para sua plataforma de inteligência de vendas.
 
 **[GMass](https://www.gmass.co/)**: História de sucesso do Bootstrap gerando [US$ 140 mil/mês](https://www.indiehackers.com/product/gmass) como uma extensão do Gmail para marketing por e-mail.
 
-**[CRM de sequência](https://www.streak.com/)**: CRM bem-sucedido baseado no Gmail que está operando [desde 2012](https://www.streak.com/about) sem maiores problemas.
+**[CRM de sequência](https://www.streak.com/)**: CRM bem-sucedido baseado no Gmail que opera [desde 2012](https://www.streak.com/about) sem maiores problemas.
 
-**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [adquirida pela Marketo em 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) com sucesso após levantar mais de US$ 15 milhões em financiamento.
+**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [adquirida pela Marketo em 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) foi criado com sucesso após levantar mais de US$ 15 milhões em financiamento.
 
 **[Bananatag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Adquirida pela Staffbase em 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) e continua operando como "Staffbase Email".
 
-**Padrão-chave**: Essas empresas têm sucesso porque **aprimoram os fluxos de trabalho de e-mail existentes** em vez de tentar substituí-los completamente. Elas criam ferramentas que funcionam **com** a infraestrutura de e-mail, e não contra ela.
+**Padrão-chave**: Essas empresas têm sucesso porque **aprimoram os fluxos de trabalho de e-mail existentes** em vez de tentar substituir o e-mail completamente. Elas criam ferramentas que funcionam **com** a infraestrutura de e-mail, e não contra ela.
 
 > \[!TIP]
-> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight.
+> **Não encontrou nenhum provedor que você conhece mencionado aqui?** (por exemplo, Posteo, Mailbox.org, Migadu, etc.) Consulte nosso [página de comparação abrangente de serviços de e-mail](https://forwardemail.net/en/blog/best-email-service) para obter mais informações.

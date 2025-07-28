@@ -10,14 +10,14 @@
   * [自托管替代方案](#the-self-hosted-alternative)
 * [我们的自托管实施：技术概述](#our-self-hosted-implementation-technical-overview)
   * [基于 Docker 的架构，简单易用](#docker-based-architecture-for-simplicity-and-portability)
-  * [Bash 脚本安装：可访问性与安全性](#bash-script-installation-accessibility-meets-security)
-  * [量子安全加密，确保未来隐私](#quantum-safe-encryption-for-future-proof-privacy)
+  * [Bash 脚本安装：兼具可访问性和安全性](#bash-script-installation-accessibility-meets-security)
+  * [量子安全加密，保障未来隐私](#quantum-safe-encryption-for-future-proof-privacy)
   * [自动维护和更新](#automated-maintenance-and-updates)
 * [开源承诺](#the-open-source-commitment)
 * [自托管与托管：做出正确的选择](#self-hosted-vs-managed-making-the-right-choice)
   * [自托管电子邮件的现实](#the-reality-of-self-hosting-email)
   * [何时选择我们的托管服务](#when-to-choose-our-managed-service)
-* [开始使用自托管转发电子邮件](#getting-started-with-self-hosted-forward-email)
+* [自托管转发电子邮件入门](#getting-started-with-self-hosted-forward-email)
   * [系统要求](#system-requirements)
   * [安装步骤](#installation-steps)
 * [自托管电子邮件的未来](#the-future-of-self-hosted-email)
@@ -26,19 +26,19 @@
 
 ## 前言 {#foreword}
 
-在当今的数字环境中，电子邮件仍然是我们在线身份和通信的支柱。然而，随着隐私问题的日益严重，许多用户面临着一个艰难的选择：以牺牲隐私为代价追求便利，还是以牺牲便利为代价追求隐私。在 Forward Email，我们始终认为您不必在两者之间做出选择。
+在当今的数字时代，电子邮件仍然是我们在线身份和沟通的支柱。然而，随着隐私问题的日益增长，许多用户面临着一个艰难的选择：以牺牲隐私为代价追求便利，还是以牺牲便利为代价追求隐私。在 Forward Email，我们始终坚信您无需在两者之间做出选择。
 
-今天，我们很高兴地宣布我们旅程中的一个重要里程碑：推出我们的自托管电子邮件解决方案。此功能代表了我们对开源原则、注重隐私的设计和用户授权的最深切承诺。借助我们的自托管选项，我们将电子邮件通信的全部权力和控制权直接交到您手中。
+今天，我们非常高兴地宣布，我们旅程中的一个重要里程碑：自托管电子邮件解决方案正式上线。此功能体现了我们对开源原则、注重隐私的设计和用户赋能的坚定承诺。通过我们的自托管选项，我们将电子邮件通信的全部控制权直接交到您的手中。
 
 这篇博文探讨了我们的自托管解决方案背后的理念、它的技术实现，以及它对于那些在数字通信中优先考虑隐私和所有权的用户的重要性。
 
 ## 自托管电子邮件为何如此重要 {#why-self-hosted-email-matters}
 
-我们的自托管电子邮件解决方案最清楚地表达了我们的信念：真正的隐私意味着控制，而控制始于开源。对于要求完全拥有数字通信的用户来说，自托管不再是一个边缘想法——而是一项基本权利。我们很自豪能够坚持这一信念，为您提供一个完全开放、可验证的平台，您可以按照自己的方式运行。
+我们的自托管电子邮件解决方案清晰地体现了我们的信念：真正的隐私意味着掌控，而掌控始于开源。对于要求完全掌控自身数字通信的用户来说，自托管已不再是边缘概念，而是一项基本权利。我们很自豪能够秉持这一信念，打造一个完全开放、可验证的平台，让您按照自己的意愿运行。
 
 ### 传统电子邮件服务的问题 {#the-problem-with-traditional-email-services}
 
-传统电子邮件服务对于注重隐私的用户而言，带来了几个基本挑战：
+传统电子邮件服务对注重隐私的用户提出了几个基本挑战：
 
 1. **信任要求**：您必须信任提供商不会访问、分析或共享您的数据
 2. **集中控制**：您的访问权限可能随时因任何原因被撤销
@@ -46,7 +46,7 @@
 4. **透明度有限**：大多数服务使用专有闭源软件
 5. **供应商锁定**：从这些服务迁移可能很困难甚至不可能
 
-即使是“注重隐私”的电子邮件提供商也常常会因为只开源前端应用程序而将后端系统保持专有和封闭而达不到要求。这造成了巨大的信任鸿沟——他们要求你相信他们的隐私承诺，却无法验证这些承诺。
+即使是“注重隐私”的电子邮件提供商，也常常会因为只开源前端应用程序，而后端系统却保持专有和封闭而存在缺陷。这造成了巨大的信任鸿沟——你被要求相信他们的隐私承诺，却无法验证。
 
 ### 自托管替代方案 {#the-self-hosted-alternative}
 
@@ -62,7 +62,7 @@
 
 ## 我们的自托管实施：技术概述 {#our-self-hosted-implementation-technical-overview}
 
-我们的自托管电子邮件解决方案建立在指导我们所有产品的相同隐私第一原则之上。让我们探索实现这一目标的技术实现。
+我们的自托管电子邮件解决方案秉承着我们所有产品的隐私优先原则。让我们探索实现这一目标的技术实现。
 
 ### 基于 Docker 的架构，简单易用 {#docker-based-architecture-for-simplicity-and-portability}
 
@@ -86,7 +86,7 @@
 * SQLite 用于安全加密的邮箱存储
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> 请务必查看我们的 [自托管开发者指南](https://forwardemail.net/self-hosted)
 
 ### Bash 脚本安装：可访问性与安全性相结合 {#bash-script-installation-accessibility-meets-security}
 
@@ -105,13 +105,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 5. 部署 Docker 容器
 6. 执行初始安全强化
 
-对于那些担心将脚本传输到 bash 的人（你应该担心！），我们鼓励在执行之前检查脚本。它是完全开源的，可供检查。
+对于那些担心将脚本通过管道传输到 Bash 的人（你应该担心！），我们建议在执行脚本之前先检查一下。它是完全开源的，可以供大家查阅。
 
 ### 量子安全加密，保障未来隐私 {#quantum-safe-encryption-for-future-proof-privacy}
 
-与我们的托管服务一样，我们的自托管解决方案使用 ChaCha20-Poly1305 作为 SQLite 数据库的密码来实现抗量子加密。这种方法不仅可以保护您的电子邮件数据免受当前威胁，还可以防止未来的量子计算攻击。
+与我们的托管服务一样，我们的自托管解决方案使用 ChaCha20-Poly1305 作为 SQLite 数据库的密码，实现了抗量子加密。这种方法不仅可以保护您的电子邮件数据免受当前威胁，还可以抵御未来的量子计算攻击。
 
-每个邮箱都存储在自己的加密 SQLite 数据库文件中，从而实现用户之间的完全隔离 - 这比传统的共享数据库方法具有显着的安全优势。
+每个邮箱都存储在其自己的加密 SQLite 数据库文件中，从而实现用户之间的完全隔离 - 这比传统的共享数据库方法具有显著的安全优势。
 
 ### 自动维护和更新 {#automated-maintenance-and-updates}
 
@@ -138,20 +138,20 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## 开源承诺 {#the-open-source-commitment}
 
-与我们的所有产品一样，我们的自托管电子邮件解决方案也是 100% 开源的（前端和后端均如此）。这意味着：
+我们的自托管电子邮件解决方案与我们的所有产品一样，前端和后端均 100% 开源。这意味着：
 
 1. **完全透明**：处理您电子邮件的每一行代码都接受公众审查
 2. **社区贡献**：任何人都可以贡献改进或修复问题
 3. **开放保障安全**：漏洞可由全球社区识别和修复
 4. **无供应商锁定**：您永远不会依赖我们公司的存在
 
-整个代码库可在 GitHub 上找到，网址为 <https://github.com/forwardemail/forwardemail.net>.
+整个代码库可在 GitHub 上找到 <https://github.com/forwardemail/forwardemail.net>.
 
 ## 自托管与托管：做出正确的选择 {#self-hosted-vs-managed-making-the-right-choice}
 
-虽然我们很自豪能够提供自托管选项，但我们认识到它并不适合所有人。自托管电子邮件伴随着真正的责任和挑战：
+虽然我们很荣幸能够提供自托管选项，但我们深知这并非适合所有人。自托管电子邮件服务确实伴随着一些责任和挑战：
 
-### 自托管电子邮件的现实 {#the-reality-of-self-hosting-email}
+### 自托管电子邮件的现实{#the-reality-of-self-hosting-email}
 
 #### 技术考虑因素 {#technical-considerations}
 
@@ -187,7 +187,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## 自托管转发电子邮件入门 {#getting-started-with-self-hosted-forward-email}
 
-准备好掌控您的电子邮件基础设施了吗？以下是入门方法：
+准备好掌控你的电子邮件基础设施了吗？以下是如何开始：
 
 ### 系统要求 {#system-requirements}
 
@@ -200,7 +200,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * 支持 IPv4 和 IPv6
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> 我们推荐几个位于 <https://forwardemail.net/blog/docs/best-mail-server-providers> 的邮件服务器提供商（来源位于 <https://github.com/forwardemail/awesome-mail-server-providers>）
 
 ### 安装步骤 {#installation-steps}
 
@@ -223,7 +223,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## 自托管电子邮件的未来 {#the-future-of-self-hosted-email}
 
-我们的自托管解决方案才刚刚开始。我们致力于通过以下方式不断改进此产品：
+我们的自托管解决方案仅仅是个开始。我们致力于通过以下方式持续改进此产品：
 
 1. **增强的管理工具**：更强大的基于 Web 的管理
 2. **额外的身份验证选项**：包含硬件安全密钥支持
@@ -233,13 +233,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## 结论：人人享有电子邮件自由 {#conclusion-email-freedom-for-everyone}
 
-我们的自托管电子邮件解决方案的推出代表着我们提供注重隐私、透明的电子邮件服务的使命的一个重要里程碑。无论您选择我们的托管服务还是自托管选项，您都会受益于我们对开源原则和隐私优先设计的坚定承诺。
+我们自托管电子邮件解决方案的推出，标志着我们致力于提供注重隐私、透明的电子邮件服务这一使命迈出了重要的一步。无论您选择我们的托管服务还是自托管服务，您都将受益于我们对开源原则和隐私优先设计的坚定承诺。
 
-电子邮件太重要了，不能被封闭的专有系统所控制，因为这些系统优先考虑数据收集而不是用户隐私。借助 Forward Email 的自托管解决方案，我们很自豪能够为您提供真正的替代方案 — 让您完全控制您的数字通信。
+电子邮件至关重要，不应被那些优先收集数据、却忽视用户隐私的封闭式专有系统所控制。Forward Email 的自托管解决方案，我们很荣幸能为您提供一个真正的替代方案——让您完全掌控自己的数字通信。
 
-我们认为隐私不仅仅是一种功能，而是一项基本权利。借助我们的自托管电子邮件选项，我们让这项权利比以往任何时候都更容易实现。
+我们相信隐私不仅仅是一项功能，更是一项基本权利。有了我们的自托管电子邮件选项，我们让这项权利比以往任何时候都更容易被享有。
 
-准备好掌控您的电子邮件了吗？[立即开始](https://forwardemail.net/self-hosted) 或浏览我们的 [GitHub 存储库](https://github.com/forwardemail/forwardemail.net) 了解更多信息。
+准备好掌控您的电子邮件了吗？[立即开始](https://forwardemail.net/self-hosted) 或浏览我们的 [GitHub 存储库](https://github.com/forwardemail/forwardemail.net) 以了解更多信息。
 
 ## 参考文献 {#references}
 
@@ -247,6 +247,6 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 \[2] 自托管文档：<https://forwardemail.net/en/self-hosted>
 
-\[3] 电子邮件隐私技术实现：<https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
+\[3] 电子邮件隐私技术实施：<https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
 
 \[4] 开源电子邮件为何重要：<https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>

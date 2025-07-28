@@ -14,7 +14,7 @@
   * [6. Avvia Listmonk](#6-start-listmonk)
   * [7. Configurare l'inoltro email SMTP in Listmonk](#7-configure-forward-email-smtp-in-listmonk)
   * [8. Configurare l'elaborazione dei rimbalzi](#8-configure-bounce-processing)
-* [Prova](#testing)
+* [Test](#testing)
   * [Crea una mailing list](#create-a-mailing-list)
   * [Aggiungi abbonati](#add-subscribers)
   * [Crea e invia una campagna](#create-and-send-a-campaign)
@@ -24,7 +24,7 @@
 
 ## Panoramica {#overview}
 
-Questa guida fornisce agli sviluppatori istruzioni dettagliate per configurare [Listmonk](https://listmonk.app/), un potente gestore open source di newsletter e mailing list, per utilizzare [Inoltra e-mail](https://forwardemail.net/) come provider SMTP. Questa combinazione consente di gestire le campagne in modo efficace, garantendo al contempo un recapito email sicuro, privato e affidabile.
+Questa guida fornisce agli sviluppatori istruzioni dettagliate per configurare [Listmonk](https://listmonk.app/), un potente gestore open source di newsletter e mailing list, per utilizzare [Inoltra e-mail](https://forwardemail.net/) come provider SMTP. Questa combinazione consente di gestire le campagne in modo efficace, garantendo al contempo un recapito email sicuro, riservato e affidabile.
 
 * **Listmonk**: Gestisce la gestione degli iscritti, l'organizzazione delle liste, la creazione di campagne e il monitoraggio delle prestazioni.
 * **Inoltro email**: Funge da server SMTP sicuro, gestendo l'invio effettivo delle email con funzionalità di sicurezza integrate come SPF, DKIM, DMARC e crittografia TLS.
@@ -94,7 +94,7 @@ sudo ufw enable
 
 Quando richiesto, confermare l'attivazione del firewall.
 
-### 5. Configura l'accesso HTTPS {#5-configure-https-access}
+### 5. Configurare l'accesso HTTPS {#5-configure-https-access}
 
 Eseguire Listmonk su HTTPS è fondamentale per la sicurezza. Hai due opzioni principali:
 
@@ -114,8 +114,8 @@ Questo rende Listmonk accessibile internamente sulla porta 80, che Cloudflare pu
 In alternativa, puoi impostare un proxy inverso come Nginx o Caddy sul tuo VPS per gestire la terminazione HTTPS e le richieste proxy a Listmonk (in esecuzione sulla porta 9000 per impostazione predefinita).
 
 * Mantieni il valore predefinito `ports: - "127.0.0.1:9000:9000"` in `docker-compose.yml` per garantire che Listmonk sia accessibile solo localmente.
-* Configura il reverse proxy scelto per l'ascolto sulle porte 80 e 443, gestire l'acquisizione del certificato SSL (ad esempio, tramite Let's Encrypt) e inoltrare il traffico a `http://127.0.0.1:9000`.
-* La configurazione dettagliata del reverse proxy esula dallo scopo di questa guida, ma sono disponibili numerosi tutorial online.
+* Configura il proxy inverso scelto per l'ascolto sulle porte 80 e 443, gestire l'acquisizione del certificato SSL (ad esempio, tramite Let's Encrypt) e inoltrare il traffico a `http://127.0.0.1:9000`.
+* La configurazione dettagliata del proxy inverso esula dallo scopo di questa guida, ma sono disponibili numerosi tutorial online.
 
 ### 6. Avvia Listmonk {#6-start-listmonk}
 
@@ -134,7 +134,7 @@ Docker scaricherà le immagini necessarie e avvierà l'applicazione Listmonk e i
 
 Successivamente, configura Listmonk per inviare email tramite il tuo account Forward Email.
 
-1. **Abilita SMTP in Inoltra Email**: Assicurati di aver generato le credenziali SMTP nella dashboard del tuo account Inoltra Email. Segui il link [Guida all'inoltro e-mail per inviare e-mail con un dominio personalizzato tramite SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) se non l'hai già fatto.
+1. **Abilita SMTP in Inoltra Email**: Assicurati di aver generato le credenziali SMTP nella dashboard del tuo account Inoltra Email. Segui il [Guida all'inoltro e-mail per inviare e-mail con un dominio personalizzato tramite SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) se non l'hai già fatto.
 2. **Configura Listmonk**: Accedi al pannello di amministrazione di Listmonk.
 * Vai a **Impostazioni -> SMTP**.
 
@@ -159,7 +159,7 @@ Successivamente, configura Listmonk per inviare email tramite il tuo account For
 
 L'elaborazione dei bounce consente a Listmonk di gestire automaticamente le email che non sono state recapitate (ad esempio, a causa di indirizzi non validi). Inoltra email fornisce un webhook per notificare a Listmonk i bounce.
 
-#### Impostazione inoltro e-mail {#forward-email-setup}
+#### Configurazione inoltro e-mail {#forward-email-setup}
 
 1. Accedi al tuo [Dashboard di inoltro e-mail](https://forwardemail.net/).
 2. Vai a **Domini**, seleziona il dominio che stai utilizzando per l'invio e vai alla sua pagina **Impostazioni**.
@@ -183,9 +183,9 @@ L'elaborazione dei bounce consente a Listmonk di gestire automaticamente le emai
 6. Incolla la **Chiave di verifica del payload della firma webhook** copiata dalla dashboard di Inoltra email nel campo **Chiave di inoltro email**.
 7. Fai clic su **Salva** in fondo alla pagina.
 8. L'elaborazione bounce è ora configurata! Quando Inoltra email rileva un bounce per un'email inviata da Listmonk, ne informerà l'istanza di Listmonk tramite il webhook e Listmonk contrassegnerà l'iscritto di conseguenza.
-9. Completa i passaggi seguenti in [Prova](#testing) per assicurarti che tutto funzioni correttamente.
+9. Completa i passaggi seguenti in [Test](#testing) per assicurarti che tutto funzioni correttamente.
 
-## Test in corso {#testing}
+## Test di {#testing}
 
 Ecco una rapida panoramica delle funzioni principali di Listmonk:
 
@@ -211,15 +211,15 @@ Ecco una rapida panoramica delle funzioni principali di Listmonk:
 * Inserisci i dettagli della campagna (Nome, Oggetto, Email del mittente, Lista/e a cui inviare).
 * Scegli il tipo di contenuto (Rich Text/HTML, Testo normale, HTML grezzo).
 * Componi il contenuto dell'email. Puoi utilizzare variabili modello come `{{ .Subscriber.Email }}` o `{{ .Subscriber.FirstName }}`.
-* **Invia sempre prima un'email di prova!** Utilizza l'opzione "Invia prova" per visualizzare l'email nella tua casella di posta.
+* **Invia sempre prima un'email di prova!** Utilizza l'opzione "Invia prova" per visualizzare l'email in anteprima nella tua casella di posta.
 * Una volta soddisfatto, fai clic su **Avvia campagna** per inviarla immediatamente o programmarla per un secondo momento.
 
 ## Verifica {#verification}
 
-* **Invio SMTP**: Invia regolarmente email di prova tramite la pagina delle impostazioni SMTP di Listmonk e testa le campagne per assicurarti che le email vengano recapitate correttamente.
-* **Gestione dei bounce**: Invia una campagna di prova a un indirizzo email non valido noto (ad esempio, `bounce-test@yourdomain.com` se non ne hai uno reale a portata di mano, anche se i risultati possono variare). Controlla le statistiche della campagna in Listmonk dopo un po' per vedere se il bounce è stato registrato.
-* **Intestazioni email**: Utilizza strumenti come [Tester di posta](https://www.mail-tester.com/) o ispeziona manualmente le intestazioni email per verificare che SPF, DKIM e DMARC vengano superati, a indicare la corretta configurazione tramite Inoltra email.
-* **Log di Inoltra email**: Controlla i log della dashboard di Inoltra email se sospetti che problemi di recapito provengano dal server SMTP.
+* **Invio SMTP**: invia regolarmente email di prova tramite la pagina delle impostazioni SMTP di Listmonk e testa le campagne per assicurarti che le email vengano recapitate correttamente.
+* **Gestione dei bounce**: invia una campagna di prova a un indirizzo email non valido noto (ad esempio, `bounce-test@yourdomain.com` se non ne hai uno reale a portata di mano, anche se i risultati possono variare). Controlla le statistiche della campagna in Listmonk dopo un po' per vedere se il bounce è stato registrato.
+* **Intestazioni email**: utilizza strumenti come [Tester di posta](https://www.mail-tester.com/) o ispeziona manualmente le intestazioni email per verificare che SPF, DKIM e DMARC vengano superati, a indicare la corretta configurazione tramite Inoltra email.
+* **Log di Inoltra email**: controlla i log della dashboard di Inoltra email se sospetti che problemi di recapito provengano dal server SMTP.
 
 ## Note per gli sviluppatori {#developer-notes}
 

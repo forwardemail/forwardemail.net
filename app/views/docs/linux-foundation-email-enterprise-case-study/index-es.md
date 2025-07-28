@@ -23,7 +23,7 @@
 
 ## Introducción {#introduction}
 
-[Fundación Linux](https://en.wikipedia.org/wiki/Linux_Foundation) gestiona más de 900 proyectos de código abierto en más de 250 dominios, incluyendo [linux.com](https://www.linux.com/) y [jQuery.com](https://jquery.com/). Este caso práctico explora cómo se asociaron con [Reenviar correo electrónico](https://forwardemail.net) para optimizar la gestión del correo electrónico, manteniendo la alineación con los principios del código abierto.
+[Fundación Linux](https://en.wikipedia.org/wiki/Linux_Foundation) gestiona más de 900 proyectos de código abierto en más de 250 dominios, incluyendo [linux.com](https://www.linux.com/) y [jQuery.com](https://jquery.com/). Este caso práctico explora cómo se asociaron con [Reenviar correo electrónico](https://forwardemail.net) para optimizar la gestión del correo electrónico, manteniendo la coherencia con los principios del código abierto.
 
 ## El desafío {#the-challenge}
 
@@ -53,11 +53,11 @@ graph TD
 
 ### Arquitectura 100% de código abierto {#100-open-source-architecture}
 
-Como único servicio de correo electrónico con una plataforma completamente de código abierto (tanto frontend como backend), Forward Email se alineó perfectamente con el compromiso de la Fundación Linux con los principios de código abierto. Al igual que en nuestra implementación con [Canónico/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), esta transparencia permitió a su equipo técnico verificar las implementaciones de seguridad e incluso aportar mejoras.
+Como único servicio de correo electrónico con una plataforma completamente de código abierto (tanto frontend como backend), Forward Email se alineó perfectamente con el compromiso de la Fundación Linux con los principios de código abierto. Al igual que nuestra implementación con [Canónico/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), esta transparencia permitió a su equipo técnico verificar las implementaciones de seguridad e incluso aportar mejoras.
 
 ### Diseño centrado en la privacidad {#privacy-focused-design}
 
-El estricto [políticas de privacidad](https://forwardemail.net/privacy) de Forward Email proporcionó la seguridad requerida por la Fundación Linux. Nuestro [Implementación técnica de protección de la privacidad del correo electrónico](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) garantiza que todas las comunicaciones sean seguras por diseño, sin registro ni análisis del contenido del correo electrónico.
+El estricto [políticas de privacidad](https://forwardemail.net/privacy) de Forward Email proporcionó la seguridad requerida por la Fundación Linux. Nuestro [Implementación técnica de protección de la privacidad del correo electrónico](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) garantiza que todas las comunicaciones sean seguras por diseño, sin registro ni escaneo del contenido del correo electrónico.
 
 Como se detalla en nuestra documentación de implementación técnica:
 
@@ -69,11 +69,11 @@ La implementación de [cifrado resistente a los cuánticos](https://forwardemail
 
 ### Modelo empresarial de precio fijo {#fixed-price-enterprise-model}
 
-El [precios empresariales](https://forwardemail.net/pricing) de Forward Email ofrecía un costo mensual fijo, independientemente del dominio o usuario. Este enfoque ha generado ahorros significativos para otras grandes organizaciones, como lo demuestra nuestro [Estudio de caso de correo electrónico de exalumnos universitarios](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), donde las instituciones ahorraron hasta un 99 % en comparación con las soluciones tradicionales de correo electrónico por usuario.
+El [precios empresariales](https://forwardemail.net/pricing) de Forward Email ofrecía un costo mensual fijo, independientemente del dominio o usuario. Este enfoque ha generado ahorros significativos para otras grandes organizaciones, como se demuestra en nuestro [Estudio de caso de correo electrónico de exalumnos universitarios](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), donde las instituciones ahorraron hasta un 99 % en comparación con las soluciones tradicionales de correo electrónico por usuario.
 
 ### API fácil de usar para desarrolladores {#developer-friendly-api}
 
-Tras el [Enfoque README primero](https://tom.preston-werner.com/2010/08/23/readme-driven-development) e inspirado en el [Diseño de la API RESTful de Stripe](https://amberonrails.com/building-stripes-api), el [API](https://forwardemail.net/api) de Forward Email permitió una integración profunda con el Centro de Control de Proyectos de la Fundación Linux. Esta integración fue crucial para automatizar la gestión del correo electrónico en su diversa cartera de proyectos.
+Siguiendo un [Enfoque README primero](https://tom.preston-werner.com/2010/08/23/readme-driven-development) e inspirado en [Diseño de la API RESTful de Stripe](https://amberonrails.com/building-stripes-api), el [API](https://forwardemail.net/api) de Forward Email permitió una integración profunda con el Centro de Control de Proyectos de Linux Foundation. Esta integración fue crucial para automatizar la gestión del correo electrónico en su diversa cartera de proyectos.
 
 ## Proceso de implementación {#implementation-process}
 
@@ -111,11 +111,11 @@ La implementación generó beneficios significativos:
 * Incorporación más rápida al proyecto (de días a minutos)
 * Gestión optimizada de más de 250 dominios desde una única interfaz
 
-### Gestión de costes {#cost-management}
+### Gestión de costos {#cost-management}
 
 * Precios fijos independientemente del crecimiento de dominios o usuarios
 * Eliminación de las tarifas de licencia por usuario
-* Al igual que con nuestro [estudio de caso universitario](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), la Fundación Linux logró ahorros sustanciales en comparación con las soluciones tradicionales.
+* Similar a nuestro [estudio de caso universitario](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), la Fundación Linux logró ahorros sustanciales en costos en comparación con las soluciones tradicionales
 
 ### Seguridad mejorada {#enhanced-security}
 

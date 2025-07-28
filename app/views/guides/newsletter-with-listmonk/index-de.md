@@ -19,12 +19,12 @@
   * [Abonnenten hinzufügen](#add-subscribers)
   * [Erstellen und Senden einer Kampagne](#create-and-send-a-campaign)
 * [Überprüfung](#verification)
-* [Entwicklerhinweise](#developer-notes)
+* [Entwicklernotizen](#developer-notes)
 * [Abschluss](#conclusion)
 
 ## Übersicht {#overview}
 
-Dieses Handbuch bietet Entwicklern eine Schritt-für-Schritt-Anleitung zur Einrichtung von [Listenmönch](https://listmonk.app/), einem leistungsstarken Open-Source-Newsletter- und Mailinglisten-Manager, mit [E-Mail weiterleiten](https://forwardemail.net/) als SMTP-Anbieter. Diese Kombination ermöglicht Ihnen die effektive Verwaltung Ihrer Kampagnen und gewährleistet gleichzeitig eine sichere, vertrauliche und zuverlässige E-Mail-Zustellung.
+Dieses Handbuch bietet Entwicklern eine Schritt-für-Schritt-Anleitung zum Einrichten von [Listenmönch](https://listmonk.app/), einem leistungsstarken Open-Source-Newsletter- und Mailinglisten-Manager, mit [E-Mail weiterleiten](https://forwardemail.net/) als SMTP-Anbieter. Diese Kombination ermöglicht Ihnen die effektive Verwaltung Ihrer Kampagnen und gewährleistet gleichzeitig eine sichere, vertrauliche und zuverlässige E-Mail-Zustellung.
 
 * **Listmonk**: Übernimmt die Abonnentenverwaltung, Listenorganisation, Kampagnenerstellung und Leistungsverfolgung.
 * **E-Mail weiterleiten**: Fungiert als sicherer SMTP-Server und übernimmt den eigentlichen E-Mail-Versand mit integrierten Sicherheitsfunktionen wie SPF, DKIM, DMARC und TLS-Verschlüsselung.
@@ -44,7 +44,7 @@ Durch die Integration dieser beiden behalten Sie die volle Kontrolle über Ihre 
 Bevor Sie beginnen, stellen Sie sicher, dass Sie über Folgendes verfügen:
 
 * Ein Virtual Private Server (VPS) mit einer aktuellen Linux-Distribution (Ubuntu 20.04+ empfohlen) mit mindestens 1 CPU und 1 GB RAM (2 GB empfohlen).
-* Benötigen Sie einen Anbieter? Schauen Sie sich den [empfohlene VPS-Liste](https://github.com/forwardemail/awesome-mail-server-providers) an.
+* Benötigen Sie einen Anbieter? Sehen Sie sich [empfohlene VPS-Liste](https://github.com/forwardemail/awesome-mail-server-providers) an.
 * Ein Domainname, den Sie verwalten (DNS-Zugriff erforderlich).
 * Ein aktives Konto mit [E-Mail weiterleiten](https://forwardemail.net/).
 * Root- oder `sudo`-Zugriff auf Ihren VPS.
@@ -103,11 +103,11 @@ Die Ausführung von Listmonk über HTTPS ist aus Sicherheitsgründen entscheiden
 Wenn das DNS Ihrer Domäne von Cloudflare verwaltet wird, können Sie deren Proxy-Funktion für einfaches HTTPS nutzen.
 
 1. **DNS-Punkt**: Erstellen Sie in Cloudflare einen `A`-Eintrag für Ihre Listmonk-Subdomain (z. B. `listmonk.yourdomain.com`), der auf Ihre VPS-IP-Adresse verweist. Stellen Sie sicher, dass der **Proxy-Status** auf **Proxied** (orangefarbene Wolke) eingestellt ist.
-2. **Docker Compose bearbeiten**: Bearbeiten Sie die heruntergeladene Datei `docker-compose.yml`:
+2. **Docker Compose anpassen**: Bearbeiten Sie die heruntergeladene Datei `docker-compose.yml`:
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-Dadurch ist Listmonk intern über Port 80 erreichbar, den Cloudflare dann als Proxy nutzen und mit HTTPS sichern kann.
+Dadurch ist Listmonk intern über Port 80 erreichbar, den Cloudflare dann als Proxy verwenden und mit HTTPS sichern kann.
 
 #### Option B: Verwenden eines Reverse-Proxys (Nginx, Caddy usw.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
@@ -119,7 +119,7 @@ Alternativ können Sie auf Ihrem VPS einen Reverse-Proxy wie Nginx oder Caddy ei
 
 ### 6. Starten Sie Listmonk {#6-start-listmonk}
 
-Navigieren Sie zurück zu Ihrem Verzeichnis `listmonk` (falls Sie nicht bereits dort sind) und starten Sie die Container im getrennten Modus.
+Navigieren Sie zurück zu Ihrem `listmonk`-Verzeichnis (falls Sie nicht bereits dort sind) und starten Sie die Container im getrennten Modus.
 
 ```bash
 cd ~/listmonk # Or the directory where you saved docker-compose.yml
@@ -128,13 +128,13 @@ docker compose up -d
 
 Docker lädt die erforderlichen Images herunter und startet die Listmonk-Anwendung sowie die Datenbankcontainer. Beim ersten Mal kann dies ein bis zwei Minuten dauern.
 
-✅ **Zugriff auf Listmonk**: Sie sollten jetzt über die von Ihnen konfigurierte Domäne (z. B. `https://listmonk.yourdomain.com`) auf die Listmonk-Weboberfläche zugreifen können.
+✅ **Auf Listmonk zugreifen**: Sie sollten jetzt über die von Ihnen konfigurierte Domäne (z. B. `https://listmonk.yourdomain.com`) auf die Listmonk-Weboberfläche zugreifen können.
 
-### 7. Konfigurieren Sie die SMTP-Weiterleitung von E-Mails in Listmonk {#7-configure-forward-email-smtp-in-listmonk}
+### 7. Konfigurieren Sie die SMTP-Weiterleitung für E-Mails in Listmonk {#7-configure-forward-email-smtp-in-listmonk}
 
 Konfigurieren Sie als Nächstes Listmonk so, dass E-Mails über Ihr Forward Email-Konto gesendet werden.
 
-1. **SMTP in der E-Mail-Weiterleitung aktivieren**: Stellen Sie sicher, dass Sie SMTP-Anmeldeinformationen im Dashboard Ihres E-Mail-Weiterleitungskontos generiert haben. Folgen Sie den Anweisungen [Anleitung zum Weiterleiten von E-Mails mit einer benutzerdefinierten Domäne über SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp), falls noch nicht geschehen.
+1. **SMTP in der E-Mail-Weiterleitung aktivieren**: Stellen Sie sicher, dass Sie SMTP-Anmeldeinformationen im Dashboard Ihres E-Mail-Weiterleitungskontos generiert haben. Folgen Sie den Anweisungen unter [Anleitung zum Weiterleiten von E-Mails mit einer benutzerdefinierten Domäne über SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp), falls noch nicht geschehen.
 2. **Listmonk konfigurieren**: Melden Sie sich im Listmonk-Administrationsbereich an.
 * Navigieren Sie zu **Einstellungen -> SMTP**.
 
@@ -159,9 +159,9 @@ Konfigurieren Sie als Nächstes Listmonk so, dass E-Mails über Ihr Forward Emai
 
 Mit der Bounce-Verarbeitung kann Listmonk E-Mails, die nicht zugestellt werden konnten (z. B. aufgrund ungültiger Adressen), automatisch verarbeiten. Forward Email bietet einen Webhook, um Listmonk über Bounces zu informieren.
 
-#### E-Mail-Einrichtung weiterleiten {#forward-email-setup}
+#### E-Mail-Weiterleitung einrichten {#forward-email-setup}
 
-1. Melden Sie sich bei Ihrem [Dashboard „E-Mail weiterleiten“](https://forwardemail.net/) an.
+1. Melden Sie sich bei [Dashboard „E-Mail weiterleiten“](https://forwardemail.net/) an.
 2. Navigieren Sie zu **Domains**, wählen Sie die Domain aus, die Sie zum Senden verwenden, und öffnen Sie deren **Einstellungen**.
 3. Scrollen Sie nach unten zum Abschnitt **Bounce-Webhook-URL**.
 4. Geben Sie die folgende URL ein und ersetzen Sie `<your_listmonk_domain>` durch die Domain oder Subdomain, unter der Ihre Listmonk-Instanz erreichbar ist:
@@ -183,7 +183,7 @@ Mit der Bounce-Verarbeitung kann Listmonk E-Mails, die nicht zugestellt werden k
 6. Fügen Sie den **Webhook-Signatur-Payload-Verifizierungsschlüssel**, den Sie aus dem Dashboard für E-Mail weiterleiten kopiert haben, in das Feld **Schlüssel für E-Mail weiterleiten** ein.
 7. Klicken Sie unten auf der Seite auf **Speichern**.
 8. Die Bounce-Verarbeitung ist nun konfiguriert! Wenn E-Mail weiterleiten einen Bounce für eine von Listmonk gesendete E-Mail erkennt, wird Ihre Listmonk-Instanz über den Webhook benachrichtigt, und Listmonk markiert den Abonnenten entsprechend.
-9. Führen Sie die folgenden Schritte unter [Testen](#testing) aus, um sicherzustellen, dass alles funktioniert.
+9. Führen Sie die folgenden Schritte in [Testen](#testing) aus, um sicherzustellen, dass alles funktioniert.
 
 ## Testen {#testing}
 
@@ -205,7 +205,7 @@ Hier ist ein kurzer Überblick über die wichtigsten Listmonk-Funktionen:
 * Weisen Sie Abonnenten beim Erstellen oder Importieren einer oder mehreren Listen zu.
 * **Best Practice**: Nutzen Sie ein Double-Opt-in-Verfahren. Konfigurieren Sie dies unter **Einstellungen -> Opt-in & Abonnements**.
 
-### Erstellen und Senden einer Kampagne {#create-and-send-a-campaign}
+### Erstellen und senden Sie eine Kampagne {#create-and-send-a-campaign}
 
 * Gehen Sie zu **Kampagnen** -> **Neue Kampagne**.
 * Geben Sie die Kampagnendetails ein (Name, Betreff, Absender-E-Mail, Empfängerliste(n).
@@ -214,16 +214,16 @@ Hier ist ein kurzer Überblick über die wichtigsten Listmonk-Funktionen:
 * **Senden Sie immer zuerst eine Test-E-Mail!** Nutzen Sie die Option „Test senden“, um eine Vorschau der E-Mail in Ihrem Posteingang anzuzeigen.
 * Wenn Sie zufrieden sind, klicken Sie auf **Kampagne starten**, um den Versand sofort durchzuführen oder für einen späteren Zeitpunkt zu planen.
 
-## Verifizierung {#verification}
+## Überprüfung {#verification}
 
 * **SMTP-Zustellung**: Senden Sie regelmäßig Test-E-Mails über die SMTP-Einstellungsseite von Listmonk und testen Sie Kampagnen, um sicherzustellen, dass die E-Mails korrekt zugestellt werden.
 * **Bounce-Behandlung**: Senden Sie eine Testkampagne an eine bekanntermaßen ungültige E-Mail-Adresse (z. B. `bounce-test@yourdomain.com`, falls Sie keine gültige Adresse zur Hand haben; die Ergebnisse können jedoch variieren). Überprüfen Sie nach kurzer Zeit die Kampagnenstatistiken in Listmonk, um festzustellen, ob der Bounce registriert wurde.
-* **E-Mail-Header**: Verwenden Sie Tools wie [Mail-Tester](https://www.mail-tester.com/) oder überprüfen Sie E-Mail-Header manuell, um sicherzustellen, dass SPF, DKIM und DMARC durchgelassen werden, was auf eine korrekte Einrichtung durch Forward Email hindeutet.
+* **E-Mail-Header**: Verwenden Sie Tools wie [Mail-Tester](https://www.mail-tester.com/) oder überprüfen Sie E-Mail-Header manuell, um sicherzustellen, dass SPF, DKIM und DMARC durchgelassen werden, was auf eine korrekte Einrichtung durch Forward Email hinweist.
 * **Forward Email-Protokolle**: Überprüfen Sie Ihre Forward Email-Dashboard-Protokolle, wenn Sie Zustellungsprobleme vermuten, die vom SMTP-Server herrühren.
 
 ## Entwicklerhinweise {#developer-notes}
 
-* **Templating**: Listmonk nutzt die Template-Engine von Go. Weitere Informationen zur erweiterten Personalisierung finden Sie in der Dokumentation: `{{ .Subscriber.Attribs.your_custom_field }}`.
+* **Templating**: Listmonk nutzt die Template-Engine von Go. Informationen zur erweiterten Personalisierung finden Sie in der Dokumentation: `{{ .Subscriber.Attribs.your_custom_field }}`.
 * **API**: Listmonk bietet eine umfassende REST-API zur Verwaltung von Listen, Abonnenten, Kampagnen, Vorlagen und mehr. Den Link zur API-Dokumentation finden Sie in der Fußzeile Ihrer Listmonk-Instanz.
 * **Benutzerdefinierte Felder**: Definieren Sie unter **Einstellungen -> Abonnentenfelder** benutzerdefinierte Abonnentenfelder, um zusätzliche Daten zu speichern.
 * **Webhooks**: Neben Bounces kann Listmonk auch Webhooks für andere Ereignisse (z. B. Abonnements) senden und so die Integration mit anderen Systemen ermöglichen.

@@ -14,7 +14,7 @@
   * [6. Inicie o Listmonk](#6-start-listmonk)
   * [7. Configurar o encaminhamento de e-mail SMTP no Listmonk](#7-configure-forward-email-smtp-in-listmonk)
   * [8. Configurar o processamento de rejeição](#8-configure-bounce-processing)
-* [Testando](#testing)
+* [Teste](#testing)
   * [Criar uma lista de discussão](#create-a-mailing-list)
   * [Adicionar assinantes](#add-subscribers)
   * [Criar e enviar uma campanha](#create-and-send-a-campaign)
@@ -24,7 +24,7 @@
 
 ## Visão geral {#overview}
 
-Este guia fornece aos desenvolvedores instruções passo a passo para configurar o [Listmonk](https://listmonk.app/), um poderoso gerenciador de newsletters e listas de e-mail de código aberto, para usar o [Encaminhar e-mail](https://forwardemail.net/) como seu provedor SMTP. Essa combinação permite que você gerencie suas campanhas de forma eficaz, garantindo uma entrega de e-mails segura, privada e confiável.
+Este guia fornece aos desenvolvedores instruções passo a passo para configurar o [Listmonk](https://listmonk.app/), um poderoso gerenciador de newsletters e listas de e-mail de código aberto, para usar o [Encaminhar e-mail](https://forwardemail.net/) como seu provedor SMTP. Essa combinação permite que você gerencie suas campanhas de forma eficaz, garantindo a entrega de e-mails segura, privada e confiável.
 
 * **Listmonk**: Gerencia assinantes, organiza listas, cria campanhas e monitora o desempenho.
 * **Encaminhamento de e-mails**: Atua como um servidor SMTP seguro, gerenciando o envio de e-mails com recursos de segurança integrados, como criptografia SPF, DKIM, DMARC e TLS.
@@ -102,7 +102,7 @@ Executar o Listmonk via HTTPS é crucial para a segurança. Você tem duas opç�
 
 Se o DNS do seu domínio for gerenciado pela Cloudflare, você pode aproveitar o recurso de proxy para HTTPS fácil.
 
-1. **DNS de ponto**: Crie um registro `A` no Cloudflare para o seu subdomínio Listmonk (por exemplo, `listmonk.yourdomain.com`) apontando para o endereço IP do seu VPS. Certifique-se de que o **Status do proxy** esteja definido como **Proxied** (nuvem laranja).
+1. **DNS de Ponto**: Crie um registro `A` no Cloudflare para o seu subdomínio Listmonk (por exemplo, `listmonk.yourdomain.com`) apontando para o endereço IP do seu VPS. Certifique-se de que o **Status do Proxy** esteja definido como **Proxied** (nuvem laranja).
 2. **Modifique o Docker Compose**: Edite o arquivo `docker-compose.yml` que você baixou:
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
@@ -113,13 +113,13 @@ Isso torna o Listmonk acessível internamente na porta 80, que o Cloudflare pode
 
 Como alternativa, você pode configurar um proxy reverso como Nginx ou Caddy no seu VPS para lidar com o encerramento de HTTPS e solicitações de proxy para o Listmonk (executando na porta 9000 por padrão).
 
-* Mantenha o padrão `ports: - "127.0.0.1:9000:9000"` em `docker-compose.yml` para garantir que o Listmonk seja acessível apenas localmente.
+* Mantenha o `ports: - "127.0.0.1:9000:9000"` padrão em `docker-compose.yml` para garantir que o Listmonk seja acessível apenas localmente.
 * Configure o proxy reverso escolhido para escutar nas portas 80 e 443, processar a aquisição de certificados SSL (por exemplo, via Let's Encrypt) e encaminhar o tráfego para `http://127.0.0.1:9000`.
 * A configuração detalhada do proxy reverso está além do escopo deste guia, mas muitos tutoriais estão disponíveis online.
 
 ### 6. Inicie o Listmonk {#6-start-listmonk}
 
-Navegue de volta para o seu diretório `listmonk` (se ainda não estiver lá) e inicie os contêineres no modo desanexado.
+Volte para o diretório `listmonk` (se ainda não estiver lá) e inicie os contêineres no modo desanexado.
 
 ```bash
 cd ~/listmonk # Or the directory where you saved docker-compose.yml
@@ -128,9 +128,9 @@ docker compose up -d
 
 O Docker baixará as imagens necessárias e iniciará o aplicativo Listmonk e os contêineres do banco de dados. Pode levar um ou dois minutos na primeira vez.
 
-✅ **Acesse o Listmonk**: Agora você deve conseguir acessar a interface web do Listmonk por meio do domínio que configurou (por exemplo, `https://listmonk.yourdomain.com`).
+✅ **Acesse o Listmonk**: Agora você deve conseguir acessar a interface web do Listmonk por meio do domínio configurado (por exemplo, `https://listmonk.yourdomain.com`).
 
-### 7. Configurar encaminhamento de e-mail SMTP no Listmonk {#7-configure-forward-email-smtp-in-listmonk}
+### 7. Configurar o encaminhamento de e-mail SMTP no Listmonk {#7-configure-forward-email-smtp-in-listmonk}
 
 Em seguida, configure o Listmonk para enviar e-mails usando sua conta Forward Email.
 
@@ -150,7 +150,7 @@ Em seguida, configure o Listmonk para enviar e-mails usando sua conta Forward Em
 | **TLS** | `SSL/TLS` |
 | **Do e-mail** | Seu endereço `From` desejado (por exemplo, `newsletter@yourdomain.com`). Certifique-se de que este domínio esteja configurado em "Encaminhar e-mail". |
 
-* **Importante**: Sempre use a porta `465` com `SSL/TLS` para conexões seguras com o Encaminhamento de E-mail. Não use STARTTLS (porta 587).
+* **Importante**: Sempre use a porta `465` com `SSL/TLS` para conexões seguras com o Forward Email. Não use STARTTLS (porta 587).
 
 * Clique em **Salvar**.
 3. **Enviar e-mail de teste**: Use o botão "Enviar e-mail de teste" na página de configurações de SMTP. Insira um endereço de destinatário acessível e clique em **Enviar**. Verifique se o e-mail chegou à caixa de entrada do destinatário.
@@ -161,7 +161,7 @@ O processamento de devoluções permite que o Listmonk trate automaticamente e-m
 
 #### Configuração de encaminhamento de e-mail {#forward-email-setup}
 
-1. Acesse seu [Painel de encaminhamento de e-mail](https://forwardemail.net/).
+1. Faça login no seu [Painel de encaminhamento de e-mail](https://forwardemail.net/).
 2. Navegue até **Domínios**, selecione o domínio que você está usando para envio e acesse a página **Configurações**.
 3. Role para baixo até a seção **URL do Webhook de Retorno**.
 4. Insira a seguinte URL, substituindo `<your_listmonk_domain>` pelo domínio ou subdomínio onde sua instância do Listmonk está acessível:
@@ -183,13 +183,13 @@ O processamento de devoluções permite que o Listmonk trate automaticamente e-m
 6. Cole a **Chave de Verificação de Payload de Assinatura de Webhook** que você copiou do painel de Encaminhamento de E-mail no campo **Chave de Encaminhamento de E-mail**.
 7. Clique em **Salvar** na parte inferior da página.
 8. O processamento de rejeição agora está configurado! Quando o Encaminhamento de E-mail detectar uma rejeição para um e-mail enviado pelo Listmonk, ele notificará sua instância do Listmonk por meio do webhook, e o Listmonk marcará o assinante de acordo.
-9. Conclua as etapas abaixo em [Testando](#testing) para garantir que tudo esteja funcionando.
+9. Conclua as etapas abaixo em [Teste](#testing) para garantir que tudo esteja funcionando.
 
-## Testando {#testing}
+## Teste {#testing}
 
 Aqui está uma rápida visão geral das principais funções do Listmonk:
 
-### Crie uma lista de discussão {#create-a-mailing-list}
+### Criar uma lista de discussão {#create-a-mailing-list}
 
 * Acesse **Listas** na barra lateral.
 * Clique em **Nova Lista**.
@@ -205,14 +205,14 @@ Aqui está uma rápida visão geral das principais funções do Listmonk:
 * Atribua assinantes a uma ou mais listas durante a criação ou importação.
 * **Melhores Práticas**: Use um processo de opt-in duplo. Configure isso em **Configurações -> Opt-in e Assinaturas**.
 
-### Crie e envie uma campanha {#create-and-send-a-campaign}
+### Criar e enviar uma campanha {#create-and-send-a-campaign}
 
 * Acesse **Campanhas** -> **Nova Campanha**.
 * Preencha os detalhes da campanha (Nome, Assunto, E-mail de origem, Lista(s) para envio).
 * Escolha o tipo de conteúdo (Rich Text/HTML, Texto Simples, HTML Simples).
 * Crie o conteúdo do seu e-mail. Você pode usar variáveis de modelo como `{{ .Subscriber.Email }}` ou `{{ .Subscriber.FirstName }}`.
 * **Sempre envie um e-mail de teste primeiro!** Use a opção "Enviar Teste" para visualizar o e-mail na sua caixa de entrada.
-* Quando estiver satisfeito, clique em **Iniciar Campanha** para enviar imediatamente ou agendá-la para mais tarde.
+* Quando estiver satisfeito, clique em **Iniciar Campanha** para enviar imediatamente ou agendá-lo para mais tarde.
 
 ## Verificação {#verification}
 
@@ -225,7 +225,7 @@ Aqui está uma rápida visão geral das principais funções do Listmonk:
 
 * **Templating**: O Listmonk utiliza o mecanismo de templates do Go. Explore sua documentação para personalização avançada: `{{ .Subscriber.Attribs.your_custom_field }}`.
 * **API**: O Listmonk fornece uma API REST abrangente para gerenciar listas, assinantes, campanhas, modelos e muito mais. Encontre o link da documentação da API no rodapé da sua instância do Listmonk.
-* **Campos Personalizados**: Defina campos personalizados para assinantes em **Configurações -> Campos do Assinante** para armazenar dados adicionais.
+* **Campos Personalizados**: Defina campos personalizados para assinantes em **Configurações -> Campos de Assinante** para armazenar dados adicionais.
 * **Webhooks**: Além de rejeições, o Listmonk pode enviar webhooks para outros eventos (por exemplo, assinaturas), permitindo a integração com outros sistemas.
 
 ## Conclusão {#conclusion}

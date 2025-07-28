@@ -1,16 +1,16 @@
-# Cách chúng tôi xây dựng một hệ thống thanh toán mạnh mẽ với Stripe và PayPal: Phương pháp tiếp cận Trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Cách chúng tôi xây dựng hệ thống thanh toán mạnh mẽ với Stripe và PayPal: Phương pháp tiếp cận Trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
 <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
 
 ## Mục lục {#table-of-contents}
 
 * [Lời nói đầu](#foreword)
-* [Thách thức: Nhiều bộ xử lý thanh toán, một nguồn sự thật](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Thách thức: Nhiều bộ xử lý thanh toán, một nguồn thông tin đáng tin cậy](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [Phương pháp Trifecta: Ba lớp độ tin cậy](#the-trifecta-approach-three-layers-of-reliability)
 * [Lớp 1: Chuyển hướng sau khi thanh toán](#layer-1-post-checkout-redirects)
-  * [Triển khai Stripe Checkout](#stripe-checkout-implementation)
+  * [Triển khai thanh toán Stripe](#stripe-checkout-implementation)
   * [Luồng thanh toán PayPal](#paypal-payment-flow)
-* [Lớp 2: Trình xử lý Webhook với Xác minh chữ ký](#layer-2-webhook-handlers-with-signature-verification)
+* [Lớp 2: Trình xử lý Webhook có xác minh chữ ký](#layer-2-webhook-handlers-with-signature-verification)
   * [Triển khai Stripe Webhook](#stripe-webhook-implementation)
   * [Triển khai PayPal Webhook](#paypal-webhook-implementation)
 * [Lớp 3: Công việc tự động với Bree](#layer-3-automated-jobs-with-bree)
@@ -20,23 +20,23 @@
   * [Phát hiện và phòng ngừa gian lận](#fraud-detection-and-prevention)
   * [Xử lý tranh chấp](#dispute-handling)
 * [Tái sử dụng mã: Nguyên tắc KISS và DRY](#code-reuse-kiss-and-dry-principles)
-* [Triển khai yêu cầu đăng ký VISA](#visa-subscription-requirements-implementation)
+* [Triển khai các yêu cầu đăng ký VISA](#visa-subscription-requirements-implementation)
   * [Thông báo qua email tự động trước khi gia hạn](#automated-pre-renewal-email-notifications)
   * [Xử lý các trường hợp ngoại lệ](#handling-edge-cases-1)
-  * [Thời gian dùng thử và điều khoản đăng ký](#trial-periods-and-subscription-terms)
-* [Kết luận: Những lợi ích của phương pháp Trifecta của chúng tôi](#conclusion-the-benefits-of-our-trifecta-approach)
+  * [Thời gian dùng thử và Điều khoản đăng ký](#trial-periods-and-subscription-terms)
+* [Kết luận: Lợi ích của phương pháp Trifecta của chúng tôi](#conclusion-the-benefits-of-our-trifecta-approach)
 
 ## Lời nói đầu {#foreword}
 
-Tại Forward Email, chúng tôi luôn ưu tiên tạo ra các hệ thống đáng tin cậy, chính xác và thân thiện với người dùng. Khi triển khai hệ thống xử lý thanh toán, chúng tôi biết mình cần một giải pháp có thể xử lý nhiều bộ xử lý thanh toán trong khi vẫn duy trì tính nhất quán dữ liệu hoàn hảo. Bài đăng trên blog này trình bày chi tiết cách nhóm phát triển của chúng tôi tích hợp cả Stripe và PayPal bằng cách sử dụng phương pháp trifecta đảm bảo độ chính xác theo thời gian thực 1:1 trên toàn bộ hệ thống của chúng tôi.
+Tại Forward Email, chúng tôi luôn ưu tiên tạo ra các hệ thống đáng tin cậy, chính xác và thân thiện với người dùng. Khi triển khai hệ thống xử lý thanh toán, chúng tôi biết mình cần một giải pháp có thể xử lý nhiều bộ xử lý thanh toán trong khi vẫn duy trì tính nhất quán dữ liệu hoàn hảo. Bài viết trên blog này trình bày chi tiết cách nhóm phát triển của chúng tôi tích hợp cả Stripe và PayPal bằng phương pháp trifecta, đảm bảo độ chính xác theo thời gian thực 1:1 trên toàn bộ hệ thống.
 
 ## Thách thức: Nhiều bộ xử lý thanh toán, một nguồn thông tin đáng tin cậy {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Là một dịch vụ email tập trung vào quyền riêng tư, chúng tôi muốn cung cấp cho người dùng các tùy chọn thanh toán. Một số người thích sự đơn giản của thanh toán bằng thẻ tín dụng thông qua Stripe, trong khi những người khác đánh giá cao lớp phân tách bổ sung mà PayPal cung cấp. Tuy nhiên, việc hỗ trợ nhiều bộ xử lý thanh toán sẽ gây ra sự phức tạp đáng kể:
+Là một dịch vụ email chú trọng quyền riêng tư, chúng tôi muốn cung cấp cho người dùng các tùy chọn thanh toán. Một số người thích sự đơn giản của thanh toán bằng thẻ tín dụng thông qua Stripe, trong khi những người khác lại đánh giá cao lớp bảo mật bổ sung mà PayPal cung cấp. Tuy nhiên, việc hỗ trợ nhiều bộ xử lý thanh toán sẽ gây ra sự phức tạp đáng kể:
 
 1. Làm thế nào để chúng tôi đảm bảo dữ liệu nhất quán trên các hệ thống thanh toán khác nhau?
-2. Làm thế nào để chúng tôi xử lý các trường hợp ngoại lệ như tranh chấp, hoàn tiền hoặc thanh toán không thành công?
-3. Làm thế nào để chúng tôi duy trì một nguồn thông tin xác thực duy nhất trong cơ sở dữ liệu của mình?
+2. Làm thế nào để chúng tôi xử lý các trường hợp bất khả kháng như tranh chấp, hoàn tiền hoặc thanh toán không thành công?
+3. Làm thế nào để chúng tôi duy trì một nguồn dữ liệu đáng tin cậy duy nhất trong cơ sở dữ liệu của mình?
 
 Giải pháp của chúng tôi là triển khai cái mà chúng tôi gọi là "phương pháp trifecta" - một hệ thống ba lớp cung cấp tính dự phòng và đảm bảo tính nhất quán của dữ liệu bất kể điều gì xảy ra.
 
@@ -46,9 +46,9 @@ Hệ thống thanh toán của chúng tôi bao gồm ba thành phần quan trọ
 
 1. **Chuyển hướng sau khi thanh toán** - Thu thập thông tin thanh toán ngay sau khi thanh toán
 2. **Trình xử lý Webhook** - Xử lý các sự kiện thời gian thực từ bộ xử lý thanh toán
-3. **Công việc tự động** - Xác minh và đối chiếu dữ liệu thanh toán theo định kỳ
+3. **Công việc tự động** - Định kỳ xác minh và đối chiếu dữ liệu thanh toán
 
-Hãy cùng tìm hiểu từng thành phần và xem chúng hoạt động cùng nhau như thế nào.
+Chúng ta hãy cùng tìm hiểu từng thành phần và xem chúng hoạt động cùng nhau như thế nào.
 
 ```mermaid
 flowchart TD
@@ -112,11 +112,11 @@ flowchart TD
 
 ## Lớp 1: Chuyển hướng sau khi thanh toán {#layer-1-post-checkout-redirects}
 
-Lớp đầu tiên của phương pháp trifecta của chúng tôi diễn ra ngay sau khi người dùng hoàn tất thanh toán. Cả Stripe và PayPal đều cung cấp cơ chế chuyển hướng người dùng trở lại trang web của chúng tôi với thông tin giao dịch.
+Lớp đầu tiên trong phương pháp trifecta của chúng tôi diễn ra ngay sau khi người dùng hoàn tất thanh toán. Cả Stripe và PayPal đều cung cấp cơ chế chuyển hướng người dùng trở lại trang web của chúng tôi với thông tin giao dịch.
 
 ### Triển khai thanh toán Stripe {#stripe-checkout-implementation}
 
-Đối với Stripe, chúng tôi sử dụng API Phiên thanh toán của họ để tạo trải nghiệm thanh toán liền mạch. Khi người dùng chọn một gói và chọn thanh toán bằng thẻ tín dụng, chúng tôi tạo Phiên thanh toán với thành công cụ thể và hủy URL:
+Đối với Stripe, chúng tôi sử dụng API Phiên Thanh toán của họ để tạo trải nghiệm thanh toán liền mạch. Khi người dùng chọn một gói cước và thanh toán bằng thẻ tín dụng, chúng tôi sẽ tạo Phiên Thanh toán với các URL thành công và hủy cụ thể:
 
 ```javascript
 const options = {
@@ -154,11 +154,11 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Phần quan trọng ở đây là tham số `success_url`, bao gồm `session_id` làm tham số truy vấn. Khi Stripe chuyển hướng người dùng trở lại trang web của chúng tôi sau khi thanh toán thành công, chúng tôi có thể sử dụng ID phiên này để xác minh giao dịch và cập nhật cơ sở dữ liệu của chúng tôi cho phù hợp.
+Phần quan trọng ở đây là tham số `success_url`, bao gồm `session_id` làm tham số truy vấn. Khi Stripe chuyển hướng người dùng trở lại trang web của chúng tôi sau khi thanh toán thành công, chúng tôi có thể sử dụng ID phiên này để xác minh giao dịch và cập nhật cơ sở dữ liệu cho phù hợp.
 
 ### Luồng thanh toán PayPal {#paypal-payment-flow}
 
-Đối với PayPal, chúng tôi sử dụng cách tiếp cận tương tự với API đơn hàng của họ:
+Đối với PayPal, chúng tôi sử dụng cách tiếp cận tương tự với API Đơn hàng của họ:
 
 ```javascript
 const requestBody = {
@@ -210,7 +210,7 @@ const requestBody = {
 };
 ```
 
-Tương tự như Stripe, chúng tôi chỉ định các tham số `return_url` và `cancel_url` để xử lý chuyển hướng sau thanh toán. Khi PayPal chuyển hướng người dùng trở lại trang web của chúng tôi, chúng tôi có thể nắm bắt thông tin chi tiết về thanh toán và cập nhật cơ sở dữ liệu của mình.
+Tương tự như Stripe, chúng tôi chỉ định các tham số `return_url` và `cancel_url` để xử lý việc chuyển hướng sau thanh toán. Khi PayPal chuyển hướng người dùng trở lại trang web của chúng tôi, chúng tôi có thể nắm bắt thông tin thanh toán và cập nhật cơ sở dữ liệu.
 
 ```mermaid
 sequenceDiagram
@@ -283,11 +283,11 @@ sequenceDiagram
 
 ## Lớp 2: Trình xử lý Webhook có Xác minh chữ ký {#layer-2-webhook-handlers-with-signature-verification}
 
-Mặc dù chuyển hướng sau khi thanh toán hoạt động tốt trong hầu hết các trường hợp, nhưng chúng không phải là hoàn hảo. Người dùng có thể đóng trình duyệt trước khi được chuyển hướng hoặc sự cố mạng có thể ngăn không cho chuyển hướng hoàn tất. Đó là lúc webhooks phát huy tác dụng.
+Mặc dù chuyển hướng sau khi thanh toán hoạt động tốt trong hầu hết các trường hợp, nhưng chúng không phải là giải pháp hoàn hảo. Người dùng có thể đóng trình duyệt trước khi được chuyển hướng, hoặc sự cố mạng có thể ngăn quá trình chuyển hướng hoàn tất. Đó chính là lúc webhooks phát huy tác dụng.
 
-Cả Stripe và PayPal đều cung cấp hệ thống webhook gửi thông báo theo thời gian thực về các sự kiện thanh toán. Chúng tôi đã triển khai trình xử lý webhook mạnh mẽ để xác minh tính xác thực của các thông báo này và xử lý chúng cho phù hợp.
+Cả Stripe và PayPal đều cung cấp hệ thống webhook gửi thông báo theo thời gian thực về các sự kiện thanh toán. Chúng tôi đã triển khai các trình xử lý webhook mạnh mẽ để xác minh tính xác thực của các thông báo này và xử lý chúng cho phù hợp.
 
-### Triển khai Stripe Webhook {#stripe-webhook-implementation}
+### Triển khai Webhook Stripe {#stripe-webhook-implementation}
 
 Trình xử lý webhook Stripe của chúng tôi xác minh chữ ký của các sự kiện webhook đến để đảm bảo chúng hợp lệ:
 
@@ -334,7 +334,7 @@ async function webhook(ctx) {
 }
 ```
 
-Hàm `stripe.webhooks.constructEvent` xác minh chữ ký bằng bí mật điểm cuối của chúng tôi. Nếu chữ ký hợp lệ, chúng tôi xử lý sự kiện theo cách không đồng bộ để tránh chặn phản hồi webhook.
+Hàm `stripe.webhooks.constructEvent` xác minh chữ ký bằng bí mật điểm cuối của chúng tôi. Nếu chữ ký hợp lệ, chúng tôi sẽ xử lý sự kiện theo cách không đồng bộ để tránh chặn phản hồi webhook.
 
 ### Triển khai PayPal Webhook {#paypal-webhook-implementation}
 
@@ -377,11 +377,11 @@ async function webhook(ctx) {
 }
 ```
 
-Cả hai trình xử lý webhook đều tuân theo cùng một mẫu: xác minh chữ ký, xác nhận biên lai và xử lý sự kiện không đồng bộ. Điều này đảm bảo rằng chúng tôi không bao giờ bỏ lỡ sự kiện thanh toán, ngay cả khi chuyển hướng sau khi thanh toán không thành công.
+Cả hai trình xử lý webhook đều tuân theo cùng một quy trình: xác minh chữ ký, xác nhận đã nhận và xử lý sự kiện một cách không đồng bộ. Điều này đảm bảo chúng tôi không bao giờ bỏ lỡ bất kỳ sự kiện thanh toán nào, ngay cả khi chuyển hướng sau khi thanh toán không thành công.
 
 ## Lớp 3: Công việc tự động với Bree {#layer-3-automated-jobs-with-bree}
 
-Lớp cuối cùng của phương pháp trifecta của chúng tôi là một tập hợp các công việc tự động định kỳ xác minh và đối chiếu dữ liệu thanh toán. Chúng tôi sử dụng Bree, một trình lập lịch công việc cho Node.js, để chạy các công việc này theo các khoảng thời gian đều đặn.
+Lớp cuối cùng trong phương pháp trifecta của chúng tôi là một tập hợp các tác vụ tự động định kỳ xác minh và đối chiếu dữ liệu thanh toán. Chúng tôi sử dụng Bree, một trình lập lịch tác vụ cho Node.js, để chạy các tác vụ này theo định kỳ.
 
 ### Trình kiểm tra độ chính xác của đăng ký {#subscription-accuracy-checker}
 
@@ -452,7 +452,7 @@ async function mapper(customer) {
 }
 ```
 
-Công việc này kiểm tra sự khác biệt giữa cơ sở dữ liệu của chúng tôi và Stripe, chẳng hạn như địa chỉ email không khớp hoặc nhiều đăng ký đang hoạt động. Nếu tìm thấy bất kỳ vấn đề nào, nó sẽ ghi lại và gửi cảnh báo cho nhóm quản trị của chúng tôi.
+Công việc này kiểm tra sự khác biệt giữa cơ sở dữ liệu của chúng tôi và Stripe, chẳng hạn như địa chỉ email không khớp hoặc nhiều đăng ký đang hoạt động. Nếu phát hiện bất kỳ sự cố nào, công việc sẽ ghi lại và gửi cảnh báo đến nhóm quản trị viên.
 
 ### Đồng bộ hóa đăng ký PayPal {#paypal-subscription-synchronization}
 
@@ -491,9 +491,9 @@ Những công việc tự động này đóng vai trò là mạng lưới an to�
 
 ## Xử lý các trường hợp ngoại lệ {#handling-edge-cases}
 
-Một hệ thống thanh toán mạnh mẽ phải xử lý các trường hợp ngoại lệ một cách khéo léo. Hãy cùng xem cách chúng tôi xử lý một số tình huống phổ biến.
+Một hệ thống thanh toán mạnh mẽ phải xử lý các trường hợp ngoại lệ một cách khéo léo. Hãy cùng xem xét cách chúng tôi xử lý một số tình huống phổ biến.
 
-### Phát hiện và ngăn chặn gian lận {#fraud-detection-and-prevention}
+### Phát hiện và phòng ngừa gian lận {#fraud-detection-and-prevention}
 
 Chúng tôi đã triển khai các cơ chế phát hiện gian lận tinh vi có thể tự động xác định và xử lý các hoạt động thanh toán đáng ngờ:
 
@@ -540,7 +540,7 @@ case 'charge.failed': {
 }
 ```
 
-Mã này sẽ tự động cấm những người dùng có nhiều lần tính phí không thành công và không có tên miền đã xác minh, đây là dấu hiệu rõ ràng của hoạt động gian lận.
+Mã này sẽ tự động cấm những người dùng có nhiều khoản phí không thành công và không có tên miền đã được xác minh, đây là dấu hiệu rõ ràng của hoạt động gian lận.
 
 ### Xử lý tranh chấp {#dispute-handling}
 
@@ -583,13 +583,13 @@ Cách tiếp cận này giảm thiểu tác động của tranh chấp đối v�
 
 ## Tái sử dụng mã: Nguyên tắc KISS và DRY {#code-reuse-kiss-and-dry-principles}
 
-Trong toàn bộ hệ thống thanh toán của mình, chúng tôi đã tuân thủ các nguyên tắc KISS (Giữ mọi thứ đơn giản, ngu ngốc) và DRY (Đừng lặp lại chính mình). Sau đây là một số ví dụ:
+Trong suốt hệ thống thanh toán của mình, chúng tôi luôn tuân thủ nguyên tắc KISS (Giữ mọi thứ đơn giản, đừng lặp lại) và DRY (Đừng lặp lại chính mình). Dưới đây là một số ví dụ:
 
-1. **Các hàm trợ giúp được chia sẻ**: Chúng tôi đã tạo ra các hàm trợ giúp có thể tái sử dụng cho các tác vụ phổ biến như đồng bộ hóa thanh toán và gửi email.
+1. **Hàm trợ lý dùng chung**: Chúng tôi đã tạo ra các hàm trợ lý có thể tái sử dụng cho các tác vụ phổ biến như đồng bộ hóa thanh toán và gửi email.
 
 2. **Xử lý lỗi nhất quán**: Cả trình xử lý webhook của Stripe và PayPal đều sử dụng cùng một mẫu để xử lý lỗi và thông báo cho quản trị viên.
 
-3. **Sơ đồ cơ sở dữ liệu hợp nhất**: Sơ đồ cơ sở dữ liệu của chúng tôi được thiết kế để chứa cả dữ liệu Stripe và PayPal, với các trường chung cho trạng thái thanh toán, số tiền và thông tin về gói thanh toán.
+3. **Sơ đồ cơ sở dữ liệu hợp nhất**: Sơ đồ cơ sở dữ liệu của chúng tôi được thiết kế để chứa cả dữ liệu Stripe và PayPal, với các trường chung cho trạng thái thanh toán, số tiền và thông tin gói.
 
 4. **Cấu hình tập trung**: Cấu hình liên quan đến thanh toán được tập trung trong một tệp duy nhất, giúp dễ dàng cập nhật giá cả và thông tin sản phẩm.
 
@@ -689,11 +689,11 @@ graph TD
 
 ## Triển khai Yêu cầu Đăng ký VISA {#visa-subscription-requirements-implementation}
 
-Ngoài cách tiếp cận trifecta của chúng tôi, chúng tôi đã triển khai các tính năng cụ thể để tuân thủ các yêu cầu đăng ký của VISA đồng thời nâng cao trải nghiệm của người dùng. Một yêu cầu chính từ VISA là người dùng phải được thông báo trước khi họ bị tính phí đăng ký, đặc biệt là khi chuyển từ dùng thử sang đăng ký trả phí.
+Bên cạnh phương pháp tiếp cận "trifecta", chúng tôi đã triển khai các tính năng cụ thể để tuân thủ các yêu cầu đăng ký của VISA, đồng thời nâng cao trải nghiệm người dùng. Một yêu cầu quan trọng từ VISA là người dùng phải được thông báo trước khi bị tính phí đăng ký, đặc biệt là khi chuyển từ gói dùng thử sang gói trả phí.
 
 ### Thông báo tự động qua email trước khi gia hạn {#automated-pre-renewal-email-notifications}
 
-Chúng tôi đã xây dựng một hệ thống tự động xác định người dùng có đăng ký dùng thử đang hoạt động và gửi cho họ email thông báo trước khi khoản phí đầu tiên của họ xảy ra. Điều này không chỉ giúp chúng tôi tuân thủ các yêu cầu của VISA mà còn giảm các khoản hoàn trả và cải thiện sự hài lòng của khách hàng.
+Chúng tôi đã xây dựng một hệ thống tự động xác định người dùng có đăng ký dùng thử đang hoạt động và gửi email thông báo trước khi khoản phí đầu tiên phát sinh. Điều này không chỉ giúp chúng tôi tuân thủ các yêu cầu của VISA mà còn giảm thiểu tình trạng hoàn tiền và cải thiện sự hài lòng của khách hàng.
 
 Sau đây là cách chúng tôi triển khai tính năng này:
 
@@ -778,16 +778,16 @@ for (const user of users) {
 
 Việc triển khai này đảm bảo rằng người dùng luôn được thông báo về các khoản phí sắp tới, với thông tin chi tiết rõ ràng về:
 
-1. Khi nào khoản phí đầu tiên sẽ xảy ra
-2. Tần suất các khoản phí trong tương lai (hàng tháng, hàng năm, v.v.)
-3. Số tiền chính xác mà họ sẽ bị tính
-4. Những tên miền nào được bao gồm trong đăng ký của họ
+1. Thời điểm phát sinh khoản phí đầu tiên
+2. Tần suất phát sinh các khoản phí trong tương lai (hàng tháng, hàng năm, v.v.)
+3. Số tiền chính xác họ sẽ bị tính
+4. Những tên miền nào được bao gồm trong gói đăng ký của họ
 
-Bằng cách tự động hóa quy trình này, chúng tôi tuân thủ hoàn toàn các yêu cầu của VISA (yêu cầu thông báo ít nhất 7 ngày trước khi tính phí) đồng thời giảm các yêu cầu hỗ trợ và cải thiện trải nghiệm tổng thể của người dùng.
+Bằng cách tự động hóa quy trình này, chúng tôi duy trì sự tuân thủ hoàn toàn với các yêu cầu của VISA (yêu cầu thông báo ít nhất 7 ngày trước khi tính phí) đồng thời giảm các yêu cầu hỗ trợ và cải thiện trải nghiệm tổng thể của người dùng.
 
 ### Xử lý các trường hợp ngoại lệ {#handling-edge-cases-1}
 
-Việc triển khai của chúng tôi cũng bao gồm xử lý lỗi mạnh mẽ. Nếu có bất kỳ điều gì sai sót trong quá trình thông báo, hệ thống của chúng tôi sẽ tự động cảnh báo nhóm của chúng tôi:
+Việc triển khai của chúng tôi cũng bao gồm khả năng xử lý lỗi mạnh mẽ. Nếu có bất kỳ sai sót nào xảy ra trong quá trình thông báo, hệ thống của chúng tôi sẽ tự động cảnh báo nhóm:
 
 ```javascript
 try {
@@ -813,13 +813,13 @@ try {
 }
 ```
 
-Điều này đảm bảo rằng ngay cả khi có vấn đề với hệ thống thông báo, nhóm của chúng tôi vẫn có thể nhanh chóng giải quyết và tuân thủ các yêu cầu của VISA.
+Điều này đảm bảo rằng ngay cả khi có sự cố với hệ thống thông báo, nhóm của chúng tôi vẫn có thể nhanh chóng giải quyết và tuân thủ các yêu cầu của VISA.
 
-Hệ thống thông báo đăng ký VISA là một ví dụ khác về cách chúng tôi xây dựng cơ sở hạ tầng thanh toán của mình, chú trọng đến cả tính tuân thủ và trải nghiệm của người dùng, bổ sung cho phương pháp tiếp cận ba trong một của chúng tôi nhằm đảm bảo xử lý thanh toán đáng tin cậy và minh bạch.
+Hệ thống thông báo đăng ký VISA là một ví dụ khác về cách chúng tôi xây dựng cơ sở hạ tầng thanh toán của mình với mục tiêu tuân thủ và trải nghiệm người dùng, bổ sung cho phương pháp tiếp cận ba trong một của chúng tôi nhằm đảm bảo xử lý thanh toán đáng tin cậy và minh bạch.
 
 ### Thời gian dùng thử và Điều khoản đăng ký {#trial-periods-and-subscription-terms}
 
-Đối với người dùng bật tính năng tự động gia hạn các gói cước hiện tại, chúng tôi sẽ tính toán thời gian dùng thử phù hợp để đảm bảo họ không bị tính phí cho đến khi gói cước hiện tại hết hạn:
+Đối với người dùng bật tính năng tự động gia hạn trên các gói cước hiện tại, chúng tôi sẽ tính toán thời gian dùng thử phù hợp để đảm bảo họ không bị tính phí cho đến khi gói cước hiện tại hết hạn:
 
 ```javascript
 if (
@@ -838,7 +838,7 @@ if (
 
 Chúng tôi cũng cung cấp thông tin rõ ràng về các điều khoản đăng ký, bao gồm tần suất thanh toán và chính sách hủy, đồng thời bao gồm siêu dữ liệu chi tiết với mỗi đăng ký để đảm bảo theo dõi và quản lý đúng cách.
 
-## Kết luận: Lợi ích của phương pháp Trifecta của chúng tôi {#conclusion-the-benefits-of-our-trifecta-approach}
+## Kết luận: Lợi ích của phương pháp tiếp cận Trifecta của chúng tôi {#conclusion-the-benefits-of-our-trifecta-approach}
 
 Phương pháp xử lý thanh toán toàn diện của chúng tôi đã mang lại một số lợi ích chính:
 
@@ -846,12 +846,12 @@ Phương pháp xử lý thanh toán toàn diện của chúng tôi đã mang l�
 
 2. **Độ chính xác**: Cơ sở dữ liệu của chúng tôi luôn phản ánh đúng trạng thái đăng ký và thanh toán ở cả Stripe và PayPal.
 
-3. **Tính linh hoạt**: Người dùng có thể chọn phương thức thanh toán ưa thích mà không ảnh hưởng đến độ tin cậy của hệ thống của chúng tôi.
+3. **Tính linh hoạt**: Người dùng có thể chọn phương thức thanh toán ưa thích mà không ảnh hưởng đến độ tin cậy của hệ thống.
 
-4. **Độ bền**: Hệ thống của chúng tôi xử lý các trường hợp ngoại lệ một cách hiệu quả, từ lỗi mạng đến các hoạt động gian lận.
+4. **Độ mạnh mẽ**: Hệ thống của chúng tôi xử lý các trường hợp ngoại lệ một cách hiệu quả, từ lỗi mạng đến các hoạt động gian lận.
 
-Nếu bạn đang triển khai hệ thống thanh toán hỗ trợ nhiều bộ xử lý, chúng tôi thực sự khuyên bạn nên sử dụng phương pháp trifecta này. Phương pháp này đòi hỏi nhiều nỗ lực phát triển ban đầu hơn, nhưng lợi ích lâu dài về độ tin cậy và độ chính xác là rất xứng đáng.
+Nếu bạn đang triển khai hệ thống thanh toán hỗ trợ nhiều bộ xử lý, chúng tôi đặc biệt khuyên dùng phương pháp trifecta này. Phương pháp này đòi hỏi nhiều nỗ lực phát triển ban đầu hơn, nhưng lợi ích lâu dài về độ tin cậy và độ chính xác là rất xứng đáng.
 
 Để biết thêm thông tin về Forward Email và các dịch vụ email tập trung vào quyền riêng tư của chúng tôi, hãy truy cập [trang web](https://forwardemail.net).
 
-<!-- *Từ khóa: xử lý thanh toán, tích hợp Stripe, tích hợp PayPal, xử lý webhook, đồng bộ hóa thanh toán, quản lý đăng ký, phòng chống gian lận, xử lý tranh chấp, hệ thống thanh toán Node.js, hệ thống thanh toán đa bộ xử lý, tích hợp cổng thanh toán, xác minh thanh toán theo thời gian thực, tính nhất quán của dữ liệu thanh toán, thanh toán đăng ký, bảo mật thanh toán, tự động hóa thanh toán, webhook thanh toán, đối chiếu thanh toán, trường hợp ngoại lệ về thanh toán, xử lý lỗi thanh toán, yêu cầu đăng ký VISA, thông báo trước khi gia hạn, tuân thủ đăng ký* -->
+<!-- *Từ khóa: xử lý thanh toán, tích hợp Stripe, tích hợp PayPal, xử lý webhook, đồng bộ hóa thanh toán, quản lý đăng ký, phòng chống gian lận, xử lý tranh chấp, hệ thống thanh toán Node.js, hệ thống thanh toán đa bộ xử lý, tích hợp cổng thanh toán, xác minh thanh toán theo thời gian thực, tính nhất quán của dữ liệu thanh toán, lập hóa đơn đăng ký, bảo mật thanh toán, tự động hóa thanh toán, webhook thanh toán, đối chiếu thanh toán, các trường hợp ngoại lệ về thanh toán, xử lý lỗi thanh toán, yêu cầu đăng ký VISA, thông báo trước khi gia hạn, tuân thủ đăng ký* -->

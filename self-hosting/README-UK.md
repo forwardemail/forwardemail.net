@@ -1,36 +1,35 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Релізи, розміщені на власному хостингу {#self-hosted-releases}
 
-У цьому розділі документується робочий процес CI/CD для самостійного рішення ForwardEmail, пояснюється, як створюються, публікуються та розгортаються образи Docker.
+У цьому розділі документовано робочий процес CI/CD для самостійно розміщеного рішення ForwardEmail, а також пояснюється, як створюються, публікуються та розгортаються образи Docker.
 
-## Table of Contents {#table-of-contents}
+## Зміст {#table-of-contents}
 
 * [Огляд](#overview)
 * [Робочий процес CI/CD](#cicd-workflow)
-  * [Робочий процес GitHub Actions](#github-actions-workflow)
-  * [Структура зображення Docker](#docker-image-structure)
+  * [Робочий процес дій GitHub](#github-actions-workflow)
+  * [Структура образу Docker](#docker-image-structure)
 * [Процес розгортання](#deployment-process)
-  * [монтаж](#installation)
+  * [Встановлення](#installation)
   * [Конфігурація Docker Compose](#docker-compose-configuration)
-* [Особливості обслуговування](#maintenance-features)
-  * [Автоматичне оновлення](#automatic-updates)
+* [Особливості технічного обслуговування](#maintenance-features)
+  * [Автоматичні оновлення](#automatic-updates)
   * [Резервне копіювання та відновлення](#backup-and-restore)
-  * [Відновлення сертифіката](#certificate-renewal)
-* [Керування версіями](#versioning)
+  * [Поновлення сертифіката](#certificate-renewal)
+* [Версіонування](#versioning)
 * [Доступ до зображень](#accessing-images)
 * [Сприяння](#contributing)
 
-## Overview {#overview}
+## Огляд {#overview}
 
-Власне розміщене рішення ForwardEmail використовує дії GitHub для автоматичного створення та публікації зображень Docker щоразу, коли створюється новий випуск. Ці образи потім доступні для розгортання користувачів на власних серверах за допомогою наданого сценарію налаштування.
+Рішення ForwardEmail для самостійного розміщення використовує дії GitHub для автоматичного створення та публікації образів Docker щоразу, коли створюється новий реліз. Ці образи потім доступні для розгортання користувачами на власних серверах за допомогою наданого скрипта налаштування.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
->
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Також є наші [самостійно розміщений блог](https://forwardemail.net/blog/docs/self-hosted-solution) та [посібник розробника для самостійного розміщення](https://forwardemail.net/self-hosted)
+>> А для більш детальних покрокових версій дивіться посібники на основі [Убунту](https://forwardemail.net/guides/selfhosted-on-ubuntu) або [Дебіан](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Робочий процес CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Робочий процес дій GitHub {#github-actions-workflow}
 
 Процес створення та публікації образу Docker на власному хостингу визначено в `.github/workflows/docker-image-build-publish.yml`. Цей робочий процес:
 
@@ -42,8 +41,8 @@
 * Входить до реєстру контейнерів GitHub (GHCR)
 * Оновлює схему для самостійного розгортання
 * Збирає образ Docker за допомогою `self-hosting/Dockerfile-selfhosted`
-* Позначає образ як версією релізу, так і `latest`
-* Надсилає образи до реєстру контейнерів GitHub
+* Позначає образ тегом версії релізу та `latest`
+* Завантажує образи до реєстру контейнерів GitHub
 
 ```yaml
 # Key workflow steps
@@ -85,19 +84,19 @@ jobs:
 * Створює необхідні каталоги для зберігання даних
 * Копіює зібраний застосунок з етапу конструктора
 
-Цей підхід гарантує, що кінцеве зображення буде оптимізовано за розміром і безпекою.
+Такий підхід гарантує, що кінцеве зображення оптимізоване за розміром та безпекою.
 
 ## Процес розгортання {#deployment-process}
 
-### Встановлення {#installation}
+### Інсталяція {#installation}
 
-Користувачі можуть розгортати самостійно розміщене рішення за допомогою наданого сценарію налаштування:
+Користувачі можуть розгорнути самостійно розміщене рішення за допомогою наданого сценарію налаштування:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
 ```
 
-Цей сценарій:
+Цей скрипт:
 
 1. Клонує репозиторій
 2. Налаштовує середовище
@@ -121,19 +120,19 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **Redis**: Сховище даних в пам'яті
 * **SQLite**: База даних для зберігання електронних листів
 
-Кожна служба використовує той самий образ Docker, але з різними точками входу, що забезпечує модульну архітектуру та спрощує обслуговування.
+Кожен сервіс використовує один і той самий образ Docker, але з різними точками входу, що дозволяє створювати модульну архітектуру та спрощувати обслуговування.
 
 ## Функції технічного обслуговування {#maintenance-features}
 
-Саморозміщене рішення включає кілька функцій обслуговування:
+Самостійне рішення включає кілька функцій обслуговування:
 
 ### Автоматичні оновлення {#automatic-updates}
 
-Користувачі можуть увімкнути автоматичні оновлення, які:
+Користувачі можуть увімкнути автоматичні оновлення, які будуть:
 
 * Щоночі завантажувати останній образ Docker
 * Перезапускати служби з оновленим образом
-* Ведти журнал процесу оновлення
+* Записувати процес оновлення
 
 ```bash
 # Setup auto-updates (runs at 1 AM daily)
@@ -142,7 +141,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### Резервне копіювання та відновлення {#backup-and-restore}
 
-Параметри надають такі параметри:
+Налаштування пропонує такі опції:
 
 * Налаштування регулярних резервних копій на сховище, сумісне з S3
 * Резервне копіювання даних MongoDB, Redis та SQLite
@@ -150,7 +149,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### Поновлення сертифіката {#certificate-renewal}
 
-Сертифікати SSL автоматично керуються з параметрами:
+SSL-сертифікати керуються автоматично та мають такі опції:
 
 * Генерувати нові сертифікати під час налаштування
 * Поновлювати сертифікати за потреби
@@ -158,7 +157,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## Версіонування {#versioning}
 
-Кожна версія GitHub створює новий образ Docker із тегами:
+Кожен реліз GitHub створює новий образ Docker з тегами:
 
 1. Конкретна версія випуску (наприклад, `v1.0.0`)
 2. Тег `latest` для найновішого випуску
@@ -167,18 +166,18 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## Доступ до зображень {#accessing-images}
 
-Зображення Docker є загальнодоступними за адресою:
+Образи Docker доступні для загального доступу за адресою:
 
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (приклад тегу версії)
 
-Для отримання цих зображень не потрібна автентифікація.
+Для отримання цих зображень автентифікація не потрібна.
 
-## Співпраця {#contributing}
+## Робить внесок {#contributing}
 
-Щоб зробити внесок у рішення, яке розміщено на власному хості:
+Щоб зробити свій внесок у розробку самостійно розміщеного рішення:
 
 1. Внесіть зміни до відповідних файлів у каталозі `self-hosting`
 2. Тестуйте локально або на VPS на базі Ubuntu, використовуючи наданий скрипт `setup.sh`
 3. Надішліть запит на впровадження (pull request)
-4. Після об'єднання та створення нового релізу, робочий процес CI автоматично створить та опублікує оновлений образ Docker.
+4. Після об'єднання та створення нового релізу, робочий процес CI автоматично створить та опублікує оновлений образ Docker

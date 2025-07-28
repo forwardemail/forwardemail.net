@@ -14,13 +14,13 @@
 
 Forward Email は、お客様のデータの保護に尽力しているプライバシー重視の企業です。
 
-[一般データ保護規則](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)（以下「GDPR」）は、EUおよびEEA域外へのデータ移転を規定するものであり、その目的は、お客様の個人情報に対する管理と権利を強化することです。当社は、処理、保管、および／または移転したデータを販売することはありません。また、お客様にサービスを提供する以外の目的でこれらのデータを使用することもありません。
+[一般データ保護規則](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation)（以下「GDPR」）は、EUおよびEEA域外へのデータ転送を規定するものであり、その目的は、お客様の個人情報に対する管理と権利を強化することです。当社は、処理、保管、および／または転送するデータを販売することはありません。また、お客様にサービスを提供する以外の目的でデータを使用することもありません。
 
-[マイアカウント → プロフィール](/my-account/profile) で**いつでも**個人情報を変更したり、[マイアカウント → セキュリティ](/my-account/security) でアカウント全体と関連情報をすべて削除したりできます。<https://github.com/forwardemail> は**100%オープンソース**であるため、ソースコードはプライバシー法の遵守状況についていつでも監査を受けることができます。
+[マイアカウント → プロフィール](/my-account/profile)にある個人情報は**いつでも**修正でき、[マイアカウント → セキュリティ](/my-account/security)にあるアカウント全体と関連情報をすべて削除することもできます。<https://github.com/forwardemail>>は**100%オープンソース**であるため、ソースコードはプライバシー法の遵守状況についていつでも監査を受けることができます。
 
-当社の[データ処理契約](/dpa) では、処理、保存、転送されるデータのプライバシーに関する GDPR および EU-US および Swiss-US のプライバシー シールド フレームワークへの準拠について詳しく説明しています。
+当社の [データ処理契約](/dpa) には、処理、保存、転送されるデータのプライバシーに関する GDPR および EU-US および Swiss-US Privacy Shield フレームワークへの準拠の詳細が記載されています。
 
-当社の[利用規約](/terms)に同意することにより、お客様は自動的にDPAに同意したものとみなされ、別途書類に署名する必要はありません。当社は、お客様の個人データが処理、保管、転送される場所を問わず、当社の[プライバシーポリシー](/privacy)に従い、すべての個人データを保護するために最善を尽くします。詳細については、当社の[利用規約](/terms)および[プライバシーポリシー](/privacy)をご覧ください。
+[利用規約](/terms)に同意することにより、お客様は自動的にDPAに同意したものとみなされ、別途書類に署名する必要はありません。当社は、[プライバシーポリシー](/privacy)に基づき、お客様の個人データを**場所を問わず**、保護するために最大限の努力を払います。[利用規約](/terms)および[プライバシーポリシー](/privacy)でも詳細をご覧いただけます。
 
 ## 国際データ転送 {#international-data-transfer}
 
@@ -37,7 +37,7 @@ Forward Email は、お客様のデータの保護に尽力しているプライ
 | [Stripe](https://stripe.com/) | :white_check_mark: はい | <https://stripe.com/legal/privacy-center> |
 | [PayPal](https://www.paypal.com/us/home) | :x: いいえ | <https://www.paypal.com/uk/legalhub/privacy-full> |
 
-## GDPR 担当者 {#gdpr-representative}
+## GDPR担当者 {#gdpr-representative}
 
 [GDPR第27条](https://gdpr-info.eu/art-27-gdpr/) に従い、当社には以下の加盟国代表者がいます。
 

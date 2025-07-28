@@ -4,7 +4,7 @@
 
 * [Översikt](#overview)
 * [Varför Listmonk och vidarebefordra e-post](#why-listmonk-and-forward-email)
-* [Förutsättningar](#prerequisites)
+* [Förkunskapskrav](#prerequisites)
 * [Installation](#installation)
   * [1. Uppdatera din server](#1-update-your-server)
   * [2. Installera beroenden](#2-install-dependencies)
@@ -24,7 +24,7 @@
 
 ## Översikt {#overview}
 
-Den här guiden ger utvecklare steg-för-steg-instruktioner för hur man konfigurerar [Listmonk](https://listmonk.app/), en kraftfull hantering av nyhetsbrev och e-postlistor med öppen källkod, för att använda [Vidarebefordra e-post](https://forwardemail.net/) som SMTP-leverantör. Denna kombination låter dig hantera dina kampanjer effektivt samtidigt som du säkerställer säker, privat och pålitlig e-postleverans.
+Den här guiden ger utvecklare steg-för-steg-instruktioner för hur man konfigurerar [Listmonk](https://listmonk.app/), en kraftfull hantering av nyhetsbrev och e-postlistor med öppen källkod, för att använda [Vidarebefordra e-post](https://forwardemail.net/) som SMTP-leverantör. Den här kombinationen låter dig hantera dina kampanjer effektivt samtidigt som du säkerställer säker, privat och pålitlig e-postleverans.
 
 * **Listmonk**: Hanterar prenumeranthantering, listorganisation, kampanjskapande och prestationsspårning.
 * **Vidarebefordra e-post**: Fungerar som en säker SMTP-server och hanterar själva sändningen av e-postmeddelanden med inbyggda säkerhetsfunktioner som SPF, DKIM, DMARC och TLS-kryptering.
@@ -36,7 +36,7 @@ Genom att integrera dessa två behåller du full kontroll över din data och inf
 * **Öppen källkod**: Både Listmonk och principerna bakom Forward Email betonar transparens och kontroll. Du hostar Listmonk själv och äger dina data.
 * **Integritetsfokuserad**: Forward Email är byggd med integritet i centrum, vilket minimerar datalagring och fokuserar på säker överföring.
 * **Kostnadseffektiv**: Listmonk är gratis, och Forward Email erbjuder generösa gratisnivåer och prisvärda betalda planer, vilket gör detta till en budgetvänlig lösning.
-* **Skalbarhet**: Listmonk är mycket prestandaeffektiv, och Forward Emails infrastruktur är utformad för tillförlitlig leverans i stor skala.
+* **Skalbarhet**: Listmonk är mycket prestandafullt, och Forward Emails infrastruktur är utformad för tillförlitlig leverans i stor skala.
 * **Utvecklarvänlig**: Listmonk erbjuder ett robust API, och Forward Email tillhandahåller enkel SMTP-integration och webhooks.
 
 ## Förutsättningar {#prerequisites}
@@ -107,20 +107,20 @@ Att köra Listmonk över HTTPS är avgörande för säkerheten. Du har två huvu
 
 Om din domäns DNS hanteras av Cloudflare kan du utnyttja deras proxyfunktion för enkel HTTPS.
 
-1. **Punkt-DNS**: Skapa en `A`-post i Cloudflare för din Listmonk-underdomän (t.ex. `listmonk.yourdomain.com`) som pekar mot din VPS IP-adress. Se till att **Proxystatus** är inställd på **Proxyserver** (orange moln).
+1. **Punkt-DNS**: Skapa en `A`-post i Cloudflare för din Listmonk-underdomän (t.ex. `listmonk.yourdomain.com`) som pekar mot din VPS IP-adress. Se till att **Proxystatus** är inställd på **Proxied** (orange moln).
 
 2. **Ändra Docker Compose**: Redigera `docker-compose.yml`-filen som du laddade ner:
 
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-Detta gör Listmonk tillgänglig internt på port 80, som Cloudflare sedan kan proxyservera och säkra med HTTPS.
+Detta gör Listmonk tillgänglig internt på port 80, som Cloudflare sedan kan proxya och säkra med HTTPS.
 
 #### Alternativ B: Använda en omvänd proxy (Nginx, Caddy, etc.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
 Alternativt kan du konfigurera en omvänd proxy som Nginx eller Caddy på din VPS för att hantera HTTPS-terminering och proxyförfrågningar till Listmonk (körs på port 9000 som standard).
 
-* Behåll standardvärdet `ports: - "127.0.0.1:9000:9000"` i `docker-compose.yml` för att säkerställa att Listmonk endast är tillgängligt lokalt.
+* Behåll standardvärdet `ports: - "127.0.0.1:9000:9000"` i `docker-compose.yml` för att säkerställa att Listmonk endast är tillgänglig lokalt.
 
 * Konfigurera din valda omvända proxy för att lyssna på portarna 80 och 443, hantera SSL-certifikatförvärv (t.ex. via Let's Encrypt) och vidarebefordra trafik till `http://127.0.0.1:9000`.
 
@@ -143,10 +143,9 @@ Docker kommer att ladda ner de nödvändiga avbildningarna och starta Listmonk-a
 
 Konfigurera sedan Listmonk för att skicka e-postmeddelanden med ditt konto för vidarebefordran av e-post.
 
-1. **Aktivera SMTP i Vidarebefordra e-post**: Se till att du har genererat SMTP-inloggningsuppgifter i instrumentpanelen för ditt konto för vidarebefordra e-post. Följ [Guide för vidarebefordran av e-post för att skicka e-post med en anpassad domän via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) om du inte redan har gjort det.
+1. **Aktivera SMTP i vidarebefordran av e-post**: Se till att du har genererat SMTP-inloggningsuppgifter i instrumentpanelen för ditt konto för vidarebefordran av e-post. Följ [Guide för vidarebefordran av e-post för att skicka e-post med en anpassad domän via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) om du inte redan har gjort det.
 
 2. **Konfigurera Listmonk**: Logga in på din Listmonk-administratörspanel.
-
 * Navigera till **Inställningar -> SMTP**.
 
 * Listmonk har inbyggt stöd för vidarebefordran av e-post. Välj **Vidarebefordra e-post** från leverantörslistan eller ange följande uppgifter manuellt:
@@ -174,20 +173,23 @@ Avvisningshantering gör att Listmonk automatiskt hanterar e-postmeddelanden som
 
 1. Logga in på din [Instrumentpanel för vidarebefordran av e-post](https://forwardemail.net/).
 2. Navigera till **Domäner**, välj den domän du använder för att skicka och gå till dess **Inställningar**-sida.
-3. Scrolla ner till avsnittet **Avvisad Webhook-URL**.
+3. Scrolla ner till avsnittet **Adress för avvisad webhook**.
 4. Ange följande URL och ersätt `<your_listmonk_domain>` med den faktiska domänen eller underdomänen där din Listmonk-instans är tillgänglig:
 
 ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
 *Exempel*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-5. Scrolla vidare ner till avsnittet **Verifieringsnyckel för Webhook-signaturnytta**.
+
+5. Scrolla vidare ner till avsnittet **Verifieringsnyckel för webbsignaturnytta**.
+
 6. **Kopiera** den genererade verifieringsnyckeln. Du behöver den i Listmonk.
+
 7. Spara ändringarna i dina domäninställningar för vidarebefordran av e-post.
 
-#### Listmonk-installation {#listmonk-setup}
+#### Listmonk-inställningar {#listmonk-setup}
 
-1. I din Listmonk-administratörspanel, navigera till **Inställningar -> Avvisningar**.
+1. I din Listmonk-administratörspanel navigerar du till **Inställningar -> Avvisningar**.
 2. Aktivera **Aktivera avvisningshantering**.
 3. Aktivera **Aktivera avvisningswebhooks**.
 4. Scrolla ner till avsnittet **Webhook-leverantörer**.
@@ -224,14 +226,14 @@ Här är en snabb översikt över Listmonks kärnfunktioner:
 * Välj din innehållstyp (Rich Text/HTML, Oformaterad text, Rå HTML).
 * Skriv ditt e-postinnehåll. Du kan använda mallvariabler som `{{ .Subscriber.Email }}` eller `{{ .Subscriber.FirstName }}`.
 * **Skicka alltid ett testmeddelande först!** Använd alternativet "Skicka test" för att förhandsgranska e-postmeddelandet i din inkorg.
-* När du är nöjd klickar du på **Starta kampanj** för att skicka det omedelbart eller schemalägga det till senare.
+* När du är nöjd klickar du på **Starta kampanj** för att skicka direkt eller schemalägga det till senare.
 
 ## Verifiering {#verification}
 
 * **SMTP-leverans**: Skicka regelbundet testmejl via Listmonks SMTP-inställningssida och testkampanjer för att säkerställa att e-postmeddelanden levereras korrekt.
 * **Hantering av avvisningar**: Skicka en testkampanj till en känd ogiltig e-postadress (t.ex. `bounce-test@yourdomain.com` om du inte har en riktig e-postadress till hands, även om resultaten kan variera). Kontrollera kampanjstatistiken i Listmonk efter en kort stund för att se om avvisningen är registrerad.
-* **E-postrubriker**: Använd verktyg som [Mail Tester](https://www.mail-tester.com/) eller inspektera e-postrubriker manuellt för att verifiera att SPF, DKIM och DMARC skickas, vilket indikerar korrekt konfiguration genom vidarebefordran av e-post.
-* **Loggar för vidarebefordran av e-post**: Kontrollera dina loggar på instrumentpanelen för vidarebefordran av e-post om du misstänker leveransproblem som kommer från SMTP-servern.
+* **E-postrubriker**: Använd verktyg som [E-posttestare](https://www.mail-tester.com/) eller inspektera e-postrubriker manuellt för att verifiera att SPF, DKIM och DMARC skickas, vilket indikerar korrekt konfiguration genom vidarebefordran av e-post.
+* **Loggar för vidarebefordran av e-post**: Kontrollera dina loggar för instrumentpanelen för vidarebefordran av e-post om du misstänker leveransproblem som kommer från SMTP-servern.
 
 ## Utvecklaranteckningar {#developer-notes}
 
@@ -242,7 +244,7 @@ Här är en snabb översikt över Listmonks kärnfunktioner:
 
 ## Slutsats {#conclusion}
 
-Genom att integrera Listmonks självhostade kraft med den säkra, integritetsskyddande leveransen av Forward Email skapar du en robust och etisk e-postmarknadsföringsplattform. Du behåller fullt ägande av din publikdata samtidigt som du drar nytta av hög leveransbarhet och automatiserade säkerhetsfunktioner.
+Genom att integrera Listmonks självhostade kraft med den säkra, integritetsrespekterande leveransen av Forward Email skapar du en robust och etisk e-postmarknadsföringsplattform. Du behåller fullt ägande av din publikdata samtidigt som du drar nytta av hög leveransbarhet och automatiserade säkerhetsfunktioner.
 
 Denna uppsättning erbjuder ett skalbart, kostnadseffektivt och utvecklarvänligt alternativ till proprietära e-posttjänster, vilket perfekt överensstämmer med principerna om öppen källkodsprogramvara och användarnas integritet.
 

@@ -64,36 +64,35 @@
 
 A Forward Emailnél éveket töltöttünk a Node.js éles környezetünk tökéletesítésével. Ez az átfogó útmutató bemutatja a keményen tesztelt Node.js éles környezetben történő telepítés legjobb gyakorlatait, különös tekintettel a teljesítményoptimalizálásra, a monitorozásra és a Node.js alkalmazások napi több millió tranzakció kezelésére való skálázásával kapcsolatos tanulságokra.
 
-## 573%-os egymagos teljesítményoptimalizálási forradalmunk {#our-573-single-core-performance-optimization-revolution}
+## Az 573%-os egymagos teljesítményoptimalizálási forradalmunk {#our-573-single-core-performance-optimization-revolution}
 
 Amikor Intelről AMD Ryzen processzorokra váltottunk, **573%-os teljesítményjavulást** értünk el a Node.js alkalmazásainkban. Ez nem csupán egy apró optimalizálás volt – alapvetően megváltoztatta a Node.js alkalmazásaink teljesítményét éles környezetben, és jól mutatja az egymagos teljesítményoptimalizálás fontosságát minden Node.js alkalmazás esetében.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> A Node.js éles telepítésének ajánlott gyakorlataihoz a hardverválasztás kritikus fontosságú. Kifejezetten a DataPacket tárhelyet választottuk az AMD Ryzen elérhetősége miatt, mivel az egymagos teljesítmény kulcsfontosságú a Node.js alkalmazások számára, mivel a JavaScript végrehajtása egyszálú.
 
-### Miért fontos az egymagos teljesítményoptimalizálás a Node.js számára {#why-single-core-performance-optimization-matters-for-nodejs}
+### Miért fontos az egymagos teljesítményoptimalizálás a Node.js esetében {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Az Intelről AMD Ryzenre való átállásunk a következőket eredményezte:
 
-* **573%-os teljesítményjavulás** a kérésfeldolgozásban (dokumentálva a [státuszoldalunk GitHub hibája #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **Megszüntetett feldolgozási késedelmek**, közel azonnali válaszok (a [GitHub hibája #298](https://github.com/forwardemail/forwardemail.net/issues/298)] részben említve)
+* **573%-os teljesítményjavulás** a kérésfeldolgozásban (dokumentálva a [státuszoldalunk GitHub-problémája #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **Megszüntetett feldolgozási késedelmek**, közel azonnali válaszok (a [GitHub-probléma #298](https://github.com/forwardemail/forwardemail.net/issues/298] című részben említettük)
 * **Jobb ár-teljesítmény arány** a Node.js éles környezetekben
 * **Javított válaszidők** az összes alkalmazásvégpontunkon
 
-A teljesítménynövekedés olyan jelentős volt, hogy az AMD Ryzen processzorokat most már elengedhetetlennek tartjuk minden komoly Node.js éles környezetben, függetlenül attól, hogy webes alkalmazásokat, API-kat, mikroszolgáltatásokat vagy bármilyen más Node.js munkaterhelést futtat.
+A teljesítménynövekedés olyan jelentős volt, hogy most már elengedhetetlennek tartjuk az AMD Ryzen processzorokat minden komoly Node.js éles környezetben, függetlenül attól, hogy webes alkalmazásokat, API-kat, mikroszolgáltatásokat vagy bármilyen más Node.js munkaterhelést futtat.
 
 ### Kapcsolódó tartalom {#related-content}
 
 Infrastruktúra-választásainkkal kapcsolatos további részletekért tekintse meg:
 
-* [Legjobb e-mail-továbbító szolgáltatás](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Teljesítmény-összehasonlításokban
-* [Saját üzemeltetésű megoldás](https://forwardemail.net/blog/docs/self-hosted-solution) - Hardverajánlások
+* [Legjobb e-mail-továbbító szolgáltatás](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Teljesítmény-összehasonlítások részben)* [Saját üzemeltetésű megoldás](https://forwardemail.net/blog/docs/self-hosted-solution) - Hardverajánlások
 
 ## Node.js éles környezet beállítása: Technológiai veremünk {#nodejs-production-environment-setup-our-technology-stack}
 
 Node.js éles környezetben történő telepítésére vonatkozó legjobb gyakorlataink magukban foglalják a több éves gyártási tapasztalaton alapuló, tudatos technológiai döntéseket. Íme, hogy mit használunk, és miért vonatkoznak ezek a választások minden Node.js alkalmazásra:
 
-### Csomagkezelő: pnpm a termelési hatékonyság érdekében {#package-manager-pnpm-for-production-efficiency}
+### Csomagkezelő: pnpm a termelési hatékonysághoz {#package-manager-pnpm-for-production-efficiency}
 
 **Amit használunk:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (rögzített verzió)
 
@@ -105,14 +104,14 @@ A Node.js termelési környezetünk beállításához a pnpm-et választottuk az
 * **Jobb teljesítmény** éles környezetben
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> A Node.js éles telepítési legjobb gyakorlataink részeként a kritikus eszközök, például a pnpm pontos verzióit rögzítjük, hogy biztosítsuk az egységes viselkedést minden környezetben és a csapattagok gépein.
 
 **Megvalósítás részletei:**
 
 * [A package.json konfigurációnk](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [NPM ökoszisztéma blogbejegyzésünk](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 
-### Webes keretrendszer: Koa modern Node.js éles környezetben {#web-framework-koa-for-modern-nodejs-production}
+### Webes keretrendszer: Koa modern Node.js éles környezethez {#web-framework-koa-for-modern-nodejs-production}
 
 **Amit használunk:**
 
@@ -130,7 +129,7 @@ Ezek a minták akkor is érvényesek, ha REST API-kat, GraphQL-kiszolgálókat, 
 * [API-kiszolgáló konfigurációja](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
 * [Kapcsolatfelvételi űrlapok megvalósítási útmutatója](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 
-### Háttérben futó feladatok feldolgozása: Bree a termelési megbízhatóság érdekében {#background-job-processing-bree-for-production-reliability}
+### Háttérfeladat-feldolgozás: Bree az éles üzem megbízhatóságához {#background-job-processing-bree-for-production-reliability}
 
 **Amit használunk:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) ütemező
 
@@ -143,7 +142,7 @@ A Bree-t azért hoztuk létre és tartjuk karban, mert a meglévő feladatüteme
 * [PM2 állapotfelmérés](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 * [Takarítási feladat megvalósítása](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### Hibakezelés: @hapi/boom a termelési megbízhatóság érdekében {#error-handling-hapiboom-for-production-reliability}
+### Hibakezelés: @hapi/boom a termelés megbízhatóságához {#error-handling-hapiboom-for-production-reliability}
 
 **Amit használunk:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
@@ -172,7 +171,7 @@ Termelési monitorozási küszöbértékeink (a tényleges gyártási kódunkbó
 * **75%-os lemezhasználat** figyelmeztetési küszöbérték
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Ezek a küszöbértékek a mi adott hardverkonfigurációnkra vonatkoznak. Node.js éles környezeti monitorozás implementálásakor tekintse át a monitor-server.js implementációnkat, hogy megértse a pontos logikát, és az értékeket a saját beállításához igazítsa.
 
 ### Alkalmazásszintű monitorozás Node.js éles környezetben {#application-level-monitoring-for-nodejs-production}
 
@@ -202,11 +201,11 @@ Ez a minta minden Node.js alkalmazásra vonatkozik – webalkalmazásokra, API-k
 
 ## Node.js éles környezet monitorozása PM2 állapotfelméréssel {#nodejs-production-monitoring-with-pm2-health-checks}
 
-Több éves gyártási tapasztalatunk során a PM2 segítségével finomítottuk Node.js éles környezetünket. A PM2 állapotfelméréseink elengedhetetlenek a megbízhatóság fenntartásához bármely Node.js alkalmazásban.
+Több éves gyártási tapasztalatunk során finomítottuk a Node.js éles környezetünket PM2-vel. A PM2 állapotfelméréseink elengedhetetlenek a megbízhatóság fenntartásához bármely Node.js alkalmazásban.
 
 ### PM2 állapotfelmérő rendszerünk {#our-pm2-health-check-system}
 
-**Alapvető implementációnk:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+**Alap implementációnk:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 Node.js éles környezetünk monitorozása PM2 állapotfelméréssel a következőket foglalja magában:
 
@@ -217,9 +216,9 @@ Node.js éles környezetünk monitorozása PM2 állapotfelméréssel a következ
 * **Megakadályozza az újraindítási ciklusokat** intelligens állapotellenőrzéssel
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> A Node.js éles telepítési ajánlott gyakorlataihoz legalább 15 perc üzemidő szükséges ahhoz, hogy egy folyamatot egészségesnek tekintsünk, hogy elkerüljük az újraindítási hurkokat. Ez megakadályozza a kaszkádos hibákat, amikor a folyamatok memóriaproblémákkal vagy egyéb problémákkal küzdenek.
 
-### PM2 termelési konfigurációnk {#our-pm2-production-configuration}
+### A PM2 termelési konfigurációja {#our-pm2-production-configuration}
 
 **Az ökoszisztémánk beállítása:** Tanulmányozd a szerverindító fájljainkat a Node.js éles környezet beállításához:
 
@@ -242,22 +241,19 @@ Az egyik legértékesebb Node.js éles telepítési bevált gyakorlatunk az inte
 
 ### Az isCodeBug implementációnk éles környezetben {#our-iscodebug-implementation-for-production}
 
-**Forrás:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+**Forrás:** IDEIGLENES_HELYTARTOZÓ_0
 
 Ez a segítő intelligens hibaosztályozást biztosít a Node.js alkalmazásokhoz éles környezetben a következőkhöz:
 
-* **A tényleges hibákat előtérbe helyezzük** a felhasználói hibákkal szemben
-* **Javítsuk az incidensekre adott válaszainkat** a valós problémákra összpontosítva
-* **Csökkentsük a várható felhasználói hibák miatti riasztási fáradtságot**
-* **Jobban megértsük** az alkalmazás és a felhasználók által generált problémákat
+* **A tényleges hibákat helyezzük előtérbe** a felhasználói hibákkal szemben.* **Javítsuk az incidensekre adott válaszainkat** a valós problémákra összpontosítva.* **Csökkentsük a várható felhasználói hibák miatti riasztási fáradtságot**.* **Jobban értsük meg** az alkalmazás és a felhasználók által generált problémákat.
 
 Ez a minta bármilyen Node.js alkalmazásnál működik – akár e-kereskedelmi webhelyeket, SaaS platformokat, API-kat vagy mikroszolgáltatásokat építesz.
 
-### Integráció a termelési naplózásunkkal {#integration-with-our-production-logging}
+### Integráció az éles naplózással {#integration-with-our-production-logging}
 
 **Naplózó integrációnk:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-A loggerünk a `isCodeBug` kódot használja a riasztási szintek és a mezőkihagyások meghatározásához, biztosítva, hogy értesítést kapjunk a valódi problémákról, miközben kiszűrjük a zajt a Node.js éles környezetünkben.
+A naplózónk a `isCodeBug` függvényt használja a riasztási szintek és a mezőkihagyások meghatározásához, biztosítva, hogy értesítést kapjunk a valódi problémákról, miközben kiszűrjük a zajt a Node.js éles környezetünkben.
 
 ### Kapcsolódó tartalom {#related-content-1}
 
@@ -270,7 +266,7 @@ Tudjon meg többet a hibakezelési mintáinkról:
 
 Fejlett profilkészítő eszközöket használunk a halom pillanatképek elemzésére, valamint az OOM (Out of Memory) problémák, a teljesítménybeli szűk keresztmetszetek és a Node.js memóriaproblémák hibakeresésére éles környezetünkben. Ezek az eszközök elengedhetetlenek minden olyan Node.js alkalmazás számára, amely memóriaszivárgással vagy teljesítményproblémákkal küzd.
 
-### Profilalkotási megközelítésünk Node.js éles környezetben {#our-profiling-approach-for-nodejs-production}
+### Profilozási megközelítésünk Node.js éles környezetben {#our-profiling-approach-for-nodejs-production}
 
 **Az általunk ajánlott eszközök:**
 
@@ -278,13 +274,13 @@ Fejlett profilkészítő eszközöket használunk a halom pillanatképek elemzé
 * [`cpupro`](https://github.com/discoveryjs/cpupro) - CPU profilok és heap pillanatképek elemzéséhez
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> A v8-profiler-next és a cpupro együttes használatával hozunk létre egy teljes teljesítmény-hibakeresési munkafolyamatot a Node.js alkalmazásainkhoz. Ez a kombináció segít azonosítani a memóriaszivárgásokat, a teljesítménybeli szűk keresztmetszeteket és optimalizálni az éles kódunkat.
 
-### Hogyan implementáljuk a halompillanat-elemzést {#how-we-implement-heap-snapshot-analysis}
+### Hogyan implementáljuk a halom pillanatkép-elemzését {#how-we-implement-heap-snapshot-analysis}
 
 **A monitorozási megvalósításunk:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-Éles környezetünk monitorozása magában foglalja az automatikus memória-pillanatkép-generálást a memória-küszöbértékek túllépése esetén. Ez segít a környezeti problémák hibakeresésében, mielőtt azok alkalmazásösszeomlásokat okoznának.
+Éles környezeti monitorozásunk magában foglalja az automatikus memória-pillanatkép-generálást a memória-küszöbértékek túllépése esetén. Ez segít nekünk a környezeti problémák hibakeresésében, mielőtt azok alkalmazásösszeomlásokat okoznának.
 
 **Főbb megvalósítási minták:**
 
@@ -298,7 +294,7 @@ Fejlett profilkészítő eszközöket használunk a halom pillanatképek elemzé
 **Tanulmányozd a tényleges megvalósításunkat:**
 
 * [Monitor szerver implementáció](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Halomfigyelés és pillanatkép generálása
-* [Takarítási feladat](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Pillanatképek megőrzése és tisztítása
+* [Takarítási feladat](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Pillanatkép megőrzése és tisztítása
 * [Naplózó integráció](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Teljesítménynaplózás
 
 ### Ajánlott megvalósítás a Node.js alkalmazásához {#recommended-implementation-for-your-nodejs-application}
@@ -311,13 +307,13 @@ Fejlett profilkészítő eszközöket használunk a halom pillanatképek elemzé
 
 1. **CPU profilok generálása** nagy terhelésű időszakokban
 2. **Elemzés a cpupro segítségével** a szűk keresztmetszetek azonosítása érdekében
-3. **A forró útvonalakra** és az optimalizálási lehetőségekre összpontosítás
+3. **A forró útvonalakra** és az optimalizálási lehetőségekre összpontosítva
 4. **Teljesítményjavulás figyelése előtte/utána**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> A halom pillanatképek és CPU-profilok generálása befolyásolhatja a teljesítményt. Javasoljuk a szabályozás bevezetését, és a profilalkotás engedélyezését csak konkrét problémák vizsgálatakor vagy karbantartási időszakokban.
 
-### Integráció a termelésfelügyeletünkkel {#integration-with-our-production-monitoring}
+### Integráció a termelési monitorozásunkkal {#integration-with-our-production-monitoring}
 
 Profilozó eszközeink integrálódnak tágabb monitorozási stratégiánkba:
 
@@ -341,11 +337,11 @@ Főbb biztonsági intézkedéseink Node.js éles környezetekhez:
 * **A **swap letiltva** a bizalmas adatok lemezre írásának megakadályozása érdekében.* **A memória-memória dump-jai letiltva** a bizalmas információkat tartalmazó memória-dump-ok megakadályozása érdekében.* **Az USB-tároló blokkolva** a jogosulatlan adathozzáférés megakadályozása érdekében.* **A kernel paramétereinek finomhangolása** a biztonság és a teljesítmény érdekében.
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> A Node.js éles telepítési ajánlott gyakorlatainak megvalósításakor a swap letiltása memóriahiány miatti leállásokat okozhat, ha az alkalmazás meghaladja a rendelkezésre álló RAM-ot. Gondosan figyelemmel kísérjük a memóriahasználatot, és ennek megfelelően méretezzük a szervereinket.
 
 ### Alkalmazásbiztonság Node.js alkalmazásokhoz {#application-security-for-nodejs-applications}
 
-**Naplómező-kizárásunk:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+**Naplómező-kihagyásunk:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
 A naplókból eltávolítjuk az érzékeny mezőket, beleértve a jelszavakat, tokeneket, API-kulcsokat és személyes adatokat. Ez védi a felhasználók adatait, miközben fenntartja a hibakeresési lehetőségeket bármely Node.js éles környezetben.
 
@@ -377,7 +373,7 @@ Egy hibrid adatbázis-megközelítést használunk, amelyet a Node.js alkalmazá
 * [`better-sqlite3`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`better-sqlite3-multiple-ciphers`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-**Konfigurációnk:** [`ansible/playbooks/sqlite.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
+**A konfigurációnk:** [`ansible/playbooks/sqlite.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
 A Node.js alkalmazásainkban az SQLite-ot használjuk felhasználóspecifikus adatokhoz, mert a következőket biztosítja:
 
@@ -396,9 +392,9 @@ Ez a minta jól működik SaaS-alkalmazások, több-bérlős rendszerek vagy bá
 * [`@ladjs/mongoose-error-messages`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@zainundin/mongoose-factory`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-**A beállításunk megvalósítása:** [`helpers/setup-mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-mongoose.js)
+**A beállításunk implementációja:** [`helpers/setup-mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/setup-mongoose.js)
 
-**Konfigurációnk:** [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
+**A konfigurációnk:** [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
 
 A Node.js éles környezetünkben a MongoDB-t használjuk az alkalmazásadatokhoz, mert a következőket biztosítja:
 
@@ -408,7 +404,7 @@ A Node.js éles környezetünkben a MongoDB-t használjuk az alkalmazásadatokho
 * **Gazdag lekérdezőnyelv**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Hibrid megközelítésünk az adott felhasználási esetünkre optimalizál. Tanulmányozza a tényleges adatbázis-használati mintáinkat a kódbázisban, hogy megértse, ez a megközelítés megfelel-e a Node.js alkalmazás igényeinek.
 
 ## Node.js éles háttérfeladat-feldolgozás {#nodejs-production-background-job-processing}
 
@@ -416,11 +412,11 @@ A háttérben futó feladatarchitektúránkat a Bree köré építettük a megb�
 
 ### Bree szerverünk beállítása éles környezethez {#our-bree-server-setup-for-production}
 
-**Fő implementációnk:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
+**Fő megvalósításunk:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
 **Ansible telepítésünk:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
-### Termelési feladatpéldák {#production-job-examples}
+### Éles Feladat Példák {#production-job-examples}
 
 **Állapotfigyelés:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
@@ -435,7 +431,7 @@ Ezek a minták minden olyan Node.js alkalmazásra vonatkoznak, amelyre szükség
 * Állapotfigyelés és karbantartás
 * Munkaszálak kihasználtsága CPU-igényes feladatokhoz
 
-### Feladatütemezési mintáink Node.js éles környezetben {#our-job-scheduling-patterns-for-nodejs-production}
+### A Node.js éles környezetében alkalmazott feladatütemezési mintáink {#our-job-scheduling-patterns-for-nodejs-production}
 
 Tanulmányozd a tényleges munkabeosztási mintáinkat az álláskeresőnkben, hogy megértsd:
 
@@ -449,7 +445,7 @@ Proaktív karbantartást alkalmazunk a gyakori Node.js éles környezetben jelen
 
 ### A mi takarítási implementációnk {#our-cleanup-implementation}
 
-**Forrás:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+**Forrás:** IDEIGLENES_HELYTARTOZÓ_0
 
 A Node.js éles alkalmazások automatizált karbantartása a következőket célozza meg:
 
@@ -463,7 +459,7 @@ Ezek a minták minden olyan Node.js alkalmazásra vonatkoznak, amely ideiglenes 
 
 ### Lemezterület-kezelés Node.js éles környezetben {#disk-space-management-for-nodejs-production}
 
-**Figyelemmel kísérési küszöbértékeink:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**Figyelemmel kísért küszöbértékeink:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
 * **Várólista-korlátok** a háttérben történő feldolgozáshoz
 * **75%-os lemezhasználat** figyelmeztetési küszöbérték
@@ -498,7 +494,7 @@ Ezek a minták minden olyan Node.js alkalmazásra vonatkoznak, amely ideiglenes 
 * [JavaScript kapcsolatfelvételi űrlapok](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 * [React e-mail integráció](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
-### Infrastruktúra automatizálás Node.js éles környezetben {#infrastructure-automation-for-nodejs-production}
+### Infrastruktúra-automatizálás Node.js éles környezetben {#infrastructure-automation-for-nodejs-production}
 
 **Ansible forgatókönyveink, amelyeket érdemes tanulmányozni a Node.js éles telepítéséhez:**
 
@@ -514,7 +510,7 @@ Ezek a minták minden olyan Node.js alkalmazásra vonatkoznak, amely ideiglenes 
 * [Kanonikus Ubuntu esettanulmány](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * [Öregdiákok e-mail továbbítása](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 
-## Következtetés: Node.js éles környezetben történő telepítésének ajánlott gyakorlatai {#conclusion-nodejs-production-deployment-best-practices}
+## Következtetés: Node.js éles környezetben történő telepítés ajánlott gyakorlatai {#conclusion-nodejs-production-deployment-best-practices}
 
 Node.js éles infrastruktúránk bizonyítja, hogy a Node.js alkalmazások vállalati szintű megbízhatóságot érhetnek el az alábbiak révén:
 
@@ -530,7 +526,7 @@ Node.js éles infrastruktúránk bizonyítja, hogy a Node.js alkalmazások váll
 
 ## Teljes erőforráslista a Node.js éles környezetéhez {#complete-resource-list-for-nodejs-production}
 
-### Alapvető megvalósítási fájljaink {#our-core-implementation-files}
+### Alapvető implementációs fájljaink {#our-core-implementation-files}
 
 * [Fő konfiguráció](https://github.com/forwardemail/forwardemail.net/blob/master/config/index.js)
 * [Csomagfüggőségek](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)

@@ -10,7 +10,7 @@
 * [Logos](#logos)
 * [Graphique](#graphics)
 
-## À propos du transfert d'e-mail {#about-forward-email}
+## À propos de Transférer un e-mail {#about-forward-email}
 
 Forward Email est le seul service d'hébergement de messagerie 100 % open source axé sur la sécurité et la confidentialité. Découvrez notre histoire sur [notre page À propos](/about).
 
@@ -20,7 +20,7 @@ Notre objectif est d’être la plate-forme d’infrastructure de messagerie et 
 
 Si vous êtes un membre de la presse, un journaliste ou un représentant des médias et que vous souhaitez nous parler, poser des questions ou en savoir plus, veuillez nous contacter à `press@forwardemail.net`.
 
-Polices ## {#fonts}
+## Polices {#fonts}
 
 * **Logo :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (gras ; épaisseur 700)
 * **Corps :** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (standard ; épaisseur 400)
@@ -29,9 +29,9 @@ Polices ## {#fonts}
 
 ## Couleurs {#colors}
 
-* **Bleu :** `#0066FF` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
-* **Cyan :** `#9DE5F9` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
-* **Vert :** `#269C32` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
+* **Bleu** : `#0066FF` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
+* **Cyan** : `#9DE5F9` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
+* **Vert** : `#269C32` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
 
 ## Logos {#logos}
 
@@ -49,7 +49,7 @@ Polices ## {#fonts}
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif>
 
-"Freddy dans une enveloppe"
+« Freddy dans une enveloppe »
 
 ![Freddy dans une enveloppe](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-verified.gif)
 

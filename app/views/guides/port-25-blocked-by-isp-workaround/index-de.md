@@ -6,7 +6,7 @@
 * [So umgehen Sie die Blockierung ausgehenden SMTP-Datenverkehrs durch den ISP auf Port 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
 * [Wie kann ich überprüfen, ob mein ISP Ports blockiert](#how-can-i-check-if-my-isp-blocks-ports)
 
-## So umgehen Sie die Blockierung eingehender SMTP-Daten durch Ihren ISP auf Port 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
+## So umgehen Sie die Blockierung eingehender SMTP-Nachrichten durch Ihren ISP auf Port 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
 Wenn Sie Port 25 auf der IP-Adresse Ihres Mailservers nicht geöffnet haben, ist diese Anleitung für Sie.
 
@@ -20,6 +20,6 @@ Angenommen, Sie verwenden unseren Dienst zum Weiterleiten von E-Mails, [Sie kön
 
 Wenn Ihr ISP den ausgehenden Port 25 blockiert, müssen Sie eine alternative Lösung finden oder sich an ihn wenden.
 
-## Wie kann ich überprüfen, ob mein ISP die Ports {#how-can-i-check-if-my-isp-blocks-ports} blockiert
+## Wie kann ich überprüfen, ob mein ISP die Ports {#how-can-i-check-if-my-isp-blocks-ports} blockiert?
 
 Sie können `telnet smtp.forwardemail.net 25` von der Befehlszeile oder dem Terminal aus ausführen, um zu sehen, ob Ihre ausgehende Verbindung über Port 25 blockiert ist.

@@ -69,13 +69,13 @@ Hos Forward Email har vi brugt årevis på at perfektionere vores Node.js produk
 Da vi migrerede fra Intel- til AMD Ryzen-processorer, opnåede vi en forbedring af vores Node.js-applikationers ydeevne på **573%**. Dette var ikke bare en mindre optimering – det ændrede fundamentalt, hvordan vores Node.js-applikationer yder i produktion, og demonstrerer vigtigheden af single-core-ydeevneoptimering for enhver Node.js-applikation.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Valg af hardware er afgørende for bedste praksis for Node.js-produktionsimplementering. Vi valgte specifikt DataPacket-hosting på grund af deres AMD Ryzen-tilgængelighed, fordi single-core-ydeevne er afgørende for Node.js-applikationer, da JavaScript-udførelse er single-threaded.
 
 ### Hvorfor Single Core-ydeevneoptimering er vigtig for Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Vores migrering fra Intel til AMD Ryzen resulterede i:
 
-* **573% forbedring af ydeevnen** i anmodningsbehandling (dokumenteret i [vores statussides GitHub-problem #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **573% forbedring af ydeevne** i anmodningsbehandling (dokumenteret i [vores statussides GitHub-problem #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
 * **Elimineret behandlingsforsinkelse** til næsten øjeblikkelige svar (nævnt i [GitHub-problem #298](https://github.com/forwardemail/forwardemail.net/issues/298))
 * **Bedre pris-til-ydelsesforhold** for Node.js-produktionsmiljøer
 * **Forbedrede svartider** på tværs af alle vores applikationsslutpunkter
@@ -105,7 +105,7 @@ Vi valgte pnpm frem for npm og yarn til vores Node.js produktionsmiljøopsætnin
 * **Bedre ydeevne** i produktionsimplementeringer
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Som en del af vores bedste praksis for Node.js-produktionsimplementering fastlåser vi nøjagtige versioner af kritiske værktøjer som pnpm for at sikre ensartet adfærd på tværs af alle miljøer og teammedlemmers maskiner.
 
 **Implementeringsdetaljer:**
 
@@ -132,7 +132,7 @@ Disse mønstre gælder, uanset om du bygger REST API'er, GraphQL-servere, webapp
 
 ### Baggrundsjobbehandling: Bree for produktionspålidelighed {#background-job-processing-bree-for-production-reliability}
 
-**Hvad vi bruger:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) planlægningsprogram
+**Hvad vi bruger:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) planlægger
 
 Vi har oprettet og vedligeholder Bree, fordi eksisterende jobplanlæggere ikke opfyldte vores behov for understøttelse af arbejdstråde og moderne JavaScript-funktioner i Node.js-produktionsmiljøer. Dette gælder for alle Node.js-applikationer, der kræver baggrundsbehandling, planlagte opgaver eller arbejdstråde.
 
@@ -172,7 +172,7 @@ Vores produktionsovervågningstærskler (fra vores faktiske produktionskode):
 * **75 % diskforbrug** advarselstærskel
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Disse tærskler fungerer for vores specifikke hardwarekonfiguration. Når du implementerer Node.js produktionsovervågning, skal du gennemgå vores monitor-server.js implementering for at forstå den nøjagtige logik og tilpasse værdierne til din opsætning.
 
 ### Overvågning på applikationsniveau for Node.js-produktion {#application-level-monitoring-for-nodejs-production}
 
@@ -217,7 +217,7 @@ Vores Node.js produktionsovervågning med PM2 sundhedstjek inkluderer:
 * **Forhindrer genstartsløkker** gennem intelligent sundhedskontrol
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> For bedste praksis for Node.js-produktionsimplementering kræver vi 15+ minutters oppetid, før vi betragter en proces som sund, for at undgå genstartsløkker. Dette forhindrer kaskadefejl, når processer kæmper med hukommelse eller andre problemer.
 
 ### Vores PM2-produktionskonfiguration {#our-pm2-production-configuration}
 
@@ -257,7 +257,7 @@ Dette mønster fungerer for enhver Node.js-applikation - uanset om du bygger e-h
 
 **Vores loggerintegration:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Vores logger bruger `isCodeBug` til at bestemme alarmniveauer og feltredigering, hvilket sikrer, at vi får besked om reelle problemer, mens vi filtrerer støj fra i vores Node.js-produktionsmiljø.
+Vores logger bruger `isCodeBug` til at bestemme alarmniveauer og feltredigering, hvilket sikrer, at vi får besked om reelle problemer, samtidig med at vi filtrerer støj fra i vores Node.js-produktionsmiljø.
 
 ### Relateret indhold {#related-content-1}
 
@@ -266,7 +266,7 @@ Få mere at vide om vores fejlhåndteringsmønstre:
 * [Opbygning af et pålideligt betalingssystem](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Fejlhåndteringsmønstre
 * [Beskyttelse af e-mail-privatliv](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Håndtering af sikkerhedsfejl
 
-## Avanceret ydeevnedebugging med v8-profiler-next og cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
+## Avanceret ydeevnefejlfinding med v8-profiler-next og cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
 Vi bruger avancerede profileringsværktøjer til at analysere heap-snapshots og fejlfinde OOM (Out of Memory)-problemer, flaskehalse i ydeevnen og Node.js-hukommelsesproblemer i vores produktionsmiljø. Disse værktøjer er essentielle for enhver Node.js-applikation, der oplever hukommelseslækager eller ydeevneproblemer.
 
@@ -278,7 +278,7 @@ Vi bruger avancerede profileringsværktøjer til at analysere heap-snapshots og 
 * [`cpupro`](https://github.com/discoveryjs/cpupro) - Til analyse af CPU-profiler og heap-snapshots
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> Vi bruger v8-profiler-next og cpupro sammen til at skabe en komplet arbejdsgang til fejlfinding af ydeevne for vores Node.js-applikationer. Denne kombination hjælper os med at identificere hukommelseslækager, flaskehalse i ydeevnen og optimere vores produktionskode.
 
 ### Sådan implementerer vi Heap Snapshot-analyse {#how-we-implement-heap-snapshot-analysis}
 
@@ -319,7 +319,7 @@ Vores produktionsovervågning inkluderer automatisk generering af heap-snapshots
 4. **Overvåg før/efter** forbedringer af ydeevne
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> Generering af heap-snapshots og CPU-profiler kan påvirke ydeevnen. Vi anbefaler at implementere throttling og kun aktivere profilering, når specifikke problemer undersøges eller under vedligeholdelsesvinduer.
 
 ### Integration med vores produktionsovervågning {#integration-with-our-production-monitoring}
 
@@ -336,7 +336,7 @@ Denne tilgang har hjulpet os med at identificere og løse hukommelseslækager, o
 
 Vi implementerer omfattende sikkerhed for vores Node.js produktionsinfrastruktur gennem Ansible-automatisering. Disse fremgangsmåder gælder for alle Node.js-applikationer:
 
-### Systemsikkerhed til Node.js-produktion {#system-level-security-for-nodejs-production}
+### Systemniveausikkerhed for Node.js-produktion {#system-level-security-for-nodejs-production}
 
 **Vores Ansible-implementering:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 
@@ -348,7 +348,7 @@ Vores vigtigste sikkerhedsforanstaltninger for Node.js produktionsmiljøer:
 * **Kerneparameterjustering** for både sikkerhed og ydeevne
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Når du implementerer bedste praksis for Node.js-produktionsimplementering, kan deaktivering af swap forårsage hukommelsesafbrydelser, hvis din applikation overstiger den tilgængelige RAM. Vi overvåger hukommelsesforbruget omhyggeligt og dimensionerer vores servere passende.
 
 ### Applikationssikkerhed for Node.js-applikationer {#application-security-for-nodejs-applications}
 
@@ -356,7 +356,7 @@ Vores vigtigste sikkerhedsforanstaltninger for Node.js produktionsmiljøer:
 
 Vi redigerer følsomme felter fra logfiler, herunder adgangskoder, tokens, API-nøgler og personlige oplysninger. Dette beskytter brugernes privatliv, samtidig med at fejlfindingsfunktionerne opretholdes i ethvert Node.js-produktionsmiljø.
 
-### Automatisering af infrastruktursikkerhed {#infrastructure-security-automation}
+### Infrastruktursikkerhedsautomatisering {#infrastructure-security-automation}
 
 **Vores komplette Ansible-opsætning til Node.js-produktion:**
 
@@ -415,13 +415,13 @@ Vi bruger MongoDB til applikationsdata i vores Node.js produktionsmiljø, fordi 
 * **Rigt forespørgselssprog**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Vores hybride tilgang optimerer til vores specifikke use case. Undersøg vores faktiske databasebrugsmønstre i kodebasen for at forstå, om denne tilgang passer til dine Node.js-applikationsbehov.
 
 ## Node.js Produktionsbaggrundsjobbehandling {#nodejs-production-background-job-processing}
 
 Vi byggede vores baggrundsjobarkitektur omkring Bree for pålidelig Node.js-produktionsimplementering. Dette gælder for alle Node.js-applikationer, der kræver baggrundsbehandling:
 
-### Vores Bree Server-opsætning til produktion {#our-bree-server-setup-for-production}
+### Vores Bree-serveropsætning til produktion {#our-bree-server-setup-for-production}
 
 **Vores primære implementering:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
@@ -429,7 +429,7 @@ Vi byggede vores baggrundsjobarkitektur omkring Bree for pålidelig Node.js-prod
 
 ### Eksempler på produktionsjob {#production-job-examples}
 
-**Helbredsovervågning:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+**Sundhedsovervågning:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 **Automatisering af oprydning:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
@@ -442,7 +442,7 @@ Disse mønstre gælder for enhver Node.js-applikation, der har brug for:
 * Tilstandsovervågning og vedligeholdelse
 * Udnyttelse af arbejdstråde til CPU-intensive opgaver
 
-### Vores jobplanlægningsmønstre til Node.js-produktion {#our-job-scheduling-patterns-for-nodejs-production}
+### Vores jobplanlægningsmønstre for Node.js-produktion {#our-job-scheduling-patterns-for-nodejs-production}
 
 Undersøg vores faktiske jobplanlægningsmønstre i vores jobkatalog for at forstå:
 

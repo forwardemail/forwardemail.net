@@ -14,9 +14,9 @@
 * [公司比较](#company-comparison)
 * [选择标准](#selection-criteria)
 
-## 概述 {#overview}
+## 概览 {#overview}
 
-Forward Email 一直在积极评估网络安全研究公司，以便对我们在 [GitHub](https://github.com/forwardemail) 上的开源代码库和服务器基础设施进行全面审计。经过过去几年的广泛研究和评估，我们确定了几家卓越的安全审计公司，它们始终展现出高质量的工作、专业的技术，并与我们以隐私为中心的价值观保持一致。
+Forward Email 一直在积极评估网络安全研究公司，以便对我们位于 [GitHub](https://github.com/forwardemail) 的开源代码库和服务器基础设施进行全面审计。经过过去几年的广泛研究和评估，我们确定了几家卓越的安全审计公司，它们始终展现出高质量的工作、专业的技术，并与我们以隐私为中心的价值观保持一致。
 
 本文档代表了我们为寻求专业安全审计服务的组织提供的调查结果和建议。此处列出的公司均在渗透测试、代码审查、基础设施评估和安全研究方面展现出卓越的能力。
 
@@ -58,9 +58,9 @@ Radically Open Security (ROS) 是一家独特的非营利性计算机安全咨�
 
 * [Droid2Tracking 安全评估](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - 移动追踪分析
 * [2022年Tauri计划安全评估](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - 跨平台应用框架评估
-* [Mullvad VPN 安全评估 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN 服务安全分析
+* [Mullvad VPN 安全评估 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - VPN 服务安全性分析
 
-### Assured AB {#assured-ab}
+### 保证 AB {#assured-ab}
 
 **地点**：瑞典哥德堡
 **网站**：<https://www.assured.se/>
@@ -76,11 +76,11 @@ Assured AB 是一家瑞典网络安全咨询公司，在技术网络安全评估
 * [Mulvad API 安全审计 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API 安全评估
 * [Mullvad DNS 服务器安全审计 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - DNS 基础设施评估
 
-### 比特轨迹 {#trail-of-bits}
+### 位轨迹 {#trail-of-bits}
 
 **地点**：美国纽约州纽约市
 **网站**：<https://www.trailofbits.com/>
-**专业化**：“我们不仅修复错误，我们还修复软件。”
+**专业领域**：“我们不仅修复错误，我们还修复软件。”
 
 Trail of Bits 是一家著名的美国网络安全公司，因其在软件安全方面的创新方法而备受赞誉。该公司总部位于纽约，开发了尖端工具和方法，推动了整个网络安全领域的发展。他们的座右铭是“我们不仅修复漏洞，我们修复软件”，这体现了他们致力于解决系统性安全问题，而非仅仅解决表面漏洞。
 

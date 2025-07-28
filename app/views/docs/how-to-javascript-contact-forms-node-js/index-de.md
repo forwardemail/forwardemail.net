@@ -7,7 +7,7 @@
 
 ## Installation und Anforderungen {#install-and-requirements}
 
-Sie müssen die npm-Abhängigkeit `nodemailer` installieren:
+Sie müssen die `nodemailer`-npm-Abhängigkeit installieren:
 
 ```sh
 npm install nodemailer
@@ -15,7 +15,7 @@ npm install nodemailer
 
 ## Quellcode und Beispiel {#source-code-and-example}
 
-In diesem Beispiel werden die Bibliothek **[Nodemailer](https://github.com/nodemailer/nodemailer)** und ihr offizieller Sponsor **[E-Mail weiterleiten](https://forwardemail.net)** zum Senden und zur Vorschau ausgehender E-Mails verwendet.
+Dieses Beispiel verwendet die Bibliothek **[Nodemailer](https://github.com/nodemailer/nodemailer)** und ihren offiziellen Sponsor **[E-Mail weiterleiten](https://forwardemail.net)** zum Senden und zur Vorschau ausgehender E-Mails.
 
 Sie müssen ein <strong class="text-success"><i class="fa fa-key"></i> Passwort generieren</strong>, um ausgehende E-Mails zu senden – befolgen Sie bitte unsere **[Senden Sie E-Mails mit einem benutzerdefinierten Domänen-SMTP-Handbuch](/guides/send-email-with-custom-domain-smtp)**.
 

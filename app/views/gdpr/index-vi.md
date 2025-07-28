@@ -12,13 +12,13 @@
 
 ## Lời nói đầu {#foreword}
 
-Forward Email là một công ty chú trọng vào quyền riêng tư, cam kết bảo vệ dữ liệu của bạn.
+Forward Email là một công ty chú trọng đến quyền riêng tư và cam kết bảo vệ dữ liệu của bạn.
 
-[Quy định bảo vệ dữ liệu chung](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") điều chỉnh việc chuyển giao dữ liệu ra ngoài EU và EEA, và mục tiêu của nó là tăng cường quyền kiểm soát và quyền lợi của bạn đối với thông tin cá nhân của mình. May mắn thay, chúng tôi không bán bất kỳ dữ liệu nào chúng tôi xử lý, lưu trữ và/hoặc chuyển giao – cũng như không sử dụng dữ liệu đó cho bất kỳ mục đích nào khác ngoài việc cung cấp dịch vụ cho bạn.
+[Quy định chung về bảo vệ dữ liệu](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") quản lý việc chuyển giao dữ liệu ra ngoài EU và EEA, với mục tiêu là tăng cường quyền kiểm soát và quyền lợi của bạn đối với thông tin cá nhân. May mắn thay, chúng tôi không bán bất kỳ dữ liệu nào chúng tôi xử lý, lưu trữ và/hoặc chuyển giao – cũng như không sử dụng dữ liệu đó cho bất kỳ mục đích nào khác ngoài việc cung cấp dịch vụ cho bạn.
 
-**Bất cứ lúc nào**, bạn có thể sửa đổi thông tin cá nhân của mình theo [Tài khoản của tôi → Hồ sơ](/my-account/profile) và thậm chí xóa toàn bộ tài khoản cùng mọi thông tin liên quan theo [Tài khoản của tôi → Bảo mật](/my-account/security). Vì **chúng tôi hoàn toàn mã nguồn mở** tại <https://github.com/forwardemail> – mã nguồn của chúng tôi cũng có thể được kiểm tra để đảm bảo tuân thủ luật riêng tư bất cứ lúc nào.
+**Bất cứ lúc nào**, bạn có thể sửa đổi thông tin cá nhân của mình tại [Tài khoản của tôi → Hồ sơ](/my-account/profile) và thậm chí xóa toàn bộ tài khoản cùng mọi thông tin liên quan tại [Tài khoản của tôi → Bảo mật](/my-account/security). Vì **chúng tôi sử dụng mã nguồn mở 100%** tại <https://github.com/forwardemail> – mã nguồn của chúng tôi cũng có thể được kiểm tra để đảm bảo tuân thủ luật riêng tư bất cứ lúc nào.
 
-[Thỏa thuận xử lý dữ liệu](/dpa) của chúng tôi nêu chi tiết về việc chúng tôi tuân thủ GDPR cũng như khuôn khổ Bảo vệ quyền riêng tư EU-Hoa Kỳ và Thụy Sĩ-Hoa Kỳ, liên quan đến quyền riêng tư của dữ liệu được xử lý, lưu trữ và chuyển giao.
+[Thỏa thuận xử lý dữ liệu](/dpa) của chúng tôi nêu chi tiết về việc tuân thủ GDPR cũng như khuôn khổ Bảo vệ quyền riêng tư EU-Hoa Kỳ và Thụy Sĩ-Hoa Kỳ, liên quan đến quyền riêng tư của dữ liệu được xử lý, lưu trữ và chuyển giao.
 
 Bằng việc đồng ý với [Điều khoản dịch vụ](/terms) của chúng tôi, bạn tự động chấp nhận DPA của chúng tôi và không cần phải ký một tài liệu riêng. Chúng tôi sẽ nỗ lực hết sức để bảo vệ tất cả dữ liệu cá nhân của bạn theo [Chính sách bảo mật](/privacy) của chúng tôi – **bất kể vị trí** mà dữ liệu được xử lý, lưu trữ và chuyển giao. Bạn cũng có thể tìm hiểu thêm bằng cách đọc [Điều khoản dịch vụ](/terms) và [Chính sách bảo mật](/privacy) của chúng tôi.
 

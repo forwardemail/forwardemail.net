@@ -12,7 +12,7 @@
   * [加密](#encryption)
   * [身份验证和授权](#authentication-and-authorization)
   * [反滥用措施](#anti-abuse-measures)
-* [資料保護](#data-protection)
+* [数据保护](#data-protection)
   * [数据最小化](#data-minimization)
   * [备份和恢复](#backup-and-recovery)
 * [服务提供商](#service-providers)
@@ -30,13 +30,13 @@
 
 ## 前言 {#foreword}
 
-在 Forward Email，安全是我们的首要任务。我们已实施全面的安全措施来保护您的电子邮件通信和个人数据。本文档概述了我们的安全实践以及我们为确保您的电子邮件的机密性、完整性和可用性而采取的步骤。
+在 Forward Email，安全是我们的首要任务。我们已实施全面的安全措施，以保护您的电子邮件通信和个人数据。本文档概述了我们的安全实践以及我们为确保您电子邮件的机密性、完整性和可用性而采取的措施。
 
 ## 基础设施安全 {#infrastructure-security}
 
 ### 安全数据中心 {#secure-data-centers}
 
-我们的基础架构托管在符合 SOC 2 标准的数据中心，具有以下特点：
+我们的基础架构托管在符合 SOC 2 标准的数据中心，具有：
 
 * 全天候物理安保和监控
 * 生物识别门禁系统
@@ -56,7 +56,7 @@
 * 端口扫描防护，自动阻止可疑活动
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> 所有传输中的数据均使用 TLS 1.2+ 和现代密码套件进行加密。
 
 ## 电子邮件安全 {#email-security}
 
@@ -69,7 +69,7 @@
 * **全面保护**：我们实施静态加密、内存加密和传输加密
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> 我们是全球首个也是唯一一个使用 **[抗量子且单独加密的 SQLite 邮箱](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)** 的电子邮件服务。
 
 ### 身份验证和授权 {#authentication-and-authorization}
 
@@ -105,24 +105,24 @@
 
 ## 服务提供商 {#service-providers}
 
-我们精心挑选服务提供商，以确保他们符合我们的高安全标准。以下是我们用于国际数据传输的提供商及其 GDPR 合规状态：
+我们精心挑选服务提供商，以确保他们符合我们严格的安全标准。以下是我们用于国际数据传输的服务提供商及其 GDPR 合规情况：
 
-| 提供者 | 目的 | DPF 认证 | GDPR 合规页面 |
+| 提供者 | 目的 | DPF认证 | GDPR 合规页面 |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com) | CDN、DDoS 保护、DNS | ✅ 是的 | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
-| [DataPacket](https://www.datapacket.com) | 服务器基础设施 | ❌ 不 | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
-| [Digital Ocean](https://www.digitalocean.com) | 云基础设施 | ❌ 不 | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
-| [Vultr](https://www.vultr.com) | 云基础设施 | ❌ 不 | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
+| [DataPacket](https://www.datapacket.com) | 服务器基础设施 | ❌ 没有 | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
+| [Digital Ocean](https://www.digitalocean.com) | 云基础设施 | ❌ 没有 | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [Vultr](https://www.vultr.com) | 云基础设施 | ❌ 没有 | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | 付款处理 | ✅ 是的 | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
-| [PayPal](https://www.paypal.com) | 付款处理 | ❌ 不 | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| [PayPal](https://www.paypal.com) | 付款处理 | ❌ 没有 | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-我们使用这些提供商来确保可靠、安全的服务交付，同时保持遵守国际数据保护法规。所有数据传输均在适当的保护措施下进行，以保护您的个人信息。
+我们使用这些提供商来确保可靠、安全的服务交付，同时遵守国际数据保护法规。所有数据传输均在适当的安全措施下进行，以保护您的个人信息。
 
 ## 合规性和审计 {#compliance-and-auditing}
 
 ### 定期安全评估 {#regular-security-assessments}
 
-我们的团队会定期监控、审查和评估代码库、服务器、基础设施和实践。我们实施了全面的安全计划，其中包括：
+我们的团队会定期监控、审查和评估代码库、服务器、基础架构和实践。我们实施了全面的安全计划，其中包括：
 
 * 定期轮换 SSH 密钥
 * 持续监控访问日志
@@ -132,8 +132,8 @@
 
 ### 合规性 {#compliance}
 
-* 符合 [GDPR](https://forwardemail.net/gdpr) 的数据处理实践
-* 适用于企业客户的 [数据处理协议 (DPA)](https://forwardemail.net/dpa)
+* [GDPR](https://forwardemail.net/gdpr) 符合数据处理规范
+* [数据处理协议（DPA）](https://forwardemail.net/dpa) 可供企业客户使用
 * 符合 CCPA 的隐私控制措施
 * SOC 2 Type II 审核流程
 
@@ -149,7 +149,7 @@
 6. **事件后分析**：全面审查和改进
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> 如果您发现安全漏洞，请立即报告至 <security@forwardemail.net>。
 
 ## 安全开发生命周期 {#security-development-lifecycle}
 
@@ -179,7 +179,7 @@ flowchart LR
 
 ## 服务器强化 {#server-hardening}
 
-我们的[Ansible 配置](https://github.com/forwardemail/forwardemail.net/tree/master/ansible)实施了许多服务器强化措施：
+我们的 [Ansible 配置](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) 实施了许多服务器强化措施：
 
 * **USB 访问已禁用**：通过将 usb-storage 内核模块列入黑名单来禁用物理端口
 * **防火墙规则**：严格的 iptables 规则，仅允许必要的连接
@@ -199,7 +199,7 @@ flowchart LR
 
 ## 服务水平协议 {#service-level-agreement}
 
-我们保持高水平的服务可用性和可靠性。我们的基础设施设计为冗余和容错，以确保您的电子邮件服务保持正常运行。虽然我们没有发布正式的 SLA 文档，但我们承诺：
+我们保持高水平的服务可用性和可靠性。我们的基础设施设计具有冗余和容错功能，确保您的电子邮件服务持续运行。虽然我们没有发布正式的 SLA 文档，但我们承诺：
 
 * 所有服务正常运行时间均超过 99.9%
 * 快速响应服务中断
@@ -208,7 +208,7 @@ flowchart LR
 
 ## 开源安全 {#open-source-security}
 
-作为[开源服务](https://github.com/forwardemail/forwardemail.net)，我们的安全优势在于：
+作为 [开源服务](https://github.com/forwardemail/forwardemail.net)，我们的安全优势在于：
 
 * 代码透明，任何人都可以审计
 * 社区驱动的安全改进
@@ -233,12 +233,12 @@ flowchart LR
 
 如需了解有关我们的安全措施的更多信息或报告安全问题，请联系<security@forwardemail.net>。
 
-## 其他资源 {#additional-resources}
+## 额外资源 {#additional-resources}
 
 * [隐私政策](https://forwardemail.net/en/privacy)
 * [服务条款](https://forwardemail.net/en/terms)
 * [GDPR 合规性](https://forwardemail.net/gdpr)
-* [数据处理协议 (DPA)](https://forwardemail.net/dpa)
+* [数据处理协议（DPA）](https://forwardemail.net/dpa)
 * [举报滥用行为](https://forwardemail.net/en/report-abuse)
 * [安全策略](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)

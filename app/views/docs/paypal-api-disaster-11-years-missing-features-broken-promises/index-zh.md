@@ -1,4 +1,4 @@
-# PayPal 11 年的 API 灾难：当他们忽视开发人员时，我们如何构建解决方法 {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
+# PayPal 11 年的 API 灾难：当他们忽视开发人员时，我们如何构建解决方法{#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
 <img 加载="懒惰" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
@@ -51,7 +51,7 @@
   * [现实世界的影响](#the-real-world-impact)
   * [2025年7月账户迁移灾难](#the-july-2025-account-migration-disaster)
   * [为什么这很重要](#why-this-matters)
-* [其他支付处理商如何正确运作](#how-every-other-payment-processor-does-it-right)
+* [其他支付处理商如何做得好](#how-every-other-payment-processor-does-it-right)
   * [条纹](#stripe)
   * [桨](#paddle)
   * [Coinbase Commerce](#coinbase-commerce)
@@ -76,7 +76,7 @@
   * [文档谎言](#the-documentation-lie)
 * [这对开发人员意味着什么](#what-this-means-for-developers)
 
-## 缺失的部分：无法列出订阅 {#the-missing-piece-no-way-to-list-subscriptions}
+## 缺失的部分：无法列出订阅{#the-missing-piece-no-way-to-list-subscriptions}
 
 让我们震惊的是：PayPal 自 2014 年以来就提供订阅计费服务，但他们从未为商家提供列出自己的订阅的方式。
 
@@ -91,7 +91,7 @@
 
 但 PayPal 呢？他们根本就没开发过。
 
-## 2014-2017：问题的出现 {#2014-2017-the-problem-emerges}
+## 2014-2017：问题浮现{#2014-2017-the-problem-emerges}
 
 订阅列表问题最早出现在 2017 年的 PayPal 社区论坛上。开发人员提出了一个显而易见的问题：“如何获取所有订阅的列表？”
 
@@ -105,17 +105,17 @@ PayPal 对此有何回应？毫无动静。
 
 2017 年的 [原始社区帖子](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) 表明开发人员正在恳求这项基本功能。PayPal 的回应是将人们报告该问题的存储库存档。
 
-## 2020：我们向他们提供广泛的反馈 {#2020-we-give-them-extensive-feedback}
+## 2020：我们向他们提供广泛的反馈{#2020-we-give-them-extensive-feedback}
 
 2020年10月，PayPal 与我们联系，希望召开一次正式的反馈会议。这可不是一次轻松的闲聊——他们组织了一场45分钟的 Microsoft Teams 电话会议，与会的8位 PayPal 高管包括 Sri Shivananda（首席技术官）、Edwin Aoki、Jim Magats、John Kunze 等。
 
-### 27 条反馈列表 {#the-27-item-feedback-list}
+### 27 项反馈列表 {#the-27-item-feedback-list}
 
 我们做好了准备。经过 6 个小时的尝试，我们整合了他们的 API，发现了 27 个具体问题。PayPal Checkout 团队的 Mark Stuart 说：
 
 > 嘿，Nick，谢谢你今天和大家分享！我认为这会成为我们团队获得更多支持和投资的催化剂，让我们能够去解决这些问题。到目前为止，很难得到像你这样丰富的反馈。
 
-这些反馈并不是理论上的——而是来自真实的整合尝试：
+这些反馈并不是理论上的——它来自于真实的整合尝试：
 
 1. **访问令牌生成不起作用**：
 
@@ -129,7 +129,7 @@ Mark Stuart 发现访问令牌问题尤其令人担忧：
 
 > 我们通常不会听说有关访问令牌生成的问题。
 
-### 团队参与，承诺兑现 {#teams-got-involved-promises-were-made}
+### 支球队参与，并做出承诺 {#teams-got-involved-promises-were-made}
 
 随着我们发现越来越多的问题，PayPal 不断邀请更多团队参与讨论。订阅管理 UI 团队的 Darshan Raju 也加入了讨论，他说道：
 
@@ -143,7 +143,7 @@ Mark Stuart 发现访问令牌问题尤其令人担忧：
 
 > 让 PayPal 成为开发人员应该使用的工具。
 
-### 结果如何？毫无进展。{#the-result-nothing}
+### 结果如何？没有。{#the-result-nothing}
 
 尽管进行了正式的反馈会议，但清单仍然包含 27 项内容，多个团队参与，并承诺：
 
@@ -167,11 +167,11 @@ Mark Stuart 发现访问令牌问题尤其令人担忧：
 * **John Kunze**（全球消费产品副总裁）→ [已退休](https://www.linkedin.com/in/john-kunze-5724a86)（2023 年）
 * **Edwin Aoki**（最后几位留任者之一）→ [刚刚前往纳斯达克](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ)（2025 年 1 月）
 
-PayPal 已经成为一扇旋转门，高管们在这里收集开发人员的反馈、做出承诺，然后跳槽到摩根大通、Ripple 和其他金融科技公司等更好的公司。
+PayPal 已经成为一扇旋转门，高管们在这里收集开发人员的反馈，做出承诺，然后跳槽到摩根大通、Ripple 和其他金融科技公司等更好的公司。
 
 这就解释了为什么 2025 年 GitHub 问题响应似乎与我们 2020 年的反馈完全脱节——实际上所有收到该反馈的人都离开了 PayPal。
 
-## 2025 年：新的领导层，同样的问题 {#2025-new-leadership-same-problems}
+## 2025：新的领导，同样的问题 {#2025-new-leadership-same-problems}
 
 快进到2025年，同样的模式再次出现。在多年毫无进展之后，PayPal的新领导层再次伸出援手。
 
@@ -181,7 +181,7 @@ PayPal 已经成为一扇旋转门，高管们在这里收集开发人员的反�
 
 > 嗨，Nick，感谢您的联系和反馈。Michelle（已抄送）和她的团队会积极与您沟通并共同解决此事。谢谢 -A
 
-### 米歇尔·吉尔的回应{#michelle-gills-response}
+### Michelle Gill 的回复 {#michelle-gills-response}
 
 小型企业和金融服务部执行副总裁兼总经理 Michelle Gill 回应道：
 
@@ -193,7 +193,7 @@ PayPal 已经成为一扇旋转门，高管们在这里收集开发人员的反�
 
 > 谢谢。不过我觉得打电话没什么用。原因如下……我以前打过一次电话，但完全没有进展。我浪费了两个多小时的时间与整个团队和领导层沟通，但什么也没做……来来回回发了好多邮件，什么也没做。反馈也没有任何进展。我尝试了好几年，希望有人能听取我的意见，但最终却毫无进展。
 
-### 马蒂·布罗德贝克的过度设计回应 {#marty-brodbecks-overengineering-response}
+### 马蒂·布罗德贝克的过度工程回应 {#marty-brodbecks-overengineering-response}
 
 然后，PayPal 消费者工程主管 Marty Brodbeck 伸出了援手：
 
@@ -210,7 +210,7 @@ GET /v1/billing/subscriptions
 Authorization: Bearer {access_token}
 ```
 
-### “简单的 CRUD” 矛盾 {#the-simple-crud-contradiction}
+### “简单的 CRUD”矛盾 {#the-simple-crud-contradiction}
 
 当我们指出这是自 2014 年起就应该存在的基本 CRUD 功能时，Marty 的回应是：
 
@@ -241,7 +241,7 @@ PayPal TypeScript SDK 经过数月的开发，目前仅支持三个端点，结�
 
 早在 2016 年，我们就曾公开与包括 Dan Schulman 在内的 PayPal 领导层沟通，探讨界面和可用性问题。这已经是 9 年前的事了，同样的 UI/UX 问题至今仍然存在。
 
-### 2021：商务电子邮件错误报告 {#2021-business-email-bug-report}
+### 2021：企业电子邮件错误报告 {#2021-business-email-bug-report}
 
 2021年3月，我们报告了PayPal企业电子邮件系统发送错误的取消通知的问题。该电子邮件模板中的变量渲染不正确，导致客户收到令人困惑的消息。
 
@@ -294,7 +294,7 @@ PayPal TypeScript SDK 经过数月的开发，目前仅支持三个端点，结�
 
 Mark Stuart 承认了会话超时问题：
 
-> 我记得您曾经报告过，当您在 IDE 和developer.paypal.com 或商家仪表板之间切换时，您的会话经常过期并中断您的开发流程，然后您会回来并再次被注销。
+> 我记得您过去曾报告过，当您在 IDE 和developer.paypal.com 或商家仪表板之间切换时，您的会话经常过期并中断您的开发流程，然后您会回来并再次被注销。
 
 **结果**：会话超时仍为 60 秒。报告系统仍然经常出现故障。
 
@@ -386,7 +386,7 @@ PayPal 开发者界面中更多 UI 灾难，显示工作流程中断
 * 错误消息未指示缺少哪些字段
 * 数据类型不一致（要求使用字符串金额而不是数字）
 
-### 内容安全政策违规 {#content-security-policy-violations}
+### 内容安全政策违规行为 {#content-security-policy-violations}
 
 他们的 SDK 需要您的 CSP 中使用 unsafe-inline 和 unsafe-eval，**迫使您损害网站的安全性**。
 
@@ -437,7 +437,7 @@ PayPal 支持人员声称一切正常，但付款却完全中断。最后一条�
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-身份验证流程本应“修复”不了任何问题
+据称“解决”不了任何问题的身份验证流程
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
@@ -463,11 +463,11 @@ PayPal 支持人员声称一切正常，但付款却完全中断。最后一条�
 
 **我们只能支持一个有缺陷的平台，因为 PayPal 为某些用户创造了支付垄断权。**
 
-## 社区解决方法 {#the-community-workaround}
+## 社区解决方案 {#the-community-workaround}
 
 由于 PayPal 不提供基本的订阅列表功能，开发者社区已构建了相应的解决方案。我们创建了一个脚本来帮助管理 PayPal 订阅：[set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-此脚本引用了开发者分享解决方案的[社区要点](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)。用户实际上[感谢我们](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)提供了PayPal多年前就应该构建的功能。
+此脚本引用了一个 [社区要点](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)，开发者可以在其中分享解决方案。用户实际上是 [感谢我们](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)，因为他们提供了 PayPal 多年前就应该构建的功能。
 
 ## 因网络钓鱼而阻止 PayPal 模板 {#blocking-paypal-templates-due-to-phishing}
 
@@ -479,7 +479,7 @@ PayPal 支持人员声称一切正常，但付款却完全中断。最后一条�
 
 **主题：** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-这封邮件已被转发至 `abuse@microsoft.com`，因为它疑似网络钓鱼攻击。问题出在哪里？它实际上来自 PayPal 的沙盒环境，但其模板设计非常糟糕，以至于触发了网络钓鱼检测系统。
+这封邮件被转发给了 `abuse@microsoft.com`，因为它疑似网络钓鱼攻击。问题出在哪里？它实际上来自 PayPal 的沙盒环境，但其模板设计非常糟糕，以至于触发了网络钓鱼检测系统。
 
 ### 我们的实施 {#our-implementation}
 
@@ -520,7 +520,7 @@ if (
 
 ### 问题的规模 {#the-scale-of-the-problem}
 
-我们的垃圾邮件过滤日志显示，我们每天处理的 PayPal 发票垃圾邮件数量巨大。被屏蔽的主题示例包括：
+我们的垃圾邮件过滤日志显示，我们每天处理的 PayPal 发票垃圾邮件数量巨大。被拦截的主题示例包括：
 
 * PayPal 账单团队开具的发票：- 此费用将从您的账户中自动扣除。请立即致电 [电话] 联系我们。
 * 公司名称 [公司名称] (订单号 [ORDER-ID]) 开具的发票。
@@ -541,11 +541,11 @@ if (
 
 PayPal 本应引领金融诈骗的斗争，但其电子邮件模板设计却极其糟糕，甚至会触发反钓鱼系统。我们被迫屏蔽合法的 PayPal 邮件，因为它们与诈骗邮件难以区分。
 
-安全研究记录了这一点：[警惕PayPal新地址诈骗](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - 展示了 PayPal 自己的系统如何被利用进行欺诈。
+这在安全研究中有所记录：[警惕PayPal新地址诈骗](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - 展示了 PayPal 自己的系统如何被利用进行欺诈。
 
 ### 现实世界的影响：新型 PayPal 诈骗 {#real-world-impact-novel-paypal-scams}
 
-问题不仅仅在于糟糕的模板设计。PayPal 的发票系统极易被利用，诈骗者经常滥用该系统发送看似合法的欺诈性发票。安全研究员 Gavin Anderegg 记录了 [新型 PayPal 骗局](https://anderegg.ca/2023/02/01/a-novel-paypal-scam)，其中诈骗者发送了通过所有身份验证检查的真实 PayPal 发票：
+问题不仅仅在于糟糕的模板设计。PayPal 的发票系统极易被利用，骗子经常滥用它来发送看似合法的欺诈性发票。安全研究员 Gavin Anderegg 记录了 [新型 PayPal 骗局](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) 的情况，骗子会通过所有身份验证检查，发送真实的 PayPal 发票：
 
 > “检查邮件来源后，发现这封邮件似乎真的来自 PayPal（SPF、DKIM 和 DMARC 均已通过）。按钮还链接到一个看似合法的 PayPal 网址……我愣了一下才意识到这是一封合法邮件。我刚刚收到一张骗子发来的随机“发票”。
 
@@ -558,7 +558,7 @@ PayPal 本应引领金融诈骗的斗争，但其电子邮件模板设计却极�
 
 研究人员指出：
 
-> “这似乎也算是一项 PayPal 应该考虑锁定的便捷功能。我立刻就意识到这是某种骗局，只对技术细节感兴趣。这看起来太容易上当了，我担心其他人也会上当。”
+> “这似乎也算是一项 PayPal 应该考虑锁定的便捷功能。我立刻就觉得这是某种骗局，只对技术细节感兴趣。这看起来太容易上当了，我担心其他人也会上当。”
 
 这完美地说明了问题所在：PayPal 自己的合法系统设计非常糟糕，以至于它们会导致欺诈，同时使合法通信看起来可疑。
 
@@ -601,7 +601,7 @@ PayPal 的流程完全是倒退的：
 * **关键业务期间收入损失**
 * **付款神秘失败时客户信任受损**
 
-### 2025 年 7 月账户迁移灾难 {#the-july-2025-account-migration-disaster}
+### 2025 年 7 月帐户迁移灾难 {#the-july-2025-account-migration-disaster}
 
 2025年7月，我们例行账户迁移时就曾遇到过类似的情况。PayPal最初允许付款，然后突然在没有任何通知的情况下将其屏蔽。直到客户开始反映无法付款，我们才发现这个问题。
 
@@ -625,11 +625,11 @@ Stripe 自 API 上线以来就提供了订阅列表功能。他们的文档清�
 
 Paddle 提供全面的订阅管理 API，包括列表、筛选和分页。他们深知商家需要了解自己的经常性收入来源。
 
-### Coinbase Commerce {#coinbase-commerce}
+### Coinbase 商务 {#coinbase-commerce}
 
 甚至像 Coinbase Commerce 这样的加密货币支付处理器也比 PayPal 提供更好的订阅管理。
 
-### 方形 {#square}
+### 正方形 {#square}
 
 Square 的 API 将订阅列表作为一项基本功能，而不是事后才想到的功能。
 
@@ -643,7 +643,7 @@ Square 的 API 将订阅列表作为一项基本功能，而不是事后才想�
 * 订阅变更的 Webhook 通知
 * 包含实用示例的详尽文档
 
-### 其他处理器与 PayPal 相比提供的功能 {#what-other-processors-provide-vs-paypal}
+### 其他处理器与 PayPal 相比提供哪些功能 {#what-other-processors-provide-vs-paypal}
 
 **Stripe - 列出所有订阅：**
 
@@ -715,13 +715,13 @@ PayPal 是唯一一家强制开发人员在自己的数据库中手动跟踪订�
 
 ### 大抹杀 {#the-great-erasure}
 
-最初的 PayPal 社区（地址：`paypal-community.com`）拥有**6,003,558 名成员**，包含数十万条关于 PayPal API 故障的帖子、错误报告、投诉和讨论。这代表了 PayPal 十多年来系统性问题的记录证据。
+`paypal-community.com` 上的原始 PayPal 社区拥有**6,003,558 名成员**，其中包含数十万条关于 PayPal API 故障的帖子、错误报告、投诉和讨论。这代表了 PayPal 十多年来系统性问题的记录证据。
 
 2025年6月30日，PayPal悄悄下线了整个论坛。所有`paypal-community.com`链接现在都返回404错误。这并非迁移或升级。
 
 ### 第三方救援 {#the-third-party-rescue}
 
-幸运的是，[ppl.lithium.com](https://ppl.lithium.com/)上的第三方服务保留了部分内容，让我们能够访问PayPal试图隐藏的讨论。然而，第三方的保留并不完整，随时可能消失。
+幸运的是，[ppl.lithium.com](https://ppl.lithium.com/) 的第三方服务保留了部分内容，让我们能够访问 PayPal 试图隐藏的讨论。然而，第三方的保留并不完整，随时可能消失。
 
 这种隐藏证据的做法对 PayPal 来说并不新鲜。他们有过这样的记录：
 
@@ -740,7 +740,7 @@ PayPal 是唯一一家强制开发人员在自己的数据库中手动跟踪订�
 
 在我们的生产系统中，我们发现有 108 笔 PayPal 付款，总额达 **1,899 美元**，由于 PayPal 捕获失败而丢失。这些付款呈现出一致的模式：
 
-* 已收到 `CHECKOUT.ORDER.APPROVED` webhook
+* 已收到 `CHECKOUT.ORDER.APPROVED` 个 webhook
 * PayPal 的捕获 API 返回 404 错误
 * 订单无法通过 PayPal API 访问
 
@@ -752,9 +752,9 @@ PayPal 是唯一一家强制开发人员在自己的数据库中手动跟踪订�
 
 我们发现这一点的唯一原因是因为我们非常细致并且以数据为导向。
 
-### 2013 年原始报告：11 年以上的疏忽 {#the-2013-original-report-11-years-of-negligence}
+### 2013 年原始报告：11 年以上的疏忽{#the-2013-original-report-11-years-of-negligence}
 
-关于此确切问题的最早记录报告出现在[2013 年 11 月 Stack Overflow](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([已归档](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture))上：
+关于此确切问题的最早记录报告出现在 [2013 年 11 月 Stack Overflow](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([已归档](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)) 上：
 
 > “使用 Rest API 进行捕获时不断收到 404 错误”
 
@@ -777,7 +777,7 @@ PayPal 是唯一一家强制开发人员在自己的数据库中手动跟踪订�
 
 ### 2016 年承认：PayPal 破坏了他们自己的 SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-2016年，PayPal 自己的 GitHub 代码库记录了 [大规模捕获失败](https://github.com/paypal/PayPal-PHP-SDK/issues/660) 漏洞，该漏洞影响了其官方 PHP SDK。漏洞规模之大令人震惊：
+2016年，PayPal 自己的 GitHub 代码库记录了 [大规模捕获失败](https://github.com/paypal/PayPal-PHP-SDK/issues/660) 对其官方 PHP SDK 的影响。影响规模之大令人震惊：
 
 > “自 2016 年 9 月 20 日起，所有 PayPal 数据捕获尝试均失败，并显示‘INVALID_RESOURCE_ID - 未找到请求的资源 ID’。9 月 19 日至 9 月 20 日期间，API 集成没有任何变化。**自 9 月 20 日起，100% 的捕获尝试均返回此错误。**”
 
@@ -800,7 +800,7 @@ PayPal 最初的反应是指责商家，并让他们寻求技术支持。在巨�
 
 > “已将 SDK 升级至 v1.7.4，但问题仍然存在。”
 
-### 2024 年升级：依然破裂 {#the-2024-escalation-still-broken}
+### 2024 年升级：仍然失败 {#the-2024-escalation-still-broken}
 
 来自已保存的 PayPal 社区的最新报告显示，问题实际上变得更加严重。[2024 年 9 月讨论](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([已归档](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) 记录了同样的问题：
 
@@ -812,7 +812,7 @@ PayPal 最初的反应是指责商家，并让他们寻求技术支持。在巨�
 
 ### Webhook 可靠性灾难 {#the-webhook-reliability-disaster}
 
-另一个 [保留社区讨论](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) 揭示了 PayPal 的 webhook 系统从根本上来说不可靠：
+另一个 [保留社区讨论](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) 揭示了 PayPal 的 webhook 系统从根本上来说是不可靠的：
 
 > “理论上，它应该有两个来自 Webhook 事件的事件（CHECKOUT.ORDER.APPROVED 和 PAYMENT.CAPTURE.COMPLETED）。实际上，**这两个事件很少会立即收到，PAYMENT.CAPTURE.COMPLETED 大多数情况下都无法收到，或者会在几个小时后收到。**”
 
@@ -826,7 +826,7 @@ PayPal 最初的反应是指责商家，并让他们寻求技术支持。在巨�
 2. **“如果订单状态为‘已完成’，我可以认为我已经收到款项了吗？”** - 商家无法信任 PayPal 的 API 响应
 3. **“为什么‘事件日志’->Webhook 事件’找不到任何日志？”** - 即使是 PayPal 自己的日志系统也无法正常工作
 
-### 系统性疏忽的模式 {#the-pattern-of-systematic-negligence}
+### 系统性疏忽模式 {#the-pattern-of-systematic-negligence}
 
 证据跨越了 11 年多的时间，并显示出清晰的模式：
 
@@ -861,13 +861,13 @@ PayPal 的官方文档中从未提及商家必须为捕获操作实现重试逻�
 
 ### 纽约金融服务部行动{#the-new-york-department-of-financial-services-action}
 
-2025 年 1 月，纽约金融服务部针对欺骗行为发布了 [针对 PayPal 的执法行动](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf)，表明 PayPal 的欺骗模式远远超出了其 API。
+2025 年 1 月，纽约金融服务部针对欺骗行为发布了 [针对 PayPal 的执法行动](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) 警告，表明 PayPal 的欺骗模式远远超出了其 API 的范围。
 
 此次监管行动表明 PayPal 愿意在其整个业务范围内采取欺骗行为，而不仅仅是在其开发工具范围内。
 
 ### Honey 诉讼：重写联盟链接 {#the-honey-lawsuit-rewriting-affiliate-links}
 
-PayPal 收购 Honey 的行为导致了 [诉讼称 Honey 重写了联盟链接](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer)，窃取了内容创作者和网红的佣金。这体现了另一种形式的系统性欺诈，PayPal 通过将本应归于他人的收入转移来获利。
+PayPal 收购 Honey 导致 [诉讼称 Honey 重写了联盟链接](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) 窃取了内容创作者和网红的佣金。这体现了另一种系统性欺诈行为，PayPal 通过将本应归于他人的收入转移来牟利。
 
 模式很清晰：
 

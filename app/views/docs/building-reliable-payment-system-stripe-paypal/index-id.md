@@ -5,7 +5,7 @@
 ## Daftar Isi {#table-of-contents}
 
 * [Kata pengantar](#foreword)
-* [Tantangan: Banyaknya Pemroses Pembayaran, Satu Sumber Kebenaran](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [Tantangan: Banyak Pemroses Pembayaran, Satu Sumber Kebenaran](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [Pendekatan Trifecta: Tiga Lapisan Keandalan](#the-trifecta-approach-three-layers-of-reliability)
 * [Lapisan 1: Pengalihan Pasca-Pembayaran](#layer-1-post-checkout-redirects)
   * [Implementasi Stripe Checkout](#stripe-checkout-implementation)
@@ -14,7 +14,7 @@
   * [Implementasi Webhook Stripe](#stripe-webhook-implementation)
   * [Implementasi Webhook PayPal](#paypal-webhook-implementation)
 * [Lapisan 3: Pekerjaan Otomatis dengan Bree](#layer-3-automated-jobs-with-bree)
-  * [Pemeriksa Akurasi Langganan](#subscription-accuracy-checker)
+  * [Pemeriksa Akurasi Berlangganan](#subscription-accuracy-checker)
   * [Sinkronisasi Langganan PayPal](#paypal-subscription-synchronization)
 * [Penanganan Kasus Tepi](#handling-edge-cases)
   * [Deteksi dan Pencegahan Penipuan](#fraud-detection-and-prevention)
@@ -28,13 +28,13 @@
 
 ## Kata Pengantar {#foreword}
 
-Di Forward Email, kami selalu memprioritaskan pembuatan sistem yang andal, akurat, dan mudah digunakan. Saat menerapkan sistem pemrosesan pembayaran, kami tahu kami memerlukan solusi yang dapat menangani beberapa pemroses pembayaran sekaligus menjaga konsistensi data yang sempurna. Artikel blog ini merinci cara tim pengembangan kami mengintegrasikan Stripe dan PayPal menggunakan pendekatan tiga serangkai yang memastikan akurasi waktu nyata 1:1 di seluruh sistem kami.
+Di Forward Email, kami selalu memprioritaskan pengembangan sistem yang andal, akurat, dan ramah pengguna. Saat mengimplementasikan sistem pemrosesan pembayaran, kami menyadari bahwa kami membutuhkan solusi yang dapat menangani beberapa pemroses pembayaran sekaligus menjaga konsistensi data yang sempurna. Artikel blog ini merinci bagaimana tim pengembangan kami mengintegrasikan Stripe dan PayPal menggunakan pendekatan trifecta yang memastikan akurasi real-time 1:1 di seluruh sistem kami.
 
 ## Tantangan: Banyak Pemroses Pembayaran, Satu Sumber Kebenaran {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Sebagai layanan email yang berfokus pada privasi, kami ingin memberikan opsi pembayaran kepada pengguna kami. Sebagian pengguna lebih menyukai pembayaran kartu kredit melalui Stripe yang mudah, sementara sebagian lainnya menghargai lapisan pemisahan tambahan yang disediakan PayPal. Namun, mendukung beberapa pemroses pembayaran menimbulkan kerumitan yang signifikan:
+Sebagai layanan email yang berfokus pada privasi, kami ingin memberikan opsi pembayaran kepada pengguna kami. Beberapa pengguna lebih menyukai kemudahan pembayaran kartu kredit melalui Stripe, sementara yang lain menghargai lapisan pemisahan tambahan yang disediakan PayPal. Namun, mendukung beberapa pemroses pembayaran menimbulkan kompleksitas yang signifikan:
 
-1. Bagaimana kita memastikan data yang konsisten di berbagai sistem pembayaran?
+1. Bagaimana kita memastikan konsistensi data di berbagai sistem pembayaran?
 2. Bagaimana kita menangani kasus-kasus khusus seperti sengketa, pengembalian dana, atau pembayaran yang gagal?
 3. Bagaimana kita mempertahankan satu sumber kebenaran dalam basis data kita?
 
@@ -116,7 +116,7 @@ Lapisan pertama dari pendekatan trifecta kami terjadi segera setelah pengguna me
 
 ### Implementasi Stripe Checkout {#stripe-checkout-implementation}
 
-Untuk Stripe, kami menggunakan API Sesi Checkout mereka untuk menciptakan pengalaman pembayaran yang lancar. Saat pengguna memilih paket dan memilih untuk membayar dengan kartu kredit, kami membuat Sesi Checkout dengan URL sukses dan batal yang spesifik:
+Untuk Stripe, kami menggunakan API Sesi Checkout mereka untuk menciptakan pengalaman pembayaran yang lancar. Ketika pengguna memilih paket dan memilih untuk membayar dengan kartu kredit, kami membuat Sesi Checkout dengan URL sukses dan batal yang spesifik:
 
 ```javascript
 const options = {
@@ -154,7 +154,7 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Bagian penting di sini adalah parameter `success_url`, yang menyertakan `session_id` sebagai parameter kueri. Saat Stripe mengarahkan pengguna kembali ke situs kami setelah pembayaran berhasil, kami dapat menggunakan ID sesi ini untuk memverifikasi transaksi dan memperbarui basis data kami sebagaimana mestinya.
+Bagian penting di sini adalah parameter `success_url`, yang menyertakan `session_id` sebagai parameter kueri. Ketika Stripe mengarahkan pengguna kembali ke situs kami setelah pembayaran berhasil, kami dapat menggunakan ID sesi ini untuk memverifikasi transaksi dan memperbarui basis data kami.
 
 ### Alur Pembayaran PayPal {#paypal-payment-flow}
 
@@ -210,7 +210,7 @@ const requestBody = {
 };
 ```
 
-Mirip dengan Stripe, kami menetapkan parameter `return_url` dan `cancel_url` untuk menangani pengalihan pasca-pembayaran. Saat PayPal mengalihkan pengguna kembali ke situs kami, kami dapat memperoleh detail pembayaran dan memperbarui basis data kami.
+Mirip dengan Stripe, kami menetapkan parameter `return_url` dan `cancel_url` untuk menangani pengalihan pascabayar. Ketika PayPal mengalihkan pengguna kembali ke situs kami, kami dapat mencatat detail pembayaran dan memperbarui basis data kami.
 
 ```mermaid
 sequenceDiagram
@@ -283,9 +283,9 @@ sequenceDiagram
 
 ## Lapisan 2: Penanganan Webhook dengan Verifikasi Tanda Tangan {#layer-2-webhook-handlers-with-signature-verification}
 
-Meskipun pengalihan pasca-pembayaran berfungsi dengan baik untuk sebagian besar skenario, pengalihan tersebut tidak sepenuhnya aman. Pengguna mungkin menutup browser mereka sebelum dialihkan, atau masalah jaringan mungkin mencegah pengalihan selesai. Di sinilah webhook berperan.
+Meskipun pengalihan pasca-pembayaran berfungsi dengan baik untuk sebagian besar skenario, pengalihan tersebut tidak sepenuhnya aman. Pengguna mungkin menutup peramban mereka sebelum dialihkan, atau masalah jaringan mungkin mencegah pengalihan selesai. Di sinilah webhook berperan.
 
-Baik Stripe maupun PayPal menyediakan sistem webhook yang mengirimkan notifikasi real-time tentang peristiwa pembayaran. Kami telah menerapkan pengendali webhook tangguh yang memverifikasi keaslian notifikasi ini dan memprosesnya sebagaimana mestinya.
+Baik Stripe maupun PayPal menyediakan sistem webhook yang mengirimkan notifikasi real-time tentang peristiwa pembayaran. Kami telah menerapkan pengendali webhook yang andal untuk memverifikasi keaslian notifikasi ini dan memprosesnya sebagaimana mestinya.
 
 ### Implementasi Webhook Stripe {#stripe-webhook-implementation}
 
@@ -377,7 +377,7 @@ async function webhook(ctx) {
 }
 ```
 
-Kedua pengendali webhook mengikuti pola yang sama: memverifikasi tanda tangan, mengonfirmasi penerimaan, dan memproses peristiwa secara asinkron. Ini memastikan bahwa kami tidak akan pernah melewatkan peristiwa pembayaran, bahkan jika pengalihan pasca-pembayaran gagal.
+Kedua pengendali webhook mengikuti pola yang sama: memverifikasi tanda tangan, mengonfirmasi penerimaan, dan memproses peristiwa secara asinkron. Hal ini memastikan bahwa kami tidak pernah melewatkan peristiwa pembayaran, meskipun pengalihan pasca-pembayaran gagal.
 
 ## Lapisan 3: Pekerjaan Otomatis dengan Bree {#layer-3-automated-jobs-with-bree}
 
@@ -385,7 +385,7 @@ Lapisan terakhir dari pendekatan trifecta kami adalah serangkaian pekerjaan otom
 
 ### Pemeriksa Akurasi Langganan {#subscription-accuracy-checker}
 
-Salah satu pekerjaan utama kami adalah pemeriksa akurasi langganan, yang memastikan bahwa basis data kami secara akurat mencerminkan status langganan di Stripe:
+Salah satu tugas utama kami adalah pemeriksa akurasi langganan, yang memastikan bahwa basis data kami secara akurat mencerminkan status langganan di Stripe:
 
 ```javascript
 async function mapper(customer) {
@@ -452,7 +452,7 @@ async function mapper(customer) {
 }
 ```
 
-Pekerjaan ini memeriksa ketidaksesuaian antara basis data kami dan Stripe, seperti alamat email yang tidak cocok atau beberapa langganan aktif. Jika ditemukan masalah, pekerjaan ini akan mencatatnya dan mengirimkan peringatan ke tim admin kami.
+Pekerjaan ini memeriksa ketidaksesuaian antara basis data kami dan Stripe, seperti alamat email yang tidak cocok atau beberapa langganan aktif. Jika ditemukan masalah, pekerjaan ini akan mencatatnya dan mengirimkan peringatan kepada tim admin kami.
 
 ### Sinkronisasi Langganan PayPal {#paypal-subscription-synchronization}
 
@@ -487,11 +487,11 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-Pekerjaan otomatis ini berfungsi sebagai jaring pengaman terakhir kami, yang memastikan bahwa basis data kami selalu mencerminkan status langganan dan pembayaran sebenarnya di Stripe dan PayPal.
+Pekerjaan otomatis ini berfungsi sebagai jaring pengaman terakhir kami, memastikan bahwa basis data kami selalu mencerminkan status sebenarnya dari langganan dan pembayaran di Stripe dan PayPal.
 
 ## Menangani Kasus Tepi {#handling-edge-cases}
 
-Sistem pembayaran yang kuat harus menangani kasus-kasus tertentu dengan baik. Mari kita lihat bagaimana kita menangani beberapa skenario umum.
+Sistem pembayaran yang tangguh harus menangani kasus-kasus ekstrem dengan baik. Mari kita lihat bagaimana kami menangani beberapa skenario umum.
 
 ### Deteksi dan Pencegahan Penipuan {#fraud-detection-and-prevention}
 
@@ -544,7 +544,7 @@ Kode ini secara otomatis memblokir pengguna yang memiliki beberapa tagihan gagal
 
 ### Penanganan Sengketa {#dispute-handling}
 
-Jika pengguna membantah suatu tagihan, kami secara otomatis menerima klaim tersebut dan mengambil tindakan yang sesuai:
+Jika pengguna membantah suatu tagihan, kami secara otomatis menerima klaim tersebut dan mengambil tindakan yang tepat:
 
 ```javascript
 case 'CUSTOMER.DISPUTE.CREATED': {
@@ -581,9 +581,9 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 
 Pendekatan ini meminimalkan dampak perselisihan pada bisnis kami sekaligus memastikan pengalaman pelanggan yang baik.
 
-## Penggunaan Kembali Kode: Prinsip KISS dan DRY {#code-reuse-kiss-and-dry-principles}
+Penggunaan Kembali Kode ##: Prinsip KISS dan DRY {#code-reuse-kiss-and-dry-principles}
 
-Di seluruh sistem pembayaran kami, kami telah mematuhi prinsip KISS (Keep It Simple, Stupid) dan DRY (Don't Repeat Yourself). Berikut ini beberapa contohnya:
+Di seluruh sistem pembayaran kami, kami telah mematuhi prinsip KISS (Keep It Simple, Stupid) dan DRY (Don't Repeat Yourself). Berikut beberapa contohnya:
 
 1. **Fungsi Pembantu Bersama**: Kami telah membuat fungsi pembantu yang dapat digunakan kembali untuk tugas-tugas umum seperti menyinkronkan pembayaran dan mengirim email.
 
@@ -591,7 +591,7 @@ Di seluruh sistem pembayaran kami, kami telah mematuhi prinsip KISS (Keep It Sim
 
 3. **Skema Basis Data Terpadu**: Skema basis data kami dirancang untuk mengakomodasi data Stripe dan PayPal, dengan bidang umum untuk status pembayaran, jumlah, dan informasi paket.
 
-4. **Konfigurasi Terpusat**: Konfigurasi terkait pembayaran dipusatkan dalam satu file, memudahkan pembaruan harga dan informasi produk.
+4. **Konfigurasi Terpusat**: Konfigurasi terkait pembayaran dipusatkan dalam satu file, sehingga memudahkan pembaruan harga dan informasi produk.
 
 ```mermaid
 graph TD
@@ -689,13 +689,13 @@ graph TD
 
 ## Implementasi Persyaratan Berlangganan VISA {#visa-subscription-requirements-implementation}
 
-Selain pendekatan tiga serangkai, kami telah menerapkan fitur-fitur khusus untuk mematuhi persyaratan berlangganan VISA sekaligus meningkatkan pengalaman pengguna. Salah satu persyaratan utama dari VISA adalah pengguna harus diberi tahu sebelum dikenai biaya berlangganan, terutama saat beralih dari uji coba ke langganan berbayar.
+Selain pendekatan trifecta kami, kami telah menerapkan fitur-fitur spesifik untuk memenuhi persyaratan berlangganan VISA sekaligus meningkatkan pengalaman pengguna. Salah satu persyaratan utama VISA adalah pengguna harus diberi tahu sebelum dikenakan biaya berlangganan, terutama saat beralih dari uji coba ke langganan berbayar.
 
 ### Notifikasi Email Pra-Perpanjangan Otomatis {#automated-pre-renewal-email-notifications}
 
-Kami telah membangun sistem otomatis yang mengidentifikasi pengguna dengan langganan uji coba aktif dan mengirimkan email pemberitahuan kepada mereka sebelum tagihan pertama mereka terjadi. Hal ini tidak hanya membuat kami mematuhi persyaratan VISA tetapi juga mengurangi pengembalian dana dan meningkatkan kepuasan pelanggan.
+Kami telah membangun sistem otomatis yang mengidentifikasi pengguna dengan langganan uji coba aktif dan mengirimkan email notifikasi sebelum tagihan pertama mereka muncul. Hal ini tidak hanya menjaga kepatuhan kami terhadap persyaratan VISA, tetapi juga mengurangi pengembalian dana dan meningkatkan kepuasan pelanggan.
 
-Berikut cara kami menerapkan fitur ini:
+Berikut ini cara kami menerapkan fitur ini:
 
 ```javascript
 // Find users with trial subscriptions who haven't received a notification yet
@@ -778,16 +778,16 @@ for (const user of users) {
 
 Implementasi ini memastikan bahwa pengguna selalu diberi tahu tentang tagihan yang akan datang, dengan rincian yang jelas tentang:
 
-1. Kapan tagihan pertama akan terjadi
-2. Frekuensi tagihan mendatang (bulanan, tahunan, dst.)
-3. Jumlah pasti yang akan ditagih
-4. Domain mana yang dicakup oleh langganan mereka
+1. Kapan tagihan pertama akan dikenakan
+2. Frekuensi tagihan selanjutnya (bulanan, tahunan, dll.)
+3. Jumlah pasti tagihan yang akan dikenakan
+4. Domain mana saja yang tercakup dalam langganan mereka
 
 Dengan mengotomatiskan proses ini, kami mempertahankan kepatuhan sempurna terhadap persyaratan VISA (yang mewajibkan pemberitahuan setidaknya 7 hari sebelum penagihan) sekaligus mengurangi pertanyaan dukungan dan meningkatkan pengalaman pengguna secara keseluruhan.
 
 ### Menangani Kasus Tepi {#handling-edge-cases-1}
 
-Implementasi kami juga mencakup penanganan kesalahan yang kuat. Jika terjadi kesalahan selama proses pemberitahuan, sistem kami secara otomatis akan memberi tahu tim kami:
+Implementasi kami juga mencakup penanganan kesalahan yang andal. Jika terjadi kesalahan selama proses notifikasi, sistem kami akan secara otomatis memberi tahu tim kami:
 
 ```javascript
 try {
@@ -813,9 +813,9 @@ try {
 }
 ```
 
-Hal ini memastikan bahwa meskipun terjadi masalah dengan sistem notifikasi, tim kami dapat dengan cepat mengatasinya dan menjaga kepatuhan terhadap persyaratan VISA.
+Ini memastikan bahwa meskipun terjadi masalah dengan sistem notifikasi, tim kami dapat dengan cepat mengatasinya dan menjaga kepatuhan terhadap persyaratan VISA.
 
-Sistem notifikasi langganan VISA merupakan contoh lain tentang bagaimana kami membangun infrastruktur pembayaran dengan mempertimbangkan kepatuhan dan pengalaman pengguna, melengkapi pendekatan trifecta kami untuk memastikan pemrosesan pembayaran yang andal dan transparan.
+Sistem pemberitahuan langganan VISA adalah contoh lain tentang bagaimana kami membangun infrastruktur pembayaran dengan mempertimbangkan kepatuhan dan pengalaman pengguna, melengkapi pendekatan trifecta kami untuk memastikan pemrosesan pembayaran yang andal dan transparan.
 
 ### Periode Uji Coba dan Ketentuan Berlangganan {#trial-periods-and-subscription-terms}
 
@@ -838,20 +838,20 @@ if (
 
 Kami juga menyediakan informasi yang jelas tentang ketentuan berlangganan, termasuk frekuensi penagihan dan kebijakan pembatalan, serta menyertakan metadata terperinci dengan setiap langganan untuk memastikan pelacakan dan pengelolaan yang tepat.
 
-## Kesimpulan: Manfaat Pendekatan Trifecta Kami {#conclusion-the-benefits-of-our-trifecta-approach}
+Kesimpulan: Manfaat Pendekatan Trifecta Kami {#conclusion-the-benefits-of-our-trifecta-approach}
 
 Pendekatan tiga serangkai kami terhadap pemrosesan pembayaran telah memberikan beberapa manfaat utama:
 
 1. **Keandalan**: Dengan menerapkan tiga lapisan verifikasi pembayaran, kami memastikan bahwa tidak ada pembayaran yang terlewat atau diproses secara tidak benar.
 
-2. **Akurasi**: Basis data kami selalu mencerminkan status langganan dan pembayaran sebenarnya di Stripe dan PayPal.
+2. **Akurasi**: Basis data kami selalu mencerminkan status sebenarnya dari langganan dan pembayaran di Stripe dan PayPal.
 
-3. **Fleksibelitas**: Pengguna dapat memilih metode pembayaran yang mereka inginkan tanpa mengorbankan keandalan sistem kami.
+3. **Fleksibilitas**: Pengguna dapat memilih metode pembayaran yang mereka inginkan tanpa mengorbankan keandalan sistem kami.
 
 4. **Ketahanan**: Sistem kami menangani kasus-kasus ekstrem dengan baik, mulai dari kegagalan jaringan hingga aktivitas penipuan.
 
-Jika Anda menerapkan sistem pembayaran yang mendukung banyak prosesor, kami sangat merekomendasikan pendekatan tiga serangkai ini. Pendekatan ini memerlukan lebih banyak upaya pengembangan di awal, tetapi manfaat jangka panjang dalam hal keandalan dan akurasi sangat sepadan.
+Jika Anda menerapkan sistem pembayaran yang mendukung banyak prosesor, kami sangat merekomendasikan pendekatan trifecta ini. Pendekatan ini membutuhkan upaya pengembangan awal yang lebih besar, tetapi manfaat jangka panjangnya dalam hal keandalan dan akurasi sangat sepadan.
 
-Untuk informasi lebih lanjut tentang Forward Email dan layanan email kami yang berfokus pada privasi, kunjungi [situs web](https://forwardemail.net) kami.
+Untuk informasi lebih lanjut tentang Forward Email dan layanan email kami yang berfokus pada privasi, kunjungi [situs web](https://forwardemail.net).
 
-<!-- *Kata kunci: pemrosesan pembayaran, integrasi Stripe, integrasi PayPal, penanganan webhook, sinkronisasi pembayaran, manajemen langganan, pencegahan penipuan, penanganan sengketa, sistem pembayaran Node.js, sistem pembayaran multiprosesor, integrasi gateway pembayaran, verifikasi pembayaran waktu nyata, konsistensi data pembayaran, penagihan langganan, keamanan pembayaran, otomatisasi pembayaran, webhook pembayaran, rekonsiliasi pembayaran, kasus tepi pembayaran, penanganan kesalahan pembayaran, persyaratan langganan VISA, pemberitahuan pra-perpanjangan, kepatuhan langganan* -->
+<!-- *Kata kunci: pemrosesan pembayaran, integrasi Stripe, integrasi PayPal, penanganan webhook, sinkronisasi pembayaran, manajemen langganan, pencegahan penipuan, penanganan sengketa, sistem pembayaran Node.js, sistem pembayaran multiprosesor, integrasi gateway pembayaran, verifikasi pembayaran real-time, konsistensi data pembayaran, penagihan langganan, keamanan pembayaran, otomatisasi pembayaran, webhook pembayaran, rekonsiliasi pembayaran, kasus tepi pembayaran, penanganan kesalahan pembayaran, persyaratan langganan VISA, notifikasi pra-perpanjangan, kepatuhan langganan* -->

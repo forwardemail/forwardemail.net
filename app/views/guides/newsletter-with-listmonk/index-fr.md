@@ -22,7 +22,7 @@
 * [Notes du développeur](#developer-notes)
 * [Conclusion](#conclusion)
 
-## Présentation {#overview}
+## Présentation de {#overview}
 
 Ce guide fournit aux développeurs des instructions étape par étape pour configurer [Listmonk](https://listmonk.app/), un puissant gestionnaire de newsletters et de listes de diffusion open source, afin d'utiliser [Transférer un e-mail](https://forwardemail.net/) comme fournisseur SMTP. Cette combinaison vous permet de gérer efficacement vos campagnes tout en garantissant une distribution d'e-mails sécurisée, privée et fiable.
 
@@ -31,15 +31,15 @@ Ce guide fournit aux développeurs des instructions étape par étape pour confi
 
 En intégrant ces deux éléments, vous conservez un contrôle total sur vos données et votre infrastructure tout en tirant parti du système de livraison robuste de Forward Email.
 
-## Pourquoi Listmonk et transférer les e-mails {#why-listmonk-and-forward-email}
+## Pourquoi Listmonk et transférer les e-mails ? {#why-listmonk-and-forward-email}
 
 * **Open Source** : Listmonk et les principes de Forward Email privilégient la transparence et le contrôle. Vous hébergez Listmonk vous-même et êtes propriétaire de vos données.
-* **Confidentialité** : Forward Email est conçu avec la confidentialité comme priorité, minimisant la conservation des données et privilégiant la transmission sécurisée.
+* **Confidentialité** : Forward Email est conçu avec la confidentialité au cœur de ses préoccupations, minimisant la conservation des données et privilégiant la transmission sécurisée.
 * **Rentabilité** : Listmonk est gratuit, et Forward Email propose des offres gratuites généreuses et des forfaits payants abordables, ce qui en fait une solution économique.
 * **Évolutivité** : Listmonk est très performant et l'infrastructure de Forward Email est conçue pour une diffusion fiable à grande échelle.
 * **Convivial pour les développeurs** : Listmonk propose une API robuste, et Forward Email offre une intégration SMTP et des webhooks simples.
 
-## Conditions préalables {#prerequisites}
+## Prérequis {#prerequisites}
 
 Avant de commencer, assurez-vous d’avoir les éléments suivants :
 
@@ -48,9 +48,9 @@ Avant de commencer, assurez-vous d’avoir les éléments suivants :
 * Un nom de domaine que vous contrôlez (accès DNS requis).
 * Un compte actif avec [Transférer un e-mail](https://forwardemail.net/).
 * Un accès root ou `sudo` à votre VPS.
-* Connaissances de base des opérations en ligne de commande Linux.
+* Une connaissance de base des opérations en ligne de commande Linux.
 
-Installation de ## {#installation}
+## Installation de {#installation}
 
 Ces étapes vous guident dans l’installation de Listmonk à l’aide de Docker et Docker Compose sur votre VPS.
 
@@ -70,7 +70,7 @@ Installez Docker, Docker Compose et UFW (Uncomplicated Firewall).
 sudo apt install -y docker.io docker-compose ufw
 ```
 
-### 3. Télécharger la configuration de Listmonk {#3-download-listmonk-configuration}
+### 3. Télécharger la configuration Listmonk {#3-download-listmonk-configuration}
 
 Créez un répertoire pour Listmonk et téléchargez le fichier officiel `docker-compose.yml`.
 
@@ -102,7 +102,7 @@ Exécuter Listmonk via HTTPS est crucial pour la sécurité. Deux options princi
 
 Si le DNS de votre domaine est géré par Cloudflare, vous pouvez tirer parti de leur fonction proxy pour un HTTPS facile.
 
-1. **Point DNS** : Créez un enregistrement `A` dans Cloudflare pour votre sous-domaine Listmonk (par exemple, `listmonk.yourdomain.com`) pointant vers votre adresse IP VPS. Assurez-vous que le **statut du proxy** est défini sur **Proxié** (nuage orange).
+1. **Point DNS** : Créez un enregistrement `A` dans Cloudflare pour votre sous-domaine Listmonk (par exemple, `listmonk.yourdomain.com`) pointant vers l'adresse IP de votre VPS. Assurez-vous que le **statut du proxy** est défini sur **Proxyé** (nuage orange).
 2. **Modifier Docker Compose** : Modifiez le fichier `docker-compose.yml` que vous avez téléchargé :
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
@@ -128,13 +128,13 @@ docker compose up -d
 
 Docker téléchargera les images nécessaires et démarrera l'application Listmonk et les conteneurs de base de données. La première fois, cela peut prendre une à deux minutes.
 
-✅ **Accéder à Listmonk** : Vous devriez maintenant pouvoir accéder à l'interface Web de Listmonk via le domaine que vous avez configuré (par exemple, `https://listmonk.yourdomain.com`).
+✅ **Accéder à Listmonk** : Vous devriez maintenant pouvoir accéder à l'interface Web Listmonk via le domaine que vous avez configuré (par exemple, `https://listmonk.yourdomain.com`).
 
 ### 7. Configurer le transfert d'e-mails SMTP dans Listmonk {#7-configure-forward-email-smtp-in-listmonk}
 
 Ensuite, configurez Listmonk pour envoyer des e-mails à l’aide de votre compte de transfert d’e-mail.
 
-1. **Activer SMTP dans le transfert d'e-mails** : Assurez-vous d'avoir généré vos identifiants SMTP dans le tableau de bord de votre compte de transfert d'e-mails. Suivez les instructions [Guide de transfert d'e-mails pour envoyer des e-mails avec un domaine personnalisé via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) si ce n'est pas déjà fait.
+1. **Activer SMTP dans les e-mails de transfert** : Assurez-vous d'avoir généré les identifiants SMTP dans le tableau de bord de votre compte de transfert. Suivez les instructions de la section [Guide de transfert d'e-mails pour envoyer des e-mails avec un domaine personnalisé via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) si ce n'est pas déjà fait.
 2. **Configurer Listmonk** : Connectez-vous à votre panneau d'administration Listmonk.
 * Accédez à **Paramètres -> SMTP**.
 
@@ -145,7 +145,7 @@ Ensuite, configurez Listmonk pour envoyer des e-mails à l’aide de votre compt
 | **Hôte** | `smtp.forwardemail.net` |
 | **Port** | `465` |
 | **Protocole d'authentification** | `LOGIN` |
-| **Nom d'utilisateur** | Votre adresse e-mail de transfert **Nom d'utilisateur SMTP** |
+| **Nom d'utilisateur** | Votre e-mail de transfert **Nom d'utilisateur SMTP** |
 | **Mot de passe** | Votre e-mail de transfert **Mot de passe SMTP** |
 | **TLS** | `SSL/TLS` |
 | **De l'e-mail** | L'adresse `From` souhaitée (par exemple, `newsletter@yourdomain.com`). Assurez-vous que ce domaine est configuré dans « Transférer les e-mails ». |
@@ -162,7 +162,7 @@ Le traitement des retours permet à Listmonk de gérer automatiquement les e-mai
 #### Configuration du transfert d'e-mails {#forward-email-setup}
 
 1. Connectez-vous à votre [Tableau de bord de transfert d'e-mails](https://forwardemail.net/).
-2. Accédez à **Domaines**, sélectionnez le domaine que vous utilisez pour l'envoi et accédez à la page **Paramètres**.
+2. Accédez à **Domaines**, sélectionnez le domaine que vous utilisez pour l'envoi et accédez à sa page **Paramètres**.
 3. Faites défiler la page jusqu'à la section **URL du webhook de rebond**.
 4. Saisissez l'URL suivante, en remplaçant `<your_listmonk_domain>` par le domaine ou sous-domaine où votre instance Listmonk est accessible :
 ```sh
@@ -210,25 +210,25 @@ Voici un aperçu rapide des fonctions principales de Listmonk :
 * Accédez à **Campagnes** -> **Nouvelle campagne**.
 * Renseignez les détails de la campagne (nom, objet, adresse e-mail de l'expéditeur, liste(s) à laquelle envoyer).
 * Choisissez votre type de contenu (texte enrichi/HTML, texte brut, HTML brut).
-* Rédigez le contenu de votre e-mail. Vous pouvez utiliser des variables de modèle telles que `{{ .Subscriber.Email }}` ou `{{ .Subscriber.FirstName }}`.
+* Rédigez le contenu de votre e-mail. Vous pouvez utiliser des variables de modèle comme `{{ .Subscriber.Email }}` ou `{{ .Subscriber.FirstName }}`.
 * **Envoyez toujours un e-mail de test au préalable !** Utilisez l'option « Envoyer un test » pour prévisualiser l'e-mail dans votre boîte de réception.
 * Une fois satisfait, cliquez sur **Démarrer la campagne** pour l'envoyer immédiatement ou le programmer ultérieurement.
 
-Vérification ## {#verification}
+## Vérification {#verification}
 
 * **Livraison SMTP** : Envoyez régulièrement des e-mails de test via la page des paramètres SMTP de Listmonk et testez vos campagnes pour vous assurer que les e-mails sont correctement distribués.
 * **Gestion des retours à l'expéditeur** : Envoyez une campagne de test à une adresse e-mail invalide connue (par exemple, `bounce-test@yourdomain.com` si vous n'en avez pas sous la main, mais les résultats peuvent varier). Vérifiez les statistiques de la campagne dans Listmonk après un court instant pour voir si le retour à l'expéditeur est enregistré.
 * **En-têtes d'e-mail** : Utilisez des outils comme [Testeur de courrier](https://www.mail-tester.com/) ou inspectez manuellement les en-têtes d'e-mail pour vérifier que les protocoles SPF, DKIM et DMARC sont valides, indiquant une configuration correcte via le transfert d'e-mails.
 * **Journaux de transfert d'e-mails** : Consultez les journaux de votre tableau de bord de transfert d'e-mails si vous suspectez des problèmes de distribution provenant du serveur SMTP.
 
-Notes du développeur : ##
+## Notes du développeur {#developer-notes}
 
 * **Modèles** : Listmonk utilise le moteur de création de modèles de Go. Consultez sa documentation pour une personnalisation avancée : `{{ .Subscriber.Attribs.your_custom_field }}`.
 * **API** : Listmonk fournit une API REST complète pour la gestion des listes, des abonnés, des campagnes, des modèles, etc. Le lien vers la documentation de l'API se trouve dans le pied de page de votre instance Listmonk.
 * **Champs personnalisés** : Définissez des champs d'abonné personnalisés sous **Paramètres -> Champs d'abonné** pour stocker des données supplémentaires.
 * **Webhooks** : Outre les rebonds, Listmonk peut envoyer des webhooks pour d'autres événements (par exemple, les abonnements), permettant ainsi l'intégration avec d'autres systèmes.
 
-Conclusion
+## Conclusion {#conclusion}
 
 En combinant la puissance auto-hébergée de Listmonk avec la diffusion sécurisée et respectueuse de la confidentialité de Forward Email, vous créez une plateforme d'email marketing robuste et éthique. Vous conservez l'entière propriété des données de votre audience tout en bénéficiant d'une délivrabilité élevée et de fonctionnalités de sécurité automatisées.
 

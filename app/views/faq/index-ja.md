@@ -29,12 +29,12 @@
 * [データ管理](#data-management)
   * [サーバーはどこにありますか](#where-are-your-servers-located)
   * [メールボックスをエクスポートしてバックアップするにはどうすればいいですか？](#how-do-i-export-and-backup-my-mailbox)
-  * [既存のメールボックスをインポートして移行するにはどうすればいいですか](#how-do-i-import-and-migrate-my-existing-mailbox)
+  * [既存のメールボックスをインポートして移行するにはどうすればいいですか？](#how-do-i-import-and-migrate-my-existing-mailbox)
   * [セルフホスティングをサポートしていますか](#do-you-support-self-hosting)
 * [メール設定](#email-configuration)
   * [メール転送を開始して設定するにはどうすればよいですか？](#how-do-i-get-started-and-set-up-email-forwarding)
-  * [高度な転送のために複数のMXエクスチェンジとサーバーを使用できますか？](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [休暇通知（不在時の自動返信）を設定するにはどうすればいいですか？](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [高度な転送のために複数のMX交換とサーバーを使用できますか？](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
+  * [不在通知（不在時自動返信）を設定するにはどうすればいいですか？](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [転送メールにSPFを設定するにはどうすればいいですか？](#how-do-i-set-up-spf-for-forward-email)
   * [転送メールにDKIMを設定するにはどうすればいいですか？](#how-do-i-set-up-dkim-for-forward-email)
   * [転送メールにDMARCを設定するにはどうすればいいですか？](#how-do-i-set-up-dmarc-for-forward-email)
@@ -88,7 +88,7 @@
   * [メールを転送するにはどうすればいいですか？](#how-do-you-process-an-email-for-forwarding)
   * [メール配信の問題にどのように対処しますか](#how-do-you-handle-email-delivery-issues)
   * [IPアドレスがブロックされたらどう対処しますか？](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [郵便局の住所とは](#what-are-postmaster-addresses)
+  * [郵便局長の住所とは何ですか](#what-are-postmaster-addresses)
   * [返信不要アドレスとは](#what-are-no-reply-addresses)
   * [サーバーのIPアドレスは何ですか？](#what-are-your-servers-ip-addresses)
   * [許可リストはありますか](#do-you-have-an-allowlist)
@@ -137,32 +137,32 @@
 
 メール転送を開始するには:
 
-1. [forwardemail.net/register](https://forwardemail.net/register) で**アカウントを作成**します
+1. [forwardemail.net/register](https://forwardemail.net/register)で**アカウントを作成**します
 
-2. [マイアカウント → ドメイン](/my-account/domains) で **ドメインを追加して検証する**
+2. [マイアカウント → ドメイン](/my-account/domains)の下に**ドメインを追加して検証する**
 
-3. **メールエイリアス/メールボックスを追加して設定する** [マイアカウント → ドメイン](/my-account/domains) → エイリアス
+3. [マイアカウント → ドメイン](/my-account/domains) → エイリアスの下に**メールエイリアス/メールボックスを追加して設定する**
 
 4. 新しいエイリアスの1つにメールを送信して**設定をテスト**します
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> DNS の変更がグローバルに反映されるまでには最大 24～48 時間かかる場合がありますが、通常はそれよりも早く反映されます。
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> 配信率を向上させるには、[SPF](#how-do-i-set-up-spf-for-forward-email)、[DKIM](#how-do-i-set-up-dkim-for-forward-email)、および[DMARC](#how-do-i-set-up-dmarc-for-forward-email)レコードを設定することをお勧めします。
 
 ## はじめに {#introduction}
 
-### 転送メールとは {#what-is-forward-email}
+### 転送メールとは{#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email は、完全なメールホスティングソリューションのコストやメンテナンスなしで、プロフェッショナルなメールアドレスを必要とする個人、中小企業、開発者に最適です。
 
 Forward Email は、**フル機能の電子メール サービス プロバイダー** であり、**カスタム ドメイン名用の電子メール ホスティング プロバイダー** です。
 
 これは唯一の無料のオープンソース サービスであり、独自の電子メール サーバーをセットアップして維持する複雑さなしで、カスタム ドメインの電子メール アドレスを使用できます。
 
-当社のサービスでは、カスタム ドメインに送信されたメールを既存のメール アカウントに転送します。また、専用のメール ホスティング プロバイダーとしてご利用いただくこともできます。
+当社のサービスでは、カスタム ドメインに送信されたメールを既存のメール アカウントに転送します。また、当社を専用のメール ホスティング プロバイダーとして使用することもできます。
 
 メール転送の主な機能:
 
@@ -174,10 +174,10 @@ Forward Email は、**フル機能の電子メール サービス プロバイ�
 * **エンドツーエンド暗号化**: OpenPGP/MIMEをサポート
 * **カスタムキャッチオールエイリアス**: メールエイリアスを無制限に作成できます
 
-[メール比較ページ](/blog/best-email-service) で、当社を 56 社以上の他のメール サービス プロバイダーと比較できます。
+[メール比較ページ](/blog/best-email-service) で当社を 56 社以上の他のメール サービス プロバイダーと比較できます。
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> メール転送について詳しくは、無料の[技術ホワイトペーパー](/technical-whitepaper.pdf)をご覧ください。
 
 ### 転送メールを使用するユーザー {#who-uses-forward-email}
 
@@ -216,14 +216,14 @@ Forward Email は、**フル機能の電子メール サービス プロバイ�
 ### このサービスの速度はどのくらいですか？ {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> 当社のシステムは、スピードと信頼性を重視して設計されており、複数の冗長サーバーによりメールが迅速に配信されます。
 
 メール転送では、通常は受信後数秒以内に、最小限の遅延でメッセージを配信します。
 
 パフォーマンスメトリック:
 
 * **平均配信時間**: 受信から転送まで5～10秒未満 ([受信トレイまでの時間「TTI」モニタリングページをご覧ください](/tti))
-* **稼働率**: 99.9%以上のサービス可用性
+* **稼働時間**: 99.9%以上のサービス可用性
 * **グローバルインフラストラクチャ**: 最適なルーティングのために戦略的に配置されたサーバー
 * **自動スケーリング**: メールのピーク時にはシステムがスケーリングされます
 
@@ -231,16 +231,16 @@ Forward Email は、**フル機能の電子メール サービス プロバイ�
 
 [エラーの例外](#do-you-store-error-logs) および [送信SMTP](#do-you-support-sending-email-with-smtp) では、ディスクに書き込んだり、ログを保存したりしません ([プライバシーポリシー](/privacy) を参照)。
 
-すべてはメモリ内で実行され、[ソースコードはGitHubにあります](https://github.com/forwardemail) で実行されます。
+すべてはメモリ内および [ソースコードはGitHubにあります](https://github.com/forwardemail) で実行されます。
 
 ## メールクライアント {#email-clients}
 
 ### サンダーバード {#thunderbird}
 
 1. 転送メールダッシュボードで新しいエイリアスを作成し、パスワードを生成します。
-2. Thunderbirdを開き、**編集 > アカウント設定 > アカウント操作 > メールアカウントを追加** に移動します。
+2. Thunderbirdを開き、**編集 → アカウント設定 → アカウント操作 → メールアカウントを追加** に移動します。
 3. 名前、転送メールアドレス、パスワードを入力します。
-4. **手動で設定** をクリックし、以下を入力します。
+4. **手動で設定** をクリックし、以下の情報を入力します。
 * 受信: IMAP、`imap.forwardemail.net`、ポート993、SSL/TLS
 * 送信: SMTP、`smtp.forwardemail.net`、ポート587、STARTTLS
 5. **完了** をクリックします。
@@ -255,10 +255,10 @@ Forward Email は、**フル機能の電子メール サービス プロバイ�
 * 受信: `imap.forwardemail.net`、ポート 993、SSL
 * 送信: `smtp.forwardemail.net`、ポート 587、TLS
 * ユーザー名: メールアドレス全体
-* パスワード: 生成されたパスワード
+* パスワード: 生成したパスワード
 6. **[接続]** をクリックします。
 
-### Apple メール {#apple-mail}
+### Appleメール {#apple-mail}
 
 1. 転送メールダッシュボードで新しいエイリアスを作成し、パスワードを生成します。
 2. **メール > 環境設定 > アカウント > +** に移動します。
@@ -268,7 +268,7 @@ Forward Email は、**フル機能の電子メール サービス プロバイ�
 * 受信: `imap.forwardemail.net`
 * 送信: `smtp.forwardemail.net`
 * ユーザー名: メールアドレス全体
-* パスワード: 生成されたパスワード
+* パスワード: 生成したパスワード
 6. **サインイン** をクリックします。
 
 ### モバイルデバイス {#mobile-devices}
@@ -351,7 +351,7 @@ Androidの場合:
 
 13.「アカウントを追加」をクリックして続行します
 
-14. 新しいタブを開いて[Gメール](https://gmail.com)にアクセスし、確認メールが届くのを待ちます（「送信者名」として指定しようとしているメールアドレスの所有者であることを確認する確認コードが届きます）。
+14. [Gメール](https://gmail.com) の新しいタブを開き、確認メールが届くのを待ちます（「送信者」として指定しようとしているメールアドレスの所有者であることを確認する確認コードが届きます）。
 
 15. 届いたら、前の手順で受け取った確認コードをコピーして貼り付けます。
 
@@ -373,7 +373,7 @@ Androidの場合:
 
 ### Gmail を使用したメール送信の従来の無料ガイドとは何ですか {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">重要:</strong> この従来の無料ガイドは、<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we が送信SMTPをサポートするようになった</a>ため、2023年5月をもって廃止されました。以下のガイドを使用すると、<a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this により、Gmailの送信メールに「<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>」と表示されます</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">重要:</strong> この従来の無料ガイドは、<a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we が送信SMTPをサポートするようになった</a>ため、2023年5月をもって廃止されました。以下のガイドを使用すると、<a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this により、Gmailの送信メールに</a>「<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>」と表示されます。</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -391,13 +391,13 @@ Androidの場合:
 </span>
 </div>
 
-<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Gmail を使ってメールを送信する方法" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
+<div class="mx-auto lazyframe lazyframe-bordered border border-themed mb-3" data-vendor="youtube_nocookie" title="Gmailでメールを送信する方法" data-src="https://www.youtube-nocookie.com/embed/MEheS8gM4Xs?autoplay=0"></div>
 
 <div id="レガシーフリーガイド">
 
 1. この機能をご利用いただくには、[Gmailの2要素認証][gmail-2fa] を有効にする必要があります。有効になっていない場合は、<https://www.google.com/landing/2step/> にアクセスしてください。
 
-2. 2要素認証が有効になったら（または既に有効になっている場合は）、<https://myaccount.google.com/apppasswords>.にアクセスします。
+2. 2要素認証が有効になったら（または既に有効になっている場合は）、<https://myaccount.google.com/apppasswords>.
 
 3. 「アプリパスワードを生成するアプリとデバイスを選択してください」というメッセージが表示されたら、以下の操作を行います。
 * 「アプリを選択」のドロップダウンで「メール」を選択します。
@@ -444,7 +444,7 @@ G Suite をご利用の場合は、管理パネルの <a class="alert-link" href
 
 14.「アカウントを追加」をクリックして続行します
 
-15. 新しいタブを開いて[Gメール](https://gmail.com)にアクセスし、確認メールが届くのを待ちます（「送信者名」として指定したメールアドレスの所有者であることを確認する確認コードが届きます）。
+15. [Gメール](https://gmail.com) の新しいタブを開き、確認メールが届くのを待ちます（「送信者名」として指定しようとしているメールアドレスの所有者であることを確認する確認コードが届きます）。
 
 16. 届いたら、前の手順で受け取った確認コードをコピーして貼り付けます。
 
@@ -452,7 +452,7 @@ G Suite をご利用の場合は、管理パネルの <a class="alert-link" href
 
 </div>
 
-### Gmail の高度なルーティング設定 {#advanced-gmail-routing-configuration}
+### Gmail の詳細なルーティング設定 {#advanced-gmail-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -462,7 +462,7 @@ G Suite をご利用の場合は、管理パネルの <a class="alert-link" href
 
 Gmail で高度なルーティングを設定して、メールボックスと一致しないエイリアスが Forward Email のメール交換に転送されるようにするには、次の手順に従います。
 
-1. Google 管理コンソール（[admin.google.com](https://admin.google.com)）にログインします。
+1. [admin.google.com](https://admin.google.com) で Google 管理コンソールにログインします。
 2. **アプリ > Google Workspace > Gmail > ルーティング** に移動します。
 3. **ルートを追加** をクリックし、以下の設定を行います。
 
@@ -494,7 +494,7 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 </span>
 </div>
 
-### Outlook ルーティングの高度な構成 {#advanced-outlook-routing-configuration}
+### Outlook ルーティングの詳細構成 {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -505,21 +505,21 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 メールボックスと一致しないエイリアスが Forward Email のメール交換に転送されるように、高度なルーティングを設定する Microsoft 365 (旧 Office 365) ユーザーの場合:
 
 1. [admin.microsoft.com](https://admin.microsoft.com) で Microsoft 365 管理センターにログインします。
-2. **[Exchange] → [メール フロー] → [ルール]** に移動します。
-3. **[ルールの追加]** をクリックし、[新しいルールの作成]** を選択します。
+2. **[Exchange] → [メールフロー] → [ルール]** に移動します。
+3. **[ルールの追加]** をクリックし、**[新しいルールの作成]** を選択します。
 4. ルールに名前を付けます（例：「存在しないメールボックスを転送メールに転送する」）。
 5. **[このルールを適用する条件]** で、以下を選択します。
-* 「受信者のアドレスが次のアドレスに一致する場合」
+* 「受信者のアドレスが次の値に一致する場合」
 * ドメイン内のすべてのアドレスに一致するパターンを入力します（例：`*@yourdomain.com`）。
-6. **[次の操作を実行する]** で、以下を選択します。
-* 「メッセージを次のアドレスにリダイレクトする」
-* 「次のメール サーバー」を選択します。
-* 「`mx1.forwardemail.net`」とポート 25 を入力します。
-* 「`mx2.forwardemail.net`」をバックアップ サーバーとして追加します。
+6. **[次の処理を実行する]** で、以下を選択します。
+* 「メッセージを次のメールサーバーにリダイレクトする」
+* 「次のメールサーバー」を選択します。
+* `mx1.forwardemail.net` とポート 25 を入力します。
+* `mx2.forwardemail.net` をバックアップサーバーとして追加します。
 7. **[次の場合を除く]** で、以下を選択します。
-* 「受信者は…です
-* 転送対象外とする既存のメールボックスをすべて追加します
-8. 他のメールフロールールよりも後に実行されるように、ルールの優先度を設定します
+* 「受信者が次の値である場合」
+* 転送しない既存のメールボックスをすべて追加します。転送済み
+8. 他のメールフロールールよりも後に実行されるようにルールの優先度を設定します
 9. **[保存]** をクリックしてルールを有効にします
 
 ## トラブルシューティング {#troubleshooting}
@@ -534,7 +534,7 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 
 **まだ問題が解決しない場合は？** 問題を調査して迅速に解決策を見つけられるよう、<a href="/help">お問い合わせ</a>ください。
 
-### メールクライアントをメール転送機能と連携させるにはどうすればいいですか？ {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### メールクライアントをメール転送機能と連携させるにはどうすればいいですか？{#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
 当社のサービスは、以下の一般的なメールクライアントに対応しています。
@@ -568,11 +568,11 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 | IMAP | `imap.forwardemail.net` | SSL/TLS **推奨** | `993` と `2993` |
 | SMTP | `smtp.forwardemail.net` | SSL/TLS **推奨** または TLS (STARTTLS) | SSL/TLS の場合は `465` と `2465` (または) TLS (STARTTLS) の場合は `587`、`2587`、`2525`、および `25` |
 
-### メールがスパムや迷惑メールに分類されるのはなぜですか？また、ドメインの評判を確認するにはどうすればいいですか？ {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### メールがスパムや迷惑メールに分類されるのはなぜですか？また、ドメインの評判を確認するにはどうすればいいですか？{#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
 このセクションでは、送信メールが弊社の SMTP サーバー (例: `smtp.forwardemail.net`) を使用していて (または `mx1.forwardemail.net` または `mx2.forwardemail.net` 経由で転送されていて)、受信者のスパム フォルダーまたは迷惑メール フォルダーに配信されている場合について説明します。
 
-当社は定期的に[IPアドレス](#what-are-your-servers-ip-addresses)を[すべての信頼できるDNS拒否リスト](#how-do-you-handle-your-ip-addresses-becoming-blocked)に対して監視しているため、**したがって、これはドメインの評判に固有の問題である可能性が高い**です。
+当社では、[IPアドレス](#what-are-your-servers-ip-addresses) を [すべての信頼できるDNS拒否リスト](#how-do-you-handle-your-ip-addresses-becoming-blocked) に対して定期的に監視しているため、**したがって、これはドメイン レピュテーション固有の問題である可能性が高いです**。
 
 メールがスパム フォルダーに振り分けられる理由はいくつかあります。
 
@@ -597,28 +597,28 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 | Yahoo 送信ハブ | <https://senders.yahooinc.com/> | 評判 |
 | MultiRBL.valli.org ブラックリストチェック | <https://multirbl.valli.org/lookup/> | DNSBL |
 | 送信者スコア | <https://senderscore.org/act/blocklist-remover/> | 評判 |
-| 価値の下落 | <https://www.invaluement.com/lookup/> | DNSBL |
+| 価値減額 | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP 削除 | <https://ipcheck.proofpoint.com/> | 除去 |
-| Cloudmark IP 削除 | <https://csi.cloudmark.com/en/reset/> | 除去 |
+| Apple/ProofpointのIP削除 | <https://ipcheck.proofpoint.com/> | 除去 |
+| Cloudmark IPの削除 | <https://csi.cloudmark.com/en/reset/> | 除去 |
 | スパムコップ | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook および Office 365 の IP 削除 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | 除去 |
+| Microsoft Outlook と Office 365 の IP 削除 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | 除去 |
 | UCEPROTECTのレベル1、2、3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
 | UCEPROTECT の backscatterer.org | <https://www.backscatterer.org/> | 後方散乱保護 |
-| UCEPROTECT の whitelisted.org | <https://www.whitelisted.org/> (有料) | DNSWL |
+| UCEPROTECTのwhitelisted.org | <https://www.whitelisted.org/> (有料) | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | 除去 |
 | AOL/Verizon（例：`[IPTS04]`） | <https://senders.yahooinc.com/> | 除去 |
 | コックス・コミュニケーションズ | `unblock.request@cox.net` | 除去 |
 | t-online.de (ドイツ語/T-Mobile) | `tobr@rx.t-online.de` | 除去 |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> 少量の高品質なメールから始めて、良好な評判を築いてから、大量に送信するようにしましょう。
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> ドメインがブラックリストに登録されている場合、ブラックリストごとに削除手順が異なります。手順については、各ブラックリストのウェブサイトをご確認ください。
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> 追加のサポートが必要な場合、または特定のメールサービスプロバイダによって当社のメールがスパムとして誤検知されていることが判明した場合は、<a href="/help">お問い合わせ</a>ください。
 
 ### スパムメールを受信した場合はどうすればよいですか？ {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -628,7 +628,7 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 
 **スパムを転送するメールアドレスは次のとおりです:** <abuse@forwardemail.net>
 
-### Gmail で自分宛に送信されたテストメールが「疑わしい」と表示されるのはなぜですか {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Gmailで自分宛に送信したテストメールが「疑わしい」と表示されるのはなぜですか？{#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
 自分自身にテストを送信したとき、またはエイリアスを使用してメールを送信した相手が初めてあなたからのメールを見たときに Gmail でこのエラー メッセージが表示されても、**心配しないでください**。これは Gmail に組み込まれている安全機能です。
 
@@ -638,7 +638,7 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 
 ### Gmail の via forwardemail dot net を削除できますか？ {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-このトピックは[Gmailで広く知られている問題で、送信者の名前の横に追加情報が表示される](https://support.google.com/mail/answer/1311182) に関連しています。
+このトピックは [Gmailで広く知られている問題で、送信者の名前の横に追加情報が表示される](https://support.google.com/mail/answer/1311182) に関連しています。
 
 2023 年 5 月現在、すべての有料ユーザー向けに SMTP を使用したメール送信をアドオンとしてサポートしています。つまり、Gmail で <span class="notranslate">via forwardemail dot net</span> を削除できます。
 
@@ -651,15 +651,15 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 ### サーバーの所在地はどこですか？ {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> [forwardemail.eu](https://forwardemail.eu) でホストされている EU データセンターの所在地については、近日中に発表する予定です。最新情報については、<https://github.com/orgs/forwardemail/discussions/336> のディスカッションにご登録ください。
 
 当社のサーバーは主にコロラド州デンバーにあります。IP アドレスの完全なリストについては、<https://forwardemail.net/ips> をご覧ください。
 
-当社のサブプロセッサーについては、[GDPR](/gdpr)、[DPA](/dpa)、および [プライバシー](/privacy) のページでご確認いただけます。
+当社のサブプロセッサーについては、[GDPR](/gdpr)、[DPA](/dpa)、および [プライバシー](/privacy) ページでご確認いただけます。
 
 ### メールボックスをエクスポートしてバックアップするにはどうすればよいですか？ {#how-do-i-export-and-backup-my-mailbox}
 
-いつでもメールボックスを[EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)、[Mボックス](https://en.wikipedia.org/wiki/Mbox)、または暗号化された[SQLite](https://en.wikipedia.org/wiki/SQLite) 形式でエクスポートできます。
+いつでも、メールボックスを [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)、[Mボックス](https://en.wikipedia.org/wiki/Mbox)、または暗号化された [SQLite](https://en.wikipedia.org/wiki/SQLite) 形式でエクスポートできます。
 
 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイ アカウント <i class="fa fa-angle-right"></i> ドメイン</a> <i class="fa fa-angle-right"></i> エイリアス <i class="fa fa-angle-right"></i> バックアップのダウンロード</i> に移動し、希望するエクスポート形式のタイプを選択します。
 
@@ -677,7 +677,7 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 | メールビューア | EML | VSコード | <https://github.com/joelharkes/vscode_email_viewer> |
 | emlリーダー | EML | すべてのプラットフォーム | <https://github.com/s0ph1e/eml-reader> |
 
-さらに、MboxファイルをEMLファイルに変換する必要がある場合は、<https://github.com/noelmartinon/mboxzilla>.を使用できます。
+さらに、MboxファイルをEMLファイルに変換する必要がある場合は、<https://github.com/noelmartinon/mboxzilla>.
 
 ### 既存のメールボックスをインポートして移行するにはどうすればよいですか？ {#how-do-i-import-and-migrate-my-existing-mailbox}
 
@@ -709,13 +709,13 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 
 2. [サンダーバード](https://www.thunderbird.net) をダウンロードしてインストールし、開きます。
 
-3. エイリアスの完全なメールアドレス（例：<code><you@yourdomain.com></code>）と生成されたパスワードを使用して、新しいアカウントを作成します。<strong>まだパスワードを生成していない場合は、<a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">設定手順を参照してください</a></strong>。
+3. エイリアスの完全なメールアドレス（例：<code><you@yourdomain.com></code>）と生成されたパスワードを使用して、新しいアカウントを作成します。<strong>まだパスワードを生成していない場合は、<a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">セットアップ手順を参照してください</a></strong>。
 
 4. [インポートエクスポートツール](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird プラグインをダウンロードしてインストールします。
 
-5. Thunderbird で新しいローカル フォルダーを作成し、それを右クリックして → `ImportExportTools NG` オプションを選択 → `Import mbox file` (MBOX エクスポート形式の場合) または `Import messages` / `Import all messages from a directory` (EML エクスポート形式の場合) を選択します。
+5. Thunderbird で新しいローカル フォルダーを作成し、それを右クリックして、`ImportExportTools NG` オプションを選択し、`Import mbox file` (MBOX エクスポート形式の場合) または `Import messages` / `Import all messages from a directory` (EML エクスポート形式の場合) を選択します。
 
-6. ローカルフォルダから、Thunderbird の新規（または既存の）IMAP フォルダにドラッグ＆ドロップして、弊社の IMAP ストレージにメッセージをアップロードします。これにより、SQLite 暗号化ストレージにメッセージがオンラインでバックアップされます。
+6. ローカルフォルダから、Thunderbird の新規（または既存の）IMAP フォルダにドラッグ＆ドロップして、弊社の IMAP ストレージにメッセージをアップロードします。これにより、メッセージが SQLite 暗号化ストレージにオンラインでバックアップされます。
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -723,7 +723,7 @@ Gmail で高度なルーティングを設定して、メールボックスと�
 ヒント:
 </strong>
 <span>
-Thunderbirdへのインポート方法がわからない場合は、<a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> および <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>. にある公式の手順を参照してください。
+Thunderbirdへのインポート方法がわからない場合は、<a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a>" および <a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>." の公式手順を参照してください。
 </span>
 </div>
 
@@ -749,9 +749,9 @@ Thunderbirdへのインポート方法がわからない場合は、<a class="al
 </div>
 </div>
 
-### セルフホスティングをサポートしていますか？ {#do-you-support-self-hosting}
+### セルフホスティングをサポートしていますか？{#do-you-support-self-hosting}
 
-はい、2025年3月よりセルフホストオプションをサポートします。ブログ[ここ](https://forwardemail.net/blog/docs/self-hosted-solution)をお読みください。また、[セルフホストガイド](https://forwardemail.net/self-hosted) で開始方法をご確認ください。より詳細なステップバイステップのガイドにご興味をお持ちの方は、[ウブントゥ](https://forwardemail.net/guides/selfhosted-on-ubuntu) または [デビアン](https://forwardemail.net/guides/selfhosted-on-debian) に基づいたガイドをご覧ください。
+はい、2025年3月よりセルフホストオプションをサポートします。ブログ[ここ](https://forwardemail.net/blog/docs/self-hosted-solution)をお読みください。[セルフホストガイド](https://forwardemail.net/self-hosted)で開始方法をご確認ください。より詳細なステップバイステップのガイドにご興味をお持ちの方は、[ウブントゥ](https://forwardemail.net/guides/selfhosted-on-ubuntu)または[デビアン](https://forwardemail.net/guides/selfhosted-on-debian)ベースのガイドをご覧ください。
 
 ## メール設定 {#email-configuration}
 
@@ -802,7 +802,7 @@ Thunderbirdへのインポート方法がわからない場合は、<a class="al
 <td>ログイン <i class="fa fa-angle-right"></i> ドメインセンター <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> DNS設定の編集</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Route 53</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon ルート53</a></td>
 <td>ログイン <i class="fa fa-angle-right"></i> ホストゾーン <i class="fa fa-angle-right"></i> (ドメインを選択)</td>
 </tr>
 <tr>
@@ -811,7 +811,7 @@ Thunderbirdへのインポート方法がわからない場合は、<a class="al
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>FOR ROCK: ログイン <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i>（管理するには横の▼アイコンをクリックしてください）<i class="fa fa-angle-right"></i> DNS
+<td>ROCK向け: ログイン <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i>（管理するには横の▼アイコンをクリックしてください）<i class="fa fa-angle-right"></i> DNS
 <br />
 レガシーの場合：ログイン <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> ゾーンエディター <i class="fa fa-angle-right"></i>（ドメインを選択してください）</td>
 </tr>
@@ -820,7 +820,7 @@ Thunderbirdへのインポート方法がわからない場合は、<a class="al
 <td>ログイン <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS 簡単操作</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Made Easy</a></td>
 <td>ログイン <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (ドメインを選択)</td>
 </tr>
 <tr>
@@ -839,87 +839,87 @@ Thunderbirdへのインポート方法がわからない場合は、<a class="al
 <td>
 <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> 視聴</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> 視聴</a>
 </td>
 <td>ログイン <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> (歯車アイコンをクリック) <i class="fa fa-angle-right"></i> 左側のメニューで「DNSとネームサーバー」をクリック</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
 <td>ログイン <i class="fa fa-angle-right"></i> パネル <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> ドメイン管理 <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
 <td>ログイン <i class="fa fa-angle-right"></i> 概要 <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> シンプルエディター <i class="fa fa-angle-right"></i> レコード</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-<td>ログイン <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> ゾーンを編集</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
+<td>ログイン <i class="fa fa-angle-right"></i> (ドメインを選択してください) <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> ゾーンの編集</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> 視聴</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> 視聴</a>
 </td>
-<td>ログイン <i class="fa fa-angle-right"></i> ドメインを管理 <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> 管理DNS</td>
+<td>ログイン <i class="fa fa-angle-right"></i> ドメインの管理 <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> DNSの管理</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google ドメイン</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 ドメイン</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> 視聴</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> 視聴</a>
 </td>
 <td>ログイン <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> DNSを設定</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> 視聴</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> 視聴</a>
 </td>
 <td>ログイン <i class="fa fa-angle-right"></i> ドメインリスト <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> 高度なDNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
 <td>ログイン <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> Netlify DNSの設定</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network ソリューション</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 ソリューション</a></td>
 <td>ログイン <i class="fa fa-angle-right"></i> アカウントマネージャー <i class="fa fa-angle-right"></i> ドメイン名 <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> 管理 <i class="fa fa-angle-right"></i> ドメインの参照先を変更 <i class="fa fa-angle-right"></i> 高度なDNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> 視聴</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> 視聴</a>
 </td>
 <td>ログイン <i class="fa fa-angle-right"></i> 管理対象ドメイン <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> DNS設定</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
 <td>ログイン <i class="fa fa-angle-right"></i> ホームメニュー <i class="fa fa-angle-right"></i> 設定 <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i>
 詳細設定 <i class="fa fa-angle-right"></i> カスタムレコード</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-<td>「now」CLI の使用 <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Now</a></td>
+<td>「now」CLI を使用する場合 <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>ログイン <i class="fa fa-angle-right"></i> ドメインページ <i class="fa fa-angle-right"></i> (ドメインを選択) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
 <td>ログイン <i class="fa fa-angle-right"></i> ドメインページ <i class="fa fa-angle-right"></i> (<i class="fa fa-ellipsis-h"></i> アイコンをクリック) <i class="fa fa-angle-right"></i> 「DNSレコードの管理」を選択</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>ログイン <i class="fa fa-angle-right"></i> ドメイン <i class="fa fa-angle-right"></i> マイドメイン</td>
 </tr>
 <tr>
 <td>その他</td>
 <td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">重要:</strong> ここにレジストラ名が表示されていない場合は、インターネットで「$REGISTRAR の DNS レコードを変更する方法」と検索してください（$REGISTRAR をレジストラ名に置き換えてください。例：GoDaddy をご利用の場合は「GoDaddy の DNS レコードを変更する方法」）。</div>
+<div class="alert mb-0アラート警告"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">重要:</strong> ここにレジストラ名が表示されていない場合は、インターネットで「$REGISTRAR の DNS レコードを変更する方法」と検索してください（$REGISTRAR をレジストラ名に置き換えてください。例：GoDaddy をご利用の場合は「GoDaddy の DNS レコードを変更する方法」）。</div>
 </td>
 </tr>
 </tbody>
@@ -1017,7 +1017,7 @@ Thunderbirdへのインポート方法がわからない場合は、<a class="al
 ヒント:
 </strong>
 <span>
-上記の「値」列の値は、必ずご自身のメールアドレスに置き換えてください。「TTL」値は3600である必要はなく、必要に応じてより低い値または高い値にすることができます。TTL（Time to Live：生存時間）値を低く設定すると、DNSレコードに加えられた将来の変更がインターネット全体に迅速に反映されます。これは、メモリ内にキャッシュされる期間（秒単位）と考えてください。<a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL の詳細については、Wikipedia をご覧ください</a>。
+上記の「値」列の値は、必ずご自身のメールアドレスに置き換えてください。「TTL」値は3600である必要はなく、必要に応じてより低い値または高い値にすることができます。TTL（Time to Live：生存時間）値を低くすると、DNSレコードに加えられた将来の変更がインターネット全体に迅速に反映されます。これは、メモリ内にキャッシュされる期間（秒単位）と考えてください。TTLの詳細については、<a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">Wikipedia の TTL について</a>をご覧ください。
 </span>
 </div>
 
@@ -1193,7 +1193,7 @@ Thunderbirdへのインポート方法がわからない場合は、<a class="al
 オプション F:
 </strong>
 <span>
-Webhook をグローバルまたは個別のエイリアスとして使用して、メールを転送することもできます。Webhook の例と詳細については、以下の「<a href="#do-you-support-webhooks" class="alert-link">Webhook をサポートしていますか</a>」セクションをご覧ください。
+Webhook を、メール転送先のグローバルまたは個別のエイリアスとして使用することもできます。Webhook の例と詳細については、以下の「<a href="#do-you-support-webhooks" class="alert-link">Webhook をサポートしていますか</a>」セクションをご覧ください。
 </span>
 </div>
 
@@ -1226,7 +1226,7 @@ Webhook をグローバルまたは個別のエイリアスとして使用して
 オプション G:
 </strong>
 <span>
-エイリアスのマッチングや、メール転送先の置換処理には、正規表現（regex）を使用することもできます。regex の例と、以下の「<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">正規表現またはregexをサポートしていますか？</a>」セクションをご覧ください。
+エイリアスのマッチングやメール転送先の置換処理には、正規表現（regex）を使用することもできます。regex の例と、以下の「<a href="#do-you-support-regular-expressions-or-regex" class="alert-link">正規表現または regex をサポートしていますか？</a>」セクションをご覧ください。
 </span>
 </div>
 
@@ -1344,7 +1344,7 @@ Gmail（例: 送信者名）または G Suite をご利用の場合は、上記�
 テストメールが届かない場合、または「このメッセージにはご注意ください」という内容のテストメールが届いた場合は、それぞれ「<a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">テストメールが届かないのはなぜですか？</a>」と「<a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Gmailで自分宛に送信したテストメールが「不審」と表示されるのはなぜですか？</a>」の回答をご覧ください。
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Gmail から「名前を付けてメールを送信」する場合は、<strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">こちらの動画を視聴</a></strong>するか、以下の「<a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a>」の手順に従う必要があります。
+</li><li class="mb-2 mb-md-3 mb-lg-5">Gmail から「名前を付けてメールを送信」する場合は、<strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">こちらの動画を視聴</a></strong>するか、以下の <a href="#how-to-send-mail-as-using-gmail">How to Send Mail As Using Gmail</a> の手順に従う必要があります。
 
 </li></ol>
 
@@ -1380,19 +1380,19 @@ Gmail（例: 送信者名）または G Suite をご利用の場合は、上記�
 </span>
 </div>
 
-### 高度な転送に複数のMXエクスチェンジとサーバーを使用できますか？ {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### 高度な転送のために複数のMX交換とサーバーを使用できますか？{#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
 はい、ただし、**DNS レコードにリストされる MX 交換は 1 つだけにする必要があります**。
 
 複数の MX 交換を構成する方法として「Priority」を使用しないでください。
 
-代わりに、一致しないすべてのエイリアスのメールを当社のサービスのエクスチェンジ (`mx1.forwardemail.net` および/または `mx2.forwardemail.net`) に転送するように既存の MX エクスチェンジを設定する必要があります。
+代わりに、既存の MX エクスチェンジを設定して、一致しないすべてのエイリアスのメールを当社のサービスのエクスチェンジ (`mx1.forwardemail.net` および/または `mx2.forwardemail.net`) に転送する必要があります。
 
-Google Workspace をご利用で、一致しないすべてのエイリアスを当社のサービスに転送する場合は、<https://support.google.com/a/answer/6297084>. をご覧ください。
+Google Workspace をご利用で、一致しないすべてのエイリアスを 我々 のサービスに転送する場合は、<https://support.google.com/a/answer/6297084>.
 
-Microsoft 365 (Outlook) を使用しており、一致しないすべてのエイリアスを当社のサービスに転送する場合は、<https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> および <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>. を参照してください。
+Microsoft 365 (Outlook) を使用しており、一致しないすべてのエイリアスを当社のサービスに転送する場合は、<https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> と <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>. を参照してください。
 
-### 不在通知（不在時自動返信）を設定するにはどうすればいいですか？ {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### 不在通知（不在時自動返信）を設定するにはどうすればいいですか？{#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
 <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">マイ アカウント > <i class="fa fa-angle-right"></i> ドメイン</a> > <i class="fa fa-angle-right"></i> エイリアス にアクセスし、不在時の自動返信を設定するエイリアスを作成または編集します。
 
@@ -1406,7 +1406,7 @@ Microsoft 365 (Outlook) を使用しており、一致しないすべてのエ�
 * 不在通知機能は、グローバルバニティドメイン名では有効にできません（例：[使い捨てアドレス](/disposable-addresses) はサポートされていません）。
 * ワイルドカード/キャッチオール (`*`) または正規表現を含むエイリアスでは、不在応答を有効にできません。
 
-`postfix` などのメール システム (例: `sieve` 不在通知フィルター拡張機能を使用するシステム) とは異なり、Forward Email は DKIM 署名を自動的に追加し、不在通知の送信時に接続の問題を防いでくれます (例: 一般的な SSL/TLS 接続の問題や従来の保守サーバーによる問題)。さらに、不在通知の Open WKD および PGP 暗号化もサポートします。
+`postfix` などのメール システム (例: `sieve` 不在通知フィルター拡張機能を使用するシステム) とは異なり、Forward Email は DKIM 署名を自動的に追加し、不在通知の送信時に接続の問題 (一般的な SSL/TLS 接続の問題や旧来の保守サーバーによるものなど) を防いでおり、さらに不在通知の Open WKD および PGP 暗号化もサポートしています。
 
 <!--
 * 不正使用を防ぐため、不在通知メッセージを送信するたびに、送信SMTPクレジットが1クレジット差し引かれます。
@@ -1415,26 +1415,26 @@ Microsoft 365 (Outlook) を使用しており、一致しないすべてのエ�
 
 1. [許可リストに登録](#do-you-have-an-allowlist) 送信者ごとに 4 日ごとに 1 回のみ送信します (Gmail の動作と同様です)。
 
-* Redisキャッシュでは、`alias_id` と `sender` というフィンガープリントを使用しています。`alias_id` はMongoDBのエイリアスID、`sender` はFromアドレス（許可リストに登録されている場合）またはFromアドレスのルートドメイン（許可リストに登録されていない場合）です。簡略化のため、キャッシュ内のこのフィンガープリントの有効期限は4日間に設定されています。
+* Redisキャッシュでは、`alias_id`と`sender`のフィンガープリントを使用しています。`alias_id`はMongoDBのエイリアスID、`sender`はFromアドレス（許可リストに登録されている場合）またはFromアドレスのルートドメイン（許可リストに登録されていない場合）です。簡略化のため、キャッシュ内のこのフィンガープリントの有効期限は4日間に設定されています。
 
-* 許可リストに登録されていない送信者の [差出人] アドレスで解析されたルート ドメインを使用するという当社のアプローチにより、比較的未知の送信者 (悪意のある人物など) による不在通知メッセージの大量送信を防止します。
+* 許可リストに登録されていない送信者の [送信元] アドレスで解析されたルート ドメインを使用するという当社のアプローチにより、比較的未知の送信者 (悪意のある人物など) による不在通知メッセージの大量送信を防止します。
 
 2. MAIL FROM および/または From が空白でなく、[ポストマスターのユーザー名](#what-are-postmaster-addresses) (電子メールの @ の前の部分) が含まれていない (大文字と小文字は区別されません) 場合にのみ送信されます。
 
 3. 元のメッセージに次のいずれかのヘッダー（大文字と小文字は区別されません）が含まれている場合は送信しません。
 
 * `auto-submitted` のヘッダーの値が `no` と等しくありません。
-* `x-auto-response-suppress` のヘッダー（値が `dr`、`autoreply`、`auto-reply`、`auto_reply`、または `all` の場合）
-* `list-id`、`list-subscribe`、`list-unsubscribe`、`list-help`、`list-post`、`list-owner`、`list-archive`、`x-autoreply` の場合） `x-autorespond`、または `x-auto-respond` (値に関係なく)。
-* `precedence` のヘッダーで、値が `bulk`、`autoreply`、`auto-reply`、`auto_reply`、または `list` の場合。
+* `x-auto-response-suppress` のヘッダー（値が `dr`、`autoreply`、`auto-reply`、`auto_reply`、または `all`）
+* `list-id`、`list-subscribe`、`no`0、`no`1、`no`2、`no`3、`no`4、`no`5、`no`6、または `no`7 のヘッダー（値に関係なく）。
+* `no`8 のヘッダー。値は `no`9、`x-auto-response-suppress`0、`x-auto-response-suppress`1、`x-auto-response-suppress`2、または `x-auto-response-suppress`3 です。
 
 4. MAIL FROM または From のメール アドレスが `+donotreply`、`-donotreply`、`+noreply`、または `-noreply` で終わる場合は送信されません。
 
-5. 送信元メールアドレスのユーザー名部分が `mdaemon` で、大文字と小文字を区別しないヘッダーが `X-MDDSN-Message` だった場合は送信されません。
+5. 送信元メールアドレスのユーザー名部分が `mdaemon` で、大文字と小文字を区別しないヘッダーが `X-MDDSN-Message` の場合は送信されません。
 
-6. `multipart/report` の大文字と小文字を区別しない `content-type` ヘッダーがあった場合は送信しません。
+6. `multipart/report` に大文字と小文字を区別しない `content-type` ヘッダーがあった場合は送信しません。
 
-### 転送メールに SPF を設定するにはどうすればいいですか {#how-do-i-set-up-spf-for-forward-email}
+### 転送メールにSPFを設定するにはどうすればいいですか？ {#how-do-i-set-up-spf-for-forward-email}
 
 レジストラの DNS 管理ページを使用して、次の <strong class="notranslate">TXT</strong> レコードを設定します。
 
@@ -1507,29 +1507,29 @@ Microsoft Outlook または Live.com をご利用の場合は、SPF <strong clas
 
 ### 連絡先を接続して設定するにはどうすればよいですか？ {#how-do-i-connect-and-configure-my-contacts}
 
-**連絡先を設定するには、次のCardDAV URLを使用します:** `https://carddav.forwardemail.net` (またはクライアントが許可する場合は単に `carddav.forwardemail.net`)
+**連絡先を設定するには、次のCardDAV URLを使用します:** `https://carddav.forwardemail.net` (またはクライアントが許可する場合は単に`carddav.forwardemail.net`)
 
 ### カレンダーを接続して設定するにはどうすればよいですか？ {#how-do-i-connect-and-configure-my-calendars}
 
-**カレンダーを設定するには、次のCalDAV URLを使用します:** `https://caldav.forwardemail.net` (またはクライアントが許可している場合は単に `caldav.forwardemail.net`)
+**カレンダーを設定するには、次のCalDAV URLを使用します:** `https://caldav.forwardemail.net` (またはクライアントが許可している場合は`caldav.forwardemail.net`)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="メール転送カレンダー CalDAV Thunderbird の設定例" />
 
 ### カレンダーを追加したり、既存のカレンダーを管理するにはどうすればよいですか？ {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-追加のカレンダーを追加する場合は、新しいカレンダー URL を追加します: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**`calendar-name` を希望のカレンダー名に置き換えてください**)
+追加のカレンダーを追加する場合は、新しいカレンダー URL `https://caldav.forwardemail.net/dav/principals/calendar-name` を追加します (**`calendar-name` を希望のカレンダー名に置き換えてください**)
 
 カレンダーを作成後に名前と色を変更できます。お好みのカレンダー アプリケーション (例: Apple Mail または [サンダーバード](https://thunderbird.net)) を使用してください。
 
-### 転送メール用の SRS を設定するにはどうすればいいですか {#how-do-i-set-up-srs-for-forward-email}
+### メール転送用の SRS を設定するにはどうすればいいですか {#how-do-i-set-up-srs-for-forward-email}
 
 [送信者書き換えスキーム](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") は自動的に構成されるため、自分で構成する必要はありません。
 
-### 転送メール用の MTA-STS を設定するにはどうすればいいですか {#how-do-i-set-up-mta-sts-for-forward-email}
+### 転送メール用のMTA-STSを設定するにはどうすればいいですか？ {#how-do-i-set-up-mta-sts-for-forward-email}
 
-詳細については、[MTA-STSに関するセクション](#do-you-support-mta-sts) を参照してください。
+詳細については、[MTA-STSのセクション](#do-you-support-mta-sts) を参照してください。
 
-### メールアドレスにプロフィール写真を追加するにはどうすればよいですか？ {#how-do-i-add-a-profile-picture-to-my-email-address}
+### メールアドレスにプロフィール写真を追加するにはどうすればいいですか？ {#how-do-i-add-a-profile-picture-to-my-email-address}
 
 Gmail を使用している場合は、次の手順に従ってください。
 
@@ -1550,13 +1550,13 @@ Gmail を使用している場合は、次の手順に従ってください。
 
 ## 高度な機能 {#advanced-features}
 
-### マーケティング関連のメールのためのニュースレターやメーリングリストをサポートしていますか？ {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
+### マーケティング関連のメール配信のためのニュースレターやメーリングリストをサポートしていますか？{#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
 はい、詳しくは<https://forwardemail.net/guides/newsletter-with-listmonk>.をご覧ください。
 
 IPレピュテーションを維持し、配信率を確保するため、Forward Emailでは**ニュースレター承認**においてドメインごとに手動による審査プロセスを設けています。承認をご希望の場合は、<support@forwardemail.net>までメールを送信いただくか、[ヘルプリクエスト](https://forwardemail.net/help)を開いてください。通常、このプロセスは24時間以内に完了し、ほとんどのリクエストは1～2時間以内に承認されます。近い将来、スパム対策とアラート機能を強化し、このプロセスを即時化することを目指しています。このプロセスにより、メールが受信トレイに確実に届き、スパムとしてマークされることがなくなります。
 
-### API を使用したメール送信をサポートしていますか {#do-you-support-sending-email-with-api}
+### APIを使用したメール送信をサポートしていますか？{#do-you-support-sending-email-with-api}
 
 はい、2023 年 5 月現在、すべての有料ユーザー向けに API を使用したメール送信をアドオンとしてサポートしています。
 
@@ -1572,11 +1572,11 @@ IPレピュテーションを維持し、配信率を確保するため、Forwar
 
 オプション、例、および詳細については、API ドキュメントの [メール](/email-api#outbound-emails) のセクションをご覧ください。
 
-弊社の API を使用して送信メールを送信するには、[私のセキュリティ](/my-account/security) で入手できる API トークンを使用する必要があります。
+弊社の API を使用して送信メールを送信するには、[私のセキュリティ](/my-account/security) で使用可能な API トークンを使用する必要があります。
 
-### IMAP でのメール受信をサポートしていますか {#do-you-support-receiving-email-with-imap}
+### IMAP でのメール受信をサポートしていますか？ {#do-you-support-receiving-email-with-imap}
 
-はい、2023年10月16日より、すべての有料ユーザー様向けにアドオンとしてIMAP経由のメール受信をサポートいたします。**[暗号化されたSQLiteメールボックスストレージ機能の仕組み](/blog/docs/best-quantum-safe-encrypted-email-service) の**詳細記事をご覧ください。
+はい、2023年10月16日より、すべての有料ユーザー様向けのアドオンとしてIMAP経由のメール受信をサポートします。**[暗号化されたSQLiteメールボックスストレージ機能の仕組み](/blog/docs/best-quantum-safe-encrypted-email-service)に関する詳細記事をお読みください**。
 
 <div id="imap-instructions">
 
@@ -1600,12 +1600,12 @@ IPレピュテーションを維持し、配信率を確保するため、Forwar
 <strong class="font-weight-bold">
 ヒント:
 </strong>
-<span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple のご利用をお勧めします。 Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替手段</a>。</span>
+<span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替手段</a>。</span>
 </div>
 
 4. IMAPサーバー名の入力を求められた場合は、`imap.forwardemail.net`と入力します。
 
-5. IMAPサーバーのポート番号を求められた場合は、「`993`」（SSL/TLS）と入力してください。必要に応じて「[代替IMAPポート](/faq#what-are-your-imap-server-configuration-settings)」も参照してください。
+5. IMAPサーバーのポート番号を求められたら、`993` (SSL/TLS) を入力してください。必要に応じて[代替IMAPポート](/faq#what-are-your-imap-server-configuration-settings) も参照してください。
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1634,7 +1634,7 @@ IPレピュテーションを維持し、配信率を確保するため、Forwar
 
 ### POP3をサポートしていますか？ {#do-you-support-pop3}
 
-はい、2023年12月4日より、すべての有料ユーザー向けにアドオンとして[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)がサポートされます。[暗号化されたSQLiteメールボックスストレージ機能の仕組み](/blog/docs/best-quantum-safe-encrypted-email-service)については、**詳しくは記事をご覧ください**。
+はい、2023年12月4日より、すべての有料ユーザー向けに[POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)をアドオンとしてサポートいたします。[暗号化されたSQLiteメールボックスストレージ機能の仕組み](/blog/docs/best-quantum-safe-encrypted-email-service)については、**詳しくはこちらの記事をご覧ください**。
 
 <div id="pop3-instructions">
 
@@ -1658,18 +1658,18 @@ IPレピュテーションを維持し、配信率を確保するため、Forwar
 <strong class="font-weight-bold">
 ヒント:
 </strong>
-<span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple のご利用をお勧めします。 Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替手段</a>。</span>
+<span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替手段</a>。</span>
 </div>
 
 4. POP3サーバー名の入力を求められた場合は、`pop3.forwardemail.net`と入力します。
 
-5. POP3サーバーのポート番号を求められたら、「`995`」（SSL/TLS）と入力します。必要に応じて「[代替POP3ポート](/faq#what-are-your-pop3-server-configuration-settings)」も参照してください。
+5. POP3サーバーのポート番号を求められたら、`995` (SSL/TLS) を入力してください。必要に応じて[代替POP3ポート](/faq#what-are-your-pop3-server-configuration-settings) も参照してください。
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 ヒント:
 </strong>
-<span>Thunderbirdをご利用の場合は、「接続のセキュリティ」が「SSL/TLS」に設定され、「認証方法」が「通常のパスワード」に設定されていることを確認してください。</span>
+<span>Thunderbirdをご利用の場合は、「接続セキュリティ」が「SSL/TLS」に設定され、「認証方法」が「通常のパスワード」に設定されていることを確認してください。</span>
 </div>
 
 6. POP3サーバーのパスワードを求められた場合は、上記の手順2の<strong class="text-success"><i class="fa fa-key"></i>「パスワードの生成」</strong>から取得したパスワードを貼り付けます。
@@ -1692,7 +1692,7 @@ IPレピュテーションを維持し、配信率を確保するため、Forwar
 
 ### カレンダー（CalDAV）をサポートしていますか？ {#do-you-support-calendars-caldav}
 
-はい、2024年2月5日よりこの機能を追加しました。弊社のサーバーは`caldav.forwardemail.net`で保護されており、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
+はい、2024年2月5日よりこの機能を追加しました。サーバーは`caldav.forwardemail.net`で、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
 
 IPv4 と IPv6 の両方をサポートし、ポート `443` (HTTPS) 経由で利用できます。
 
@@ -1703,9 +1703,9 @@ IPv4 と IPv6 の両方をサポートし、ポート `443` (HTTPS) 経由で利
 
 カレンダー サポートを使用するには、**ユーザー** は <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイ アカウント <i class="fa fa-angle-right"></i> ドメイン</a> にあるドメインに存在するエイリアスのメール アドレスである必要があります。また、**パスワード** はエイリアス固有の生成されたパスワードである必要があります。
 
-### 連絡先（CardDAV）をサポートしていますか？ {#do-you-support-contacts-carddav}
+### 連絡先（CardDAV）をサポートしていますか？{#do-you-support-contacts-carddav}
 
-はい、2025年6月12日よりこの機能を追加しました。弊社のサーバーは`carddav.forwardemail.net`で保護されており、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
+はい、2025年6月12日よりこの機能を追加しました。サーバーは`carddav.forwardemail.net`で、<a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">ステータスページ</a>でも監視されています。
 
 IPv4 と IPv6 の両方をサポートし、ポート `443` (HTTPS) 経由で利用できます。
 
@@ -1716,7 +1716,7 @@ IPv4 と IPv6 の両方をサポートし、ポート `443` (HTTPS) 経由で利
 
 連絡先サポートを使用するには、**ユーザー** は <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">マイ アカウント <i class="fa fa-angle-right"></i> ドメイン</a> にあるドメインのエイリアスのメール アドレスである必要があります。また、**パスワード** はエイリアス固有の生成されたパスワードである必要があります。
 
-### SMTP を使用したメール送信をサポートしていますか？ {#do-you-support-sending-email-with-smtp}
+### SMTP によるメール送信をサポートしていますか？ {#do-you-support-sending-email-with-smtp}
 
 はい、2023 年 5 月現在、すべての有料ユーザー向けに SMTP を使用したメール送信をアドオンとしてサポートしています。
 
@@ -1754,18 +1754,18 @@ Gmailをご利用の場合は、<a class="alert-link" href="/guides/send-mail-as
 <strong class="font-weight-bold">
 ヒント:
 </strong>
-<span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple のご利用をお勧めします。 Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替手段</a>。</span>
+<span><a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>、<a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>、<a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a>、または<a href="/blog/open-source" class="alert-link" target="_blank">オープンソースでプライバシー重視の代替手段</a>。</span>
 </div>
 
 5. SMTPサーバー名の入力を求められた場合は、`smtp.forwardemail.net`と入力します。
 
-6. SMTPサーバーのポート番号を求められたら、「`465`」（SSL/TLS）と入力します。必要に応じて「[代替SMTPポート](/faq#what-are-your-smtp-server-configuration-settings)」を参照してください。
+6. SMTPサーバーのポート番号を求められたら、`465` (SSL/TLS) を入力してください。必要に応じて[代替SMTPポート](/faq#what-are-your-smtp-server-configuration-settings) を参照してください。
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 ヒント:
 </strong>
-<span>Thunderbirdをご利用の場合は、「接続のセキュリティ」が「SSL/TLS」に設定され、「認証方法」が「通常のパスワード」に設定されていることを確認してください。</span>
+<span>Thunderbirdをご利用の場合は、「接続セキュリティ」が「SSL/TLS」に設定され、「認証方法」が「通常のパスワード」に設定されていることを確認してください。</span>
 </div>
 
 7. SMTPサーバーのパスワードを求められた場合は、上記の手順3の<strong class="text-success"><i class="fa fa-key"></i>パスワードの生成</strong>から取得したパスワードを貼り付けます。
@@ -1796,15 +1796,15 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 
 </div>
 
-### OpenPGP/MIME、エンドツーエンド暗号化（「E2EE」）、Web Key Directory（「WKD」）をサポートしていますか？ {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### OpenPGP/MIME、エンドツーエンド暗号化（「E2EE」）、Webキーディレクトリ（「WKD」）をサポートしていますか？{#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-はい、[オープンPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP)、[エンドツーエンド暗号化（「E2EE」）](https://en.wikipedia.org/wiki/End-to-end_encryption)、および[Web キー ディレクトリ ("WKD")](https://wiki.gnupg.org/WKD)を使用した公開鍵の検出をサポートしています。OpenPGPは[keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service)または[独自のキーを自己ホストする](https://wiki.gnupg.org/WKDHosting)を使用して設定できます（[WKDサーバーのセットアップに関するこのgist](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)を参照）。
+はい、[オープンPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP)、[エンドツーエンド暗号化（「E2EE」）](https://en.wikipedia.org/wiki/End-to-end_encryption)、および[Web キー ディレクトリ ("WKD")](https://wiki.gnupg.org/WKD)を使用した公開鍵の検出をサポートしています。[keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service)または[独自のキーを自己ホストする](https://wiki.gnupg.org/WKDHosting)を使用してOpenPGPを設定できます（[WKDサーバーのセットアップに関するこのgist](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)を参照）。
 
-* WKDルックアップは、メール配信をタイムリーに行うため1時間キャッシュされます。そのため、WKDキーを追加、変更、または削除する場合は、キャッシュを手動で消去できるよう、メールアドレスを`support@forwardemail.net`までメールでご連絡ください。
+* WKDルックアップは、メール配信をタイムリーに行うため1時間キャッシュされます。そのため、WKDキーを追加、変更、または削除した場合は、`support@forwardemail.net`までメールアドレスをお知らせください。キャッシュを手動で消去いたします。
 * WKDルックアップ経由、またはインターフェースにアップロードされたPGPキーを使用して転送されるメッセージは、PGP暗号化に対応しています。
 * PGPチェックボックスがオンになっている限り、アップロードされたキーが優先されます。
-* Webhooksに送信されるメッセージは現在PGPで暗号化されていません。
-* 特定の転送先アドレス（正規表現、ワイルドカード、完全一致など）に一致するエイリアスが複数あり、そのうちの複数にアップロードされたPGPキーが含まれ、PGPチェック済みの場合、エラーアラートメールが送信され、アップロードされたPGPキーによるメッセージの暗号化は行われません。これは非常に稀なケースであり、通常は複雑なエイリアスルールを持つ上級ユーザーにのみ適用されます。
+* Webhookに送信されるメッセージは現在PGPで暗号化されていません。
+* 特定の転送先アドレス（正規表現、ワイルドカード、完全一致など）に一致するエイリアスが複数あり、そのうち複数にアップロードされたPGPキーが含まれ、PGPチェック済みの場合、エラーアラートメールが送信され、アップロードされたPGPキーによるメッセージの暗号化は行われません。これは非常にまれなケースであり、通常は複雑なエイリアスルールを持つ上級ユーザーにのみ適用されます。
 * **送信者がDMARCポリシーで拒否を設定している場合、MXサーバー経由のメール転送にはPGP暗号化は適用されません。すべてのメールでPGP暗号化が必要な場合は、IMAPサービスをご利用いただき、受信メール用のエイリアスにPGPキーを設定することをお勧めします。**
 
 **Web キー ディレクトリの設定は、<https://wkd.chimbosonic.com/> (オープン ソース) または <https://www.webkeydirectory.com/> (独自仕様) で検証できます。**
@@ -1814,7 +1814,7 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 <strong class="font-weight-bold">
 自動暗号化：
 </strong>
-<span><a href="#do-you-support-sending-email-with-smtp" class="alert-link">送信SMTPサービス</a>をご利用で、暗号化されていないメッセージを送信されている場合、<a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>を使用して、受信者ごとに自動的にメッセージの暗号化を試みます。</span>
+<span><a href="#do-you-support-sending-email-with-smtp" class="alert-link">送信SMTPサービス</a>をご利用で、暗号化されていないメッセージを送信されている場合、<a class="alert-link" href="https://wiki.gnupg.org/WKD">Web 鍵ディレクトリ（"WKD")</a>を使用して、受信者ごとに自動的にメッセージの暗号化を試みます。</span>
 </div>
 
 <div class="alert alert-warning">
@@ -1849,7 +1849,7 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 
 2. プラグインを開き、公開鍵を作成し、それを使用するようにメールクライアントを設定します。
 
-3. 公開鍵を<https://keys.openpgp.org/upload>.にアップロードします。
+3. 公開鍵を<https://keys.openpgp.org/upload>.
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1910,13 +1910,13 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 </div>
 </div>
 
-### MTA-STSをサポートしていますか？ {#do-you-support-mta-sts}
+### MTA-STSをサポートしていますか？{#do-you-support-mta-sts}
 
-はい、2023年3月2日より[MTA-STS](https://www.hardenize.com/blog/mta-sts)をサポートしています。ドメインで有効にしたい場合は、[このテンプレート](https://github.com/jpawlowski/mta-sts.template)をご利用ください。
+はい、2023年3月2日より[MTA-STS](https://www.hardenize.com/blog/mta-sts)をサポートしています。ドメインで[このテンプレート](https://github.com/jpawlowski/mta-sts.template)を有効にする場合は、そちらをご利用ください。
 
-私たちの設定はGitHubの<https://github.com/forwardemail/mta-sts.forwardemail.net>.で公開されています。
+設定はGitHubの<https://github.com/forwardemail/mta-sts.forwardemail.net>.>で公開されています。
 
-### パスキーとWebAuthnをサポートしていますか？ {#do-you-support-passkeys-and-webauthn}
+### パスキーとWebAuthnをサポートしていますか？{#do-you-support-passkeys-and-webauthn}
 
 はい！2023 年 12 月 13 日より、パスキー [需要が高いため](https://github.com/orgs/forwardemail/discussions/182) のサポートが追加されました。
 
@@ -1932,23 +1932,23 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 * [iPhoneでパスキーを使用してアプリやウェブサイトにサインインする](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Passkeysに関するWikipediaの記事](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
-### メールのベストプラクティスをサポートしていますか？ {#do-you-support-email-best-practices}
+### メールのベストプラクティスをサポートしていますか？{#do-you-support-email-best-practices}
 
 はい。すべてのプランでSPF、DKIM、DMARC、ARC、SRSのサポートを標準で提供しています。また、これらの仕様の原著者や他のメール専門家と緊密に連携し、完璧さと高い配信率を実現しています。
 
-### バウンスWebhookをサポートしていますか？ {#do-you-support-bounce-webhooks}
+### バウンスWebhookをサポートしていますか？{#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 ヒント:
 </strong>
-メールWebhookに関するドキュメントをお探しですか？詳しくは、「<a href="/faq#do-you-support-webhooks" class="alert-link">Webhookをサポートしていますか？</a>」をご覧ください。
+メールのWebhookに関するドキュメントをお探しですか？詳しくは、「<a href="/faq#do-you-support-webhooks" class="alert-link">Webhookをサポートしていますか？</a>」をご覧ください。
 <span>
 </span>
 </div>
 
-はい、2024年8月14日よりこの機能を追加しました。「マイアカウント」→「ドメイン」→「設定」→「バウンスWebhook URL」にアクセスし、送信SMTPメールがバウンスした際に`http://`または`https://`のURLを設定してください。このURLに、`POST`リクエストが送信されます。
+はい、2024年8月14日よりこの機能を追加しました。「マイアカウント」→「ドメイン」→「設定」→「バウンスWebhook URL」にアクセスし、送信SMTPメールがバウンスした際に`POST`リクエストを送信する`http://`または`https://`のURLを設定できるようになりました。
 
 これは、送信 SMTP を管理および監視するのに役立ち、サブスクライバーの管理、オプトアウト、バウンスの発生の検出にも使用できます。
 
@@ -1958,20 +1958,20 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 * `list_id` (文字列) - 元の送信メールの`List-ID`ヘッダー（大文字と小文字を区別しない）の値（存在する場合）
 * `list_unsubscribe` (文字列) - 元の送信メールの`List-Unsubscribe`ヘッダー（大文字と小文字を区別しない）の値（存在する場合）
 * `feedback_id` (文字列) - 元の送信メールの`Feedback-ID`ヘッダー（大文字と小文字を区別しない）の値（存在する場合）
-* `recipient` (文字列) - バウンスまたはエラー発生
+* `recipient` (文字列) - バウンスまたはエラーとなった受信者のメールアドレス
 * `message` (文字列) - バウンスに関する詳細なエラーメッセージ
 * `response` (文字列) - SMTP 応答メッセージ
-* `response_code` (数値) - 解析された SMTP 応答コード
-* `truth_source` (文字列) - 応答コードが信頼できるソースからのものである場合、この値にはルートドメイン名が設定されます (例: `google.com` または `yahoo.com`)
-* `bounce` (オブジェクト) - バウンスおよび拒否ステータスの詳細を示す以下のプロパティを含むオブジェクト
-* `action` (文字列) - バウンスアクション (例: `"reject"`)
-* `message` (文字列) - バウンス理由 (例: `"Message Sender Blocked By Receiving Server"`)
-* `category` (文字列) - バウンスカテゴリ (例: `"block"`)
-* `code` (数値) - バウンスステータスコード (例: `554`)
-* `status` (文字列) - レスポンスメッセージのバウンスコード (例: `5.7.1`)
-* `line` (数値) - 解析された行番号 (存在する場合) [Zone-MTAバウンス解析リストから](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (例: `526`)
-* `headers` (オブジェクト) - 送信メールのヘッダーのキーと値のペア
-* `bounced_at` (文字列) - バウンスエラーが発生した日付 ([ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) 形式)
+* `list_id`0 (数値) - 解析された SMTP 応答コード
+* `list_id`1 (文字列) - 応答コードが信頼できるソースからのものである場合、この値にはルートドメイン名が設定されます (例: `list_id`2 または `list_id`3)
+* `list_id`4 (オブジェクト) - バウンスおよび拒否ステータスの詳細を示す以下のプロパティを含むオブジェクト
+* `list_id`5 (文字列) - バウンスアクション (例: `list_id`6)
+* `list_id`7 (文字列) - バウンス理由 (例: `list_id`8)
+* `list_id`9 (文字列) - バウンスカテゴリ (例: `List-ID`0)
+* `List-ID`1 (数値) - バウンスステータスコード (例: `List-ID`2)
+* `List-ID`3 (文字列) - 応答メッセージのバウンスコード (例: `List-ID`4)
+* `List-ID`5 (数値) - 解析された行番号 (存在する場合)、`List-ID`6 (例: `List-ID`7)
+* `List-ID`8 (オブジェクト) - 送信メールのヘッダーのキーと値のペア
+* `List-ID`9 (文字列) - バウンスエラーが発生した日付 (`list_unsubscribe`0 形式)
 
 例えば：
 
@@ -1998,18 +1998,18 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 
 バウンス Webhook に関する追加の注意事項をいくつか示します。
 
-* Webhook ペイロードに `list_id`、`list_unsubscribe`、または `feedback_id` 値が含まれている場合は、必要に応じて `recipient` をリストから削除するための適切な措置を講じる必要があります。
-* `bounce.category` 値が `"block"`、`"recipient"`、`"spam"`、または `"virus"` のいずれかであった場合は、ユーザーをリストから必ず削除する必要があります。
-* Webhook ペイロードを検証する必要がある場合（実際に弊社サーバーから送信されていることを確認するため）、[逆引きを使用してリモートクライアントのIPアドレスとクライアントのホスト名を解決する](https://nodejs.org/api/dns.html#dnspromisesreverseip) を使用できます。正しくは `smtp.forwardemail.net` です。
-* IP アドレスを [公開されているIPアドレス](#what-are-your-servers-ip-addresses) で確認することもできます。
-* Webhook キーを取得するには、「マイアカウント」→「ドメイン」→「設定」→「Webhook 署名ペイロード検証キー」にアクセスしてください。
+* Webhook ペイロードに `list_id`、`list_unsubscribe`、または `feedback_id` の値が含まれている場合は、必要に応じて `recipient` をリストから削除する適切な措置を講じてください。
+* `bounce.category` の値が `"block"`、`"recipient"`、`"spam"`、または `"virus"` のいずれかだった場合は、必ずユーザーをリストから削除してください。
+* Webhook ペイロードを検証する必要がある場合（実際に当社のサーバーから送信されていることを確認するため）、[逆引きを使用してリモートクライアントのIPアドレスとクライアントのホスト名を解決する](https://nodejs.org/api/dns.html#dnspromisesreverseip) を使用できます。これは `list_unsubscribe`0 である必要があります。
+* IP アドレスを `list_unsubscribe`1 と照合することもできます。
+* Webhook キーを取得するには、「マイアカウント」→「ドメイン」→「設定」→「Webhook 署名ペイロード検証キー」に移動してください。
 * セキュリティ上の理由から、このキーはいつでもローテーションできます。
-* Webhook リクエストの `X-Webhook-Signature` の値を計算し、このキーを使用して計算されたボディの値と比較します。この方法の例は [このStack Overflowの投稿](https://stackoverflow.com/a/68885281) で確認できます。
-* 詳細については、<https://github.com/forwardemail/free-email-forwarding/issues/235> の説明をご覧ください。
-* Webhook エンドポイントが `200` ステータス コードで応答するまで最大 `5` 秒間待機し、最大 `1` 回再試行します。
-* リクエストの送信中にバウンス Webhook URL にエラーが検出された場合は、週に 1 回、確認メールを送信します。
+* Webhook リクエストの `list_unsubscribe`2 の値と、このキーを使用して計算された本文の値を計算し、比較します。実行方法の例は、`list_unsubscribe`3 で確認できます。
+* 詳細については、<`list_unsubscribe`4 の説明をご覧ください。
+* Webhook エンドポイントが `list_unsubscribe`6 ステータスコードで応答するまで、最大 `list_unsubscribe`5 秒間待機し、最大 `list_unsubscribe`7 回再試行します。
+* バウンス Webhook URL にリクエストを送信中にエラーが検出された場合は、週に 1 回、確認メールを送信します。
 
-### Webhooksをサポートしていますか？ {#do-you-support-webhooks}
+### Webhookをサポートしていますか？{#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2080,24 +2080,24 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 **Webhook に関する追加の注意事項は次のとおりです:**
 
 * Webhook ペイロードを検証する必要がある場合（実際に弊社サーバーから送信されていることを確認するため）、[逆引きを使用してリモートクライアントのIPアドレスとクライアントのホスト名を解決する](https://nodejs.org/api/dns.html#dnspromisesreverseip) を使用できます。これは、`mx1.forwardemail.net` または `mx2.forwardemail.net` のいずれかである必要があります。
-* IP アドレスを [公開されているIPアドレス](#what-are-your-servers-ip-addresses) で確認することもできます。
+* IP アドレスを [公開されているIPアドレス](#what-are-your-servers-ip-addresses) と比較することもできます。
 * 有料プランをご利用の場合は、「マイアカウント」→「ドメイン」→「設定」→「Webhook 署名ペイロード検証キー」にアクセスして、Webhook キーを取得してください。
 * セキュリティ上の理由から、このキーはいつでもローテーションできます。
 * Webhook リクエストの `X-Webhook-Signature` の値を計算し、このキーを使用して計算されたボディの値と比較します。この方法の例は、[このStack Overflowの投稿](https://stackoverflow.com/a/68885281) で確認できます。
-* 詳細については、<https://github.com/forwardemail/free-email-forwarding/issues/235> の説明をご覧ください。
+* 詳細については、<https://github.com/forwardemail/free-email-forwarding/issues/235>> の説明をご覧ください。
 * Webhook が `200` ステータスコードで応答しない場合、その応答は [エラーログが作成されました](#do-you-store-error-logs) に保存されます。これはデバッグに便利です。
-* Webhook の HTTP リクエストは、SMTP 接続試行ごとに最大 3 回再試行され、エンドポイントの POST リクエストごとに最大 60 秒のタイムアウトが設定されます。**これは 3 回だけ再試行されるという意味ではありません**。実際には、3 回目の HTTP POST リクエスト試行が失敗した後に、SMTP コード 421（送信者に後で再試行するように指示する）を送信することで、継続的に再試行されます。つまり、メールはステータスコード 200 に達するまで数日間継続的に再試行されます。
+* Webhook の HTTP リクエストは、SMTP 接続試行ごとに最大 3 回再試行されます。エンドポイントの POST リクエストごとに最大 60 秒のタイムアウトがあります。**これは 3 回だけ再試行されるという意味ではありません**。実際には、3 回目の HTTP POST リクエスト試行が失敗した後に、SMTP コード 421（送信者に後で再試行するように指示する）を送信することで、継続的に再試行されます。つまり、メールはステータスコード 200 に達するまで数日間継続的に再試行されます。
 * [スーパーエージェントの再試行方法](https://ladjs.github.io/superagent/#retrying-requests) で使用されるデフォルトのステータスコードとエラーコードに基づいて、自動的に再試行されます（私たちはメンテナーです）。
-* リソースを節約し、応答時間を短縮するため、同じエンドポイントへのWebhook HTTPリクエストを複数回ではなく1つのリクエストにまとめます。例えば、<webhook1@example.com>、<webhook2@example.com>、<webhook3@example.com>にメールを送信し、これらがすべて完全に同じエンドポイントURLにアクセスするように設定されている場合、リクエストは1つだけになります。エンドポイントの完全一致と厳密な等価性に基づいてグループ化します。
-* メッセージをJSON対応オブジェクトに解析するために、[メールパーサー](https://nodemailer.com/extras/mailparser/)ライブラリの「simpleParser」メソッドを使用していることに注意してください。
-* 生のメール値は文字列としてプロパティ「raw」として返されます。
-* 認証結果はプロパティ「dkim」、「spf」、「arc」、「dmarc」、「bimi」として返されます。
-* 解析されたメールヘッダーはプロパティ「headers」として返されます。ただし、反復処理と解析を容易にするために「headerLines」を使用することもできます。
-* このWebhookの受信者はグループ化され、プロパティ「recipients」に設定されます。
-* SMTPセッション情報はプロパティ「session」に設定されます。これには、メッセージの送信者、メッセージの到着時刻、HELO、クライアントホスト名に関する情報が含まれます。クライアントホスト名の値は、`session.clientHostname`として、FQDN（逆PTR参照）または括弧で囲まれた`session.remoteAddress`のいずれかです（例：`"[127.0.0.1]"`）。
-* `X-Original-To`の値を素早く取得したい場合は、`session.recipient`の値を使用できます（以下の例を参照）。ヘッダー `X-Original-To` は、メッセージの元の受信者（マスク転送前）とのデバッグ用にメッセージに追加するヘッダーです。
-* ペイロード本体から `attachments` および/または `raw` プロパティを削除する必要がある場合は、クエリ文字列パラメータとして Webhook エンドポイントに `?attachments=false`、`?raw=false`、または `?attachments=false&raw=false` を追加するだけです（例： `https://example.com/webhook?attachments=false&raw=false`）。
-* 添付ファイルがある場合は、バッファ値とともに `attachments` 配列に追加されます。JavaScript で次のような方法を使用して、添付ファイルをコンテンツに解析できます。
+* リソースを節約し、応答時間を短縮するため、同じエンドポイントへの Webhook HTTP リクエストを複数回ではなく 1 つのリクエストにまとめます。例えば、<webhook1@example.com>、<webhook2@example.com>、<webhook3@example.com> にメールを送信し、これら全てが*完全に*同じエンドポイント URL にアクセスするように設定されている場合、リクエストは 1 つだけ送信されます。エンドポイントの完全一致と厳密な等価性に基づいてグループ化されます。
+* メッセージを JSON 対応オブジェクトに解析するために、`mx1.forwardemail.net`0 ライブラリの "simpleParser" メソッドを使用していることに注意してください。
+* 生のメールの文字列値は、プロパティ "raw" として返されます。
+* 認証結果は、プロパティ "dkim"、"spf"、"arc"、"dmarc"、"bimi" として返されます。
+* 解析されたメールヘッダーはプロパティ "headers" として返されます。ただし、反復処理と解析を容易にするために "headerLines" を使用することもできます。
+* この Webhook のグループ化された受信者は、まとめてプロパティ "recipients" として返されます。
+* SMTPセッション情報はプロパティ「session」として提供されます。これには、メッセージの送信者、メッセージの到着時刻、HELO、クライアントホスト名に関する情報が含まれます。クライアントホスト名の`mx1.forwardemail.net`1は、FQDN（逆PTR検索による）または`mx1.forwardemail.net`2を括弧で囲んだ値（例：`mx1.forwardemail.net`3）のいずれかです。
+* `mx1.forwardemail.net`4の値を素早く取得したい場合は、`mx1.forwardemail.net`5の値を使用できます（以下の例を参照）。ヘッダー`mx1.forwardemail.net`6は、メッセージの元の受信者（マスク転送前）とのデバッグ用にメッセージに追加されるヘッダーです。
+* ペイロード本体から `mx1.forwardemail.net`7 および/または `mx1.forwardemail.net`8 プロパティを削除する必要がある場合は、Webhook エンドポイントにクエリ文字列パラメータ（例: `mx2.forwardemail.net`2）として `mx1.forwardemail.net`9、`mx2.forwardemail.net`0、または `mx2.forwardemail.net`1 を追加するだけです。
+* 添付ファイルがある場合は、バッファ値とともに `mx2.forwardemail.net`3 配列に追加されます。これらの添付ファイルは、JavaScript を使用して次のように解析することで、コンテンツに戻すことができます。
 
   ```js
   const data = [
@@ -2312,15 +2312,15 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 }
 ```
 
-### 正規表現またはregexをサポートしていますか？ {#do-you-support-regular-expressions-or-regex}
+### 正規表現またはregexをサポートしていますか？{#do-you-support-regular-expressions-or-regex}
 
 はい、2021年9月27日よりこの機能を追加しました。エイリアスのマッチングや置換には、正規表現（regex）を記述するだけで済みます。
 
 正規表現でサポートされているエイリアスは、`/` で始まり、`/` で終わり、受信者がメールアドレスまたはWebhookであるものです。受信者には、正規表現の置換サポートを含めることもできます（例：`$1`、`$2`）。
 
-`i` と `g` の2つの正規表現フラグをサポートしています。大文字と小文字を区別しないフラグ `i` は永続的なデフォルトであり、常に適用されます。グローバルフラグ `g` は、末尾の `/` に `/g` を追加することで追加できます。
+`i`と`g`の2つの正規表現フラグをサポートしています。`i`の大文字と小文字を区別しないフラグは永続的なデフォルトであり、常に適用されます。`g`のグローバルフラグは、末尾の`/`に`/g`を追加することで追加できます。
 
-なお、正規表現サポートにより、受信者部分の <a href="#can-i-disable-specific-aliases">disabled エイリアス機能</a> もサポートされていることに注意してください。
+なお、正規表現サポートにより、受信者部分の<a href="#can-i-disable-specific-aliases">disabled エイリアス機能</a>もサポートされていることに注意してください。
 
 正規表現は、<a href="/disposable-addresses" target="_blank">グローバルバニティドメイン</a>ではサポートされていません (セキュリティ上の脆弱性となる可能性があるため)。
 
@@ -2362,7 +2362,7 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>名と姓の置換例:</strong> 会社のメールアドレスがすべて `firstname.lastname@example.com` パターンであるとします。`firstname.lastname@example.com` パターンに該当するすべてのメールを、置換サポートを使用して `firstname.lastname@company.com` に転送する場合: (<a href="https://regexr.com/66hnu" class="alert-link">正規表現のテストを見る</a>):
+<strong>名と姓の置換例:</strong> 会社のメールアドレスがすべて`firstname.lastname@example.com`というパターンだとします。`firstname.lastname@example.com`というパターンに該当するすべてのメールを、置換機能を使って`firstname.lastname@company.com`に転送したいとします（<a href="https://regexr.com/66hnu" class="alert-link">正規表現のテストを見る</a>）:
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2376,7 +2376,7 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 </thead>
 <tbody>
 <tr>
-<td><em>"@", ".", または空白</em></td>
+<td><em>"@"、"."、または空白</em></td>
 <td class="text-center">3600</td>
 <td class="notranslate">TXT</td>
 <td><code>forward-email=/^([A-Za-z]+)+\.([A-Za-z]+)+$/:$1.$2@company.com</code></td>
@@ -2410,7 +2410,7 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Webhook クエリ文字列置換の例:</strong> `example.com` に送信されるすべてのメールを <a href="#do-you-support-webhooks" class="alert-link">Webhook</a> に送信し、動的クエリ文字列キー「to」とメールアドレスのユーザー名部分を値として設定したいとします (<a href="https://regexr.com/66ho4" class="alert-link">RegExr のテストを表示</a>):
+<strong>Webhook クエリ文字列置換の例:</strong> `example.com` に送信されるすべてのメールを <a href="#do-you-support-webhooks" class="alert-link">Webhook</a> に送信し、動的クエリ文字列キー「to」とメールアドレスのユーザー名部分を値として設定したいとします (<a href="https://regexr.com/66ho4" class="alert-link">RegExr のテストを表示</a>)。
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2434,7 +2434,7 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>サイレント拒否の例:</strong> 特定のパターンに一致するすべてのメールを無効にし、ステータスコード `250` でサイレント拒否（送信者にはメッセージが正常に送信されたように見えますが、実際にはどこにも送信されません）したい場合（<a href="#can-i-disable-specific-aliases" class="alert-link">特定のエイリアスを無効にすることはできますか</a>を参照）、同じ方法で感嘆符「!」を 1 つ追加します。これにより、送信者にはメッセージは正常に配信されましたが、実際にはどこにも送信されなかったことが示されます（例: blackhole または `/dev/null`）。
+<strong>サイレント拒否の例:</strong> 特定のパターンに一致するすべてのメールを無効にし、ステータスコード `250` でサイレント拒否（送信者にはメッセージが正常に送信されたように見えますが、実際にはどこにも送信されません）したい場合は（<a href="#can-i-disable-specific-aliases" class="alert-link">特定のエイリアスを無効にすることはできますか</a>を参照）、同じ方法で感嘆符「!」を 1 つ追加します。これにより、送信者にはメッセージは正常に配信されましたが、実際にはどこにも送信されなかったことが示されます（例: blackhole または `/dev/null`）。
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2516,11 +2516,11 @@ IPレピュテーションを維持し、配信率を確保するため、送信
 
 ### 送信SMTP制限は何ですか？ {#what-are-your-outbound-smtp-limits}
 
-ユーザーとドメインのSMTP送信メッセージ数は、1日あたり300通に制限されています。これは、暦月で平均9,000通以上のメール送信に相当します。この制限を超える必要がある場合、または継続的に大容量のメールを送受信する場合は、[お問い合わせ](https://forwardemail.net/help) をご利用ください。
+ユーザーとドメインのSMTP送信メッセージ数は、1日あたり300通に制限されています。これは、暦月で平均9,000通以上のメール送信に相当します。この制限を超える必要がある場合、または継続的に大容量のメールを受信する場合は、[お問い合わせ](https://forwardemail.net/help)をご利用ください。
 
-### SMTP を有効にするには承認が必要ですか？ {#do-i-need-approval-to-enable-smtp}
+### SMTPを有効にするには承認が必要ですか？{#do-i-need-approval-to-enable-smtp}
 
-はい。IPレピュテーションを維持し、配信率を確保するため、Forward Emailでは送信SMTP承認においてドメインごとに手動レビュープロセスを実施しています。承認をご希望の場合は、<support@forwardemail.net>までメールを送信いただくか、[ヘルプリクエスト](https://forwardemail.net/help)を開いてください。通常、承認には24時間もかからず、ほとんどのリクエストは1～2時間以内に承認されます。近い将来、スパム対策とアラート機能を強化し、このプロセスを即時化することを目指しています。このプロセスにより、メールが受信トレイに確実に届き、スパムとしてマークされることがなくなります。
+はい。IPレピュテーションを維持し、配信率を確保するため、Forward Emailでは送信SMTP承認においてドメインごとに手動レビュープロセスを実施しています。承認をご希望の場合は、<support@forwardemail.net>までメールを送信いただくか、[ヘルプリクエスト](https://forwardemail.net/help)を開いてください。通常、このプロセスは24時間以内に完了し、ほとんどのリクエストは1～2時間以内に承認されます。近い将来、スパム対策とアラート機能を強化し、このプロセスを即時化することを目指しています。このプロセスにより、メールが受信トレイに確実に届き、スパムとしてマークされることがなくなります。
 
 ### SMTPサーバーの構成設定は何ですか？ {#what-are-your-smtp-server-configuration-settings}
 
@@ -2675,7 +2675,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### 高度なサーバー強化テクニック {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> 当社のセキュリティインフラストラクチャの詳細については、[セキュリティページ](/security) をご覧ください。
 
 Forward Email では、インフラストラクチャとデータのセキュリティを確保するために、さまざまなサーバー強化技術を実装しています。
 
@@ -2712,15 +2712,15 @@ Forward Email では、インフラストラクチャとデータのセキュリ
 * インシデント対応手順
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> 当社のセキュリティ対策は、新たな脅威や脆弱性に対処するため、継続的に更新されています。
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> セキュリティを最大限に高めるには、OpenPGP によるエンドツーエンドの暗号化をご利用いただくことをお勧めします。
 
-### SOC 2またはISO 27001認証を取得していますか？ {#do-you-have-soc-2-or-iso-27001-certifications}
+### SOC 2またはISO 27001認証を取得していますか？{#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email は、業界標準への準拠を確保するために、認定サブプロセッサーが提供するインフラストラクチャ上で動作します。
 
 Forward EmailはSOC 2 Type IIまたはISO 27001認証を直接取得していません。ただし、このサービスは認定されたサブプロセッサーが提供するインフラストラクチャ上で運用されています。
 
@@ -2732,7 +2732,7 @@ Forward EmailはSOC 2 Type IIまたはISO 27001認証を直接取得していま
 
 Forward Emailは、セキュリティ監査に関する業界のベストプラクティスに従い、独立したセキュリティ研究者と定期的に連携しています。出典: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-### メール転送に TLS 暗号化を使用していますか？ {#do-you-use-tls-encryption-for-email-forwarding}
+### メール転送にTLS暗号化を使用していますか？ {#do-you-use-tls-encryption-for-email-forwarding}
 
 はい。Forward Emailは、すべての接続（HTTPS、SMTP、IMAP、POP3）にTLS 1.2以上を厳格に適用し、拡張TLSサポートのためにMTA-STSを実装しています。実装内容は次のとおりです。
 
@@ -2743,7 +2743,7 @@ Forward Emailは、セキュリティ監査に関する業界のベストプラ�
 * 主要ブラウザにプリロード済みのHSTS（HTTP Strict Transport Security）
 * **MTA-STS（Mail Transfer Agent Strict Transport Security）**による厳格なTLS適用
 
-出典: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
+ソース: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 
 **MTA-STS実装**: Forward Emailは、コードベースに厳格なMTA-STS適用を実装しています。TLSエラーが発生し、MTA-STSが適用されている場合、システムは421 SMTPステータスコードを返します。これにより、メールが安全に配信されないまま後で再試行されることがなくなります。実装の詳細：
 
@@ -2752,7 +2752,7 @@ Forward Emailは、セキュリティ監査に関する業界のベストプラ�
 
 サードパーティの検証: <https://www.hardenize.com/report/forwardemail.net/1750312779> は、すべての TLS およびトランスポート セキュリティ対策に対して「良好」の評価を示しています。
 
-### メール認証ヘッダーを保存しますか？ {#do-you-preserve-email-authentication-headers}
+### メール認証ヘッダーを保存しますか？{#do-you-preserve-email-authentication-headers}
 
 はい。Forward Email はメール認証ヘッダーを包括的に実装し、保持します。
 
@@ -2761,14 +2761,14 @@ Forward Emailは、セキュリティ監査に関する業界のベストプラ�
 * **DMARC**: SPFまたはDKIMの検証に失敗したメールに対するポリシー適用
 * **ARC**: 詳細は明記されていませんが、このサービスの完璧なコンプライアンススコアは、包括的な認証ヘッダー処理を示唆しています
 
-出典: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
+ソース: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
 検証：Internet.nl Mail Testでは、「SPF、DKIM、DMARC」の実装において100/100のスコアを示しました。Hardenize評価では、SPFとDMARCの「良好」評価を確認しました。<https://www.hardenize.com/report/forwardemail.net/1750312779>
 
-### 元のメールヘッダーを保存し、なりすましを防止していますか？ {#do-you-preserve-original-email-headers-and-prevent-spoofing}
+### 元のメールヘッダーを保存し、なりすましを防止しますか？{#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> メール転送機能は、メールの不正使用を防ぐために、高度ななりすまし対策を実装しています。
 
 Forward Email は、MX コードベースを通じて包括的ななりすまし防止保護を実装しながら、元の電子メール ヘッダーを保持します。
 
@@ -2782,9 +2782,9 @@ Forward Email は、MX コードベースを通じて包括的ななりすまし
 * メインMXデータハンドラー: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 * 任意のメールフィルタリング（なりすまし対策）: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-`isArbitrary` ヘルパーは、ドメインのなりすまし、ブロックされたフレーズ、さまざまなフィッシング パターンの検出を含む、高度なスプーフィング防止ルールを実装します。
+`isArbitrary` ヘルパーは、ドメインのなりすまし、ブロックされたフレーズ、さまざまなフィッシング パターンの検出を含む、高度なスプーフィング対策ルールを実装します。
 
-出典: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
+ソース: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
 ### スパムや不正使用からどのように保護しますか？ {#how-do-you-protect-against-spam-and-abuse}
 
@@ -2803,10 +2803,10 @@ Forward Email は包括的な多層保護を実装します。
 * <https://www.datapacket.com/datacenters/denver> (DDoS防御の詳細)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### メールの内容をディスクに保存していますか？ {#do-you-store-email-content-on-disk}
+### メールの内容をディスクに保存していますか？{#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> メール転送では、メールの内容がディスクに書き込まれるのを防ぐゼロ知識アーキテクチャが採用されています。
 
 * **ゼロ知識アーキテクチャ**: 個別に暗号化されたSQLiteメールボックスにより、Forward Emailはメールの内容にアクセスできません。
 * **インメモリ処理**: メール処理はすべてメモリ内で行われるため、ディスクへの保存は不要です。
@@ -2818,7 +2818,7 @@ Forward Email は包括的な多層保護を実装します。
 出典：
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=10> (概要)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (ゼロ知識認証の詳細)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (ゼロ知識情報の詳細)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=21> (サンドボックス暗号化)
 
 ### システムクラッシュ時にメールの内容が公開される可能性があります {#can-email-content-be-exposed-during-system-crashes}
@@ -2839,7 +2839,7 @@ Forward Email は包括的な多層保護を実装します。
 * エラー分類: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js>
 * MX処理におけるタイムアウトエラー処理: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
-出典: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
+ソース: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
 ### メールインフラストラクチャにアクセスできるユーザー {#who-has-access-to-your-email-infrastructure}
 
@@ -2865,9 +2865,9 @@ Forward Email は、厳格な 2FA 要件に基づいて、最小限の 2 ～ 3 �
 ### どのインフラストラクチャプロバイダーを使用していますか？ {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email は、包括的なコンプライアンス認証を取得した複数のインフラストラクチャサブプロセッサーを使用しています。
 
-詳細は、GDPRコンプライアンスページをご覧ください: <https://forwardemail.net/gdpr>
+詳細はGDPRコンプライアンスページをご覧ください: <https://forwardemail.net/gdpr>
 
 **プライマリインフラストラクチャサブプロセッサ:**
 
@@ -2887,13 +2887,13 @@ Forward Email は、厳格な 2FA 要件に基づいて、最小限の 2 ～ 3 �
 * PCI-DSS準拠
 * CSA STAR レベル1認証取得
 * APEC CBPR PRP認証取得
-* 詳細：<https://www.digitalocean.com/trust/certification-reports>
+* 詳細: <https://www.digitalocean.com/trust/certification-reports>
 
 **ヴルトル**
 
 * SOC 2+ (HIPAA) 認定
 * PCI 加盟店基準準拠
-* CSA STAR レベル 1 認定
+* CSA STAR レベル1 認定
 * ISO/IEC 20000-1:2018、27001:2022、27017:2015、27018:2019
 * 詳細: <https://www.vultr.com/legal/compliance/>
 
@@ -2902,18 +2902,18 @@ Forward Email は、厳格な 2FA 要件に基づいて、最小限の 2 ～ 3 �
 * SOC 2準拠（認証取得については、DataPacketまで直接お問い合わせください）
 * エンタープライズグレードのインフラストラクチャ（デンバー拠点）
 * ShieldサイバーセキュリティスタックによるDDoS防御
-* 24時間365日対応のテクニカルサポート
+* 24時間365日体制のテクニカルサポート
 * 58のデータセンターにまたがるグローバルネットワーク
-* 詳細：<https://www.datapacket.com/datacenters/denver>
+* 詳細: <https://www.datapacket.com/datacenters/denver>
 
 **決済代行業者:**
 
 * **Stripe**: データプライバシーフレームワーク認定済み - <https://stripe.com/legal/privacy-center>
 * **PayPal**: DPF認定なし - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### データ処理契約（DPA）を提供していますか？ {#do-you-offer-a-data-processing-agreement-dpa}
+### データ処理契約（DPA）を提供していますか？{#do-you-offer-a-data-processing-agreement-dpa}
 
-はい、Forward Emailは包括的なデータ処理契約（DPA）を提供しており、エンタープライズ契約と併せて締結いただけます。DPAのコピーは、<https://forwardemail.net/dpa> からご覧いただけます。
+はい、Forward Emailは包括的なデータ処理契約（DPA）を提供しており、エンタープライズ契約と併せて締結いただけます。DPAのコピーは以下からご覧いただけます: <https://forwardemail.net/dpa>
 
 **DPAの詳細:**
 
@@ -2930,7 +2930,7 @@ Forward Email は、厳格な 2FA 要件に基づいて、最小限の 2 ～ 3 �
 ### データ侵害通知をどのように処理しますか？ {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Forward Email のゼロ知識アーキテクチャにより、侵害の影響が大幅に軽減されます。
 
 * **データ露出の制限**: ゼロ知識アーキテクチャのため、暗号化されたメールの内容にはアクセスできません
 * **データ収集の最小化**: セキュリティのため、基本的な加入者情報と限定的なIPログのみ収集します
@@ -2958,12 +2958,12 @@ Antrim, BT1 - 5EF
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### テスト環境を提供していますか？ {#do-you-offer-a-test-environment}
+### テスト環境を提供していますか？{#do-you-offer-a-test-environment}
 
 Forward Emailの技術ドキュメントには専用のサンドボックスモードについて明記されていません。ただし、テスト方法としては以下のようなものが考えられます。
 
 * **セルフホスティングオプション**: テスト環境を構築するための包括的なセルフホスティング機能
-* **APIインターフェース**: 構成をプログラムでテストできる可能性
+* **APIインターフェース**: 設定をプログラムでテストできる可能性
 * **オープンソース**: 100%オープンソースコードのため、お客様は転送ロジックを検証できます
 * **複数ドメイン**: 複数ドメインをサポートしているため、テストドメインを作成できます
 
@@ -2971,7 +2971,7 @@ Forward Emailの技術ドキュメントには専用のサンドボックスモ�
 
 ソース: <https://github.com/forwardemail/forwardemail.net> (開発環境の詳細)
 
-### 監視およびアラートツールを提供していますか？ {#do-you-provide-monitoring-and-alerting-tools}
+### 監視およびアラートツールを提供していますか？{#do-you-provide-monitoring-and-alerting-tools}
 
 Forward Email は、いくつかの制限付きでリアルタイム監視を提供します。
 
@@ -2993,10 +2993,10 @@ Forward Email は、いくつかの制限付きでリアルタイム監視を提
 * <https://forwardemail.net> (リアルタイム監視表示)
 * <https://github.com/forwardemail/forwardemail.net> (監視実装)
 
-### 高可用性をどのように確保しますか {#how-do-you-ensure-high-availability}
+### 高可用性をどのように確保しますか？ {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email は、複数のインフラストラクチャプロバイダーにわたる包括的な冗長性を実装します。
 
 * **分散インフラストラクチャ**: 地理的に分散した複数のプロバイダー (DigitalOcean、Vultr、DataPacket)
 * **地理的負荷分散**: Cloudflareベースの地理的に分散した負荷分散と自動フェイルオーバー
@@ -3004,19 +3004,19 @@ Forward Email は、いくつかの制限付きでリアルタイム監視を提
 * **多層DDoS防御**: DataPacketのShieldシステムとCloudflareを介した
 * **サーバー冗長性**: リージョンごとに複数のサーバーと自動フェイルオーバー
 * **データベースレプリケーション**: 複数の拠点間でのリアルタイムデータ同期
-* **監視とアラート**: 自動インシデント対応による24時間365日監視
+* **監視とアラート**: 24時間365日体制の監視と自動インシデント対応
 
-**稼働率保証**: 99.9% 以上のサービス可用性と透過的な監視が <https://forwardemail.net> で利用可能
+**稼働率保証**: 99.9% 以上のサービス可用性と透過的な監視が <https://forwardemail.net>
 
 出典：
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### 国防権限法（NDAA）第889条に準拠していますか？ {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### 国防権限法（NDAA）第889条に準拠していますか？{#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email は、インフラストラクチャパートナーを慎重に選定することで、Section 889 に完全に準拠しています。
 
 はい、Forward Email は**Section 889**に準拠しています。国防権限法（NDAA）第889条では、政府機関が特定の企業（Huawei、ZTE、Hikvision、Dahua、Hytera）の通信機器およびビデオ監視機器を使用する組織と契約したり、使用したりすることを禁止しています。
 
@@ -3030,35 +3030,35 @@ Forward Email は、Section 889 で禁止されている機器を使用してい
 
 **Cloudflare の取り組み**: Cloudflare は、サードパーティの行動規範の中で、セクション 889 で禁止されている組織の通信機器、ビデオ監視製品、またはサービスを使用しないことを明示的に規定しています。
 
-**政府のユースケース**: **米国海軍兵学校** が安全なメール転送のニーズに Forward Email を選択し、連邦コンプライアンス標準の文書化を要求したときに、当社の Section 889 コンプライアンスが検証されました。
+**政府の使用事例**: **米国海軍兵学校** が安全なメール転送のニーズに Forward Email を選択し、連邦コンプライアンス標準の文書化を要求したときに、当社の Section 889 コンプライアンスが検証されました。
 
 より広範な連邦規制を含む政府コンプライアンス フレームワークの詳細については、包括的なケース スタディをご覧ください: [連邦政府電子メールサービスセクション889準拠](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
 ## システムと技術詳細 {#system-and-technical-details}
 
-### メールとその内容を保存しますか？ {#do-you-store-emails-and-their-contents}
+### メールとその内容を保存しますか？{#do-you-store-emails-and-their-contents}
 
-いいえ、[エラーの例外](#do-you-store-error-logs) および [送信SMTP](#do-you-support-sending-email-with-smtp) ではディスクに書き込んだりログを保存したりしません ([プライバシーポリシー](/privacy) を参照)。
+いいえ、[エラーの例外](#do-you-store-error-logs) および [送信SMTP](#do-you-support-sending-email-with-smtp) を使用してディスクに書き込んだり、ログを保存したりすることはありません ([プライバシーポリシー](/privacy) を参照)。
 
-すべてはメモリ内で実行され、[ソースコードはGitHubにあります](https://github.com/forwardemail) で実行されます。
+すべてはメモリ内および [ソースコードはGitHubにあります](https://github.com/forwardemail) で実行されます。
 
 ### メール転送システムはどのように機能しますか？ {#how-does-your-email-forwarding-system-work}
 
-メールは[SMTPプロトコル](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol) に依存しています。このプロトコルは、サーバー（通常はポート25で動作）に送信されるコマンドで構成されています。まず最初の接続が行われ、次に送信者がメールの送信元（"MAIL FROM"）を指定し、続いてメールの送信先（"RCPT TO"）を指定し、最後にメールのヘッダーと本文（"DATA"）を指定します。当社のメール転送システムのフローは、以下の各SMTPプロトコルコマンドに基づいて説明されています。
+メールは[SMTPプロトコル](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)に依存しています。このプロトコルは、サーバー（通常はポート25で動作）に送信されるコマンドで構成されています。まず最初の接続が行われ、次に送信者がメールの送信元（"MAIL FROM"）を指定し、続いてメールの送信先（"RCPT TO"）を指定し、最後にメールのヘッダーと本文（"DATA"）を指定します。当社のメール転送システムのフローは、以下の各SMTPプロトコルコマンドに基づいて説明されています。
 
-* 初期接続（コマンド名なし、例：`telnet example.com 25`） - これは初期接続です。[許可リスト](#do-you-have-an-allowlist) に含まれていない送信者については、[拒否リスト](#do-you-have-a-denylist) と照合します。最後に、送信者が許可リストに含まれていない場合は、[グレーリスト](#do-you-have-a-greylist) に登録されているかどうかを確認します。
+* 初期接続（コマンド名なし、例：`telnet example.com 25`） - これは初期接続です。[許可リスト](#do-you-have-an-allowlist) に登録されていない送信者については、[拒否リスト](#do-you-have-a-denylist) に登録されているかどうかを確認します。最後に、送信者が許可リストに登録されていない場合は、[グレーリスト](#do-you-have-a-greylist) に登録されているかどうかを確認します。
 
-* `HELO` - これは、送信者のFQDN、IPアドレス、またはメールハンドラ名を識別するための挨拶を示します。この値は偽装される可能性があるため、このデータには依存せず、代わりに接続のIPアドレスの逆ホスト名検索を使用します。
+* `HELO` - 送信者のFQDN、IPアドレス、またはメールハンドラ名を識別するための挨拶を示します。この値は偽装される可能性があるため、このデータには依存せず、代わりに接続のIPアドレスの逆ホスト名検索を使用します。
 
-* `MAIL FROM` - これは、メールのエンベロープメールの送信元アドレスを示します。値を入力する場合は、有効なRFC 5322メールアドレスである必要があります。空の値も許可されます。ここでは[後方散乱をチェックする](#how-do-you-protect-against-backscatter)を使用し、MAIL FROMを[拒否リスト](#do-you-have-a-denylist)と照合します。最後に、許可リストに登録されていない送信者に対してレート制限を適用します（詳細については、[レート制限](#do-you-have-rate-limiting)と[許可リスト](#do-you-have-an-allowlist)のセクションを参照してください）。
+* `MAIL FROM` - メールのエンベロープメールの送信元アドレスを示します。値を入力する場合は、有効なRFC 5322メールアドレスである必要があります。空の値も許可されます。ここでは[後方散乱をチェックする](#how-do-you-protect-against-backscatter)を使用し、MAIL FROMを[拒否リスト](#do-you-have-a-denylist)と照合します。最後に、許可リストに登録されていない送信者に対してレート制限を行います（詳細については、[レート制限](#do-you-have-rate-limiting)と[許可リスト](#do-you-have-an-allowlist)のセクションを参照してください）。
 
-* `RCPT TO` - メールの受信者を示します。有効なRFC 5322メールアドレスである必要があります。1メッセージあたり最大50人のエンベロープ受信者まで許可されます（これはメールの「To」ヘッダーとは異なります）。また、SRSドメイン名によるなりすましを防ぐため、有効な[送信者書き換えスキーム](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（「SRS」）アドレスもここで確認します。
+* `RCPT TO` - メールの受信者を示します。有効なRFC 5322メールアドレスである必要があります。1メッセージあたり最大50人のエンベロープ受信者のみ許可されます（これはメールの「To」ヘッダーとは異なります）。また、SRSドメイン名によるなりすましを防ぐため、有効な[送信者書き換えスキーム](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)（「SRS」）アドレスもここで確認します。
 
-* `DATA` - これはメールを処理するサービスの中核部分です。詳細については、以下のセクション [メールを転送するにはどうすればいいですか？](#how-do-you-process-an-email-for-forwarding) をご覧ください。
+* `DATA` - メールを処理するサービスの中核部分です。詳細については、下記の[メールを転送するにはどうすればいいですか？](#how-do-you-process-an-email-for-forwarding)セクションをご覧ください。
 
 ### 転送するメールをどのように処理しますか？ {#how-do-you-process-an-email-for-forwarding}
 
-このセクションでは、上記のセクション [メール転送システムはどのように機能しますか](#how-does-your-email-forwarding-system-work) の SMTP プロトコル コマンド `DATA` に関連するプロセスについて説明します。これは、電子メールのヘッダー、本文、セキュリティを処理し、配信先を決定し、接続を処理する方法です。
+このセクションでは、上記の [メール転送システムはどのように機能しますか](#how-does-your-email-forwarding-system-work) セクションの SMTP プロトコル コマンド `DATA` に関連するプロセスについて説明します。これは、電子メールのヘッダー、本文、セキュリティを処理し、電子メールの配信先を決定し、接続を処理する方法です。
 
 1. メッセージが最大サイズの 50 MB を超えると、552 エラー コードで拒否されます。
 
@@ -3066,66 +3066,66 @@ Forward Email は、Section 889 で禁止されている機器を使用してい
 
 3. メッセージに 25 を超える「Received」ヘッダーがあった場合、リダイレクト ループに陥っていると判断され、550 エラー コードで拒否されます。
 
-4. 電子メールのフィンガープリント ([指紋採取](#how-do-you-determine-an-email-fingerprint) のセクションを参照) を使用して、メッセージの再試行が 5 日以上試行されているかどうか ([デフォルトの接尾辞の動作](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime) に一致) を確認し、そうである場合は、550 エラー コードで拒否されます。
+4. 電子メールのフィンガープリント ([指紋採取](#how-do-you-determine-an-email-fingerprint) のセクションを参照) を使用して、メッセージの再試行が 5 日以上試行されているかどうか ([デフォルトの接尾辞の動作](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime) に一致) を確認します。そうである場合は、550 エラー コードで拒否されます。
 
 5. [スパムスキャナー](https://spamscanner.net) を使用して電子メールをスキャンした結果をメモリ内に保存します。
 
-6. スパムスキャナから任意の結果が返された場合は、554エラーコードで拒否されます。本稿執筆時点では、任意の結果にはGTUBEテストのみが含まれます。詳細については、<https://spamassassin.apache.org/gtube/> をご覧ください。
+6. スパムスキャナから任意の結果が返された場合は、エラーコード554で拒否されます。本稿執筆時点では、任意の結果にはGTUBEテストのみが含まれます。詳細については、<https://spamassassin.apache.org/gtube/> を参照してください。
 
 7. デバッグと不正使用防止の目的で、メッセージに次のヘッダーを追加します。
 
 * `Received` - 送信元IPとホスト、送信タイプ、TLS接続情報、日時、受信者を含む標準のReceivedヘッダーを追加します。
 * `X-Original-To` - メッセージの元の受信者
-* これは、メールが最初にどこに配信されたかを判断するのに役立ちます（「Received」ヘッダーに加えて）。
+* これは、メールが最初にどこに配信されたかを特定するのに役立ちます（「Received」ヘッダーに加えて）。
 * これは、IMAPまたはマスク転送時に受信者ごとに追加されます（プライバシー保護のため）。
-* `X-Forward-Email-Website` - 弊社ウェブサイトへのリンク（<https://forwardemail.net>）が含まれます。
-* `X-Forward-Email-Version` - 弊社コードベースの`package.json`の現在の[セムバー](https://semver.org/)バージョンです。
-* `X-Forward-Email-Session-ID` - デバッグ目的で使用されるセッションID値（非本番環境のみ）。
-* `X-Forward-Email-Sender` - 元のエンベロープMAIL FROMアドレス（空白でない場合）、リバースPTRクライアントFQDN（存在する場合）、および送信者のIPアドレスを含む、カンマ区切りのリスト。
+* `X-Forward-Email-Website` - <https://forwardemail.net>>の当社ウェブサイトへのリンクが含まれます。
+* `X-Forward-Email-Version` - 当社のコードベースの`package.json`にある現在の[セムバー](https://semver.org/)バージョンです。
+* `X-Forward-Email-Session-ID` - デバッグ目的で使用されるセッションID値（非本番環境にのみ適用されます）。
+* `X-Forward-Email-Sender` - 元のエンベロープMAIL FROMアドレス（空白でない場合）、逆PTRクライアントFQDN（存在する場合）、および送信者のIPアドレスを含む、カンマ区切りのリスト。
 * `X-Forward-Email-ID` - これは送信SMTPにのみ適用され、「マイアカウント」→「メール」に保存されているメールIDと相関します。
-* `X-Report-Abuse` - 値は`abuse@forwardemail.net`です。
-* `X-Report-Abuse-To` - 値は`abuse@forwardemail.net`です。
-* `X-Complaints-To` - 値は `abuse@forwardemail.net` です。
+* `X-Original-To`0 - 値は`X-Original-To`1です。
+* `X-Original-To`2 - 値は`X-Original-To`3です。
+* `X-Original-To`4 - 値は`X-Original-To`5です。
 
 8. 次に、[DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail)、[SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework)、[ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain)、および [DMARC](https://en.wikipedia.org/wiki/DMARC) のメッセージを確認します。
 
-* メッセージがDMARCに失敗し、ドメインに拒否ポリシー（例：`p=reject` [DMARCポリシーにあった](https://wikipedia.org/wiki/DMARC)）が設定されている場合、エラーコード550で拒否されます。通常、ドメインのDMARCポリシーは、`_dmarc`サブドメインの<strong class="notranslate">TXT</strong>レコードに記載されています（例：`dig _dmarc.example.com txt`）。
-* メッセージがSPFに失敗し、ドメインにハードフェイルポリシー（例：SPFポリシーに`~all`ではなく`-all`が設定されている場合、またはポリシーがまったく設定されていない場合）が設定されている場合、エラーコード550で拒否されます。通常、ドメインのSPFポリシーは、ルートドメインの<strong class="notranslate">TXT</strong>レコードに記載されています（例：`dig example.com txt`）。SPFに関する[Gmailと同じようにメールを送信する](#can-i-send-mail-as-in-gmail-with-this)の詳細については、こちらのセクションをご覧ください。
+* メッセージがDMARCに失敗し、ドメインに拒否ポリシー（例：`p=reject` [DMARCポリシーにあった](https://wikipedia.org/wiki/DMARC)）が設定されている場合、エラーコード550で拒否されます。通常、ドメインのDMARCポリシーは、`_dmarc`サブドメインの<strong class="notranslate">TXT</strong>レコード（例：`dig _dmarc.example.com txt`）に記載されています。
+* メッセージがSPFに失敗し、ドメインにハードフェイルポリシー（例：`~all`ではなく、`-all`がSPFポリシーに含まれている、またはポリシーが全く設定されていない場合）が設定されている場合、エラーコード550で拒否されます。通常、ドメインのSPFポリシーは、ルートドメインの<strong class="notranslate">TXT</strong>レコード（例：`dig example.com txt`）に記載されています。 SPF に関する [Gmailと同じようにメールを送信する](#can-i-send-mail-as-in-gmail-with-this) の詳細については、このセクションを参照してください。
 
-9. 次に、上記のセクション[メール転送システムはどのように機能しますか](#how-does-your-email-forwarding-system-work)の`RCPT TO`コマンドから収集したメッセージの受信者を処理します。受信者ごとに、以下の操作を実行します。
+9. 次に、上記の[メール転送システムはどのように機能しますか](#how-does-your-email-forwarding-system-work)セクションの`RCPT TO`コマンドから収集したメッセージの受信者を処理します。受信者ごとに、以下の操作を実行します。
 
-* ドメイン名の <strong class="notranslate">TXT</strong> レコード（`@` 記号の後の部分、例：メールアドレスが `test@example.com` の場合は `example.com`）を検索します。例えば、ドメインが `example.com` の場合、`dig example.com txt` などの DNS ルックアップを実行します。
-* `forward-email=`（無料プラン）または `forward-email-site-verification=`（有料プラン）で始まるすべての <strong class="notranslate">TXT</strong> レコードを解析します。ユーザーがプランをアップグレードまたはダウングレードしている間もメールを処理するため、両方のレコードを解析することに注意してください。
-* 解析されたこれらの <strong class="notranslate">TXT</strong> レコードから、転送設定を抽出します（上記の [メール転送を開始して設定するにはどうすればよいですか？](#how-do-i-get-started-and-set-up-email-forwarding) セクションで説明されているとおり）。`forward-email-site-verification=` 値は 1 つのみサポートされます。複数の値が指定された場合は 550 エラーが発生し、送信者はこの受信者へのバウンスを受け取ります。
-* 抽出された転送設定を再帰的に反復処理し、グローバル転送、正規表現ベースの転送、その他サポートされているすべての転送設定（現在は「転送アドレス」と呼ばれています）を特定します。
+* ドメイン名の<strong class="notranslate">TXT</strong>レコード（`@` 記号の後の部分、例：メールアドレスが `test@example.com` の場合は `example.com`）を参照します。例えば、ドメインが `example.com` の場合は、`dig example.com txt` などのDNSルックアップを実行します。
+* `forward-email=`（無料プラン）または `forward-email-site-verification=`（有料プラン）で始まるすべての<strong class="notranslate">TXT</strong>レコードを解析します。ユーザーがプランをアップグレードまたはダウングレードする際にメールを処理するため、両方のレコードを解析することに注意してください。
+* 解析されたこれらの <strong class="notranslate">TXT</strong> レコードから、転送設定を抽出します（上記の [メール転送を開始して設定するにはどうすればよいですか？](#how-do-i-get-started-and-set-up-email-forwarding) セクションで説明されているとおり）。サポートされる `forward-email-site-verification=` 値は 1 つのみであり、複数指定された場合は 550 エラーが発生し、送信者はこの受信者へのバウンスを受け取ります。
+* 抽出された転送設定を再帰的に反復処理し、グローバル転送、正規表現ベースの転送、その他サポートされているすべての転送設定（現在「転送アドレス」と呼ばれています）を特定します。
 * 各転送アドレスに対して、1 回の再帰検索をサポートします（これにより、指定されたアドレスでこの一連の操作が再度開始されます）。再帰的に一致が見つかった場合、親の結果が転送アドレスから削除され、子が追加されます。
 * 転送先アドレスは一意であるかどうか解析されます（1つのアドレスに重複したメールを送信したり、不要なSMTPクライアント接続を発生させたりしないため）。
-* 各転送先アドレスについて、APIエンドポイント `/v1/max-forwarded-addresses` でドメイン名を検索します（ドメインがエイリアスごとにメールを転送できるアドレスの数を決定するため。例：デフォルトでは10件。詳細は [エイリアスごとの転送の最大制限](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias) のセクションを参照してください）。この制限を超えると550エラーが発生し、送信者はこの受信者のバウンスを受け取ります。
-* 元の受信者の設定をAPIエンドポイント `/v1/settings` で検索します。これは有料ユーザー向けの検索をサポートしています（無料ユーザー向けのフォールバック機能付き）。これは、`port` (数値、例：`25`)、`has_adult_content_protection` (ブール値)、`has_phishing_protection` (ブール値)、`has_executable_protection` (ブール値)、および `has_virus_protection` (ブール値) の詳細設定用の構成オブジェクトを返します。
-* これらの設定に基づいて、スパムスキャナの結果と照合し、エラーが発生した場合は、メッセージは554エラーコードで拒否されます (例：`has_virus_protection` が有効になっている場合は、スパムスキャナの結果でウイルスをチェックします)。無料プランのすべてのユーザーは、アダルトコンテンツ、フィッシング、実行ファイル、およびウイルスのチェックにオプトインされることに注意してください。デフォルトでは、すべての有料プランのユーザーもオプトインされていますが、この構成はメール転送ダッシュボードのドメインの [設定] ページで変更できます。
+* 各転送先アドレスについて、APIエンドポイント`/v1/max-forwarded-addresses`に対してドメイン名を検索します（ドメインがエイリアスごとにメールを転送できるアドレスの数を決定するため。例えば、デフォルトでは10件です。`example.com`0のセクションを参照してください）。この制限を超えると550エラーが発生し、送信者はこの受信者のバウンスを受け取ります。
+* 元の受信者の設定をAPIエンドポイント`example.com`1に対して検索します。これは有料ユーザー向けの検索をサポートしています（無料ユーザー向けのフォールバック機能付き）。これは、`example.com`2（数値、例：`example.com`3）、`example.com`4（ブール値）、`example.com`5（ブール値）、`example.com`6（ブール値）、および`example.com`7（ブール値）の詳細設定用の構成オブジェクトを返します。
+* これらの設定に基づいて、スパムスキャナの結果と照合し、エラーが発生した場合は、メッセージは554エラーコードで拒否されます（例：`example.com`8が有効になっている場合は、スパムスキャナの結果でウイルスをチェックします）。無料プランのすべてのユーザーは、アダルトコンテンツ、フィッシング、実行ファイル、およびウイルスのチェックにオプトインされることに注意してください。デフォルトでは、すべての有料プランのユーザーもオプトインされていますが、この構成はメール転送ダッシュボードのドメインの [設定] ページで変更できます。
 
 10. 処理された受信者の転送アドレスごとに、次の操作を実行します。
 
-* アドレスは [拒否リスト](#do-you-have-a-denylist) と照合され、リストに含まれていた場合は 421 エラーコードが返されます（送信者に後で再試行するように指示します）。
-* アドレスが Webhook の場合、以降の操作のためにブール値を設定します（下記参照 – 配信用に複数の POST リクエストではなく、類似の Webhook をグループ化して 1 つの接続を作成します）。
-* アドレスがメールアドレスの場合、以降の操作のためにホストを解析します（下記参照 – 配信用に複数の個別の接続ではなく、類似のホストをグループ化して 1 つの接続を作成します）。
+* アドレスは[拒否リスト](#do-you-have-a-denylist)と照合され、リストに含まれていた場合は421エラーコードが返されます（送信者に後で再試行するように指示します）。
+* アドレスがWebhookの場合、以降の操作のためにブール値を設定します（下記参照 – 配信用に複数のPOSTリクエストではなく、類似のWebhookをグループ化して1つのPOSTリクエストを作成します）。
+* アドレスがメールアドレスの場合、以降の操作のためにホストを解析します（下記参照 – 配信用に複数の個別の接続ではなく、類似のホストをグループ化して1つの接続を作成します）。
 
 11. 受信者が存在せず、バウンスもない場合は、「受信者が無効です」という 550 エラーで応答します。
 
-12. 受信者がいる場合は、同じホストでグループ化された受信者を反復処理し、メールを配信します。詳細については、以下のセクション「[メール配信の問題にどのように対処しますか](#how-do-you-handle-email-delivery-issues)」をご覧ください。
+12. 受信者がいる場合は、同じホストでグループ化された受信者を反復処理し、メールを配信します。詳細については、以下の[メール配信の問題にどのように対処しますか](#how-do-you-handle-email-delivery-issues)セクションをご覧ください。
 
 * メール送信中にエラーが発生した場合、エラーはメモリに保存され、後で処理されます。
-* メール送信時に発生したエラーコードのうち、最も低いエラーコード（存在する場合）が、`DATA` コマンドへの応答コードとして使用されます。つまり、配信されなかったメールは通常、元の送信者によって再試行されますが、既に配信されたメールは次回のメッセージ送信時に再送信されません（[指紋採取](#how-do-you-determine-an-email-fingerprint) を使用しているため）。
+* メール送信時に発生したエラーコードのうち、最も低いエラーコード（存在する場合）が `DATA` コマンドへの応答コードとして使用されます。つまり、配信されなかったメールは通常、元の送信者によって再試行されますが、既に配信されたメールは次回のメッセージ送信時に再送信されません（[指紋採取](#how-do-you-determine-an-email-fingerprint) を使用しているため）。
 * エラーが発生しなかった場合は、SMTP 応答ステータスコード 250（成功）が送信されます。
 * バウンスとは、配信試行の結果、ステータスコードが 500 以上（永続的な失敗）になったメールを指します。
 
 13. バウンスが発生しなかった場合 (永続的な失敗)、非永続的な失敗からの最も低いエラー コードの SMTP 応答ステータス コード (バウンスがなかった場合は 250 の成功ステータス コード) を返します。
 
-14. バウンスが発生した場合、送信者に最も低いエラーコードを返した後、バックグラウンドでバウンスメールを送信します。ただし、最も低いエラーコードが500以上の場合は、バウンスメールを送信しません。これは、バウンスメールを送信すると、送信者が二重のバウンスメール（例：Gmailなどの送信MTAからのメールと、当社からのメール）を受信することになるためです。詳細については、以下の[後方散乱からどのように保護するか](#how-do-you-protect-against-backscatter)のセクションをご覧ください。
+14. バウンスが発生した場合、送信者に最も低いエラーコードを返した後、バックグラウンドでバウンスメールを送信します。ただし、最も低いエラーコードが500以上の場合は、バウンスメールを送信しません。これは、バウンスメールを送信すると、送信者が二重のバウンスメール（例：Gmailなどの送信MTAからのメールと、当社からのメール）を受信することになるためです。詳細については、以下の[後方散乱からどのように保護するか](#how-do-you-protect-against-backscatter)に関するセクションをご覧ください。
 
 ### メール配信の問題をどのように処理しますか？ {#how-do-you-handle-email-delivery-issues}
 
-送信者の DMARC ポリシーが通らず、DKIM 署名が「From」ヘッダーと一致していない場合にのみ、電子メールの「Friendly-From」の書き換えが行われます。つまり、メッセージの「From」ヘッダーを変更し、「X-Original-From」を設定し、まだ設定されていない場合は「Reply-To」も設定します。また、これらのヘッダーを変更した後、メッセージの ARC シールを再シールします。
+なお、送信者のDMARCポリシーが不合格で、かつDKIM署名がFromヘッダーと一致していない場合にのみ、メールの「Friendly-From」を書き換えます。つまり、メッセージの「From」ヘッダーを変更し、「X-Original-From」を設定し、「Reply-To」がまだ設定されていない場合は設定します。また、これらのヘッダーを変更した後、メッセージのARCシールも再シールします。
 
 また、コード、DNS リクエスト、Node.js 内部、HTTP リクエスト (例: 受信者が Webhook の場合、408、413、429 は SMTP 応答コード 421 にマッピングされます)、メール サーバーの応答 (例: 「defer」または「slowdown」を含む応答は 421 エラーとして再試行されます) など、スタックのあらゆるレベルでエラー メッセージのスマート解析を使用します。
 
@@ -3147,7 +3147,7 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 
 当社の IP アドレスは公開されています ([詳細については、以下のセクションをご覧ください。](#what-are-your-servers-ip-addresses))。
 
-### ポストマスターアドレスとは何ですか？ {#what-are-postmaster-addresses}
+### 郵便局長の住所とは何ですか？ {#what-are-postmaster-addresses}
 
 誤った宛先へのバウンスや、監視されていないメールボックスや存在しないメールボックスへの不在応答メッセージの送信を防ぐために、メール デーモンのようなユーザー名のリストを維持しています。
 
@@ -3170,9 +3170,9 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 * `postmaster`
 * [および返信不可のアドレス](#what-are-no-reply-addresses)
 
-このようなリストを使用して効率的な電子メール システムを作成する方法の詳細については、「[RFC 5320 セクション 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6)」を参照してください。
+このようなリストを使用して効率的な電子メール システムを作成する方法の詳細については、[RFC 5320 セクション4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) を参照してください。
 
-### ノーリプライアドレスとは {#what-are-no-reply-addresses}
+### ノーリプライアドレスとは{#what-are-no-reply-addresses}
 
 次のいずれかに等しい電子メール ユーザー名 (大文字と小文字は区別されません) は、返信不可アドレスとみなされます。
 
@@ -3195,13 +3195,13 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 * `noreply`
 * `noreplys`
 
-このリストは[GitHub上のオープンソースプロジェクトとして](https://github.com/forwardemail/reserved-email-addresses-list) によって管理されています。
+このリストは [GitHub上のオープンソースプロジェクトとして](https://github.com/forwardemail/reserved-email-addresses-list) で管理されます。
 
 ### サーバーのIPアドレスは何ですか？ {#what-are-your-servers-ip-addresses}
 
-当社のIPアドレスは<https://forwardemail.net/ips>.で公開されています。
+弊社のIPアドレスは<https://forwardemail.net/ips>.>で公開されています。
 
-### 許可リストはありますか？ {#do-you-have-an-allowlist}
+### 許可リストはありますか？{#do-you-have-an-allowlist}
 
 はい、デフォルトで許可リストに登録されている [ドメイン名拡張子のリスト](#what-domain-name-extensions-are-allowlisted-by-default) と、[厳格な基準](#what-is-your-allowlist-criteria) に基づいた動的でキャッシュされたローリング許可リストがあります。
 
@@ -3421,7 +3421,7 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-さらに、次の [ブランドおよび企業のトップレベルドメイン](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) はデフォルトで許可リストに登録されています (例: Apple Card 銀行明細書の `applecard.apple` の場合は `apple`)。
+さらに、次の [ブランドおよび企業のトップレベルドメイン](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) はデフォルトで許可リストに登録されています (例: Apple Card 銀行明細書の `applecard.apple` の場合は `apple`):
 
 <ul class="list-inline">
 <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3723,7 +3723,7 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 <li class="list-inline-item"><code class="notranslate">プレイステーション</code></li>
 <li class="list-inline-item"><code class="notranslate">ポール</code></li>
 <li class="list-inline-item"><code class="notranslate">ポリシー</code></li>
-<li class="list-inline-item"><code class="notranslate">実践</code></li>
+<li class="list-inline-item"><code class="notranslate">プラクシ</code></li>
 <li class="list-inline-item"><code class="notranslate">製品</code></li>
 <li class="list-inline-item"><code class="notranslate">プログレッシブ</code></li>
 <li class="list-inline-item"><code class="notranslate">プル</code></li>
@@ -3846,7 +3846,7 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 <li class="list-inline-item"><code class="notranslate">Zippo</code></li>
 </ul>
 
-2025 年 3 月 18 日現在、以下のフランス海外領土もこのリストに追加されました ([このGitHubリクエストに従って](https://github.com/forwardemail/forwardemail.net/issues/327))。
+2025 年 3 月 18 日現在、以下のフランス海外領土もこのリスト ([このGitHubリクエストに従って](https://github.com/forwardemail/forwardemail.net/issues/327)) に追加されました。
 
 <ul class="list-inline">
 <li class="list-inline-item"><code class="notranslate">bzh</code></li>
@@ -3886,14 +3886,13 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 
 ### 許可リストの基準は何ですか？ {#what-is-your-allowlist-criteria}
 
-当社では [ドメイン名拡張子はデフォルトで許可リストに登録される](#what-domain-name-extensions-are-allowlisted-by-default) の静的リストを保有しており、また、以下の厳格な基準に基づいて、動的でキャッシュされたローリング許可リストも維持しています。
+当社では [ドメイン名拡張子はデフォルトで許可リストに登録される](#what-domain-name-extensions-are-allowlisted-by-default) の静的リストを保有しており、さらに以下の厳格な基準に基づいて、動的でキャッシュされたローリング許可リストも維持しています。
 
-* 送信者のルートドメインは、[無料プランで提供しているリストに一致するドメイン名拡張子](#what-domain-name-extensions-can-be-used-for-free) である必要があります（`biz` と `info` も含む）。また、`edu`、`gov`、`mil` の部分一致（`xyz.gov.au` や `xyz.edu.au` など）も含まれます。
-* 送信者のルートドメインは、[傘の人気ランキング](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") から解析された上位 100,000 件の一意のルートドメイン（UPL）内に収まっている必要があります。
-* 送信者のルートドメインは、過去7日間のUPLのうち少なくとも4日間（\~50%以上）に出現する一意のルートドメインの上位50,000件以内に含まれていなければなりません。
-* 送信者のルートドメインは、Cloudflareによってアダルトコンテンツまたはマルウェアとして分類されている[分類された](https://radar.cloudflare.com/categorization-feedback/)であってはなりません。
-* 送信者のルートドメインには、AレコードまたはMXレコードのいずれかが設定されている必要があります。
-* 送信者のルートドメインには、Aレコード、MXレコード、`p=reject`または`p=quarantine`を含むDMARCレコード、または`-all`または`~all`修飾子を含むSPFレコードのいずれかが設定されている必要があります。
+* 送信者のルートドメインは、[無料プランで提供しているリストに一致するドメイン名拡張子](#what-domain-name-extensions-can-be-used-for-free)（`biz`と`info`を含む）である必要があります。また、`xyz.gov.au`や`xyz.edu.au`など、`edu`、`gov`、`mil`の部分一致も含まれます。
+* 送信者のルートドメインは、[傘の人気ランキング](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List")（以下「UPL」）の解析結果における一意のルートドメイン上位10万件以内である必要があります。
+* 送信者のルートドメインは、過去7日間のUPLのうち少なくとも4日間に出現する一意のルートドメインの上位5万件以内である必要があります（約50%以上）。
+* 送信者のルートドメインは、Cloudflareによってアダルトコンテンツまたはマルウェアとして分類されている[分類された](https://radar.cloudflare.com/categorization-feedback/)であってはなりません。 * 送信者のルートドメインには、A レコードまたは MX レコードのいずれかが設定されている必要があります。
+* 送信者のルートドメインには、A レコード、MX レコード、`biz`0 または `biz`1 を指定した DMARC レコード、または `biz`2 または `biz`3 を指定した SPF レコードのいずれかが設定されている必要があります。
 
 この基準が満たされた場合、送信者のルートドメインは7日間キャッシュされます。自動ジョブは毎日実行されるため、これは毎日更新されるローリングホワイトリストキャッシュです。
 
@@ -3901,11 +3900,11 @@ DNS または接続エラーが発生した場合は、`DATA` コマンドに SM
 
 Google、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotify など、この記事の執筆時点で人気のドメインももちろん含まれています。
 
-許可リストに登録されていない送信者の場合、FQDNルートドメインまたはIPアドレスから初めてメールを送信すると、[レート制限](#do-you-have-rate-limiting) および [グレーリスト](#do-you-have-a-greylist) として保護されます。これはメールの標準として採用されている標準的な方法であることにご注意ください。ほとんどのメールサーバークライアントは、レート制限またはグレーリストエラー（例：421または4xxレベルのエラーステータスコード）を受信すると、再試行を試みます。
+許可リストに登録されていない送信者の場合、FQDNルートドメインまたはIPアドレスから初めてメールを送信すると、[レート制限](#do-you-have-rate-limiting)と[グレーリスト](#do-you-have-a-greylist)が設定されます。これはメールの標準規格として採用されている標準的な方法であることにご注意ください。ほとんどのメールサーバークライアントは、レート制限またはグレーリストエラー（例：421または4xxレベルのエラーステータスコード）を受信すると、再試行を試みます。
 
-**`a@gmail.com`、`b@xyz.edu`、`c@gov.au` などの特定の送信者は、引き続き [拒否リスト](#do-you-have-a-denylist)** である可能性があることに注意してください (たとえば、これらの送信者からのスパム、フィッシング、またはマルウェアが自動的に検出された場合など)。
+**`a@gmail.com`、`b@xyz.edu`、`c@gov.au` などの特定の送信者は、[拒否リスト](#do-you-have-a-denylist) になる可能性があることに注意してください** (たとえば、これらの送信者からのスパム、フィッシング、またはマルウェアを自動的に検出した場合など)。
 
-### 無料で使用できるドメイン名拡張子はどれですか？ {#what-domain-name-extensions-can-be-used-for-free}
+### 無料で使用できるドメイン名拡張子 {#what-domain-name-extensions-can-be-used-for-free}
 
 2023 年 3 月 31 日より、ユーザーとサービスを保護するために、新しい包括的なスパム ルールを施行しました。
 
@@ -4007,9 +4006,9 @@ Google、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotify など�
 <li class="list-inline-item"><code class="notranslate">ザ</code></li>
 </ul>
 
-### グレーリストはありますか？ {#do-you-have-a-greylist}
+### グレーリストはありますか？{#do-you-have-a-greylist}
 
-はい、非常に緩い[メールのグレーリスト](https://en.wikipedia.org/wiki/Greylisting_\(email\))ポリシーを採用しています。グレーリストは許可リストに登録されていない送信者にのみ適用され、キャッシュに30日間保存されます。
+はい、非常に緩い[電子メールのグレーリスト](https://en.wikipedia.org/wiki/Greylisting_\(email\)ポリシーを採用しています。グレーリストは許可リストに登録されていない送信者にのみ適用され、キャッシュに30日間保存されます。
 
 新規送信者については、最初のリクエストの到着時刻を値として設定したキーをRedisデータベースに30日間保存します。その後、再試行ステータスコード450でメールを拒否し、5分経過後にのみ送信を許可します。
 
@@ -4017,17 +4016,17 @@ Google、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotify など�
 
 キーはFQDNルートドメインまたは送信者のIPアドレスのいずれかで構成されます。つまり、グレーリストを通過するサブドメインはルートドメインでも通過し、その逆も同様です（これが「非常に緩い」ポリシーの意味です）。
 
-例えば、`test.example.com` からのメールが `example.com` からのメールよりも先に届いた場合、`test.example.com` および/または `example.com` からのメールは、接続の最初の到着時刻から 5 分間待機する必要があります。`test.example.com` と `example.com` の両方にそれぞれ 5 分間の待機時間を設定することはありません（グレーリストポリシーはルートドメインレベルで適用されます）。
+例えば、`example.com` からのメールよりも先に `test.example.com` からのメールが届いた場合、`test.example.com` および/または `example.com` からのメールは、接続の最初の到着時刻から 5 分間待機する必要があります。`test.example.com` と `example.com` の両方に 5 分間の待機時間を設定することはありません（グレーリストポリシーはルートドメインレベルで適用されます）。
 
-グレーリストは、[許可リスト](#do-you-have-an-allowlist) 上の送信者 (本稿執筆時点では Meta、Amazon、Netflix、Google、Microsoft など) には適用されないことに注意してください。
+グレーリストは、[許可リスト](#do-you-have-an-allowlist) 上の送信者 (執筆時点では Meta、Amazon、Netflix、Google、Microsoft など) には適用されないことに注意してください。
 
-### ブラックリストをお持ちですか？ {#do-you-have-a-denylist}
+### ブラックリストはありますか？{#do-you-have-a-denylist}
 
 はい、当社は独自のブラックリストを運用しており、検出されたスパムや悪意のあるアクティビティに基づいて、リアルタイムで自動更新および手動で更新しています。
 
-また、<http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> で 1 時間ごとに UCEPROTECT レベル 1 のブラックリストからすべての IP アドレスを取得し、7 日間の有効期限でブラックリストに送信します。
+また、<http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> で UCEPROTECT レベル 1 のブラックリストからすべての IP アドレスを 1 時間ごとに取得し、7 日間の有効期限でブラックリストに追加します。
 
-拒否リストに見つかった送信者は、[許可リストに登録されていない](#do-you-have-an-allowlist) の場合、421 エラー コード (後で再試行するように送信者に指示する) を受け取ります。
+拒否リストに見つかった送信者は、[許可リストに登録されていない](#do-you-have-an-allowlist) の場合、421 エラー コード (送信者に後で再試行するように指示) を受け取ります。
 
 554 ステータス コードの代わりに 421 ステータス コードを使用すると、潜在的な誤検知をリアルタイムで軽減でき、次の試行でメッセージを正常に配信できるようになります。
 
@@ -4035,52 +4034,52 @@ Google、Yahoo、Microsoft、Amazon、Meta、Twitter、Netflix、Spotify など�
 
 すべてのブラックリスト削除リクエストは、管理者によってリアルタイムで監視されます (たとえば、繰り返し発生する誤検知を管理者が永続的にブラックリストに追加できるようにするため)。
 
-ブラックリストの削除リクエストは <https://forwardemail.net/denylist>. でリクエストできます。有料ユーザーの場合、ブラックリストの削除リクエストは即座に処理されますが、無料ユーザーの場合は管理者がリクエストを処理するまで待つ必要があります。
+ブラックリストの削除リクエストは <https://forwardemail.net/denylist>. でリクエストできます。有料ユーザーの場合、ブラックリストの削除リクエストは即座に処理されますが、無料ユーザーは管理者がリクエストを処理するまで待つ必要があります。
 
 スパムまたはウイルス コンテンツを送信していると検出された送信者は、次の方法で拒否リストに追加されます。
 
-1. [初期メッセージのフィンガープリント](#how-do-you-determine-an-email-fingerprint) は、スパムまたは「信頼できる」送信者からのブロックリストが検出されると、グレーリストに登録されます（例：`gmail.com`、`microsoft.com`、`apple.com`）。
+1. [初期メッセージのフィンガープリント](#how-do-you-determine-an-email-fingerprint) は、「信頼できる」送信者（例：`gmail.com`、`microsoft.com`、`apple.com`）からのスパムメールまたはブロックリストメールが検出されると、グレーリストに登録されます。
 * 送信者が許可リストに登録されている場合、メッセージは1時間グレーリストに登録されます。
 * 送信者が許可リストに登録されていない場合、メッセージは6時間グレーリストに登録されます。
-2. 送信者とメッセージの情報からブラックリストキーを解析し、これらのキーごとにカウンターを作成し（まだ存在しない場合）、1ずつ増やして24時間キャッシュします。
-* 許可リストに登録されている送信者の場合:
-* エンベロープ「MAIL FROM」メールアドレスのキーを追加します（SPFに合格または合格しておらず、かつ[ポストマスターのユーザー名](#what-are-postmaster-addresses)または[返信不可のユーザー名](#what-are-no-reply-addresses)でない場合）。
-* 「From」ヘッダーが許可リストに登録されている場合、SPFに合格またはDKIMに合格して調整されている場合は、「From」ヘッダーのメールアドレスのキーを追加します。
-* 「From」ヘッダーが許可リストに登録されていない場合は、「From」ヘッダーのメールアドレスとそのルート解析済みドメイン名のキーを追加します。
-* 許可リストに登録されていない送信者の場合:
-* エンベロープ「MAIL FROM」メールアドレスのキーを追加します（SPFに合格した場合）。
-* 「From」ヘッダーが許可リストに登録されている場合、SPFに合格またはDKIMに合格して調整されている場合は、「From」ヘッダーのメールアドレスのキーを追加します。
-* 「From」ヘッダーがホワイトリストに登録されていない場合は、「From」ヘッダーのメールアドレスとそのルート解析ドメイン名のキーを追加します。
+2. 送信者とメッセージの情報からブラックリストキーを解析し、これらのキーごとにカウンターを作成し（まだ存在しない場合）、1ずつ増加させて24時間キャッシュします。
+* 許可リストに登録されている送信者の場合：
+* エンベロープの「MAIL FROM」メールアドレスが SPF に合格または不合格で、かつ [ポストマスターのユーザー名](#what-are-postmaster-addresses) または [返信不可のユーザー名](#what-are-no-reply-addresses) でなかった場合、キーを追加します。
+* 「From」ヘッダーがホワイトリストに登録されている場合、SPFまたはDKIMに合格し調整済みの状態であれば、「From」ヘッダーのメールアドレスのキーを追加します。
+* 「From」ヘッダーがホワイトリストに登録されていない場合は、「From」ヘッダーのメールアドレスとそのルート解析済みドメイン名のキーを追加します。
+* ホワイトリストに登録されていない送信者の場合：
+* SPFに合格した場合、エンベロープ「MAIL FROM」メールアドレスのキーを追加します。
+* 「From」ヘッダーがホワイトリストに登録されている場合、SPFまたはDKIMに合格し調整済みの状態であれば、「From」ヘッダーのメールアドレスのキーを追加します。
+* 「From」ヘッダーがホワイトリストに登録されていない場合は、「From」ヘッダーのメールアドレスとそのルート解析済みドメイン名のキーを追加します。
 * 送信者のリモートIPアドレスのキーを追加します。
-* 送信者のIPアドレスから逆引きしてクライアントが解決したホスト名のキーを追加します（存在する場合）。
-* クライアントが解決したホスト名のルートドメインのキーを追加します（存在する場合、かつクライアントが解決したホスト名と異なる場合）。
-3. ホワイトリストに登録されていない送信者とキーのカウンターが5に達した場合、そのキーは30日間ブラックリストに登録され、不正使用対策チームにメールが送信されます。これらの数値は変更される可能性があり、不正使用の監視に伴い更新されます。
-4. ホワイトリストに登録されている送信者とキーのカウンターが10に達した場合、そのキーは7日間ブラックリストに登録され、不正使用対策チームにメールが送信されます。これらの数値は変更される可能性があり、不正使用の監視に伴い更新されます。
+* 送信者のIPアドレスから逆引きして解決されたクライアントホスト名のキーを追加します（存在する場合）。
+* クライアントが解決したホスト名のルートドメインに対応するキーを追加します（ルートドメインが存在し、クライアントが解決したホスト名と異なる場合）。
+3. 許可リストに登録されていない送信者とキーのカウンタが5に達した場合、そのキーは30日間ブラックリストに登録され、不正使用対策チームにメールが送信されます。これらの数値は変更される可能性があり、不正使用の監視に伴い更新情報がこのページに反映されます。
+4. 許可リストに登録されている送信者とキーのカウンタが10に達した場合、そのキーは7日間ブラックリストに登録され、不正使用対策チームにメールが送信されます。これらの数値は変更される可能性があり、不正使用の監視に伴い更新情報がこのページに反映されます。
 
 > **注:** 近い将来、レピュテーションモニタリングを導入する予定です。レピュテーションモニタリングでは、送信者をブラックリストに登録するタイミングを、パーセンテージのしきい値に基づいて計算します（前述の基本的なカウンターとは対照的です）。
 
 ### レート制限はありますか？ {#do-you-have-rate-limiting}
 
-送信者レート制限は、送信者のIPアドレスの逆PTRルックアップから解析されたルートドメインに基づいて行われます。それでも結果が得られない場合は、送信者のIPアドレスのみが使用されます。以下では、これを`Sender`と表記します。
+送信者のレート制限は、送信者のIPアドレスの逆PTRルックアップから解析されたルートドメインに基づいて行われます。それでも結果が得られない場合は、送信者のIPアドレスのみが使用されます。以下では、これを`Sender`と呼びます。
 
 当社の MX サーバーには、[暗号化されたIMAPストレージ](/blog/docs/best-quantum-safe-encrypted-email-service) で受信される受信メールの毎日の制限があります。
 
-* 受信メールのレート制限を、個々のエイリアス（例：`you@yourdomain.com`）ごとに行うのではなく、エイリアスのドメイン名自体（例：`yourdomain.com`）ごとに行います。これにより、ドメイン全体のすべてのエイリアスの受信トレイに `Senders` が一斉に届くのを防ぎます。
-* 受信者を問わず、サービス全体のすべての`Senders`に適用される一般的な制限があります。
-* 信頼できる情報源として「信頼できる」とみなされる`Senders`（例：`gmail.com`、`microsoft.com`、`apple.com`）は、1日あたり100GBの送信に制限されます。
-* [許可リストに登録](#do-you-have-an-allowlist)である`Senders`は、1日あたり10GBの送信に制限されます。
-* その他のすべての`Senders`は、1日あたり1GBまたは1000通のメッセージ送信に制限されます。
-* `Sender` および `yourdomain.com` ごとに、1 日あたり 1 GB および/または 1,000 件のメッセージという特定の制限があります。
+* 受信メールのレート制限を個々のエイリアス（例：`you@yourdomain.com`）ごとに行うのではなく、エイリアスのドメイン名（例：`yourdomain.com`）ごとにレート制限を行います。これにより、`Senders` がドメイン全体のすべてのエイリアスの受信トレイに一度に大量のメールを流してしまうことを防ぎます。
+* 受信者に関わらず、サービス全体のすべての `Senders` に適用される一般的な制限があります。
+* 信頼できる情報源として「信頼できる」と判断された `Senders`（例：`gmail.com`、`microsoft.com`、`apple.com`）は、1日あたり100GBの送信に制限されます。
+* [許可リストに登録](#do-you-have-an-allowlist) である `Senders` は、1 日あたり 10 GB の送信に制限されています。
+* その他すべての `yourdomain.com`0 は、1 日あたり 1 GB または 1,000 件のメッセージ送信に制限されています。
+* `yourdomain.com`1 および `yourdomain.com`2 には、1 日あたり 1 GB または 1,000 件のメッセージ送信という特定の制限があります。
 
 MX サーバーは、レート制限を通じて 1 人以上の受信者に転送されるメッセージも制限しますが、これは `Senders` にのみ適用され、[許可リスト](#do-you-have-an-allowlist) には適用されません。
 
-* 1時間あたり、`Sender` 解決済みのFQDNルートドメイン（または）`Sender` リモートIPアドレス（逆PTRが利用できない場合）あたり、およびエンベロープ受信者あたり最大100接続まで許可します。レート制限用のキーは、暗号ハッシュとしてRedisデータベースに保存されます。
+* 1時間あたり、`Sender`で解決されたFQDNルートドメイン（または）`Sender`リモートIPアドレス（逆PTRが利用できない場合）ごとに、およびエンベロープ受信者ごとに最大100接続まで許可します。レート制限用のキーは、暗号ハッシュとしてRedisデータベースに保存されます。
 
 * 弊社のシステムを通じて電子メールを送信する場合は、すべての IP アドレスに対して逆 PTR が設定されていることを確認してください (そうでない場合、送信元の固有の FQDN ルート ドメインまたは IP アドレスごとにレート制限が行われます)。
 
 * Amazon SES などの一般的なシステムを介して送信する場合、(この記事の執筆時点では) Amazon SES が許可リストに含まれているため、レート制限は発生しないことに注意してください。
 
-* `test.abc.123.example.com` のようなドメインから送信する場合、レート制限は `example.com` に適用されます。多くのスパマーは、FQDN ルートドメインではなく、ホスト名のみをレート制限する一般的なスパムフィルターを回避するために、数百ものサブドメインを使用しています。
+* `test.abc.123.example.com` などのドメインから送信する場合、レート制限は `example.com` に適用されます。多くのスパマーは、FQDN ルートドメインではなく、ホスト名のみにレート制限をかける一般的なスパムフィルターを回避するために、数百ものサブドメインを使用しています。
 
 * レート制限を超える `Senders` は 421 エラーで拒否されます。
 
@@ -4090,21 +4089,21 @@ MX サーバーは、レート制限を通じて 1 人以上の受信者に転�
 
 ### バックスキャッターからどのように保護しますか？ {#how-do-you-protect-against-backscatter}
 
-誤った宛先へのバウンスやバウンス スパム (「[後方散乱](https://en.wikipedia.org/wiki/Backscatter_\(email\)」として知られています) は、送信者の IP アドレスの評判を落とす原因となる可能性があります。
+誤った宛先へのバウンスやバウンス スパム (「[後方散乱](https://en.wikipedia.org/wiki/Backscatter_\(email\)」と呼ばれます) は、送信者の IP アドレスに悪い評価を与える可能性があります。
 
-バックスキャッターを防ぐために 2 つの手順を実行します。詳細については、以下のセクション [既知のMAIL FROMスパマーからのバウンスを防ぐ](#prevent-bounces-from-known-mail-from-spammers) および [不要な反射を防ぎ、後方散乱から保護する](#prevent-unnecessary-bounces-to-protect-against-backscatter) を参照してください。
+バックスキャッターを防ぐために 2 つの手順を実行します。詳細については、以下のセクション [既知のMAIL FROMスパマーからのバウンスを防ぐ](#prevent-bounces-from-known-mail-from-spammers) と [不要な反射を防ぎ、後方散乱から保護する](#prevent-unnecessary-bounces-to-protect-against-backscatter) を参照してください。
 
-### 既知の MAIL FROM スパマーからのバウンスを防止します {#prevent-bounces-from-known-mail-from-spammers}
+### 既知のMAIL FROMスパマーからのバウンスを防止します {#prevent-bounces-from-known-mail-from-spammers}
 
-私たちは、1 時間ごとに <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> の [Backscatter.org](https://www.backscatterer.org/) ([UCEPROTECT](https://www.uceprotect.net/) を使用) からリストを取得し、Redis データベースにフィードします (尊重する必要がある IP が削除された場合に備えて、事前に差異も比較します)。
+私たちは、1 時間ごとに <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> で [Backscatter.org](https://www.backscatterer.org/) ([UCEPROTECT](https://www.uceprotect.net/) を使用) からリストを取得し、それを Redis データベースにフィードします (尊重する必要がある IP が削除された場合に備えて、事前に差異も比較します)。
 
 MAIL FROM が空白の場合、または [郵便局長の住所](#what-are-postmaster-addresses) (電子メールの @ の前の部分) のいずれかと等しい場合 (大文字と小文字は区別されません)、送信者の IP がこのリストのいずれかと一致するかどうかを確認します。
 
-送信者のIPアドレスがリストに記載されている場合（かつ[許可リスト](#do-you-have-an-allowlist)に登録されていない場合）、554エラーと`The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`というメッセージを送信します。送信者がBackscattererリストと許可リストの両方に登録されている場合は、アラートが通知され、必要に応じて問題を解決します。
+送信者のIPアドレスがリストに載っている場合（[許可リスト](#do-you-have-an-allowlist)には載っていない場合）、`The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`というメッセージと共に554エラーを送信します。送信者がBackscattererリストと許可リストの両方に登録されている場合は、アラートが通知され、必要に応じて問題を解決します。
 
-このセクションで説明する手法は、<https://www.backscatterer.org/?target=usage> の「セーフ モード」推奨事項に準拠しています。この推奨事項では、特定の条件がすでに満たされている場合にのみ送信元 IP がチェックされます。
+このセクションで説明する手法は、<https://www.backscatterer.org/?target=usage> の「セーフ モード」推奨事項に準拠しています。セーフ モードでは、特定の条件がすでに満たされている場合にのみ送信元 IP をチェックします。
 
-### 不要なバウンスを防ぎ、バックスキャッターから保護します {#prevent-unnecessary-bounces-to-protect-against-backscatter}
+### 不要なバウンスを防ぎ、バックスキャッタリングから保護します {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
 バウンスは、受信者へのメール転送が完全に失敗し、メールが再試行されないことを示すメールです。
 
@@ -4112,39 +4111,39 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 
 1. ステータス コード エラーが 500 以上発生した場合にのみ送信します (メールの転送が失敗した場合、たとえば Gmail が 500 レベルのエラーで応答した場合など)。
 
-2. 送信は一度だけ行います（重複送信を防ぐため、計算されたバウンスフィンガープリントキーを使用し、キャッシュに保存します）。バウンスフィンガープリントとは、メッセージのフィンガープリントと、バウンスアドレスとそのエラーコードのハッシュを組み合わせたキーです。メッセージフィンガープリントの計算方法の詳細については、[指紋採取](#how-do-you-determine-an-email-fingerprint) のセクションをご覧ください。送信に成功したバウンスフィンガープリントは、Redis キャッシュで7日後に有効期限切れとなります。
+2. 送信は一度だけ行います（重複送信を防ぐため、計算されたバウンスフィンガープリントキーを使用し、キャッシュに保存します）。バウンスフィンガープリントとは、メッセージのフィンガープリントと、バウンスアドレスとそのエラーコードのハッシュを組み合わせたキーです。メッセージフィンガープリントの計算方法の詳細については、[指紋採取](#how-do-you-determine-an-email-fingerprint) のセクションをご覧ください。正常に送信されたバウンスフィンガープリントは、Redis キャッシュで7日後に有効期限切れとなります。
 
 3. MAIL FROM および/または From が空白でなく、[ポストマスターのユーザー名](#what-are-postmaster-addresses) (電子メールの @ の前の部分) が含まれていない (大文字と小文字は区別されません) 場合にのみ送信されます。
 
 4. 元のメッセージに次のいずれかのヘッダー（大文字と小文字は区別されません）が含まれている場合は送信しません。
 
 * `auto-submitted` のヘッダーの値が `no` と等しくありません。
-* `x-auto-response-suppress` のヘッダー（値が `dr`、`autoreply`、`auto-reply`、`auto_reply`、または `all` の場合）
-* `list-id`、`list-subscribe`、`list-unsubscribe`、`list-help`、`list-post`、`list-owner`、`list-archive` のヘッダー`x-autoreply`、`x-autorespond`、または `x-auto-respond` (値に関係なく)。
-* `precedence` のヘッダーで、値が `bulk`、`autoreply`、`auto-reply`、`auto_reply`、または `list` です。
+* `x-auto-response-suppress` のヘッダー（値が `dr`、`autoreply`、`auto-reply`、`auto_reply`、または `all`）
+* `list-id`、`list-subscribe`、`no`0、`no`1、`no`2、`no`3、`no`4、`no`5、`no`6、または `no`7 のヘッダー（値に関係なく）。
+* `no`8 のヘッダー。値は `no`9、`x-auto-response-suppress`0、`x-auto-response-suppress`1、`x-auto-response-suppress`2、または `x-auto-response-suppress`3 です。
 
 5. MAIL FROM または From のメール アドレスが `+donotreply`、`-donotreply`、`+noreply`、または `-noreply` で終わる場合は送信されません。
 
-6. 送信元メールアドレスのユーザー名部分が `mdaemon` で、大文字と小文字を区別しないヘッダーが `X-MDDSN-Message` だった場合は送信されません。
+6. 送信元メールアドレスのユーザー名部分が `mdaemon` で、大文字と小文字を区別しないヘッダーが `X-MDDSN-Message` の場合は送信されません。
 
-7. `multipart/report` の、大文字と小文字を区別しない `content-type` ヘッダーがあった場合は送信しません。
+7. `multipart/report` に大文字と小文字を区別しない `content-type` ヘッダーがあった場合は送信しません。
 
 ### メールのフィンガープリントをどのように特定するか {#how-do-you-determine-an-email-fingerprint}
 
-電子メールのフィンガープリントは、電子メールの一意性を判別し、重複したメッセージが配信されたり、[重複バウンス](#prevent-unnecessary-bounces-to-protect-against-backscatter) が送信されたりするのを防ぐために使用されます。
+電子メールのフィンガープリントは、電子メールの一意性を判別し、重複したメッセージが配信され、[重複バウンス](#prevent-unnecessary-bounces-to-protect-against-backscatter) が送信されるのを防ぐために使用されます。
 
 指紋は次のリストから計算されます。
 
 * クライアントが解決したFQDNホスト名またはIPアドレス
-* `Message-ID` ヘッダー値（存在する場合）
-* `Date` ヘッダー値（存在する場合）
-* `From` ヘッダー値（存在する場合）
-* `To` ヘッダー値（存在する場合）
-* `Cc` ヘッダー値（存在する場合）
-* `Subject` ヘッダー値（存在する場合）
-* `Body` 値（存在する場合）
+* `Message-ID`ヘッダー値（存在する場合）
+* `Date`ヘッダー値（存在する場合）
+* `From`ヘッダー値（存在する場合）
+* `To`ヘッダー値（存在する場合）
+* `Cc`ヘッダー値（存在する場合）
+* `Subject`ヘッダー値（存在する場合）
+* `Body`ヘッダー値（存在する場合）
 
-### 25番以外のポートにメールを転送できますか（例：ISPがポート25をブロックしている場合） {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+### 25番以外のポートにメールを転送できますか（例：ISPがポート25をブロックしている場合）{#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
 はい、2020年5月5日よりこの機能を追加しました。現在、この機能はエイリアスではなくドメインごとにご利用いただけます。エイリアスごとにご利用いただく必要がある場合は、ご要望をお知らせください。
 
@@ -4158,9 +4157,9 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 </span>
 </div>
 
-無料プランをご利用の場合は、以下に示すように、新しい DNS <strong class="notranslate">TXT</strong> レコードを追加しますが、ポートを 25 から任意のポートに変更します。
+無料プランをご利用の場合は、以下に示すように新しい DNS <strong class="notranslate">TXT</strong> レコードを追加しますが、ポートを 25 から任意のポートに変更します。
 
-たとえば、`example.com` に送信されるすべてのメールを、エイリアス受信者の SMTP ポート 25 ではなく 1337 に転送する場合は、次のようにします。
+たとえば、`example.com` に送信されるすべてのメールをエイリアス受信者の SMTP ポート 25 ではなく 1337 に転送する場合は、次のようにします。
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4210,7 +4209,7 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 </tbody>
 </table>
 
-### Gmailエイリアスのプラス記号（+）はサポートされていますか？ {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Gmailエイリアスのプラス記号（+）をサポートしていますか？{#does-it-support-the-plus--symbol-for-gmail-aliases}
 
 はい、もちろんです。
 
@@ -4218,9 +4217,9 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 
 はい、もちろんです。名前/ホスト/エイリアスとして「@」、「.」、または空白を使用する代わりに、サブドメイン名を値として使用します。
 
-`foo.example.com` を使用してメールを転送する場合は、DNS 設定 (MX レコードと <strong class="notranslate">TXT</strong> レコードの両方) で、名前/ホスト/エイリアス値として `foo` を入力します。
+`foo.example.com` でメールを転送する場合は、DNS 設定 (MX レコードと <strong class="notranslate">TXT</strong> レコードの両方) で、名前/ホスト/エイリアス値として `foo` を入力します。
 
-### これは私のメールのヘッダーを転送しますか？ {#does-this-forward-my-emails-headers}
+### メールのヘッダーを転送しますか？{#does-this-forward-my-emails-headers}
 
 はい、もちろんです。
 
@@ -4228,17 +4227,17 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 
 はい、[アヴァ](https://github.com/avajs/ava) で記述されたテストがあり、コード カバレッジもあります。
 
-### SMTP応答メッセージとコードを渡しますか？ {#do-you-pass-along-smtp-response-messages-and-codes}
+### SMTP応答メッセージとコードを渡しますか？{#do-you-pass-along-smtp-response-messages-and-codes}
 
-はい、もちろんです。例えば、`hello@example.com` にメールを送信し、そのメールが `user@gmail.com` に転送されるように登録されている場合、プロキシサーバー「mx1.forwardemail.net」または「mx2.forwardemail.net」ではなく、SMTPサーバー「gmail.com」からのSMTP応答メッセージとコードが返されます。
+はい、もちろんです。例えば、`hello@example.com` にメールを送信し、`user@gmail.com` に転送するように登録されている場合、プロキシサーバー「mx1.forwardemail.net」または「mx2.forwardemail.net」ではなく、SMTPサーバー「gmail.com」からのSMTP応答メッセージとコードが返されます。
 
-### スパムメールを防ぎ、メール転送の評判を良くするにはどうすればいいでしょうか？ {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### どのようにしてスパムメールを防ぎ、メール転送の評判を良くしますか？ {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-上記の [メール転送システムはどのように機能しますか](#how-does-your-email-forwarding-system-work)、[メール配信の問題にどのように対処しますか](#how-do-you-handle-email-delivery-issues)、および [IPアドレスがブロックされたらどう対処しますか？](#how-do-you-handle-your-ip-addresses-becoming-blocked) のセクションを参照してください。
+上記の [メール転送システムはどのように機能しますか](#how-does-your-email-forwarding-system-work)、[メール配信の問題にどのように対処しますか](#how-do-you-handle-email-delivery-issues)、および [IPアドレスがブロックされたらどう対処しますか？](#how-do-you-handle-your-ip-addresses-becoming-blocked) に関するセクションを参照してください。
 
 ### ドメイン名のDNSルックアップをどのように実行しますか？ {#how-do-you-perform-dns-lookups-on-domain-names}
 
-オープンソースソフトウェアプロジェクト :tangerine: [タンジェリン](https://github.com/forwardemail/tangerine) を作成し、DNSルックアップに使用しています。デフォルトのDNSサーバーは `1.1.1.1` と `1.0.0.1` で、DNSクエリはアプリケーション層の [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (DoH) を介して実行されます。
+オープンソースソフトウェアプロジェクト :tangerine: [タンジェリン](https://github.com/forwardemail/tangerine) を作成し、DNSルックアップに使用しています。デフォルトのDNSサーバーは`1.1.1.1`と`1.0.0.1`で、DNSクエリはアプリケーション層の[DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS)（「DoH」）を介して実行されます。
 
 :tangerine: [タンジェリン](https://github.com/tangerine) は、[デフォルトで CloudFlare のプライバシー重視のコンシューマー DNS サービス][cloudflare-dns] を使用します。
 
@@ -4248,13 +4247,13 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 
 はい！プラン開始日から30日以内にアカウントをアップグレード、ダウングレード、またはキャンセルすると、自動的に払い戻しが行われます。これは初めてご利用になるお客様のみに適用されます。
 
-### プランを切り替えた場合、差額を日割り計算して返金してもらえますか？ {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### プランを切り替えた場合、差額を日割り計算して返金してもらえますか？{#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
 プラン変更の際、差額の計算や返金は行いません。既存のプランの有効期限からの残存期間を、新しいプランの最も近い期間（月単位で切り捨て）に換算します。
 
 有料プランを初めて開始してから 30 日以内に有料プラン間でアップグレードまたはダウングレードした場合、既存のプランの全額が自動的に返金されますのでご了承ください。
 
-### このメール転送サービスを「フォールバック」または「フォールオーバー」MXサーバーとして使用できますか？ {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
+### このメール転送サービスを「フォールバック」または「フォールオーバー」MXサーバーとして使用できますか？{#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
 いいえ、一度に使用できるメール交換サーバーは1つだけなので、推奨されません。優先度の設定ミスやメールサーバーがMX交換優先度チェックを尊重していないため、フォールバックは通常再試行されません。
 
@@ -4274,11 +4273,11 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 
 「:」マッピングは保持しておく必要があります。これは、これをオフにする場合に必要になります (有料プランのいずれかにアップグレードする場合、インポートにも使用されます)。
 
-**静かな拒否 (送信者にはメッセージが正常に送信されたように見えますが、実際にはどこにも送信されません) (ステータス コード `250`):** エイリアスの先頭に「!」 (感嘆符 1 つ) を付けると、このアドレスに送信しようとした送信者に成功ステータス コード `250` が返されますが、メール自体はどこにも送信されません (ブラックホールや `/dev/null` など)。
+**静かな拒否 (送信者にはメッセージが正常に送信されたように見えますが、実際にはどこにも送信されません) (ステータス コード `250`):** エイリアスの先頭に「!」 (感嘆符 1 つ) を付けると、このアドレスに送信しようとした送信者に成功ステータス コード `250` が返されますが、メール自体はどこにも送信されません (例: ブラックホールまたは `/dev/null`)。
 
-**ソフト拒否の場合 (ステータス コード `421`):** エイリアスの先頭に「!!」(二重感嘆符) を付けると、このアドレスに送信しようとした送信者にソフト エラー ステータス コード `421` が返され、メールは拒否されて返送されるまで最大 5 日間再試行されることがよくあります。
+**ソフト拒否の場合 (ステータス コード `421`):** エイリアスの先頭に「!!」(二重感嘆符) を付けると、このアドレスに送信しようとした送信者に `421` のソフト エラー ステータス コードが返され、メールは拒否されて返送されるまで最大 5 日間再試行されることがよくあります。
 
-**ハード拒否の場合 (ステータス コード `550`):** エイリアスの先頭に「!!!」(3 つの感嘆符) を付けると、このアドレスに送信しようとした送信者に永続的なエラー ステータス コード `550` が返され、メールは拒否されてバウンスされます。
+**ハード拒否の場合 (ステータス コード `550`):** エイリアスの先頭に「!!!」(3 つの感嘆符) を付けると、このアドレスに送信しようとした送信者に `550` の永続的なエラー ステータス コードが返され、メールは拒否されてバウンスされます。
 
 たとえば、`alias@example.com` に送信されるすべてのメールが `user@gmail.com` に流れないようにし、拒否してバウンスするようにしたい場合 (たとえば、感嘆符を 3 つ使用します)。
 
@@ -4359,7 +4358,7 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 </tbody>
 </table>
 
-### メールを複数の受信者に転送できますか {#can-i-forward-emails-to-multiple-recipients}
+### メールを複数の受信者に転送できますか？ {#can-i-forward-emails-to-multiple-recipients}
 
 はい、もちろんです。<strong class="notranslate">TXT</strong> レコードに複数の受信者を指定するだけです。
 
@@ -4417,7 +4416,7 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 
 はい、可能です。<strong class="notranslate">TXT</strong> レコードに複数のグローバルキャッチオール受信者を指定するだけです。
 
-たとえば、`*@example.com` (アスタリスクはワイルドカード、つまりキャッチオールであることを意味します) に送信されるすべてのメールを `user+a@gmail.com` と `user+b@gmail.com` に転送する場合、<strong class="notranslate">TXT</strong> レコードは次のようになります。
+たとえば、`*@example.com` (アスタリスクはワイルドカード、つまりキャッチオールを意味します) に送信されるすべてのメールを `user+a@gmail.com` と `user+b@gmail.com` に転送する場合、<strong class="notranslate">TXT</strong> レコードは次のようになります。
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4469,7 +4468,7 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 
 ### エイリアスごとに転送できるメールアドレスの数に上限はありますか？ {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-はい、デフォルトの上限は10です。これは、ドメイン名にエイリアスを10個しか設定できないという意味ではありません。エイリアスは必要な数だけ（無制限に）設定できます。つまり、1つのエイリアスを転送できるのは10個の固有のメールアドレスだけです。例えば、`hello:user+1@gmail.com`、`hello:user+2@gmail.com`、`hello:user+3@gmail.com`、…（1～10）といったエイリアスを設定できます。そして、`hello@example.com`宛のメールは、`user+1@gmail.com`、`user+2@gmail.com`、`user+3@gmail.com`、…（1～10）に転送されます。
+はい、デフォルトの上限は10です。これは、ドメイン名にエイリアスが10個しか設定できないという意味ではありません。エイリアスは必要な数だけ（無制限に）設定できます。つまり、1つのエイリアスを10個の固有のメールアドレスにのみ転送できるということです。例えば、`hello:user+1@gmail.com`、`hello:user+2@gmail.com`、`hello:user+3@gmail.com`、…（1～10）のように設定できます。そして、`hello@example.com`宛のメールは、`user+1@gmail.com`、`user+2@gmail.com`、`user+3@gmail.com`、…（1～10）に転送されます。
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4481,15 +4480,15 @@ Backscatterer リストに掲載される一般的な理由は、誤った宛先
 </span>
 </div>
 
-### メールを再帰的に転送できますか {#can-i-recursively-forward-emails}
+### メールを再帰的に転送できますか？{#can-i-recursively-forward-emails}
 
-はい、可能です。ただし、上限は必ず守ってください。`hello:linus@example.com` と `linus:user@gmail.com` を設定している場合、`hello@example.com` 宛のメールは `linus@example.com` と `user@gmail.com` に転送されます。上限を超えてメールを再帰的に転送しようとすると、エラーが発生しますのでご注意ください。
+はい、可能です。ただし、上限は必ず守ってください。`hello:linus@example.com`と`linus:user@gmail.com`がある場合、`hello@example.com`宛のメールは`linus@example.com`と`user@gmail.com`に転送されます。上限を超えてメールを再帰的に転送しようとするとエラーが発生することにご注意ください。
 
-### 私の許可なくメール転送を登録解除したり登録したりすることはできますか？ {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### 私の許可なくメール転送を登録または解除することはできますか？{#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
-MXレコードと<strong class="notranslate">TXT</strong>レコードによる検証を使用しています。そのため、このサービスのMXレコードと<strong class="notranslate">TXT</strong>レコードを追加すると登録完了となります。削除すると登録解除となります。ドメインとDNS管理の所有権はお客様にありますので、第三者がそれらにアクセスできれば問題となります。
+MXレコードと<strong class="notranslate">TXT</strong>レコードによる検証を使用しています。そのため、このサービスのMXレコードと<strong class="notranslate">TXT</strong>レコードを追加すると登録完了となります。削除すると登録解除となります。ドメインとDNS管理の所有権はお客様にありますので、第三者がそれらにアクセスした場合、問題が発生します。
 
-### 無料なのはなぜですか {#how-is-it-free}
+### 無料なのはなぜですか？ {#how-is-it-free}
 
 Forward Email は、オープンソース開発、効率的なインフラストラクチャ、およびサービスをサポートするオプションの有料プランの組み合わせにより、無料レベルを提供します。
 
@@ -4504,44 +4503,44 @@ Forward Email は、オープンソース開発、効率的なインフラスト
 4. **合理的な使用制限**: 無料レベルには、不正使用を防ぐための公正使用ポリシーがあります。
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> 基本的なメール転送機能は無料で提供しながら、より高度なニーズを持つユーザー向けにプレミアム機能を提供することに尽力しています。
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> 当社のサービスにご満足いただけましたら、継続的な開発とメンテナンスをサポートするために有料プランへのアップグレードをご検討ください。
 
-### メールの最大サイズ制限はいくつですか？ {#what-is-the-max-email-size-limit}
+### メールの最大サイズ制限はいくらですか？ {#what-is-the-max-email-size-limit}
 
 デフォルトでは、コンテンツ、ヘッダー、添付ファイルを含めて50MBのサイズ制限が設定されています。GmailやOutlookなどのサービスでは25MBのサイズ制限しか設定されていないため、これらのプロバイダーのアドレスに送信する際に制限を超えるとエラーメッセージが表示されます。
 
 ファイル サイズの制限を超えた場合、適切な応答コードを含むエラーが返されます。
 
-### メールのログを保存しますか？ {#do-you-store-logs-of-emails}
+### メールのログを保存しますか？{#do-you-store-logs-of-emails}
 
-いいえ、[エラーの例外](#do-you-store-error-logs) および [送信SMTP](#do-you-support-sending-email-with-smtp) ではディスクに書き込んだりログを保存したりしません ([プライバシーポリシー](/privacy) を参照)。
+いいえ、[エラーの例外](#do-you-store-error-logs) および [送信SMTP](#do-you-support-sending-email-with-smtp) を使用してディスクに書き込んだり、ログを保存したりすることはありません ([プライバシーポリシー](/privacy) を参照)。
 
-すべてはメモリ内で実行され、[ソースコードはGitHubにあります](https://github.com/forwardemail) で実行されます。
+すべてはメモリ内および [ソースコードはGitHubにあります](https://github.com/forwardemail) で実行されます。
 
-### エラーログを保存しますか？ {#do-you-store-error-logs}
+### エラーログを保存しますか？{#do-you-store-error-logs}
 
-**はい。[マイアカウント → ログ](/my-account/logs) または [マイアカウント → ドメイン](/my-account/domains) でエラーログにアクセスできます。**
+**はい。[マイアカウント → ログ](/my-account/logs) または [マイアカウント → ドメイン](/my-account/domains) の下にあるエラー ログにアクセスできます。**
 
-2023 年 2 月現在、SMTP エラー、エンベロープ、および電子メール ヘッダーが含まれる `4xx` および `5xx` SMTP 応答コードのエラー ログを 7 日間保存します (電子メールの本文や添付ファイルは保存されません)。
+2023 年 2 月現在、`4xx` および `5xx` SMTP 応答コードのエラー ログを 7 日間保存します。これには、SMTP エラー、エンベロープ、および電子メール ヘッダーが含まれます (電子メールの本文や添付ファイルは保存されません)。
 
-エラーログを使用すると、[あなたのドメイン](/my-account/domains) における重要なメールの見逃しを確認し、スパム誤検知を軽減できます。また、エラーログには Webhook エンドポイントのレスポンスが含まれているため、[メールウェブフック](#do-you-support-webhooks) の問題をデバッグする際にも役立ちます。
+エラーログを利用することで、重要なメールが漏れていないか確認し、[あなたのドメイン](/my-account/domains) のスパム誤検知を軽減できます。また、エラーログには Webhook エンドポイントのレスポンスが含まれているため、[メールウェブフック](#do-you-support-webhooks) の問題をデバッグする際にも役立ちます。
 
-接続が早期に終了したため (たとえば、`RCPT TO` および `MAIL FROM` コマンドが送信される前に)、[レート制限](#do-you-have-rate-limiting) および [グレーリスト](#do-you-have-a-greylist) のエラー ログにはアクセスできません。
+接続が早期に終了するため (たとえば、`RCPT TO` および `MAIL FROM` コマンドが送信される前に)、[レート制限](#do-you-have-rate-limiting) および [グレーリスト](#do-you-have-a-greylist) のエラー ログにはアクセスできません。
 
 詳細については、[プライバシーポリシー](/privacy) をご覧ください。
 
-### 私のメールを読んでいますか？ {#do-you-read-my-emails}
+### 私のメールを読んでいますか？{#do-you-read-my-emails}
 
 いいえ、絶対にありません。[プライバシーポリシー](/privacy)をご覧ください。
 
 他の多くのメール転送サービスはメールを保存し、潜在的に読み取られる可能性があります。転送されたメールをディスクストレージに保存する必要はありません。そこで私たちは、すべてをメモリ内で処理する初のオープンソースソリューションを設計しました。
 
-私たちは、お客様にはプライバシーの権利があると信じており、それを厳格に尊重しています。サーバーにデプロイされるコードは、透明性と信頼の構築を目的として、[GitHub上のオープンソースソフトウェア](https://github.com/forwardemail) で保護されています。
+私たちは、お客様にはプライバシーの権利があると信じており、それを厳格に尊重しています。サーバーにデプロイされるコードは、透明性と信頼の構築を目的として、[GitHub上のオープンソースソフトウェア](https://github.com/forwardemail)です。
 
-### この {#can-i-send-mail-as-in-gmail-with-this} を使用して Gmail で「メールを送信」できますか?
+### この{#can-i-send-mail-as-in-gmail-with-this}を使用して、Gmailで「メールを送信」できますか？
 
 はい！2018年10月2日よりこの機能を追加しました。上記の[Gmailでメールを送信する方法](#how-to-send-mail-as-using-gmail)をご覧ください。
 
@@ -4559,7 +4558,7 @@ Gmail（例: 送信者名）または G Suite をご利用の場合は、SPF <st
 </span>
 </div>
 
-### Outlook でこの {#can-i-send-mail-as-in-outlook-with-this} を使用して「メールを送信」できますか?
+### Outlookでこの{#can-i-send-mail-as-in-outlook-with-this}を使用して「メールを送信」できますか？
 
 はい！2018年10月2日よりこの機能を追加しました。Microsoftの以下の2つのリンクをご覧ください。
 
@@ -4580,25 +4579,25 @@ Microsoft Outlook または Live.com をご利用の場合は、SPF <strong clas
 </span>
 </div>
 
-### Apple Mail と iCloud Mail でこの {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} を使用して「メールを送信」できますか?
+### この{#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}を使用して、Apple MailとiCloud Mailで「メールを送信」できますか？
 
 iCloud+ に加入している場合は、カスタム ドメインを使用できます。[当社のサービスはApple Mailとも互換性があります](#apple-mail)。
 
 詳細については、<https://support.apple.com/en-us/102540> を参照してください。
 
-### この {#can-i-forward-unlimited-emails-with-this} でメールを無制限に転送できますか？
+### この{#can-i-forward-unlimited-emails-with-this}でメールを無制限に転送できますか？
 
-はい。ただし、「比較的未知の」送信者への接続は、ホスト名またはIPアドレスごとに1時間あたり100接続に制限されます。上記の[レート制限](#do-you-have-rate-limiting)および[グレーリスト](#do-you-have-a-greylist)のセクションをご覧ください。
+はい。ただし、「比較的未知の」送信者へのレート制限は、ホスト名またはIPアドレスごとに1時間あたり100接続に制限されます。上記の[レート制限](#do-you-have-rate-limiting)と[グレーリスト](#do-you-have-a-greylist)のセクションをご覧ください。
 
 「比較的不明」とは、[許可リスト](#do-you-have-an-allowlist) に表示されない送信者を意味します。
 
 この制限を超えた場合、送信者のメール サーバーに後で再試行するように指示する 421 応答コードを送信します。
 
-### 1つの価格で無制限のドメインを提供していますか？ {#do-you-offer-unlimited-domains-for-one-price}
+### 1つの価格で無制限のドメインを提供していますか？{#do-you-offer-unlimited-domains-for-one-price}
 
 はい。どのプランをご利用いただいても、すべてのドメインをカバーする月額料金は1つだけです。
 
-### どのような支払い方法がご利用いただけますか？ {#which-payment-methods-do-you-accept}
+### どのような支払い方法を受け付けていますか？ {#which-payment-methods-do-you-accept}
 
 Forward Email では、次の 1 回限りの支払い方法、または月次/四半期/年次の支払い方法がご利用いただけます。
 
@@ -4607,17 +4606,17 @@ Forward Email では、次の 1 回限りの支払い方法、または月次/�
 3. **暗号通貨**: Ethereum、Polygon、Solanaネットワーク上のStripeのステーブルコイン決済をご利用いただけます
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> 当社のサーバーには、支払い識別子と、[ストライプ](https://stripe.com/global) および [ペイパル](https://www.paypal.com) の取引、顧客、サブスクリプション、支払い ID への参照のみを含む、限定的な支払い情報が保存されます。
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> プライバシーを最大限に確保するには、暗号通貨による決済をご検討ください。
 
 すべてのお支払いはStripeまたはPayPalを通じて安全に処理されます。お支払い情報は当社のサーバーに保存されることはありません。
 
 ## 追加リソース {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> 以下の記事は、新しいガイド、ヒント、技術情報などで定期的に更新されています。最新のコンテンツを定期的にご確認ください。
 
 * [ケーススタディと開発者向けドキュメント](/blog/docs)
 * [リソース](/resources)

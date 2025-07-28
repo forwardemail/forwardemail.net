@@ -1,4 +1,4 @@
-# Senden Sie E-Mails mit dem React.js Node Web App-Beispiel {#send-emails-with-reactjs-node-web-app-example}
+# Senden Sie E-Mails mit React.js Node Web App Beispiel {#send-emails-with-reactjs-node-web-app-example}
 
 ## Inhaltsverzeichnis {#table-of-contents}
 

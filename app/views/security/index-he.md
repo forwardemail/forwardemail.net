@@ -2,26 +2,26 @@
 
 <img loading="lazy" src="/img/articles/security.webp" alt="" class="rounded-lg" />
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [הַקדָמָה](#foreword)
-* [אבטחת תשתית](#infrastructure-security)
+* [אבטחת תשתיות](#infrastructure-security)
   * [מרכזי נתונים מאובטחים](#secure-data-centers)
   * [אבטחת רשת](#network-security)
 * [אבטחת דוא"ל](#email-security)
   * [הצפנה](#encryption)
   * [אימות והרשאה](#authentication-and-authorization)
   * [אמצעים נגד התעללות](#anti-abuse-measures)
-* [הגנת מידע](#data-protection)
+* [הגנת נתונים](#data-protection)
   * [מזעור נתונים](#data-minimization)
   * [גיבוי ושחזור](#backup-and-recovery)
-* [נותני שירות](#service-providers)
-* [ציות וביקורת](#compliance-and-auditing)
-  * [הערכות אבטחה רגילות](#regular-security-assessments)
+* [ספקי שירות](#service-providers)
+* [תאימות וביקורת](#compliance-and-auditing)
+  * [הערכות אבטחה תקופתיות](#regular-security-assessments)
   * [הַתאָמָה](#compliance)
 * [תגובה לאירוע](#incident-response)
 * [מחזור חיים של פיתוח אבטחה](#security-development-lifecycle)
-* [התקשות שרת](#server-hardening)
+* [הקשחת שרתים](#server-hardening)
 * [הסכם רמת שירות](#service-level-agreement)
 * [אבטחת קוד פתוח](#open-source-security)
 * [אבטחת עובדים](#employee-security)
@@ -30,13 +30,13 @@
 
 ## הקדמה {#foreword}
 
-ב-Forward Email, האבטחה היא בראש סדר העדיפויות שלנו. יישמנו אמצעי אבטחה מקיפים כדי להגן על תקשורת הדוא"ל והנתונים האישיים שלך. מסמך זה מתאר את נוהלי האבטחה שלנו ואת הצעדים שאנו נוקטים כדי להבטיח את הסודיות, היושרה והזמינות של הדוא"ל שלך.
+ב-Forward Email, אבטחה היא בראש סדר העדיפויות שלנו. יישמנו אמצעי אבטחה מקיפים כדי להגן על תקשורת הדוא"ל והנתונים האישיים שלך. מסמך זה מתאר את נוהלי האבטחה שלנו ואת הצעדים שאנו נוקטים כדי להבטיח את הסודיות, השלמות והזמינות של הדוא"ל שלך.
 
 ## אבטחת תשתית {#infrastructure-security}
 
 ### מרכזי נתונים מאובטחים {#secure-data-centers}
 
-התשתית שלנו מתארחת במרכזי נתונים תואמי SOC 2 עם:
+התשתית שלנו מאוחסנת במרכזי נתונים תואמי SOC 2 עם:
 
 * אבטחה ומעקב פיזיים 24/7
 * בקרות גישה ביומטריות
@@ -46,7 +46,7 @@
 
 ### אבטחת רשת {#network-security}
 
-אנו מיישמים שכבות מרובות של אבטחת רשת:
+אנו מיישמים מספר שכבות של אבטחת רשת:
 
 * חומות אש ברמה ארגונית עם רשימות בקרת גישה מחמירות
 * הגנה והפחתת פעילות מפני DDoS
@@ -56,7 +56,7 @@
 * הגנה על סריקת פורטים עם חסימה אוטומטית של פעילות חשודה
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> כל הנתונים במעבר מוצפנים באמצעות TLS 1.2+ עם חבילות הצפנה מודרניות.
 
 ## אבטחת דוא"ל {#email-security}
 
@@ -69,9 +69,9 @@
 * **הגנה מקיפה**: אנו מיישמים הצפנה במנוחה, הצפנה בזיכרון והצפנה תוך כדי העברה
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> אנחנו שירות הדוא"ל הראשון והיחיד בעולם שמשתמש ב- **[תיבות דואר של SQLite עמידות קוונטית ומוצפנות בנפרד](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
-### אימות ואישור {#authentication-and-authorization}
+### אימות והרשאה {#authentication-and-authorization}
 
 * **חתימת DKIM**: כל האימיילים היוצאים נחתמים באמצעות DKIM
 * **SPF ו-DMARC**: תמיכה מלאה ב-SPF ו-DMARC למניעת זיוף אימיילים
@@ -90,7 +90,7 @@
 
 ### מזעור נתונים {#data-minimization}
 
-אנו פועלים לפי העיקרון של מזעור נתונים:
+אנו פועלים לפי עקרון מזעור הנתונים:
 
 * אנו אוספים רק את הנתונים הדרושים למתן השירות שלנו
 * תוכן הדוא"ל מעובד בזיכרון ואינו מאוחסן באופן קבוע אלא אם כן נדרש למשלוח IMAP/POP3
@@ -105,24 +105,24 @@
 
 ## ספקי שירות {#service-providers}
 
-אנו בוחרים בקפידה את ספקי השירותים שלנו כדי להבטיח שהם עומדים בתקני האבטחה הגבוהים שלנו. להלן הספקים שבהם אנו משתמשים להעברת נתונים בינלאומית וסטטוס התאימות ל-GDPR שלהם:
+אנו בוחרים בקפידה את ספקי השירות שלנו כדי להבטיח שהם עומדים בתקני האבטחה הגבוהים שלנו. להלן הספקים בהם אנו משתמשים להעברת נתונים בינלאומית ומצב תאימותם ל-GDPR:
 
-| ספק | מַטָרָה | מוסמך DPF | דף תאימות GDPR |
+| ספק | מַטָרָה | DPF מוסמך | דף תאימות GDPR |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
-| [Cloudflare](https://www.cloudflare.com) | הגנת CDN, DDoS, DNS | ✅ כן | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
+| [Cloudflare](https://www.cloudflare.com) | CDN, הגנה מפני DDoS, DNS | ✅ כן | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | תשתית שרתים | ❌ לא | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | תשתית ענן | ❌ לא | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
 | [Vultr](https://www.vultr.com) | תשתית ענן | ❌ לא | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | עיבוד תשלומים | ✅ כן | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | עיבוד תשלומים | ❌ לא | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-אנו משתמשים בספקים אלה כדי להבטיח אספקת שירות אמינה ומאובטחת תוך שמירה על עמידה בתקנות הגנת מידע בינלאומיות. כל העברת הנתונים מתבצעת עם אמצעי הגנה מתאימים כדי להגן על המידע האישי שלך.
+אנו משתמשים בספקים אלה כדי להבטיח מתן שירות אמין ומאובטח, תוך שמירה על עמידה בתקנות הגנת מידע בינלאומיות. כל העברות הנתונים מתבצעות תוך שמירה על אמצעי הגנה מתאימים להגנה על המידע האישי שלך.
 
 ## תאימות וביקורת {#compliance-and-auditing}
 
 ### הערכות אבטחה תקופתיות {#regular-security-assessments}
 
-הצוות שלנו עוקב באופן קבוע אחר, סוקר ומעריך את בסיס הקוד, השרתים, התשתית והפרקטיקות. אנו מיישמים תוכנית אבטחה מקיפה הכוללת:
+הצוות שלנו מנטר, סוקר ומעריך באופן קבוע את בסיס הקוד, השרתים, התשתית והנהלים. אנו מיישמים תוכנית אבטחה מקיפה הכוללת:
 
 * סיבוב קבוע של מפתחות SSH
 * ניטור מתמשך של יומני גישה
@@ -137,9 +137,9 @@
 * בקרות פרטיות תואמות CCPA
 * תהליכים מבוקרים מסוג SOC 2 Type II
 
-## תגובה לאירוע {#incident-response}
+## תגובת אירוע {#incident-response}
 
-תוכנית התגובה לאירועי אבטחה שלנו כוללת:
+תוכנית התגובה שלנו לאירועי אבטחה כוללת:
 
 1. **זיהוי**: מערכות ניטור והתרעה אוטומטיות
 2. **בלימה**: בידוד מיידי של מערכות מושפעות
@@ -149,7 +149,7 @@
 6. **ניתוח לאחר אירוע**: סקירה מקיפה ושיפור
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> אם גיליתם פגיעות אבטחה, אנא דווחו עליה מיד לכתובת <security@forwardemail.net>.
 
 ## מחזור חיים של פיתוח אבטחה {#security-development-lifecycle}
 
@@ -174,12 +174,12 @@ flowchart LR
 * מידול איומים במהלך התכנון
 * שיטות קידוד מאובטחות
 * בדיקות אבטחה סטטיות ודינמיות של יישומים
-* סקירת קוד עם התמקדות באבטחה
+* סקירת קוד עם דגש על אבטחה
 * סריקת פגיעויות תלויות
 
 ## הקשחת שרת {#server-hardening}
 
-ה-[תצורה אפשרית](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) שלנו מיישם מגוון רחב של אמצעים להקשיחות שרתים:
+ה-[תצורת Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) שלנו מיישם מגוון רחב של אמצעים להקשיחות שרתים:
 
 * **גישה ל-USB מושבתת**: פורטים פיזיים מושבתים על ידי הוספת רשימה שחורה של מודול הליבה של usb-storage
 * **כללי חומת אש**: כללי iptables מחמירים המאפשרים רק חיבורים נחוצים
@@ -199,16 +199,16 @@ flowchart LR
 
 ## הסכם רמת שירות {#service-level-agreement}
 
-אנו שומרים על רמה גבוהה של זמינות ואמינות שירות. התשתית שלנו מתוכננת ליותר וסובלנות לתקלות כדי להבטיח ששירות הדוא"ל שלך יישאר פעיל. אמנם איננו מפרסמים מסמך SLA רשמי, אך אנו מחויבים ל:
+אנו שומרים על רמת זמינות ואמינות גבוהה של השירות. התשתית שלנו מתוכננת לאפשרות יתירות וסבילות לתקלות כדי להבטיח ששירות הדוא"ל שלך יישאר פעיל. למרות שאיננו מפרסמים מסמך SLA רשמי, אנו מחויבים ל:
 
 * זמן פעילות של 99.9%+ לכל השירותים
 * תגובה מהירה לשיבושים בשירות
 * תקשורת שקופה במהלך תקלות
 * תחזוקה שוטפת בתקופות עם תנועה נמוכה
 
-## אבטחה בקוד פתוח {#open-source-security}
+## אבטחת קוד פתוח {#open-source-security}
 
-כ-[שירות קוד פתוח](https://github.com/forwardemail/forwardemail.net), האבטחה שלנו נהנית מ:
+בתור [שירות קוד פתוח](https://github.com/forwardemail/forwardemail.net), האבטחה שלנו נהנית מ:
 
 * קוד שקוף שניתן לביקורת על ידי כל אחד
 * שיפורי אבטחה מונעי קהילה
@@ -224,7 +224,7 @@ flowchart LR
 
 ## שיפור מתמיד {#continuous-improvement}
 
-אנו משפרים ללא הרף את עמדת האבטחה שלנו באמצעות:
+אנו משפרים באופן מתמיד את מצב האבטחה שלנו באמצעות:
 
 * ניטור מגמות אבטחה ואיומים מתפתחים
 * סקירה ועדכונים שוטפים של מדיניות אבטחה
@@ -242,5 +242,5 @@ flowchart LR
 * [דווח על שימוש לרעה](https://forwardemail.net/en/report-abuse)
 * [מדיניות אבטחה](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [מאגר GitHub](https://github.com/forwardemail/forwardemail.net)
+* [מאגר גיטהאב](https://github.com/forwardemail/forwardemail.net)
 * [FAQ](https://forwardemail.net/en/faq)

@@ -1,40 +1,40 @@
-# Egenhostad e-post: Engagemang för öppen källkod {#self-hosted-email-commitment-to-open-source}
+# E-post med egen host: Engagemang för öppen källkod {#self-hosted-email-commitment-to-open-source}
 
 <img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## Innehållsförteckning {#table-of-contents}
 
 * [Förord](#foreword)
-* [Varför självvärd e-post är viktigt](#why-self-hosted-email-matters)
+* [Varför egenhostad e-post är viktig](#why-self-hosted-email-matters)
   * [Problemet med traditionella e-posttjänster](#the-problem-with-traditional-email-services)
-  * [Alternativet självvärd](#the-self-hosted-alternative)
-* [Vår Self-Hosted Implementation: Teknisk översikt](#our-self-hosted-implementation-technical-overview)
-  * [Docker-baserad arkitektur för enkelhet och portabilitet](#docker-based-architecture-for-simplicity-and-portability)
-  * [Bash Script Installation: Tillgänglighet möter säkerhet](#bash-script-installation-accessibility-meets-security)
+  * [Det självhostade alternativet](#the-self-hosted-alternative)
+* [Vår självhostade implementering: Teknisk översikt](#our-self-hosted-implementation-technical-overview)
+  * [Dockerbaserad arkitektur för enkelhet och portabilitet](#docker-based-architecture-for-simplicity-and-portability)
+  * [Bash-skriptinstallation: Tillgänglighet möter säkerhet](#bash-script-installation-accessibility-meets-security)
   * [Kvantsäker kryptering för framtidssäker integritet](#quantum-safe-encryption-for-future-proof-privacy)
-  * [Automatiskt underhåll och uppdateringar](#automated-maintenance-and-updates)
-* [Åtagandet med öppen källkod](#the-open-source-commitment)
-* [Self-hosted vs. Managed: Att göra rätt val](#self-hosted-vs-managed-making-the-right-choice)
+  * [Automatiserat underhåll och uppdateringar](#automated-maintenance-and-updates)
+* [Öppen källkod-åtagandet](#the-open-source-commitment)
+* [Självhostad kontra hanterad: Att göra rätt val](#self-hosted-vs-managed-making-the-right-choice)
   * [Verkligheten med självhostande e-post](#the-reality-of-self-hosting-email)
-  * [När ska du välja vår hanterade tjänst](#when-to-choose-our-managed-service)
-* [Komma igång med Self-Hosted Forward Email](#getting-started-with-self-hosted-forward-email)
+  * [När du ska välja vår hanterade tjänst](#when-to-choose-our-managed-service)
+* [Komma igång med egenhostad vidarebefordran av e-post](#getting-started-with-self-hosted-forward-email)
   * [Systemkrav](#system-requirements)
   * [Installationssteg](#installation-steps)
-* [Framtiden för e-post med egen värd](#the-future-of-self-hosted-email)
+* [Framtiden för självhostad e-post](#the-future-of-self-hosted-email)
 * [Slutsats: E-postfrihet för alla](#conclusion-email-freedom-for-everyone)
 * [Referenser](#references)
 
 ## Förord {#foreword}
 
-I dagens digitala landskap förblir e-post ryggraden i vår onlineidentitet och kommunikation. Men när integritetsproblemen växer står många användare inför ett svårt val: bekvämlighet på bekostnad av integritet eller integritet på bekostnad av bekvämlighet. På Forward Email har vi alltid trott att du inte ska behöva välja mellan de två.
+I dagens digitala landskap är e-post fortfarande ryggraden i vår onlineidentitet och kommunikation. Ändå, i takt med att integritetsoro växer, står många användare inför ett svårt val: bekvämlighet på bekostnad av integritet, eller integritet på bekostnad av bekvämlighet. På Forward Email har vi alltid ansett att du inte ska behöva välja mellan de två.
 
-Idag är vi glada över att kunna tillkännage en betydande milstolpe i vår resa: lanseringen av vår egen värdbaserade e-postlösning. Den här funktionen representerar vårt djupaste engagemang för principer med öppen källkod, integritetsfokuserad design och användarbemyndigande. Med vårt alternativ för egen värd, lägger vi full kraft och kontroll över din e-postkommunikation direkt i dina händer.
+Idag är vi glada att kunna presentera en viktig milstolpe i vår resa: lanseringen av vår självhostade e-postlösning. Denna funktion representerar vårt djupaste engagemang för öppen källkod, integritetsfokuserad design och användarstöd. Med vårt självhostade alternativ lägger vi all makt och kontroll över din e-postkommunikation direkt i dina händer.
 
-Det här blogginlägget utforskar filosofin bakom vår egenvärdiga lösning, dess tekniska implementering och varför det är viktigt för användare som prioriterar både integritet och ägande i sin digitala kommunikation.
+Det här blogginlägget utforskar filosofin bakom vår självhostade lösning, dess tekniska implementering och varför den är viktig för användare som prioriterar både integritet och ägarskap i sin digitala kommunikation.
 
 ## Varför egenhostad e-post är viktig {#why-self-hosted-email-matters}
 
-Vår egen värdbaserade e-postlösning är det tydligaste uttrycket för vår övertygelse om att sann integritet betyder kontroll, och kontroll börjar med öppen källkod. För användare som kräver full äganderätt över sin digitala kommunikation är självhotell inte längre en marginal idé – det är en väsentlig rättighet. Vi är stolta över att stå bakom den tron med en helt öppen, verifierbar plattform som du kan köra på dina egna villkor.
+Vår egenhostade e-postlösning är det tydligaste uttrycket för vår övertygelse att sann integritet innebär kontroll, och kontroll börjar med öppen källkod. För användare som kräver fullt ägande över sin digitala kommunikation är egenhosting inte längre en marginell idé – det är en grundläggande rättighet. Vi är stolta över att stå bakom den övertygelsen med en helt öppen, verifierbar plattform som du kan köra på dina egna villkor.
 
 ### Problemet med traditionella e-posttjänster {#the-problem-with-traditional-email-services}
 
@@ -46,11 +46,11 @@ Traditionella e-posttjänster innebär flera grundläggande utmaningar för inte
 4. **Begränsad transparens**: De flesta tjänster använder proprietär programvara med sluten källkod.
 5. **Leverantörslåsning**: Att migrera bort från dessa tjänster kan vara svårt eller omöjligt.
 
-Även "integritetsfokuserade" e-postleverantörer kommer ofta till korta genom att bara öppna sina frontend-applikationer samtidigt som de håller sina backend-system proprietära och stängda. Detta skapar en betydande förtroendeklyfta – du ombeds att tro på deras sekretesslöften utan att kunna verifiera dem.
+Även "integritetsfokuserade" e-postleverantörer misslyckas ofta genom att bara använda öppen källkod för sina frontend-applikationer samtidigt som de håller sina backend-system proprietära och stängda. Detta skapar ett betydande förtroendegap – man ombeds att tro på deras integritetslöften utan möjligheten att verifiera dem.
 
 ### Det självhostade alternativet {#the-self-hosted-alternative}
 
-Att själv tillhandahålla din e-post ger ett fundamentalt annorlunda tillvägagångssätt:
+Att självhosta din e-post ger en fundamentalt annorlunda metod:
 
 1. **Fullständig kontroll**: Du äger och kontrollerar hela e-postinfrastrukturen
 2. **Verifierbar integritet**: Hela systemet är transparent och granskningsbart
@@ -58,15 +58,15 @@ Att själv tillhandahålla din e-post ger ett fundamentalt annorlunda tillvägag
 4. **Anpassningsfrihet**: Anpassa systemet till dina specifika behov
 5. **Motståndskraft**: Din tjänst fortsätter oavsett företagets beslut
 
-Som en användare uttryckte det: "Att vara värd för min e-post är den digitala motsvarigheten till att odla min egen mat - det kräver mer arbete, men jag vet exakt vad som finns i det."
+Som en användare uttryckte det: "Att hosta min e-post är den digitala motsvarigheten till att odla min egen mat – det kräver mer arbete, men jag vet exakt vad som finns i det."
 
 ## Vår självhostade implementering: Teknisk översikt {#our-self-hosted-implementation-technical-overview}
 
-Vår egen värdbaserade e-postlösning bygger på samma principer om integritet i första hand som vägleder alla våra produkter. Låt oss utforska den tekniska implementeringen som gör detta möjligt.
+Vår e-postlösning med egen host är byggd på samma principer om integritet som styr alla våra produkter. Låt oss utforska den tekniska implementeringen som gör detta möjligt.
 
 ### Docker-baserad arkitektur för enkelhet och portabilitet {#docker-based-architecture-for-simplicity-and-portability}
 
-Vi har paketerat hela vår e-postinfrastruktur med Docker, vilket gör det enkelt att distribuera på praktiskt taget alla Linux-baserade system. Detta containeriserade tillvägagångssätt ger flera viktiga fördelar:
+Vi har paketerat hela vår e-postinfrastruktur med Docker, vilket gör det enkelt att driftsätta den på praktiskt taget alla Linux-baserade system. Denna containerbaserade metod ger flera viktiga fördelar:
 
 1. **Förenklad driftsättning**: Ett enda kommando konfigurerar hela infrastrukturen
 2. **Konsekvent miljö**: Eliminerar problem med att "fungerar på min maskin"
@@ -86,11 +86,11 @@ Arkitekturen inkluderar containrar för:
 * SQLite för säker, krypterad brevlådelagring
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Se till att kolla in vår [guide för utvecklare med egen host](https://forwardemail.net/self-hosted)
 
-### Installation av Bash-skript: Tillgänglighet möter säkerhet {#bash-script-installation-accessibility-meets-security}
+### Bash-skriptinstallation: Tillgänglighet möter säkerhet {#bash-script-installation-accessibility-meets-security}
 
-Vi har utformat installationsprocessen för att vara så enkel som möjligt med bibehållen säkerhetspraxis:
+Vi har utformat installationsprocessen för att vara så enkel som möjligt samtidigt som vi bibehåller bästa säkerhetsrutiner:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -105,17 +105,17 @@ Detta enda kommando:
 5. Distribuerar Docker-containrarna
 6. Utför initial säkerhetshärdning
 
-För dem som är oroliga för att sätta skript till bash (som ni borde vara!), uppmuntrar vi att granska skriptet innan det körs. Den är helt öppen källkod och tillgänglig för inspektion.
+För er som är oroliga för att manipulera skript till bash (vilket ni borde vara!), uppmuntrar vi er att granska skriptet innan det körs. Det är helt öppen källkod och tillgängligt för inspektion.
 
 ### Kvantsäker kryptering för framtidssäker integritet {#quantum-safe-encryption-for-future-proof-privacy}
 
-Liksom vår värdtjänst implementerar vår självvärdade lösning kvantbeständig kryptering med ChaCha20-Poly1305 som chiffer för SQLite-databaser. Detta tillvägagångssätt skyddar din e-postdata inte bara mot aktuella hot utan också mot framtida kvantberäkningsattacker.
+Precis som vår hostade tjänst implementerar vår självhostade lösning kvantresistent kryptering med ChaCha20-Poly1305 som chiffer för SQLite-databaser. Denna metod skyddar dina e-postdata inte bara mot aktuella hot, utan även mot framtida kvantberäkningsattacker.
 
-Varje brevlåda lagras i sin egen krypterade SQLite-databasfil, vilket ger fullständig isolering mellan användare – en betydande säkerhetsfördel jämfört med traditionella delade databasmetoder.
+Varje postlåda lagras i sin egen krypterade SQLite-databasfil, vilket ger fullständig isolering mellan användare – en betydande säkerhetsfördel jämfört med traditionella metoder för delade databaser.
 
-### Automatiskt underhåll och uppdateringar {#automated-maintenance-and-updates}
+### Automatiserat underhåll och uppdateringar {#automated-maintenance-and-updates}
 
-Vi har byggt in omfattande underhållsverktyg direkt i den självvärderade lösningen:
+Vi har byggt in omfattande underhållsverktyg direkt i den självhostade lösningen:
 
 1. **Automatiska säkerhetskopior**: Schemalagda säkerhetskopior av all kritisk data
 2. **Certifikatförnyelse**: Automatiserad Let's Encrypt-certifikathantering
@@ -138,7 +138,7 @@ Dessa verktyg är tillgängliga via en enkel interaktiv meny:
 
 ## Öppen källkod-åtagandet {#the-open-source-commitment}
 
-Vår egen värdbaserade e-postlösning, liksom alla våra produkter, är 100 % öppen källkod – både frontend och backend. Detta betyder:
+Vår egenhostade e-postlösning, liksom alla våra produkter, är 100 % öppen källkod – både frontend och backend. Det betyder:
 
 1. **Fullständig transparens**: Varje kodrad som behandlar dina e-postmeddelanden är tillgänglig för offentlig granskning
 2. **Bidrag från communityn**: Vem som helst kan bidra med förbättringar eller åtgärda problem
@@ -147,9 +147,9 @@ Vår egen värdbaserade e-postlösning, liksom alla våra produkter, är 100 % �
 
 Hela kodbasen finns tillgänglig på GitHub på <https://github.com/forwardemail/forwardemail.net>.
 
-## Självhostad kontra hanterad: Att göra rätt val {#self-hosted-vs-managed-making-the-right-choice}
+## Egenhostad kontra hanterad: Att göra rätt val {#self-hosted-vs-managed-making-the-right-choice}
 
-Även om vi är stolta över att kunna erbjuda ett alternativ som tillhandahålls själv, inser vi att det inte är rätt val för alla. E-post som är självvärd kommer med verkliga ansvar och utmaningar:
+Även om vi är stolta över att erbjuda ett alternativ med egen webbhotell, inser vi att det inte är rätt val för alla. Att ha egen webbhotell för e-post innebär verkliga ansvarsområden och utmaningar:
 
 ### Verkligheten med egenhosting av e-post {#the-reality-of-self-hosting-email}
 
@@ -183,11 +183,11 @@ För många användare är vår hanterade tjänst fortfarande det bästa alterna
 4. **Leveransbarhet**: Utnyttja vårt etablerade IP-rykte
 5. **Kostnadseffektivitet**: När man tar hänsyn till tidskostnader är vår tjänst ofta mer ekonomisk
 
-Båda alternativen ger samma integritetsfördelar och öppen källkod - skillnaden är helt enkelt vem som hanterar infrastrukturen.
+Båda alternativen ger samma integritetsfördelar och transparens som med öppen källkod – skillnaden är helt enkelt vem som hanterar infrastrukturen.
 
 ## Komma igång med egenhostad vidarebefordran av e-post {#getting-started-with-self-hosted-forward-email}
 
-Är du redo att ta kontroll över din e-postinfrastruktur? Så här kommer du igång:
+Redo att ta kontroll över din e-postinfrastruktur? Så här kommer du igång:
 
 ### Systemkrav {#system-requirements}
 
@@ -200,7 +200,7 @@ Båda alternativen ger samma integritetsfördelar och öppen källkod - skillnad
 * Stöd för IPv4 och IPv6
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> Vi rekommenderar flera e-postserverleverantörer på <https://forwardemail.net/blog/docs/best-mail-server-providers> (källa på <https://github.com/forwardemail/awesome-mail-server-providers>)
 
 ### Installationssteg {#installation-steps}
 
@@ -215,31 +215,31 @@ Båda alternativen ger samma integritetsfördelar och öppen källkod - skillnad
 * Konfigurera DNS-poster enligt instruktionerna
 * Välj dina önskade konfigurationsalternativ
 
-3. **Verifiera installationen**:
+3. **Verifiera installation**:
 När installationen är klar kan du kontrollera att allt fungerar genom att:
-* Kontrollera containerns status: `docker ps`
-* Skicka ett testmeddelande via e-post
+* Kontrollera containerstatus: `docker ps`
+* Skicka ett testmeddelande
 * Logga in på webbgränssnittet
 
 ## Framtiden för självhostad e-post {#the-future-of-self-hosted-email}
 
-Vår egen värdlösning är bara början. Vi är fast beslutna att ständigt förbättra detta erbjudande med:
+Vår självhostade lösning är bara början. Vi strävar efter att kontinuerligt förbättra detta erbjudande med:
 
 1. **Förbättrade administrationsverktyg**: Kraftfullare webbaserad hantering
-2. **Ytterligare autentiseringsalternativ**: Inklusive stöd för hårdvarusäkerhetsnycklar
+2. **Ytterligare autentiseringsalternativ**: Inklusive stöd för säkerhetsnycklar för hårdvara
 3. **Avancerad övervakning**: Bättre insikter i systemets hälsa och prestanda
 4. **Implementering av flera servrar**: Alternativ för konfigurationer med hög tillgänglighet
-5. **Communitydrivna förbättringar**: Inkluderar bidrag från användare
+5. **Community-drivna förbättringar**: Inkluderar bidrag från användare
 
 ## Slutsats: E-postfrihet för alla {#conclusion-email-freedom-for-everyone}
 
-Lanseringen av vår egen värd e-postlösning representerar en betydande milstolpe i vårt uppdrag att tillhandahålla integritetsfokuserade, transparenta e-posttjänster. Oavsett om du väljer vår hanterade tjänst eller ett alternativ som tillhandahålls av dig själv, drar du nytta av vårt orubbliga engagemang för principer med öppen källkod och design med integritet i första hand.
+Lanseringen av vår egenhostade e-postlösning representerar en viktig milstolpe i vårt uppdrag att tillhandahålla integritetsfokuserade, transparenta e-posttjänster. Oavsett om du väljer vår hanterade tjänst eller vårt egenhostade alternativ drar du nytta av vårt orubbliga engagemang för principer om öppen källkod och integritetsfokuserad design.
 
-E-post är för viktigt för att kontrolleras av slutna, proprietära system som prioriterar datainsamling framför användarnas integritet. Med Forward Emails egen värdlösning är vi stolta över att kunna erbjuda ett genuint alternativ – ett som ger dig fullständig kontroll över din digitala kommunikation.
+E-post är för viktigt för att kontrolleras av slutna, proprietära system som prioriterar datainsamling framför användarnas integritet. Med Forward Emails självhostade lösning är vi stolta över att kunna erbjuda ett genuint alternativ – ett som ger dig full kontroll över din digitala kommunikation.
 
-Vi tror att integritet inte bara är en funktion; det är en grundläggande rättighet. Och med vårt eget e-postalternativ gör vi den rätten mer tillgänglig än någonsin tidigare.
+Vi anser att integritet inte bara är en funktion; det är en grundläggande rättighet. Och med vårt alternativ för egenhostad e-post gör vi den rättigheten mer tillgänglig än någonsin tidigare.
 
-Redo att ta kontroll över din e-post? [Kom igång idag](https://forwardemail.net/self-hosted) eller utforska vår [GitHub-förråd](https://github.com/forwardemail/forwardemail.net) för att lära dig mer.
+Redo att ta kontroll över din e-post? [Kom igång idag](https://forwardemail.net/self-hosted) eller utforska vår [GitHub-arkiv](https://github.com/forwardemail/forwardemail.net) för att lära dig mer.
 
 ## Referenser {#references}
 

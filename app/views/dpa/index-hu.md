@@ -1,6 +1,6 @@
 # Adatfeldolgozási megállapodás {#data-processing-agreement}
 
-<!-- v1.0 innen: <https://github.com/CommonPaper/DPA> -->
+<!-- v1.0 innen: <IDEIGLEGES_HELYTARTÓS_0 -->
 
 <img loading="lusta" src="/img/articles/dpa.webp" alt="" class="lekerekített-lg" />
 
@@ -47,7 +47,7 @@
 
 ## Kulcsfontosságú kifejezések {#key-terms}
 
-| Term | Érték |
+| Kifejezés | Érték |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Megállapodás | Ez a DPA kiegészíti a [Terms of Service](/terms) dokumentumot |
 | <strong>Jóváhagyott alfeldolgozók</strong> | [Cloudflare](https://cloudflare.com) (USA; DNS-, hálózati és biztonsági szolgáltató), [DataPacket](https://www.datapacket.com/) (USA/Egyesült Királyság; tárhelyszolgáltató), [Digital Ocean](https://digitalocean.com) (USA; tárhelyszolgáltató), [Vultr](https://www.vultr.com) (USA; tárhelyszolgáltató), [Stripe](https://stripe.com) (USA; fizetésfeldolgozó), [PayPal](https://paypal.com) (USA; fizetésfeldolgozó) |
@@ -55,16 +55,17 @@
 | Biztonsági irányelvek | [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) megtekintése |
 | <strong>Irányító állam</strong> | Delaware állam, Amerikai Egyesült Államok |
 
-## A Szerződés módosításai {#changes-to-the-agreement}
+## A megállapodás módosításai {#changes-to-the-agreement}
 
-Ez a dokumentum a [Közös Papíralapú DPA Szabványfeltételek (1.0 verzió)](https://commonpaper.com/standards/data-processing-agreement/1.0) dokumentum származéka, és a következő változtatásokat végeztük el:
+Ez a dokumentum a [Közös Papíralapú DPA Szabványfeltételek (1.0 verzió)](https://commonpaper.com/standards/data-processing-agreement/1.0) dokumentum származéka, és a következő módosításokat végeztük el:
 
-1. A [Irányadó jog és választott bíróságok](#11-governing-law-and-chosen-courts) szakaszt alább, a fent azonosított `Governing State` kóddal együtt tüntettük fel.
-2. A [Szolgáltatói kapcsolat](#12-service-provider-relationship) szakaszt alább tüntettük fel.
+1. A [Irányadó jog és választott bíróságok](#11-governing-law-and-chosen-courts) elemet az alábbiakban egy szakaszként vettük fel, a fent azonosított `Governing State` elemmel együtt.
 
-## 1. Adatfeldolgozó és alfeldolgozó kapcsolatai {#1-processor-and-subprocessor-relationships}
+2. A [Szolgáltatói kapcsolat](#12-service-provider-relationship) elemet az alábbiakban egy szakaszként vettük fel.
 
-### 1. Szolgáltató, mint adatfeldolgozó {#1-provider-as-processor}
+## 1. Feldolgozó és alfeldolgozó közötti kapcsolatok {#1-processor-and-subprocessor-relationships}
+
+### 1. Szolgáltató, mint feldolgozó {#1-provider-as-processor}
 
 Azokban az esetekben, amikor az <strong>Ügyfél</strong> az Ügyfél Személyes Adatainak Adatkezelője, a <strong>Szolgáltató</strong> minősül olyan Adatfeldolgozónak, aki az <strong>Ügyfél</strong> nevében kezeli a Személyes Adatokat.
 
@@ -72,7 +73,7 @@ Azokban az esetekben, amikor az <strong>Ügyfél</strong> az Ügyfél Személyes
 
 Azokban az esetekben, amikor az <strong>Ügyfél</strong> az Ügyfél személyes adatainak feldolgozója, a <strong>Szolgáltató</strong> az Ügyfél személyes adatainak alfeldolgozójának minősül.
 
-## 2. A(z) {#2-processing} feldolgozása
+## 2. A(z) {#2-processing}} feldolgozása
 
 ### 1. Feldolgozási részletek {#1-processing-details}
 
@@ -82,7 +83,7 @@ A címlapon található I(B) melléklet ismerteti a feldolgozás tárgyát, jell
 
 <strong>Az Ügyfél</strong> utasítja a <strong>Szolgáltatót</strong> az Ügyfél Személyes Adatainak Kezelésére: (a) a Szolgáltatás nyújtása és fenntartása érdekében; (b) a Szolgáltatás <strong>Ügyfél</strong> általi használata során később meghatározott módon; (c) a <strong>Megállapodás</strong>-ban dokumentált módon; és (d) az Ügyfél Személyes Adatainak jelen DPA szerinti Kezelésével kapcsolatban az <strong>Ügyfél</strong> által adott és a <strong>Szolgáltató</strong> által elismert egyéb írásbeli utasításokban dokumentált módon. A <strong>Szolgáltató</strong> betartja ezeket az utasításokat, kivéve, ha az Alkalmazandó Törvények ezt tiltják. A <strong>Szolgáltató</strong> haladéktalanul tájékoztatja az <strong>Ügyfelet</strong>, ha nem tudja követni a Kezelési utasításokat. Az <strong>Ügyfél</strong> olyan utasításokat adott, és csak olyanokat fog adni, amelyek megfelelnek az Alkalmazandó Törvényeknek.
 
-### 3. A {#3-processing-by-provider} szolgáltató általi feldolgozás
+### 3. Szolgáltató általi feldolgozás {#3-processing-by-provider}
 
 A <strong>Szolgáltató</strong> az Ügyfél Személyes Adatait kizárólag a jelen Adatfeldolgozási Megállapodással (DPA) összhangban kezeli, beleértve a Borítólapon található részleteket is. Amennyiben a <strong>Szolgáltató</strong> frissíti a Szolgáltatást meglévő termékek, funkciók vagy funkciók frissítése vagy új termékek hozzáadása érdekében, a <strong>Szolgáltató</strong> szükség szerint módosíthatja az <strong>Adatazonyok Kategóriáit</strong>, a <strong>Személyes Adatok Kategóriáit</strong>, a <strong>Különleges Adatkategóriákra Vonatkozó Korlátozásokat vagy Védelmi Intézkedéseket</strong>, az <strong>Továbbítás Gyakoriságát</strong>, a <strong>Feldolgozás Jellegét és Célját</strong>, valamint a <strong>Feldolgozás Időtartamát</strong> a frissítések tükrözése érdekében, értesítve az <strong>Ügyfelet</strong> a frissítésekről és változásokról.
 
@@ -90,7 +91,7 @@ A <strong>Szolgáltató</strong> az Ügyfél Személyes Adatait kizárólag a je
 
 Amennyiben az <strong>Ügyfél</strong> adatfeldolgozó, a <strong>Szolgáltató</strong> pedig alfeldolgozó, az <strong>Ügyfél</strong> betartja az összes alkalmazandó jogszabályt, amely az <strong>Ügyfél</strong> személyes adatainak feldolgozására vonatkozik. Az <strong>Ügyfél</strong> és az Adatkezelő közötti megállapodás hasonlóképpen előírja az <strong>Ügyfél</strong> számára, hogy betartsa az összes alkalmazandó jogszabályt, amely az <strong>Ügyfél</strong>-re, mint Adatfeldolgozóra vonatkozik. Ezenkívül az <strong>Ügyfél</strong> betartja az <strong>Ügyfél</strong> és az Adatkezelő közötti megállapodásban foglalt alfeldolgozói követelményeket.
 
-### 5. Hozzájárulás az adatkezeléshez {#5-consent-to-processing}
+### 5. Hozzájárulás a feldolgozáshoz {#5-consent-to-processing}
 
 <strong>Az Ügyfél</strong> betartotta és a jövőben is betartja az összes alkalmazandó adatvédelmi törvényt az Ügyfél Személyes Adatainak a <strong>Szolgáltató</strong> és/vagy a Szolgáltatás részére történő átadásával kapcsolatban, beleértve az összes közzétételt, az összes hozzájárulás beszerzését, a megfelelő választási lehetőség biztosítását és az alkalmazandó adatvédelmi törvények által előírt vonatkozó garanciák végrehajtását.
 
@@ -102,9 +103,9 @@ b. Alfeldolgozó igénybevétele esetén a **Szolgáltató** írásbeli megálla
 
 c. Amennyiben a GDPR vonatkozik az Ügyfél Személyes Adatainak Kezelésére, (i) a jelen DPA-ban leírt adatvédelmi kötelezettségek (a GDPR 28. cikkének (3) bekezdésében említettek szerint, amennyiben alkalmazható) az Alfeldolgozóra is vonatkoznak, és (ii) a <strong>Szolgáltató</strong> és az Alfeldolgozó közötti megállapodás tartalmazza ezeket a kötelezettségeket, beleértve a <strong>Szolgáltató</strong> és Alfeldolgozója közötti koordináció részleteit az Ügyfél Személyes Adatainak Kezelésével kapcsolatos kérdésekre vagy kérésekre adott válaszok terén. Ezenkívül a <strong>Szolgáltató</strong> az <strong>Ügyfél</strong> kérésére megosztja az Alfeldolgozóival kötött megállapodásainak (beleértve azok módosításait is) másolatát. Az üzleti titkok vagy más bizalmas információk, beleértve a személyes adatokat is, védelme érdekében szükséges mértékben a <strong>Szolgáltató</strong> a másolat megosztása előtt kitakarhatja az Alfeldolgozóval kötött megállapodás szövegét.
 
-d. A <strong>Szolgáltató</strong> teljes mértékben felelős az Alfeldolgozóinak alvállalkozásba adott összes kötelezettségért, beleértve az Alfeldolgozók cselekedeteit és mulasztásait az Ügyfél Személyes Adatainak Feldolgozása során. A <strong>Szolgáltató</strong> értesíti az Ügyfelet, ha Alfeldolgozói nem teljesítik az Ügyfél Személyes Adataival kapcsolatos lényeges kötelezettségeiket a <strong>Szolgáltató</strong> és az Alfeldolgozó között létrejött megállapodás értelmében.
+d. A <strong>Szolgáltató</strong> teljes mértékben felelős az Alfeldolgozóinak alvállalkozásba adott összes kötelezettségért, beleértve az Alfeldolgozók Ügyfél Személyes Adatainak Feldolgozása során elkövetett cselekedeteit és mulasztásait is. A <strong>Szolgáltató</strong> értesíti az Ügyfelet, ha Alfeldolgozói nem teljesítik az Ügyfél Személyes Adataival kapcsolatos lényeges kötelezettségeiket a <strong>Szolgáltató</strong> és az Alfeldolgozó között létrejött megállapodás értelmében.
 
-## 3. Korlátozott adatátvitel {#3-restricted-transfers}
+## 3. Korlátozott átvitelek {#3-restricted-transfers}
 
 ### 1. Engedélyezés {#1-authorization}
 
@@ -154,7 +155,7 @@ Azon Személyesadat-továbbítások esetében, amelyeknél a svájci jog (és ne
 
 ## 5. Audit és jelentések {#5-audit--reports}
 
-### 1. Auditjogosultságok {#1-audit-rights}
+### 1. Naplózási jogok {#1-audit-rights}
 
 A <strong>Szolgáltató</strong> minden olyan információt megad az <strong>Ügyfél</strong>nek, amely észszerűen szükséges a jelen DPA-nak való megfelelés igazolásához, és a <strong>Szolgáltató</strong> lehetővé teszi és hozzájárul az auditokhoz, beleértve az <strong>Ügyfél</strong> által végzett ellenőrzéseket is, a <strong>Szolgáltató</strong> jelen DPA-nak való megfelelésének felmérése érdekében. A <strong>Szolgáltató</strong> azonban korlátozhatja az adatokhoz vagy információkhoz való hozzáférést, ha az <strong>Ügyfél</strong> információkhoz való hozzáférése negatívan befolyásolná a <strong>Szolgáltató</strong> szellemi tulajdonjogait, titoktartási kötelezettségeit vagy az alkalmazandó jogszabályok szerinti egyéb kötelezettségeit. Az <strong>Ügyfél</strong> tudomásul veszi és elfogadja, hogy a jelen DPA szerinti auditjogait és az alkalmazandó adatvédelmi törvények által biztosított auditjogait csak úgy gyakorolja, ha utasítja a <strong>Szolgáltatót</strong> az alábbi jelentéstételi és átvilágítási követelmények betartására. A <strong>Szolgáltató</strong> a jelen DPA-nak való megfeleléséről szóló nyilvántartást a DPA lejárta után 3 évig megőrzi.
 
@@ -168,21 +169,21 @@ A Jelentésen túlmenően a <strong>Szolgáltató</strong> válaszol az <strong>
 
 ## 6. Koordináció és együttműködés {#6-coordination--cooperation}
 
-### 1. Válasz a megkeresésekre {#1-response-to-inquiries}
+### 1. Válasz a kérdésekre {#1-response-to-inquiries}
 
 Amennyiben a <strong>Szolgáltató</strong> bármilyen megkeresést vagy kérést kap bárki mástól az Ügyfél Személyes Adatainak Kezelésével kapcsolatban, a <strong>Szolgáltató</strong> értesíti az <strong>Ügyfelet</strong> a kérésről, és a <strong>Szolgáltató</strong> nem válaszol a kérésre az <strong>Ügyfél</strong> előzetes hozzájárulása nélkül. Az ilyen típusú megkeresésekre és kérésekre példaként említhető az Ügyfél Személyes Adataival kapcsolatos bírósági, közigazgatási vagy szabályozási hatósági végzés, ahol az <strong>Ügyfél</strong> értesítését az Alkalmazandó Jog nem tiltja, vagy az érintett személytől érkező kérés. Amennyiben az Alkalmazandó Jog megengedi, a <strong>Szolgáltató</strong> követi az <strong>Ügyfél</strong> ésszerű utasításait ezekkel a kérésekkel kapcsolatban, beleértve az állapotfrissítések és az <strong>Ügyfél</strong> által ésszerűen kért egyéb információk megadását. Amennyiben az érintett személy a vonatkozó adatvédelmi törvények értelmében érvényes kérelmet nyújt be az <strong>Ügyfél</strong> személyes adatainak a <strong>Szolgáltató</strong> részére történő megadásának törlésére vagy megakadályozására, a <strong>Szolgáltató</strong> segíti az <strong>Ügyfelet</strong> a kérelem teljesítésében az alkalmazandó adatvédelmi törvényeknek megfelelően. A <strong>Szolgáltató</strong> együttműködik az <strong>Ügyféllel</strong> és ésszerű segítséget nyújt neki az <strong>Ügyfél</strong> költségére minden olyan jogi válaszban vagy egyéb eljárási intézkedésben, amelyet az <strong>Ügyfél</strong> tesz egy harmadik félnek a <strong>Szolgáltató</strong> általi, az Ügyfél személyes adatainak a jelen adatfeldolgozási megállapodás szerinti kezelésével kapcsolatos kérésére válaszul.
 
-### 2. Adatvédelmi hatásvizsgálatok (DPIA) és közvetlen adatvédelmi hatásvizsgálatok (DTIA) {#2-dpias-and-dtias}
+### 2. Adatvédelmi hatásvizsgálatok (DPIA) és közvetlen hatásvizsgálatok (DTIA) {#2-dpias-and-dtias}
 
 Amennyiben az alkalmazandó adatvédelmi törvények előírják, a **Szolgáltató** ésszerűen segíti az **Ügyfelet** a kötelező adatvédelmi hatásvizsgálatok vagy adatátviteli hatásvizsgálatok elvégzésében, valamint az illetékes adatvédelmi hatóságokkal való konzultációkban, figyelembe véve a feldolgozás és az Ügyfél személyes adatainak jellegét.
 
 ## 7. Az ügyfél személyes adatainak törlése {#7-deletion-of-customer-personal-data}
 
-### 1. Törlés az ügyfél által {#1-deletion-by-customer}
+### 1. Ügyfél általi törlés {#1-deletion-by-customer}
 
 A <strong>Szolgáltató</strong> lehetővé teszi az <strong>Ügyfél</strong> számára, hogy a Szolgáltatások működésével összhangban lévő módon törölje az Ügyfél Személyes Adatait. A <strong>Szolgáltató</strong> a lehető leghamarabb eleget tesz ennek az utasításnak, kivéve, ha az Ügyfél Személyes Adatainak további tárolását az Alkalmazandó Jog írja elő.
 
-### 2. Törlés a DPA lejártakor {#2-deletion-at-dpa-expiration}
+### 2. Törlés a DPA lejáratakor {#2-deletion-at-dpa-expiration}
 
 a. A DPA lejárta után a <strong>Szolgáltató</strong> az <strong>Ügyfél</strong> utasítására visszaszolgáltatja vagy törli az Ügyfél Személyes Adatait, kivéve, ha az Ügyfél Személyes Adatainak további tárolását az Alkalmazandó Jog írja elő vagy engedélyezi. Ha a visszaküldés vagy megsemmisítés kivitelezhetetlen, vagy az Alkalmazandó Jog tiltja, a <strong>Szolgáltató</strong> ésszerű erőfeszítéseket tesz az Ügyfél Személyes Adatainak további feldolgozásának megakadályozása érdekében, és továbbra is védi a birtokában, őrizetében vagy ellenőrzése alatt maradt Ügyfél Személyes Adatokat. Például az Alkalmazandó Jog előírhatja a <strong>Szolgáltató</strong> számára az Ügyfél Személyes Adatainak további tárolását vagy feldolgozását.
 
@@ -260,6 +261,6 @@ Amennyiben a kaliforniai fogyasztóvédelmi törvény, a Cal. Civ. Code § 1798.
 
 20. **„Egyesült Királyságbeli kiegészítés”** az EGT Általános Szerződési Feltételeihez fűzött nemzetközi adatátviteli kiegészítést jelenti, amelyet az Információs Biztos adott ki a 2018. évi adatvédelmi törvény S119A(1) bekezdése alapján korlátozott adatátvitelt végző felek számára.
 
-## Stáblista {#credits}
+## Közreműködők {#credits}
 
-Ez a dokumentum a [Közös Papíralapú DPA Szabványfeltételek (1.0 verzió)](https://commonpaper.com/standards/data-processing-agreement/1.0) dokumentum származéka, és a [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) licenc alatt áll.
+Ez a dokumentum a [Közös Papíralapú DPA Szabványfeltételek (1.0 verzió)](https://commonpaper.com/standards/data-processing-agreement/1.0) származéka, és a [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) licenc alatt áll.

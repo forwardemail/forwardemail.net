@@ -14,31 +14,31 @@
   * [Implementazione del webhook Stripe](#stripe-webhook-implementation)
   * [Implementazione del webhook PayPal](#paypal-webhook-implementation)
 * [Livello 3: lavori automatizzati con Bree](#layer-3-automated-jobs-with-bree)
-  * [Controllo accuratezza abbonamento](#subscription-accuracy-checker)
-  * [Sincronizzazione abbonamento PayPal](#paypal-subscription-synchronization)
+  * [Controllo dell'accuratezza dell'abbonamento](#subscription-accuracy-checker)
+  * [Sincronizzazione degli abbonamenti PayPal](#paypal-subscription-synchronization)
 * [Gestione dei casi limite](#handling-edge-cases)
   * [Rilevamento e prevenzione delle frodi](#fraud-detection-and-prevention)
   * [Gestione delle controversie](#dispute-handling)
 * [Riutilizzo del codice: principi KISS e DRY](#code-reuse-kiss-and-dry-principles)
-* [Implementazione dei requisiti di sottoscrizione VISA](#visa-subscription-requirements-implementation)
-  * [Notifiche e-mail automatiche prima del rinnovo](#automated-pre-renewal-email-notifications)
+* [Implementazione dei requisiti di abbonamento VISA](#visa-subscription-requirements-implementation)
+  * [Notifiche e-mail automatiche pre-rinnovo](#automated-pre-renewal-email-notifications)
   * [Gestione dei casi limite](#handling-edge-cases-1)
   * [Periodi di prova e termini di abbonamento](#trial-periods-and-subscription-terms)
 * [Conclusione: i vantaggi del nostro approccio Trifecta](#conclusion-the-benefits-of-our-trifecta-approach)
 
 ## Prefazione {#foreword}
 
-In Forward Email, abbiamo sempre dato priorità alla creazione di sistemi affidabili, precisi e intuitivi. Quando si è trattato di implementare il nostro sistema di elaborazione dei pagamenti, sapevamo di aver bisogno di una soluzione in grado di gestire più processori di pagamento mantenendo al contempo una perfetta coerenza dei dati. Questo post del blog descrive in dettaglio come il nostro team di sviluppo ha integrato sia Stripe che PayPal utilizzando un approccio trifecta che garantisce un'accuratezza in tempo reale 1:1 nell'intero sistema.
+Noi di Forward Email abbiamo sempre dato priorità alla creazione di sistemi affidabili, accurati e intuitivi. Quando si è trattato di implementare il nostro sistema di elaborazione dei pagamenti, sapevamo di aver bisogno di una soluzione in grado di gestire più processori di pagamento mantenendo al contempo una perfetta coerenza dei dati. Questo articolo del blog descrive come il nostro team di sviluppo ha integrato Stripe e PayPal utilizzando un approccio "trifecta" che garantisce un'accuratezza 1:1 in tempo reale sull'intero sistema.
 
-## La sfida: più processori di pagamento, un'unica fonte di verità {#the-challenge-multiple-payment-processors-one-source-of-truth}
+## La sfida: più processori di pagamento, una sola fonte di verità {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-In quanto servizio di posta elettronica incentrato sulla privacy, volevamo offrire ai nostri utenti opzioni di pagamento. Alcuni preferiscono la semplicità dei pagamenti con carta di credito tramite Stripe, mentre altri apprezzano il livello di separazione aggiuntivo fornito da PayPal. Tuttavia, supportare più processori di pagamento introduce una notevole complessità:
+In quanto servizio di posta elettronica incentrato sulla privacy, desideravamo offrire ai nostri utenti opzioni di pagamento. Alcuni preferiscono la semplicità dei pagamenti con carta di credito tramite Stripe, mentre altri apprezzano l'ulteriore livello di separazione offerto da PayPal. Tuttavia, supportare più processori di pagamento introduce una notevole complessità:
 
 1. Come garantiamo la coerenza dei dati tra i diversi sistemi di pagamento?
 2. Come gestiamo casi limite come controversie, rimborsi o pagamenti non andati a buon fine?
 3. Come manteniamo un'unica fonte di dati attendibile nel nostro database?
 
-La nostra soluzione è stata quella di implementare quello che chiamiamo "approccio trifecta", un sistema a tre livelli che fornisce ridondanza e assicura la coerenza dei dati indipendentemente da cosa accada.
+La nostra soluzione è stata quella di implementare quello che chiamiamo l'approccio "trifecta", un sistema a tre livelli che fornisce ridondanza e assicura la coerenza dei dati qualunque cosa accada.
 
 ## L'approccio Trifecta: tre livelli di affidabilità {#the-trifecta-approach-three-layers-of-reliability}
 
@@ -112,11 +112,11 @@ flowchart TD
 
 ## Livello 1: Reindirizzamenti post-checkout {#layer-1-post-checkout-redirects}
 
-Il primo livello del nostro approccio trifecta avviene immediatamente dopo che un utente completa un pagamento. Sia Stripe che PayPal forniscono meccanismi per reindirizzare gli utenti al nostro sito con informazioni sulle transazioni.
+Il primo livello del nostro approccio "trifecta" avviene subito dopo che un utente completa un pagamento. Sia Stripe che PayPal forniscono meccanismi per reindirizzare gli utenti al nostro sito con le informazioni sulla transazione.
 
 ### Implementazione del checkout Stripe {#stripe-checkout-implementation}
 
-Per Stripe, utilizziamo la loro API Checkout Sessions per creare un'esperienza di pagamento fluida. Quando un utente seleziona un piano e sceglie di pagare con una carta di credito, creiamo una Checkout Session con URL specifici di successo e annullamento:
+Per Stripe, utilizziamo la loro API Checkout Sessions per creare un'esperienza di pagamento fluida. Quando un utente seleziona un piano e sceglie di pagare con carta di credito, creiamo una sessione di checkout con URL specifici per l'esito positivo e l'annullamento:
 
 ```javascript
 const options = {
@@ -158,7 +158,7 @@ La parte critica in questo caso è il parametro `success_url`, che include `sess
 
 ### Flusso di pagamento PayPal {#paypal-payment-flow}
 
-Per PayPal utilizziamo un approccio simile con la loro API degli ordini:
+Per PayPal utilizziamo un approccio simile con la loro API Ordini:
 
 ```javascript
 const requestBody = {
@@ -283,13 +283,13 @@ sequenceDiagram
 
 ## Livello 2: gestori webhook con verifica della firma {#layer-2-webhook-handlers-with-signature-verification}
 
-Sebbene i reindirizzamenti post-checkout funzionino bene per la maggior parte degli scenari, non sono infallibili. Gli utenti potrebbero chiudere il browser prima di essere reindirizzati, oppure problemi di rete potrebbero impedire il completamento del reindirizzamento. Ecco dove entrano in gioco i webhook.
+Sebbene i reindirizzamenti post-checkout funzionino bene nella maggior parte degli scenari, non sono infallibili. Gli utenti potrebbero chiudere il browser prima di essere reindirizzati, oppure problemi di rete potrebbero impedire il completamento del reindirizzamento. È qui che entrano in gioco i webhook.
 
-Sia Stripe che PayPal forniscono sistemi webhook che inviano notifiche in tempo reale sugli eventi di pagamento. Abbiamo implementato robusti gestori webhook che verificano l'autenticità di queste notifiche e le elaborano di conseguenza.
+Sia Stripe che PayPal forniscono sistemi webhook che inviano notifiche in tempo reale sugli eventi di pagamento. Abbiamo implementato robusti gestori di webhook che verificano l'autenticità di queste notifiche e le elaborano di conseguenza.
 
 ### Implementazione del webhook Stripe {#stripe-webhook-implementation}
 
-Il nostro gestore webhook Stripe verifica la firma degli eventi webhook in arrivo per garantire che siano legittimi:
+Il nostro gestore webhook Stripe verifica la firma degli eventi webhook in arrivo per garantirne la legittimità:
 
 ```javascript
 async function webhook(ctx) {
@@ -377,15 +377,15 @@ async function webhook(ctx) {
 }
 ```
 
-Entrambi i gestori di webhook seguono lo stesso schema: verifica la firma, conferma la ricezione ed elabora l'evento in modo asincrono. Ciò garantisce che non perdiamo mai un evento di pagamento, anche se il reindirizzamento post-checkout fallisce.
+Entrambi i gestori di webhook seguono lo stesso schema: verificano la firma, confermano la ricezione ed elaborano l'evento in modo asincrono. Questo garantisce che non si perda mai un evento di pagamento, anche se il reindirizzamento post-checkout non riesce.
 
 ## Livello 3: Lavori automatizzati con Bree {#layer-3-automated-jobs-with-bree}
 
-L'ultimo livello del nostro approccio trifecta è un set di lavori automatizzati che verificano e riconciliano periodicamente i dati di pagamento. Utilizziamo Bree, uno scheduler di lavori per Node.js, per eseguire questi lavori a intervalli regolari.
+Il livello finale del nostro approccio "trifecta" è un insieme di processi automatizzati che verificano e riconciliano periodicamente i dati di pagamento. Utilizziamo Bree, uno scheduler di processi per Node.js, per eseguire questi processi a intervalli regolari.
 
 ### Verifica accuratezza abbonamento {#subscription-accuracy-checker}
 
-Uno dei nostri compiti principali è il controllo dell'accuratezza dell'abbonamento, che garantisce che il nostro database rifletta accuratamente lo stato dell'abbonamento in Stripe:
+Uno dei nostri compiti principali è il controllo dell'accuratezza degli abbonamenti, che garantisce che il nostro database rifletta accuratamente lo stato dell'abbonamento in Stripe:
 
 ```javascript
 async function mapper(customer) {
@@ -452,7 +452,7 @@ async function mapper(customer) {
 }
 ```
 
-Questo lavoro verifica le discrepanze tra il nostro database e Stripe, come indirizzi email non corrispondenti o più abbonamenti attivi. Se rileva problemi, li registra e invia avvisi al nostro team di amministrazione.
+Questo processo verifica eventuali discrepanze tra il nostro database e Stripe, come indirizzi email non corrispondenti o più abbonamenti attivi. Se rileva problemi, li registra e invia avvisi al nostro team di amministrazione.
 
 ### Sincronizzazione abbonamento PayPal {#paypal-subscription-synchronization}
 
@@ -491,7 +491,7 @@ Questi processi automatizzati costituiscono la nostra ultima rete di sicurezza, 
 
 ## Gestione dei casi limite {#handling-edge-cases}
 
-Un sistema di pagamento robusto deve gestire i casi limite con garbo. Diamo un'occhiata a come gestiamo alcuni scenari comuni.
+Un sistema di pagamento affidabile deve gestire con eleganza i casi limite. Vediamo come gestire alcuni scenari comuni.
 
 ### Rilevamento e prevenzione delle frodi {#fraud-detection-and-prevention}
 
@@ -583,7 +583,7 @@ Questo approccio riduce al minimo l'impatto delle controversie sulla nostra atti
 
 ## Riutilizzo del codice: principi KISS e DRY {#code-reuse-kiss-and-dry-principles}
 
-In tutto il nostro sistema di pagamento, abbiamo aderito ai principi KISS (Keep It Simple, Stupid) e DRY (Don't Repeat Yourself). Ecco alcuni esempi:
+In tutto il nostro sistema di pagamento, aderiamo ai principi KISS (Keep It Simple, Stupid) e DRY (Don't Repeat Yourself). Ecco alcuni esempi:
 
 1. **Funzioni di supporto condivise**: abbiamo creato funzioni di supporto riutilizzabili per attività comuni come la sincronizzazione dei pagamenti e l'invio di e-mail.
 
@@ -689,11 +689,11 @@ graph TD
 
 ## Implementazione dei requisiti di abbonamento VISA {#visa-subscription-requirements-implementation}
 
-Oltre al nostro approccio trifecta, abbiamo implementato funzionalità specifiche per soddisfare i requisiti di abbonamento di VISA, migliorando al contempo l'esperienza utente. Un requisito fondamentale di VISA è che gli utenti debbano essere avvisati prima che venga addebitato loro un abbonamento, in particolare quando si passa da una versione di prova a un abbonamento a pagamento.
+Oltre al nostro approccio "trifecta", abbiamo implementato funzionalità specifiche per soddisfare i requisiti di abbonamento di VISA, migliorando al contempo l'esperienza utente. Un requisito fondamentale di VISA è che gli utenti vengano avvisati prima dell'addebito di un abbonamento, soprattutto quando si passa da un abbonamento di prova a uno a pagamento.
 
 ### Notifiche automatiche via email prima del rinnovo {#automated-pre-renewal-email-notifications}
 
-Abbiamo creato un sistema automatizzato che identifica gli utenti con abbonamenti di prova attivi e invia loro un'e-mail di notifica prima che venga effettuato il primo addebito. Questo non solo ci mantiene conformi ai requisiti VISA, ma riduce anche gli addebiti e migliora la soddisfazione del cliente.
+Abbiamo sviluppato un sistema automatizzato che identifica gli utenti con abbonamenti di prova attivi e invia loro un'email di notifica prima del primo addebito. Questo non solo ci consente di rispettare i requisiti VISA, ma riduce anche gli addebiti non rimborsabili e migliora la soddisfazione del cliente.
 
 Ecco come abbiamo implementato questa funzionalità:
 
@@ -787,7 +787,7 @@ Automatizzando questo processo, manteniamo la perfetta conformità ai requisiti 
 
 ### Gestione dei casi limite {#handling-edge-cases-1}
 
-La nostra implementazione include anche una solida gestione degli errori. Se qualcosa va storto durante il processo di notifica, il nostro sistema avvisa automaticamente il nostro team:
+La nostra implementazione include anche una solida gestione degli errori. In caso di problemi durante il processo di notifica, il nostro sistema avvisa automaticamente il nostro team:
 
 ```javascript
 try {
@@ -815,7 +815,7 @@ try {
 
 Ciò garantisce che, anche se si verifica un problema con il sistema di notifica, il nostro team possa risolverlo rapidamente e mantenere la conformità ai requisiti VISA.
 
-Il sistema di notifica degli abbonamenti VISA è un altro esempio di come abbiamo costruito la nostra infrastruttura di pagamento tenendo a mente sia la conformità che l'esperienza utente, integrando il nostro approccio "trifecta" per garantire un'elaborazione dei pagamenti affidabile e trasparente.
+Il sistema di notifica degli abbonamenti VISA è un altro esempio di come abbiamo costruito la nostra infrastruttura di pagamento tenendo a mente sia la conformità che l'esperienza dell'utente, integrando il nostro approccio "trifecta" per garantire un'elaborazione dei pagamenti affidabile e trasparente.
 
 ### Periodi di prova e termini di abbonamento {#trial-periods-and-subscription-terms}
 
@@ -840,7 +840,7 @@ Forniamo inoltre informazioni chiare sui termini dell'abbonamento, tra cui la fr
 
 ## Conclusione: i vantaggi del nostro approccio Trifecta {#conclusion-the-benefits-of-our-trifecta-approach}
 
-Il nostro approccio trifecta all'elaborazione dei pagamenti ha fornito diversi vantaggi chiave:
+Il nostro approccio "trifecta" all'elaborazione dei pagamenti ha offerto diversi vantaggi chiave:
 
 1. **Affidabilità**: implementando tre livelli di verifica dei pagamenti, garantiamo che nessun pagamento venga perso o elaborato in modo errato.
 
@@ -850,8 +850,8 @@ Il nostro approccio trifecta all'elaborazione dei pagamenti ha fornito diversi v
 
 4. **Robustezza**: il nostro sistema gestisce con eleganza i casi limite, dai guasti della rete alle attività fraudolente.
 
-Se stai implementando un sistema di pagamento che supporta più processori, ti consigliamo vivamente questo approccio trifecta. Richiede più sforzi di sviluppo iniziali, ma i vantaggi a lungo termine in termini di affidabilità e accuratezza ne valgono la pena.
+Se state implementando un sistema di pagamento che supporta più processori, vi consigliamo vivamente questo approccio "trifecta". Richiede un maggiore impegno di sviluppo iniziale, ma i vantaggi a lungo termine in termini di affidabilità e precisione ne valgono decisamente la pena.
 
-Per maggiori informazioni su Forward Email e sui nostri servizi di posta elettronica incentrati sulla privacy, visita il nostro [sito web](https://forwardemail.net).
+Per maggiori informazioni su Forward Email e sui nostri servizi di posta elettronica incentrati sulla privacy, visita [sito web](https://forwardemail.net).
 
 <!-- *Parole chiave: elaborazione dei pagamenti, integrazione Stripe, integrazione PayPal, gestione webhook, sincronizzazione dei pagamenti, gestione degli abbonamenti, prevenzione delle frodi, gestione delle controversie, sistema di pagamento Node.js, sistema di pagamento multiprocessore, integrazione del gateway di pagamento, verifica dei pagamenti in tempo reale, coerenza dei dati di pagamento, fatturazione degli abbonamenti, sicurezza dei pagamenti, automazione dei pagamenti, webhook di pagamento, riconciliazione dei pagamenti, casi limite di pagamento, gestione degli errori di pagamento, requisiti di abbonamento VISA, notifiche pre-rinnovo, conformità degli abbonamenti* -->

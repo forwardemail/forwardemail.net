@@ -1,38 +1,38 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Saját tárhelyen futó kiadások {#self-hosted-releases}
 
-Ez a rész a ForwardEmail saját üzemeltetésű megoldásának CI/CD-munkafolyamatát dokumentálja, elmagyarázva, hogyan készülnek, publikálnak és telepítenek a Docker-képfájlokat.
+Ez a szakasz a ForwardEmail saját üzemeltetésű megoldásának CI/CD-munkafolyamatát dokumentálja, ismertetve a Docker-lemezképek létrehozásának, közzétételének és telepítésének módját.
 
-## Table of Contents {#table-of-contents}
+## Tartalomjegyzék {#table-of-contents}
 
 * [Áttekintés](#overview)
 * [CI/CD munkafolyamat](#cicd-workflow)
-  * [GitHub Actions munkafolyamat](#github-actions-workflow)
+  * [GitHub Actions Workflow](#github-actions-workflow)
   * [Docker képstruktúra](#docker-image-structure)
 * [Telepítési folyamat](#deployment-process)
   * [Telepítés](#installation)
-  * [Docker Compose konfiguráció](#docker-compose-configuration)
-* [Karbantartási funkciók](#maintenance-features)
+  * [Docker Composition konfiguráció](#docker-compose-configuration)
+* [Karbantartási jellemzők](#maintenance-features)
   * [Automatikus frissítések](#automatic-updates)
   * [Biztonsági mentés és visszaállítás](#backup-and-restore)
   * [Tanúsítvány megújítása](#certificate-renewal)
-* [Verziószámítás](#versioning)
+* [Verziókezelés](#versioning)
 * [Képek elérése](#accessing-images)
 * [Hozzájárulás](#contributing)
 
-## Overview {#overview}
+## Áttekintés {#overview}
 
-A ForwardEmail saját üzemeltetésű megoldása a GitHub Actions segítségével automatikusan létrehozza és közzéteszi a Docker-képeket, amikor új kiadás jön létre. Ezeket a lemezképeket ezután a felhasználók saját kiszolgálóikon telepíthetik a mellékelt telepítőszkript segítségével.
+A ForwardEmail saját üzemeltetésű megoldása a GitHub Actions segítségével automatikusan létrehozza és közzéteszi a Docker-lemezképeket, valahányszor új kiadás készül. Ezeket a lemezképeket ezután a felhasználók a mellékelt telepítőszkript segítségével telepíthetik saját szervereiken.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Létezik még a [saját tárhelyen tárolt blog](https://forwardemail.net/blog/docs/self-hosted-solution) és [saját tárhelyen futó fejlesztői útmutató](https://forwardemail.net/self-hosted) is.
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> A részletesebb, lépésről lépésre bemutatott verziókért lásd a [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) vagy [Debian](https://forwardemail.net/guides/selfhosted-on-debian) alapú útmutatókat.
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD munkafolyamat {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub műveletek munkafolyamata {#github-actions-workflow}
 
-A saját üzemeltetésű Docker rendszerkép létrehozási és közzétételi folyamatát a `.github/workflows/docker-image-build-publish.yml` fájlban definiálták. Ez a munkafolyamat:
+A saját üzemeltetésű Docker rendszerkép létrehozási és közzétételi folyamata a `.github/workflows/docker-image-build-publish.yml` fájlban van definiálva. Ez a munkafolyamat:
 
 1. **Triggerek**: Automatikusan lefut, amikor új GitHub kiadás jelenik meg.
 2. **Környezet**: Ubuntun fut Node.js 18.20.4 verzióval.
@@ -42,8 +42,8 @@ A saját üzemeltetésű Docker rendszerkép létrehozási és közzétételi fo
 * Bejelentkezik a GitHub Container Registry-be (GHCR).
 * Frissíti a sémát az önállóan üzemeltetett telepítéshez.
 * Felépíti a Docker rendszerképet a `self-hosting/Dockerfile-selfhosted` használatával.
-* Megcímkézi a rendszerképet a kiadási verzióval és a `latest` kóddal.
-* Elküldi a rendszerképeket a GitHub Container Registry-be.
+* Megcímkézi a rendszerképet a kiadási verzióval és a `latest`-gyel is.
+* Átküldi a rendszerképeket a GitHub Container Registry-be.
 
 ```yaml
 # Key workflow steps
@@ -71,13 +71,13 @@ jobs:
 
 ### Docker képstruktúra {#docker-image-structure}
 
-A Docker rendszerkép a `self-hosting/Dockerfile-selfhosted` kódban definiált többlépcsős megközelítéssel épül fel:
+A Docker-rendszerkép a `self-hosting/Dockerfile-selfhosted`-ban definiált többlépcsős megközelítéssel épül fel:
 
 1. **Builder Stage**:
 * A Node.js 20-at használja alapképként
 * Beállítja a `SELF_HOSTED=true` környezeti változót
-* Telepíti a függőségeket a pnpm paranccsal
-* Éles módban fordítja az alkalmazást
+* Függőségeket telepít a pnpm paranccsal
+* Az alkalmazást éles módban építi fel
 
 2. **Utolsó szakasz**:
 * Egy karcsúbb Node.js 20-as rendszerképet használ
@@ -85,13 +85,13 @@ A Docker rendszerkép a `self-hosting/Dockerfile-selfhosted` kódban definiált 
 * Létrehozza a szükséges könyvtárakat az adattároláshoz
 * Átmásolja a felépített alkalmazást a builder szakaszból
 
-Ez a megközelítés biztosítja a végső kép méretének és biztonságának optimalizálását.
+Ez a megközelítés biztosítja, hogy a végső kép mérete és biztonsága optimalizált legyen.
 
 ## Telepítési folyamat {#deployment-process}
 
 ### Telepítés {#installation}
 
-A felhasználók telepíthetik a saját üzemeltetésű megoldást a mellékelt telepítőszkript segítségével:
+A felhasználók a megadott telepítőszkript segítségével telepíthetik az önállóan üzemeltetett megoldást:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
@@ -106,7 +106,7 @@ Ez a szkript:
 5. Letölti a legújabb Docker-lemezképeket
 6. Elindítja a szolgáltatásokat a Docker Compose használatával
 
-### Docker írási konfiguráció {#docker-compose-configuration}
+### Docker Composite konfiguráció {#docker-compose-configuration}
 
 A `docker-compose-self-hosted.yml` fájl határozza meg az önállóan üzemeltetett megoldáshoz szükséges összes szolgáltatást:
 
@@ -121,15 +121,15 @@ A `docker-compose-self-hosted.yml` fájl határozza meg az önállóan üzemelte
 * **Redis**: Memórián belüli adattároló
 * **SQLite**: E-mailek tárolására szolgáló adatbázis
 
-Minden szolgáltatás ugyanazt a Docker-képet használja, de különböző belépési pontokkal, ami lehetővé teszi a moduláris architektúrát, miközben leegyszerűsíti a karbantartást.
+Minden szolgáltatás ugyanazt a Docker-rendszerképet használja, de eltérő belépési pontokkal, ami lehetővé teszi a moduláris architektúrát, miközben egyszerűsíti a karbantartást.
 
 ## Karbantartási funkciók {#maintenance-features}
 
-A saját üzemeltetésű megoldás számos karbantartási funkciót tartalmaz:
+Az önállóan üzemeltetett megoldás számos karbantartási funkciót tartalmaz:
 
 ### Automatikus frissítések {#automatic-updates}
 
-A felhasználók engedélyezhetik az automatikus frissítéseket, amelyek:
+A felhasználók engedélyezhetik az automatikus frissítéseket, amelyek a következőket teszik:
 
 * A legújabb Docker rendszerkép letöltése éjszakánként
 * Szolgáltatások újraindítása a frissített rendszerképpel
@@ -150,7 +150,7 @@ A beállítás a következő lehetőségeket kínálja:
 
 ### Tanúsítvány megújítása {#certificate-renewal}
 
-Az SSL-tanúsítványokat a rendszer automatikusan kezeli a következő opciókkal:
+Az SSL-tanúsítványok automatikusan kezelődnek, a következő lehetőségekkel:
 
 * Új tanúsítványok generálása a beállítás során
 * Tanúsítványok megújítása szükség esetén
@@ -158,12 +158,12 @@ Az SSL-tanúsítványokat a rendszer automatikusan kezeli a következő opciókk
 
 ## Verziókezelés {#versioning}
 
-Minden GitHub-kiadás új Docker-képet hoz létre, amely a következő címkékkel van ellátva:
+Minden GitHub kiadás létrehoz egy új Docker rendszerképet, amely a következő címkével van ellátva:
 
 1. A konkrét kiadási verzió (pl. `v1.0.0`)
 2. A legújabb kiadás `latest` címkéje
 
-A felhasználók választhatnak egy adott verziót a stabilitás érdekében, vagy a `latest` címke segítségével mindig a legújabb funkciókat kaphatják meg.
+A felhasználók választhatnak egy adott verzió használatát a stabilitás érdekében, vagy a `latest` címke használatával mindig a legújabb funkciókat kapják meg.
 
 ## Képek elérése {#accessing-images}
 
@@ -172,13 +172,13 @@ A Docker képek nyilvánosan elérhetők a következő címen:
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (példa verziócímkére)
 
-A képek letöltéséhez nincs szükség hitelesítésre.
+Nincs szükség hitelesítésre ezen képek lekéréséhez.
 
-## Hozzájárulás {#contributing}
+## Közreműködő {#contributing}
 
 A saját üzemeltetésű megoldáshoz való hozzájárulás:
 
-1. Módosítsa a megfelelő fájlokat a `self-hosting` könyvtárban.
+1. Módosítsa a `self-hosting` könyvtárban található releváns fájlokat.
 2. Tesztelje helyben vagy egy Ubuntu alapú VPS-en a mellékelt `setup.sh` szkript használatával.
 3. Küldjön be egy pull request-et.
 4. Az egyesítés és az új kiadás létrehozása után a CI munkafolyamat automatikusan felépíti és közzéteszi a frissített Docker-képet.

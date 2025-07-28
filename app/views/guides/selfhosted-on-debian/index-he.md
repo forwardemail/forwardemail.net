@@ -1,9 +1,9 @@
 # מדריך התקנה של העברת דוא"ל לאירוח עצמי עבור דביאן {#forward-email-self-hosting-installation-guide-for-debian}
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [סקירה כללית](#overview)
-* [דרישות מוקדמות](#prerequisites)
+* [דרישות קדם](#prerequisites)
 * [דרישות מערכת](#system-requirements)
 * [התקנה שלב אחר שלב](#step-by-step-installation)
   * [שלב 1: הגדרת מערכת ראשונית](#step-1-initial-system-setup)
@@ -45,7 +45,7 @@
 * [שיטות עבודה מומלצות לאבטחה](#security-best-practices)
 * [מַסְקָנָה](#conclusion)
 
-## סקירה כללית {#overview}
+## סקירה כללית של {#overview}
 
 מדריך זה מספק הוראות שלב אחר שלב להתקנת הפתרון העצמי של Forward Email במערכות דביאן. מדריך זה מותאם במיוחד עבור דביאן 11 (Bullseye) ודביאן 12 (Bookworm).
 
@@ -531,7 +531,7 @@ curl -I https://$DOMAIN
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## הגדרות לאחר התקנה {#post-installation-configuration}
+## תצורה לאחר התקנה {#post-installation-configuration}
 
 ### הגדרת רשומות DNS {#dns-records-setup}
 
@@ -663,7 +663,7 @@ crontab -l
 * **UFW**: ייתכן שלא ייכלל בהתקנות מינימליות של דביאן
 * **systemd**: ההתנהגות עשויה להיות שונה במקצת מאובונטו
 
-### ניהול שירות {#service-management}
+### ניהול שירותים {#service-management}
 
 ```bash
 # Check service status (Debian-specific commands)
@@ -703,7 +703,7 @@ nslookup google.com
 
 ### משימות תחזוקה שוטפות {#regular-maintenance-tasks}
 
-1. **ניטור שטח דיסק פנוי**: `df -h`
+1. **ניטור שטח דיסק**: `df -h`
 2. **בדיקת סטטוס שירות**: שימוש בפקודת docker compose מתאימה
 3. **סקירת יומני רישום**: בדיקת יומני יישום ומערכת
 4. **עדכון חבילות מערכת**: `apt update && apt upgrade`
@@ -833,4 +833,4 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 ההבדלים העיקריים מאובונטו הם התקנת snapd ותצורת מאגר Docker. לאחר הגדרה נכונה של אלה, אפליקציית Forward Email מתנהגת באופן זהה בשתי המערכות.
 
-לאפשרויות תצורה נוספות ותכונות מתקדמות, עיינו בתיעוד הרשמי של העברת דוא"ל בכתובת <https://forwardemail.net/self-hosted#configuration>.
+לאפשרויות תצורה נוספות ותכונות מתקדמות, עיין בתיעוד הרשמי של העברת דוא"ל בכתובת <https://forwardemail.net/self-hosted#configuration>.

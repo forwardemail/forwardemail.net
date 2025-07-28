@@ -5,7 +5,7 @@
 * [前言](#foreword)
 * [转发电子邮件的 SMTP 处理如何工作](#how-forward-emails-smtp-processing-works)
   * [电子邮件队列和重试系统](#email-queue-and-retry-system)
-  * [可靠性验证](#dummy-proofed-for-reliability)
+  * [可靠性防假](#dummy-proofed-for-reliability)
 * [Node.js 集成](#nodejs-integration)
   * [使用 Nodemailer](#using-nodemailer)
   * [使用 Express.js](#using-expressjs)
@@ -18,24 +18,24 @@
 * [Ruby 集成](#ruby-integration)
   * [使用 Ruby Mail Gem](#using-ruby-mail-gem)
 * [Java 集成](#java-integration)
-  * [使用 Java Mail API](#using-javamail-api)
+  * [使用 Java 邮件 API](#using-javamail-api)
 * [电子邮件客户端配置](#email-client-configuration)
   * [雷鸟](#thunderbird)
   * [苹果邮件](#apple-mail)
   * [Gmail（以…的名义发送邮件）](#gmail-send-mail-as)
 * [故障排除](#troubleshooting)
-  * [常见问题及解决方案](#common-issues-and-solutions)
+  * [常见问题和解决方案](#common-issues-and-solutions)
   * [获取帮助](#getting-help)
 * [其他资源](#additional-resources)
 * [结论](#conclusion)
 
 ## 前言 {#foreword}
 
-本指南提供了如何使用各种编程语言、框架和电子邮件客户端与 Forward Email 的 SMTP 服务集成的详细示例。我们的 SMTP 服务设计可靠、安全，并且易于与您现有的应用程序集成。
+本指南提供了详细的示例，介绍如何使用各种编程语言、框架和电子邮件客户端集成 Forward Email 的 SMTP 服务。我们的 SMTP 服务设计可靠、安全，并且易于与您现有的应用程序集成。
 
-## 转发电子邮件的 SMTP 处理如何工作 {#how-forward-emails-smtp-processing-works}
+## 转发电子邮件的 SMTP 处理如何运作 {#how-forward-emails-smtp-processing-works}
 
-在深入了解集成示例之前，了解我们的 SMTP 服务如何处理电子邮件非常重要：
+在深入研究集成示例之前，了解我们的 SMTP 服务如何处理电子邮件非常重要：
 
 ### 电子邮件队列和重试系统 {#email-queue-and-retry-system}
 
@@ -44,15 +44,15 @@
 1. **初始处理**：邮件经过验证、恶意软件扫描以及垃圾邮件过滤器检查
 2. **智能排队**：邮件将被放入复杂的队列系统中等待投递
 3. **智能重试机制**：如果投递暂时失败，我们的系统将：
-* 使用我们的 `getBounceInfo` 函数分析错误响应
+* 使用 `getBounceInfo` 函数分析错误响应
 * 确定问题是暂时的（例如，“稍后再试”、“暂时延迟”）还是永久性的（例如，“用户未知”）
-* 对于暂时性问题，将邮件标记为需要重试
+* 对于暂时性问题，将邮件标记为重试
 * 对于永久性问题，生成退回通知
 4. **5 天重试期**：我们最多会重试投递 5 天（类似于 Postfix 等行业标准），以便有时间解决暂时性问题
 5. **投递状态通知**：发件人将收到有关其邮件状态（已投递、延迟或退回）的通知
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> 成功投递后，出于安全和隐私考虑，外发 SMTP 电子邮件内容将在一段可配置的保留期（默认 30 天）后被删除。仅会保留一条指示已投递的占位符消息。
 
 ### 可靠性验证 {#dummy-proofed-for-reliability}
 
@@ -63,7 +63,7 @@
 * 如果收件人邮箱已满，系统将稍后重试
 * 如果接收服务器暂时不可用，我们将继续尝试
 
-这种方法在保证隐私和安全的同时显著提高了投递率。
+这种方法在保证隐私和安全的同时，显著提高了投递率。
 
 ## Node.js 集成 {#nodejs-integration}
 
@@ -107,7 +107,7 @@ sendEmail();
 
 ### 使用 Express.js {#using-expressjs}
 
-以下是如何将转发电子邮件 SMTP 与 Express.js 应用程序集成：
+以下是将转发电子邮件 SMTP 与 Express.js 应用程序集成的方法：
 
 ```javascript
 const express = require('express');
@@ -277,7 +277,7 @@ try {
 
 ### 使用 Laravel {#using-laravel}
 
-对于 Laravel 应用程序，更新您的 `.env` 文件：
+对于 Laravel 应用程序，更新 `.env` 文件：
 
 ```sh
 MAIL_MAILER=smtp
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-然后使用 Laravel 的邮件外观发送电子邮件：
+然后使用 Laravel 的 Mail 外观发送电子邮件：
 
 ```php
 <?php
@@ -452,7 +452,7 @@ flowchart TD
 * 用户名：您的完整电子邮件地址
 5. 点击“测试”，然后点击“完成”
 
-### 苹果邮件 {#apple-mail}
+### Apple 邮件 {#apple-mail}
 
 1. 打开邮件，前往“邮件”>“偏好设置”>“帐户”
 2. 点击“+”按钮添加新帐户
@@ -465,7 +465,7 @@ flowchart TD
 * 密码：您的密码
 6. 点击“登录”完成设置
 
-### Gmail（以此身份发送邮件）{#gmail-send-mail-as}
+### Gmail（以……身份发送邮件）{#gmail-send-mail-as}
 
 1. 打开 Gmail，前往“设置”>“帐户和导入”
 2. 在“以…身份发送邮件”下，点击“添加其他电子邮件地址”
@@ -504,13 +504,13 @@ flowchart TD
 
 ### 获取帮助 {#getting-help}
 
-如果您遇到这里未涵盖的问题，请：
+如果您遇到此处未涵盖的问题，请：
 
 1. 查看我们的 [常见问题解答页面](/faq) 了解常见问题
 2. 查看我们的 [关于电子邮件传递的博客文章](/blog/docs/best-email-forwarding-service) 了解详细信息
 3. 联系我们的支持团队 <support@forwardemail.net>
 
-## 其他资源 {#additional-resources}
+## 额外资源 {#additional-resources}
 
 * [转发电子邮件文档](/docs)
 * [SMTP 服务器限制和配置](/faq#what-are-your-outbound-smtp-limits)
@@ -519,6 +519,6 @@ flowchart TD
 
 ## 结论 {#conclusion}
 
-Forward Email 的 SMTP 服务提供了一种可靠、安全且注重隐私的方式，可从您的应用程序和电子邮件客户端发送电子邮件。借助我们的智能队列系统、5 天重试机制和全面的投递状态通知，您可以确信您的电子邮件将到达目的地。
+Forward Email 的 SMTP 服务提供可靠、安全且注重隐私的邮件发送方式，方便您从应用程序和电子邮件客户端发送电子邮件。凭借我们智能的队列系统、5 天重试机制以及全面的投递状态通知功能，您可以安心无虞地确保邮件顺利送达目的地。
 
 如需更多高级用例或自定义集成，请联系我们的支持团队。

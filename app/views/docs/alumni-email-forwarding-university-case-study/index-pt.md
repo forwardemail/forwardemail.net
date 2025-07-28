@@ -1,4 +1,4 @@
-# Estudo de caso: como o Forward Email potencializa soluções de e-mail para ex-alunos em universidades de ponta {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
+# Estudo de caso: como o Forward Email impulsiona soluções de e-mail para ex-alunos em universidades de ponta {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
 <img carregando="preguiçoso" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
 
@@ -10,7 +10,7 @@
 * [Desafio de e-mail de ex-alunos da universidade](#the-university-alumni-email-challenge)
   * [O valor da identidade de e-mail de ex-alunos](#the-value-of-alumni-email-identity)
   * [Soluções tradicionais não atendem às expectativas](#traditional-solutions-fall-short)
-  * [A solução de e-mail de encaminhamento](#the-forward-email-solution)
+  * [A solução de encaminhamento de e-mail](#the-forward-email-solution)
 * [Implementação Técnica: Como Funciona](#technical-implementation-how-it-works)
   * [Arquitetura central](#core-architecture)
   * [Integração com Sistemas Universitários](#integration-with-university-systems)
@@ -29,8 +29,8 @@
   * [Desafio](#challenge)
   * [Solução](#solution)
   * [Resultados](#results)
-* [Benefícios para Universidades e Ex-Alunos](#benefits-for-universities-and-alumni)
-  * [Para Universidades](#for-universities)
+* [Benefícios para Universidades e Ex-alunos](#benefits-for-universities-and-alumni)
+  * [Para universidades](#for-universities)
   * [Para ex-alunos](#for-alumni)
   * [Taxas de adoção entre ex-alunos](#adoption-rates-among-alumni)
   * [Economia de custos em comparação com soluções anteriores](#cost-savings-compared-to-previous-solutions)
@@ -44,9 +44,9 @@
 
 Criamos o serviço de encaminhamento de e-mail mais seguro, privado e flexível do mundo para universidades de prestígio e seus ex-alunos.
 
-No cenário competitivo do ensino superior, manter conexões vitalícias com ex-alunos não é apenas uma questão de tradição — é um imperativo estratégico. Uma das maneiras mais tangíveis pelas quais as universidades promovem essas conexões é por meio de endereços de e-mail de ex-alunos, fornecendo aos graduados uma identidade digital que reflete sua herança acadêmica.
+No cenário competitivo do ensino superior, manter conexões duradouras com ex-alunos não é apenas uma questão de tradição — é um imperativo estratégico. Uma das maneiras mais tangíveis pelas quais as universidades promovem essas conexões é por meio dos endereços de e-mail de ex-alunos, fornecendo aos graduados uma identidade digital que reflete sua herança acadêmica.
 
-Na Forward Email, firmamos parcerias com algumas das instituições de ensino mais prestigiadas do mundo para revolucionar a forma como gerenciam os serviços de e-mail para ex-alunos. Nossa solução de encaminhamento de e-mails de nível empresarial agora alimenta os sistemas de e-mail para ex-alunos do [Universidade de Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge), [Universidade de Maryland](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park), [Universidade Tufts](https://en.wikipedia.org/wiki/Tufts_University) e [Faculdade Swarthmore](https://en.wikipedia.org/wiki/Swarthmore_College), atendendo coletivamente milhares de ex-alunos em todo o mundo.
+Na Forward Email, firmamos parcerias com algumas das instituições de ensino mais prestigiadas do mundo para revolucionar a forma como gerenciam os serviços de e-mail para ex-alunos. Nossa solução de encaminhamento de e-mails de nível empresarial agora alimenta os sistemas de e-mail para ex-alunos [Universidade de Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge), [Universidade de Maryland](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park), [Universidade Tufts](https://en.wikipedia.org/wiki/Tufts_University) e [Faculdade Swarthmore](https://en.wikipedia.org/wiki/Swarthmore_College), atendendo coletivamente milhares de ex-alunos em todo o mundo.
 
 Esta postagem do blog explora como nosso serviço de encaminhamento de e-mail [código aberto](https://en.wikipedia.org/wiki/Open-source_software), focado em privacidade, se tornou a solução preferida para essas instituições, as implementações técnicas que o tornam possível e o impacto transformador que ele teve na eficiência administrativa e na satisfação dos ex-alunos.
 
@@ -56,18 +56,18 @@ Os benefícios financeiros da nossa solução são substanciais, especialmente q
 
 | Solução | Custo por ex-aluno (anual) | Custo para 100.000 ex-alunos | Aumentos de preços recentes |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Google Workspace para empresas | $72 | $7,200,000 | • 2019: G Suite Basic de US$ 5 para US$ 6/mês (+20%)<br>• 2023: Planos flexíveis aumentaram 20%<br>• 2025: Business Plus de US$ 18 para US$ 26,40/mês (+47%) com recursos de IA |
+| Google Workspace para Empresas | $72 | $7,200,000 | • 2019: G Suite Basic de US$ 5 para US$ 6/mês (+20%)<br>• 2023: Planos flexíveis aumentaram 20%<br>• 2025: Business Plus de US$ 18 para US$ 26,40/mês (+47%) com recursos de IA |
 | Google Workspace para Educação | Gratuito (Fundamentos da Educação)<br>US$ 3/aluno/ano (Educação Padrão)<br>US$ 5/aluno/ano (Educação Plus) | Grátis - $ 500.000 | • Descontos por volume: 5% para 100-499 licenças<br>• Descontos por volume: 10% para mais de 500 licenças<br>• Nível gratuito limitado aos serviços principais |
-| Microsoft 365 Negócios | $60 | $6,000,000 | • 2023: Introdução de atualizações de preços semestrais<br>• 2025 (janeiro): Pessoal de US$ 6,99 para US$ 9,99/mês (+43%) com Copilot AI<br>• 2025 (abril): aumento de 5% nos compromissos anuais pagos mensalmente |
+| Microsoft 365 Business | $60 | $6,000,000 | • 2023: Introdução de atualizações de preços semestrais<br>• 2025 (janeiro): Pessoal de US$ 6,99 para US$ 9,99/mês (+43%) com Copilot AI<br>• 2025 (abril): aumento de 5% nos compromissos anuais pagos mensalmente |
 | Microsoft 365 Educação | Gratuito (A1)<br>$38-55/professor/ano (A3)<br>$65-96/professor/ano (A5) | Grátis - $ 96.000 | • Licenças de estudante geralmente incluídas nas compras do corpo docente<br>• Preços personalizados por meio de licenciamento por volume<br>• Nível gratuito limitado às versões da web |
-| Troca auto-hospedada | $45 | $4,500,000 | Os custos contínuos de manutenção e segurança continuam a aumentar |
+| Exchange auto-hospedado | $45 | $4,500,000 | Os custos contínuos de manutenção e segurança continuam a aumentar |
 | **Encaminhar e-mail corporativo** | **Fixo $ 250/mês** | **US$ 3.000/ano** | **Nenhum aumento de preço desde o lançamento** |
 
 ### Poupança universitária do mundo real {#real-world-university-savings}
 
-Veja quanto nossas universidades parceiras economizam anualmente ao escolher o Forward Email em vez dos provedores tradicionais:
+Veja quanto nossas universidades parceiras economizam anualmente ao escolher o Forward Email em vez de provedores tradicionais:
 
-| Universidade | Contagem de ex-alunos | Custo Anual com o Google | Custo anual com encaminhamento de e-mail | Poupança Anual |
+| Universidade | Contagem de ex-alunos | Custo anual com o Google | Custo anual com encaminhamento de e-mail | Poupança Anual |
 | ----------------------- | ------------ | ----------------------- | ------------------------------ | -------------- |
 | Universidade de Cambridge | 30,000 | $90,000 | $3,000 | $87,000 |
 | Faculdade Swarthmore | 5,000 | $15,000 | $3,000 | $12,000 |
@@ -75,12 +75,12 @@ Veja quanto nossas universidades parceiras economizam anualmente ao escolher o F
 | Universidade de Maryland | 25,000 | $75,000 | $3,000 | $72,000 |
 
 > \[!NOTE]
-> Forward Email enterprise only costs $250/month typically, with no extra cost per user, whitelisted API rate limitations, and the only additional cost is storage if you need additional GB/TB for students (+$3 per 10 GB additional storage). We use NVMe SSD drives for fast support of IMAP/POP3/SMTP/CalDAV/CardDAV as well.
+> O Forward Email Enterprise normalmente custa apenas US$ 250/mês, sem custo adicional por usuário, com limitações de taxa de API na lista de permissões, e o único custo adicional é o armazenamento, caso você precise de GB/TB adicionais para estudantes (+US$ 3 por 10 GB de armazenamento adicional). Também usamos unidades SSD NVMe para suporte rápido a IMAP/POP3/SMTP/CalDAV/CardDAV.
 
 > \[!IMPORTANT]
-> Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
+> Ao contrário do Google e da Microsoft, que aumentaram repetidamente seus preços ao integrar recursos de IA que analisam seus dados, o Forward Email mantém preços estáveis com foco estrito na privacidade. Não utilizamos IA, não rastreamos padrões de uso e não armazenamos registros ou e-mails em disco (todo o processamento é feito na memória), garantindo total privacidade para as comunicações com seus ex-alunos.
 
-Isso representa uma redução significativa de custos em comparação com as soluções tradicionais de hospedagem de e-mail — recursos que as universidades podem redirecionar para bolsas de estudo, pesquisas ou outras atividades de missão crítica. De acordo com uma análise de 2023 da Email Vendor Selection, as instituições de ensino estão cada vez mais buscando alternativas econômicas aos provedores de e-mail tradicionais, à medida que os preços continuam subindo com a integração de recursos de IA ([Seleção de fornecedores de e-mail, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
+Isso representa uma redução significativa de custos em comparação com as soluções tradicionais de hospedagem de e-mail — recursos que as universidades podem redirecionar para bolsas de estudo, pesquisas ou outras atividades de missão crítica. De acordo com uma análise de 2023 da Email Vendor Selection, as instituições de ensino estão cada vez mais buscando alternativas econômicas aos provedores de e-mail tradicionais, à medida que os preços continuam subindo com a integração de recursos de IA ([Seleção de Fornecedores por E-mail, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
 
 ## Desafio de e-mail para ex-alunos da universidade {#the-university-alumni-email-challenge}
 
@@ -99,7 +99,7 @@ Endereços de e-mail de ex-alunos (como `firstname.lastname@cl.cam.ac.uk` ou `us
 Uma pesquisa da Tekade (2020) destaca que endereços de e-mail educacionais oferecem inúmeros benefícios aos ex-alunos, incluindo acesso a recursos acadêmicos, credibilidade profissional e descontos exclusivos em vários serviços ([Médio, 2020](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05)).
 
 > \[!TIP]
-> Visit our new [AlumniEmail.com](https://alumniemail.com) directory for a comprehensive resource on university alumni email services, including setup guides, best practices, and a searchable directory of alumni email domains. It serves as a central hub for all alumni email information.
+> Visite nosso novo diretório [AlumniEmail.com](https://alumniemail.com) para obter um recurso abrangente sobre serviços de e-mail para ex-alunos universitários, incluindo guias de configuração, práticas recomendadas e um diretório pesquisável de domínios de e-mail para ex-alunos. Ele serve como um hub central para todas as informações sobre e-mail para ex-alunos.
 
 ### Soluções tradicionais não atendem às expectativas {#traditional-solutions-fall-short}
 
@@ -125,7 +125,7 @@ Nossa abordagem aborda esses desafios por meio de um modelo fundamentalmente dif
 
 ## Implementação técnica: como funciona {#technical-implementation-how-it-works}
 
-Nossa solução utiliza uma arquitetura técnica sofisticada, mas elegantemente simples, para fornecer encaminhamento de e-mail confiável e seguro em escala.
+Nossa solução utiliza uma arquitetura técnica sofisticada, porém elegantemente simples, para fornecer encaminhamento de e-mail confiável e seguro em escala.
 
 ### Arquitetura principal {#core-architecture}
 
@@ -141,7 +141,7 @@ De acordo com profissionais de TI da ServerFault, para universidades que buscam 
 
 ### Integração com Sistemas Universitários {#integration-with-university-systems}
 
-Desenvolvemos caminhos de integração perfeitos com a infraestrutura universitária existente:
+Desenvolvemos caminhos de integração contínua com a infraestrutura universitária existente:
 
 * Provisionamento automatizado por meio da integração [API RESTful](https://forwardemail.net/email-api)
 * Opções de identidade visual personalizadas para portais universitários
@@ -150,7 +150,7 @@ Desenvolvemos caminhos de integração perfeitos com a infraestrutura universit�
 
 ### Gerenciamento orientado por API {#api-driven-management}
 
-Nosso [API RESTful](https://forwardemail.net/email-api) permite que as universidades automatizem o gerenciamento de e-mail:
+Nosso [API RESTful](https://forwardemail.net/email-api) permite que universidades automatizem o gerenciamento de e-mail:
 
 ```javascript
 // Example: Creating a new alumni email address
@@ -170,20 +170,20 @@ const response = await fetch('https://forwardemail.net/api/v1/domains/example.ed
 
 ### Configuração e verificação de DNS {#dns-configuration-and-verification}
 
-A configuração adequada de DNS é crítica para a entrega de e-mails. Nossa equipe auxilia com:
+A configuração correta do DNS é essencial para a entrega de e-mails. Nossa equipe auxilia com:
 
 * Configuração [DNS](https://en.wikipedia.org/wiki/Domain_Name_System) incluindo registros MX
-* Implementação abrangente de segurança de e-mail usando nosso pacote de código aberto [autenticação de correio](https://www.npmjs.com/package/mailauth), um canivete suíço para autenticação de e-mail que lida com:
-* [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Estrutura de Política do Remetente) para evitar spoofing de e-mail
+* Implementação abrangente de segurança de e-mail usando nosso pacote [autenticação de e-mail](https://www.npmjs.com/package/mailauth) de código aberto, um canivete suíço para autenticação de e-mail que lida com:
+* [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Estrutura de Política de Remetente) para evitar spoofing de e-mail
 * [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (E-mail Identificado por DomainKeys) para autenticação de e-mail
 * [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Autenticação, Relatórios e Conformidade de Mensagens Baseadas em Domínio) para aplicação de políticas
-* [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (Segurança Estrita de Transporte SMTP MTA) para aplicar criptografia TLS
-* [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Cadeia de Recebimento Autenticada) para manter a autenticação quando as mensagens são encaminhadas
-* [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Reescrita de Remetente Esquema) para preservar a validação SPF por meio do encaminhamento
+* [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (Segurança de Transporte Estrita SMTP MTA) para aplicar criptografia TLS
+* [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Cadeia Recebida Autenticada) para manter a autenticação quando as mensagens são encaminhadas
+* [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Esquema de Reescrita de Remetente) para preservar a validação SPF durante o encaminhamento
 * [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Indicadores de Marca para Identificação de Mensagens) para exibição de logotipo em clientes de e-mail de suporte
 * Verificação de registro DNS TXT para propriedade de domínio
 
-O pacote `mailauth` (<http://npmjs.com/package/mailauth>) é uma solução totalmente de código aberto que gerencia todos os aspectos da autenticação de e-mail em uma única biblioteca integrada. Diferentemente de soluções proprietárias, essa abordagem garante transparência, atualizações regulares de segurança e controle total sobre o processo de autenticação de e-mail.
+O pacote `mailauth` (<http://npmjs.com/package/mailauth>) é uma solução totalmente de código aberto que gerencia todos os aspectos da autenticação de e-mail em uma única biblioteca integrada. Diferentemente das soluções proprietárias, essa abordagem garante transparência, atualizações regulares de segurança e controle total sobre o processo de autenticação de e-mail.
 
 ### Testes e Garantia de Qualidade {#testing-and-quality-assurance}
 
@@ -195,7 +195,7 @@ Antes da implantação completa, realizamos testes rigorosos:
 * Validação de integração de API
 * Teste de aceitação do usuário com representantes de ex-alunos
 
-Cronograma de implementação do ## {#implementation-timeline}
+## Cronograma de implementação do {#implementation-timeline}
 
 ```mermaid
 gantt
@@ -219,13 +219,13 @@ gantt
     Ongoing Maintenance            :e1, after d2, 365d
 ```
 
-## Processo de implementação: da migração à manutenção {#implementation-process-from-migration-to-maintenance}
+Processo de implementação do ##: da migração à manutenção {#implementation-process-from-migration-to-maintenance}
 
 Nosso processo de implementação estruturado garante uma transição tranquila para universidades que adotam nossa solução.
 
 ### Avaliação e Planejamento Inicial {#initial-assessment-and-planning}
 
-Começamos com uma avaliação abrangente do sistema de e-mail atual da universidade, banco de dados de ex-alunos e requisitos técnicos. Esta fase inclui:
+Começamos com uma avaliação abrangente do atual sistema de e-mail da universidade, do banco de dados de ex-alunos e dos requisitos técnicos. Esta fase inclui:
 
 * Entrevistas com stakeholders de TI, relações com ex-alunos e administração
 * Auditoria técnica da infraestrutura de e-mail existente
@@ -235,7 +235,7 @@ Começamos com uma avaliação abrangente do sistema de e-mail atual da universi
 
 ### Estratégia de Migração {#migration-strategy}
 
-Com base na avaliação, desenvolvemos uma estratégia de migração personalizada que minimiza a interrupção e garante a integridade completa dos dados:
+Com base na avaliação, desenvolvemos uma estratégia de migração personalizada que minimiza as interrupções e garante a integridade completa dos dados:
 
 * Abordagem de migração em fases por coortes de ex-alunos
 * Operação de sistemas paralelos durante a transição
@@ -284,7 +284,7 @@ Nossa parceria continua muito além da implementação:
 
 ## Estudo de caso: Universidade de Cambridge {#case-study-university-of-cambridge}
 
-A Universidade de Cambridge buscou uma solução para fornecer endereços de e-mail @cam.ac.uk aos ex-alunos e, ao mesmo tempo, reduzir os custos e a sobrecarga de TI.
+A Universidade de Cambridge buscou uma solução para fornecer endereços de e-mail @cam.ac.uk aos ex-alunos, reduzindo ao mesmo tempo os custos e a sobrecarga de TI.
 
 ### Desafio {#challenge}
 
@@ -319,15 +319,15 @@ A implementação proporcionou benefícios significativos:
 
 Nossa solução oferece benefícios tangíveis tanto para as instituições quanto para seus graduados.
 
-### Para Universidades {#for-universities}
+### Para universidades {#for-universities}
 
 * **Custo-benefício**: Preço fixo independentemente do número de ex-alunos
-* **Simplicidade administrativa**: Gerenciamento automatizado por API
+* **Simplicidade administrativa**: Gerenciamento automatizado por meio de API
 * **Segurança aprimorada**: Autenticação de e-mail abrangente
 * **Consistência da marca**: Endereços de e-mail institucionais vitalícios
 * **Engajamento de ex-alunos**: Conexões fortalecidas por meio de serviço contínuo
 
-De acordo com a BulkSignature (2023), plataformas de e-mail para instituições educacionais oferecem benefícios significativos, incluindo custo-benefício por meio de planos gratuitos ou de baixo custo, eficiência de tempo por meio de recursos de comunicação em massa e recursos de rastreamento para monitorar a entrega e o engajamento de e-mails ([Assinatura em massa, 2023](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/)).
+De acordo com a BulkSignature (2023), as plataformas de e-mail para instituições educacionais oferecem benefícios significativos, incluindo custo-benefício por meio de planos gratuitos ou de baixo custo, eficiência de tempo por meio de recursos de comunicação em massa e recursos de rastreamento para monitorar a entrega e o engajamento de e-mails ([Assinatura em massa, 2023](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/)).
 
 ### Para ex-alunos {#for-alumni}
 
@@ -349,11 +349,11 @@ O impacto financeiro foi substancial, com universidades relatando economias de c
 
 ## Considerações de segurança e privacidade {#security-and-privacy-considerations}
 
-Para instituições educacionais, proteger dados de ex-alunos não é apenas uma boa prática; geralmente é um requisito legal sob regulamentações como o GDPR na Europa.
+Para instituições educacionais, proteger dados de ex-alunos não é apenas uma boa prática — geralmente é uma exigência legal sob regulamentações como o GDPR na Europa.
 
 ### Medidas de Proteção de Dados {#data-protection-measures}
 
-Nossa solução incorpora múltiplas camadas de segurança:
+Nossa solução incorpora várias camadas de segurança:
 
 * Criptografia de ponta a ponta para todo o tráfego de e-mail
 * Sem armazenamento de conteúdo de e-mail em nossos servidores
@@ -362,9 +362,9 @@ Nossa solução incorpora múltiplas camadas de segurança:
 * Código transparente e de código aberto para verificação de segurança
 
 > \[!WARNING]
-> Many email providers scan email content for advertising purposes or to train AI models. This practice raises serious privacy concerns, especially for professional and academic communications. Forward Email never scans email content and processes all emails in-memory to ensure complete privacy.
+> Muitos provedores de e-mail verificam o conteúdo dos e-mails para fins publicitários ou para treinar modelos de IA. Essa prática levanta sérias preocupações com a privacidade, especialmente para comunicações profissionais e acadêmicas. O Forward Email nunca verifica o conteúdo dos e-mails e processa todos os e-mails armazenados na memória para garantir total privacidade.
 
-Estrutura de conformidade ### {#compliance-framework}
+### Estrutura de conformidade {#compliance-framework}
 
 Mantemos estrita conformidade com as regulamentações relevantes:
 
@@ -385,9 +385,9 @@ Continuamos aprimorando nossa solução de e-mail para ex-alunos com novos recur
 
 ## Conclusão {#conclusion}
 
-O Forward Email revolucionou a forma como as universidades fornecem e gerenciam serviços de e-mail para ex-alunos. Ao substituir a hospedagem de e-mail complexa e cara por um encaminhamento de e-mail elegante e seguro, permitimos que as instituições ofereçam endereços de e-mail vitalícios a todos os ex-alunos, reduzindo drasticamente os custos e a sobrecarga administrativa.
+O Forward Email revolucionou a forma como as universidades fornecem e gerenciam serviços de e-mail para ex-alunos. Ao substituir a hospedagem de e-mail complexa e cara por um encaminhamento de e-mail elegante e seguro, permitimos que as instituições ofereçam endereços de e-mail vitalícios a todos os ex-alunos, reduzindo drasticamente os custos e as despesas administrativas.
 
-Nossas parcerias com instituições de prestígio como Cambridge, Maryland, Tufts e Swarthmore demonstram a eficácia da nossa abordagem em diversos ambientes educacionais. À medida que as universidades enfrentam uma pressão cada vez maior para manter as conexões dos ex-alunos enquanto controlam os custos, nossa solução oferece uma alternativa atraente aos sistemas de e-mail tradicionais.
+Nossas parcerias com instituições de prestígio como Cambridge, Maryland, Tufts e Swarthmore demonstram a eficácia da nossa abordagem em diversos ambientes educacionais. À medida que as universidades enfrentam uma pressão crescente para manter a conexão com seus ex-alunos e, ao mesmo tempo, controlar custos, nossa solução oferece uma alternativa atraente aos sistemas de e-mail tradicionais.
 
 ```mermaid
 flowchart LR
@@ -399,4 +399,4 @@ flowchart LR
     A -->|SSO Authentication| F
 ```
 
-Para universidades interessadas em explorar como o Forward Email pode transformar seus serviços de e-mail de ex-alunos, entre em contato com nossa equipe em <support@forwardemail.net> ou visite [forwardemail.net](https://forwardemail.net) para saber mais sobre nossas soluções empresariais.
+Para universidades interessadas em explorar como o Forward Email pode transformar seus serviços de e-mail para ex-alunos, entre em contato com nossa equipe em <support@forwardemail.net> ou visite [forwardemail.net](https://forwardemail.net) para saber mais sobre nossas soluções empresariais.

@@ -64,7 +64,7 @@
 
 يعتمد حل البريد الإلكتروني المُستضاف ذاتيًا لدينا على مبادئ الخصوصية نفسها التي تُوجّه جميع منتجاتنا. لنستكشف التطبيق التقني الذي يُمكّننا من ذلك.
 
-### هندسة تعتمد على Docker لتحقيق البساطة والقدرة على النقل {#docker-based-architecture-for-simplicity-and-portability}
+### هندسة معمارية تعتمد على Docker لتحقيق البساطة والقدرة على النقل {#docker-based-architecture-for-simplicity-and-portability}
 
 لقد قمنا بتغليف كامل البنية التحتية لبريدنا الإلكتروني باستخدام Docker، مما يُسهّل نشره على أي نظام Linux تقريبًا. يوفر هذا النهج القائم على الحاويات العديد من المزايا الرئيسية:
 
@@ -86,9 +86,9 @@
 * SQLite لتخزين آمن ومشفّر لصناديق البريد
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> تأكد من الاطلاع على [دليل المطور المستضاف ذاتيًا](https://forwardemail.net/self-hosted)
 
-### تثبيت البرنامج النصي Bash: إمكانية الوصول تلتقي بالأمان {#bash-script-installation-accessibility-meets-security}
+تثبيت البرنامج النصي Bash ###: إمكانية الوصول تلبي الأمان {#bash-script-installation-accessibility-meets-security}
 
 لقد قمنا بتصميم عملية التثبيت لتكون بسيطة قدر الإمكان مع الحفاظ على أفضل ممارسات الأمان:
 
@@ -145,9 +145,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 ٣. **الأمان من خلال الانفتاح**: يمكن تحديد الثغرات الأمنية وإصلاحها من قِبل مجتمع عالمي.
 ٤. **لا يوجد احتكار للموردين**: لن تعتمد أبدًا على وجود شركتنا.
 
-قاعدة التعليمات البرمجية بأكملها متاحة على GitHub على <https://github.com/forwardemail/forwardemail.net>.
+قاعدة التعليمات البرمجية بأكملها متاحة على GitHub في <https://github.com/forwardemail/forwardemail.net>.
 
-## الاستضافة الذاتية مقابل الإدارة: اتخاذ الاختيار الصحيح {#self-hosted-vs-managed-making-the-right-choice}
+## الاستضافة الذاتية مقابل الإدارة: اتخاذ القرار الصحيح {#self-hosted-vs-managed-making-the-right-choice}
 
 مع أننا نفخر بتقديم خيار الاستضافة الذاتية، إلا أننا ندرك أنه ليس الخيار الأمثل للجميع. فخدمة الاستضافة الذاتية للبريد الإلكتروني تنطوي على مسؤوليات وتحديات حقيقية:
 
@@ -173,7 +173,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **تسجيل النطاق**: من ١٠ إلى ٢٠ دولارًا أمريكيًا سنويًا
 * **قيمة الوقت**: استثمارك في الوقت له قيمة حقيقية
 
-### متى تختار خدمتنا المُدارة {#when-to-choose-our-managed-service}
+### متى تختار خدمتنا المُدارة؟ {#when-to-choose-our-managed-service}
 
 بالنسبة للعديد من المستخدمين، تظل خدمتنا المُدارة هي الخيار الأفضل:
 
@@ -185,26 +185,26 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 يوفر كلا الخيارين نفس فوائد الخصوصية والشفافية مفتوحة المصدر - والفرق ببساطة هو من يدير البنية التحتية.
 
-## البدء في استخدام البريد الإلكتروني المُعاد توجيهه ذاتيًا {#getting-started-with-self-hosted-forward-email}
+## البدء باستخدام البريد الإلكتروني المُعاد توجيهه ذاتيًا {#getting-started-with-self-hosted-forward-email}
 
 هل أنت مستعد لإدارة البنية التحتية لبريدك الإلكتروني؟ إليك كيفية البدء:
 
-### متطلبات النظام {#system-requirements}
+### متطلبات نظام {#system-requirements}
 
 * أوبونتو ٢٠.٠٤ LTS أو أحدث (موصى به)
 * ذاكرة وصول عشوائي (RAM) بسعة ١ غيغابايت كحد أدنى (يوصى بـ ٢ غيغابايت فأكثر)
-* سعة تخزين ٢٠ غيغابايت موصى بها
+* سعة تخزينية ٢٠ غيغابايت موصى بها
 * اسم نطاق يمكنك التحكم به
 * عنوان IP عام يدعم المنفذ ٢٥
-* إمكانية ضبط [عكس PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
+* إمكانية ضبط TEMP_PLACEHOLDER_٠
 * دعم IPv4 وIPv6
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> نوصي بالعديد من مزودي خدمة البريد الإلكتروني في <https://forwardemail.net/blog/docs/best-mail-server-providers> (المصدر في <https://github.com/forwardemail/awesome-mail-server-providers>)
 
-خطوات التثبيت ### {#installation-steps}
+### خطوات تثبيت {#installation-steps}
 
-1. **تشغيل البرنامج النصي للتثبيت**:
+1. **شغّل برنامج التثبيت**:
 ```bash
    bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
    ```
@@ -239,7 +239,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 نؤمن بأن الخصوصية ليست مجرد ميزة، بل حق أساسي. ومع خيار البريد الإلكتروني المُستضاف ذاتيًا، نجعل هذا الحق متاحًا أكثر من أي وقت مضى.
 
-هل أنت مستعد للتحكم في بريدك الإلكتروني؟ [ابدأ اليوم](https://forwardemail.net/self-hosted) أو استكشف [مستودع GitHub](https://github.com/forwardemail/forwardemail.net) لمعرفة المزيد.
+هل أنت مستعد للتحكم ببريدك الإلكتروني؟ [ابدأ اليوم](https://forwardemail.net/self-hosted) أو استكشف [مستودع GitHub](https://github.com/forwardemail/forwardemail.net) لمعرفة المزيد.
 
 ## المراجع {#references}
 
@@ -249,4 +249,4 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 \[3] التنفيذ الفني لخصوصية البريد الإلكتروني: <https://forwardemail.net/en/blog/docs/email-privacy-protection-technical-implementation>
 
-\[4] لماذا يعد البريد الإلكتروني مفتوح المصدر مهمًا: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>
+\[4] لماذا يُعد البريد الإلكتروني مفتوح المصدر مهمًا: <https://forwardemail.net/en/blog/docs/why-open-source-email-security-privacy>

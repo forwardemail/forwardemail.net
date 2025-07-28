@@ -1,13 +1,13 @@
 # Odesílání e-mailů s příkladem webové aplikace React.js Node {#send-emails-with-reactjs-node-web-app-example}
 
-__CHRÁNĚNÁ_URL_9__ Obsah {__CHRÁNĚNÁ_URL_10__
+## Obsah {#table-of-contents}
 
 * [Instalace a požadavky](#install-and-requirements)
 * [Zdrojový kód a příklad](#source-code-and-example)
 
 ## Instalace a požadavky {#install-and-requirements}
 
-Budete muset nainstalovat závislosti `@react-email/render` a `nodemailer` npm:
+Budete muset nainstalovat závislosti `@react-email/render` a `nodemailer` pro npm:
 
 ```sh
 npm install @react-email/render nodemailer
@@ -36,7 +36,7 @@ export function Email(props) {
 
 V tomto příkladu používáme knihovnu **[Nodemailer](https://github.com/nodemailer/nodemailer)** a jejího oficiálního sponzora **[Přeposlat e-mail](https://forwardemail.net)** k odesílání a náhledu odchozí pošty.
 
-Pro odesílání odchozí pošty budete muset <strong class="text-success"><i class="fa fa-key"></i>vygenerovat heslo</strong> – postupujte prosím podle našich **[Odeslat e-mail s průvodcem SMTP vlastní domény](/guides/send-email-with-custom-domain-smtp)**.
+Pro odesílání odchozí pošty budete muset <strong class="text-success"><i class="fa fa-key"></i>vygenerovat heslo</strong> – postupujte podle našich pokynů **[Průvodce odesíláním e-mailů pomocí SMTP pro vlastní doménu](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -70,12 +70,12 @@ const options = {
 transporter.sendMail(options);
 ```
 
-Spusťte aplikaci a odešlete e-mail:
+Spusťte aplikaci pro odeslání e-mailu:
 
 ```sh
 node app
 ```
 
-Nyní můžete na stránce **[Můj účet → E-maily](/my-account/emails)** zobrazit stav doručení e-mailů v reálném čase, protokoly doručitelnosti e-mailů a náhledy HTML/prostého textu/příloh.
+Nyní můžete přejít na stránku **[Můj účet → E-maily](/my-account/emails)** a zobrazit stav doručení e-mailů v reálném čase, protokoly doručitelnosti e-mailů a náhledy HTML/prostého textu/příloh.
 
-> P.S. :tada: Můžete také **[náhled e-mailů v prohlížečích a simulátoru iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** a **[vytvářet e-mailové šablony pomocí Node.js](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Můžete také použít **[náhled e-mailů v prohlížečích a simulátoru iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** a **[vytvářet šablony e-mailů pomocí Node.js](/docs/send-emails-with-node-js-javascript)**.

@@ -37,8 +37,8 @@
 * [Huolto ja valvonta](#maintenance-and-monitoring)
   * [Lokien sijainnit](#log-locations)
   * [Säännölliset huoltotehtävät](#regular-maintenance-tasks)
-  * [Sertifikaatin uusiminen](#certificate-renewal)
-* [Vianetsintä](#troubleshooting)
+  * [Todistuksen uusiminen](#certificate-renewal)
+* [Vianmääritys](#troubleshooting)
   * [Debian-kohtaiset ongelmat](#debian-specific-issues)
   * [Yleisiä ongelmia](#common-issues)
   * [Avun saaminen](#getting-help)
@@ -200,7 +200,7 @@ docker --version
 docker compose version || docker-compose --version
 ```
 
-### Vaihe 7: Docker-palvelun {#step-7-configure-docker-service} määrittäminen
+### Vaihe 7: Docker-palvelun {#step-7-configure-docker-service}} määrittäminen
 
 Varmista, että Docker käynnistyy automaattisesti ja on käynnissä:
 
@@ -265,7 +265,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-### Vaihe 9: Kloonaa edelleenlähetyssähköpostien arkisto {#step-9-clone-forward-email-repository}
+### Vaihe 9: Kloonaa edelleenlähetyssähköpostien tietovarasto {#step-9-clone-forward-email-repository}
 
 Lataa sähköpostin edelleenlähetyksen lähdekoodi:
 
@@ -283,7 +283,7 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### Vaihe 10: Ympäristön konfigurointi {#step-10-set-up-environment-configuration}
+### Vaihe 10: Ympäristön konfiguroinnin määrittäminen {#step-10-set-up-environment-configuration}
 
 Valmistele ympäristön kokoonpano:
 
@@ -618,7 +618,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Cron-varmuuskopiointitöiden määrittäminen {#set-up-backup-cron-jobs}
+### Varmuuskopiointi Cron-töiden määrittäminen {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -635,7 +635,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## Automaattisen päivityksen asetukset {#auto-update-configuration}
+## Automaattisen päivityksen määritys {#auto-update-configuration}
 
 Määritä automaattiset päivitykset sähköpostin edelleenlähetysasennuksellesi:
 
@@ -693,12 +693,12 @@ nslookup google.com
 
 ## Ylläpito ja valvonta {#maintenance-and-monitoring}
 
-### Lokitiedostojen sijainnit {#log-locations}
+### Lokisijainnit {#log-locations}
 
 * **Docker Compose -lokit**: Käytä asennuksen perusteella asianmukaista Docker Compose -komentoa
 * **Järjestelmälokit**: `/var/log/syslog`
 * **Varmuuskopiolokit**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Automaattisesti päivittyvät lokit**: `/var/log/autoupdate.log`
+* **Automaattisen päivityksen lokit**: `/var/log/autoupdate.log`
 * **Lisätyt lokit**: `journalctl -u snapd`
 
 ### Säännölliset ylläpitotehtävät {#regular-maintenance-tasks}
@@ -707,7 +707,7 @@ nslookup google.com
 2. **Palvelun tilan tarkistus**: Käytä asianmukaista Dockerin compose-komentoa
 3. **Lokien tarkastelu**: Tarkista sekä sovellus- että järjestelmälokit
 4. **Järjestelmäpakettien päivitys**: `apt update && apt upgrade`
-5. **Snapd-komennon valvonta**: `snap list` ja `snap refresh`
+5. **Snapd-tiedoston valvonta**: `snap list` ja `snap refresh`
 
 ### Varmenteen uusiminen {#certificate-renewal}
 
@@ -796,7 +796,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * Varmista, että portit 80 ja 443 ovat käytettävissä
 * Varmista, että DNS-tietueet osoittavat palvelimellesi
-* Tarkista palomuurin asetukset koodilla `ufw status`
+* Tarkista palomuurin asetukset `ufw status`-komennolla
 
 #### 3. Sähköpostin toimitusongelmat {#3-email-delivery-issues}
 
@@ -816,11 +816,11 @@ nohup dockerd >/dev/null 2>/dev/null &
 4. **Käytä vahvoja salasanoja**: Luo vahvat salasanat kaikille tileille
 5. **Ota käyttöön Fail2Ban**: Harkitse Fail2Banin asentamista lisäturvallisuuden takaamiseksi
 6. **Säännölliset tietoturvatarkastukset**: Tarkista kokoonpanosi säännöllisesti
-7. **Valvo Snapdiä**: Pidä Snap-paketit ajan tasalla `snap refresh` -koodilla
+7. **Valvo Snapdiä**: Pidä Snap-paketit ajan tasalla `snap refresh`:lla
 
-## Yhteenveto {#conclusion}
+## Johtopäätös {#conclusion}
 
-Sähköpostin edelleenlähetysasennuksesi pitäisi nyt olla valmis ja käynnissä Debianissa. Muista:
+Sähköpostinvälityspalvelun asennuksen pitäisi nyt olla valmis ja käynnissä Debianissa. Muista:
 
 1. Määritä DNS-tietueesi oikein
 2. Testaa sähköpostin lähettäminen ja vastaanottaminen

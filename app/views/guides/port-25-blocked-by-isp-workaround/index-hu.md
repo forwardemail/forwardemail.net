@@ -16,10 +16,10 @@ Mivel a 25-ös porton nem lehet kimenő forgalom, valószínűleg a blokkolás m
 
 Feltételezve, hogy a szolgáltatásunkat használja e-mailek továbbítására, [Ezt a problémát a GYIK válaszunk segítségével kerülheti meg itt](/faq#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25).
 
-## Hogyan lehet megkerülni az internetszolgáltató által a 25-ös porton blokkolt kimenő SMTP-üzeneteket? {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
+## Hogyan lehet megkerülni az internetszolgáltató által a kimenő SMTP-üzenetek 25-ös porton történő blokkolását {#how-to-workaround-isp-blocking-outbound-smtp-on-port-25}
 
 Ha az internetszolgáltatód blokkolja a 25-ös kimenő portot, akkor alternatív megoldást kell találnod, vagy fel kell venned velük a kapcsolatot.
 
-## Hogyan ellenőrizhetem, hogy az internetszolgáltatóm blokkolja-e a(z) {#how-can-i-check-if-my-isp-blocks-ports}_ portokat?
+## Hogyan ellenőrizhetem, hogy az internetszolgáltatóm blokkolja-e a portokat? {#how-can-i-check-if-my-isp-blocks-ports}
 
 A `telnet smtp.forwardemail.net 25` parancs futtatásával parancssorból vagy terminálból ellenőrizheted, hogy a kimenő 25-ös porton keresztüli kapcsolat blokkolva van-e.

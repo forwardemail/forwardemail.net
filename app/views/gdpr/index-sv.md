@@ -16,11 +16,11 @@ Forward Email är ett integritetsfokuserat företag som är engagerat i att skyd
 
 [Allmänna dataskyddsförordningen](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") reglerar överföring av data utanför EU och EES, och dess mål är att förbättra din kontroll och dina rättigheter över dina personuppgifter. Som tur är säljer vi inte några data som vi behandlar, lagrar och/eller överför – och vi använder inte heller sådana data för något annat ändamål än att tillhandahålla våra tjänster till dig.
 
-Du kan när som helst ändra din personliga information under [Mitt konto → Profil](/my-account/profile) och till och med radera hela ditt konto och all relaterad information under [Mitt konto → Säkerhet](/my-account/security). Eftersom **vi är 100 % öppen källkod** på <https://github.com/forwardemail> kan vår källkod även granskas för att säkerställa att den följer sekretesslagar när som helst.
+Du kan när som helst ändra din personliga information under [Mitt konto → Profil](/my-account/profile) och till och med radera hela ditt konto och all relaterad information under [Mitt konto → Säkerhet](/my-account/security). Eftersom vi använder 100 % öppen källkod på <https://github.com/forwardemail> kan vår källkod även granskas för att säkerställa att den följer sekretesslagar när som helst.
 
 Vår [Avtal om databehandling](/dpa) beskriver i detalj vår efterlevnad av GDPR samt ramverket för Privacy Shield mellan EU och USA och Schweiz och USA, med avseende på integriteten för data som behandlas, lagras och överförs.
 
-Genom att godkänna vårt [Användarvillkor](/terms) godkänner du automatiskt vårt dataskyddsavtal och behöver inte underteckna ett separat dokument. Vi kommer att göra vårt bästa för att skydda alla dina personuppgifter i enlighet med vårt [Integritetspolicy](/privacy) – **oavsett var** de behandlas, lagras och överförs. Du kan också lära dig mer genom att läsa våra [Användarvillkor](/terms) och [Integritetspolicy](/privacy).
+Genom att godkänna vår [Användarvillkor](/terms) godkänner du automatiskt vårt dataskyddsavtal och behöver inte underteckna ett separat dokument. Vi kommer att göra vårt bästa för att skydda alla dina personuppgifter i enlighet med vår [Integritetspolicy](/privacy) – **oavsett var** de behandlas, lagras och överförs. Du kan också läsa mer genom att läsa våra [Användarvillkor](/terms) och [Integritetspolicy](/privacy).
 
 ## Internationell dataöverföring {#international-data-transfer}
 
@@ -39,12 +39,12 @@ Nedan listas de leverantörer som vi använder för att överföra data internat
 
 ## GDPR-representant {#gdpr-representative}
 
-I enlighet med [Artikel 27 i GDPR](https://gdpr-info.eu/art-27-gdpr/) har vi representanter från medlemsstaterna enligt nedan:
+I enlighet med [Artikel 27 i GDPR](https://gdpr-info.eu/art-27-gdpr/) har vi medlemsstaternas representanter enligt nedan:
 
 ### EU-representant {#eu-representative}
 
 <blockquote class="notranslate">Osano International Compliance Services Limited<br />ATTN: LFHC<br />3 Dublin Landings<br />North Wall Quay<br />Dublin 1<br />D01C4E0</blockquote>
 
-### Representant i Storbritannien {#uk-representative}
+### Representant för Storbritannien {#uk-representative}
 
 <blockquote class="notranslate">Osano UK Compliance LTD<br />ATTN: LFHC<br />42-46 Fountain Street<br />Belfast<br />Antrim<br />BT1 - 5EF</blockquote>

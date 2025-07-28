@@ -2,7 +2,7 @@
 
 <!-- v1.0 dari <https://github.com/CommonPaper/DPA> -->
 
-<img memuat="malas" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 
@@ -12,7 +12,7 @@
   * [1. Penyedia sebagai Pemroses](#1-provider-as-processor)
   * [2. Penyedia sebagai Subprosesor](#2-provider-as-subprocessor)
 * [2. Pengolahan](#2-processing)
-  * [1. Rincian Pemrosesan](#1-processing-details)
+  * [1. Detail Pemrosesan](#1-processing-details)
   * [2. Instruksi Pemrosesan](#2-processing-instructions)
   * [3. Pemrosesan oleh Penyedia](#3-processing-by-provider)
   * [4. Pemrosesan Pelanggan](#4-customer-processing)
@@ -20,8 +20,8 @@
   * [6. Subprosesor](#6-subprocessors)
 * [3. Transfer Terbatas](#3-restricted-transfers)
   * [1. Otorisasi](#1-authorization)
-  * [2. Transfer Ex-EEA](#2-ex-eea-transfers)
-  * [3. Transfer Ex-Inggris](#3-ex-uk-transfers)
+  * [2. Transfer Eks-EEA](#2-ex-eea-transfers)
+  * [3. Transfer Ex-UK](#3-ex-uk-transfers)
   * [4. Transfer Internasional Lainnya](#4-other-international-transfers)
 * [4. Respons Insiden Keamanan](#4-security-incident-response)
 * [5. Audit & Laporan](#5-audit--reports)
@@ -64,7 +64,7 @@ Dokumen ini merupakan turunan dari [Istilah Standar DPA Makalah Umum (Versi 1.0)
 
 ## 1. Hubungan Prosesor dan Subprosesor {#1-processor-and-subprocessor-relationships}
 
-### 1. Penyedia sebagai Pemroses {#1-provider-as-processor}
+### 1. Penyedia sebagai Prosesor {#1-provider-as-processor}
 
 Dalam situasi di mana <strong>Pelanggan</strong> adalah Pengendali Data Pribadi Pelanggan, <strong>Penyedia</strong> akan dianggap sebagai Pemroses yang Memproses Data Pribadi atas nama <strong>Pelanggan</strong>.
 
@@ -118,7 +118,7 @@ a. Modul Dua (Pengendali ke Pemroses) dari SCC EEA berlaku ketika <strong>Pelang
 
 b. Modul Tiga (Pemroses ke Subpemroses) dari SCC EEA berlaku ketika <strong>Pelanggan</strong> adalah Pemroses dan <strong>Penyedia</strong> Memproses Data Pribadi Pelanggan atas nama <strong>Pelanggan</strong> sebagai Subpemroses.
 
-c. Untuk setiap modul, berlaku ketentuan berikut (bila berlaku):
+c. Untuk setiap modul, berlaku ketentuan berikut (jika berlaku):
 
 1. Klausul docking opsional dalam Klausul 7 tidak berlaku;
 
@@ -132,21 +132,21 @@ c. Untuk setiap modul, berlaku ketentuan berikut (bila berlaku):
 
 6. Dalam Klausul 18(b), perselisihan akan diselesaikan di pengadilan <strong>Negara Anggota yang Mengatur</strong>; dan
 
-7. Halaman Sampul DPA ini berisi informasi yang dipersyaratkan dalam Lampiran I, Lampiran II, dan Lampiran III SCC EEA.
+7. Halaman Sampul DPA ini memuat informasi yang dipersyaratkan dalam Lampiran I, Lampiran II, dan Lampiran III SCC EEA.
 
-### 3. Transfer Eks-Inggris {#3-ex-uk-transfers}
+### 3. Transfer Ex-UK {#3-ex-uk-transfers}
 
 <strong>Pelanggan</strong> dan <strong>Penyedia</strong> sepakat bahwa jika GDPR Inggris melindungi transfer Data Pribadi Pelanggan, transfer tersebut dilakukan dari <strong>Pelanggan</strong> di dalam Britania Raya ke <strong>Penyedia</strong> di luar Britania Raya, dan transfer tersebut tidak diatur oleh keputusan kecukupan yang dibuat oleh Sekretaris Negara Britania Raya, maka dengan menandatangani DPA ini, <strong>Pelanggan</strong> dan <strong>Penyedia</strong> dianggap telah menandatangani Adendum Inggris dan Lampirannya, yang disertakan sebagai referensi. Setiap transfer tersebut dilakukan sesuai dengan Adendum Inggris, yang dilengkapi sebagai berikut:
 
-a. Bagian 3.2 dari DPA ini berisi informasi yang dipersyaratkan dalam Tabel 2 dari Adendum Inggris.
+a. Bagian 3.2 dari DPA ini berisi informasi yang dipersyaratkan dalam Tabel 2 dari Addendum Inggris.
 
-b. Tabel 4 dari Addendum Inggris dimodifikasi sebagai berikut: Tidak ada pihak yang dapat mengakhiri Addendum Inggris sebagaimana ditetapkan dalam Bagian 19 dari Addendum Inggris; sejauh ICO menerbitkan Addendum yang Disetujui yang direvisi berdasarkan Bagian 18 dari Addendum Inggris, para pihak akan bekerja dengan itikad baik untuk merevisi DPA ini sebagaimana mestinya.
+b. Tabel 4 dari Adendum Inggris diubah sebagai berikut: Tidak ada pihak yang dapat mengakhiri Adendum Inggris sebagaimana ditetapkan dalam Bagian 19 dari Adendum Inggris; sejauh ICO menerbitkan Adendum yang Disetujui yang direvisi berdasarkan Bagian 18 dari Adendum Inggris, para pihak akan bekerja dengan itikad baik untuk merevisi DPA ini sebagaimana mestinya.
 
 c. Halaman Sampul memuat informasi yang diwajibkan oleh Lampiran 1A, Lampiran 1B, Lampiran II, dan Lampiran III dari Adendum Inggris.
 
 ### 4. Transfer Internasional Lainnya {#4-other-international-transfers}
 
-Untuk transfer Data Pribadi yang hukum Swiss (dan bukan hukum di negara anggota EEA atau Inggris Raya) berlaku untuk sifat internasional dari transfer tersebut, referensi ke GDPR dalam Klausul 4 SCC EEA, sejauh yang diwajibkan secara hukum, diubah untuk merujuk ke Undang-Undang Perlindungan Data Federal Swiss atau penggantinya, dan konsep otoritas pengawasan akan mencakup Komisaris Informasi dan Perlindungan Data Federal Swiss.
+Untuk transfer Data Pribadi yang hukum Swiss (dan bukan hukum di negara anggota EEA atau Inggris Raya) berlaku untuk sifat internasional dari transfer tersebut, referensi ke GDPR dalam Klausul 4 SCC EEA, sejauh yang diwajibkan oleh hukum, diubah untuk merujuk ke Undang-Undang Perlindungan Data Federal Swiss atau penggantinya, dan konsep otoritas pengawasan akan mencakup Komisaris Informasi dan Perlindungan Data Federal Swiss.
 
 ## 4. Respons Insiden Keamanan {#4-security-incident-response}
 
@@ -166,7 +166,7 @@ Pelanggan mengakui bahwa Penyedia diaudit secara berkala berdasarkan standar yan
 
 Selain Laporan, <strong>Penyedia</strong> akan menanggapi permintaan informasi yang wajar dari <strong>Pelanggan</strong> untuk mengonfirmasi kepatuhan <strong>Penyedia</strong> terhadap DPA ini, termasuk tanggapan terhadap kuesioner keamanan informasi, uji tuntas, dan audit, atau dengan memberikan informasi tambahan tentang program keamanan informasinya. Semua permintaan tersebut harus dibuat secara tertulis dan ditujukan kepada <strong>Kontak Keamanan Penyedia</strong> dan hanya dapat diajukan setahun sekali.
 
-## 6. Koordinasi & Kerjasama {#6-coordination--cooperation}
+## 6. Koordinasi & Kerja Sama {#6-coordination--cooperation}
 
 ### 1. Tanggapan atas Pertanyaan {#1-response-to-inquiries}
 
@@ -186,7 +186,7 @@ Jika diharuskan oleh Hukum Perlindungan Data yang Berlaku, <strong>Penyedia</str
 
 a. Setelah DPA berakhir, <strong>Penyedia</strong> akan mengembalikan atau menghapus Data Pribadi Pelanggan atas instruksi <strong>Pelanggan</strong>, kecuali penyimpanan lebih lanjut atas Data Pribadi Pelanggan diwajibkan atau diizinkan oleh Hukum yang Berlaku. Jika pengembalian atau pemusnahan tidak dapat dilakukan atau dilarang oleh Hukum yang Berlaku, <strong>Penyedia</strong> akan melakukan upaya yang wajar untuk mencegah Pemrosesan Data Pribadi Pelanggan lebih lanjut dan akan terus melindungi Data Pribadi Pelanggan yang masih berada dalam kepemilikan, penyimpanan, atau kendalinya. Misalnya, Hukum yang Berlaku mungkin mewajibkan <strong>Penyedia</strong> untuk terus menyimpan atau Memproses Data Pribadi Pelanggan.
 
-b. Jika <strong>Pelanggan</strong> dan <strong>Penyedia</strong> telah menyetujui SCC EEA atau Adendum Inggris sebagai bagian dari DPA ini, <strong>Penyedia</strong> hanya akan memberikan <strong>Pelanggan</strong> sertifikasi penghapusan Data Pribadi yang dijelaskan dalam Klausul 8.1(d) dan Klausul 8.5 SCC EEA jika <strong>Pelanggan</strong> memintanya.
+b. Jika <strong>Pelanggan</strong> dan <strong>Penyedia</strong> telah memasuki SCC EEA atau Adendum Inggris sebagai bagian dari DPA ini, <strong>Penyedia</strong> hanya akan memberikan <strong>Pelanggan</strong> sertifikasi penghapusan Data Pribadi yang dijelaskan dalam Klausul 8.1(d) dan Klausul 8.5 SCC EEA jika <strong>Pelanggan</strong> memintanya.
 
 ## 8. Batasan Tanggung Jawab {#8-limitation-of-liability}
 
@@ -200,7 +200,7 @@ b. Jika <strong>Pelanggan</strong> dan <strong>Penyedia</strong> telah menyetuju
 
 ### 3. Pengecualian {#3-exceptions}
 
-1. DPA ini tidak membatasi tanggung jawab apa pun kepada individu terkait hak perlindungan data individu berdasarkan Undang-Undang Perlindungan Data yang Berlaku. Selain itu, DPA ini tidak membatasi tanggung jawab apa pun antara para pihak atas pelanggaran SCC EEA atau Adendum Inggris.
+1. DPA ini tidak membatasi tanggung jawab apa pun kepada individu terkait hak perlindungan data individu tersebut berdasarkan Hukum Perlindungan Data yang Berlaku. Selain itu, DPA ini tidak membatasi tanggung jawab apa pun antara para pihak atas pelanggaran SCC EEA atau Adendum Inggris.
 
 ## 9. Konflik Antar Dokumen {#9-conflicts-between-documents}
 
@@ -220,11 +220,11 @@ Sejauh Undang-Undang Privasi Konsumen California, Cal. Civ. Code § 1798.100 et 
 
 ## 13. Definisi {#13-definitions}
 
-1. **"Hukum yang Berlaku"** berarti hukum, aturan, peraturan, perintah pengadilan, dan persyaratan mengikat lainnya dari otoritas pemerintah terkait yang berlaku untuk atau mengatur suatu pihak.
+1. **"Hukum yang Berlaku"** berarti hukum, peraturan, regulasi, perintah pengadilan, dan persyaratan mengikat lainnya dari otoritas pemerintah terkait yang berlaku untuk atau mengatur suatu pihak.
 
 2. **"Hukum Perlindungan Data yang Berlaku"** berarti Hukum yang Berlaku yang mengatur bagaimana Layanan dapat memproses atau menggunakan informasi pribadi, data pribadi, informasi identitas pribadi, atau istilah serupa lainnya milik seseorang.
 
-3. **"Pengendali"** akan memiliki arti(arti) yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk perusahaan yang menentukan tujuan dan tingkat Pemrosesan Data Pribadi.
+3. **"Pengendali"** akan memiliki arti(s) yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk perusahaan yang menentukan tujuan dan tingkat Pemrosesan Data Pribadi.
 
 4. **"Halaman Sampul"** berarti dokumen yang ditandatangani atau diterima secara elektronik oleh para pihak yang memuat Ketentuan Standar DPA ini dan mengidentifikasi <strong>Penyedia</strong>, <strong>Pelanggan</strong>, serta pokok bahasan dan detail pemrosesan data.
 
@@ -238,15 +238,15 @@ Sejauh Undang-Undang Privasi Konsumen California, Cal. Civ. Code § 1798.100 et 
 
 9. **"GDPR"** berarti Peraturan Uni Eropa 2016/679 sebagaimana diterapkan oleh hukum setempat di negara anggota EEA yang relevan.
 
-10. **"Data Pribadi"** akan memiliki arti yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk informasi pribadi, data pribadi, atau istilah serupa lainnya.
+10. **"Data Pribadi"** akan memiliki arti(s) yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk informasi pribadi, data pribadi, atau istilah serupa lainnya.
 
 11. **"Pemrosesan"** atau **"Proses"** akan memiliki arti(arti) yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk setiap penggunaan, atau pelaksanaan operasi komputer pada, Data Pribadi, termasuk dengan metode otomatis.
 
-12. **"Pemroses"** akan memiliki arti yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk perusahaan yang Memproses Data Pribadi atas nama Pengendali.
+12. **"Pemroses"** akan memiliki arti(s) yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk perusahaan yang Memproses Data Pribadi atas nama Pengendali.
 
 13. **"Laporan"** berarti laporan audit yang disiapkan oleh perusahaan lain sesuai dengan standar yang ditetapkan dalam Kebijakan Keamanan atas nama Penyedia.
 
-14. **"Transfer Terbatas"** berarti (a) jika GDPR berlaku, transfer data pribadi dari EEA ke negara di luar EEA yang tidak tunduk pada penentuan kecukupan oleh Komisi Eropa; dan (b) jika GDPR Inggris berlaku, transfer data pribadi dari Inggris Raya ke negara lain mana pun yang tidak tunduk pada peraturan kecukupan yang diadopsi berdasarkan Bagian 17A Undang-Undang Perlindungan Data Inggris Raya tahun 2018.
+14. **"Transfer Terbatas"** berarti (a) jika GDPR berlaku, transfer data pribadi dari EEA ke negara di luar EEA yang tidak tunduk pada penentuan kecukupan oleh Komisi Eropa; dan (b) jika GDPR Inggris berlaku, transfer data pribadi dari Inggris Raya ke negara lain mana pun yang tidak tunduk pada peraturan kecukupan yang diadopsi berdasarkan Bagian 17A Undang-Undang Perlindungan Data Inggris Raya 2018.
 
 15. **"Insiden Keamanan"** berarti Pelanggaran Data Pribadi sebagaimana didefinisikan dalam Pasal 4 GDPR.
 
@@ -254,11 +254,11 @@ Sejauh Undang-Undang Privasi Konsumen California, Cal. Civ. Code § 1798.100 et 
 
 17. **"Data Kategori Khusus"** akan memiliki arti yang diberikan dalam Pasal 9 GDPR.
 
-18. **"Subprosesor"** akan memiliki makna(s) yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk perusahaan yang, dengan persetujuan dan penerimaan dari Pengendali, membantu Pemroses dalam Memproses Data Pribadi atas nama Pengendali.
+18. **"Subprosesor"** akan memiliki arti(s) yang diberikan dalam Hukum Perlindungan Data yang Berlaku untuk perusahaan yang, dengan persetujuan dan penerimaan Pengendali, membantu Pemroses dalam Memproses Data Pribadi atas nama Pengendali.
 
-19. **"GDPR Inggris"** berarti Peraturan Uni Eropa 2016/679 sebagaimana diterapkan oleh bagian 3 Undang-Undang Uni Eropa (Penarikan) Inggris tahun 2018 di Inggris.
+19. **"GDPR Inggris"** berarti Peraturan Uni Eropa 2016/679 sebagaimana diterapkan oleh pasal 3 Undang-Undang Penarikan Diri Uni Eropa tahun 2018 di Inggris.
 
-20. **"Addendum Inggris"** berarti addendum transfer data internasional untuk SCC EEA yang diterbitkan oleh Komisioner Informasi untuk Pihak yang melakukan Transfer Terbatas berdasarkan S119A(1) Undang-Undang Perlindungan Data 2018.
+20. **"Addendum Inggris"** berarti addendum transfer data internasional untuk SCC EEA yang dikeluarkan oleh Komisioner Informasi untuk Pihak yang melakukan Transfer Terbatas berdasarkan S119A(1) Undang-Undang Perlindungan Data 2018.
 
 ## Kredit {#credits}
 

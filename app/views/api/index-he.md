@@ -1,6 +1,6 @@
 # ממשק API של דוא"ל {#email-api}
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [ספריות](#libraries)
 * [כתובת URL בסיסית](#base-uri)
@@ -81,9 +81,9 @@
 | ---------- | ---------------------------------------------------------------------- |
 | אוֹדֶם | [Faraday](https://github.com/lostisland/faraday) |
 | פִּיתוֹן | [requests](https://github.com/psf/requests) |
-| Java | [OkHttp](https://github.com/square/okhttp/) |
+| ג'אווה | [OkHttp](https://github.com/square/okhttp/) |
 | PHP | [guzzle](https://github.com/guzzle/guzzle) |
-| JavaScript | [superagent](https://github.com/ladjs/superagent) (אנחנו מתחזקים) |
+| ג'אווהסקריפט | [superagent](https://github.com/ladjs/superagent) (אנחנו מתחזקים) |
 | Node.js | [superagent](https://github.com/ladjs/superagent) (אנחנו מתחזקים) |
 | לָלֶכֶת | [net/http](https://golang.org/pkg/net/http/) |
 | .NET | [RestSharp](https://github.com/restsharp/RestSharp) |
@@ -94,7 +94,7 @@
 
 ## אימות {#authentication}
 
-כל נקודות הקצה דורשות ש-[מפתח API](https://forwardemail.net/my-account/security) שלך יוגדר כערך "שם משתמש" של כותרת [הרשאה בסיסית](https://en.wikipedia.org/wiki/Basic_access_authentication) של הבקשה (למעט [אנשי קשר חלופיים](#alias-contacts), [לוחות שנה חלופיים](#alias-calendars), ו-[תיבות דואר חלופיות](#alias-mailboxes) המשתמשים ב-[שם משתמש וסיסמה כינויים שנוצרו](/faq#do-you-support-receiving-email-with-imap)).
+כל נקודות הקצה דורשות ש-[מפתח API](https://forwardemail.net/my-account/security) יוגדר כערך "שם משתמש" של כותרת [הרשאה בסיסית](https://en.wikipedia.org/wiki/Basic_access_authentication) של הבקשה (למעט [אנשי קשר חלופיים](#alias-contacts), [לוחות שנה חלופיים](#alias-calendars) ו-[תיבות דואר חלופיות](#alias-mailboxes) המשתמשים ב-[שם משתמש וסיסמה כינויים שנוצרו](/faq#do-you-support-receiving-email-with-imap)).
 
 אל דאגה - דוגמאות ניתנות למטה עבורך אם אינך בטוח מה זה.
 
@@ -117,16 +117,16 @@
 | 504 | פסק זמן של שער הגישה |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> אם קיבלתם קוד סטטוס 5xx (מה שלא אמור לקרות), אנא צרו איתנו קשר בכתובת <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> ונעזור לכם לפתור את הבעיה באופן מיידי.
 
 ## לוקליזציה {#localization}
 
-השירות שלנו מתורגם ליותר מ-25 שפות שונות. כל הודעות התגובה של ה-API מתורגמות למיקום האחרון שזוהה של המשתמש שביצע את בקשת ה-API. ניתן לעקוף זאת על ידי העברת כותרת מותאמת אישית `Accept-Language`. אל תהססו לנסות זאת באמצעות תפריט השפות הנפתח בתחתית עמוד זה.
+השירות שלנו מתורגם ליותר מ-25 שפות שונות. כל הודעות התגובה של ה-API מתורגמות למיקום האחרון שזוהה של המשתמש שביצע את בקשת ה-API. ניתן לעקוף זאת על ידי העברת כותרת `Accept-Language` מותאמת אישית. אל תהסס לנסות זאת באמצעות תפריט השפות הנפתח בתחתית דף זה.
 
-## חלוקת דפים {#pagination}
+## דפדוף {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> החל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור [רשימת דומיינים](#list-domains) ו-[רשימת כינויי דומיין](#list-domain-aliases) יעמדו כברירת מחדל על מספר תוצאות מקסימלי של `1000` לעמוד. אם ברצונך להצטרף להתנהגות זו מוקדם, תוכל להעביר את `?paginate=true` כפרמטר שאילתה נוסף לכתובת האתר עבור שאילתת נקודת הקצה.
 
 חלוקת עימודים נתמכת על ידי כל נקודות הקצה של ה-API המציגות תוצאות.
 
@@ -136,7 +136,7 @@
 
 | פרמטרים של מחרוזת שאילתה | דָרוּשׁ | סוּג | תֵאוּר |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `page` | לֹא | מִספָּר | דף תוצאות להחזרה. אם לא צוין, הערך `page` יהיה `1`. חייב להיות מספר גדול או שווה ל-`1`. |
+| `page` | לֹא | מִספָּר | דף התוצאות להחזרה. אם לא צוין, הערך `page` יהיה `1`. חייב להיות מספר גדול או שווה ל-`1`. |
 | `limit` | לֹא | מִספָּר | מספר התוצאות להחזרה בכל עמוד. ברירת המחדל היא `10` אם לא צוין. חייב להיות מספר גדול או שווה ל-`1`, וקטן או שווה ל-`50`. |
 
 על מנת לקבוע האם קיימות תוצאות נוספות, אנו מספקים את כותרות תגובת ה-HTTP הבאות (אותן ניתן לנתח על מנת למיין אותן באופן תכנותי):
@@ -156,15 +156,15 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
-## יומני רישום {#logs}
+## יומני {#logs}
 
 ### אחזור יומני רישום {#retrieve-logs}
 
-ה-API שלנו מאפשר לך להוריד יומני רישום עבור חשבונך באופן תכנותי. הגשת בקשה לנקודת קצה זו תעבד את כל יומני הרישום עבור חשבונך ותשלח אותם אליך בדוא"ל כקובץ מצורף ([Gzip](https://en.wikipedia.org/wiki/Gzip) קובץ גיליון אלקטרוני דחוס [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) לאחר השלמת הפעולה.
+ה-API שלנו מאפשר לך להוריד יומני רישום עבור חשבונך באופן תכנותי. הגשת בקשה לנקודת קצה זו תעבד את כל היומנים עבור חשבונך ותשלח אותם אליך בדוא"ל כקובץ מצורף (קובץ גיליון אלקטרוני [ג'י-זיפס](https://en.wikipedia.org/wiki/Gzip) דחוס) לאחר השלמתה.
 
-זה מאפשר לך ליצור עבודות רקע עם [עבודת קרון](https://en.wikipedia.org/wiki/Cron) או להשתמש ב-[תוכנת תזמון משימות Node.js ב-Bree](https://github.com/breejs/bree) שלנו כדי לקבל יומני רישום בכל עת שתרצה. שים לב שנקודת קצה זו מוגבלת ל-`10` בקשות ליום.
+זה מאפשר לך ליצור משימות רקע עם [עבודת קרון](https://en.wikipedia.org/wiki/Cron) או להשתמש ב-[תוכנת תזמון משימות Node.js ב-Bree](https://github.com/breejs/bree) שלנו כדי לקבל יומני רישום בכל עת שתרצה. שים לב שנקודת קצה זו מוגבלת ל-`10` בקשות ביום.
 
-הקובץ המצורף הוא באותיות קטנות של `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` והאימייל עצמו מכיל סיכום קצר של היומנים שאוחזרו. ניתן גם להוריד יומנים בכל עת מ-[החשבון שלי → יומנים](/my-account/logs)
+הקובץ המצורף הוא באותיות קטנות של `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` והאימייל עצמו מכיל סיכום קצר של היומנים שאוחזרו. ניתן גם להוריד יומנים בכל עת מ-[החשבון שלי → יומנים](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -223,7 +223,7 @@ curl -X POST BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-### אחזור חשבון {#retrieve-account}
+### אחזר חשבון {#retrieve-account}
 
 > `GET /v1/account`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## אנשי קשר חלופי (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> בניגוד לנקודות קצה אחרות של API, אלה דורשות [אימות](#authentication) "שם משתמש" שווה לשם המשתמש הכינוי ו-"סיסמה" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
 
 ### רשימת אנשי קשר {#list-contacts}
 
@@ -273,7 +273,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### אחזור איש קשר {#retrieve-contact}
+### אחזר איש קשר {#retrieve-contact}
 
 > `GET /v1/contacts/:id`
 
@@ -285,7 +285,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### מחק איש קשר {#delete-contact}
+### מחק את איש הקשר {#delete-contact}
 
 > `DELETE /v1/contacts/:id`
 
@@ -294,12 +294,12 @@ curl -X PUT BASE_URI/v1/account \
 ## לוחות שנה חלוניים (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> בניגוד לנקודות קצה אחרות של API, אלה דורשות [אימות](#authentication) "שם משתמש" שווה לשם המשתמש הכינוי ו-"סיסמה" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
 
-### רשימת לוחות שנה {#list-calendars}
+### רשימת יומנים {#list-calendars}
 
 > `GET /v1/calendars`
 
@@ -311,7 +311,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### אחזור לוח שנה {#retrieve-calendar}
+### אחזר לוח שנה {#retrieve-calendar}
 
 > `GET /v1/calendars/:id`
 
@@ -332,14 +332,14 @@ curl -X PUT BASE_URI/v1/account \
 ## הודעות כינוי (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> בניגוד לנקודות קצה אחרות של API, אלה דורשות [אימות](#authentication) "שם משתמש" שווה לשם המשתמש הכינוי ו-"סיסמה" שווה לסיסמה שנוצרה על ידי הכינוי ככותרות הרשאה בסיסית.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
 
 אנא ודא שפעלת לפי הוראות ההתקנה עבור הדומיין שלך.
 
-ניתן למצוא הוראות אלה במקטע השאלות הנפוצות שלנו [האם אתם תומכים בקבלת דוא"ל באמצעות IMAP?](/faq#do-you-support-receiving-email-with-imap).
+ניתן למצוא הוראות אלה בקטע השאלות הנפוצות שלנו [האם אתם תומכים בקבלת דוא"ל באמצעות IMAP?](/faq#do-you-support-receiving-email-with-imap).
 
 ### הצג וחפש הודעות {#list-and-search-for-messages}
 
@@ -350,19 +350,19 @@ curl -X PUT BASE_URI/v1/account \
 ### צור הודעה {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> פעולה זו **לא** תשלח אימייל – היא פשוט תוסיף את ההודעה לתיקיית תיבת הדואר שלך (לדוגמה, זה דומה לפקודה IMAP `APPEND`). אם ברצונך לשלוח אימייל, עיין ב-[צור דוא"ל SMTP יוצא](#create-outbound-smtp-email) להלן. לאחר יצירת אימייל ה-SMTP היוצא, תוכל לצרף עותק שלו באמצעות נקודת קצה זו לתיבת הדואר של הכינוי שלך למטרות אחסון.
 
 > `POST /v1/messages`
 
 **בקרוב**
 
-### אחזור הודעה {#retrieve-message}
+### אחזר הודעה {#retrieve-message}
 
 > `GET /v1/messages/:id`
 
 **בקרוב**
 
-### הודעת עדכון {#update-message}
+### עדכון הודעה {#update-message}
 
 > `PUT /v1/messages/:id`
 
@@ -374,13 +374,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-## תיקיות כינויים (IMAP/POP3) {#alias-folders-imappop3}
+## תיקיות חלופיות (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> נקודות קצה של תיקיות עם נתיב <code>/v1/folders/:path</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה של תיקייה <code>:id</code>. משמעות הדבר היא שניתן להתייחס לתיקייה לפי ערך <code>path</code> או <code>id</code> שלה.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> מדור נקודת הקצה הזה נמצא בתהליך עבודה ויפורסם (בתקווה) בשנת 2024. בינתיים, אנא השתמשו בלקוח IMAP מהתפריט הנפתח "אפליקציות" בניווט באתר שלנו.
 
 ### רשימת תיקיות {#list-folders}
 
@@ -394,13 +394,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **בקרוב**
 
-### אחזור תיקייה {#retrieve-folder}
+### אחזר תיקייה {#retrieve-folder}
 
 > `GET /v1/folders/:id`
 
 **בקרוב**
 
-### תיקיית עדכון {#update-folder}
+### עדכון תיקייה {#update-folder}
 
 > `PUT /v1/folders/:id`
 
@@ -437,11 +437,11 @@ curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### רשימת הודעות דוא"ל יוצאות של SMTP {#list-outbound-smtp-emails}
+### רשימת הודעות דוא"ל SMTP יוצאות {#list-outbound-smtp-emails}
 
-שים לב שנקודת קצה זו אינה מחזירה ערכי מאפיינים עבור `message`, `headers`, וגם לא `rejectedErrors` של אימייל.
+שים לב שנקודת קצה זו אינה מחזירה ערכי מאפיינים עבור `message`, `headers` וגם לא `rejectedErrors` של אימייל.
 
-כדי להחזיר מאפיינים אלה והערכים שלהם, אנא השתמש בנקודת הקצה [אחזור דוא"ל](#retrieve-email) עם מזהה דוא"ל.
+כדי להחזיר מאפיינים אלה ואת הערכים שלהם, אנא השתמש בנקודת הקצה [אחזור דוא"ל](#retrieve-email) עם מזהה דוא"ל.
 
 > `GET /v1/emails`
 
@@ -462,13 +462,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### צור דוא"ל SMTP יוצא {#create-outbound-smtp-email}
 
-ה-API שלנו ליצירת אימייל מושפע וממנף את תצורת אפשרות ההודעה של Nodemailer. אנא עיין ב-[תצורת הודעת Nodemailer](https://nodemailer.com/message/) עבור כל פרמטרי הגוף שלהלן.
+ה-API שלנו ליצירת אימייל מושפע וממנף את תצורת אפשרות ההודעה של Nodemailer. אנא התייחסו ל-[תצורת הודעת Nodemailer](https://nodemailer.com/message/) עבור כל פרמטרי הגוף שלהלן.
 
 שים לב שלמעט `envelope` ו-`dkim` (מכיוון שאנו מגדירים אותם באופן אוטומטי עבורך), אנו תומכים בכל אפשרויות Nodemailer. אנו מגדירים באופן אוטומטי את האפשרויות `disableFileAccess` ו-`disableUrlAccess` ל-`true` לצורכי אבטחה.
 
 עליך להעביר את האפשרות היחידה `raw` עם כתובת האימייל הגולמית המלאה שלך, כולל כותרות, **או** להעביר אפשרויות פרמטר גוף בודדות למטה.
 
-נקודת קצה זו של ה-API תקודד אוטומטית אימוג'ים עבורכם אם הם נמצאים בכותרות (לדוגמה, שורת נושא של `Subject: 🤓 Hello` תומר אוטומטית ל-`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). המטרה שלנו הייתה ליצור API דוא"ל ידידותי במיוחד למפתחים ועמיד בפני דמה.
+נקודת קצה זו של ה-API תקודד אוטומטית אימוג'ים עבורך אם הם נמצאים בכותרות (לדוגמה, שורת נושא של `Subject: 🤓 Hello` מומרת ל-`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello` באופן אוטומטי). המטרה שלנו הייתה ליצור API דוא"ל ידידותי במיוחד למפתחים ועמיד בפני ניסויים.
 
 > `POST /v1/emails`
 
@@ -491,7 +491,7 @@ curl BASE_URI/v1/emails?limit=1 \
 | `amp` | לֹא | חוּט | גרסת HTML ספציפית ל-AMP4EMAIL של ההודעה (ראה [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
 | `icalEvent` | לֹא | לְהִתְנַגֵד | אירוע iCalendar לשימוש כתוכן חלופי להודעה (ראה [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
 | `alternatives` | לֹא | מַעֲרָך | מערך של תוכן הודעה חלופי (ראה [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
-| `encoding` | לֹא | חוּט | קידוד עבור הטקסט ומחרוזות ה-HTML (ברירת המחדל היא `"utf-8"`, אך תומך גם בערכי קידוד `"hex"` ו-`"base64"`). |
+| `encoding` | לֹא | חוּט | קידוד עבור טקסט ומחרוזות HTML (ברירת המחדל היא `"utf-8"`, אך תומך גם בערכי קידוד `"hex"` ו-`"base64"`). |
 | `raw` | לֹא | מחרוזת או מאגר | הודעה בפורמט RFC822 שנוצרה בהתאמה אישית לשימוש (במקום הודעה שנוצרת על ידי Nodemailer – ראה [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
 | `textEncoding` | לֹא | חוּט | קידוד שנאלץ לשמש עבור ערכי טקסט (`"quoted-printable"` או `"base64"`). ערך ברירת המחדל הוא הערך הקרוב ביותר שזוהה (עבור ASCII יש להשתמש ב-`"quoted-printable"`). |
 | `priority` | לֹא | חוּט | רמת עדיפות עבור האימייל (יכולה להיות `"high"`, `"normal"` (ברירת מחדל), או `"low"`). שים לב שערך של `"normal"` אינו מגדיר כותרת עדיפות (זוהי התנהגות ברירת המחדל). אם מוגדר ערך של `"high"` או `"low"`, אז הכותרות `X-Priority`, `X-MSMail-Priority` ו-`Importance` הן [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
@@ -530,9 +530,9 @@ curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### מחיקת דוא"ל SMTP יוצא {#delete-outbound-smtp-email}
+### מחק דוא"ל SMTP יוצא {#delete-outbound-smtp-email}
 
-מחיקת דוא"ל תגדיר את הסטטוס ל-`"rejected"` (ולאחר מכן לא תעבד אותו בתור) אם ורק אם הסטטוס הנוכחי הוא אחד מ-`"pending"`, `"queued"`, או `"deferred"`. אנו עשויים למחוק דוא"ל באופן אוטומטי 30 יום לאחר שנוצרו ו/או נשלחו - לכן עליך לשמור עותק של דוא"ל SMTP יוצא בלקוח, במסד הנתונים או באפליקציה שלך. באפשרותך להתייחס לערך מזהה הדוא"ל שלנו במסד הנתונים שלך אם תרצה בכך - ערך זה מוחזר הן מנקודות הקצה [צור אימייל](#create-email) והן מנקודות הקצה [אחזור דוא"ל](#retrieve-email).
+מחיקת דוא"ל תגדיר את הסטטוס ל-`"rejected"` (ולא תעבד אותו בתור) אם ורק אם הסטטוס הנוכחי הוא אחד מ-`"pending"`, `"queued"` או `"deferred"`. אנו עשויים למחוק דוא"לים באופן אוטומטי 30 יום לאחר שנוצרו ו/או נשלחו - לכן עליך לשמור עותק של דוא"ל SMTP יוצא בלקוח, במסד הנתונים או באפליקציה שלך. באפשרותך להתייחס לערך מזהה הדוא"ל שלנו במסד הנתונים שלך אם תרצה בכך - ערך זה מוחזר הן מנקודות הקצה [צור אימייל](#create-email) והן מנקודות הקצה [אחזור דוא"ל](#retrieve-email).
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## דומיינים {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> נקודות קצה של דומיין עם שם הדומיין <code>/v1/domains/:domain_name</code> כנקודת הקצה שלהן ניתנות להחלפה עם מזהה הדומיין <code>:domain_id</code>. משמעות הדבר היא שניתן להתייחס לדומיין לפי ערך <code>name</code> או <code>id</code> שלו.
 
 ### רשימת דומיינים {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> החל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור [רשימת דומיינים](#list-domains) ו-[רשימת כינויי דומיין](#list-domain-aliases) יקבלו כברירת מחדל `1000` תוצאות לכל עמוד. אם ברצונך להצטרף להתנהגות זו מוקדם, תוכל להעביר את `?paginate=true` כפרמטר שאילתה נוסף לכתובת האתר עבור שאילתת נקודת הקצה. ראה [דִפּוּף](#pagination) לקבלת תובנות נוספות.
 
 > `GET /v1/domains`
 
@@ -599,7 +599,7 @@ curl -X POST BASE_URI/v1/domains \
   -d plan=free
 ```
 
-### אחזור דומיין {#retrieve-domain}
+### אחזר דומיין {#retrieve-domain}
 
 > `GET /v1/domains/DOMAIN_NAME`
 
@@ -632,7 +632,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### רשימת סיסמאות כלליות לכל הדומיין {#list-domain-wide-catch-all-passwords}
+### רשימת סיסמאות כלל-קבוצתיות {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
@@ -649,7 +649,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
 
 | פרמטר גוף | דָרוּשׁ | סוּג | תֵאוּר |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | לֹא | חוּט | סיסמה חדשה מותאמת אישית לשימוש עבור סיסמת הכלל עבור הדומיין. שים לב שתוכל להשאיר שדה זה ריק או חסר לחלוטין מגוף בקשת ה-API שלך אם ברצונך לקבל סיסמה חזקה שנוצרה באופן אקראי. |
+| `new_password` | לֹא | חוּט | סיסמה חדשה מותאמת אישית לשימוש עבור סיסמת הכלל לכל הדומיין. שים לב שתוכל להשאיר שדה זה ריק או חסר לחלוטין מגוף בקשת ה-API שלך אם ברצונך לקבל סיסמה חזקה שנוצרה באופן אקראי. |
 | `description` | לֹא | חוּט | תיאור למטרות ארגון בלבד. |
 
 > בקשה לדוגמה:
@@ -659,7 +659,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### הסר סיסמה כוללת של הדומיין {#remove-domain-wide-catch-all-password}
+### הסר את הסיסמה הכוללת של הדומיין {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
@@ -694,7 +694,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### מחיקת דומיין {#delete-domain}
+### מחיקת הדומיין {#delete-domain}
 
 > `DELETE /v1/domains/:domain_name`
 
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> אם המשתמש המוזמן כבר חבר מקובל בדומיינים אחרים שהמנהל המזמין אותו חבר בהם, הוא יקבל את ההזמנה באופן אוטומטי ולא ישלח אימייל.
 
 ### הסר הזמנה לדומיין {#remove-domain-invite}
 
@@ -771,7 +771,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
   -u API_TOKEN:
 ```
 
-### הסר חבר דומיין {#remove-domain-member}
+### הסר את חבר הדומיין {#remove-domain-member}
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
@@ -804,10 +804,10 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
   -u API_TOKEN:
 ```
 
-### רשימת שמות דומיין חלופי {#list-domain-aliases}
+### רשימת כינויי דומיין {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> החל מ-1 בנובמבר 2024, נקודות הקצה של ה-API עבור [רשימת דומיינים](#list-domains) ו-[רשימת כינויי דומיין](#list-domain-aliases) יקבלו כברירת מחדל `1000` תוצאות לכל עמוד. אם ברצונך להצטרף להתנהגות זו מוקדם, תוכל להעביר את `?paginate=true` כפרמטר שאילתה נוסף לכתובת האתר עבור שאילתת נקודת הקצה. ראה [דִפּוּף](#pagination) לקבלת תובנות נוספות.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -844,7 +844,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `has_pgp` | לֹא | בוליאני | האם להפעיל או להשבית את [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) עבור [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) באמצעות הכינוי `public_key`. |
 | `public_key` | לֹא | חוּט | מפתח ציבורי של OpenPGP בפורמט ASCII Armor ‏([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); לדוגמה, מפתח GPG עבור `support@forwardemail.net`). זה חל רק אם `has_pgp` מוגדר כ-`true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | לֹא | חוּט | מכסת אחסון מקסימלית עבור כינוי זה. השאר ריק כדי לאפס למכסת הדומיין המקסימלית הנוכחית או הזן ערך כגון "1 ג'יגה-בייט" שנותח על ידי [bytes](https://github.com/visionmedia/bytes.js). ערך זה ניתן להתאמה רק על ידי מנהלי דומיין. |
-| `vacation_responder_is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית משיב חופשה אוטומטי. |
+| `vacation_responder_is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית הודעת חופשה אוטומטית. |
 | `vacation_responder_start_date` | לֹא | חוּט | תאריך התחלה עבור משיב חופשה (אם מופעל ולא הוגדר כאן תאריך התחלה, ההנחה היא שהוא כבר התחיל). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
 | `vacation_responder_end_date` | לֹא | חוּט | תאריך סיום עבור משיב חופשה (אם מופעל ולא מוגדר כאן תאריך סיום, התוצאה היא שהיא לעולם לא מסתיימת ומגיבה לנצח). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
 | `vacation_responder_subject` | לֹא | חוּט | נושא בטקסט רגיל עבור משיב החופשה, לדוגמה "מחוץ למשרד". אנו משתמשים ב-`striptags` כדי להסיר את כל ה-HTML כאן. |
@@ -857,7 +857,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 
-### אחזור כינוי דומיין {#retrieve-domain-alias}
+### אחזר כינוי דומיין {#retrieve-domain-alias}
 
 ניתן לאחזר כינוי דומיין לפי הערך `id` שלו או לפי הערך `name` שלו.
 
@@ -896,7 +896,7 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `has_pgp` | לֹא | בוליאני | האם להפעיל או להשבית את [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) עבור [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) באמצעות הכינוי `public_key`. |
 | `public_key` | לֹא | חוּט | מפתח ציבורי של OpenPGP בפורמט ASCII Armor ‏([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); לדוגמה, מפתח GPG עבור `support@forwardemail.net`). זה חל רק אם `has_pgp` מוגדר כ-`true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | לֹא | חוּט | מכסת אחסון מקסימלית עבור כינוי זה. השאר ריק כדי לאפס למכסת הדומיין המקסימלית הנוכחית או הזן ערך כגון "1 ג'יגה-בייט" שנותח על ידי [bytes](https://github.com/visionmedia/bytes.js). ערך זה ניתן להתאמה רק על ידי מנהלי דומיין. |
-| `vacation_responder_is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית משיב חופשה אוטומטי. |
+| `vacation_responder_is_enabled` | לֹא | בוליאני | האם להפעיל או להשבית הודעת חופשה אוטומטית. |
 | `vacation_responder_start_date` | לֹא | חוּט | תאריך התחלה עבור משיב חופשה (אם מופעל ולא הוגדר כאן תאריך התחלה, ההנחה היא שהוא כבר התחיל). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
 | `vacation_responder_end_date` | לֹא | חוּט | תאריך סיום עבור משיב חופשה (אם מופעל ולא מוגדר כאן תאריך סיום, התוצאה היא שהיא לעולם לא מסתיימת ומגיבה לנצח). אנו תומכים בתבניות תאריך כגון `MM/DD/YYYY`, `YYYY-MM-DD`, ובתבניות תאריך אחרות באמצעות ניתוח חכם באמצעות `dayjs`. |
 | `vacation_responder_subject` | לֹא | חוּט | נושא בטקסט רגיל עבור משיב החופשה, לדוגמה "מחוץ למשרד". אנו משתמשים ב-`striptags` כדי להסיר את כל ה-HTML כאן. |
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## הצפנה {#encrypt}
 
-אנו מאפשרים לך להצפין רשומות אפילו בתוכנית החינמית ללא עלות. פרטיות לא צריכה להיות תכונה, היא צריכה להיות מובנית באופן אינהרנטי בכל היבטי המוצר. כפי שמתבקש מאוד ב-[דיון על מדריכי פרטיות](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) וב-[בעיות הגיטהאב שלנו](https://github.com/forwardemail/forwardemail.net/issues/254) הוספנו זאת.
+אנו מאפשרים לך להצפין רשומות אפילו בתוכנית החינמית ללא עלות. פרטיות לא צריכה להיות תכונה, היא צריכה להיות מובנית באופן אינהרנטי בכל היבטי המוצר. כפי שביקשנו מאוד ב-[דיון על מדריכי פרטיות](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) וב-[בעיות הגיטהאב שלנו](https://github.com/forwardemail/forwardemail.net/issues/254), הוספנו זאת.
 
 ### הצפנת רשומת TXT {#encrypt-txt-record}
 

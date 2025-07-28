@@ -25,7 +25,7 @@
 ## Prefácio {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> Nosso serviço de e-mail é [100% de código aberto](https://github.com/forwardemail) e prioriza a privacidade por meio de caixas de correio SQLite seguras e criptografadas.
 
 Até lançarmos o [Suporte IMAP](/faq#do-you-support-receiving-email-with-imap), usávamos o MongoDB para nossas necessidades de armazenamento de dados persistentes.
 
@@ -35,7 +35,7 @@ Nossa equipe na [Encaminhar e-mail](https://forwardemail.net) precisava de uma s
 
 Em vez de usar um banco de dados compartilhado para armazenar suas caixas de correio, nós as armazenamos e criptografamos individualmente com sua senha (que só você tem). **Nosso serviço de e-mail é tão seguro que, se você esquecer sua senha, perderá sua caixa de correio** (e precisará recuperá-la com backups offline ou começar tudo de novo).
 
-Continue lendo enquanto analisamos detalhadamente abaixo um [comparação de provedores de serviços de e-mail](#email-service-provider-comparison), [como funciona nosso serviço](#how-does-it-work), [nossa pilha de tecnologia](#technologies) e muito mais.
+Continue lendo enquanto damos uma olhada mais a fundo em [comparação de provedores de serviços de e-mail](#email-service-provider-comparison), [como funciona nosso serviço](#how-does-it-work), [nossa pilha de tecnologia](#technologies) e muito mais.
 
 ## Comparação de provedores de serviços de e-mail {#email-service-provider-comparison}
 
@@ -50,14 +50,14 @@ Somos o único provedor de serviços de e-mail 100% de código aberto e focado e
 1. Usando seu cliente de e-mail, como Apple Mail, Thunderbird, Gmail ou Outlook – você se conecta aos nossos servidores seguros [IMAP](/faq#do-you-support-receiving-email-with-imap) usando seu nome de usuário e senha:
 
 * Seu nome de usuário é seu alias completo com seu domínio, como `hello@example.com`.
-* Sua senha é gerada aleatoriamente e exibida apenas por 30 segundos quando você clica em <strong class="text-success"><i class="fa fa-key"></i> Gerar Senha</strong> em <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Minha Conta <i class="fa fa-angle-right"></i> Domínios</a> <i class="fa fa-angle-right"></i> Aliases.
+* Sua senha é gerada aleatoriamente e exibida por apenas 30 segundos quando você clica em <strong class="text-success"><i class="fa fa-key"></i> Gerar Senha</strong> em <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Minha Conta <i class="fa fa-angle-right"></i> Domínios</a> <i class="fa fa-angle-right"></i> Aliases.
 
 2. Após a conexão, seu cliente de e-mail enviará [Comandos do protocolo IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) para o nosso servidor IMAP para manter sua caixa de entrada sincronizada. Isso inclui escrever e armazenar rascunhos de e-mail e outras ações que você pode realizar (por exemplo, marcar um e-mail como Importante ou sinalizar um e-mail como Spam/Lixo Eletrônico).
 
 3. Os servidores de troca de e-mails (comumente conhecidos como servidores "MX") recebem novos e-mails recebidos e os armazenam na sua caixa de entrada. Quando isso acontece, seu cliente de e-mail será notificado e sincronizará sua caixa de entrada. Nossos servidores de troca de e-mails podem encaminhar seus e-mails para um ou mais destinatários (incluindo [webhooks](/faq#do-you-support-webhooks)), armazenar seus e-mails para você em seu armazenamento IMAP criptografado conosco, **ou ambos**!
 
 > \[!DICA]
-> Interessado em saber mais? Leia [como configurar o encaminhamento de e-mail](/faq#how-do-i-get-started-and-set-up-email-forwarding), [como funciona nosso serviço de troca de correspondência](/faq#how-does-your-email-forwarding-system-work) ou visualize [nossos guias](/guides).
+> Interessado em saber mais? Leia [como configurar o encaminhamento de e-mail](/faq#how-do-i-get-started-and-set-up-email-forwarding), [como funciona nosso serviço de troca de correspondência](/faq#how-does-your-email-forwarding-system-work) ou veja [nossos guias](/guides).
 
 4. Nos bastidores, nosso design de armazenamento seguro de e-mail funciona de duas maneiras para manter suas caixas de correio criptografadas e acessíveis somente a você:
 
@@ -110,9 +110,9 @@ Exploramos outras possíveis camadas de armazenamento de banco de dados, porém 
 
 ### Segurança {#security}
 
-Em todos os momentos, utilizamos criptografia [criptografia em repouso](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [criptografia em trânsito](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS sobre HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") usando :tangerine: [tangerina](https://tangeri.ne) e [esguicho](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poli1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) em caixas de correio. Além disso, utilizamos autenticação de dois fatores baseada em token (em oposição ao SMS, que é suscetível a [ataques do tipo man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)), chaves SSH rotacionadas com acesso root desabilitado, acesso exclusivo a servidores por meio de endereços IP restritos e muito mais.
+Em todos os momentos, usamos [criptografia em repouso](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [criptografia em trânsito](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS sobre HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") usando criptografia :tangerine: [tangerina](https://tangeri.ne) e [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poli1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) em caixas de correio. Além disso, usamos autenticação de dois fatores baseada em token (em oposição ao SMS, que é suspeito de [ataques do tipo man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)), chaves SSH rotacionadas com acesso root desabilitado, acesso exclusivo a servidores por meio de endereços IP restritos e muito mais.
 
-Em caso de [ataque de empregada malvada](https://en.wikipedia.org/wiki/Evil_maid_attack) ou de um funcionário desonesto de um fornecedor terceirizado, **sua caixa de correio ainda poderá ser aberta apenas com a senha gerada**. Fique tranquilo, não dependemos de nenhum fornecedor terceirizado além dos nossos provedores de servidores compatíveis com SOC Tipo 2: Cloudflare, DataPacket, Digital Ocean e Vultr.
+No caso de um [ataque de empregada malvada](https://en.wikipedia.org/wiki/Evil_maid_attack) ou funcionário desonesto de um fornecedor terceirizado, **sua caixa de correio ainda poderá ser aberta apenas com a senha gerada**. Fique tranquilo, não dependemos de nenhum fornecedor terceirizado além dos nossos provedores de servidores compatíveis com SOC Tipo 2: Cloudflare, DataPacket, Digital Ocean e Vultr.
 
 Nosso objetivo é ter o mínimo possível de [ponto único de falhas](https://en.wikipedia.org/wiki/Single_point_of_failure).
 
@@ -122,9 +122,9 @@ Nosso objetivo é ter o mínimo possível de [ponto único de falhas](https://en
 
 Banco de dados incorporado [SQLite é extremamente popular](https://www.sqlite.org/mostdeployed.html) – atualmente em execução no seu telefone e computador – [e usado por quase todas as principais tecnologias](https://www.sqlite.org/famous.html).
 
-Por exemplo, em nossos servidores criptografados, há uma caixa de correio de banco de dados SQLite para `linux@example.com`, `info@example.com`, `hello@example.com` e assim por diante – uma para cada arquivo de banco de dados, como `.sqlite`. Também não nomeamos os arquivos de banco de dados com o endereço de e-mail – em vez disso, usamos o BSON ObjectID e UUIDs exclusivos gerados, que não compartilham a quem a caixa de correio pertence ou sob qual endereço de e-mail ela está (por exemplo, `353a03f21e534321f5d6e267.sqlite`).
+Por exemplo, em nossos servidores criptografados, há uma caixa de correio de banco de dados SQLite para `linux@example.com`, `info@example.com`, `hello@example.com` e assim por diante – uma para cada um, como um arquivo de banco de dados `.sqlite`. Também não nomeamos os arquivos de banco de dados com o endereço de e-mail – em vez disso, usamos o BSON ObjectID e UUIDs exclusivos gerados, que não compartilham a quem a caixa de correio pertence ou sob qual endereço de e-mail ela está (por exemplo, `353a03f21e534321f5d6e267.sqlite`).
 
-Cada um desses bancos de dados é criptografado usando sua senha (que só você tem) usando [esguicho](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poli1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Isso significa que suas caixas de correio são criptografadas individualmente, autocontidas, [em sandbox](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\) e portáteis.
+Cada um desses bancos de dados é criptografado usando sua senha (que só você tem) usando [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poli1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Isso significa que suas caixas de correio são criptografadas individualmente, autocontidas ([em sandbox](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) e portáteis.
 
 Ajustamos o SQLite com o seguinte [PRAGMA](https://www.sqlite.org/pragma.html):
 
@@ -140,13 +140,13 @@ Ajustamos o SQLite com o seguinte [PRAGMA](https://www.sqlite.org/pragma.html):
 
 > Todos os outros padrões são do SQLite, conforme especificado no [documentação oficial do PRAGMA](https://www.sqlite.org/pragma.html#pragma_auto_vacuum).
 
-### Concorrência {#concurrency}
+### Simultaneidade {#concurrency}
 
 > **tldr;** Usamos `WebSocket` para leituras e gravações simultâneas em suas caixas de correio criptografadas do SQLite.
 
 #### Lê {#reads}
 
-Seu cliente de e-mail no seu telefone pode resolver `imap.forwardemail.net` para um dos nossos endereços IP da Digital Ocean – e seu cliente de desktop pode resolver um IP separado de um [provedor](#providers) completamente diferente.
+Seu cliente de e-mail no seu telefone pode resolver `imap.forwardemail.net` para um dos nossos endereços IP da Digital Ocean, e seu cliente de desktop pode resolver um IP separado de um [provedor](#providers) completamente diferente.
 
 Independentemente do servidor IMAP ao qual seu cliente de e-mail se conecta, queremos que a conexão leia seu banco de dados em tempo real com 100% de precisão. Isso é feito por meio de WebSockets.
 
@@ -160,10 +160,10 @@ Para realizar gravações com o registro de gravação antecipada ("[WAL](https:
 
 O servidor primário está sendo executado nos servidores de dados com os volumes montados contendo as caixas de correio criptografadas. Do ponto de vista da distribuição, você pode considerar todos os servidores IMAP individuais por trás de `imap.forwardemail.net` como servidores secundários ("Secundário").
 
-Realizamos comunicação bidirecional com [Soquetes da Web](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
+Realizamos comunicação bidirecional com [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
-* Os servidores primários usam uma instância do servidor [ws](https://github.com/websockets/ws) do `WebSocketServer`.
-* Os servidores secundários usam uma instância do cliente [ws](https://github.com/websockets/ws) do `WebSocket` que é encapsulado com [websocket-como-prometido](https://github.com/vitalets/websocket-as-promised) e [reconectando-websocket](https://github.com/opensumi/reconnecting-websocket). Esses dois encapsuladores garantem que o `WebSocket` se reconecte e possa enviar e receber dados para gravações específicas no banco de dados.
+* Os servidores primários usam uma instância do servidor `WebSocketServer` do [ws](https://github.com/websockets/ws).
+* Os servidores secundários usam uma instância do cliente `WebSocket` do [ws](https://github.com/websockets/ws), que é encapsulado com [websocket-como-prometido](https://github.com/vitalets/websocket-as-promised) e [reconectando-websocket](https://github.com/opensumi/reconnecting-websocket). Esses dois encapsuladores garantem que o `WebSocket` se reconecte e possa enviar e receber dados para gravações específicas no banco de dados.
 
 ### Backups {#backups}
 
@@ -180,7 +180,7 @@ O Secundário instruirá o Primário por meio da conexão `WebSocket` para execu
 1. Conecte-se à sua caixa de correio criptografada.
 2. Obtenha um bloqueio de gravação.
 3. Execute um ponto de verificação WAL via `wal_checkpoint(PASSIVE)`.
-4. Execute o comando SQLite `VACUUM INTO`.
+4. Execute o comando `VACUUM INTO` do SQLite.
 5. Certifique-se de que o arquivo copiado possa ser aberto com a senha criptografada (salvaguarda/proteção contra falsificações).
 6. Carregue-o no Cloudflare R2 para armazenamento (ou no seu próprio provedor, se especificado).
 
@@ -240,7 +240,7 @@ Aqui está uma tabela descrevendo os projetos que usamos em nosso código-fonte 
 
 > Você pode encontrar outros projetos que usamos em [nosso código-fonte no GitHub](https://github.com/forwardemail).
 
-Provedores ### {#providers}
+### Provedores {#providers}
 
 | Provedor | Propósito |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
@@ -256,8 +256,8 @@ Provedores ### {#providers}
 O Forward Email foi projetado de acordo com estes princípios:
 
 1. Seja sempre amigável ao desenvolvedor, focado em segurança e privacidade, e transparente.
-2. Siga as diretrizes [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Fator Doze](https://12factor.net/), [Navalha de Occam](https://en.wikipedia.org/wiki/Occam%27s_razor) e [comida de cachorro](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)
-3. Foque no desenvolvedor fragmentado, bootstrapped e [ramen lucrativo](http://www.paulgraham.com/ramenprofitable.html)
+2. Siga os padrões [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Fator Doze](https://12factor.net/), [Navalha de Occam](https://en.wikipedia.org/wiki/Occam%27s_razor) e [comida de cachorro](https://en.wikipedia.org/wiki/Eating_your_own_dog_food).
+3. Foque nos desenvolvedores que usam scrappy, bootstrap e [ramen lucrativo](http://www.paulgraham.com/ramenprofitable.html).
 
 ### Experimentos {#experiments}
 
@@ -272,29 +272,26 @@ Esse experimento nos levou a entender melhor e descobrir casos extremos envolven
 * Se você habilitar o sinalizador `--vfs-cache-mode writes` com rclone, as leituras serão permitidas, porém as gravações serão armazenadas em cache.
 * Se você tiver vários servidores IMAP distribuídos globalmente, o cache ficará desativado entre eles, a menos que você tenha um único gravador e vários ouvintes (por exemplo, uma abordagem pub/sub).
 * Isso é incrivelmente complexo e adicionar qualquer complexidade adicional como essa resultará em mais pontos únicos de falha.
-* Provedores de armazenamento compatíveis com S3 não suportam alterações parciais de arquivo – o que significa que qualquer alteração no arquivo `.sqlite` resultará em uma alteração completa e no reenvio do banco de dados.
-* Outras soluções, como `rsync`, existem, mas não são focadas no suporte a logs de gravação antecipada ("[WAL](https://www.sqlite.org/wal.html)") – por isso, acabamos analisando o Litestream. Felizmente, nosso uso de criptografia já criptografa os arquivos [WAL](https://www.sqlite.org/wal.html) para nós, então não precisamos depender do Litestream para isso. No entanto, ainda não tínhamos confiança no Litestream para uso em produção e temos algumas observações abaixo sobre isso.
-* Usar esta opção de `--vfs-cache-mode writes` (a *única* maneira de usar o SQLite em vez de `rclone` para gravações) tentará copiar todo o banco de dados do zero na memória – manipular uma caixa de correio de 10 GB é aceitável; no entanto, manipular várias caixas de correio com armazenamento excessivamente alto fará com que os servidores IMAP apresentem limitações de memória e erros de `ENOMEM`, falhas de segmentação e corrupção de dados.
-
-* Se você tentar usar o SQLite [Mesas Virtuais](https://www.sqlite.org/vtab.html) (por exemplo, usando [s3db](https://github.com/jrhy/s3db)) para manter os dados ativos em uma camada de armazenamento compatível com S3, você encontrará vários outros problemas:
-* As leituras e gravações serão extremamente lentas, pois os endpoints da API S3 precisarão ser acessados com os métodos HTTP `GET`, `PUT`, `HEAD` e `POST`.
-* Os testes de desenvolvimento mostraram que exceder 500 mil a mais de 1 milhão de registros na internet de fibra óptica ainda é limitado pela taxa de transferência de gravação e leitura para provedores compatíveis com S3. Por exemplo, nossos desenvolvedores executaram loops `for` para executar instruções SQL sequenciais `INSERT` e aquelas que gravavam grandes quantidades de dados em massa. Em ambos os casos, o desempenho foi incrivelmente lento.
-* Tabelas virtuais **não podem ter índices**, instruções `ALTER TABLE` e [outro](https://stackoverflow.com/a/12507650) [limitações](https://sqlite.org/lang_createvtab.html) – o que leva a atrasos de 1 a 2 minutos ou mais, dependendo da quantidade de dados.
+* Provedores de armazenamento compatíveis com S3 não suportam alterações parciais de arquivos – o que significa que qualquer alteração no arquivo `.sqlite` resultará em uma alteração completa e no reenvio do banco de dados.
+* Existem outras soluções, como `rsync`, mas elas não são focadas no suporte a logs de gravação antecipada ("[WAL](https://www.sqlite.org/wal.html)") – então acabamos analisando o Litestream. Felizmente, nosso uso de criptografia já criptografa os arquivos [WAL](https://www.sqlite.org/wal.html) para nós, então não precisamos depender do Litestream para isso. No entanto, ainda não estávamos confiantes no Litestream para uso em produção e temos algumas observações sobre isso abaixo.
+* Usar esta opção de `--vfs-cache-mode writes` (a *única* maneira de usar o SQLite em vez de `rclone` para gravações) tentará copiar todo o banco de dados do zero para a memória – manipular uma caixa de correio de 10 GB é aceitável; no entanto, manipular várias caixas de correio com armazenamento excessivamente alto fará com que os servidores IMAP apresentem limitações de memória e erros de `ENOMEM`, falhas de segmentação e corrupção de dados.
+* Se você tentar usar o comando [Mesas Virtuais](https://www.sqlite.org/vtab.html) do SQLite (por exemplo, usando o comando [s3db](https://github.com/jrhy/s3db)) para manter os dados ativos em uma camada de armazenamento compatível com S3, você encontrará vários outros problemas:
+* As leituras e gravações serão extremamente lentas, pois os endpoints da API S3 precisarão ser acessados com os métodos HTTP `.sqlite`0, `.sqlite`1, `.sqlite`2 e `.sqlite`3.
+* Os testes de desenvolvimento mostraram que exceder 500 mil a mais de 1 milhão de registros na internet de fibra óptica ainda é limitado pela taxa de transferência de gravação e leitura para provedores compatíveis com S3. Por exemplo, nossos desenvolvedores executaram loops `.sqlite`4 para executar instruções SQL sequenciais `.sqlite`5 e aquelas que gravavam grandes quantidades de dados em massa. Em ambos os casos, o desempenho foi incrivelmente lento.
+* Tabelas virtuais **não podem ter índices**, instruções `.sqlite`6 e `.sqlite`7 `.sqlite`8 – o que leva a atrasos de 1 a 2 minutos ou mais, dependendo da quantidade de dados.
 * Objetos foram armazenados sem criptografia e não há suporte nativo para criptografia disponível.
-* Também exploramos o uso de [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs), que é conceitual e tecnicamente semelhante ao tópico anterior (portanto, apresenta os mesmos problemas). Uma possibilidade seria usar uma compilação personalizada `sqlite3` encapsulada com criptografia, como [wxSQLite3](https://github.com/utelle/wxsqlite3) (que usamos atualmente em nossa solução acima) por meio de [editando o arquivo de configuração](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276).
-* Outra abordagem possível seria usar o [extensão multiplex](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c), porém, isso tem uma limitação de 32 GB e exigiria uma série de problemas complexos de compilação e desenvolvimento.
-* Instruções `ALTER TABLE` são necessárias (portanto, isso descarta completamente o uso de Tabelas Virtuais). Precisamos de instruções `ALTER TABLE` para que nosso hook com `knex-schema-inspector` funcione corretamente – o que garante que os dados não sejam corrompidos e que as linhas recuperadas possam ser convertidas em documentos válidos de acordo com nossas definições de esquema `mongoose` (que incluem restrição, tipo de variável e validação arbitrária de dados).
+* Também exploramos o uso de `.sqlite`9, que é conceitual e tecnicamente semelhante ao tópico anterior (portanto, apresenta os mesmos problemas). Uma possibilidade seria usar uma compilação `rsync`0 personalizada, encapsulada com criptografia, como `rsync`1 (que usamos atualmente em nossa solução acima) por meio de `rsync`2.
+* Outra abordagem potencial seria usar `rsync`3, porém, isso tem uma limitação de 32 GB e exigiria complexas dores de cabeça de construção e desenvolvimento.
+* Instruções `rsync`4 são necessárias (portanto, isso descarta completamente o uso de Tabelas Virtuais). Precisamos de instruções `rsync`5 para que nosso hook com `rsync`6 funcione corretamente – o que garante que os dados não sejam corrompidos e que as linhas recuperadas possam ser convertidas em documentos válidos de acordo com nossas definições de esquema `rsync`7 (que incluem restrição, tipo de variável e validação arbitrária de dados).
 * Quase todos os projetos compatíveis com S3 relacionados ao SQLite na comunidade de código aberto são em Python (e não em JavaScript, que usamos em 100% do nosso stack).
-* Bibliotecas de compressão como [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) (veja [comentários](https://news.ycombinator.com/item?id=32303762)) parecem promissoras, mas [pode ainda não estar pronto para uso em produção](https://github.com/phiresky/sqlite-zstd#usage). Em vez disso, a compactação do lado do aplicativo em tipos de dados como `String`, `Object`, `Map`, `Array`, `Set` e `Buffer` será uma abordagem mais limpa e fácil (e também mais fácil de migrar, já que poderíamos armazenar um sinalizador ou coluna `Boolean` – ou até mesmo usar `PRAGMA` `user_version=1` para compactação ou `user_version=0` para nenhuma compactação como metadados do banco de dados).
-* Felizmente, já implementamos a desduplicação de anexos em nosso servidor IMAP – portanto, cada mensagem com o mesmo anexo não manterá uma cópia do anexo – em vez disso, um único anexo é armazenado para várias mensagens e threads em uma caixa de correio (e uma referência estrangeira é posteriormente usada).
-* O projeto Litestream, que é uma solução de replicação e backup do SQLite, é muito promissor e provavelmente o utilizaremos no futuro.
-* Sem desmerecer o(s) autor(es) – porque adoramos seu trabalho e suas contribuições ao código aberto há mais de uma década – no entanto, com base no uso real, parece haver [pode haver muitas dores de cabeça](https://github.com/benbjohnson/litestream/issues) e [potencial perda de dados devido ao uso](https://github.com/benbjohnson/litestream/issues/218).
-* A restauração de backup precisa ser simples e fácil. Usar uma solução como o MongoDB com `mongodump` e `mongoexport` não é apenas tedioso, mas também demorado e apresenta complexidade de configuração.
-
+* Bibliotecas de compressão como `rsync`8 (veja `rsync`9) parecem promissoras, mas __PROTECTED_LINK_189__0. Em vez disso, a compactação do lado do aplicativo em tipos de dados como __PROTECTED_LINK_189__1, __PROTECTED_LINK_189__2, __PROTECTED_LINK_189__3, __PROTECTED_LINK_189__4, __PROTECTED_LINK_189__5 e __PROTECTED_LINK_189__6 será uma abordagem mais limpa e fácil (e também mais fácil de migrar, já que poderíamos armazenar um sinalizador ou coluna __PROTECTED_LINK_189__7 – ou até mesmo usar __PROTECTED_LINK_189__8 ou __PROTECTED_LINK_189__9 para compactação ou __PROTECTED_LINK_190__0 para nenhuma compactação como metadados do banco de dados).
+* Felizmente, já implementamos a desduplicação de anexos em nosso armazenamento de servidor IMAP – portanto, cada mensagem com o mesmo anexo não manterá uma cópia do anexo – em vez disso, um único anexo é armazenado para várias mensagens e threads em uma caixa de correio (e uma referência estrangeira é posteriormente usada).
+* O projeto Litestream, que é uma solução de replicação e backup SQLite, é muito promissor e provavelmente o utilizaremos no futuro.
+* Sem desmerecer o(s) autor(es) – pois adoramos seu trabalho e suas contribuições ao código aberto há mais de uma década – no entanto, a partir do uso no mundo real, parece que existem __PROTECTED_LINK_190__1 e __PROTECTED_LINK_190__2.
+* A restauração de backup precisa ser simples e trivial. Usar uma solução como o MongoDB com __PROTECTED_LINK_190__3 e __PROTECTED_LINK_190__4 não é apenas tedioso, mas também demorado e apresenta complexidade de configuração.
 * Bancos de dados SQLite simplificam (é um único arquivo).
 * Queríamos projetar uma solução em que os usuários pudessem pegar suas caixas de correio e sair a qualquer momento.
-* Comandos Node.js simples para `fs.unlink('mailbox.sqlite'))` e elas são permanentemente apagadas do armazenamento em disco.
-* Podemos usar uma API compatível com S3 com HTTP `DELETE` para remover facilmente snapshots e backups para os usuários.
+* Comandos simples do Node.js para __PROTECTED_LINK_190__5 e elas são permanentemente apagadas do armazenamento em disco. * Da mesma forma, podemos usar uma API compatível com S3 com HTTP __PROTECTED_LINK_190__6 para remover facilmente snapshots e backups para os usuários.
 * O SQLite foi a solução mais simples, rápida e econômica.
 
 ### Falta de alternativas {#lack-of-alternatives}

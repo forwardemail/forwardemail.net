@@ -6,7 +6,7 @@
 <strong>TL;DR:</strong> בנינו את ממשק ה-API REST השלם הראשון בעולם לניהול דוא"ל עם יכולות חיפוש מתקדמות שאף שירות אחר לא מציע. בעוד ש-Gmail, Outlook ו-Apple מאלצים מפתחים להיכנס לגיהנום IMAP או ממשקי API בעלי קצב חיפוש מוגבל, Forward Email מספק פעולות CRUD מהירות במיוחד עבור הודעות, תיקיות, אנשי קשר ויומנים באמצעות ממשק REST מאוחד עם יותר מ-15 פרמטרי חיפוש. זהו ממשק ה-API של דוא"ל שחיכו לו.
 </p>
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [בעיית ה-API של הדוא"ל](#the-email-api-problem)
 * [מה באמת אומרים המפתחים](#what-developers-are-actually-saying)
@@ -71,7 +71,7 @@
   * [4. עיין בתיעוד](#4-explore-the-documentation)
 * [משאבים טכניים](#technical-resources)
 
-## בעיית ממשק ה-API של הדוא"ל {#the-email-api-problem}
+## בעיית ה-API של הדוא"ל {#the-email-api-problem}
 
 ממשקי API של דוא"ל שבורים מיסודם. נקודה.
 
@@ -83,7 +83,7 @@
 התוצאה? מפתחים או נוטשים לחלוטין את שילוב הדוא"ל או מבזבזים שבועות בבניית מעטפות IMAP שבירות שמתקלקלות ללא הרף.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **הסוד המלוכלך**: רוב "ממשקי ה-API של דוא"ל" הם רק ממשקי API לשליחה. לא ניתן לארגן תיקיות, לסנכרן אנשי קשר או לנהל יומנים באופן תכנותי דרך ממשק REST פשוט. עד עכשיו.
 
 ## מה באמת אומרים המפתחים {#what-developers-are-actually-saying}
 
@@ -91,7 +91,7 @@
 
 > "לאחרונה ניסיתי לשלב את Gmail באפליקציה שלי, והשקעתי בזה יותר מדי זמן. החלטתי שלא כדאי לתמוך ב-Gmail."
 >
-> *- [מפתח חדשות האקר](https://news.ycombinator.com/item?id=42106944), 147 הצבעות בעד*
+> *- [מפתח חדשות האקר](https://news.ycombinator.com/item?id=42106944), 147 הצבעות חיוביות*
 
 > "האם כל ממשקי ה-API של הדוא"ל בינוניים? הם נראים מוגבלים או מגבילים בצורה כלשהי."
 >
@@ -110,7 +110,7 @@
 * **בעיות SMTP בוורדפרס**: [631 בעיות ב-GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) בנוגע לכשלים במסירת דוא"ל
 * **מגבלות Zapier**: [תלונות הקהילה](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) בנוגע למגבלות של 10 דוא"ל/שעה וכשלים בזיהוי IMAP
 * **פרויקטים של IMAP API**: [מְרוּבֶּה](https://github.com/ewildgoose/imap-api) [קוד פתוח](https://emailengine.app/) [פרויקטים](https://www.npmjs.com/package/imapflow) קיימים במיוחד כדי "להמיר IMAP ל-REST" מכיוון שאף ספק לא מציע זאת
-* **תסכולים ב-Gmail API**: [גלישת מחסנית](https://stackoverflow.com/questions/tagged/gmail-api) כולל 4,847 שאלות שתויגו כ-"gmail-api" עם תלונות נפוצות בנוגע למגבלות קצב ומורכבות
+* **תסכולים ב-Gmail API**: ל-[גלישת מחסנית](https://stackoverflow.com/questions/tagged/gmail-api) יש 4,847 שאלות שתויגו "gmail-api" עם תלונות נפוצות בנוגע למגבלות קצב ומורכבות
 
 ## הפתרון המהפכני להעברת דוא"ל {#forward-emails-revolutionary-solution}
 
@@ -119,9 +119,9 @@
 זה לא עוד סתם API של שליחה. זוהי שליטה תכנותית מלאה על:
 
 * **הודעות**: יצירה, קריאה, עדכון, מחיקה, חיפוש, העברה, סימון
-* **תיקיות**: ניהול מלא של תיקיות IMAP דרך נקודות קצה REST
-* **אנשי קשר**: [כרטיסDAV](https://tools.ietf.org/html/rfc6352) אחסון וסנכרון של אנשי קשר
-* **יומנים**: [CalDAV](https://tools.ietf.org/html/rfc4791) אירועי לוח שנה ותזמון
+* **תיקיות**: ניהול מלא של תיקיות IMAP דרך נקודות קצה של REST
+* **אנשי קשר**: אחסון וסנכרון של אנשי קשר [כרטיסDAV](https://tools.ietf.org/html/rfc6352)
+* **יומנים**: אירועי יומן ותזמון [CalDAV](https://tools.ietf.org/html/rfc4791)
 
 ### למה בנינו את זה {#why-we-built-this}
 
@@ -152,10 +152,10 @@ curl -u "alias@yourdomain.com:password" \
 
 ### תיקיות (5 נקודות קצה) {#folders-5-endpoints}
 
-* `GET /v1/folders` - רשימת כל התיקיות עם סטטוס הרשמה
+* `GET /v1/folders` - רשימת כל התיקיות עם סטטוס המנוי
 * `POST /v1/folders` - יצירת תיקייה חדשה עם מאפיינים מותאמים אישית
 * `GET /v1/folders/:id` - קבלת פרטי תיקייה וספירת הודעות
-* `PUT /v1/folders/:id` - עדכון מאפייני תיקייה והרשמה
+* `PUT /v1/folders/:id` - עדכון מאפייני תיקייה ומנוי
 * `DELETE /v1/folders/:id` - מחיקת תיקייה וטיפל בהעברת הודעות
 
 ### אנשי קשר (5 נקודות קצה) {#contacts-5-endpoints}
@@ -174,13 +174,13 @@ curl -u "alias@yourdomain.com:password" \
 * `PUT /v1/calendars/:id` - עדכון אירוע עם זיהוי התנגשויות
 * `DELETE /v1/calendars/:id` - מחיקת אירוע עם התראות משתתפים
 
-## חיפוש מתקדם: אין שירות אחר שמשתווה אליו {#advanced-search-no-other-service-compares}
+## חיפוש מתקדם: אין שירות אחר המשתווה {#advanced-search-no-other-service-compares}
 
 **Forward Email הוא שירות הדוא"ל היחיד המציע חיפוש מקיף ותכנותי בכל שדות ההודעה באמצעות REST API.**
 
 בעוד שספקים אחרים מציעים סינון בסיסי במקרה הטוב, בנינו את ממשק ה-API לחיפוש דוא"ל המתקדם ביותר שנוצר אי פעם. אף ממשק API של Gmail, ממשק API של Outlook או כל שירות אחר לא מתקרב ליכולות החיפוש שלנו.
 
-### נוף ה-API של החיפוש פגום {#the-search-api-landscape-is-broken}
+### סביבת ה-API של החיפוש פגומה {#the-search-api-landscape-is-broken}
 
 **מגבלות חיפוש ב-API של Gmail:**
 
@@ -194,8 +194,8 @@ curl -u "alias@yourdomain.com:password" \
 **מגבלות חיפוש ב-API של Outlook:**
 
 * ✅ פרמטר בסיסי `$search`
-* ❌ אין צורך במיקוד שדות מתקדם
-* ❌ אין צורך בשילובי שאילתות מורכבים
+* ❌ אין מיקוד שדות מתקדם
+* ❌ אין צירופי שאילתות מורכבים
 * ❌ הגבלת קצב אגרסיבית
 * ❌ נדרש תחביר OData מורכב
 
@@ -209,7 +209,7 @@ curl -u "alias@yourdomain.com:password" \
 * ❌ אין ממשקי API ציבוריים
 * ❌ אין יכולות חיפוש פרוגרמטיות
 
-### ממשק ה-API לחיפוש מהפכני של העברת דוא"ל {#forward-emails-revolutionary-search-api}
+### ממשק ה-API המהפכני לחיפוש העברת דוא"ל {#forward-emails-revolutionary-search-api}
 
 **אנו מציעים 15+ פרמטרים לחיפוש שאף שירות אחר לא מספק:**
 
@@ -290,7 +290,7 @@ GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. בינה מבוססת גודל {#2-size-based-intelligence}
+#### 2. מודיעין מבוסס גודל {#2-size-based-intelligence}
 
 ```bash
 # Find newsletter emails (typically large)
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **יתרון למפתחים**: בעזרת ממשק ה-API לחיפוש של Forward Email, תוכלו לבנות יישומי דוא"ל שיתחרו בפונקציונליות של לקוחות שולחן עבודה, תוך שמירה על הפשטות של ממשקי API של REST.
 
 ## ארכיטקטורת ביצועים מהירה במיוחד {#blazing-fast-performance-architecture}
 
@@ -393,7 +393,7 @@ graph LR
 * **זמן תגובה של API**: פחות מ-50ms בממוצע
 * **אחזור הודעות**: פחות מ-10ms עבור הודעות במטמון
 * **פעולות תיקייה**: פחות מ-5ms עבור פעולות מטא-נתונים
-* **סנכרון אנשי קשר**: יותר מ-1000 אנשי קשר לשנייה
+* **סנכרון אנשי קשר**: יותר מ-1000 אנשי קשר/שנייה
 * **זמן פעולה**: הסכם רמת שירות של 99.99% עם תשתית יתירה
 
 ### ארכיטקטורת פרטיות במקום הראשון {#privacy-first-architecture}
@@ -402,7 +402,7 @@ graph LR
 
 ## למה אנחנו שונים: ההשוואה המלאה {#why-were-different-the-complete-comparison}
 
-### מגבלות ספקים עיקריות {#major-provider-limitations}
+### מגבלות ספק עיקריות {#major-provider-limitations}
 
 | ספק | בעיות ליבה | מגבלות ספציפיות |
 | ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -413,7 +413,7 @@ graph LR
 | **סַך הַכֹּל** | אין API, שקיפות מטעה | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) אבל [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) מונע אינטגרציות סטנדרטיות |
 | **אימייל של זאפייר** | מגבלות קצב חמורות | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
 
-### יתרונות העברת דוא"ל {#forward-email-advantages}
+יתרונות ### להעברת דוא"ל {#forward-email-advantages}
 
 | תכונה | העברת דוא"ל | תַחֲרוּת |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -430,7 +430,7 @@ graph LR
 **ProtonMail ו-Tuta משווקות את עצמן כ"קוד פתוח" ו"שקופות", אך זהו שיווק מטעה המפר עקרונות פרטיות מודרניים.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **טענות שקיפות כוזבות**: גם ProtonMail וגם Tuta מפרסמים באופן בולט את אישורי "קוד פתוח" שלהם תוך שמירה על קוד צד השרת הקריטי ביותר שלהם קנייני וסגור.
 
 **ההונאה של ProtonMail:**
 
@@ -459,19 +459,19 @@ graph LR
 
 * ✅ **[קוד פתוח מלא](https://github.com/forwardemail/forwardemail.net)** - קוד שרת ולקוח
 * ✅ **[אירוח עצמי זמין](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - הפעלת מופע משלך
-* ✅ **פרוטוקולים סטנדרטיים** - תאימות ל-IMAP, SMTP, CardDAV, CalDAV
+* ✅ **פרוטוקולים סטנדרטיים** - תאימות IMAP, SMTP, CardDAV, CalDAV
 * ✅ **אבטחה ניתנת לביקורת** - כל שורת קוד ניתנת לבדיקה
 * ✅ **אין נעילת ספק** - הנתונים שלך, השליטה שלך
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **קוד פתוח אמיתי מאפשר לך לאמת כל טענה.** בעזרת Forward Email, תוכל לבקר את ההצפנה שלנו, לסקור את הטיפול בנתונים שלנו ואפילו להפעיל מופע משלך. זוהי שקיפות אמיתית.
 
 ## 30+ דוגמאות לאינטגרציה מהעולם האמיתי {#30-real-world-integration-examples}
 
 ### 1. שיפור טופס יצירת קשר בוורדפרס {#1-wordpress-contact-form-enhancement}
 
 **בעיה**: [כשלים בהגדרת SMTP של וורדפרס](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 בעיות ב-GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
-**פתרון**: אינטגרציה ישירה של API עוקפת לחלוטין את [SMTP](https://tools.ietf.org/html/rfc5321)
+**פתרון**: שילוב ישיר של API עוקף לחלוטין את [SMTP](https://tools.ietf.org/html/rfc5321)
 
 ```javascript
 // WordPress contact form that saves to Sent folder
@@ -490,9 +490,9 @@ await fetch('https://api.forwardemail.net/v1/messages', {
 });
 ```
 
-### 2. אלטרנטיבה ל-Zapier לאוטומציה של דוא"ל {#2-zapier-alternative-for-email-automation}
+### 2. אלטרנטיבה לזאפייר לאוטומציה של דוא"ל {#2-zapier-alternative-for-email-automation}
 
-**בעיה**: [מגבלת 10 מיילים לשעה של זאפייר](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) ו-[כשלים בזיהוי IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
+**בעיה**: [מגבלת 10 מיילים לשעה של זאפייר](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) ו- [כשלים בזיהוי IMAP](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958)
 **פתרון**: אוטומציה בלתי מוגבלת עם שליטה מלאה בדוא"ל
 
 ```javascript
@@ -510,7 +510,7 @@ for (const message of messages) {
 ### 3. סנכרון דוא"ל CRM {#3-crm-email-synchronization}
 
 **בעיה**: ניהול אנשי קשר ידני בין דוא"ל ל-[מערכות CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**פתרון**: סנכרון דו-כיווני עם ממשק API של אנשי קשר [כרטיסDAV](https://tools.ietf.org/html/rfc6352)
+**פתרון**: סנכרון דו-כיווני עם ממשק ה-API של אנשי קשר של [כרטיסDAV](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
 // Sync new email contacts to CRM
@@ -527,7 +527,7 @@ for (const contact of newContacts) {
 ### 4. עיבוד הזמנות מסחר אלקטרוני {#4-e-commerce-order-processing}
 
 **בעיה**: עיבוד ידני של דוא"ל הזמנות עבור [פלטפורמות מסחר אלקטרוני](https://en.wikipedia.org/wiki/E-commerce)
-**פתרון**: מערכת ניהול הזמנות אוטומטית
+**פתרון**: ניהול הזמנות אוטומטי
 
 ```javascript
 // Process order confirmation emails
@@ -546,9 +546,9 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. תמיכה בשילוב כרטיסים {#5-support-ticket-integration}
+### 5. שילוב כרטיסים עם תמיכה {#5-support-ticket-integration}
 
-**בעיה**: שרשורי דוא"ל מפוזרים ברחבי [פלטפורמות תמיכה](https://en.wikipedia.org/wiki/Help_desk_software)
+**בעיה**: שרשורי דוא"ל מפוזרים ב-[פלטפורמות תמיכה](https://en.wikipedia.org/wiki/Help_desk_software)
 **פתרון**: מעקב מלא אחר שרשורי דוא"ל
 
 ```javascript
@@ -568,10 +568,10 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. מערכת לניהול ניוזלטרים {#6-newsletter-management-system}
+### 6. מערכת ניהול ניוזלטרים {#6-newsletter-management-system}
 
-**בעיה**: אינטגרציות מוגבלות עם [פלטפורמת ניוזלטרים](https://en.wikipedia.org/wiki/Email_marketing)
-**פתרון**: ניהול מחזור חיי המנוי המלא
+**בעיה**: אינטגרציות מוגבלות של [פלטפורמת ניוזלטרים](https://en.wikipedia.org/wiki/Email_marketing)
+**פתרון**: ניהול מחזור חיים מלא של מנויים
 
 ```javascript
 // Auto-manage newsletter subscriptions
@@ -592,7 +592,7 @@ for (const msg of unsubscribes) {
 ### 7. ניהול משימות מבוסס דוא"ל {#7-email-based-task-management}
 
 **בעיה**: עומס בתיבת הדואר הנכנס ו-[מעקב אחר משימות](https://en.wikipedia.org/wiki/Task_management)
-**פתרון**: המרת מיילים למשימות מעשיות
+**פתרון**: המרת הודעות דוא"ל למשימות ניתנות לפעולה
 
 ```javascript
 // Create tasks from flagged emails
@@ -866,7 +866,7 @@ await updateDashboard(deliveryStats);
 
 ### 19. הסמכת לידים מבוססת דוא"ל {#19-email-based-lead-qualification}
 
-**בעיה**: [ניקוד לידים](https://en.wikipedia.org/wiki/Lead_scoring) ידני מפני אינטראקציות בדוא"ל
+**בעיה**: [ניקוד לידים](https://en.wikipedia.org/wiki/Lead_scoring) ידני מאינטראקציות בדוא"ל
 **פתרון**: צינור אוטומטי של סיווג לידים
 
 ```javascript
@@ -962,7 +962,7 @@ for (const email of invoiceEmails) {
 }
 ```
 
-### 23. רישום לאירוע באמצעות דוא"ל {#23-email-based-event-registration}
+### 23. רישום אירועים מבוסס דוא"ל {#23-email-based-event-registration}
 
 **בעיה**: עיבוד ידני של [רישום לאירוע](https://en.wikipedia.org/wiki/Event_management) מתגובות דוא"ל
 **פתרון**: ניהול אוטומטי של משתתפים ושילוב לוח שנה
@@ -999,7 +999,7 @@ for (const registration of registrations) {
 
 ### 24. תהליך עבודה לאישור מסמכים מבוסס דוא"ל {#24-email-based-document-approval-workflow}
 
-**בעיה**: שרשראות [אישור מסמך](https://en.wikipedia.org/wiki/Document_management_system) מורכבות באמצעות דוא"ל
+**בעיה**: שרשראות מורכבות של [אישור מסמך](https://en.wikipedia.org/wiki/Document_management_system) באמצעות דוא"ל
 **פתרון**: מעקב אוטומטי אחר אישורים וניהול גרסאות של מסמכים
 
 ```javascript
@@ -1063,7 +1063,7 @@ for (const email of feedbackEmails) {
 ### 26. צינור גיוס מבוסס דוא"ל {#26-email-based-recruitment-pipeline}
 
 **בעיה**: [גִיוּס](https://en.wikipedia.org/wiki/Recruitment) ידני ומעקב אחר מועמדים
-**פתרון**: ניהול מועמדים אוטומטי וקביעת ראיונות
+**פתרון**: ניהול אוטומטי של מועמדים ותזמון ראיונות
 
 ```javascript
 // Process job application emails
@@ -1213,8 +1213,8 @@ for (const email of vendorEmails) {
 
 ### 30. ניטור מדיה חברתית מבוסס דוא"ל {#30-email-based-social-media-monitoring}
 
-**בעיה**: מעקב ידני אחר אזכורים ותגובה
-**פתרון**: עיבוד אוטומטי של התראות ותיאום תגובה ברשתות חברתיות
+**בעיה**: מעקב ידני אחר אזכורים ותגובה ל-[מדיה חברתית](https://en.wikipedia.org/wiki/Social_media_monitoring)
+**פתרון**: עיבוד אוטומטי של התראות ותיאום תגובה לרשתות חברתיות
 
 ```javascript
 // Process social media alerts from email notifications
@@ -1258,7 +1258,7 @@ for (const alert of socialAlerts) {
 
 ## תחילת העבודה {#getting-started}
 
-### 1. צור חשבון דוא"ל להעברה {#1-create-your-forward-email-account}
+### 1. צור את חשבון הדוא"ל שלך להעברת דוא"ל {#1-create-your-forward-email-account}
 
 הירשם ב-[forwardemail.net](https://forwardemail.net) ואמת את הדומיין שלך.
 
@@ -1283,14 +1283,14 @@ curl -u "your-alias@domain.com:password" \
 
 ### 4. עיין בתיעוד {#4-explore-the-documentation}
 
-בקרו באתר [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) לקבלת תיעוד API מלא עם דוגמאות אינטראקטיביות.
+בקר באתר [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) לקבלת תיעוד API מלא עם דוגמאות אינטראקטיביות.
 
 ## משאבים טכניים {#technical-resources}
 
 * **[תיעוד API מלא](https://forwardemail.net/en/email-api)** - מפרט OpenAPI 3.0 אינטראקטיבי
 * **[מדריך לאירוח עצמי](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - פריסת דוא"ל מורחב בתשתית שלך
 * **[סקירת אבטחה](https://forwardemail.net/technical-whitepaper.pdf)** - ארכיטקטורה טכנית ופרטי אבטחה
-* **[מאגר GitHub](https://github.com/forwardemail/forwardemail.net)** - בסיס קוד בקוד פתוח
+* **[מאגר גיטהאב](https://github.com/forwardemail/forwardemail.net)** - בסיס קוד בקוד פתוח
 * **[תמיכה למפתחים](mailto:api@forwardemail.net)** - גישה ישירה לצוות ההנדסה שלנו
 
 ---

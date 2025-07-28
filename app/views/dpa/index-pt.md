@@ -59,7 +59,7 @@
 
 Este documento é um derivado do [Termos Padrão do Common Paper DPA (Versão 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) e as seguintes alterações foram feitas:
 
-1. [Lei aplicável e tribunais escolhidos](#11-governing-law-and-chosen-courts) foi incluído como uma seção abaixo com `Governing State` identificado acima.
+1. [Lei aplicável e tribunais escolhidos](#11-governing-law-and-chosen-courts) foi incluído como uma seção abaixo, com `Governing State` identificado acima.
 2. [Relacionamento com o Provedor de Serviços](#12-service-provider-relationship) foi incluído como uma seção abaixo.
 
 ## 1. Relacionamentos entre Processador e Subprocessador {#1-processor-and-subprocessor-relationships}
@@ -90,7 +90,7 @@ O <strong>Provedor</strong> processará os Dados Pessoais do Cliente somente de 
 
 Quando o <strong>Cliente</strong> for um Processador e o <strong>Provedor</strong> for um Subprocessador, o <strong>Cliente</strong> cumprirá todas as Leis Aplicáveis que se aplicam ao Processamento de Dados Pessoais do Cliente pelo <strong>Cliente</strong>. O contrato do <strong>Cliente</strong> com seu Controlador exigirá, da mesma forma, que o <strong>Cliente</strong> cumpra todas as Leis Aplicáveis que se aplicam ao <strong>Cliente</strong> como Processador. Além disso, o <strong>Cliente</strong> cumprirá os requisitos do Subprocessador previstos no contrato do <strong>Cliente</strong> com seu Controlador.
 
-### 5. Consentimento para Processamento {#5-consent-to-processing}
+### 5. Consentimento para processamento {#5-consent-to-processing}
 
 O <strong>Cliente</strong> cumpriu e continuará a cumprir todas as Leis de Proteção de Dados Aplicáveis relativas ao fornecimento de Dados Pessoais do Cliente ao <strong>Provedor</strong> e/ou ao Serviço, incluindo fazer todas as divulgações, obter todos os consentimentos, fornecer escolha adequada e implementar salvaguardas relevantes exigidas pelas Leis de Proteção de Dados Aplicáveis.
 
@@ -178,7 +178,7 @@ Se exigido pelas Leis de Proteção de Dados Aplicáveis, o <strong>Provedor</st
 
 ## 7. Exclusão de Dados Pessoais do Cliente {#7-deletion-of-customer-personal-data}
 
-### 1. Exclusão pelo Cliente {#1-deletion-by-customer}
+### 1. Exclusão pelo cliente {#1-deletion-by-customer}
 
 O <strong>Provedor</strong> permitirá que o <strong>Cliente</strong> exclua os Dados Pessoais do Cliente de maneira consistente com a funcionalidade dos Serviços. O <strong>Provedor</strong> cumprirá esta instrução o mais rápido possível, exceto quando o armazenamento adicional dos Dados Pessoais do Cliente for exigido pela Lei Aplicável.
 
@@ -194,7 +194,7 @@ b. Se o <strong>Cliente</strong> e o <strong>Provedor</strong> tiverem firmado a
 
 **Na extensão máxima permitida pelas Leis de Proteção de Dados Aplicáveis, a responsabilidade cumulativa total de cada parte para com a outra parte decorrente ou relacionada a este DPA estará sujeita às renúncias, exclusões e limitações de responsabilidade declaradas no <strong>Contrato</strong>.**
 
-### 2. Reivindicações de partes relacionadas {#2-related-party-claims}
+### 2. Reivindicações de Partes Relacionadas {#2-related-party-claims}
 
 **Quaisquer reclamações feitas contra o <strong>Provedor</strong> ou suas Afiliadas decorrentes ou relacionadas a este DPA só podem ser apresentadas pela entidade <strong>Cliente</strong> que é parte do <strong>Contrato</strong>.**
 
@@ -214,7 +214,7 @@ Este DPA entrará em vigor quando o <strong>Provedor</strong> e o <strong>Client
 
 Não obstante a lei aplicável ou cláusulas semelhantes do <strong>Contrato</strong>, todas as interpretações e disputas sobre este DPA serão regidas pelas leis do <strong>Estado Regente</strong>, independentemente de suas disposições sobre conflito de leis. Além disso, e não obstante a seleção de foro, jurisdição ou cláusulas semelhantes do <strong>Contrato</strong>, as partes concordam em ajuizar qualquer ação, processo ou procedimento judicial relativo a este DPA, e cada parte se submete irrevogavelmente à jurisdição exclusiva dos tribunais do <strong>Estado Regente</strong>.
 
-## 12. Relacionamento com o Provedor de Serviços {#12-service-provider-relationship}
+## 12. Relacionamento com o provedor de serviços {#12-service-provider-relationship}
 
 Na medida em que a Lei de Privacidade do Consumidor da Califórnia, Código Civil da Califórnia § 1798.100 et seq ("CCPA") se aplica, as partes reconhecem e concordam que o <strong>Provedor</strong> é um provedor de serviços e está recebendo Dados Pessoais do <strong>Cliente</strong> para fornecer o Serviço conforme acordado no <strong>Contrato</strong>, o que constitui uma finalidade comercial. O <strong>Provedor</strong> não venderá nenhum Dado Pessoal fornecido pelo <strong>Cliente</strong> sob o <strong>Contrato</strong>. Além disso, o <strong>Provedor</strong> não reterá, usará ou divulgará nenhum Dado Pessoal fornecido pelo <strong>Cliente</strong> sob o <strong>Contrato</strong>, exceto conforme necessário para fornecer o Serviço ao <strong>Cliente</strong>, conforme declarado no <strong>Contrato</strong> ou conforme permitido pelas Leis de Proteção de Dados Aplicáveis. O <strong>Provedor</strong> certifica que entende as restrições deste parágrafo.
 

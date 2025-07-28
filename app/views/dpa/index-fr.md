@@ -55,16 +55,16 @@
 | <strong>Politique de sécurité</strong> | Voir [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | <strong>État au pouvoir</strong> | L'État du Delaware, États-Unis |
 
-## Modifications de l'accord {#changes-to-the-agreement}
+## Modifications apportées à l'accord {#changes-to-the-agreement}
 
-Ce document est un dérivé du [Conditions générales de la DPA (version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) et les modifications suivantes ont été apportées :
+Ce document est un dérivé de [Conditions générales de la DPA (version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) et les modifications suivantes ont été apportées :
 
 1. [Loi applicable et tribunaux choisis](#11-governing-law-and-chosen-courts) a été inclus comme section ci-dessous avec `Governing State` identifié ci-dessus.
 2. [Relation avec le prestataire de services](#12-service-provider-relationship) a été inclus comme section ci-dessous.
 
 ## 1. Relations entre processeur et sous-traitant {#1-processor-and-subprocessor-relationships}
 
-### 1. Fournisseur en tant que sous-traitant {#1-provider-as-processor}
+### 1. Fournisseur en tant que processeur {#1-provider-as-processor}
 
 Dans les situations où le <strong>Client</strong> est un Responsable du traitement des Données Personnelles du Client, le <strong>Fournisseur</strong> sera considéré comme un Sous-traitant qui traite les Données Personnelles pour le compte du <strong>Client</strong>.
 
@@ -86,9 +86,9 @@ Le Client demande au Fournisseur de traiter les Données personnelles du Client�
 
 Le Fournisseur traitera uniquement les Données Personnelles du Client conformément au présent DPA, y compris les informations figurant sur la Page de Couverture. Si le Fournisseur met à jour le Service pour mettre à jour des produits, fonctionnalités ou caractéristiques existants ou en inclure de nouveaux, il peut modifier les Catégories de Personnes Concernées, les Catégories de Données Personnelles, les Données de Catégorie Spéciale, les Restrictions ou Garanties des Données de Catégorie Spéciale, la Fréquence de Transfert, la Nature et la Finalité du Traitement et la Durée du Traitement, selon les besoins, afin de refléter les mises à jour en informant le Client des mises à jour et des modifications.
 
-### 4. Traitement des clients {#4-customer-processing}
+### 4. Traitement client {#4-customer-processing}
 
-Lorsque le Client est un Sous-traitant et le Fournisseur un Sous-traitant ultérieur, le Client se conformera à toutes les lois applicables au Traitement des Données Personnelles du Client par le Client. De même, l'accord du Client avec son Responsable du Traitement exigera que le Client se conforme à toutes les lois applicables qui lui sont applicables en tant que Sous-traitant. De plus, le Client se conformera aux exigences du Sous-traitant ultérieur prévues dans l'accord du Client avec son Responsable du Traitement.
+Lorsque le Client est un Sous-traitant et le Fournisseur un Sous-traitant ultérieur, le Client se conformera à toutes les lois applicables au Traitement des Données Personnelles du Client par le Client. L'accord du Client avec son Responsable du Traitement exigera également que le Client se conforme à toutes les lois applicables qui lui sont applicables en tant que Sous-traitant. De plus, le Client se conformera aux exigences du Sous-traitant ultérieur prévues dans l'accord du Client avec son Responsable du Traitement.
 
 ### 5. Consentement au traitement {#5-consent-to-processing}
 
@@ -134,9 +134,9 @@ c. Pour chaque module, les dispositions suivantes s'appliquent (le cas échéant
 
 7. La page de couverture du présent DPA contient les informations requises à l'annexe I, à l'annexe II et à l'annexe III des CCT de l'EEE.
 
-### 3. Transferts hors du Royaume-Uni {#3-ex-uk-transfers}
+### 3. Transferts hors Royaume-Uni {#3-ex-uk-transfers}
 
-Le Client et le Fournisseur conviennent que si le RGPD britannique protège le transfert des Données personnelles du Client, que ce transfert s'effectue du Client depuis le Royaume-Uni vers le Fournisseur hors du Royaume-Uni et qu'il n'est pas régi par une décision d'adéquation prise par le Secrétaire d'État du Royaume-Uni, alors, en concluant le présent ATD, le Client et le Fournisseur sont réputés avoir signé l'Addendum britannique et ses annexes, qui sont incorporés par référence. Tout transfert de ce type est effectué conformément à l'Addendum britannique, qui est complété comme suit :
+Le Client et le Fournisseur conviennent que si le RGPD britannique protège le transfert des Données personnelles du Client, que ce transfert est effectué du Client depuis le Royaume-Uni vers le Fournisseur hors du Royaume-Uni et qu'il n'est pas régi par une décision d'adéquation prise par le Secrétaire d'État du Royaume-Uni, alors, en concluant le présent ATD, le Client et le Fournisseur sont réputés avoir signé l'Avenant britannique et ses annexes, qui sont incorporés par référence. Tout transfert de ce type est effectué conformément à l'Avenant britannique, qui est complété comme suit :
 
 a. La section 3.2 du présent DPA contient les informations requises dans le tableau 2 de l’addendum du Royaume-Uni.
 
@@ -156,7 +156,7 @@ Pour les transferts de données personnelles lorsque le droit suisse (et non le 
 
 ### 1. Droits d'audit {#1-audit-rights}
 
-Le Fournisseur fournira au Client toutes les informations raisonnablement nécessaires pour démontrer sa conformité au présent ATD et autorisera et contribuera aux audits, y compris les inspections par le Client, afin d'évaluer sa conformité au présent ATD. Cependant, le Fournisseur peut restreindre l'accès aux données ou aux informations si l'accès du Client à ces informations a un impact négatif sur ses droits de propriété intellectuelle, ses obligations de confidentialité ou d'autres obligations en vertu des lois applicables. Le Client reconnaît et accepte qu'il n'exercera ses droits d'audit en vertu du présent ATD et tout droit d'audit accordé par les lois applicables sur la protection des données qu'en demandant au Fournisseur de se conformer aux exigences de reporting et de diligence raisonnable ci-dessous. Le Fournisseur conservera des enregistrements de sa conformité au présent ATD pendant 3 ans après l'expiration du présent ATD.
+Le Fournisseur fournira au Client toutes les informations raisonnablement nécessaires pour démontrer sa conformité au présent ATD et autorisera et contribuera aux audits, y compris les inspections par le Client, afin d'évaluer sa conformité au présent ATD. Cependant, le Fournisseur peut restreindre l'accès aux données ou aux informations si l'accès du Client à ces informations aurait un impact négatif sur ses droits de propriété intellectuelle, ses obligations de confidentialité ou d'autres obligations en vertu des lois applicables. Le Client reconnaît et accepte qu'il n'exercera ses droits d'audit en vertu du présent ATD et tout droit d'audit accordé par les lois applicables sur la protection des données qu'en demandant au Fournisseur de se conformer aux exigences de reporting et de diligence raisonnable ci-dessous. Le Fournisseur conservera des enregistrements de sa conformité au présent ATD pendant 3 ans après l'expiration du présent ATD.
 
 ### 2. Rapports de sécurité {#2-security-reports}
 
@@ -194,7 +194,7 @@ b. Si le <strong>Client</strong> et le <strong>Fournisseur</strong> ont conclu l
 
 **Dans la mesure maximale autorisée par les lois applicables en matière de protection des données, la responsabilité cumulative totale de chaque partie envers l'autre partie découlant du présent DPA ou liée à celui-ci sera soumise aux renonciations, exclusions et limitations de responsabilité énoncées dans l'<strong>Accord</strong>.**
 
-### 2. Réclamations de parties liées {#2-related-party-claims}
+### 2. Réclamations entre parties liées {#2-related-party-claims}
 
 **Toute réclamation formulée contre le <strong>Fournisseur</strong> ou ses sociétés affiliées découlant du présent DPA ou en relation avec celui-ci ne peut être déposée que par l'entité <strong>Client</strong> qui est partie au <strong>Contrat</strong>.**
 

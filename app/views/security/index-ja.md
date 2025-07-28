@@ -11,7 +11,7 @@
 * [メールセキュリティ](#email-security)
   * [暗号化](#encryption)
   * [認証と承認](#authentication-and-authorization)
-  * [不正使用防止対策](#anti-abuse-measures)
+  * [虐待防止対策](#anti-abuse-measures)
 * [データ保護](#data-protection)
   * [データの最小化](#data-minimization)
   * [バックアップとリカバリ](#backup-and-recovery)
@@ -30,13 +30,13 @@
 
 ## 序文 {#foreword}
 
-Forward Email では、セキュリティを最優先に考えています。当社は、お客様の電子メール通信と個人データを保護するために、包括的なセキュリティ対策を実施しています。このドキュメントでは、当社のセキュリティ対策と、お客様の電子メールの機密性、整合性、可用性を確保するために当社が講じている手順について説明します。
+Forward Emailでは、セキュリティを最優先に考えています。お客様のメール通信と個人データを保護するため、包括的なセキュリティ対策を実施しています。この文書では、Forward Emailのセキュリティ対策と、お客様のメールの機密性、完全性、可用性を確保するための手順についてご説明します。
 
 ## インフラストラクチャセキュリティ {#infrastructure-security}
 
-### 安全なデータセンター {#secure-data-centers}
+### セキュアデータセンター {#secure-data-centers}
 
-当社のインフラストラクチャは、SOC 2 準拠のデータ センターでホストされており、次の特徴を備えています。
+当社のインフラストラクチャは、SOC 2 準拠のデータ センターでホストされており、次のようになっています。
 
 * 24時間365日体制の物理的なセキュリティと監視
 * 生体認証によるアクセス制御
@@ -56,7 +56,7 @@ Forward Email では、セキュリティを最優先に考えています。当
 * 疑わしいアクティビティを自動的にブロックするポートスキャン保護
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> 転送中のすべてのデータは、最新の暗号スイートを使用した TLS 1.2 以降を使用して暗号化されます。
 
 ## メールセキュリティ {#email-security}
 
@@ -69,7 +69,7 @@ Forward Email では、セキュリティを最優先に考えています。当
 * **包括的な保護**: 保存時の暗号化、メモリ内の暗号化、転送時の暗号化を実装しています。
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> 当社は、**[量子耐性があり個別に暗号化されたSQLiteメールボックス](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)** を採用した世界初かつ唯一のメールサービスです。
 
 ### 認証と承認 {#authentication-and-authorization}
 
@@ -105,7 +105,7 @@ Forward Email では、セキュリティを最優先に考えています。当
 
 ## サービスプロバイダー {#service-providers}
 
-当社は、サービス プロバイダーを慎重に選定し、高いセキュリティ基準を満たしていることを確認しています。以下は、国際データ転送に使用するプロバイダーと、その GDPR 準拠状況です。
+当社は、高いセキュリティ基準を満たすサービスプロバイダーを厳選しています。国際データ転送に利用するプロバイダーと、GDPR遵守状況は以下のとおりです。
 
 | プロバイダー | 目的 | DPF認定 | GDPRコンプライアンスページ |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
@@ -116,13 +116,13 @@ Forward Email では、セキュリティを最優先に考えています。当
 | [Stripe](https://stripe.com) | 支払い処理 | ✅ はい | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | 支払い処理 | ❌ いいえ | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-当社は、国際的なデータ保護規制に準拠しながら、信頼性が高く安全なサービスの提供を保証するために、これらのプロバイダーを利用しています。すべてのデータ転送は、お客様の個人情報を保護するために適切な安全対策を講じて行われます。
+当社は、国際的なデータ保護規制を遵守しながら、信頼性と安全性を確保するために、これらのプロバイダーを利用しています。すべてのデータ転送は、お客様の個人情報を保護するための適切な安全対策を講じて行われます。
 
 ## コンプライアンスと監査 {#compliance-and-auditing}
 
 ### 定期的なセキュリティ評価 {#regular-security-assessments}
 
-当社のチームは、コードベース、サーバー、インフラストラクチャ、プラクティスを定期的に監視、レビュー、評価しています。当社は、以下を含む包括的なセキュリティ プログラムを実施しています。
+当社のチームは、コードベース、サーバー、インフラストラクチャ、そしてプラクティスを定期的に監視、レビュー、評価しています。また、以下を含む包括的なセキュリティプログラムを導入しています。
 
 * SSHキーの定期的なローテーション
 * アクセスログの継続的な監視
@@ -149,7 +149,7 @@ Forward Email では、セキュリティを最優先に考えています。当
 6. **インシデント事後分析**: 包括的なレビューと改善
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> セキュリティ上の脆弱性を発見した場合は、直ちに <security@forwardemail.net> までご報告ください。
 
 ## セキュリティ開発ライフサイクル {#security-development-lifecycle}
 
@@ -174,12 +174,12 @@ flowchart LR
 * 設計段階における脅威モデリング
 * セキュアコーディングプラクティス
 * 静的および動的アプリケーションセキュリティテスト
-* セキュリティを重視したコードレビュー
+* セキュリティに重点を置いたコードレビュー
 * 依存関係の脆弱性スキャン
 
 ## サーバーの強化 {#server-hardening}
 
-当社の[Ansible の設定](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) は、数多くのサーバー強化対策を実施しています。
+当社の [Ansibleの設定](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) は、さまざまなサーバー強化対策を実装しています。
 
 * **USBアクセス無効化**: usb-storageカーネルモジュールをブラックリストに登録することで、物理ポートを無効化します。
 * **ファイアウォールルール**: 厳格なiptablesルールにより、必要な接続のみを許可します。
@@ -199,7 +199,7 @@ flowchart LR
 
 ## サービスレベル契約 {#service-level-agreement}
 
-当社は、高いレベルのサービス可用性と信頼性を維持しています。当社のインフラストラクチャは冗長性と耐障害性を考慮して設計されており、お客様の電子メール サービスの運用が確実に継続されます。当社は正式な SLA 文書を公開していませんが、次のことに取り組んでいます。
+当社は、高いレベルのサービス可用性と信頼性を維持しています。当社のインフラストラクチャは冗長性とフォールトトレランス性を備えており、お客様のメールサービスの継続的な運用を保証します。正式なSLA文書は公開しておりませんが、以下の点にご留意ください。
 
 * 全サービスで99.9%以上の稼働率
 * サービス中断への迅速な対応
@@ -208,7 +208,7 @@ flowchart LR
 
 ## オープンソースセキュリティ {#open-source-security}
 
-[オープンソースサービス](https://github.com/forwardemail/forwardemail.net) として、当社のセキュリティは次のメリットを受けています。
+[オープンソースサービス](https://github.com/forwardemail/forwardemail.net) として、当社のセキュリティは次のメリットを得ています。
 
 * 誰でも監査可能な透明なコード
 * コミュニティ主導のセキュリティ改善
@@ -224,7 +224,7 @@ flowchart LR
 
 ## 継続的な改善 {#continuous-improvement}
 
-当社は以下の方法でセキュリティ体制を継続的に改善しています。
+当社は、以下の方法でセキュリティ体制を継続的に改善しています。
 
 * セキュリティトレンドと新たな脅威の監視
 * セキュリティポリシーの定期的なレビューと更新
@@ -242,5 +242,5 @@ flowchart LR
 * [不正行為を報告する](https://forwardemail.net/en/report-abuse)
 * [セキュリティポリシー](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [GitHub リポジトリ](https://github.com/forwardemail/forwardemail.net)
+* [GitHubリポジトリ](https://github.com/forwardemail/forwardemail.net)
 * [FAQ](https://forwardemail.net/en/faq)

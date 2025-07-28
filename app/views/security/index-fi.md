@@ -6,37 +6,37 @@
 
 * [Esipuhe](#foreword)
 * [Infrastruktuurin turvallisuus](#infrastructure-security)
-  * [Suojatut palvelinkeskukset](#secure-data-centers)
+  * [Turvalliset datakeskukset](#secure-data-centers)
   * [Verkkoturvallisuus](#network-security)
 * [Sähköpostin suojaus](#email-security)
   * [Salaus](#encryption)
   * [Todennus ja valtuutus](#authentication-and-authorization)
-  * [Väärinkäytön vastaiset toimenpiteet](#anti-abuse-measures)
+  * [Väärinkäytösten vastaiset toimenpiteet](#anti-abuse-measures)
 * [Tietosuoja](#data-protection)
   * [Tietojen minimointi](#data-minimization)
   * [Varmuuskopiointi ja palautus](#backup-and-recovery)
 * [Palveluntarjoajat](#service-providers)
-* [Vaatimustenmukaisuus ja tarkastus](#compliance-and-auditing)
+* [Vaatimustenmukaisuus ja tilintarkastus](#compliance-and-auditing)
   * [Säännölliset turvallisuusarvioinnit](#regular-security-assessments)
   * [Vaatimustenmukaisuus](#compliance)
-* [Tapahtumavastaus](#incident-response)
-* [Turvallisuuskehityksen elinkaari](#security-development-lifecycle)
-* [Palvelimen karkaisu](#server-hardening)
+* [Tapahtumavaste](#incident-response)
+* [Tietoturvakehityksen elinkaari](#security-development-lifecycle)
+* [Palvelimen suojaus](#server-hardening)
 * [Palvelutasosopimus](#service-level-agreement)
-* [Avoimen lähdekoodin suojaus](#open-source-security)
+* [Avoimen lähdekoodin tietoturva](#open-source-security)
 * [Työntekijöiden turvallisuus](#employee-security)
 * [Jatkuva parantaminen](#continuous-improvement)
 * [Lisäresurssit](#additional-resources)
 
 ## Esipuhe {#foreword}
 
-Forward Emailissa turvallisuus on tärkein prioriteettimme. Olemme ottaneet käyttöön kattavat turvatoimenpiteet sähköpostiviestintäsi ja henkilötietojesi suojaamiseksi. Tässä asiakirjassa esitellään turvallisuuskäytäntömme ja toimenpiteet, joita teemme varmistaaksemme sähköpostisi luottamuksellisuuden, eheyden ja saatavuuden.
+Forward Emaililla turvallisuus on meille tärkeintä. Olemme ottaneet käyttöön kattavia turvatoimenpiteitä sähköpostiviestiesi ja henkilötietojesi suojaamiseksi. Tässä asiakirjassa esitetään turvallisuuskäytäntömme ja toimenpiteet, joilla varmistamme sähköpostisi luottamuksellisuuden, eheyden ja saatavuuden.
 
 ## Infrastruktuurin suojaus {#infrastructure-security}
 
-### Turvalliset datakeskukset {#secure-data-centers}
+### Suojatut datakeskukset {#secure-data-centers}
 
-Infrastruktuurimme isännöi SOC 2 -yhteensopivia datakeskuksia, joissa on:
+Infrastruktuurimme sijaitsee SOC 2 -yhteensopivissa datakeskuksissa, joissa on:
 
 * 24/7 fyysinen turvallisuus ja valvonta
 * Biometriset pääsynvalvontajärjestelmät
@@ -46,7 +46,7 @@ Infrastruktuurimme isännöi SOC 2 -yhteensopivia datakeskuksia, joissa on:
 
 ### Verkkoturvallisuus {#network-security}
 
-Toteutamme useita verkon suojaustasoja:
+Toteutamme useita verkkoturvallisuuden kerroksia:
 
 * Yritystason palomuurit tiukoilla käyttöoikeusluetteloilla
 * DDoS-suojaus ja sen lieventäminen
@@ -56,7 +56,7 @@ Toteutamme useita verkon suojaustasoja:
 * Porttiskannaussuojaus ja epäilyttävän toiminnan automaattinen esto
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Kaikki siirrettävä data salataan TLS 1.2+ -salauksella ja moderneilla salausmenetelmillä.
 
 ## Sähköpostin suojaus {#email-security}
 
@@ -69,7 +69,7 @@ Toteutamme useita verkon suojaustasoja:
 * **Kattava suojaus**: Toteutamme salauksen levossa, salauksen muistissa ja salauksen siirron aikana.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Olemme maailman ensimmäinen ja ainoa sähköpostipalvelu, joka käyttää **[kvanttiherkät ja yksilöllisesti salatut SQLite-postilaatikot](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**-palvelua.
 
 ### Todennus ja valtuutus {#authentication-and-authorization}
 
@@ -90,7 +90,7 @@ Toteutamme useita verkon suojaustasoja:
 
 ### Tietojen minimointi {#data-minimization}
 
-Noudatamme tietojen minimoinnin periaatetta:
+Noudatamme tiedon minimoinnin periaatetta:
 
 * Keräämme vain palvelumme tarjoamiseen tarvittavat tiedot.
 * Sähköpostin sisältö käsitellään muistissa, eikä sitä tallenneta pysyvästi, ellei IMAP/POP3-toimitus sitä vaadi.
@@ -105,24 +105,24 @@ Noudatamme tietojen minimoinnin periaatetta:
 
 ## Palveluntarjoajat {#service-providers}
 
-Valitsemme palveluntarjoajamme huolellisesti varmistaaksemme, että ne täyttävät korkeat turvallisuusstandardimme. Alla on kansainväliseen tiedonsiirtoon käyttämämme palveluntarjoajat ja niiden GDPR-vaatimustenmukaisuus:
+Valitsemme palveluntarjoajamme huolellisesti varmistaaksemme, että ne täyttävät korkeat turvallisuusstandardimme. Alla on lueteltu kansainväliseen tiedonsiirtoon käyttämämme palveluntarjoajat ja niiden GDPR-vaatimustenmukaisuusstatus:
 
 | Palveluntarjoaja | Tarkoitus | DPF-sertifioitu | GDPR-vaatimustenmukaisuussivu |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com) | CDN, DDoS-suojaus, DNS | ✅ Kyllä | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Palvelininfrastruktuuri | ❌ Ei | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
-| [Digital Ocean](https://www.digitalocean.com) | Pilviinfrastruktuuri | ❌ Ei | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
-| [Vultr](https://www.vultr.com) | Pilviinfrastruktuuri | ❌ Ei | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
-| [Stripe](https://stripe.com) | Maksujen käsittely | ✅ Kyllä | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
-| [PayPal](https://www.paypal.com) | Maksujen käsittely | ❌ Ei | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| [Digital Ocean](https://www.digitalocean.com) | Pilvi-infrastruktuuri | ❌ Ei | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [Vultr](https://www.vultr.com) | Pilvi-infrastruktuuri | ❌ Ei | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
+| [Stripe](https://stripe.com) | Maksun käsittely | ✅ Kyllä | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
+| [PayPal](https://www.paypal.com) | Maksun käsittely | ❌ Ei | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Käytämme näitä palveluntarjoajia varmistaaksemme luotettavan ja turvallisen palvelutoimituksen noudattaen samalla kansainvälisiä tietosuojamääräyksiä. Kaikki tiedonsiirrot suoritetaan asianmukaisin suojatoimin henkilötietojesi suojaamiseksi.
+Käytämme näitä palveluntarjoajia varmistaaksemme luotettavan ja turvallisen palvelun toimituksen samalla, kun noudatamme kansainvälisiä tietosuojamääräyksiä. Kaikki tiedonsiirrot suoritetaan asianmukaisin suojatoimin henkilötietojesi suojaamiseksi.
 
 ## Vaatimustenmukaisuus ja auditointi {#compliance-and-auditing}
 
 ### Säännölliset tietoturva-arvioinnit {#regular-security-assessments}
 
-Tiimimme seuraa, tarkistaa ja arvioi säännöllisesti koodikantaa, palvelimia, infrastruktuuria ja käytäntöjä. Toteutamme kattavan turvallisuusohjelman, joka sisältää:
+Tiimimme valvoo, tarkistaa ja arvioi säännöllisesti koodikantaa, palvelimia, infrastruktuuria ja käytäntöjä. Toteutamme kattavan tietoturvaohjelman, joka sisältää:
 
 * SSH-avainten säännöllinen kierrätys
 * Jatkuva käyttölokien valvonta
@@ -132,14 +132,14 @@ Tiimimme seuraa, tarkistaa ja arvioi säännöllisesti koodikantaa, palvelimia, 
 
 ### Vaatimustenmukaisuus {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr) -yhteensopivat tietojenkäsittelykäytännöt
+* [GDPR](https://forwardemail.net/gdpr)-yhteensopivat tietojenkäsittelykäytännöt
 * [Tietojenkäsittelysopimus (DPA)](https://forwardemail.net/dpa) saatavilla yritysasiakkaille
 * CCPA-yhteensopivat tietosuojakäytännöt
 * SOC 2 Type II -auditoidut prosessit
 
 ## Tapahtumavastaus {#incident-response}
 
-Turvallisuushäiriöiden reagointisuunnitelmamme sisältää:
+Tietoturvapoikkeamien varautumissuunnitelmamme sisältää:
 
 1. **Havaitseminen**: Automaattiset valvonta- ja hälytysjärjestelmät
 2. **Eristäminen**: Vaikutuksen kohteena olevien järjestelmien välitön eristäminen
@@ -149,7 +149,7 @@ Turvallisuushäiriöiden reagointisuunnitelmamme sisältää:
 6. **Tapahtuman jälkeinen analyysi**: Kattava tarkastelu ja parantaminen
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Jos huomaat tietoturvahaavoittuvuuden, ilmoita siitä välittömästi osoitteeseen <security@forwardemail.net>.
 
 ## Tietoturvakehityksen elinkaari {#security-development-lifecycle}
 
@@ -168,7 +168,7 @@ flowchart LR
     F -.-> K[Vulnerability Management]
 ```
 
-Kaikki koodit käyvät läpi:
+Kaikki koodi käy läpi:
 
 * Tietoturvavaatimusten kerääminen
 * Uhkien mallintaminen suunnittelun aikana
@@ -179,30 +179,30 @@ Kaikki koodit käyvät läpi:
 
 ## Palvelimen suojaus {#server-hardening}
 
-[Mahdollinen kokoonpano](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) -palvelumme toteuttaa useita palvelimen suojauksen parantamiseen tähtääviä toimenpiteitä:
+[Ansible-kokoonpano](https://github.com/forwardemail/forwardemail.net/tree/master/ansible)-objektimme toteuttaa useita palvelimen suojaustoimenpiteitä:
 
 * **USB-käyttö poistettu käytöstä**: Fyysiset portit on poistettu käytöstä lisäämällä usb-storage-ydinmoduuli mustalle listalle.* **Palomuurisäännöt**: Tiukat iptables-säännöt, jotka sallivat vain tarvittavat yhteydet.* **SSH-kovetus**: Vain avainpohjainen todennus, ei salasanakirjautumista, pääkäyttäjän kirjautuminen poistettu käytöstä.* **Palvelun eristäminen**: Jokainen palvelu toimii minimaalisilla vaadituilla oikeuksilla.* **Automaattiset päivitykset**: Tietoturvakorjaukset asennetaan automaattisesti.* **Suojattu käynnistys**: Vahvistettu käynnistysprosessi peukaloinnin estämiseksi.* **Ytimen koventaminen**: Suojatut ytimen parametrit ja sysctl-määritykset.* **Tiedostojärjestelmän rajoitukset**: noexec-, nosuid- ja nodev-liityntävaihtoehdot tarvittaessa.* **Ydinvedokset poistettu käytöstä**: Järjestelmä on määritetty estämään ydinvedokset tietoturvasyistä.* **Vaihto pois käytöstä**: Vaihtomuisti poistettu käytöstä tietovuotojen estämiseksi.* **Porttiskannauksen suojaus**: Porttiskannausyritysten automaattinen tunnistus ja esto.* **Läpinäkyvät valtavat sivut poistettu käytöstä**: THP poistettu käytöstä suorituskyvyn ja tietoturvan parantamiseksi.* **Järjestelmäpalvelun koventaminen**: Ei-välttämättömät palvelut, kuten Apport, poistettu käytöstä.* **Käyttäjä Hallinta**: Vähiten oikeuksien periaate, jossa on erilliset deploy- ja devops-käyttäjät
 * **Tiedostokuvaajien rajoitukset**: Suuremmat rajoitukset paremman suorituskyvyn ja tietoturvan saavuttamiseksi
 
 ## Palvelutasosopimus {#service-level-agreement}
 
-Ylläpidämme korkeaa palvelun saatavuutta ja luotettavuutta. Infrastruktuurimme on suunniteltu redundanssia ja vikasietoisuutta varten, jotta sähköpostipalvelusi pysyy toiminnassa. Vaikka emme julkaise virallista SLA-asiakirjaa, olemme sitoutuneet:
+Ylläpidämme palvelun korkeaa käytettävyyttä ja luotettavuutta. Infrastruktuurimme on suunniteltu redundanssia ja vikasietoisuutta silmällä pitäen, jotta sähköpostipalvelusi pysyy toiminnassa. Vaikka emme julkaise virallista palvelutasosopimusta, olemme sitoutuneet:
 
 * 99,9 %+ käyttöaika kaikille palveluille
 * Nopea reagointi palvelun häiriöihin
 * Läpinäkyvä viestintä häiriötilanteissa
 * Säännöllinen ylläpito vähäisen liikenteen aikana
 
-## Avoimen lähdekoodin tietoturva {#open-source-security}
+## Avoimen lähdekoodin suojaus {#open-source-security}
 
-[avoimen lähdekoodin palvelu](https://github.com/forwardemail/forwardemail.net) -yhteisönä tietoturvamme hyötyy seuraavista:
+[avoimen lähdekoodin palvelu](https://github.com/forwardemail/forwardemail.net):na tietoturvamme hyötyy seuraavista eduista:
 
 * Läpinäkyvä koodi, jota kuka tahansa voi auditoida
 * Yhteisön johtamat tietoturvaparannukset
 * Haavoittuvuuksien nopea tunnistaminen ja korjaaminen
 * Ei tietoturvaa hämärän takia
 
-## Työntekijöiden turvallisuus {#employee-security}
+## Työntekijän suojaus {#employee-security}
 
 * Kaikkien työntekijöiden taustatarkastukset
 * Tietoturvakoulutus
@@ -211,7 +211,7 @@ Ylläpidämme korkeaa palvelun saatavuutta ja luotettavuutta. Infrastruktuurimme
 
 ## Jatkuva parantaminen {#continuous-improvement}
 
-Parannamme jatkuvasti turva-asentoamme seuraavilla tavoilla:
+Parannamme jatkuvasti tietoturvaamme seuraavilla tavoilla:
 
 * Tietoturvatrendien ja uusien uhkien seuranta
 * Tietoturvakäytäntöjen säännöllinen tarkastelu ja päivitykset

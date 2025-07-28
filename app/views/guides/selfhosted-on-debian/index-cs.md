@@ -1,6 +1,6 @@
 # Průvodce instalací samoobslužného hostingu pro přesměrování e-mailů v Debianu {#forward-email-self-hosting-installation-guide-for-debian}
 
-__CHRÁNĚNÁ_URL_49__ Obsah {__CHRÁNĚNÁ_URL_50__
+## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
 * [Předpoklady](#prerequisites)
@@ -45,7 +45,7 @@ __CHRÁNĚNÁ_URL_49__ Obsah {__CHRÁNĚNÁ_URL_50__
 * [Nejlepší bezpečnostní postupy](#security-best-practices)
 * [Závěr](#conclusion)
 
-__CHRÁNĚNÁ_URL_51__ Přehled {__CHRÁNĚNÁ_URL_52__
+## Přehled {#overview}
 
 Tato příručka poskytuje podrobné pokyny k instalaci samoobslužného řešení Forward Email na systémech Debian. Tato příručka je speciálně uzpůsobena pro Debian 11 (Bullseye) a Debian 12 (Bookworm).
 
@@ -533,17 +533,17 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ## Konfigurace po instalaci {#post-installation-configuration}
 
-Nastavení DNS záznamů ### {#dns-records-setup}
+### Nastavení záznamů DNS {#dns-records-setup}
 
 Pro vaši doménu je potřeba nakonfigurovat následující DNS záznamy:
 
-Záznam MX #### {#mx-record}
+#### Záznam MX {#mx-record}
 
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
-__CHRÁNĚNÁ_URL_105__ Záznamy {__CHRÁNĚNÁ_URL_106__
+#### Záznamy A {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -556,13 +556,13 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-__CHRÁNĚNÁ_URL_107__ Záznam SPF {__CHRÁNĚNÁ_URL_108__
+#### Záznam SPF {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
-__CHRÁNĚNÁ_URL_109__ Záznam DKIM {__CHRÁNĚNÁ_URL_110__
+#### Záznam DKIM {#dkim-record}
 
 Získejte svůj veřejný klíč DKIM:
 
@@ -577,7 +577,7 @@ Vytvořit DNS záznam DKIM:
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-#### Záznam DMARC {#dmarc-record}
+Záznam #### DMARC {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -585,7 +585,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### První přihlášení {#first-login}
 
-1. Otevřete webový prohlížeč a přejděte na adresu `https://yourdomain.com`
+1. Otevřete webový prohlížeč a přejděte na `https://yourdomain.com`
 2. Zadejte základní ověřovací údaje, které jste si dříve uložili
 3. Dokončete průvodce počátečním nastavením
 4. Vytvořte si svůj první e-mailový účet
@@ -635,7 +635,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## Konfigurace automatických aktualizací {#auto-update-configuration}
+## Konfigurace automatické aktualizace {#auto-update-configuration}
 
 Nastavte automatické aktualizace pro instalaci služby Forward Email:
 
@@ -701,12 +701,12 @@ nslookup google.com
 * **Protokoly automatické aktualizace**: `/var/log/autoupdate.log`
 * **Protokoly Snapd**: `journalctl -u snapd`
 
-### Pravidelná údržba {#regular-maintenance-tasks}
+### Pravidelné úkoly údržby {#regular-maintenance-tasks}
 
 1. **Monitorování místa na disku**: `df -h`
-2. **Zkontrolovat stav služby**: Použít příslušný příkaz docker compose
-3. **Zkontrolovat protokoly**: Zkontrolovat protokoly aplikace i systému
-4. **Aktualizovat systémové balíčky**: `apt update && apt upgrade`
+2. **Zkontrolování stavu služby**: Použijte příslušný příkaz Docker Compose
+3. **Zkontrolujte protokoly**: Zkontrolujte protokoly aplikace i systému
+4. **Aktualizujte systémové balíčky**: `apt update && apt upgrade`
 5. **Monitorování snapd**: `snap list` a `snap refresh`
 
 ### Obnovení certifikátu {#certificate-renewal}
@@ -732,7 +732,7 @@ fi
 
 ### Problémy specifické pro Debian {#debian-specific-issues}
 
-__CHRÁNĚNÁ_URL_143__ 1. Snapd nefunguje {__CHRÁNĚNÁ_URL_144__
+#### 1. Snapd nefunguje {#1-snapd-not-working}
 
 ```bash
 # Check snapd status
@@ -764,7 +764,7 @@ else
 fi
 ```
 
-#### 3. Problémy s instalací balíčků {#3-package-installation-issues}
+#### 3. Problémy s instalací balíčku {#3-package-installation-issues}
 
 ```bash
 # Update package cache
@@ -777,7 +777,7 @@ apt --fix-broken install
 apt-mark showhold
 ```
 
-### Časté problémy {#common-issues}
+### Běžné problémy {#common-issues}
 
 #### 1. Služba Docker se nespustí {#1-docker-service-wont-start}
 
@@ -796,7 +796,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * Zajistěte, aby porty 80 a 443 byly přístupné
 * Ověřte, zda záznamy DNS odkazují na váš server
-* Zkontrolujte nastavení firewallu pomocí `ufw status`
+* Zkontrolujte nastavení firewallu s parametrem `ufw status`
 
 #### 3. Problémy s doručováním e-mailů {#3-email-delivery-issues}
 
@@ -808,7 +808,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * **Dokumentace**: <https://forwardemail.net/self-hosted>
 * **Problémy s GitHubem**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Dokumentace k Debianu**: <https://www.debian.org/doc/>
+* **Dokumentace Debianu**: <https://www.debian.org/doc/>
 
 ## Nejlepší bezpečnostní postupy {#security-best-practices}
 
@@ -831,6 +831,6 @@ Vaše vlastní instalace služby Forward Email by nyní měla být dokončena a 
 5. Udržujte instalaci aktualizovanou
 6. Monitorujte balíčky Snapd a Snap
 
-Hlavní rozdíly oproti Ubuntu spočívají v instalaci nástroje Snapd a konfiguraci repozitáře Docker. Jakmile jsou tyto funkce správně nastaveny, aplikace Forward Email se na obou systémech chová identicky.
+Hlavní rozdíly oproti Ubuntu spočívají v instalaci SnapD a konfiguraci Docker repozitáře. Jakmile jsou tyto funkce správně nastaveny, aplikace Forward Email se na obou systémech chová identicky.
 
 Další možnosti konfigurace a pokročilé funkce naleznete v oficiální dokumentaci k Forward Email na adrese <https://forwardemail.net/self-hosted#configuration>.

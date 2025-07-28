@@ -5,7 +5,7 @@
 <p class="lead mt-3">Ve Forward Email se již více než deset let potýkáme s nefunkčními API PayPalu. Co začalo jako drobná frustrace, se změnilo v naprostou katastrofu, která nás donutila vymyslet si vlastní řešení, blokovat jejich phishingové šablony a nakonec zastavit všechny platby přes PayPal během kritické migrace účtu.</p>
 <p class="lead mt-3">Toto je příběh o 11 letech, kdy PayPal ignoroval základní potřeby vývojářů, zatímco jsme se snažili všemožně zprovoznit jejich platformu.</p>
 
-__CHRÁNĚNÁ_URL_23__ Obsah {__CHRÁNĚNÁ_URL_24__
+## Obsah {#table-of-contents}
 
 * [Chybějící kousek: Není možné zobrazit seznam předplatných](#the-missing-piece-no-way-to-list-subscriptions)
 * [2014–2017: Problém se objevuje](#2014-2017-the-problem-emerges)
@@ -103,7 +103,7 @@ Reakce PayPalu? Cvrčci.
 
 > „+1. Jsou to téměř 3 roky.“ - laudukang (což znamená, že problém existoval od roku \~2014)
 
-Článek [původní příspěvek komunity](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) z roku 2017 ukazuje vývojáře, kteří o tuto základní funkci prosí. Reakcí PayPal byla archivace repozitáře, kde lidé problém hlásili.
+Souhrn [původní příspěvek komunity](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) z roku 2017 ukazuje vývojáře, kteří o tuto základní funkci prosili. Reakcí PayPal byla archivace repozitáře, kde lidé problém hlásili.
 
 ## 2020: Poskytujeme jim rozsáhlou zpětnou vazbu {#2020-we-give-them-extensive-feedback}
 
@@ -113,7 +113,7 @@ V říjnu 2020 nás společnost PayPal kontaktovala s žádostí o formální zp
 
 Přišli jsme připraveni. Po 6 hodinách pokusů o integraci s jejich API jsme sestavili 27 konkrétních problémů. Mark Stuart z týmu PayPal Checkout řekl:
 
-> Ahoj Nicku, díky, že ses dnes s námi podělil! Myslím, že tohle bude katalyzátorem pro získání větší podpory a investic pro náš tým, aby se s těmito věcmi vypořádal. Bylo těžké získat tak bohatou zpětnou vazbu, jakou jsi nám zatím zanechal.
+> Ahoj Nicku, díky za dnešní sdílení s ostatními! Myslím, že tohle bude katalyzátorem pro získání větší podpory a investic pro náš tým, aby se s těmito věcmi vypořádal. Bylo těžké získat tak bohatou zpětnou vazbu, jakou jsi nám zatím zanechal.
 
 Zpětná vazba nebyla teoretická – pocházela ze skutečných pokusů o integraci:
 
@@ -129,7 +129,7 @@ Mark Stuart shledal problém s přístupovým tokenem obzvláště znepokojivým
 
 > O problémech s generováním přístupových tokenů obvykle neslyšíme.
 
-### Týmy se zapojily, sliby padly {#teams-got-involved-promises-were-made}
+### Týmy se zapojily, sliby byly dány {#teams-got-involved-promises-were-made}
 
 Jak jsme objevovali další problémy, PayPal do konverzace přidával další týmy. Darshan Raju z týmu pro správu uživatelského rozhraní předplatného se připojil a řekl:
 
@@ -162,7 +162,7 @@ A tady to začíná být opravdu zajímavé. Každý, kdo obdržel naši zpětno
 
 **Techničtí lídři, kteří slibovali a pak odešli:**
 
-* **Mark Stuart** (slíbená zpětná vazba bude „katalyzátorem“) → [Nyní u Ripple](https://www.linkedin.com/in/markstuartsf)
+* **Mark Stuart** (slibovaná zpětná vazba bude „katalyzátorem“) → [Nyní u Ripple](https://www.linkedin.com/in/markstuartsf)
 * **Jim Magats** (18letý veterán PayPal) → [Generální ředitel společnosti MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
 * **John Kunze** (viceprezident pro globální spotřebitelské produkty) → [V důchodu](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
 * **Edwin Aoki** (jeden z posledních zbývajících) → [Právě odešel na Nasdaq](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (leden 2025)
@@ -187,7 +187,7 @@ Michelle Gill, výkonná viceprezidentka a generální ředitelka pro malé podn
 
 > Moc děkuji, Nicku, přesouvám Alex do skryté kopie. Zabýváme se tím od tvého předchozího příspěvku. Zavoláme ti do konce týdne. Mohl bys mi prosím poslat své kontaktní údaje, aby se s tebou mohl spojit jeden z mých kolegů? Michelle
 
-### Naše odpověď: Konec schůzek {#our-response-no-more-meetings}
+### Naše odpověď: Žádné další schůzky {#our-response-no-more-meetings}
 
 Další schůzku jsme odmítli s tím, že naši frustraci vysvětlujeme takto:
 
@@ -210,7 +210,7 @@ GET /v1/billing/subscriptions
 Authorization: Bearer {access_token}
 ```
 
-### Rozpor „jednoduchého CRUD“ {#the-simple-crud-contradiction}
+### Rozpor typu „jednoduchý CRUD“ {#the-simple-crud-contradiction}
 
 Když jsme zdůraznili, že se jedná o základní funkcionalitu CRUD, která měla existovat od roku 2014, Martyho odpověď byla výmluvná:
 
@@ -222,7 +222,7 @@ Tato odpověď ukazuje, že nerozumí svému vlastnímu API. Pokud jsou „jedno
 
 > Pokud jsou „jednoduché operace CRUD součástí základního API“, kde je pak koncový bod pro výpis předplatného? Vývojáři požadují tuto „jednoduchou operaci CRUD“ od roku 2014. Je to už 11 let. Každý jiný platební procesor má tuto základní funkcionalitu od prvního dne.
 
-### Rozpor se vyjasňuje {#the-disconnect-becomes-clear}
+### Odpojení se vyjasňuje {#the-disconnect-becomes-clear}
 
 Výměny názorů s Alexem Chrissem, Michelle Gillovou a Martym Brodbeckem z roku 2025 ukazují stejnou organizační dysfunkci:
 
@@ -267,7 +267,7 @@ Mark Stuart to přeposlal týmu pro spotřební zboží:
 
 **Výsledek**: Nikdy neopraveno. Uživatelské rozhraní stále zobrazuje tyto zbytečné položky $0.
 
-### 2021: Chyby v prostředí sandboxu {#2021-sandbox-environment-failures}
+### 2021: Chyby sandboxového prostředí {#2021-sandbox-environment-failures}
 
 V listopadu 2021 jsme nahlásili kritické problémy s prostředím sandboxu služby PayPal:
 
@@ -477,13 +477,13 @@ Problémy sahají nad rámec API. Šablony e-mailů PayPal jsou tak špatně nav
 
 Pravidelně dostáváme hlášení o e-mailech od PayPalu, které vypadají přesně jako pokusy o phishing. Zde je skutečný příklad z našich hlášení o zneužití:
 
-**Předmět:** __CHRÁNĚNÝ_INLINE_KÓD_7__
+**Předmět:** DOČASNÝ_ZÁSADNÍ_PŘÍSPĚVEK_0
 
 Tento e-mail byl přeposlán na adresu `abuse@microsoft.com`, protože se zdálo, že se jedná o pokus o phishing. Problém? Ve skutečnosti pocházel z prostředí sandboxu PayPal, ale design jejich šablony je tak špatný, že spustí systémy pro detekci phishingu.
 
 ### Naše implementace {#our-implementation}
 
-Filtrování specifické pro PayPal implementované v našem [kód pro filtrování e-mailů](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172):
+Filtrování specifické pro PayPal implementované v našem [kód pro filtrování e-mailů](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) si můžete prohlédnout:
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -537,7 +537,7 @@ Naše technické protokoly ukazují, že tyto spamové e-maily obsahují legitim
 
 To vytváří nemožnou situaci: legitimní e-maily PayPal a spam mají stejné technické vlastnosti.
 
-__CHRÁNĚNÁ_URL_97__ Ironie {__CHRÁNĚNÁ_URL_98__
+### Ironie {#the-irony}
 
 PayPal, společnost, která by měla vést boj proti finančním podvodům, má šablony e-mailů navržené tak špatně, že spouštějí anti-phishingové systémy. Jsme nuceni blokovat legitimní e-maily PayPal, protože jsou k nerozeznání od podvodných.
 
@@ -545,7 +545,7 @@ Toto je zdokumentováno v bezpečnostním výzkumu: [Pozor na podvod s novými a
 
 ### Dopad na reálný svět: Nové podvody s PayPalem {#real-world-impact-novel-paypal-scams}
 
-Problém sahá víc než jen nad rámec špatného designu šablony. Fakturační systém PayPal je tak snadno zneužitelný, že ho podvodníci pravidelně zneužívají k zasílání podvodných faktur vypadajících jako legitimní. Bezpečnostní výzkumník Gavin Anderegg zdokumentoval [Nový podvod s PayPalem](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) případ, kdy podvodníci zasílají skutečné faktury PayPal, které projdou všemi ověřovacími kontrolami:
+Problém sahá víc než jen nad rámec špatného designu šablony. Fakturační systém PayPal je tak snadno zneužitelný, že ho podvodníci pravidelně zneužívají k zasílání podvodných faktur vypadajících jako legitimní. Bezpečnostní výzkumník Gavin Anderegg zdokumentoval [Nový podvod s PayPalem](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), kdy podvodníci zasílají skutečné faktury PayPal, které projdou všemi ověřovacími kontrolami:
 
 > „Při kontrole zdroje vypadalo, že e-mail skutečně pocházel z PayPalu (SPF, DKIM a DMARC prošly testem). Tlačítko také odkazovalo na něco, co vypadalo jako legitimní URL adresa PayPalu... Chvíli mi trvalo, než mi došlo, že se jedná o legitimní e-mail. Právě mi podvodník poslal náhodnou „fakturu“.“
 
@@ -617,19 +617,19 @@ Tento zpětný proces je příznakem širších organizačních problémů PayPa
 
 Funkce pro výpis předplatného, kterou PayPal odmítá implementovat, je v tomto odvětví standardem již více než deset let. Zde je návod, jak tento základní požadavek řeší ostatní platební zpracovatelé:
 
-__CHRÁNĚNÁ_URL_115__ Pruh {__CHRÁNĚNÁ_URL_116__
+### Proužek {#stripe}
 
 Stripe má seznam předplatných od spuštění svého API. Jejich dokumentace jasně ukazuje, jak načíst všechna předplatná pro zákaznický nebo obchodní účet. Toto je považováno za základní funkcionalitu CRUD.
 
-__CHRÁNĚNÁ_URL_117__ Pádlo {__CHRÁNĚNÁ_URL_118__
+### Pádlo {#paddle}
 
 Paddle poskytuje komplexní API pro správu předplatného, včetně výpisů, filtrování a stránkování. Chápou, že obchodníci potřebují vidět své opakující se toky příjmů.
 
-__CHRÁNĚNÁ_URL_119__ Coinbase Commerce {__CHRÁNĚNÁ_URL_120__
+### Coinbase Commerce {#coinbase-commerce}
 
 Dokonce i zpracovatelé plateb za kryptoměny, jako je Coinbase Commerce, poskytují lepší správu předplatného než PayPal.
 
-__CHRÁNĚNÁ_URL_121__ Čtverec {__CHRÁNĚNÁ_URL_122__
+### Čtverec {#square}
 
 API Square zahrnuje seznam předplatných jako základní funkci, nikoli jako dodatečnou.
 
@@ -643,7 +643,7 @@ Každý moderní platební procesor nabízí:
 * Upozornění webhookem na změny předplatného
 * Komplexní dokumentace s funkčními příklady
 
-### Co poskytují jiní zpracovatelé v porovnání s PayPalem {#what-other-processors-provide-vs-paypal}
+### Co poskytují ostatní zpracovatelé v porovnání s PayPalem {#what-other-processors-provide-vs-paypal}
 
 **Stripe - Seznam všech předplatných:**
 
@@ -702,18 +702,18 @@ Authorization: Bearer access_token
 
 **Co chybí v PayPalu:**
 
-* ❌ Žádné `GET /v1/billing/subscriptions` (vypsat vše)
+* ❌ Žádný `GET /v1/billing/subscriptions` (vypsat vše)
 * ❌ Žádná funkce vyhledávání
 * ❌ Žádné filtrování podle stavu, zákazníka, data
 * ❌ Žádná podpora stránkování
 
 PayPal je jediný významný platební procesor, který nutí vývojáře ručně sledovat ID předplatného ve svých vlastních databázích.
 
-## Systematické zatajování ze strany PayPal: Umlčení 6 milionů hlasů {#paypals-systematic-cover-up-silencing-6-million-voices}
+## Systematické zatajování ze strany PayPalu: Umlčení 6 milionů hlasů {#paypals-systematic-cover-up-silencing-6-million-voices}
 
 V kroku, který dokonale vystihuje přístup PayPalu k řešení kritiky, nedávno odpojili celé své komunitní fórum, čímž efektivně umlčeli přes 6 milionů členů a smazali statisíce příspěvků dokumentujících jejich selhání.
 
-__CHRÁNĚNÁ_URL_129__ Velké vymazání {__CHRÁNĚNÁ_URL_130__
+### Velké vymazání {#the-great-erasure}
 
 Původní komunita PayPal na adrese `paypal-community.com` hostila **6 003 558 členů** a obsahovala stovky tisíc příspěvků, hlášení o chybách, stížností a diskusí o selhání API PayPalu. To představovalo více než deset let zdokumentovaných důkazů o systematických problémech PayPalu.
 
@@ -732,21 +732,21 @@ Tento vzorec skrývání důkazů není pro PayPal ničím novým. Mají zdokume
 
 Zablokování fóra představuje dosud nejdrzejší pokus skrýt jejich systematické selhání před veřejnou kontrolou.
 
-## Jedenáctiletá katastrofa s chybou v zachycování: 1 899 dolarů a stále přibývá {#the-11-year-capture-bug-disaster-1899-and-counting}
+## Jedenáctiletá katastrofa s chybou v zachycování dat: 1 899 dolarů a stále přibývá {#the-11-year-capture-bug-disaster-1899-and-counting}
 
 Zatímco PayPal se pilně věnoval organizování zpětné vazby a dával sliby, jejich základní systém pro zpracování plateb byl již více než 11 let zásadně narušen. Důkazy jsou zničující.
 
-### Ztráta 1 899 dolarů z přeposlání e-mailu {#forward-emails-1899-loss}
+### Ztráta 1 899 USD z přeposílaného e-mailu {#forward-emails-1899-loss}
 
 V našich produkčních systémech jsme objevili 108 plateb přes PayPal v celkové hodnotě **1 899 USD**, které byly ztraceny kvůli chybám při zachycování plateb PayPalem. Tyto platby vykazují konzistentní vzorec:
 
-* Byly přijaty `CHECKOUT.ORDER.APPROVED` webhooky
-* Rozhraní API pro zachycení dat PayPal vrátilo chybu 404
+* Byly přijaty webové hooky `CHECKOUT.ORDER.APPROVED`
+* Rozhraní API pro zachycení dat PayPal vrátilo chyby 404
 * Objednávky se staly nepřístupnými prostřednictvím API PayPal
 
 Není možné určit, zda byly zákazníkům účtovány poplatky, protože PayPal po 14 dnech zcela skryje ladicí protokoly a vymaže z řídicího panelu všechna data pro ID objednávek, která nebyla zaznamenána.
 
-Toto představuje pouze jeden podnik. **Celkové ztráty tisíců obchodníků za více než 11 let pravděpodobně dosáhnou milionů dolarů.**
+Toto představuje pouze jeden podnik. **Celkové ztráty tisíců obchodníků za více než 11 let pravděpodobně dosahují milionů dolarů.**
 
 **Znovu to zopakujeme: celkové ztráty tisíců obchodníků za více než 11 let pravděpodobně dosáhnou milionů dolarů.**
 
@@ -777,7 +777,7 @@ Reakce komunity v roce 2013 byla výmluvná:
 
 ### Přiznání z roku 2016: PayPal prolomil vlastní SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-V roce 2016 zdokumentoval vlastní repozitář GitHub společnosti PayPal chybu [masivní selhání zachycení](https://github.com/paypal/PayPal-PHP-SDK/issues/660), která ovlivnila jejich oficiální PHP SDK. Rozsah byl ohromující:
+V roce 2016 zdokumentoval repozitář GitHub společnosti PayPal, který [masivní selhání zachycení](https://github.com/paypal/PayPal-PHP-SDK/issues/660) ovlivňoval jejich oficiální PHP SDK. Rozsah byl ohromující:
 
 > „Od 20. září 2016 všechny pokusy o zachycení plateb přes PayPal selhávají s chybou ‚INVALID_RESOURCE_ID - Požadované ID zdroje nebylo nalezeno‘. Mezi 19. a 20. zářím se v integraci API nic nezměnilo. **100 % pokusů o zachycení plateb od 20. září vrátilo tuto chybu.**“
 
@@ -800,9 +800,9 @@ I po „opravě“ problému obchodníci hlásili:
 
 > „Aktualizoval jsem sadu SDK na verzi 1.7.4 a **problém stále přetrvává.**“
 
-### Eskalace v roce 2024: Stále zlomená {#the-2024-escalation-still-broken}
+### Eskalace v roce 2024: Stále nefunkční {#the-2024-escalation-still-broken}
 
-Nedávné zprávy ze zachovalé komunity PayPal ukazují, že se problém ve skutečnosti zhoršil. [Diskuse ze září 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archivováno](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) dokumentuje přesně tytéž problémy:
+Nedávné zprávy ze zachovalé komunity PayPal ukazují, že se problém ve skutečnosti zhoršil. Soubor [Diskuse ze září 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([archivováno](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) dokumentuje přesně stejné problémy:
 
 > „Problém se začal objevovat teprve asi před 2 týdny a neovlivňuje všechny objednávky. **Mnohem častějším problémem se zdá být chyba 404 při zachycení objednávky.**“
 
@@ -826,7 +826,7 @@ Obchodníkovy otázky odhalují hloubku problémů se spolehlivostí PayPalu:
 2. **„Pokud je stav objednávky 'DOKONČENO', mohu považovat peníze za přijaté?“** - Obchodníci nemohou důvěřovat odpovědím API PayPalu.
 3. **„Proč 'Protokoly událostí->Události webhooku' nenajdou žádné protokoly?“** - Ani vlastní systém protokolování PayPalu nefunguje.
 
-__CHRÁNĚNÁ_URL_145__ Vzorec systematické nedbalosti {__CHRÁNĚNÁ_URL_146__
+### Vzorec systematické nedbalosti {#the-pattern-of-systematic-negligence}
 
 Důkazy pokrývají více než 11 let a ukazují jasný vzorec:
 
@@ -844,7 +844,7 @@ Nejedná se o chybu – **jedná se o systematickou nedbalost.** PayPal o těcht
 
 ### Nedokumentovaný požadavek {#the-undocumented-requirement}
 
-Nikde v oficiální dokumentaci PayPalu se nezmiňuje, že obchodníci musí implementovat logiku opakování operací zachycení. Jejich dokumentace uvádí, že obchodníci by měli „zachycovat platby ihned po schválení“, ale nezmiňuje se, že jejich API náhodně vrací chyby 404 vyžadující složité mechanismy opakování.
+Nikde v oficiální dokumentaci PayPalu se nezmiňuje, že obchodníci musí implementovat logiku opakování operací zachycení. Jejich dokumentace uvádí, že obchodníci by měli „zachycovat data ihned po schválení“, ale nezmiňuje se, že jejich API náhodně vrací chyby 404 vyžadující složité mechanismy opakování.
 
 To nutí každého obchodníka:
 
@@ -861,20 +861,20 @@ Katastrofa způsobená chybou v zachycování je jen jedním z příkladů syste
 
 ### Akce Ministerstva finančních služeb státu New York {#the-new-york-department-of-financial-services-action}
 
-V lednu 2025 vydalo newyorské ministerstvo finančních služeb protokol [vynucovací opatření proti PayPalu](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) za klamavé praktiky, což dokazuje, že podvodné praktiky PayPalu sahají daleko za hranice jejich API.
+V lednu 2025 vydalo newyorské ministerstvo finančních služeb příkaz [vynucovací opatření proti PayPalu](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) za klamavé praktiky, což dokazuje, že vzorec podvodů PayPalu sahá daleko za hranice jejich API.
 
 Toto regulační opatření ukazuje ochotu společnosti PayPal používat klamavé praktiky v celém svém podnikání, nejen ve svých vývojářských nástrojích.
 
 ### Soudní spor s Medem: Přepisování partnerských odkazů {#the-honey-lawsuit-rewriting-affiliate-links}
 
-Akvizice společnosti Honey společností PayPal vedla k tomu, že [soudní spory, které tvrdí, že Honey přepisuje partnerské odkazy](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) kradla provize tvůrcům obsahu a influencerům. To představuje další formu systematického podvodu, kdy PayPal profituje z přesměrování příjmů, které by měly jít jiným.
+Akvizice společnosti Honey společností PayPal vedla k tomu, že [soudní spory, které tvrdí, že Honey přepisuje partnerské odkazy](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) kradl provize od tvůrců obsahu a influencerů. To představuje další formu systematického podvodu, kdy PayPal profituje z přesměrování příjmů, které by měly jít jiným.
 
 Vzor je jasný:
 
 1. **Selhání API**: Skrývání nefunkčních funkcí, obviňování obchodníků
 2. **Umlčování komunity**: Odstraňování důkazů o problémech
 3. **Porušení předpisů**: Zapojování se do klamavých praktik
-4. **Krádež partnerských programů**: Krádež provizí prostřednictvím technických manipulací
+4. **Krádež affiliate partnerů**: Krádež provizí prostřednictvím technických manipulací
 
 ### Cena za nedbalost společnosti PayPal {#the-cost-of-paypals-negligence}
 
@@ -915,7 +915,7 @@ Vzor je jasný:
 
 Mezitím jsou vývojáři nuceni vytvářet alternativní řešení, narušovat bezpečnost a zabývat se nefunkčními uživatelskými rozhraními, jen aby mohli přijímat platby.
 
-Pokud vytváříte platební systém, poučte se z našich zkušeností: vytvořte si [trojitý přístup](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) s více procesory, ale neočekávejte, že PayPal poskytne základní funkce, které potřebujete. Plánujte si vytvoření alternativních řešení od prvního dne.
+Pokud vytváříte platební systém, poučte se z našich zkušeností: vytvořte si [trojitý přístup](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) s více procesory, ale neočekávejte, že PayPal poskytne základní funkce, které potřebujete. Plánujte si vytváření alternativních řešení od prvního dne.
 
 > Tento příspěvek dokumentuje naše 11leté zkušenosti s API PayPal na Forward Email. Všechny příklady kódu a odkazy pocházejí z našich skutečných produkčních systémů. Platby přes PayPal i přes tyto problémy nadále podporujeme, protože někteří zákazníci nemají jinou možnost.
 

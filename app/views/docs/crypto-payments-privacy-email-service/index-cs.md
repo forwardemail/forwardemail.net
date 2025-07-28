@@ -2,35 +2,35 @@
 
 <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_4__ Obsah {__CHRÁNĚNÁ_URL_5__
+## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
-* [Proč na platbách kryptoměnami záleží](#why-crypto-payments-matter)
+* [Proč jsou platby v kryptoměnách důležité](#why-crypto-payments-matter)
 * [Jak to funguje](#how-it-works)
-* [Výhody ochrany soukromí](#privacy-benefits)
+* [Výhody ochrany osobních údajů](#privacy-benefits)
 * [Technické detaily](#technical-details)
-* [Nastavení vaší krypto peněženky](#setting-up-your-crypto-wallet)
-  * [MetaMask](#metamask)
+* [Nastavení krypto peněženky](#setting-up-your-crypto-wallet)
+  * [MetaMaska](#metamask)
   * [Přízrak](#phantom)
   * [Peněženka Coinbase](#coinbase-wallet)
   * [WalletConnect](#walletconnect)
 * [Začínáme](#getting-started)
-* [Těšíme se](#looking-forward)
+* [Pohled do budoucna](#looking-forward)
 
-__CHRÁNĚNÁ_URL_6__ Předmluva {__CHRÁNĚNÁ_URL_7__
+## Předmluva {#foreword}
 
-V [Přeposlat e-mail](https://forwardemail.net) neustále hledáme způsoby, jak vylepšit vaše [soukromí](https://en.wikipedia.org/wiki/Privacy) a zabezpečení a zároveň zpřístupnit naše služby. Dnes s radostí oznamujeme, že nyní přijímáme platby [kryptoměna](https://en.wikipedia.org/wiki/Cryptocurrency) prostřednictvím integrace kryptoplateb [Stripe's](https://stripe.com).
+Ve službě [Přeposlat e-mail](https://forwardemail.net) neustále hledáme způsoby, jak vylepšit vaše [soukromí](https://en.wikipedia.org/wiki/Privacy) a zabezpečení a zároveň zpřístupnit naše služby. Dnes s radostí oznamujeme, že nyní přijímáme platby [kryptoměna](https://en.wikipedia.org/wiki/Cryptocurrency) prostřednictvím integrace kryptoměn [Stripe's](https://stripe.com).
 
 ## Proč jsou platby v kryptoměnách důležité {#why-crypto-payments-matter}
 
-[Soukromí](https://en.wikipedia.org/wiki/Internet_privacy) vždy bylo jádrem našich služeb. I když jsme v minulosti nabízeli různé platební metody, platby v kryptoměnách poskytují další vrstvu soukromí, která je dokonale v souladu s naším posláním. Platbou v kryptoměnách můžete:
+[Soukromí](https://en.wikipedia.org/wiki/Internet_privacy) byl vždy jádrem našich služeb. I když jsme v minulosti nabízeli různé platební metody, platby v kryptoměnách poskytují další vrstvu soukromí, která je dokonale v souladu s naším posláním. Platbou v kryptoměnách můžete:
 
 * Zachovejte větší anonymitu při nákupu našich e-mailových služeb
 * Omezte množství osobních údajů vázaných na váš e-mailový účet
 * Oddělte své finanční a e-mailové identity
 * Podpořte rostoucí ekosystém [decentralizované finance](https://en.wikipedia.org/wiki/Decentralized_finance)
 
-__CHRÁNĚNÁ_URL_10__ Jak to funguje {__CHRÁNĚNÁ_URL_11__
+## Jak to funguje {#how-it-works}
 
 Aby byl proces co nejplynulejší, integrovali jsme kryptoměnový platební systém [Stripe's](https://docs.stripe.com/crypto). Zde je návod, jak můžete platit za služby Forward Email pomocí kryptoměny:
 
@@ -46,10 +46,10 @@ flowchart LR
 
 1. **Vyberte kryptoměnu jako způsob platby**: Při placení uvidíte jako možnost platby možnost „Kryptoměna“ vedle tradičních metod, jako jsou kreditní karty.
 
-2. **Vyberte si kryptoměnu**: V současné době akceptujeme [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) na několika blockchainech, včetně [Ethereum](https://ethereum.org), [Solana](https://solana.com) a [Polygon](https://polygon.technology). USDC je stabilní kryptoměna, která si udržuje hodnotu 1:1 vůči americkému dolaru.
+2. **Vyberte si kryptoměnu**: V současné době akceptujeme [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) na několika blockchainech, včetně [Ethereum](https://ethereum.org), [Solána](https://solana.com) a [Polygon](https://polygon.technology). USDC je stabilní kryptoměna, která si udržuje hodnotu 1:1 vůči americkému dolaru.
 
 3. **Připojte svou peněženku**: Budete přesměrováni na zabezpečenou stránku, kde si můžete připojit svou preferovanou krypto peněženku. Podporujeme několik možností peněženek, včetně:
-* [MetaMask](https://metamask.io)
+* [MetaMaska](https://metamask.io)
 * [Přízrak](https://phantom.app)
 * [Peněženka Coinbase](https://www.coinbase.com/wallet)
 * [WalletConnect](https://walletconnect.com) (kompatibilní s mnoha dalšími peněženkami)
@@ -58,7 +58,7 @@ flowchart LR
 
 ## Výhody ochrany osobních údajů {#privacy-benefits}
 
-Použití kryptoměny pro vaše předplatné e-mailu přeposílání zvyšuje vaše soukromí několika způsoby:
+Používání kryptoměny pro vaše předplatné Forward Email zvyšuje vaše soukromí několika způsoby:
 
 ```mermaid
 graph TD
@@ -75,22 +75,22 @@ graph TD
     end
 ```
 
-* **Omezené osobní údaje**: Na rozdíl od plateb kreditní kartou kryptoměnové transakce nevyžadují vaše jméno, fakturační adresu ani jiné osobní údaje. Více se dozvíte na [transakční soukromí](https://en.wikipedia.org/wiki/Privacy_coin).
-* **Oddělení od tradičního bankovnictví**: Vaši platbu nelze propojit s vaším bankovním účtem ani s úvěrovou historií. Přečtěte si na [finanční soukromí](https://en.wikipedia.org/wiki/Financial_privacy).
-* **Ochrana soukromí blockchainu**: Transakce blockchainu jsou sice veřejné, ale pseudonymní a nejsou přímo spojeny s vaší skutečnou identitou. Viz [blockchainové techniky ochrany soukromí](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
-* **V souladu s našimi hodnotami**: Jako e-mailová služba zaměřená na ochranu soukromí věříme, že vám v každém kroku dáváme kontrolu nad vašimi osobními údaji. Podívejte se na naše [zásady ochrany osobních údajů](/privacy).
+* **Omezené osobní údaje**: Na rozdíl od plateb kreditní kartou kryptoměnové transakce nevyžadují vaše jméno, fakturační adresu ani jiné osobní údaje. Více informací naleznete na [soukromí transakcí](https://en.wikipedia.org/wiki/Privacy_coin).
+* **Oddělení od tradičního bankovnictví**: Vaši platbu nelze propojit s vaším bankovním účtem ani s úvěrovou historií. Přečtěte si o [finanční soukromí](https://en.wikipedia.org/wiki/Financial_privacy).
+* **Soukromí blockchainu**: Transakce blockchainu jsou sice veřejné, ale jsou pseudonymní a nejsou přímo spojeny s vaší skutečnou identitou. Viz [techniky ochrany soukromí blockchainu](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
+* **V souladu s našimi hodnotami**: Jako e-mailová služba zaměřená na soukromí věříme, že vám v každém kroku dáváme kontrolu nad vašimi osobními údaji. Podívejte se na naše [zásady ochrany osobních údajů](/privacy).
 
 ## Technické podrobnosti {#technical-details}
 
-Pro zájemce o technické aspekty:
+Pro ty, kteří se zajímají o technické aspekty:
 
 * Používáme kryptoměnovou platební infrastrukturu [Stripe's](https://docs.stripe.com/crypto/stablecoin-payments), která zvládá veškerou složitost blockchainových transakcí.
-* Platby se provádějí v [USDC](https://www.circle.com/en/usdc) na několika blockchainech, včetně [Ethereum](https://ethereum.org), [Solana](https://solana.com) a [Polygon](https://polygon.technology).
+* Platby se provádějí v [USDC](https://www.circle.com/en/usdc) na několika blockchainech, včetně [Ethereum](https://ethereum.org), [Solána](https://solana.com) a [Polygon](https://polygon.technology).
 * Zatímco platíte v kryptoměně, my obdržíme ekvivalentní hodnotu v USD, což nám umožňuje udržovat stabilní ceny.
 
 ## Nastavení krypto peněženky {#setting-up-your-crypto-wallet}
 
-Jste v kryptoměně noví? Zde je návod, jak nastavit peněženky, které podporujeme:
+Jste v kryptoměnách nováčkem? Zde je návod, jak nastavit peněženky, které podporujeme:
 
 ```mermaid
 flowchart LR
@@ -100,29 +100,29 @@ flowchart LR
     D --> E[Ready for Payment]
 ```
 
-__CHRÁNĚNÁ_URL_18__ MetaMaska {__CHRÁNĚNÁ_URL_19__
+### MetaMaska {#metamask}
 
-[MetaMask](https://metamask.io) je jednou z nejpopulárnějších peněženek Ethereum.
+[MetaMaska](https://metamask.io) je jednou z nejpopulárnějších peněženek Ethereum.
 
-1. Navštivte stránku [Stránka ke stažení MetaMask](https://metamask.io/download/)
+1. Navštivte stránku [Stránka pro stažení MetaMask](https://metamask.io/download/)
 2. Nainstalujte rozšíření prohlížeče nebo mobilní aplikaci
 3. Vytvořte novou peněženku podle pokynů k nastavení
 4. **Důležité**: Bezpečně uložte svou obnovovací frázi
-5. Přidejte ETH nebo USDC do své peněženky prostřednictvím směnárny nebo přímého nákupu
-6. [Podrobný průvodce nastavením MetaMask](https://metamask.io/faqs/)
+5. Přidejte ETH nebo USDC do své peněženky prostřednictvím burzy nebo přímého nákupu
+6. [Podrobný návod k nastavení MetaMask](https://metamask.io/faqs/)
 
-__CHRÁNĚNÁ_URL_20__ Fantom {__CHRÁNĚNÁ_URL_21__
+### Fantom {#phantom}
 
-[Přízrak](https://phantom.app) je přední peněženka Solana.
+[Přízrak](https://phantom.app) je přední peněženka od Solany.
 
-1. Navštivte [Fantomové webové stránky](https://phantom.app/)
+1. Navštivte stránku [Fantomský web](https://phantom.app/)
 2. Stáhněte si příslušnou verzi pro své zařízení
 3. Vytvořte novou peněženku podle pokynů na obrazovce
 4. Bezpečně zálohujte svou obnovovací frázi
-5. Přidejte do své peněženky SOL nebo USDC
-6. [Průvodce Phantomovou peněženkou](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
+5. Přidejte do peněženky SOL nebo USDC
+6. [Průvodce peněženkou Phantom](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
 
-__CHRÁNĚNÁ_URL_22__ Peněženka Coinbase {__CHRÁNĚNÁ_URL_23__
+### Peněženka Coinbase {#coinbase-wallet}
 
 [Peněženka Coinbase](https://www.coinbase.com/wallet) podporuje více blockchainů.
 
@@ -132,7 +132,7 @@ __CHRÁNĚNÁ_URL_22__ Peněženka Coinbase {__CHRÁNĚNÁ_URL_23__
 4. Převeďte nebo zakupte kryptoměny přímo v aplikaci
 5. [Průvodce peněženkou Coinbase](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
 
-__CHRÁNĚNÁ_URL_24__ WalletConnect {__CHRÁNĚNÁ_URL_25__
+### WalletConnect {#walletconnect}
 
 [WalletConnect](https://walletconnect.com) je protokol, který propojuje peněženky s webovými stránkami.
 
@@ -140,32 +140,32 @@ __CHRÁNĚNÁ_URL_24__ WalletConnect {__CHRÁNĚNÁ_URL_25__
 2. Během placení vyberte WalletConnect.
 3. Naskenujte QR kód pomocí aplikace peněženky.
 4. Schválení připojení.
-5. [WalletConnect kompatibilní peněženky](https://walletconnect.com/registry/wallets)
+5. [Peněženky kompatibilní s WalletConnect](https://walletconnect.com/registry/wallets)
 
 ## Začínáme {#getting-started}
 
-Jste připraveni zlepšit své soukromí pomocí kryptoplateb? Při příštím obnovení předplatného nebo upgradu plánu jednoduše vyberte možnost „Crypto“ při placení.
+Jste připraveni vylepšit své soukromí pomocí kryptoměnových plateb? Při příštím obnovení předplatného nebo upgradu tarifu jednoduše vyberte během platby možnost „Krypto“.
 
-Další informace o kryptoměnách a technologii blockchain naleznete v těchto zdrojích:
+Pro více informací o kryptoměnách a technologii blockchain se podívejte na tyto zdroje:
 
-* [Co je to kryptoměna?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedie
-* [Blockchain vysvětlen](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedie
-* [Průvodce digitální ochranou soukromí](https://www.eff.org/issues/privacy) - Nadace Electronic Frontier
+* [Co je kryptoměna?](https://www.investopedia.com/terms/c/cryptocurrency.asp) - Investopedie
+* [Vysvětlení blockchainu](https://www.investopedia.com/terms/b/blockchain.asp) - Investopedie
+* [Průvodce digitálním soukromím](https://www.eff.org/issues/privacy) - Nadace Electronic Frontier
 
-## Těšíme se {#looking-forward}
+## Výhled do budoucna {#looking-forward}
 
 Přidání plateb v kryptoměnách je jen dalším krokem v našem trvalém závazku k [soukromí](https://en.wikipedia.org/wiki/Privacy), [zabezpečení](https://en.wikipedia.org/wiki/Computer_security) a uživatelské volbě. Věříme, že vaše e-mailová služba by měla respektovat vaše soukromí na všech úrovních – od zpráv, které odesíláte, až po způsob platby za službu.
 
-Jako vždy uvítáme vaši zpětnou vazbu k této nové platební možnosti. Máte-li dotazy ohledně používání kryptoměny s funkcí Forward Email, kontaktujte nás prosím na [podpůrný tým](/help).
+Jako vždy uvítáme vaši zpětnou vazbu k této nové platební možnosti. Máte-li dotazy ohledně používání kryptoměny s funkcí Forward Email, kontaktujte prosím našeho [tým podpory](/help).
 
 ---
 
 **Odkazy:**
 
 1. [Dokumentace Stripe Crypto](https://docs.stripe.com/crypto)
-2. [USDC Stablecoin](https://www.circle.com/en/usdc)
-3. [Ethereum Blockchain](https://ethereum.org)
-4. [Solana Blockchain](https://solana.com)
-5. [Polygonová síť](https://polygon.technology)
-6. [Electronic Frontier Foundation – soukromí](https://www.eff.org/issues/privacy)
-7. [Přeposlat Zásady ochrany osobních údajů e-mailu](/privacy)
+2. [Stablecoin USDC](https://www.circle.com/en/usdc)
+3. [Blockchain Etherea](https://ethereum.org)
+4. [Blockchain Solana](https://solana.com)
+5. [Polygonální síť](https://polygon.technology)
+6. [Nadace pro elektronické hranice – Ochrana osobních údajů](https://www.eff.org/issues/privacy)
+7. [Zásady ochrany osobních údajů pro přeposílání e-mailů](/privacy)

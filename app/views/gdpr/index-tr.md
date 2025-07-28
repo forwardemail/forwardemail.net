@@ -1,6 +1,6 @@
 # GDPR Uyumluluğu {#gdpr-compliance}
 
-<img loading="tembel" src="/img/articles/gdpr.webp" alt="" class="yuvarlak-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 
@@ -16,11 +16,11 @@ Forward Email, verilerinizi korumaya kendini adamış, gizliliğe odaklanmış b
 
 [Genel Veri Koruma Yönetmeliği](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR"), verilerin AB ve AEA dışına aktarılmasını düzenler ve amacı, kişisel bilgileriniz üzerindeki kontrolünüzü ve haklarınızı artırmaktır. Neyse ki, işlediğimiz, sakladığımız ve/veya aktardığımız hiçbir veriyi satmıyoruz; bu verileri size hizmet sunmak dışında herhangi bir amaçla kullanmıyoruz.
 
-**İstediğiniz zaman** [Hesabım → Profil](/my-account/profile) altında kişisel bilgilerinizi değiştirebilir ve hatta [Hesabım → Güvenlik](/my-account/security) altında tüm hesabınızı ve ilgili tüm bilgileri silebilirsiniz. <https://github.com/forwardemail> adresinde **%100 açık kaynaklı** olduğumuz için, kaynak kodumuz gizlilik yasalarına uygunluk açısından istediğiniz zaman denetlenebilir.
+**İstediğiniz zaman** [Hesabım → Profil](/my-account/profile) altındaki kişisel bilgilerinizi değiştirebilir ve hatta [Hesabım → Güvenlik](/my-account/security) altındaki tüm hesabınızı ve ilgili tüm bilgileri silebilirsiniz. <https://github.com/forwardemail>'de **%100 açık kaynaklı** olduğumuz için, kaynak kodumuz gizlilik yasalarına uygunluk açısından istediğiniz zaman denetlenebilir.
 
-[Veri İşleme Sözleşmesi](/dpa) belgemiz, işlenen, saklanan ve aktarılan verilerin gizliliği açısından GDPR'nin yanı sıra AB-ABD ve İsviçre-ABD Gizlilik Kalkanı çerçevelerine uyumluluğumuzu ayrıntılı olarak açıklamaktadır.
+[Veri İşleme Sözleşmesi](/dpa), işlenen, saklanan ve aktarılan verilerin gizliliği açısından GDPR'nin yanı sıra AB-ABD ve İsviçre-ABD Gizlilik Kalkanı çerçevelerine uyumluluğumuzu ayrıntılı olarak açıklar.
 
-[Hizmet Şartları](/terms) sözleşmemizi kabul ederek, DPA'mızı otomatik olarak kabul etmiş olursunuz ve ayrı bir belge imzalamanıza gerek kalmaz. Tüm kişisel verilerinizi, işlendiği, saklandığı ve aktarıldığı **konum** ne olursa olsun, [Gizlilik Politikası](/privacy) sözleşmemize uygun olarak korumak için elimizden gelenin en iyisini yapacağız. Ayrıca [Hizmet Şartları](/terms) ve [Gizlilik Politikası](/privacy) sözleşmelerimizi okuyarak daha fazla bilgi edinebilirsiniz.
+[Hizmet Şartları](/terms)'ımızı kabul ederek, DPA'mızı otomatik olarak kabul etmiş olursunuz ve ayrı bir belge imzalamanıza gerek kalmaz. Tüm kişisel verilerinizi [Gizlilik Politikası](/privacy)'imize uygun olarak korumak için elimizden gelenin en iyisini yapacağız - işlendiği, saklandığı ve aktarıldığı **konum** ne olursa olsun. Ayrıca [Hizmet Şartları](/terms) ve [Gizlilik Politikası](/privacy)'ümüzü okuyarak daha fazla bilgi edinebilirsiniz.
 
 ## Uluslararası Veri Aktarımı {#international-data-transfer}
 
@@ -39,7 +39,7 @@ Aşağıda, verileri uluslararası olarak aktarmak için kullandığımız sağl
 
 ## GDPR Temsilcisi {#gdpr-representative}
 
-[GDPR'nin 27. maddesi](https://gdpr-info.eu/art-27-gdpr/) uyarınca, aşağıda listelenen Üye Devlet temsilcilerimiz bulunmaktadır:
+[GDPR'nin 27. Maddesi](https://gdpr-info.eu/art-27-gdpr/) uyarınca aşağıda listelenen Üye Devlet temsilcilerimiz bulunmaktadır:
 
 ### AB Temsilcisi {#eu-representative}
 

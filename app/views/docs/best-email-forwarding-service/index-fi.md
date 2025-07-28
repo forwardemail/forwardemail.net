@@ -5,35 +5,35 @@
 ## Sisällysluettelo {#table-of-contents}
 
 * [Esipuhe](#foreword)
-* [Eteenpäin sähköpostin tietosuojafilosofia](#the-forward-email-privacy-philosophy)
-* [SQLite-toteutus: Tietojesi kestävyys ja siirrettävyys](#sqlite-implementation-durability-and-portability-for-your-data)
-* [Älykäs jono- ja uudelleenyritysmekanismi: sähköpostin toimituksen varmistaminen](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
-* [Rajoittamattomat resurssit älykkäällä nopeudenrajoituksella](#unlimited-resources-with-intelligent-rate-limiting)
-* [Sandboxed-salaus parantaa turvallisuutta](#sandboxed-encryption-for-enhanced-security)
-* [Muistissa sähköpostin käsittely: Ei levytilaa maksimaalisen yksityisyyden takaamiseksi](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
-* [Päästä päähän -salaus OpenPGP:llä täydellisen yksityisyyden takaamiseksi](#end-to-end-encryption-with-openpgp-for-complete-privacy)
-* [Monikerroksinen sisällön suojaus kattavaan tietoturvaan](#multi-layered-content-protection-for-comprehensive-security)
-* [Miten eroamme muista sähköpostipalveluista: Tekninen tietosuojaetu](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
-  * [Avoimen lähdekoodin läpinäkyvyys todennettavissa olevaan yksityisyyteen](#open-source-transparency-for-verifiable-privacy)
-  * [Ei toimittajan lukitusta yksityisyyden takaamiseksi ilman kompromisseja](#no-vendor-lock-in-for-privacy-without-compromise)
-  * [Sandbox-tiedot todellista eristämistä varten](#sandboxed-data-for-true-isolation)
+* [Sähköpostin edelleenlähetyksen tietosuojafilosofia](#the-forward-email-privacy-philosophy)
+* [SQLite-toteutus: Datasi kestävyys ja siirrettävyys](#sqlite-implementation-durability-and-portability-for-your-data)
+* [Älykäs jonotus- ja uudelleenyritysmekanismi: Sähköpostin toimituksen varmistaminen](#smart-queue-and-retry-mechanism-ensuring-email-delivery)
+* [Rajattomat resurssit älykkäällä nopeudenrajoituksella](#unlimited-resources-with-intelligent-rate-limiting)
+* [Sandbox-salaus parannettua turvallisuutta varten](#sandboxed-encryption-for-enhanced-security)
+* [Muistissa tapahtuva sähköpostin käsittely: Ei levytilaa maksimaalisen yksityisyyden takaamiseksi](#in-memory-email-processing-no-disk-storage-for-maximum-privacy)
+* [Kokonaisvaltainen salaus OpenPGP:llä täydellisen yksityisyyden takaamiseksi](#end-to-end-encryption-with-openpgp-for-complete-privacy)
+* [Monikerroksinen sisällönsuojaus kattavaa turvallisuutta varten](#multi-layered-content-protection-for-comprehensive-security)
+* [Miten eroamme muista sähköpostipalveluista: Tekninen yksityisyyden etu](#how-we-differ-from-other-email-services-the-technical-privacy-advantage)
+  * [Avoimen lähdekoodin läpinäkyvyys todennettavan yksityisyyden takaamiseksi](#open-source-transparency-for-verifiable-privacy)
+  * [Ei toimittajasidonnaisuutta yksityisyyden suojaan ilman kompromisseja](#no-vendor-lock-in-for-privacy-without-compromise)
+  * [Hiekkalaatikkodata todelliseen eristämiseen](#sandboxed-data-for-true-isolation)
   * [Tietojen siirrettävyys ja hallinta](#data-portability-and-control)
-* [Tietosuojan tekniset haasteet - ensimmäinen sähköpostin edelleenlähetys](#the-technical-challenges-of-privacy-first-email-forwarding)
-  * [Muistinhallinta kirjautumattomaan sähköpostin käsittelyyn](#memory-management-for-no-logging-email-processing)
-  * [Roskapostin tunnistus ilman sisältöanalyysiä yksityisyyden suojaamiseksi](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
-  * [Yhteensopivuuden säilyttäminen Privacy-First Designin kanssa](#maintaining-compatibility-with-privacy-first-design)
-* [Parhaat tietosuojakäytännöt edelleenlähettäville sähköpostin käyttäjille](#privacy-best-practices-for-forward-email-users)
-* [Johtopäätös: Yksityisen sähköpostin edelleenlähetyksen tulevaisuus](#conclusion-the-future-of-private-email-forwarding)
+* [Yksityisyyden suojaan keskittyvän sähköpostin edelleenlähetyksen tekniset haasteet](#the-technical-challenges-of-privacy-first-email-forwarding)
+  * [Muistinhallinta sähköpostien käsittelyssä ilman lokien kirjaamista](#memory-management-for-no-logging-email-processing)
+  * [Roskapostin tunnistus ilman sisällön analysointia yksityisyyttä suojaavaa suodatusta varten](#spam-detection-without-content-analysis-for-privacy-preserving-filtering)
+  * [Yhteensopivuuden ylläpitäminen yksityisyyttä ensisijaisen suunnittelun kanssa](#maintaining-compatibility-with-privacy-first-design)
+* [Sähköpostin edelleenlähetyskäyttäjien tietosuojakäytännöt](#privacy-best-practices-for-forward-email-users)
+* [Johtopäätös: Yksityisten sähköpostien edelleenlähetyksen tulevaisuus](#conclusion-the-future-of-private-email-forwarding)
 
 ## Esipuhe {#foreword}
 
-Nykypäivän digitaalisessa ympäristössä sähköpostin tietosuoja on tullut kriittisemmäksi kuin koskaan. Tietomurtojen, valvontaongelmien ja sähköpostin sisältöön perustuvan kohdistetun mainonnan myötä käyttäjät etsivät yhä enemmän ratkaisuja, jotka asettavat heidän yksityisyytensä etusijalle. Forward Emailissa olemme rakentaneet palvelumme alusta alkaen siten, että yksityisyys on arkkitehtuurimme kulmakivi. Tämä blogikirjoitus tutkii teknisiä toteutuksia, jotka tekevät palvelustamme yhden kaikkein yksityisyyteen keskittyvistä sähköpostin edelleenlähetysratkaisuista.
+Nykypäivän digitaalisessa maailmassa sähköpostin yksityisyydestä on tullut tärkeämpää kuin koskaan. Tietomurtojen, valvontaongelmien ja sähköpostisisältöön perustuvan kohdennetun mainonnan vuoksi käyttäjät etsivät yhä enemmän ratkaisuja, jotka asettavat heidän yksityisyytensä etusijalle. Forward Emaililla olemme rakentaneet palvelumme alusta alkaen yksityisyys arkkitehtuurimme kulmakivenä. Tässä blogikirjoituksessa tarkastellaan teknisiä toteutuksia, jotka tekevät palvelustamme yhden yksityisyyteen keskittyvimmistä sähköpostin edelleenlähetysratkaisuista.
 
 ## Sähköpostin edelleenlähetyksen tietosuojafilosofia {#the-forward-email-privacy-philosophy}
 
 Ennen kuin syvennymme teknisiin yksityiskohtiin, on tärkeää ymmärtää perusperiaatteitamme yksityisyyden suojaan: **sähköpostisi kuuluvat sinulle ja vain sinulle**. Tämä periaate ohjaa kaikkia teknisiä päätöksiämme sähköpostin edelleenlähetyksestä salauksen toteuttamiseen.
 
-Toisin kuin monet sähköpostipalveluntarjoajat, jotka skannaavat viestejäsi mainostarkoituksiin tai tallentavat niitä rajoituksetta palvelimilleen, Forward Email toimii radikaalisti erilaisella lähestymistavalla:
+Toisin kuin monet sähköpostipalveluntarjoajat, jotka skannaavat viestisi mainostarkoituksiin tai säilyttävät niitä loputtomiin palvelimillaan, Forward Email toimii radikaalisti erilaisella lähestymistavalla:
 
 1. **Vain muistissa tapahtuvaa käsittelyä** - Emme tallenna edelleenlähetettyjä sähköpostejasi levylle
 2. **Ei metatietojen tallennusta** - Emme pidä kirjaa siitä, kuka lähettää sähköpostia kenelle
@@ -42,9 +42,9 @@ Toisin kuin monet sähköpostipalveluntarjoajat, jotka skannaavat viestejäsi ma
 
 ## SQLite-toteutus: Tietojesi kestävyys ja siirrettävyys {#sqlite-implementation-durability-and-portability-for-your-data}
 
-Yksi Forward Emailin merkittävimmistä yksityisyydensuojaeduista on huolellisesti suunniteltu [SQLite](https://en.wikipedia.org/wiki/SQLite) -toteutuksemme. Olemme hienosäätäneet SQLiteä erityisillä PRAGMA-asetuksilla ja [Eteenpäin kirjoitettava kirjaus (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging) varmistaaksemme sekä tietojesi kestävyyden että siirrettävyyden säilyttäen samalla korkeimmat yksityisyyden ja turvallisuuden standardit.
+Yksi Forward Emailin merkittävimmistä yksityisyydensuojaeduista on huolellisesti suunniteltu [SQLite](https://en.wikipedia.org/wiki/SQLite)-toteutuksemme. Olemme hienosäätäneet SQLiteä erityisillä PRAGMA-asetuksilla ja [Ennakoiva kirjaus (WAL)](https://en.wikipedia.org/wiki/Write-ahead_logging)-toteutuksella varmistaaksemme sekä tietojesi kestävyyden että siirrettävyyden säilyttäen samalla korkeimmat yksityisyyden ja turvallisuuden standardit.
 
-Tässä katsaus siihen, miten olemme toteuttaneet SQLiten käyttäen [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305) -koodia kvanttiresistentin salauksen salausmenetelmänä:
+Tässä katsaus siihen, miten olemme toteuttaneet SQLiten käyttäen [ChaCha20-Poly1305](https://en.wikipedia.org/wiki/ChaCha20-Poly1305):aa kvanttiresistentin salauksen salausmenetelmänä:
 
 ```javascript
 // Initialize the database with better-sqlite3-multiple-ciphers
@@ -83,11 +83,11 @@ db.pragma('temp_store=1;');
 
 Tämä toteutus varmistaa, että tietosi ovat paitsi turvassa myös siirrettävissä. Voit ottaa sähköpostisi mukaasi milloin tahansa viemällä ne [MBOX](https://en.wikipedia.org/wiki/Email#Storage)-, [EML](https://en.wikipedia.org/wiki/Email#Storage)- tai SQLite-muodoissa. Ja kun haluat poistaa tietosi, ne ovat todellakin poissa – poistamme tiedostot vain levytallennustilasta SQL DELETE ROW -komentojen suorittamisen sijaan, jotka voivat jättää jälkiä tietokantaan.
 
-Käyttöönottomme kvanttisalaus käyttää ChaCha20-Poly1305-salauksena tietokannan alustaessa, mikä tarjoaa vahvan suojan sekä nykyisiä että tulevia tietosuojaasi uhkaavia uhkia vastaan.
+Toteutuksemme kvanttisalauksessa käytetään ChaCha20-Poly1305-salausalgoritmia tietokannan alustamisen yhteydessä, mikä tarjoaa vahvan suojan sekä nykyisiä että tulevia tietosuojauhkia vastaan.
 
 ## Älykäs jonotus- ja uudelleenyritysmekanismi: Sähköpostin toimituksen varmistaminen {#smart-queue-and-retry-mechanism-ensuring-email-delivery}
 
-Sen sijaan, että keskittyisimme pelkästään otsikoiden käsittelyyn, olemme ottaneet käyttöön hienostuneen älykkään jonotus- ja uudelleenyritysmekanismin `getBounceInfo` -menetelmällämme. Tämä järjestelmä varmistaa, että sähköposteillasi on parhaat mahdollisuudet perille, vaikka tilapäisiä ongelmia ilmenisi.
+Sen sijaan, että keskittyisimme pelkästään otsikoiden käsittelyyn, olemme ottaneet käyttöön kehittyneen älykkään jonotus- ja uudelleenyritysmekanismin `getBounceInfo`-metodillamme. Tämä järjestelmä varmistaa, että sähköposteillasi on parhaat mahdollisuudet tulla perille, vaikka tilapäisiä ongelmia ilmenisi.
 
 ```javascript
 function getBounceInfo(err) {
@@ -121,21 +121,21 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> This is an excerpt of the `getBounceInfo` method and not the actual extensive implementation. For the complete code, you can review it on [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+> Tämä on ote `getBounceInfo`-metodista eikä varsinainen laaja toteutus. Koko koodin löydät osoitteesta [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-Yritämme postin toimitusta uudelleen viiden päivän ajan, alan standardien, kuten [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\), mukaisesti, antaen tilapäisille ongelmille aikaa ratkaista itsensä. Tämä lähestymistapa parantaa merkittävästi toimitusprosenttia ja samalla säilyttää yksityisyyden.
+Yritämme postin toimitusta uudelleen viiden päivän ajan, samalla tavalla kuin alan standardien, kuten [Jälkitunniste](https://en.wikipedia.org/wiki/Postfix_\(software\), mukaisesti, antaen tilapäisille ongelmille aikaa ratkaista itsensä. Tämä lähestymistapa parantaa merkittävästi toimitusprosenttia ja samalla säilyttää yksityisyyden.
 
-Samoin poistamme myös lähtevien SMTP-sähköpostien viestisisällön onnistuneen toimituksen jälkeen. Tämä on määritetty tallennusjärjestelmässämme oletusarvoiseksi 30 päivän säilytysajaksi, jota voit säätää verkkotunnuksesi lisäasetuksissa. Tämän ajanjakson jälkeen sähköpostin sisältö poistetaan ja tyhjennetään automaattisesti, ja jäljelle jää vain paikkamerkkiviesti:
+Samoin poistamme lähtevien SMTP-sähköpostien sisällön onnistuneen toimituksen jälkeen. Tämä on määritetty tallennusjärjestelmässämme 30 päivän oletusarvoiseksi säilytysajaksi, jota voit muuttaa verkkotunnuksesi lisäasetuksissa. Tämän ajanjakson jälkeen sähköpostin sisältö poistetaan automaattisesti, ja jäljelle jää vain paikkamerkkiviesti:
 
 ```txt
 This message was successfully sent. It has been redacted and purged for your security and privacy. If you would like to increase your message retention time, please go to the Advanced Settings page for your domain.
 ```
 
-Tämä lähestymistapa varmistaa, että lähettämiäsi sähköpostiviestejä ei säilytetä loputtomiin, mikä vähentää tietomurtojen tai luvattoman pääsyn riskiä viestintään.
+Tämä lähestymistapa varmistaa, että lähetettyjä sähköposteja ei säilytetä loputtomiin, mikä vähentää tietomurtojen tai luvattoman pääsyn riskiä viestintääsi.
 
 ## Rajattomat resurssit älykkäällä nopeudenrajoituksella {#unlimited-resources-with-intelligent-rate-limiting}
 
-Vaikka Forward Email tarjoaa rajoittamattoman määrän verkkotunnuksia ja aliaksia, olemme ottaneet käyttöön älykkään nopeusrajoituksen suojellaksemme järjestelmäämme väärinkäytöksiltä ja varmistaaksemme oikeudenmukaisen käytön kaikille käyttäjille. Esimerkiksi muut kuin yritysasiakkaat voivat luoda jopa 50+ aliasta päivässä, mikä estää tietokantaamme joutumasta roskapostiin ja tulviin ja mahdollistaa reaaliaikaisten väärinkäyttö- ja suojausominaisuuksiemme toiminnan tehokkaasti.
+Vaikka Forward Email tarjoaa rajattomasti verkkotunnuksia ja aliaksia, olemme ottaneet käyttöön älykkään nopeusrajoituksen suojataksemme järjestelmäämme väärinkäytöksiltä ja varmistaaksemme oikeudenmukaisen käytön kaikille käyttäjille. Esimerkiksi muut kuin yritysasiakkaat voivat luoda jopa 50+ aliasta päivässä, mikä estää tietokantaamme roskapostin ja ylikuormituksen ja mahdollistaa reaaliaikaisten väärinkäyttö- ja suojausominaisuuksiemme tehokkaan toiminnan.
 
 ```javascript
 // Rate limiter implementation
@@ -155,26 +155,26 @@ if (limit.remaining <= 0) {
 }
 ```
 
-Tämä tasapainoinen lähestymistapa tarjoaa sinulle joustavuuden luoda niin monta sähköpostiosoitetta kuin tarvitset kattavaan tietosuojan hallintaan, samalla kun säilytät palvelumme eheyden ja suorituskyvyn kaikille käyttäjille.
+Tämä tasapainoinen lähestymistapa tarjoaa sinulle joustavuutta luoda niin monta sähköpostiosoitetta kuin tarvitset kattavaa yksityisyyden hallintaa varten, samalla säilyttäen palvelumme eheyden ja suorituskyvyn kaikille käyttäjille.
 
-## Hiekkalaatikkosalaus parannetun turvallisuuden takaamiseksi {#sandboxed-encryption-for-enhanced-security}
+## Sandbox-salaus parannetun turvallisuuden takaamiseksi {#sandboxed-encryption-for-enhanced-security}
 
-Ainutlaatuinen hiekkalaatikkosalaustapamme tarjoaa kriittisen tietoturvaedun, jonka monet käyttäjät jättävät huomiotta valitessaan sähköpostipalvelua. Tutkitaan, miksi hiekkalaatikkotiedot, erityisesti sähköposti, ovat niin tärkeitä.
+Ainutlaatuinen hiekkalaatikkopohjainen salausmenetelmämme tarjoaa kriittisen tietoturvaedun, jonka monet käyttäjät unohtavat valitessaan sähköpostipalvelua. Tarkastellaanpa, miksi datan, erityisesti sähköpostin, hiekkalaatikkopohjainen salaus on niin tärkeää.
 
-Palvelut, kuten Gmail ja Proton, käyttävät todennäköisesti jaettua [relaatiotietokannat](https://en.wikipedia.org/wiki/Relational_database) -linkkiä, mikä luo perustavanlaatuisen tietoturvahaavoittuvuuden. Jaetussa tietokantaympäristössä, jos joku saa pääsyn yhden käyttäjän tietoihin, hänellä on mahdollisesti polku myös muiden käyttäjien tietoihin. Tämä johtuu siitä, että kaikki käyttäjätiedot sijaitsevat samoissa tietokantataulukoissa, eroteltuina toisistaan vain käyttäjätunnuksilla tai vastaavilla tunnisteilla.
+Palvelut, kuten Gmail ja Proton, käyttävät todennäköisesti jaettua [relaatiotietokannat](https://en.wikipedia.org/wiki/Relational_database)-ominaisuutta, mikä luo perustavanlaatuisen tietoturvahaavoittuvuuden. Jaetussa tietokantaympäristössä, jos joku saa käyttöoikeuden yhden käyttäjän tietoihin, hänellä on mahdollisesti polku myös muiden käyttäjien tietoihin. Tämä johtuu siitä, että kaikki käyttäjätiedot sijaitsevat samoissa tietokantataulukoissa, erotettuina toisistaan vain käyttäjätunnuksilla tai vastaavilla tunnisteilla.
 
-Sähköpostin edelleenlähetys käyttää täysin erilaista lähestymistapaa hiekkalaatikkosalauksellamme:
+Sähköpostin edelleenlähetys käyttää perustavanlaatuisesti erilaista lähestymistapaa hiekkalaatikkopohjaisessa salauksessamme:
 
 1. **Täydellinen eristäminen**: Jokaisen käyttäjän tiedot tallennetaan omaan salattuun SQLite-tietokantatiedostoonsa, täysin erillään muista käyttäjistä.
 2. **Itsenäiset salausavaimet**: Jokainen tietokanta salataan omalla yksilöllisellä avaimellaan, joka on johdettu käyttäjän salasanasta.
 3. **Ei jaettua tallennustilaa**: Toisin kuin relaatiotietokannoissa, joissa kaikkien käyttäjien sähköpostit voivat olla yhdessä "sähköpostit"-taulukossa, lähestymistapamme varmistaa, ettei tiedot sekoitu.
 4. **Syvyysaikainen puolustus**: Vaikka yhden käyttäjän tietokanta jotenkin vaarantuisi, se ei tarjoa pääsyä minkään muun käyttäjän tietoihin.
 
-Tämä hiekkalaatikkolähestymistapa on samanlainen kuin sähköpostisi sijoittaminen erilliseen fyysiseen holviin eikä jaettuun tallennustilaan, jossa on sisäiset jakajat. Se on perustavanlaatuinen arkkitehtoninen ero, joka parantaa merkittävästi yksityisyyttäsi ja turvallisuuttasi.
+Tämä hiekkalaatikkolähestymistapa on samanlainen kuin sähköpostin säilyttäminen erillisessä fyysisessä holvissa jaetun, sisäisillä väliseinillä varustetun tallennustilan sijaan. Se on perustavanlaatuinen arkkitehtoninen ero, joka parantaa merkittävästi yksityisyyttäsi ja turvallisuuttasi.
 
 ## Muistissa oleva sähköpostin käsittely: Ei levytilaa maksimaalisen yksityisyyden takaamiseksi {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
 
-Sähköpostin välityspalvelussa käsittelemme sähköpostit kokonaan RAM-muistissa emmekä koskaan kirjoita niitä levymuistiin tai tietokantoihin. Tämä lähestymistapa tarjoaa vertaansa vailla olevan suojan sähköpostin valvontaa ja metatietojen keräämistä vastaan.
+Sähköpostin edelleenlähetyspalvelussamme käsittelemme sähköpostit kokonaan RAM-muistissa emmekä koskaan kirjoita niitä levylle tai tietokantoihin. Tämä lähestymistapa tarjoaa vertaansa vailla olevan suojan sähköpostin valvontaa ja metatietojen keräämistä vastaan.
 
 Tässä on yksinkertaistettu katsaus sähköpostin käsittelyyn:
 
@@ -208,11 +208,11 @@ async function onData(stream, _session, fn) {
 }
 ```
 
-Tämä lähestymistapa tarkoittaa, että vaikka palvelimemme vaarantuisivat, hyökkääjillä ei olisi historiallisia sähköpostitietoja. Sähköpostisi yksinkertaisesti kulkevat järjestelmämme läpi ja välitetään välittömästi määränpäähänsä jättämättä jälkiä. Tämä kirjautumaton sähköpostin edelleenlähetystapa on keskeinen viestintäsi suojaamisessa valvonnalta.
+Tämä lähestymistapa tarkoittaa, että vaikka palvelimemme vaarantuisivat, hyökkääjillä ei olisi pääsyä historiallisiin sähköpostitietoihin. Sähköpostisi yksinkertaisesti kulkevat järjestelmämme läpi ja välitetään välittömästi määränpäähänsä jälkiä jättämättä. Tämä lokien kirjaamaton sähköpostin edelleenlähetystapa on olennainen viestintäsi suojaamiseksi valvonnalta.
 
 ## Päästä päähän -salaus OpenPGP:llä täydellisen yksityisyyden takaamiseksi {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
-Käyttäjille, jotka tarvitsevat korkeimman tason yksityisyyden suojaa sähköpostin valvontaa vastaan, tuemme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) -protokollaa päästä päähän -salaukseen. Toisin kuin monet sähköpostipalveluntarjoajat, jotka vaativat omia siltoja tai sovelluksia, toteutuksemme toimii tavallisten sähköpostiohjelmien kanssa, mikä tekee turvallisesta viestinnästä kaikkien saatavilla.
+Käyttäjille, jotka tarvitsevat korkeimman tason yksityisyyden suojaa sähköpostin valvontaa vastaan, tuemme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy)-salausta päästä päähän -periaatteella. Toisin kuin monet sähköpostipalveluntarjoajat, jotka vaativat omia siltoja tai sovelluksia, toteutuksemme toimii tavallisten sähköpostiohjelmien kanssa, mikä tekee turvallisesta viestinnästä kaikkien saatavilla.
 
 Näin toteutamme OpenPGP-salauksen:
 
@@ -247,71 +247,71 @@ async function encryptMessage(pubKeyArmored, raw, isArmored = true) {
 }
 ```
 
-Tämä toteutus varmistaa, että sähköpostisi salataan ennen kuin ne lähtevät laitteestasi ja että vain aiottu vastaanottaja voi purkaa salauksen, jolloin viestintäsi pysyy yksityisenä jopa meiltä. Tämä on välttämätöntä arkaluonteisen viestinnän suojaamiseksi luvattomalta käytöltä ja valvonnalta.
+Tämä toteutus varmistaa, että sähköpostisi salataan ennen kuin ne lähtevät laitteeltasi, ja vain aiottu vastaanottaja voi purkaa niiden salauksen, jolloin viestintäsi pysyy yksityisenä myös meiltä. Tämä on olennaista arkaluonteisen viestinnän suojaamiseksi luvattomalta käytöltä ja valvonnalta.
 
 ## Monikerroksinen sisällönsuojaus kattavaa turvallisuutta varten {#multi-layered-content-protection-for-comprehensive-security}
 
-Välitä sähköposti tarjoaa useita sisällön suojaustasoja, jotka ovat oletuksena käytössä kattavan suojan tarjoamiseksi eri uhkia vastaan:
+Sähköpostin edelleenlähetys tarjoaa useita sisällön suojauskerroksia, jotka ovat oletusarvoisesti käytössä kattavan suojan tarjoamiseksi erilaisia uhkia vastaan:
 
 1. **Aikuisille suunnatun sisällön suojaus** – Suodattaa pois sopimattoman sisällön vaarantamatta yksityisyyttä
-2. **[Tietojenkalastelu](https://en.wikipedia.org/wiki/Phishing) suojaus** – Estää tietojesi varastamisyritykset säilyttäen samalla anonymiteetin
+2. **[Tietojenkalastelu](https://en.wikipedia.org/wiki/Phishing)-suojaus** – Estää tietojesi varastamisyritykset säilyttäen samalla anonymiteetin
 3. **Suoritettavien tiedostojen suojaus** – Estää mahdollisesti haitalliset liitteet tarkistamatta sisältöä
-4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus) suojaus** – Tarkistaa haittaohjelmien varalta yksityisyyttä suojaavilla tekniikoilla
+4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus)-suojaus** – Tarkistaa haittaohjelmien varalta yksityisyyttä suojaavilla tekniikoilla
 
-Toisin kuin monet palveluntarjoajat, jotka ottavat nämä ominaisuudet käyttöön, olemme poistaneet ne käytöstä varmistaen, että kaikki käyttäjät hyötyvät oletusarvoisesti näistä suojauksista. Tämä lähestymistapa kuvastaa sitoutumistamme sekä yksityisyyteen että turvallisuuteen ja tarjoaa tasapainon, jota monet sähköpostipalvelut eivät saavuta.
+Toisin kuin monet palveluntarjoajat, jotka tekevät näistä ominaisuuksista valinnaisia, me olemme tehneet niistä pois päältä, varmistaen, että kaikki käyttäjät hyötyvät näistä suojauksista oletusarvoisesti. Tämä lähestymistapa heijastaa sitoutumistamme sekä yksityisyyteen että tietoturvaan ja tarjoaa tasapainon, jota monet sähköpostipalvelut eivät saavuta.
 
 ## Miten eroamme muista sähköpostipalveluista: Tekninen tietosuojaetu {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-Verrattaessa sähköpostin edelleenlähetystä muihin sähköpostipalveluihin, useat keskeiset tekniset erot korostavat tietosuojaa etusijalla olevaa lähestymistapaamme:
+Kun verrataan sähköpostin edelleenlähetystä muihin sähköpostipalveluihin, useat keskeiset tekniset erot korostavat yksityisyys etusijalle asettamaamme lähestymistapaa:
 
-### Avoimen lähdekoodin läpinäkyvyys todennettavan yksityisyyden takaamiseksi {#open-source-transparency-for-verifiable-privacy}
+### Avoimen lähdekoodin läpinäkyvyys todennettavaa yksityisyyttä varten {#open-source-transparency-for-verifiable-privacy}
 
-Vaikka monet sähköpostipalveluntarjoajat väittävät olevansa avoimen lähdekoodin tarjoajia, he usein pitävät taustakoodinsa suljettuna. Forward Email on 100 % [avoimen lähdekoodin](https://en.wikipedia.org/wiki/Open_source) suojattu, mukaan lukien sekä käyttöliittymän että taustakoodin. Tämä läpinäkyvyys mahdollistaa kaikkien komponenttien riippumattoman tietoturvatarkastuksen, mikä varmistaa, että kuka tahansa voi vahvistaa tietosuojaväitteemme.
+Vaikka monet sähköpostipalveluntarjoajat väittävät olevansa avoimen lähdekoodin tarjoajia, he usein pitävät taustajärjestelmänsä koodin suljettuna. Forward Email on 100 % [avoimen lähdekoodin](https://en.wikipedia.org/wiki/Open_source), mukaan lukien sekä käyttöliittymän että taustajärjestelmän koodi. Tämä läpinäkyvyys mahdollistaa kaikkien komponenttien riippumattoman tietoturvatarkastuksen, mikä varmistaa, että kuka tahansa voi vahvistaa tietosuojaväitteemme.
 
-### Ei toimittajasidonnaisuutta yksityisyyden suojaan ilman kompromisseja {#no-vendor-lock-in-for-privacy-without-compromise}
+### Ei toimittajan sitomista yksityisyyden suojaan ilman kompromisseja {#no-vendor-lock-in-for-privacy-without-compromise}
 
 Monet yksityisyyteen keskittyvät sähköpostipalveluntarjoajat edellyttävät omien sovellustensa tai siltojensa käyttöä. Forward Email toimii minkä tahansa tavallisen sähköpostiohjelman kanssa [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-, [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol)- ja [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)-protokollien kautta, mikä antaa sinulle vapauden valita haluamasi sähköpostiohjelmiston tinkimättä yksityisyydestä.
 
-### Hiekkalaatikkodataa todelliseen eristämiseen {#sandboxed-data-for-true-isolation}
+### Hiekkalaatikkodata todelliseen eristämiseen {#sandboxed-data-for-true-isolation}
 
-Toisin kuin palvelut, jotka käyttävät jaettuja tietokantoja, joissa kaikki käyttäjien tiedot sekoitetaan, hiekkalaatikkomenetelmämme varmistaa, että jokaisen käyttäjän tiedot ovat täysin eristettyjä. Tämä perustavanlaatuinen arkkitehtoninen ero tarjoaa huomattavasti vahvemmat tietosuojatakuut kuin useimmat sähköpostipalvelut tarjoavat.
+Toisin kuin palvelut, jotka käyttävät jaettuja tietokantoja, joissa kaikkien käyttäjien tiedot sekoitetaan, hiekkalaatikkomenetelmämme varmistaa, että jokaisen käyttäjän tiedot ovat täysin erillään. Tämä perustavanlaatuinen arkkitehtoninen ero tarjoaa huomattavasti vahvemmat yksityisyystakuut kuin useimmat sähköpostipalvelut.
 
 ### Tietojen siirrettävyys ja hallinta {#data-portability-and-control}
 
-Uskomme, että tietosi kuuluvat sinulle, minkä vuoksi helpotamme sähköpostien vientiä vakiomuodoissa (MBOX, EML, SQLite) ja poistamme tietosi todella halutessasi. Tämän tason hallinta on harvinaista sähköpostipalveluntarjoajien keskuudessa, mutta se on välttämätöntä todellisen yksityisyyden kannalta.
+Uskomme, että tietosi kuuluvat sinulle, minkä vuoksi teemme sähköpostiesi viemisestä helppoa standardimuodoissa (MBOX, EML, SQLite) ja tietojesi todellisesta poistamisesta milloin tahansa. Tämän tasoinen hallinta on harvinaista sähköpostipalveluntarjoajien keskuudessa, mutta välttämätöntä todellisen yksityisyyden takaamiseksi.
 
 ## Yksityisyyden suojaan keskittyvän sähköpostin edelleenlähetyksen tekniset haasteet {#the-technical-challenges-of-privacy-first-email-forwarding}
 
-Yksityisyys etusijalla olevan sähköpostipalvelun rakentamiseen liittyy merkittäviä teknisiä haasteita. Tässä on joitain esteitä, jotka olemme voitettu:
+Yksityisyyttä etusijalla olevan sähköpostipalvelun rakentaminen tuo mukanaan merkittäviä teknisiä haasteita. Tässä on joitakin esteitä, jotka olemme voittaneet:
 
-### Muistinhallinta lokikirjaamattomaan sähköpostien käsittelyyn {#memory-management-for-no-logging-email-processing}
+### Muistinhallinta lokikirjaamattomalle sähköpostin käsittelylle {#memory-management-for-no-logging-email-processing}
 
-Sähköpostien käsittely muistissa ilman levytilaa vaatii huolellista muistinhallintaa, jotta suuria sähköpostiliikennemääriä voidaan käsitellä tehokkaasti. Olemme ottaneet käyttöön kehittyneitä muistin optimointitekniikoita varmistaaksemme luotettavan suorituskyvyn tinkimättä tallennuskieltokäytännöstämme, joka on tärkeä osa tietosuojastrategiaamme.
+Sähköpostien käsittely muistissa ilman levytilaa vaatii huolellista muistinhallintaa, jotta suuria sähköpostiliikennemääriä voidaan käsitellä tehokkaasti. Olemme ottaneet käyttöön edistyneitä muistin optimointitekniikoita varmistaaksemme luotettavan suorituskyvyn tinkimättä tallennuskieltokäytännöstämme, joka on kriittinen osa yksityisyyden suojausstrategiaamme.
 
 ### Roskapostin tunnistus ilman sisällön analysointia yksityisyyttä suojaavaa suodatusta varten {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-Useimmat [roskaposti](https://en.wikipedia.org/wiki/Email_spam) -tunnistusjärjestelmät perustuvat sähköpostisisällön analysointiin, mikä on ristiriidassa tietosuojaperiaatteidemme kanssa. Olemme kehittäneet tekniikoita roskapostikuvioiden tunnistamiseksi ilman sähköpostiesi sisällön lukemista, mikä tasapainottaa yksityisyyden ja käytettävyyden ja säilyttää viestintäsi luottamuksellisuuden.
+Useimmat [roskaposti](https://en.wikipedia.org/wiki/Email_spam)-tunnistusjärjestelmät perustuvat sähköpostisisällön analysointiin, mikä on ristiriidassa tietosuojaperiaatteidemme kanssa. Olemme kehittäneet tekniikoita roskapostikuvioiden tunnistamiseksi ilman sähköpostiesi sisällön lukemista. Näin löydetään tasapaino yksityisyyden ja käytettävyyden välillä ja säilytetään viestintäsi luottamuksellisuus.
 
 ### Yhteensopivuuden ylläpitäminen yksityisyyttä ensisijaisen suunnittelun kanssa {#maintaining-compatibility-with-privacy-first-design}
 
-Yhteensopivuuden varmistaminen kaikkien sähköpostiohjelmien kanssa edistyneiden tietosuojaominaisuuksien käyttöönoton yhteydessä on vaatinut luovia suunnitteluratkaisuja. Tiimimme on työskennellyt väsymättä tehdäkseen yksityisyydestä saumattoman, joten sinun ei tarvitse valita mukavuuden ja turvallisuuden välillä suojellessasi sähköpostiviestintääsi.
+Yhteensopivuuden varmistaminen kaikkien sähköpostiohjelmien kanssa samalla, kun toteutetaan edistyneitä tietosuojaominaisuuksia, on vaatinut luovia suunnitteluratkaisuja. Tiimimme on työskennellyt väsymättä tehdäkseen tietosuojasta saumattoman, joten sinun ei tarvitse valita kätevyyden ja turvallisuuden välillä sähköpostiviestinnän suojaamisessa.
 
 ## Tietosuojakäytännöt sähköpostin edelleenlähetyskäyttäjille {#privacy-best-practices-for-forward-email-users}
 
-Suosittelemme seuraavia parhaita käytäntöjä, jotta voit maksimoida suojauksesi sähköpostin valvonnalta ja maksimoidaksesi yksityisyytesi edelleenlähetyssähköpostin käytön aikana:
+Jotta voisit maksimoida suojauksesi sähköpostivalvontaa vastaan ja yksityisyytesi sähköpostin edelleenlähetystä käytettäessä, suosittelemme seuraavia parhaita käytäntöjä:
 
 1. **Käytä eri palveluille yksilöllisiä aliaksia** - Luo jokaiselle rekisteröidylle palvelulle eri sähköpostialias estääksesi palveluiden välisen seurannan.
 2. **Ota käyttöön OpenPGP-salaus** - Käytä arkaluonteisessa viestinnässä päästä päähän -salausta täydellisen yksityisyyden varmistamiseksi.
 3. **Vaihda sähköpostialiaksiasi säännöllisesti** - Päivitä tärkeiden palveluiden aliakset säännöllisesti pitkäaikaisen tiedonkeruun minimoimiseksi.
-4. **Käytä vahvoja, yksilöllisiä salasanoja** - Suojaa sähköpostin edelleenlähetystilisi vahvalla salasanalla luvattoman käytön estämiseksi.
-5. **Ota käyttöön [IP-osoite](https://en.wikipedia.org/wiki/IP_address) anonymisointi** - Harkitse [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) käyttöä yhdessä sähköpostin edelleenlähetyksen kanssa täydellisen anonymiteetin saavuttamiseksi.
+4. **Käytä vahvoja, yksilöllisiä salasanoja** - Suojaa sähköpostin edelleenlähetystili vahvalla salasanalla luvattoman käytön estämiseksi.
+5. **Ota käyttöön [IP-osoite](https://en.wikipedia.org/wiki/IP_address)-anonymisointi** - Harkitse [VPN](https://en.wikipedia.org/wiki/Virtual_private_network)-aliaksen käyttöä yhdessä sähköpostin edelleenlähetyksen kanssa täydellisen anonymiteetin saavuttamiseksi.
 
 ## Yhteenveto: Yksityisten sähköpostien edelleenlähetyksen tulevaisuus {#conclusion-the-future-of-private-email-forwarding}
 
-Me Forward Emailissa uskomme, että yksityisyys ei ole vain ominaisuus – se on perusoikeus. Tekniset toteutuksemme heijastavat tätä uskomusta tarjoamalla sinulle sähköpostin edelleenlähetyksen, joka kunnioittaa yksityisyyttäsi kaikilla tasoilla ja suojaa sinua sähköpostin valvonnalta ja metatietojen keräämiseltä.
+Forward Emaililla uskomme, että yksityisyys ei ole vain ominaisuus – se on perusoikeus. Tekniset toteutuksemme heijastavat tätä uskomusta ja tarjoavat sinulle sähköpostin edelleenlähetyksen, joka kunnioittaa yksityisyyttäsi kaikilla tasoilla ja suojaa sinua sähköpostin valvonnalta ja metatietojen keräämiseltä.
 
-Kun jatkamme palvelumme kehittämistä ja parantamista, sitoutumisemme yksityisyyteen pysyy horjumattomana. Tutkimme jatkuvasti uusia salausmenetelmiä, tutkimme lisää yksityisyyden suojauksia ja tarkennamme koodikantaamme tarjotaksemme turvallisimman mahdollisen sähköpostikokemuksen.
+Palvelumme kehittämisen ja parantamisen ohella sitoutumisemme yksityisyyteen pysyy horjumattomana. Tutkimme jatkuvasti uusia salausmenetelmiä, tutkimme lisäsuojauskeinoja ja hiomme koodikantaamme tarjotaksemme mahdollisimman turvallisen sähköpostikokemuksen.
 
-Valitsemalla Lähetä edelleen sähköposti et valitse vain sähköpostipalvelua, vaan tuet visiota Internetistä, jossa tietosuoja on oletusarvo, ei poikkeus. Liity kanssamme rakentamaan yksityisempää digitaalista tulevaisuutta, yksi sähköposti kerrallaan.
+Valitsemalla sähköpostin edelleenlähetyksen et valitse vain sähköpostipalvelua – tuet visiota internetistä, jossa yksityisyys on oletusarvo, ei poikkeus. Liity mukaan rakentamaan yksityisempää digitaalista tulevaisuutta, yksi sähköposti kerrallaan.
 
 <!-- *Avainsanat: yksityinen sähköpostin edelleenlähetys, sähköpostin yksityisyyden suojaus, turvallinen sähköpostipalvelu, avoimen lähdekoodin sähköposti, kvanttiturvallinen salaus, OpenPGP-sähköposti, muistissa oleva sähköpostin käsittely, lokiton sähköpostipalvelu, sähköpostin metatietojen suojaus, sähköpostin otsikon yksityisyys, päästä päähän salattu sähköposti, yksityisyyttä ensin huomioiva sähköposti, anonyymi sähköpostin edelleenlähetys, sähköpostin tietoturvan parhaat käytännöt, sähköpostin sisällön suojaus, tietojenkalastelusuojaus, sähköpostin virustarkistus, yksityisyyteen keskittyvä sähköpostipalveluntarjoaja, turvalliset sähköpostin otsikot, sähköpostin yksityisyyden toteutus, suojaus sähköpostin valvonnalta, lokiton sähköpostin edelleenlähetys, sähköpostin metatietojen vuotamisen estäminen, sähköpostin yksityisyystekniikat, IP-osoitteen anonymisointi sähköpostissa, yksityiset sähköpostialiakset, sähköpostin edelleenlähetyksen turvallisuus, sähköpostin yksityisyys mainostajilta, kvanttisuojattu sähköpostin salaus, sähköpostin yksityisyys ilman kompromisseja, SQLite-sähköpostin tallennustila, sähköpostin hiekkalaatikkosalaus, sähköpostin tietojen siirrettävyys* -->

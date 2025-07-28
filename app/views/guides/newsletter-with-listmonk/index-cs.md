@@ -1,6 +1,6 @@
 # Listmonk s přesměrováním e-mailů pro bezpečné doručování newsletterů {#listmonk-with-forward-email-for-secure-newsletter-delivery}
 
-__CHRÁNĚNÁ_URL_27__ Obsah {__CHRÁNĚNÁ_URL_28__
+## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
 * [Proč Listmonk a přeposílání e-mailů](#why-listmonk-and-forward-email)
@@ -15,16 +15,16 @@ __CHRÁNĚNÁ_URL_27__ Obsah {__CHRÁNĚNÁ_URL_28__
   * [7. Konfigurace SMTP pro přeposílání e-mailů v Listmonku](#7-configure-forward-email-smtp-in-listmonk)
   * [8. Konfigurace zpracování odražených zpráv](#8-configure-bounce-processing)
 * [Testování](#testing)
-  * [Vytvořte seznam adresátů](#create-a-mailing-list)
+  * [Vytvořte si seznam adresátů](#create-a-mailing-list)
   * [Přidat odběratele](#add-subscribers)
-  * [Vytvořte a odešlete kampaň](#create-and-send-a-campaign)
+  * [Vytvořit a odeslat kampaň](#create-and-send-a-campaign)
 * [Ověření](#verification)
 * [Poznámky pro vývojáře](#developer-notes)
 * [Závěr](#conclusion)
 
 ## Přehled {#overview}
 
-Tato příručka poskytuje vývojářům podrobné pokyny k nastavení [Listmonk](https://listmonk.app/), výkonného open-source správce newsletterů a mailing listů, pro použití [Přeposlat e-mail](https://forwardemail.net/) jako poskytovatele SMTP. Tato kombinace vám umožňuje efektivně spravovat vaše kampaně a zároveň zajistit bezpečné, soukromé a spolehlivé doručování e-mailů.
+Tato příručka poskytuje vývojářům podrobné pokyny pro nastavení [Listmonk](https://listmonk.app/), výkonného open-source správce newsletterů a mailing listů, pro použití [Přeposlat e-mail](https://forwardemail.net/) jako poskytovatele SMTP. Tato kombinace vám umožňuje efektivně spravovat vaše kampaně a zároveň zajistit bezpečné, soukromé a spolehlivé doručování e-mailů.
 
 * **Listmonk**: Zajišťuje správu odběratelů, organizaci seznamů, vytváření kampaní a sledování výkonu.
 * **Přeposílání e-mailů**: Funguje jako zabezpečený SMTP server a zajišťuje samotné odesílání e-mailů s vestavěnými bezpečnostními funkcemi, jako je SPF, DKIM, DMARC a šifrování TLS.
@@ -47,10 +47,10 @@ Než začnete, ujistěte se, že máte následující:
 * Potřebujete poskytovatele? Podívejte se na [seznam doporučených VPS](https://github.com/forwardemail/awesome-mail-server-providers).
 * Název domény, kterou spravujete (vyžadován přístup k DNS).
 * Aktivní účet s [Přeposlat e-mail](https://forwardemail.net/).
-* Root nebo `sudo` přístup k vašemu VPS.
+* Přístup root nebo `sudo` k vašemu VPS.
 * Základní znalost operací příkazového řádku Linuxu.
 
-Instalace {##
+## Instalace {#installation}
 
 Tyto kroky vás provedou instalací Listmonku pomocí Dockeru a Docker Compose na vašem VPS.
 
@@ -70,7 +70,7 @@ Nainstalujte Docker, Docker Compose a UFW (nekomplikovaný firewall).
 sudo apt install -y docker.io docker-compose ufw
 ```
 
-### 3. Stáhněte si konfiguraci Listmonk {#3-download-listmonk-configuration}
+### 3. Stáhnout konfiguraci Listmonku {#3-download-listmonk-configuration}
 
 Vytvořte adresář pro Listmonk a stáhněte si oficiální soubor `docker-compose.yml`.
 
@@ -98,28 +98,28 @@ Po zobrazení výzvy potvrďte povolení brány firewall.
 
 Spuštění Listmonku přes HTTPS je pro bezpečnost zásadní. Máte dvě hlavní možnosti:
 
-#### Možnost A: Použití proxy serveru Cloudflare (doporučeno pro zjednodušení) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### Možnost A: Použití proxy Cloudflare (doporučeno pro zjednodušení) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
 Pokud DNS vaší domény spravuje Cloudflare, můžete pro snadné HTTPS využít jejich funkci proxy.
 
-1. **Point DNS**: Vytvořte v Cloudflare záznam `A` pro vaši subdoménu Listmonk (např. `listmonk.yourdomain.com`) odkazující na IP adresu vašeho VPS. Ujistěte se, že je **Stav proxy** nastaven na **Proxyed** (oranžový obláček).
-2. **Úprava Docker Compose**: Upravte stažený soubor `docker-compose.yml`:
+1. **DNS bodu**: Vytvořte v Cloudflare záznam `A` pro vaši subdoménu Listmonk (např. `listmonk.yourdomain.com`) odkazující na IP adresu vašeho VPS. Ujistěte se, že je **Stav proxy** nastaven na **Proxyed** (oranžový obláček).
+2. **Upravit Docker Compose**: Upravte stažený soubor `docker-compose.yml`:
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-Tím se Listmonk zpřístupní interně na portu 80, který pak Cloudflare může proxyovat a zabezpečit pomocí HTTPS.
+Tím se Listmonk interně zpřístupní na portu 80, který pak Cloudflare může proxyovat a zabezpečit pomocí HTTPS.
 
 #### Možnost B: Použití reverzní proxy (Nginx, Caddy atd.) {#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
 Alternativně si můžete na svém VPS nastavit reverzní proxy, jako je Nginx nebo Caddy, pro zpracování HTTPS ukončení a proxy požadavků na Listmonk (ve výchozím nastavení běží na portu 9000).
 
-* Ponechte výchozí hodnotu `ports: - "127.0.0.1:9000:9000"` v `docker-compose.yml`, abyste zajistili, že Listmonk bude přístupný pouze lokálně.
+* Ponechte výchozí hodnotu `ports: - "127.0.0.1:9000:9000"` v `docker-compose.yml`, aby byl Listmonk přístupný pouze lokálně.
 * Nakonfigurujte zvolenou reverzní proxy tak, aby naslouchala na portech 80 a 443, zpracovávala získávání SSL certifikátů (např. přes Let's Encrypt) a přesměrovávala provoz na `http://127.0.0.1:9000`.
 * Podrobné nastavení reverzní proxy přesahuje rámec této příručky, ale mnoho tutoriálů je k dispozici online.
 
-__CHRÁNĚNÁ_URL_51__ 6. Spusťte Listmonk {__CHRÁNĚNÁ_URL_52__
+### 6. Spusťte Listmonk {#6-start-listmonk}
 
-Vraťte se do adresáře `listmonk` (pokud tam ještě nejste) a spusťte kontejnery v odděleném režimu.
+Vraťte se do adresáře `listmonk` (pokud tam ještě nejste) a spusťte kontejnery v odpojeném režimu.
 
 ```bash
 cd ~/listmonk # Or the directory where you saved docker-compose.yml
@@ -130,18 +130,17 @@ Docker stáhne potřebné obrazy a spustí aplikaci Listmonk a databázové kont
 
 ✅ **Přístup k Listmonku**: Nyní byste měli mít přístup k webovému rozhraní Listmonku prostřednictvím domény, kterou jste nakonfigurovali (např. `https://listmonk.yourdomain.com`).
 
-### 7. Konfigurace přeposílání e-mailů pro protokol SMTP v Listmonku {#7-configure-forward-email-smtp-in-listmonk}
+### 7. Konfigurace SMTP pro přeposílání e-mailů v Listmonku {#7-configure-forward-email-smtp-in-listmonk}
 
 Dále nakonfigurujte Listmonk tak, aby odesílal e-maily pomocí vašeho účtu Forward Email.
 
 1. **Povolte SMTP v přeposílání e-mailů**: Ujistěte se, že jste si vygenerovali přihlašovací údaje SMTP v řídicím panelu účtu pro přeposílání e-mailů. Pokud jste tak ještě neučinili, postupujte podle pokynů [Průvodce přesměrováním e-mailů pro odesílání e-mailů s vlastní doménou přes SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp).
-
-2. **Konfigurace Listmonku**: Přihlaste se do administrátorského panelu Listmonku.
+2. **Konfigurace Listmonk**: Přihlaste se do administrátorského panelu Listmonk.
 * Přejděte do sekce **Nastavení -> SMTP**.
 
 * Listmonk má vestavěnou podporu pro přeposílání e-mailů. Vyberte **ForwardEmail** ze seznamu poskytovatelů nebo ručně zadejte následující údaje:
 
-| Nastavení | Hodnota |
+| Prostředí | Hodnota |
 | :---------------- | :------------------------------------------------------------------------------------------------------------------ |
 | **Hostitel** | `smtp.forwardemail.net` |
 | **Přístav** | `465` |
@@ -151,20 +150,20 @@ Dále nakonfigurujte Listmonk tak, aby odesílal e-maily pomocí vašeho účtu 
 | **TLS** | `SSL/TLS` |
 | **Z e-mailu** | Vaše požadovaná adresa `From` (např. `newsletter@yourdomain.com`). Ujistěte se, že je tato doména nakonfigurována v části Přeposílání e-mailů. |
 
-* **Důležité**: Pro zabezpečené připojení s funkcí Forward Email vždy používejte port `465` s `SSL/TLS`. Nepoužívejte protokol STARTTLS (port 587).
+* **Důležité**: Pro zabezpečené připojení s přeposíláním e-mailů vždy používejte port `465` s portem `SSL/TLS`. Nepoužívejte STARTTLS (port 587).
 
 * Klikněte na **Uložit**.
-3. **Odeslat zkušební e-mail**: Na stránce nastavení SMTP použijte tlačítko „Odeslat zkušební e-mail“. Zadejte adresu příjemce, ke které máte přístup, a klikněte na **Odeslat**. Ověřte, zda e-mail dorazil do schránky příjemce.
+3. **Odeslat zkušební e-mail**: Použijte tlačítko „Odeslat zkušební e-mail“ na stránce nastavení SMTP. Zadejte adresu příjemce, ke které máte přístup, a klikněte na **Odeslat**. Ověřte, zda e-mail dorazil do schránky příjemce.
 
-### 8. Konfigurace zpracování nedoručených e-mailů {#8-configure-bounce-processing}
+### 8. Konfigurace zpracování odeslaných zpráv {#8-configure-bounce-processing}
 
 Zpracování nedoručených e-mailů umožňuje Listmonku automaticky zpracovat e-maily, které nemohly být doručeny (např. kvůli neplatným adresám). Funkce Forward Email poskytuje webhook, který Listmonk upozorní na nedoručené e-maily.
 
 #### Nastavení přeposílání e-mailů {#forward-email-setup}
 
-1. Přihlaste se ke své [Panel pro přeposílání e-mailů](https://forwardemail.net/).
+1. Přihlaste se do své [Panel pro přeposílání e-mailů](https://forwardemail.net/).
 2. Přejděte do sekce **Domény**, vyberte doménu, kterou používáte pro odesílání, a přejděte na její stránku **Nastavení**.
-3. Přejděte dolů do sekce **URL adresa webhooku pro odesílání**.
+3. Přejděte dolů do sekce **URL adresy webhooku pro odesílání**.
 4. Zadejte následující URL adresu a nahraďte `<your_listmonk_domain>` skutečnou doménou nebo subdoménou, kde je vaše instance Listmonk dostupná:
 ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
@@ -176,17 +175,25 @@ Zpracování nedoručených e-mailů umožňuje Listmonku automaticky zpracovat 
 
 #### Nastavení Listmonku {#listmonk-setup}
 
-1. V administračním panelu Listmonk přejděte do **Nastavení -> Odmítnutí**.
+1. V administrátorském panelu Listmonk přejděte do **Nastavení -> Odmítnutí**.
+
 2. Povolte **Povolit zpracování odmítnutí**.
+
 3. Povolte **Povolit webhooky pro odmítnutí**.
+
 4. Přejděte dolů do sekce **Poskytovatelé webhooků**.
+
 5. Povolte **Přeposílání e-mailů**.
+
 6. Vložte **Klíč pro ověření datové zátěže podpisu webhooku**, který jste zkopírovali z panelu Přeposílání e-mailů, do pole **Klíč pro přeposílání e-mailů**.
+
 7. Klikněte na **Uložit** v dolní části stránky.
+
 8. Zpracování odmítnutí je nyní nakonfigurováno! Když Přeposílání e-mailů zjistí odmítnutí e-mailu odeslaného službou Listmonk, upozorní vaši instanci Listmonk prostřednictvím webhooku a Listmonk odběratele odpovídajícím způsobem označí.
+
 9. Dokončete níže uvedené kroky v [Testování](#testing), abyste se ujistili, že vše funguje.
 
-__CHRÁNĚNÁ_URL_61__ Testování {__CHRÁNĚNÁ_URL_62__
+## Testování {#testing}
 
 Zde je rychlý přehled základních funkcí Listmonku:
 
@@ -209,24 +216,25 @@ Zde je rychlý přehled základních funkcí Listmonku:
 ### Vytvořit a odeslat kampaň {#create-and-send-a-campaign}
 
 * Přejděte do **Kampaně** -> **Nová kampaň**.
-* Vyplňte podrobnosti kampaně (jméno, předmět, e-mail odesílatele, seznam(y) k odeslání).
-* Vyberte typ obsahu (Rich Text/HTML, prostý text, nezpracovaný HTML).
-* Vytvořte obsah e-mailu. Můžete použít proměnné šablony, jako například `{{ .Subscriber.Email }}` nebo `{{ .Subscriber.FirstName }}`.
-* **Vždy nejprve odešlete testovací e-mail!** Pomocí možnosti „Odeslat testovací e-mail“ si můžete zobrazit náhled e-mailu ve vaší schránce. * Jakmile budete spokojeni, klikněte na **Spustit kampaň** a odešlete ji okamžitě nebo naplánujte na později.
+* Vyplňte podrobnosti kampaně (Název, Předmět, E-mail odesílatele, Seznam(y) k odeslání).
+* Vyberte typ obsahu (Rich Text/HTML, Prostý text, Neupravený HTML).
+* Vytvořte obsah e-mailu. Můžete použít proměnné šablony, jako je `{{ .Subscriber.Email }}` nebo `{{ .Subscriber.FirstName }}`.
+* **Vždy nejprve odešlete testovací e-mail!** Pomocí možnosti „Odeslat testovací“ si můžete zobrazit náhled e-mailu ve vaší schránce.
+* Jakmile budete spokojeni, klikněte na **Spustit kampaň** a odešlete ji okamžitě nebo naplánujte na později.
 
 ## Ověření {#verification}
 
 * **Doručování SMTP**: Pravidelně odesílejte testovací e-maily prostřednictvím stránky nastavení SMTP v Listmonku a testujte kampaně, abyste zajistili správné doručení e-mailů.
 * **Ošetření nedoručených e-mailů**: Odešlete testovací kampaň na známou neplatnou e-mailovou adresu (např. `bounce-test@yourdomain.com`, pokud nemáte po ruce skutečnou, výsledky se však mohou lišit). Po krátké době zkontrolujte statistiky kampaně v Listmonku, abyste zjistili, zda je nedoručení zaznamenáno.
-* **Záhlaví e-mailů**: Použijte nástroje jako [Tester pošty](https://www.mail-tester.com/) nebo ručně zkontrolujte záhlaví e-mailů, abyste ověřili, zda SPF, DKIM a DMARC procházejí správně, což naznačuje správné nastavení přesměrování e-mailů.
+* **Záhlaví e-mailů**: Použijte nástroje jako [Tester pošty](https://www.mail-tester.com/) nebo ručně zkontrolujte záhlaví e-mailů, abyste ověřili, zda SPF, DKIM a DMARC procházejí, což naznačuje správné nastavení přesměrování e-mailů.
 * **Protokoly přesměrování e-mailů**: Pokud máte podezření na problémy s doručováním pocházející ze serveru SMTP, zkontrolujte protokoly přesměrování e-mailů na řídicím panelu.
 
 ## Poznámky pro vývojáře {#developer-notes}
 
-* **Šablony**: Listmonk používá šablonovací engine Go. Pro pokročilou personalizaci si prohlédněte jeho dokumentaci: `{{ .Subscriber.Attribs.your_custom_field }}`.
+* **Šablony**: Listmonk používá šablonovací engine Go. Pro pokročilé možnosti personalizace si prohlédněte dokumentaci k němu: `{{ .Subscriber.Attribs.your_custom_field }}`.
 * **API**: Listmonk poskytuje komplexní REST API pro správu seznamů, odběratelů, kampaní, šablon a dalších funkcí. Odkaz na dokumentaci k API najdete v patičce vaší instance Listmonk.
 * **Vlastní pole**: Definujte vlastní pole pro odběratele v části **Nastavení -> Pole pro odběratele** pro ukládání dalších dat.
-* **Webhooky**: Kromě nedoručených zpráv může Listmonk odesílat webhooky i pro další události (např. odběry), což umožňuje integraci s jinými systémy.
+* **Webhooky**: Kromě nedoručených zpráv může Listmonk odesílat webhooky i pro jiné události (např. odběry), což umožňuje integraci s jinými systémy.
 
 ## Závěr {#conclusion}
 

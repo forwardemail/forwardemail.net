@@ -20,7 +20,7 @@
 * [Toepasselijk recht](#governing-law)
 * [Aanvullende openbaarmakingen](#additional-disclosures)
 
-Vrijwaring ## {#disclaimer}
+## Vrijwaring {#disclaimer}
 
 Door deze website te bezoeken, gaat u akkoord met deze Gebruiksvoorwaarden en alle toepasselijke wet- en regelgeving. Bovendien gaat u ermee akkoord dat u verantwoordelijk bent voor de naleving van alle toepasselijke lokale wetten.
 
@@ -34,28 +34,30 @@ Forward Email geeft geen garanties, expliciet noch impliciet, en wijst hierbij a
 
 Forward Email garandeert en verklaart voorts niet dat het gebruik van de materialen op haar Service of anderszins met betrekking tot dergelijke materialen of op sites die aan deze site zijn gelinkt, nauwkeurig, betrouwbaar of waarschijnlijk is.
 
-<u>**U gaat er specifiek mee akkoord dat u de Service niet zult gebruiken voor zakelijke doeleinden of voor materialen die verband houden met zowel [De verboden bedrijven van Stripe](https://stripe.com/legal/restricted-businesses) als [Verboden activiteiten van PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**
+<u>**U gaat er specifiek mee akkoord dat u de Service niet zult gebruiken voor zakelijke doeleinden of voor materialen die betrekking hebben op zowel [De verboden bedrijven van Stripe](https://stripe.com/legal/restricted-businesses) als [Verboden activiteiten van PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**
 
 <u>**U gaat er specifiek mee akkoord dat Forward Email door het gebruik van de Service niet verantwoordelijk is voor, niet aansprakelijk is voor en dat u met de Service geen van de volgende zaken zult creëren, lezen, wijzigen of verzenden:**
 
 * **U mag onze dienst niet gebruiken om een dienst te exploiteren die derden (met uitzondering van uw eigen medewerkers en contractanten) toegang geeft tot onze dienst, deze gebruikt of er voordeel uit haalt. Als u wilt dat wij hiervoor een uitzondering maken, neem dan contact met ons op om een zakelijke overeenkomst te bespreken. Zie onze [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) voor meer informatie.**
 * Als u onze [Uitgaande SMTP](/faq#do-you-support-sending-email-with-smtp) dienst gebruikt, gaat u akkoord met het volgende:
 * U mag deze gebruiken voor [transactionele e-mail](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) en [e-mailmarketing](https://en.wikipedia.org/wiki/Email_marketing).
-* Als u e-mailmarketingmateriaal verstuurt, moet u een header met de tekst `List-Unsubscribe` opnemen en moeten uw abonnees zich hiervoor hebben aangemeld. * We raden u aan een open-source nieuwsbriefbeheerder te gebruiken, zoals [ListMonk](https://github.com/knadh/listmonk) op <https://github.com/knadh/listmonk>..
-* Houd er rekening mee dat we van plan zijn in de toekomst onze eigen nieuwsbriefbeheerder te lanceren.
+* Als u e-mailmarketingmateriaal verstuurt, moet u een header `List-Unsubscribe` opnemen en moeten uw abonnees zich hiervoor hebben aangemeld.
+* We raden u aan een open-source nieuwsbriefbeheerder te gebruiken, zoals [ListMonk](https://github.com/knadh/listmonk) op <https://github.com/knadh/listmonk>.
+* Houd er rekening mee dat we van plan zijn in de toekomst onze eigen nieuwsbriefbeheerder uit te brengen.
 * E-mailmarketingmateriaal omvat promotionele, bulk- of commerciële e-mails naar een lijst met contactpersonen met vergelijkbare inhoud, onderwerpregel en berichttekst (bijvoorbeeld nieuwsbrieven en aankondigingen).
-* U moet voldoen aan de [CAN-SPAM-wet van 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
+* U moet voldoen aan de [CAN-SPAM-wet van 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003)-richtlijn.
 * U moet gebruikers die zich hebben afgemeld, zich hebben afgemeld of uw e-mail als spam hebben gemarkeerd, direct of binnen 24 uur verwijderen.
 * De eerste keer dat uw domeinnaam probeert een nieuwsbrief te versturen, zal een beheerder uw domein beoordelen en goedkeuren voor het versturen van nieuwsbrieven (meestal binnen 2-4 uur, maar soms kan het langer duren).
-* Alles wat de Service, de werking ervan en/of de klanten ervan verstoort. * Materialen die beledigend, lasterlijk, vals, intimiderend, onfatsoenlijk, smadelijk, misleidend, aanstootgevend, obsceen, aanstootgevend, godslasterlijk, bedreigend, onrechtmatig en/of vulgair zijn.
-* Ongeautoriseerd, auteursrechtelijk beschermd of vertrouwelijk materiaal en/of materiaal dat inbreuk maakt op intellectuele-eigendomsrechten, bedrijfsgeheimen en/of de privacy van anderen.
-* Alles wat aanzet tot crimineel gedrag, potentieel tot civiele aansprakelijkheid kan leiden en/of de wet- en regelgeving van een rechtsgebied kan schenden.
-* Materialen die schade toebrengen of de potentie hebben om schade toe te brengen aan minderjarigen, zich voordoen als een andere persoon of entiteit en/of een verkeerde voorstelling geven van een band met een persoon of entiteit.
-* Materialen die spam, virussen, malware, NSFW-materiaal (onfatsoenlijke, provocerende of godslasterlijke inhoud), beschadigde bestanden en/of andere software of programma's bevatten die schade kunnen toebrengen of de potentie hebben om schade toe te brengen aan een persoon, entiteit, computer, netwerk, overheid, dienst en/of enige andere kwestie.
+* Alles wat de Service, de werking ervan en/of de klanten ervan verstoort.
+* Materiaal dat beledigend, lasterlijk, vals, intimiderend, onfatsoenlijk, smadelijk, misleidend, aanstootgevend, obsceen, beledigend, godslasterlijk, bedreigend, onwettig en/of vulgair is.
+* Ongeautoriseerd auteursrechtelijk beschermd of vertrouwelijk materiaal en/of materiaal dat inbreuk maakt op intellectuele-eigendomsrechten, bedrijfsgeheimen en/of de privacy van anderen.
+* Alles wat crimineel gedrag aanmoedigt, kan leiden tot civiele aansprakelijkheid en/of de wet- en regelgeving van een rechtsgebied schendt.
+* Materiaal dat schade toebrengt of kan toebrengen aan minderjarigen, zich voordoet als een ander individu of entiteit en/of een verkeerde voorstelling geeft van een band met een individu of entiteit.
+* Materiaal dat spam, virussen, malware, NSFW-materiaal (aanstootgevende, provocerende of profane content), beschadigde bestanden en/of andere software of programma's bevat die schade kunnen toebrengen of kunnen toebrengen aan een individu, entiteit, computer, netwerk, overheid, dienst en/of enige andere kwestie.
 
 De materialen op deze website zijn beschermd door de toepasselijke auteursrecht- en merkenwetgeving.
 
-Door onze website te bezoeken en onze diensten te gebruiken, geeft u aan dat u akkoord gaat met onze [Privacybeleid](/privacy) en [Gegevensverwerkingsovereenkomst](/dpa) (bijvoorbeeld voor naleving van de AVG).
+Door onze website te bezoeken en onze diensten te gebruiken, geeft u aan dat u akkoord gaat met onze cookies (bijvoorbeeld voor naleving van de AVG).
 
 ## Onbeperkt gebruik {#unlimited-usage}
 
@@ -92,7 +94,7 @@ Als u een geschil opent met uw creditcardmaatschappij, bank of PayPal, wordt uw 
 
 ### Overeenkomst {#agreement}
 
-Forward Email zal alle redelijke commerciële inspanningen leveren (ten minste conform de acceptabele en redelijke industrienormen) om ervoor te zorgen dat de Forward Email-service 99,99% van de tijd in een kalendermaand beschikbaar is voor betalende klanten. Indien dit niet het geval is, komt u mogelijk in aanmerking voor de hieronder beschreven [Credits](#credits) in overeenstemming met [Geschiktheid](#eligibility).
+Forward Email zal alle redelijke commerciële inspanningen leveren (ten minste conform de acceptabele en redelijke industrienormen) om ervoor te zorgen dat de Forward Email-service 99,99% van de tijd in elke kalendermaand beschikbaar is voor betalende klanten. Indien dit niet het geval is, komt u mogelijk in aanmerking voor de hieronder beschreven [Credits](#credits) in overeenstemming met [Geschiktheid](#eligibility).
 
 ### Credits {#credits}
 
@@ -106,9 +108,9 @@ Forward Email zal alle redelijke commerciële inspanningen leveren (ten minste c
 
 ### Geschiktheid {#eligibility}
 
-Het minimale kredietbedrag moet minimaal $ 1,00 bedragen om in aanmerking te komen. Het maximale kredietbedrag is beperkt tot 30 dagen of het totale bedrag dat de klant per meest recente kalendermaand betaalt met betrekking tot Downtime (afhankelijk van welke het hoogst is). Betalende klanten die getroffen zijn door Downtime moeten binnen 30 dagen na de datum van Downtime een verzoek tot Credits indienen door een [Hulpverzoek](/help) in te dienen. Credits zijn alleen van toepassing op Downtime-factoren die binnen de primaire controle van Forward Email vallen.
+Het minimale kredietbedrag moet minimaal $ 1,00 bedragen om in aanmerking te komen. Het maximale kredietbedrag is beperkt tot 30 dagen of het totale bedrag dat de klant per meest recente kalendermaand betaalt met betrekking tot Downtime (afhankelijk van welke het hoogst is). Betalende klanten die getroffen zijn door Downtime moeten binnen 30 dagen na de datum van Downtime een verzoek tot krediet indienen door een [Hulpverzoek](/help) in te dienen. Kredieten zijn alleen van toepassing op Downtime-factoren die binnen de primaire controle van Forward Email vallen.
 
-## Revisies en errata {#revisions-and-errata}
+## Revisies en Errata {#revisions-and-errata}
 
 De materialen op de website van Forward Email kunnen technische, typografische of fotografische fouten bevatten. Forward Email garandeert niet dat de materialen op haar website accuraat, volledig of actueel zijn. Forward Email kan de materialen op haar website te allen tijde en zonder voorafgaande kennisgeving wijzigen. Forward Email verbindt zich er echter niet toe de materialen te actualiseren.
 

@@ -55,14 +55,14 @@
 | Política de seguridad | Ver [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | <strong>Estado gobernante</strong> | El estado de Delaware, Estados Unidos |
 
-## Cambios al Acuerdo {#changes-to-the-agreement}
+## Cambios en el Acuerdo {#changes-to-the-agreement}
 
-Este documento es un derivado del [Términos estándar de la DPA en papel común (versión 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) y se han realizado los siguientes cambios:
+Este documento es un derivado de [Términos estándar de la DPA en papel común (versión 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) y se han realizado los siguientes cambios:
 
-1. [Ley aplicable y tribunales elegidos](#11-governing-law-and-chosen-courts) se ha incluido como una sección a continuación con `Governing State` identificado anteriormente.
+1. [Ley aplicable y tribunales elegidos](#11-governing-law-and-chosen-courts) se ha incluido como una sección a continuación, junto con `Governing State`, identificado anteriormente.
 2. [Relación con el proveedor de servicios](#12-service-provider-relationship) se ha incluido como una sección a continuación.
 
-## 1. Relaciones entre el procesador y el subprocesador {#1-processor-and-subprocessor-relationships}
+## 1. Relaciones entre procesador y subprocesador {#1-processor-and-subprocessor-relationships}
 
 ### 1. Proveedor como procesador {#1-provider-as-processor}
 
@@ -86,7 +86,7 @@ El Cliente ordena al Proveedor que procese sus Datos Personales: (a) para presta
 
 El Proveedor solo procesará los Datos Personales del Cliente de acuerdo con este DPA, incluyendo la información detallada en la Portada. Si el Proveedor actualiza el Servicio para actualizar productos, características o funcionalidades existentes o para incluir nuevos, podrá cambiar las Categorías de Interesados, las Categorías de Datos Personales, los Datos de Categoría Especial, las Restricciones o Garantías de los Datos de Categoría Especial, la Frecuencia de Transferencia, la Naturaleza y Finalidad del Procesamiento y la Duración del Procesamiento, según sea necesario para reflejar las actualizaciones, notificándoselas al Cliente.
 
-### 4. Procesamiento de clientes {#4-customer-processing}
+### 4. Procesamiento del cliente {#4-customer-processing}
 
 Cuando el Cliente sea el Encargado del Tratamiento y el Proveedor sea el Subencargado del Tratamiento, el Cliente cumplirá con todas las Leyes Aplicables que rijan su Tratamiento de Datos Personales. El acuerdo entre el Cliente y su Responsable del Tratamiento también le exigirá que cumpla con todas las Leyes Aplicables que le sean aplicables como Encargado del Tratamiento. Además, el Cliente cumplirá con los requisitos para Subencargados del Tratamiento establecidos en el acuerdo entre el Cliente y su Responsable del Tratamiento.
 
@@ -162,7 +162,7 @@ El Proveedor proporcionará al Cliente toda la información razonablemente neces
 
 El Cliente reconoce que el Proveedor es auditado periódicamente por auditores externos independientes según los estándares definidos en la Política de Seguridad. Previa solicitud por escrito, el Proveedor entregará al Cliente, de forma confidencial, una copia resumida de su Informe vigente para que este pueda verificar el cumplimiento del Proveedor con los estándares definidos en la Política de Seguridad.
 
-### 3. Debida diligencia en materia de seguridad {#3-security-due-diligence}
+### 3. Debida diligencia de seguridad {#3-security-due-diligence}
 
 Además del Informe, el Proveedor responderá a las solicitudes de información razonables del Cliente para confirmar su cumplimiento con este DPA, incluyendo respuestas a cuestionarios de seguridad de la información, diligencia debida y auditoría, o proporcionando información adicional sobre su programa de seguridad de la información. Todas estas solicitudes deben presentarse por escrito al Contacto de Seguridad del Proveedor y solo pueden realizarse una vez al año.
 
@@ -172,7 +172,7 @@ Además del Informe, el Proveedor responderá a las solicitudes de información 
 
 Si el Proveedor recibe alguna consulta o solicitud de cualquier otra persona sobre el Tratamiento de Datos Personales del Cliente, notificará al Cliente sobre la solicitud y no responderá a ella sin su consentimiento previo. Ejemplos de este tipo de consultas y solicitudes incluyen una orden judicial, administrativa o de un organismo regulador sobre Datos Personales del Cliente, cuando la notificación al Cliente no esté prohibida por la Ley Aplicable, o una solicitud de un titular de los datos. Si la Ley Aplicable lo permite, el Proveedor seguirá las instrucciones razonables del Cliente sobre estas solicitudes, incluyendo proporcionar actualizaciones de estado y otra información que el Cliente solicite razonablemente. Si un titular de datos realiza una solicitud válida bajo las Leyes de Protección de Datos Aplicables para eliminar o excluirse de la entrega de Datos Personales del Cliente al Proveedor, el Proveedor ayudará al Cliente a cumplir con la solicitud de acuerdo con la Ley de Protección de Datos Aplicable. El Proveedor cooperará con el Cliente y le brindará asistencia razonable, a expensas del Cliente, en cualquier respuesta legal u otra acción procesal tomada por el Cliente en respuesta a una solicitud de un tercero sobre el Procesamiento de Datos Personales del Cliente por parte del Proveedor bajo este DPA.
 
-### 2. EIPD y EIDT {#2-dpias-and-dtias}
+### 2. DPIA y DTIA {#2-dpias-and-dtias}
 
 Si lo exigen las leyes de protección de datos aplicables, el <strong>Proveedor</strong> ayudará razonablemente al <strong>Cliente</strong> a realizar cualquier evaluación de impacto de protección de datos obligatoria o evaluaciones de impacto de transferencia de datos y consultas con las autoridades de protección de datos pertinentes, teniendo en cuenta la naturaleza del procesamiento y los datos personales del cliente.
 
@@ -206,7 +206,7 @@ b. Si el Cliente y el Proveedor han suscrito las Condiciones Generales de Contra
 
 1. El presente DPA forma parte del Acuerdo y lo complementa. En caso de inconsistencia entre el presente DPA, el Acuerdo o cualquiera de sus partes, la parte mencionada anteriormente prevalecerá sobre la parte mencionada posteriormente para dicha inconsistencia: (1) las Cláusulas Contractuales del EEE o el Anexo del Reino Unido, (2) el presente DPA y, finalmente, (3) el Acuerdo.
 
-## 10. Duración del acuerdo {#10-term-of-agreement}
+## 10. Plazo del acuerdo {#10-term-of-agreement}
 
 Este DPA comenzará cuando el Proveedor y el Cliente acuerden una Portada del DPA y firmen o acepten electrónicamente el Acuerdo, y continuará hasta su vencimiento o rescisión. Sin embargo, tanto el Proveedor como el Cliente permanecerán sujetos a las obligaciones establecidas en este DPA y en la Ley de Protección de Datos Aplicable hasta que el Cliente deje de transferir sus Datos Personales al Proveedor y este deje de procesarlos.
 
@@ -260,6 +260,6 @@ En la medida en que sea aplicable la Ley de Privacidad del Consumidor de Califor
 
 20. **"Anexo del Reino Unido"** significa el anexo de transferencia internacional de datos a las Condiciones Generales de Contratación del EEE emitido por el Comisionado de Información para las Partes que realizan Transferencias Restringidas según el Artículo 119A(1) de la Ley de Protección de Datos de 2018.
 
-Créditos {##
+## Créditos {#credits}
 
 Este documento es un derivado de [Términos estándar de la DPA en papel común (versión 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) y está licenciado bajo [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

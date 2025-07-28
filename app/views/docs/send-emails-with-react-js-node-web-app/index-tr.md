@@ -34,9 +34,9 @@ export function Email(props) {
 }
 ```
 
-Bu örnekte, giden postaları göndermek ve önizlemek için **[Nodemailer](https://github.com/nodemailer/nodemailer)** kütüphanesini ve resmi sponsoru **[E-postayı İlet](https://forwardemail.net)**'u kullanıyoruz.
+Bu örnekte, giden postaları göndermek ve önizlemek için **[Nodemailer](https://github.com/nodemailer/nodemailer)** kütüphanesini ve onun resmi sponsoru **[E-postayı İlet](https://forwardemail.net)**'i kullanıyoruz.
 
-Giden e-posta göndermek için <strong class="text-success"><i class="fa fa-key"></i>Şifre Oluştur</strong>'a ihtiyacınız olacak - lütfen **[Özel Alan Adıyla E-posta Gönderme SMTP Kılavuzu](/guides/send-email-with-custom-domain-smtp)** adımlarımızı izleyin.
+Giden e-posta göndermek için <strong class="text-success"><i class="fa fa-key"></i>Şifre Oluştur</strong>'a ihtiyacınız olacak - lütfen **[Özel Alan Adıyla E-posta Gönderme SMTP Kılavuzu](/guides/send-email-with-custom-domain-smtp)** adımlarını izleyin.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -78,4 +78,4 @@ node app
 
 Artık gerçek zamanlı e-posta teslim durumunuzu, e-posta teslim edilebilirlik günlüklerinizi ve HTML/düz metin/ek önizlemelerinizi görmek için **[Hesabım → E-postalar](/my-account/emails)** adresine gidebilirsiniz.
 
-> Not: :tada: Ayrıca **[tarayıcılarda ve iOS Simülatöründe e-postaları önizleme](/docs/test-preview-email-rendering-browsers-ios-simulator)** ve **[Node.js ile e-posta şablonları oluşturun](/docs/send-emails-with-node-js-javascript)**'ü de kullanabilirsiniz.
+> Not: :tada: Ayrıca **[tarayıcılarda ve iOS Simülatöründe e-postaları önizleme](/docs/test-preview-email-rendering-browsers-ios-simulator)** ve **[Node.js ile e-posta şablonları oluşturun](/docs/send-emails-with-node-js-javascript)** de yapabilirsiniz.

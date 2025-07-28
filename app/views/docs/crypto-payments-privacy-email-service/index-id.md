@@ -1,6 +1,6 @@
 # Memperkenalkan Pembayaran Kripto: Privasi yang Ditingkatkan untuk Layanan Email Anda {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="malas" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 
@@ -10,7 +10,7 @@
 * [Manfaat Privasi](#privacy-benefits)
 * [Detail Teknis](#technical-details)
 * [Menyiapkan Dompet Kripto Anda](#setting-up-your-crypto-wallet)
-  * [Masker Meta](#metamask)
+  * [MetaMask](#metamask)
   * [Hantu](#phantom)
   * [Dompet Coinbase](#coinbase-wallet)
   * [Koneksi Dompet](#walletconnect)
@@ -19,7 +19,7 @@
 
 ## Kata Pengantar {#foreword}
 
-Di [Teruskan Email](https://forwardemail.net), kami terus mencari cara untuk meningkatkan [pribadi](https://en.wikipedia.org/wiki/Privacy) dan keamanan Anda sekaligus menjadikan layanan kami lebih mudah diakses. Hari ini, dengan bangga kami umumkan bahwa kami kini menerima pembayaran [mata uang kripto](https://en.wikipedia.org/wiki/Cryptocurrency) melalui integrasi pembayaran kripto [Garis-garis](https://stripe.com).
+Di [Teruskan Email](https://forwardemail.net), kami terus mencari cara untuk meningkatkan [pribadi](https://en.wikipedia.org/wiki/Privacy) dan keamanan Anda sekaligus membuat layanan kami lebih mudah diakses. Hari ini, dengan bangga kami umumkan bahwa kami kini menerima pembayaran [mata uang kripto](https://en.wikipedia.org/wiki/Cryptocurrency) melalui integrasi pembayaran kripto [Garis-garis](https://stripe.com).
 
 ## Mengapa Pembayaran Kripto Penting {#why-crypto-payments-matter}
 
@@ -28,7 +28,7 @@ Di [Teruskan Email](https://forwardemail.net), kami terus mencari cara untuk men
 * Jaga anonimitas yang lebih baik saat membeli layanan email kami
 * Kurangi informasi pribadi yang terkait dengan akun email Anda
 * Pisahkan identitas keuangan dan email Anda
-* Dukung ekosistem [keuangan terdesentralisasi](https://en.wikipedia.org/wiki/Decentralized_finance) yang terus berkembang
+* Dukung ekosistem [keuangan terdesentralisasi](https://en.wikipedia.org/wiki/Decentralized_finance) yang sedang berkembang
 
 ## Cara Kerjanya {#how-it-works}
 
@@ -46,10 +46,10 @@ flowchart LR
 
 1. **Pilih Kripto sebagai Metode Pembayaran Anda**: Saat melakukan pembayaran, Anda akan melihat "Kripto" sebagai opsi pembayaran di samping metode tradisional seperti kartu kredit.
 
-2. **Pilih Mata Uang Kripto Anda**: Saat ini, kami menerima [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) di berbagai blockchain termasuk [Etereum](https://ethereum.org), [Matahari](https://solana.com), dan [Poligon](https://polygon.technology). USDC adalah mata uang kripto stabil yang nilainya setara dengan dolar AS.
+2. **Pilih Mata Uang Kripto Anda**: Saat ini, kami menerima [USDC](https://en.wikipedia.org/wiki/USD_Coin) (USD Coin) di berbagai blockchain termasuk [Ethereum](https://ethereum.org), [Solana](https://solana.com), dan [Poligon](https://polygon.technology). USDC adalah mata uang kripto stabil yang nilainya setara dengan dolar AS.
 
-3. **Hubungkan Dompet Anda**: Anda akan diarahkan ke halaman aman tempat Anda dapat menghubungkan dompet kripto pilihan Anda. Kami mendukung beberapa pilihan dompet, termasuk:
-* [Masker Meta](https://metamask.io)
+3. **Hubungkan Dompet Anda**: Anda akan diarahkan ke halaman aman tempat Anda dapat menghubungkan dompet kripto pilihan Anda. Kami mendukung beberapa opsi dompet, termasuk:
+* [MetaMask](https://metamask.io)
 * [Hantu](https://phantom.app)
 * [Dompet Coinbase](https://www.coinbase.com/wallet)
 * [Koneksi Dompet](https://walletconnect.com) (kompatibel dengan banyak dompet lainnya)
@@ -82,15 +82,15 @@ graph TD
 
 ## Detail Teknis {#technical-details}
 
-Bagi mereka yang tertarik dengan aspek teknis:
+Bagi mereka yang tertarik dengan aspek teknisnya:
 
 * Kami menggunakan infrastruktur pembayaran kripto [Garis-garis](https://docs.stripe.com/crypto/stablecoin-payments), yang menangani semua kompleksitas transaksi blockchain.
-* Pembayaran dilakukan dalam [USDC](https://www.circle.com/en/usdc) di berbagai blockchain, termasuk [Etereum](https://ethereum.org), [Matahari](https://solana.com), dan [Poligon](https://polygon.technology).
+* Pembayaran dilakukan dalam [USDC](https://www.circle.com/en/usdc) pada beberapa blockchain, termasuk [Ethereum](https://ethereum.org), [Solana](https://solana.com), dan [Poligon](https://polygon.technology).
 * Saat Anda membayar dalam mata uang kripto, kami menerima nilai yang setara dalam USD, sehingga kami dapat mempertahankan harga yang stabil.
 
 ## Menyiapkan Dompet Kripto Anda {#setting-up-your-crypto-wallet}
 
-Baru mengenal mata uang kripto? Berikut cara menyiapkan dompet yang kami dukung:
+Baru mengenal mata uang kripto? Berikut cara mengatur dompet yang kami dukung:
 
 ```mermaid
 flowchart LR
@@ -102,7 +102,7 @@ flowchart LR
 
 ### MetaMask {#metamask}
 
-[Masker Meta](https://metamask.io) adalah salah satu dompet Ethereum yang paling populer.
+[MetaMask](https://metamask.io) adalah salah satu dompet Ethereum yang paling populer.
 
 1. Kunjungi [Halaman unduhan MetaMask](https://metamask.io/download/)
 2. Pasang ekstensi peramban atau aplikasi seluler
@@ -124,7 +124,7 @@ flowchart LR
 
 ### Dompet Coinbase {#coinbase-wallet}
 
-[Dompet Coinbase](https://www.coinbase.com/wallet) mendukung banyak blockchain.
+[Dompet Coinbase](https://www.coinbase.com/wallet) mendukung beberapa blockchain.
 
 1. Unduh [Dompet Coinbase](https://www.coinbase.com/wallet/downloads)
 2. Buat dompet baru (terpisah dari akun bursa Coinbase)
@@ -132,7 +132,7 @@ flowchart LR
 4. Transfer atau beli kripto langsung di aplikasi
 5. [Panduan Dompet Coinbase](https://www.coinbase.com/learn/tips-and-tutorials/how-to-set-up-a-crypto-wallet)
 
-### WalletConnect {#walletconnect}
+### Koneksi Dompet {#walletconnect}
 
 [Koneksi Dompet](https://walletconnect.com) adalah protokol yang menghubungkan dompet ke situs web.
 
@@ -144,7 +144,7 @@ flowchart LR
 
 ## Memulai {#getting-started}
 
-Siap meningkatkan privasi Anda dengan pembayaran kripto? Cukup pilih opsi "Kripto" selama proses pembayaran saat Anda memperbarui langganan atau meningkatkan paket Anda.
+Siap meningkatkan privasi Anda dengan pembayaran kripto? Cukup pilih opsi "Kripto" saat pembayaran saat Anda memperbarui langganan atau meningkatkan paket berikutnya.
 
 Untuk informasi lebih lanjut tentang mata uang kripto dan teknologi blockchain, lihat sumber daya berikut:
 
@@ -163,9 +163,9 @@ Seperti biasa, kami sangat menghargai masukan Anda mengenai opsi pembayaran baru
 **Referensi:**
 
 1. [Dokumentasi Kripto Stripe](https://docs.stripe.com/crypto)
-2. [Koin stabil USDC](https://www.circle.com/en/usdc)
+2. [Koin Stabil USDC](https://www.circle.com/en/usdc)
 3. [Rantai Blok Ethereum](https://ethereum.org)
-4. [Rantai Blok Solana](https://solana.com)
+4. [Solana Blockchain](https://solana.com)
 5. [Jaringan Poligon](https://polygon.technology)
-6. [Electronic Frontier Foundation - Privasi](https://www.eff.org/issues/privacy)
+6. [Yayasan Perbatasan Elektronik - Privasi](https://www.eff.org/issues/privacy)
 7. [Kebijakan Privasi Email Teruskan](/privacy)

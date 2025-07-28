@@ -29,7 +29,7 @@
 
 In der heutigen digitalen Welt ist der Datenschutz beim E-Mail-Verkehr wichtiger denn je. Angesichts von Datenschutzverletzungen, Überwachungsbedenken und gezielter Werbung auf Basis von E-Mail-Inhalten suchen Nutzer zunehmend nach Lösungen, die ihre Privatsphäre schützen. Bei Forward Email haben wir unseren Service von Grund auf mit Datenschutz als Eckpfeiler unserer Architektur entwickelt. Dieser Blogbeitrag untersucht die technischen Implementierungen, die unseren Service zu einer der datenschutzfreundlichsten E-Mail-Weiterleitungslösungen auf dem Markt machen.
 
-## Die Datenschutzphilosophie von Forward Email {#the-forward-email-privacy-philosophy}
+## Die Datenschutzphilosophie für die Weiterleitung von E-Mails {#the-forward-email-privacy-philosophy}
 
 Bevor wir uns mit den technischen Details befassen, ist es wichtig, unsere grundlegende Datenschutzphilosophie zu verstehen: **Ihre E-Mails gehören Ihnen und nur Ihnen**. Dieser Grundsatz bestimmt jede unserer technischen Entscheidungen, von der E-Mail-Weiterleitung bis zur Implementierung der Verschlüsselung.
 
@@ -81,7 +81,7 @@ db.pragma('optimize=0x10002;');
 db.pragma('temp_store=1;');
 ```
 
-Diese Implementierung gewährleistet, dass Ihre Daten nicht nur sicher, sondern auch portierbar sind. Sie können Ihre E-Mails jederzeit mitnehmen und loslegen, indem Sie sie in den Formaten [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) oder SQLite exportieren. Und wenn Sie Ihre Daten löschen möchten, sind sie wirklich weg – wir löschen die Dateien einfach vom Festplattenspeicher, anstatt SQL DELETE ROW-Befehle auszuführen, die Spuren in der Datenbank hinterlassen können.
+Diese Implementierung gewährleistet nicht nur die Sicherheit Ihrer Daten, sondern auch deren Portabilität. Sie können Ihre E-Mails jederzeit mitnehmen, indem Sie sie in den Formaten [MBOX](https://en.wikipedia.org/wiki/Email#Storage), [EML](https://en.wikipedia.org/wiki/Email#Storage) oder SQLite exportieren. Und wenn Sie Ihre Daten löschen möchten, sind sie wirklich weg – wir löschen die Dateien einfach vom Festplattenspeicher, anstatt SQL DELETE ROW-Befehle auszuführen, die Spuren in der Datenbank hinterlassen können.
 
 Der Quantenverschlüsselungsaspekt unserer Implementierung verwendet ChaCha20-Poly1305 als Chiffre, wenn wir die Datenbank initialisieren, und bietet so starken Schutz vor aktuellen und zukünftigen Bedrohungen Ihrer Datensicherheit.
 
@@ -121,9 +121,9 @@ function getBounceInfo(err) {
 ```
 
 > \[!NOTE]
-> This is an excerpt of the `getBounceInfo` method and not the actual extensive implementation. For the complete code, you can review it on [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
+> Dies ist ein Auszug der Methode `getBounceInfo` und nicht die tatsächliche, umfassende Implementierung. Den vollständigen Code finden Sie unter [GitHub](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/get-bounce-info.js).
 
-Wir versuchen die E-Mail-Zustellung fünf Tage lang erneut (ähnlich Branchenstandards wie [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), um vorübergehenden Problemen Zeit zu geben, sich zu lösen. Dieser Ansatz verbessert die Zustellraten erheblich und schützt gleichzeitig die Privatsphäre.
+Wir versuchen die E-Mail-Zustellung fünf Tage lang erneut (ähnlich Branchenstandards wie [Postfix](https://en.wikipedia.org/wiki/Postfix_\(software\)), um temporären Problemen Zeit zu geben, sich zu lösen. Dieser Ansatz verbessert die Zustellraten deutlich und schützt gleichzeitig die Privatsphäre.
 
 In ähnlicher Weise redigieren wir auch den Nachrichteninhalt ausgehender SMTP-E-Mails nach erfolgreicher Zustellung. Dies ist in unserem Speichersystem mit einer Standardaufbewahrungsdauer von 30 Tagen konfiguriert, die Sie in den erweiterten Einstellungen Ihrer Domain anpassen können. Nach Ablauf dieser Frist wird der E-Mail-Inhalt automatisch redigiert und gelöscht, es bleibt nur eine Platzhalternachricht übrig:
 
@@ -159,9 +159,9 @@ Dieser ausgewogene Ansatz bietet Ihnen die Flexibilität, so viele E-Mail-Adress
 
 ## Sandbox-Verschlüsselung für verbesserte Sicherheit {#sandboxed-encryption-for-enhanced-security}
 
-Unser einzigartiger Sandbox-Verschlüsselungsansatz bietet einen entscheidenden Sicherheitsvorteil, den viele Nutzer bei der Wahl eines E-Mail-Dienstes übersehen. Lassen Sie uns untersuchen, warum Sandboxing-Daten, insbesondere E-Mails, so wichtig sind.
+Unser einzigartiger Sandbox-Verschlüsselungsansatz bietet einen entscheidenden Sicherheitsvorteil, den viele Nutzer bei der Wahl eines E-Mail-Dienstes übersehen. Lassen Sie uns untersuchen, warum die Sandbox-Verschlüsselung von Daten, insbesondere von E-Mails, so wichtig ist.
 
-Dienste wie Gmail und Proton verwenden höchstwahrscheinlich gemeinsam genutzte [relationale Datenbanken](https://en.wikipedia.org/wiki/Relational_database), was eine grundlegende Sicherheitslücke darstellt. In einer gemeinsam genutzten Datenbankumgebung kann jemand, der Zugriff auf die Daten eines Benutzers erhält, möglicherweise auch auf die Daten anderer Benutzer zugreifen. Dies liegt daran, dass alle Benutzerdaten in denselben Datenbanktabellen gespeichert sind und nur durch Benutzer-IDs oder ähnliche Kennungen getrennt sind.
+Dienste wie Gmail und Proton verwenden höchstwahrscheinlich den gemeinsam genutzten [relationale Datenbanken](https://en.wikipedia.org/wiki/Relational_database), was eine grundlegende Sicherheitslücke darstellt. In einer gemeinsam genutzten Datenbankumgebung kann jemand, der Zugriff auf die Daten eines Benutzers erhält, möglicherweise auch auf die Daten anderer Benutzer zugreifen. Dies liegt daran, dass alle Benutzerdaten in denselben Datenbanktabellen gespeichert sind und nur durch Benutzer-IDs oder ähnliche Kennungen getrennt sind.
 
 Forward Email verfolgt mit unserer Sandbox-Verschlüsselung einen grundlegend anderen Ansatz:
 
@@ -172,7 +172,7 @@ Forward Email verfolgt mit unserer Sandbox-Verschlüsselung einen grundlegend an
 
 Dieser Sandbox-Ansatz ähnelt der Aufbewahrung Ihrer E-Mails in einem separaten physischen Tresor statt in einem gemeinsam genutzten Speicher mit internen Trennwänden. Es handelt sich um einen grundlegenden architektonischen Unterschied, der Ihre Privatsphäre und Sicherheit deutlich verbessert.
 
-## In-Memory-E-Mail-Verarbeitung: Kein Festplattenspeicher für maximale Privatsphäre {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
+## E-Mail-Verarbeitung im Arbeitsspeicher: Kein Festplattenspeicher für maximale Privatsphäre {#in-memory-email-processing-no-disk-storage-for-maximum-privacy}
 
 Für unseren E-Mail-Weiterleitungsdienst verarbeiten wir E-Mails vollständig im RAM und schreiben sie niemals auf Festplatten oder in Datenbanken. Dieser Ansatz bietet unübertroffenen Schutz vor E-Mail-Überwachung und Metadatenerfassung.
 
@@ -208,9 +208,9 @@ async function onData(stream, _session, fn) {
 }
 ```
 
-Dieser Ansatz bedeutet, dass selbst im Falle einer Kompromittierung unserer Server Angreifer keinen Zugriff auf historische E-Mail-Daten hätten. Ihre E-Mails durchlaufen einfach unser System und werden sofort und spurlos an ihr Ziel weitergeleitet. Dieser Ansatz ohne Protokollierung ist grundlegend für den Schutz Ihrer Kommunikation vor Überwachung.
+Dieser Ansatz bedeutet, dass selbst bei einer Kompromittierung unserer Server Angreifer keinen Zugriff auf historische E-Mail-Daten hätten. Ihre E-Mails passieren einfach unser System und werden sofort und spurlos an ihr Ziel weitergeleitet. Dieser Ansatz ohne Protokollierung ist grundlegend für den Schutz Ihrer Kommunikation vor Überwachung.
 
-## Ende-zu-Ende-Verschlüsselung mit OpenPGP für vollständigen Datenschutz {#end-to-end-encryption-with-openpgp-for-complete-privacy}
+## End-to-End-Verschlüsselung mit OpenPGP für vollständigen Datenschutz {#end-to-end-encryption-with-openpgp-for-complete-privacy}
 
 Für Nutzer, die höchsten Datenschutz vor E-Mail-Überwachung benötigen, unterstützen wir [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy) für Ende-zu-Ende-Verschlüsselung. Im Gegensatz zu vielen E-Mail-Anbietern, die proprietäre Bridges oder Apps benötigen, funktioniert unsere Implementierung mit Standard-E-Mail-Clients und ermöglicht so sichere Kommunikation für jedermann.
 
@@ -255,26 +255,26 @@ Forward Email bietet mehrere Ebenen des Inhaltsschutzes, die standardmäßig akt
 
 1. **Schutz vor Inhalten für Erwachsene** – Filtert unangemessene Inhalte heraus, ohne die Privatsphäre zu beeinträchtigen.
 2. **[Phishing](https://en.wikipedia.org/wiki/Phishing)-Schutz** – Blockiert Versuche, Ihre Daten zu stehlen, und wahrt gleichzeitig Ihre Anonymität.
-3. **Schutz vor ausführbaren Dateien** – Verhindert potenziell schädliche Anhänge, ohne den Inhalt zu prüfen.
-4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus)-Schutz** – Sucht mithilfe datenschutzfreundlicher Techniken nach Malware.
+3. **Schutz vor ausführbaren Dateien** – Verhindert potenziell schädliche Anhänge, ohne den Inhalt zu scannen.
+4. **[Virus](https://en.wikipedia.org/wiki/Computer_virus)-Schutz** – Scannt mithilfe datenschutzfreundlicher Techniken auf Malware.
 
 Im Gegensatz zu vielen Anbietern, die diese Funktionen optional anbieten, haben wir sie optional gestaltet, um sicherzustellen, dass alle Nutzer standardmäßig von diesem Schutz profitieren. Dieser Ansatz spiegelt unser Engagement für Datenschutz und Sicherheit wider und bietet eine Balance, die viele E-Mail-Dienste nicht erreichen.
 
 ## Wie wir uns von anderen E-Mail-Diensten unterscheiden: Der technische Datenschutzvorteil {#how-we-differ-from-other-email-services-the-technical-privacy-advantage}
 
-Beim Vergleich von Forward Email mit anderen E-Mail-Diensten werden mehrere wichtige technische Unterschiede deutlich, die unseren Ansatz unterstreichen, bei dem der Datenschutz an erster Stelle steht:
+Beim Vergleich von Forward Email mit anderen E-Mail-Diensten werden mehrere wichtige technische Unterschiede deutlich, die unseren Ansatz, bei dem der Datenschutz an erster Stelle steht, unterstreichen:
 
 ### Open Source-Transparenz für überprüfbaren Datenschutz {#open-source-transparency-for-verifiable-privacy}
 
-Viele E-Mail-Anbieter behaupten zwar, Open Source zu sein, halten ihren Backend-Code jedoch oft geheim. Forward Email ist zu 100 % [Open Source](https://en.wikipedia.org/wiki/Open_source), sowohl im Frontend- als auch im Backend-Code. Diese Transparenz ermöglicht unabhängige Sicherheitsprüfungen aller Komponenten und stellt sicher, dass unsere Datenschutzansprüche von jedem überprüft werden können.
+Viele E-Mail-Anbieter behaupten zwar, Open Source zu sein, halten ihren Backend-Code jedoch oft geheim. Forward Email besteht zu 100 % aus [Open Source](https://en.wikipedia.org/wiki/Open_source), einschließlich Frontend- und Backend-Code. Diese Transparenz ermöglicht unabhängige Sicherheitsprüfungen aller Komponenten und stellt sicher, dass unsere Datenschutzansprüche von jedem überprüft werden können.
 
 ### Keine Abhängigkeit von einem Anbieter für kompromisslosen Datenschutz {#no-vendor-lock-in-for-privacy-without-compromise}
 
-Viele datenschutzorientierte E-Mail-Anbieter verlangen die Verwendung eigener Apps oder Bridges. Forward Email funktioniert mit jedem Standard-E-Mail-Client über die Protokolle [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) und [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). So haben Sie die Freiheit, Ihre bevorzugte E-Mail-Software zu wählen, ohne Kompromisse beim Datenschutz eingehen zu müssen.
+Viele datenschutzorientierte E-Mail-Anbieter verlangen die Verwendung eigener Apps oder Bridges. Forward Email funktioniert mit jedem Standard-E-Mail-Client über die Protokolle [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol), [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) und [SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). So können Sie Ihre bevorzugte E-Mail-Software frei wählen, ohne Kompromisse beim Datenschutz eingehen zu müssen.
 
 ### Sandbox-Daten für echte Isolation {#sandboxed-data-for-true-isolation}
 
-Im Gegensatz zu Diensten mit gemeinsamen Datenbanken, in denen alle Benutzerdaten vermischt werden, stellt unser Sandbox-Ansatz sicher, dass die Daten jedes einzelnen Benutzers vollständig isoliert sind. Dieser grundlegende architektonische Unterschied bietet deutlich stärkere Datenschutzgarantien als die meisten E-Mail-Dienste.
+Im Gegensatz zu Diensten mit gemeinsamen Datenbanken, in denen alle Benutzerdaten vermischt werden, stellt unser Sandbox-Ansatz sicher, dass die Daten jedes einzelnen Benutzers vollständig isoliert sind. Dieser grundlegende architektonische Unterschied bietet deutlich bessere Datenschutzgarantien als die meisten E-Mail-Dienste.
 
 ### Datenportabilität und -kontrolle {#data-portability-and-control}
 
@@ -288,13 +288,13 @@ Der Aufbau eines datenschutzorientierten E-Mail-Dienstes bringt erhebliche techn
 
 Die Verarbeitung von E-Mails im Arbeitsspeicher ohne Festplattenspeicher erfordert eine sorgfältige Speicherverwaltung, um hohe E-Mail-Verkehrsmengen effizient zu bewältigen. Wir haben fortschrittliche Speicheroptimierungstechniken implementiert, um eine zuverlässige Leistung zu gewährleisten, ohne dabei unsere No-Storage-Richtlinie zu gefährden, ein wichtiger Bestandteil unserer Datenschutzstrategie.
 
-### Spam-Erkennung ohne Inhaltsanalyse zur datenschutzgerechten Filterung {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
+### Spam-Erkennung ohne Inhaltsanalyse zur datenschutzkonformen Filterung {#spam-detection-without-content-analysis-for-privacy-preserving-filtering}
 
-Die meisten [Spam](https://en.wikipedia.org/wiki/Email_spam)-Erkennungssysteme basieren auf der Analyse von E-Mail-Inhalten, was unseren Datenschutzgrundsätzen widerspricht. Wir haben Techniken entwickelt, um Spam-Muster zu erkennen, ohne den Inhalt Ihrer E-Mails zu lesen. So schaffen wir ein Gleichgewicht zwischen Datenschutz und Benutzerfreundlichkeit, das die Vertraulichkeit Ihrer Kommunikation gewährleistet.
+Die meisten [Spam](https://en.wikipedia.org/wiki/Email_spam)-Erkennungssysteme basieren auf der Analyse von E-Mail-Inhalten, was unseren Datenschutzgrundsätzen widerspricht. Wir haben Techniken entwickelt, um Spam-Muster zu erkennen, ohne den Inhalt Ihrer E-Mails zu lesen. So finden wir ein Gleichgewicht zwischen Datenschutz und Benutzerfreundlichkeit, das die Vertraulichkeit Ihrer Kommunikation gewährleistet.
 
 ### Aufrechterhaltung der Kompatibilität mit dem Privacy-First-Design {#maintaining-compatibility-with-privacy-first-design}
 
-Die Kompatibilität mit allen E-Mail-Clients und die Implementierung erweiterter Datenschutzfunktionen erforderten kreative technische Lösungen. Unser Team hat unermüdlich daran gearbeitet, den Datenschutz nahtlos zu gestalten, damit Sie beim Schutz Ihrer E-Mail-Kommunikation nicht zwischen Komfort und Sicherheit wählen müssen.
+Die Gewährleistung der Kompatibilität mit allen E-Mail-Clients bei gleichzeitiger Implementierung erweiterter Datenschutzfunktionen erfordert kreative technische Lösungen. Unser Team hat unermüdlich daran gearbeitet, den Datenschutz nahtlos zu gestalten, damit Sie beim Schutz Ihrer E-Mail-Kommunikation nicht zwischen Komfort und Sicherheit wählen müssen.
 
 ## Bewährte Datenschutzpraktiken für Benutzer der E-Mail-Weiterleitung {#privacy-best-practices-for-forward-email-users}
 
@@ -303,8 +303,8 @@ Um Ihren Schutz vor E-Mail-Überwachung und Ihre Privatsphäre bei der Verwendun
 1. **Verwenden Sie eindeutige Aliase für verschiedene Dienste** – Erstellen Sie für jeden Dienst, für den Sie sich anmelden, einen anderen E-Mail-Alias, um dienstübergreifendes Tracking zu verhindern.
 2. **Aktivieren Sie OpenPGP-Verschlüsselung** – Verwenden Sie für vertrauliche Kommunikation eine Ende-zu-Ende-Verschlüsselung, um absolute Privatsphäre zu gewährleisten.
 3. **Rotieren Sie Ihre E-Mail-Aliase regelmäßig.** – Aktualisieren Sie die Aliase für wichtige Dienste regelmäßig, um die langfristige Datenerfassung zu minimieren.
-4. **Verwenden Sie sichere, eindeutige Passwörter.** – Schützen Sie Ihr Forward Email-Konto mit einem sicheren Passwort, um unbefugten Zugriff zu verhindern.
-5. **Implementieren Sie [IP-Adresse](https://en.wikipedia.org/wiki/IP_address)-Anonymisierung.** – Erwägen Sie die Verwendung einer [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) in Verbindung mit Forward Email für vollständige Anonymität.
+4. **Verwenden Sie sichere, eindeutige Passwörter.** – Schützen Sie Ihr Forward-E-Mail-Konto mit einem sicheren Passwort, um unbefugten Zugriff zu verhindern.
+5. **Implementieren Sie die Anonymisierung durch [IP-Adresse](https://en.wikipedia.org/wiki/IP_address).** – Erwägen Sie die Verwendung eines [VPN](https://en.wikipedia.org/wiki/Virtual_private_network) in Verbindung mit Forward-E-Mail für vollständige Anonymität.
 
 ## Fazit: Die Zukunft der privaten E-Mail-Weiterleitung {#conclusion-the-future-of-private-email-forwarding}
 

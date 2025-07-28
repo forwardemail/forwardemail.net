@@ -1,50 +1,50 @@
 # Příklady integrace SMTP {#smtp-integration-examples}
 
-__CHRÁNĚNÁ_URL_16__ Obsah {__CHRÁNĚNÁ_URL_17__
+## Obsah {#table-of-contents}
 
 * [Předmluva](#foreword)
-* [Jak funguje přeposílání e-mailů SMTP](#how-forward-emails-smtp-processing-works)
-  * [E-mailová fronta a systém opakování](#email-queue-and-retry-system)
-  * [Spolehlivost s dummy-proofed](#dummy-proofed-for-reliability)
+* [Jak funguje zpracování SMTP přesměrování e-mailů](#how-forward-emails-smtp-processing-works)
+  * [Systém fronty e-mailů a opakování pokusů](#email-queue-and-retry-system)
+  * [Ochranné proti zkoušce pro spolehlivost](#dummy-proofed-for-reliability)
 * [Integrace Node.js](#nodejs-integration)
-  * [Pomocí Nodemailer](#using-nodemailer)
-  * [Pomocí Express.js](#using-expressjs)
+  * [Používání Nodemaileru](#using-nodemailer)
+  * [Používání Express.js](#using-expressjs)
 * [Integrace Pythonu](#python-integration)
-  * [Pomocí smtplib](#using-smtplib)
-  * [Pomocí Django](#using-django)
+  * [Používání smtplib](#using-smtplib)
+  * [Používání Djanga](#using-django)
 * [Integrace PHP](#php-integration)
-  * [Použití PHPMailer](#using-phpmailer)
-  * [Pomocí Laravelu](#using-laravel)
+  * [Používání PHPMaileru](#using-phpmailer)
+  * [Používání Laravelu](#using-laravel)
 * [Integrace Ruby](#ruby-integration)
-  * [Použití Ruby Mail Gem](#using-ruby-mail-gem)
-* [Integrace Java](#java-integration)
-  * [Použití JavaMail API](#using-javamail-api)
+  * [Používání Ruby Mail Gemu](#using-ruby-mail-gem)
+* [Integrace Javy](#java-integration)
+  * [Používání rozhraní Java Mail API](#using-javamail-api)
 * [Konfigurace e-mailového klienta](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (Odeslat poštu jako)](#gmail-send-mail-as)
+  * [Gmail (Odesílat poštu jako)](#gmail-send-mail-as)
 * [Odstraňování problémů](#troubleshooting)
-  * [Běžné problémy a řešení](#common-issues-and-solutions)
+  * [Běžné problémy a jejich řešení](#common-issues-and-solutions)
   * [Získání pomoci](#getting-help)
 * [Další zdroje](#additional-resources)
 * [Závěr](#conclusion)
 
-__CHRÁNĚNÁ_URL_18__ Předmluva {__CHRÁNĚNÁ_URL_19__
+## Předmluva {#foreword}
 
-Tato příručka poskytuje podrobné příklady integrace se službou SMTP Forward Email pomocí různých programovacích jazyků, rámců a e-mailových klientů. Naše služba SMTP je navržena tak, aby byla spolehlivá, bezpečná a snadno integrovatelná s vašimi stávajícími aplikacemi.
+Tato příručka poskytuje podrobné příklady integrace se službou SMTP od Forward Email pomocí různých programovacích jazyků, frameworků a e-mailových klientů. Naše služba SMTP je navržena tak, aby byla spolehlivá, bezpečná a snadno se integrovala s vašimi stávajícími aplikacemi.
 
 ## Jak funguje zpracování SMTP pro přeposílání e-mailů {#how-forward-emails-smtp-processing-works}
 
-Než se pustíme do příkladů integrace, je důležité pochopit, jak naše služba SMTP zpracovává e-maily:
+Než se ponoříme do příkladů integrace, je důležité pochopit, jak naše služba SMTP zpracovává e-maily:
 
-### Systém pro frontu a opakování e-mailů {#email-queue-and-retry-system}
+### Systém fronty e-mailů a opakování pokusů {#email-queue-and-retry-system}
 
 Když odešlete e-mail přes SMTP na naše servery:
 
 1. **Počáteční zpracování**: E-mail je ověřen, skenován na přítomnost malwaru a kontrolován pomocí spamových filtrů.
 2. **Inteligentní řazení do fronty**: E-maily jsou zařazeny do sofistikovaného systému front pro doručení.
 3. **Inteligentní mechanismus opakování**: Pokud doručení dočasně selže, náš systém:
-* Analyzuje chybovou odpověď pomocí naší funkce `getBounceInfo`
+* Analyzuje chybovou odpověď pomocí funkce `getBounceInfo`.
 * Určí, zda je problém dočasný (např. „zkuste to znovu později“, „dočasně odloženo“) nebo trvalý (např. „uživatel neznámý“).
 * V případě dočasných problémů označí e-mail k opakování.
 * V případě trvalých problémů vygeneruje oznámení o nedoručení.
@@ -52,24 +52,24 @@ Když odešlete e-mail přes SMTP na naše servery:
 5. **Oznámení o stavu doručení**: Odesílatelé dostávají oznámení o stavu svých e-mailů (doručeno, zpožděno nebo nedoručeno).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Po úspěšném doručení je obsah odchozích SMTP e-mailů po uplynutí nastavitelné doby uchovávání (výchozí hodnota je 30 dní) z důvodu zabezpečení a ochrany soukromí odstraněn. Zůstane pouze zástupná zpráva o úspěšném doručení.
 
-### Ověřeno proti falešným ověřením {#dummy-proofed-for-reliability}
+### Ověřeno pro spolehlivost {#dummy-proofed-for-reliability}
 
-Náš systém je navržen tak, aby zvládal různé okrajové případy:
+Náš systém je navržen tak, aby zvládal různé hraniční případy:
 
-* Pokud je detekován blokovaný seznam, pokus o doručení e-mailu bude automaticky zopakován.
+* Pokud je detekován blokovaný seznam, pokus o doručení bude automaticky zopakován.
 * Pokud dojde k problémům se sítí, pokus o doručení bude zopakován.
 * Pokud je poštovní schránka příjemce plná, systém se pokusí o doručení později.
 * Pokud je přijímací server dočasně nedostupný, budeme se o doručení dále pokoušet.
 
-Tento přístup výrazně zlepšuje rychlost doručení při zachování soukromí a bezpečnosti.
+Tento přístup výrazně zlepšuje míru doručování a zároveň zachovává soukromí a bezpečnost.
 
-__CHRÁNĚNÁ_URL_26__ Integrace Node.js {__CHRÁNĚNÁ_URL_27__
+## Integrace Node.js {#nodejs-integration}
 
 ### Používání Nodemaileru {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) je oblíbený modul pro odesílání e-mailů z Node.js aplikací.
+[Nodemailer](https://nodemailer.com/) je oblíbený modul pro odesílání e-mailů z aplikací Node.js.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -105,9 +105,9 @@ async function sendEmail() {
 sendEmail();
 ```
 
-__CHRÁNĚNÁ_URL_30__ Používání Express.js {__CHRÁNĚNÁ_URL_31__
+### Používání Express.js {#using-expressjs}
 
-Zde je návod, jak integrovat Forward Email SMTP s aplikací Express.js:
+Zde je návod, jak integrovat SMTP pro přeposílání e-mailů s aplikací Express.js:
 
 ```javascript
 const express = require('express');
@@ -159,7 +159,7 @@ app.listen(port, () => {
 });
 ```
 
-## Integrace s Pythonem {#python-integration}
+## Integrace Pythonu {#python-integration}
 
 ### Používání smtplib {#using-smtplib}
 
@@ -204,7 +204,7 @@ except Exception as e:
 
 ### Používání Djanga {#using-django}
 
-Pro aplikace Django přidejte do souboru `settings.py` následující kód:
+Pro aplikace Django přidejte do `settings.py` následující:
 
 ```python
 # Email settings
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Poté odešlete e-maily ve svých zobrazeních:
+Pak odešlete e-maily ve svých zobrazeních:
 
 ```python
 from django.core.mail import send_mail
@@ -234,7 +234,7 @@ def send_email_view(request):
     return HttpResponse('Email sent!')
 ```
 
-## Integrace s PHP {#php-integration}
+## Integrace PHP {#php-integration}
 
 ### Používání PHPMaileru {#using-phpmailer}
 
@@ -275,7 +275,7 @@ try {
 }
 ```
 
-__CHRÁNĚNÁ_URL_42__ Používání Laravelu {__CHRÁNĚNÁ_URL_43__
+### Používání Laravelu {#using-laravel}
 
 Pro aplikace Laravel aktualizujte soubor `.env`:
 
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Poté posílejte e-maily pomocí fasády Laravel's Mail:
+Pak odešlete e-maily pomocí fasády Mail v Laravelu:
 
 ```php
 <?php
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## Konfigurace e-mailového klienta {#email-client-configuration}
 
-__CHRÁNĚNÁ_URL_54__ Thunderbird {__CHRÁNĚNÁ_URL_55__
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
@@ -452,7 +452,7 @@ flowchart TD
 * Uživatelské jméno: vaše úplná e-mailová adresa.
 5. Klikněte na „Test“ a poté na „Hotovo“.
 
-__CHRÁNĚNÁ_URL_56__ Apple Mail {__CHRÁNĚNÁ_URL_57__
+### Apple Mail {#apple-mail}
 
 1. Otevřete aplikaci Mail a přejděte do sekce Pošta > Předvolby > Účty
 2. Klikněte na tlačítko „+“ pro přidání nového účtu
@@ -480,7 +480,7 @@ __CHRÁNĚNÁ_URL_56__ Apple Mail {__CHRÁNĚNÁ_URL_57__
 
 ## Řešení problémů {#troubleshooting}
 
-### Časté problémy a jejich řešení {#common-issues-and-solutions}
+### Běžné problémy a řešení {#common-issues-and-solutions}
 
 1. **Ověření selhalo**
 * Ověřte své uživatelské jméno (úplnou e-mailovou adresu) a heslo
@@ -504,21 +504,21 @@ __CHRÁNĚNÁ_URL_56__ Apple Mail {__CHRÁNĚNÁ_URL_57__
 
 ### Získání pomoci {#getting-help}
 
-Pokud narazíte na problémy, které zde nejsou popsány, prosím:
+Pokud narazíte na problémy, které zde nejsou uvedeny, prosím:
 
-1. Pro časté dotazy se podívejte na naši [Stránka FAQ](/faq)
-2. Pro podrobné informace si projděte naši [blogový příspěvek o doručování e-mailem](/blog/docs/best-email-forwarding-service)
-3. Kontaktujte náš tým podpory na adrese <support@forwardemail.net>
+1. Pro časté dotazy si prohlédněte náš [Stránka s častými dotazy](/faq).
+2. Pro podrobné informace si projděte náš [blogový příspěvek o doručování e-mailů](/blog/docs/best-email-forwarding-service).
+3. Kontaktujte náš tým podpory na adrese <support@forwardemail.net>.
 
 ## Další zdroje {#additional-resources}
 
-* [Předat e-mailovou dokumentaci](/docs)
-* [Omezení a konfigurace serveru SMTP](/faq#what-are-your-outbound-smtp-limits)
-* [Průvodce doporučenými postupy e-mailem](/blog/docs/best-email-forwarding-service)
-* [Bezpečnostní praktiky](/security)
+* [Dokumentace k přeposlání e-mailu](/docs)
+* [Omezení a konfigurace SMTP serveru](/faq#what-are-your-outbound-smtp-limits)
+* [Průvodce osvědčenými postupy pro e-maily](/blog/docs/best-email-forwarding-service)
+* [Bezpečnostní postupy](/security)
 
 ## Závěr {#conclusion}
 
-Služba SMTP Forward Email poskytuje spolehlivý, bezpečný a na ochranu soukromí zaměřený způsob odesílání e-mailů z vašich aplikací a e-mailových klientů. Díky našemu inteligentnímu systému front, 5dennímu mechanismu opakování a komplexním upozorněním o stavu doručení si můžete být jisti, že vaše e-maily dorazí na místo určení.
+Služba SMTP od Forward Email poskytuje spolehlivý, bezpečný a na soukromí zaměřený způsob odesílání e-mailů z vašich aplikací a e-mailových klientů. Díky našemu inteligentnímu systému front, 5dennímu mechanismu opakování a komplexním oznámením o stavu doručení si můžete být jisti, že vaše e-maily dorazí do cíle.
 
-Pro pokročilejší případy použití nebo vlastní integrace kontaktujte náš tým podpory.
+Pro pokročilejší případy použití nebo vlastní integrace se prosím obraťte na náš tým podpory.

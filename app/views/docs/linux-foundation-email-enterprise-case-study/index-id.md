@@ -1,6 +1,6 @@
 # Studi Kasus: Bagaimana Linux Foundation Mengoptimalkan Manajemen Email di Lebih dari 250 Domain dengan Forward Email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img memuat="malas" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 
@@ -17,7 +17,7 @@
   * [Peningkatan Efisiensi](#efficiency-improvements)
   * [Manajemen Biaya](#cost-management)
   * [Keamanan yang Ditingkatkan](#enhanced-security)
-  * [Pengalaman Pengguna yang Lebih Baik](#improved-user-experience)
+  * [Pengalaman Pengguna yang Ditingkatkan](#improved-user-experience)
 * [Kesimpulan](#conclusion)
 * [Referensi](#references)
 
@@ -27,11 +27,11 @@
 
 ## Tantangan {#the-challenge}
 
-Linux Foundation menghadapi beberapa tantangan pengelolaan email:
+Yayasan Linux menghadapi beberapa tantangan manajemen email:
 
 * **Skala**: Mengelola email di lebih dari 250 domain dengan persyaratan berbeda
-* **Beban Administratif**: Mengonfigurasi rekaman DNS, memelihara aturan penerusan, dan menanggapi permintaan dukungan
-* **Keamanan**: Melindungi dari ancaman berbasis email sambil menjaga privasi
+* **Beban Administratif**: Mengonfigurasi rekaman DNS, mempertahankan aturan penerusan, dan menanggapi permintaan dukungan
+* **Keamanan**: Melindungi dari ancaman berbasis email sekaligus menjaga privasi
 * **Biaya**: Solusi per pengguna tradisional sangat mahal dalam skala besar
 * **Penyelarasan Open-Source**: Kebutuhan akan solusi yang sesuai dengan komitmen mereka terhadap nilai-nilai open-source
 
@@ -57,11 +57,11 @@ Sebagai satu-satunya layanan email dengan platform sumber terbuka sepenuhnya (ba
 
 ### Desain Berfokus pada Privasi {#privacy-focused-design}
 
-[kebijakan privasi](https://forwardemail.net/privacy) Forward Email yang ketat menyediakan keamanan yang dibutuhkan Linux Foundation. [implementasi teknis perlindungan privasi email](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) kami memastikan bahwa semua komunikasi tetap aman sejak awal, tanpa pencatatan atau pemindaian konten email.
+[kebijakan privasi](https://forwardemail.net/privacy) yang ketat dari Forward Email menyediakan keamanan yang dibutuhkan Linux Foundation. [implementasi teknis perlindungan privasi email](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) kami memastikan bahwa semua komunikasi tetap aman sejak awal, tanpa pencatatan atau pemindaian konten email.
 
 Seperti yang dijelaskan secara rinci dalam dokumentasi implementasi teknis kami:
 
-> "Kami membangun seluruh sistem kami berdasarkan prinsip bahwa email Anda adalah milik Anda dan hanya Anda. Tidak seperti penyedia lain yang memindai konten email untuk iklan atau pelatihan AI, kami menerapkan kebijakan tanpa pencatatan dan pemindaian yang ketat yang menjaga kerahasiaan semua komunikasi."
+> "Kami membangun seluruh sistem kami berdasarkan prinsip bahwa email Anda adalah milik Anda dan hanya milik Anda. Tidak seperti penyedia lain yang memindai konten email untuk iklan atau pelatihan AI, kami menerapkan kebijakan tanpa pencatatan dan pemindaian yang ketat untuk menjaga kerahasiaan semua komunikasi."
 
 ### Keamanan Tingkat Perusahaan {#enterprise-grade-security}
 
@@ -95,11 +95,11 @@ flowchart LR
    domain.org.    600    IN    TXT   "v=spf1 include:spf.forwardemail.net -all"
    ```
 
-2. **Integrasi API**: Menghubungkan dengan Pusat Kontrol Proyek untuk manajemen layanan mandiri
+2. **Integrasi API**: Terhubung dengan Pusat Kontrol Proyek untuk manajemen layanan mandiri
 
 3. **Pengembangan Fitur Kustom**: Manajemen multi-domain, pelaporan, kebijakan keamanan
 
-Kami bekerja sama erat dengan Linux Foundation untuk mengembangkan fitur-fitur (yang juga 100% bersumber terbuka sehingga setiap orang dapat memperoleh manfaat darinya) khusus untuk lingkungan multi-proyek mereka, mirip dengan cara kami membuat solusi khusus untuk [sistem email alumni universitas](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
+Kami bekerja sama erat dengan Linux Foundation untuk mengembangkan fitur-fitur (yang juga 100% bersumber terbuka sehingga semua orang dapat memperoleh manfaat darinya) khusus untuk lingkungan multi-proyek mereka, mirip dengan cara kami membuat solusi khusus untuk [sistem email alumni universitas](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
 
 ## Hasil dan Manfaat {#results-and-benefits}
 
@@ -107,9 +107,9 @@ Implementasinya memberikan manfaat yang signifikan:
 
 ### Peningkatan Efisiensi {#efficiency-improvements}
 
-* Mengurangi biaya administrasi
-* Onboarding proyek yang lebih cepat (dari beberapa hari menjadi beberapa menit)
-* Manajemen yang lebih efisien untuk semua 250+ domain dari satu antarmuka
+* Mengurangi beban administrasi
+* Onboarding proyek lebih cepat (dari hitungan hari menjadi hitungan menit)
+* Manajemen yang lebih efisien untuk lebih dari 250 domain dari satu antarmuka
 
 ### Manajemen Biaya {#cost-management}
 
@@ -126,17 +126,17 @@ Implementasinya memberikan manfaat yang signifikan:
 
 ### Peningkatan Pengalaman Pengguna {#improved-user-experience}
 
-* Manajemen email swalayan untuk administrator proyek
-* Pengalaman yang konsisten di semua domain Linux Foundation
+* Manajemen email mandiri untuk administrator proyek
+* Pengalaman yang konsisten di seluruh domain Linux Foundation
 * Pengiriman email yang andal dengan autentikasi yang kuat
 
 ## Kesimpulan {#conclusion}
 
-Kemitraan Linux Foundation dengan Forward Email menunjukkan bagaimana organisasi dapat mengatasi tantangan manajemen email yang kompleks sekaligus menjaga keselarasan dengan nilai-nilai inti mereka. Dengan memilih solusi yang mengutamakan prinsip-prinsip sumber terbuka, privasi, dan keamanan, Linux Foundation telah mengubah manajemen email dari beban administratif menjadi keuntungan strategis.
+Kemitraan Linux Foundation dengan Forward Email menunjukkan bagaimana organisasi dapat mengatasi tantangan manajemen email yang kompleks sekaligus tetap selaras dengan nilai-nilai inti mereka. Dengan memilih solusi yang mengutamakan prinsip sumber terbuka, privasi, dan keamanan, Linux Foundation telah mengubah manajemen email dari beban administratif menjadi keunggulan strategis.
 
-Seperti yang terlihat dalam pekerjaan kami dengan [Kanonik/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) dan [universitas besar](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organisasi dengan portofolio domain yang kompleks dapat mencapai peningkatan yang signifikan dalam efisiensi, keamanan, dan manajemen biaya melalui solusi perusahaan Forward Email.
+Seperti yang terlihat dalam pekerjaan kami dengan [Kanonik/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) dan [universitas-universitas besar](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organisasi dengan portofolio domain yang kompleks dapat mencapai peningkatan yang signifikan dalam efisiensi, keamanan, dan manajemen biaya melalui solusi perusahaan Forward Email.
 
-Untuk informasi lebih lanjut tentang bagaimana Forward Email dapat membantu organisasi Anda mengelola email di beberapa domain, kunjungi [forwardemail.net](https://forwardemail.net) atau jelajahi [dokumentasi](https://forwardemail.net/email-api) dan [panduan](https://forwardemail.net/guides) kami yang terperinci.
+Untuk informasi lebih lanjut tentang bagaimana Forward Email dapat membantu organisasi Anda mengelola email di beberapa domain, kunjungi [forwardemail.net](https://forwardemail.net) atau jelajahi [dokumentasi](https://forwardemail.net/email-api) dan [panduan](https://forwardemail.net/guides) terperinci kami.
 
 ## Referensi {#references}
 

@@ -1,1 +1,1 @@
-<https://github.com/scintill/macos-server-apns-certs/tree/master> を参照してください
+<https://github.com/scintill/macos-server-apns-certs/tree/master> を参照

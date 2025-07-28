@@ -1,49 +1,49 @@
-# Tiskové materiály a materiály pro média {#press--media-kit}
+# Tiskové a mediální materiály {#press--media-kit}
 
 <img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_5__ Obsah {__CHRÁNĚNÁ_URL_6__
+## Obsah {#table-of-contents}
 
-* [O přeposílání e-mailů](#about-forward-email)
-* [Písma](#fonts)
+* [O přeposlání e-mailu](#about-forward-email)
+* [Fonty](#fonts)
 * [Barvy](#colors)
 * [Loga](#logos)
 * [Grafika](#graphics)
 
-## O přeposílání e-mailu {#about-forward-email}
+## O přeposílaném e-mailu {#about-forward-email}
 
 Forward Email je jediná 100% open-source e-mailová hostingová služba zaměřená na bezpečnost a soukromí. Více informací o naší historii naleznete na [naše stránka O nás](/about).
 
-Naše služba byla založena v roce 2017 a zajišťuje e-maily pro více než 500 000 domén – včetně významných uživatelů, jako jsou [Americká námořní akademie](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [několik univerzit](/blog/docs/alumni-email-forwarding-university-case-study), vládních institucí a dalších.
+Naše služba byla založena v roce 2017 a zajišťuje e-maily pro více než 500 000 domén – včetně významných uživatelů, jako jsou [Americká námořní akademie](/blog/docs/federal-government-email-service-section-889-compliant), [Kanonický/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Nadace Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [několik univerzit](/blog/docs/alumni-email-forwarding-university-case-study), vládních institucí a dalších.
 
-Naším cílem je být platformou pro podnikovou e-mailovou a bezpečnostní infrastrukturu – a dodržujeme [několik zásad](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Naším cílem je být platformou pro podnikovou e-mailovou a bezpečnostní infrastrukturu – a dodržujeme pravidla [několik principů](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Pokud jste členem tisku, novinářem nebo zástupcem médií a chcete s námi hovořit, položit nám otázky nebo se dozvědět více, kontaktujte nás prosím na adrese `press@forwardemail.net`.
+Pokud jste novinář, tiskový pracovník nebo zástupce médií a chcete s námi hovořit, položit nám otázky nebo se dozvědět více, kontaktujte nás prosím na adrese `press@forwardemail.net`.
 
-__CHRÁNĚNÁ_URL_9__ Fonty {__CHRÁNĚNÁ_URL_10__
+## Fonty {#fonts}
 
 * **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (tučné; tloušťka 700)
 * **Tělo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (běžné; tloušťka 400)
-* **Nadpisy:** [VC Honey](https://verycoolstudio.com/typefaces/honey) (tučné; tloušťka 700)
-* **Ikony:** [Úžasné písmo 5](https://fontawesome.com/)
+* **Nadpisy:** [Med VC](https://verycoolstudio.com/typefaces/honey) (tučné; tloušťka 700)
+* **Ikony:** [Písmo Awesome 5](https://fontawesome.com/)
 
-__CHRÁNĚNÁ_URL_11__ Barvy {__CHRÁNĚNÁ_URL_12__
+## Barvy {#colors}
 
 * **Modrá:** `#0066FF` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
 * **Azurová:** `#9DE5F9` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
 * **Zelená:** `#269C32` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
 
-__CHRÁNĚNÁ_URL_16__ Loga {__CHRÁNĚNÁ_URL_17__
+## Loga {#logos}
 
-"Přeposlat logo e-mailu"
+Logo pro přeposlání e-mailu
 
 ![Logo pro přeposlání e-mailu](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg)
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/logo-square.svg>
 
-__CHRÁNĚNÁ_URL_19__ Grafika {__CHRÁNĚNÁ_URL_20__
+## Grafika {#graphics}
 
-"Freddy mává z vesmíru"
+Freddy mává z vesmíru
 
 ![Freddy mává](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
 
@@ -61,7 +61,7 @@ __CHRÁNĚNÁ_URL_19__ Grafika {__CHRÁNĚNÁ_URL_20__
 
 > <https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/self-test.gif>
 
-"Freddy mává na travnatém poli"
+Freddy mává na travnatém poli
 
 ![Freddy mává na travnatém poli](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/welcome.gif)
 

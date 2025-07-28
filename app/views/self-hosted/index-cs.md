@@ -1,41 +1,41 @@
-# Vlastní hostování {#self-hosted}
+# Samostatně hostované {#self-hosted}
 
-__CHRÁNĚNÁ_URL_41__ Obsah {__CHRÁNĚNÁ_URL_42__
+## Obsah {#table-of-contents}
 
 * [Začínáme](#getting-started)
 * [Požadavky](#requirements)
-  * [Cloud-init / User-data](#cloud-init--user-data)
+  * [Cloudová inicializace / Uživatelská data](#cloud-init--user-data)
 * [Instalovat](#install)
-  * [Debug instalační skript](#debug-install-script)
+  * [Ladění instalačního skriptu](#debug-install-script)
   * [Výzvy](#prompts)
-  * [Počáteční nastavení (Možnost 1)](#initial-setup-option-1)
+  * [Počáteční nastavení (možnost 1)](#initial-setup-option-1)
 * [Služby](#services)
   * [Důležité cesty k souborům](#important-file-paths)
 * [Konfigurace](#configuration)
   * [Počáteční nastavení DNS](#initial-dns-setup)
-* [Přihlášení](#onboarding)
+* [Nástupní proces](#onboarding)
 * [Testování](#testing)
   * [Vytvoření prvního aliasu](#creating-your-first-alias)
-  * [Odeslání / Příjem vašeho prvního e-mailu](#sending--receiving-your-first-email)
+  * [Odeslání / příjem vašeho prvního e-mailu](#sending--receiving-your-first-email)
 * [Odstraňování problémů](#troubleshooting)
-  * [Jaké je základní autorizační uživatelské jméno a heslo](#what-is-the-basic-auth-username-and-password)
+  * [Jaké je základní autorizační uživatelské jméno a heslo?](#what-is-the-basic-auth-username-and-password)
   * [Jak poznám, co běží](#how-do-i-know-what-is-running)
-  * [Jak poznám, že něco neběží, že by to mělo být](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [Jak poznám, že něco, co by mělo fungovat, nefunguje?](#how-do-i-know-if-something-isnt-running-that-should-be)
   * [Jak najdu protokoly](#how-do-i-find-logs)
   * [Proč mi vyprší časový limit odchozích e-mailů](#why-are-my-outgoing-emails-timing-out)
 
 ## Začínáme {#getting-started}
 
-Naše e-mailové řešení s vlastním hostitelem, stejně jako všechny naše produkty, je 100% open source – jak frontend, tak backend. To znamená:
+Naše e-mailové řešení s vlastním hostingem, stejně jako všechny naše produkty, je 100% open-source – a to jak na frontendu, tak i na backendu. To znamená:
 
 1. **Naprostá transparentnost**: Každý řádek kódu, který zpracovává vaše e-maily, je k dispozici pro veřejnou kontrolu.
 2. **Příspěvky komunity**: Kdokoli může přispět vylepšeními nebo opravit problémy.
 3. **Zabezpečení prostřednictvím otevřenosti**: Zranitelnosti může identifikovat a opravit globální komunita.
 4. **Žádná vázanost na dodavatele**: Nikdy nejste závislí na existenci naší společnosti.
 
-Celá kódová základna je k dispozici na GitHubu na adrese <https://github.com/forwardemail/forwardemail.net>, licencovaná pod licencí MIT.
+Celá kódová základna je k dispozici na GitHubu na adrese <https://github.com/forwardemail/forwardemail.net>, a je licencována pod licencí MIT.
 
-Architektura obsahuje kontejnery pro:
+Architektura zahrnuje kontejnery pro:
 
 * SMTP server pro odchozí e-maily
 * IMAP/POP3 servery pro načítání e-mailů
@@ -45,9 +45,8 @@ Architektura obsahuje kontejnery pro:
 * SQLite pro bezpečné a šifrované ukládání poštovních schránek
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
->
-> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Nezapomeňte se podívat na náš návod [blog s vlastním hostingem](https://forwardemail.net/blog/docs/self-hosted-solution)
+>> A pro ty, kteří mají zájem o podrobnější návod krok za krokem, se podívejte na naše návody založené na návodu [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) nebo [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
 ## Požadavky {#requirements}
 
@@ -57,17 +56,17 @@ Před spuštěním instalačního skriptu se ujistěte, že máte následující
 * **Zdroje**: 1 virtuální procesor a 2 GB RAM
 * **Root přístup**: Administrátorská oprávnění pro spouštění příkazů.
 * **Název domény**: Vlastní doména připravená pro konfiguraci DNS.
-* **Čistá IP adresa**: Zajistěte, aby váš server měl čistou IP adresu bez předchozí spamové reputace kontrolou černých listů. Více informací [zde](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* **Čistá IP adresa**: Zajistěte, aby váš server měl čistou IP adresu bez předchozí spamové reputace, a to kontrolou černých listin. Více informací [zde](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
 * Veřejná IP adresa s podporou portu 25
 * Možnost nastavení [reverzní PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
 * Podpora IPv4 a IPv6
 
 > \[!TIP]
-> See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
+> Podívejte se na náš seznam [úžasní poskytovatelé poštovních serverů](https://github.com/forwardemail/awesome-mail-server-providers)
 
 ### Cloudová inicializace / Uživatelská data {#cloud-init--user-data}
 
-Většina cloudových dodavatelů podporuje konfiguraci cloud-init, když je zřízen virtuální privátní server (VPS). Je to skvělý způsob, jak nastavit některé soubory a proměnné prostředí předem pro použití logikou počátečního nastavení skriptů, což obejde nutnost žádat během běhu skriptu o další informace.
+Většina cloudových dodavatelů podporuje konfiguraci cloud-init pro případ, kdy je zřízen virtuální privátní server (VPS). To je skvělý způsob, jak předem nastavit některé soubory a proměnné prostředí pro použití logikou počátečního nastavení skriptů, což obejde nutnost dotazovat se během běhu skriptu na další informace.
 
 **Možnosti**
 
@@ -75,7 +74,7 @@ Většina cloudových dodavatelů podporuje konfiguraci cloud-init, když je zř
 * `DOMAIN` - vlastní doména (např. `example.com`) používaná pro nastavení vlastního hostingu
 * `AUTH_BASIC_USERNAME` - uživatelské jméno použité při prvním nastavení k ochraně webu
 * `AUTH_BASIC_PASSWORD` - heslo použité při prvním nastavení k ochraně webu
-* `/root/.cloudflare.ini` - (**pouze uživatelé Cloudflare**) konfigurační soubor cloudflare používaný certbotem pro konfiguraci DNS. Vyžaduje nastavení API tokenu pomocí `dns_cloudflare_api_token`. Více informací [zde](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+* `/root/.cloudflare.ini` - (**pouze pro uživatele Cloudflare**) konfigurační soubor cloudflare používaný certbotem pro konfiguraci DNS. Vyžaduje nastavení API tokenu pomocí `dns_cloudflare_api_token`. Více informací naleznete na [zde](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 
 Příklad:
 
@@ -96,9 +95,9 @@ runcmd:
   - chmod +x /etc/profile.d/env.sh
 ```
 
-__CHRÁNĚNÁ_URL_50__ Nainstalujte {__CHRÁNĚNÁ_URL_51__
+## Nainstalovat {#install}
 
-Spuštěním následujícího příkazu na serveru stáhněte a spusťte instalační skript:
+Spusťte na serveru následující příkaz pro stažení a spuštění instalačního skriptu:
 
 ```sh
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -106,7 +105,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### Ladicí instalační skript {#debug-install-script}
 
-Pro podrobný výstup přidejte před instalační skript `DEBUG=true`:
+Pro podrobnější výstup přidejte před instalační skript `DEBUG=true`:
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -124,32 +123,32 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 7. Exit
 ```
 
-* **Počáteční nastavení**: Stáhněte si nejnovější kód pro přesměrování e-mailů, nakonfigurujte prostředí, vyžádejte si vlastní doménu a nastavte všechny potřebné certifikáty, klíče a tajné klíče.
+* **Počáteční nastavení**: Stáhněte si nejnovější kód pro přesměrování e-mailů, nakonfigurujte prostředí, vyžádejte si vlastní doménu a nastavte všechny potřebné certifikáty, klíče a tajné kódy.
 * **Nastavení zálohování**: Nastaví cron pro zálohování MongoDB a Redis pomocí úložiště kompatibilního s S3 pro bezpečné a vzdálené ukládání. Samostatně bude při přihlášení zálohován sqlite, pokud dojde ke změnám pro bezpečné a šifrované zálohy.
 * **Nastavení upgradu**: Nastaví cron pro vyhledávání nočních aktualizací, které bezpečně obnoví a restartují komponenty infrastruktury.
 * **Obnovení certifikátů**: Pro SSL certifikáty se používá Certbot / lets encrypt a klíče vyprší každé 3 měsíce. Tím se obnoví certifikáty pro vaši doménu a umístí se do potřebné složky, aby je mohly spotřebovat související komponenty. Viz [důležité cesty k souborům](#important-file-paths)
-* **Obnovení ze zálohy**: Spustí MongoDB a Redis pro obnovení ze zálohovaných dat.
+* **Obnovit ze zálohy**: Spustí MongoDB a Redis pro obnovení ze zálohovaných dat.
 
 ### Počáteční nastavení (možnost 1) {#initial-setup-option-1}
 
 Pro začátek vyberte možnost `1. Initial setup`.
 
-Po dokončení byste měli vidět zprávu o úspěchu. Můžete dokonce spustit `docker ps` a sledovat, jak se komponenty roztočily. Více informací o komponentách níže.
+Po dokončení byste měli vidět zprávu o úspěchu. Můžete dokonce spustit příkaz `docker ps` a sledovat, jak se komponenty roztočily. Více informací o komponentách níže.
 
-__CHRÁNĚNÁ_URL_58__ Služby {__CHRÁNĚNÁ_URL_59__
+## Služby {#services}
 
 | Název služby | Výchozí port | Popis |
 | ------------ | :----------: | ------------------------------------------------------ |
-| Web | `443` | Webové rozhraní pro všechny administrátorské interakce |
-| API | `4000` | Vrstva API na abstraktní databáze |
-| Bree | Žádný | Úkol na pozadí a úkol běžec |
-| SMTP | `465/587` | Server SMTP pro odchozí poštu |
-| SMTP Bree | Žádný | Úloha na pozadí SMTP |
+| Web | `443` | Webové rozhraní pro veškeré interakce administrátora |
+| API | `4000` | Vrstva API pro abstraktní databáze |
+| Bree | Žádný | Úloha na pozadí a spouštěč úloh |
+| SMTP | `465/587` | SMTP server pro odchozí e-maily |
+| SMTP Bree | Žádný | Úloha SMTP na pozadí |
 | MX | `2525` | Výměna pošty pro příchozí e-maily a přeposílání e-mailů |
-| IMAP | `993/2993` | Server IMAP pro správu příchozí pošty a poštovní schránky |
+| IMAP | `993/2993` | IMAP server pro správu příchozích e-mailů a poštovních schránek |
 | POP3 | `995/2995` | POP3 server pro správu příchozích e-mailů a poštovních schránek |
-| SQLite | `3456` | SQLite server pro interakce s databází sqlite |
-| SQLite Bree | Žádný | Práce na pozadí SQLite |
+| SQLite | `3456` | SQLite server pro interakce s databází(emi) SQLite |
+| SQLite Bree | Žádný | Úloha na pozadí SQLite |
 | CalDAV | `5000` | CalDAV server pro správu kalendářů |
 | CardDAV | `6000` | CardDAV server pro správu kalendářů |
 | MongoDB | `27017` | Databáze MongoDB pro správu většiny dat |
@@ -160,23 +159,23 @@ __CHRÁNĚNÁ_URL_58__ Služby {__CHRÁNĚNÁ_URL_59__
 
 Poznámka: *Cesta k hostiteli* níže je relativní vzhledem k `/root/forwardemail.net/self-hosting/`.
 
-| Komponent | Hostitelská cesta | Cesta kontejneru |
+| Komponent | Cesta hostitele | Cesta kontejneru |
 | ---------------------- | :-------------------: | ---------------------------- |
 | MongoDB | `./mongo-backups` | `/backups` |
 | Redis | `./redis-data` | `/data` |
-| Sqlite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| Env soubor | `./.env` | `/app/.env` |
+| SQLite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
+| Soubor env | `./.env` | `/app/.env` |
 | SSL certifikáty/klíče | `./ssl` | `/app/ssl/` |
 | Soukromý klíč | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| Certifikát celého řetězu | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| Certifikáty CA | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
+| Certifikát celého řetězce | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
+| Certifikované certifikační autority | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
 | Soukromý klíč DKIM | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
 
 > \[!IMPORTANT]
-> Save the `.env` file securely. It is critical for recovery in case of failure.
-> You can find this in `/root/forwardemail.net/self-hosting/.env`.
+> Soubor `.env` bezpečně uložte. Je nezbytný pro obnovení v případě selhání.
+> Najdete ho v souboru `/root/forwardemail.net/self-hosting/.env`.
 
-__CHRÁNĚNÁ_URL_62__ Konfigurace {__CHRÁNĚNÁ_URL_63__
+## Konfigurace {#configuration}
 
 ### Počáteční nastavení DNS {#initial-dns-setup}
 
@@ -184,25 +183,25 @@ U vámi zvoleného poskytovatele DNS nakonfigurujte příslušné záznamy DNS. 
 
 | Typ | Jméno | Obsah | TTL |
 | ----- | ------------------ | ----------------------------- | ---- |
-| A | "@", "." nebo prázdné | <ip_address> | auto |
-| CNAME | api | <název_domény> | auto |
-| CNAME | caldav | <název_domény> | auto |
+| A | „@“, „.“, nebo prázdné | <ip_adresa> | auto |
+| CNAME | API | <název_domény> | auto |
+| CNAME | Caldav | <název_domény> | auto |
 | CNAME | karta | <název_domény> | auto |
-| CNAME | fe-odskočí | <název_domény> | auto |
-| CNAME | imap | <název_domény> | auto |
+| CNAME | fe-odrazy | <název_domény> | auto |
+| CNAME | IMAP | <název_domény> | auto |
 | CNAME | mx | <název_domény> | auto |
 | CNAME | pop3 | <název_domény> | auto |
 | CNAME | smtp | <název_domény> | auto |
-| MX | "@", "." nebo prázdné | mx.<název_domény> (priorita 0) | auto |
-| TXT | "@", "." nebo prázdné | "v=spf1 a -all" | auto |
+| MX | „@“, „.“, nebo prázdné | mx.<název_domény> (priorita 0) | auto |
+| TXT | „@“, „.“, nebo prázdné | "v=spf1 a -všechny" | auto |
 
-#### Reverzní DNS / PTR záznam {#reverse-dns--ptr-record}
+#### Reverzní záznam DNS / PTR {#reverse-dns--ptr-record}
 
-Reverzní DNS (rDNS) nebo záznamy reverzního ukazatele (PTR záznamy) jsou pro e-mailové servery nezbytné, protože pomáhají ověřit legitimitu serveru odesílajícího e-mail. Každý poskytovatel cloudu to dělá jinak, takže budete muset vyhledat, jak přidat „Reverse DNS“ k mapování hostitele a IP na odpovídající název hostitele. Nejspíše v síťové části poskytovatele.
+Reverzní DNS (rDNS) nebo záznamy reverzního ukazatele (PTR) jsou pro e-mailové servery nezbytné, protože pomáhají ověřovat legitimitu serveru odesílajícího e-mail. Každý poskytovatel cloudových služeb to dělá jinak, takže budete muset vyhledat, jak přidat „Reverzní DNS“ pro mapování hostitele a IP adresy na odpovídající název hostitele. Nejpravděpodobněji v síťové sekci poskytovatele.
 
 #### Port 25 blokován {#port-25-blocked}
 
-Někteří poskytovatelé internetových služeb a poskytovatelé cloudu blokují číslo 25, aby se vyhnuli špatným aktérům. K otevření portu 25 pro SMTP / odchozí e-maily možná budete muset zadat lístek podpory.
+Někteří poskytovatelé internetových služeb a cloudových služeb blokují port 25, aby se vyhnuli zlomyslným aktérům. Pro otevření portu 25 pro SMTP / odchozí e-maily může být nutné podat požadavek na podporu.
 
 ## Nástup {#onboarding}
 
@@ -221,9 +220,9 @@ Přejděte na https\://\<název_domény> a nahraďte \<název_domény> doménou 
 * Volitelně můžete nakonfigurovat **SMTP pro odchozí e-maily** v **Nastavení domény**. To vyžaduje další záznamy DNS.
 
 > \[!NOTE]
-> No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
+> Žádné informace nejsou odesílány mimo váš server. Možnost vlastního hostování a počáteční účet slouží pouze pro přihlášení administrátora a webové zobrazení pro správu domén, aliasů a souvisejících konfigurací e-mailů.
 
-__CHRÁNĚNÁ_URL_72__ Testování {__CHRÁNĚNÁ_URL_73__
+## Testování {#testing}
 
 ### Vytvoření vašeho prvního aliasu {#creating-your-first-alias}
 
@@ -254,20 +253,20 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 Uživatelské jméno: `<alias name>`
 
-| Typ | Název hostitele | Přístav | Zabezpečení připojení | Autentizace |
+| Typ | Název hostitele | Přístav | Zabezpečení připojení | Ověřování |
 | ---- | ------------------ | ---- | ------------------- | --------------- |
 | SMTP | smtp.<název_domény> | 465 | SSL / TLS | Normální heslo |
 | IMAP | imap.<název_domény> | 993 | SSL / TLS | Normální heslo |
 
 ### Odesílání / příjem vašeho prvního e-mailu {#sending--receiving-your-first-email}
 
-Po konfiguraci byste měli být schopni odesílat a přijímat e-maily na svou nově vytvořenou a hostovanou e-mailovou adresu!
+Po konfiguraci byste měli být schopni odesílat a přijímat e-maily na nově vytvořenou a samostatně hostovanou e-mailovou adresu!
 
 ## Řešení problémů {#troubleshooting}
 
 #### Proč to nefunguje mimo Ubuntu a Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Momentálně hledáme podporu pro MacOS a budeme hledat i další. Pokud chcete, aby byla podporována i jiná platforma, otevřete prosím [diskuse](https://github.com/orgs/forwardemail/discussions) nebo přispějte.
+Momentálně hledáme podporu pro MacOS a budeme se věnovat i dalším. Pokud chcete, aby byla podporována i jiná platforma, otevřete prosím soubor [diskuse](https://github.com/orgs/forwardemail/discussions) nebo přispějte.
 
 #### Proč selhává výzva certbot acme {#why-is-the-certbot-acme-challenge-failing}
 
@@ -280,30 +279,30 @@ Můžete vidět dvě výzvy, jako je tato:
 
 Je také možné, že šíření DNS nebylo dokončeno. Můžete použít nástroje jako: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. To vám dá představu, zda by se změny vašeho TXT záznamu měly projevit. Je také možné, že lokální DNS cache na vašem hostiteli stále používá starou, zastaralou hodnotu nebo nezachytila nedávné změny.
 
-Další možností je použít automatické změny DNS serveru Cerbot nastavením souboru `/root/.cloudflare.ini` s API tokenem ve vašem cloud-init / user-data při počátečním nastavení VPS nebo vytvořením tohoto souboru a opětovným spuštěním skriptu. Tím se změny DNS a aktualizace vyvolají automaticky.
+Další možností je použít automatické změny DNS serveru Cerbot nastavením souboru `/root/.cloudflare.ini` s tokenem API ve vašem cloud-init / user-data při počátečním nastavení VPS nebo vytvořením tohoto souboru a opětovným spuštěním skriptu. Tím se změny DNS a aktualizace vyvolají automaticky.
 
 ### Jaké je základní uživatelské jméno a heslo pro autorizaci {#what-is-the-basic-auth-username-and-password}
 
-Pro vlastní hosting přidáváme vyskakovací okno s nativním ověřováním v prohlížeči s jednoduchým uživatelským jménem (`admin`) a heslem (náhodně vygenerovaným při počátečním nastavení). Toto heslo přidáváme pouze jako ochranu pro případ, že by vás automatizace / scraperové nějakým způsobem předběhli k první registraci na webu. Toto heslo najdete po počátečním nastavení v souboru `.env` v adresářích `AUTH_BASIC_USERNAME` a `AUTH_BASIC_PASSWORD`.
+Pro vlastní hosting přidáváme vyskakovací okno s nativním ověřováním v prohlížeči s jednoduchým uživatelským jménem (`admin`) a heslem (náhodně vygenerovaným při počátečním nastavení). Toto heslo přidáváme pouze jako ochranu pro případ, že by vás automatizace / scraperové nějakým způsobem předběhli k první registraci na webu. Toto heslo najdete po počátečním nastavení v souboru `.env` v položkách `AUTH_BASIC_USERNAME` a `AUTH_BASIC_PASSWORD`.
 
 ### Jak zjistím, co je spuštěno {#how-do-i-know-what-is-running}
 
-Můžete spustit `docker ps` a zobrazit všechny spuštěné kontejnery, které jsou spouštěny ze souboru `docker-compose-self-hosting.yml`. Můžete také spustit `docker ps -a` a zobrazit vše (včetně kontejnerů, které neběží).
+Můžete spustit příkaz `docker ps` a zobrazit všechny spuštěné kontejnery, které jsou spouštěny ze souboru `docker-compose-self-hosting.yml`. Můžete také spustit příkaz `docker ps -a` a zobrazit vše (včetně kontejnerů, které neběží).
 
-### Jak poznám, že něco, co by mělo být spuštěno, nefunguje {#how-do-i-know-if-something-isnt-running-that-should-be}
+### Jak zjistím, že něco, co by mělo být spuštěno, nefunguje {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-Všechno (včetně kontejnerů, které nejsou spuštěny) můžete zobrazit spuštěním příkazu `docker ps -a`. Může se zobrazit protokol ukončení nebo poznámka.
+Můžete spustit příkaz `docker ps -a` a zobrazit tak vše (včetně kontejnerů, které neběží). Může se zobrazit protokol ukončení nebo poznámka.
 
 ### Jak najdu protokoly {#how-do-i-find-logs}
 
-Další protokoly můžete získat pomocí `docker logs -f <container_name>`. Pokud došlo k nějakému ukončení, pravděpodobně to souvisí s nesprávně nakonfigurovaným souborem `.env`.
+Další protokoly můžete získat pomocí souboru `docker logs -f <container_name>`. Pokud došlo k nějakému ukončení, pravděpodobně to souvisí s nesprávně nakonfigurovaným souborem `.env`.
 
-Ve webovém rozhraní si můžete prohlédnout protokoly odchozích e-mailů a chyb `/admin/emails` a `/admin/logs`.
+Ve webovém rozhraní si můžete prohlédnout protokoly odchozích e-mailů `/admin/emails` a `/admin/logs`, respektive protokoly chyb.
 
 ### Proč mi vypršel časový limit odchozích e-mailů {#why-are-my-outgoing-emails-timing-out}
 
-Pokud se při připojování k serveru MX zobrazí zpráva jako Vypršel časový limit připojení..., možná budete muset zkontrolovat, zda není blokován port 25. Je běžné, že poskytovatelé internetových služeb nebo poskytovatelé cloudu to ve výchozím nastavení blokují, kde možná budete muset požádat o podporu / podat tiket, aby se to otevřelo.
+Pokud se při připojování k serveru MX zobrazí zpráva typu „Časový limit připojení vypršel...“, pak budete možná muset zkontrolovat, zda není port 25 blokován. Je běžné, že poskytovatelé internetových služeb nebo cloudových služeb tento port ve výchozím nastavení blokují, takže se budete muset obrátit na podporu / podat požadavek, abyste tuto možnost zpřístupnili.
 
-#### Jaké nástroje mám použít k testování osvědčených postupů pro konfiguraci e-mailu a reputace IP adres {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### Jaké nástroje mám použít k testování osvědčených postupů pro konfiguraci e-mailu a reputace IP adresy {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-Podívejte se na náš __CHRÁNĚNÝ_LINK_124__.
+Podívejte se na náš [Často kladené otázky zde](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).

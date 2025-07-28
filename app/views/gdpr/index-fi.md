@@ -14,13 +14,13 @@
 
 Forward Email on yksityisyyteen keskittyvä yritys, joka on sitoutunut suojaamaan tietojasi.
 
-[Yleinen tietosuoja-asetus](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") säätelee tietojen siirtoa EU:n ja ETA:n ulkopuolelle, ja sen tavoitteena on parantaa hallintaasi ja oikeuksiasi henkilötietoihisi. Onneksi emme myy käsittelemiämme, tallentamiamme ja/tai siirtämiämme tietoja – emmekä käytä tällaisia tietoja mihinkään muuhun tarkoitukseen kuin palvelujemme tarjoamiseen sinulle.
+[Yleinen tietosuoja-asetus](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") säätelee tietojen siirtoa EU:n ja ETA:n ulkopuolelle, ja sen tavoitteena on parantaa hallintaasi ja oikeuksiasi henkilötietoihisi. Onneksi emme myy mitään käsittelemiämme, tallentamiamme ja/tai siirtämiämme tietoja – emmekä käytä tällaisia tietoja mihinkään muuhun tarkoitukseen kuin palvelujemme tarjoamiseen sinulle.
 
-Voit **milloin tahansa** muokata henkilötietojasi osoitteessa [Oma tili → Profiili](/my-account/profile) ja jopa poistaa koko tilisi ja kaikki siihen liittyvät tiedot osoitteessa [Oma tili → Tietoturva](/my-account/security). Koska **olemme 100 % avoimen lähdekoodin** ohjelmia osoitteessa <https://github.com/forwardemail>, lähdekoodimme voidaan myös auditoida tietosuojalakien noudattamisen varmistamiseksi milloin tahansa.
+Voit **milloin tahansa** muokata henkilötietojasi kohdassa [Oma tili → Profiili](/my-account/profile) ja jopa poistaa koko tilisi ja kaikki siihen liittyvät tiedot kohdassa [Oma tili → Tietoturva](/my-account/security). Koska **olemme 100 % avoimen lähdekoodin** <https://github.com/forwardemail>:ssa, lähdekoodimme voidaan myös auditoida tietosuojalakien noudattamisen varmistamiseksi milloin tahansa.
 
-[Tietojenkäsittelysopimus](/dpa) -asiakirjassamme kerrotaan yksityiskohtaisesti, miten noudatamme GDPR:ää sekä EU:n ja Yhdysvaltojen sekä Sveitsin ja Yhdysvaltojen välisiä Privacy Shield -järjestelyjä käsiteltävien, tallennettujen ja siirrettyjen tietojen yksityisyyden suojaan liittyen.
+[Tietojenkäsittelysopimus](/dpa)-tietolomakkeessamme kerrotaan, miten noudatamme GDPR:ää sekä EU:n ja Yhdysvaltojen sekä Sveitsin ja Yhdysvaltojen välisiä Privacy Shield -järjestelyjä käsiteltävien, tallennettujen ja siirrettyjen tietojen yksityisyyden suojaan liittyen.
 
-Hyväksymällä [Palveluehdot](/terms) -ehtomme hyväksyt automaattisesti tietosuojasopimuksemme, eikä sinun tarvitse allekirjoittaa erillistä asiakirjaa. Teemme parhaamme suojataksemme kaikkia henkilötietojasi [Tietosuojakäytäntö](/privacy) -ehtojemme mukaisesti – **riippumatta siitä, missä** niitä käsitellään, tallennetaan ja siirretään. Voit myös lukea lisää lukemalla [Palveluehdot](/terms) ja [Tietosuojakäytäntö](/privacy) -ehdot.
+Hyväksymällä [Palveluehdot](/terms)-ehtomme hyväksyt automaattisesti tietosuojasopimuksemme, etkä tarvitse erillistä asiakirjaa. Teemme parhaamme suojataksemme kaikkia henkilötietojasi [Tietosuojakäytäntö](/privacy)-ehtojemme mukaisesti – **riippumatta sijainnista**, jossa niitä käsitellään, säilytetään ja siirretään. Voit myös lukea lisää lukemalla [Palveluehdot](/terms)- ja [Tietosuojakäytäntö](/privacy)-ehdot.
 
 ## Kansainvälinen tiedonsiirto {#international-data-transfer}
 
@@ -39,7 +39,7 @@ Alla on lueteltu palveluntarjoajamme, joita käytämme tiedonsiirtoon kansainvä
 
 ## GDPR-edustaja {#gdpr-representative}
 
-[GDPR:n 27 artikla](https://gdpr-info.eu/art-27-gdpr/) mukaisesti meillä on alla luetellut jäsenvaltioiden edustajat:
+[GDPR:n 27 artikla](https://gdpr-info.eu/art-27-gdpr/):n mukaisesti meillä on alla luetellut jäsenvaltioiden edustajat:
 
 ### EU-edustaja {#eu-representative}
 

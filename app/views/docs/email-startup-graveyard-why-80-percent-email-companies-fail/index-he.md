@@ -5,12 +5,12 @@
 <p class="lead mt-3">בעוד שסטארט-אפים רבים בתחום הדוא"ל השקיעו מיליונים בפתרון בעיות נתפסות, אנו ב-<a href="https://forwardemail.net">Forward Email</a> התמקדנו בבניית תשתית דוא"ל אמינה מאפס מאז 2017. ניתוח זה בוחן את הדפוסים העומדים מאחורי תוצאות סטארט-אפים בתחום הדוא"ל ואת האתגרים הבסיסיים של תשתית הדוא"ל.</p>
 
 > \[!NOTE]
-> **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
+> **תובנה מרכזית**: רוב חברות הזנק בתחום הדוא"ל אינן בונות תשתית דוא"ל אמיתית מאפס. רבות מהן בונות על גבי פתרונות קיימים כמו Amazon SES או מערכות קוד פתוח כמו Postfix. הפרוטוקולים המרכזיים עובדים היטב - האתגר טמון ביישום.
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **סקירה טכנית מעמיקה**: לפרטים מקיפים על הגישה, הארכיטקטורה ויישום האבטחה שלנו, עיינו ב-[סקירה טכנית להעברת דוא"ל](https://forwardemail.net/technical-whitepaper.pdf) וב-[דף אודות](https://forwardemail.net/en/about) המתעדים את ציר הזמן המלא של הפיתוח שלנו מאז 2017.
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [מטריצת כישלון סטארט-אפים בדוא"ל](#the-email-startup-failure-matrix)
 * [בדיקת המציאות של התשתיות](#the-infrastructure-reality-check)
@@ -96,10 +96,10 @@
   * [הרחבת דוא"ל ורכישות שירות](#email-extension-and-service-acquisitions)
   * [השורדים: חברות דוא"ל שבאמת עובדות](#the-survivors-email-companies-that-actually-work)
 
-## מטריצת כשלונות הפעלת דוא"ל {#the-email-startup-failure-matrix}
+## מטריצת כשלון הפעלת דוא"ל {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Failure Rate Alert**: [Techstars alone has 28 email-related companies](https://www.techstars.com/portfolio) with only 5 exits - an exceedingly high failure rate (sometimes calculated to be 80%+).
+> **התראת שיעור כשל**: [ל-Techstars לבדה יש 28 חברות הקשורות לדוא"ל](https://www.techstars.com/portfolio) עם 5 יציאות בלבד - שיעור כשל גבוה במיוחד (לפעמים מחושב כ-80%+).
 
 הנה כל כישלון משמעותי של סטארט-אפים בתחום הדוא"ל שמצאנו, מאורגן לפי מאיץ, מימון ותוצאה:
 
@@ -120,7 +120,7 @@
 ## בדיקת מציאות של התשתית {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **The Hidden Truth**: Every single "email startup" is just building UI on top of existing infrastructure. They're not building actual email servers - they're building apps that connect to real email infrastructure.
+> **האמת הנסתרת**: כל "סטארט-אפ דוא"ל" פשוט בונה ממשק משתמש על גבי תשתית קיימת. הם לא בונים שרתי דוא"ל אמיתיים - הם בונים אפליקציות שמתחברות לתשתית דוא"ל אמיתית.
 
 ### מה באמת מפעיל דוא"ל {#what-actually-runs-email}
 
@@ -139,7 +139,7 @@ graph TD
     F --> K[Authentication that works]
 ```
 
-### מה "סטארטאפים של אימייל" בונים בפועל {#what-email-startups-actually-build}
+### מה "סטארט-אפים בתחום הדוא"ל" בונים בפועל {#what-email-startups-actually-build}
 
 ```mermaid
 graph LR
@@ -157,21 +157,21 @@ graph LR
 ```
 
 > \[!TIP]
-> **Key Pattern for Email Success**: The companies that actually succeed in email don't try to reinvent the wheel. Instead, they build **infrastructure and tools that enhance** existing email workflows. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), and [Postmark](https://postmarkapp.com/) became billion-dollar companies by providing reliable SMTP APIs and delivery services - they work **with** email protocols, not against them. This is the same approach we take at Forward Email.
+> **דפוס מפתח להצלחה בדוא"ל**: החברות שמצליחות באמת בדוא"ל לא מנסות להמציא את הגלגל מחדש. במקום זאת, הן בונות **תשתית וכלים שמשפרים** זרימות עבודה קיימות בדוא"ל. [שלח רשת](https://sendgrid.com/), [רובה דואר](https://www.mailgun.com/) ו-[חוֹתֶמֶת דוֹאַר](https://postmarkapp.com/) הפכו לחברות של מיליארד דולר על ידי אספקת ממשקי API ושירותי מסירה אמינים של SMTP - הן עובדות **עם** פרוטוקולי דוא"ל, לא נגדם. זוהי אותה גישה שאנו נוקטים ב-Forward Email.
 
-## למה רוב חברות הזנק בתחום הדוא"ל נכשלות {#why-most-email-startups-fail}
+## מדוע רוב חברות הסטארט-אפ בתחום הדוא"ל נכשלות {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **The Fundamental Pattern**: Email *client* startups typically fail because they try to replace working protocols, while email *infrastructure* companies can succeed by enhancing existing workflows. The key is understanding what users actually need versus what entrepreneurs think they need.
+> **הדפוס הבסיסי**: סטארט-אפים של *לקוחות* דוא"ל בדרך כלל נכשלים משום שהם מנסים להחליף פרוטוקולי עבודה, בעוד שחברות *תשתית* דוא"ל יכולות להצליח על ידי שיפור זרימות עבודה קיימות. המפתח הוא להבין מה משתמשים באמת צריכים לעומת מה שיזמים חושבים שהם צריכים.
 
 ### 1. פרוטוקולי דוא"ל עובדים, הטמעה לרוב לא {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Email Statistics**: [347.3 billion emails sent daily](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) without major issues, serving [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023.
+> **סטטיסטיקות דוא"ל**: [347.3 מיליארד מיילים נשלחים מדי יום](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) ללא בעיות משמעותיות, משרת את [4.37 מיליארד משתמשי דוא"ל ברחבי העולם](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) נכון לשנת 2023.
 
 פרוטוקולי הדוא"ל המרכזיים יציבים, אך איכות היישום משתנה מאוד:
 
-* **תאימות אוניברסלית**: כל מכשיר, כל פלטפורמה תומכת ב-[SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), ו-[POP3](https://tools.ietf.org/html/rfc1939)
+* **תאימות אוניברסלית**: כל מכשיר, כל פלטפורמה תומכת ב-[SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) ו-[POP3](https://tools.ietf.org/html/rfc1939)
 * **מבוזר**: אין נקודת כשל יחידה ב-[מיליארדי שרתי דוא"ל ברחבי העולם](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
 * **סטנדרטי**: SMTP, IMAP, POP3 הם פרוטוקולים שנבדקו היטב משנות ה-80 וה-90
 * **אמין**: [347.3 מיליארד מיילים נשלחים מדי יום](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) ללא בעיות משמעותיות
@@ -193,19 +193,19 @@ graph LR
 
 * **"דוא"ל מורכב מדי"**: תהליך העבודה הבסיסי פשוט - [לשלוח, לקבל, לארגן מאז 1971](https://en.wikipedia.org/wiki/History_of_email)
 * **"דוא"ל זקוק לבינה מלאכותית"**: [לג'ימייל כבר יש תכונות חכמות יעילות](https://support.google.com/mail/answer/9116836) כמו תשובה חכמה ותיבת דואר נכנס עדיפה
-* **"דוא"ל זקוק לאבטחה טובה יותר"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), ו-[DMARC](https://tools.ietf.org/html/rfc7489) מספקים אימות מוצק
-* **"דוא"ל זקוק לממשק חדש"**: ממשקי [הַשׁקָפָה](https://outlook.com/) ו-[Gmail](https://gmail.com/) שוכללו באמצעות עשרות שנים של מחקר משתמשים
+* **"דוא"ל זקוק לאבטחה טובה יותר"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) ו-[DMARC](https://tools.ietf.org/html/rfc7489) מספקים אימות מוצק
+* **"דוא"ל זקוק לממשק חדש"**: ממשקי [הַשׁקָפָה](https://outlook.com/) ו-[ג'ימייל](https://gmail.com/) שוכללו באמצעות עשרות שנים של מחקר משתמשים
 
 **בעיות אמיתיות שכדאי לפתור**: אמינות תשתית, יכולת אספקה, סינון דואר זבל וכלי פיתוח.
 
-### 4. חוב טכני הוא עצום {#4-technical-debt-is-massive}
+### 4. החוב הטכני הוא עצום {#4-technical-debt-is-massive}
 
 בניית תשתית דוא"ל אמיתית דורשת:
 
 * **שרתי SMTP**: מסירה מורכבת ו-[ניהול מוניטין](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
 * **סינון דואר זבל**: [נוף האיומים](https://www.spamhaus.org/) בהתפתחות מתמדת
 * **מערכות אחסון**: יישום אמין של [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
-* **אימות**: תאימות לתקנים [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617)
+* **אימות**: תאימות לתקנות [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617)
 * **יכולת מסירה**: קשרי ספקי שירותי אינטרנט ו-[ניהול מוניטין](https://sendgrid.com/blog/what-is-email-deliverability/)
 
 ### 5. התשתית כבר קיימת {#5-the-infrastructure-already-exists}
@@ -213,10 +213,10 @@ graph LR
 למה להמציא מחדש כשאפשר להשתמש ב:
 
 * **[אמזון SES](https://aws.amazon.com/ses/)**: תשתית מסירה מוכחת
-* **[Postfix](http://www.postfix.org/)**: שרת SMTP שנבדק בקרב
+* **[תיקון פוסט](http://www.postfix.org/)**: שרת SMTP שנבדק היטב
 * **[שובך יונים](https://www.dovecot.org/)**: שרת IMAP/POP3 אמין
-* **[SpamAssassin](https://spamassassin.apache.org/)**: סינון דואר זבל יעיל
-* **ספקים קיימים**: [Gmail](https://gmail.com/), [הַשׁקָפָה](https://outlook.com/), [פאסט מייל](https://www.fastmail.com/) פועלים מצוין
+* **[ספאםאסאסין](https://spamassassin.apache.org/)**: סינון דואר זבל יעיל
+* **ספקים קיימים**: [ג'ימייל](https://gmail.com/), [הַשׁקָפָה](https://outlook.com/), [פאסט מייל](https://www.fastmail.com/) פועלים מצוין
 
 ## מקרי בוחן: כאשר סטארט-אפים בתחום הדוא"ל נכשלים {#case-studies-when-email-startups-fail}
 
@@ -226,25 +226,25 @@ graph LR
 
 #### ההתקנה {#the-setup}
 
-* **מיצוב**: "פלטפורמת דוא"ל ופרודוקטיביות שמקדמת את הפרטיות"
+* **מיצוב**: "פלטפורמת דוא"ל ופרודוקטיביות המתמקדת בפרטיות"
 * **מימון**: [הון סיכון משמעותי](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
 * **הבטחה**: דוא"ל טוב יותר באמצעות פרטיות והצפנה
 
 #### הרכישה {#the-acquisition}
 
-[נושן רכשה את סקיף בפברואר 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) עם הבטחות רכישה אופייניות בנוגע לאינטגרציה ופיתוח מתמשך.
+[נושן רכשה את סקיף בפברואר 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) עם הבטחות רכישה אופייניות לגבי אינטגרציה ופיתוח מתמשך.
 
 #### המציאות {#the-reality}
 
 * **כיבוי מיידי**: [סקיף נסגרה תוך חודשים](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
-* **יציאת מייסדים**: [מייסדי סקיף עזבו את Notion והצטרפו לקורסור](https://x.com/skeptrune/status/1939763513695903946)
+* **יציאת מייסדים**: [מייסדי Skiff עזבו את Notion והצטרפו ל-Cursor](https://x.com/skeptrune/status/1939763513695903946)
 * **נטישת משתמשים**: אלפי משתמשים נאלצו לעבור
 
 ### ניתוח המאיץ {#the-accelerator-analysis}
 
-#### קומבינטר Y: מפעל אפליקציות הדוא"ל {#y-combinator-the-email-app-factory}
+#### Y Combinator: מפעל אפליקציות הדוא"ל {#y-combinator-the-email-app-factory}
 
-[קומבינטור Y](https://www.ycombinator.com/) מימנה עשרות סטארט-אפים בתחום הדוא"ל. הנה התבנית:
+[קומבינטור Y](https://www.ycombinator.com/) מימן עשרות סטארט-אפים בתחום הדוא"ל. הנה התבנית:
 
 * **[אֶלֶקטרוֹנִי](https://www.ycdb.co/company/emailio)** (2014): תוכנת דוא"ל ניידת → עברה ל"בריאות"
 * **[זמן דואר](https://www.ycdb.co/company/mailtime)** (2016): דוא"ל בסגנון צ'אט → עברה לניתוח נתונים
@@ -268,7 +268,7 @@ graph LR
 ### מלכודת הון סיכון {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
+> **פרדוקס מימון הון סיכון**: קרנות הון סיכון אוהבות סטארט-אפים בדוא"ל כי הם נשמעים פשוטים אבל למעשה בלתי אפשריים. ההנחות הבסיסיות שמושכות השקעות הן בדיוק מה שמבטיח כישלון.
 
 קרנות הון סיכון אוהבות סטארט-אפים בדוא"ל כי הם נשמעים פשוטים אבל למעשה בלתי אפשריים:
 
@@ -294,7 +294,7 @@ graph TD
 
 ## המציאות הטכנית: ערימות דוא"ל מודרניות {#the-technical-reality-modern-email-stacks}
 
-### מה באמת מניע "סטארט-אפים של אימייל" {#what-actually-powers-email-startups}
+### מה באמת מניע "סטארט-אפים בתחום הדוא"ל" {#what-actually-powers-email-startups}
 
 בואו נבחן מה החברות האלה באמת מפעילות:
 
@@ -317,10 +317,10 @@ graph LR
 * **Nylas Mail**: [שימוש בזיכרון של 1GB+](https://github.com/nylas/nylas-mail/issues/3501) לפני הכיבוי
 * **[תיבת דואר](https://www.postbox-inc.com/)**: [זיכרון במצב סרק של 300MB+](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[קנרי מייל](https://canarymail.io/)**: [קריסות תכופות עקב בעיות זיכרון](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Thunderbird](https://www.thunderbird.net/)**: [ניצול RAM גבוה עד 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) של זיכרון המערכת
+* **[ת'אנדרברד](https://www.thunderbird.net/)**: [ניצול RAM גבוה עד 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) של זיכרון המערכת
 
 > \[!WARNING]
-> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
+> **משבר ביצועי Electron**: לקוחות דוא"ל מודרניים שנבנו עם Electron ו-React Native סובלים מבעיות זיכרון וביצועים חמורים. מסגרות חוצות פלטפורמות אלו, למרות שהן נוחות למפתחים, יוצרות יישומים עתירי משאבים הצורכים מאות מגה-בייט עד ג'יגה-בייט של זיכרון RAM עבור פונקציונליות בסיסית של דוא"ל.
 
 **ניקוז סוללה**: סנכרון מתמיד וקוד לא יעיל:
 
@@ -331,7 +331,7 @@ graph LR
 
 ## דפוסי הרכישה: הצלחה לעומת כיבוי {#the-acquisition-patterns-success-vs-shutdown}
 
-### שני התבניות {#the-two-patterns}
+### שתי התבניות {#the-two-patterns}
 
 **תבנית אפליקציית לקוח (בדרך כלל נכשלת)**:
 
@@ -370,17 +370,17 @@ flowchart TD
 **כשלים באפליקציית לקוח**:
 
 * **תיבת דואר ← דרופבוקס ← כיבוי** (2013-2015)
-* **[דרור → גוגל → כיבוי](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[דואר אלקטרוני → גוגל → כיבוי](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **[סקיף → רעיון → כיבוי](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
+* **מחזיק_מקום_זמני_0** (2012-2013)
+* **מחזיק_מקום_זמני_1** (2010-2011)
+* **מחזיק_מקום_זמני_2** (2024)
 
 **חריג בולט**:
 
-* **[על-אנושי → גרדמורלי](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025): רכישה מוצלחת עם שילוב אסטרטגי בפלטפורמת פרודוקטיביות
+* **[על-אנושי → גרדמורלי](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/)** (2025): רכישה מוצלחת עם שילוב אסטרטגי בפלטפורמת הפרודוקטיביות
 
 **הצלחות תשתית**:
 
-* **[SendGrid → טוויליו](https://en.wikipedia.org/wiki/SendGrid)** (2019): רכישה בשווי 3 מיליארד דולר, צמיחה מתמשכת
+* **[SendGrid → טוויליו](https://en.wikipedia.org/wiki/SendGrid)** (2019): רכישה של 3 מיליארד דולר, צמיחה מתמשכת
 * **[רובה דואר → סינץ'](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021): אינטגרציה אסטרטגית
 * **[חותמת דואר → ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022): פלטפורמה משופרת
 
@@ -388,7 +388,7 @@ flowchart TD
 
 ### התקדמות בתעשייה הטבעית {#natural-industry-progression}
 
-תעשיית הדוא"ל התפתחה באופן טבעי לכיוון קונסולידציה, כאשר חברות גדולות רוכשות חברות קטנות יותר כדי לשלב תכונות או לחסל תחרות. זה לא בהכרח שלילי - כך מתפתחות רוב התעשיות הבוגרות.
+תעשיית הדוא"ל התפתחה באופן טבעי לכיוון קונסולידציה, כאשר חברות גדולות יותר רוכשות חברות קטנות יותר כדי לשלב תכונות או לחסל תחרות. זה לא בהכרח שלילי - כך מתפתחות רוב התעשיות הבוגרות.
 
 ### מעברים לאחר רכישה {#post-acquisition-transitions}
 
@@ -407,13 +407,13 @@ flowchart TD
 * **הבנת נתיבי הגירה**: רוב השירותים מספקים כלי ייצוא
 * **התחשבות ביציבות לטווח ארוך**: ספקים מבוססים מציעים לעתים קרובות יותר המשכיות
 
-## בדיקת מציאות בחדשות ההאקרים {#the-hacker-news-reality-check}
+## בדיקת מציאות חדשות ההאקרים {#the-hacker-news-reality-check}
 
 כל סטארט-אפ של אימייל מקבל את אותן תגובות ב-[חדשות האקרים](https://news.ycombinator.com/):
 
 * ["אימייל עובד מצוין, זה פותר בעיה שאינה קיימת"](https://news.ycombinator.com/item?id=35982757)
 * ["פשוט תשתמשו בג'ימייל/אאוטלוק כמו כולם"](https://news.ycombinator.com/item?id=36001234)
-* [עוד לקוח דוא"ל שייסגר בעוד שנתיים"](https://news.ycombinator.com/item?id=36012345)
+* ["עוד לקוח דוא"ל שייסגר בעוד שנתיים"](https://news.ycombinator.com/item?id=36012345)
 * ["הבעיה האמיתית היא ספאם, וזה לא פותר את זה"](https://news.ycombinator.com/item?id=36023456)
 
 **הקהילה צודקת**. התגובות האלה מופיעות בכל השקת סטארט-אפ בדוא"ל, כי הבעיות הבסיסיות תמיד זהות.
@@ -424,8 +424,8 @@ flowchart TD
 
 שנת 2024 הביאה גל חדש של סטארט-אפים בתחום "דוא"ל המופעל על ידי בינה מלאכותית", כאשר האקזיט המוצלח הגדול הראשון כבר התרחש:
 
-* **[על-אנושי](https://superhuman.com/)**: [גויסו 33 מיליון דולר](https://superhuman.com/), [נרכש בהצלחה על ידי Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - יציאה נדירה ומוצלחת מאפליקציית לקוח
-* **[גלים קצרים](https://www.shortwave.com/)**: עטיפת Gmail עם סיכומים מבוססי בינה מלאכותית
+* **[על-אנושי](https://superhuman.com/)**: [גויסו 33 מיליון דולר](https://superhuman.com/), [נרכש בהצלחה על ידי Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - יציאה נדירה של אפליקציית לקוח מוצלחת
+* **[גלים קצרים](https://www.shortwave.com/)**: עטיפת Gmail עם סיכומי בינה מלאכותית
 * **[סיין בוקס](https://www.sanebox.com/)**: סינון דוא"ל מבוסס בינה מלאכותית (עובד בפועל, אך לא מהפכני)
 
 ### אותן בעיות ישנות {#the-same-old-problems}
@@ -444,8 +444,8 @@ flowchart TD
 ### חברות תשתית (הזוכים) {#infrastructure-companies-the-winners}
 
 * **[שלח רשת](https://sendgrid.com/)**: [רכישה של 3 מיליארד דולר על ידי טוויליו](https://en.wikipedia.org/wiki/SendGrid)
-* **[רובה דואר](https://www.mailgun.com/)**: [הכנסות של מעל 50 מיליון דולר](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), נרכשה על ידי Sinch
-* **[חוֹתֶמֶת דוֹאַר](https://postmarkapp.com/)**: רווחית, [נרכש על ידי ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
+* **[רובה דואר](https://www.mailgun.com/)**: [הכנסות של מעל 50 מיליון דולר](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/), נרכש על ידי Sinch
+* **[חוֹתֶמֶת דוֹאַר](https://postmarkapp.com/)**: רווחי, [נרכש על ידי ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)
 * **[אמזון SES](https://aws.amazon.com/ses/)**: מיליארדי הכנסות
 
 **דפוס**: הם בונים תשתית, לא אפליקציות.
@@ -453,21 +453,21 @@ flowchart TD
 ### ספקי דוא"ל (השורדים) {#email-providers-the-survivors}
 
 * **[פאסט מייל](https://www.fastmail.com/)**: [25+ שנים](https://www.fastmail.com/about/), רווחי, עצמאי
-* **[פרוטון מייל](https://proton.me/)**: צמיחה בת קיימא וממוקדת בפרטיות
+* **[פרוטון מייל](https://proton.me/)**: צמיחה בת קיימא, ממוקדת פרטיות
 * **[זוהו מייל](https://www.zoho.com/mail/)**: חלק מחבילת עסקים גדולה יותר
 * **אנחנו**: 7+ שנים, רווחי, צומח
 
 > \[!WARNING]
-> **The JMAP Investment Question**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with limited adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that many users request. This represents a strategic choice to prioritize protocol innovation over user-requested features. Whether JMAP will gain broader adoption remains to be seen, but the current email client ecosystem continues to rely primarily on IMAP/SMTP.
+> **שאלת ההשקעה ב-JMAP**: בעוד ש-Fastmail משקיעה משאבים ב-[JMAP](https://jmap.io/), פרוטוקול שהוא [גיל 10+ שנים עם אימוץ מוגבל](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), הוא בו זמנית [לסרב ליישם הצפנת PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) שמשתמשים רבים מבקשים. זוהי בחירה אסטרטגית לתעדף חדשנות בפרוטוקול על פני תכונות המבוקשות על ידי המשתמשים. נותר לראות האם JMAP יזכה לאימוץ רחב יותר, אך המערכת האקולוגית הנוכחית של לקוחות הדוא"ל ממשיכה להסתמך בעיקר על IMAP/SMTP.
 
 > \[!TIP]
-> **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
+> **הצלחה ארגונית**: העברת דוא"ל מפעילה את [פתרונות דוא"ל לבוגרים עבור אוניברסיטאות מובילות](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), כולל אוניברסיטת קיימברידג' עם 30,000 כתובות של בוגרים, ומספקת חיסכון של 87,000 דולר בעלויות השנתיות בהשוואה לפתרונות מסורתיים.
 
 **דפוס**: הם משפרים את האימייל, לא מחליפים אותו.
 
-### היוצא מן הכלל: סיפור ההצלחה של Xobni {#the-exception-xobnis-success-story}
+### היוצא מן הכלל: סיפור ההצלחה של קסובני {#the-exception-xobnis-success-story}
 
-[הובני](https://en.wikipedia.org/wiki/Xobni) בולט כאחת הסטארט-אפים הבודדים הקשורים לדוא"ל שבאמת הצליחו בזכות נקיטת הגישה הנכונה.
+[הובני](https://en.wikipedia.org/wiki/Xobni) בולט כאחת הסטארט-אפים הבודדים הקשורים לדוא"ל שבאמת הצליחו בזכות הגישה הנכונה.
 
 **מה שזובני עשתה נכון**:
 
@@ -478,7 +478,7 @@ flowchart TD
 
 **ההצלחה**: [Xobni נרכשה על ידי יאהו תמורת 60 מיליון דולר בשנת 2013](https://en.wikipedia.org/wiki/Xobni), המספק תשואה מוצקה למשקיעים ואקזיט מוצלח למייסדים.
 
-#### למה קסובני הצליח במקום בו אחרים נכשלו {#why-xobni-succeeded-where-others-failed}
+#### מדוע קסובני הצליח במקום בו אחרים נכשלו {#why-xobni-succeeded-where-others-failed}
 
 1. **נבנה על תשתית מוכחת**: השתמשתי בטיפול הדוא"ל הקיים של Outlook
 2. **פתרתי בעיות אמיתיות**: ניהול אנשי הקשר היה באמת מקולקל
@@ -487,9 +487,9 @@ flowchart TD
 
 #### הצלחתם המתמשכת של המייסדים {#the-founders-continued-success}
 
-[מאט ברזינה](https://www.linkedin.com/in/mattbrezina/) ו-[אדם סמית'](https://www.linkedin.com/in/adamjsmith/) לא עצרו אחרי קסובני:
+[מאט ברזינה](https://www.linkedin.com/in/mattbrezina/) ו-[אדם סמית'](https://www.linkedin.com/in/adamjsmith/) לא עצרו אחרי Xobni:
 
-* **מאט ברזינה**: הפך ל-[משקיע אנג'ל](https://mercury.com/investor-database/matt-brezina) פעיל עם השקעות ב-Dropbox, Mailbox ואחרים
+* **מאט ברזינה**: הפך לתפקיד זמני פעיל עם השקעות ב-Dropbox, Mailbox ואחרים
 * **אדם סמית'**: המשיך לבנות חברות מצליחות בתחום הפרודוקטיביות
 * **שני המייסדים**: הוכיחו שהצלחה בדוא"ל נובעת משיפור, לא מהחלפה
 
@@ -506,7 +506,7 @@ flowchart TD
 
 זוהי שאלה מכרעת שנוגעת ללב ליבה של חדשנות בדוא"ל. התשובה הקצרה היא: **אף אחד לא החליף בהצלחה את הדוא"ל, אבל יש כאלה ששיפרו אותו בהצלחה**.
 
-### מה בעצם נתקע {#what-actually-stuck}
+### מה באמת נתקע {#what-actually-stuck}
 
 מבט על חידושים בתחום הדוא"ל ב-20 השנים האחרונות:
 
@@ -517,9 +517,9 @@ flowchart TD
 
 **דפוס**: כל החידושים המוצלחים **שיפרו** פרוטוקולי דוא"ל קיימים במקום להחליף אותם.
 
-### כלים חדשים משלימים את הדוא"ל (אך לא מחליפים אותו) {#new-tools-complement-email-but-dont-replace-it}
+### כלים חדשים משלימים את האימייל (אך לא מחליפים אותו) {#new-tools-complement-email-but-dont-replace-it}
 
-* **[רָפוּי](https://slack.com/)**: מעולה לצ'אט קבוצתי, אך עדיין שולח התראות דוא"ל
+* **[רָפוּי](https://slack.com/)**: מצוין לצ'אט קבוצתי, אך עדיין שולח התראות דוא"ל
 * **[מַחֲלוֹקֶת](https://discord.com/)**: מצוין לקהילות, אך משתמש בדוא"ל לניהול חשבונות
 * **[וואטסאפ](https://www.whatsapp.com/)**: מושלם להעברת הודעות, אך עסקים עדיין משתמשים בדוא"ל
 * **[זום](https://zoom.us/)**: חיוני לשיחות וידאו, אך הזמנות לפגישות מגיעות בדוא"ל
@@ -527,7 +527,7 @@ flowchart TD
 ### ניסוי HEY {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Real-World Validation**: HEY's founder [DHH](https://dhh.dk/) actually uses our service at Forward Email for his personal domain `dhh.dk` and has for several years, demonstrating that even email innovators rely on proven infrastructure.
+> **אימות בעולם האמיתי**: מייסד HEY, [DHH](https://dhh.dk/), משתמש בשירות שלנו ב-Forward Email עבור הדומיין האישי שלו, `dhh.dk`, כבר מספר שנים, מה שמראה שגם חדשנים בתחום הדוא"ל מסתמכים על תשתית מוכחת.
 
 [HEY](https://hey.com/) מאת [מחנה בסיס](https://basecamp.com/) מייצג את הניסיון הרציני ביותר לאחרונה "להמציא מחדש" את הדוא"ל:
 
@@ -542,7 +542,7 @@ flowchart TD
 
 1. **תשתית טובה יותר**: שרתים מהירים יותר, סינון דואר זבל טוב יותר, יכולת מסירה משופרת
 2. **ממשקים משופרים**: [תצוגת השיחה של Gmail](https://support.google.com/mail/answer/5900), [שילוב לוח שנה של Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
-3. **כלי פיתוח**: ממשקי API לשליחת דוא"ל, webhooks למעקב
+3. **כלי פיתוח**: ממשקי API לשליחת דוא"ל, Webhooks למעקב
 4. **זרימות עבודה מיוחדות**: שילוב CRM, אוטומציה שיווקית, דוא"ל טרנזקציונלי
 
 אף אחד מאלה לא החליף את האימייל - הם שיפרו אותו.
@@ -611,13 +611,13 @@ graph TD
 * **ללא אסטרטגיית רכישה**: אנו בונים לטווח ארוך
 * **ללא טענות "מהפכניות"**: אנו פשוט גורמים לדוא"ל לעבוד טוב יותר
 
-### מה מייחד אותנו {#what-makes-us-different}
+### מה שמייחד אותנו {#what-makes-us-different}
 
 > \[!TIP]
-> **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
+> **תאימות לתקנות ממשלתיות**: העברת דוא"ל היא [תאימות לסעיף 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) ומשרתת ארגונים כמו האקדמיה הימית של ארה"ב, מה שמדגים את מחויבותנו לעמוד בדרישות אבטחה פדרליות מחמירות.
 
 > \[!NOTE]
-> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+> **הטמעת OpenPGP ו-OpenWKD**: בניגוד ל-Fastmail, אשר [מסרב ליישם את PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) מציין חששות מורכבות, Forward Email מספק תמיכה מלאה ב-OpenPGP עם תאימות ל-OpenWKD (Web Key Directory), ומעניק למשתמשים את ההצפנה שהם באמת רוצים מבלי לאלץ אותם להשתמש בפרוטוקולים ניסיוניים כמו JMAP.
 
 **השוואה טכנית של ערימות**:
 
@@ -651,14 +651,14 @@ graph TD
 * **ללא חוב מדור קודם**: בסיס קוד נקי ומודרני ללא עשרות שנים של תיקונים
 
 > \[!NOTE]
-> **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
+> **פרטיות מעוצבת**: [מדיניות הפרטיות](https://forwardemail.net/en/privacy) שלנו מבטיח שלא נאחסן אימיילים שהועברו לאחסון דיסק או למסדי נתונים, שלא נאחסן מטא-דאטה של אימיילים ולא נאחסן יומני רישום או כתובות IP - פועל בזיכרון בלבד עבור שירותי העברת אימיילים.
 
 **תיעוד טכני**: לפרטים מקיפים על הגישה, הארכיטקטורה ויישום האבטחה שלנו, עיינו בתיעוד [נייר עמדה טכני](https://forwardemail.net/technical-whitepaper.pdf) ובתיעוד הטכני המקיף שלנו.
 
 ### השוואה בין ספקי שירותי דוא"ל: צמיחה באמצעות פרוטוקולים מוכחים {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+> **מספרי צמיחה אמיתיים**: בעוד ספקים אחרים רודפים אחר פרוטוקולים ניסיוניים, Forward Email מתמקד במה שמשתמשים באמת רוצים - IMAP, POP3, SMTP, CalDAV ו-CardDAV אמינים שעובדים בכל המכשירים. הצמיחה שלנו מדגימה את הערך של גישה זו.
 
 | ספק | שמות מתחם (2024 דרך [SecurityTrails](https://securitytrails.com/)) | שמות מתחם (2025 דרך [ViewDNS](https://viewdns.info/reversemx/)) | שינוי באחוזים | רשומת MX |
 | ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
@@ -679,7 +679,7 @@ graph TD
 
 ### ציר הזמן הטכני {#the-technical-timeline}
 
-בהתבסס על [ציר זמן רשמי של החברה](https://forwardemail.net/en/about) שלנו, כך בנינו תשתית דוא"ל שבאמת עובדת:
+בהתבסס על ה-[ציר זמן רשמי של החברה](https://forwardemail.net/en/about) שלנו, כך בנינו תשתית דוא"ל שבאמת עובדת:
 
 ```mermaid
 timeline
@@ -719,7 +719,7 @@ graph TD
 ## אתגרי אבטחה בתשתית דוא"ל {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Quantum-Safe Email Security**: Forward Email is the [world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), providing unprecedented security against future quantum computing threats.
+> **אבטחת דוא"ל בטוחה קוונטית**: העברת דוא"ל היא ה-[שירות הדוא"ל הראשון והיחיד בעולם המשתמש בתיבות דואר של SQLite עמידות בפני קוונטים ומוצפנות בנפרד](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), המספקת אבטחה חסרת תקדים מפני איומי מחשוב קוונטי עתידיים.
 
 אבטחת דוא"ל היא אתגר מורכב המשפיע על כל הספקים בתעשייה. במקום להדגיש אירועים בודדים, חשוב יותר להבין את שיקולי האבטחה הנפוצים שכל ספקי תשתית הדוא"ל חייבים לטפל בהם.
 
@@ -733,7 +733,7 @@ graph TD
 * **תאימות**: עמידה בדרישות רגולטוריות שונות כמו [GDPR](https://gdpr.eu/) ו- [CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Advanced Encryption**: Our [security practices](https://forwardemail.net/en/security) include ChaCha20-Poly1305 encryption for mailboxes, full disk encryption with LUKS v2, and comprehensive protection with encryption-at-rest, encryption-in-memory, and encryption-in-transit.
+> **הצפנה מתקדמת**: ה-[נוהלי אבטחה](https://forwardemail.net/en/security) שלנו כולל הצפנת ChaCha20-Poly1305 לתיבות דואר, הצפנת דיסק מלאה עם LUKS v2 והגנה מקיפה עם הצפנה במנוחה, הצפנה בזיכרון והצפנה תוך כדי תנועה.
 
 ### ערך השקיפות {#the-value-of-transparency}
 
@@ -754,11 +754,11 @@ graph TD
 * **פרוטוקולי אימות**: שיפור [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) ו-[DMARC](https://tools.ietf.org/html/rfc7489)
 * **זיהוי איומים**: פיתוח מסנני ספאם ופישינג טובים יותר
 * **הקשחת תשתית**: אבטחת שרתים ומסדי נתונים
-* **ניהול מוניטין של דומיין**: התמודדות עם [ספאם חסר תקדים מדומיין onmicrosoft.com של מיקרוסופט](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) הדורשים [כללי חסימה שרירותיים](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) ו-[דיונים נוספים על MSP](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
+* **ניהול מוניטין של דומיין**: התמודדות עם [ספאם חסר תקדים מדומיין onmicrosoft.com של מיקרוסופט](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) הדורש [כללי חסימה שרירותיים](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) ו-[דיונים נוספים על MSP](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
 
 אתגרים אלה דורשים השקעה ומומחיות מתמשכות מכל הספקים בתחום.
 
-## מסקנה: התמקדו בתשתיות, לא באפליקציות {#conclusion-focus-on-infrastructure-not-apps}
+## מסקנה: התמקדות בתשתיות, לא באפליקציות {#conclusion-focus-on-infrastructure-not-apps}
 
 ### הראיות ברורות {#the-evidence-is-clear}
 
@@ -796,10 +796,10 @@ graph TD
 **ההזדמנות**: יישום טוב יותר של פרוטוקולים מוכחים, לא החלפת פרוטוקולים.
 
 > \[!TIP]
-> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
+> **ניתוח מקיף של שירותי דוא"ל**: להשוואה מעמיקה של 79 שירותי דוא"ל בשנת 2025, כולל ביקורות מפורטות, צילומי מסך וניתוח טכני, עיינו במדריך המקיף שלנו: [79 שירותי הדוא"ל הטובים ביותר](https://forwardemail.net/en/blog/best-email-service). ניתוח זה מדגים מדוע דוא"ל מורחב מדורג באופן עקבי כבחירה המומלצת לאמינות, אבטחה ועמידה בתקנים.
 
 > \[!NOTE]
-> **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
+> **אימות בעולם האמיתי**: הגישה שלנו עובדת עבור ארגונים ברמות [סוכנויות ממשלתיות הדורשות עמידה בסעיף 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) עד [אוניברסיטאות גדולות המנהלות עשרות אלפי כתובות של בוגרים](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), ומוכיחה שבניית תשתית אמינה היא הדרך להצלחה בדוא"ל.
 
 אם אתם חושבים על בניית סטארט-אפ בתחום הדוא"ל, שקלו לבנות תשתית דוא"ל במקום זאת. העולם זקוק לשרתי דוא"ל טובים יותר, לא ליותר אפליקציות דוא"ל.
 
@@ -807,7 +807,7 @@ graph TD
 
 ### ניסויי הדוא"ל של גוגל השתבשו {#googles-email-experiments-gone-wrong}
 
-גוגל, למרות שבבעלותה [Gmail](https://gmail.com/), ביטלה מספר פרויקטים של דוא"ל:
+גוגל, למרות שבבעלותה [ג'ימייל](https://gmail.com/), ביטלה מספר פרויקטים של דוא"ל:
 
 * **[גוגל ווייב](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "רוצח אימיילים" שאף אחד לא הבין
 * **[גוגל באז](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): אסון שילוב אימיילים ברשתות חברתיות
@@ -820,9 +820,9 @@ graph TD
 
 [ניוטון מייל](https://en.wikipedia.org/wiki/CloudMagic) מת **שלוש פעמים**:
 
-1. **[קלאוד מג'יק](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): ניוטון רכשה את תוכנת הדוא"ל.
-2. ניוטון מייל (2016-2018): מיתוג מחדש, מודל המנוי נכשל.
-3. **[תחיית ניוטון מייל](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): ניסיון חזרה, נכשל שוב.
+1. **[קלאוד מג'יק](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): תוכנת דוא"ל נרכשה על ידי ניוטון
+2. **Newton Mail** (2016-2018): מיתוג מחדש, מודל המנוי נכשל
+3. **[תחיית ניוטון מייל](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): ניסיון חזרה, נכשל שוב
 
 **לקח**: לקוחות דוא"ל אינם יכולים לעמוד במודלים של מנוי.
 
@@ -842,19 +842,19 @@ graph TD
 * **[השגה → מיקרוסופט → כיבוי](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (הפך ל-Outlook Mobile)
 * **[Acompli → מיקרוסופט → משולב](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (הצלחה נדירה)
 
-### איחוד תשתיות דוא"ל {#email-infrastructure-consolidation}
+### איחוד תשתית דוא"ל {#email-infrastructure-consolidation}
 
-* **[תיבת דואר → לקוח eM](https://www.postbox-inc.com/)** (2024): תיבת הדואר נסגרה מיד לאחר הרכישה
+* **[תיבת דואר → לקוח eM](https://www.postbox-inc.com/)** (2024): תיבת הדואר נסגרת מיד לאחר הרכישה
 * **רכישות מרובות**: [אימפרוב MX](https://improvmx.com/) נרכש מספר פעמים, עם [חששות בנוגע לפרטיות שהועלו](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) ו-[הודעות רכישה](https://improvmx.com/blog/improvmx-has-been-acquired) ו-[רישומי עסקים](https://quietlight.com/listings/15877422)
 * **הידרדרות השירות**: שירותים רבים מחמירים לאחר הרכישה
 
 ## בית הקברות של דוא"ל בקוד פתוח: כאשר "חינם" אינו בר קיימא {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
-### ניילס מייל → מיילספרינג: המזלג שלא יכול היה {#nylas-mail--mailspring-the-fork-that-couldnt}
+### ניילס מייל → מיילספרינג: המזלג שלא יכול {#nylas-mail--mailspring-the-fork-that-couldnt}
 
-* **[ניילס מייל](https://github.com/nylas/nylas-mail)**: תוכנת דוא"ל בקוד פתוח, [הופסק בשנת 2017](https://github.com/nylas/nylas-mail) והייתה לה [בעיות שימוש מסיביות בזיכרון](https://github.com/nylas/nylas-mail/issues/3501)
-* **[מיילספרינג](https://getmailspring.com/)**: קהילת פיצול, מתקשה בתחזוקה ו-[בעיות שימוש גבוה ב-RAM](https://github.com/Foundry376/Mailspring/issues/1758)
-* **מציאות**: תוכנות דוא"ל בקוד פתוח אינן יכולות להתחרות באפליקציות מקוריות
+* **[ניילס מייל](https://github.com/nylas/nylas-mail)**: לקוח דוא"ל בקוד פתוח, [הופסק בשנת 2017](https://github.com/nylas/nylas-mail) ו-[בעיות שימוש מסיביות בזיכרון](https://github.com/nylas/nylas-mail/issues/3501)
+* **[מיילספרינג](https://getmailspring.com/)**: קהילת מזלג, מתקשה בתחזוקה ו-[בעיות שימוש גבוה ב-RAM](https://github.com/Foundry376/Mailspring/issues/1758)
+* **מציאות**: לקוחות דוא"ל בקוד פתוח לא יכולים להתחרות באפליקציות מקוריות
 
 ### יודורה: צעדת המוות בת 18 השנים {#eudora-the-18-year-death-march}
 
@@ -877,11 +877,11 @@ graph TD
 * **מורכבות**: פרוטוקולי דוא"ל מורכבים ליישום נכון
 * **אבטחה**: נדרשים עדכוני אבטחה שוטפים
 * **תאימות**: חובה לעבוד עם כל ספקי הדוא"ל
-* **משאבים**: שחיקה של מפתחים מתנדבים
+* **משאבים**: שחיקה בקרב מפתחים מתנדבים
 
-## גל סטארט-אפים של דוא"ל מבוסס בינה מלאכותית: ההיסטוריה חוזרת על עצמה עם "בינה" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
+## גל הסטארט-אפים של דוא"ל מבוסס בינה מלאכותית: ההיסטוריה חוזרת על עצמה עם "בינה" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
-### הבהלה הנוכחית לזהב של אימיילים מבוססי בינה מלאכותית {#the-current-ai-email-gold-rush}
+### הבהלה הנוכחית לזהב של אימיילים בתחום הבינה המלאכותית {#the-current-ai-email-gold-rush}
 
 סטארטאפים בתחום הדוא"ל של בינה מלאכותית בשנת 2024:
 
@@ -889,14 +889,14 @@ graph TD
 * **[גלים קצרים](https://www.shortwave.com/)**: Y Combinator, Gmail + בינה מלאכותית
 * **[סיין בוקס](https://www.sanebox.com/)**: סינון דוא"ל מבוסס בינה מלאכותית (רווחי בפועל)
 * **[בּוּמֵרַנְג](https://www.boomeranggmail.com/)**: תזמון ותגובות מבוססות בינה מלאכותית
-* **[דואר-0/אפס](https://github.com/Mail-0/Zero)**: סטארט-אפ של לקוח דוא"ל מבוסס בינה מלאכותית בונה ממשק דוא"ל נוסף
+* **[דואר-0/אפס](https://github.com/Mail-0/Zero)**: סטארט-אפ של לקוח דוא"ל מבוסס בינה מלאכותית שבונה ממשק דוא"ל נוסף
 * **[תיבת דואר נכנס אפס](https://github.com/elie222/inbox-zero)**: עוזר דוא"ל מבוסס בינה מלאכותית בקוד פתוח מנסה להפוך את ניהול הדוא"ל לאוטומטי
 
 ### טירוף המימון {#the-funding-frenzy}
 
 קרנות הון סיכון זורקות כסף על "בינה מלאכותית + דוא"ל":
 
-* **[הושקעו מעל 100 מיליון דולר](https://pitchbook.com/)** בסטארטאפים של דוא"ל מבוססי בינה מלאכותית בשנת 2024
+* **[הושקעו מעל 100 מיליון דולר](https://pitchbook.com/)** בסטארט-אפים בתחום הדוא"ל המבוססים על בינה מלאכותית בשנת 2024
 * **אותן הבטחות**: "חוויית דוא"ל מהפכנית"
 * **אותן בעיות**: בנייה על גבי תשתית קיימת
 * **אותה תוצאה**: רובם ייכשלו תוך 3 שנים
@@ -912,7 +912,7 @@ graph TD
 ### התוצאה הבלתי נמנעת {#the-inevitable-outcome}
 
 * **2025**: [סופרמן נרכש בהצלחה על ידי Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) - אקזיט מוצלח ונדיר עבור לקוח דוא"ל
-* **2025-2026**: רוב חברות הסטארט-אפ שנותרו בתחום הדוא"ל מבוססות הבינה המלאכותית יעברו שינוי או ייסגרו
+* **2025-2026**: רוב חברות הסטארט-אפ של דוא"ל בתחום הבינה המלאכותית שנותרו יעברו שינוי או ייסגרו
 * **2027**: חברות ששרדו יירכשו, עם תוצאות מעורבות
 * **2028**: "דוא"ל בלוקצ'יין" או המגמה הבאה תופיע
 
@@ -925,22 +925,22 @@ graph TD
 * **[ActiveCampaign רכשה את Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
 * **[סינץ' רכשה את Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
 * **[טוויליו רכשה את SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **רכישות מרובות של [אימפרוב MX](https://improvmx.com/)** (בדרך) עם [חששות בנוגע לפרטיות](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) ו-[הודעות רכישה](https://improvmx.com/blog/improvmx-has-been-acquired) ו-[רישומי עסקים](https://quietlight.com/listings/15877422)
+* **רכישות מרובות של [אימפרוב MX](https://improvmx.com/)** (מתמשכות) עם [חששות בנוגע לפרטיות](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) ו-[הודעות רכישה](https://improvmx.com/blog/improvmx-has-been-acquired) ו-[רישומי עסקים](https://quietlight.com/listings/15877422)
 
-### Outlook: ה"הישרדות" שלא יכולה להפסיק לפרוץ {#outlook-the-survivor-that-cant-stop-breaking}
+### תחזית: ה"הישרדות" שלא יכולה להפסיק להישבר {#outlook-the-survivor-that-cant-stop-breaking}
 
-[מיקרוסופט אאוטלוק](https://outlook.com/), למרות היותו "שורד", סובל מבעיות מתמידות:
+[מיקרוסופט אאוטלוק](https://outlook.com/), למרות היותו "שורד", סובל מבעיות קבועות:
 
-* **דליפות זיכרון**: [אאוטלוק צורך ג'יגה-בייט של זיכרון RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) ו-[דורש הפעלה מחדש תכופה](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
-* **בעיות סנכרון**: אימיילים נעלמים ומופיעים מחדש באופן אקראי
+* **דליפות זיכרון**: [אאוטלוק צורך ג'יגה-בייט של זיכרון RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) ו- [דורש הפעלה מחדש תכופה](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
+* **בעיות סנכרון**: הודעות דוא"ל נעלמות ומופיעות שוב באופן אקראי
 * **בעיות ביצועים**: הפעלה איטית, קריסות תכופות
-* **בעיות תאימות**: ניתוקים עם ספקי אימייל של צד שלישי
+* **בעיות תאימות**: ניתוקים עם ספקי דוא"ל של צד שלישי
 
 **הניסיון שלנו בעולם האמיתי**: אנו עוזרים באופן קבוע ללקוחות שהגדרות Outlook שלהם משבשות את יישום ה-IMAP התואם לחלוטין שלנו.
 
 ### בעיית תשתית חותמות הדואר {#the-postmark-infrastructure-problem}
 
-לאחר [הרכישה של ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
+אחרי [הרכישה של ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
 
 * **כשל בתעודת SSL**: [הפסקת חשמל של כמעט 10 שעות בספטמבר 2024](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) עקב תעודות SSL שפג תוקפן
 * **דחיות משתמשים**: [מארק קוהלברוג נדחה](https://x.com/marckohlbrugge/status/1935041134729769379) למרות שימוש לגיטימי
@@ -949,21 +949,21 @@ graph TD
 
 ### נפגעים אחרונים של לקוחות דוא"ל (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-**רכישה[תיבת דואר → לקוח eM](https://www.postbox-inc.com/)**: בשנת 2024, eM Client רכשה את Postbox ואת [מיד לסגור אותו](https://www.postbox-inc.com/), מה שאילץ אלפי משתמשים לעבור לרשת.
+**רכישה של [תיבת דואר → לקוח eM](https://www.postbox-inc.com/)**: בשנת 2024, eM Client רכשה את Postbox ואת [מיד לסגור אותו](https://www.postbox-inc.com/), מה שאילץ אלפי משתמשים לעבור לחשבון.
 
-**[קנרי מייל](https://canarymail.io/) בעיות**: למרות [גיבוי סקויה](https://www.sequoiacap.com/), משתמשים מדווחים על תכונות שאינן פועלות ותמיכת לקוחות לקויה.
+**בעיות [קנרי מייל](https://canarymail.io/)**: למרות [גיבוי סקויה](https://www.sequoiacap.com/), משתמשים מדווחים על תכונות שאינן פועלות ותמיכת לקוחות לקויה.
 
 **[ניצוץ מאת רידל](https://sparkmailapp.com/)**: משתמשים מדווחים יותר ויותר על חוויה גרועה עם תוכנת הדוא"ל.
 
-**[דוארבירד](https://www.getmailbird.com/) בעיות רישוי**: משתמשי Windows מתמודדים עם בעיות רישוי ובלבול בנוגע למנוי.
+**בעיות רישוי [דוארבירד](https://www.getmailbird.com/)**: משתמשי Windows נתקלים בבעיות רישוי ובלבול בנוגע למנוי.
 
-**[דוֹאַר אֲוִיר](https://airmailapp.com/) דחייה**: תוכנת הדוא"ל של Mac/iOS, המבוססת על בסיס הקוד Sparrow שנכשל, ממשיכה לקבל [ביקורות גרועות](https://airmailapp.com/) עקב בעיות אמינות.
+**דחייה של [דוֹאַר אֲוִיר](https://airmailapp.com/)**: תוכנת הדוא"ל של Mac/iOS, המבוססת על בסיס הקוד Sparrow שנכשל, ממשיכה לקבל [ביקורות גרועות](https://airmailapp.com/) עקב בעיות אמינות.
 
-### רכישות של הרחבות דוא"ל ושירותים {#email-extension-and-service-acquisitions}
+### רכישות שירות ותוספות דוא"ל {#email-extension-and-service-acquisitions}
 
 **[עוזר HubSpot](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → הופסק**: תוסף מעקב הדוא"ל של HubSpot היה [הופסק בשנת 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) והוחלף ב-"HubSpot Sales".
 
-**[אינטראקציה עבור ג'ימייל](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → הוצא משימוש**: תוסף ה-Gmail של Salesforce היה [פרש ביוני 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), מה שאילץ את המשתמשים לעבור לפתרונות אחרים.
+**[אינטראקציה עבור ג'ימייל](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → הוצא משימוש**: סיומת ה-Gmail של Salesforce הייתה [פרש ביוני 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), מה שאילץ את המשתמשים לעבור לפתרונות אחרים.
 
 ### השורדים: חברות דוא"ל שבאמת עובדות {#the-survivors-email-companies-that-actually-work}
 
@@ -971,21 +971,21 @@ graph TD
 
 **[מיילמודו](https://www.mailmodo.com/)**: [סיפור ההצלחה של Y Combinator](https://www.ycombinator.com/companies/mailmodo), [2 מיליון דולר מסקויה סרג'](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) על ידי התמקדות בקמפיינים אינטראקטיביים בדוא"ל.
 
-**[מיקסמקס](https://mixmax.com/)**: גייס [מימון כולל של 13.3 מיליון דולר](https://www.mixmax.com/about) וממשיך לפעול כפלטפורמה מצליחה למעורבות מכירות.
+**[מיקסמקס](https://mixmax.com/)**: הועלה [סך מימון של 13.3 מיליון דולר](https://www.mixmax.com/about) וממשיכה לפעול כפלטפורמה מצליחה למעורבות מכירות.
 
-**[Outreach.io](https://www.outreach.io/)**: הגיע ל-[שווי של מעל 4.4 מיליארד דולר](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) והוא מתכונן להנפקה פוטנציאלית כפלטפורמת מעורבות מכירות.
+**[Outreach.io](https://www.outreach.io/)**: הגיע ל-[שווי של מעל 4.4 מיליארד דולר](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) ומתכונן להנפקה פוטנציאלית כפלטפורמת מעורבות מכירות.
 
-**[Apollo.io](https://www.apollo.io/)**: השיגו [שווי של 1.6 מיליארד דולר](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) עם 100 מיליון דולר בסדרה D בשנת 2023 עבור פלטפורמת מודיעין המכירות שלהם.
+**[Apollo.io](https://www.apollo.io/)**: השיגו את [שווי של 1.6 מיליארד דולר](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) עם 100 מיליון דולר בסדרה D בשנת 2023 עבור פלטפורמת מודיעין המכירות שלהם.
 
-**[ג'י-מאס](https://www.gmass.co/)**: סיפור הצלחה של Bootstrap שיצר את [140 אלף דולר לחודש](https://www.indiehackers.com/product/gmass) כהרחבה לג'ימייל לשיווק בדוא"ל.
+**[ג'י-מאס](https://www.gmass.co/)**: סיפור הצלחה של Bootstrap שיצר את [140 אלף דולר לחודש](https://www.indiehackers.com/product/gmass) כהרחבה של Gmail לשיווק בדוא"ל.
 
-**[סטרייפ CRM](https://www.streak.com/)**: מערכת CRM מבוססת Gmail מוצלחת שפועלת [מאז 2012](https://www.streak.com/about) ללא בעיות משמעותיות.
+**[סטרייפ CRM](https://www.streak.com/)**: מערכת CRM מבוססת Gmail מוצלחת שפועלת ב-[מאז 2012](https://www.streak.com/about) ללא בעיות משמעותיות.
 
-**[טוטאפ](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [נרכשה על ידי Marketo בשנת 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) הצליחו לאחר גיוס של מעל 15 מיליון דולר.
+**[טוטאפ](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: גיוס [נרכשה על ידי Marketo בשנת 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) הצליח לאחר גיוס של מעל 15 מיליון דולר.
 
-**[בננתאג](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [נרכש על ידי Staffbase בשנת 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) וממשיך לפעול כ"דוא"ל של בסיס הצוות".
+**[בננתאג](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [נרכש על ידי Staffbase בשנת 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) וממשיך לפעול כ"דוא"ל בסיס הצוות".
 
 **דפוס מפתח**: חברות אלו מצליחות משום שהן **משפרות זרימות עבודה קיימות של דוא"ל** במקום לנסות להחליף את הדוא"ל לחלוטין. הן בונות כלים שעובדים **עם** תשתית הדוא"ל, ולא נגדה.
 
 > \[!TIP]
-> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight.
+> **לא מוצאים ספק שאתם מכירים מוזכר כאן?** (לדוגמה, Posteo, Mailbox.org, Migadu וכו') עיינו ב-[דף מקיף להשוואת שירותי דוא"ל](https://forwardemail.net/en/blog/best-email-service) שלנו לקבלת תובנות נוספות.

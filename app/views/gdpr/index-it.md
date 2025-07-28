@@ -16,11 +16,11 @@ Forward Email è un'azienda attenta alla privacy e impegnata a proteggere i tuoi
 
 Il [Regolamento generale sulla protezione dei dati](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("GDPR") regola il trasferimento di dati al di fuori dell'UE e del SEE e il suo obiettivo è quello di migliorare il controllo e i diritti dell'utente sui propri dati personali. Fortunatamente, non vendiamo i dati che elaboriamo, archiviamo e/o trasferiamo, né li utilizziamo per scopi diversi dalla fornitura dei nostri servizi.
 
-In **qualsiasi momento** puoi modificare le tue informazioni personali su [Il mio account → Profilo](/my-account/profile) e persino eliminare l'intero account e tutte le informazioni correlate su [Il mio account → Sicurezza](/my-account/security). Poiché **siamo open source al 100%** su <https://github.com/forwardemail>, il nostro codice sorgente può essere verificato in qualsiasi momento per verificarne la conformità alle leggi sulla privacy.
+In **qualsiasi momento** puoi modificare le tue informazioni personali in [Il mio account → Profilo](/my-account/profile) e persino eliminare l'intero account e tutte le informazioni correlate in [Il mio account → Sicurezza](/my-account/security). Poiché **siamo open source al 100%** in <https://github.com/forwardemail>, il nostro codice sorgente può essere verificato in qualsiasi momento per verificarne la conformità alle leggi sulla privacy.
 
-Il nostro [Contratto di elaborazione dei dati](/dpa) illustra dettagliatamente la nostra conformità al GDPR e ai quadri Privacy Shield UE-USA e Svizzera-USA, in merito alla privacy dei dati elaborati, archiviati e trasferiti.
+Il nostro [Contratto di elaborazione dei dati](/dpa) illustra dettagliatamente la nostra conformità al GDPR e ai framework Privacy Shield UE-USA e Svizzera-USA, in merito alla privacy dei dati elaborati, archiviati e trasferiti.
 
-Accettando la nostra [Termini di servizio](/terms), accetti automaticamente il nostro DPA e non dovrai firmare un documento separato. Faremo del nostro meglio per proteggere tutti i tuoi dati personali in conformità con la nostra [politica sulla riservatezza](/privacy), **indipendentemente dal luogo** in cui vengono elaborati, archiviati e trasferiti. Puoi anche saperne di più leggendo le nostre [Termini di servizio](/terms) e [politica sulla riservatezza](/privacy).
+Accettando il nostro [Termini di servizio](/terms), accetti automaticamente il nostro DPA e non dovrai firmare un documento separato. Faremo del nostro meglio per proteggere tutti i tuoi dati personali in conformità con il nostro [politica sulla riservatezza](/privacy), **indipendentemente dal luogo** in cui vengono elaborati, archiviati e trasferiti. Puoi anche saperne di più leggendo i nostri [Termini di servizio](/terms) e [politica sulla riservatezza](/privacy).
 
 ## Trasferimento dati internazionale {#international-data-transfer}
 

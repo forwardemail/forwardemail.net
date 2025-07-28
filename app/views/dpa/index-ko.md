@@ -1,6 +1,6 @@
 # 데이터 처리 계약 {#data-processing-agreement}
 
-<!-- <https://github.com/CommonPaper/DPA>의 v1.0 -->
+<!-- <https://github.com/CommonPaper/DPA>에서 v1.0으로 -->
 
 <img 로딩="게으른" src="/img/articles/dpa.webp" alt="" 클래스="둥근-lg" />
 
@@ -59,8 +59,8 @@
 
 이 문서는 [일반 논문 DPA 표준 용어(버전 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0)에서 파생되었으며 다음과 같은 변경 사항이 적용되었습니다.
 
-1. [준거법 및 선택된 법원](#11-governing-law-and-chosen-courts)은 위에 명시된 `Governing State`과 함께 아래 섹션에 포함되었습니다.
-2. [서비스 제공자 관계](#12-service-provider-relationship)는 아래 섹션에 포함되었습니다.
+1. [준거법 및 선택된 법원](#11-governing-law-and-chosen-courts)은 위에 명시된 `Governing State`과 함께 아래 섹션으로 포함되었습니다.
+2. [서비스 제공자 관계](#12-service-provider-relationship)는 아래 섹션으로 포함되었습니다.
 
 ## 1. 프로세서 및 하위 프로세서 관계 {#1-processor-and-subprocessor-relationships}
 
@@ -68,11 +68,11 @@
 
 <strong>고객</strong>이 고객 개인 데이터의 관리자인 경우, <strong>공급자</strong>는 <strong>고객</strong>을 대신하여 개인 데이터를 처리하는 처리자로 간주됩니다.
 
-### 2. 하위 처리자로서의 공급자 {#2-provider-as-subprocessor}
+### 2. 하위 프로세서로서의 공급자 {#2-provider-as-subprocessor}
 
 <strong>고객</strong>이 고객 개인 데이터의 처리자인 경우, <strong>공급자</strong>는 고객 개인 데이터의 하위 처리자로 간주됩니다.
 
-## 2. {#2-processing} 처리
+## 2. {#2-processing}} 처리 중
 
 ### 1. 처리 세부 정보 {#1-processing-details}
 
@@ -82,7 +82,7 @@
 
 <strong>고객</strong>은 <strong>공급자</strong>에게 다음과 같이 고객 개인 데이터를 처리하도록 지시합니다. (a) 서비스를 제공하고 유지하기 위해; (b) <strong>고객</strong>이 서비스를 이용함으로써 추가로 명시될 수 있는 경우; (c) <strong>계약</strong>에 문서화된 경우; (d) <strong>고객</strong>이 제공하고 <strong>공급자</strong>가 본 DPA에 따라 고객 개인 데이터를 처리하는 것에 관해 인정한 다른 서면 지침에 문서화된 경우. <strong>공급자</strong>는 해당 법률에 의해 금지되지 않는 한 이러한 지침을 준수합니다. <strong>공급자</strong>는 처리 지침을 따를 수 없는 경우 즉시 <strong>고객</strong>에게 알립니다. <strong>고객</strong>은 해당 법률을 준수하는 지침만 제공했으며 앞으로도 계속 제공할 것입니다.
 
-### 3. 공급자에 의한 처리 {#3-processing-by-provider}
+### 3. 공급자별 처리 {#3-processing-by-provider}
 
 <strong>제공자</strong>는 표지 페이지의 세부 정보를 포함하여 본 DPA에 따라서만 고객 개인 데이터를 처리합니다. <strong>제공자</strong>가 기존 제품, 기능 또는 기능을 업데이트하거나 새로운 제품, 기능 또는 기능을 포함하기 위해 서비스를 업데이트하는 경우, <strong>제공자</strong>는 <strong>데이터 주체 범주</strong>, <strong>개인 데이터 범주</strong>, <strong>특수 범주 데이터</strong>, <strong>특수 범주 데이터 제한 또는 보호 조치</strong>, <strong>전송 빈도</strong>, <strong>처리의 성격 및 목적</strong>, 그리고 <strong>처리 기간</strong>을 필요에 따라 변경하여 <strong>고객</strong>에게 업데이트 및 변경 사항을 알릴 수 있습니다.
 
@@ -90,7 +90,7 @@
 
 <strong>고객</strong>이 처리자이고 <strong>제공자</strong>가 하위 처리자일 경우, <strong>고객</strong>은 <strong>고객</strong>의 고객 개인 데이터 처리에 적용되는 모든 관련 법률을 준수해야 합니다. <strong>고객</strong>과 고객 관리자 간의 계약은 마찬가지로 <strong>고객</strong>이 처리자로서 <strong>고객</strong>에게 적용되는 모든 관련 법률을 준수하도록 요구합니다. 또한, <strong>고객</strong>은 <strong>고객</strong>과 고객 관리자 간의 계약에 따른 하위 처리자 요건을 준수해야 합니다.
 
-### 5. {#5-consent-to-processing} 처리에 대한 동의
+### 5. 처리에 대한 동의 {#5-consent-to-processing}
 
 <strong>고객</strong>은 <strong>공급자</strong> 및/또는 서비스에 고객 개인 데이터를 제공하는 것과 관련하여 모든 해당 데이터 보호법을 준수했으며 앞으로도 계속 준수할 것입니다. 여기에는 모든 공개, 모든 동의 획득, 적절한 선택권 제공, 해당 데이터 보호법에 따라 요구되는 관련 안전장치 구현이 포함됩니다.
 
@@ -110,7 +110,7 @@ d. <strong>공급자</strong>는 고객 개인 데이터 처리에 있어서 하
 
 <strong>고객</strong>은 <strong>제공자</strong>가 서비스 제공을 위해 필요에 따라 고객 개인 데이터를 EEA, 영국 또는 기타 관련 지역 외부로 전송할 수 있음에 동의합니다. <strong>제공자</strong>가 유럽 위원회 또는 기타 관련 감독 기관에서 적정성 결정을 내리지 않은 지역으로 고객 개인 데이터를 전송하는 경우, <strong>제공자</strong>는 관련 데이터 보호법에 따라 해당 지역으로의 고객 개인 데이터 전송에 대한 적절한 안전 조치를 시행합니다.
 
-### 2. EEA 외부 전송 {#2-ex-eea-transfers}
+### 2. EEA 이전 {#2-ex-eea-transfers}}
 
 <strong>고객</strong>과 <strong>공급업체</strong>는 GDPR이 고객 개인 정보의 전송을 보호하는 경우, 해당 전송이 EEA 내부의 <strong>고객</strong>으로부터 EEA 외부의 <strong>공급업체</strong>로 이루어지며, 해당 전송이 유럽 위원회의 적정성 결정의 적용을 받지 않는 경우, 본 DPA를 체결함으로써 <strong>고객</strong>과 <strong>공급업체</strong>는 참조로 포함된 EEA SCC 및 그 부록에 서명한 것으로 간주된다는 데 동의합니다. 이러한 전송은 다음과 같이 작성되는 EEA SCC에 따라 이루어집니다.
 
@@ -134,7 +134,7 @@ c. 각 모듈에 대해 다음 사항이 적용됩니다(해당되는 경우):
 
 7. 이 DPA의 표지에는 EEA SCC 부록 I, 부록 II 및 부록 III에 필요한 정보가 포함되어 있습니다.
 
-### 3. 영국 외 지역 전송 {#3-ex-uk-transfers}
+### 3. 영국 외 송금 {#3-ex-uk-transfers}
 
 <strong>고객</strong>과 <strong>공급업체</strong>는 영국 GDPR이 고객 개인 정보 전송을 보호하는 경우, 해당 전송이 영국 내의 <strong>고객</strong>으로부터 영국 외부의 <strong>공급업체</strong>로 이루어지며, 해당 전송이 영국 국무장관의 적정성 결정의 적용을 받지 않는 경우, 본 DPA를 체결함으로써 <strong>고객</strong>과 <strong>공급업체</strong>는 참조로 포함된 영국 추가 조항 및 그 부록에 서명한 것으로 간주된다는 데 동의합니다. 이러한 전송은 다음과 같이 작성된 영국 추가 조항에 따라 이루어집니다.
 
@@ -168,7 +168,7 @@ c. 표지에는 영국 부록의 부록 1A, 부록 1B, 부록 II 및 부록 III�
 
 ## 6. 조정 및 협력 {#6-coordination--cooperation}
 
-### 1. 문의에 대한 답변 {#1-response-to-inquiries}
+### 1. 문의사항에 대한 답변 {#1-response-to-inquiries}
 
 <strong>공급자</strong>가 고객 개인 정보 처리에 대해 타인으로부터 문의나 요청을 받는 경우, <strong>공급자</strong>는 해당 요청에 대해 <strong>고객</strong>에게 통지하며, <strong>공급자</strong>는 <strong>고객</strong>의 사전 동의 없이는 해당 요청에 응답하지 않습니다. 이러한 문의 및 요청의 예로는 고객 개인 정보에 대한 사법, 행정 또는 규제 기관의 명령(<strong>고객</strong>에게 통지하는 것이 관련 법률에 의해 금지되지 않는 경우)이나 정보 주체의 요청이 있습니다. 관련 법률에서 허용하는 경우, <strong>공급자</strong>는 이러한 요청에 대해 <strong>고객</strong>의 합리적인 지시를 따르며, 여기에는 <strong>고객</strong>이 합리적으로 요청한 상태 업데이트 및 기타 정보 제공이 포함됩니다. 개인정보 주체가 적용 가능한 데이터 보호법에 따라 <strong>고객</strong>이 <strong>공급자</strong>에게 고객 개인 데이터를 제공하는 것을 삭제하거나 거부하도록 유효한 요청을 하는 경우, <strong>공급자</strong>는 적용 가능한 데이터 보호법에 따라 <strong>고객</strong>이 요청을 이행하도록 지원합니다. <strong>공급자</strong>는 본 DPA에 따라 <strong>공급자</strong>의 고객 개인 데이터 처리에 관한 제3자의 요청에 응하여 <strong>고객</strong>이 취하는 모든 법적 대응 또는 기타 절차적 조치에 대해 <strong>고객</strong>의 비용으로 <strong>고객</strong>과 협조하고 합리적인 지원을 제공합니다.
 
@@ -190,7 +190,7 @@ b. <strong>고객</strong>과 <strong>공급자</strong>가 본 DPA의 일부로
 
 ## 8. 책임의 한계 {#8-limitation-of-liability}
 
-### 1. 책임 한도 및 손해배상 면제 {#1-liability-caps-and-damages-waiver}
+### 1. 책임 한도 및 손해 배상 면제 {#1-liability-caps-and-damages-waiver}
 
 **적용 가능한 데이터 보호법에 따라 허용되는 최대 범위 내에서, 본 DPA로 인해 또는 이와 관련하여 상대방에게 발생하는 각 당사자의 총 누적 책임은 <strong>계약</strong>에 명시된 포기, 제외 및 책임 제한에 따릅니다.**
 
@@ -210,7 +210,7 @@ b. <strong>고객</strong>과 <strong>공급자</strong>가 본 DPA의 일부로
 
 본 DPA는 <strong>공급자</strong>와 <strong>고객</strong>이 DPA 표지에 동의하고 <strong>계약</strong>에 서명하거나 전자적으로 동의하는 시점부터 시작되며, <strong>계약</strong>이 만료되거나 해지될 때까지 지속됩니다. 단, <strong>공급자</strong>와 <strong>고객</strong>은 <strong>고객</strong>이 <strong>공급자</strong>에게 고객 개인 정보 전송을 중단하고 <strong>공급자</strong>가 고객 개인 정보 처리를 중단할 때까지 본 DPA 및 관련 데이터 보호법의 의무를 각각 준수해야 합니다.
 
-## 11. 준거법 및 선택된 법원 {#11-governing-law-and-chosen-courts}
+## 11. 준거법 및 선택 법원 {#11-governing-law-and-chosen-courts}
 
 <strong>계약</strong>의 준거법 또는 유사 조항에도 불구하고, 본 DPA에 대한 모든 해석 및 분쟁은 법률 조항의 충돌 여부와 관계없이 <strong>준거국</strong>의 법률에 따라 규율됩니다. 또한, <strong>계약</strong>의 재판지 선택, 관할권 또는 유사 조항에도 불구하고, 당사자들은 본 DPA에 대한 모든 법적 소송, 조치 또는 절차를 <strong>준거국</strong> 법원에서 제기하는 데 동의하며, 각 당사자는 <strong>준거국</strong> 법원의 전속 관할권에 돌이킬 수 없이 복종합니다.
 

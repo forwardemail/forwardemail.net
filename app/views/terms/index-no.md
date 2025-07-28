@@ -39,17 +39,23 @@ Videre garanterer ikke Forward Email eller gir noen garantier angående nøyakti
 <u>**Du samtykker spesifikt i at ved å bruke Tjenesten skal Videresend E-post ikke være ansvarlig for, og du skal ikke opprette, lese, endre eller overføre noe av det følgende med Tjenesten:**</u>
 
 * **Du skal ikke bruke tjenesten vår til å drive en tjeneste som tillater tredjeparter (annet enn dine egne ansatte og kontraktører) å få tilgang til, bruke eller dra nytte av tjenesten vår. Hvis du trenger at vi gjør et unntak for deg angående dette, kan du kontakte oss for å diskutere en bedriftsavtale. Se vår [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) for mer informasjon.**
-* Hvis du bruker vår [Utgående SMTP](/faq#do-you-support-sending-email-with-smtp)-tjeneste, godtar du følgende:
-* Du har tillatelse til å bruke den til [transaksjons-e-post](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) og [e-postmarkedsføring](https://en.wikipedia.org/wiki/Email_marketing).
+* Hvis du bruker [Utgående SMTP](/faq#do-you-support-sending-email-with-smtp)-tjenesten vår, godtar du følgende:
+* Du har tillatelse til å bruke den for [transaksjons-e-post](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) og [e-postmarkedsføring](https://en.wikipedia.org/wiki/Email_marketing).
 * Hvis du sender markedsføringsmateriell på e-post, må du inkludere en `List-Unsubscribe`-overskrift, og abonnentene dine må være påmeldt.
-* Vi anbefaler at du bruker en nyhetsbrevbehandler med åpen kildekode, for eksempel [ListMonk](https://github.com/knadh/listmonk) på <https://github.com/knadh/listmonk>.
+* Vi anbefaler at du bruker en nyhetsbrevbehandler med åpen kildekode, for eksempel [ListMonk](https://github.com/knadh/listmonk), på <https://github.com/knadh/listmonk>.
 * Merk at vi planlegger å lansere vår egen nyhetsbrevbehandler i fremtiden.
-* E-postmarkedsføringsmateriell inkluderer reklame-, masseutsendelser eller kommersielle e-poster til en kontaktliste med lignende innhold, emnelinje og brødtekst (f.eks. nyhetsbrev og kunngjøringer).
+* * E-postmarkedsføringsmateriell inkluderer reklame-, masseutsendelser eller kommersielle e-poster til en kontaktliste med lignende innhold, emnelinje og brødtekst (f.eks. nyhetsbrev og kunngjøringer).
+
 * Du må overholde [CAN-SPAM-loven av 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
+
 * Du må fjerne brukere som har valgt ut, avsluttet abonnementet eller merket e-posten din som spam, enten umiddelbart eller innen 24 timer.
+
 * Første gang domenenavnet ditt prøver å sende et nyhetsbrev, vil en administrator gjennomgå og godkjenne domenet ditt for sending av nyhetsbrev (vanligvis innen 2–4 timer, men noen ganger kan det ta lengre tid).
-* Alt som forstyrrer tjenestens drift og/eller kundenes forstyrrelser.
-* Materialer som er fornærmende, ærekrenkende, falske, trakasserende, uanstendige, injurierende, villedende, anstøtelig, obskøne, støtende, blasfemiske, truende, ulovlige og/eller vulgære.
+
+* Alt som forstyrrer tjenestens drift, driften og/eller kundenes forstyrrelser.
+
+* Materialer som er fornærmende, ærekrenkende, falske, trakasserende, uanstendige, injurierende, villedende, uanstendige, obskøne, støtende, blasfemiske, truende, ulovlige og/eller vulgære.
+
 * Uautorisert opphavsrettsbeskyttet eller konfidensielt materiale og/eller materiale som krenker andres immaterielle rettigheter, forretningshemmeligheter og/eller personvern.
 * Alt som oppmuntrer til kriminell oppførsel, har potensial til å forårsake sivilrettslig ansvar og/eller bryter med lover eller forskrifter i noen jurisdiksjoner.
 * Materiale som forårsaker skade eller har potensial til å forårsake skade på mindreårige, utgir seg for å være en annen person eller enhet, og/eller gir feilaktig fremstilling av en tilknytning til en person eller enhet.
@@ -57,7 +63,7 @@ Videre garanterer ikke Forward Email eller gir noen garantier angående nøyakti
 
 Materialet på dette nettstedet er beskyttet av gjeldende lov om opphavsrett og varemerker.
 
-Din tilgang til nettstedet vårt og bruk av tjenesten vår indikerer at du har samtykket i våre [Personvernerklæring](/privacy) og [Databehandleravtale](/dpa) (f.eks. for samsvar med GDPR).
+Din tilgang til nettstedet vårt og bruk av tjenesten vår indikerer at du har samtykket i [Personvernerklæring](/privacy) og [Databehandleravtale](/dpa) (f.eks. for samsvar med GDPR).
 
 ## Ubegrenset bruk {#unlimited-usage}
 
@@ -95,7 +101,7 @@ Kontoen din vil automatisk og permanent bli utestengt hvis du åpner en tvist me
 
 ### Avtale {#agreement}
 
-Forward Email skal bruke alle rimelige kommersielle tiltak (ikke mindre enn akseptable og rimelige bransjestandarder) for å sikre at Forward Email-tjenesten er tilgjengelig for betalende kunder 99,99 % av tiden i en hvilken som helst kalendermåned. Hvis ikke, kan du være kvalifisert til å motta [Studiepoeng](#credits) beskrevet nedenfor i samsvar med [Kvalifisering](#eligibility).
+Videresendt e-post skal bruke alle rimelige kommersielle tiltak (ikke mindre enn akseptable og rimelige bransjestandarder) for å sikre at Videresendt e-post-tjenesten er tilgjengelig for betalende kunder 99,99 % av tiden i en hvilken som helst kalendermåned. Hvis ikke, kan du være kvalifisert til å motta [Studiepoeng](#credits) beskrevet nedenfor i samsvar med [Kvalifisering](#eligibility).
 
 ### Krediteringer {#credits}
 
@@ -109,9 +115,9 @@ Forward Email skal bruke alle rimelige kommersielle tiltak (ikke mindre enn akse
 
 ### Kvalifisering {#eligibility}
 
-Minimum kredittbeløpet må være minst $1,00 for å være kvalifisert. Maksimal kreditt er begrenset til 30 dager eller det totale beløpet kunden betaler per den siste kalendermåneden med hensyn til nedetid (det som er størst). Betalende kunder som er berørt av nedetid, må be om kreditter ved å sende inn en [Hjelpeforespørsel](/help) innen 30 dager fra datoen for nedetid. Kreditter gjelder kun for nedetidfaktorer som er innenfor den primære kontrollen til Videresendt e-post.
+Minimumsbeløpet for kreditt må være minst $1,00 for å være kvalifisert. Maksimal kreditt er begrenset til 30 dager eller det totale beløpet kunden betaler per den siste kalendermåneden med hensyn til nedetid (det som er størst). Betalende kunder som er berørt av nedetid, må be om kreditter ved å sende inn en [Hjelpeforespørsel](/help) innen 30 dager fra datoen for nedetid. Kreditter gjelder kun for nedetidfaktorer som er innenfor den primære kontrollen til Videresendt e-post.
 
-## Revisjoner og feilrettinger {#revisions-and-errata}
+## Revisjoner og feil {#revisions-and-errata}
 
 Materialet som vises på Forward Emails nettsted kan inneholde tekniske, typografiske eller fotografiske feil. Forward Email garanterer ikke at noe av materialet på nettstedet er nøyaktig, fullstendig eller oppdatert. Forward Email kan når som helst gjøre endringer i materialet på nettstedet uten varsel. Forward Email forplikter seg imidlertid ikke til å oppdatere materialet.
 
@@ -131,4 +137,4 @@ Generelle vilkår og betingelser som gjelder for bruk av et nettsted.
 
 ## Ytterligere opplysninger {#additional-disclosures}
 
-Dette nettstedet er beskyttet av Cloudflare, og dets [Personvernerklæring](https://www.cloudflare.com/privacypolicy/) og [Vilkår for bruk](https://www.cloudflare.com/website-terms/) gjelder.
+Dette nettstedet er beskyttet av Cloudflare, og [Personvernerklæring](https://www.cloudflare.com/privacypolicy/) og [Vilkår for bruk](https://www.cloudflare.com/website-terms/) gjelder.

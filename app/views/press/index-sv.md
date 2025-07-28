@@ -12,13 +12,13 @@
 
 ## Om vidarebefordran av e-post {#about-forward-email}
 
-Vidarebefordra e-post är den enda e-posthotelltjänsten med 100 % öppen källkod som fokuserar på säkerhet och integritet. Läs mer om vår historia på [vår Om-sida](/about).
+Vidarebefordra e-post är den enda e-posttjänsten med 100 % öppen källkod som fokuserar på säkerhet och integritet. Läs mer om vår historia på [vår Om-sida](/about).
 
-Vår tjänst grundades 2017 och hanterar e-post för över 500 000 domäner – inklusive kända användare som [Den amerikanska marinakademin](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linuxstiftelsen](/blog/docs/linux-foundation-email-enterprise-case-study), [flera universitet](/blog/docs/alumni-email-forwarding-university-case-study) och myndigheter, med flera.
+Vår tjänst grundades 2017 och hanterar e-post för över 500 000 domäner – inklusive kända användare som [Den amerikanska marinakademin](/blog/docs/federal-government-email-service-section-889-compliant), [Kanonisk/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linuxstiftelsen](/blog/docs/linux-foundation-email-enterprise-case-study), [flera universitet](/blog/docs/alumni-email-forwarding-university-case-study) och myndigheter med flera.
 
 Vårt mål är att vara en e-post- och säkerhetsinfrastrukturplattform i företagsklass – och vi följer [flera principer](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
-Om du är medlem i pressen, journalist eller medierepresentant och vill prata med oss, ställa frågor eller veta mer – vänligen kontakta oss på `press@forwardemail.net`.
+Om du är press, journalist eller medierepresentant och vill prata med oss, ställa frågor eller veta mer – vänligen kontakta oss på `press@forwardemail.net`.
 
 ## Typsnitt {#fonts}
 
@@ -43,7 +43,7 @@ Om du är medlem i pressen, journalist eller medierepresentant och vill prata me
 
 ## Grafik {#graphics}
 
-"Freddy vinkar från yttre rymden"
+"Freddy vinkar från rymden"
 
 ![Freddy vinkar](https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/assets/img/emails/domain-onboard.gif)
 

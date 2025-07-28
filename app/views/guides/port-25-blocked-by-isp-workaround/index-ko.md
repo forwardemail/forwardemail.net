@@ -20,6 +20,6 @@
 
 ISP가 아웃바운드 포트 25를 차단하는 경우 대체 솔루션을 찾거나 해당 ISP에 문의해야 합니다.
 
-## ISP가 {#how-can-i-check-if-my-isp-blocks-ports} 포트를 차단하는지 어떻게 확인할 수 있나요?
+## ISP가 포트 {#how-can-i-check-if-my-isp-blocks-ports}}를 차단하는지 어떻게 확인할 수 있나요?
 
 명령줄이나 터미널에서 `telnet smtp.forwardemail.net 25`을 실행하면 아웃바운드 포트 25 연결이 차단되었는지 확인할 수 있습니다.

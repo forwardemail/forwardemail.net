@@ -1,4 +1,4 @@
-# Listmonk 带有转发电子邮件功能，可实现安全的新闻通讯传递 {#listmonk-with-forward-email-for-secure-newsletter-delivery}
+# Listmonk 带有转发电子邮件功能，可安全发送新闻稿 {#listmonk-with-forward-email-for-secure-newsletter-delivery}
 
 ## 目录 {#table-of-contents}
 
@@ -24,7 +24,7 @@
 
 ## 概览 {#overview}
 
-本指南为开发者提供分步说明，指导他们如何设置功能强大的开源新闻通讯和邮件列表管理器 [Listmonk](https://listmonk.app/)，并使用 [转发电子邮件](https://forwardemail.net/) 作为其 SMTP 提供商。此组合可让您有效地管理营销活动，同时确保电子邮件的安全、私密和可靠投递。
+本指南为开发者提供分步说明，指导他们如何设置 [Listmonk](https://listmonk.app/)（一款功能强大的开源新闻通讯和邮件列表管理器），并使用 [转发电子邮件](https://forwardemail.net/) 作为其 SMTP 提供商。这种组合让您能够有效地管理营销活动，同时确保电子邮件的安全、私密和可靠。
 
 * **Listmonk**：处理订阅者管理、列表组织、活动创建和绩效跟踪。
 * **转发电子邮件**：充当安全的 SMTP 服务器，使用内置安全功能（如 SPF、DKIM、DMARC 和 TLS 加密）处理电子邮件的实际发送。
@@ -47,7 +47,7 @@
 * 需要提供商？请查看 [推荐VPS列表](https://github.com/forwardemail/awesome-mail-server-providers)。
 * 一个您控制的域名（需要 DNS 访问权限）。
 * 一个拥有 [转发电子邮件](https://forwardemail.net/) 权限的有效账户。
-* 拥有您 VPS 的 Root 权限或 `sudo` 权限。
+* 拥有 VPS 的 Root 权限或 `sudo` 权限。
 * 熟悉 Linux 命令行操作。
 
 ## 安装 {#installation}
@@ -72,7 +72,7 @@ sudo apt install -y docker.io docker-compose ufw
 
 ### 3. 下载 Listmonk 配置 {#3-download-listmonk-configuration}
 
-为 Listmonk 创建一个目录并下载官方的 `docker-compose.yml` 文件。
+为 Listmonk 创建一个目录并下载官方 `docker-compose.yml` 文件。
 
 ```bash
 mkdir listmonk && cd listmonk
@@ -102,24 +102,24 @@ sudo ufw enable
 
 如果您的域名的 DNS 由 Cloudflare 管理，您可以利用其代理功能轻松实现 HTTPS。
 
-1. **指向 DNS**：在 Cloudflare 中为您的 Listmonk 子域名（例如 `listmonk.yourdomain.com`）创建一条指向您 VPS IP 地址的 `A` 记录。确保 **代理状态** 设置为 **已代理**（橙色云）。
+1. **指向 DNS**：在 Cloudflare 中为您的 Listmonk 子域名（例如 `listmonk.yourdomain.com`）创建一条指向您 VPS IP 地址的 `A` 记录。确保**代理状态**设置为**已代理**（橙色云）。
 2. **修改 Docker Compose**：编辑您下载的 `docker-compose.yml` 文件：
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
    ```
-这将使 Listmonk 可在端口 80 上内部访问，然后 Cloudflare 可以使用代理并使用 HTTPS 进行安全保护。
+这将使 Listmonk 能够在端口 80 上内部访问，然后 Cloudflare 可以使用代理并使用 HTTPS 进行安全保护。
 
 #### 选项 B：使用反向代理（Nginx、Caddy 等）{#option-b-using-a-reverse-proxy-nginx-caddy-etc}
 
 或者，您可以在 VPS 上设置像 Nginx 或 Caddy 这样的反向代理来处理对 Listmonk 的 HTTPS 终止和代理请求（默认在端口 9000 上运行）。
 
 * 保留 `docker-compose.yml` 中的默认 `ports: - "127.0.0.1:9000:9000"`，以确保 Listmonk 只能在本地访问。
-* 配置您选择的反向代理，使其监听端口 80 和 443，处理 SSL 证书获取（例如，通过 Let's Encrypt 获取），并将流量转发至 `http://127.0.0.1:9000`。
+* 配置您选择的反向代理，使其监听端口 80 和 443，处理 SSL 证书获取（例如，通过 Let's Encrypt 获取），并将流量转发到 `http://127.0.0.1:9000`。
 * 详细的反向代理设置超出了本指南的范围，但网上有很多教程可供参考。
 
 ### 6. 启动 Listmonk {#6-start-listmonk}
 
-导航回您的 `listmonk` 目录（如果您还没有到达那里）并以分离模式启动容器。
+导航回您的 `listmonk` 目录（如果您尚未到达该目录）并以分离模式启动容器。
 
 ```bash
 cd ~/listmonk # Or the directory where you saved docker-compose.yml
@@ -128,7 +128,7 @@ docker compose up -d
 
 Docker 将下载必要的镜像并启动 Listmonk 应用程序和数据库容器。首次启动可能需要一两分钟。
 
-✅ **访问 Listmonk**：您现在应该能够通过您配置的域访问 Listmonk 网络界面（例如，`https://listmonk.yourdomain.com`）。
+✅ **访问 Listmonk**：您现在应该能够通过您配置的域（例如，`https://listmonk.yourdomain.com`）访问 Listmonk 网络界面。
 
 ### 7. 在 Listmonk 中配置转发电子邮件 SMTP {#7-configure-forward-email-smtp-in-listmonk}
 
@@ -136,7 +136,7 @@ Docker 将下载必要的镜像并启动 Listmonk 应用程序和数据库容器
 
 1. **在“转发邮件”中启用 SMTP**：确保您已在“转发邮件”账户信息中心中生成 SMTP 凭据。如果您尚未执行此操作，请按照 [转发电子邮件指南，通过 SMTP 发送带有自定义域的电子邮件](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp) 操作。
 2. **配置 Listmonk**：登录您的 Listmonk 管理面板。
-* 前往 **设置 -> SMTP**。
+* 前往**设置 -> SMTP**。
 
 * Listmonk 内置了“转发邮件”功能。请从提供商列表中选择“转发邮件”，或手动输入以下详细信息：
 
@@ -162,16 +162,16 @@ Docker 将下载必要的镜像并启动 Listmonk 应用程序和数据库容器
 #### 转发电子邮件设置 {#forward-email-setup}
 
 1. 登录您的 [转发电子邮件仪表板](https://forwardemail.net/)。
-2. 导航至 **域名**，选择您用于发送邮件的域名，然后进入其 **设置** 页面。
-3. 向下滚动到 **反弹 Webhook URL** 部分。
-4. 输入以下 URL，将 `<your_listmonk_domain>` 替换为您的 Listmonk 实例可访问的实际域名或子域名：
+2. 导航至“域”，选择您用于发送邮件的域，然后进入其“设置”页面。
+3. 向下滚动到“反弹 Webhook URL”部分。
+4. 输入以下 URL，将 `<your_listmonk_domain>` 替换为您的 Listmonk 实例可访问的实际域或子域：
 ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
 *示例*：`https://listmonk.yourdomain.com/webhooks/service/forwardemail`
-5. 进一步向下滚动到 **Webhook 签名负载验证密钥** 部分。
-6. **复制**生成的验证密钥。您在 Listmonk 中需要用到它。
-7. 保存转发邮件域名设置中的更改。
+5. 进一步向下滚动到“Webhook 签名负载验证密钥”部分。
+6. **复制**生成的验证密钥。您将在 Listmonk 中需要此密钥。
+7. 保存“转发电子邮件”域设置中的更改。
 
 #### Listmonk 设置 {#listmonk-setup}
 
@@ -183,7 +183,7 @@ Docker 将下载必要的镜像并启动 Listmonk 应用程序和数据库容器
 6. 将您从“转发电子邮件”仪表板复制的“Webhook 签名负载验证密钥”粘贴到“转发电子邮件密钥”字段中。
 7. 点击页面底部的“保存”。
 8. 退回处理现已配置完毕！当“转发电子邮件”检测到 Listmonk 发送的电子邮件被退回时，它将通过 webhook 通知您的 Listmonk 实例，Listmonk 会相应地标记订阅者。
-9. 完成 [测试](#testing) 中的以下步骤，以确保一切正常。
+9. 在 [测试](#testing) 中完成以下步骤，以确保一切正常。
 
 ## 测试 {#testing}
 
@@ -217,13 +217,13 @@ Docker 将下载必要的镜像并启动 Listmonk 应用程序和数据库容器
 ## 验证 {#verification}
 
 * **SMTP 投递**：定期通过 Listmonk 的 SMTP 设置页面发送测试邮件，并测试邮件发送情况，以确保邮件正确投递。
-* **退回处理**：向已知无效的电子邮件地址发送测试邮件（例如，如果您手边没有真实的电子邮件地址，请发送 `bounce-test@yourdomain.com`，但结果可能会有所不同）。过一会儿，在 Listmonk 中查看邮件发送情况统计信息，看看是否出现退回邮件。
-* **邮件标头**：使用 [邮件测试器](https://www.mail-tester.com/) 等工具或手动检查邮件标头，验证 SPF、DKIM 和 DMARC 是否通过，这表示“转发邮件”设置正确。
+* **退回处理**：向已知无效的电子邮件地址发送测试邮件（例如，如果您手边没有真实的电子邮件地址，可以发送 `bounce-test@yourdomain.com`，但结果可能会有所不同）。过一会儿，在 Listmonk 中查看邮件发送情况统计信息，看看是否出现退回邮件。
+* **邮件标头**：使用 [邮件测试器](https://www.mail-tester.com/) 等工具或手动检查邮件标头，验证 SPF、DKIM 和 DMARC 是否通过，这表明“转发邮件”设置正确。
 * **转发邮件日志**：如果您怀疑投递问题源自 SMTP 服务器，请检查“转发邮件”仪表板日志。
 
 ## 开发者笔记 {#developer-notes}
 
-* **模板**：Listmonk 使用 Go 的模板引擎。探索其文档，了解高级个性化功能：`{{ .Subscriber.Attribs.your_custom_field }}`。
+* **模板**：Listmonk 使用 Go 的模板引擎。探索其文档，了解高级个性化设置：`{{ .Subscriber.Attribs.your_custom_field }}`。
 * **API**：Listmonk 提供全面的 REST API，用于管理列表、订阅者、活动、模板等。API 文档链接位于 Listmonk 实例的页脚中。
 * **自定义字段**：在“设置”->“订阅者字段”下定义自定义订阅者字段，以存储其他数据。
 * **Webhook**：除了退回邮件，Listmonk 还可以为其他事件（例如订阅）发送 Webhook，从而实现与其他系统集成。

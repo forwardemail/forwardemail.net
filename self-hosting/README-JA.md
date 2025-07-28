@@ -1,13 +1,13 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# セルフホストリリース {#self-hosted-releases}
 
-このセクションでは、ForwardEmail のセルフホスト ソリューションの CI/CD ワークフローについて説明し、Docker イメージの構築、公開、デプロイの方法を説明します。
+このセクションでは、ForwardEmail のセルフホスト ソリューションの CI/CD ワークフローについて説明し、Docker イメージの構築、公開、およびデプロイの方法を説明します。
 
-## Table of Contents {#table-of-contents}
+## 目次 {#table-of-contents}
 
 * [概要](#overview)
-* [CI/CD ワークフロー](#cicd-workflow)
+* [CI/CDワークフロー](#cicd-workflow)
   * [GitHub アクションワークフロー](#github-actions-workflow)
-  * [Docker イメージの構造](#docker-image-structure)
+  * [Dockerイメージの構造](#docker-image-structure)
 * [展開プロセス](#deployment-process)
   * [インストール](#installation)
   * [Docker Compose の設定](#docker-compose-configuration)
@@ -17,31 +17,31 @@
   * [証明書の更新](#certificate-renewal)
 * [バージョン管理](#versioning)
 * [画像へのアクセス](#accessing-images)
-* [貢献する](#contributing)
+* [貢献](#contributing)
 
-## Overview {#overview}
+## 概要 {#overview}
 
-ForwardEmail のセルフホスト ソリューションは、GitHub Actions を使用して、新しいリリースが作成されるたびに Docker イメージを自動的にビルドして公開します。これらのイメージは、提供されたセットアップ スクリプトを使用してユーザーが自分のサーバーにデプロイできるようになります。
+ForwardEmailのセルフホスト型ソリューションは、GitHub Actionsを使用して、新しいリリースが作成されるたびにDockerイメージを自動的にビルド・公開します。これらのイメージは、提供されているセットアップスクリプトを使用してユーザーが自身のサーバーにデプロイできます。
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> [セルフホストブログ](https://forwardemail.net/blog/docs/self-hosted-solution) と [セルフホスト開発者ガイド](https://forwardemail.net/self-hosted) もございます。
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> より詳細な手順については、[ウブントゥ](https://forwardemail.net/guides/selfhosted-on-ubuntu) または [デビアン](https://forwardemail.net/guides/selfhosted-on-debian) ベースのガイドをご覧ください。
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD ワークフロー {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub Actions ワークフロー {#github-actions-workflow}
 
-セルフホスト型Dockerイメージのビルドと公開プロセスは、`.github/workflows/docker-image-build-publish.yml`で定義されています。このワークフローは次のようになります。
+セルフホスト型Dockerイメージのビルドと公開プロセスは、`.github/workflows/docker-image-build-publish.yml`に定義されています。このワークフローは次のようになります。
 
 1. **トリガー**: 新しいGitHubリリースが公開されると自動的に実行されます
-2. **環境**: UbuntuとNode.js 18.20.4で実行されます
+2. **環境**: UbuntuでNode.js 18.20.4を使用して実行されます
 3. **ビルドプロセス**:
 * リポジトリのコードをチェックアウトします
 * マルチプラットフォームビルド用にDocker Buildxをセットアップします
 * GitHub Container Registry (GHCR)にログインします
 * セルフホスト型デプロイメント用にスキーマを更新します
-* `self-hosting/Dockerfile-selfhosted` を使用してDockerイメージをビルドします
+* `self-hosting/Dockerfile-selfhosted`を使用してDockerイメージをビルドします
 * リリースバージョンと`latest`の両方でイメージにタグを付けます
 * イメージをGitHub Container Registryにプッシュします
 
@@ -69,7 +69,7 @@ jobs:
           docker push ghcr.io/${{ github.repository }}-selfhosted:latest
 ```
 
-### Docker イメージ構造 {#docker-image-structure}
+### Dockerイメージ構造 {#docker-image-structure}
 
 Docker イメージは、`self-hosting/Dockerfile-selfhosted` で定義されたマルチステージ アプローチを使用して構築されます。
 
@@ -91,7 +91,7 @@ Docker イメージは、`self-hosting/Dockerfile-selfhosted` で定義された
 
 ### インストール {#installation}
 
-ユーザーは、提供されたセットアップ スクリプトを使用して、セルフホスト ソリューションを展開できます。
+ユーザーは、提供されているセットアップ スクリプトを使用して、セルフホスト ソリューションを展開できます。
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
@@ -161,9 +161,9 @@ SSL 証明書は、次のオプションを使用して自動的に管理され�
 各 GitHub リリースでは、次のタグが付けられた新しい Docker イメージが作成されます。
 
 1. 特定のリリースバージョン（例：`v1.0.0`）
-2. 最新リリースの`latest` タグ
+2. 最新リリースの`latest`タグ
 
-ユーザーは、安定性のために特定のバージョンを使用するか、常に最新の機能を取得するために `latest` タグを使用するかを選択できます。
+ユーザーは、安定性のために特定のバージョンを使用するか、または `latest` タグを使用して常に最新の機能を取得するかを選択できます。
 
 ## 画像へのアクセス {#accessing-images}
 
@@ -172,13 +172,13 @@ Docker イメージは次の場所で公開されています:
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (バージョンタグの例)
 
-これらのイメージを取得するために認証は必要ありません。
+これらのイメージをプルするには認証は必要ありません。
 
 ## 貢献 {#contributing}
 
-セルフホスト型ソリューションに貢献するには:
+セルフホスト ソリューションに貢献するには:
 
-1. `self-hosting` ディレクトリ内の関連ファイルに変更を加えます。
-2. 提供されている `setup.sh` スクリプトを使用して、ローカルまたは Ubuntu ベースの VPS でテストします。
-3. プルリクエストを送信します。
-4. マージされて新しいリリースが作成されると、CI ワークフローによって更新された Docker イメージが自動的にビルドされ、公開されます。
+1. `self-hosting` ディレクトリ内の関連ファイルに変更を加える
+2. 提供されている `setup.sh` スクリプトを使用して、ローカルまたは Ubuntu ベースの VPS でテストする
+3. プルリクエストを送信する
+4. マージされて新しいリリースが作成されると、CI ワークフローによって更新された Docker イメージが自動的にビルドされ、公開されます

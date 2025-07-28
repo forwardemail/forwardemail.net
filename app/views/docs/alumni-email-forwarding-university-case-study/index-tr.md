@@ -1,6 +1,6 @@
 # Vaka Çalışması: Yönlendirme E-postası, En İyi Üniversiteler İçin Mezun E-posta Çözümlerini Nasıl Güçlendiriyor? {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="tembel" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 
@@ -11,8 +11,8 @@
   * [Mezun E-posta Kimliğinin Değeri](#the-value-of-alumni-email-identity)
   * [Geleneksel Çözümler Yetersiz Kalıyor](#traditional-solutions-fall-short)
   * [Yönlendirilmiş E-posta Çözümü](#the-forward-email-solution)
-* [Teknik Uygulama: Nasıl Çalışır](#technical-implementation-how-it-works)
-  * [Çekirdek Mimarlık](#core-architecture)
+* [Teknik Uygulama: Nasıl Çalışır?](#technical-implementation-how-it-works)
+  * [Çekirdek Mimari](#core-architecture)
   * [Üniversite Sistemleriyle Entegrasyon](#integration-with-university-systems)
   * [API Odaklı Yönetim](#api-driven-management)
   * [DNS Yapılandırması ve Doğrulaması](#dns-configuration-and-verification)
@@ -29,10 +29,10 @@
   * [Meydan okumak](#challenge)
   * [Çözüm](#solution)
   * [Sonuçlar](#results)
-* [Üniversiteler ve Mezunlar İçin Faydaları](#benefits-for-universities-and-alumni)
+* [Üniversiteler ve Mezunlar İçin Faydalar](#benefits-for-universities-and-alumni)
   * [Üniversiteler İçin](#for-universities)
   * [Mezunlar İçin](#for-alumni)
-  * [Mezunlar Arasında Kabul Oranları](#adoption-rates-among-alumni)
+  * [Mezunlar Arasında Evlat Edinme Oranları](#adoption-rates-among-alumni)
   * [Önceki Çözümlere Göre Maliyet Tasarrufları](#cost-savings-compared-to-previous-solutions)
 * [Güvenlik ve Gizlilik Hususları](#security-and-privacy-considerations)
   * [Veri Koruma Önlemleri](#data-protection-measures)
@@ -42,13 +42,13 @@
 
 ## Önsöz {#foreword}
 
-Saygın üniversiteler ve mezunları için dünyanın en güvenli, özel ve esnek e-posta yönlendirme hizmetini oluşturduk.
+Prestijli üniversiteler ve mezunları için dünyanın en güvenli, özel ve esnek e-posta yönlendirme hizmetini oluşturduk.
 
-Yüksek öğrenimin rekabetçi ortamında, mezunlarla ömür boyu süren bağlantıları sürdürmek sadece bir gelenek meselesi değil, stratejik bir zorunluluktur. Üniversitelerin bu bağlantıları teşvik etmesinin en somut yollarından biri, mezunlara akademik miraslarını yansıtan dijital bir kimlik sağlayan mezun e-posta adresleridir.
+Yükseköğretimin rekabetçi ortamında, mezunlarla ömür boyu sürecek bağları sürdürmek sadece bir gelenek meselesi değil, stratejik bir zorunluluktur. Üniversitelerin bu bağları güçlendirmesinin en somut yollarından biri, mezunlara akademik miraslarını yansıtan dijital bir kimlik sağlayan mezun e-posta adresleridir.
 
 Forward Email olarak, mezun e-posta hizmetlerini yönetme biçimlerini kökten değiştirmek için dünyanın en prestijli eğitim kurumlarından bazılarıyla ortaklık kurduk. Kurumsal düzeydeki e-posta yönlendirme çözümümüz artık [Cambridge Üniversitesi](https://en.wikipedia.org/wiki/University_of_Cambridge), [Maryland Üniversitesi](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park), [Tufts Üniversitesi](https://en.wikipedia.org/wiki/Tufts_University) ve [Swarthmore Koleji](https://en.wikipedia.org/wiki/Swarthmore_College) mezun e-posta sistemlerini destekliyor ve toplamda dünya çapında binlerce mezuna hizmet veriyor.
 
-Bu blog yazısı, gizlilik odaklı [açık kaynak](https://en.wikipedia.org/wiki/Open-source_software) e-posta yönlendirme hizmetimizin bu kurumlar için nasıl tercih edilen çözüm haline geldiğini, bunu mümkün kılan teknik uygulamaları ve hem idari verimlilik hem de mezun memnuniyeti üzerindeki dönüştürücü etkisini inceliyor.
+Bu blog yazısı, gizlilik odaklı e-posta yönlendirme hizmetimiz [açık kaynaklı](https://en.wikipedia.org/wiki/Open-source_software)'ın bu kurumlar için nasıl tercih edilen çözüm haline geldiğini, bunu mümkün kılan teknik uygulamaları ve hem idari verimlilik hem de mezun memnuniyeti üzerindeki dönüştürücü etkisini inceliyor.
 
 ## İstikrarlı Fiyatlandırma ile Önemli Maliyet Tasarrufları {#dramatic-cost-savings-with-stable-pricing}
 
@@ -57,17 +57,17 @@ Bu blog yazısı, gizlilik odaklı [açık kaynak](https://en.wikipedia.org/wiki
 | Çözüm | Mezun Başına Maliyet (Yıllık) | 100.000 Mezun İçin Maliyet | Son Fiyat Artışları |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | İşletmeler için Google Workspace | $72 | $7,200,000 | • 2019: G Suite Basic aylık 5 dolardan 6 dolara (+%20)<br>• 2023: Esnek planlar %20 arttı<br>• 2025: Yapay zeka özellikleriyle Business Plus aylık 18 dolardan 26,40 dolara (+%47) |
-| Eğitim için Google Workspace | Ücretsiz (Eğitim Temelleri)<br>Öğrenci başına 3 ABD doları/yıl (Eğitim Standardı)<br>Öğrenci başına 5 ABD doları/yıl (Eğitim Artı) | Ücretsiz - 500.000$ | • Toplu indirimler: 100-499 lisans için %5<br>• Toplu indirimler: 500+ lisans için %10<br>• Ücretsiz katman, temel hizmetlerle sınırlıdır |
+| Google Workspace for Education | Ücretsiz (Eğitim Temelleri)<br>Öğrenci başına 3 ABD doları/yıl (Eğitim Standardı)<br>Öğrenci başına 5 ABD doları/yıl (Eğitim Artı) | Ücretsiz - 500.000 $ | • Toplu indirimler: 100-499 lisans için %5<br>• Toplu indirimler: 500+ lisans için %10<br>• Ücretsiz katman, temel hizmetlerle sınırlıdır |
 | Microsoft 365 İş | $60 | $6,000,000 | • 2023: Yılda iki kez fiyat güncellemeleri getirildi<br>• 2025 (Ocak): Copilot AI ile kişisel abonelik 6,99 ABD dolarından 9,99 ABD dolarına (+%43) yükseldi<br>• 2025 (Nisan): Aylık ödenen yıllık taahhütlerde %5 artış |
-| Microsoft 365 Eğitim | Ücretsiz (A1)<br>38-55$/fakülte/yıl (A3)<br>65-96$/fakülte/yıl (A5) | Ücretsiz - 96.000$ | • Öğrenci lisansları genellikle öğretim üyesi satın alımlarına dahildir<br>• Toplu lisanslama yoluyla özel fiyatlandırma<br>• Ücretsiz katman web sürümleriyle sınırlıdır |
-| Kendi Kendine Barındırılan Exchange | $45 | $4,500,000 | Devam eden bakım ve güvenlik maliyetleri artmaya devam ediyor |
+| Microsoft 365 Eğitim | Ücretsiz (A1)<br>38-55$/fakülte/yıl (A3)<br>65-96$/fakülte/yıl (A5) | Ücretsiz - 96.000 $ | • Öğrenci lisansları genellikle öğretim üyesi satın alımlarına dahildir<br>• Toplu lisanslama yoluyla özel fiyatlandırma<br>• Ücretsiz katman web sürümleriyle sınırlıdır |
+| Kendinden Barındırılan Exchange | $45 | $4,500,000 | Devam eden bakım ve güvenlik maliyetleri artmaya devam ediyor |
 | **E-postayı İlet Kurumsal** | **Sabit 250$/ay** | **3.000$/yıl** | **Piyasaya sürüldüğünden beri fiyat artışı yapılmadı** |
 
 ### Gerçek Dünya Üniversite Tasarrufları {#real-world-university-savings}
 
-Geleneksel sağlayıcılar yerine Forward Email'i seçerek ortak üniversitelerimizin yılda ne kadar tasarruf sağladığını görün:
+Geleneksel sağlayıcılar yerine Forward Email'i seçen üniversitelerimizin yıllık tasarrufları şöyle:
 
-| Üniversite | Mezun Sayısı | Google ile Yıllık Maliyet | E-posta İletme ile Yıllık Maliyet | Yıllık Tasarruflar |
+| Üniversite | Mezun Sayısı | Google ile Yıllık Maliyet | E-posta İletme ile Yıllık Maliyet | Yıllık Tasarruf |
 | ----------------------- | ------------ | ----------------------- | ------------------------------ | -------------- |
 | Cambridge Üniversitesi | 30,000 | $90,000 | $3,000 | $87,000 |
 | Swarthmore Koleji | 5,000 | $15,000 | $3,000 | $12,000 |
@@ -75,12 +75,12 @@ Geleneksel sağlayıcılar yerine Forward Email'i seçerek ortak üniversiteleri
 | Maryland Üniversitesi | 25,000 | $75,000 | $3,000 | $72,000 |
 
 > \[!NOTE]
-> Forward Email enterprise only costs $250/month typically, with no extra cost per user, whitelisted API rate limitations, and the only additional cost is storage if you need additional GB/TB for students (+$3 per 10 GB additional storage). We use NVMe SSD drives for fast support of IMAP/POP3/SMTP/CalDAV/CardDAV as well.
+> Kurumsal E-posta Yönlendirme hizmetinin maliyeti genellikle aylık 250 ABD dolarıdır. Kullanıcı başına ek bir maliyet yoktur, beyaz listeye alınmış API ücret sınırlamaları vardır ve öğrenciler için ek GB/TB depolama alanına ihtiyacınız olması durumunda ek maliyet sadece depolama alanıdır (10 GB ek depolama alanı için +3 ABD doları). Ayrıca IMAP/POP3/SMTP/CalDAV/CardDAV'ı hızlı bir şekilde desteklemek için NVMe SSD sürücüler kullanıyoruz.
 
 > \[!IMPORTANT]
-> Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
+> Verilerinizi analiz eden yapay zeka özelliklerini entegre ederken fiyatlarını sürekli artıran Google ve Microsoft'un aksine, Forward Email, gizlilik odaklı istikrarlı fiyatlandırma politikasına sahiptir. Yapay zeka kullanmıyor, kullanım modellerini takip etmiyor ve günlükleri veya e-postaları diske kaydetmiyoruz (tüm işlemler bellek içinde yapılır), böylece mezunlarınızla olan iletişimleriniz için tam gizlilik sağlıyoruz.
 
-Bu, geleneksel e-posta barındırma çözümlerine kıyasla önemli bir maliyet tasarrufu anlamına geliyor; üniversiteler bu fonları burslara, araştırmalara veya diğer kritik öneme sahip faaliyetlere yönlendirebiliyor. Email Vendor Selection tarafından 2023 yılında yapılan bir analize göre, eğitim kurumları, yapay zeka özelliklerinin entegrasyonuyla fiyatlar artmaya devam ettikçe, geleneksel e-posta sağlayıcılarına uygun maliyetli alternatifler arıyor ([E-posta Satıcı Seçimi, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
+Bu, geleneksel e-posta barındırma çözümlerine kıyasla önemli bir maliyet tasarrufu anlamına geliyor; üniversiteler bu fonları burslara, araştırmalara veya diğer kritik öneme sahip faaliyetlere yönlendirebiliyor. Email Vendor Selection tarafından 2023 yılında yapılan bir analize göre, eğitim kurumları yapay zeka özelliklerinin entegrasyonuyla fiyatlar artmaya devam ettikçe, geleneksel e-posta sağlayıcılarına uygun maliyetli alternatifler arıyor ([E-posta Satıcı Seçimi, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
 
 ## Üniversite Mezunları E-posta Yarışması {#the-university-alumni-email-challenge}
 
@@ -88,28 +88,28 @@ Bu, geleneksel e-posta barındırma çözümlerine kıyasla önemli bir maliyet 
 
 ### Mezun E-posta Kimliğinin Değeri {#the-value-of-alumni-email-identity}
 
-Mezun e-posta adresleri (örneğin `firstname.lastname@cl.cam.ac.uk` veya `username@terpalum.umd.edu`) birden fazla önemli işleve sahiptir:
+Mezun e-posta adresleri (`firstname.lastname@cl.cam.ac.uk` veya `username@terpalum.umd.edu` gibi) birden fazla önemli işleve sahiptir:
 
 * Kurumsal bağlantıyı ve marka kimliğini sürdürmek
-* Üniversite ile devam eden iletişimi kolaylaştırmak
+* Üniversite ile sürekli iletişimi kolaylaştırmak
 * Mezunlar için profesyonel güvenilirliği artırmak
 * Mezunlar arasında ağ oluşturma ve topluluk oluşturmayı desteklemek
-* İstikrarlı, ömür boyu bir iletişim noktası sağlamak
+* İstikrarlı ve ömür boyu sürecek bir iletişim noktası sağlamak
 
 Tekade (2020) tarafından yapılan araştırma, eğitim e-posta adreslerinin mezunlara akademik kaynaklara erişim, profesyonel güvenilirlik ve çeşitli hizmetlerde özel indirimler gibi çok sayıda fayda sağladığını vurgulamaktadır ([Orta, 2020](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05)).
 
 > \[!TIP]
-> Visit our new [AlumniEmail.com](https://alumniemail.com) directory for a comprehensive resource on university alumni email services, including setup guides, best practices, and a searchable directory of alumni email domains. It serves as a central hub for all alumni email information.
+> Kurulum kılavuzları, en iyi uygulamalar ve aranabilir bir mezun e-posta alan adı dizini de dahil olmak üzere üniversite mezunlarının e-posta hizmetleri hakkında kapsamlı bir kaynak için yeni [AlumniEmail.com](https://alumniemail.com) dizinimizi ziyaret edin. Tüm mezun e-posta bilgileri için merkezi bir merkez görevi görür.
 
 ### Geleneksel Çözümler Yetersiz Kalıyor {#traditional-solutions-fall-short}
 
-Geleneksel e-posta sistemleri mezunların e-posta ihtiyaçlarına uygulandığında bazı sınırlamalar ortaya çıkar:
+Geleneksel e-posta sistemleri, mezunların e-posta ihtiyaçlarına uygulandığında çeşitli sınırlamalar ortaya çıkar:
 
-* **Maliyet Önleyici**: Kullanıcı başına lisanslama modelleri büyük mezun tabanları için finansal olarak sürdürülemez hale gelir
-* **İdari Yük**: Binlerce veya milyonlarca hesabı yönetmek önemli BT kaynakları gerektirir
-* **Güvenlik Endişeleri**: Hareketsiz hesaplar için güvenliğin sağlanması güvenlik açığını artırır
-* **Sınırlı Esneklik**: Katı sistemler mezun e-posta yönlendirmesinin benzersiz ihtiyaçlarına uyum sağlayamaz
-* **Gizlilik Sorunları**: Birçok sağlayıcı reklam amaçlı e-posta içeriğini tarar
+* **Maliyet Engelleyici**: Kullanıcı başına lisanslama modelleri, geniş mezun tabanları için finansal olarak sürdürülemez hale gelir.
+* **İdari Yük**: Binlerce veya milyonlarca hesabı yönetmek önemli BT kaynakları gerektirir.
+* **Güvenlik Endişeleri**: Etkin olmayan hesaplar için güvenliği sağlamak, güvenlik açığını artırır.
+* **Sınırlı Esneklik**: Katı sistemler, mezunların e-posta yönlendirmelerinin benzersiz ihtiyaçlarına uyum sağlayamaz.
+* **Gizlilik Sorunları**: Birçok sağlayıcı, reklam amaçlı e-posta içeriğini tarar.
 
 Quora'da üniversite e-posta bakımıyla ilgili yapılan bir tartışma, üniversitelerin mezunların e-posta adreslerini sınırlamasının veya iptal etmesinin başlıca nedenlerinden birinin güvenlik endişeleri olduğunu ortaya koyuyor; çünkü kullanılmayan hesaplar bilgisayar korsanlığına ve kimlik hırsızlığına karşı savunmasız olabiliyor ([Quora, 2011](https://www.quora.com/Is-there-any-cost-for-a-college-or-university-to-maintain-edu-e-mail-addresses)).
 
@@ -118,32 +118,32 @@ Quora'da üniversite e-posta bakımıyla ilgili yapılan bir tartışma, üniver
 Bizim yaklaşımımız bu zorlukları temelde farklı bir modelle ele alıyor:
 
 * Barındırma yerine e-posta yönlendirme
-* Kullanıcı başına maliyetler yerine sabit ücretli fiyatlandırma
+* Kullanıcı başına maliyet yerine sabit fiyatlandırma
 * Şeffaflık ve güvenlik için açık kaynaklı mimari
-* İçerik taraması olmayan gizlilik odaklı tasarım
+* İçerik taraması gerektirmeyen, gizlilik odaklı tasarım
 * Üniversite kimlik yönetimi için özel özellikler
 
 ## Teknik Uygulama: Nasıl Çalışır? {#technical-implementation-how-it-works}
 
-Çözümümüz, büyük ölçekte güvenilir, emniyetli e-posta yönlendirmesi sağlamak için gelişmiş ancak zarif bir şekilde basit bir teknik mimariden yararlanır.
+Çözümümüz, büyük ölçekte güvenilir ve emniyetli e-posta yönlendirmesi sağlamak için gelişmiş ancak zarif bir şekilde basit bir teknik mimariden yararlanır.
 
 ### Çekirdek Mimarisi {#core-architecture}
 
 E-posta İletme sistemi birkaç temel bileşenden oluşur:
 
-* Yüksek kullanılabilirlik için dağıtılmış MX sunucuları
+* Yüksek erişilebilirlik için dağıtılmış MX sunucuları
 * Mesaj depolaması olmadan gerçek zamanlı yönlendirme
 * Kapsamlı e-posta kimlik doğrulaması
-* Özel alan ve alt alan desteği
+* Özel alan adı ve alt alan adı desteği
 * API odaklı hesap yönetimi
 
 ServerFault'taki BT uzmanlarına göre, kendi e-posta çözümlerini uygulamak isteyen üniversiteler için en iyi Posta Aktarım Aracısı (MTA) olarak Postfix önerilirken, IMAP/POP3 erişimi için Courier veya Dovecot tercih ediliyor ([Sunucu Hatası, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)). Ancak çözümümüz, üniversitelerin bu karmaşık sistemleri kendilerinin yönetme ihtiyacını ortadan kaldırıyor.
 
 ### Üniversite Sistemleriyle Entegrasyon {#integration-with-university-systems}
 
-Mevcut üniversite altyapısıyla sorunsuz entegrasyon yolları geliştirdik:
+Mevcut üniversite altyapısıyla kusursuz entegrasyon yolları geliştirdik:
 
-* [RESTful API](https://forwardemail.net/email-api) entegrasyonu aracılığıyla otomatik provizyonlama
+* [RESTful API](https://forwardemail.net/email-api) entegrasyonu ile otomatik provizyonlama
 * Üniversite portalları için özel markalama seçenekleri
 * Departmanlar ve kuruluşlar için esnek takma ad yönetimi
 * Verimli yönetim için toplu işlemler
@@ -170,28 +170,28 @@ const response = await fetch('https://forwardemail.net/api/v1/domains/example.ed
 
 ### DNS Yapılandırması ve Doğrulaması {#dns-configuration-and-verification}
 
-E-posta teslimi için uygun DNS yapılandırması kritik öneme sahiptir. Ekibimiz şunlara yardımcı olur:
+E-posta teslimatı için doğru DNS yapılandırması kritik öneme sahiptir. Ekibimiz şu konularda yardımcı olur:
 
 * MX kayıtları da dahil olmak üzere [DNS](https://en.wikipedia.org/wiki/Domain_Name_System) yapılandırması
-* E-posta kimlik doğrulaması için İsviçre çakısı niteliğindeki açık kaynaklı [postayetkisi](https://www.npmjs.com/package/mailauth) paketimizi kullanan kapsamlı e-posta güvenliği uygulaması:
-* E-posta sahteciliğini önlemek için [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Gönderen Politikası Çerçevesi)
+* E-posta kimlik doğrulaması için bir İsviçre çakısı olan açık kaynaklı [posta yetkilendirmesi](https://www.npmjs.com/package/mailauth) paketimizi kullanan kapsamlı e-posta güvenliği uygulaması:
+* E-posta sahteciliğini önlemek için [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Gönderen Politika Çerçevesi)
 * E-posta kimlik doğrulaması için [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (Etki Alanı Anahtarlarıyla Tanımlanmış Posta)
 * Politika uygulaması için [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Etki Alanı Tabanlı Mesaj Kimlik Doğrulaması, Raporlama ve Uygunluk)
-* TLS şifrelemesini uygulamak için [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (SMTP MTA Sıkı Aktarım Güvenliği)
+* TLS şifrelemesini uygulamak için [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (SMTP MTA Sıkı Taşıma Güvenliği)
 * Mesajlar iletildiğinde kimlik doğrulamasını sürdürmek için [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Kimliği Doğrulanmış Alınan Zincir)
 * İletim yoluyla SPF doğrulamasını korumak için [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Gönderen Yeniden Yazma Şeması)
-* Desteklenen e-posta istemcilerinde logo gösterimi için [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Mesaj Tanımlama için Marka Göstergeleri)
+* Logo gösterimi için [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Mesaj Tanımlaması için Marka Göstergeleri) Desteklenen e-posta istemcileri
 * Alan adı sahipliği için DNS TXT kaydı doğrulaması
 
 `mailauth` paketi (<http://npmjs.com/package/mailauth>), e-posta kimlik doğrulamasının tüm yönlerini tek bir entegre kitaplıkta ele alan tamamen açık kaynaklı bir çözümdür. Tescilli çözümlerin aksine, bu yaklaşım şeffaflık, düzenli güvenlik güncellemeleri ve e-posta kimlik doğrulama süreci üzerinde tam kontrol sağlar.
 
 ### Test ve Kalite Güvencesi {#testing-and-quality-assurance}
 
-Tam dağıtıma geçmeden önce sıkı testler yürütüyoruz:
+Tam dağıtıma geçmeden önce, sıkı testler gerçekleştiriyoruz:
 
 * Uçtan uca e-posta teslim testi
 * Yüksek hacimli senaryolar için yük testi
-* Güvenlik penetrasyon testi
+* Güvenlik sızma testi
 * API entegrasyon doğrulaması
 * Mezun temsilcileriyle kullanıcı kabul testi
 
@@ -238,10 +238,10 @@ Yapılandırılmış uygulama sürecimiz, çözümümüzü benimseyen üniversit
 Değerlendirmeye dayanarak, kesintileri en aza indirirken tam veri bütünlüğünü sağlayan özel bir geçiş stratejisi geliştiriyoruz:
 
 * Mezun grupları tarafından aşamalı geçiş yaklaşımı
-* Geçiş sırasında paralel sistem çalışması
+* Geçiş sırasında paralel sistem işletimi
 * Kapsamlı veri doğrulama protokolleri
 * Herhangi bir geçiş sorunu için geri dönüş prosedürleri
-* Tüm paydaşlar için net iletişim planı
+* Tüm paydaşlar için net bir iletişim planı
 
 ### Teknik Kurulum ve Yapılandırma {#technical-setup-and-configuration}
 
@@ -249,7 +249,7 @@ Teknik ekibimiz sistem kurulumunun tüm aşamalarıyla ilgilenir:
 
 * DNS yapılandırması ve doğrulaması
 * Üniversite sistemleriyle API entegrasyonu
-* Üniversite markasıyla özel portal geliştirme
+* Üniversite markasını taşıyan özel portal geliştirme
 * E-posta kimlik doğrulama kurulumu (SPF, DKIM, DMARC)
 
 ### Kullanıcı Deneyimi Tasarımı {#user-experience-design}
@@ -269,7 +269,7 @@ Kapsamlı eğitim, tüm paydaşların sistemi etkili bir şekilde kullanabilmesi
 * Yönetici eğitim oturumları
 * BT personeli için teknik dokümantasyon
 * Mezunlar için kullanıcı kılavuzları
-* Genel görevler için video eğitimleri
+* Yaygın görevler için video eğitimleri
 * Bilgi tabanı geliştirme
 
 ### Sürekli Destek ve Optimizasyon {#ongoing-support-and-optimization}
@@ -278,9 +278,9 @@ Ortaklığımız uygulama aşamasının çok ötesinde de devam ediyor:
 
 * 7/24 teknik destek
 * Düzenli sistem güncellemeleri ve güvenlik yamaları
-* Performans izleme ve optimizasyon
+* Performans izleme ve optimizasyonu
 * E-posta en iyi uygulamaları hakkında danışmanlık
-* Veri analitiği ve raporlama
+* Veri analizi ve raporlama
 
 ## Vaka Çalışması: Cambridge Üniversitesi {#case-study-university-of-cambridge}
 
@@ -288,10 +288,10 @@ Cambridge Üniversitesi, mezunlarına @cam.ac.uk e-posta adresi sağlamanın yan
 
 ### Meydan Okuması {#challenge}
 
-Cambridge, önceki mezun e-posta sistemiyle ilgili bazı zorluklarla karşı karşıyaydı:
+Cambridge, önceki mezun e-posta sistemiyle ilgili çeşitli zorluklarla karşı karşıyaydı:
 
-* Ayrı e-posta altyapısını sürdürmenin yüksek operasyonel maliyetleri
-* Binlerce hesabı yönetmenin idari yükü
+* Ayrı e-posta altyapısının sürdürülmesi için yüksek operasyonel maliyetler
+* Binlerce hesabı yönetmenin getirdiği idari yük
 * Hareketsiz hesaplarla ilgili güvenlik endişeleri
 * Mezun veritabanı sistemleriyle sınırlı entegrasyon
 * Artan depolama gereksinimleri
@@ -301,21 +301,21 @@ Cambridge, önceki mezun e-posta sistemiyle ilgili bazı zorluklarla karşı kar
 Forward Email kapsamlı bir çözüm uyguladı:
 
 * Tüm @cam.ac.uk mezun adresleri için e-posta yönlendirme
-* Mezunların kendi kendine hizmet almaları için özel markalı portal
+* Mezunların kendi kendine hizmet alabilmesi için özel markalı portal
 * Cambridge mezun veritabanıyla API entegrasyonu
 * Kapsamlı e-posta güvenliği uygulaması
 
-### Sonuçlar {#results}
+### Sonuçları {#results}
 
 Uygulama önemli faydalar sağladı:
 
-* Önceki çözüme kıyasla önemli maliyet düşüşü
+* Önceki çözüme kıyasla önemli maliyet tasarrufu
 * %99,9 e-posta teslim güvenilirliği
-* Otomasyon yoluyla basitleştirilmiş yönetim
+* Otomasyon sayesinde basitleştirilmiş yönetim
 * Modern e-posta kimlik doğrulamasıyla gelişmiş güvenlik
-* Sistem kullanılabilirliği konusunda olumlu mezun geri bildirimi
+* Sistem kullanılabilirliği konusunda mezunlardan olumlu geri bildirimler
 
-## Üniversiteler ve Mezunlar İçin Faydalar {#benefits-for-universities-and-alumni}
+## Üniversiteler ve Mezunlar için Faydalar {#benefits-for-universities-and-alumni}
 
 Çözümümüz hem kurumlar hem de mezunları için somut faydalar sağlıyor.
 
@@ -325,9 +325,9 @@ Uygulama önemli faydalar sağladı:
 * **İdari Basitlik**: API aracılığıyla otomatik yönetim
 * **Gelişmiş Güvenlik**: Kapsamlı e-posta kimlik doğrulaması
 * **Marka Tutarlılığı**: Ömür boyu kurumsal e-posta adresleri
-* **Mezun Katılımı**: Devam eden hizmet aracılığıyla güçlendirilmiş bağlantılar
+* **Mezun Katılımı**: Sürekli hizmet sayesinde güçlendirilmiş bağlantılar
 
-BulkSignature'a (2023) göre, eğitim kurumları için e-posta platformları, ücretsiz veya düşük maliyetli planlar aracılığıyla maliyet etkinliği, kitle iletişim yetenekleri aracılığıyla zaman verimliliği ve e-posta teslimatını ve etkileşimini izlemek için izleme özellikleri dahil olmak üzere önemli avantajlar sunmaktadır ([Toplu İmza, 2023](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/)).
+BulkSignature'a (2023) göre, eğitim kurumları için e-posta platformları, ücretsiz veya düşük maliyetli planlar aracılığıyla maliyet etkinliği, kitle iletişim yetenekleri aracılığıyla zaman verimliliği ve e-posta teslimatını ve etkileşimi izlemek için izleme özellikleri dahil olmak üzere önemli avantajlar sunmaktadır ([Toplu İmza, 2023](https://bulksignature.com/blog/5-best-email-platforms-for-educational-institutions/)).
 
 ### Mezunlar İçin {#for-alumni}
 
@@ -337,19 +337,19 @@ BulkSignature'a (2023) göre, eğitim kurumları için e-posta platformları, ü
 * **Basitleştirilmiş Yönetim**: Kolay alıcı güncellemeleri
 * **Gelişmiş Güvenlik**: Modern e-posta kimlik doğrulaması
 
-Uluslararası Eğitim ve Okuryazarlık Çalışmaları Dergisi'nden yapılan araştırma, akademik ortamlarda doğru e-posta iletişiminin önemini vurgulayarak, e-posta okuryazarlığının hem öğrenciler hem de mezunlar için profesyonel ortamlarda önemli bir beceri olduğunu belirtmektedir ([IJELS, 2021](https://files.eric.ed.gov/fulltext/EJ1319324.pdf)).
+Uluslararası Eğitim ve Okuryazarlık Çalışmaları Dergisi'nden yapılan araştırma, akademik ortamlarda doğru e-posta iletişiminin önemini vurgulayarak, e-posta okuryazarlığının hem öğrenciler hem de mezunlar için profesyonel ortamlarda önemli bir beceri olduğunu belirtiyor ([IJELS, 2021](https://files.eric.ed.gov/fulltext/EJ1319324.pdf)).
 
-### Mezunlar Arasında Kabul Oranları {#adoption-rates-among-alumni}
+### Mezunlar Arasında Benimseme Oranları {#adoption-rates-among-alumni}
 
 Üniversiteler, mezun toplulukları arasında yüksek benimseme ve memnuniyet oranları bildiriyor.
 
 ### Önceki Çözümlere Göre Maliyet Tasarrufları {#cost-savings-compared-to-previous-solutions}
 
-Finansal etki önemli oldu; üniversiteler önceki e-posta çözümlerine kıyasla önemli maliyet tasarrufları bildirdi.
+Finansal etkisi önemli oldu; üniversiteler önceki e-posta çözümlerine kıyasla önemli maliyet tasarrufları bildirdi.
 
 ## Güvenlik ve Gizlilik Hususları {#security-and-privacy-considerations}
 
-Eğitim kurumları için mezun verilerinin korunması sadece iyi bir uygulama değil, aynı zamanda Avrupa'daki GDPR gibi düzenlemeler kapsamında sıklıkla yasal bir gerekliliktir.
+Eğitim kurumları için mezun verilerinin korunması yalnızca iyi bir uygulama değil, aynı zamanda Avrupa'daki GDPR gibi düzenlemeler kapsamında yasal bir zorunluluktur.
 
 ### Veri Koruma Önlemleri {#data-protection-measures}
 
@@ -357,12 +357,12 @@ Eğitim kurumları için mezun verilerinin korunması sadece iyi bir uygulama de
 
 * Tüm e-posta trafiği için uçtan uca şifreleme
 * Sunucularımızda e-posta içeriği depolanmaz
-* Düzenli güvenlik denetimleri ve penetrasyon testleri
-* Uluslararası veri koruma standartlarına uyum
+* Düzenli güvenlik denetimleri ve sızma testleri
+* Uluslararası veri koruma standartlarına uygunluk
 * Güvenlik doğrulaması için şeffaf, açık kaynaklı kod
 
 > \[!WARNING]
-> Many email providers scan email content for advertising purposes or to train AI models. This practice raises serious privacy concerns, especially for professional and academic communications. Forward Email never scans email content and processes all emails in-memory to ensure complete privacy.
+> Birçok e-posta sağlayıcısı, reklam amaçlı veya yapay zeka modellerini eğitmek için e-posta içeriğini tarar. Bu uygulama, özellikle profesyonel ve akademik iletişimlerde ciddi gizlilik endişeleri doğurur. Forward Email, e-posta içeriğini asla taramaz ve tam gizlilik sağlamak için tüm e-postaları bellekte işler.
 
 ### Uyumluluk Çerçevesi {#compliance-framework}
 
@@ -378,16 +378,16 @@ Eğitim kurumları için mezun verilerinin korunması sadece iyi bir uygulama de
 
 Mezun e-posta çözümümüzü yeni özellikler ve yeteneklerle geliştirmeye devam ediyoruz:
 
-* Üniversite yöneticileri için geliştirilmiş analizler
-* Gelişmiş kimlik avı korumaları
-* Daha derin entegrasyon için genişletilmiş API yetenekleri
+* Üniversite yöneticileri için gelişmiş analizler
+* Gelişmiş kimlik avı koruması
+* Daha derin entegrasyon için genişletilmiş API özellikleri
 * Ek kimlik doğrulama seçenekleri
 
 ## Sonuç {#conclusion}
 
-Forward Email, üniversitelerin mezunlara e-posta hizmetleri sağlama ve yönetme biçiminde devrim yarattı. Maliyetli, karmaşık e-posta barındırmayı zarif, güvenli e-posta yönlendirmeyle değiştirerek, kurumların tüm mezunlara ömür boyu e-posta adresleri sunmasını sağlarken maliyetleri ve idari yükü önemli ölçüde azalttık.
+Forward Email, üniversitelerin mezunlara e-posta hizmetleri sunma ve yönetme biçiminde devrim yarattı. Maliyetli ve karmaşık e-posta barındırma hizmetini, zarif ve güvenli e-posta yönlendirme hizmetiyle değiştirerek, kurumların tüm mezunlarına ömür boyu e-posta adresleri sunmasını sağlarken, maliyetleri ve idari giderleri önemli ölçüde azalttık.
 
-Cambridge, Maryland, Tufts ve Swarthmore gibi prestijli kurumlarla olan ortaklıklarımız, yaklaşımımızın çeşitli eğitim ortamlarında etkinliğini göstermektedir. Üniversiteler, maliyetleri kontrol ederken mezunlarla bağlantılarını sürdürme konusunda artan baskıyla karşı karşıya kaldıkça, çözümümüz geleneksel e-posta sistemlerine karşı ikna edici bir alternatif sunmaktadır.
+Cambridge, Maryland, Tufts ve Swarthmore gibi prestijli kurumlarla kurduğumuz ortaklıklar, yaklaşımımızın farklı eğitim ortamlarındaki etkinliğini kanıtlıyor. Üniversiteler, maliyetleri kontrol altında tutarken mezunlarla bağlantılarını sürdürme konusunda artan baskıyla karşı karşıya kalırken, çözümümüz geleneksel e-posta sistemlerine güçlü bir alternatif sunuyor.
 
 ```mermaid
 flowchart LR
@@ -399,4 +399,4 @@ flowchart LR
     A -->|SSO Authentication| F
 ```
 
-Forward Email'in mezun e-posta hizmetlerini nasıl dönüştürebileceğini keşfetmek isteyen üniversiteler, <support@forwardemail.net> adresinden ekibimizle iletişime geçebilir veya kurumsal çözümlerimiz hakkında daha fazla bilgi edinmek için [forwardemail.net](https://forwardemail.net) adresini ziyaret edebilirler.
+Forward Email'in mezun e-posta hizmetlerini nasıl dönüştürebileceğini keşfetmek isteyen üniversiteler, <support@forwardemail.net> adresinden ekibimizle iletişime geçebilir veya kurumsal çözümlerimiz hakkında daha fazla bilgi edinmek için [forwardemail.net](https://forwardemail.net) adresini ziyaret edebilir.

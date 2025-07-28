@@ -46,7 +46,7 @@ Nous avons créé le service de transfert de courrier électronique le plus séc
 
 Dans le paysage concurrentiel de l'enseignement supérieur, entretenir des liens durables avec les anciens élèves n'est pas seulement une question de tradition : c'est un impératif stratégique. L'un des moyens les plus concrets pour les universités de favoriser ces liens est l'utilisation des adresses e-mail des anciens élèves, qui offrent aux diplômés une identité numérique reflétant leur parcours académique.
 
-Chez Forward Email, nous avons collaboré avec certains des établissements d'enseignement les plus prestigieux au monde pour révolutionner la gestion de leurs services de messagerie pour les anciens élèves. Notre solution de transfert d'e-mails professionnelle alimente désormais les systèmes de messagerie des anciens élèves des universités [Université de Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge), [Université du Maryland](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park), [Université Tufts](https://en.wikipedia.org/wiki/Tufts_University) et [Collège Swarthmore](https://en.wikipedia.org/wiki/Swarthmore_College), desservant collectivement des milliers d'anciens élèves dans le monde entier.
+Chez Forward Email, nous avons collaboré avec certains des établissements d'enseignement les plus prestigieux au monde pour révolutionner la gestion de leurs services de messagerie pour les anciens élèves. Notre solution de transfert d'e-mails professionnelle alimente désormais les systèmes de messagerie des anciens élèves des établissements [Université de Cambridge](https://en.wikipedia.org/wiki/University_of_Cambridge), [Université du Maryland](https://en.wikipedia.org/wiki/University_of_Maryland,\_College_Park), [Université Tufts](https://en.wikipedia.org/wiki/Tufts_University) et [Collège Swarthmore](https://en.wikipedia.org/wiki/Swarthmore_College), desservant collectivement des milliers d'anciens élèves dans le monde entier.
 
 Cet article de blog explore comment notre service de transfert de courrier électronique axé sur la confidentialité [open source](https://en.wikipedia.org/wiki/Open-source_software) est devenu la solution préférée de ces institutions, les implémentations techniques qui le rendent possible et l'impact transformateur qu'il a eu sur l'efficacité administrative et la satisfaction des anciens élèves.
 
@@ -75,14 +75,14 @@ Voici combien nos universités partenaires économisent chaque année en choisis
 | Université du Maryland | 25,000 | $75,000 | $3,000 | $72,000 |
 
 > \[!NOTE]
-> Forward Email enterprise only costs $250/month typically, with no extra cost per user, whitelisted API rate limitations, and the only additional cost is storage if you need additional GB/TB for students (+$3 per 10 GB additional storage). We use NVMe SSD drives for fast support of IMAP/POP3/SMTP/CalDAV/CardDAV as well.
+> Le service de transfert d'e-mails pour entreprise ne coûte généralement que 250 $/mois, sans frais supplémentaires par utilisateur, avec des limitations de débit API autorisées. Le seul coût supplémentaire est le stockage si vous avez besoin de Go/To supplémentaires pour les étudiants (+ 3 $ par tranche de 10 Go de stockage supplémentaire). Nous utilisons également des disques SSD NVMe pour une prise en charge rapide des protocoles IMAP/POP3/SMTP/CalDAV/CardDAV.
 
 > \[!IMPORTANT]
-> Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
+> Contrairement à Google et Microsoft, qui ont régulièrement augmenté leurs tarifs tout en intégrant des fonctionnalités d'IA analysant vos données, Forward Email maintient des tarifs stables et une attention particulière à la confidentialité. Nous n'utilisons pas d'IA, ne suivons pas les habitudes d'utilisation et ne stockons ni journaux ni e-mails sur disque (tout le traitement est effectué en mémoire), garantissant ainsi une confidentialité totale de vos communications avec les anciens élèves.
 
 Cela représente une réduction significative des coûts par rapport aux solutions d'hébergement de messagerie traditionnelles : les universités peuvent ainsi réaffecter des fonds à des bourses d'études, à la recherche ou à d'autres activités essentielles. Selon une analyse réalisée en 2023 par Email Vendor Selection, les établissements d'enseignement recherchent de plus en plus des alternatives rentables aux fournisseurs de messagerie traditionnels, car les prix continuent d'augmenter avec l'intégration de fonctionnalités d'IA ([Sélection des fournisseurs de courrier électronique, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
 
-## Le défi des e-mails des anciens étudiants de l'université {#the-university-alumni-email-challenge}
+## Le défi des e-mails des anciens élèves de l'université {#the-university-alumni-email-challenge}
 
 Pour les universités, fournir des adresses e-mail permanentes aux anciens élèves présente des défis uniques que les solutions de messagerie traditionnelles peinent à relever efficacement. Comme indiqué dans une discussion approfondie sur ServerFault, les universités disposant d'une base d'utilisateurs importante ont besoin de solutions de messagerie spécialisées alliant performances, sécurité et rentabilité ([ServerFault, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)).
 
@@ -96,10 +96,10 @@ Les adresses e-mail des anciens élèves (comme `firstname.lastname@cl.cam.ac.uk
 * Soutenir le réseautage des anciens élèves et le développement de la communauté
 * Offrir un point de contact stable et permanent
 
-Une étude menée par Tekade (2020) souligne que les adresses e-mail éducatives offrent de nombreux avantages aux anciens élèves, notamment l'accès aux ressources académiques, la crédibilité professionnelle et des remises exclusives sur divers services ([Moyen, 2020](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05)).
+Une étude de Tekade (2020) souligne que les adresses e-mail éducatives offrent de nombreux avantages aux anciens élèves, notamment l'accès aux ressources académiques, la crédibilité professionnelle et des remises exclusives sur divers services ([Moyen, 2020](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05)).
 
 > \[!TIP]
-> Visit our new [AlumniEmail.com](https://alumniemail.com) directory for a comprehensive resource on university alumni email services, including setup guides, best practices, and a searchable directory of alumni email domains. It serves as a central hub for all alumni email information.
+> Consultez notre nouveau répertoire [AlumniEmail.com](https://alumniemail.com) pour une ressource complète sur les services de messagerie des anciens étudiants, incluant des guides de configuration, des bonnes pratiques et un répertoire consultable des domaines de messagerie des anciens étudiants. Ce répertoire centralise toutes les informations relatives à la messagerie des anciens étudiants.
 
 ### Les solutions traditionnelles sont insuffisantes {#traditional-solutions-fall-short}
 
@@ -107,7 +107,7 @@ Les systèmes de messagerie conventionnels présentent plusieurs limites lorsqu'
 
 * **Coût prohibitif** : Les modèles de licences par utilisateur deviennent financièrement insoutenables pour les grandes bases d'anciens élèves.
 * **Charge administrative** : La gestion de milliers, voire de millions de comptes, nécessite des ressources informatiques importantes.
-* **Problèmes de sécurité** : Le maintien de la sécurité des comptes inactifs augmente la vulnérabilité.
+* **Problèmes de sécurité** : Le maintien de la sécurité des comptes inactifs accroît la vulnérabilité.
 * **Flexibilité limitée** : Les systèmes rigides ne peuvent s'adapter aux besoins spécifiques de transfert d'e-mails des anciens élèves.
 * **Problèmes de confidentialité** : De nombreux fournisseurs analysent le contenu des e-mails à des fins publicitaires.
 
@@ -120,10 +120,10 @@ Notre approche répond à ces défis à travers un modèle fondamentalement diff
 * Transfert d'e-mails plutôt qu'hébergement
 * Tarification forfaitaire plutôt que par utilisateur
 * Architecture open source pour la transparence et la sécurité
-* Conception axée sur la confidentialité sans analyse de contenu
+* Conception axée sur la confidentialité, sans analyse de contenu
 * Fonctionnalités spécialisées pour la gestion des identités universitaires
 
-## Implémentation technique : comment ça marche {#technical-implementation-how-it-works}
+Implémentation technique de ## : comment cela fonctionne {#technical-implementation-how-it-works}
 
 Notre solution s'appuie sur une architecture technique sophistiquée mais élégamment simple pour fournir un transfert de courrier électronique fiable et sécurisé à grande échelle.
 
@@ -137,13 +137,13 @@ Le système de transfert de courrier électronique se compose de plusieurs élé
 * Prise en charge de domaines et de sous-domaines personnalisés
 * Gestion de compte pilotée par API
 
-Selon les professionnels de l'informatique de ServerFault, pour les universités souhaitant mettre en œuvre leurs propres solutions de messagerie, Postfix est recommandé comme agent de transfert de courrier (MTA), tandis que Courier ou Dovecot sont privilégiés pour l'accès IMAP/POP3 ([ServerFault, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)). Cependant, notre solution évite aux universités de gérer elles-mêmes ces systèmes complexes.
+Selon les professionnels de l'informatique sur ServerFault, pour les universités souhaitant mettre en œuvre leurs propres solutions de messagerie, Postfix est recommandé comme agent de transfert de courrier (MTA), tandis que Courier ou Dovecot sont privilégiés pour l'accès IMAP/POP3 ([ServerFault, 2009](https://serverfault.com/questions/97364/what-is-the-best-mail-server-for-a-university-with-a-large-amount-of-users)). Cependant, notre solution évite aux universités de gérer elles-mêmes ces systèmes complexes.
 
 ### Intégration avec les systèmes universitaires {#integration-with-university-systems}
 
 Nous avons développé des parcours d’intégration transparents avec l’infrastructure universitaire existante :
 
-* Provisionnement automatisé grâce à l'intégration [API RESTful](https://forwardemail.net/email-api)
+* Provisionnement automatisé grâce à l'intégration de [API RESTful](https://forwardemail.net/email-api)
 * Options de personnalisation pour les portails universitaires
 * Gestion flexible des alias pour les départements et les organisations
 * Opérations par lots pour une administration efficace
@@ -172,15 +172,15 @@ const response = await fetch('https://forwardemail.net/api/v1/domains/example.ed
 
 Une configuration DNS adéquate est essentielle à la distribution des e-mails. Notre équipe vous accompagne dans les domaines suivants :
 
-* Configuration [DNS](https://en.wikipedia.org/wiki/Domain_Name_System) incluant les enregistrements MX
-* Mise en œuvre complète de la sécurité des e-mails grâce à notre package open source [mailauth](https://www.npmjs.com/package/mailauth), véritable couteau suisse pour l'authentification des e-mails. Il gère :
+* Configuration de [DNS](https://en.wikipedia.org/wiki/Domain_Name_System) incluant les enregistrements MX
+* Mise en œuvre complète de la sécurité des e-mails grâce à notre package open source [authentification par courrier](https://www.npmjs.com/package/mailauth), véritable couteau suisse pour l'authentification des e-mails. Il gère :
 * [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Sender Policy Framework) pour empêcher l'usurpation d'identité des e-mails
 * [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (DomainKeys Identified Mail) pour l'authentification des e-mails
 * [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Domain-based Message Authentication, Reporting & Conformance) pour l'application des politiques
 * [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (SMTP MTA Strict Transport Security) pour appliquer le chiffrement TLS
 * [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Authenticated Received Chain) pour maintenir l'authentification lors du transfert des messages
 * [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Sender Rewriting Scheme) pour préserver la validation SPF lors du transfert
-* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Indicateurs de marque pour l'identification des messages) pour l'affichage du logo dans les clients de messagerie compatibles
+* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Brand Indicators for Message Identification) pour l'affichage du logo dans les clients de messagerie compatibles
 * Vérification de l'enregistrement DNS TXT pour la propriété du domaine
 
 Le package `mailauth` (<http://npmjs.com/package/mailauth>) est une solution entièrement open source qui gère tous les aspects de l'authentification des e-mails dans une bibliothèque intégrée. Contrairement aux solutions propriétaires, cette approche garantit la transparence, des mises à jour de sécurité régulières et un contrôle total du processus d'authentification des e-mails.
@@ -195,7 +195,7 @@ Avant le déploiement complet, nous effectuons des tests rigoureux :
 * Validation de l'intégration des API
 * Tests d'acceptation utilisateur avec des représentants des anciens élèves
 
-Calendrier de mise en œuvre de ## {#implementation-timeline}
+## Calendrier de mise en œuvre de {#implementation-timeline}
 
 ```mermaid
 gantt
@@ -219,7 +219,7 @@ gantt
     Ongoing Maintenance            :e1, after d2, 365d
 ```
 
-Processus de mise en œuvre de ## : de la migration à la maintenance {#implementation-process-from-migration-to-maintenance}
+Processus d'implémentation ## : de la migration à la maintenance {#implementation-process-from-migration-to-maintenance}
 
 Notre processus de mise en œuvre structuré garantit une transition en douceur pour les universités qui adoptent notre solution.
 
@@ -233,11 +233,11 @@ Nous commençons par une évaluation complète du système de messagerie actuel 
 * Examen de la sécurité et de la conformité
 * Élaboration du calendrier et des étapes clés du projet
 
-Stratégie de migration ### {#migration-strategy}
+### Stratégie de migration {#migration-strategy}
 
 Sur la base de l’évaluation, nous élaborons une stratégie de migration sur mesure qui minimise les perturbations tout en garantissant l’intégrité complète des données :
 
-* Approche de migration progressive par cohortes d'anciens élèves
+* Migration progressive par cohortes d'anciens élèves
 * Fonctionnement parallèle des systèmes pendant la transition
 * Protocoles complets de validation des données
 * Procédures de secours en cas de problème de migration
@@ -272,7 +272,7 @@ Une formation complète garantit que toutes les parties prenantes peuvent utilis
 * Tutoriels vidéo pour les tâches courantes
 * Développement d'une base de connaissances
 
-### Assistance et optimisation continues {#ongoing-support-and-optimization}
+### Support et optimisation continus {#ongoing-support-and-optimization}
 
 Notre partenariat se poursuit bien au-delà de la mise en œuvre :
 
@@ -282,7 +282,7 @@ Notre partenariat se poursuit bien au-delà de la mise en œuvre :
 * Consultation sur les meilleures pratiques de messagerie
 * Analyse et reporting des données
 
-## Étude de cas : Université de Cambridge {#case-study-university-of-cambridge}
+Étude de cas : Université de Cambridge {#case-study-university-of-cambridge}
 
 L'Université de Cambridge a cherché une solution pour fournir des adresses e-mail @cam.ac.uk aux anciens élèves tout en réduisant les frais généraux et les coûts informatiques.
 
@@ -296,16 +296,16 @@ Cambridge a été confrontée à plusieurs défis avec son ancien système de me
 * Intégration limitée aux systèmes de bases de données des anciens élèves
 * Besoins de stockage croissants
 
-Solution ### {#solution}
+### Solution {#solution}
 
 Forward Email a mis en œuvre une solution complète :
 
 * Transfert d'e-mails pour toutes les adresses d'anciens élèves @cam.ac.uk
 * Portail personnalisé pour le libre-service des anciens élèves
-* Intégration API avec la base de données des anciens élèves de Cambridge
+* Intégration de l'API avec la base de données des anciens élèves de Cambridge
 * Mise en œuvre complète de la sécurité des e-mails
 
-Résultats ### {#results}
+### Résultats {#results}
 
 La mise en œuvre a apporté des avantages significatifs :
 
@@ -337,7 +337,7 @@ Selon BulkSignature (2023), les plateformes de messagerie pour les établissemen
 * **Gestion simplifiée** : Mises à jour faciles des destinataires
 * **Sécurité renforcée** : Authentification moderne des e-mails
 
-Une étude de l'International Journal of Education & Literacy Studies souligne l'importance d'une communication par courrier électronique appropriée dans les milieux universitaires, notant que la maîtrise du courrier électronique est une compétence cruciale pour les étudiants et les anciens élèves dans les contextes professionnels ([IJELS, 2021](https://files.eric.ed.gov/fulltext/EJ1319324.pdf)).
+Une recherche de l'International Journal of Education & Literacy Studies souligne l'importance d'une communication par courrier électronique appropriée dans les milieux universitaires, notant que la maîtrise du courrier électronique est une compétence cruciale pour les étudiants et les anciens élèves dans les contextes professionnels ([IJELS, 2021](https://files.eric.ed.gov/fulltext/EJ1319324.pdf)).
 
 ### Taux d'adoption parmi les anciens élèves {#adoption-rates-among-alumni}
 
@@ -362,9 +362,9 @@ Notre solution intègre plusieurs couches de sécurité :
 * Code source transparent et open source pour la vérification de la sécurité
 
 > \[!WARNING]
-> Many email providers scan email content for advertising purposes or to train AI models. This practice raises serious privacy concerns, especially for professional and academic communications. Forward Email never scans email content and processes all emails in-memory to ensure complete privacy.
+> De nombreux fournisseurs de messagerie analysent le contenu des e-mails à des fins publicitaires ou pour entraîner des modèles d'IA. Cette pratique soulève de graves problèmes de confidentialité, notamment pour les communications professionnelles et universitaires. Forward Email n'analyse jamais le contenu des e-mails et traite tous les e-mails en mémoire afin de garantir une confidentialité totale.
 
-Cadre de conformité ### {#compliance-framework}
+### Cadre de conformité {#compliance-framework}
 
 Nous maintenons un strict respect des réglementations en vigueur :
 
@@ -383,7 +383,7 @@ Nous continuons d'améliorer notre solution de messagerie pour les anciens élè
 * Fonctionnalités API étendues pour une intégration plus poussée
 * Options d'authentification supplémentaires
 
-Conclusion
+## Conclusion {#conclusion}
 
 Forward Email a révolutionné la façon dont les universités fournissent et gèrent les services de messagerie des anciens élèves. En remplaçant un hébergement de messagerie coûteux et complexe par une redirection de messagerie élégante et sécurisée, nous avons permis aux établissements d'offrir des adresses e-mail permanentes à tous les anciens élèves tout en réduisant considérablement les coûts et les frais administratifs.
 

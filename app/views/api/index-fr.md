@@ -75,7 +75,7 @@
 
 ## Bibliothèques {#libraries}
 
-Nous n'avons pas encore publié de wrappers d'API, mais nous prévoyons de le faire prochainement. Envoyez un e-mail à <api@forwardemail.net> si vous souhaitez être informé de la sortie du wrapper d'API d'un langage de programmation spécifique. En attendant, vous pouvez utiliser ces bibliothèques de requêtes HTTP recommandées dans votre application, ou simplement utiliser [boucle](https://stackoverflow.com/a/27442239/3586413) comme dans les exemples ci-dessous.
+Nous n'avons pas encore publié de wrappers d'API, mais nous prévoyons de le faire prochainement. Envoyez un e-mail à <api@forwardemail.net> si vous souhaitez être informé de la sortie du wrapper d'API d'un langage de programmation spécifique. En attendant, vous pouvez utiliser les bibliothèques de requêtes HTTP recommandées dans votre application, ou simplement utiliser [boucle](https://stackoverflow.com/a/27442239/3586413) comme dans les exemples ci-dessous.
 
 | Langue | Bibliothèque |
 | ---------- | ---------------------------------------------------------------------- |
@@ -92,13 +92,13 @@ Nous n'avons pas encore publié de wrappers d'API, mais nous prévoyons de le fa
 
 Le chemin URI de base HTTP actuel est : `BASE_URI`.
 
-Authentification ## {#authentication}
+## Authentification {#authentication}
 
 Tous les points de terminaison nécessitent que votre [clé API](https://forwardemail.net/my-account/security) soit défini comme valeur « nom d'utilisateur » de l'en-tête [Autorisation de base](https://en.wikipedia.org/wiki/Basic_access_authentication) de la requête (à l'exception de [Contacts d'alias](#alias-contacts), [Calendriers d'alias](#alias-calendars) et [Boîtes aux lettres d'alias](#alias-mailboxes) qui utilisent un [nom d'utilisateur et mot de passe d'alias générés](/faq#do-you-support-receiving-email-with-imap)).
 
 Ne vous inquiétez pas, des exemples sont fournis ci-dessous si vous n'êtes pas sûr de ce que c'est.
 
-Erreurs ## {#errors}
+## Erreurs {#errors}
 
 Si des erreurs se produisent, le corps de la réponse de la requête API contiendra un message d’erreur détaillé.
 
@@ -117,16 +117,16 @@ Si des erreurs se produisent, le corps de la réponse de la requête API contien
 | 504 | Délai d'expiration de la passerelle |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Si vous recevez un code d'état 5xx (ce qui ne devrait pas arriver), veuillez nous contacter à l'adresse <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> et nous vous aiderons à résoudre votre problème immédiatement.
 
 ## Localisation {#localization}
 
-Notre service est traduit dans plus de 25 langues. Tous les messages de réponse API sont traduits dans la dernière langue détectée de l'utilisateur effectuant la requête API. Vous pouvez contourner ce problème en ajoutant un en-tête personnalisé `Accept-Language`. N'hésitez pas à l'essayer en utilisant le menu déroulant des langues en bas de cette page.
+Notre service est traduit dans plus de 25 langues. Tous les messages de réponse API sont traduits dans la dernière langue détectée de l'utilisateur effectuant la requête API. Vous pouvez contourner ce problème en ajoutant un en-tête `Accept-Language` personnalisé. N'hésitez pas à l'essayer en utilisant le menu déroulant des langues en bas de cette page.
 
 ## Pagination {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> À compter du 1er novembre 2024, les points de terminaison d'API pour [Liste des domaines](#list-domains) et [Lister les alias de domaine](#list-domain-aliases) utiliseront par défaut le nombre maximal de résultats par page `1000`. Si vous souhaitez activer ce comportement plus tôt, vous pouvez ajouter `?paginate=true` comme paramètre de chaîne de requête supplémentaire à l'URL de la requête du point de terminaison.
 
 La pagination est prise en charge par tous les points de terminaison d'API qui répertorient les résultats.
 
@@ -156,15 +156,15 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
-Journaux ## {#logs}
+## Journaux {#logs}
 
 ### Récupérer les journaux {#retrieve-logs}
 
-Notre API vous permet de télécharger les journaux de votre compte par programmation. En soumettant une requête à ce point de terminaison, tous les journaux de votre compte seront traités et vous seront envoyés par e-mail sous forme de pièce jointe (fichier tableur compressé [Gzip](https://en.wikipedia.org/wiki/Gzip) [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) une fois l'opération terminée.
+Notre API vous permet de télécharger les journaux de votre compte par programmation. En soumettant une requête à ce point de terminaison, tous les journaux de votre compte seront traités et vous seront envoyés par e-mail sous forme de pièce jointe (fichier tableur compressé [Gzip](https://en.wikipedia.org/wiki/Gzip) et [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)).
 
-Cela vous permet de créer des tâches en arrière-plan avec un [Tâche cron](https://en.wikipedia.org/wiki/Cron) ou d'utiliser notre [Logiciel de planification de tâches Node.js Bree](https://github.com/breejs/bree) pour recevoir les journaux à tout moment. Notez que ce point de terminaison est limité à `10` requêtes par jour.
+Cela vous permet de créer des tâches d'arrière-plan avec un [Tâche cron](https://en.wikipedia.org/wiki/Cron) ou d'utiliser notre [Logiciel de planification de tâches Node.js Bree](https://github.com/breejs/bree) pour recevoir les journaux à tout moment. Notez que ce point de terminaison est limité à `10` requêtes par jour.
 
-La pièce jointe contient la forme minuscule `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` et l'e-mail contient un bref résumé des journaux récupérés. Vous pouvez également télécharger les journaux à tout moment depuis [Mon compte → Journaux](/my-account/logs).
+La pièce jointe est la forme minuscule de `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` et l'e-mail contient un bref résumé des journaux récupérés. Vous pouvez également télécharger les journaux à tout moment depuis [Mon compte → Journaux](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Contacts d'alias (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Contrairement aux autres points de terminaison d'API, ceux-ci nécessitent [Authentification](#authentication) : « username » égal au nom d'utilisateur de l'alias et « password » égal au mot de passe généré par l'alias comme en-têtes d'autorisation de base.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Cette section relative aux points de terminaison est en cours de développement et sera publiée (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP disponible dans le menu déroulant « Applications » de la navigation de notre site web.
 
 ### Liste des contacts {#list-contacts}
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Calendriers d'alias (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Contrairement aux autres points de terminaison d'API, ceux-ci nécessitent [Authentification](#authentication) : « username » égal au nom d'utilisateur de l'alias et « password » égal au mot de passe généré par l'alias comme en-têtes d'autorisation de base.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Cette section relative aux points de terminaison est en cours de développement et sera publiée (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP disponible dans le menu déroulant « Applications » de la navigation de notre site web.
 
 ### Liste des calendriers {#list-calendars}
 
@@ -332,10 +332,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Messages d'alias (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Contrairement aux autres points de terminaison d'API, ceux-ci nécessitent [Authentification](#authentication) : « username » égal au nom d'utilisateur de l'alias et « password » égal au mot de passe généré par l'alias comme en-têtes d'autorisation de base.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Cette section relative aux points de terminaison est en cours de développement et sera publiée (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP disponible dans le menu déroulant « Applications » de la navigation de notre site web.
 
 Veuillez vous assurer que vous avez suivi les instructions de configuration de votre domaine.
 
@@ -350,7 +350,7 @@ Ces instructions peuvent être trouvées dans notre section FAQ [Prenez-vous en 
 ### Créer un message {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Cette commande n'enverra **PAS** d'e-mail ; elle ajoutera simplement le message à votre boîte aux lettres (par exemple, similaire à la commande IMAP `APPEND`). Pour envoyer un e-mail, consultez la commande [Créer un e-mail SMTP sortant](#create-outbound-smtp-email) ci-dessous. Après avoir créé l'e-mail SMTP sortant, vous pouvez en ajouter une copie à la boîte aux lettres de votre alias via ce point de terminaison à des fins de stockage.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Ces instructions peuvent être trouvées dans notre section FAQ [Prenez-vous en 
 ## Dossiers d'alias (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Les points de terminaison de dossier dont le chemin d'accès est <code>/v1/folders/:path</code> sont interchangeables avec l'ID de dossier <code>:id</code>. Vous pouvez ainsi faire référence au dossier par sa valeur <code>path</code> ou <code>id</code>.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Cette section relative aux points de terminaison est en cours de développement et sera publiée (espérons-le) en 2024. En attendant, veuillez utiliser un client IMAP disponible dans le menu déroulant « Applications » de la navigation de notre site web.
 
 ### Liste des dossiers {#list-folders}
 
@@ -422,7 +422,7 @@ Ces instructions peuvent être trouvées dans notre section FAQ [Prenez-vous en 
 
 Veuillez vous assurer que vous avez suivi les instructions de configuration de votre domaine.
 
-Ces instructions sont disponibles à l'adresse [Mon compte → Domaines → Paramètres → Configuration SMTP sortante](/my-account/domains). Vous devez configurer DKIM, Return-Path et DMARC pour l'envoi de messages SMTP sortants avec votre domaine.
+Ces instructions se trouvent dans [Mon compte → Domaines → Paramètres → Configuration SMTP sortante](/my-account/domains). Vous devez configurer DKIM, Return-Path et DMARC pour l'envoi de messages SMTP sortants avec votre domaine.
 
 ### Obtenir la limite d'e-mails SMTP sortants {#get-outbound-smtp-email-limit}
 
@@ -439,7 +439,7 @@ curl BASE_URI/v1/emails/limit \
 
 ### Liste des e-mails SMTP sortants {#list-outbound-smtp-emails}
 
-Notez que ce point de terminaison ne renvoie pas de valeurs de propriété pour `message`, `headers`, ni `rejectedErrors` d'un e-mail.
+Notez que ce point de terminaison ne renvoie pas de valeurs de propriété pour `message`, `headers` ni `rejectedErrors` d'un e-mail.
 
 Pour renvoyer ces propriétés et leurs valeurs, veuillez utiliser le point de terminaison [Récupérer l'e-mail](#retrieve-email) avec un identifiant de messagerie.
 
@@ -462,7 +462,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Créer un e-mail SMTP sortant {#create-outbound-smtp-email}
 
-Notre API de création d'e-mails s'inspire et exploite la configuration des options de message de Nodemailer. Veuillez vous référer au [Configuration des messages Nodemailer](https://nodemailer.com/message/) pour tous les paramètres de corps ci-dessous.
+Notre API de création d'e-mails s'inspire et exploite la configuration des options de message de Nodemailer. Veuillez vous référer à [Configuration des messages Nodemailer](https://nodemailer.com/message/) pour tous les paramètres de corps ci-dessous.
 
 Notez qu'à l'exception de `envelope` et `dkim` (que nous définissons automatiquement), nous prenons en charge toutes les options Nodemailer. Pour des raisons de sécurité, nous définissons automatiquement les options `disableFileAccess` et `disableUrlAccess` sur `true`.
 
@@ -543,15 +543,15 @@ curl -X DELETE BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-Domaines ## {#domains}
+## Domaines {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Les points de terminaison de domaine dont le nom de domaine est <code>/v1/domains/:domain_name</code> sont interchangeables avec l'ID de domaine <code>:domain_id</code>. Cela signifie que vous pouvez faire référence au domaine par sa valeur <code>name</code> ou <code>id</code>.
 
 ### Liste des domaines {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> À compter du 1er novembre 2024, les points de terminaison d'API pour [Liste des domaines](#list-domains) et [Lister les alias de domaine](#list-domain-aliases) utiliseront par défaut le nombre maximal de résultats par page `1000`. Si vous souhaitez activer ce comportement plus tôt, vous pouvez ajouter `?paginate=true` comme paramètre de chaîne de requête supplémentaire à l'URL de la requête du point de terminaison. Consultez [Pagination](#pagination) pour plus d'informations.
 
 > `GET /v1/domains`
 
@@ -570,7 +570,7 @@ curl BASE_URI/v1/domains \
   -u API_TOKEN:
 ```
 
-### Créer le domaine {#create-domain}
+### Créer un domaine {#create-domain}
 
 > `POST /v1/domains`
 
@@ -705,9 +705,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-## Invite {#invites}
+## invite {#invites}
 
-### Accepter l'invitation du domaine {#accept-domain-invite}
+### Accepter l'invitation de domaine {#accept-domain-invite}
 
 > `GET /v1/domains/:domain_name/invites`
 
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Si l'utilisateur invité est déjà membre d'un autre domaine dont l'administrateur l'invite est membre, l'invitation sera automatiquement acceptée et aucun e-mail ne sera envoyé.
 
 ### Supprimer l'invitation de domaine {#remove-domain-invite}
 
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Liste des alias de domaine {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> À compter du 1er novembre 2024, les points de terminaison d'API pour [Liste des domaines](#list-domains) et [Lister les alias de domaine](#list-domain-aliases) utiliseront par défaut le nombre maximal de résultats par page `1000`. Si vous souhaitez activer ce comportement plus tôt, vous pouvez ajouter `?paginate=true` comme paramètre de chaîne de requête supplémentaire à l'URL de la requête du point de terminaison. Consultez [Pagination](#pagination) pour plus d'informations.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -859,7 +859,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 ### Récupérer l'alias de domaine {#retrieve-domain-alias}
 
-Vous pouvez récupérer un alias de domaine soit par sa valeur `id` soit par sa valeur `name`.
+Vous pouvez récupérer un alias de domaine par sa valeur `id` ou `name`.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Chiffrer {#encrypt}
 
-Nous vous permettons de chiffrer vos enregistrements gratuitement, même avec l'offre gratuite. La confidentialité ne devrait pas être une fonctionnalité, mais une fonctionnalité intégrée à tous les aspects d'un produit. Suite à une demande importante dans un [Discussion sur les guides de confidentialité](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) et dans un [nos problèmes GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), nous avons ajouté cette fonctionnalité.
+Nous vous permettons de chiffrer vos enregistrements gratuitement, même avec l'offre gratuite. La confidentialité ne devrait pas être une fonctionnalité, mais être intégrée à tous les aspects d'un produit. Suite à une forte demande pour [Discussion sur les guides de confidentialité](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) et [nos problèmes GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), nous avons ajouté cette fonctionnalité.
 
 ### Chiffrer l'enregistrement TXT {#encrypt-txt-record}
 

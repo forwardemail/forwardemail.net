@@ -5,11 +5,11 @@
 ## 目录 {#table-of-contents}
 
 * [前言](#foreword)
-* [挑战：多个支付处理器，一个事实来源](#the-challenge-multiple-payment-processors-one-source-of-truth)
+* [挑战：多个支付处理器，一个真实来源](#the-challenge-multiple-payment-processors-one-source-of-truth)
 * [三重方法：三层可靠性](#the-trifecta-approach-three-layers-of-reliability)
 * [第 1 层：结账后重定向](#layer-1-post-checkout-redirects)
   * [Stripe Checkout 实施](#stripe-checkout-implementation)
-  * [PayPal 付款流程](#paypal-payment-flow)
+  * [PayPal付款流程](#paypal-payment-flow)
 * [第 2 层：带有签名验证的 Webhook 处理程序](#layer-2-webhook-handlers-with-signature-verification)
   * [Stripe Webhook 实现](#stripe-webhook-implementation)
   * [PayPal Webhook 实现](#paypal-webhook-implementation)
@@ -28,21 +28,21 @@
 
 ## 前言 {#foreword}
 
-在 Forward Email，我们始终将创建可靠、准确且用户友好的系统放在首位。在实施我们的支付处理系统时，我们知道我们需要一个能够处理多个支付处理器同时保持完美数据一致性的解决方案。这篇博文详细介绍了我们的开发团队如何使用三重方法集成 Stripe 和 PayPal，以确保整个系统的 1:1 实时准确性。
+在 Forward Email，我们始终将创建可靠、准确且用户友好的系统放在首位。在实施支付处理系统时，我们深知需要一个能够处理多个支付处理器，同时保持完美数据一致性的解决方案。这篇博文详细介绍了我们的开发团队如何采用三重奏方法集成 Stripe 和 PayPal，以确保整个系统达到 1:1 的实时准确性。
 
 ## 挑战：多个支付处理器，一个真实来源 {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-作为一家注重隐私的电子邮件服务公司，我们希望为用户提供多种支付选项。有些人喜欢通过 Stripe 进行信用卡支付的简便性，而另一些人则看重 PayPal 提供的额外隔离层。然而，支持多个支付处理器会带来很大的复杂性：
+作为一家注重隐私的电子邮件服务商，我们希望为用户提供多种支付选项。有些人喜欢通过 Stripe 便捷的信用卡支付，而另一些人则更看重 PayPal 提供的额外安全保障。然而，支持多种支付处理器会带来显著的复杂性：
 
 1. 我们如何确保不同支付系统之间的数据一致性？
 2. 我们如何应对争议、退款或支付失败等极端情况？
 3. 我们如何维护数据库中的单一真实来源？
 
-我们的解决方案是实施所谓的“三重方法” - 一种三层系统，无论发生什么情况都能提供冗余并确保数据一致性。
+我们的解决方案是实施所谓的“三重方法”——一个三层系统，无论发生什么情况，都能提供冗余并确保数据的一致性。
 
 ## 三重方法：三层可靠性 {#the-trifecta-approach-three-layers-of-reliability}
 
-我们的支付系统由三个关键组件组成，它们共同协作以确保完美的数据同步：
+我们的支付系统由三个关键组件组成，它们协同工作以确保完美的数据同步：
 
 1. **结账后重定向** - 结账后立即获取付款信息
 2. **Webhook 处理程序** - 处理来自支付处理器的实时事件
@@ -112,11 +112,11 @@ flowchart TD
 
 ## 第 1 层：结帐后重定向 {#layer-1-post-checkout-redirects}
 
-我们的三重奏方法的第一层在用户完成付款后立即发生。Stripe 和 PayPal 都提供了将用户重定向回我们网站的机制，其中包含交易信息。
+我们的三重奏方案的第一层在用户完成付款后立即生效。Stripe 和 PayPal 都提供了将用户重定向回我们网站的机制，并提供交易信息。
 
 ### Stripe Checkout 实施 {#stripe-checkout-implementation}
 
-对于 Stripe，我们使用他们的 Checkout Sessions API 来创建无缝支付体验。当用户选择计划并选择使用信用卡付款时，我们会创建一个 Checkout Session，其中包含特定的成功和取消 URL：
+对于 Stripe，我们使用他们的 Checkout Sessions API 来打造无缝的支付体验。当用户选择套餐并使用信用卡付款时，我们会创建一个 Checkout Session，其中包含具体的成功和取消 URL：
 
 ```javascript
 const options = {
@@ -283,9 +283,9 @@ sequenceDiagram
 
 ## 第 2 层：带有签名验证的 Webhook 处理程序 {#layer-2-webhook-handlers-with-signature-verification}
 
-虽然结账后重定向在大多数情况下效果很好，但并非万无一失。用户可能会在重定向之前关闭浏览器，或者网络问题可能会阻止重定向完成。这就是 webhook 的作用所在。
+虽然结账后重定向在大多数情况下都能很好地发挥作用，但它并非万无一失。用户可能会在重定向之前关闭浏览器，或者网络问题可能导致重定向无法完成。这时，Webhook 就派上用场了。
 
-Stripe 和 PayPal 均提供 webhook 系统，可发送有关付款事件的实时通知。我们已实施强大的 webhook 处理程序，可验证这些通知的真实性并进行相应的处理。
+Stripe 和 PayPal 均提供 Webhook 系统，用于发送有关支付事件的实时通知。我们已实现强大的 Webhook 处理程序，用于验证这些通知的真实性并进行相应的处理。
 
 ### Stripe Webhook 实现 {#stripe-webhook-implementation}
 
@@ -377,11 +377,11 @@ async function webhook(ctx) {
 }
 ```
 
-两个 webhook 处理程序都遵循相同的模式：验证签名、确认收据并异步处理事件。这确保我们不会错过任何付款事件，即使结账后重定向失败。
+两个 webhook 处理程序都遵循相同的模式：验证签名、确认收货，然后异步处理事件。这确保了即使结账后重定向失败，我们也不会错过任何支付事件。
 
 ## 第 3 层：使用 Bree 的自动化作业 {#layer-3-automated-jobs-with-bree}
 
-我们的三重方法的最后一层是一组自动化作业，用于定期验证和核对支付数据。我们使用 Node.js 的作业调度程序 Bree 定期运行这些作业。
+我们三重奏方法的最后一层是一组自动化作业，用于定期验证和核对支付数据。我们使用 Node.js 的作业调度程序 Bree 定期运行这些作业。
 
 ### 订阅准确性检查器 {#subscription-accuracy-checker}
 
@@ -452,7 +452,7 @@ async function mapper(customer) {
 }
 ```
 
-这项工作会检查我们的数据库和 Stripe 之间的差异，例如电子邮件地址不匹配或多个有效订阅。如果发现任何问题，它会记录下来并向我们的管理团队发送警报。
+这项作业会检查我们的数据库与 Stripe 之间的差异，例如电子邮件地址不匹配或多个有效订阅。如果发现任何问题，它会记录下来并向我们的管理团队发送警报。
 
 ### PayPal 订阅同步 {#paypal-subscription-synchronization}
 
@@ -487,15 +487,15 @@ async function syncPayPalSubscriptionPayments() {
 }
 ```
 
-这些自动化作业是我们的最终安全网，确保我们的数据库始终反映 Stripe 和 PayPal 中订阅和付款的真实状态。
+这些自动化作业是我们最后的安全网，确保我们的数据库始终反映 Stripe 和 PayPal 中订阅和付款的真实状态。
 
 ## 处理边缘情况 {#handling-edge-cases}
 
-一个强大的支付系统必须妥善处理极端情况。让我们看看我们如何处理一些常见情况。
+一个强大的支付系统必须能够妥善处理各种极端情况。让我们来看看我们如何处理一些常见的情况。
 
 ### 欺诈检测与预防 {#fraud-detection-and-prevention}
 
-我们实施了复杂的欺诈检测机制，可以自动识别和处理可疑的付款活动：
+我们实施了复杂的欺诈检测机制，可以自动识别和处理可疑的支付活动：
 
 ```javascript
 case 'charge.failed': {
@@ -583,7 +583,7 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 
 ## 代码重用：KISS 和 DRY 原则 {#code-reuse-kiss-and-dry-principles}
 
-在我们的支付系统中，我们始终坚持 KISS（保持简单、简洁）和 DRY（不要重复自己）原则。以下是一些示例：
+在我们的整个支付系统中，我们始终坚持 KISS（保持简单，简洁）和 DRY（避免重复）原则。以下是一些示例：
 
 1. **共享辅助函数**：我们为同步付款和发送电子邮件等常见任务创建了可重复使用的辅助函数。
 
@@ -689,11 +689,11 @@ graph TD
 
 ## VISA 订阅要求实施 {#visa-subscription-requirements-implementation}
 
-除了三重奏方法外，我们还实施了特定功能，以符合 VISA 的订阅要求，同时提升用户体验。VISA 的一项关键要求是，在向用户收取订阅费用之前必须通知用户，尤其是在从试用过渡到付费订阅时。
+除了三重奏方案外，我们还实施了特定功能，以符合 VISA 的订阅要求，同时提升用户体验。VISA 的一项关键要求是，在用户支付订阅费用之前必须通知他们，尤其是在从试用版过渡到付费订阅时。
 
 ### 自动续订前电子邮件通知 {#automated-pre-renewal-email-notifications}
 
-我们建立了一个自动化系统，该系统可以识别试用订阅的用户，并在首次收费前向他们发送通知电子邮件。这不仅使我们符合 VISA 要求，还可以减少退款并提高客户满意度。
+我们构建了一个自动化系统，可以识别正在试用订阅的用户，并在首次扣款前向他们发送通知电子邮件。这不仅使我们符合 VISA 的要求，还能减少退款并提高客户满意度。
 
 以下是我们实现此功能的方法：
 
@@ -776,7 +776,7 @@ for (const user of users) {
 }
 ```
 
-此实施方式可确保用户始终了解即将发生的收费，并提供有关以下方面的清晰详细信息：
+此实施可确保用户始终了解即将发生的收费，并提供有关以下方面的清晰详细信息：
 
 1. 首次收费时间
 2. 未来收费频率（月费、年费等）
@@ -787,7 +787,7 @@ for (const user of users) {
 
 ### 处理边缘情况 {#handling-edge-cases-1}
 
-我们的实施还包括强大的错误处理。如果在通知过程中出现任何问题，我们的系统会自动向我们的团队发出警报：
+我们的实施还包括强大的错误处理功能。如果在通知过程中出现任何问题，我们的系统会自动向我们的团队发出警报：
 
 ```javascript
 try {
@@ -850,7 +850,7 @@ if (
 
 4.**稳健性**：我们的系统可以很好地处理各种边缘情况，从网络故障到欺诈活动。
 
-如果您要实施支持多种处理器的支付系统，我们强烈建议您采用这种三重方法。虽然这需要更多的前期开发工作，但从可靠性和准确性方面来看，这样做是值得的。
+如果您正在实施支持多种处理器的支付系统，我们强烈推荐这种三重方案。虽然前期开发工作量较大，但从可靠性和准确性的长期效益来看，这样做绝对值得。
 
 有关转发电子邮件和我们以隐私为重点的电子邮件服务的更多信息，请访问我们的[网站](https://forwardemail.net)。
 

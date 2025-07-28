@@ -48,7 +48,7 @@ Nuestro sistema de pago consta de tres componentes críticos que trabajan juntos
 2. **Gestores de webhooks**: procesamiento de eventos en tiempo real de los procesadores de pagos.
 3. **Trabajos automatizados**: verificación y conciliación periódica de los datos de pago.
 
-Analicemos cada componente y veamos cómo funcionan juntos.
+Profundicemos en cada componente y veamos cómo funcionan juntos.
 
 ```mermaid
 flowchart TD
@@ -116,7 +116,7 @@ La primera capa de nuestro enfoque trifecta se implementa inmediatamente despué
 
 ### Implementación de Stripe Checkout {#stripe-checkout-implementation}
 
-En Stripe, utilizamos su API de Sesiones de Pago para crear una experiencia de pago fluida. Cuando un usuario selecciona un plan y decide pagar con tarjeta de crédito, creamos una Sesión de Pago con URLs específicas de éxito y cancelación:
+En Stripe, utilizamos su API de Sesiones de Pago para crear una experiencia de pago fluida. Cuando un usuario selecciona un plan y decide pagar con tarjeta de crédito, creamos una Sesión de Pago con URL específicas de éxito y cancelación:
 
 ```javascript
 const options = {
@@ -210,7 +210,7 @@ const requestBody = {
 };
 ```
 
-Al igual que Stripe, especificamos los parámetros `return_url` y `cancel_url` para gestionar las redirecciones posteriores al pago. Cuando PayPal redirige al usuario a nuestro sitio web, podemos capturar los detalles del pago y actualizar nuestra base de datos.
+Al igual que en Stripe, especificamos los parámetros `return_url` y `cancel_url` para gestionar las redirecciones posteriores al pago. Cuando PayPal redirige al usuario a nuestro sitio web, podemos capturar los detalles del pago y actualizar nuestra base de datos.
 
 ```mermaid
 sequenceDiagram
@@ -334,7 +334,7 @@ async function webhook(ctx) {
 }
 ```
 
-La función `stripe.webhooks.constructEvent` verifica la firma usando nuestro secreto de endpoint. Si la firma es válida, procesamos el evento de forma asíncrona para evitar bloquear la respuesta del webhook.
+La función `stripe.webhooks.constructEvent` verifica la firma utilizando nuestro secreto de endpoint. Si la firma es válida, procesamos el evento de forma asíncrona para evitar bloquear la respuesta del webhook.
 
 ### Implementación del webhook de PayPal {#paypal-webhook-implementation}
 
@@ -385,7 +385,7 @@ La capa final de nuestro enfoque trifecta consiste en un conjunto de tareas auto
 
 ### Comprobador de precisión de suscripciones {#subscription-accuracy-checker}
 
-Una de nuestras tareas principales es la verificación de precisión de suscripciones, que garantiza que nuestra base de datos refleje con precisión el estado de la suscripción en Stripe:
+Una de nuestras tareas principales es el verificador de precisión de suscripciones, que garantiza que nuestra base de datos refleje con precisión el estado de la suscripción en Stripe:
 
 ```javascript
 async function mapper(customer) {
@@ -581,7 +581,7 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 
 Este enfoque minimiza el impacto de las disputas en nuestro negocio y al mismo tiempo garantiza una buena experiencia del cliente.
 
-## Reutilización de código: principios KISS y DRY {#code-reuse-kiss-and-dry-principles}
+## Reutilización de código: Principios KISS y DRY {#code-reuse-kiss-and-dry-principles}
 
 En todo nuestro sistema de pagos, nos hemos adherido a los principios KISS (Keep It Simple, Stupid) y DRY (Don't Repeat Yourself). Aquí tienes algunos ejemplos:
 
@@ -687,7 +687,7 @@ graph TD
     class B,C,D,E,I,L,Q,R,S,W,X,Y,Z secondary;
 ```
 
-## Implementación de requisitos de suscripción a VISA {#visa-subscription-requirements-implementation}
+## Implementación de requisitos de suscripción de VISA {#visa-subscription-requirements-implementation}
 
 Además de nuestro enfoque tripartito, hemos implementado funciones específicas para cumplir con los requisitos de suscripción de VISA y, al mismo tiempo, mejorar la experiencia del usuario. Un requisito clave de VISA es que los usuarios deben recibir una notificación antes de que se les cobre una suscripción, especialmente al pasar de una suscripción de prueba a una de pago.
 

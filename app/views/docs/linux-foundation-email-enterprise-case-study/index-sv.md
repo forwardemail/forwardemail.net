@@ -10,7 +10,7 @@
   * [100 % öppen källkodsarkitektur](#100-open-source-architecture)
   * [Integritetsfokuserad design](#privacy-focused-design)
   * [Säkerhet i företagsklass](#enterprise-grade-security)
-  * [Företagsmodell med fast pris](#fixed-price-enterprise-model)
+  * [Fastprisföretagsmodell](#fixed-price-enterprise-model)
   * [Utvecklarvänligt API](#developer-friendly-api)
 * [Implementeringsprocess](#implementation-process)
 * [Resultat och fördelar](#results-and-benefits)
@@ -23,11 +23,11 @@
 
 ## Introduktion {#introduction}
 
-[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) hanterar över 900 projekt med öppen källkod över 250+ domäner, inklusive [linux.com](https://www.linux.com/) och [jQuery.com](https://jquery.com/). Denna fallstudie utforskar hur de samarbetade med [Vidarebefordra e-post](https://forwardemail.net) för att effektivisera e-posthanteringen samtidigt som de bibehöll överensstämmelsen med principerna för öppen källkod.
+[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) hanterar över 900 projekt med öppen källkod över fler än 250 domäner, inklusive [linux.com](https://www.linux.com/) och [jQuery.com](https://jquery.com/). Denna fallstudie utforskar hur de samarbetade med [Vidarebefordra e-post](https://forwardemail.net) för att effektivisera e-posthanteringen samtidigt som de bibehöll överensstämmelsen med principerna för öppen källkod.
 
 ## Utmaningen {#the-challenge}
 
-Linux Foundation stod inför flera utmaningar för e-posthantering:
+Linux Foundation stod inför flera utmaningar med e-posthantering:
 
 * **Skala**: Hantera e-post över fler än 250 domäner med olika krav
 * **Administrativ börda**: Konfigurera DNS-poster, underhålla vidarebefordringsregler och svara på supportförfrågningar
@@ -35,11 +35,11 @@ Linux Foundation stod inför flera utmaningar för e-posthantering:
 * **Kostnad**: Traditionella lösningar per användare var oöverkomligt dyra i sin skala
 * **Öppen källkodsanpassning**: Behov av lösningar som matchar deras engagemang för öppen källkod
 
-I likhet med de utmaningar som [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) stod inför med sina flera distributionsdomäner, behövde Linux Foundation en lösning som kunde hantera olika projekt samtidigt som en enhetlig hanteringsmetod bibehölls.
+I likhet med de utmaningar som [Kanonisk/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) stod inför med sina flera distributionsdomäner, behövde Linux Foundation en lösning som kunde hantera olika projekt samtidigt som en enhetlig hanteringsmetod bibehölls.
 
 ## Lösningen {#the-solution}
 
-Forward Email gav en heltäckande lösning med nyckelfunktioner:
+Vidarebefordra e-post erbjöd en heltäckande lösning med viktiga funktioner:
 
 ```mermaid
 graph TD
@@ -53,11 +53,11 @@ graph TD
 
 ### 100 % öppen källkodsarkitektur {#100-open-source-architecture}
 
-Som den enda e-posttjänsten med en helt öppen källkodsplattform (både frontend och backend) stämde Forward Email perfekt överens med Linux Foundations engagemang för principer om öppen källkod. I likhet med vår implementering med [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) gjorde denna transparens det möjligt för deras tekniska team att verifiera säkerhetsimplementeringar och till och med bidra med förbättringar.
+Som den enda e-posttjänsten med en helt öppen källkodsplattform (både frontend och backend) stämde Forward Email perfekt överens med Linux Foundations engagemang för principer om öppen källkod. I likhet med vår implementering med [Kanonisk/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) gjorde denna transparens det möjligt för deras tekniska team att verifiera säkerhetsimplementeringar och till och med bidra med förbättringar.
 
 ### Integritetsfokuserad design {#privacy-focused-design}
 
-Vidarebefordra e-postens strikta [sekretesspolicyer](https://forwardemail.net/privacy) gav den säkerhet som Linux Foundation krävde. Vår [teknisk implementering för e-postskydd](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) säkerställer att all kommunikation förblir säker genom design, utan loggning eller skanning av e-postinnehåll.
+Vidarebefordra e-postens strikta [sekretesspolicyer](https://forwardemail.net/privacy) gav den säkerhet som Linux Foundation krävde. Vår [teknisk implementering av e-postskydd för integritet](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) säkerställer att all kommunikation förblir säker genom design, utan loggning eller skanning av e-postinnehåll.
 
 Som beskrivs i vår tekniska implementeringsdokumentation:
 
@@ -69,15 +69,15 @@ Implementeringen av [kvantresistent kryptering](https://forwardemail.net/blog/do
 
 ### Företagsmodell med fast pris {#fixed-price-enterprise-model}
 
-Vidarebefordra e-postens [företagsprissättning](https://forwardemail.net/pricing) erbjöd en fast månadskostnad oavsett domäner eller användare. Denna metod har lett till betydande kostnadsbesparingar för andra stora organisationer, vilket demonstrerats i vår [e-postfallstudie för universitetsalumner](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), där institutioner sparade upp till 99 % jämfört med traditionella e-postlösningar per användare.
+Vidarebefordra e-postens [företagsprissättning](https://forwardemail.net/pricing) gav en fast månadskostnad oavsett domäner eller användare. Denna metod har lett till betydande kostnadsbesparingar för andra stora organisationer, vilket demonstreras i vår [fallstudie om e-post från universitetsalumner](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), där institutioner sparade upp till 99 % jämfört med traditionella e-postlösningar per användare.
 
 ### Utvecklarvänligt API {#developer-friendly-api}
 
-Efter en [README-första tillvägagångssätt](https://tom.preston-werner.com/2010/08/23/readme-driven-development) och inspirerad av [Stripes RESTful API-design](https://amberonrails.com/building-stripes-api), möjliggjorde Forward Emails [API](https://forwardemail.net/api) djupgående integration med Linux Foundations Project Control Center. Denna integration var avgörande för att automatisera e-posthanteringen i deras mångsidiga projektportfölj.
+Efter [README-först-metoden](https://tom.preston-werner.com/2010/08/23/readme-driven-development) och inspirerad av [Stripes RESTful API-design](https://amberonrails.com/building-stripes-api), möjliggjorde Forward Email's [API](https://forwardemail.net/api) djupgående integration med Linux Foundations Project Control Center. Denna integration var avgörande för att automatisera e-posthanteringen i deras mångsidiga projektportfölj.
 
 ## Implementeringsprocess {#implementation-process}
 
-Implementeringen följde ett strukturerat tillvägagångssätt:
+Implementeringen följde en strukturerad metod:
 
 ```mermaid
 flowchart LR
@@ -99,7 +99,7 @@ flowchart LR
 
 3. **Utveckling av anpassade funktioner**: Hantering av flera domäner, rapportering, säkerhetspolicyer
 
-Vi arbetade nära Linux Foundation för att utveckla funktioner (som också är 100 % öppna så att alla kan dra nytta av dem) specifikt för deras miljö med flera projekt, ungefär som vi skapade anpassade lösningar för [e-postsystem för alumner vid universitet](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
+Vi arbetade nära Linux Foundation för att utveckla funktioner (som också är 100 % öppna så att alla kan dra nytta av dem) specifikt för deras miljö med flera projekt, ungefär som vi skapade anpassade lösningar för [e-postsystem för universitetsalumner](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
 
 ## Resultat och fördelar {#results-and-benefits}
 
@@ -122,7 +122,7 @@ Implementeringen gav betydande fördelar:
 * Kvantresistent kryptering över alla domäner
 * Omfattande e-postautentisering som förhindrar förfalskning och nätfiske
 * Säkerhetstester och praxis via [säkerhetsfunktioner](https://forwardemail.net/security)
-* Integritetsskydd genom vår [tekniskt genomförande](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* Integritetsskydd genom vår [teknisk implementering](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 
 ### Förbättrad användarupplevelse {#improved-user-experience}
 
@@ -132,11 +132,11 @@ Implementeringen gav betydande fördelar:
 
 ## Slutsats {#conclusion}
 
-Linux Foundations partnerskap med Forward Email visar hur organisationer kan hantera komplexa e-posthanteringsutmaningar samtidigt som de bibehåller anpassning till sina kärnvärden. Genom att välja en lösning som prioriterar principer med öppen källkod, sekretess och säkerhet har Linux Foundation förvandlat e-posthantering från en administrativ börda till en strategisk fördel.
+Linux Foundations partnerskap med Forward Email visar hur organisationer kan hantera komplexa utmaningar inom e-posthantering samtidigt som de bibehåller sina kärnvärden. Genom att välja en lösning som prioriterar principer om öppen källkod, integritet och säkerhet har Linux Foundation förvandlat e-posthantering från en administrativ börda till en strategisk fördel.
 
-Som vi sett i vårt arbete med både [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) och [stora universiteten](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) kan organisationer med komplexa domänportföljer uppnå betydande förbättringar av effektivitet, säkerhet och kostnadshantering genom Forward Emails företagslösning.
+Som vi sett i vårt arbete med både [Kanonisk/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) och [större universitet](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) kan organisationer med komplexa domänportföljer uppnå betydande förbättringar av effektivitet, säkerhet och kostnadshantering genom Forward Emails företagslösning.
 
-För mer information om hur Vidarebefordra e-post kan hjälpa din organisation att hantera e-post över flera domäner, besök [forwardemail.net](https://forwardemail.net) eller utforska våra detaljerade [dokumentation](https://forwardemail.net/email-api) och [guider](https://forwardemail.net/guides).
+För mer information om hur vidarebefordra e-post kan hjälpa din organisation att hantera e-post över flera domäner, besök [forwardemail.net](https://forwardemail.net) eller utforska våra detaljerade [dokumentation](https://forwardemail.net/email-api) och [guider](https://forwardemail.net/guides).
 
 ## Referenser {#references}
 

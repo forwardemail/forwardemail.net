@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Versions auto-hébergées {#self-hosted-releases}
 
 Cette section documente le flux de travail CI/CD pour la solution auto-hébergée de ForwardEmail, expliquant comment les images Docker sont créées, publiées et déployées.
 
-## Table of Contents {#table-of-contents}
+## Table des matières {#table-of-contents}
 
 * [Aperçu](#overview)
 * [Flux de travail CI/CD](#cicd-workflow)
@@ -19,18 +19,18 @@ Cette section documente le flux de travail CI/CD pour la solution auto-hébergé
 * [Accéder aux images](#accessing-images)
 * [Contribuer](#contributing)
 
-## Overview {#overview}
+## Présentation de {#overview}
 
 La solution auto-hébergée de ForwardEmail utilise GitHub Actions pour créer et publier automatiquement des images Docker dès la sortie d'une nouvelle version. Ces images sont ensuite disponibles pour être déployées sur leurs propres serveurs grâce au script d'installation fourni.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Il existe également nos [blog auto-hébergé](https://forwardemail.net/blog/docs/self-hosted-solution) et [guide du développeur auto-hébergé](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Pour des versions plus détaillées, étape par étape, consultez les guides basés sur [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) ou [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Flux de travail CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Flux de travail des actions GitHub {#github-actions-workflow}
 
 Le processus de création et de publication d'images Docker auto-hébergées est défini dans `.github/workflows/docker-image-build-publish.yml`. Ce flux de travail :
 
@@ -42,8 +42,8 @@ Le processus de création et de publication d'images Docker auto-hébergées est
 * Connexion au registre de conteneurs GitHub (GHCR)
 * Mise à jour du schéma pour un déploiement auto-hébergé
 * Création de l'image Docker avec `self-hosting/Dockerfile-selfhosted`
-* Balisage de l'image avec la version et `latest`
-* Envoi des images vers le registre de conteneurs GitHub
+* Ajout d'une balise à l'image avec la version et `latest`
+* Envoi des images au registre de conteneurs GitHub
 
 ```yaml
 # Key workflow steps
@@ -69,7 +69,7 @@ jobs:
           docker push ghcr.io/${{ github.repository }}-selfhosted:latest
 ```
 
-Structure de l'image Docker ### {#docker-image-structure}
+### Structure de l'image Docker {#docker-image-structure}
 
 L'image Docker est construite à l'aide d'une approche en plusieurs étapes définie dans `self-hosting/Dockerfile-selfhosted` :
 
@@ -87,9 +87,9 @@ L'image Docker est construite à l'aide d'une approche en plusieurs étapes déf
 
 Cette approche garantit que l’image finale est optimisée en termes de taille et de sécurité.
 
-Processus de déploiement ## {#deployment-process}
+## Processus de déploiement {#deployment-process}
 
-Installation de ### {#installation}
+### Installation de {#installation}
 
 Les utilisateurs peuvent déployer la solution auto-hébergée à l'aide du script de configuration fourni :
 
@@ -106,7 +106,7 @@ Ce script :
 5. Extraction des dernières images Docker
 6. Démarrage des services via Docker Compose
 
-Configuration de Docker Compose {#docker-compose-configuration}
+### Configuration de Docker Compose {#docker-compose-configuration}
 
 Le fichier `docker-compose-self-hosted.yml` définit tous les services requis pour la solution auto-hébergée :
 
@@ -161,7 +161,7 @@ Les certificats SSL sont gérés automatiquement avec des options pour :
 Chaque version de GitHub crée une nouvelle image Docker étiquetée avec :
 
 1. La version spécifique (par exemple, `v1.0.0`)
-2. La balise `latest` de la version la plus récente
+2. La balise `latest` pour la version la plus récente
 
 Les utilisateurs peuvent choisir d'utiliser une version spécifique pour la stabilité ou la balise `latest` pour toujours obtenir les fonctionnalités les plus récentes.
 
@@ -178,7 +178,7 @@ Aucune authentification n'est requise pour extraire ces images.
 
 Pour contribuer à la solution auto-hébergée :
 
-1. Modifiez les fichiers concernés dans le répertoire `self-hosting`
+1. Modifiez les fichiers concernés dans le répertoire `self-hosting`.
 2. Testez localement ou sur un VPS Ubuntu à l'aide du script `setup.sh` fourni.
 3. Soumettez une pull request.
 4. Une fois la fusion terminée et la nouvelle version créée, le workflow CI générera et publiera automatiquement l'image Docker mise à jour.

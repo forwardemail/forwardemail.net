@@ -6,7 +6,7 @@
 * [Como contornar o bloqueio do SMTP de saída pelo ISP na porta 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
 * [Como posso verificar se meu ISP bloqueia portas](#how-can-i-check-if-my-isp-blocks-ports)
 
-## Como contornar o bloqueio do ISP de SMTP de entrada na porta 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
+## Como contornar o bloqueio do ISP por SMTP de entrada na porta 25 {#how-to-workaround-isp-blocking-inbound-smtp-on-port-25}
 
 Se você não tiver a porta 25 aberta no endereço IP do seu servidor de e-mail, este guia é para você.
 

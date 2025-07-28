@@ -6,35 +6,35 @@
 
 * [Prefácio](#foreword)
 * [Segurança de Infraestrutura](#infrastructure-security)
-  * [Centros de dados seguros](#secure-data-centers)
+  * [Data Centers Seguros](#secure-data-centers)
   * [Segurança de rede](#network-security)
 * [Segurança de e-mail](#email-security)
   * [Criptografia](#encryption)
   * [Autenticação e Autorização](#authentication-and-authorization)
-  * [Medidas anti-abuso](#anti-abuse-measures)
+  * [Medidas Antiabuso](#anti-abuse-measures)
 * [Proteção de Dados](#data-protection)
   * [Minimização de dados](#data-minimization)
   * [Backup e Recuperação](#backup-and-recovery)
-* [Provedores de serviços](#service-providers)
+* [Prestadores de serviços](#service-providers)
 * [Conformidade e Auditoria](#compliance-and-auditing)
-  * [Avaliações de segurança regulares](#regular-security-assessments)
+  * [Avaliações regulares de segurança](#regular-security-assessments)
   * [Conformidade](#compliance)
 * [Resposta a incidentes](#incident-response)
-* [Ciclo de vida do desenvolvimento de segurança](#security-development-lifecycle)
+* [Ciclo de vida de desenvolvimento de segurança](#security-development-lifecycle)
 * [Endurecimento do servidor](#server-hardening)
 * [Acordo de Nível de Serviço](#service-level-agreement)
 * [Segurança de código aberto](#open-source-security)
-* [Segurança dos funcionários](#employee-security)
+* [Segurança dos Funcionários](#employee-security)
 * [Melhoria Contínua](#continuous-improvement)
 * [Recursos adicionais](#additional-resources)
 
 ## Prefácio {#foreword}
 
-Na Forward Email, a segurança é nossa maior prioridade. Implementamos medidas de segurança abrangentes para proteger suas comunicações por e-mail e dados pessoais. Este documento descreve nossas práticas de segurança e as etapas que tomamos para garantir a confidencialidade, integridade e disponibilidade do seu e-mail.
+Na Forward Email, a segurança é nossa principal prioridade. Implementamos medidas de segurança abrangentes para proteger suas comunicações por e-mail e dados pessoais. Este documento descreve nossas práticas de segurança e as medidas que tomamos para garantir a confidencialidade, a integridade e a disponibilidade do seu e-mail.
 
-## Segurança de Infraestrutura {#infrastructure-security}
+## Segurança de infraestrutura {#infrastructure-security}
 
-### Data Centers Seguros {#secure-data-centers}
+### Centros de dados seguros {#secure-data-centers}
 
 Nossa infraestrutura é hospedada em data centers compatíveis com SOC 2 com:
 
@@ -56,7 +56,7 @@ Implementamos múltiplas camadas de segurança de rede:
 * Proteção de varredura de portas com bloqueio automatizado de atividades suspeitas
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Todos os dados em trânsito são criptografados usando TLS 1.2+ com conjuntos de criptografia modernos.
 
 ## Segurança de e-mail {#email-security}
 
@@ -69,7 +69,7 @@ Implementamos múltiplas camadas de segurança de rede:
 * **Proteção Abrangente**: Implementamos criptografia em repouso, criptografia na memória e criptografia em trânsito
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Somos o primeiro e único serviço de e-mail do mundo a usar **[caixas de correio SQLite resistentes a quantum e criptografadas individualmente](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Autenticação e Autorização {#authentication-and-authorization}
 
@@ -83,7 +83,7 @@ Implementamos múltiplas camadas de segurança de rede:
 * **Filtragem de Spam**: Detecção de spam em várias camadas com aprendizado de máquina
 * **Verificação de Vírus**: Verificação em tempo real de todos os anexos
 * **Limitação de Taxa**: Proteção contra ataques de força bruta e enumeração
-* **Reputação de IP**: Monitoramento da reputação do IP de envio
+* **Reputação de IP**: Monitoramento da reputação de IP de envio
 * **Filtragem de Conteúdo**: Detecção de URLs maliciosos e tentativas de phishing
 
 ## Proteção de Dados {#data-protection}
@@ -92,7 +92,7 @@ Implementamos múltiplas camadas de segurança de rede:
 
 Seguimos o princípio de minimização de dados:
 
-* Coletamos apenas os dados necessários para a prestação do nosso serviço
+* Coletamos apenas os dados necessários para fornecer nosso serviço
 * O conteúdo do e-mail é processado na memória e não é armazenado de forma persistente, a menos que seja necessário para entrega IMAP/POP3
 * Os registros são anonimizados e retidos apenas pelo tempo necessário
 
@@ -105,24 +105,24 @@ Seguimos o princípio de minimização de dados:
 
 ## Provedores de serviços {#service-providers}
 
-Selecionamos cuidadosamente nossos provedores de serviços para garantir que eles atendam aos nossos altos padrões de segurança. Abaixo estão os provedores que usamos para transferência internacional de dados e seu status de conformidade com o GDPR:
+Selecionamos cuidadosamente nossos provedores de serviços para garantir que atendam aos nossos elevados padrões de segurança. Abaixo, listamos os provedores que utilizamos para transferência internacional de dados e seus respectivos status de conformidade com o GDPR:
 
 | Provedor | Propósito | Certificado DPF | Página de conformidade com o GDPR |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com) | CDN, proteção DDoS, DNS | ✅ Sim | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
-| [DataPacket](https://www.datapacket.com) | Infraestrutura do servidor | ❌ Não | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
+| [DataPacket](https://www.datapacket.com) | Infraestrutura de servidor | ❌ Não | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
 | [Digital Ocean](https://www.digitalocean.com) | Infraestrutura de nuvem | ❌ Não | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
 | [Vultr](https://www.vultr.com) | Infraestrutura de nuvem | ❌ Não | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
 | [Stripe](https://stripe.com) | Processamento de pagamento | ✅ Sim | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Processamento de pagamento | ❌ Não | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Usamos esses provedores para garantir entrega de serviço confiável e segura, mantendo a conformidade com os regulamentos internacionais de proteção de dados. Todas as transferências de dados são conduzidas com salvaguardas apropriadas para proteger suas informações pessoais.
+Utilizamos esses provedores para garantir a prestação de serviços confiável e segura, mantendo a conformidade com as normas internacionais de proteção de dados. Todas as transferências de dados são realizadas com as devidas salvaguardas para proteger suas informações pessoais.
 
 ## Conformidade e Auditoria {#compliance-and-auditing}
 
 ### Avaliações regulares de segurança {#regular-security-assessments}
 
-Nossa equipe monitora, revisa e avalia regularmente a base de código, servidores, infraestrutura e práticas. Implementamos um programa de segurança abrangente que inclui:
+Nossa equipe monitora, revisa e avalia regularmente a base de código, os servidores, a infraestrutura e as práticas. Implementamos um programa de segurança abrangente que inclui:
 
 * Rotação regular de chaves SSH
 * Monitoramento contínuo de logs de acesso
@@ -133,7 +133,7 @@ Nossa equipe monitora, revisa e avalia regularmente a base de código, servidore
 ### Conformidade {#compliance}
 
 * Práticas de tratamento de dados em conformidade com [GDPR](https://forwardemail.net/gdpr)
-* [Acordo de Processamento de Dados (DPA)](https://forwardemail.net/dpa) disponível para clientes empresariais
+* [Contrato de Processamento de Dados (DPA)](https://forwardemail.net/dpa) disponível para clientes empresariais
 * Controles de privacidade em conformidade com CCPA
 * Processos auditados SOC 2 Tipo II
 
@@ -149,7 +149,7 @@ Nosso plano de resposta a incidentes de segurança inclui:
 6. **Análise pós-incidente**: Revisão e melhoria abrangentes
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Se você descobrir uma vulnerabilidade de segurança, informe-a imediatamente para <security@forwardemail.net>.
 
 ## Ciclo de vida de desenvolvimento de segurança {#security-development-lifecycle}
 
@@ -199,7 +199,7 @@ Nosso [Configuração Ansible](https://github.com/forwardemail/forwardemail.net/
 
 ## Acordo de Nível de Serviço {#service-level-agreement}
 
-Mantemos um alto nível de disponibilidade e confiabilidade do serviço. Nossa infraestrutura é projetada para redundância e tolerância a falhas para garantir que seu serviço de e-mail permaneça operacional. Embora não publiquemos um documento SLA formal, estamos comprometidos com:
+Mantemos um alto nível de disponibilidade e confiabilidade do serviço. Nossa infraestrutura foi projetada para oferecer redundância e tolerância a falhas, garantindo que seu serviço de e-mail permaneça operacional. Embora não publiquemos um SLA formal, temos o compromisso de:
 
 * Mais de 99,9% de disponibilidade para todos os serviços
 * Resposta rápida a interrupções de serviço
@@ -208,7 +208,7 @@ Mantemos um alto nível de disponibilidade e confiabilidade do serviço. Nossa i
 
 ## Segurança de código aberto {#open-source-security}
 
-Como um [serviço de código aberto](https://github.com/forwardemail/forwardemail.net), nossa segurança se beneficia de:
+Como [serviço de código aberto](https://github.com/forwardemail/forwardemail.net), nossa segurança se beneficia de:
 
 * Código transparente que pode ser auditado por qualquer pessoa
 * Melhorias de segurança conduzidas pela comunidade
@@ -238,7 +238,7 @@ Para obter mais informações sobre nossas práticas de segurança ou para relat
 * [política de Privacidade](https://forwardemail.net/en/privacy)
 * [Termos de Serviço](https://forwardemail.net/en/terms)
 * [Conformidade com o RGPD](https://forwardemail.net/gdpr)
-* [Acordo de Processamento de Dados (DPA)](https://forwardemail.net/dpa)
+* [Contrato de Processamento de Dados (DPA)](https://forwardemail.net/dpa)
 * [Denunciar abuso](https://forwardemail.net/en/report-abuse)
 * [Política de Segurança](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)

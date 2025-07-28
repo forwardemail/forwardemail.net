@@ -24,7 +24,7 @@
   * [16단계: 설치 확인](#step-16-verify-installation)
 * [설치 후 구성](#post-installation-configuration)
   * [DNS 레코드 설정](#dns-records-setup)
-  * [첫 로그인](#first-login)
+  * [첫 번째 로그인](#first-login)
 * [백업 구성](#backup-configuration)
   * [S3 호환 백업 설정](#set-up-s3-compatible-backup)
   * [백업 Cron 작업 설정](#set-up-backup-cron-jobs)
@@ -388,7 +388,7 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 echo "✅ All encryption keys generated successfully"
 ```
 
-### 13단계: 구성 {#step-13-update-ssl-paths-in-configuration}에서 SSL 경로 업데이트
+### 13단계: 구성에서 SSL 경로 업데이트 {#step-13-update-ssl-paths-in-configuration}
 
 환경 파일에서 SSL 인증서 경로를 구성합니다.
 
@@ -675,4 +675,4 @@ nohup dockerd >/dev/null 2>/dev/null &
 4. 시스템을 정기적으로 모니터링하세요.
 5. 설치를 최신 상태로 유지하세요.
 
-추가 구성 옵션 및 고급 기능에 대해서는 <https://forwardemail.net/self-hosted#configuration>.에서 공식 Forward Email 문서를 참조하세요.
+추가 구성 옵션 및 고급 기능에 대해서는 <https://forwardemail.net/self-hosted#configuration>.>의 공식 Forward Email 문서를 참조하세요.

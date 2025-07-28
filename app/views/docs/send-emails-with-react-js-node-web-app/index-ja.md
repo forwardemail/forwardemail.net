@@ -1,4 +1,4 @@
-# React.js Node Web アプリでメールを送信する例 {#send-emails-with-reactjs-node-web-app-example}
+# React.js Node Webアプリの例でメールを送信する {#send-emails-with-reactjs-node-web-app-example}
 
 ## 目次 {#table-of-contents}
 
@@ -7,7 +7,7 @@
 
 ## インストールと要件 {#install-and-requirements}
 
-`@react-email/render` と `nodemailer` npm 依存関係をインストールする必要があります。
+`@react-email/render` および `nodemailer` npm 依存関係をインストールする必要があります。
 
 ```sh
 npm install @react-email/render nodemailer
@@ -76,6 +76,6 @@ transporter.sendMail(options);
 node app
 ```
 
-**[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信ステータス、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できます。
+**[マイアカウント → メール](/my-account/emails)** にアクセスして、リアルタイムのメール配信ステータス、メール配信ログ、HTML/プレーンテキスト/添付ファイルのプレビューを確認できるようになりました。
 
-> P.S. :tada: **[ブラウザとiOSシミュレータでメールをプレビューする](/docs/test-preview-email-rendering-browsers-ios-simulator)** と **[Node.jsでメールテンプレートを作成する](/docs/send-emails-with-node-js-javascript)** も可能です。
+> P.S. :tada: **[ブラウザとiOSシミュレータでメールをプレビューする](/docs/test-preview-email-rendering-browsers-ios-simulator)** と **[Node.jsでメールテンプレートを作成する](/docs/send-emails-with-node-js-javascript)** も使用できます。

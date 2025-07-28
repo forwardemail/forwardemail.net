@@ -57,14 +57,14 @@
 
 ## Modifiche all'accordo {#changes-to-the-agreement}
 
-Il presente documento è derivato dal [Condizioni standard del DPA comune (versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) e sono state apportate le seguenti modifiche:
+Questo documento è un derivato di [Condizioni standard del DPA comune (versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) e sono state apportate le seguenti modifiche:
 
-1. [Legge applicabile e tribunali scelti](#11-governing-law-and-chosen-courts) è stato incluso come sezione sottostante con `Governing State` identificato sopra.
+1. [Legge applicabile e tribunali scelti](#11-governing-law-and-chosen-courts) è stato incluso come sezione sottostante, insieme a `Governing State` identificato sopra.
 2. [Rapporto con il fornitore di servizi](#12-service-provider-relationship) è stato incluso come sezione sottostante.
 
-## 1. Rapporti tra responsabile del trattamento e sub-responsabile del trattamento {#1-processor-and-subprocessor-relationships}
+## 1. Relazioni tra processore e sub-processore {#1-processor-and-subprocessor-relationships}
 
-### 1. Fornitore come Responsabile del Trattamento {#1-provider-as-processor}
+### 1. Fornitore come Processore {#1-provider-as-processor}
 
 Nei casi in cui il <strong>Cliente</strong> è titolare del trattamento dei dati personali del cliente, il <strong>Fornitore</strong> sarà considerato un responsabile del trattamento che elabora i dati personali per conto del <strong>Cliente</strong>.
 
@@ -78,7 +78,7 @@ Nei casi in cui il <strong>Cliente</strong> è un Responsabile del trattamento d
 
 L'Allegato I(B) nella pagina di copertina descrive l'oggetto, la natura, lo scopo e la durata del presente Trattamento, nonché le <strong>Categorie di Dati Personali</strong> raccolti e le <strong>Categorie di Interessati</strong>.
 
-### 2. Istruzioni per l'elaborazione {#2-processing-instructions}
+### 2. Istruzioni di elaborazione {#2-processing-instructions}
 
 Il Cliente incarica il Fornitore di elaborare i Dati Personali del Cliente: (a) per fornire e mantenere il Servizio; (b) come ulteriormente specificato tramite l'utilizzo del Servizio da parte del Cliente; (c) come documentato nel Contratto; e (d) come documentato in qualsiasi altra istruzione scritta fornita dal Cliente e riconosciuta dal Fornitore in merito all'elaborazione dei Dati Personali del Cliente ai sensi del presente DPA. Il Fornitore si atterrà a tali istruzioni, salvo divieto imposto dalle Leggi Applicabili. Il Fornitore informerà immediatamente il Cliente qualora non fosse in grado di seguire le istruzioni di elaborazione. Il Cliente ha fornito e fornirà solo istruzioni conformi alle Leggi Applicabili.
 
@@ -86,9 +86,9 @@ Il Cliente incarica il Fornitore di elaborare i Dati Personali del Cliente: (a) 
 
 Il Fornitore tratterà i Dati Personali del Cliente esclusivamente in conformità con il presente DPA, inclusi i dettagli riportati nella Pagina di Copertina. Qualora il Fornitore aggiorni il Servizio per aggiornare prodotti, caratteristiche o funzionalità esistenti o includerne di nuovi, il Fornitore potrà modificare le Categorie di Interessati, le Categorie di Dati Personali, i Dati di Categoria Speciale, le Limitazioni o Garanzie relative ai Dati di Categoria Speciale, la Frequenza di Trasferimento, la Natura e le Finalità del Trattamento e la Durata del Trattamento, secondo necessità, per riflettere gli aggiornamenti, notificando al Cliente gli aggiornamenti e le modifiche.
 
-### 4. Elaborazione dei dati del cliente {#4-customer-processing}
+### 4. Elaborazione clienti {#4-customer-processing}
 
-Laddove il <strong>Cliente</strong> sia un Responsabile del trattamento e il <strong>Fornitore</strong> un Sub-responsabile del trattamento, il <strong>Cliente</strong> si atterrà a tutte le Leggi applicabili al Trattamento dei Dati Personali da parte del <strong>Cliente</strong>. Analogamente, il contratto del <strong>Cliente</strong> con il suo Titolare del trattamento richiederà al <strong>Cliente</strong> di rispettare tutte le Leggi applicabili al <strong>Cliente</strong> in qualità di Responsabile del trattamento. Inoltre, il <strong>Cliente</strong> si atterrà ai requisiti del Sub-responsabile del trattamento previsti dal contratto del <strong>Cliente</strong> con il suo Titolare del trattamento.
+Laddove il <strong>Cliente</strong> sia un Responsabile del trattamento e il <strong>Fornitore</strong> un Sub-responsabile del trattamento, il <strong>Cliente</strong> si impegna a rispettare tutte le Leggi applicabili al Trattamento dei Dati Personali da parte del <strong>Cliente</strong>. Analogamente, il contratto del <strong>Cliente</strong> con il suo Titolare del trattamento richiederà al <strong>Cliente</strong> di rispettare tutte le Leggi applicabili al <strong>Cliente</strong> in qualità di Responsabile del trattamento. Inoltre, il <strong>Cliente</strong> si impegna a rispettare i requisiti del Sub-responsabile del trattamento previsti dal contratto del <strong>Cliente</strong> con il suo Titolare del trattamento.
 
 ### 5. Consenso al trattamento {#5-consent-to-processing}
 
@@ -108,7 +108,7 @@ d. Il <strong>Fornitore</strong> rimane pienamente responsabile di tutti gli obb
 
 ### 1. Autorizzazione {#1-authorization}
 
-Il Cliente accetta che il Fornitore possa trasferire i Dati Personali del Cliente al di fuori del SEE, del Regno Unito o di altri territori geografici pertinenti, se necessario per fornire il Servizio. Qualora il Fornitore trasferisca i Dati Personali del Cliente in un territorio per il quale la Commissione Europea o altra autorità di vigilanza competente non abbia emesso una decisione di adeguatezza, il Fornitore adotterà misure di sicurezza appropriate per il trasferimento dei Dati Personali del Cliente in tale territorio, in conformità con le Leggi applicabili in materia di protezione dei dati.
+Il Cliente accetta che il Fornitore possa trasferire i Dati Personali del Cliente al di fuori del SEE, del Regno Unito o di altri territori geografici pertinenti, se necessario per fornire il Servizio. Qualora il Fornitore trasferisca i Dati Personali del Cliente in un territorio per il quale la Commissione Europea o altra autorità di vigilanza competente non abbia emesso una decisione di adeguatezza, il Fornitore adotterà misure di sicurezza appropriate per il trasferimento dei Dati Personali del Cliente in tale territorio, in conformità con le Leggi Applicabili sulla Protezione dei Dati.
 
 ### 2. Trasferimenti ex-SEE {#2-ex-eea-transfers}
 
@@ -182,7 +182,7 @@ Se richiesto dalle leggi applicabili sulla protezione dei dati, il <strong>Forni
 
 Il <strong>Fornitore</strong> consentirà al <strong>Cliente</strong> di eliminare i Dati personali del Cliente in modo coerente con la funzionalità dei Servizi. Il <strong>Fornitore</strong> rispetterà questa istruzione non appena ragionevolmente possibile, salvo nei casi in cui l'ulteriore conservazione dei Dati personali del Cliente sia richiesta dalla Legge applicabile.
 
-### 2. Cancellazione alla scadenza del DPA {#2-deletion-at-dpa-expiration}
+### 2. Eliminazione alla scadenza del DPA {#2-deletion-at-dpa-expiration}
 
 a. Dopo la scadenza del DPA, il Fornitore restituirà o cancellerà i Dati Personali del Cliente su istruzione del Cliente, a meno che l'ulteriore conservazione dei Dati Personali del Cliente non sia richiesta o autorizzata dalla Legge Applicabile. Qualora la restituzione o la distruzione siano impraticabili o vietate dalla Legge Applicabile, il Fornitore compirà ogni ragionevole sforzo per impedire l'ulteriore Trattamento dei Dati Personali del Cliente e continuerà a proteggere i Dati Personali del Cliente rimasti in suo possesso, custodia o controllo. Ad esempio, la Legge Applicabile potrebbe richiedere al Fornitore di continuare a ospitare o trattare i Dati Personali del Cliente.
 
@@ -200,7 +200,7 @@ b. Se il <strong>Cliente</strong> e il <strong>Fornitore</strong> hanno sottoscr
 
 ### 3. Eccezioni {#3-exceptions}
 
-1. Il presente DPA non limita in alcun modo la responsabilità nei confronti di un individuo in merito ai suoi diritti di protezione dei dati personali ai sensi delle Leggi applicabili in materia di protezione dei dati. Inoltre, il presente DPA non limita in alcun modo la responsabilità tra le parti per violazioni delle Condizioni Generali di Contratto (SCC) SEE o dell'Addendum del Regno Unito.
+1. Il presente DPA non limita alcuna responsabilità nei confronti di un individuo in merito ai suoi diritti di protezione dei dati personali ai sensi delle Leggi applicabili in materia di protezione dei dati. Inoltre, il presente DPA non limita alcuna responsabilità tra le parti per violazioni delle Condizioni Generali di Contratto (SCC) SEE o dell'Addendum del Regno Unito.
 
 ## 9. Conflitti tra documenti {#9-conflicts-between-documents}
 
@@ -208,13 +208,13 @@ b. Se il <strong>Cliente</strong> e il <strong>Fornitore</strong> hanno sottoscr
 
 ## 10. Durata dell'accordo {#10-term-of-agreement}
 
-Il presente DPA entrerà in vigore nel momento in cui il Fornitore e il Cliente concorderanno una pagina di copertina per il DPA e firmeranno o accetteranno elettronicamente il Contratto e continuerà fino alla scadenza o alla risoluzione del Contratto. Tuttavia, il Fornitore e il Cliente rimarranno entrambi soggetti agli obblighi previsti dal presente DPA e dalle Leggi applicabili in materia di protezione dei dati fino a quando il Cliente non cesserà di trasferire i Dati Personali al Fornitore e il Fornitore non cesserà di elaborare i Dati Personali del Cliente.
+Il presente DPA avrà inizio nel momento in cui il Fornitore e il Cliente concorderanno una pagina di copertina per il DPA e firmeranno o accetteranno elettronicamente il Contratto e continuerà fino alla scadenza o alla risoluzione del Contratto. Tuttavia, il Fornitore e il Cliente rimarranno entrambi soggetti agli obblighi previsti dal presente DPA e dalle Leggi applicabili in materia di protezione dei dati fino a quando il Cliente non cesserà di trasferire i Dati Personali al Fornitore e il Fornitore non cesserà di elaborare i Dati Personali del Cliente.
 
 ## 11. Legge applicabile e tribunali prescelti {#11-governing-law-and-chosen-courts}
 
 Fermo restando il diritto applicabile o clausole simili del <strong>Contratto</strong>, tutte le interpretazioni e le controversie relative al presente DPA saranno regolate dalle leggi dello <strong>Stato Governante</strong>, senza riguardo alle disposizioni in materia di conflitto di leggi. Inoltre, e nonostante la scelta del foro competente, la giurisdizione o clausole simili del <strong>Contratto</strong>, le parti concordano di intentare qualsiasi azione legale, causa o procedimento relativo al presente DPA presso i tribunali dello <strong>Stato Governante</strong>, e ciascuna parte si sottomette irrevocabilmente alla giurisdizione esclusiva di tali tribunali.
 
-## 12. Rapporto con il fornitore del servizio {#12-service-provider-relationship}
+## 12. Relazione con il fornitore del servizio {#12-service-provider-relationship}
 
 Nella misura in cui si applica il California Consumer Privacy Act, Cal. Civ. Code § 1798.100 e segg. ("CCPA"), le parti riconoscono e concordano che il Fornitore è un fornitore di servizi e riceve Dati Personali dal Cliente per fornire il Servizio come concordato nel Contratto, il che costituisce uno scopo commerciale. Il Fornitore non venderà alcun Dato Personale fornito dal Cliente ai sensi del Contratto. Inoltre, il Fornitore non conserverà, utilizzerà o divulgherà alcun Dato Personale fornito dal Cliente ai sensi del Contratto, salvo quanto necessario per fornire il Servizio al Cliente, come indicato nel Contratto o come consentito dalle Leggi Applicabili sulla Protezione dei Dati. Il <strong>fornitore</strong> certifica di aver compreso le restrizioni del presente paragrafo.
 
@@ -262,4 +262,4 @@ Nella misura in cui si applica il California Consumer Privacy Act, Cal. Civ. Cod
 
 ## Crediti {#credits}
 
-Il presente documento è un derivato di [Condizioni standard del DPA comune (versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) ed è concesso in licenza con licenza [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Il presente documento è derivato da [Condizioni standard del DPA comune (versione 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) ed è concesso in licenza con [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

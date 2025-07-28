@@ -10,13 +10,13 @@
 * [Logos](#logos)
 * [Grafik](#graphics)
 
-## Informationen zur E-Mail-Weiterleitung {#about-forward-email}
+## Informationen zum Weiterleiten von E-Mails {#about-forward-email}
 
 Forward Email ist der einzige 100 % Open-Source-E-Mail-Hosting-Dienst mit Fokus auf Sicherheit und Datenschutz. Erfahren Sie mehr über unsere Geschichte auf [unsere Info-Seite](/about).
 
-Unser Dienst wurde 2017 gegründet und unterstützt E-Mails für über 500.000 Domänen – darunter namhafte Benutzer wie [Die US Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Die Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [mehrere Universitäten](/blog/docs/alumni-email-forwarding-university-case-study) und Regierungen und mehr.
+Unser Dienst wurde 2017 gegründet und unterstützt E-Mails für über 500.000 Domänen – darunter namhafte Benutzer wie [Die US Naval Academy](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Die Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [mehrere Universitäten](/blog/docs/alumni-email-forwarding-university-case-study), Regierungen und mehr.
 
-Unser Ziel ist es, die E-Mail- und Sicherheitsinfrastrukturplattform der Unternehmensklasse zu sein – und wir halten uns an [mehrere Prinzipien](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Unser Ziel ist es, die E-Mail- und Sicherheitsinfrastrukturplattform der Enterprise-Klasse zu sein – und wir halten uns an [mehrere Prinzipien](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
 Sie sind Pressevertreter, Journalist oder Medienschaffender und möchten mit uns sprechen, Fragen stellen oder mehr erfahren – dann kontaktieren Sie uns bitte unter `press@forwardemail.net`.
 

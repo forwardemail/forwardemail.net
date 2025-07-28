@@ -83,13 +83,13 @@ Todos os principais provedores de e-mail forçam os desenvolvedores a uma de dua
 O resultado? Os desenvolvedores abandonam completamente a integração de e-mail ou perdem semanas construindo wrappers IMAP frágeis que quebram constantemente.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **O Segredo Sujo**: A maioria das "APIs de e-mail" são apenas APIs de envio. Você não pode organizar pastas, sincronizar contatos ou gerenciar calendários programaticamente por meio de uma interface REST simples. Até agora.
 
 ## O que os desenvolvedores estão realmente dizendo {#what-developers-are-actually-saying}
 
 A frustração é real e está documentada em todos os lugares:
 
-> "Recentemente, tentei integrar o Gmail ao meu aplicativo e dediquei muito tempo a isso. Decidi que não valia a pena oferecer suporte ao Gmail."
+> "Recentemente, tentei integrar o Gmail ao meu aplicativo, mas dediquei muito tempo a isso. Decidi que não valia a pena oferecer suporte ao Gmail."
 >
 > *- [Desenvolvedor do Hacker News](https://news.ycombinator.com/item?id=42106944), 147 votos positivos*
 
@@ -99,7 +99,7 @@ A frustração é real e está documentada em todos os lugares:
 
 > "Por que o desenvolvimento de e-mails tem que ser péssimo?"
 >
-> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 comentários sobre a dor do desenvolvedor*
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 comentários sobre o sofrimento do desenvolvedor*
 
 > "O que torna a API do Gmail mais eficiente que o IMAP? Outro motivo pelo qual a API do Gmail é muito mais eficiente é porque ela só precisa baixar cada mensagem uma vez. Com o IMAP, cada mensagem precisa ser baixada e indexada..."
 >
@@ -120,10 +120,10 @@ Esta não é apenas mais uma API de envio. Trata-se de um controle programático
 
 * **Mensagens**: Criar, ler, atualizar, excluir, pesquisar, mover, sinalizar
 * **Pastas**: Gerenciamento completo de pastas IMAP via endpoints REST
-* **Contatos**: [CardDAV](https://tools.ietf.org/html/rfc6352) armazenamento e sincronização de contatos
-* **Calendários**: [CalDAV](https://tools.ietf.org/html/rfc4791) eventos e agendamento de calendário
+* **Contatos**: Armazenamento e sincronização de contatos [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **Calendários**: Eventos e agendamento de calendário [CalDAV](https://tools.ietf.org/html/rfc4791)
 
-### Por que construímos este {#why-we-built-this}
+### Por que construímos isso {#why-we-built-this}
 
 **O problema**: Todo provedor de e-mail trata o e-mail como uma caixa preta. Você pode enviar e-mails, talvez lê-los com OAuth complexo, mas não pode realmente *gerenciar* seus dados de e-mail programaticamente.
 
@@ -133,7 +133,7 @@ Esta não é apenas mais uma API de envio. Trata-se de um controle programático
 
 ### Autenticação Simples {#simple-authentication}
 
-Não [Complexidade do OAuth](https://oauth.net/2/). Não [senhas específicas do aplicativo](https://support.google.com/accounts/answer/185833). Apenas suas credenciais de alias:
+Sem [Complexidade do OAuth](https://oauth.net/2/). Sem [senhas específicas do aplicativo](https://support.google.com/accounts/answer/185833). Apenas suas credenciais de alias:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -142,23 +142,23 @@ curl -u "alias@yourdomain.com:password" \
 
 ## 20 endpoints que mudam tudo {#20-endpoints-that-change-everything}
 
-### Mensagens (5 endpoints) {#messages-5-endpoints}
+Mensagens ### (5 pontos de extremidade) {#messages-5-endpoints}
 
-* `GET /v1/messages` - Listar mensagens com filtragem (`?folder=`, `?is_unread=`, `?is_flagged=`)
-* `POST /v1/messages` - Enviar novas mensagens diretamente para pastas
-* `GET /v1/messages/:id` - Recuperar mensagem específica com metadados completos
-* `PUT /v1/messages/:id` - Atualizar mensagem (sinalizadores, pasta, status de leitura)
-* `DELETE /v1/messages/:id` - Excluir mensagem permanentemente
+* `GET /v1/messages` - Lista mensagens com filtragem (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `POST /v1/messages` - Envia novas mensagens diretamente para pastas
+* `GET /v1/messages/:id` - Recupera mensagens específicas com metadados completos
+* `PUT /v1/messages/:id` - Atualiza mensagens (sinalizadores, pasta, status de leitura)
+* `DELETE /v1/messages/:id` - Exclui mensagens permanentemente
 
 ### Pastas (5 pontos de extremidade) {#folders-5-endpoints}
 
-* `GET /v1/folders` - Lista todas as pastas com status de assinatura
-* `POST /v1/folders` - Cria uma nova pasta com propriedades personalizadas
-* `GET /v1/folders/:id` - Obtém detalhes da pasta e contagens de mensagens
-* `PUT /v1/folders/:id` - Atualiza as propriedades da pasta e a assinatura
-* `DELETE /v1/folders/:id` - Exclui a pasta e gerencia a realocação das mensagens
+* `GET /v1/folders` - Listar todas as pastas com status de assinatura
+* `POST /v1/folders` - Criar uma nova pasta com propriedades personalizadas
+* `GET /v1/folders/:id` - Obter detalhes da pasta e contagem de mensagens
+* `PUT /v1/folders/:id` - Atualizar as propriedades da pasta e assinatura
+* `DELETE /v1/folders/:id` - Excluir pasta e gerenciar a realocação de mensagens
 
-### Contatos (5 endpoints) {#contacts-5-endpoints}
+### Contatos (5 pontos de extremidade) {#contacts-5-endpoints}
 
 * `GET /v1/contacts` - Listar contatos com pesquisa e paginação
 * `POST /v1/contacts` - Criar novo contato com suporte completo a vCard
@@ -170,11 +170,11 @@ curl -u "alias@yourdomain.com:password" \
 
 * `GET /v1/calendars` - Listar eventos do calendário com filtragem por data
 * `POST /v1/calendars` - Criar evento do calendário com participantes e recorrência
-* `GET /v1/calendars/:id` - Obter detalhes do evento com gerenciamento de fuso horário
+* `GET /v1/calendars/:id` - Obter detalhes do evento com tratamento de fuso horário
 * `PUT /v1/calendars/:id` - Atualizar evento com detecção de conflitos
 * `DELETE /v1/calendars/:id` - Excluir evento com notificações aos participantes
 
-## Busca Avançada: Nenhum Outro Serviço se Compara a {#advanced-search-no-other-service-compares}
+## Pesquisa avançada: Nenhum outro serviço se compara a {#advanced-search-no-other-service-compares}
 
 **O Forward Email é o único serviço de e-mail que oferece pesquisa programática abrangente em todos os campos de mensagens por meio de uma API REST.**
 
@@ -209,7 +209,7 @@ Enquanto outros provedores oferecem, na melhor das hipóteses, filtros básicos,
 * ❌ Sem APIs públicas
 * ❌ Sem recursos de busca programática
 
-### API de pesquisa revolucionária do Encaminhar e-mail {#forward-emails-revolutionary-search-api}
+### API de pesquisa revolucionária do Forward Email {#forward-emails-revolutionary-search-api}
 
 **Oferecemos mais de 15 parâmetros de pesquisa que nenhum outro serviço oferece:**
 
@@ -226,7 +226,7 @@ Enquanto outros provedores oferecem, na melhor das hipóteses, filtros básicos,
 | **Não diferencia maiúsculas de minúsculas** | ✅ Todas as pesquisas | ✅ | ✅ | ❌ |
 | **Suporte à paginação** | ✅ Funciona com todos os parâmetros de pesquisa | ✅ | ✅ | ❌ |
 
-### Exemplos de pesquisa no mundo real {#real-world-search-examples}
+### Exemplos de pesquisa do mundo real {#real-world-search-examples}
 
 **Encontre todas as faturas do último trimestre:**
 
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Vantagem para o desenvolvedor**: Com a API de pesquisa do Forward Email, você pode criar aplicativos de e-mail que rivalizam com os clientes de desktop em funcionalidade, mantendo a simplicidade das APIs REST.
 
 ## Arquitetura de desempenho extremamente rápida {#blazing-fast-performance-architecture}
 
@@ -396,7 +396,7 @@ graph LR
 * **Sincronização de Contatos**: Mais de 1.000 contatos/segundo
 * **Tempo de Atividade**: SLA de 99,99% com infraestrutura redundante
 
-### Arquitetura com foco na privacidade {#privacy-first-architecture}
+Arquitetura que prioriza a privacidade {###
 
 **Design de Conhecimento Zero**: Somente você tem acesso com sua senha IMAP — não podemos ler seus e-mails. Nosso [arquitetura de conhecimento zero](https://forwardemail.net/en/security) garante privacidade total e oferece desempenho excepcional.
 
@@ -413,7 +413,7 @@ graph LR
 | **Total** | Sem API, transparência enganosa | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) mas [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) impede integrações padrão |
 | **E-mail Zapier** | Limites de taxa severa | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
 
-### Vantagens do encaminhamento de e-mail {#forward-email-advantages}
+### Vantagens de encaminhamento de e-mail {#forward-email-advantages}
 
 | Recurso | Encaminhar e-mail | Concorrência |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -430,7 +430,7 @@ graph LR
 **ProtonMail e Tuta se promovem como "código aberto" e "transparentes", mas isso é marketing enganoso que viola os princípios modernos de privacidade.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Falsas Declarações de Transparência**: Tanto o ProtonMail quanto o Tuta anunciam com destaque suas credenciais de "código aberto", enquanto mantêm seu código mais crítico do lado do servidor proprietário e fechado.
 
 **A decepção do ProtonMail:**
 
@@ -464,11 +464,11 @@ Em 2025, a verdadeira privacidade exige **transparência total**. Quando provedo
 * ✅ **Sem dependência de fornecedor** - seus dados, seu controle
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Código aberto de verdade significa que você pode verificar todas as declarações.** Com o Forward Email, você pode auditar nossa criptografia, revisar nosso processamento de dados e até mesmo executar sua própria instância. Isso é transparência de verdade.
 
 ## Mais de 30 exemplos de integração do mundo real {#30-real-world-integration-examples}
 
-### 1. Melhoria do formulário de contato do WordPress {#1-wordpress-contact-form-enhancement}
+### 1. Aprimoramento do formulário de contato do WordPress {#1-wordpress-contact-form-enhancement}
 
 **Problema**: [Falhas de configuração SMTP do WordPress](https://github.com/awesomemotive/WP-Mail-SMTP/issues) ([631 problemas do GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues))
 **Solução**: A integração direta com a API ignora completamente o [SMTP](https://tools.ietf.org/html/rfc5321)
@@ -510,7 +510,7 @@ for (const message of messages) {
 ### 3. Sincronização de e-mail do CRM {#3-crm-email-synchronization}
 
 **Problema**: Gerenciamento manual de contatos entre e-mail e [Sistemas de CRM](https://en.wikipedia.org/wiki/Customer_relationship_management)
-**Solução**: Sincronização bidirecional com a API de contatos [CardDAV](https://tools.ietf.org/html/rfc6352)
+**Solução**: Sincronização bidirecional com a API de contato [CardDAV](https://tools.ietf.org/html/rfc6352)
 
 ```javascript
 // Sync new email contacts to CRM
@@ -546,7 +546,7 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. Integração de Tickets de Suporte {#5-support-ticket-integration}
+### 5. Integração de tickets de suporte {#5-support-ticket-integration}
 
 **Problema**: Tópicos de e-mail espalhados por [plataformas de helpdesk](https://en.wikipedia.org/wiki/Help_desk_software)
 **Solução**: Rastreamento completo dos tópicos de e-mail
@@ -570,7 +570,7 @@ for (const email of supportEmails) {
 
 ### 6. Sistema de gerenciamento de boletins informativos {#6-newsletter-management-system}
 
-**Problema**: Integrações limitadas com [plataforma de newsletter](https://en.wikipedia.org/wiki/Email_marketing)
+**Problema**: Integrações limitadas de [plataforma de newsletter](https://en.wikipedia.org/wiki/Email_marketing)
 **Solução**: Gerenciamento completo do ciclo de vida do assinante
 
 ```javascript
@@ -627,7 +627,7 @@ for (const account of accounts) {
 
 ### 9. Painel de análise avançada de e-mail {#9-advanced-email-analytics-dashboard}
 
-**Problema**: Nenhuma informação sobre [padrões de e-mail](https://en.wikipedia.org/wiki/Email_analytics) com filtragem sofisticada
+**Problema**: Nenhum insight sobre [padrões de e-mail](https://en.wikipedia.org/wiki/Email_analytics) com filtragem sofisticada
 **Solução**: Análise de e-mail personalizada usando recursos de pesquisa avançados
 
 ```javascript
@@ -675,7 +675,7 @@ const complianceEmails = await fetch('/v1/messages?body=confidential&has_attachm
 analytics.complianceReview = complianceEmails.length;
 ```
 
-### 10. Arquivamento de e-mail inteligente {#10-smart-email-archiving}
+### 10. Arquivamento Inteligente de E-mail {#10-smart-email-archiving}
 
 **Problema**: Manual [organização de e-mail](https://en.wikipedia.org/wiki/Email_management)
 **Solução**: Categorização inteligente de e-mails
@@ -866,7 +866,7 @@ await updateDashboard(deliveryStats);
 
 ### 19. Qualificação de leads por e-mail {#19-email-based-lead-qualification}
 
-**Problema**: [pontuação de leads](https://en.wikipedia.org/wiki/Lead_scoring) manual de interações por e-mail
+**Problema**: [pontuação de leads](https://en.wikipedia.org/wiki/Lead_scoring) manual em interações por e-mail
 **Solução**: Pipeline automatizado de qualificação de leads
 
 ```javascript
@@ -885,7 +885,7 @@ for (const prospect of prospects) {
 ### 20. Gerenciamento de Projetos Baseado em E-mail {#20-email-based-project-management}
 
 **Problema**: [Atualizações do projeto](https://en.wikipedia.org/wiki/Project_management) espalhados em sequências de e-mail
-**Solução**: Hub de comunicação centralizado do projeto
+**Solução**: Hub de comunicação centralizado para projetos
 
 ```javascript
 // Extract project updates from emails
@@ -904,7 +904,7 @@ for (const email of projectEmails) {
 }
 ```
 
-### 21. Gerenciamento de inventário baseado em e-mail {#21-email-based-inventory-management}
+### 21. Gerenciamento de estoque baseado em e-mail {#21-email-based-inventory-management}
 
 **Problema**: Atualizações manuais de estoque por e-mail de fornecedores
 **Solução**: Rastreamento automatizado de estoque por meio de notificações por e-mail
@@ -999,8 +999,8 @@ for (const registration of registrations) {
 
 ### 24. Fluxo de trabalho de aprovação de documentos por e-mail {#24-email-based-document-approval-workflow}
 
-**Problema**: Cadeias complexas de [aprovação de documentos](https://en.wikipedia.org/wiki/Document_management_system) via e-mail
-**Solução**: Rastreamento automatizado de aprovação e controle de versão de documentos
+**Problema**: Cadeias complexas de [aprovação de documentos](https://en.wikipedia.org/wiki/Document_management_system) por e-mail
+**Solução**: Rastreamento automatizado de aprovações e controle de versão de documentos
 
 ```javascript
 // Track document approval workflow
@@ -1172,7 +1172,7 @@ for (const report of bugReports) {
 ### 29. Gerenciamento de fornecedores baseado em e-mail {#29-email-based-vendor-management}
 
 **Problema**: [comunicação com o fornecedor](https://en.wikipedia.org/wiki/Vendor_management) manual e rastreamento de contratos
-**Solução**: Gerenciamento automatizado de relacionamento com fornecedores
+**Solução**: Gestão automatizada de relacionamento com fornecedores
 
 ```javascript
 // Track vendor communications and contracts

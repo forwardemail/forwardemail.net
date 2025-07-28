@@ -22,7 +22,7 @@
 * [Configuratie van e-mailclient](#email-client-configuration)
   * [Dondervogel](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (E-mail verzenden als)](#gmail-send-mail-as)
+  * [Gmail (e-mail verzenden als)](#gmail-send-mail-as)
 * [Probleemoplossing](#troubleshooting)
   * [Veelvoorkomende problemen en oplossingen](#common-issues-and-solutions)
   * [Hulp krijgen](#getting-help)
@@ -31,7 +31,7 @@
 
 ## Voorwoord {#foreword}
 
-Deze gids biedt gedetailleerde voorbeelden van hoe u kunt integreren met de SMTP-service van Forward Email met behulp van verschillende programmeertalen, frameworks en e-mailclients. Onze SMTP-service is ontworpen om betrouwbaar, veilig en eenvoudig te integreren met uw bestaande applicaties.
+Deze handleiding biedt gedetailleerde voorbeelden van hoe u kunt integreren met de SMTP-service van Forward Email met behulp van verschillende programmeertalen, frameworks en e-mailclients. Onze SMTP-service is ontworpen om betrouwbaar, veilig en eenvoudig te integreren met uw bestaande applicaties.
 
 ## Hoe de SMTP-verwerking van Forward Email werkt {#how-forward-emails-smtp-processing-works}
 
@@ -44,15 +44,15 @@ Wanneer u een e-mail via SMTP naar onze servers verzendt:
 1. **Initiële verwerking**: De e-mail wordt gevalideerd, gescand op malware en gecontroleerd door spamfilters.
 2. **Slimme wachtrij**: E-mails worden in een geavanceerd wachtrijsysteem geplaatst voor bezorging.
 3. **Intelligent herhaalmechanisme**: Als de bezorging tijdelijk mislukt, zal ons systeem:
-* De foutreactie analyseren met behulp van onze `getBounceInfo`-functie.
+* De foutreactie analyseren met onze `getBounceInfo`-functie.
 * Bepalen of het probleem tijdelijk is (bijv. "probeer het later opnieuw", "tijdelijk uitgesteld") of permanent (bijv. "gebruiker onbekend").
-* Bij tijdelijke problemen markeert u de e-mail voor opnieuw proberen.
-* Bij permanente problemen genereert u een bouncemelding.
+* Bij tijdelijke problemen de e-mail markeren voor opnieuw proberen.
+* Bij permanente problemen een bouncemelding genereren.
 4. **5-daagse herhaalperiode**: We proberen de bezorging maximaal 5 dagen opnieuw (vergelijkbaar met industriestandaarden zoals Postfix), waardoor tijdelijke problemen de tijd krijgen om op te lossen.
 5. **Meldingen over de bezorgstatus**: Verzenders ontvangen meldingen over de status van hun e-mails (bezorgd, vertraagd of teruggestuurd).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Na succesvolle bezorging wordt de inhoud van uitgaande SMTP-e-mails na een configureerbare bewaartermijn (standaard 30 dagen) om veiligheids- en privacyredenen verwijderd. Alleen een tijdelijke aanduiding blijft over om de succesvolle bezorging aan te geven.
 
 ### Dummy-proof voor betrouwbaarheid {#dummy-proofed-for-reliability}
 
@@ -63,13 +63,13 @@ Ons systeem is ontworpen om verschillende randgevallen te kunnen verwerken:
 * Als de mailbox van de ontvanger vol is, probeert het systeem het later opnieuw.
 * Als de ontvangende server tijdelijk niet beschikbaar is, blijven we proberen.
 
-Deze aanpak verbetert de leveringspercentages aanzienlijk, terwijl de privacy en veiligheid behouden blijven.
+Deze aanpak verbetert de bezorgsnelheid aanzienlijk, terwijl de privacy en veiligheid gewaarborgd blijven.
 
 ## Node.js-integratie {#nodejs-integration}
 
 ### Nodemailer gebruiken {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) is een populaire module voor het verzenden van e-mails vanuit Node.js-applicaties.
+[Nodemailer](https://nodemailer.com/) is een populaire module voor het verzenden van e-mails vanuit Node.js-toepassingen.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Stuur vervolgens e-mails in uw weergaven:
+Stuur dan e-mails in uw weergaven:
 
 ```python
 from django.core.mail import send_mail
@@ -277,7 +277,7 @@ try {
 
 ### Laravel gebruiken {#using-laravel}
 
-Voor Laravel-toepassingen moet u het bestand `.env` bijwerken:
+Voor Laravel-toepassingen moet u uw bestand `.env` bijwerken:
 
 ```sh
 MAIL_MAILER=smtp
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## Configuratie van e-mailclient {#email-client-configuration}
 
-__BESCHERMDE_URL_54__ Thunderbird {__BESCHERMDE_URL_55__
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
@@ -478,7 +478,7 @@ flowchart TD
 * Selecteer 'Beveiligde verbinding via SSL'.
 5. Klik op 'Account toevoegen' en verifieer je e-mailadres.
 
-## Problemen oplossen {#troubleshooting}
+## Problemen oplossen met {#troubleshooting}
 
 ### Veelvoorkomende problemen en oplossingen {#common-issues-and-solutions}
 
@@ -515,10 +515,10 @@ Als u problemen ondervindt die hier niet worden behandeld, kunt u het volgende d
 * [Documentatie voor het doorsturen van e-mails](/docs)
 * [SMTP-serverlimieten en -configuratie](/faq#what-are-your-outbound-smtp-limits)
 * [Handleiding voor best practices voor e-mail](/blog/docs/best-email-forwarding-service)
-* [Veiligheidspraktijken](/security)
+* [Beveiligingspraktijken](/security)
 
 ## Conclusie {#conclusion}
 
-De SMTP-service van Forward Email biedt een betrouwbare, veilige en privacygerichte manier om e-mails te versturen vanuit uw applicaties en e-mailclients. Met ons intelligente wachtrijsysteem, 5-dagen retry-mechanisme en uitgebreide meldingen over de bezorgstatus kunt u erop vertrouwen dat uw e-mails hun bestemming bereiken.
+De SMTP-service van Forward Email biedt een betrouwbare, veilige en privacyvriendelijke manier om e-mails te versturen vanuit uw applicaties en e-mailclients. Dankzij ons intelligente wachtrijsysteem, een mechanisme om 5 dagen opnieuw te proberen en uitgebreide meldingen over de bezorgstatus kunt u erop vertrouwen dat uw e-mails hun bestemming bereiken.
 
 Voor geavanceerdere use cases of aangepaste integraties kunt u contact opnemen met ons supportteam.

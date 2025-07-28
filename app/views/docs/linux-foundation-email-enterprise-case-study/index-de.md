@@ -53,11 +53,11 @@ graph TD
 
 ### 100 % Open-Source-Architektur {#100-open-source-architecture}
 
-Als einziger E-Mail-Dienst mit einer vollständig Open-Source-Plattform (Frontend und Backend) entsprach Forward Email perfekt dem Open-Source-Bekenntnis der Linux Foundation. Ähnlich wie bei unserer Implementierung mit [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) ermöglichte diese Transparenz dem technischen Team, Sicherheitsimplementierungen zu überprüfen und sogar Verbesserungen vorzunehmen.
+Als einziger E-Mail-Dienst mit einer vollständig Open-Source-Plattform (Frontend und Backend) entsprach Forward Email perfekt dem Open-Source-Engagement der Linux Foundation. Ähnlich wie bei unserer Implementierung mit [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) ermöglichte diese Transparenz dem technischen Team, Sicherheitsimplementierungen zu überprüfen und sogar Verbesserungen vorzunehmen.
 
 ### Datenschutzorientiertes Design {#privacy-focused-design}
 
-Der strenge [Datenschutzrichtlinien](https://forwardemail.net/privacy) von Forward Email bot die von der Linux Foundation geforderte Sicherheit. Unser [Technische Umsetzung des E-Mail-Datenschutzes](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) stellt sicher, dass die gesamte Kommunikation von Grund auf sicher bleibt, ohne dass E-Mail-Inhalte protokolliert oder gescannt werden.
+Der strikte [Datenschutzrichtlinien](https://forwardemail.net/privacy) von Forward Email bot die von der Linux Foundation geforderte Sicherheit. Unser [Technische Umsetzung des E-Mail-Datenschutzes](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) stellt sicher, dass die gesamte Kommunikation von Grund auf sicher bleibt, ohne dass E-Mail-Inhalte protokolliert oder gescannt werden.
 
 Wie in unserer technischen Implementierungsdokumentation ausführlich beschrieben:
 
@@ -65,15 +65,15 @@ Wie in unserer technischen Implementierungsdokumentation ausführlich beschriebe
 
 ### Sicherheit auf Unternehmensniveau {#enterprise-grade-security}
 
-Die Implementierung von [quantenresistente Verschlüsselung](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) mit ChaCha20-Poly1305 bot modernste Sicherheit, da jedes Postfach eine separate verschlüsselte Datei darstellt. Dieser Ansatz stellt sicher, dass die Kommunikation der Linux Foundation auch dann sicher bleibt, wenn Quantencomputer in der Lage sind, aktuelle Verschlüsselungsstandards zu knacken.
+Die Implementierung von [quantenresistente Verschlüsselung](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) mit ChaCha20-Poly1305 bot modernste Sicherheit, da jedes Postfach eine separate verschlüsselte Datei darstellt. Dieser Ansatz stellt sicher, dass die Kommunikation der Linux Foundation auch dann sicher bleibt, wenn Quantencomputer aktuelle Verschlüsselungsstandards knacken können.
 
 ### Festpreis-Unternehmensmodell {#fixed-price-enterprise-model}
 
-Forward Emails [Unternehmenspreise](https://forwardemail.net/pricing) bot feste monatliche Kosten, unabhängig von Domänen oder Benutzern. Dieser Ansatz hat anderen großen Organisationen erhebliche Kosteneinsparungen ermöglicht, wie unser [Fallstudie zu E-Mails von Universitäts-Alumni](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) zeigt: Hier konnten Institutionen im Vergleich zu herkömmlichen E-Mail-Lösungen mit Einzelbenutzerabrechnung bis zu 99 % einsparen.
+Der [Unternehmenspreise](https://forwardemail.net/pricing) von Forward Email bot feste monatliche Kosten, unabhängig von Domänen oder Benutzern. Dieser Ansatz hat anderen großen Organisationen erhebliche Kosteneinsparungen ermöglicht, wie unser [Fallstudie zu E-Mails von Universitäts-Alumni](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) zeigt: Hier konnten Institutionen im Vergleich zu herkömmlichen E-Mail-Lösungen mit Einzelbenutzerabrechnung bis zu 99 % einsparen.
 
 ### Entwicklerfreundliche API {#developer-friendly-api}
 
-Nach einem [README-First-Ansatz](https://tom.preston-werner.com/2010/08/23/readme-driven-development) und inspiriert von [Stripes RESTful-API-Design](https://amberonrails.com/building-stripes-api) ermöglichte Forward Emails [API](https://forwardemail.net/api) eine umfassende Integration mit dem Project Control Center der Linux Foundation. Diese Integration war entscheidend für die Automatisierung des E-Mail-Managements im gesamten vielfältigen Projektportfolio.
+Nach einem [README-First-Ansatz](https://tom.preston-werner.com/2010/08/23/readme-driven-development) und inspiriert von [Stripes RESTful-API-Design](https://amberonrails.com/building-stripes-api) ermöglichte Forward Emails [API](https://forwardemail.net/api) eine tiefe Integration mit dem Project Control Center der Linux Foundation. Diese Integration war entscheidend für die Automatisierung des E-Mail-Managements im gesamten vielfältigen Projektportfolio.
 
 ## Implementierungsprozess {#implementation-process}
 
@@ -121,7 +121,7 @@ Die Implementierung brachte erhebliche Vorteile:
 
 * Quantenresistente Verschlüsselung über alle Domänen hinweg
 * Umfassende E-Mail-Authentifizierung zur Verhinderung von Spoofing und Phishing
-* Sicherheitstests und -praktiken durch [Sicherheitsfunktionen](https://forwardemail.net/security)
+* Sicherheitstests und -praktiken über [Sicherheitsfunktionen](https://forwardemail.net/security)
 * Datenschutz durch unsere [technische Umsetzung](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 
 ### Verbesserte Benutzererfahrung {#improved-user-experience}
@@ -136,7 +136,7 @@ Die Partnerschaft der Linux Foundation mit Forward Email zeigt, wie Unternehmen 
 
 Wie unsere Arbeit mit [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) und [großen Universitäten](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) zeigt, können Organisationen mit komplexen Domänenportfolios durch die Unternehmenslösung von Forward Email erhebliche Verbesserungen bei Effizienz, Sicherheit und Kostenmanagement erzielen.
 
-Weitere Informationen dazu, wie Forward Email Ihrem Unternehmen bei der Verwaltung von E-Mails über mehrere Domänen hinweg helfen kann, finden Sie unter [forwardemail.net](https://forwardemail.net) oder in unseren ausführlichen [Dokumentation](https://forwardemail.net/email-api) und [Anleitungen](https://forwardemail.net/guides).
+Weitere Informationen dazu, wie Forward Email Ihrem Unternehmen bei der Verwaltung von E-Mails über mehrere Domänen hinweg helfen kann, finden Sie unter [forwardemail.net](https://forwardemail.net) oder in unseren ausführlichen Abschnitten [Dokumentation](https://forwardemail.net/email-api) und [Anleitungen](https://forwardemail.net/guides).
 
 ## Referenzen {#references}
 

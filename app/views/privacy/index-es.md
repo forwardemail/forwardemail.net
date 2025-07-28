@@ -13,11 +13,11 @@
 
 ## Descargo de responsabilidad {#disclaimer}
 
-Por favor, consulte nuestra [Términos](/terms) ya que se aplica a todo el sitio.
+Por favor, consulte nuestro [Términos](/terms) ya que se aplica a todo el sitio.
 
 ## Información no recopilada {#information-not-collected}
 
-**Con la excepción de [errores](/faq#do-you-store-error-logs), [correos electrónicos SMTP salientes](/faq#do-you-support-sending-email-with-smtp) y/o cuando se detecte spam o actividad maliciosa (por ejemplo, para limitar la velocidad):**
+**Con la excepción de [errores](/faq#do-you-store-error-logs), [correos electrónicos SMTP salientes](/faq#do-you-support-sending-email-with-smtp) y/o cuando se detecta spam o actividad maliciosa (por ejemplo, para limitar la velocidad):**
 
 * No almacenamos los correos electrónicos reenviados en discos ni bases de datos.
 * No almacenamos metadatos de correos electrónicos en discos ni bases de datos.
@@ -29,20 +29,20 @@ Para mayor transparencia, en cualquier momento puede <a href="https://github.com
 
 **Estrictamente por motivos de funcionalidad y para mejorar nuestro servicio, recopilamos y almacenamos de forma segura la siguiente información:**
 
-* Almacenamos correos electrónicos e información de calendario en su [base de datos SQLite cifrada](/blog/docs/best-quantum-safe-encrypted-email-service) exclusivamente para su acceso IMAP/POP3/CalDAV/CardDAV y la funcionalidad del buzón.
+* Almacenamos correos electrónicos e información de calendario en su [base de datos SQLite cifrada](/blog/docs/best-quantum-safe-encrypted-email-service) exclusivamente para su acceso IMAP/POP3/CalDAV/CardDAV y la funcionalidad de su buzón.
 * Tenga en cuenta que si utiliza únicamente nuestros servicios de reenvío de correo electrónico, no se almacenan correos electrónicos en el disco ni en la base de datos, como se describe en [Información no recopilada](#information-not-collected).
 * Nuestros servicios de reenvío de correo electrónico funcionan únicamente en memoria (no se escribe en el disco ni en las bases de datos).
 * El almacenamiento IMAP/POP3/CalDAV/CardDAV está cifrado en reposo, en tránsito y se almacena en un disco con cifrado LUKS.
 * Las copias de seguridad de su almacenamiento IMAP/POP3/CalDAV/CardDAV están cifradas en reposo, en tránsito y se almacenan en [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
 * Almacenamos una cookie en cada sesión para el tráfico de su sitio web.
 * Almacenamos la dirección de correo electrónico que nos proporciona. * Almacenamos los nombres de dominio, alias y configuraciones que nos proporciona.
-* Almacenamos los códigos de respuesta SMTP `4xx` y `5xx`, [registros de errores](/faq#do-you-store-error-logs), durante 7 días.
+* Almacenamos los códigos de respuesta SMTP `4xx` y `5xx` ([registros de errores](/faq#do-you-store-error-logs)) durante 7 días.
 * Almacenamos [correos electrónicos SMTP salientes](/faq#do-you-support-sending-email-with-smtp) durante aproximadamente 30 días.
 * Esta duración varía según el encabezado "Fecha", ya que permitimos el envío de correos electrónicos en el futuro si existe un encabezado "Fecha".
 * **Tenga en cuenta que, una vez que un correo electrónico se entrega correctamente o se produce un error permanente, redactaremos y eliminaremos el cuerpo del mensaje.**
-* Si desea configurar el cuerpo de su mensaje SMTP saliente para que se conserve durante más tiempo del predeterminado de 0 días (tras la entrega correcta o un error permanente), vaya a la Configuración avanzada de su dominio e introduzca un valor entre `0` y `30`. * Algunos usuarios disfrutan usando la función de vista previa [Mi cuenta > Correos electrónicos](/my-account/emails) para ver cómo se procesan sus correos electrónicos, por lo que ofrecemos un periodo de retención configurable.
-* Tenga en cuenta que también ofrecemos compatibilidad con [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
-* Cualquier información adicional que nos proporcione voluntariamente, como comentarios o preguntas que nos envíe por correo electrónico o en nuestra página de <a href="/help">ayuda</a>.
+* Si desea configurar el cuerpo de su mensaje SMTP saliente para que se conserve durante más tiempo del predeterminado de 0 días (tras la entrega correcta o un error permanente), vaya a la Configuración avanzada de su dominio e introduzca un valor entre `0` y `30`. * Algunos usuarios prefieren usar la función de vista previa [Mi cuenta > Correos electrónicos](/my-account/emails) para ver cómo se procesan sus correos electrónicos, por lo que ofrecemos un periodo de retención configurable.
+* Tenga en cuenta que también ofrecemos compatibilidad con __PROTECTED_LINK_30__0.
+* Cualquier información adicional que nos proporcione voluntariamente, como comentarios o preguntas enviadas por correo electrónico o en nuestra página de <a href="/help">ayuda</a>.
 
 ## Información compartida {#information-shared}
 

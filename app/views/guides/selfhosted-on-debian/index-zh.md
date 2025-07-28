@@ -45,7 +45,7 @@
 * [安全最佳实践](#security-best-practices)
 * [结论](#conclusion)
 
-## 概述 {#overview}
+## 概览 {#overview}
 
 本指南提供在 Debian 系统上安装 Forward Email 自托管解决方案的分步说明。本指南专门针对 Debian 11（Bullseye）和 Debian 12（Bookworm）系统。
 
@@ -155,7 +155,7 @@ sleep 10
 snap version
 ```
 
-### 步骤 5：安装 Snap 包 {#step-5-install-snap-packages}
+### 步骤 5：安装 Snap 软件包 {#step-5-install-snap-packages}
 
 通过 snap 安装 AWS CLI 和 Certbot：
 
@@ -305,7 +305,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### 步骤 11：配置您的域名 {#step-11-configure-your-domain}
+### 步骤 11：配置您的域 {#step-11-configure-your-domain}
 
 设置您的域名并更新环境变量：
 
@@ -585,7 +585,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### 首次登录 {#first-login}
 
-1. 打开您的网络浏览器并导航至 `https://yourdomain.com`
+1. 打开您的网页浏览器并导航至 `https://yourdomain.com`
 2. 输入您之前保存的基本身份验证凭据
 3. 完成初始设置向导
 4. 创建您的第一个电子邮件帐户
@@ -732,7 +732,7 @@ fi
 
 ### Debian 特定问题 {#debian-specific-issues}
 
-#### 1. Snapd 无法正常工作 {#1-snapd-not-working}
+#### 1. Snapd 不工作 {#1-snapd-not-working}
 
 ```bash
 # Check snapd status

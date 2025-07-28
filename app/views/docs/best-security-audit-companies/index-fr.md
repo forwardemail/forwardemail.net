@@ -14,9 +14,9 @@
 * [Comparaison des entreprises](#company-comparison)
 * [Critères de sélection](#selection-criteria)
 
-## Présentation {#overview}
+## Présentation de {#overview}
 
-Forward Email a activement évalué les cabinets d'études en cybersécurité afin de réaliser des audits complets de notre code source open source [GitHub](https://github.com/forwardemail) et de notre infrastructure serveur. Après des recherches et des évaluations approfondies au cours des dernières années, nous avons identifié plusieurs cabinets d'audit de sécurité exceptionnels, qui font preuve d'un travail de haute qualité, d'une expertise technique et d'un respect constant de nos valeurs axées sur la confidentialité.
+Forward Email a activement évalué les cabinets d'études en cybersécurité afin de réaliser des audits complets de notre base de code open source sur [GitHub](https://github.com/forwardemail) et de notre infrastructure serveur. Après des recherches et des évaluations approfondies au cours des dernières années, nous avons identifié plusieurs cabinets d'audit de sécurité exceptionnels, qui font preuve d'un travail de haute qualité, d'une expertise technique et d'un respect constant de nos valeurs axées sur la confidentialité.
 
 Ce document présente nos conclusions et recommandations aux organisations souhaitant bénéficier de services professionnels d'audit de sécurité. Les entreprises répertoriées ici ont toutes démontré des compétences exceptionnelles en matière de tests d'intrusion, de revue de code, d'évaluation des infrastructures et de recherche en sécurité.
 
@@ -60,7 +60,7 @@ Leur modèle à but non lucratif leur permet de se concentrer uniquement sur les
 * [Évaluation de la sécurité du programme Tauri 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Évaluation du framework d'application multiplateforme
 * [Évaluation de la sécurité du VPN Mullvad 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Analyse de la sécurité du service VPN
 
-### Assuré AB {#assured-ab}
+### AB assuré {#assured-ab}
 
 **Lieu** : Göteborg, Suède
 **Site web** : <https://www.assured.se/>
@@ -101,7 +101,7 @@ L'entreprise possède une expertise particulière en sécurité blockchain, en i
 | **Assuré AB** | Göteborg, Suède | Infrastructure technique | Sécurité des e-mails/DNS, évaluations des API | Audits de serveurs spécialisés |
 | **Sentier des morceaux** | New York, États-Unis | Sécurité des logiciels | Blockchain, cryptographie, outils de sécurité | Contributions open source |
 
-Critères de sélection ## {#selection-criteria}
+## Critères de sélection {#selection-criteria}
 
 Lors de l’évaluation de ces sociétés d’audit de sécurité, nous avons pris en compte plusieurs facteurs critiques que les organisations devraient évaluer lors de la sélection d’un partenaire de sécurité :
 

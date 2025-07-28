@@ -33,7 +33,7 @@
 ٣. **الأمان من خلال الانفتاح**: يمكن تحديد الثغرات الأمنية وإصلاحها من قِبل مجتمع عالمي.
 ٤. **لا يوجد احتكار للموردين**: لن تعتمد أبدًا على وجود شركتنا.
 
-يتوفر الكود بأكمله على GitHub على <https://github.com/forwardemail/forwardemail.net>, مرخصًا بموجب ترخيص MIT.
+يتوفر الكود الأساسي بأكمله على GitHub في <https://github.com/forwardemail/forwardemail.net>, مرخصًا بموجب ترخيص MIT.
 
 تتضمن الهندسة المعمارية حاويات لـ:
 
@@ -45,11 +45,11 @@
 * SQLite لتخزين آمن ومشفّر لصناديق البريد
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+> تأكد من الاطلاع على [مدونة ذاتية الاستضافة](https://forwardemail.net/blog/docs/self-hosted-solution)
 >
-> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> ولمن يرغب في الحصول على نسخة أكثر تفصيلاً خطوة بخطوة، يُرجى الاطلاع على أدلتنا المستندة إلى [أوبونتو](https://forwardemail.net/guides/selfhosted-on-ubuntu) أو [ديبيان](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## المتطلبات {#requirements}
+## متطلبات {#requirements}
 
 قبل تشغيل البرنامج النصي للتثبيت، تأكد من أن لديك ما يلي:
 
@@ -57,13 +57,13 @@
 * **الموارد**: وحدة معالجة مركزية افتراضية واحدة وذاكرة وصول عشوائي (RAM) سعة 2 غيغابايت.
 * **صلاحيات الجذر**: صلاحيات إدارية لتنفيذ الأوامر.
 * **اسم النطاق**: نطاق مخصص جاهز لتكوين DNS.
-* **عنوان IP نظيف**: تأكد من أن عنوان IP لخادمك نظيف وخالٍ من أي سجل بريد عشوائي سابق من خلال التحقق من القوائم السوداء. لمزيد من المعلومات، تفضل بزيارة [هنا](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* **عنوان IP نظيف**: تأكد من أن خادمك يمتلك عنوان IP نظيفًا وخاليًا من أي سجل بريد عشوائي سابق من خلال التحقق من القوائم السوداء. لمزيد من المعلومات، يُرجى زيارة [هنا](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
 * عنوان IP عام يدعم المنفذ 25.
-* إمكانية ضبط [عكس PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/).
+* إمكانية تعيين [عكس PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/).
 * دعم IPv4 وIPv6.
 
 > \[!TIP]
-> See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
+> اطلع على قائمتنا لـ [مزودي خدمة البريد الإلكتروني الرائعين](https://github.com/forwardemail/awesome-mail-server-providers)
 
 ### Cloud-init / بيانات المستخدم {#cloud-init--user-data}
 
@@ -75,7 +75,7 @@
 * `DOMAIN` - نطاق مخصص (مثل `example.com`) يُستخدم لإعداد الاستضافة الذاتية
 * `AUTH_BASIC_USERNAME` - اسم المستخدم المستخدم في الإعداد الأول لحماية الموقع
 * `AUTH_BASIC_PASSWORD` - كلمة المرور المستخدمة في الإعداد الأول لحماية الموقع
-* `/root/.cloudflare.ini` - (**لمستخدمي Cloudflare فقط**) ملف تكوين cloudflare يستخدمه certbot لتكوين DNS. يتطلب منك تعيين رمز API الخاص بك عبر `dns_cloudflare_api_token`. اقرأ المزيد [هنا](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+* `/root/.cloudflare.ini` - (**لمستخدمي Cloudflare فقط**) ملف تكوين Cloudflare يستخدمه certbot لتكوين DNS. يتطلب منك تعيين رمز API الخاص بك عبر `dns_cloudflare_api_token`. اقرأ المزيد عن [هنا](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 
 مثال:
 
@@ -112,7 +112,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### المطالبات {#prompts}
+### مطالبات {#prompts}
 
 ```sh
 1. Initial setup
@@ -125,18 +125,18 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 ```
 
 * **الإعداد الأولي**: نزّل أحدث رمز لإعادة توجيه البريد الإلكتروني، وقم بتكوين البيئة، واطلب نطاقك المخصص، وقم بإعداد جميع الشهادات والمفاتيح والأسرار اللازمة.
-* **إعداد النسخ الاحتياطي**: سيتم إعداد مهمة دورية لنسخ mongoDB وredis احتياطيًا باستخدام مخزن متوافق مع S3 للتخزين الآمن عن بُعد. بشكل منفصل، سيتم نسخ sqlite احتياطيًا عند تسجيل الدخول في حال وجود تغييرات على النسخ الاحتياطية الآمنة والمشفرة.
+* **إعداد النسخ الاحتياطي**: سيتم إعداد مهمة دورية لنسخ mongoDB وredis احتياطيًا باستخدام مخزن متوافق مع S3 للتخزين الآمن عن بُعد. بشكل منفصل، سيتم نسخ sqlite احتياطيًا عند تسجيل الدخول في حال وجود تغييرات في النسخ الاحتياطية الآمنة والمشفرة.
 * **ترقية الإعداد**: قم بإعداد مهمة دورية للبحث عن تحديثات ليلية لإعادة بناء مكونات البنية التحتية وإعادة تشغيلها بأمان.
-* **تجديد الشهادات**: يُستخدم Certbot / lets encrypt لشهادات SSL، وستنتهي صلاحية المفاتيح كل 3 أشهر. سيؤدي هذا إلى تجديد شهادات نطاقك ووضعها في المجلد المطلوب لاستخدام المكونات ذات الصلة. راجع [مسارات الملفات المهمة](#important-file-paths)
-* **الاستعادة من النسخة الاحتياطية**: سيتم تشغيل mongoDB وredis لاستعادة البيانات من النسخة الاحتياطية.
+* **تجديد الشهادات**: يُستخدم Certbot / lets encrypt لشهادات SSL، وستنتهي صلاحية المفاتيح كل 3 أشهر. سيؤدي هذا إلى تجديد شهادات نطاقك ووضعها في المجلد المطلوب لاستخدام المكونات ذات الصلة. انظر [مسارات الملفات المهمة](#important-file-paths)
+* **الاستعادة من النسخة الاحتياطية**: سيتم تشغيل mongoDB وredis لاستعادة بيانات النسخة الاحتياطية.
 
 ### الإعداد الأولي (الخيار 1) {#initial-setup-option-1}
 
 اختر الخيار `1. Initial setup` للبدء.
 
-بعد اكتمال العملية، ستظهر لك رسالة نجاح. يمكنك أيضًا تشغيل `docker ps` لمشاهدة تشغيل المكونات. للمزيد من المعلومات حول المكونات، يُرجى الاطلاع أدناه.
+بعد اكتمال العملية، ستظهر لك رسالة نجاح. يمكنك أيضًا تشغيل الأمر `docker ps` لمشاهدة تشغيل المكونات. للمزيد من المعلومات حول المكونات، يُرجى الاطلاع أدناه.
 
-## الخدمات {#services}
+## خدمات {#services}
 
 | اسم الخدمة | المنفذ الافتراضي | وصف |
 | ------------ | :----------: | ------------------------------------------------------ |
@@ -152,17 +152,17 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 | SQLite بري | لا أحد | وظيفة خلفية SQLite |
 | كالداف | `5000` | خادم CalDAV لإدارة التقويم |
 | بطاقة داف | `6000` | خادم CardDAV لإدارة التقويم |
-| مونجو دي بي | `27017` | قاعدة بيانات MongoDB لإدارة معظم البيانات |
+| مونغو دي بي | `27017` | قاعدة بيانات MongoDB لإدارة معظم البيانات |
 | ريديس | `6379` | Redis للتخزين المؤقت وإدارة الحالة |
 | SQLite | لا أحد | قاعدة بيانات SQLite لصناديق البريد المشفرة |
 
 ### مسارات الملفات المهمة {#important-file-paths}
 
-ملاحظة: *مسار المضيف* أدناه يتعلق بـ `/root/forwardemail.net/self-hosting/`.
+ملاحظة: *مسار المضيف* أدناه نسبي إلى `/root/forwardemail.net/self-hosting/`.
 
 | عنصر | مسار المضيف | مسار الحاوية |
 | ---------------------- | :-------------------: | ---------------------------- |
-| مونجو دي بي | `./mongo-backups` | `/backups` |
+| مونغو دي بي | `./mongo-backups` | `/backups` |
 | ريديس | `./redis-data` | `/data` |
 | سكليت | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
 | ملف البيئة | `./.env` | `/app/.env` |
@@ -173,14 +173,14 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 | مفتاح DKIM الخاص | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
 
 > \[!IMPORTANT]
-> Save the `.env` file securely. It is critical for recovery in case of failure.
-> You can find this in `/root/forwardemail.net/self-hosting/.env`.
+> احفظ ملف `.env` بأمان. فهو ضروري للاستعادة في حال حدوث أي عطل.
+> يمكنك العثور عليه في `/root/forwardemail.net/self-hosting/.env`.
 
-## التكوين {#configuration}
+## تكوين {#configuration}
 
 ### إعداد DNS الأولي {#initial-dns-setup}
 
-في مزوّد DNS الذي تختاره، قم بتكوين سجلات DNS المناسبة. يُرجى ملاحظة أن أي شيء بين قوسين (`<>`) ديناميكي ويحتاج إلى التحديث بالقيمة التي اخترتها.
+في مزوّد DNS الذي تختاره، قم بتكوين سجلات DNS المناسبة. يُرجى ملاحظة أن أي شيء بين قوسين (`<>`) ديناميكي ويحتاج إلى تحديث بالقيمة التي اخترتها.
 
 | يكتب | اسم | محتوى | TTL |
 | ----- | ------------------ | ----------------------------- | ---- |
@@ -196,15 +196,15 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 | MX | "@"، "."، أو فارغ | mx.<domain_name> (الأولوية 0) | آلي |
 | TXT | "@"، "."، أو فارغ | "v=spf1 a -الكل" | آلي |
 
-#### سجل DNS / PTR العكسي {#reverse-dns--ptr-record}
+#### سجل DNS/PTR عكسي {#reverse-dns--ptr-record}
 
 يُعدّ نظام DNS العكسي (rDNS) أو سجلات المؤشر العكسي (PTR) أساسيًا لخوادم البريد الإلكتروني، إذ يُساعدان في التحقق من صحة الخادم المُرسِل للبريد الإلكتروني. يختلف أسلوب كل مُزوّد خدمة سحابية في هذا الشأن، لذا ستحتاج إلى البحث عن كيفية إضافة "نظام DNS العكسي" لربط المُضيف وعنوان IP باسم المُضيف المُقابل. غالبًا ما تجد ذلك في قسم الشبكات لدى المُزوّد.
 
-#### تم حظر المنفذ 25 {#port-25-blocked}
+#### المنفذ 25 محظور {#port-25-blocked}
 
 يحظر بعض مزودي خدمة الإنترنت وموفري الخدمات السحابية المنفذ ٢٥ لتجنب أي محاولات اختراق. قد تحتاج إلى تقديم طلب دعم لفتح المنفذ ٢٥ لـ SMTP/البريد الإلكتروني الصادر.
 
-## التوجيه {#onboarding}
+## عملية التوجيه {#onboarding}
 
 ١. افتح صفحة الوصول
 انتقل إلى https\://\<domain_name>، مع استبدال \<domain_name> بالنطاق المُهيأ في إعدادات DNS. ستظهر لك صفحة إعادة توجيه البريد الإلكتروني.
@@ -221,11 +221,11 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 * اختياريًا، يمكنك تكوين **SMTP للبريد الإلكتروني الصادر** في **إعدادات النطاق**. يتطلب هذا سجلات DNS إضافية.
 
 > \[!NOTE]
-> No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
+> لا يتم إرسال أي معلومات خارج خادمك. خيار الاستضافة الذاتية والحساب الأولي مخصصان فقط لتسجيل دخول المسؤول وعرض الويب لإدارة النطاقات والأسماء المستعارة وتكوينات البريد الإلكتروني ذات الصلة.
 
 ## اختبار {#testing}
 
-### إنشاء اسمك المستعار الأول {#creating-your-first-alias}
+### إنشاء الاسم المستعار الأول الخاص بك {#creating-your-first-alias}
 
 ١. انتقل إلى صفحة الأسماء المستعارة
 افتح صفحة إدارة الأسماء المستعارة:
@@ -265,13 +265,13 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 بمجرد التكوين، يجب أن تكون قادرًا على إرسال واستقبال البريد الإلكتروني إلى عنوان البريد الإلكتروني الذي أنشأته حديثًا والمستضاف ذاتيًا!
 
-## استكشاف الأخطاء وإصلاحها {#troubleshooting}
+استكشاف أخطاء ## وإصلاحها {#troubleshooting}
 
-#### لماذا لا يعمل هذا خارج Ubuntu وDebian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
+#### لماذا لا يعمل هذا خارج Ubuntu وDebian؟ {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-نحن نتطلع حاليًا لدعم نظام MacOS وسنسعى لدعم أنظمة أخرى. يُرجى فتح [مناقشة](https://github.com/orgs/forwardemail/discussions) أو المساهمة إذا كنت ترغب في رؤية دعم أنظمة أخرى.
+نحن نتطلع حاليًا لدعم نظام MacOS وسنسعى لدعم أنظمة أخرى. يُرجى فتح [مناقشة](https://github.com/orgs/forwardemail/discussions) أو المساهمة إذا كنت ترغب في رؤية أنظمة أخرى مدعومة.
 
-#### لماذا يفشل تحدي certbot acme {#why-is-the-certbot-acme-challenge-failing}
+#### لماذا يفشل تحدي certbot acme؟ {#why-is-the-certbot-acme-challenge-failing}
 
 المشكلة الأكثر شيوعًا هي أن certbot / letsencrypt قد يطلبان أحيانًا تحديين. تأكد من إضافة كلا السجلين النصيين.
 
@@ -279,25 +279,25 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-من المحتمل أيضًا أن عملية نشر DNS لم تكتمل. يمكنك استخدام أدوات مثل: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. سيمنحك هذا فكرة عما إذا كان ينبغي عكس تغييرات سجل TXT. من المحتمل أيضًا أن ذاكرة التخزين المؤقت المحلية لـ DNS على جهازك المضيف لا تزال تستخدم قيمة قديمة أو قديمة، أو أنها لم تلتقط التغييرات الأخيرة.
+من المحتمل أيضًا أن عملية نشر DNS لم تكتمل. يمكنك استخدام أدوات مثل: `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. سيمنحك هذا فكرة عما إذا كان ينبغي أن تنعكس تغييرات سجل TXT. من المحتمل أيضًا أن ذاكرة التخزين المؤقت المحلية لـ DNS على جهازك المضيف لا تزال تستخدم قيمة قديمة أو قديمة، أو أنها لم تلتقط التغييرات الأخيرة.
 
 خيار آخر هو استخدام تغييرات DNS التلقائية من Cerbot عن طريق ضبط ملف `/root/.cloudflare.ini` باستخدام رمز API في ملف cloud-init / user-data عند إعداد VPS الأولي، أو إنشاء هذا الملف وتشغيل البرنامج النصي مرة أخرى. سيؤدي هذا إلى إدارة تغييرات DNS وتحديثات التحدي تلقائيًا.
 
-### ما هو اسم المستخدم وكلمة المرور الأساسيين للمصادقة {#what-is-the-basic-auth-username-and-password}
+### ما هو اسم المستخدم وكلمة المرور الأساسيين للمصادقة؟ {#what-is-the-basic-auth-username-and-password}
 
-للاستضافة الذاتية، نضيف نافذة منبثقة للمصادقة التلقائية للمتصفح لأول مرة، باستخدام اسم مستخدم بسيط (`admin`) وكلمة مرور (يتم توليدها عشوائيًا عند الإعداد الأولي). نضيف هذا فقط كحماية في حال تأخرت عمليات الأتمتة/الاستخلاص عن التسجيل لأول مرة على تجربة الويب. يمكنك العثور على كلمة المرور هذه بعد الإعداد الأولي في ملفك `.env` ضمن `AUTH_BASIC_USERNAME` و`AUTH_BASIC_PASSWORD`.
+للاستضافة الذاتية، نضيف نافذة منبثقة للمصادقة التلقائية للمتصفح لأول مرة، باستخدام اسم مستخدم بسيط (`admin`) وكلمة مرور (يتم توليدها عشوائيًا عند الإعداد الأولي). نضيف هذا فقط كحماية في حال تأخرت عمليات الأتمتة/الاستخراج عن التسجيل لأول مرة على تجربة الويب. يمكنك العثور على كلمة المرور هذه بعد الإعداد الأولي في ملف `.env` ضمن `AUTH_BASIC_USERNAME` و`AUTH_BASIC_PASSWORD`.
 
 ### كيف أعرف ما الذي يتم تشغيله {#how-do-i-know-what-is-running}
 
-يمكنك تشغيل الأمر `docker ps` لرؤية جميع الحاويات قيد التشغيل والتي يتم تشغيلها من ملف `docker-compose-self-hosting.yml`. يمكنك أيضًا تشغيل الأمر `docker ps -a` لرؤية جميع الحاويات (بما في ذلك الحاويات غير العاملة).
+يمكنك تشغيل الأمر `docker ps` لرؤية جميع الحاويات قيد التشغيل التي يتم تشغيلها من ملف `docker-compose-self-hosting.yml`. كما يمكنك تشغيل الأمر `docker ps -a` لرؤية جميع الحاويات (بما في ذلك الحاويات غير العاملة).
 
-### كيف يمكنني أن أعرف إذا كان هناك شيء لا يعمل والذي يجب أن يكون {#how-do-i-know-if-something-isnt-running-that-should-be}
+### كيف يمكنني معرفة ما إذا كان هناك شيء لا يعمل والذي يجب أن يكون {#how-do-i-know-if-something-isnt-running-that-should-be}
 
 يمكنك تشغيل `docker ps -a` لرؤية كل شيء (بما في ذلك الحاويات التي لا تعمل). قد ترى سجل خروج أو ملاحظة.
 
 ### كيف يمكنني العثور على السجلات {#how-do-i-find-logs}
 
-يمكنك الحصول على المزيد من السجلات عبر `docker logs -f <container_name>`. في حال ظهور أي شيء، فمن المرجح أن يكون ذلك مرتبطًا بتكوين ملف `.env` بشكل غير صحيح.
+يمكنك الحصول على المزيد من السجلات عبر `docker logs -f <container_name>`. في حال ظهور أي شيء، فمن المرجح أن يكون ذلك بسبب تكوين ملف `.env` بشكل غير صحيح.
 
 داخل واجهة المستخدم على الويب، يمكنك عرض `/admin/emails` و`/admin/logs` لسجلات البريد الإلكتروني الصادر وسجلات الأخطاء على التوالي.
 
@@ -307,4 +307,4 @@ https://<domain_name>/en/my-account/domains/<domain_name>/aliases
 
 #### ما هي الأدوات التي يجب أن أستخدمها لاختبار أفضل ممارسات تكوين البريد الإلكتروني وسمعة IP؟ {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
-قم بإلقاء نظرة على [الأسئلة الشائعة هنا](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation).
+قم بإلقاء نظرة على [الأسئلة الشائعة هنا](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation) الخاص بنا.

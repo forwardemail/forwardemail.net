@@ -14,9 +14,9 @@
 
 Forward Email est une entreprise soucieuse de la confidentialité et engagée à protéger vos données.
 
-Le [Règlement général sur la protection des données](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (« RGPD ») régit le transfert de données hors de l'UE et de l'EEE et vise à renforcer votre contrôle et vos droits sur vos informations personnelles. Heureusement, nous ne vendons aucune donnée que nous traitons, stockons et/ou transférons, et nous ne l'utilisons à aucune autre fin que celle de vous fournir nos services.
+Le RGPD régit le transfert de données hors de l'UE et de l'EEE et vise à renforcer votre contrôle et vos droits sur vos informations personnelles. Heureusement, nous ne vendons aucune donnée que nous traitons, stockons et/ou transférons, et nous ne l'utilisons à aucune autre fin que celle de vous fournir nos services.
 
-Vous pouvez à tout moment modifier vos informations personnelles via [Mon compte → Profil](/my-account/profile) et même supprimer l'intégralité de votre compte et toutes les informations associées via [Mon compte → Sécurité](/my-account/security). Étant donné que nous sommes 100 % open source chez <https://github.com/forwardemail>, notre code source peut également être audité à tout moment pour vérifier sa conformité aux lois sur la confidentialité.
+Vous pouvez modifier vos informations personnelles à tout moment sous [Mon compte → Profil](/my-account/profile) et même supprimer l'intégralité de votre compte et toutes les informations associées sous [Mon compte → Sécurité](/my-account/security). Étant donné que nous sommes 100 % open source chez <https://github.com/forwardemail>, notre code source peut également être audité à tout moment pour vérifier sa conformité aux lois sur la confidentialité.
 
 Notre [Accord de traitement des données](/dpa) détaille notre conformité avec le RGPD ainsi qu'avec les cadres de protection des données UE-États-Unis et Suisse-États-Unis, en ce qui concerne la confidentialité des données traitées, stockées et transférées.
 
@@ -45,6 +45,6 @@ Conformément à [Article 27 du RGPD](https://gdpr-info.eu/art-27-gdpr/), nous a
 
 <blockquote class="notranslate">Osano International Compliance Services Limited<br />À l'attention de : LFHC<br />3 Dublin Landings<br />North Wall Quay<br />Dublin 1<br />D01C4E0</blockquote>
 
-### Représentant du Royaume-Uni {#uk-representative}
+### Représentant au Royaume-Uni {#uk-representative}
 
 <blockquote class="notranslate">Osano UK Compliance LTD<br />À l'attention de : LFHC<br />42-46, rue Fountain<br />Belfast<br />Antrim<br />BT1 - 5EF</blockquote>

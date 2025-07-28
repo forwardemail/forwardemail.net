@@ -17,7 +17,7 @@ npm install nodemailer
 
 Tässä esimerkissä käytetään **[Nodemailer](https://github.com/nodemailer/nodemailer)**-kirjastoa ja sen virallista sponsoria **[Lähetä sähköpostia eteenpäin](https://forwardemail.net)** lähtevän postin lähettämiseen ja esikatseluun.
 
-Sinun on <strong class="text-success"><i class="fa fa-key"></i>luotava salasana</strong> lähettääksesi lähtevää postia – noudata **[Lähetä sähköpostia mukautetulla verkkotunnuksella SMTP-opas](/guides/send-email-with-custom-domain-smtp)**-ohjeitamme.
+Sinun on <strong class="text-success"><i class="fa fa-key"></i>luotava salasana</strong> lähettääksesi lähtevää postia – noudata **[Lähetä sähköpostia mukautetulla verkkotunnuksella SMTP-opas](/guides/send-email-with-custom-domain-smtp)**-käytäntöämme.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -51,6 +51,6 @@ Suorita sovellus lähettääksesi sähköpostin:
 node app
 ```
 
-Nyt voit siirtyä osoitteeseen **[Oma tili → Sähköpostit](/my-account/emails)** nähdäksesi reaaliaikaisen sähköpostien toimitustilan, sähköpostien toimituslokit ja HTML-/selkotekstisten/liitteiden esikatselut.
+Nyt voit siirtyä kohtaan **[Oma tili → Sähköpostit](/my-account/emails)** nähdäksesi reaaliaikaisen sähköpostien toimitustilan, sähköpostien toimituslokit ja HTML-/selkotekstisten/liitteiden esikatselut.
 
-> P.S. :tada: Voit myös **[esikatsele sähköposteja selaimissa ja iOS-simulaattorissa](/docs/test-preview-email-rendering-browsers-ios-simulator)** ja **[luo sähköpostipohjia Node.js:llä](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Voit myös käyttää **[esikatsele sähköposteja selaimissa ja iOS-simulaattorissa](/docs/test-preview-email-rendering-browsers-ios-simulator)**- ja **[luo sähköpostipohjia Node.js:llä](/docs/send-emails-with-node-js-javascript)**-merkkejä.

@@ -1,4 +1,4 @@
-# Installationshandbuch für das Self-Hosting von Forward Email für Debian {#forward-email-self-hosting-installation-guide-for-debian}
+# Forward Email Self-Hosting Installationshandbuch für Debian {#forward-email-self-hosting-installation-guide-for-debian}
 
 ## Inhaltsverzeichnis {#table-of-contents}
 
@@ -55,8 +55,8 @@ Stellen Sie vor Beginn der Installation sicher, dass Sie über Folgendes verfüg
 
 * **Debian-Server**: Version 11 (Bullseye) oder 12 (Bookworm)
 * **Root-Zugriff**: Sie müssen Befehle als Root ausführen können (Sudo-Zugriff).
-* **Domänenname**: Eine Domäne, die Sie mit DNS-Verwaltungszugriff verwalten.
-* **Neuer Server**: Es wird empfohlen, eine neue Debian-Installation zu verwenden.
+* **Domänenname**: Eine von Ihnen verwaltete Domäne mit DNS-Verwaltungszugriff.
+* **Neuer Server**: Empfohlen wird eine neue Debian-Installation.
 * **Internetverbindung**: Erforderlich zum Herunterladen von Paketen und Docker-Images.
 
 ## Systemanforderungen {#system-requirements}
@@ -350,7 +350,7 @@ update_env_file "AUTH_BASIC_ENABLED" "true"
 
 ### Schritt 12: SSL-Zertifikate generieren {#step-12-generate-ssl-certificates}
 
-#### Option A: Manuelle DNS-Challenge (für die meisten Benutzer empfohlen) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### Option A: Manuelle DNS-Herausforderung (für die meisten Benutzer empfohlen) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -543,7 +543,7 @@ Sie müssen die folgenden DNS-Einträge für Ihre Domäne konfigurieren:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### A-Datensätze {#a-records}
+#### A Datensätze {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -590,7 +590,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 3. Schließen Sie den Einrichtungsassistenten ab.
 4. Erstellen Sie Ihr erstes E-Mail-Konto.
 
-## Backup-Konfiguration {#backup-configuration}
+## Sicherungskonfiguration {#backup-configuration}
 
 ### S3-kompatibles Backup einrichten {#set-up-s3-compatible-backup}
 
@@ -695,17 +695,17 @@ nslookup google.com
 
 ### Protokollspeicherorte {#log-locations}
 
-* **Docker Compose-Protokolle**: Verwenden Sie den entsprechenden Docker Compose-Befehl je nach Installation.
+* **Docker Compose-Protokolle**: Verwenden Sie den entsprechenden Docker Compose-Befehl basierend auf der Installation.
 * **Systemprotokolle**: `/var/log/syslog`
 * **Sicherungsprotokolle**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
-* **Protokolle zur automatischen Aktualisierung**: `/var/log/autoupdate.log`
+* **Automatisch aktualisierte Protokolle**: `/var/log/autoupdate.log`
 * **Snapd-Protokolle**: `journalctl -u snapd`
 
 ### Regelmäßige Wartungsaufgaben {#regular-maintenance-tasks}
 
-1. **Festplattenspeicher überwachen**: `df -h`
+1. **Speicherplatz überwachen**: `df -h`
 2. **Dienststatus prüfen**: Verwenden Sie den entsprechenden Docker-Compose-Befehl.
-3. **Protokolle prüfen**: Überprüfen Sie sowohl die Anwendungs- als auch die Systemprotokolle.
+3. **Protokolle prüfen**: Überprüfen Sie sowohl Anwendungs- als auch Systemprotokolle.
 4. **Systempakete aktualisieren**: `apt update && apt upgrade`
 5. **Snapd überwachen**: `snap list` und `snap refresh`
 
@@ -818,7 +818,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 4. **Sichere Passwörter verwenden**: Sichere Passwörter für alle Konten erstellen.
 5. **Fail2Ban aktivieren**: Erwägen Sie die Installation von Fail2Ban für zusätzliche Sicherheit.
 6. **Regelmäßige Sicherheitsüberprüfungen**: Überprüfen Sie regelmäßig Ihre Konfiguration.
-7. **Snapd überwachen**: Halten Sie Snapd-Pakete mit `snap refresh` auf dem neuesten Stand.
+7. **Snapd überwachen**: Snap-Pakete mit `snap refresh` auf dem neuesten Stand halten.
 
 ## Fazit {#conclusion}
 
@@ -831,6 +831,6 @@ Ihre selbstgehostete Installation von Forward Email sollte nun abgeschlossen sei
 5. Halten Sie Ihre Installation auf dem neuesten Stand.
 6. Überwachen Sie Snapd und Snap-Pakete.
 
-Die Hauptunterschiede zu Ubuntu liegen in der Snapd-Installation und der Docker-Repository-Konfiguration. Sobald diese ordnungsgemäß eingerichtet sind, verhält sich die Anwendung „Forward Email“ auf beiden Systemen identisch.
+Die Hauptunterschiede zu Ubuntu liegen in der Snapd-Installation und der Konfiguration des Docker-Repositorys. Sobald diese ordnungsgemäß eingerichtet sind, verhält sich die Anwendung „Forward Email“ auf beiden Systemen identisch.
 
 Weitere Konfigurationsoptionen und erweiterte Funktionen finden Sie in der offiziellen Forward Email-Dokumentation unter <https://forwardemail.net/self-hosted#configuration>.

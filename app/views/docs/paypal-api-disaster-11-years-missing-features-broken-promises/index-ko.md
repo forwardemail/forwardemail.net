@@ -1,4 +1,4 @@
-# PayPal의 11년 API 재앙: 개발자들을 무시하는 동안 우리가 해결 방법을 구축한 방법 {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
+# PayPal의 11년 API 재앙: 개발자들을 무시하는 동안 우리는 어떻게 해결책을 구축했는가 {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
 <img 로딩="게으른" src="/img/articles/pypl-disaster.webp" alt="" 클래스="둥근-lg" />
 
@@ -58,7 +58,7 @@
   * [정사각형](#square)
   * [산업 표준](#the-industry-standard)
   * [다른 프로세서가 제공하는 것과 PayPal의 차이점은 무엇입니까?](#what-other-processors-provide-vs-paypal)
-* [PayPal의 체계적인 은폐: 600만 명의 목소리를 침묵시키다](#paypals-systematic-cover-up-silencing-6-million-voices)
+* [PayPal의 조직적 은폐: 600만 명의 목소리를 침묵시키다](#paypals-systematic-cover-up-silencing-6-million-voices)
   * [대지각](#the-great-erasure)
   * [제3자 구조](#the-third-party-rescue)
 * [11년간의 포획 버그 재앙: 1,899달러, 계속 증가 중](#the-11-year-capture-bug-disaster-1899-and-counting)
@@ -67,7 +67,7 @@
   * [2016년 입장: PayPal이 자체 SDK를 망가뜨렸다](#the-2016-admission-paypal-breaks-their-own-sdk)
   * [2024년 에스컬레이션: 여전히 깨짐](#the-2024-escalation-still-broken)
   * [웹훅 신뢰성 재앙](#the-webhook-reliability-disaster)
-  * [체계적인 과실의 패턴](#the-pattern-of-systematic-negligence)
+  * [체계적 과실의 패턴](#the-pattern-of-systematic-negligence)
   * [문서화되지 않은 요구 사항](#the-undocumented-requirement)
 * [PayPal의 광범위한 사기 패턴](#paypals-broader-pattern-of-deception)
   * [뉴욕 금융 서비스부 조치](#the-new-york-department-of-financial-services-action)
@@ -91,7 +91,7 @@
 
 하지만 PayPal은요? 그들은... 그냥 만들어내지 않았을 뿐이에요.
 
-## 2014-2017: 문제가 발생합니다. {#2014-2017-the-problem-emerges}
+## 2014-2017: 문제가 발생하다 {#2014-2017-the-problem-emerges}
 
 구독 목록 문제는 2017년 PayPal 커뮤니티 포럼에서 처음 나타났습니다. 당시 개발자들은 당연한 질문을 던졌습니다. "내 모든 구독 목록을 어떻게 얻을 수 있나요?"
 
@@ -103,7 +103,7 @@ PayPal의 반응은? 깜빡임뿐이었다.
 
 > "+1. 거의 3년이 지났네요." - laudukang (문제가 2014년부터 있었다는 뜻)
 
-2017년의 [원래 커뮤니티 게시물](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066)는 개발자들이 이 기본적인 기능을 간절히 원하고 있음을 보여줍니다. PayPal은 사람들이 문제를 보고한 저장소를 보관하는 방식으로 대응했습니다.
+2017년의 [원래 커뮤니티 게시물](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066)은 개발자들이 이 기본적인 기능을 간절히 원하고 있음을 보여줍니다. PayPal은 사람들이 문제를 보고한 저장소를 보관하는 방식으로 대응했습니다.
 
 ## 2020: 우리는 그들에게 광범위한 피드백을 제공합니다 {#2020-we-give-them-extensive-feedback}
 
@@ -151,7 +151,7 @@ Mark Stuart는 액세스 토큰 문제가 특히 우려스럽다고 생각했습
 
 문제가 있었지만 아무것도 해결되지 않았습니다.
 
-## 경영진의 대거 이탈: PayPal이 모든 기관적 기억을 잃은 이유 {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
+## 임원진의 대거 이탈: PayPal이 모든 기관적 기억을 잃은 이유 {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
 정말 흥미로운 부분이 바로 여기 있습니다. 2020년 피드백을 받은 모든 분들이 PayPal을 떠났습니다.
 
@@ -171,11 +171,11 @@ PayPal은 임원들이 개발자 피드백을 수집하고, 약속을 한 다음
 
 이는 2025년 GitHub 이슈에 대한 대응이 2020년 피드백과 전혀 동떨어져 보이는 이유를 설명합니다. 문자 그대로 해당 피드백을 받은 모든 사람이 PayPal을 떠났습니다.
 
-## 2025: 새로운 리더십, 똑같은 문제들 {#2025-new-leadership-same-problems}
+## 2025: 새로운 리더십, 여전히 존재하는 문제 {#2025-new-leadership-same-problems}
 
 2025년으로 넘어가면 정확히 같은 패턴이 나타납니다. 수년간 아무런 진전이 없던 페이팔의 새 경영진이 다시 손을 내밉니다.
 
-### 새 CEO가 참여합니다 {#the-new-ceo-gets-involved}
+### 새 CEO가 참여합니다. {#the-new-ceo-gets-involved}
 
 2025년 6월 30일, 저희는 PayPal의 신임 CEO인 알렉스 크리스에게 직접 이 문제를 보고했습니다. 그의 답변은 간단했습니다.
 
@@ -191,9 +191,9 @@ PayPal은 임원들이 개발자 피드백을 수집하고, 약속을 한 다음
 
 우리는 우리의 좌절감을 설명하며 추가 회의를 거부했습니다.
 
-> 감사합니다. 하지만 전화 통화를 한다고 해서 아무런 효과가 없을 것 같아요. 이유는 다음과 같습니다. 예전에 전화 통화를 했는데 전혀 효과가 없었어요. 전체 팀과 경영진과 두 시간 넘게 이야기했지만 아무것도 이루어지지 않았어요. 이메일을 주고받았지만 아무것도 이루어지지 않았어요. 피드백도 전혀 효과가 없었어요. 몇 년 동안 노력했고, 귀 기울여 들어주었는데, 결국 아무 소용이 없었어요.
+> 감사합니다. 하지만 전화 통화를 한다고 해서 아무런 효과가 없을 것 같아요. 이유는 다음과 같습니다. 예전에 전화 통화를 했는데 전혀 진전이 없었어요. 전체 팀과 경영진과 두 시간 넘게 이야기를 나눴지만 아무것도 이뤄지지 않았어요. 이메일을 주고받았지만 아무것도 이뤄지지 않았어요. 피드백도 전혀 효과가 없었어요. 몇 년 동안 노력했고, 귀 기울여 들어주었는데, 결국 아무 소용이 없었어요.
 
-### Marty Brodbeck의 과도한 엔지니어링 대응 {#marty-brodbecks-overengineering-response}
+### Marty Brodbeck의 과도한 대응 {#marty-brodbecks-overengineering-response}
 
 그러자 PayPal의 소비자 엔지니어링 부문을 총괄하는 Marty Brodbeck이 연락했습니다.
 
@@ -233,7 +233,7 @@ Authorization: Bearer {access_token}
 
 이러한 패턴은 2025년의 PayPal 팀이 2020년에 제공된 광범위한 피드백과 전혀 단절된 것처럼 보이는 이유를 설명합니다. 피드백을 받은 사람들은 사라졌고, 새로운 리더십은 같은 실수를 반복하고 있습니다.
 
-## 수년간 무시된 버그 보고서 {#years-of-bug-reports-they-ignored}
+## 무시된 버그 보고서 {#years-of-bug-reports-they-ignored}
 
 저희는 단순히 기능 부족에 대한 불평만 한 것이 아닙니다. 버그를 적극적으로 보고하고 개선을 위해 노력했습니다. 저희가 기록한 문제들의 전체 타임라인은 다음과 같습니다.
 
@@ -282,7 +282,7 @@ Mark Stuart는 이를 소비자 제품 팀에 전달했습니다.
 
 **결과**: 응답도 없고 해결책도 없습니다. 개발자들은 여전히 샌드박스 안정성 문제에 직면해 있습니다.
 
-### 2021: 보고 시스템이 완전히 손상되었습니다. {#2021-reports-system-completely-broken}
+### 2021: 보고서 시스템이 완전히 고장났습니다. {#2021-reports-system-completely-broken}
 
 2021년 5월, PayPal의 거래 보고서 다운로드 시스템이 완전히 고장났다고 보고했습니다.
 
@@ -294,7 +294,7 @@ Mark Stuart는 이를 소비자 제품 팀에 전달했습니다.
 
 Mark Stuart는 세션 시간 초과 문제를 인정했습니다.
 
-> 과거에 IDE와 developer.paypal.com 또는 판매자 대시보드 사이를 전환하는 동안 세션이 자주 만료되어 개발 흐름이 방해를 받고, 다시 돌아오면 다시 로그아웃된다는 보고를 하신 적이 있습니다.
+> 과거에 IDE와 developer.paypal.com 또는 판매자 대시보드 사이를 전환하는 동안 세션이 자주 만료되어 개발 흐름이 방해를 받고, 다시 돌아와서 다시 로그아웃되는 현상이 발생했다고 보고하신 적이 있습니다.
 
 **결과**: 세션 시간 초과는 여전히 60초입니다. 보고 시스템은 여전히 정기적으로 실패합니다.
 
@@ -324,7 +324,7 @@ Sri Shivananda(CTO)가 우리에게 감사를 표했습니다.
 
 PayPal API를 사용하는 것은 마치 10년 전으로 시간을 거슬러 올라가는 것과 같습니다. 저희가 기록한 기술적 문제는 다음과 같습니다.
 
-### 손상된 사용자 인터페이스 {#broken-user-interface}
+### 사용자 인터페이스가 손상되었습니다. {#broken-user-interface}
 
 PayPal 개발자 대시보드는 정말 엉망입니다. 저희가 매일 겪는 문제는 다음과 같습니다.
 
@@ -350,7 +350,7 @@ PayPal 개발자 대시보드는 정말 엉망입니다. 저희가 매일 겪는
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-PayPal 개발자 인터페이스에서 잘못된 워크플로를 보여주는 UI 오류 사례 추가
+PayPal 개발자 인터페이스의 UI 오류로 인해 워크플로가 손상되는 현상이 더 많이 발생했습니다.
 </div></figcaption>
 <video class="lazyframe-bordered" loading="lazy" controls>
 <source src="/img/articles/pypl-kapture-2.mp4" type="video/mp4">
@@ -408,7 +408,7 @@ PayPal 개발자 인터페이스에서 잘못된 워크플로를 보여주는 UI
 
 11년 동안 같은 문제를 겪다가, 정기적인 계정 이전 과정에서 결정적인 문제가 발생했습니다. 회사명인 "Forward Email LLC"와 일치하도록 새 PayPal 계정으로 전환해야 했기 때문입니다. 회계 처리가 더욱 깔끔해졌습니다.
 
-간단했어야 할 일이 완전한 재앙으로 바뀌었습니다.
+간단해야 할 일이 완전한 재앙으로 바뀌었습니다.
 
 * 초기 테스트 결과 모든 것이 정상적으로 작동하는 것으로 확인되었습니다.
 * 몇 시간 후, PayPal은 예고 없이 모든 구독 결제를 갑자기 차단했습니다.
@@ -455,7 +455,7 @@ PayPal 지원팀은 모든 것이 괜찮다고 주장했지만 결제는 완전�
 <img loading="lazy" src="/img/articles/pypl-restored.png" alt="" class="rounded-lg" />
 </figure>
 
-## 왜 우리는 PayPal을 그냥 중단할 수 없는가 {#why-we-cant-just-drop-paypal}
+## 왜 PayPal을 그냥 폐기할 수 없는가 {#why-we-cant-just-drop-paypal}
 
 이러한 모든 문제에도 불구하고, 일부 고객은 PayPal만 결제 수단으로 사용하고 있기 때문에 PayPal을 완전히 포기할 수는 없습니다. 한 고객이 [상태 페이지](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515)에서 다음과 같이 말씀하셨습니다.
 
@@ -465,9 +465,9 @@ PayPal 지원팀은 모든 것이 괜찮다고 주장했지만 결제는 완전�
 
 ## 커뮤니티 해결 방법 {#the-community-workaround}
 
-PayPal이 기본적인 구독 목록 기능을 제공하지 않기 때문에 개발자 커뮤니티에서 해결책을 마련했습니다. PayPal 구독 관리에 도움이 되는 스크립트를 만들었습니다. [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
+PayPal이 기본적인 구독 목록 기능을 제공하지 않기 때문에 개발자 커뮤니티에서 해결책을 마련했습니다. PayPal 구독 관리에 도움이 되는 스크립트인 [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)을 만들었습니다.
 
-이 스크립트는 개발자가 솔루션을 공유하는 [커뮤니티 요점](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)을 참조합니다. 사용자는 PayPal이 몇 년 전에 구축했어야 했던 것을 제공함으로써 실제로 [우리에게 감사하다](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)을 받고 있습니다.
+이 스크립트는 개발자들이 솔루션을 공유하는 [커뮤니티 요점](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)을 참조합니다. 실제로 사용자는 PayPal이 몇 년 전에 구축했어야 할 것을 제공한 [우리에게 감사하다](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)입니다.
 
 ## 피싱으로 인한 PayPal 템플릿 차단 {#blocking-paypal-templates-due-to-phishing}
 
@@ -479,11 +479,11 @@ PayPal이 기본적인 구독 목록 기능을 제공하지 않기 때문에 개
 
 **제목:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-이 이메일은 피싱 시도로 추정되어 `abuse@microsoft.com`로 전달되었습니다. 문제는 PayPal의 샌드박스 환경에서 전송된 것이었지만, 템플릿 디자인이 너무 열악해서 피싱 탐지 시스템이 작동한다는 것입니다.
+이 이메일은 피싱 시도로 추정되어 `abuse@microsoft.com`으로 전달되었습니다. 문제는 PayPal의 샌드박스 환경에서 전송된 것이었지만, 템플릿 디자인이 너무 열악해서 피싱 탐지 시스템이 작동한다는 것입니다.
 
 ### 구현 {#our-implementation}
 
-[이메일 필터링 코드](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172)에서 구현된 PayPal 전용 필터링을 확인할 수 있습니다.
+[이메일 필터링 코드](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172)에 구현된 PayPal 관련 필터링을 확인할 수 있습니다.
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -533,7 +533,7 @@ PayPal의 침해 신고팀에 여러 차례 신고했음에도 불구하고, Pay
 * `X-Email-Type-Id: RT000238` (차단하는 ID와 동일)
 * `From: "service@paypal.com" <service@paypal.com>`
 * `paypal.com`의 유효한 DKIM 서명
-* PayPal 메일 서버를 보여주는 적절한 SPF 레코드
+* PayPal 메일 서버를 표시하는 적절한 SPF 레코드
 
 이로 인해 불가능한 상황이 발생합니다. 합법적인 PayPal 이메일과 스팸은 모두 동일한 기술적 특성을 가지고 있습니다.
 
@@ -541,11 +541,11 @@ PayPal의 침해 신고팀에 여러 차례 신고했음에도 불구하고, Pay
 
 금융 사기 근절을 선도해야 할 PayPal의 이메일 템플릿은 너무 조악하게 설계되어 피싱 방지 시스템을 작동시킵니다. 정상적인 PayPal 이메일은 사기와 구별이 불가능하기 때문에 차단해야 합니다.
 
-이는 보안 연구 자료에 기록되어 있습니다: [PayPal 신규 주소 사기에 주의하세요](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - PayPal의 자체 시스템이 사기에 어떻게 악용되는지 보여줍니다.
+이는 보안 연구에 기록되어 있습니다: [PayPal 신규 주소 사기에 주의하세요](https://www.bleepingcomputer.com/news/security/beware-paypal-new-address-feature-abused-to-send-phishing-emails/) - PayPal의 자체 시스템이 사기에 어떻게 악용되는지 보여줍니다.
 
 ### 실제 영향: 새로운 PayPal 사기 {#real-world-impact-novel-paypal-scams}
 
-문제는 단순히 부실한 템플릿 디자인에만 국한되지 않습니다. PayPal의 송장 시스템은 매우 쉽게 악용되어 사기꾼들이 정기적으로 이를 악용하여 합법적인 것처럼 보이는 사기성 송장을 발송합니다. 보안 연구원 개빈 앤더렉은 사기꾼들이 모든 인증 검사를 통과한 실제 PayPal 송장을 보내는 [새로운 페이팔 사기](https://anderegg.ca/2023/02/01/a-novel-paypal-scam)를 기록했습니다.
+문제는 단순히 부실한 템플릿 디자인에만 국한되지 않습니다. PayPal의 송장 시스템은 매우 쉽게 악용되어 사기꾼들이 정기적으로 이를 악용하여 합법적인 것처럼 보이는 사기성 송장을 발송합니다. 보안 연구원 개빈 앤더렉은 사기꾼들이 모든 인증 검사를 통과한 실제 PayPal 송장을 발송하는 [새로운 페이팔 사기](https://anderegg.ca/2023/02/01/a-novel-paypal-scam) 취약점을 발견했습니다.
 
 > "발신지를 확인해 보니, 이메일은 실제로 PayPal에서 보낸 것처럼 보였습니다(SPF, DKIM, DMARC 모두 통과). 버튼은 정상적인 PayPal URL처럼 보이는 곳으로 연결되었습니다... 이메일이 정상이라는 것을 깨닫는 데는 시간이 좀 걸렸습니다. 사기꾼에게서 무작위 '청구서'를 받았던 것입니다."
 
@@ -558,7 +558,7 @@ PayPal의 침해 신고팀에 여러 차례 신고했음에도 불구하고, Pay
 
 연구자는 다음과 같이 언급했습니다.
 
-> "PayPal이 이 기능을 폐쇄하는 것을 고려해야 할 편의 기능인 것 같습니다. 저는 즉시 이것이 일종의 사기라고 생각했고 기술적인 세부 사항에만 관심이 있었습니다. 너무 쉽게 해낼 수 있어서 다른 사람들이 속을까 봐 걱정됩니다."
+> "PayPal이 이 기능을 폐쇄하는 것을 고려해야 할 것 같습니다. 저는 이것이 일종의 사기라고 즉시 생각했고 기술적인 세부 사항에만 관심이 있었습니다. 너무 쉽게 해낼 수 있어서 다른 사람들이 속을까 봐 걱정됩니다."
 
 이는 문제를 완벽하게 보여줍니다. PayPal의 합법적인 시스템은 너무나 형편없이 설계되어 사기를 가능하게 하는 동시에 합법적인 의사소통을 의심스럽게 보이게 만듭니다.
 
@@ -594,11 +594,11 @@ PayPal의 프로세스는 완전히 반대입니다.
 
 이러한 역방향 프로세스는 기업에 재앙을 초래합니다.
 
-* **고객이 최대 판매 기간에 구매를 완료할 수 없음**
+* **고객이 성수기 구매를 완료할 수 없음**
 * **사전 알림 없음**, 확인 필요
 * **결제 차단 시 이메일 알림 없음**
 * **가맹점은 혼란스러워하는 고객을 통해 문제점을 파악**
-* **중요 영업 기간에 **매출 손실**
+* **중요 영업 기간 중 **매출 손실**
 * **의미 없는 결제 실패 시 고객 신뢰 손상**
 
 ### 2025년 7월 계정 마이그레이션 재해 {#the-july-2025-account-migration-disaster}
@@ -629,7 +629,7 @@ Paddle은 목록, 필터링, 페이지 매김 기능을 포함한 포괄적인 �
 
 Coinbase Commerce와 같은 암호화폐 결제 프로세서조차 PayPal보다 더 나은 구독 관리 기능을 제공합니다.
 
-### 정사각형 {#square}
+### 사각형 {#square}
 
 Square의 API에는 구독 목록이 추가된 것이 아니라 기본 기능으로 포함되어 있습니다.
 
@@ -643,7 +643,7 @@ Square의 API에는 구독 목록이 추가된 것이 아니라 기본 기능으
 * 구독 변경 시 웹훅 알림
 * 작업 예제를 포함한 포괄적인 설명서
 
-### 다른 프로세서가 제공하는 것과 PayPal이 제공하는 것 비교 {#what-other-processors-provide-vs-paypal}
+### 다른 프로세서가 제공하는 것과 PayPal의 비교 {#what-other-processors-provide-vs-paypal}
 
 **Stripe - 모든 구독 목록:**
 
@@ -709,23 +709,23 @@ Authorization: Bearer access_token
 
 PayPal은 개발자가 자체 데이터베이스에서 구독 ID를 수동으로 추적하도록 강제하는 유일한 주요 결제 처리업체입니다.
 
-## PayPal의 체계적인 은폐: 600만 명의 목소리를 침묵시키다 {#paypals-systematic-cover-up-silencing-6-million-voices}
+## PayPal의 조직적 은폐: 600만 명의 목소리를 침묵시키다 {#paypals-systematic-cover-up-silencing-6-million-voices}
 
-PayPal이 비판을 처리하는 방식을 완벽하게 요약한 조치로, 최근 PayPal은 커뮤니티 포럼 전체를 오프라인으로 전환하여 600만 명이 넘는 회원을 사실상 침묵시키고 실패를 기록한 수십만 개의 게시물을 삭제했습니다.
+PayPal이 비판을 처리하는 방식을 완벽하게 요약한 조치로, PayPal은 최근 커뮤니티 포럼 전체를 오프라인으로 전환하여 600만 명이 넘는 회원을 사실상 침묵시키고 실패를 기록한 수십만 개의 게시물을 삭제했습니다.
 
-### 대삭제 {#the-great-erasure}
+### 대지우기 {#the-great-erasure}
 
-`paypal-community.com`의 초기 PayPal 커뮤니티는 **6,003,558명의 회원**을 보유하고 있었으며, PayPal API 오류에 대한 수십만 건의 게시물, 버그 리포트, 불만 사항 및 토론이 오고 갔습니다. 이는 PayPal의 체계적인 문제에 대한 10년 이상의 문서화된 증거를 보여줍니다.
+`paypal-community.com`의 초기 PayPal 커뮤니티는 **6,003,558명의 회원**을 보유하고 있었으며, PayPal API 오류에 대한 수십만 건의 게시물, 버그 리포트, 불만 사항 및 토론이 오고 갔습니다. 이는 10년 이상 PayPal의 체계적인 문제에 대한 문서화된 증거였습니다.
 
-2025년 6월 30일, PayPal은 조용히 포럼 전체를 오프라인으로 전환했습니다. 모든 `paypal-community.com` 링크는 이제 404 오류를 반환합니다. 이는 마이그레이션이나 업그레이드가 아니었습니다.
+2025년 6월 30일, PayPal은 조용히 포럼 전체를 오프라인으로 전환했습니다. 모든 `paypal-community.com` 링크가 이제 404 오류를 반환합니다. 이는 마이그레이션이나 업그레이드가 아니었습니다.
 
 ### 제3자 구조 {#the-third-party-rescue}
 
-다행히 [ppl.lithium.com](https://ppl.lithium.com/)의 제3자 서비스가 일부 콘텐츠를 보존하여 PayPal이 숨기려 했던 논의 내용을 확인할 수 있게 되었습니다. 하지만 이 제3자 보존 서비스는 불완전하며 언제든지 사라질 수 있습니다.
+다행히 [ppl.lithium.com](https://ppl.lithium.com/)의 제3자 서비스가 일부 콘텐츠를 보존하여 PayPal이 숨기려 했던 논의 내용을 확인할 수 있었습니다. 하지만 이 제3자 보존 서비스는 불완전하며 언제든지 사라질 수 있습니다.
 
 PayPal의 이러한 증거 은폐 행태는 새로운 것이 아닙니다. PayPal은 다음과 같은 기록된 이력을 가지고 있습니다.
 
-* 중요 버그 보고서를 공개에서 삭제
+* 중요 버그 보고서를 공개 목록에서 삭제
 * 사전 고지 없이 개발자 도구 중단
 * 적절한 문서 없이 API 변경
 * 커뮤니티에서 발생한 오류에 대한 논의 중단
@@ -752,7 +752,7 @@ PayPal은 14일 후에 디버그 로그를 완전히 숨기고, 캡처되지 않
 
 우리가 이것을 발견한 유일한 이유는 우리가 놀라울 정도로 꼼꼼하고 데이터에 기반을 두고 있기 때문입니다.
 
-### 2013년 원본 보고서: 11년 이상의 과실 {#the-2013-original-report-11-years-of-negligence}
+### 2013년 원본 보고서: 11년 이상의 부주의 {#the-2013-original-report-11-years-of-negligence}
 
 이 문제에 대한 가장 초기의 문서화된 보고서는 [2013년 11월 Stack Overflow](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)([보관됨](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture))에 나타납니다.
 
@@ -777,9 +777,9 @@ PayPal은 14일 후에 디버그 로그를 완전히 숨기고, 캡처되지 않
 
 ### 2016년 입장: PayPal이 자체 SDK를 망가뜨렸다 {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-2016년, PayPal의 자체 GitHub 저장소에서 공식 PHP SDK에 영향을 미치는 [대규모 캡처 실패](https://github.com/paypal/PayPal-PHP-SDK/issues/660) 취약점이 발견되었습니다. 그 규모는 엄청났습니다.
+2016년, PayPal의 GitHub 저장소에는 [대규모 캡처 실패](https://github.com/paypal/PayPal-PHP-SDK/issues/660) 취약점이 공식 PHP SDK에 영향을 미치는 것으로 기록되어 있었습니다. 그 규모는 엄청났습니다.
 
-> "2016년 9월 20일 이후 모든 PayPal 캡처 시도가 'INVALID_RESOURCE_ID - 요청된 리소스 ID를 찾을 수 없습니다.'라는 오류 메시지와 함께 실패했습니다. 9월 19일부터 9월 20일까지 API 통합에 대한 변경 사항은 없습니다. **9월 20일 이후 모든 캡처 시도에서 이 오류가 반환되었습니다.**"
+> "2016년 9월 20일 이후 모든 PayPal 캡처 시도가 'INVALID_RESOURCE_ID - 요청된 리소스 ID를 찾을 수 없습니다.'라는 오류 메시지와 함께 실패했습니다. 9월 19일부터 9월 20일까지 API 통합에 아무런 변경 사항이 없었습니다. **9월 20일 이후 모든 캡처 시도에서 이 오류가 반환되었습니다.**"
 
 한 상인은 이렇게 보고했습니다.
 
@@ -812,13 +812,13 @@ PayPal의 초기 대응은 판매자에게 책임을 전가하고 기술 지원�
 
 ### 웹훅 안정성 재해 {#the-webhook-reliability-disaster}
 
-또 다른 [보존된 커뮤니티 토론](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446)는 PayPal의 웹훅 시스템이 근본적으로 신뢰할 수 없다는 것을 보여줍니다.
+또 다른 [보존된 커뮤니티 토론](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446)은 PayPal의 웹훅 시스템이 근본적으로 신뢰할 수 없다는 것을 보여줍니다.
 
 > "이론적으로는 Webhook 이벤트에서 두 가지 이벤트(CHECKOUT.ORDER.APPROVED 및 PAYMENT.CAPTURE.COMPLETED)가 발생해야 합니다. 하지만 실제로 **이 두 이벤트는 즉시 수신되는 경우가 드물고, PAYMENT.CAPTURE.COMPLETED는 대부분 수신되지 않거나 몇 시간 후에 수신됩니다.**"
 
 구독 결제의 경우:
 
-> "**'PAYMENT.SALE.COMPLETED'가 수신되지 않는 경우가 있거나 몇 시간 후까지 수신되지 않는 경우가 있습니다.**"
+> "**'PAYMENT.SALE.COMPLETED'가 수신되지 않거나 몇 시간 후까지 수신되지 않는 경우가 있습니다.**"
 
 상인의 질문은 PayPal의 신뢰성 문제가 얼마나 심각한지를 보여줍니다.
 
@@ -844,7 +844,7 @@ PayPal의 초기 대응은 판매자에게 책임을 전가하고 기술 지원�
 
 ### 문서화되지 않은 요구 사항 {#the-undocumented-requirement}
 
-PayPal 공식 문서 어디에도 판매자가 캡처 작업을 위한 재시도 로직을 구현해야 한다는 내용은 없습니다. PayPal 문서에는 판매자가 "승인 후 즉시 캡처"해야 한다고 명시되어 있지만, API가 무작위로 404 오류를 반환하여 복잡한 재시도 메커니즘이 필요하다는 사실은 언급되어 있지 않습니다.
+PayPal 공식 문서 어디에도 판매자가 캡처 작업을 위한 재시도 로직을 구현해야 한다는 내용은 없습니다. PayPal 문서에는 판매자가 "승인 후 즉시 캡처"해야 한다고 명시되어 있지만, API가 무작위로 404 오류를 반환하여 복잡한 재시도 메커니즘을 필요로 한다는 사실은 언급되어 있지 않습니다.
 
 이로 인해 모든 상인은 다음을 수행해야 합니다.
 
@@ -861,13 +861,13 @@ PayPal 공식 문서 어디에도 판매자가 캡처 작업을 위한 재시도
 
 ### 뉴욕 금융 서비스부 조치 {#the-new-york-department-of-financial-services-action}
 
-2025년 1월, 뉴욕 금융서비스부는 사기 행위에 대한 [PayPal에 대한 강제 조치](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) 경고를 발행하여 PayPal의 사기 행각이 API를 훨씬 넘어 확장되었음을 보여주었습니다.
+2025년 1월, 뉴욕 금융서비스부는 사기 행위에 대한 [PayPal에 대한 강제 조치](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) 경고를 발표하여 PayPal의 사기 행각이 API를 훨씬 넘어 확장되었음을 보여주었습니다.
 
 이번 규제 조치는 PayPal이 개발자 도구뿐만 아니라 전체 사업에 걸쳐 사기성 행위를 저지르려는 의지를 보여줍니다.
 
-### 허니 소송: 제휴 링크 재작성 {#the-honey-lawsuit-rewriting-affiliate-links}
+### 허니 소송: 제휴 링크 재작성 {#the-honey-lawsuit-rewriting-affiliate-links}}
 
-PayPal이 Honey를 인수하면서 콘텐츠 제작자와 인플루언서의 수수료를 가로채는 [Honey가 제휴 링크를 다시 작성했다는 소송](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer)이 발생했습니다. 이는 PayPal이 다른 사람에게 돌아가야 할 수익을 다른 곳으로 돌려 이익을 취하는 또 다른 형태의 조직적인 사기 행위입니다.
+PayPal이 Honey를 인수하면서 콘텐츠 제작자와 인플루언서의 수수료를 가로채는 [Honey가 제휴 링크를 다시 작성했다는 소송](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) 문제가 발생했습니다. 이는 PayPal이 다른 사람에게 돌아가야 할 수익을 다른 곳으로 돌려 이익을 취하는 또 다른 형태의 조직적인 사기 행각입니다.
 
 패턴은 명확합니다.
 
@@ -887,13 +887,13 @@ PayPal이 Honey를 인수하면서 콘텐츠 제작자와 인플루언서의 수
 
 소규모 이메일 서비스 하나가 2,000달러에 가까운 손실을 입었고, 이 문제가 11년 이상 지속되어 수천 개의 판매자에게 영향을 미쳤다면, 전체 재정적 피해는 **수억 달러**에 달할 가능성이 큽니다.
 
-### 문서 거짓말 {#the-documentation-lie}
+### 문서의 거짓말 {#the-documentation-lie}
 
 PayPal 공식 문서에는 판매자가 직면하게 될 심각한 제약과 버그에 대한 언급이 계속해서 누락되어 있습니다. 예를 들어 다음과 같습니다.
 
 * **캡처 API**: 404 오류가 흔하며 재시도 로직이 필요하다는 언급이 없습니다.
 * **웹훅 안정성**: 웹훅이 몇 시간씩 지연되는 경우가 많다는 언급이 없습니다.
-* **구독 등록**: 엔드포인트가 없어도 등록이 가능하다는 내용이 문서에 명시되어 있습니다.
+* **구독 등록**: 설명서에는 엔드포인트가 없어도 등록이 가능하다고 명시되어 있습니다.
 * **세션 시간 초과**: 공격적인 60초 시간 초과에 대한 언급이 없습니다.
 
 중요한 정보가 체계적으로 누락되면서 판매자는 생산 시스템에서 시행착오를 거쳐 PayPal의 한계를 발견하게 되고, 이는 종종 재정적 손실로 이어집니다.
@@ -915,7 +915,7 @@ PayPal이 광범위한 피드백을 수집하면서도 기본적인 개발자 �
 
 그 사이 개발자들은 결제를 받기 위해 해결책을 만들고, 보안을 약화시키고, 깨진 UI를 다루어야만 했습니다.
 
-결제 시스템을 구축하고 있다면 저희의 경험을 참고하십시오. 여러 프로세서를 사용하여 [트리펙타 접근법](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal)를 구축하되, PayPal이 필요한 기본 기능을 제공할 것이라고 기대하지 마십시오. 처음부터 차선책을 구축할 계획을 세우십시오.
+결제 시스템을 구축하고 있다면 저희의 경험을 참고하십시오. 여러 프로세서를 갖춘 [트리펙타 접근법](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal)을 구축하되, PayPal이 필요한 기본 기능을 제공할 것이라고 기대하지 마십시오. 처음부터 차선책을 구축할 계획을 세우십시오.
 
 > 이 게시물은 Forward Email에서 PayPal API를 11년간 사용해 온 경험을 담고 있습니다. 모든 코드 예시와 링크는 실제 운영 시스템에서 가져온 것입니다. 이러한 문제에도 불구하고 일부 고객에게는 다른 선택지가 없기 때문에 PayPal 결제를 계속 지원하고 있습니다.
 

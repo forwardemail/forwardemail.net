@@ -83,33 +83,33 @@
 结果如何？开发人员要么完全放弃电子邮件集成，要么浪费数周时间构建脆弱且经常崩溃的 IMAP 包装器。
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **不可告人的秘密**：大多数“电子邮件 API”都只是发送 API。你无法通过简单的 REST 接口以编程方式组织文件夹、同步联系人或管理日历。现在，情况已经发生了改变。
 
 ## 开发人员的真实想法 {#what-developers-are-actually-saying}
 
 这种挫败感是真实存在的，并且随处可见：
 
-> “我最近尝试将 Gmail 集成到我的应用中，但我为此投入了太多时间。我认为不值得支持 Gmail。”
+> “我最近尝试将 Gmail 集成到我的应用中，花了太多时间。我觉得不值得支持 Gmail。”
 >
 > *- [Hacker News 开发者](https://news.ycombinator.com/item?id=42106944)，147 票*
 
-> “所有电子邮件 API 都平庸吗？它们似乎在某种程度上存在局限性或限制性。”
+> “所有电子邮件 API 都平庸吗？它们似乎在某些方面有所限制。”
 >
 > *- [Reddit r/SaaS 讨论](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
 > “为什么电子邮件开发这么糟糕？”
 >
-> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/)，89 条评论，反映开发者的苦恼*
+> *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/)，89 条评论，讲述开发者的痛苦*
 
 > “是什么让 Gmail API 比 IMAP 更高效？Gmail API 更高效的另一个原因是它只需下载每封邮件一次。而使用 IMAP，每封邮件都必须下载并编入索引……”
 >
-> *- [Stack Overflow 问题](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) 47 票赞同*
+> *- [Stack Overflow 问题](https://stackoverflow.com/questions/25431022/what-makes-the-gmail-api-more-efficient-than-imap) 获得 47 票*
 
 证据随处可见：
 
 * **WordPress SMTP 问题**：[631 个 GitHub 问题](https://github.com/awesomemotive/WP-Mail-SMTP/issues) 邮件投递失败
-* **Zapier 限制**：[社区投诉](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) 每小时 10 封邮件的限制以及 IMAP 检测失败
-* **IMAP API 项目**：[多种的](https://github.com/ewildgoose/imap-api) [开源](https://emailengine.app/) [项目](https://www.npmjs.com/package/imapflow) 专门用于“将 IMAP 转换为 REST”，因为没有提供商提供此功能
+* **Zapier 限制**：[社区投诉](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) 每小时邮件发送限制 10 封，IMAP 检测失败
+* **IMAP API 项目**：[多种的](https://github.com/ewildgoose/imap-api)、[开源](https://emailengine.app/) 和 [项目](https://www.npmjs.com/package/imapflow) 专门用于“将 IMAP 转换为 REST”，因为目前没有提供商提供此功能
 * **Gmail API 问题**：[堆栈溢出](https://stackoverflow.com/questions/tagged/gmail-api) 有 4,847 个标记为“gmail-api”的问题，其中最常见的是速率限制和复杂性
 
 ## 转发电子邮件的革命性解决方案 {#forward-emails-revolutionary-solution}
@@ -133,16 +133,16 @@
 
 ### 简单身份验证 {#simple-authentication}
 
-没有 [OAuth 复杂性](https://oauth.net/2/)。也没有 [应用专用密码](https://support.google.com/accounts/answer/185833)。只有您的别名凭据：
+没有 [OAuth 复杂性](https://oauth.net/2/)。也没有 [应用专用密码](https://support.google.com/accounts/answer/185833)。只有您的别名凭证：
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
   https://api.forwardemail.net/v1/messages
 ```
 
-## 改变一切的 20 个端点 {#20-endpoints-that-change-everything}
+## 20 个改变一切的端点 {#20-endpoints-that-change-everything}
 
-### 消息（5 个端点）{#messages-5-endpoints}
+### 条消息（5 个端点）{#messages-5-endpoints}
 
 * `GET /v1/messages` - 列出带有筛选条件的消息（`?folder=`、`?is_unread=`、`?is_flagged=`）
 * `POST /v1/messages` - 将新消息直接发送到文件夹
@@ -150,7 +150,7 @@ curl -u "alias@yourdomain.com:password" \
 * `PUT /v1/messages/:id` - 更新消息（标记、文件夹、已读状态）
 * `DELETE /v1/messages/:id` - 永久删除消息
 
-### 文件夹（5 个端点）{#folders-5-endpoints}
+### 个文件夹（5 个端点）{#folders-5-endpoints}
 
 * `GET /v1/folders` - 列出所有具有订阅状态的文件夹
 * `POST /v1/folders` - 创建具有自定义属性的新文件夹
@@ -158,23 +158,23 @@ curl -u "alias@yourdomain.com:password" \
 * `PUT /v1/folders/:id` - 更新文件夹属性和订阅
 * `DELETE /v1/folders/:id` - 删除文件夹并处理消息重定位
 
-### 联系人（5 个端点）{#contacts-5-endpoints}
+### 个联系人（5 个端点）{#contacts-5-endpoints}
 
-* `GET /v1/contacts` - 使用搜索和分页功能列出联系人
-* `POST /v1/contacts` - 创建新联系人并完全支持 vCard
+* `GET /v1/contacts` - 列出联系人，并进行搜索和分页
+* `POST /v1/contacts` - 创建新联系人，并完全支持 vCard
 * `GET /v1/contacts/:id` - 检索联系人的所有字段和元数据
 * `PUT /v1/contacts/:id` - 使用 ETag 验证更新联系人信息
-* `DELETE /v1/contacts/:id` - 使用级联处理功能删除联系人
+* `DELETE /v1/contacts/:id` - 使用级联处理删除联系人
 
 ### 日历（5 个端点）{#calendars-5-endpoints}
 
-* `GET /v1/calendars` - 使用日期筛选功能列出日历事件
+* `GET /v1/calendars` - 列出日历事件并进行日期过滤
 * `POST /v1/calendars` - 创建包含参与者和重复项的日历事件
 * `GET /v1/calendars/:id` - 获取事件详情并进行时区处理
-* `PUT /v1/calendars/:id` - 使用冲突检测功能更新事件
+* `PUT /v1/calendars/:id` - 更新事件并进行冲突检测
 * `DELETE /v1/calendars/:id` - 删除事件并发送参与者通知
 
-## 高级搜索：没有其他服务可比 {#advanced-search-no-other-service-compares}
+## 高级搜索：没有其他服务可与 {#advanced-search-no-other-service-compares}
 
 **转发电子邮件是唯一通过 REST API 在所有消息字段中提供全面、编程搜索的电子邮件服务。**
 
@@ -269,7 +269,7 @@ GET /me/messages?$search="quarterly"
 
 **转发电子邮件搜索性能：**
 
-* ⚡ 复杂搜索的**响应时间低于 100 毫秒**
+* ⚡ **复杂搜索响应时间低于 100 毫秒**
 * 🔍 **正则表达式优化**，并进行适当的索引
 * 📊 **计数和数据的并行查询执行**
 * 💾 **精简查询，高效利用内存**
@@ -280,9 +280,9 @@ GET /me/messages?$search="quarterly"
 * 🐌 **Outlook API**：具有复杂退避要求的严格限制
 * 🐌 **其他**：没有可供比较的 API
 
-### 无人拥有的搜索功能 {#search-features-no-one-else-has}
+### 其他搜索功能均无此功能 {#search-features-no-one-else-has}
 
-#### 1. 标头特定搜索 {#1-header-specific-search}
+#### 1. 标题特定搜索 {#1-header-specific-search}
 
 ```bash
 # Find messages with specific headers
@@ -290,7 +290,7 @@ GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. 基于尺寸的情报 {#2-size-based-intelligence}
+#### 2. 基于尺寸的智能 {#2-size-based-intelligence}
 
 ```bash
 # Find newsletter emails (typically large)
@@ -317,7 +317,7 @@ GET /v1/messages?has_attachments=false&before=2023-01-01T00:00:00Z
 GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 ```
 
-### 为什么这对开发人员很重要 {#why-this-matters-for-developers}
+### 为什么这对开发者很重要 {#why-this-matters-for-developers}
 
 **构建以前不可能实现的应用程序：**
 
@@ -327,7 +327,7 @@ GET /v1/messages?is_flagged=true&from=ceo&has_attachments=true&subject=urgent
 4. **商业智能**：从电子邮件通信模式中提取洞察
 5. **自动化工作流程**：根据复杂的电子邮件过滤器触发操作
 
-### 技术实现 {#the-technical-implementation}
+### 技术实施 {#the-technical-implementation}
 
 我们的搜索 API 使用：
 
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **开发者优势**：借助 Forward Email 的搜索 API，您可以构建功能可与桌面客户端媲美的电子邮件应用程序，同时保持 REST API 的简单性。
 
 ## 超快性能架构 {#blazing-fast-performance-architecture}
 
@@ -398,7 +398,7 @@ graph LR
 
 ### 隐私优先架构 {#privacy-first-architecture}
 
-**零知识设计**：只有您本人可以使用 IMAP 密码访问，我们无法读取您的电子邮件。我们的 [零知识架构](https://forwardemail.net/en/security) 机制在提供卓越性能的同时，确保绝对的隐私。
+**零知识设计**：只有您本人可以使用 IMAP 密码访问 - 我们无法读取您的电子邮件。我们的 [零知识架构](https://forwardemail.net/en/security) 确保完全隐私，同时提供卓越的性能。
 
 ## 我们为何与众不同：全面比较 {#why-were-different-the-complete-comparison}
 
@@ -423,26 +423,26 @@ graph LR
 | **无速率限制** | ✅ 为实际应用而设计的宽松限制 | ❌ 限制配额会破坏工作流程 |
 | **自托管** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ 仅限供应商锁定 |
 | **隐私** | ✅ 零知识、加密、私密 | ❌数据挖掘和隐私问题 |
-| **表现** | ✅ 低于 50ms 的响应速度，NVMe 存储 | ❌ 网络延迟、节流延迟 |
+| **表现** | ✅ 低于 50 毫秒的响应速度，NVMe 存储 | ❌ 网络延迟、节流延迟 |
 
 ### 开源透明度问题 {#the-open-source-transparency-problem}
 
 **ProtonMail 和 Tuta 将自己标榜为“开源”和“透明”，但这是违反现代隐私原则的误导性营销。**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **虚假的透明度声明**：ProtonMail 和 Tuta 都大肆宣传其“开源”资质，同时却将其最关键的服务器端代码保持专有和封闭状态。
 
 **ProtonMail 的欺骗行为：**
 
 * **声明**：[“我们是开源的”](https://proton.me/blog/open-source) 在营销中占据显著位置
-* **现实**：[服务器代码完全专有](https://github.com/ProtonMail) - 只有客户端应用是开源的
+* **现实**：[服务器代码完全专有](https://github.com/ProtonMail) - 仅客户端应用开源
 * **影响**：用户无法验证服务器端加密、数据处理或隐私声明
 * **违反透明度**：无法审计实际的电子邮件处理和存储系统
 
 **Tuta 的误导性营销：**
 
 * **宣传**：[“开源电子邮件”](https://tuta.com/blog/posts/open-source-email) 是核心卖点
-* **现实**：[后端基础设施是闭源的](https://github.com/tutao/tutanota) - 仅提供前端
+* **现实**：[后端基础设施是闭源的](https://github.com/tutao/tutanota) - 仅前端可用
 * **影响**：专有加密阻止使用标准电子邮件协议 (IMAP/SMTP)
 * **锁定策略**：自定义加密强制依赖供应商
 
@@ -464,9 +464,9 @@ graph LR
 * ✅ **不受供应商限制** - 您的数据，您掌控
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **真正的开源意味着您可以验证每一条声明。** 使用 Forward Email，您可以审核我们的加密方式、查看我们的数据处理方式，甚至运行您自己的实例。这才是真正的透明。
 
-## 30 多个真实世界的集成示例 {#30-real-world-integration-examples}
+## 30+ 真实世界集成示例 {#30-real-world-integration-examples}
 
 ### 1. WordPress 联系表单增强功能 {#1-wordpress-contact-form-enhancement}
 
@@ -526,7 +526,7 @@ for (const contact of newContacts) {
 
 ### 4. 电子商务订单处理 {#4-e-commerce-order-processing}
 
-**问题**：手动处理 [电子商务平台](https://en.wikipedia.org/wiki/E-commerce) 的订单邮件
+**问题**：[电子商务平台](https://en.wikipedia.org/wiki/E-commerce) 的手动订单邮件处理
 **解决方案**：自动化订单管理流程
 
 ```javascript
@@ -548,7 +548,7 @@ for (const order of orderEmails) {
 
 ### 5. 支持票证集成 {#5-support-ticket-integration}
 
-**问题**：电子邮件线索分散在 [帮助台平台](https://en.wikipedia.org/wiki/Help_desk_software)
+**问题**：电子邮件线索分散在 [帮助台平台](https://en.wikipedia.org/wiki/Help_desk_software) 中
 **解决方案**：完整的电子邮件线索跟踪
 
 ```javascript
@@ -570,7 +570,7 @@ for (const email of supportEmails) {
 
 ### 6. 新闻通讯管理系统 {#6-newsletter-management-system}
 
-**问题**：[简报平台](https://en.wikipedia.org/wiki/Email_marketing) 集成有限
+**问题**：[简报平台](https://en.wikipedia.org/wiki/Email_marketing) 集成受限
 **解决方案**：完整的订阅者生命周期管理
 
 ```javascript
@@ -591,7 +591,7 @@ for (const msg of unsubscribes) {
 
 ### 7. 基于电子邮件的任务管理 {#7-email-based-task-management}
 
-**问题**：收件箱爆满，[任务跟踪](https://en.wikipedia.org/wiki/Task_management)
+**问题**：收件箱爆满，[任务跟踪](https://en.wikipedia.org/wiki/Task_management) 占位符
 **解决方案**：将电子邮件转化为可执行的任务
 
 ```javascript
@@ -627,7 +627,7 @@ for (const account of accounts) {
 
 ### 9. 高级电子邮件分析仪表板 {#9-advanced-email-analytics-dashboard}
 
-**问题**：即使使用复杂的过滤功能，也无法深入了解 [电子邮件模式](https://en.wikipedia.org/wiki/Email_analytics)
+**问题**：即使使用复杂的筛选功能，也无法深入了解 [电子邮件模式](https://en.wikipedia.org/wiki/Email_analytics)
 **解决方案**：使用高级搜索功能进行自定义电子邮件分析
 
 ```javascript
@@ -698,7 +698,7 @@ for (const email of oldEmails) {
 
 ### 11. 电子邮件到日历集成 {#11-email-to-calendar-integration}
 
-**问题**：手动从电子邮件创建 [日历事件](https://tools.ietf.org/html/rfc4791)
+**问题**：通过电子邮件手动创建 [日历事件](https://tools.ietf.org/html/rfc4791)
 **解决方案**：自动提取和创建事件
 
 ```javascript
@@ -789,7 +789,7 @@ await fetch('/v1/messages', {
 ### 15. 基于电子邮件的工作流自动化 {#15-email-based-workflow-automation}
 
 **问题**：通过电子邮件手动发送 [审批流程](https://en.wikipedia.org/wiki/Workflow)
-**解决方案**：自动触发工作流程
+**解决方案**：自动触发工作流
 
 ```javascript
 // Process approval emails
@@ -830,8 +830,8 @@ for (const email of recentEmails) {
 
 ### 17. 基于电子邮件的调查收集 {#17-email-based-survey-collection}
 
-**问题**：手动 [调查回复](https://en.wikipedia.org/wiki/Survey_methodology) 处理
-**解决方案**：自动响应聚合
+**问题**：手动处理 [调查回复](https://en.wikipedia.org/wiki/Survey_methodology)
+**解决方案**：自动聚合响应
 
 ```javascript
 // Collect and process survey responses
@@ -935,8 +935,8 @@ for (const email of inventoryEmails) {
 
 ### 22. 基于电子邮件的发票处理 {#22-email-based-invoice-processing}
 
-**问题**：手动 [发票处理](https://en.wikipedia.org/wiki/Invoice_processing) 和会计集成
-**解决方案**：自动发票提取和会计系统同步
+**问题**：手动 [发票处理](https://en.wikipedia.org/wiki/Invoice_processing) 与会计集成
+**解决方案**：自动发票提取与会计系统同步
 
 ```javascript
 // Extract invoice data from email attachments
@@ -999,7 +999,7 @@ for (const registration of registrations) {
 
 ### 24. 基于电子邮件的文档审批工作流程 {#24-email-based-document-approval-workflow}
 
-**问题**：通过电子邮件传递复杂的 [文件批准](https://en.wikipedia.org/wiki/Document_management_system) 链接
+**问题**：通过电子邮件发送复杂的 [文件批准](https://en.wikipedia.org/wiki/Document_management_system) 链
 **解决方案**：自动审批跟踪和文档版本控制
 
 ```javascript
@@ -1030,7 +1030,7 @@ for (const email of approvalEmails) {
 
 ### 25. 基于电子邮件的客户反馈分析 {#25-email-based-customer-feedback-analysis}
 
-**问题**：手动 [客户反馈](https://en.wikipedia.org/wiki/Customer_feedback) 收集和情绪分析
+**问题**：手动收集 [客户反馈](https://en.wikipedia.org/wiki/Customer_feedback) 数据并进行情绪分析
 **解决方案**：自动反馈处理和情绪追踪
 
 ```javascript
@@ -1096,7 +1096,7 @@ for (const application of applications) {
 
 ### 27. 基于电子邮件的费用报告处理 {#27-email-based-expense-report-processing}
 
-**问题**：手动 [费用报告](https://en.wikipedia.org/wiki/Expense_report) 提交和审批
+**问题**：[费用报告](https://en.wikipedia.org/wiki/Expense_report) 手动提交和审批
 **解决方案**：自动费用提取和审批工作流程
 
 ```javascript
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. 基于电子邮件的社交媒体监控 {#30-email-based-social-media-monitoring}
 
-**问题**：手动 [社交媒体](https://en.wikipedia.org/wiki/Social_media_monitoring) 提及跟踪和响应
+**问题**：手动跟踪和响应 [社交媒体](https://en.wikipedia.org/wiki/Social_media_monitoring) 提及
 **解决方案**：自动社交媒体警报处理和响应协调
 
 ```javascript
@@ -1260,13 +1260,13 @@ for (const alert of socialAlerts) {
 
 ### 1. 创建您的转发电子邮件帐户 {#1-create-your-forward-email-account}
 
-在[forwardemail.net](https://forwardemail.net)注册并验证您的域名。
+在 [forwardemail.net](https://forwardemail.net) 注册并验证您的域名。
 
 ### 2. 生成 API 凭证 {#2-generate-api-credentials}
 
 您的别名电子邮件和密码将作为 API 凭证 - 无需额外设置。
 
-### 3. 进行第一次 API 调用 {#3-make-your-first-api-call}
+### 3. 进行您的第一次 API 调用 {#3-make-your-first-api-call}
 
 ```bash
 # List your messages

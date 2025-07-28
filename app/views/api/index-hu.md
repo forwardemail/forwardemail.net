@@ -14,7 +14,7 @@
   * [Fiók létrehozása](#create-account)
   * [Fiók lekérése](#retrieve-account)
   * [Fiók frissítése](#update-account)
-* [Alias Contacts (CardDAV)](#alias-contacts-carddav)
+* [Alias-kapcsolatok (CardDAV)](#alias-contacts-carddav)
   * [Kapcsolatok listázása](#list-contacts)
   * [Kapcsolat létrehozása](#create-contact)
   * [Kapcsolatfelvétel](#retrieve-contact)
@@ -75,7 +75,7 @@
 
 ## Könyvtárak {#libraries}
 
-Jelenleg még nem adtunk ki API-csomagolókat, de a közeljövőben tervezzük, hogy megteszünk egyet. Küldjön egy e-mailt az <api@forwardemail.net> címre, ha értesítést szeretne kapni egy adott programozási nyelv API-csomagolójának kiadásáról. Addig is használhatja ezeket az ajánlott HTTP-kéréskönyvtárakat az alkalmazásában, vagy egyszerűen használhatja a [becsavar](https://stackoverflow.com/a/27442239/3586413) függvényt az alábbi példák szerint.
+Jelenleg még nem adtunk ki API-csomagolókat, de a közeljövőben tervezzük, hogy megteszünk egyet. Küldjön egy e-mailt a <api@forwardemail.net> címre, ha értesítést szeretne kapni egy adott programozási nyelv API-csomagolójának kiadásáról. Addig is használhatja ezeket az ajánlott HTTP-kéréskönyvtárakat az alkalmazásában, vagy egyszerűen használhatja a [becsavar](https://stackoverflow.com/a/27442239/3586413) függvényt az alábbi példák szerint.
 
 | Nyelv | Könyvtár |
 | ---------- | ---------------------------------------------------------------------- |
@@ -94,7 +94,7 @@ A jelenlegi HTTP alap URI elérési út: `BASE_URI`.
 
 ## Hitelesítés {#authentication}
 
-Minden végponthoz a [API-kulcs](https://forwardemail.net/my-account/security) paramétert kell beállítani a kérés [Alapszintű engedélyezés](https://en.wikipedia.org/wiki/Basic_access_authentication) fejlécének „username” értékeként (a [Alias-kapcsolatok](#alias-contacts), [Alias naptárak](#alias-calendars) és [Alias postaládák](#alias-mailboxes) kivételével, amelyek [generált alias felhasználónév és jelszó](/faq#do-you-support-receiving-email-with-imap) paramétert használnak).
+Minden végponthoz a [API-kulcs](https://forwardemail.net/my-account/security) paramétert kell a kérés [Alapszintű engedélyezés](https://en.wikipedia.org/wiki/Basic_access_authentication) fejlécének „username” értékeként beállítani (a [Alias-kapcsolatok](#alias-contacts), [Alias naptárak](#alias-calendars) és [Alias postaládák](#alias-mailboxes) kivételével, amelyek [generált alias felhasználónév és jelszó](/faq#do-you-support-receiving-email-with-imap) paramétert használnak).
 
 Ne aggódj – ha nem vagy biztos benne, hogy miről is van szó, alább láthatsz néhány példát.
 
@@ -117,22 +117,22 @@ Ha bármilyen hiba történik, az API-kérés válaszának törzse részletes hi
 | 504 | Átjáró időtúllépése |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Ha 5xx állapotkódot kap (aminek nem szabadna előfordulnia), kérjük, vegye fel velünk a kapcsolatot a <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> címen, és azonnal segítünk a probléma megoldásában.
 
 ## Lokalizáció {#localization}
 
 Szolgáltatásunk több mint 25 különböző nyelvre van lefordítva. Minden API-válaszüzenet az API-kérést kezdeményező felhasználó által utoljára észlelt területi beállításra van lefordítva. Ezt felülbírálhatja egy egyéni `Accept-Language` fejléc megadásával. Nyugodtan próbálja ki a lap alján található nyelvi legördülő menü segítségével.
 
-## Oldalszámozás {#pagination}
+## Lapozás {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> 2024. november 1-jétől a [Domainek listázása](#list-domains) és [Domain aliasok listázása](#list-domain-aliases) API-végpontjai alapértelmezés szerint `1000` maximális találatot állítanak be oldalanként. Ha korábban szeretné engedélyezni ezt a viselkedést, átadhatja a `?paginate=true` paramétert további lekérdezési karakterlánc paraméterként a végpont lekérdezésének URL-címéhez.
 
 A lapozást minden olyan API-végpont támogatja, amely listázza az eredményeket.
 
 Egyszerűen adja meg a `page` (és opcionálisan a `limit`) lekérdezési karakterlánc tulajdonságait.
 
-A `page` tulajdonságnak a `1` tulajdonságnál nagyobb vagy azzal egyenlő számnak kell lennie. Ha a `limit` tulajdonságot adja meg (ami szintén egy szám), akkor a minimális érték `10`, a maximális pedig `50` (hacsak másképp nincs feltüntetve).
+A `page` tulajdonságnak a `1` tulajdonságnál nagyobb vagy azzal egyenlő számnak kell lennie. Ha megadja a `limit` tulajdonságot (ami szintén egy szám), akkor a minimális érték `10`, a maximális pedig `50` (kivéve, ha másképp van feltüntetve).
 
 | Lekérdezési karakterlánc paraméterei | Kívánt | Típus | Leírás |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -162,9 +162,9 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 API-nk programozott módon lehetővé teszi fiókod naplóinak letöltését. Ha erre a végpontra küldesz egy kérést, a rendszer feldolgozza a fiókod összes naplóját, és a folyamat befejezése után mellékletként ([Gzip](https://en.wikipedia.org/wiki/Gzip) tömörített [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) táblázatfájl) elküldi neked e-mailben.
 
-Ez lehetővé teszi háttérfeladatok létrehozását egy [Cron-feladat](https://en.wikipedia.org/wiki/Cron) segítségével, vagy a [Node.js munkaütemező szoftver Bree](https://github.com/breejs/bree) használatával, hogy naplókat kapjon, amikor csak szeretné. Vegye figyelembe, hogy ez a végpont napi `10` kérésre korlátozódik.
+Ez lehetővé teszi háttérfeladatok létrehozását [Cron-feladat](https://en.wikipedia.org/wiki/Cron) segítségével, vagy a [Node.js munkaütemező szoftver Bree](https://github.com/breejs/bree) használatával naplókat fogadhat, amikor csak szeretné. Vegye figyelembe, hogy ez a végpont napi `10` kérésre korlátozódik.
 
-A melléklet a `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` kód kisbetűs alakja, és maga az e-mail tartalmazza a lekért naplók rövid összefoglalását. A naplókat bármikor letöltheti a [Fiókom → Naplók](/my-account/logs) oldalról.
+A melléklet a `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` kisbetűs alakja, és maga az e-mail tartalmazza a lekért naplók rövid összefoglalását. A naplókat bármikor letöltheti a [Fiókom → Naplók](/my-account/logs) oldalról.
 
 > `GET /v1/logs/download`
 
@@ -188,7 +188,7 @@ curl BASE_URI/v1/logs/download \
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-Vegye figyelembe, hogy olyan szolgáltatásokat használhat, mint a [Crontab.guru](https://crontab.guru/), a cron feladatkifejezés szintaxisának validálásához.
+Vegye figyelembe, hogy olyan szolgáltatásokat is használhat, mint a [Crontab.guru](https://crontab.guru/), a cron feladatkifejezés szintaxisának érvényesítéséhez.
 
 > Példa Cron feladatra (minden nap éjfélkor **és az előző napi naplókkal**):
 
@@ -256,12 +256,12 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-kapcsolatok (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Más API végpontokkal ellentétben ezekhez alapvető jogosultságfejlécként a [Hitelesítés](#authentication) „felhasználónév” paramétere megegyezik az alias felhasználónevével, valamint a „jelszó” paramétere megegyezik az alias által generált jelszóval.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ez a végpont szakasz még fejlesztés alatt áll, és (remélhetőleg) 2024-ben jelenik meg. Addig is kérjük, használjon egy IMAP klienst, amelyet a weboldalunk navigációjában található „Alkalmazások” legördülő menüből választhat.
 
-### Kapcsolatok listája {#list-contacts}
+### Kapcsolatok listázása {#list-contacts}
 
 > `GET /v1/contacts`
 
@@ -273,7 +273,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Hamarosan**
 
-### Kapcsolatfelvétel {#retrieve-contact}
+### Kapcsolat lekérése {#retrieve-contact}
 
 > `GET /v1/contacts/:id`
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias naptárak (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Más API végpontokkal ellentétben ezekhez alapvető jogosultságfejlécként a [Hitelesítés](#authentication) „felhasználónév” paramétere megegyezik az alias felhasználónevével, valamint a „jelszó” paramétere megegyezik az alias által generált jelszóval.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ez a végpont szakasz még fejlesztés alatt áll, és (remélhetőleg) 2024-ben jelenik meg. Addig is kérjük, használjon egy IMAP klienst, amelyet a weboldalunk navigációjában található „Alkalmazások” legördülő menüből választhat.
 
 ### Naptárak listázása {#list-calendars}
 
@@ -332,14 +332,14 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias üzenetek (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Más API végpontokkal ellentétben ezekhez alapvető jogosultságfejlécként a [Hitelesítés](#authentication) „felhasználónév” paramétere megegyezik az alias felhasználónevével, valamint a „jelszó” paramétere megegyezik az alias által generált jelszóval.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ez a végpont szakasz még fejlesztés alatt áll, és (remélhetőleg) 2024-ben jelenik meg. Addig is kérjük, használjon egy IMAP klienst, amelyet a weboldalunk navigációjában található „Alkalmazások” legördülő menüből választhat.
 
 Kérjük, győződjön meg róla, hogy követte a domain beállítására vonatkozó utasításokat.
 
-Ezek az utasítások a [Támogatja az IMAP-on keresztüli e-mail fogadást?](/faq#do-you-support-receiving-email-with-imap) GYIK részlegünkben találhatók.
+Ezek az utasítások a GYIK részben találhatók: [Támogatja az IMAP-on keresztüli e-mail fogadást?](/faq#do-you-support-receiving-email-with-imap).
 
 ### Üzenetek listázása és keresése {#list-and-search-for-messages}
 
@@ -350,7 +350,7 @@ Ezek az utasítások a [Támogatja az IMAP-on keresztüli e-mail fogadást?](/fa
 ### Üzenet létrehozása {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Ez **NEM** fog e-mailt küldeni – csak egyszerűen hozzáadja az üzenetet a postaláda mappájához (pl. ez hasonló az IMAP `APPEND` parancshoz). Ha e-mailt szeretne küldeni, akkor tekintse meg a [Kimenő SMTP e-mail létrehozása](#create-outbound-smtp-email) részt alább. Miután létrehozta a kimenő SMTP e-mailt, annak egy másolatát hozzáfűzheti az alias postaládájához tárolási célból.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Ezek az utasítások a [Támogatja az IMAP-on keresztüli e-mail fogadást?](/fa
 ## Alias mappák (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> A mappa végpontjai, amelyeknek a mappa elérési útja <code>/v1/folders/:path</code>, felcserélhetők a mappa azonosítójával <code>:id</code>. Ez azt jelenti, hogy a mappára a <code>path</code> vagy a <code>id</code> értékével is hivatkozhat.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Ez a végpont szakasz még fejlesztés alatt áll, és (remélhetőleg) 2024-ben jelenik meg. Addig is kérjük, használjon egy IMAP klienst, amelyet a weboldalunk navigációjában található „Alkalmazások” legördülő menüből választhat.
 
 ### Mappák listázása {#list-folders}
 
@@ -394,7 +394,7 @@ Ezek az utasítások a [Támogatja az IMAP-on keresztüli e-mail fogadást?](/fa
 
 **Hamarosan**
 
-### {#retrieve-folder}} mappa lekérése
+### Mappa lekérése {#retrieve-folder}
 
 > `GET /v1/folders/:id`
 
@@ -422,11 +422,11 @@ Ezek az utasítások a [Támogatja az IMAP-on keresztüli e-mail fogadást?](/fa
 
 Kérjük, győződjön meg róla, hogy követte a domain beállítására vonatkozó utasításokat.
 
-Ezek az utasítások a [Fiókom → Domainek → Beállítások → Kimenő SMTP konfiguráció](/my-account/domains) címen találhatók. Gondoskodnia kell a DKIM, a Return-Path és a DMARC beállításáról a kimenő SMTP küldéséhez a domainjével.
+Ezek az utasítások a [Fiókom → Domainek → Beállítások → Kimenő SMTP konfiguráció](/my-account/domains) címen találhatók. Gondoskodnia kell a DKIM, a Return-Path és a DMARC beállításáról a kimenő SMTP-üzenetek domainnel történő küldéséhez.
 
 ### Kimenő SMTP e-mail korlát lekérése {#get-outbound-smtp-email-limit}
 
-Ez egy egyszerű végpont, amely egy JSON objektumot ad vissza, amely a `count` és `limit` kódokat tartalmazza a napi SMTP kimenő üzenetek számára vonatkozóan, fiókonként.
+Ez egy egyszerű végpont, amely egy JSON objektumot ad vissza, amely a `count` és `limit` értékeket tartalmazza a napi SMTP kimenő üzenetek számára vonatkozóan fiókonként.
 
 > `GET /v1/emails/limit`
 
@@ -462,13 +462,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Kimenő SMTP e-mail létrehozása {#create-outbound-smtp-email}
 
-Az e-mailek létrehozására szolgáló API-nkat a Nodemailer üzenetküldési beállításainak konfigurációja ihlette és azt használja ki. Az alábbi összes törzsparamétert a [Nodemailer üzenetkonfiguráció](https://nodemailer.com/message/) hivatkozásban találja.
+Az e-mailek létrehozására szolgáló API-nkat a Nodemailer üzenetküldési beállításainak konfigurációja ihlette és azt használja ki. Kérjük, az összes alábbi törzsparaméter esetében a [Nodemailer üzenetkonfiguráció](https://nodemailer.com/message/) paramétert használja.
 
 Vegye figyelembe, hogy a `envelope` és `dkim` kivételével (mivel ezeket automatikusan beállítjuk), az összes Nodemailer opciót támogatjuk. Biztonsági okokból a `disableFileAccess` és `disableUrlAccess` opciókat automatikusan `true` értékre állítjuk.
 
-Vagy a `raw` egyetlen opcióját kell átadnod a nyers teljes e-maileddel, beleértve a fejléceket is, **vagy** az alábbi, különálló törzsparaméter-opciókat kell megadnod.
+Vagy a `raw` egyetlen opcióját kell átadnod a nyers, teljes e-maileddel, beleértve a fejléceket is, **vagy** az alábbi, különálló törzsparaméter-opciókat kell megadnod.
 
-Ez az API végpont automatikusan kódolja az emojikat, ha megtalálhatók a fejlécekben (pl. a `Subject: 🤓 Hello` tárgysor automatikusan `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`-ra konvertálódik). Célunk egy rendkívül fejlesztőbarát és becsapásbiztos e-mail API létrehozása volt.
+Ez az API végpont automatikusan kódolja az emojikat, ha megtalálhatók a fejlécekben (pl. a `Subject: 🤓 Hello` tárgysor automatikusan `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`-re konvertálódik). Célunk egy rendkívül fejlesztőbarát és becsapásbiztos e-mail API létrehozása volt.
 
 > `POST /v1/emails`
 
@@ -519,7 +519,7 @@ curl -X POST BASE_URI/v1/emails \
   -d "raw=`cat file.eml`"
 ```
 
-### Kimenő SMTP e-mailek lekérése {#retrieve-outbound-smtp-email}
+### Kimenő SMTP e-mail lekérése {#retrieve-outbound-smtp-email}
 
 > `GET /v1/emails/:id`
 
@@ -530,9 +530,9 @@ curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### Kimenő SMTP e-mailek törlése {#delete-outbound-smtp-email}
+### Kimenő SMTP e-mail törlése {#delete-outbound-smtp-email}
 
-Az e-mail törlése akkor és csak akkor állítja be az állapotot `"rejected"`-ra (és ezt követően nem dolgozza fel a sorban), ha az aktuális állapot a `"pending"`, `"queued"` vagy `"deferred"` egyike. Az e-maileket a létrehozásuk és/vagy elküldésük után 30 nappal automatikusan törölhetjük – ezért érdemes a kimenő SMTP e-mailekről másolatot tartani a kliensben, az adatbázisban vagy az alkalmazásban. Szükség esetén hivatkozhat az e-mail azonosító értékére az adatbázisában – ezt az értéket mind a [E-mail létrehozása](#create-email), mind a [E-mail lekérése](#retrieve-email) végpont visszaadja.
+Az e-mail törlése akkor és csak akkor állítja be az állapotot `"rejected"` értékre (és ezt követően nem dolgozza fel a sorban), ha az aktuális állapot a `"pending"`, `"queued"` vagy `"deferred"` egyike. Az e-maileket a létrehozásuk és/vagy elküldésük után 30 nappal automatikusan törölhetjük – ezért érdemes a kimenő SMTP e-mailekről másolatot tartani a kliensben, az adatbázisban vagy az alkalmazásban. Szükség esetén hivatkozhat az adatbázisban található e-mail azonosító értékünkre – ezt az értéket mind a [E-mail létrehozása](#create-email), mind a [E-mail lekérése](#retrieve-email) végpont visszaadja.
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Domainek {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> A <code>/v1/domains/:domain_name</code> domainnévvel rendelkező domainvégpontok felcserélhetők a <code>:domain_id</code> domainazonosítóval. Ez azt jelenti, hogy a domainre a <code>name</code> vagy a <code>id</code> értékével is hivatkozhat.
 
 ### Domainek listázása {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 2024. november 1-jétől a [Domainek listázása](#list-domains) és [Domain aliasok listázása](#list-domain-aliases) API-végpontjai alapértelmezés szerint `1000` maximális találatot fognak használni oldalanként. Ha korábban szeretné engedélyezni ezt a viselkedést, átadhatja a `?paginate=true` paramétert további lekérdezési karakterlánc paraméterként a végpont lekérdezésének URL-címéhez. További információkért lásd a [Lapszámozás](#pagination) részt.
 
 > `GET /v1/domains`
 
@@ -570,14 +570,14 @@ curl BASE_URI/v1/domains \
   -u API_TOKEN:
 ```
 
-### Domain létrehozása {#create-domain}
+### Tartomány létrehozása {#create-domain}
 
 > `POST /v1/domains`
 
 | Testparaméter | Kívánt | Típus | Leírás |
 | ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain` | Igen | Karakterlánc (FQDN vagy IP) | Teljesen minősített domainnév ("FQDN") vagy IP-cím |
-| `team_domain` | Nem | Karakterlánc (domainazonosító vagy tartománynév; FQDN) | Automatikusan rendelje hozzá ezt a domaint ugyanahhoz a csapathoz egy másik domainből. Ez azt jelenti, hogy a domain összes tagja csapattagként lesz hozzárendelve, és a `plan` is automatikusan `team` értékre lesz állítva. Szükség esetén beállíthatja ezt `"none"` értékre, hogy ezt kifejezetten letiltsa, de ez nem kötelező. |
+| `team_domain` | Nem | Karakterlánc (tartományazonosító vagy tartománynév; FQDN) | Automatikusan rendelje hozzá ezt a domaint ugyanahhoz a csapathoz egy másik domainből. Ez azt jelenti, hogy a domain összes tagja csapattagként lesz hozzárendelve, és a `plan` is automatikusan `team`-ra lesz állítva. Szükség esetén beállíthatja ezt `"none"`-ra, hogy ezt kifejezetten letiltsa, de ez nem kötelező. |
 | `plan` | Nem | Karakterlánc (felsorolható) | Előfizetés típusa (`"free"`, `"enhanced_protection"` vagy `"team"` kell lennie, alapértelmezett érték `"free"` vagy a felhasználó aktuális fizetős előfizetése, ha van ilyen) |
 | `catchall` | Nem | Karakterlánc (elválasztott e-mail címek) vagy logikai érték | Hozz létre egy alapértelmezett gyűjtőaliast, amelynek alapértelmezett értéke `true` (ha `true`, akkor az API-felhasználó e-mail címét használja címzettként, és ha `false`, akkor nem jön létre gyűjtőalias). Ha karakterláncot adsz meg, akkor az egy elválasztott lista az e-mail címekről, amelyeket címzettként kell használni (sortöréssel, szóközzel és/vagy vesszővel elválasztva). |
 | `has_adult_content_protection` | Nem | Logikai | Engedélyezze-e a Spam Scanner felnőtt tartalomvédelmét ezen a domainen |
@@ -670,7 +670,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
   -u API_TOKEN:
 ```
 
-### Frissítse a következő domaint: {#update-domain}
+### Tartomány frissítése {#update-domain}
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
@@ -724,7 +724,7 @@ curl BASE_URI/v1/domains/:domain_name/invites \
 
 | Testparaméter | Kívánt | Típus | Leírás |
 | -------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
-| `email` | Igen | Karakterlánc (e-mail) | A domain tagok listájára meghívandó e-mail cím |
+| `email` | Igen | Karakterlánc (e-mail) | A domain tagjainak listájára meghívandó e-mail cím |
 | `group` | Igen | Karakterlánc (felsorolható) | A felhasználó domain tagságához hozzáadandó csoport (lehet `"admin"` vagy `"user"`) |
 
 > Példa kérés:
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Ha a meghívott felhasználó már elfogadott tagja bármely más domainnek, amelynek a meghívót küldő adminisztrátor is tagja, akkor a rendszer automatikusan elfogadja a meghívást, és nem küld e-mailt.
 
 ### Domain meghívó eltávolítása {#remove-domain-invite}
 
@@ -756,7 +756,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/invites \
 
 ## Tagok {#members}
 
-### A(z) {#update-domain-member} domaintag frissítése
+### Tartománytag frissítése {#update-domain-member}
 
 > `PUT /v1/domains/DOMAIN_NAME/members/MEMBER_ID`
 
@@ -771,7 +771,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME/members/MEMBER_ID \
   -u API_TOKEN:
 ```
 
-### Domaintag eltávolítása {#remove-domain-member}
+### Tartománytag eltávolítása {#remove-domain-member}
 
 > `DELETE /v1/domains/:domain_name/members/:member_id`
 
@@ -782,7 +782,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
   -u API_TOKEN:
 ```
 
-## Álnevek {#aliases}
+## Aliasok {#aliases}
 
 ### Alias jelszó létrehozása {#generate-an-alias-password}
 
@@ -804,10 +804,10 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
   -u API_TOKEN:
 ```
 
-### Domain aliasok listája {#list-domain-aliases}
+### Domainaliasok listázása {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 2024. november 1-jétől a [Domainek listázása](#list-domains) és [Domain aliasok listázása](#list-domain-aliases) API-végpontjai alapértelmezés szerint `1000` maximális találatot fognak használni oldalanként. Ha korábban szeretné engedélyezni ezt a viselkedést, átadhatja a `?paginate=true` paramétert további lekérdezési karakterlánc paraméterként a végpont lekérdezésének URL-címéhez. További információkért lásd a [Lapszámozás](#pagination) részt.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -844,8 +844,8 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `has_pgp` | Nem | Logikai | Engedélyezze vagy tiltsa le a [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) elemet a [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) elemhez a' `public_key` alias használatával. |
 | `public_key` | Nem | Húr | OpenPGP nyilvános kulcs ASCII Armor formátumban ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); pl. GPG kulcs a `support@forwardemail.net`-hoz). Ez csak akkor érvényes, ha a `has_pgp` értéke `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Nem | Húr | Maximális tárhelykvóta ehhez az aliashoz. Hagyja üresen a domain aktuális maximális kvótájának visszaállításához, vagy adjon meg egy értéket, például „1 GB”, amelyet a [bytes](https://github.com/visionmedia/bytes.js) elemezni fog. Ezt az értéket csak a domain adminisztrátorai módosíthatják. |
-| `vacation_responder_is_enabled` | Nem | Logikai | Engedélyezze vagy letiltja az automatikus vakáció válaszadót. |
-| `vacation_responder_start_date` | Nem | Húr | A vakációs válasz kezdő dátuma (ha engedélyezve van, és itt nincs beállítva kezdő dátum, akkor feltételezi, hogy már elindult). Támogatott dátumformátumok, például `MM/DD/YYYY`, `YYYY-MM-DD` és más dátumformátumok intelligens elemzéssel, `dayjs` használatával. |
+| `vacation_responder_is_enabled` | Nem | Logikai | Az automatikus vakációs válasz engedélyezése vagy letiltása. |
+| `vacation_responder_start_date` | Nem | Húr | Az automatikus válaszadó kezdési dátuma (ha engedélyezve van, és itt nincs beállítva kezdési dátum, akkor feltételezi, hogy már elindult). Támogatott dátumformátumok, például `MM/DD/YYYY`, `YYYY-MM-DD` és más dátumformátumok intelligens elemzéssel, `dayjs` használatával. |
 | `vacation_responder_end_date` | Nem | Húr | Az automatikus válaszadó befejező dátuma (ha engedélyezve van, és itt nincs beállítva befejező dátum, akkor azt feltételezi, hogy soha nem ér véget, és örökre válaszol). Támogatjuk a `MM/DD/YYYY`, `YYYY-MM-DD` és más dátumformátumokat intelligens elemzéssel, `dayjs` használatával. |
 | `vacation_responder_subject` | Nem | Húr | A tárgy szöveges formában jelenik meg az automatikus válaszban, pl. „Távol vagyok”. A `striptags` kódot használjuk az összes HTML eltávolítására. |
 | `vacation_responder_message` | Nem | Húr | Egyszerű szöveges üzenet az automatikus válaszadónak, pl. „Februárig nem leszek az irodában.”. A `striptags` kódot használjuk az összes HTML eltávolítására. |
@@ -857,7 +857,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 
-### Domain alias lekérése {#retrieve-domain-alias}
+### Domainalias lekérése {#retrieve-domain-alias}
 
 Egy domain aliast a `id` vagy a `name` értéke alapján kérhet le.
 
@@ -896,8 +896,8 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `has_pgp` | Nem | Logikai | Engedélyezze vagy tiltsa le a [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) elemet a [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) elemhez a' `public_key` alias használatával. |
 | `public_key` | Nem | Húr | OpenPGP nyilvános kulcs ASCII Armor formátumban ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); pl. GPG kulcs a `support@forwardemail.net`-hoz). Ez csak akkor érvényes, ha a `has_pgp` értéke `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Nem | Húr | Maximális tárhelykvóta ehhez az aliashoz. Hagyja üresen a domain aktuális maximális kvótájának visszaállításához, vagy adjon meg egy értéket, például „1 GB”, amelyet a [bytes](https://github.com/visionmedia/bytes.js) elemezni fog. Ezt az értéket csak a domain adminisztrátorai módosíthatják. |
-| `vacation_responder_is_enabled` | Nem | Logikai | Engedélyezze vagy letiltja az automatikus vakáció válaszadót. |
-| `vacation_responder_start_date` | Nem | Húr | A vakációs válasz kezdő dátuma (ha engedélyezve van, és itt nincs beállítva kezdő dátum, akkor feltételezi, hogy már elindult). Támogatott dátumformátumok, például `MM/DD/YYYY`, `YYYY-MM-DD` és más dátumformátumok intelligens elemzéssel, `dayjs` használatával. |
+| `vacation_responder_is_enabled` | Nem | Logikai | Az automatikus vakációs válasz engedélyezése vagy letiltása. |
+| `vacation_responder_start_date` | Nem | Húr | Az automatikus válaszadó kezdési dátuma (ha engedélyezve van, és itt nincs beállítva kezdési dátum, akkor feltételezi, hogy már elindult). Támogatott dátumformátumok, például `MM/DD/YYYY`, `YYYY-MM-DD` és más dátumformátumok intelligens elemzéssel, `dayjs` használatával. |
 | `vacation_responder_end_date` | Nem | Húr | Az automatikus válaszadó befejező dátuma (ha engedélyezve van, és itt nincs beállítva befejező dátum, akkor azt feltételezi, hogy soha nem ér véget, és örökre válaszol). Támogatjuk a `MM/DD/YYYY`, `YYYY-MM-DD` és más dátumformátumokat intelligens elemzéssel, `dayjs` használatával. |
 | `vacation_responder_subject` | Nem | Húr | A tárgy szöveges formában jelenik meg az automatikus válaszban, pl. „Távol vagyok”. A `striptags` kódot használjuk az összes HTML eltávolítására. |
 | `vacation_responder_message` | Nem | Húr | Egyszerű szöveges üzenet az automatikus válaszadónak, pl. „Februárig nem leszek az irodában.”. A `striptags` kódot használjuk az összes HTML eltávolítására. |
@@ -922,9 +922,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Titkosítás {#encrypt}
 
-Lehetővé tesszük a rekordok ingyenes titkosítását még az ingyenes csomagban is. Az adatvédelem nem lehet funkció, hanem a termék minden aspektusába beépített rész. Ahogy azt a [Adatvédelmi útmutatók megbeszélése](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)-ben és a [GitHub-problémáink](https://github.com/forwardemail/forwardemail.net/issues/254)-ban is erősen kérték, ezt hozzáadtuk.
+Lehetővé tesszük a rekordok ingyenes titkosítását még az ingyenes csomagban is. Az adatvédelemnek nem szabadna funkciónak lennie, hanem a termék minden aspektusába beépítettnek. Ahogy azt a [Adatvédelmi útmutatók megbeszélése](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) és a [GitHub-problémáink](https://github.com/forwardemail/forwardemail.net/issues/254) csomagokban is erősen kérték, ezt hozzáadtuk.
 
-### TXT-rekord titkosítása {#encrypt-txt-record}
+### TXT rekord titkosítása {#encrypt-txt-record}
 
 > `POST /v1/encrypt`
 

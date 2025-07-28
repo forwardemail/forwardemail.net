@@ -45,11 +45,11 @@ Die Architektur umfasst Container für:
 * SQLite für sichere, verschlüsselte Postfachspeicherung
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+> Schauen Sie sich unbedingt unseren [selbst gehosteter Blog](https://forwardemail.net/blog/docs/self-hosted-solution) an.
 >
-> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Wer eine detailliertere Schritt-für-Schritt-Anleitung sucht, findet in unseren Anleitungen [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) und [Debian](https://forwardemail.net/guides/selfhosted-on-debian) weitere Informationen.
 
-## Voraussetzungen {#requirements}
+## Anforderungen {#requirements}
 
 Stellen Sie vor dem Ausführen des Installationsskripts sicher, dass Sie über Folgendes verfügen:
 
@@ -59,11 +59,11 @@ Stellen Sie vor dem Ausführen des Installationsskripts sicher, dass Sie über F
 * **Domänenname**: Eine benutzerdefinierte Domäne, bereit für die DNS-Konfiguration.
 * **Saubere IP-Adresse**: Stellen Sie sicher, dass Ihr Server eine saubere IP-Adresse ohne Spam-Reputation hat, indem Sie Blacklists prüfen. Weitere Informationen: [Hier](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
 * Öffentliche IP-Adresse mit Unterstützung für Port 25
-* Möglichkeit zur Einstellung von [umgekehrter PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)
+* Möglichkeit, [umgekehrter PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) festzulegen
 * IPv4- und IPv6-Unterstützung
 
 > \[!TIP]
-> See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
+> Sehen Sie sich unsere Liste mit [tolle Mailserver-Anbieter](https://github.com/forwardemail/awesome-mail-server-providers) an
 
 ### Cloud-Init / Benutzerdaten {#cloud-init--user-data}
 
@@ -75,7 +75,7 @@ Die meisten Cloud-Anbieter unterstützen eine Cloud-Init-Konfiguration für die 
 * `DOMAIN` – Benutzerdefinierte Domain (z. B. `example.com`) für die Einrichtung des Self-Hostings
 * `AUTH_BASIC_USERNAME` – Benutzername für die Ersteinrichtung zum Schutz der Website
 * `AUTH_BASIC_PASSWORD` – Passwort für die Ersteinrichtung zum Schutz der Website
-* `/root/.cloudflare.ini` – (**Nur für Cloudflare-Nutzer**) Cloudflare-Konfigurationsdatei, die Certbot für die DNS-Konfiguration verwendet. Sie müssen Ihren API-Token über `dns_cloudflare_api_token` einrichten. Weitere Informationen finden Sie unter [Hier](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+* `/root/.cloudflare.ini` – (**Nur für Cloudflare-Nutzer**) Cloudflare-Konfigurationsdatei, die Certbot für die DNS-Konfiguration verwendet. Sie müssen Ihren API-Token über `dns_cloudflare_api_token` festlegen. Weitere Informationen finden Sie unter [Hier](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 
 Beispiel:
 
@@ -106,7 +106,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### Debug-Installationsskript {#debug-install-script}
 
-Fügen Sie vor dem Installationsskript `DEBUG=true` hinzu, um eine ausführliche Ausgabe zu erhalten:
+Fügen Sie `DEBUG=true` vor dem Installationsskript hinzu, um eine ausführliche Ausgabe zu erhalten:
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -127,14 +127,14 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 * **Ersteinrichtung**: Laden Sie den neuesten Code zur E-Mail-Weiterleitung herunter, konfigurieren Sie die Umgebung, geben Sie Ihre benutzerdefinierte Domäne ein und richten Sie alle erforderlichen Zertifikate, Schlüssel und Geheimnisse ein.
 * **Backup einrichten**: Richtet einen Cron-Befehl ein, um MongoDB und Redis mithilfe eines S3-kompatiblen Speichers für sichere Remote-Speicherung zu sichern. SQLite wird bei der Anmeldung separat gesichert, falls Änderungen für sichere, verschlüsselte Backups vorgenommen werden.
 * **Upgrade einrichten**: Richten Sie einen Cron-Befehl ein, um nächtliche Updates zu prüfen und Infrastrukturkomponenten sicher wiederherzustellen und neu zu starten.
-* **Zertifikate erneuern**: Certbot / Lets Encrypt wird für SSL-Zertifikate verwendet, deren Schlüssel alle 3 Monate ablaufen. Dadurch werden die Zertifikate für Ihre Domäne erneuert und im entsprechenden Ordner abgelegt, damit die zugehörigen Komponenten sie nutzen können. Siehe [wichtige Dateipfade](#important-file-paths)
+* **Zertifikate erneuern**: Certbot/Lets Encrypt wird für SSL-Zertifikate verwendet, deren Schlüssel alle 3 Monate ablaufen. Dadurch werden die Zertifikate für Ihre Domäne erneuert und im entsprechenden Ordner abgelegt, damit die zugehörigen Komponenten sie nutzen können. Siehe [wichtige Dateipfade](#important-file-paths).
 * **Aus Backup wiederherstellen**: Löst die Wiederherstellung von MongoDB und Redis aus Backup-Daten aus.
 
 ### Ersteinrichtung (Option 1) {#initial-setup-option-1}
 
 Wählen Sie zum Beginnen die Option `1. Initial setup`.
 
-Nach Abschluss sollte eine Erfolgsmeldung angezeigt werden. Sie können auch `docker ps` ausführen, um die **** Komponenten hochzufahren. Weitere Informationen zu den Komponenten finden Sie weiter unten.
+Nach Abschluss sollte eine Erfolgsmeldung angezeigt werden. Sie können auch `docker ps` ausführen, um die **Komponenten** hochzufahren. Weitere Informationen zu den Komponenten finden Sie weiter unten.
 
 ## Dienste {#services}
 
@@ -173,8 +173,8 @@ Hinweis: Der unten stehende *Hostpfad* ist relativ zu `/root/forwardemail.net/se
 | Privater DKIM-Schlüssel | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
 
 > \[!IMPORTANT]
-> Save the `.env` file securely. It is critical for recovery in case of failure.
-> You can find this in `/root/forwardemail.net/self-hosting/.env`.
+> Speichern Sie die Datei `.env` sicher. Sie ist für die Wiederherstellung im Fehlerfall unerlässlich.
+> Sie finden sie in `/root/forwardemail.net/self-hosting/.env`.
 
 ## Konfiguration {#configuration}
 
@@ -204,7 +204,7 @@ Reverse DNS (rDNS) oder Reverse Pointer Records (PTR-Records) sind für E-Mail-S
 
 Einige ISPs und Cloud-Anbieter blockieren Port 25, um böswillige Akteure zu verhindern. Möglicherweise müssen Sie ein Support-Ticket einreichen, um Port 25 für SMTP/ausgehende E-Mails freizugeben.
 
-## Onboarding {#onboarding}
+## Einarbeitung {#onboarding}
 
 1. Öffnen Sie die Landingpage. Navigieren Sie zu https\://\<Domänenname> und ersetzen Sie \<Domänenname> durch die in Ihren DNS-Einstellungen konfigurierte Domäne. Die Landingpage „E-Mail weiterleiten“ sollte angezeigt werden.
 
@@ -220,7 +220,7 @@ Einige ISPs und Cloud-Anbieter blockieren Port 25, um böswillige Akteure zu ver
 * Konfigurieren Sie optional **SMTP für ausgehende E-Mails** in den **Domäneneinstellungen**. Hierfür sind zusätzliche DNS-Einträge erforderlich.
 
 > \[!NOTE]
-> No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
+> Es werden keine Informationen außerhalb Ihres Servers gesendet. Die selbst gehostete Option und das Startkonto dienen lediglich dem Administrator-Login und der Webansicht zur Verwaltung von Domänen, Aliasen und zugehörigen E-Mail-Konfigurationen.
 
 ## Testen {#testing}
 
@@ -267,9 +267,9 @@ Nach der Konfiguration sollten Sie in der Lage sein, E-Mails an Ihre neu erstell
 
 #### Warum funktioniert das nicht außerhalb von Ubuntu und Debian {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Wir arbeiten derzeit an der Unterstützung von macOS und werden uns auch um weitere Betriebssysteme kümmern. Bitte öffnen Sie ein [Diskussion](https://github.com/orgs/forwardemail/discussions) oder leisten Sie einen Beitrag, wenn Sie möchten, dass auch andere unterstützt werden.
+Wir arbeiten derzeit an der Unterstützung von macOS und werden uns auch um weitere Betriebssysteme kümmern. Bitte öffnen Sie ein [Diskussion](https://github.com/orgs/forwardemail/discussions) oder leisten Sie einen Beitrag, wenn Sie möchten, dass auch andere Betriebssysteme unterstützt werden.
 
-#### Warum schlägt die Certbot Acme-Challenge fehl? {#why-is-the-certbot-acme-challenge-failing}
+#### Warum schlägt die Certbot-Acme-Challenge fehl? {#why-is-the-certbot-acme-challenge-failing}
 
 Die häufigste Falle besteht darin, dass Certbot/Letsencrypt manchmal **2** Challenges anfordert. Sie müssen unbedingt **BEIDE** TXT-Einträge hinzufügen.
 
@@ -278,19 +278,19 @@ Sie sehen möglicherweise zwei Herausforderungen wie diese:
 \_acme-challenge.example.com -> "randomstring1"
 \_acme-challenge.example.com -> "randomstring2"
 
-Es ist auch möglich, dass die DNS-Propagierung noch nicht abgeschlossen ist. Sie können Tools wie `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>` verwenden. Dies gibt Ihnen Aufschluss darüber, ob Ihre TXT-Eintragsänderungen berücksichtigt werden sollten. Es ist auch möglich, dass der lokale DNS-Cache auf Ihrem Host noch einen alten, veralteten Wert verwendet oder die letzten Änderungen nicht übernommen hat.
+Es ist auch möglich, dass die DNS-Verbreitung noch nicht abgeschlossen ist. Sie können Tools wie `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>` verwenden. Dies gibt Ihnen Aufschluss darüber, ob Ihre TXT-Eintragsänderungen berücksichtigt werden sollten. Es ist auch möglich, dass der lokale DNS-Cache auf Ihrem Host noch einen alten, veralteten Wert verwendet oder die letzten Änderungen nicht übernommen hat.
 
-Alternativ können Sie die automatisierten Cerbot-DNS-Änderungen nutzen, indem Sie die Datei `/root/.cloudflare.ini` mit dem API-Token in Ihren Cloud-Init-/Benutzerdaten bei der ersten VPS-Einrichtung setzen oder diese Datei erstellen und das Skript erneut ausführen. Dadurch werden die DNS-Änderungen und Challenge-Updates automatisch verwaltet.
+Alternativ können Sie die automatisierten Cerbot-DNS-Änderungen nutzen, indem Sie die Datei `/root/.cloudflare.ini` mit dem API-Token in Ihren Cloud-Init-/Benutzerdaten bei der Ersteinrichtung Ihres VPS festlegen oder diese Datei erstellen und das Skript erneut ausführen. Dadurch werden die DNS-Änderungen und Challenge-Updates automatisch verwaltet.
 
-### Wie lauten Benutzername und Passwort für die Basisauthentifizierung {#what-is-the-basic-auth-username-and-password}
+### Wie lauten der Benutzername und das Passwort für die Basisauthentifizierung {#what-is-the-basic-auth-username-and-password}
 
-Für das Self-Hosting fügen wir beim ersten Mal ein natives Browser-Authentifizierungs-Popup mit einem einfachen Benutzernamen (`admin`) und einem zufällig generierten Passwort bei der Ersteinrichtung hinzu. Dies dient lediglich als Schutz für den Fall, dass Automatisierungen/Scraper Sie bei der ersten Anmeldung im Web-Erlebnis überholen. Sie finden dieses Passwort nach der Ersteinrichtung in Ihrer Datei `.env` unter `AUTH_BASIC_USERNAME` und `AUTH_BASIC_PASSWORD`.
+Für das Self-Hosting fügen wir beim ersten Mal ein natives Browser-Authentifizierungs-Popup mit einem einfachen Benutzernamen (`admin`) und einem zufällig generierten Passwort bei der Ersteinrichtung hinzu. Dies dient lediglich als Schutz für den Fall, dass Automatisierungs-/Scraper-Programme Ihre Anmeldung im Web-Erlebnis überlisten. Sie finden dieses Passwort nach der Ersteinrichtung in Ihrer Datei `.env` unter `AUTH_BASIC_USERNAME` und `AUTH_BASIC_PASSWORD`.
 
-### Wie erkenne ich, was ausgeführt wird {#how-do-i-know-what-is-running}
+### Wie erkenne ich, was ausgeführt wird? {#how-do-i-know-what-is-running}
 
 Sie können `docker ps` ausführen, um alle laufenden Container anzuzeigen, die aus der Datei `docker-compose-self-hosting.yml` gestartet werden. Sie können auch `docker ps -a` ausführen, um alles anzuzeigen (einschließlich nicht laufender Container).
 
-### Wie erkenne ich, dass etwas nicht läuft, das eigentlich {#how-do-i-know-if-something-isnt-running-that-should-be} laufen sollte?
+### Wie erkenne ich, ob etwas nicht läuft, das eigentlich laufen sollte? {#how-do-i-know-if-something-isnt-running-that-should-be}
 
 Sie können `docker ps -a` ausführen, um alles anzuzeigen (einschließlich nicht laufender Container). Möglicherweise wird ein Exit-Protokoll oder eine Notiz angezeigt.
 
@@ -302,7 +302,7 @@ Innerhalb der Web-Benutzeroberfläche können Sie `/admin/emails` und `/admin/lo
 
 ### Warum kommt es bei meinen ausgehenden E-Mails zu einer Zeitüberschreitung? {#why-are-my-outgoing-emails-timing-out}
 
-Wenn beim Verbinden mit dem MX-Server die Meldung „Verbindungs-Timeout“ angezeigt wird, prüfen Sie, ob Port 25 blockiert ist. ISPs oder Cloud-Anbieter blockieren diesen Port häufig standardmäßig. Sie müssen sich dann an den Support wenden oder ein Ticket erstellen, um die Sperre zu öffnen.
+Wenn beim Verbinden mit dem MX-Server die Meldung „Verbindungs-Timeout“ angezeigt wird, sollten Sie prüfen, ob Port 25 blockiert ist. ISPs oder Cloud-Anbieter blockieren diesen Port häufig standardmäßig. Sie müssen sich dann an den Support wenden oder ein Ticket erstellen, um die Sperre zu öffnen.
 
 #### Welche Tools sollte ich verwenden, um Best Practices für die E-Mail-Konfiguration und die IP-Reputation zu testen? {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 

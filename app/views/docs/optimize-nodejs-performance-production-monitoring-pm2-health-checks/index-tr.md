@@ -1,33 +1,33 @@
 # Node.js Üretim Altyapısı Nasıl Optimize Edilir: En İyi Uygulamalar {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="tembel" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 
 * [Önsöz](#foreword)
-* [%573 Tek Çekirdek Performans Optimizasyon Devrimimiz](#our-573-single-core-performance-optimization-revolution)
+* [%573 Tek Çekirdek Performans Optimizasyonu Devrimimiz](#our-573-single-core-performance-optimization-revolution)
   * [Node.js için Tek Çekirdek Performans Optimizasyonunun Önemi](#why-single-core-performance-optimization-matters-for-nodejs)
   * [İlgili İçerik](#related-content)
-* [Node.js Üretim Ortamı Kurulumu: Teknoloji Yığını](#nodejs-production-environment-setup-our-technology-stack)
+* [Node.js Üretim Ortamı Kurulumu: Teknoloji Yığınımız](#nodejs-production-environment-setup-our-technology-stack)
   * [Paket Yöneticisi: Üretim Verimliliği için pnpm](#package-manager-pnpm-for-production-efficiency)
   * [Web Çerçevesi: Modern Node.js Üretimi için Koa](#web-framework-koa-for-modern-nodejs-production)
   * [Arka Plan İş İşleme: Üretim Güvenilirliği için Bree](#background-job-processing-bree-for-production-reliability)
   * [Hata İşleme: Üretim Güvenilirliği için @hapi/boom](#error-handling-hapiboom-for-production-reliability)
-* [Üretimde Node.js Uygulamaları Nasıl İzlenir](#how-to-monitor-nodejs-applications-in-production)
+* [Üretimde Node.js Uygulamaları Nasıl İzlenir?](#how-to-monitor-nodejs-applications-in-production)
   * [Sistem Düzeyinde Node.js Üretim İzleme](#system-level-nodejs-production-monitoring)
   * [Node.js Üretimi için Uygulama Düzeyinde İzleme](#application-level-monitoring-for-nodejs-production)
   * [Uygulamaya Özel İzleme](#application-specific-monitoring)
 * [PM2 Sağlık Kontrolleriyle Node.js Üretim İzleme](#nodejs-production-monitoring-with-pm2-health-checks)
   * [PM2 Sağlık Kontrol Sistemimiz](#our-pm2-health-check-system)
-  * [PM2 Üretim Yapılandırmamız](#our-pm2-production-configuration)
+  * [PM2 Üretim Konfigürasyonumuz](#our-pm2-production-configuration)
   * [Otomatik PM2 Dağıtımı](#automated-pm2-deployment)
 * [Üretim Hatası İşleme ve Sınıflandırma Sistemi](#production-error-handling-and-classification-system)
-  * [Üretim için isCodeBug Uygulamamız](#our-iscodebug-implementation-for-production)
+  * [Üretim İçin isCodeBug Uygulamamız](#our-iscodebug-implementation-for-production)
   * [Üretim Kaydımızla Entegrasyon](#integration-with-our-production-logging)
   * [İlgili İçerik](#related-content-1)
 * [v8-profiler-next ve cpupro ile Gelişmiş Performans Hata Ayıklama](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
   * [Node.js Üretimi için Profilleme Yaklaşımımız](#our-profiling-approach-for-nodejs-production)
-  * [Yığın Anlık Görüntü Analizini Nasıl Uyguluyoruz](#how-we-implement-heap-snapshot-analysis)
+  * [Yığın Anlık Görüntü Analizini Nasıl Uyguluyoruz?](#how-we-implement-heap-snapshot-analysis)
   * [Performans Hata Ayıklama İş Akışı](#performance-debugging-workflow)
   * [Node.js Uygulamanız için Önerilen Uygulama](#recommended-implementation-for-your-nodejs-application)
   * [Üretim İzleme Sistemimizle Entegrasyon](#integration-with-our-production-monitoring)
@@ -40,7 +40,7 @@
   * [Node.js Üretimi için SQLite Uygulaması](#sqlite-implementation-for-nodejs-production)
   * [Node.js Üretimi için MongoDB Uygulaması](#mongodb-implementation-for-nodejs-production)
 * [Node.js Üretim Arkaplan İş İşleme](#nodejs-production-background-job-processing)
-  * [Üretim için Bree Sunucu Kurulumumuz](#our-bree-server-setup-for-production)
+  * [Üretim İçin Bree Sunucu Kurulumumuz](#our-bree-server-setup-for-production)
   * [Üretim İş Örnekleri](#production-job-examples)
   * [Node.js Üretimi için İş Planlama Modellerimiz](#our-job-scheduling-patterns-for-nodejs-production)
 * [Üretim Node.js Uygulamaları için Otomatik Bakım](#automated-maintenance-for-production-nodejs-applications)
@@ -62,21 +62,21 @@
 
 ## Önsöz {#foreword}
 
-Forward Email'de, Node.js üretim ortamı kurulumumuzu mükemmelleştirmek için yıllar harcadık. Bu kapsamlı kılavuz, savaşta test edilmiş Node.js üretim dağıtım en iyi uygulamalarımızı paylaşarak, performans optimizasyonuna, izlemeye ve Node.js uygulamalarını milyonlarca günlük işlemi idare edecek şekilde ölçeklendirme konusunda öğrendiğimiz derslere odaklanıyor.
+Forward Email olarak, Node.js üretim ortamı kurulumumuzu mükemmelleştirmek için yıllar harcadık. Bu kapsamlı kılavuz, Node.js üretim dağıtımında en iyi uygulamalarımızı paylaşıyor ve performans optimizasyonu, izleme ve Node.js uygulamalarını milyonlarca günlük işlemi yönetecek şekilde ölçeklendirme konusunda edindiğimiz derslere odaklanıyor.
 
 ## %573 Tek Çekirdek Performans Optimizasyonu Devrimimiz {#our-573-single-core-performance-optimization-revolution}
 
-Intel'den AMD Ryzen işlemcilere geçtiğimizde Node.js uygulamalarımızda **%573'lük bir performans iyileştirmesi** elde ettik. Bu sadece küçük bir iyileştirme değildi; Node.js uygulamalarımızın üretimde nasıl performans gösterdiğini temelden değiştirdi ve herhangi bir Node.js uygulaması için tek çekirdek performans iyileştirmesinin önemini gösteriyor.
+Intel'den AMD Ryzen işlemcilere geçiş yaptığımızda, Node.js uygulamalarımızda **%573'lük bir performans artışı** elde ettik. Bu, yalnızca küçük bir iyileştirme değildi; Node.js uygulamalarımızın üretimdeki performansını temelden değiştirdi ve tüm Node.js uygulamaları için tek çekirdek performans optimizasyonunun önemini ortaya koydu.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Node.js üretim dağıtımının en iyi uygulamaları için donanım seçimi kritik öneme sahiptir. JavaScript yürütmesi tek iş parçacıklı olduğundan, tek çekirdek performansı Node.js uygulamaları için hayati önem taşıdığından, AMD Ryzen kullanılabilirliği nedeniyle özellikle DataPacket barındırma hizmetini seçtik.
 
 ### Node.js için Tek Çekirdek Performans Optimizasyonunun Önemi {#why-single-core-performance-optimization-matters-for-nodejs}
 
-Intel'den AMD Ryzen'a geçişimiz şu sonuçları verdi:
+Intel'den AMD Ryzen'a geçişimiz şu sonuçları doğurdu:
 
 * İstek işlemede **%573 performans iyileştirmesi** ([Durum sayfamızın GitHub Sorunu #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **İşlem gecikmeleri ortadan kaldırıldı** ve neredeyse anında yanıtlar sağlandı ([GitHub Sorunu #298](https://github.com/forwardemail/forwardemail.net/issues/298)'de belirtilmiştir)
+* **İşlem gecikmeleri ortadan kaldırıldı** ve neredeyse anında yanıtlar sağlandı ([GitHub Sorunu #298](https://github.com/forwardemail/forwardemail.net/issues/298]'de belirtilmiştir)
 * **Node.js üretim ortamları için daha iyi fiyat-performans oranı**
 * **Tüm uygulama uç noktalarımızda iyileştirilmiş yanıt süreleri**
 
@@ -87,25 +87,25 @@ Performans artışı o kadar önemliydi ki, ister web uygulamaları, ister API'l
 Altyapı seçeneklerimiz hakkında daha fazla bilgi için şuraya göz atın:
 
 * [En İyi E-posta Yönlendirme Hizmeti](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Performans karşılaştırmaları bölümünde belgelenmiştir)
-* [Kendi Kendine Barındırılan Çözüm](https://forwardemail.net/blog/docs/self-hosted-solution) - Donanım önerileri
+* [Kendinden Barındırılan Çözüm](https://forwardemail.net/blog/docs/self-hosted-solution) - Donanım önerileri
 
 ## Node.js Üretim Ortamı Kurulumu: Teknoloji Yığınımız {#nodejs-production-environment-setup-our-technology-stack}
 
-Node.js üretim dağıtım en iyi uygulamalarımız, yılların üretim deneyimine dayalı bilinçli teknoloji seçimlerini içerir. İşte kullandığımız şey ve bu seçimlerin herhangi bir Node.js uygulamasına neden uygulandığı:
+Node.js üretim dağıtım en iyi uygulamalarımız, yılların üretim deneyimine dayanan bilinçli teknoloji seçimlerini içerir. Kullandığımız teknolojiler ve bu seçimlerin herhangi bir Node.js uygulaması için neden geçerli olduğu aşağıda açıklanmıştır:
 
 ### Paket Yöneticisi: Üretim Verimliliği için pnpm {#package-manager-pnpm-for-production-efficiency}
 
 **Ne kullanıyoruz:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (sabitlenmiş sürüm)
 
-Node.js üretim ortamı kurulumumuz için npm ve yarn yerine pnpm'yi seçtik çünkü:
+Node.js üretim ortamı kurulumumuzda npm ve yarn yerine pnpm'i seçtik çünkü:
 
-* CI/CD hatlarında **Daha hızlı kurulum süreleri**
-* Sert bağlantı yoluyla **Disk alanı verimliliği**
-* Hayali bağımlılıkları önleyen **Sıkı bağımlılık çözümü**
-* Üretim dağıtımlarında **Daha iyi performans**
+* CI/CD süreçlerinde **daha hızlı kurulum süreleri**
+* Sabit bağlantı sayesinde **disk alanı verimliliği**
+* Hayali bağımlılıkları önleyen **sıkı bağımlılık çözümü**
+* Üretim dağıtımlarında **daha iyi performans**
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Node.js üretim dağıtım en iyi uygulamalarımızın bir parçası olarak, tüm ortamlarda ve ekip üyelerinin makinelerinde tutarlı davranış sağlamak için pnpm gibi kritik araçların tam sürümlerini sabitliyoruz.
 
 **Uygulama detayları:**
 
@@ -120,9 +120,9 @@ Node.js üretim ortamı kurulumumuz için npm ve yarn yerine pnpm'yi seçtik ç�
 * [`@koa/multer`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [`@ladjs/koa-simple-ratelimit`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Node.js üretim altyapımız için Express yerine Koa'yı seçtik çünkü modern async/await desteği ve daha temiz ara yazılım bileşimi vardı. Kurucumuz Nick Baugh hem Express'e hem de Koa'ya katkıda bulunarak üretim kullanımı için her iki çerçeveye dair derinlemesine bir içgörü sağladı.
+Node.js üretim altyapımız için Express yerine Koa'yı seçtik çünkü modern asenkron/bekleme desteği ve daha temiz ara yazılım yapısı sunuyor. Kurucumuz Nick Baugh, hem Express hem de Koa'ya katkıda bulunarak, her iki çerçevenin de üretimde kullanımı hakkında derinlemesine bilgi edinmemizi sağladı.
 
-Bu kalıplar, REST API'leri, GraphQL sunucuları, web uygulamaları veya mikro hizmetler oluşturuyor olmanızdan bağımsız olarak geçerlidir.
+Bu kalıplar, REST API'leri, GraphQL sunucuları, web uygulamaları veya mikro hizmetler oluşturuyor olsanız da geçerlidir.
 
 **Uygulama örneklerimiz:**
 
@@ -147,16 +147,16 @@ Bree'yi oluşturduk ve sürdürdük çünkü mevcut iş zamanlayıcıları, üre
 
 **Ne kullanıyoruz:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
-Node.js üretim uygulamalarımızda yapılandırılmış hata yanıtları için @hapi/boom kullanıyoruz. Bu desen, tutarlı hata işleme gerektiren herhangi bir Node.js uygulaması için işe yarar.
+Node.js üretim uygulamalarımızda yapılandırılmış hata yanıtları için @hapi/boom kullanıyoruz. Bu kalıp, tutarlı hata yönetimi gerektiren tüm Node.js uygulamaları için uygundur.
 
 **Uygulama örneklerimiz:**
 
 * [Hata sınıflandırma yardımcısı](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
-* [Logger uygulaması](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
+* [Kaydedici uygulaması](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
 ## Üretimde Node.js Uygulamaları Nasıl İzlenir? {#how-to-monitor-nodejs-applications-in-production}
 
-Üretimde Node.js uygulamalarını izleme yaklaşımımız, uygulamaları ölçeklenebilir şekilde çalıştırmanın yıllar sürmesiyle gelişti. Herhangi bir Node.js uygulaması için güvenilirlik ve performansı garantilemek amacıyla izlemeyi birden fazla katmanda uyguluyoruz.
+Üretim ortamında Node.js uygulamalarını izleme yaklaşımımız, yıllardır büyük ölçekte uygulama çalıştırma deneyimimizle gelişti. Her türlü Node.js uygulaması için güvenilirlik ve performans sağlamak amacıyla izlemeyi birden fazla katmanda uyguluyoruz.
 
 ### Sistem Düzeyinde Node.js Üretim İzleme {#system-level-nodejs-production-monitoring}
 
@@ -166,13 +166,13 @@ Node.js üretim uygulamalarımızda yapılandırılmış hata yanıtları için 
 
 Üretim izleme eşiklerimiz (gerçek üretim kodumuzdan):
 
-* **2GB yığın boyutu sınırı** otomatik uyarılarla
+* **2 GB yığın boyutu sınırı** otomatik uyarılarla
 * **%25 bellek kullanımı** uyarı eşiği
 * **%80 CPU kullanımı** uyarı eşiği
 * **%75 disk kullanımı** uyarı eşiği
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Bu eşikler, özel donanım yapılandırmamız için geçerlidir. Node.js üretim izlemesini uygularken, tam mantığı anlamak ve değerleri kurulumunuza uyarlamak için monitor-server.js uygulamamızı inceleyin.
 
 ### Node.js Üretimi için Uygulama Düzeyinde İzleme {#application-level-monitoring-for-nodejs-production}
 
@@ -180,15 +180,15 @@ Node.js üretim uygulamalarımızda yapılandırılmış hata yanıtları için 
 
 Bu yardımcı şunları birbirinden ayırır:
 
-* Hemen dikkat gerektiren **Gerçek kod hataları**
-* Beklenen davranış olan **Kullanıcı hataları**
-* Kontrol edemediğimiz **Harici hizmet arızaları**
+* Acil müdahale gerektiren **gerçek kod hataları**
+* Beklenen davranış olan **kullanıcı hataları**
+* Kontrol edemediğimiz **harici hizmet arızaları**
 
 Bu desen tüm Node.js uygulamalarına uygulanabilir - web uygulamaları, API'ler, mikro hizmetler veya arka plan hizmetleri.
 
 **Günlük kaydı uygulamamız:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Node.js üretim ortamımızda yararlı hata ayıklama yeteneklerini korurken hassas bilgileri korumak için kapsamlı alan düzenlemesi uyguluyoruz.
+Node.js üretim ortamımızda hassas bilgileri korurken, yararlı hata ayıklama yeteneklerini de koruyarak kapsamlı alan düzenlemesi uyguluyoruz.
 
 ### Uygulamaya Özel İzleme {#application-specific-monitoring}
 
@@ -198,11 +198,11 @@ Node.js üretim ortamımızda yararlı hata ayıklama yeteneklerini korurken has
 * [IMAP sunucusu](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [POP3 sunucusu](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-**Kuyruk izleme:** Kaynak tükenmesini önlemek için istek işleme için 5 GB kuyruk limitleri ve 180 saniyelik zaman aşımı süreleri uyguluyoruz. Bu kalıplar, kuyrukları veya arka plan işlemesi olan tüm Node.js uygulamaları için geçerlidir.
+**Kuyruk izleme:** Kaynak tükenmesini önlemek için istek işlemede 5 GB'lık kuyruk sınırlamaları ve 180 saniyelik zaman aşımları uyguluyoruz. Bu kalıplar, kuyruk veya arka plan işleme özelliğine sahip tüm Node.js uygulamaları için geçerlidir.
 
 ## PM2 Sağlık Kontrolleriyle Node.js Üretim İzleme {#nodejs-production-monitoring-with-pm2-health-checks}
 
-Yıllar süren üretim deneyimimiz sayesinde Node.js üretim ortamı kurulumumuzu PM2 ile geliştirdik. PM2 sağlık kontrollerimiz herhangi bir Node.js uygulamasında güvenilirliği korumak için olmazsa olmazdır.
+Yılların üretim deneyimiyle Node.js üretim ortamı kurulumumuzu PM2 ile geliştirdik. PM2 sağlık kontrollerimiz, herhangi bir Node.js uygulamasında güvenilirliği korumak için olmazsa olmazdır.
 
 ### PM2 Sağlık Kontrol Sistemimiz {#our-pm2-health-check-system}
 
@@ -210,25 +210,25 @@ Yıllar süren üretim deneyimimiz sayesinde Node.js üretim ortamı kurulumumuz
 
 PM2 sağlık kontrolleri içeren Node.js üretim izleme sistemimiz şunları içerir:
 
-* **Her 20 dakikada bir çalışır** cron zamanlaması aracılığıyla
-* **Bir işlemin sağlıklı olduğunu düşünmeden önce minimum 15 dakika çalışma süresi gerektirir**
+* **Cron zamanlaması aracılığıyla her 20 dakikada bir çalışır**
+* **Bir işlemin sağlıklı olarak değerlendirilmesi için en az 15 dakika kesintisiz çalışma süresi gerekir**
 * **İşlem durumunu ve bellek kullanımını doğrular**
 * **Başarısız işlemleri otomatik olarak yeniden başlatır**
 * **Akıllı sağlık kontrolü aracılığıyla yeniden başlatma döngülerini önler**
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Node.js üretim dağıtımının en iyi uygulamaları için, yeniden başlatma döngülerinden kaçınmak amacıyla bir işlemin sağlıklı olarak değerlendirilmesinden önce 15 dakikadan fazla çalışma süresine ihtiyacımız var. Bu, işlemler bellek veya diğer sorunlarla boğuştuğunda ardışık arızaların oluşmasını önler.
 
 ### PM2 Üretim Yapılandırmamız {#our-pm2-production-configuration}
 
-**Ekosistem kurulumumuz:** Node.js üretim ortamı kurulumu için sunucu başlatma dosyalarımızı inceleyin:
+**Ekosistem kurulumumuz:** Node.js üretim ortamı kurulumu için sunucu başlangıç dosyalarımızı inceleyin:
 
 * [Web sunucusu](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API sunucusu](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
 * [Bree planlayıcısı](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 * [SMTP sunucusu](https://github.com/forwardemail/forwardemail.net/blob/master/smtp.js)
 
-Bu kalıplar, Express uygulamaları, Koa sunucuları, GraphQL API'leri veya diğer herhangi bir Node.js uygulamasını çalıştırıyor olmanıza bakılmaksızın geçerlidir.
+Bu kalıplar, Express uygulamaları, Koa sunucuları, GraphQL API'leri veya diğer Node.js uygulamalarını çalıştırıyor olmanıza bakılmaksızın geçerlidir.
 
 ### Otomatik PM2 Dağıtımı {#automated-pm2-deployment}
 
@@ -238,37 +238,37 @@ Tüm sunucularımızda tutarlı Node.js üretim dağıtımlarını garantilemek 
 
 ## Üretim Hata İşleme ve Sınıflandırma Sistemi {#production-error-handling-and-classification-system}
 
-En değerli Node.js üretim dağıtım en iyi uygulamalarımızdan biri, herhangi bir Node.js uygulamasına uygulanabilen akıllı hata sınıflandırmasıdır:
+En değerli Node.js üretim dağıtım uygulamalarımızdan biri, herhangi bir Node.js uygulamasına uygulanabilen akıllı hata sınıflandırmasıdır:
 
-### Üretim İçin isCodeBug Uygulamamız {#our-iscodebug-implementation-for-production}
+### Üretim için isCodeBug Uygulamamız {#our-iscodebug-implementation-for-production}
 
 **Kaynak:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
 Bu yardımcı, üretimdeki Node.js uygulamaları için akıllı hata sınıflandırması sağlar:
 
-* **Kullanıcı hataları yerine gerçek hatalara** öncelik verin
-* **Gerçek sorunlara odaklanarak olay yanıtımızı iyileştirin**
+* **Kullanıcı hataları yerine gerçek hatalara öncelik verin**
+* **Gerçek sorunlara odaklanarak olay müdahalemizi iyileştirin**
 * **Beklenen kullanıcı hatalarından kaynaklanan uyarı yorgunluğunu azaltın**
-* **Uygulama ile kullanıcı tarafından oluşturulan sorunları** daha iyi anlayın
+* **Uygulama kaynaklı sorunları kullanıcı kaynaklı sorunlara kıyasla daha iyi anlayın**
 
-Bu model, e-ticaret siteleri, SaaS platformları, API'ler veya mikro hizmetler oluşturuyor olmanız fark etmeksizin tüm Node.js uygulamaları için işe yarar.
+Bu model, e-ticaret siteleri, SaaS platformları, API'ler veya mikro hizmetler oluşturuyor olun, tüm Node.js uygulamaları için işe yarar.
 
 ### Üretim Kaydımızla Entegrasyon {#integration-with-our-production-logging}
 
 **Kaydedici entegrasyonumuz:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Kaydedicilerimiz, uyarı seviyelerini ve alan düzenlemesini belirlemek için `isCodeBug` kullanır ve Node.js üretim ortamımızda gürültüyü filtrelerken gerçek sorunlar hakkında bildirim aldığımızdan emin olur.
+Kaydedicilerimiz, uyarı seviyelerini ve alan düzenlemelerini belirlemek için `isCodeBug`'ı kullanır ve Node.js üretim ortamımızda gürültüyü filtrelerken gerçek sorunlar hakkında bildirim aldığımızdan emin olur.
 
 ### İlgili İçerik {#related-content-1}
 
-Hata işleme modellerimiz hakkında daha fazla bilgi edinin:
+Hata işleme kalıplarımız hakkında daha fazla bilgi edinin:
 
 * [Güvenilir Ödeme Sistemi Oluşturma](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Hata işleme kalıpları
 * [E-posta Gizlilik Koruması](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Güvenlik hatası işleme
 
 ## v8-profiler-next ve cpupro ile Gelişmiş Performans Hata Ayıklama {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
-Üretim ortamımızda yığın anlık görüntülerini analiz etmek ve OOM (Bellek Yetersiz) sorunlarını, performans darboğazlarını ve Node.js bellek sorunlarını ayıklamak için gelişmiş profil oluşturma araçları kullanıyoruz. Bu araçlar, bellek sızıntıları veya performans sorunları yaşayan herhangi bir Node.js uygulaması için olmazsa olmazdır.
+Üretim ortamımızdaki yığın anlık görüntülerini analiz etmek ve OOM (Bellek Yetersizliği) sorunlarını, performans darboğazlarını ve Node.js bellek sorunlarını gidermek için gelişmiş profil oluşturma araçları kullanıyoruz. Bu araçlar, bellek sızıntıları veya performans sorunları yaşayan tüm Node.js uygulamaları için olmazsa olmazdır.
 
 ### Node.js Üretimi için Profilleme Yaklaşımımız {#our-profiling-approach-for-nodejs-production}
 
@@ -278,18 +278,18 @@ Hata işleme modellerimiz hakkında daha fazla bilgi edinin:
 * [`cpupro`](https://github.com/discoveryjs/cpupro) - CPU profillerini ve yığın anlık görüntülerini analiz etmek için
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> Node.js uygulamalarımız için eksiksiz bir performans hata ayıklama iş akışı oluşturmak amacıyla v8-profiler-next ve cpupro'yu birlikte kullanıyoruz. Bu kombinasyon, bellek sızıntılarını, performans darboğazlarını belirlememize ve üretim kodumuzu optimize etmemize yardımcı oluyor.
 
 ### Yığın Anlık Görüntü Analizini Nasıl Uyguluyoruz? {#how-we-implement-heap-snapshot-analysis}
 
 **İzleme uygulamamız:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-Üretim izlememiz, bellek eşikleri aşıldığında otomatik yığın anlık görüntüsü oluşturmayı içerir. Bu, uygulama çökmelerine neden olmadan önce OOM sorunlarını gidermemize yardımcı olur.
+Üretim izleme sistemimiz, bellek eşikleri aşıldığında otomatik yığın anlık görüntüsü oluşturmayı içerir. Bu, uygulama çökmelerine neden olmadan önce OOM sorunlarını gidermemize yardımcı olur.
 
 **Temel uygulama kalıpları:**
 
 * **Yığın boyutu 2 GB eşiğini aştığında otomatik anlık görüntüler**
-* Üretimde talep üzerine analiz için **Sinyal tabanlı profilleme**
+* Üretimde isteğe bağlı analiz için **Sinyal tabanlı profilleme**
 * Anlık görüntü depolamasını yönetmek için **Saklama politikaları**
 * Otomatik bakım için **Temizleme işlerimizle entegrasyon**
 
@@ -305,36 +305,36 @@ Hata işleme modellerimiz hakkında daha fazla bilgi edinin:
 
 **Yığın anlık görüntü analizi için:**
 
-1. Anlık görüntü oluşturma için **v8-profiler-next** yükleyin
+1. Anlık görüntü oluşturmak için **v8-profiler-next** yükleyin
 2. Oluşturulan anlık görüntüleri analiz etmek için **cpupro** kullanın
-3. Monitor-server.js'mize benzer şekilde **izleme eşiklerini uygulayın**
+3. monitor-server.js dosyamıza benzer şekilde **izleme eşikleri** uygulayın
 4. Anlık görüntü depolamasını yönetmek için **otomatik temizleme** ayarlayın
-5. Üretimde talep üzerine profilleme için **sinyal işleyicileri** oluşturun
+5. Üretimde isteğe bağlı profilleme için **sinyal işleyicileri** oluşturun
 
-**CPU profillemesi için:**
+**CPU profili için:**
 
 1. Yüksek yük dönemlerinde **CPU profilleri oluşturun**
 2. Darboğazları belirlemek için **cpupro ile analiz edin**
 3. Sıcak yollara** ve optimizasyon fırsatlarına odaklanın
-4. Performans iyileştirmelerinden önce/sonra izleyin**
+4. Performans iyileştirmelerini **önce/sonra izleyin**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> Yığın anlık görüntüleri ve CPU profilleri oluşturmak performansı etkileyebilir. Kısıtlama uygulamanızı ve profillemeyi yalnızca belirli sorunları araştırırken veya bakım aralıkları sırasında etkinleştirmenizi öneririz.
 
 ### Üretim İzleme Sistemimizle Entegrasyon {#integration-with-our-production-monitoring}
 
-Profilleme araçlarımız daha geniş izleme stratejimizle bütünleşir:
+Profil oluşturma araçlarımız daha geniş izleme stratejimizle bütünleşir:
 
 * Bellek/CPU eşiklerine dayalı **Otomatik tetikleme**
-* Performans sorunları algılandığında **Uyarı entegrasyonu**
-* Zaman içinde performans eğilimlerini izlemek için **Geçmiş analizi**
+* Performans sorunları tespit edildiğinde **Uyarı entegrasyonu**
+* Zaman içindeki performans eğilimlerini izlemek için **Geçmiş analizi**
 * Kapsamlı hata ayıklama için **Uygulama ölçümleriyle korelasyon**
 
 Bu yaklaşım, bellek sızıntılarını tespit edip çözmemize, sıcak kod yollarını optimize etmemize ve Node.js üretim ortamımızda istikrarlı performansı korumamıza yardımcı oldu.
 
 ## Node.js Üretim Altyapısı Güvenliği {#nodejs-production-infrastructure-security}
 
-Ansible otomasyonu aracılığıyla Node.js üretim altyapımız için kapsamlı güvenlik uyguluyoruz. Bu uygulamalar herhangi bir Node.js uygulaması için geçerlidir:
+Ansible otomasyonu aracılığıyla Node.js üretim altyapımız için kapsamlı güvenlik sağlıyoruz. Bu uygulamalar tüm Node.js uygulamaları için geçerlidir:
 
 ### Node.js Üretimi için Sistem Düzeyinde Güvenlik {#system-level-security-for-nodejs-production}
 
@@ -342,19 +342,19 @@ Ansible otomasyonu aracılığıyla Node.js üretim altyapımız için kapsamlı
 
 Node.js üretim ortamları için temel güvenlik önlemlerimiz:
 
-* Hassas verilerin diske yazılmasını önlemek için **Swap devre dışı bırakıldı**
-* Hassas bilgiler içeren bellek dökümlerini önlemek için **Çekirdek dökümleri devre dışı bırakıldı**
+* Hassas verilerin diske yazılmasını önlemek için **Swap devre dışı**
+* Hassas bilgiler içeren bellek dökümlerini önlemek için **Çekirdek dökümleri devre dışı**
 * Yetkisiz veri erişimini önlemek için **USB depolama engellendi**
 * Hem güvenlik hem de performans için **Çekirdek parametresi ayarı**
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Node.js üretim dağıtım en iyi uygulamalarını uygularken, takas özelliğini devre dışı bırakmak, uygulamanızın kullanılabilir RAM'i aşması durumunda bellek yetersizliği nedeniyle çökmelere neden olabilir. Bellek kullanımını dikkatle izliyor ve sunucularımızı uygun şekilde boyutlandırıyoruz.
 
 ### Node.js Uygulamaları için Uygulama Güvenliği {#application-security-for-nodejs-applications}
 
 **Günlük alanı düzenlememiz:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Şifreler, belirteçler, API anahtarları ve kişisel bilgiler dahil olmak üzere hassas alanları günlüklerden sansürlüyoruz. Bu, herhangi bir Node.js üretim ortamında hata ayıklama yeteneklerini korurken kullanıcı gizliliğini korur.
+Şifreler, belirteçler, API anahtarları ve kişisel bilgiler dahil olmak üzere hassas alanları günlüklerden düzenliyoruz. Bu sayede, herhangi bir Node.js üretim ortamında hata ayıklama yeteneklerini korurken kullanıcı gizliliğini de koruyoruz.
 
 ### Altyapı Güvenlik Otomasyonu {#infrastructure-security-automation}
 
@@ -370,12 +370,12 @@ Node.js üretim ortamları için temel güvenlik önlemlerimiz:
 Güvenlik yaklaşımımız hakkında daha fazla bilgi edinin:
 
 * [En İyi Güvenlik Denetim Şirketleri](https://forwardemail.net/blog/docs/best-security-audit-companies)
-* [Quantum Güvenli Şifrelenmiş E-posta](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
+* [Quantum Safe Şifreli E-posta](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
 * [Neden Açık Kaynaklı E-posta Güvenliği?](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
 
 ## Node.js Uygulamaları için Veritabanı Mimarisi {#database-architecture-for-nodejs-applications}
 
-Node.js uygulamalarımız için optimize edilmiş bir hibrit veritabanı yaklaşımı kullanıyoruz. Bu kalıplar herhangi bir Node.js uygulamasına uyarlanabilir:
+Node.js uygulamalarımız için optimize edilmiş hibrit bir veritabanı yaklaşımı kullanıyoruz. Bu kalıplar herhangi bir Node.js uygulamasına uyarlanabilir:
 
 ### Node.js Üretimi için SQLite Uygulaması {#sqlite-implementation-for-nodejs-production}
 
@@ -388,10 +388,10 @@ Node.js uygulamalarımız için optimize edilmiş bir hibrit veritabanı yaklaş
 
 Node.js uygulamalarımızda kullanıcıya özel veriler için SQLite kullanıyoruz çünkü şunları sağlıyor:
 
-* Kullanıcı/kiracı başına **Veri izolasyonu**
-* Tek kullanıcı sorguları için **Daha iyi performans**
+* Kullanıcı/kiracı başına **veri izolasyonu**
+* Tek kullanıcı sorguları için **daha iyi performans**
 * Basitleştirilmiş yedekleme** ve geçiş
-* Paylaşılan veritabanlarına kıyasla **Azaltılmış karmaşıklık**
+* Paylaşımlı veritabanlarına kıyasla **Daha az karmaşıklık**
 
 Bu model, SaaS uygulamaları, çok kiracılı sistemler veya veri izolasyonuna ihtiyaç duyan herhangi bir Node.js uygulaması için iyi çalışır.
 
@@ -407,21 +407,21 @@ Bu model, SaaS uygulamaları, çok kiracılı sistemler veya veri izolasyonuna i
 
 **Yapılandırmamız:** [`config/mongoose.js`](https://github.com/forwardemail/forwardemail.net/blob/master/config/mongoose.js)
 
-Node.js üretim ortamımızda uygulama verileri için MongoDB'yi kullanıyoruz çünkü şunları sağlıyor:
+Node.js üretim ortamımızda uygulama verileri için MongoDB kullanıyoruz çünkü şunları sağlıyor:
 
-* **Gelişen veri yapıları için esnek şema**
-* **Karmaşık sorgular için daha iyi performans**
-* **Yatay ölçekleme** yetenekleri
-* **Zengin sorgu dili**
+* Gelişen veri yapıları için **Esnek şema**
+* Karmaşık sorgular için **Daha iyi performans**
+* Yatay ölçekleme** yetenekleri
+* Zengin sorgu dili**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Hibrit yaklaşımımız, özel kullanım senaryomuza göre optimize edilmiştir. Bu yaklaşımın Node.js uygulamanızın ihtiyaçlarına uygun olup olmadığını anlamak için kod tabanındaki gerçek veritabanı kullanım modellerimizi inceleyin.
 
 ## Node.js Üretim Arkaplan İş İşleme {#nodejs-production-background-job-processing}
 
-Güvenilir Node.js üretim dağıtımı için arka plan iş mimarimizi Bree etrafında oluşturduk. Bu, arka plan işleme ihtiyacı olan herhangi bir Node.js uygulaması için geçerlidir:
+Güvenilir Node.js üretim dağıtımı için arka plan iş mimarimizi Bree etrafında oluşturduk. Bu, arka plan işlemeye ihtiyaç duyan tüm Node.js uygulamaları için geçerlidir:
 
-### Üretim İçin Bree Sunucu Kurulumumuz {#our-bree-server-setup-for-production}
+### Üretim için Bree Sunucu Kurulumumuz {#our-bree-server-setup-for-production}
 
 **Ana uygulamamız:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
@@ -433,12 +433,12 @@ Güvenilir Node.js üretim dağıtımı için arka plan iş mimarimizi Bree etra
 
 **Temizlik otomasyonu:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-**Tüm işlerimiz:** [Tam iş dizinimize göz atın](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
+**Tüm işlerimiz:** [Tam iş ilanları dizinimize göz atın](https://github.com/forwardemail/forwardemail.net/tree/master/jobs)
 
 Bu kalıplar, aşağıdakilere ihtiyaç duyan herhangi bir Node.js uygulaması için geçerlidir:
 
 * Zamanlanmış görevler (veri işleme, raporlar, temizleme)
-* Arkaplan işleme (görüntü yeniden boyutlandırma, e-posta gönderme, veri içe aktarma)
+* Arka plan işleme (görüntü yeniden boyutlandırma, e-posta gönderme, veri içe aktarma)
 * Sağlık izleme ve bakım
 * CPU yoğun görevler için çalışan iş parçacığı kullanımı
 
@@ -446,19 +446,19 @@ Bu kalıplar, aşağıdakilere ihtiyaç duyan herhangi bir Node.js uygulaması i
 
 İş rehberimizdeki gerçek iş planlama kalıplarımızı inceleyerek şunları anlayabilirsiniz:
 
-* Node.js üretiminde cron benzeri zamanlamayı nasıl uygularız
-* Hata işleme ve yeniden deneme mantığımız
-* CPU yoğun görevler için çalışan iş parçacıklarını nasıl kullanırız
+* Node.js üretiminde cron benzeri zamanlamayı nasıl uyguluyoruz
+* Hata yönetimi ve yeniden deneme mantığımız
+* CPU yoğun görevler için çalışan iş parçacıklarını nasıl kullanıyoruz
 
 ## Üretim Node.js Uygulamaları için Otomatik Bakım {#automated-maintenance-for-production-nodejs-applications}
 
-Yaygın Node.js üretim sorunlarını önlemek için proaktif bakım uygularız. Bu kalıplar herhangi bir Node.js uygulaması için geçerlidir:
+Yaygın Node.js üretim sorunlarını önlemek için proaktif bakım uyguluyoruz. Bu kalıplar tüm Node.js uygulamaları için geçerlidir:
 
 ### Temizleme Uygulamamız {#our-cleanup-implementation}
 
 **Kaynak:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-Node.js üretim uygulamalarına yönelik otomatik bakımımız şunları hedefliyor:
+Node.js üretim uygulamaları için otomatik bakımımızın hedefleri:
 
 * 24 saatten eski **Geçici dosyalar**
 * Saklama sınırlarının ötesindeki **Günlük dosyaları**
@@ -472,7 +472,7 @@ Bu kalıplar, geçici dosyalar, günlükler veya önbelleğe alınmış veriler 
 
 **İzleme eşiklerimiz:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-* Arkaplan işleme için **Kuyruk sınırları**
+* Arka plan işlemleri için **Kuyruk sınırları**
 * **%75 disk kullanımı** uyarı eşiği
 * Eşikler aşıldığında **Otomatik temizleme**
 
@@ -501,16 +501,16 @@ Bu kalıplar, geçici dosyalar, günlükler veya önbelleğe alınmış veriler 
 
 * [NPM Paketleri Ekosistemi](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 * [Bina Ödeme Sistemleri](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [E-posta Gizlilik Uygulaması](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [E-posta Gizliliği Uygulaması](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 * [JavaScript İletişim Formları](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 * [React E-posta Entegrasyonu](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
 ### Node.js Üretimi için Altyapı Otomasyonu {#infrastructure-automation-for-nodejs-production}
 
-**Node.js üretim dağıtımı için çalışacağımız Ansible oyun kitaplarımız:**
+**Node.js üretim dağıtımı için inceleyeceğimiz Ansible kılavuzlarımız:**
 
 * [Tam oyun kitapları dizini](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
-* [Güvenlik sertleştirme](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Güvenlik güçlendirme](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [Node.js kurulumu](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
 ### Vaka Çalışmalarımız {#our-case-studies}
@@ -525,15 +525,15 @@ Bu kalıplar, geçici dosyalar, günlükler veya önbelleğe alınmış veriler 
 
 Node.js üretim altyapımız, Node.js uygulamalarının aşağıdakiler aracılığıyla kurumsal düzeyde güvenilirliğe ulaşabileceğini göstermektedir:
 
-* **Kanıtlanmış donanım seçenekleri** (AMD Ryzen %573 tek çekirdek performans optimizasyonu için)
-* **Savaşta test edilmiş Node.js üretim izleme**, belirli eşikler ve otomatik yanıtlar ile
-* **Akıllı hata sınıflandırması**, üretim ortamlarında olay yanıtını iyileştirmek için
+* **Kanıtlanmış donanım seçenekleri** (%573 tek çekirdek performans optimizasyonu için AMD Ryzen)
+* **Savaşta test edilmiş Node.js üretim izleme**, belirli eşikler ve otomatik yanıtlarla
+* Üretim ortamlarında olay yanıtını iyileştirmek için **Akıllı hata sınıflandırması**
 * **OOM önleme için v8-profiler-next ve cpupro ile **Gelişmiş performans hata ayıklama**
 * **Ansible otomasyonu ile **Kapsamlı güvenlik güçlendirmesi**
 * **Uygulama ihtiyaçları için optimize edilmiş hibrit veritabanı mimarisi**
-* **Ortak Node.js üretim sorunlarını önlemek için **Otomatik bakım**
+* **Yaygın Node.js üretim sorunlarını önlemek için **Otomatik bakım**
 
-**Önemli çıkarım:** Genel en iyi uygulamaları takip etmek yerine gerçek uygulama dosyalarımızı ve blog yazılarımızı inceleyin. Kod tabanımız, herhangi bir Node.js uygulamasına - web uygulamaları, API'ler, mikro hizmetler veya arka plan hizmetleri - uyarlanabilen Node.js üretim dağıtımı için gerçek dünya kalıpları sağlar.
+**Önemli Nokta:** Genel en iyi uygulamaları takip etmek yerine, gerçek uygulama dosyalarımızı ve blog yazılarımızı inceleyin. Kod tabanımız, web uygulamaları, API'ler, mikro hizmetler veya arka plan hizmetleri gibi herhangi bir Node.js uygulamasına uyarlanabilen Node.js üretim dağıtımı için gerçek dünya kalıpları sunar.
 
 ## Node.js Üretimi için Tam Kaynak Listesi {#complete-resource-list-for-nodejs-production}
 
@@ -559,7 +559,7 @@ Node.js üretim altyapımız, Node.js uygulamalarının aşağıdakiler aracıl�
 ### Altyapı Otomasyonumuz {#our-infrastructure-automation}
 
 * [Tüm Ansible oyun kitaplarımız](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
-* [Güvenlik sertleştirme](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+* [Güvenlik güçlendirme](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 * [Node.js kurulumu](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 * [Veritabanı yapılandırması](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/sqlite.yml)
 
@@ -567,10 +567,10 @@ Node.js üretim altyapımız, Node.js uygulamalarının aşağıdakiler aracıl�
 
 * [NPM Ekosistem Analizi](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 * [Ödeme Sistemi Uygulaması](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal)
-* [E-posta Gizlilik Teknik Kılavuzu](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
+* [E-posta Gizliliği Teknik Kılavuzu](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)
 * [JavaScript İletişim Formları](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 * [React E-posta Entegrasyonu](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
-* [Kendi Kendine Barındırılan Çözüm Kılavuzu](https://forwardemail.net/blog/docs/self-hosted-solution)
+* [Kendinden Barındırılan Çözüm Kılavuzu](https://forwardemail.net/blog/docs/self-hosted-solution)
 
 ### Kurumsal Vaka Çalışmalarımız {#our-enterprise-case-studies}
 

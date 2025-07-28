@@ -320,7 +320,7 @@ certbot certonly \
 
 **Vigtigt**: Når du bliver bedt om det, skal du oprette TXT-poster i din DNS. Du kan opleve flere udfordringer for det samme domæne - **opret ALLE**. Fjern ikke den første TXT-post, når du tilføjer den anden.
 
-#### Mulighed B: Cloudflare DNS (hvis du bruger Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Mulighed B: Cloudflare DNS (Hvis du bruger Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
 Hvis dit domæne bruger Cloudflare til DNS, kan du automatisere generering af certifikater:
 
@@ -573,7 +573,7 @@ crontab -l
 
 ## Konfiguration af automatisk opdatering {#auto-update-configuration}
 
-Konfigurer automatiske opdateringer til din installation af videresendt e-mail:
+Konfigurer automatiske opdateringer til din installation af Videresend e-mail:
 
 ```bash
 # Create auto-update command
@@ -601,7 +601,7 @@ crontab -l
 2. **Kontroller servicestatus**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Gennemgå logfiler**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Opdater systempakker**: `apt update && apt upgrade`
-5. **Forny certifikater**: Certifikater fornyes automatisk, men overvåger udløb
+5. **Forny certifikater**: Certifikater fornyes automatisk, men overvåger udløbsdatoer
 
 ### Certifikatfornyelse {#certificate-renewal}
 

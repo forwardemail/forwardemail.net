@@ -7,7 +7,7 @@
   * [Sistema de fila e repetição de e-mail](#email-queue-and-retry-system)
   * [À prova de falsificações para confiabilidade](#dummy-proofed-for-reliability)
 * [Integração Node.js](#nodejs-integration)
-  * [Usando Nodemailer](#using-nodemailer)
+  * [Usando o Nodemailer](#using-nodemailer)
   * [Usando Express.js](#using-expressjs)
 * [Integração Python](#python-integration)
   * [Usando smtplib](#using-smtplib)
@@ -18,7 +18,7 @@
 * [Integração Ruby](#ruby-integration)
   * [Usando Ruby Mail Gem](#using-ruby-mail-gem)
 * [Integração Java](#java-integration)
-  * [Usando a API JavaMail](#using-javamail-api)
+  * [Usando a API Java Mail](#using-javamail-api)
 * [Configuração do cliente de e-mail](#email-client-configuration)
   * [Pássaro Trovão](#thunderbird)
   * [Correio da Apple](#apple-mail)
@@ -31,7 +31,7 @@
 
 ## Prefácio {#foreword}
 
-Este guia fornece exemplos detalhados de como integrar com o serviço SMTP do Forward Email usando várias linguagens de programação, frameworks e clientes de e-mail. Nosso serviço SMTP é projetado para ser confiável, seguro e fácil de integrar com seus aplicativos existentes.
+Este guia fornece exemplos detalhados de como integrar o serviço SMTP da Forward Email usando diversas linguagens de programação, frameworks e clientes de e-mail. Nosso serviço SMTP foi projetado para ser confiável, seguro e fácil de integrar aos seus aplicativos existentes.
 
 ## Como funciona o processamento SMTP do Forward Email {#how-forward-emails-smtp-processing-works}
 
@@ -44,17 +44,17 @@ Quando você envia um e-mail via SMTP para nossos servidores:
 1. **Processamento Inicial**: O e-mail é validado, verificado em busca de malware e verificado em filtros de spam.
 2. **Fila Inteligente**: Os e-mails são colocados em um sofisticado sistema de fila para entrega.
 3. **Mecanismo Inteligente de Nova Tentativa**: Se a entrega falhar temporariamente, nosso sistema irá:
-* Analisar a resposta de erro usando nossa função `getBounceInfo`
-* Determinar se o problema é temporário (por exemplo, "tente novamente mais tarde", "temporariamente adiado") ou permanente (por exemplo, "usuário desconhecido")
+* Analisar a resposta de erro usando nossa função `getBounceInfo`.
+* Determinar se o problema é temporário (por exemplo, "tente novamente mais tarde", "temporariamente adiado") ou permanente (por exemplo, "usuário desconhecido").
 * Para problemas temporários, marcar o e-mail para nova tentativa.
 * Para problemas permanentes, gerar uma notificação de rejeição.
 4. **Período de Nova Tentativa de 5 Dias**: Tentamos a entrega novamente por até 5 dias (semelhante aos padrões do setor, como o Postfix), dando tempo para que os problemas temporários sejam resolvidos.
 5. **Notificações de Status de Entrega**: Os remetentes recebem notificações sobre o status de seus e-mails (entregues, atrasados ou devolvidos).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Após a entrega bem-sucedida, o conteúdo do e-mail SMTP de saída é redigido após um período de retenção configurável (padrão: 30 dias) para segurança e privacidade. Apenas uma mensagem de espaço reservado permanece, indicando a entrega bem-sucedida.
 
-### À prova de falsificações para confiabilidade {#dummy-proofed-for-reliability}
+### À prova de falhas para confiabilidade {#dummy-proofed-for-reliability}
 
 Nosso sistema foi projetado para lidar com vários casos extremos:
 
@@ -159,7 +159,7 @@ app.listen(port, () => {
 });
 ```
 
-Integração Python ## {#python-integration}
+## Integração Python {#python-integration}
 
 ### Usando smtplib {#using-smtplib}
 
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## Configuração do cliente de e-mail {#email-client-configuration}
 
-__URL_PROTEGIDA_54__ Thunderbird {__URL_PROTEGIDA_55__
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
@@ -452,7 +452,7 @@ flowchart TD
 * Nome de Usuário: seu endereço de e-mail completo
 5. Clique em "Testar" e depois em "Concluído"
 
-__URL_PROTEGIDA_56__ Apple Mail {__URL_PROTEGIDA_57__
+### Apple Mail {#apple-mail}
 
 1. Abra o Mail e acesse Mail > Preferências > Contas
 2. Clique no botão "+" para adicionar uma nova conta
@@ -480,7 +480,7 @@ __URL_PROTEGIDA_56__ Apple Mail {__URL_PROTEGIDA_57__
 
 ## Solução de problemas {#troubleshooting}
 
-### Problemas comuns e soluções {#common-issues-and-solutions}
+### Problemas e soluções comuns {#common-issues-and-solutions}
 
 1. **Falha na autenticação**
 * Verifique seu nome de usuário (endereço de e-mail completo) e senha
@@ -504,7 +504,7 @@ __URL_PROTEGIDA_56__ Apple Mail {__URL_PROTEGIDA_57__
 
 ### Obtendo ajuda {#getting-help}
 
-Se você encontrar problemas não abordados aqui, por favor:
+Caso encontre problemas não abordados aqui, por favor:
 
 1. Consulte nosso [Página de perguntas frequentes](/faq) para perguntas comuns
 2. Consulte nosso [postagem de blog sobre entrega de e-mail](/blog/docs/best-email-forwarding-service) para obter informações detalhadas
@@ -519,6 +519,6 @@ Se você encontrar problemas não abordados aqui, por favor:
 
 ## Conclusão {#conclusion}
 
-O serviço SMTP da Forward Email fornece uma maneira confiável, segura e focada em privacidade de enviar e-mails de seus aplicativos e clientes de e-mail. Com nosso sistema de fila inteligente, mecanismo de repetição de 5 dias e notificações abrangentes de status de entrega, você pode ter certeza de que seus e-mails chegarão ao destino.
+O serviço SMTP da Forward Email oferece uma maneira confiável, segura e com foco na privacidade de enviar e-mails de seus aplicativos e clientes de e-mail. Com nosso sistema de fila inteligente, mecanismo de repetição de 5 dias e notificações abrangentes sobre o status de entrega, você pode ter certeza de que seus e-mails chegarão ao destino.
 
 Para casos de uso mais avançados ou integrações personalizadas, entre em contato com nossa equipe de suporte.

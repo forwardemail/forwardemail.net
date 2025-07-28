@@ -83,7 +83,7 @@ Jeder große E-Mail-Anbieter zwingt Entwickler zu einer von zwei schrecklichen E
 Das Ergebnis? Entwickler verzichten entweder gänzlich auf die E-Mail-Integration oder verschwenden Wochen mit der Entwicklung anfälliger IMAP-Wrapper, die ständig kaputtgehen.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Das schmutzige Geheimnis**: Die meisten E-Mail-APIs sind reine Sende-APIs. Über eine einfache REST-Schnittstelle lassen sich Ordner nicht programmgesteuert organisieren, Kontakte synchronisieren oder Kalender verwalten. Bis jetzt.
 
 ## Was Entwickler tatsächlich sagen {#what-developers-are-actually-saying}
 
@@ -97,7 +97,7 @@ Die Frustration ist real und überall dokumentiert:
 
 > *- [Reddit r/SaaS-Diskussion](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> „Warum muss E-Mail-Entwicklung so nervig sein?“
+> „Warum muss E-Mail-Entwicklung so mies sein?“
 
 > *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 Kommentare zum Thema Entwickler-Probleme*
 
@@ -108,11 +108,11 @@ Die Frustration ist real und überall dokumentiert:
 Die Beweise sind überall:
 
 * **WordPress SMTP-Probleme**: [631 GitHub-Probleme](https://github.com/awesomemotive/WP-Mail-SMTP/issues) zu Fehlern bei der E-Mail-Zustellung
-* **Zapier-Einschränkungen**: [Beschwerden der Community](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) zu 10 E-Mails/Stunde-Limits und IMAP-Erkennungsfehlern
-* **IMAP-API-Projekte**: [Mehrere](https://github.com/ewildgoose/imap-api) [Open Source](https://emailengine.app/) [Projekte](https://www.npmjs.com/package/imapflow) existieren speziell für die Konvertierung von IMAP in REST, da kein Anbieter dies anbietet.
-* **Gmail-API-Probleme**: [Stapelüberlauf](https://stackoverflow.com/questions/tagged/gmail-api) hat 4.847 Fragen mit dem Tag „gmail-api“ mit häufigen Beschwerden zu Ratenlimits und Komplexität.
+* **Zapier-Einschränkungen**: [Beschwerden der Community](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) zu Limits von 10 E-Mails pro Stunde und IMAP-Erkennungsfehlern
+* **IMAP-API-Projekte**: [Mehrere](https://github.com/ewildgoose/imap-api) [Open Source](https://emailengine.app/) [Projekte](https://www.npmjs.com/package/imapflow) dienen speziell der Konvertierung von IMAP in REST, da kein Anbieter dies anbietet.
+* **Gmail-API-Probleme**: [Stapelüberlauf](https://stackoverflow.com/questions/tagged/gmail-api) hat 4.847 Fragen mit dem Tag „gmail-api“ mit häufigen Beschwerden zu Ratenbegrenzungen und Komplexität.
 
-## Die revolutionäre Lösung von Forward Email {#forward-emails-revolutionary-solution}
+## Die revolutionäre Lösung zum Weiterleiten von E-Mails {#forward-emails-revolutionary-solution}
 
 **Wir sind der erste E-Mail-Dienst, der vollständige CRUD-Operationen für alle E-Mail-Daten über eine einheitliche REST-API anbietet.**
 
@@ -161,10 +161,10 @@ curl -u "alias@yourdomain.com:password" \
 ### Kontakte (5 Endpunkte) {#contacts-5-endpoints}
 
 * `GET /v1/contacts` – Kontakte auflisten mit Suche und Paginierung
-* `POST /v1/contacts` – Neuen Kontakt mit voller vCard-Unterstützung erstellen
+* `POST /v1/contacts` – Neuen Kontakt erstellen mit vollständiger vCard-Unterstützung
 * `GET /v1/contacts/:id` – Kontakt mit allen Feldern und Metadaten abrufen
 * `PUT /v1/contacts/:id` – Kontaktinformationen mit ETag-Validierung aktualisieren
-* `DELETE /v1/contacts/:id` – Kontakt mit Kaskadenverarbeitung löschen
+* `DELETE /v1/contacts/:id` – Kontakt löschen mit Kaskadenverarbeitung
 
 ### Kalender (5 Endpunkte) {#calendars-5-endpoints}
 
@@ -174,7 +174,7 @@ curl -u "alias@yourdomain.com:password" \
 * `PUT /v1/calendars/:id` – Ereignis mit Konflikterkennung aktualisieren
 * `DELETE /v1/calendars/:id` – Ereignis mit Teilnehmerbenachrichtigung löschen
 
-## Erweiterte Suche: Kein anderer Dienst ist vergleichbar mit {#advanced-search-no-other-service-compares}
+## Erweiterte Suche: Kein anderer Dienst ist vergleichbar {#advanced-search-no-other-service-compares}
 
 **Forward Email ist der einzige E-Mail-Dienst, der über eine REST-API eine umfassende, programmgesteuerte Suche in allen Nachrichtenfeldern bietet.**
 
@@ -193,8 +193,8 @@ Während andere Anbieter bestenfalls grundlegende Filterfunktionen bieten, haben
 
 **Einschränkungen der Outlook-API-Suche:**
 
-* ✅ Basisparameter `$search`
-* ❌ Kein erweitertes Feld-Targeting
+* ✅ Einfacher `$search`-Parameter
+* ❌ Keine erweiterte Feldausrichtung
 * ❌ Keine komplexen Abfragekombinationen
 * ❌ Aggressive Ratenbegrenzung
 * ❌ Komplexe OData-Syntax erforderlich
@@ -226,7 +226,7 @@ Während andere Anbieter bestenfalls grundlegende Filterfunktionen bieten, haben
 | **Groß-/Kleinschreibung wird nicht beachtet** | ✅ Alle Suchen | ✅ | ✅ | ❌ |
 | **Seitennummerierungsunterstützung** | ✅ Funktioniert mit allen Suchparametern | ✅ | ✅ | ❌ |
 
-### Beispiele für Suchanfragen aus der Praxis {#real-world-search-examples}
+### Beispiele für die Suche in der Praxis {#real-world-search-examples}
 
 **Alle Rechnungen des letzten Quartals suchen:**
 
@@ -269,7 +269,7 @@ GET /me/messages?$search="quarterly"
 
 **Leistung der E-Mail-Weiterleitungssuche:**
 
-* ⚡ **Antwortzeiten unter 100 ms** für komplexe Suchen
+* ⚡ **Antwortzeiten unter 100 ms** für komplexe Suchvorgänge
 * 🔍 **Regex-Optimierung** mit korrekter Indizierung
 * 📊 **Parallele Abfrageausführung** für Anzahl und Daten
 * 💾 **Effiziente Speichernutzung** durch schlanke Abfragen
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Vorteil für Entwickler**: Mit der Such-API von Forward Email können Sie E-Mail-Anwendungen erstellen, die in ihrer Funktionalität mit Desktop-Clients mithalten können und gleichzeitig die Einfachheit von REST-APIs beibehalten.
 
 ## Blitzschnelle Leistungsarchitektur {#blazing-fast-performance-architecture}
 
@@ -430,19 +430,19 @@ graph LR
 **ProtonMail und Tuta vermarkten sich als „Open Source“ und „transparent“, aber das ist irreführendes Marketing, das gegen moderne Datenschutzprinzipien verstößt.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Falsche Transparenzbehauptungen**: Sowohl ProtonMail als auch Tuta werben prominent mit ihren „Open Source“-Referenzen, halten ihren wichtigsten serverseitigen Code jedoch proprietär und geheim.
 
 **ProtonMails Täuschung:**
 
-* **Behauptungen**: [„Wir sind Open Source“](https://proton.me/blog/open-source) prominent im Marketing präsentiert
-* **Realität**: [Der Servercode ist vollständig proprietär](https://github.com/ProtonMail) – Nur Client-Apps sind Open Source
+* **Behauptungen**: [„Wir sind Open Source“](https://proton.me/blog/open-source) wird im Marketing prominent präsentiert.
+* **Realität**: [Der Servercode ist vollständig proprietär](https://github.com/ProtonMail) – Nur Client-Apps sind Open Source.
 * **Auswirkungen**: Nutzer können serverseitige Verschlüsselung, Datenverarbeitung oder Datenschutzansprüche nicht überprüfen.
-* **Verstoß gegen Transparenz**: Keine Möglichkeit, die tatsächlichen E-Mail-Verarbeitungs- und Speichersysteme zu prüfen.
+* **Verstoß gegen Transparenz**: Es gibt keine Möglichkeit, die tatsächlichen E-Mail-Verarbeitungs- und Speichersysteme zu prüfen.
 
 **Tutas irreführendes Marketing:**
 
-* **Behauptung**: [„Open Source E-Mail“](https://tuta.com/blog/posts/open-source-email) als zentrales Verkaufsargument
-* **Realität**: [Die Backend-Infrastruktur ist Closed Source](https://github.com/tutao/tutanota) – Nur Frontend verfügbar
+* **Behauptungen**: [„Open Source E-Mail“](https://tuta.com/blog/posts/open-source-email) als zentrales Verkaufsargument
+* **Realität**: [Die Backend-Infrastruktur ist Closed Source](https://github.com/tutao/tutanota) – nur Frontend verfügbar
 * **Auswirkung**: Proprietäre Verschlüsselung verhindert Standard-E-Mail-Protokolle (IMAP/SMTP)
 * **Lock-in-Strategie**: Benutzerdefinierte Verschlüsselung erzwingt Anbieterabhängigkeit
 
@@ -455,7 +455,7 @@ Im Jahr 2025 erfordert echter Datenschutz **vollständige Transparenz**. Wenn E-
 3. **Vertrauensbasierte Sicherheit**: Sie müssen ihren Aussagen ohne Überprüfung vertrauen.
 4. **Anbieterabhängigkeit**: Proprietäre Systeme verhindern Datenportabilität.
 
-**Die wahre Transparenz von Weiterleitungen per E-Mail:**
+**Die wahre Transparenz von E-Mail-Weiterleitungen:**
 
 * ✅ **[Komplett Open Source](https://github.com/forwardemail/forwardemail.net)** – Server- und Client-Code
 * ✅ **[Selbsthosting verfügbar](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – Betreiben Sie Ihre eigene Instanz
@@ -464,7 +464,7 @@ Im Jahr 2025 erfordert echter Datenschutz **vollständige Transparenz**. Wenn E-
 * ✅ **Keine Abhängigkeit von einem Anbieter** – Ihre Daten, Ihre Kontrolle
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Echte Open Source bedeutet, dass Sie jede Aussage überprüfen können.** Mit Forward Email können Sie unsere Verschlüsselung prüfen, unseren Datenverarbeitungsprozess überprüfen und sogar Ihre eigene Instanz betreiben. Das ist echte Transparenz.
 
 ## Über 30 Integrationsbeispiele aus der Praxis {#30-real-world-integration-examples}
 
@@ -527,7 +527,7 @@ for (const contact of newContacts) {
 ### 4. E-Commerce-Auftragsabwicklung {#4-e-commerce-order-processing}
 
 **Problem**: Manuelle Bestell-E-Mail-Verarbeitung für [E-Commerce-Plattformen](https://en.wikipedia.org/wiki/E-commerce)
-**Lösung**: Automatisierte Auftragsverwaltung
+**Lösung**: Automatisierte Bestellverwaltung
 
 ```javascript
 // Process order confirmation emails
@@ -677,7 +677,7 @@ analytics.complianceReview = complianceEmails.length;
 
 ### 10. Intelligente E-Mail-Archivierung {#10-smart-email-archiving}
 
-**Problem**: Manuell [E-Mail-Organisation](https://en.wikipedia.org/wiki/Email_management)
+**Problem**: Manueller [E-Mail-Organisation](https://en.wikipedia.org/wiki/Email_management)
 **Lösung**: Intelligente E-Mail-Kategorisierung
 
 ```javascript
@@ -698,7 +698,7 @@ for (const email of oldEmails) {
 
 ### 11. E-Mail-Kalender-Integration {#11-email-to-calendar-integration}
 
-**Problem**: Manuelle [Kalenderereignis](https://tools.ietf.org/html/rfc4791)-Erstellung aus E-Mails
+**Problem**: Manuelle Erstellung von [Kalenderereignis](https://tools.ietf.org/html/rfc4791) aus E-Mails
 **Lösung**: Automatische Ereignisextraktion und -erstellung
 
 ```javascript
@@ -769,7 +769,7 @@ for (const submission of submissions) {
 
 ### 14. E-Mail-Vorlagenverwaltung {#14-email-template-management}
 
-**Problem**: Inkonsistente [E-Mail-Vorlagen](https://en.wikipedia.org/wiki/Email_template) im gesamten Team
+**Problem**: Inkonsistenter [E-Mail-Vorlagen](https://en.wikipedia.org/wiki/Email_template) im gesamten Team
 **Lösung**: Zentralisiertes Vorlagensystem mit API
 
 ```javascript
@@ -788,7 +788,7 @@ await fetch('/v1/messages', {
 
 ### 15. E-Mail-basierte Workflow-Automatisierung {#15-email-based-workflow-automation}
 
-**Problem**: Manuelle [Genehmigungsprozesse](https://en.wikipedia.org/wiki/Workflow) per E-Mail
+**Problem**: Manueller [Genehmigungsprozesse](https://en.wikipedia.org/wiki/Workflow) per E-Mail
 **Lösung**: Automatisierte Workflow-Trigger
 
 ```javascript
@@ -810,7 +810,7 @@ for (const approval of approvals) {
 
 ### 16. E-Mail-Sicherheitsüberwachung {#16-email-security-monitoring}
 
-**Problem**: Manuell [Erkennung von Sicherheitsbedrohungen](https://en.wikipedia.org/wiki/Email_security)
+**Problem**: Manueller [Erkennung von Sicherheitsbedrohungen](https://en.wikipedia.org/wiki/Email_security)
 **Lösung**: Automatisierte Bedrohungsanalyse
 
 ```javascript
@@ -850,7 +850,7 @@ await updateSurveyResults(surveyData);
 
 ### 18. E-Mail-Leistungsüberwachung {#18-email-performance-monitoring}
 
-**Problem**: Keine Transparenz in [E-Mail-Zustellungsleistung](https://en.wikipedia.org/wiki/Email_deliverability)
+**Problem**: Keine Einsicht in [E-Mail-Zustellungsleistung](https://en.wikipedia.org/wiki/Email_deliverability)
 **Lösung**: E-Mail-Metriken in Echtzeit
 
 ```javascript
@@ -866,8 +866,8 @@ await updateDashboard(deliveryStats);
 
 ### 19. E-Mail-basierte Lead-Qualifizierung {#19-email-based-lead-qualification}
 
-**Problem**: Manuelle [Lead-Scoring](https://en.wikipedia.org/wiki/Lead_scoring) aus E-Mail-Interaktionen
-**Lösung**: Automatisierte Lead-Qualifizierung
+**Problem**: Manueller [Lead-Scoring](https://en.wikipedia.org/wiki/Lead_scoring) aus E-Mail-Interaktionen
+**Lösung**: Automatisierte Lead-Qualifizierungspipeline
 
 ```javascript
 // Score leads based on email engagement
@@ -884,7 +884,7 @@ for (const prospect of prospects) {
 
 ### 20. E-Mail-basiertes Projektmanagement {#20-email-based-project-management}
 
-**Problem**: [Projektupdates](https://en.wikipedia.org/wiki/Project_management) über mehrere E-Mail-Threads verteilt
+**Problem**: [Projektupdates](https://en.wikipedia.org/wiki/Project_management) verteilt über mehrere E-Mail-Threads
 **Lösung**: Zentralisierte Projektkommunikationszentrale
 
 ```javascript
@@ -904,7 +904,7 @@ for (const email of projectEmails) {
 }
 ```
 
-### 21. E-Mail-basiertes Bestandsmanagement {#21-email-based-inventory-management}
+### 21. E-Mail-basierte Bestandsverwaltung {#21-email-based-inventory-management}
 
 **Problem**: Manuelle Bestandsaktualisierungen über Lieferanten-E-Mails
 **Lösung**: Automatisierte Bestandsverfolgung über E-Mail-Benachrichtigungen
@@ -935,8 +935,8 @@ for (const email of inventoryEmails) {
 
 ### 22. E-Mail-basierte Rechnungsverarbeitung {#22-email-based-invoice-processing}
 
-**Problem**: Manuelle [Rechnungsverarbeitung](https://en.wikipedia.org/wiki/Invoice_processing) und Buchhaltungsintegration
-**Lösung**: Automatisierte Rechnungsextraktion und Buchhaltungssystemsynchronisierung
+**Problem**: Manuelle [Rechnungsverarbeitung](https://en.wikipedia.org/wiki/Invoice_processing)-Integration und Buchhaltung
+**Lösung**: Automatisierte Rechnungsextraktion und Buchhaltungssystem-Synchronisierung
 
 ```javascript
 // Extract invoice data from email attachments
@@ -964,7 +964,7 @@ for (const email of invoiceEmails) {
 
 ### 23. E-Mail-basierte Event-Registrierung {#23-email-based-event-registration}
 
-**Problem**: Manuelle [Veranstaltungsregistrierung](https://en.wikipedia.org/wiki/Event_management)-Verarbeitung von E-Mail-Antworten
+**Problem**: Manuelle [Veranstaltungsregistrierung](https://en.wikipedia.org/wiki/Event_management)-Verarbeitung aus E-Mail-Antworten
 **Lösung**: Automatisierte Teilnehmerverwaltung und Kalenderintegration
 
 ```javascript
@@ -1097,7 +1097,7 @@ for (const application of applications) {
 ### 27. E-Mail-basierte Spesenabrechnungsverarbeitung {#27-email-based-expense-report-processing}
 
 **Problem**: Manuelle [Spesenabrechnung](https://en.wikipedia.org/wiki/Expense_report)-Einreichung und -Genehmigung
-**Lösung**: Automatisierter Workflow zur Spesenabrechnung und -genehmigung
+**Lösung**: Automatisierter Workflow zur Spesenabfrage und -genehmigung
 
 ```javascript
 // Process expense report emails
@@ -1171,7 +1171,7 @@ for (const report of bugReports) {
 
 ### 29. E-Mail-basiertes Lieferantenmanagement {#29-email-based-vendor-management}
 
-**Problem**: Manuelle [Lieferantenkommunikation](https://en.wikipedia.org/wiki/Vendor_management) und Vertragsverfolgung
+**Problem**: Manuelle [Lieferantenkommunikation](https://en.wikipedia.org/wiki/Vendor_management)- und Vertragsverfolgung
 **Lösung**: Automatisiertes Lieferantenbeziehungsmanagement
 
 ```javascript
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. E-Mail-basiertes Social Media Monitoring {#30-email-based-social-media-monitoring}
 
-**Problem**: Manuelles [sozialen Medien](https://en.wikipedia.org/wiki/Social_media_monitoring) Erwähnungs-Tracking und -Antworten
+**Problem**: Manuelles [sozialen Medien](https://en.wikipedia.org/wiki/Social_media_monitoring)-Erwähnungs-Tracking und -Antworten
 **Lösung**: Automatisierte Verarbeitung von Social-Media-Benachrichtigungen und Reaktionskoordination
 
 ```javascript
@@ -1260,7 +1260,7 @@ for (const alert of socialAlerts) {
 
 ### 1. Erstellen Sie Ihr Weiterleitungs-E-Mail-Konto {#1-create-your-forward-email-account}
 
-Melden Sie sich unter [forwardemail.net](https://forwardemail.net) an und bestätigen Sie Ihre Domain.
+Melden Sie sich bei [forwardemail.net](https://forwardemail.net) an und bestätigen Sie Ihre Domain.
 
 ### 2. API-Anmeldeinformationen generieren {#2-generate-api-credentials}
 
@@ -1288,7 +1288,7 @@ Besuchen Sie [forwardemail.net/en/email-api](https://forwardemail.net/en/email-a
 ## Technische Ressourcen {#technical-resources}
 
 * **[Vollständige API-Dokumentation](https://forwardemail.net/en/email-api)** – Interaktive OpenAPI 3.0-Spezifikation
-* **[Self-Hosting-Handbuch](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – E-Mail-Weiterleitung in Ihrer Infrastruktur implementieren
+* **[Self-Hosting-Handbuch](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – E-Mail-Weiterleitung in Ihrer Infrastruktur bereitstellen
 * **[Sicherheits-Whitepaper](https://forwardemail.net/technical-whitepaper.pdf)** – Technische Architektur und Sicherheitsdetails
 * **[GitHub-Repository](https://github.com/forwardemail/forwardemail.net)** – Open-Source-Codebasis
 * **[Entwickler-Support](mailto:api@forwardemail.net)** – Direkter Zugang zu unserem Entwicklungsteam

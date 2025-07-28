@@ -1,4 +1,4 @@
-# Casestudie: Hvordan Linux Foundation optimerer e-mailhåndtering på tværs af over 250 domæner med videresendelse af e-mail {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
+# Casestudie: Hvordan Linux Foundation optimerer e-mailhåndtering på tværs af mere end 250 domæner med videresendelse af e-mail {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
 <img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
 
@@ -7,10 +7,10 @@
 * [Indledning](#introduction)
 * [Udfordringen](#the-challenge)
 * [Løsningen](#the-solution)
-  * [100 % Open Source-arkitektur](#100-open-source-architecture)
+  * [100% open source-arkitektur](#100-open-source-architecture)
   * [Privatlivsfokuseret design](#privacy-focused-design)
-  * [Sikkerhed i virksomhedsklasse](#enterprise-grade-security)
-  * [Virksomhedsmodel til fast pris](#fixed-price-enterprise-model)
+  * [Sikkerhed i virksomhedsklassen](#enterprise-grade-security)
+  * [Fastpris-virksomhedsmodel](#fixed-price-enterprise-model)
   * [Udviklervenlig API](#developer-friendly-api)
 * [Implementeringsproces](#implementation-process)
 * [Resultater og fordele](#results-and-benefits)
@@ -23,11 +23,11 @@
 
 ## Introduktion {#introduction}
 
-[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) administrerer over 900 open source-projekter på tværs af mere end 250 domæner, herunder [linux.com](https://www.linux.com/) og [jQuery.com](https://jquery.com/). Denne casestudie undersøger, hvordan de indgik et partnerskab med [Videresend e-mail](https://forwardemail.net) for at strømline e-mailhåndteringen, samtidig med at de opretholdt overensstemmelse med open source-principper.
+[Linux Foundation](https://en.wikipedia.org/wiki/Linux_Foundation) administrerer over 900 open source-projekter på tværs af mere end 250 domæner, herunder [linux.com](https://www.linux.com/) og [jQuery.com](https://jquery.com/). Denne casestudie undersøger, hvordan de indgik et partnerskab med [Videresend e-mail](https://forwardemail.net) for at strømline e-mailhåndteringen, samtidig med at de opretholdt overensstemmelse med open source-principperne.
 
 ## Udfordringen {#the-challenge}
 
-Linux Foundation stod over for adskillige e-mailhåndteringsudfordringer:
+Linux Foundation stod over for adskillige udfordringer med e-mailhåndtering:
 
 * **Skalering**: Administration af e-mail på tværs af mere end 250 domæner med forskellige krav
 * **Administrativ byrde**: Konfiguration af DNS-poster, vedligeholdelse af videresendelsesregler og besvarelse af supportanmodninger
@@ -35,11 +35,11 @@ Linux Foundation stod over for adskillige e-mailhåndteringsudfordringer:
 * **Omkostninger**: Traditionelle løsninger pr. bruger var uoverkommeligt dyre i deres skala
 * **Open Source-tilpasning**: Behov for løsninger, der matcher deres engagement i open source-værdier
 
-I lighed med de udfordringer, som [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) stod over for med deres mange distributionsdomæner, havde Linux Foundation brug for en løsning, der kunne håndtere forskellige projekter, samtidig med at den opretholdt en samlet administrationstilgang.
+I lighed med de udfordringer, som [Kanonisk/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) stod over for med deres mange distributionsdomæner, havde Linux Foundation brug for en løsning, der kunne håndtere forskellige projekter, samtidig med at den opretholdt en samlet administrationstilgang.
 
 ## Løsningen {#the-solution}
 
-Videresend e-mail gav en omfattende løsning med nøglefunktioner:
+Videresend e-mail leverede en omfattende løsning med nøglefunktioner:
 
 ```mermaid
 graph TD
@@ -53,11 +53,11 @@ graph TD
 
 ### 100% åben kildekode-arkitektur {#100-open-source-architecture}
 
-Som den eneste e-mailtjeneste med en fuldstændig open source-platform (både frontend og backend) passede Forward Email perfekt til Linux Foundations engagement i open source-principper. I lighed med vores implementering med [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) tillod denne gennemsigtighed deres tekniske team at verificere sikkerhedsimplementeringer og endda bidrage med forbedringer.
+Som den eneste e-mailtjeneste med en fuldstændig open source-platform (både frontend og backend) passede Forward Email perfekt til Linux Foundations engagement i open source-principper. I lighed med vores implementering med [Kanonisk/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) tillod denne gennemsigtighed deres tekniske team at verificere sikkerhedsimplementeringer og endda bidrage med forbedringer.
 
 ### Design med fokus på privatliv {#privacy-focused-design}
 
-Videresend e-mails strenge [privatlivspolitikker](https://forwardemail.net/privacy) gav den sikkerhed, som Linux Foundation krævede. Vores [teknisk implementering af e-mail privatlivsbeskyttelse](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) sikrer, at al kommunikation forbliver sikker per design, uden logføring eller scanning af e-mailindhold.
+Den strenge [privatlivspolitikker](https://forwardemail.net/privacy)-funktion i Videresend e-mail gav den sikkerhed, som Linux Foundation krævede. Vores [Teknisk implementering af beskyttelse af e-mail-privatliv](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) sikrer, at al kommunikation forbliver sikker per design, uden logføring eller scanning af e-mailindhold.
 
 Som beskrevet i vores tekniske implementeringsdokumentation:
 
@@ -67,13 +67,13 @@ Som beskrevet i vores tekniske implementeringsdokumentation:
 
 Implementeringen af [kvanteresistent kryptering](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) ved hjælp af ChaCha20-Poly1305 gav den nyeste sikkerhed, hvor hver postkasse er en separat krypteret fil. Denne tilgang sikrer, at selvom kvantecomputere bliver i stand til at bryde nuværende krypteringsstandarder, vil Linux Foundations kommunikation forblive sikker.
 
-### Virksomhedsmodel med fast pris {#fixed-price-enterprise-model}
+### Fastpris-virksomhedsmodel {#fixed-price-enterprise-model}
 
-[virksomhedspriser](https://forwardemail.net/pricing) i Videresend Email gav en fast månedlig pris uanset domæner eller brugere. Denne tilgang har givet betydelige omkostningsbesparelser for andre store organisationer, som vist i vores [e-mail casestudie for universitetsalumner](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), hvor institutioner sparede op til 99 % sammenlignet med traditionelle e-mailløsninger pr. bruger.
+[virksomhedspriser](https://forwardemail.net/pricing) i Videresend Email gav en fast månedlig pris uanset domæner eller brugere. Denne tilgang har givet betydelige omkostningsbesparelser for andre store organisationer, som vist i vores [casestudie om e-mails til universitetsalumner](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), hvor institutioner sparede op til 99 % sammenlignet med traditionelle e-mailløsninger pr. bruger.
 
 ### Udviklervenlig API {#developer-friendly-api}
 
-Efter en [README-første tilgang](https://tom.preston-werner.com/2010/08/23/readme-driven-development) og inspireret af [Stripes RESTful API-design](https://amberonrails.com/building-stripes-api) muliggjorde Forward Emails [API](https://forwardemail.net/api) dyb integration med Linux Foundations Project Control Center. Denne integration var afgørende for at automatisere e-mailhåndtering på tværs af deres forskelligartede projektportefølje.
+Efter [README-først tilgang](https://tom.preston-werner.com/2010/08/23/readme-driven-development) og inspireret af [Stripes RESTful API-design](https://amberonrails.com/building-stripes-api) muliggjorde Forward Email's [API](https://forwardemail.net/api) dyb integration med Linux Foundations Project Control Center. Denne integration var afgørende for at automatisere e-mailhåndtering på tværs af deres forskelligartede projektportefølje.
 
 ## Implementeringsproces {#implementation-process}
 
@@ -99,7 +99,7 @@ flowchart LR
 
 3. **Udvikling af brugerdefinerede funktioner**: Administration af flere domæner, rapportering og sikkerhedspolitikker
 
-Vi har arbejdet tæt sammen med Linux Foundation for at udvikle funktioner (som også er 100 % open source, så alle kan drage fordel af dem) specifikt til deres multiprojektmiljø, ligesom vi har skabt brugerdefinerede løsninger til [e-mailsystemer for alumni fra universiteter](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
+Vi har arbejdet tæt sammen med Linux Foundation for at udvikle funktioner (som også er 100 % open source, så alle kan drage fordel af dem) specifikt til deres multiprojektmiljø, ligesom vi har skabt brugerdefinerede løsninger til [e-mailsystemer for universitetsalumner](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study).
 
 ## Resultater og fordele {#results-and-benefits}
 
@@ -132,9 +132,9 @@ Implementeringen gav betydelige fordele:
 
 ## Konklusion {#conclusion}
 
-Linux Foundations partnerskab med Forward Email demonstrerer, hvordan organisationer kan tackle komplekse e-mail-administrationsudfordringer, samtidig med at de er i overensstemmelse med deres kerneværdier. Ved at vælge en løsning, der prioriterer open source-principper, privatliv og sikkerhed, har Linux Foundation forvandlet e-mail-administration fra en administrativ byrde til en strategisk fordel.
+Linux Foundations partnerskab med Forward Email demonstrerer, hvordan organisationer kan håndtere komplekse udfordringer med e-mailhåndtering, samtidig med at de opretholder overensstemmelse med deres kerneværdier. Ved at vælge en løsning, der prioriterer open source-principper, privatliv og sikkerhed, har Linux Foundation forvandlet e-mailhåndtering fra en administrativ byrde til en strategisk fordel.
 
-Som det ses i vores arbejde med både [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) og [større universiteter](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), kan organisationer med komplekse domæneporteføljer opnå betydelige forbedringer i effektivitet, sikkerhed og omkostningsstyring gennem Forward Emails virksomhedsløsning.
+Som det ses i vores arbejde med både [Kanonisk/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) og [større universiteter](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), kan organisationer med komplekse domæneporteføljer opnå betydelige forbedringer i effektivitet, sikkerhed og omkostningsstyring gennem Forward Emails virksomhedsløsning.
 
 For mere information om, hvordan Videresend e-mail kan hjælpe din organisation med at administrere e-mail på tværs af flere domæner, kan du besøge [forwardemail.net](https://forwardemail.net) eller udforske vores detaljerede [dokumentation](https://forwardemail.net/email-api) og [guider](https://forwardemail.net/guides).
 

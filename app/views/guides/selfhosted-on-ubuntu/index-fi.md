@@ -32,8 +32,8 @@
 * [Huolto ja valvonta](#maintenance-and-monitoring)
   * [Lokien sijainnit](#log-locations)
   * [Säännölliset huoltotehtävät](#regular-maintenance-tasks)
-  * [Sertifikaatin uusiminen](#certificate-renewal)
-* [Vianetsintä](#troubleshooting)
+  * [Todistuksen uusiminen](#certificate-renewal)
+* [Vianmääritys](#troubleshooting)
   * [Yleisiä ongelmia](#common-issues)
   * [Avun saaminen](#getting-help)
 * [Tietoturvan parhaat käytännöt](#security-best-practices)
@@ -162,7 +162,7 @@ docker --version
 docker compose version
 ```
 
-### Vaihe 6: Docker-palvelun {#step-6-configure-docker-service} määrittäminen
+### Vaihe 6: Docker-palvelun {#step-6-configure-docker-service}} määrittäminen
 
 Varmista, että Docker käynnistyy automaattisesti ja on käynnissä:
 
@@ -221,7 +221,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-### Vaihe 8: Kloonaa edelleenlähetyssähköpostien arkisto {#step-8-clone-forward-email-repository}
+### Vaihe 8: Kloonaa edelleenlähetyssähköpostien tietovarasto {#step-8-clone-forward-email-repository}
 
 Lataa sähköpostin edelleenlähetyksen lähdekoodi:
 
@@ -239,7 +239,7 @@ cd "$ROOT_DIR"
 ls -la
 ```
 
-### Vaihe 9: Ympäristön konfigurointi {#step-9-set-up-environment-configuration}
+### Vaihe 9: Ympäristön konfiguroinnin määrittäminen {#step-9-set-up-environment-configuration}
 
 Valmistele ympäristön kokoonpano:
 
@@ -554,7 +554,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Cron-varmuuskopiointitöiden määrittäminen {#set-up-backup-cron-jobs}
+### Varmuuskopiointi Cron-töiden määrittäminen {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -571,7 +571,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## Automaattisen päivityksen asetukset {#auto-update-configuration}
+## Automaattisen päivityksen määritys {#auto-update-configuration}
 
 Määritä automaattiset päivitykset sähköpostin edelleenlähetysasennuksellesi:
 
@@ -588,7 +588,7 @@ crontab -l
 
 ## Ylläpito ja valvonta {#maintenance-and-monitoring}
 
-### Lokitiedostojen sijainnit {#log-locations}
+### Lokisijainnit {#log-locations}
 
 * **Docker Compose -lokit**: `docker compose -f $DOCKER_COMPOSE_FILE logs`
 * **Järjestelmälokit**: `/var/log/syslog`
@@ -601,7 +601,7 @@ crontab -l
 2. **Palvelun tilan tarkistus**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Lokien tarkastelu**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Järjestelmäpakettien päivitys**: `apt update && apt upgrade`
-5. **Varmenteiden uusiminen**: Varmenteet uusiutuvat automaattisesti, mutta niiden vanhenemista seurataan
+5. **Varmenteiden uusiminen**: Varmenteet uusiutuvat automaattisesti, mutta vanhenemista valvotaan
 
 ### Varmenteen uusiminen {#certificate-renewal}
 
@@ -642,7 +642,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * Varmista, että MX-tietueet ovat oikein.* Tarkista SPF-, DKIM- ja DMARC-tietueet.* Varmista, ettei hosting-palveluntarjoajasi ole estänyt porttia 25.
 
-#### 4. Verkkokäyttöliittymä ei ole saavutettavissa {#4-web-interface-not-accessible}
+#### 4. Verkkokäyttöliittymä ei ole käytettävissä {#4-web-interface-not-accessible}
 
 * Tarkista palomuurin asetukset: `ufw status`
 * Vahvista SSL-varmenteet: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
@@ -652,7 +652,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * **Dokumentaatio**: <https://forwardemail.net/self-hosted>
 * **GitHub-ongelmat**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **Yhteisön tuki**: Tutustu projektin GitHub-keskusteluihin
+* **Yhteisön tuki**: Tarkista projektin GitHub-keskustelut
 
 ## Tietoturvan parhaat käytännöt {#security-best-practices}
 
@@ -663,7 +663,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 5. **Ota käyttöön Fail2Ban**: Harkitse Fail2Banin asentamista lisäturvallisuuden takaamiseksi
 6. **Säännölliset tietoturvatarkastukset**: Tarkista kokoonpanosi säännöllisesti
 
-## Yhteenveto {#conclusion}
+## Johtopäätös {#conclusion}
 
 Sähköpostinvälityspalvelun asennuksen pitäisi nyt olla valmis ja käynnissä Ubuntussa. Muista:
 

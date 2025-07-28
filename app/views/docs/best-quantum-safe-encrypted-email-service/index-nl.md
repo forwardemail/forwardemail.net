@@ -25,19 +25,19 @@
 ## Voorwoord {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> Onze e-mailservice is [100% open source](https://github.com/forwardemail) en is gericht op privacy via beveiligde en versleutelde SQLite-mailboxen.
 
 Totdat we [IMAP-ondersteuning](/faq#do-you-support-receiving-email-with-imap) lanceerden, gebruikten we MongoDB voor onze permanente gegevensopslagbehoeften.
 
 Deze technologie is verbazingwekkend en we gebruiken hem nog steeds. Om echter encryptie-at-rest met MongoDB te gebruiken, moet u een provider gebruiken die MongoDB Enterprise aanbiedt, zoals Digital Ocean of Mongo Atlas. U kunt ook betalen voor een zakelijke licentie (waardoor u vervolgens te maken krijgt met de latentie van het verkoopteam).
 
-Ons team bij [E-mail doorsturen](https://forwardemail.net) had een ontwikkelaarsvriendelijke, schaalbare, betrouwbare en versleutelde opslagoplossing voor IMAP-mailboxen nodig. Als open-sourceontwikkelaars was het gebruik van een technologie waarvoor je licentiekosten moet betalen om de versleuteling in rust te krijgen, in strijd met [onze principes](#principles) – en daarom hebben we geëxperimenteerd, onderzoek gedaan en een nieuwe oplossing vanaf nul ontwikkeld om aan deze behoeften te voldoen.
+Ons team bij [E-mail doorsturen](https://forwardemail.net) had behoefte aan een ontwikkelaarsvriendelijke, schaalbare, betrouwbare en versleutelde opslagoplossing voor IMAP-mailboxen. Als open-sourceontwikkelaars was het gebruik van een technologie waarvoor je licentiekosten moet betalen om de versleuteling in rust te krijgen, tegen [onze principes](#principles). Daarom experimenteerden, onderzochten en ontwikkelden we een nieuwe oplossing vanaf nul om aan deze behoeften te voldoen.
 
 In plaats van een gedeelde database te gebruiken om uw mailboxen op te slaan, slaan wij uw mailboxen individueel op en versleutelen we ze met uw wachtwoord (dat alleen u kent). **Onze e-mailservice is zo veilig dat als u uw wachtwoord vergeet, u uw mailbox kwijtraakt** (en u deze moet herstellen met offline back-ups of opnieuw moet beginnen).
 
-Blijf lezen, want hieronder gaan we dieper in op [vergelijking van e-maildienstverleners](#email-service-provider-comparison), [hoe onze service werkt](#how-does-it-work), [onze technologie stack](#technologies) en meer.
+Lees verder, want hieronder gaan we dieper in op [vergelijking van e-maildienstverleners](#email-service-provider-comparison), [hoe onze service werkt](#how-does-it-work), [onze technologie stack](#technologies) en meer.
 
-## Vergelijking van e-mail serviceproviders {#email-service-provider-comparison}
+## Vergelijking van e-mailproviders {#email-service-provider-comparison}
 
 Wij zijn de enige 100% open-source en privacygerichte e-mailprovider die individueel versleutelde SQLite-mailboxen opslaat, een onbeperkt aantal domeinen, aliassen en gebruikers biedt en ondersteuning biedt voor uitgaande SMTP, IMAP en POP3:
 
@@ -47,10 +47,10 @@ Wij zijn de enige 100% open-source en privacygerichte e-mailprovider die individ
 
 ## Hoe werkt het {#how-does-it-work}
 
-1. Met behulp van uw e-mailclient zoals Apple Mail, Thunderbird, Gmail of Outlook maakt u verbinding met onze beveiligde [IMAP](/faq#do-you-support-receiving-email-with-imap)-servers met behulp van uw gebruikersnaam en wachtwoord:
+1. Met behulp van uw e-mailclient zoals Apple Mail, Thunderbird, Gmail of Outlook maakt u verbinding met onze beveiligde [IMAP](/faq#do-you-support-receiving-email-with-imap)-servers met uw gebruikersnaam en wachtwoord:
 
-* Uw gebruikersnaam is uw volledige alias bij uw domein, bijvoorbeeld `hello@example.com`.
-* Uw wachtwoord wordt willekeurig gegenereerd en wordt slechts 30 seconden weergegeven wanneer u op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> klikt vanuit <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen.
+* Je gebruikersnaam is je volledige alias bij je domein, bijvoorbeeld `hello@example.com`.
+* Je wachtwoord wordt willekeurig gegenereerd en wordt slechts 30 seconden weergegeven wanneer je op <strong class="text-success"><i class="fa fa-key"></i> Wachtwoord genereren</strong> klikt vanuit <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mijn Account <i class="fa fa-angle-right"></i> Domeinen</a> <i class="fa fa-angle-right"></i> Aliassen.
 
 2. Zodra de verbinding tot stand is gebracht, stuurt uw e-mailclient [IMAP-protocolopdrachten](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) naar onze IMAP-server om uw mailbox gesynchroniseerd te houden. Dit omvat het schrijven en opslaan van concept-e-mails en andere acties die u uitvoert (bijvoorbeeld een e-mail als belangrijk markeren of markeren als spam/ongewenste e-mail).
 
@@ -73,9 +73,9 @@ Wij zijn de enige 100% open-source en privacygerichte e-mailprovider die individ
          MX->>Sender: Success!
      ```
 
-* Wanneer u met uw e-mailclient verbinding maakt met onze IMAP-server, wordt uw wachtwoord in het geheugen gecodeerd en gebruikt om uw mailbox te lezen en te schrijven. Uw mailbox kan alleen met dit wachtwoord worden gelezen en geschreven. Houd er rekening mee dat, aangezien u de enige bent met dit wachtwoord, **alleen u** uw mailbox kunt lezen en schrijven wanneer u deze opent. De volgende keer dat uw e-mailclient probeert te pollen voor e-mail of synchronisatie, worden uw nieuwe berichten vanuit deze tijdelijke mailbox verzonden en opgeslagen in uw eigen mailboxbestand met het opgegeven wachtwoord. Houd er rekening mee dat deze tijdelijke mailbox daarna wordt opgeschoond en verwijderd, zodat alleen uw met een wachtwoord beveiligde mailbox de berichten bevat.
+* Wanneer u met uw e-mailclient verbinding maakt met onze IMAP-server, wordt uw wachtwoord in het geheugen gecodeerd en gebruikt om uw mailbox te lezen en te schrijven. Uw mailbox kan alleen met dit wachtwoord worden gelezen en geschreven. Houd er rekening mee dat, aangezien u de enige bent met dit wachtwoord, **alleen u** uw mailbox kunt lezen en schrijven wanneer u deze opent. De volgende keer dat uw e-mailclient probeert te pollen voor e-mail of synchronisaties, worden uw nieuwe berichten vanuit deze tijdelijke mailbox verzonden en opgeslagen in uw eigen mailboxbestand met het opgegeven wachtwoord. Houd er rekening mee dat deze tijdelijke mailbox daarna wordt opgeschoond en verwijderd, zodat alleen uw met een wachtwoord beveiligde mailbox de berichten bevat.
 
-* **Als u verbonden bent met IMAP (bijvoorbeeld via een e-mailclient zoals Apple Mail of Thunderbird), hoeven we niet naar tijdelijke schijfruimte te schrijven. Uw in-memory gecodeerde IMAP-wachtwoord wordt in plaats daarvan opgehaald en gebruikt. Wanneer een bericht bij u wordt afgeleverd, sturen we in realtime een WebSocket-verzoek naar alle IMAP-servers met de vraag of ze een actieve sessie voor u hebben (dit is het ophalen). Vervolgens geven we dat gecodeerde in-memory wachtwoord door. We hoeven dus niet naar een tijdelijke mailbox te schrijven, maar kunnen met uw gecodeerde wachtwoord naar uw daadwerkelijke gecodeerde mailbox schrijven.**
+* **Als u verbonden bent met IMAP (bijvoorbeeld met een e-mailclient zoals Apple Mail of Thunderbird), hoeven we niet naar tijdelijke schijfruimte te schrijven. Uw in-memory gecodeerde IMAP-wachtwoord wordt in plaats daarvan opgehaald en gebruikt. Wanneer een bericht bij u wordt afgeleverd, sturen we in realtime een WebSocket-verzoek naar alle IMAP-servers met de vraag of ze een actieve sessie voor u hebben (dit is het ophalen). Vervolgens geven we dat gecodeerde in-memory wachtwoord door. We hoeven dus niet naar een tijdelijke mailbox te schrijven, maar kunnen met uw gecodeerde wachtwoord naar uw daadwerkelijke gecodeerde mailbox schrijven.**
 
      ```mermaid
      sequenceDiagram
@@ -92,7 +92,7 @@ Wij zijn de enige 100% open-source en privacygerichte e-mailprovider die individ
 
 ## Technologieën {#technologies}
 
-### Databases {#databases}
+### Databanken {#databases}
 
 We hebben andere mogelijke databaseopslaglagen onderzocht, maar geen enkele voldeed zo goed aan onze eisen als SQLite:
 
@@ -106,7 +106,7 @@ We hebben andere mogelijke databaseopslaglagen onderzocht, maar geen enkele vold
 | [MariaDB](https://mariadb.com/) | :wit_vinkje: [For InnoDB only](https://mariadb.com/kb/en/data-at-rest-encryption-overview/#which-storage-engines-does-mariadb-encryption-support) | :x: Relationele database | :white_check_mark: `GPLv2` en `BUSL-1.1` | :X: |
 | [CockroachDB](https://www.cockroachlabs.com/product/) | :x: [Enterprise-only feature](https://www.cockroachlabs.com/docs/v23.1/enterprise-licensing) | :x: Relationele database | :x: `BUSL-1.1` en anderen | :X: |
 
-> Hier is een [blogpost waarin verschillende SQLite-databaseopslagopties worden vergeleken](https://gcore.com/learning/comparing-litestream-rqlite-dqlite/) in de tabel hierboven.
+> Hier is een [blogpost waarin verschillende SQLite-databaseopslagopties worden vergeleken](https://gcore.com/learning/comparing-litestream-rqlite-dqlite/) in de bovenstaande tabel.
 
 ### Beveiliging {#security}
 
@@ -120,11 +120,11 @@ Ons doel is om zo min mogelijk [enkelvoudig punt van falen](https://en.wikipedia
 
 > **tldr;** Onze IMAP-servers gebruiken individueel gecodeerde SQLite-databases voor elk van uw mailboxen.
 
-[SQLite is een extreem populaire](https://www.sqlite.org/mostdeployed.html) ingebedde database – deze draait momenteel op uw telefoon en computer – [en wordt gebruikt door bijna alle belangrijke technologieën](https://www.sqlite.org/famous.html).
+[SQLite is een extreem populaire](https://www.sqlite.org/mostdeployed.html) ingesloten database – deze wordt momenteel uitgevoerd op uw telefoon en computer – [en wordt gebruikt door bijna alle belangrijke technologieën](https://www.sqlite.org/famous.html).
 
-Op onze versleutelde servers is er bijvoorbeeld een SQLite-databasemailbox voor `linux@example.com`, `info@example.com`, `hello@example.com`, enzovoort – één voor elk als databasebestand `.sqlite`. We geven de databasebestanden ook geen naam met het e-mailadres – in plaats daarvan gebruiken we een BSON ObjectID en unieke UUID's die niet aangeven van wie de mailbox is of onder welk e-mailadres deze zich bevindt (bijvoorbeeld `353a03f21e534321f5d6e267.sqlite`).
+Op onze versleutelde servers is er bijvoorbeeld een SQLite-databasemailbox voor `linux@example.com`, `info@example.com`, `hello@example.com`, enzovoort – één voor elk als een databasebestand `.sqlite`. We geven de databasebestanden ook geen naam met het e-mailadres – in plaats daarvan gebruiken we een BSON ObjectID en unieke UUID's die niet aangeven van wie de mailbox is of onder welk e-mailadres deze staat (bijvoorbeeld `353a03f21e534321f5d6e267.sqlite`).
 
-Elk van deze databases is zelf versleuteld met uw wachtwoord (dat alleen u kent) via [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Dit betekent dat uw mailboxen individueel versleuteld, op zichzelf staand ([in de zandbak](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) en draagbaar zijn.
+Elk van deze databases is zelf versleuteld met uw wachtwoord (dat alleen u kent) via [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Dit betekent dat uw mailboxen individueel versleuteld, autonoom ([in de zandbak](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) en draagbaar zijn.
 
 We hebben SQLite verfijnd met de volgende [PRAGMA](https://www.sqlite.org/pragma.html):
 
@@ -138,7 +138,7 @@ We hebben SQLite verfijnd met de volgende [PRAGMA](https://www.sqlite.org/pragma
 | `foreign_keys=ON` | Zorgt ervoor dat verwijzingen naar externe sleutels (bijvoorbeeld een relatie van de ene tabel naar de andere) worden afgedwongen. [By default this is not turned on in SQLite](https://www.sqlite.org/foreignkeys.html), maar voor validatie en gegevensintegriteit moet dit worden ingeschakeld. |
 | `encoding='UTF-8'` | [Default encoding](https://www.sqlite.org/pragma.html#pragma_encoding) om te gebruiken om de geestelijke gezondheid van ontwikkelaars te waarborgen. |
 
-> Alle andere standaardwaarden zijn afkomstig van SQLite zoals gespecificeerd in [officiële PRAGMA-documentatie](https://www.sqlite.org/pragma.html#pragma_auto_vacuum).
+> Alle andere standaardwaarden komen van SQLite zoals gespecificeerd in [officiële PRAGMA-documentatie](https://www.sqlite.org/pragma.html#pragma_auto_vacuum).
 
 ### Gelijktijdigheid {#concurrency}
 
@@ -154,7 +154,7 @@ Ongeacht met welke IMAP-server uw e-mailclient verbinding maakt, willen we dat d
 
 Schrijven naar uw database verloopt iets anders, omdat SQLite een ingebedde database is en uw mailbox standaard in één bestand staat.
 
-We hebben opties zoals `litestream`, `rqlite` en `dqlite` onderzocht, maar geen van deze voldeed aan onze vereisten.
+We hebben opties zoals `litestream`, `rqlite` en `dqlite` hieronder onderzocht, maar geen van deze voldeed aan onze vereisten.
 
 Om schrijfbewerkingen uit te voeren met write-ahead-logging ("[WAL](https://www.sqlite.org/wal.html)") ingeschakeld, moeten we ervoor zorgen dat slechts één server ("Primair") hiervoor verantwoordelijk is. [WAL](https://www.sqlite.org/wal.html) versnelt de gelijktijdigheid aanzienlijk en staat één schrijver en meerdere lezers toe.
 
@@ -162,8 +162,8 @@ De primaire server draait op de dataservers met de gekoppelde volumes die de ver
 
 We realiseren tweerichtingscommunicatie met [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
-* Primaire servers gebruiken een instance van de [ws](https://github.com/websockets/ws)-server `WebSocketServer`.
-* Secundaire servers gebruiken een instance van de [ws](https://github.com/websockets/ws)-client `WebSocket` die is ingepakt met [websocket-zoals-beloofd](https://github.com/vitalets/websocket-as-promised) en [opnieuw verbinden-websocket](https://github.com/opensumi/reconnecting-websocket). Deze twee wrappers zorgen ervoor dat de `WebSocket` opnieuw verbinding maakt en gegevens kan verzenden en ontvangen voor specifieke databaseschrijfbewerkingen.
+* Primaire servers gebruiken een instance van de `WebSocketServer`-server van [ws](https://github.com/websockets/ws).
+* Secundaire servers gebruiken een instance van de `WebSocket`-client van [ws](https://github.com/websockets/ws), die is ingepakt met [websocket-zoals-beloofd](https://github.com/vitalets/websocket-as-promised) en [opnieuw verbinden-websocket](https://github.com/opensumi/reconnecting-websocket). Deze twee wrappers zorgen ervoor dat de `WebSocket` opnieuw verbinding maakt en gegevens kan verzenden en ontvangen voor specifieke databaseschrijfbewerkingen.
 
 ### Back-ups {#backups}
 
@@ -171,9 +171,9 @@ We realiseren tweerichtingscommunicatie met [WebSockets](https://developer.mozil
 
 Voor back-ups voeren we dagelijks de SQLite-opdracht `VACUUM INTO` uit tijdens de verwerking van IMAP-opdrachten. Hierbij wordt uw gecodeerde wachtwoord van een IMAP-verbinding in het geheugen gebruikt. Back-ups worden opgeslagen als er geen bestaande back-up wordt gedetecteerd of als de hash [SHA-256](https://en.wikipedia.org/wiki/SHA-2) in het bestand is gewijzigd ten opzichte van de meest recente back-up.
 
-Merk op dat we de opdracht `VACUUM INTO` gebruiken in plaats van de ingebouwde opdracht `backup`, omdat een pagina die tijdens een `backup` opdrachtbewerking wordt gewijzigd, opnieuw moet beginnen. De opdracht `VACUUM INTO` maakt een momentopname. Zie de opmerkingen bij [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) en [Hacker Nieuws](https://news.ycombinator.com/item?id=31387556) voor meer informatie.
+Merk op dat we de opdracht `VACUUM INTO` gebruiken in plaats van de ingebouwde opdracht `backup`, omdat een pagina die tijdens een `backup`-opdracht wordt gewijzigd, opnieuw moet worden gestart. De opdracht `VACUUM INTO` maakt een momentopname. Zie deze opmerkingen over [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) en [Hacker Nieuws](https://news.ycombinator.com/item?id=31387556) voor meer informatie.
 
-Daarnaast gebruiken we `VACUUM INTO` in plaats van `backup`, omdat de opdracht `backup` de database voor een korte periode onversleuteld zou laten, totdat `rekey` wordt aangeroepen (zie deze GitHub [opmerking](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) voor meer informatie).
+Bovendien gebruiken we `VACUUM INTO` in plaats van `backup`, omdat de opdracht `backup` de database voor een korte periode onversleuteld zou laten, totdat `rekey` wordt aangeroepen (zie deze GitHub [opmerking](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) voor meer informatie).
 
 De secundaire server zal de primaire server via de `WebSocket`-verbinding instrueren om de back-up uit te voeren. De primaire server zal vervolgens de opdracht ontvangen om dit te doen en zal vervolgens:
 
@@ -189,7 +189,7 @@ De secundaire server zal de primaire server via de `WebSocket`-verbinding instru
 8. Upload het naar Cloudflare R2 voor opslag (of uw eigen provider indien opgegeven).
 -->
 
-Houd er rekening mee dat uw mailboxen zijn versleuteld. Hoewel we IP-beperkingen en andere authenticatiemaatregelen hanteren voor WebSocket-communicatie, kunt u er in het geval van een kwaadwillende partij gerust van zijn dat de WebSocket-payload uw IMAP-wachtwoord niet kan openen.
+Houd er rekening mee dat uw mailboxen versleuteld zijn. Hoewel we IP-beperkingen en andere authenticatiemaatregelen hanteren voor WebSocket-communicatie, kunt u er in het geval van een kwaadwillende partij gerust op zijn dat de WebSocket-payload uw IMAP-wachtwoord niet kan openen.
 
 Op dit moment wordt er slechts één back-up per mailbox opgeslagen, maar in de toekomst bieden we mogelijk point-in-time-herstel ("[PITR](https://en.wikipedia.org/wiki/Point-in-time_recovery)") aan.
 
@@ -199,7 +199,7 @@ Onze IMAP-servers ondersteunen de opdracht `SEARCH` met complexe query's, reguli
 
 Snelle zoekprestaties zijn te danken aan [FTS5](https://www.sqlite.org/fts5.html) en [sqlite-regex](https://github.com/asg017/sqlite-regex#sqlite-regex).
 
-We slaan `Date`-waarden op in de SQLite-mailboxen als [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601)-strings via [Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) (met de UTC-tijdzone zodat gelijkheidsvergelijkingen correct werken).
+We slaan `Date`-waarden op in de SQLite-mailboxen als [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601)-strings via [Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) (met UTC-tijdzone zodat gelijkheidsvergelijkingen correct functioneren).
 
 Er worden ook indexen opgeslagen voor alle objecten die in zoekopdrachten voorkomen.
 
@@ -218,7 +218,7 @@ Hieronder vindt u een tabel met een overzicht van de projecten die we gebruiken 
 | [Node.js](https://nodejs.org/en) | Node.js is de open-source, platformonafhankelijke JavaScript-runtimeomgeving die al onze serverprocessen uitvoert. |
 | [Nodemailer](https://github.com/nodemailer/nodemailer) | Node.js-pakket voor het verzenden van e-mails, het maken van verbindingen en meer. Wij zijn een officiële sponsor van dit project. |
 | [Redis](https://redis.io/) | In-memory database voor caching, publicatie-/abonnementskanalen en DNS via HTTPS-verzoeken. |
-| [SQLite3MultipleCiphers](https://github.com/utelle/SQLite3MultipleCiphers) | Encryptie-uitbreiding voor SQLite waarmee volledige databasebestanden kunnen worden gecodeerd (inclusief de write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)"), journal, rollback, …). |
+| [SQLite3MultipleCiphers](https://github.com/utelle/SQLite3MultipleCiphers) | Encryptie-uitbreiding voor SQLite waarmee volledige databasebestanden kunnen worden gecodeerd (inclusief de write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)"), journaal, rollback, …). |
 | [SQLiteStudio](https://github.com/pawelsalawa/sqlitestudio) | Visuele SQLite-editor (die u ook kunt gebruiken) om ontwikkelingsmailboxen te testen, downloaden en bekijken. |
 | [SQLite](https://www.sqlite.org/about.html) | Ingebouwde databaselaag voor schaalbare, zelfstandige, snelle en veerkrachtige IMAP-opslag. |
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js anti-spam, e-mailfilter en phishingpreventietool (ons alternatief voor [Spam Assassin](https://spamassassin.apache.org/) en [rspamd](https://github.com/rspamd/rspamd)). |
@@ -256,7 +256,7 @@ Hieronder vindt u een tabel met een overzicht van de projecten die we gebruiken 
 Forward Email is ontworpen volgens de volgende principes:
 
 1. Wees altijd ontwikkelaarsvriendelijk, gericht op beveiliging en privacy, en transparant.
-2. Houd je aan [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Twaalf Factor](https://12factor.net/), [Het scheermes van Ockham](https://en.wikipedia.org/wiki/Occam%27s_razor) en [dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food).
+2. Houd je aan de richtlijnen van [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Twaalf Factor](https://12factor.net/), [Het scheermes van Ockham](https://en.wikipedia.org/wiki/Occam%27s_razor) en [dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food).
 3. Richt je op de scrappy, bootstrapped en [ramen-winstgevend](http://www.paulgraham.com/ramenprofitable.html) ontwikkelaar.
 
 ### Experimenten {#experiments}
@@ -272,32 +272,31 @@ Dankzij dit experiment kregen we meer inzicht in en ontdekten we grensgevallen r
 * Als u de vlag `--vfs-cache-mode writes` inschakelt met rclone, zijn leesbewerkingen in orde, maar worden schrijfbewerkingen gecached.
 * Als u meerdere IMAP-servers wereldwijd hebt, is de cache over deze servers verdeeld, tenzij u één schrijver en meerdere luisteraars hebt (bijvoorbeeld een pub/sub-aanpak).
 * Dit is ongelooflijk complex en het toevoegen van extra complexiteit zoals deze zal resulteren in meer single points of failure.
-* S3-compatibele opslagproviders ondersteunen geen gedeeltelijke bestandswijzigingen. Dit betekent dat elke wijziging van het bestand `.sqlite` resulteert in een volledige wijziging en herupload van de database.
-* Er bestaan andere oplossingen zoals `rsync`, maar deze richten zich niet op ondersteuning voor write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)"). Daarom hebben we Litestream uiteindelijk beoordeeld. Gelukkig versleutelt ons encryptiegebruik de [WAL](https://www.sqlite.org/wal.html)-bestanden al voor ons, dus hoeven we daarvoor niet op Litestream te vertrouwen. We hadden echter nog geen vertrouwen in Litestream voor productiegebruik en hebben hieronder een paar opmerkingen daarover.
-* Met de optie `--vfs-cache-mode writes` (de *enige* manier om SQLite te gebruiken in plaats van `rclone` voor schrijfbewerkingen) wordt geprobeerd de hele database helemaal opnieuw in het geheugen te kopiëren. Het verwerken van één mailbox van 10 GB is prima, maar het verwerken van meerdere mailboxen met extreem veel opslagruimte zorgt ervoor dat de IMAP-servers geheugenbeperkingen en `ENOMEM`-fouten, segmentatiefouten en gegevenscorruptie tegenkomen. * Als u probeert SQLite [Virtuele tafels](https://www.sqlite.org/vtab.html) (bijvoorbeeld met [s3db](https://github.com/jrhy/s3db)) te gebruiken om gegevens live op een S3-compatibele opslaglaag te zetten, zult u nog een aantal problemen tegenkomen:
-* Lezen en schrijven zal extreem traag zijn omdat S3 API-eindpunten moeten worden aangestuurd met de HTTP-methoden `GET`, `PUT`, `HEAD` en `POST`.
-* Ontwikkelingstests hebben aangetoond dat het overschrijden van 500K-1M+ records op glasvezelinternet nog steeds wordt beperkt door de doorvoersnelheid van schrijven en lezen naar S3-compatibele providers. Onze ontwikkelaars hebben bijvoorbeeld `for`-lussen uitgevoerd om zowel sequentiële SQL `INSERT` statements als statements die grote hoeveelheden data in bulk wegschreven, uit te voeren. In beide gevallen was de performance verbluffend traag.
-* Virtuele tabellen **kunnen geen indexen hebben**, `ALTER TABLE` statements en [ander](https://stackoverflow.com/a/12507650) [beperkingen](https://sqlite.org/lang_createvtab.html) – wat leidt tot vertragingen van meer dan 1-2 minuten of meer, afhankelijk van de hoeveelheid data.
-* Objecten werden ongecodeerd opgeslagen en er is geen native encryptie-ondersteuning beschikbaar.
-* We hebben ook het gebruik van [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs) onderzocht, wat conceptueel en technisch vergelijkbaar is met het vorige punt (dus dezelfde problemen kent). Een mogelijkheid zou zijn om een aangepaste `sqlite3` build te gebruiken, ingepakt met encryptie, zoals [wxSQLite3](https://github.com/utelle/wxsqlite3) (die we momenteel gebruiken in onze bovenstaande oplossing) via [het installatiebestand bewerken](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276).
-* Een andere mogelijke aanpak was om [multiplex-extensie](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c) te gebruiken, maar dit heeft een limiet van 32 GB en zou complexe bouw- en ontwikkelproblemen met zich meebrengen.
-* `ALTER TABLE` statements zijn vereist (waardoor het gebruik van virtuele tabellen volledig wordt uitgesloten). We hebben `ALTER TABLE` statements nodig om onze hook met `knex-schema-inspector` correct te laten werken. Dit zorgt ervoor dat gegevens niet beschadigd raken en dat opgehaalde rijen kunnen worden omgezet naar geldige documenten volgens onze `mongoose` schemadefinities (inclusief beperking, variabeletype en willekeurige gegevensvalidatie).
+* S3-compatibele opslagproviders ondersteunen geen gedeeltelijke bestandswijzigingen – wat betekent dat elke wijziging van het bestand `.sqlite` resulteert in een volledige wijziging en herupload van de database.
+* Er bestaan andere oplossingen zoals `rsync`, maar deze zijn niet gericht op ondersteuning voor write-ahead-logs ("[WAL](https://www.sqlite.org/wal.html)") – daarom hebben we uiteindelijk Litestream beoordeeld. Gelukkig versleutelt ons encryptiegebruik de [WAL](https://www.sqlite.org/wal.html)-bestanden al voor ons, dus hoeven we daarvoor niet op Litestream te vertrouwen. We hadden echter nog geen vertrouwen in Litestream voor productiegebruik en hebben hieronder een paar opmerkingen daarover.
+* Met deze optie van `--vfs-cache-mode writes` (de *enige* manier om SQLite over `rclone` te gebruiken voor schrijfbewerkingen) wordt geprobeerd de hele database helemaal opnieuw in het geheugen te kopiëren. Het verwerken van één mailbox van 10 GB is prima, maar het verwerken van meerdere mailboxen met extreem veel opslagruimte zal ervoor zorgen dat de IMAP-servers geheugenbeperkingen en `ENOMEM`-fouten, segmentatiefouten en gegevenscorruptie tegenkomen. * Als u probeert SQLite [Virtuele tafels](https://www.sqlite.org/vtab.html) (bijvoorbeeld [s3db](https://github.com/jrhy/s3db)) te gebruiken om gegevens live op een S3-compatibele opslaglaag te zetten, zult u nog een aantal problemen tegenkomen:
+* Lezen en schrijven zal extreem traag zijn, omdat S3 API-eindpunten moeten worden aangestuurd met de HTTP-methoden `.sqlite`0, `.sqlite`1, `.sqlite`2 en `.sqlite`3.
+* Ontwikkelingstests toonden aan dat het overschrijden van 500.000-1.000+ records op glasvezelinternet nog steeds wordt beperkt door de doorvoersnelheid van schrijven en lezen naar S3-compatibele providers. Onze ontwikkelaars hebben bijvoorbeeld `.sqlite`4-lussen uitgevoerd om zowel sequentiële SQL `.sqlite`5-statements als statements die grote hoeveelheden gegevens in bulk wegschreven, uit te voeren. In beide gevallen was de prestatie verbluffend traag. * Virtuele tabellen **kunnen geen indexen hebben**, `.sqlite`6 statements en `.sqlite`7 `.sqlite`8 statements – wat leidt tot vertragingen van meer dan 1-2 minuten of meer, afhankelijk van de hoeveelheid data.
+* Objecten werden ongecodeerd opgeslagen en er is geen native encryptie-ondersteuning direct beschikbaar.
+* We hebben ook `.sqlite`9 onderzocht, wat conceptueel en technisch vergelijkbaar is met het vorige punt (dus dezelfde problemen heeft). Een mogelijkheid zou zijn om een aangepaste `rsync`0 build te gebruiken die is ingepakt met encryptie, zoals `rsync`1 (die we momenteel gebruiken in onze bovenstaande oplossing) via `rsync`2.
+* Een andere mogelijke aanpak was om `rsync`3 te gebruiken, maar dit heeft een limiet van 32 GB en zou complexe bouw- en ontwikkelproblemen met zich meebrengen. * `rsync`4 statements zijn vereist (dus dit sluit het gebruik van virtuele tabellen volledig uit). We hebben `rsync`5 statements nodig om onze hook met `rsync`6 correct te laten werken – dit zorgt ervoor dat gegevens niet beschadigd raken en dat opgehaalde rijen kunnen worden omgezet naar geldige documenten volgens onze `rsync`7 schemadefinities (inclusief beperking, variabeletype en willekeurige gegevensvalidatie).
 * Bijna alle S3-compatibele projecten met betrekking tot SQLite in de open-sourcecommunity zijn in Python (en niet in JavaScript, dat we voor 100% van onze stack gebruiken).
-* Compressiebibliotheken zoals [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) (zie [opmerkingen](https://news.ycombinator.com/item?id=32303762)) zien er veelbelovend uit, maar [is mogelijk nog niet klaar voor productiegebruik](https://github.com/phiresky/sqlite-zstd#usage). In plaats daarvan zal applicatie-side compressie op gegevenstypen zoals `String`, `Object`, `Map`, `Array`, `Set` en `Buffer` een schonere en eenvoudigere aanpak zijn (en ook gemakkelijker te migreren, omdat we een `Boolean` vlag of kolom kunnen opslaan – of zelfs `PRAGMA` `user_version=1` voor compressie of `user_version=0` voor geen compressie als databasemetadata kunnen gebruiken).
-* Gelukkig hebben we al deduplicatie van bijlagen geïmplementeerd in onze IMAP-serveropslag. Daarom wordt er voor elk bericht met dezelfde bijlage geen kopie van de bijlage bewaard. In plaats daarvan wordt er één bijlage voor meerdere berichten en threads in een mailbox opgeslagen (waarna vervolgens een externe referentie wordt gebruikt).
+* Compressiebibliotheken zoals `rsync`8 (zie `rsync`9) zien er veelbelovend uit, maar __PROTECTED_LINK_189__0. In plaats daarvan zal applicatie-side compressie op gegevenstypen zoals __PROTECTED_LINK_189__1, __PROTECTED_LINK_189__2, __PROTECTED_LINK_189__3, __PROTECTED_LINK_189__4, __PROTECTED_LINK_189__5 en __PROTECTED_LINK_189__6 een schonere en eenvoudigere aanpak zijn (en ook gemakkelijker te migreren, omdat we een __PROTECTED_LINK_189__7-vlag of -kolom kunnen opslaan – of zelfs __PROTECTED_LINK_189__8 __PROTECTED_LINK_189__9 voor compressie of __PROTECTED_LINK_190__0 voor geen compressie als databasemetadata kunnen gebruiken).
+* Gelukkig hebben we al deduplicatie van bijlagen geïmplementeerd in onze IMAP-serveropslag – daarom wordt er voor elk bericht met dezelfde bijlage geen kopie van de bijlage bewaard – in plaats daarvan wordt er één bijlage opgeslagen voor meerdere berichten en threads in een mailbox (en wordt er vervolgens een externe referentie gebruikt).
 * Het project Litestream, een SQLite-replicatie- en back-upoplossing, is veelbelovend en we zullen het waarschijnlijk in de toekomst gebruiken.
-* Niet om de auteur(s) in diskrediet te brengen – we zijn al meer dan tien jaar fan van hun werk en bijdragen aan open source – maar uit praktijkgebruik blijkt dat er [kan veel hoofdpijn opleveren](https://github.com/benbjohnson/litestream/issues) en [mogelijk gegevensverlies door gebruik](https://github.com/benbjohnson/litestream/issues/218) zijn.
-* Back-upherstel moet soepel en eenvoudig zijn. Het gebruik van een oplossing zoals MongoDB met `mongodump` en `mongoexport` is niet alleen omslachtig, maar ook tijdrovend en complex qua configuratie. * SQLite-databases maken het eenvoudig (het is één enkel bestand).
-* We wilden een oplossing ontwerpen waarmee gebruikers hun mailbox op elk moment konden openen en sluiten.
-* Eenvoudige Node.js-opdrachten naar `fs.unlink('mailbox.sqlite'))` en deze wordt permanent van de schijf verwijderd.
-* We kunnen op dezelfde manier een S3-compatibele API gebruiken met HTTP `DELETE` om eenvoudig snapshots en back-ups voor gebruikers te verwijderen.
+* Om de auteur(s) niet in diskrediet te brengen – we zijn al meer dan tien jaar fan van hun werk en bijdragen aan open source – maar uit praktijkgebruik blijkt dat er __PROTECTED_LINK_190__1 en __PROTECTED_LINK_190__2 zijn.
+* Back-upherstel moet probleemloos en triviaal zijn. Het gebruik van een oplossing zoals MongoDB met __PROTECTED_LINK_190__3 en __PROTECTED_LINK_190__4 is niet alleen omslachtig, maar ook tijdrovend en complex qua configuratie.
+* SQLite-databases maken het eenvoudig (het is één enkel bestand).
+* We wilden een oplossing ontwerpen waarmee gebruikers hun mailbox op elk moment kunnen openen en sluiten.
+* Eenvoudige Node.js-opdrachten naar __PROTECTED_LINK_190__5 en het wordt permanent van de schijf verwijderd.
+* We kunnen op dezelfde manier een S3-compatibele API met HTTP __PROTECTED_LINK_190__6 gebruiken om eenvoudig snapshots en back-ups voor gebruikers te verwijderen.
 * SQLite was de eenvoudigste, snelste en meest kosteneffectieve oplossing.
 
 ### Gebrek aan alternatieven {#lack-of-alternatives}
 
 Voor zover wij weten, zijn er geen andere e-maildiensten die op deze manier zijn ontworpen en die ook niet open source zijn.
 
-Wij *denken dat dit komt* doordat bestaande e-maildiensten nog steeds gebruikmaken van verouderde technologie in productie met [spaghetticode](https://en.wikipedia.org/wiki/Spaghetti_code) :spaghetti:.
+Wij *denken dat dit komt* doordat bestaande e-mailservices nog steeds oude technologie in productie hebben met [spaghetticode](https://en.wikipedia.org/wiki/Spaghetti_code) :spaghetti:.
 
 De meeste, zo niet alle, bestaande e-mail serviceproviders zijn gesloten-source of adverteren als open-source, **maar in werkelijkheid is alleen hun front-end open-source.**
 

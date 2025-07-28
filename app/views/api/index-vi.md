@@ -43,7 +43,7 @@
   * [Nhận giới hạn email SMTP gửi đi](#get-outbound-smtp-email-limit)
   * [Liệt kê các email SMTP gửi đi](#list-outbound-smtp-emails)
   * [Tạo email SMTP gửi đi](#create-outbound-smtp-email)
-  * [Lấy email SMTP gửi đi](#retrieve-outbound-smtp-email)
+  * [Lấy lại email SMTP gửi đi](#retrieve-outbound-smtp-email)
   * [Xóa email SMTP gửi đi](#delete-outbound-smtp-email)
 * [Tên miền](#domains)
   * [Danh sách tên miền](#list-domains)
@@ -51,8 +51,8 @@
   * [Lấy lại tên miền](#retrieve-domain)
   * [Xác minh bản ghi tên miền](#verify-domain-records)
   * [Xác minh bản ghi SMTP của miền](#verify-domain-smtp-records)
-  * [Liệt kê mật khẩu bắt tất cả trên toàn miền](#list-domain-wide-catch-all-passwords)
-  * [Tạo mật khẩu bắt tất cả trên toàn miền](#create-domain-wide-catch-all-password)
+  * [Liệt kê mật khẩu chung cho toàn miền](#list-domain-wide-catch-all-passwords)
+  * [Tạo mật khẩu chung cho toàn miền](#create-domain-wide-catch-all-password)
   * [Xóa mật khẩu bắt tất cả trên toàn miền](#remove-domain-wide-catch-all-password)
   * [Cập nhật tên miền](#update-domain)
   * [Xóa tên miền](#delete-domain)
@@ -80,7 +80,7 @@ Hiện tại, chúng tôi chưa phát hành bất kỳ trình bao bọc API nào
 | Ngôn ngữ | Thư viện |
 | ---------- | ---------------------------------------------------------------------- |
 | Hồng ngọc | [Faraday](https://github.com/lostisland/faraday) |
-| Python | [requests](https://github.com/psf/requests) |
+| Trăn | [requests](https://github.com/psf/requests) |
 | Java | [OkHttp](https://github.com/square/okhttp/) |
 | PHP | [guzzle](https://github.com/guzzle/guzzle) |
 | JavaScript | [superagent](https://github.com/ladjs/superagent) (chúng tôi là người bảo trì) |
@@ -96,7 +96,7 @@ Hiện tại, chúng tôi chưa phát hành bất kỳ trình bao bọc API nào
 
 Tất cả các điểm cuối đều yêu cầu [Khóa API](https://forwardemail.net/my-account/security) của bạn được đặt làm giá trị "tên người dùng" của tiêu đề [Ủy quyền cơ bản](https://en.wikipedia.org/wiki/Basic_access_authentication) của yêu cầu (ngoại trừ [Liên hệ bí danh](#alias-contacts), [Lịch bí danh](#alias-calendars) và [Hộp thư bí danh](#alias-mailboxes) sử dụng [tên người dùng và mật khẩu bí danh đã tạo](/faq#do-you-support-receiving-email-with-imap))..
 
-Đừng lo lắng – các ví dụ được cung cấp bên dưới nếu bạn không chắc đây là gì.
+Đừng lo lắng – các ví dụ được cung cấp bên dưới nếu bạn không chắc chắn đây là gì.
 
 ## Lỗi {#errors}
 
@@ -117,7 +117,7 @@ Nếu xảy ra bất kỳ lỗi nào, nội dung phản hồi của yêu cầu A
 | 504 | Hết thời gian chờ cổng |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Nếu bạn nhận được mã trạng thái 5xx (điều này không nên xảy ra), vui lòng liên hệ với chúng tôi theo địa chỉ <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> và chúng tôi sẽ giúp bạn giải quyết vấn đề ngay lập tức.
 
 ## Bản địa hóa {#localization}
 
@@ -126,20 +126,20 @@ Dịch vụ của chúng tôi được dịch sang hơn 25 ngôn ngữ khác nha
 ## Phân trang {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> Kể từ ngày 1 tháng 11 năm 2024, các điểm cuối API cho [Danh sách tên miền](#list-domains) và [Liệt kê các bí danh tên miền](#list-domain-aliases) sẽ mặc định là `1000` (số kết quả tối đa trên mỗi trang). Nếu bạn muốn sớm tham gia hành vi này, bạn có thể truyền `?paginate=true` làm tham số chuỗi truy vấn bổ sung vào URL cho truy vấn điểm cuối.
 
 Phân trang được hỗ trợ bởi tất cả các điểm cuối API liệt kê kết quả.
 
 Chỉ cần cung cấp các thuộc tính chuỗi truy vấn `page` (và tùy chọn `limit`).
 
-Thuộc tính `page` phải là một số lớn hơn hoặc bằng `1`. Nếu bạn cung cấp `limit` (cũng là một số), thì giá trị tối thiểu là `10` và giá trị tối đa là `50` (trừ khi có ghi chú khác).
+Thuộc tính `page` phải là một số lớn hơn hoặc bằng `1`. Nếu bạn cung cấp `limit` (cũng là một số), thì giá trị tối thiểu là `10` và tối đa là `50` (trừ khi có ghi chú khác).
 
 | Tham số chuỗi truy vấn | Yêu cầu | Kiểu | Sự miêu tả |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `page` | KHÔNG | Con số | Trang kết quả cần trả về. Nếu không được chỉ định, giá trị `page` sẽ là `1`. Giá trị này phải lớn hơn hoặc bằng `1`. |
 | `limit` | KHÔNG | Con số | Số lượng kết quả trả về trên mỗi trang. Mặc định là `10` nếu không được chỉ định. Phải là một số lớn hơn hoặc bằng `1` và nhỏ hơn hoặc bằng `50`. |
 
-Để xác định có thêm kết quả hay không, chúng tôi cung cấp các tiêu đề phản hồi HTTP sau (bạn có thể phân tích cú pháp để phân trang theo chương trình):
+Để xác định xem có thêm kết quả hay không, chúng tôi cung cấp các tiêu đề phản hồi HTTP sau (bạn có thể phân tích cú pháp để phân trang theo chương trình):
 
 | Tiêu đề phản hồi HTTP | Ví dụ | Sự miêu tả |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -160,11 +160,11 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ### Truy xuất nhật ký {#retrieve-logs}
 
-API của chúng tôi cho phép bạn tải xuống nhật ký cho tài khoản của mình theo chương trình. Việc gửi yêu cầu đến điểm cuối này sẽ xử lý tất cả nhật ký cho tài khoản của bạn và gửi qua email cho bạn dưới dạng tệp đính kèm ([Gzip](https://en.wikipedia.org/wiki/Gzip) tệp bảng tính [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) được nén) sau khi hoàn tất.
+API của chúng tôi cho phép bạn tải xuống nhật ký cho tài khoản của mình theo chương trình. Việc gửi yêu cầu đến điểm cuối này sẽ xử lý tất cả nhật ký cho tài khoản của bạn và gửi qua email cho bạn dưới dạng tệp đính kèm (tệp bảng tính [Gzip](https://en.wikipedia.org/wiki/Gzip) được nén [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)) sau khi hoàn tất.
 
-Tính năng này cho phép bạn tạo các tác vụ nền với [Công việc Cron](https://en.wikipedia.org/wiki/Cron) hoặc sử dụng [Phần mềm lập lịch công việc Node.js Bree](https://github.com/breejs/bree) của chúng tôi để nhận nhật ký bất cứ khi nào bạn muốn. Lưu ý rằng điểm cuối này bị giới hạn ở `10` yêu cầu mỗi ngày.
+Tính năng này cho phép bạn tạo các tác vụ nền với [Công việc Cron](https://en.wikipedia.org/wiki/Cron) hoặc sử dụng [Phần mềm lập lịch công việc Node.js Bree](https://github.com/breejs/bree) để nhận nhật ký bất cứ khi nào bạn muốn. Lưu ý rằng điểm cuối này bị giới hạn ở `10` yêu cầu mỗi ngày.
 
-Tệp đính kèm là dạng chữ thường của `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` và email chứa bản tóm tắt ngắn gọn về các nhật ký đã thu thập được. Bạn cũng có thể tải xuống nhật ký bất cứ lúc nào từ [Tài khoản của tôi → Nhật ký](/my-account/logs)
+Tệp đính kèm có dạng chữ thường của `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` và email chứa bản tóm tắt ngắn gọn về các nhật ký đã được truy xuất. Bạn cũng có thể tải xuống nhật ký bất cứ lúc nào từ [Tài khoản của tôi → Nhật ký](/my-account/logs)
 
 > `GET /v1/logs/download`
 
@@ -188,9 +188,9 @@ curl BASE_URI/v1/logs/download \
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download -u API_TOKEN: &>/dev/null
 ```
 
-Lưu ý rằng bạn có thể sử dụng các dịch vụ như [Crontab.guru](https://crontab.guru/) để xác thực cú pháp biểu thức cron job của mình.
+Lưu ý rằng bạn có thể sử dụng các dịch vụ như [Crontab.guru](https://crontab.guru/) để xác thực cú pháp biểu thức công việc cron của mình.
 
-> Ví dụ về công việc Cron (vào nửa đêm mỗi ngày **và có nhật ký của ngày hôm trước**):
+> Ví dụ về công việc Cron (vào lúc nửa đêm mỗi ngày **và có nhật ký của ngày hôm trước**):
 
 Đối với MacOS:
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Danh bạ bí danh (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu [Xác thực](#authentication) "tên người dùng" bằng với tên người dùng bí danh và "mật khẩu" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền cơ bản.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Phần điểm cuối này đang trong quá trình hoàn thiện và dự kiến sẽ được phát hành (hy vọng là vậy) vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng trình khách IMAP từ menu thả xuống "Ứng dụng" trong phần điều hướng của trang web.
 
 ### Liệt kê danh bạ {#list-contacts}
 
@@ -273,7 +273,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Sắp ra mắt**
 
-### Lấy lại thông tin liên hệ {#retrieve-contact}
+### Lấy lại liên hệ {#retrieve-contact}
 
 > `GET /v1/contacts/:id`
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Lịch bí danh (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu [Xác thực](#authentication) "tên người dùng" bằng với tên người dùng bí danh và "mật khẩu" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền cơ bản.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Phần điểm cuối này đang trong quá trình hoàn thiện và dự kiến sẽ được phát hành (hy vọng là vậy) vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng trình khách IMAP từ menu thả xuống "Ứng dụng" trong phần điều hướng của trang web.
 
 ### Liệt kê lịch {#list-calendars}
 
@@ -332,14 +332,14 @@ curl -X PUT BASE_URI/v1/account \
 ## Tin nhắn bí danh (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Không giống như các điểm cuối API khác, các điểm cuối này yêu cầu [Xác thực](#authentication) "tên người dùng" bằng với tên người dùng bí danh và "mật khẩu" bằng với mật khẩu được tạo bí danh làm tiêu đề Ủy quyền cơ bản.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Phần điểm cuối này đang trong quá trình hoàn thiện và dự kiến sẽ được phát hành (hy vọng là vậy) vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng trình khách IMAP từ menu thả xuống "Ứng dụng" trong phần điều hướng của trang web.
 
-Hãy đảm bảo rằng bạn đã làm theo hướng dẫn thiết lập cho tên miền của mình.
+Vui lòng đảm bảo rằng bạn đã làm theo hướng dẫn thiết lập cho tên miền của mình.
 
-Bạn có thể tìm thấy những hướng dẫn này trong phần Câu hỏi thường gặp [Bạn có hỗ trợ nhận email bằng IMAP không?](/faq#do-you-support-receiving-email-with-imap) của chúng tôi.
+Bạn có thể tìm thấy hướng dẫn này trong phần Câu hỏi thường gặp [Bạn có hỗ trợ nhận email bằng IMAP không?](/faq#do-you-support-receiving-email-with-imap) của chúng tôi.
 
 ### Liệt kê và tìm kiếm tin nhắn {#list-and-search-for-messages}
 
@@ -350,7 +350,7 @@ Bạn có thể tìm thấy những hướng dẫn này trong phần Câu hỏi 
 ### Tạo tin nhắn {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Lệnh này **KHÔNG** gửi email – nó chỉ đơn giản là thêm email vào thư mục hộp thư của bạn (ví dụ: lệnh này tương tự như lệnh IMAP `APPEND`). Nếu bạn muốn gửi email, hãy xem [Tạo email SMTP gửi đi](#create-outbound-smtp-email) bên dưới. Sau khi tạo email SMTP gửi đi, bạn có thể thêm một bản sao của email đó vào hộp thư bí danh của mình bằng điểm cuối này để lưu trữ.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Bạn có thể tìm thấy những hướng dẫn này trong phần Câu hỏi 
 ## Thư mục bí danh (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Các điểm cuối thư mục có đường dẫn <code>/v1/folders/:path</code> là điểm cuối của chúng có thể hoán đổi với ID của thư mục <code>:id</code>. Điều này có nghĩa là bạn có thể tham chiếu đến thư mục bằng giá trị <code>path</code> hoặc <code>id</code> của nó.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Phần điểm cuối này đang trong quá trình hoàn thiện và dự kiến sẽ được phát hành (hy vọng là vậy) vào năm 2024. Trong thời gian chờ đợi, vui lòng sử dụng trình khách IMAP từ menu thả xuống "Ứng dụng" trong phần điều hướng của trang web.
 
 ### Liệt kê các thư mục {#list-folders}
 
@@ -420,7 +420,7 @@ Bạn có thể tìm thấy những hướng dẫn này trong phần Câu hỏi 
 
 ## Email gửi đi {#outbound-emails}
 
-Hãy đảm bảo rằng bạn đã làm theo hướng dẫn thiết lập cho tên miền của mình.
+Vui lòng đảm bảo rằng bạn đã làm theo hướng dẫn thiết lập cho tên miền của mình.
 
 Bạn có thể tìm thấy hướng dẫn này tại [Tài khoản của tôi → Tên miền → Cài đặt → Cấu hình SMTP gửi đi](/my-account/domains). Bạn cần đảm bảo thiết lập DKIM, Return-Path và DMARC để gửi SMTP đi bằng tên miền của mình.
 
@@ -462,13 +462,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Tạo email SMTP gửi đi {#create-outbound-smtp-email}
 
-API tạo email của chúng tôi được lấy cảm hứng và tận dụng cấu hình tùy chọn tin nhắn của Nodemailer. Vui lòng tuân thủ [Cấu hình tin nhắn Nodemailer](https://nodemailer.com/message/) cho tất cả các tham số nội dung bên dưới.
+API tạo email của chúng tôi được lấy cảm hứng và tận dụng cấu hình tùy chọn tin nhắn của Nodemailer. Vui lòng tham khảo [Cấu hình tin nhắn Nodemailer](https://nodemailer.com/message/) cho tất cả các tham số nội dung bên dưới.
 
-Xin lưu ý rằng ngoại trừ `envelope` và `dkim` (vì chúng tôi tự động thiết lập cho bạn), chúng tôi hỗ trợ tất cả các tùy chọn của Nodemailer. Chúng tôi tự động thiết lập các tùy chọn `disableFileAccess` và `disableUrlAccess` thành `true` vì mục đích bảo mật.
+Xin lưu ý rằng ngoại trừ `envelope` và `dkim` (vì chúng tôi tự động thiết lập cho bạn), chúng tôi hỗ trợ tất cả các tùy chọn của Nodemailer. Chúng tôi tự động thiết lập các tùy chọn `disableFileAccess` và `disableUrlAccess` thành `true` vì lý do bảo mật.
 
 Bạn nên truyền tùy chọn duy nhất `raw` vào email đầy đủ thô của bạn bao gồm cả tiêu đề **hoặc** truyền từng tùy chọn tham số nội dung bên dưới.
 
-Điểm cuối API này sẽ tự động mã hóa biểu tượng cảm xúc cho bạn nếu chúng xuất hiện trong tiêu đề (ví dụ: dòng chủ đề `Subject: 🤓 Hello` sẽ tự động được chuyển đổi thành `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Mục tiêu của chúng tôi là tạo ra một API email cực kỳ thân thiện với nhà phát triển và chống giả mạo.
+Điểm cuối API này sẽ tự động mã hóa biểu tượng cảm xúc cho bạn nếu chúng xuất hiện trong tiêu đề (ví dụ: dòng chủ đề `Subject: 🤓 Hello` sẽ tự động được chuyển đổi thành `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Mục tiêu của chúng tôi là tạo ra một API email cực kỳ thân thiện với nhà phát triển và không thể bị giả mạo.
 
 > `POST /v1/emails`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Tên miền {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Các điểm cuối miền có tên miền là <code>/v1/domains/:domain_name</code> có thể hoán đổi với ID của miền là <code>:domain_id</code>. Điều này có nghĩa là bạn có thể tham chiếu đến miền bằng giá trị <code>name</code> hoặc <code>id</code> của miền đó.
 
-### Liệt kê các tên miền {#list-domains}
+### Liệt kê các miền {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Kể từ ngày 1 tháng 11 năm 2024, các điểm cuối API cho [Danh sách tên miền](#list-domains) và [Liệt kê các bí danh tên miền](#list-domain-aliases) sẽ mặc định là `1000` số kết quả tối đa trên mỗi trang. Nếu bạn muốn sớm lựa chọn tính năng này, bạn có thể truyền `?paginate=true` làm tham số chuỗi truy vấn bổ sung vào URL cho truy vấn điểm cuối. Xem [Phân trang](#pagination) để biết thêm chi tiết.
 
 > `GET /v1/domains`
 
@@ -579,7 +579,7 @@ curl BASE_URI/v1/domains \
 | `domain` | Đúng | Chuỗi (FQDN hoặc IP) | Tên miền đủ điều kiện ("FQDN") hoặc địa chỉ IP |
 | `team_domain` | KHÔNG | Chuỗi (ID miền hoặc tên miền; FQDN) | Tự động gán miền này cho cùng một nhóm từ một miền khác. Điều này có nghĩa là tất cả thành viên từ miền này sẽ được gán làm thành viên nhóm, và `plan` cũng sẽ tự động được đặt thành `team`. Bạn có thể đặt thành `"none"` nếu cần để tắt tính năng này một cách rõ ràng, nhưng điều đó không bắt buộc. |
 | `plan` | KHÔNG | Chuỗi (có thể đếm được) | Loại gói cước (phải là `"free"`, `"enhanced_protection"` hoặc `"team"`, mặc định là `"free"` hoặc gói cước trả phí hiện tại của người dùng nếu có) |
-| `catchall` | KHÔNG | Chuỗi (địa chỉ email phân tách) hoặc Boolean | Tạo một bí danh catch-all mặc định, mặc định là `true` (nếu `true`, nó sẽ sử dụng địa chỉ email của người dùng API làm người nhận, và nếu `false` thì sẽ không tạo bí danh catch-all nào). Nếu truyền một String, thì đó là một danh sách các địa chỉ email được phân cách để sử dụng làm người nhận (được phân tách bằng dấu ngắt dòng, khoảng trắng và/hoặc dấu phẩy). |
+| `catchall` | KHÔNG | Chuỗi (địa chỉ email được phân tách) hoặc Boolean | Tạo một bí danh catch-all mặc định, mặc định là `true` (nếu `true`, nó sẽ sử dụng địa chỉ email của người dùng API làm người nhận, và nếu `false` thì sẽ không tạo bí danh catch-all nào). Nếu truyền một String, thì đó là một danh sách các địa chỉ email được phân cách để sử dụng làm người nhận (được phân tách bằng dấu ngắt dòng, khoảng trắng và/hoặc dấu phẩy). |
 | `has_adult_content_protection` | KHÔNG | Boolean | Có nên bật tính năng bảo vệ nội dung người lớn của Spam Scanner trên miền này không |
 | `has_phishing_protection` | KHÔNG | Boolean | Có nên bật tính năng bảo vệ chống lừa đảo Spam Scanner trên miền này không |
 | `has_executable_protection` | KHÔNG | Boolean | Có nên bật tính năng bảo vệ thực thi Spam Scanner trên miền này không |
@@ -643,13 +643,13 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Tạo mật khẩu chung cho toàn miền {#create-domain-wide-catch-all-password}
+### Tạo mật khẩu bắt tất cả trên toàn miền {#create-domain-wide-catch-all-password}
 
 > `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
 | Tham số cơ thể | Yêu cầu | Kiểu | Sự miêu tả |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | KHÔNG | Sợi dây | Mật khẩu mới tùy chỉnh của bạn để sử dụng cho mật khẩu catch-all trên toàn miền. Lưu ý rằng bạn có thể để trống hoặc bỏ qua hoàn toàn mục này khỏi nội dung yêu cầu API của mình nếu bạn muốn có mật khẩu mạnh và được tạo ngẫu nhiên. |
+| `new_password` | KHÔNG | Sợi dây | Mật khẩu mới tùy chỉnh của bạn để sử dụng cho mật khẩu catch-all trên toàn miền. Lưu ý rằng bạn có thể để trống hoặc bỏ qua mục này trong nội dung yêu cầu API nếu muốn có một mật khẩu mạnh và được tạo ngẫu nhiên. |
 | `description` | KHÔNG | Sợi dây | Mô tả chỉ nhằm mục đích tổ chức. |
 
 > Ví dụ yêu cầu:
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Nếu người dùng được mời đã là thành viên được chấp nhận của bất kỳ miền nào khác mà quản trị viên mời họ là thành viên, thì lời mời sẽ tự động được chấp nhận và không gửi email.
 
 ### Xóa lời mời tên miền {#remove-domain-invite}
 
@@ -782,7 +782,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
   -u API_TOKEN:
 ```
 
-## Bí danh {#aliases}
+## Biệt danh {#aliases}
 
 ### Tạo mật khẩu bí danh {#generate-an-alias-password}
 
@@ -794,7 +794,7 @@ Lưu ý rằng nếu bạn không gửi hướng dẫn qua email, thì tên ngư
 | ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `new_password` | KHÔNG | Sợi dây | Mật khẩu mới tùy chỉnh của bạn để sử dụng cho bí danh. Lưu ý rằng bạn có thể để trống hoặc bỏ qua mục này trong nội dung yêu cầu API nếu muốn có một mật khẩu mạnh và được tạo ngẫu nhiên. |
 | `password` | KHÔNG | Sợi dây | Mật khẩu hiện tại cho bí danh để thay đổi mật khẩu mà không xóa bộ nhớ hộp thư IMAP hiện có (xem tùy chọn `is_override` bên dưới nếu bạn không còn mật khẩu hiện tại). |
-| `is_override` | KHÔNG | Boolean | **SỬ DỤNG THẬN TRỌNG**: Thao tác này sẽ ghi đè hoàn toàn mật khẩu và cơ sở dữ liệu bí danh hiện có, đồng thời xóa vĩnh viễn bộ nhớ IMAP hiện có và đặt lại hoàn toàn cơ sở dữ liệu email SQLite của bí danh. Vui lòng sao lưu nếu có thể nếu bạn có hộp thư hiện có được kết nối với bí danh này. |
+| `is_override` | KHÔNG | Boolean | **SỬ DỤNG THẬN TRỌNG**: Thao tác này sẽ ghi đè hoàn toàn mật khẩu và cơ sở dữ liệu của bí danh hiện có, đồng thời xóa vĩnh viễn bộ nhớ IMAP hiện có và đặt lại hoàn toàn cơ sở dữ liệu email SQLite của bí danh. Vui lòng sao lưu nếu có thể nếu bạn có hộp thư hiện có được kết nối với bí danh này. |
 | `emailed_instructions` | KHÔNG | Sợi dây | Địa chỉ email để gửi mật khẩu bí danh và hướng dẫn thiết lập. |
 
 > Ví dụ yêu cầu:
@@ -804,10 +804,10 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
   -u API_TOKEN:
 ```
 
-### Liệt kê các bí danh tên miền {#list-domain-aliases}
+### Liệt kê các bí danh miền {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Kể từ ngày 1 tháng 11 năm 2024, các điểm cuối API cho [Danh sách tên miền](#list-domains) và [Liệt kê các bí danh tên miền](#list-domain-aliases) sẽ mặc định là `1000` số kết quả tối đa trên mỗi trang. Nếu bạn muốn sớm lựa chọn tính năng này, bạn có thể truyền `?paginate=true` làm tham số chuỗi truy vấn bổ sung vào URL cho truy vấn điểm cuối. Xem [Phân trang](#pagination) để biết thêm chi tiết.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -857,9 +857,9 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
   -u API_TOKEN:
 ```
 
-### Truy xuất bí danh tên miền {#retrieve-domain-alias}
+### Truy xuất bí danh miền {#retrieve-domain-alias}
 
-Bạn có thể lấy bí danh tên miền bằng giá trị `id` hoặc `name` của nó.
+Bạn có thể lấy bí danh tên miền bằng giá trị `id` hoặc `name`.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
@@ -879,7 +879,7 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
   -u API_TOKEN:
 ```
 
-### Cập nhật bí danh tên miền {#update-domain-alias}
+### Cập nhật bí danh miền {#update-domain-alias}
 
 > `PUT /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID`
 

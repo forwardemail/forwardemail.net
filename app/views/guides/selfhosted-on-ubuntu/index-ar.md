@@ -39,7 +39,7 @@
 * [أفضل ممارسات الأمان](#security-best-practices)
 * [خاتمة](#conclusion)
 
-## نظرة عامة {#overview}
+## نظرة عامة على {#overview}
 
 يقدم هذا الدليل تعليمات خطوة بخطوة لتثبيت حل Forward Email المُستضاف ذاتيًا على أنظمة Ubuntu. صُمم هذا الدليل خصيصًا لإصدارات Ubuntu 20.04 و22.04 و24.04 LTS.
 
@@ -53,7 +53,7 @@
 * **خادم نظيف**: يُنصح باستخدام تثبيت أوبونتو جديد
 * **اتصال بالإنترنت**: مطلوب لتنزيل الحزم وصور Docker
 
-## متطلبات النظام {#system-requirements}
+## متطلبات نظام {#system-requirements}
 
 * **ذاكرة الوصول العشوائي**: الحد الأدنى ٢ غيغابايت (يُنصح بـ ٤ غيغابايت للإنتاج)
 * **التخزين**: الحد الأدنى ٢٠ غيغابايت من المساحة المتوفرة (يُنصح بـ ٥٠ غيغابايت فأكثر للإنتاج)
@@ -69,7 +69,7 @@
 
 ## التثبيت خطوة بخطوة {#step-by-step-installation}
 
-### الخطوة 1: الإعداد الأولي للنظام {#step-1-initial-system-setup}
+### الخطوة 1: إعداد النظام الأولي {#step-1-initial-system-setup}
 
 أولاً، تأكد من تحديث نظامك والتبديل إلى المستخدم الجذر:
 
@@ -261,7 +261,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### الخطوة 10: تكوين نطاقك {#step-10-configure-your-domain}
+### الخطوة 10: تكوين المجال الخاص بك {#step-10-configure-your-domain}
 
 قم بتعيين اسم المجال الخاص بك وتحديث متغيرات البيئة:
 
@@ -479,7 +479,7 @@ netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 @ MX 10 mx.yourdomain.com
 ```
 
-#### سجلات A {#a-records}
+#### سجلات {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -498,7 +498,7 @@ carddav A YOUR_SERVER_IP
 @ TXT "v=spf1 mx ~all"
 ```
 
-سجل DKIM {#dkim-record}
+#### سجل DKIM {#dkim-record}
 
 احصل على مفتاح DKIM العام الخاص بك:
 
@@ -513,7 +513,7 @@ openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl bas
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-سجل DMARC {#dmarc-record}
+#### سجل DMARC {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -601,9 +601,9 @@ crontab -l
 ٢. **التحقق من حالة الخدمة**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 ٣. **مراجعة السجلات**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 ٤. **تحديث حزم النظام**: `apt update && apt upgrade`
-٥. **تجديد الشهادات**: يتم تجديد الشهادات تلقائيًا، ولكن مع مراقبة انتهاء صلاحيتها
+٥. **تجديد الشهادات**: يتم تجديد الشهادات تلقائيًا، ولكن يتم مراقبة انتهاء صلاحيتها
 
-### تجديد الشهادة {#certificate-renewal}
+### تجديد شهادة {#certificate-renewal}
 
 يجب أن يتم تجديد الشهادات تلقائيًا، ولكن يمكنك تجديدها يدويًا إذا لزم الأمر:
 
@@ -618,7 +618,7 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 docker compose -f "$DOCKER_COMPOSE_FILE" restart
 ```
 
-## استكشاف الأخطاء وإصلاحها {#troubleshooting}
+استكشاف أخطاء ## وإصلاحها {#troubleshooting}
 
 ### المشكلات الشائعة {#common-issues}
 
@@ -654,9 +654,9 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * **الوثائق**: <https://forwardemail.net/self-hosted>
 * **مشاكل GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
-* **دعم المجتمع**: تحقق من مناقشات المشروع على GitHub
+* **دعم المجتمع**: تحقق من مناقشات GitHub الخاصة بالمشروع
 
-## أفضل ممارسات الأمان {#security-best-practices}
+## أفضل ممارسات الأمان لـ {#security-best-practices}
 
 ١. **تحديث النظام باستمرار**: حدّث أوبونتو وحزمه بانتظام.
 ٢. **مراقبة السجلات**: جهّز مراقبة السجلات والتنبيهات.
@@ -665,9 +665,9 @@ nohup dockerd >/dev/null 2>/dev/null &
 ٥. **تفعيل ميزة Fail2Ban**: فكّر في تثبيت ميزة Fail2Ban لمزيد من الأمان.
 ٦. **عمليات تدقيق أمان منتظمة**: راجع إعداداتك بشكل دوري.
 
-## الخاتمة {#conclusion}
+## الاستنتاج {#conclusion}
 
-يجب أن يكون تثبيت خدمة البريد الإلكتروني المُستضاف ذاتيًا (Forward Email) جاهزًا ويعمل على نظام أوبونتو. تذكر:
+يجب أن يكون تثبيت خدمة البريد الإلكتروني المُستضاف ذاتيًا (Forward Email) جاهزًا للعمل على نظام أوبونتو. تذكر:
 
 ١. ضبط سجلات DNS بشكل صحيح
 ٢. اختبار إرسال واستقبال البريد الإلكتروني

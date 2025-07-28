@@ -83,17 +83,17 @@ API електронної пошти принципово не працюють
 Результат? Розробники або повністю відмовляються від інтеграції електронної пошти, або витрачають тижні на створення крихких обгорток IMAP, які постійно ламаються.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Брудний секрет**: Більшість «API електронної пошти» – це просто API надсилання. Ви не можете програмно впорядковувати папки, синхронізувати контакти чи керувати календарями через простий REST-інтерфейс. Дотепер.
 
-## Що насправді кажуть розробники {#what-developers-are-actually-saying}
+## Що насправді говорять розробники {#what-developers-are-actually-saying}
 
 Розчарування реальне і задокументоване всюди:
 
 > «Нещодавно я спробував інтегрувати Gmail у свій додаток, але витратив на це забагато часу. Я вирішив, що не варто підтримувати Gmail».
 
->> *- [Розробник Hacker News](https://news.ycombinator.com/item?id=42106944), 147 голосів «за»*
+> *- [Розробник Hacker News](https://news.ycombinator.com/item?id=42106944), 147 голосів «за»*
 
-> «Чи всі API електронної пошти посередні? Вони здаються обмеженими або обмежувальними в певному сенсі».
+> «Чи всі API електронної пошти посередні? Вони здаються обмеженими або обмежувальними в чомусь.»
 >
 > *- [Обговорення SaaS на Reddit r/](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
@@ -107,8 +107,8 @@ API електронної пошти принципово не працюють
 
 Докази є всюди:
 
-* **Проблеми з SMTP у WordPress**: [631 проблем із GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) про збої доставки електронної пошти
-* **Обмеження Zapier**: [Скарги громади](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) про обмеження 10 електронних листів на годину та збої виявлення IMAP
+* **Проблеми з SMTP у WordPress**: [631 проблем із GitHub](https://github.com/awesomemotive/WP-Mail-SMTP/issues) щодо збоїв доставки електронної пошти
+* **Обмеження Zapier**: [Скарги громади](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) обмеження приблизно на 10 електронних листів на годину та збої виявлення IMAP
 * **Проекти API IMAP**: [Кілька](https://github.com/ewildgoose/imap-api) [з відкритим кодом](https://emailengine.app/) [проекти](https://www.npmjs.com/package/imapflow) існують спеціально для «конвертації IMAP у REST», оскільки жоден постачальник не пропонує цього
 * **Розчарування API Gmail**: [Переповнення стека](https://stackoverflow.com/questions/tagged/gmail-api) має 4847 запитань з тегом «gmail-api» із поширеними скаргами на обмеження швидкості та складність
 
@@ -120,10 +120,10 @@ API електронної пошти принципово не працюють
 
 * **Повідомлення**: Створення, читання, оновлення, видалення, пошук, переміщення, позначка
 * **Папки**: Повне керування папками IMAP через кінцеві точки REST
-* **Контакти**: [CardDAV](https://tools.ietf.org/html/rfc6352) зберігання та синхронізація контактів
-* **Календарі**: [CalDAV](https://tools.ietf.org/html/rfc4791) події календаря та планування
+* **Контакти**: Зберігання та синхронізація контактів [CardDAV](https://tools.ietf.org/html/rfc6352)
+* **Календарі**: Події календаря [CalDAV](https://tools.ietf.org/html/rfc4791) та планування
 
-### Чому ми створили це {#why-we-built-this}
+### Чому ми це створили {#why-we-built-this}
 
 **Проблема**: Кожен постачальник послуг електронної пошти розглядає електронну пошту як чорну скриньку. Ви можете надсилати електронні листи, можливо, читати їх за допомогою складного OAuth, але ви не можете по-справжньому *керувати* даними своєї електронної пошти програмно.
 
@@ -133,7 +133,7 @@ API електронної пошти принципово не працюють
 
 ### Проста автентифікація {#simple-authentication}
 
-Ні [Складність OAuth](https://oauth.net/2/). Ні [паролі для програм](https://support.google.com/accounts/answer/185833). Тільки ваші псевдоніми:
+Немає [Складність OAuth](https://oauth.net/2/). Немає [паролі для програм](https://support.google.com/accounts/answer/185833). Тільки ваші псевдоніми облікових даних:
 
 ```bash
 curl -u "alias@yourdomain.com:password" \
@@ -144,43 +144,43 @@ curl -u "alias@yourdomain.com:password" \
 
 ### Повідомлення (5 кінцевих точок) {#messages-5-endpoints}
 
-* `GET /v1/messages` - Список повідомлень з фільтрацією (`?folder=`, `?is_unread=`, `?is_flagged=`)
-* `POST /v1/messages` - Надсилати нові повідомлення безпосередньо до папок
-* `GET /v1/messages/:id` - Отримувати певне повідомлення з повними метаданими
-* `PUT /v1/messages/:id` - Оновлювати повідомлення (прапорці, папка, статус прочитання)
-* `DELETE /v1/messages/:id` - Видалити повідомлення назавжди
+* `GET /v1/messages` – Список повідомлень з фільтрацією (`?folder=`, `?is_unread=`, `?is_flagged=`)
+* `POST /v1/messages` – Надсилати нові повідомлення безпосередньо до папок
+* `GET /v1/messages/:id` – Отримувати певне повідомлення з повними метаданими
+* `PUT /v1/messages/:id` – Оновлювати повідомлення (прапорці, папка, статус прочитання)
+* `DELETE /v1/messages/:id` – Видаляти повідомлення назавжди
 
 ### Папки (5 кінцевих точок) {#folders-5-endpoints}
 
-* `GET /v1/folders` - Перерахувати всі папки зі статусом підписки
-* `POST /v1/folders` - Створити нову папку з налаштовуваними властивостями
-* `GET /v1/folders/:id` - Отримати деталі папки та кількість повідомлень
-* `PUT /v1/folders/:id` - Оновити властивості папки та підписку
-* `DELETE /v1/folders/:id` - Видалити папку та обробити переміщення повідомлень
+* `GET /v1/folders` – Показати список усіх папок зі статусом підписки
+* `POST /v1/folders` – Створити нову папку з налаштовуваними властивостями
+* `GET /v1/folders/:id` – Отримати деталі папки та кількість повідомлень
+* `PUT /v1/folders/:id` – Оновити властивості папки та підписку
+* `DELETE /v1/folders/:id` – Видалити папку та керувати переміщенням повідомлень
 
 ### Контакти (5 кінцевих точок) {#contacts-5-endpoints}
 
-* `GET /v1/contacts` - Список контактів з пошуком та нумерацією сторінок
-* `POST /v1/contacts` - Створення нового контакту з повною підтримкою vCard
-* `GET /v1/contacts/:id` - Отримання контакту з усіма полями та метаданими
-* `PUT /v1/contacts/:id` - Оновлення контактної інформації з перевіркою ETag
-* `DELETE /v1/contacts/:id` - Видалення контакту з каскадною обробкою
+* `GET /v1/contacts` – Список контактів з пошуком та пагінацією
+* `POST /v1/contacts` – Створення нового контакту з повною підтримкою vCard
+* `GET /v1/contacts/:id` – Отримання контакту з усіма полями та метаданими
+* `PUT /v1/contacts/:id` – Оновлення контактної інформації з перевіркою ETag
+* `DELETE /v1/contacts/:id` – Видалення контакту з каскадною обробкою
 
 ### Календарі (5 кінцевих точок) {#calendars-5-endpoints}
 
-* `GET /v1/calendars` - Список подій календаря з фільтрацією за датою
-* `POST /v1/calendars` - Створення події календаря з учасниками та повторенням
-* `GET /v1/calendars/:id` - Отримання деталей події з обробкою часового поясу
-* `PUT /v1/calendars/:id` - Оновлення події з виявленням конфліктів
-* `DELETE /v1/calendars/:id` - Видалення події зі сповіщеннями про учасників
+* `GET /v1/calendars` – Список подій календаря з фільтрацією за датою
+* `POST /v1/calendars` – Створення події календаря з учасниками та повторенням
+* `GET /v1/calendars/:id` – Отримання деталей події з обробкою часового поясу
+* `PUT /v1/calendars/:id` – Оновлення події з виявленням конфліктів
+* `DELETE /v1/calendars/:id` – Видалення події зі сповіщеннями про учасників
 
-## Розширений пошук: Жоден інший сервіс не порівнює {#advanced-search-no-other-service-compares}
+## Розширений пошук: Немає інших сервісів, які порівнюють {#advanced-search-no-other-service-compares}
 
 **Forward Email – єдиний сервіс електронної пошти, який пропонує комплексний програмний пошук по всіх полях повідомлення через REST API.**
 
 Хоча інші постачальники пропонують щонайбільше базову фільтрацію, ми створили найсучасніший API пошуку електронної пошти з усіх коли-небудь створених. Жоден API Gmail, API Outlook чи будь-який інший сервіс не зрівняється з нашими можливостями пошуку.
 
-### Ландшафт API пошуку порушено {#the-search-api-landscape-is-broken}
+### Ландшафт API пошуку пошкоджено {#the-search-api-landscape-is-broken}
 
 **Обмеження пошуку API Gmail:**
 
@@ -290,7 +290,7 @@ GET /v1/messages?headers=X-Priority:1
 GET /v1/messages?headers=X-Spam-Score
 ```
 
-#### 2. Розвідка на основі розміру {#2-size-based-intelligence}
+#### 2. Інтелект на основі розміру {#2-size-based-intelligence}
 
 ```bash
 # Find newsletter emails (typically large)
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Переваги для розробника**: За допомогою API пошуку Forward Email ви можете створювати поштові програми, які за функціональністю конкурують з клієнтами для настільних комп’ютерів, зберігаючи при цьому простоту REST API.
 
 ## Блискавично швидка архітектура продуктивності {#blazing-fast-performance-architecture}
 
@@ -376,14 +376,14 @@ graph LR
     D --> E[AMD Ryzen]
 ```
 
-### Тести продуктивності {#performance-benchmarks}
+### Орієнтири продуктивності {#performance-benchmarks}
 
 **Чому ми блискавично швидкі:**
 
-| компонент | Технології | Перевага в продуктивності |
+| Компонент | Технології | Перевага в продуктивності |
 | ------------ | --------------------------------------------------------------------------------- | --------------------------------------------- |
 | **Сховище** | [NVMe SSD](https://en.wikipedia.org/wiki/NVM_Express) | У 10 разів швидше, ніж традиційний SATA |
-| **База даних** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Нульова затримка мережі, оптимізована серіалізація |
+| **База даних** | [SQLite](https://sqlite.org/) + [msgpackr](https://github.com/kriszyp/msgpackr) | Нульова мережева затримка, оптимізована серіалізація |
 | **Апаратне забезпечення** | [AMD Ryzen](https://www.amd.com/en/products/processors/desktops/ryzen) голий метал | Відсутність накладних витрат на віртуалізацію |
 | **Кешування** | В пам'яті + постійне зберігання | Час відгуку менше мілісекунди |
 | **Резервні копії** | [Cloudflare R2](https://www.cloudflare.com/products/r2/) зашифровано | Надійність корпоративного рівня |
@@ -400,7 +400,7 @@ graph LR
 
 **Дизайн з нульовим розкриттям інформації**: Доступ маєте лише за допомогою пароля IMAP — ми не можемо читати ваші електронні листи. Наш [архітектура з нульовим розголошенням](https://forwardemail.net/en/security) забезпечує повну конфіденційність, забезпечуючи при цьому блискавичну продуктивність.
 
-## Чому ми відрізняємося: повне порівняння {#why-were-different-the-complete-comparison}
+## Чим ми відрізняємося: Повне порівняння {#why-were-different-the-complete-comparison}
 
 ### Обмеження основних постачальників {#major-provider-limitations}
 
@@ -413,7 +413,7 @@ graph LR
 | **Всього** | Немає API, оманлива прозорість | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) але [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) запобігає стандартним інтеграціям |
 | **Електронна пошта Zapier** | Суворі обмеження швидкості | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
 
-### Переваги пересилання електронних листів {#forward-email-advantages}
+### Переваги пересилання електронної пошти {#forward-email-advantages}
 
 | Функція | Переслати електронний лист | Конкуренція |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
@@ -430,12 +430,12 @@ graph LR
 **ProtonMail та Tuta рекламують себе як «програми з відкритим вихідним кодом» та «прозорі», але це оманливий маркетинг, який порушує сучасні принципи конфіденційності.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Неправдиві заяви про прозорість**: Як ProtonMail, так і Tuta публічно рекламують свої дані про «відкритий вихідний код», водночас зберігаючи свій найважливіший серверний код власницьким та закритим.
 
 **Обман ProtonMail:**
 
-* **Заяви**: [«Ми працюємо з відкритим вихідним кодом»](https://proton.me/blog/open-source) помітно представлено в маркетингу
-* **Реальність**: [Код сервера повністю власний](https://github.com/ProtonMail) - лише клієнтські програми мають відкритий вихідний код
+* **Заяви**: ["Ми працюємо з відкритим вихідним кодом"](https://proton.me/blog/open-source) помітно фігурує в маркетингу
+* **Реальність**: [Код сервера повністю власний](https://github.com/ProtonMail) – лише клієнтські програми мають відкритий вихідний код
 * **Наслідки**: Користувачі не можуть перевірити шифрування на стороні сервера, обробку даних або заяви про конфіденційність
 * **Порушення прозорості**: Немає можливості перевірити фактичні системи обробки та зберігання електронної пошти
 
@@ -451,20 +451,20 @@ graph LR
 У 2025 році справжня конфіденційність вимагає **повної прозорості**. Коли постачальники послуг електронної пошти заявляють про «відкритий вихідний код», але приховують код свого сервера:
 
 1. **Неперевірюване шифрування**: Ви не можете перевірити, як ваші дані насправді зашифровані.
-2. **Приховані методи обробки даних**: Обробка даних на стороні сервера залишається «чорною скринькою».
+2. **Приховані методи обробки даних**: Обробка даних на стороні сервера залишається темою.
 3. **Безпека на основі довіри**: Ви повинні довіряти їхнім заявам без перевірки.
 4. **Залежність від постачальника**: Власні системи запобігають перенесенню даних.
 
 **Справжня прозорість пересилання електронної пошти:**
 
-* ✅ **[Повністю відкритий код](https://github.com/forwardemail/forwardemail.net)** - код сервера та клієнта
-* ✅ **[Доступний самостійний хостинг](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - запуск власного екземпляра
-* ✅ **Стандартні протоколи** - сумісність з IMAP, SMTP, CardDAV, CalDAV
-* ✅ **Аудит безпеки** - кожен рядок коду можна перевірити
-* ✅ **Без прив'язки до постачальника** - ваші дані, ваш контроль
+* ✅ **[Повністю відкритий код](https://github.com/forwardemail/forwardemail.net)** – код сервера та клієнта
+* ✅ **[Доступний самостійний хостинг](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – запуск власного екземпляра
+* ✅ **Стандартні протоколи** – сумісність з IMAP, SMTP, CardDAV, CalDAV
+* ✅ **Аудит безпеки** – кожен рядок коду можна перевірити
+* ✅ **Без прив’язки до постачальника** – ваші дані, ваш контроль
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Справжній відкритий код означає, що ви можете перевірити кожне твердження.** За допомогою Forward Email ви можете перевіряти наше шифрування, переглядати обробку даних і навіть запускати власний екземпляр. Це справжня прозорість.
 
 ## Понад 30 прикладів інтеграції з реального світу {#30-real-world-integration-examples}
 
@@ -526,8 +526,8 @@ for (const contact of newContacts) {
 
 ### 4. Обробка замовлень електронної комерції {#4-e-commerce-order-processing}
 
-**Проблема**: Ручна обробка електронного листа із замовленнями для [платформи електронної комерції](https://en.wikipedia.org/wiki/E-commerce)
-**Рішення**: Автоматизований процес керування замовленнями
+**Проблема**: Ручна обробка електронної пошти із замовленнями для [платформи електронної комерції](https://en.wikipedia.org/wiki/E-commerce)
+**Рішення**: Автоматизований конвеєр керування замовленнями
 
 ```javascript
 // Process order confirmation emails
@@ -610,7 +610,7 @@ for (const email of messages) {
 ### 8. Агрегація електронної пошти для кількох облікових записів {#8-multi-account-email-aggregation}
 
 **Проблема**: Керування [кілька облікових записів електронної пошти](https://en.wikipedia.org/wiki/Email_client) у різних постачальників
-**Рішення**: Єдиний інтерфейс вхідних повідомлень
+**Рішення**: Уніфікований інтерфейс папки "Вхідні"
 
 ```javascript
 // Aggregate emails from multiple accounts
@@ -627,7 +627,7 @@ for (const account of accounts) {
 
 ### 9. Розширена панель інструментів аналітики електронної пошти {#9-advanced-email-analytics-dashboard}
 
-**Проблема**: Немає інформації про [шаблони електронних листів](https://en.wikipedia.org/wiki/Email_analytics) за допомогою складної фільтрації
+**Проблема**: Немає статистичних даних про [шаблони електронних листів](https://en.wikipedia.org/wiki/Email_analytics) завдяки складній фільтрації
 **Рішення**: Налаштування аналітики електронної пошти за допомогою розширених можливостей пошуку
 
 ```javascript
@@ -747,7 +747,7 @@ await saveToComplianceStorage(backup);
 
 ### 13. Керування контентом на основі електронної пошти {#13-email-based-content-management}
 
-**Проблема**: Керування контентом, що надсилається електронною поштою для [CMS-платформи](https://en.wikipedia.org/wiki/Content_management_system)
+**Проблема**: Керування надсиланням контенту електронною поштою для [CMS-платформи](https://en.wikipedia.org/wiki/Content_management_system)
 **Рішення**: Електронна пошта як система керування контентом
 
 ```javascript
@@ -788,7 +788,7 @@ await fetch('/v1/messages', {
 
 ### 15. Автоматизація робочих процесів на основі електронної пошти {#15-email-based-workflow-automation}
 
-**Проблема**: Вручну [процеси затвердження](https://en.wikipedia.org/wiki/Workflow) електронною поштою
+**Проблема**: Ручне налаштування [процеси затвердження](https://en.wikipedia.org/wiki/Workflow) електронною поштою
 **Рішення**: Автоматизовані тригери робочого процесу
 
 ```javascript
@@ -810,7 +810,7 @@ for (const approval of approvals) {
 
 ### 16. Моніторинг безпеки електронної пошти {#16-email-security-monitoring}
 
-**Проблема**: Вручну [виявлення загроз безпеці](https://en.wikipedia.org/wiki/Email_security)
+**Проблема**: Ручне налаштування [виявлення загроз безпеці](https://en.wikipedia.org/wiki/Email_security)
 **Рішення**: Автоматизований аналіз загроз
 
 ```javascript
@@ -828,7 +828,7 @@ for (const email of recentEmails) {
 }
 ```
 
-### 17. Збір опитувань на основі електронної пошти {#17-email-based-survey-collection}
+### 17. Колекція опитувань на основі електронної пошти {#17-email-based-survey-collection}
 
 **Проблема**: Ручна обробка [відповідь на опитування](https://en.wikipedia.org/wiki/Survey_methodology)
 **Рішення**: Автоматизована агрегація відповідей
@@ -850,7 +850,7 @@ await updateSurveyResults(surveyData);
 
 ### 18. Моніторинг ефективності електронної пошти {#18-email-performance-monitoring}
 
-**Проблема**: Немає видимості [ефективність доставки електронної пошти](https://en.wikipedia.org/wiki/Email_deliverability)
+**Проблема**: Немає видимості для [ефективність доставки електронної пошти](https://en.wikipedia.org/wiki/Email_deliverability)
 **Рішення**: Метрики електронної пошти в режимі реального часу
 
 ```javascript
@@ -864,9 +864,9 @@ const deliveryStats = {
 await updateDashboard(deliveryStats);
 ```
 
-### 19. Кваліфікація потенційних клієнтів на основі електронної пошти {#19-email-based-lead-qualification}
+### 19. Кваліфікація потенційного клієнта на основі електронної пошти {#19-email-based-lead-qualification}
 
-**Проблема**: Ручне [підрахунок очок лідерства](https://en.wikipedia.org/wiki/Lead_scoring) від взаємодії з електронною поштою
+**Проблема**: Ручне встановлення [підрахунок очок лідерства](https://en.wikipedia.org/wiki/Lead_scoring) з електронної пошти
 **Рішення**: Автоматизований процес кваліфікації потенційних клієнтів
 
 ```javascript
@@ -935,7 +935,7 @@ for (const email of inventoryEmails) {
 
 ### 22. Обробка рахунків-фактур на основі електронної пошти {#22-email-based-invoice-processing}
 
-**Проблема**: Інтеграція з ручним [обробка рахунків-фактур](https://en.wikipedia.org/wiki/Invoice_processing) та бухгалтерським обліком
+**Проблема**: Ручна інтеграція [обробка рахунків-фактур](https://en.wikipedia.org/wiki/Invoice_processing) та бухгалтерського обліку
 **Рішення**: Автоматизоване вилучення рахунків-фактур та синхронізація бухгалтерської системи
 
 ```javascript
@@ -964,7 +964,7 @@ for (const email of invoiceEmails) {
 
 ### 23. Реєстрація на подію через електронну пошту {#23-email-based-event-registration}
 
-**Проблема**: Ручна обробка [реєстрація на подію](https://en.wikipedia.org/wiki/Event_management) відповідей електронною поштою
+**Проблема**: Ручна обробка [реєстрація на подію](https://en.wikipedia.org/wiki/Event_management) з відповідей електронною поштою
 **Рішення**: Автоматизоване керування учасниками та інтеграція календаря
 
 ```javascript
@@ -999,7 +999,7 @@ for (const registration of registrations) {
 
 ### 24. Робочий процес затвердження документів на основі електронної пошти {#24-email-based-document-approval-workflow}
 
-**Проблема**: Складні [затвердження документа](https://en.wikipedia.org/wiki/Document_management_system) ланцюжки через електронну пошту
+**Проблема**: Складні ланцюжки [затвердження документа](https://en.wikipedia.org/wiki/Document_management_system) через електронну пошту
 **Рішення**: Автоматизоване відстеження затверджень та керування версіями документів
 
 ```javascript
@@ -1060,9 +1060,9 @@ for (const email of feedbackEmails) {
 }
 ```
 
-### 26. Система рекрутингу на основі електронної пошти {#26-email-based-recruitment-pipeline}
+### 26. Конвеєр рекрутингу на основі електронної пошти {#26-email-based-recruitment-pipeline}
 
-**Проблема**: Ручне [рекрутинг](https://en.wikipedia.org/wiki/Recruitment) та відстеження кандидатів
+**Проблема**: Ручне налаштування [рекрутинг](https://en.wikipedia.org/wiki/Recruitment) та відстеження кандидатів
 **Рішення**: Автоматизоване управління кандидатами та планування співбесід
 
 ```javascript
@@ -1096,7 +1096,7 @@ for (const application of applications) {
 
 ### 27. Обробка звітів про витрати на основі електронної пошти {#27-email-based-expense-report-processing}
 
-**Проблема**: Ручне [звіт про витрати](https://en.wikipedia.org/wiki/Expense_report) подання та затвердження
+**Проблема**: Ручне надсилання та затвердження [звіт про витрати](https://en.wikipedia.org/wiki/Expense_report)
 **Рішення**: Автоматизований робочий процес вилучення та затвердження витрат
 
 ```javascript
@@ -1171,7 +1171,7 @@ for (const report of bugReports) {
 
 ### 29. Управління постачальниками на основі електронної пошти {#29-email-based-vendor-management}
 
-**Проблема**: Ручне [комунікація з постачальниками](https://en.wikipedia.org/wiki/Vendor_management) та відстеження контрактів
+**Проблема**: Ручне відстеження [комунікація з постачальниками](https://en.wikipedia.org/wiki/Vendor_management) та контракту
 **Рішення**: Автоматизоване управління взаємовідносинами з постачальниками
 
 ```javascript
@@ -1258,7 +1258,7 @@ for (const alert of socialAlerts) {
 
 ## Початок роботи {#getting-started}
 
-### 1. Створіть обліковий запис переадресації електронної пошти {#1-create-your-forward-email-account}
+### 1. Створіть обліковий запис для переадресації електронної пошти {#1-create-your-forward-email-account}
 
 Зареєструйтесь на [forwardemail.net](https://forwardemail.net) та підтвердьте свій домен.
 
@@ -1281,17 +1281,17 @@ curl -u "your-alias@domain.com:password" \
   https://api.forwardemail.net/v1/contacts
 ```
 
-### 4. Ознайомтеся з документацією {#4-explore-the-documentation}
+### 4. Перегляньте документацію {#4-explore-the-documentation}
 
 Відвідайте [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) для отримання повної документації API з інтерактивними прикладами.
 
 ## Технічні ресурси {#technical-resources}
 
-* **[Повна документація API](https://forwardemail.net/en/email-api)** - Інтерактивна специфікація OpenAPI 3.0
-* **[Посібник з самостійного хостингу](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Розгортання пересилання електронної пошти у вашій інфраструктурі
-* **[Технічний документ з безпеки](https://forwardemail.net/technical-whitepaper.pdf)** - Технічна архітектура та деталі безпеки
-* **[Репозиторій GitHub](https://github.com/forwardemail/forwardemail.net)** - База коду з відкритим вихідним кодом
-* **[Підтримка розробників](mailto:api@forwardemail.net)** - Прямий доступ до нашої команди інженерів
+* **[Повна документація API](https://forwardemail.net/en/email-api)** – Інтерактивна специфікація OpenAPI 3.0
+* **[Посібник з самостійного хостингу](https://forwardemail.net/en/blog/docs/self-hosted-solution)** – Розгортання пересилання електронної пошти у вашій інфраструктурі
+* **[Технічний документ з безпеки](https://forwardemail.net/technical-whitepaper.pdf)** – Технічна архітектура та деталі безпеки
+* **[Репозиторій GitHub](https://github.com/forwardemail/forwardemail.net)** – База коду з відкритим вихідним кодом
+* **[Підтримка розробників](mailto:api@forwardemail.net)** – Прямий доступ до нашої команди інженерів
 
 ---
 

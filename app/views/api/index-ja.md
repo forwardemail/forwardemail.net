@@ -94,7 +94,7 @@
 
 ## 認証 {#authentication}
 
-すべてのエンドポイントでは、リクエストの [基本認証](https://en.wikipedia.org/wiki/Basic_access_authentication) ヘッダーの「ユーザー名」値として [APIキー](https://forwardemail.net/my-account/security) を設定する必要があります ([生成されたエイリアスのユーザー名とパスワード](/faq#do-you-support-receiving-email-with-imap) を使用する [エイリアス連絡先](#alias-contacts)、[エイリアスカレンダー](#alias-calendars)、および [エイリアスメールボックス](#alias-mailboxes) を除く)。
+すべてのエンドポイントでは、[APIキー](https://forwardemail.net/my-account/security) をリクエストの [基本認証](https://en.wikipedia.org/wiki/Basic_access_authentication) ヘッダーの「ユーザー名」値として設定する必要があります ([生成されたエイリアスのユーザー名とパスワード](/faq#do-you-support-receiving-email-with-imap) を使用する [エイリアス連絡先](#alias-contacts)、[エイリアスカレンダー](#alias-calendars)、および [エイリアスメールボックス](#alias-mailboxes) を除く)。
 
 心配しないでください。これが何なのかわからない場合は、以下に例を示します。
 
@@ -117,22 +117,22 @@
 | 504 | ゲートウェイタイムアウト |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> 5xx ステータスコード（本来は発生しないはずのものです）が表示された場合は、<a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> までご連絡ください。問題解決のため、迅速に対応させていただきます。
 
 ## ローカリゼーション {#localization}
 
-当社のサービスは25以上の言語に翻訳されています。すべてのAPIレスポンスメッセージは、APIリクエストを送信したユーザーの最新のロケールに基づいて翻訳されます。カスタムの`Accept-Language`ヘッダーを渡すことで、この設定を上書きできます。このページ下部の言語ドロップダウンから、ぜひお試しください。
+当社のサービスは25以上の言語に翻訳されています。すべてのAPIレスポンスメッセージは、APIリクエストを送信したユーザーが最後に検出したロケールに翻訳されます。カスタム`Accept-Language`ヘッダーを渡すことで、この設定を上書きできます。このページ下部の言語ドロップダウンから、ぜひお試しください。
 
-## ページネーション {#pagination}
+## ページ区切り {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> 2024年11月1日より、[ドメインの一覧](#list-domains)および[ドメインエイリアスの一覧](#list-domain-aliases)のAPIエンドポイントでは、1ページあたりの最大結果数がデフォルトで`1000`になります。この動作を早期にオプトインしたい場合は、エンドポイントクエリのURLに追加のクエリ文字列パラメータとして`?paginate=true`を渡すことができます。
 
 ページ区切りは、結果を一覧表示するすべての API エンドポイントでサポートされています。
 
 クエリ文字列プロパティ `page` (およびオプションで `limit`) を指定するだけです。
 
-プロパティ`page` は、`1` 以上の数値である必要があります。`limit` （これも数値）を指定した場合、最小値は `10`、最大値は `50` となります（特に明記されていない限り）。
+プロパティ`page`は、`1`以上の数値である必要があります。`limit`（数値）を指定した場合、最小値は`10`、最大値は`50`となります（特に記載がない限り）。
 
 | クエリ文字列パラメータ | 必須 | タイプ | 説明 |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -145,7 +145,7 @@
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `X-Page-Count` | `X-Page-Count: 3` | 利用可能なページの合計数。 |
 | `X-Page-Current` | `X-Page-Current: 1` | 返された結果の現在のページ (例: `page` クエリ文字列パラメータに基づく)。 |
-| `X-Page-Size` | `X-Page-Size: 10` | 返されたページ内の結果の合計数 (例: `limit` クエリ文字列パラメータと実際に返された結果に基づく)。 |
+| `X-Page-Size` | `X-Page-Size: 10` | 返されたページ内の結果の合計数 (例: `limit` クエリ文字列パラメータと実際に返された結果に基づきます)。 |
 | `X-Item-Count` | `X-Item-Count: 30` | すべてのページで利用可能なアイテムの合計数。 |
 | `Link` | `Link: <https://api.forwardemail.net/v1/emails?page=1>; rel="prev", <https://api.forwardemail.net/v1/emails?page=3>; rel="next", <https://api.forwardemail.net/v1/emails?page=3; rel="last", https://api.forwardemail.net/v1/emails?page=1; rel="first"` | 例に示すように、解析可能な `Link` HTTPレスポンスヘッダーを提供しています。これは [similar to GitHub](https://docs.github.com/en/rest/using-the-rest-api/using-pagination-in-the-rest-api#using-link-headers) です（例えば、関連性がない、または利用できない場合は、すべての値が提供されるわけではありません。例えば、別のページがない場合、`"next"` は提供されません）。 |
 
@@ -160,9 +160,9 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ### ログを取得 {#retrieve-logs}
 
-当社のAPIを使用すると、プログラム的にアカウントのログをダウンロードできます。このエンドポイントにリクエストを送信すると、アカウントのすべてのログが処理され、完了すると添付ファイル（圧縮されたスプレッドシートファイル）としてメールで送信されます。
+当社のAPIを使用すると、プログラム的にアカウントのログをダウンロードできます。このエンドポイントにリクエストを送信すると、アカウントのすべてのログが処理され、完了すると添付ファイル（[Gzip](https://en.wikipedia.org/wiki/Gzip) 圧縮された[CSV](https://en.wikipedia.org/wiki/Comma-separated_values) スプレッドシートファイル）としてメールで送信されます。
 
-これにより、[cronジョブ](https://en.wikipedia.org/wiki/Cron) を使用してバックグラウンドジョブを作成したり、[Node.js ジョブスケジューリングソフトウェア Bree](https://github.com/breejs/bree) を使用して必要なときにいつでもログを受信したりできます。このエンドポイントは、1日あたり`10`リクエストまでに制限されていることに注意してください。
+これにより、[cronジョブ](https://en.wikipedia.org/wiki/Cron) を使用したバックグラウンドジョブを作成したり、[Node.js ジョブスケジューリングソフトウェア Bree](https://github.com/breejs/bree) を使用して必要なときにいつでもログを受信したりできます。このエンドポイントは、1日あたり `10` リクエストまでに制限されていることに注意してください。
 
 添付ファイルは`email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`の小文字形式で、メール自体には取得したログの簡単な概要が含まれています。ログは[マイアカウント → ログ](/my-account/logs)からいつでもダウンロードできます。
 
@@ -253,13 +253,13 @@ curl -X PUT BASE_URI/v1/account \
   -d "email=EMAIL"
 ```
 
-## エイリアス連絡先（CardDAV） {#alias-contacts-carddav}
+## エイリアス連絡先（CardDAV）{#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> 他の API エンドポイントとは異なり、これらのエンドポイントでは、[認証](#authentication) の「ユーザー名」がエイリアスのユーザー名に、そして「パスワード」がエイリアスで生成されたパスワードにそれぞれ Basic 認証ヘッダーとして設定されている必要があります。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> このエンドポイントセクションは現在開発中で、2024年にリリースされる予定です（予定）。それまでの間は、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンからIMAPクライアントをご利用ください。
 
 ### 連絡先リスト {#list-contacts}
 
@@ -291,13 +291,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **近日公開**
 
-## エイリアスカレンダー（CalDAV） {#alias-calendars-caldav}
+## エイリアスカレンダー（CalDAV）{#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> 他の API エンドポイントとは異なり、これらのエンドポイントでは、[認証](#authentication) の「ユーザー名」がエイリアスのユーザー名に、そして「パスワード」がエイリアスで生成されたパスワードにそれぞれ Basic 認証ヘッダーとして設定されている必要があります。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> このエンドポイントセクションは現在開発中で、2024年にリリースされる予定です（予定）。それまでの間は、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンからIMAPクライアントをご利用ください。
 
 ### カレンダーの一覧 {#list-calendars}
 
@@ -329,13 +329,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **近日公開**
 
-## エイリアスメッセージ (IMAP/POP3) {#alias-messages-imappop3}
+## エイリアスメッセージ（IMAP/POP3） {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> 他の API エンドポイントとは異なり、これらのエンドポイントでは、[認証](#authentication) の「ユーザー名」がエイリアスのユーザー名に、そして「パスワード」がエイリアスで生成されたパスワードにそれぞれ Basic 認証ヘッダーとして設定されている必要があります。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> このエンドポイントセクションは現在開発中で、2024年にリリースされる予定です（予定）。それまでの間は、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンからIMAPクライアントをご利用ください。
 
 ドメインの設定手順に従っていることを確認してください。
 
@@ -350,7 +350,7 @@ curl -X PUT BASE_URI/v1/account \
 ### メッセージを作成 {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> これはメールを送信するものではなく、単にメッセージをメールボックスフォルダに追加するだけです（IMAPの`APPEND`コマンドに似ています）。メールを送信する場合は、下記の[送信SMTPメールを作成する](#create-outbound-smtp-email)を参照してください。送信SMTPメールを作成した後、このエンドポイントを使用してそのコピーをエイリアスのメールボックスに追加し、保存することができます。
 
 > `POST /v1/messages`
 
@@ -374,13 +374,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **近日公開**
 
-## エイリアスフォルダ (IMAP/POP3) {#alias-folders-imappop3}
+## エイリアスフォルダ（IMAP/POP3） {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> フォルダのパス <code>/v1/folders/:path</code> をエンドポイントとするフォルダエンドポイントは、フォルダの ID <code>:id</code> と互換性があります。つまり、フォルダは <code>path</code> 値または <code>id</code> 値のどちらでも参照できます。
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> このエンドポイントセクションは現在開発中で、2024年にリリースされる予定です（予定）。それまでの間は、ウェブサイトのナビゲーションにある「アプリ」ドロップダウンからIMAPクライアントをご利用ください。
 
 ### フォルダの一覧 {#list-folders}
 
@@ -394,19 +394,19 @@ curl -X PUT BASE_URI/v1/account \
 
 **近日公開**
 
-### フォルダーを取得 {#retrieve-folder}
+### フォルダを取得 {#retrieve-folder}
 
 > `GET /v1/folders/:id`
 
 **近日公開**
 
-### フォルダを更新 {#update-folder}
+### 更新フォルダ {#update-folder}
 
 > `PUT /v1/folders/:id`
 
 **近日公開**
 
-### フォルダを削除します {#delete-folder}
+### フォルダを削除 {#delete-folder}
 
 > `DELETE /v1/folders/:id`
 
@@ -422,11 +422,11 @@ curl -X PUT BASE_URI/v1/account \
 
 ドメインの設定手順に従っていることを確認してください。
 
-手順については[マイアカウント → ドメイン → 設定 → 送信SMTP設定](/my-account/domains)をご覧ください。ドメインからSMTPを送信するには、DKIM、Return-Path、DMARCの設定が必要です。
+これらの手順は[マイアカウント → ドメイン → 設定 → 送信SMTP設定](/my-account/domains)にあります。ドメインからSMTPを送信するには、DKIM、Return-Path、DMARCの設定が必要です。
 
 ### 送信SMTPメールの制限を取得する {#get-outbound-smtp-email-limit}
 
-これは、アカウントごとに毎日の SMTP 送信メッセージの数の `count` と `limit` を含む JSON オブジェクトを返す単純なエンドポイントです。
+これは、アカウントごとに毎日の SMTP 送信メッセージの数を示す `count` と `limit` を含む JSON オブジェクトを返すシンプルなエンドポイントです。
 
 > `GET /v1/emails/limit`
 
@@ -437,7 +437,7 @@ curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### 送信SMTPメールを一覧表示します {#list-outbound-smtp-emails}
+### 送信SMTPメールの一覧表示 {#list-outbound-smtp-emails}
 
 このエンドポイントは、電子メールの `message`、`headers`、または `rejectedErrors` のプロパティ値を返さないことに注意してください。
 
@@ -460,15 +460,15 @@ curl BASE_URI/v1/emails?limit=1 \
   -u API_TOKEN:
 ```
 
-### 送信SMTPメールを作成 {#create-outbound-smtp-email}
+### 送信SMTPメールを作成する {#create-outbound-smtp-email}
 
-メール作成用のAPIは、Nodemailerのメッセージオプション設定を参考に開発されています。以下の本文パラメータについては、[Nodemailerメッセージ構成](https://nodemailer.com/message/) を参照してください。
+メール作成用のAPIは、Nodemailerのメッセージオプション設定を参考に開発されています。以下の本文パラメータはすべて[Nodemailerメッセージ構成](https://nodemailer.com/message/)に準じてください。
 
-`envelope` と `dkim` （これらは自動的に設定されます）を除き、Nodemailer のすべてのオプションをサポートしています。セキュリティ上の理由から、`disableFileAccess` と `disableUrlAccess` オプションは自動的に `true` に設定されます。
+`envelope` と `dkim` を除き（これらは自動的に設定されます）、Nodemailer のすべてのオプションをサポートしています。セキュリティ上の理由から、`disableFileAccess` と `disableUrlAccess` のオプションは自動的に `true` に設定されます。
 
 ヘッダーを含む生の完全な電子メールとともに `raw` の単一オプションを渡すか、**または** 以下の個別の本文パラメータ オプションを渡す必要があります。
 
-このAPIエンドポイントは、ヘッダーに絵文字が含まれている場合、自動的にエンコードします（例：件名が`Subject: 🤓 Hello`の場合、自動的に`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`に変換されます）。私たちの目標は、開発者にとって非常に使いやすく、誰でも簡単に使用できるメールAPIを作ることでした。
+このAPIエンドポイントは、ヘッダーに絵文字が含まれている場合、自動的にエンコードします（例：件名が`Subject: 🤓 Hello`の場合、自動的に`Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`に変換されます）。私たちの目標は、開発者にとって非常に使いやすく、誰でも簡単に使えるメールAPIを作ることでした。
 
 > `POST /v1/emails`
 
@@ -532,7 +532,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### 送信SMTPメールを削除します {#delete-outbound-smtp-email}
 
-メールを削除すると、現在のステータスが`"pending"`、`"queued"`、または`"deferred"`のいずれかの場合に限り、ステータスが`"rejected"`に設定され（その後、キューで処理されません）、メールは作成または送信されてから30日後に自動的に消去される場合があります。そのため、送信SMTPメールのコピーをクライアント、データベース、またはアプリケーションに保存しておく必要があります。必要に応じて、データベースで当社のメールID値を参照できます。この値は、[メールを作成](#create-email) と [メールを取得](#retrieve-email) の両方のエンドポイントから返されます。
+メールを削除すると、現在のステータスが`"pending"`、`"queued"`、または`"deferred"`のいずれかの場合に限り、ステータスが`"rejected"`に設定されます（その後、キューでは処理されません）。メールは作成または送信されてから30日後に自動的に消去される場合があります。そのため、送信SMTPメールのコピーをクライアント、データベース、またはアプリケーションに保存しておく必要があります。必要に応じて、データベースでメールID値を参照できます。この値は、[メールを作成](#create-email)と[メールを取得](#retrieve-email)の両方のエンドポイントから返されます。
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## ドメイン {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> ドメイン名 <code>/v1/domains/:domain_name</code> をエンドポイントとするドメインエンドポイントは、ドメインID <code>:domain_id</code> と互換性があります。つまり、ドメインは <code>name</code> または <code>id</code> のいずれかの値で参照できます。
 
-### ドメインをリストする {#list-domains}
+### ドメインの一覧 {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 2024年11月1日より、[ドメインの一覧](#list-domains)および[ドメインエイリアスの一覧](#list-domain-aliases)のAPIエンドポイントでは、1ページあたりの最大結果数がデフォルトで`1000`に設定されます。この動作を早期にオプトインする場合は、エンドポイントクエリのURLに追加のクエリ文字列パラメータとして`?paginate=true`を渡すことができます。詳細については、[ページネーション](#pagination)をご覧ください。
 
 > `GET /v1/domains`
 
@@ -576,8 +576,8 @@ curl BASE_URI/v1/domains \
 
 | ボディパラメータ | 必須 | タイプ | 説明 |
 | ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `domain` | はい | 文字列（FQDNまたはIP） | 完全修飾ドメイン名（「FQDN」）またはIPアドレス |
-| `team_domain` | いいえ | 文字列 (ドメイン ID またはドメイン名、FQDN) | このドメインを別のドメインの同じチームに自動的に割り当てます。つまり、このドメインのメンバー全員がチームメンバーとして割り当てられ、`plan` は自動的に `team` に設定されます。必要に応じてこれを `"none"` に設定して明示的に無効にすることもできますが、これは必須ではありません。 |
+| `domain` | はい | 文字列（FQDN または IP） | 完全修飾ドメイン名（「FQDN」）またはIPアドレス |
+| `team_domain` | いいえ | 文字列（ドメインIDまたはドメイン名; FQDN） | このドメインを別のドメインの同じチームに自動的に割り当てます。つまり、このドメインのメンバー全員がチームメンバーとして割り当てられ、`plan` は自動的に `team` に設定されます。必要に応じてこれを `"none"` に設定して明示的に無効にすることもできますが、これは必須ではありません。 |
 | `plan` | いいえ | 文字列（列挙可能） | プランの種類 (`"free"`、`"enhanced_protection"`、または `"team"` のいずれかである必要があります。デフォルトは `"free"` またはユーザーが現在利用している有料プランです) |
 | `catchall` | いいえ | 文字列（区切られたメールアドレス）またはブール値 | デフォルトのキャッチオールエイリアスを作成します。デフォルトは`true`です（`true`の場合はAPIユーザーのメールアドレスを受信者として使用し、`false`の場合はキャッチオールは作成されません）。文字列が渡された場合は、受信者として使用するメールアドレスの区切りリストになります（改行、スペース、またはカンマで区切られます）。 |
 | `has_adult_content_protection` | いいえ | ブール値 | このドメインでスパムスキャナによるアダルトコンテンツ保護を有効にするかどうか |
@@ -621,7 +621,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
-### ドメインのSMTPレコードを確認する {#verify-domain-smtp-records}
+### ドメインSMTPレコードを確認する {#verify-domain-smtp-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> 招待されたユーザーが、招待元の管理者が所属する他のドメインで既に承認済みのメンバーである場合、招待は自動的に承認され、メールは送信されません。
 
 ### ドメイン招待を削除 {#remove-domain-invite}
 
@@ -786,7 +786,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 ### エイリアスパスワードを生成する {#generate-an-alias-password}
 
-手順を電子メールで送信しない場合は、ユーザー名とパスワードが、成功したリクエストの JSON 応答本文に `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` の形式で含まれることに注意してください。
+手順を電子メールで送信しない場合は、ユーザー名とパスワードが、`{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` の形式で成功したリクエストの JSON 応答本文に含まれることに注意してください。
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
@@ -794,7 +794,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 | ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `new_password` | いいえ | 弦 | エイリアスに使用する新しいカスタムパスワード。ランダムに生成された強力なパスワードを取得したい場合は、このパスワードを空白のままにするか、APIリクエスト本文に何も入力しなくても構いません。 |
 | `password` | いいえ | 弦 | 既存の IMAP メールボックス ストレージを削除せずにパスワードを変更するためのエイリアスの既存のパスワード (既存のパスワードがなくなった場合は、以下の `is_override` オプションを参照してください)。 |
-| `is_override` | いいえ | ブール値 | **注意して使用してください**: この操作により、既存のエイリアスのパスワードとデータベースが完全に上書きされ、既存のIMAPストレージが完全に削除され、エイリアスのSQLiteメールデータベースが完全にリセットされます。このエイリアスに既存のメールボックスが接続されている場合、可能であればバックアップを作成してください。 |
+| `is_override` | いいえ | ブール値 | **注意して使用してください**：この操作により、既存のエイリアスのパスワードとデータベースが完全に上書きされ、既存のIMAPストレージが完全に削除され、エイリアスのSQLiteメールデータベースが完全にリセットされます。このエイリアスに既存のメールボックスが接続されている場合、可能であればバックアップを作成してください。 |
 | `emailed_instructions` | いいえ | 弦 | エイリアスのパスワードとセットアップ手順を送信するメール アドレス。 |
 
 > リクエスト例:
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### ドメインエイリアスの一覧 {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 2024年11月1日より、[ドメインの一覧](#list-domains)および[ドメインエイリアスの一覧](#list-domain-aliases)のAPIエンドポイントでは、1ページあたりの最大結果数がデフォルトで`1000`に設定されます。この動作を早期にオプトインする場合は、エンドポイントクエリのURLに追加のクエリ文字列パラメータとして`?paginate=true`を渡すことができます。詳細については、[ページネーション](#pagination)をご覧ください。
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## 暗号化 {#encrypt}
 
-無料プランでも記録の暗号化を無料でご利用いただけます。プライバシーは機能ではなく、製品のあらゆる側面に本質的に組み込まれているべきです。[プライバシーガイドの議論](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) と [GitHubの問題](https://github.com/forwardemail/forwardemail.net/issues/254) で多くのご要望をいただいたため、この機能を追加しました。
+無料プランでもレコードの暗号化を無料でご利用いただけます。プライバシーは機能ではなく、製品のあらゆる側面に本質的に組み込まれているべきです。[プライバシーガイドの議論](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) と [GitHubの問題](https://github.com/forwardemail/forwardemail.net/issues/254) で多くのご要望をいただいたため、この機能を追加しました。
 
 ### TXTレコードを暗号化 {#encrypt-txt-record}
 

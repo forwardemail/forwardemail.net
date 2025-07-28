@@ -34,24 +34,24 @@ O Forward Email não oferece garantias, expressas ou implícitas, e por meio des
 
 Além disso, o Forward Email não garante nem faz qualquer representação sobre a precisão, resultados prováveis ou confiabilidade do uso dos materiais em seu Serviço ou de outra forma relacionados a tais materiais ou em quaisquer sites vinculados a este site.
 
-<u>**Você concorda especificamente que não usará o Serviço para quaisquer negócios ou materiais relacionados a [Negócios proibidos da Stripe](https://stripe.com/legal/restricted-businesses) e [Atividades proibidas do PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
+<u>**Você concorda especificamente que não usará o Serviço para nenhum negócio ou materiais relacionados a [Negócios proibidos da Stripe](https://stripe.com/legal/restricted-businesses) e [Atividades proibidas do PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
 
 <u>**Você concorda especificamente que, ao usar o Serviço, a Forward Email não será responsável por, não será responsabilizada por, e você não criará, lerá, modificará ou transmitirá qualquer um dos seguintes com o Serviço:**</u>
 
 * **Você não usará nosso serviço para operar um serviço que permita que terceiros (além de seus próprios funcionários e contratados) acessem, usem ou se beneficiem dele. Caso precise que abramos uma exceção para você em relação a isso, entre em contato conosco para discutir um acordo empresarial. Consulte nosso [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) para obter mais informações.**
-* Se você estiver usando nosso serviço [SMTP de saída](/faq#do-you-support-sending-email-with-smtp), concorda com o seguinte:
+* Se estiver usando nosso serviço [SMTP de saída](/faq#do-you-support-sending-email-with-smtp), você concorda com o seguinte:
 * Você tem permissão para usá-lo para [e-mail transacional](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) e [marketing por e-mail](https://en.wikipedia.org/wiki/Email_marketing).
-* Se estiver enviando material de marketing por e-mail, você deverá incluir um cabeçalho `List-Unsubscribe` e seus assinantes deverão ter optado por participar.
-* Recomendamos que você utilize um gerenciador de newsletters de código aberto, como o [ListMonk](https://github.com/knadh/listmonk) em <https://github.com/knadh/listmonk>.
+* Se estiver enviando material de marketing por e-mail, você deve incluir um cabeçalho `List-Unsubscribe` e seus assinantes devem optar por participar.
+* Recomendamos que você use um gerenciador de newsletters de código aberto, como o [ListMonk](https://github.com/knadh/listmonk) em <https://github.com/knadh/listmonk>.
 * Observe que planejamos lançar nosso próprio gerenciador de newsletters no futuro.
 * Material de marketing por e-mail inclui e-mails promocionais, em massa ou comerciais para uma lista de contatos com conteúdo, assunto e corpo de mensagem semelhantes (por exemplo, newsletters e anúncios).
 * Você deve cumprir o [Lei CAN-SPAM de 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
-* Você deve remover usuários que optaram por não participar, cancelaram a assinatura ou marcaram seu e-mail como spam imediatamente ou em até 24 horas.
+* Você deve remover usuários que optaram por não receber, cancelaram a assinatura ou marcaram seu e-mail como spam, imediatamente ou em até 24 horas.
 * Na primeira vez que seu nome de domínio tentar enviar uma newsletter, um administrador analisará e aprovará seu domínio para o envio de newsletters (geralmente em 2 a 4 horas, mas às vezes pode levar mais tempo).
-* Qualquer coisa que cause interferência na interrupção do Serviço, de suas operações e/ou de seus clientes.
+* Qualquer coisa que interfira na interrupção do Serviço, de suas operações e/ou de seus clientes.
 * Materiais abusivos, difamatórios, falsos, assediantes, indecentes, caluniosos, enganosos, censuráveis, obscenos, ofensivos, profanos, ameaçadores, ilegais e/ou vulgares.
 * Materiais protegidos por direitos autorais ou confidenciais não autorizados e/ou materiais que infrinjam direitos de propriedade intelectual, segredos comerciais e/ou privacidade de terceiros.
-* Qualquer coisa que incentive conduta criminosa, tenha o potencial de causar responsabilidade civil e/ou viole as leis ou regulamentos de qualquer jurisdição.
+* Qualquer coisa que incentive conduta criminosa, tenha o potencial de causar responsabilidade civil e/ou viole leis ou regulamentos de qualquer jurisdição.
 * Materiais que causem danos ou tenham o potencial de causar danos a menores, personifiquem outro indivíduo ou entidade e/ou deturpem uma afiliação com um indivíduo ou entidade.
 * Materiais que contenham spam, vírus, malware, materiais NSFW (conteúdo indecente, provocativo ou profano), arquivos corrompidos e/ou qualquer outro software ou programa que possa danificar ou tenha o potencial de causar danos a um indivíduo, entidade, computador, rede, governo, serviço e/ou qualquer outro assunto.
 
@@ -85,16 +85,16 @@ Entre em contato conosco se desejar contestar uma transação ou cobrança do no
 
 Sua conta será banida automática e permanentemente se você abrir uma disputa com sua operadora de cartão de crédito, banco ou PayPal.
 
-## Contrato de Nível de Serviço ("ANS") {#service-level-agreement-sla}
+## Acordo de Nível de Serviço ("ANS") {#service-level-agreement-sla}
 
 ### Termos {#terms-1}
 
 * "Tempo de inatividade" refere-se a um fator de mais de 5% na taxa de erro do usuário, determinado por uma taxa de erro do lado do servidor.
-* "Porcentagem de tempo de atividade mensal" refere-se ao total de minutos em um mês civil menos o número de minutos de tempo de inatividade sofridos no mês civil, dividido pelo total de minutos no mês civil.
+* "Porcentagem de tempo de atividade mensal" refere-se ao total de minutos em um mês menos o número de minutos de tempo de inatividade sofridos no mês, dividido pelo total de minutos no mês.
 
 ### Acordo {#agreement}
 
-A Forward Email envidará todos os esforços comerciais razoáveis (não menos do que os padrões aceitáveis e razoáveis do setor) para garantir que o serviço Forward Email esteja disponível para clientes pagantes 99,99% do tempo em qualquer mês civil. Caso contrário, você poderá ter direito ao [Créditos](#credits) descrito abaixo, de acordo com o [Elegibilidade](#eligibility).
+O Forward Email envidará todos os esforços comerciais razoáveis (não menos do que os padrões aceitáveis e razoáveis do setor) para garantir que o serviço Forward Email esteja disponível para clientes pagantes 99,99% do tempo em qualquer mês civil. Caso contrário, você poderá ter direito ao [Créditos](#credits) descrito abaixo, de acordo com o [Elegibilidade](#eligibility).
 
 ### Créditos {#credits}
 
@@ -108,13 +108,13 @@ A Forward Email envidará todos os esforços comerciais razoáveis (não menos d
 
 ### Elegibilidade {#eligibility}
 
-O valor mínimo de crédito deve ser de pelo menos US$ 1,00 para ser elegível. O crédito máximo é limitado aos 30 dias ou ao valor total que o cliente está pagando no mês civil mais recente referente ao Tempo de Inatividade (o que for maior). Clientes pagantes afetados por qualquer Tempo de Inatividade devem solicitar Créditos preenchendo um [Solicitação de ajuda](/help) em até 30 dias a partir da data do Tempo de Inatividade. Os Créditos se aplicam apenas a fatores de Tempo de Inatividade que estejam sob o controle primário do Forward Email.
+O valor mínimo de crédito deve ser de pelo menos US$ 1,00 para ser elegível. O crédito máximo é limitado aos 30 dias ou ao valor total que o cliente está pagando no mês civil mais recente referente ao Tempo de Inatividade (o que for maior). Clientes pagantes afetados por qualquer Tempo de Inatividade devem solicitar Créditos preenchendo um [Solicitação de ajuda](/help) em até 30 dias a partir da data do Tempo de Inatividade. Os créditos se aplicam apenas a fatores de Tempo de Inatividade que estejam sob o controle principal do Forward Email.
 
 ## Revisões e Erratas {#revisions-and-errata}
 
 Os materiais exibidos no site da Forward Email podem conter erros técnicos, tipográficos ou fotográficos. A Forward Email não garante que os materiais em seu site sejam precisos, completos ou atuais. A Forward Email poderá fazer alterações nos materiais contidos em seu site a qualquer momento, sem aviso prévio. No entanto, a Forward Email não se compromete a atualizar os materiais.
 
-__URL_PROTEGIDA_28__ Links {__URL_PROTEGIDA_29__
+## Links {#links}
 
 A Forward Email não analisou todos os sites vinculados ao seu Serviço e não se responsabiliza pelo conteúdo de nenhum desses sites vinculados. A inclusão de qualquer link não implica endosso do site pela Forward Email. O uso de qualquer site vinculado é por conta e risco do usuário.
 

@@ -6,7 +6,7 @@
 
 * [Voorwoord](#foreword)
 * [Infrastructuurbeveiliging](#infrastructure-security)
-  * [Veilige datacenters](#secure-data-centers)
+  * [Beveiligde datacenters](#secure-data-centers)
   * [Netwerkbeveiliging](#network-security)
 * [E-mailbeveiliging](#email-security)
   * [Encryptie](#encryption)
@@ -17,20 +17,20 @@
   * [Back-up en herstel](#backup-and-recovery)
 * [Dienstverleners](#service-providers)
 * [Naleving en auditing](#compliance-and-auditing)
-  * [Regelmatige veiligheidsbeoordelingen](#regular-security-assessments)
+  * [Regelmatige beveiligingsbeoordelingen](#regular-security-assessments)
   * [Naleving](#compliance)
-* [Reactie op incidenten](#incident-response)
+* [Incidentrespons](#incident-response)
 * [Levenscyclus van beveiligingsontwikkeling](#security-development-lifecycle)
 * [Serververharding](#server-hardening)
-* [Service Level Overeenkomst](#service-level-agreement)
-* [Open Source-beveiliging](#open-source-security)
+* [Service Level Agreement](#service-level-agreement)
+* [Open Source Beveiliging](#open-source-security)
 * [Werknemersbeveiliging](#employee-security)
 * [Continue verbetering](#continuous-improvement)
 * [Aanvullende bronnen](#additional-resources)
 
 ## Voorwoord {#foreword}
 
-Bij Forward Email is beveiliging onze topprioriteit. We hebben uitgebreide beveiligingsmaatregelen geïmplementeerd om uw e-mailcommunicatie en persoonlijke gegevens te beschermen. Dit document beschrijft onze beveiligingspraktijken en de stappen die we nemen om de vertrouwelijkheid, integriteit en beschikbaarheid van uw e-mail te waarborgen.
+Bij Forward Email staat veiligheid voorop. We hebben uitgebreide beveiligingsmaatregelen geïmplementeerd om uw e-mailcommunicatie en persoonsgegevens te beschermen. Dit document beschrijft onze beveiligingspraktijken en de stappen die we nemen om de vertrouwelijkheid, integriteit en beschikbaarheid van uw e-mail te waarborgen.
 
 ## Infrastructuurbeveiliging {#infrastructure-security}
 
@@ -56,7 +56,7 @@ Wij implementeren meerdere lagen netwerkbeveiliging:
 * Beveiliging met poortscans en automatische blokkering van verdachte activiteiten
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Alle gegevens die worden verzonden, worden versleuteld met TLS 1.2+ en moderne coderingssuites.
 
 ## E-mailbeveiliging {#email-security}
 
@@ -69,7 +69,7 @@ Wij implementeren meerdere lagen netwerkbeveiliging:
 * **Uitgebreide bescherming**: We implementeren encryptie in rust, encryptie in het geheugen en encryptie tijdens de overdracht
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Wij zijn 's werelds eerste en enige e-mailservice die **[kwantumbestendige en individueel gecodeerde SQLite-mailboxen](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)** gebruikt.
 
 ### Authenticatie en autorisatie {#authentication-and-authorization}
 
@@ -90,7 +90,7 @@ Wij implementeren meerdere lagen netwerkbeveiliging:
 
 ### Gegevensminimalisatie {#data-minimization}
 
-Wij hanteren het principe van dataminimalisatie:
+Wij volgen het principe van dataminimalisatie:
 
 * We verzamelen alleen de gegevens die nodig zijn om onze service te leveren.
 * E-mailinhoud wordt in het geheugen verwerkt en niet permanent opgeslagen, tenzij dit nodig is voor IMAP/POP3-levering.
@@ -105,7 +105,7 @@ Wij hanteren het principe van dataminimalisatie:
 
 ## Dienstverleners {#service-providers}
 
-We selecteren onze serviceproviders zorgvuldig om ervoor te zorgen dat ze voldoen aan onze hoge veiligheidsnormen. Hieronder staan de providers die we gebruiken voor internationale gegevensoverdracht en hun GDPR-nalevingsstatus:
+We selecteren onze dienstverleners zorgvuldig om ervoor te zorgen dat ze voldoen aan onze hoge veiligheidsnormen. Hieronder vindt u de dienstverleners die we gebruiken voor internationale gegevensoverdracht en hun AVG-nalevingsstatus:
 
 | Aanbieder | Doel | DPF-gecertificeerd | AVG-nalevingspagina |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
@@ -116,13 +116,13 @@ We selecteren onze serviceproviders zorgvuldig om ervoor te zorgen dat ze voldoe
 | [Stripe](https://stripe.com) | Betalingsverwerking | ✅ Ja | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Betalingsverwerking | ❌ Nee | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Wij gebruiken deze providers om betrouwbare, veilige dienstverlening te garanderen en tegelijkertijd te voldoen aan de internationale regelgeving inzake gegevensbescherming. Alle gegevensoverdrachten worden uitgevoerd met passende waarborgen om uw persoonlijke informatie te beschermen.
+We maken gebruik van deze providers om een betrouwbare en veilige dienstverlening te garanderen en tegelijkertijd te voldoen aan de internationale regelgeving inzake gegevensbescherming. Alle gegevensoverdrachten worden uitgevoerd met passende waarborgen om uw persoonsgegevens te beschermen.
 
 ## Naleving en auditing {#compliance-and-auditing}
 
 ### Regelmatige beveiligingsbeoordelingen {#regular-security-assessments}
 
-Ons team controleert, beoordeelt en beoordeelt regelmatig de codebase, servers, infrastructuur en praktijken. We implementeren een uitgebreid beveiligingsprogramma dat het volgende omvat:
+Ons team controleert, beoordeelt en beoordeelt regelmatig de codebase, servers, infrastructuur en procedures. We implementeren een uitgebreid beveiligingsprogramma dat het volgende omvat:
 
 * Regelmatige rotatie van SSH-sleutels
 * Continue monitoring van toegangslogs
@@ -132,12 +132,12 @@ Ons team controleert, beoordeelt en beoordeelt regelmatig de codebase, servers, 
 
 ### Naleving {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr) conforme gegevensverwerkingspraktijken
+* [GDPR](https://forwardemail.net/gdpr)-conforme gegevensverwerkingspraktijken
 * [Gegevensverwerkingsovereenkomst (DPA)](https://forwardemail.net/dpa) beschikbaar voor zakelijke klanten
 * CCPA-conforme privacycontroles
 * SOC 2 Type II-gecontroleerde processen
 
-## Reactie op incidenten {#incident-response}
+## Incidentrespons {#incident-response}
 
 Ons plan voor respons op beveiligingsincidenten omvat:
 
@@ -149,7 +149,7 @@ Ons plan voor respons op beveiligingsincidenten omvat:
 6. **Analyse na incident**: Uitgebreide evaluatie en verbetering
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Als u een beveiligingslek ontdekt, meld dit dan onmiddellijk aan <security@forwardemail.net>.
 
 ## Levenscyclus van beveiligingsontwikkeling {#security-development-lifecycle}
 
@@ -177,7 +177,7 @@ Alle code ondergaat:
 * Codebeoordeling met beveiligingsfocus
 * Scannen op afhankelijkheidskwetsbaarheid
 
-## Serverbeveiliging {#server-hardening}
+## Serververharding {#server-hardening}
 
 Onze [Ansible-configuratie](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementeert talrijke serverbeveiligingsmaatregelen:
 
@@ -194,21 +194,21 @@ Onze [Ansible-configuratie](https://github.com/forwardemail/forwardemail.net/tre
 * **Beveiliging poortscanning**: Automatische detectie en blokkering van poortscanpogingen
 * **Transparante grote pagina's uitgeschakeld**: THP uitgeschakeld voor verbeterde prestaties en Beveiliging
 * **Systeemserviceverharding**: Niet-essentiële services zoals Apport uitgeschakeld
-* **Gebruikersbeheer**: Principe van minimale privileges met aparte implementatie- en Devops-gebruikers
+* **Gebruikersbeheer**: Principe van minimale privileges met aparte implementatie- en DevOps-gebruikers
 * **Bestandsdescriptorlimieten**: Verhoogde limieten voor betere prestaties en beveiliging
 
 ## Service Level Agreement {#service-level-agreement}
 
-We handhaven een hoog niveau van servicebeschikbaarheid en betrouwbaarheid. Onze infrastructuur is ontworpen voor redundantie en fouttolerantie om ervoor te zorgen dat uw e-mailservice operationeel blijft. Hoewel we geen formeel SLA-document publiceren, zijn we toegewijd aan:
+We handhaven een hoog niveau van beschikbaarheid en betrouwbaarheid van onze diensten. Onze infrastructuur is ontworpen voor redundantie en fouttolerantie om ervoor te zorgen dat uw e-mailservice operationeel blijft. Hoewel we geen formeel SLA-document publiceren, streven we ernaar:
 
 * 99,9%+ uptime voor alle services
 * Snelle reactie op serviceonderbrekingen
 * Transparante communicatie tijdens incidenten
 * Regelmatig onderhoud tijdens periodes met weinig verkeer
 
-## Open Source-beveiliging {#open-source-security}
+## Open Source Beveiliging {#open-source-security}
 
-Als [open-source service](https://github.com/forwardemail/forwardemail.net) profiteert onze beveiliging van:
+Als [open-source service](https://github.com/forwardemail/forwardemail.net) profiteert u van onze beveiliging:
 
 * Transparante code die door iedereen gecontroleerd kan worden
 * Door de community aangestuurde beveiligingsverbeteringen
@@ -224,7 +224,7 @@ Als [open-source service](https://github.com/forwardemail/forwardemail.net) prof
 
 ## Continue verbetering {#continuous-improvement}
 
-Wij verbeteren voortdurend onze beveiligingspositie door:
+Wij verbeteren voortdurend onze beveiligingshouding door:
 
 * Monitoring van beveiligingstrends en opkomende bedreigingen
 * Regelmatige evaluatie en updates van beveiligingsbeleid

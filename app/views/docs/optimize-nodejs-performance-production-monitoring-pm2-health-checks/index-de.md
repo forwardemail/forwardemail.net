@@ -69,13 +69,13 @@ Bei Forward Email haben wir jahrelang an der Perfektionierung unserer Node.js-Pr
 Durch die Migration von Intel- auf AMD Ryzen-Prozessoren konnten wir die Leistung unserer Node.js-Anwendungen um 573 % steigern. Dies war keine geringfügige Optimierung – sie veränderte die Leistung unserer Node.js-Anwendungen in der Produktion grundlegend und verdeutlicht die Bedeutung der Single-Core-Leistungsoptimierung für jede Node.js-Anwendung.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Für die Best Practices der Node.js-Produktionsbereitstellung ist die Hardwareauswahl entscheidend. Wir haben uns aufgrund der Verfügbarkeit von AMD Ryzen für DataPacket Hosting entschieden, da Single-Core-Leistung für Node.js-Anwendungen entscheidend ist, da die JavaScript-Ausführung Single-Threaded ist.
 
 ### Warum die Single-Core-Leistungsoptimierung für Node.js wichtig ist {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Unsere Migration von Intel zu AMD Ryzen führte zu:
 
-* **573 % Leistungssteigerung** bei der Anfrageverarbeitung (dokumentiert in [GitHub-Problem unserer Statusseite #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **573 % Leistungssteigerung** bei der Anfrageverarbeitung (dokumentiert in [GitHub-Problem #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671 unserer Statusseite
 * **Beseitigung von Verarbeitungsverzögerungen** für nahezu sofortige Antworten (erwähnt in [GitHub-Problem #298](https://github.com/forwardemail/forwardemail.net/issues/298))
 * **Besseres Preis-Leistungs-Verhältnis** für Node.js-Produktionsumgebungen
 * **Verbesserte Reaktionszeiten** für alle unsere Anwendungsendpunkte
@@ -105,7 +105,7 @@ Wir haben uns für die Einrichtung unserer Node.js-Produktionsumgebung für pnpm
 * **Bessere Leistung** in Produktionsbereitstellungen
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Im Rahmen unserer Best Practices für die Node.js-Produktionsbereitstellung fixieren wir exakte Versionen kritischer Tools wie pnpm, um ein konsistentes Verhalten in allen Umgebungen und auf allen Rechnern der Teammitglieder zu gewährleisten.
 
 **Implementierungsdetails:**
 
@@ -128,11 +128,11 @@ Diese Muster gelten unabhängig davon, ob Sie REST-APIs, GraphQL-Server, Webanwe
 
 * [Webserver-Setup](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API-Serverkonfiguration](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
-* [Implementierungsleitfaden für Kontaktformulare](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
+* [Leitfaden zur Implementierung von Kontaktformularen](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 
-### Hintergrund-Jobverarbeitung: Bree für Produktionszuverlässigkeit {#background-job-processing-bree-for-production-reliability}
+### Hintergrundjobverarbeitung: Bree für Produktionszuverlässigkeit {#background-job-processing-bree-for-production-reliability}
 
-**Was wir verwenden:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) Scheduler
+**Was wir verwenden:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)-Scheduler
 
 Wir haben Bree entwickelt und pflegen es, weil vorhandene Job-Scheduler unsere Anforderungen an Worker-Thread-Unterstützung und moderne JavaScript-Funktionen in produktiven Node.js-Umgebungen nicht erfüllten. Dies gilt für alle Node.js-Anwendungen, die Hintergrundverarbeitung, geplante Aufgaben oder Worker-Threads benötigen.
 
@@ -172,7 +172,7 @@ Unsere Produktionsüberwachungsschwellenwerte (aus unserem tatsächlichen Produk
 * **75 % Festplattenauslastung** Warnschwelle
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Diese Schwellenwerte gelten für unsere spezifische Hardwarekonfiguration. Wenn Sie die Node.js-Produktionsüberwachung implementieren, überprüfen Sie unsere monitor-server.js-Implementierung, um die genaue Logik zu verstehen und die Werte an Ihr Setup anzupassen.
 
 ### Überwachung auf Anwendungsebene für die Node.js-Produktion {#application-level-monitoring-for-nodejs-production}
 
@@ -200,11 +200,11 @@ Wir implementieren eine umfassende Feldredaktion, um vertrauliche Informationen 
 
 **Warteschlangenüberwachung:** Wir implementieren Warteschlangenlimits von 5 GB und Timeouts von 180 Sekunden für die Anforderungsverarbeitung, um eine Ressourcenüberlastung zu verhindern. Diese Muster gelten für alle Node.js-Anwendungen mit Warteschlangen oder Hintergrundverarbeitung.
 
-## Node.js-Produktionsüberwachung mit PM2-Integritätschecks {#nodejs-production-monitoring-with-pm2-health-checks}
+## Node.js-Produktionsüberwachung mit PM2-Integritätsprüfungen {#nodejs-production-monitoring-with-pm2-health-checks}
 
 Wir haben unsere Node.js-Produktionsumgebung mit PM2 über Jahre hinweg optimiert. Unsere PM2-Integritätschecks sind unerlässlich für die Zuverlässigkeit jeder Node.js-Anwendung.
 
-### Unser PM2 Health Check System {#our-pm2-health-check-system}
+### Unser PM2-Gesundheitschecksystem {#our-pm2-health-check-system}
 
 **Unsere Kernimplementierung:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
@@ -217,7 +217,7 @@ Unsere Node.js-Produktionsüberwachung mit PM2-Integritätschecks umfasst:
 * **Verhindert Neustartschleifen** durch intelligente Integritätsprüfung
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Für die Best Practices der Node.js-Produktionsbereitstellung benötigen wir mindestens 15 Minuten Betriebszeit, bevor ein Prozess als fehlerfrei gilt, um Neustartschleifen zu vermeiden. Dies verhindert kaskadierende Fehler bei Prozessen mit Speicherproblemen oder anderen Problemen.
 
 ### Unsere PM2-Produktionskonfiguration {#our-pm2-production-configuration}
 
@@ -236,7 +236,7 @@ Diese Muster gelten unabhängig davon, ob Sie Express-Apps, Koa-Server, GraphQL-
 
 Wir automatisieren unser gesamtes PM2-Setup über Ansible, um konsistente Node.js-Produktionsbereitstellungen auf allen unseren Servern sicherzustellen.
 
-## System zur Handhabung und Klassifizierung von Produktionsfehlern {#production-error-handling-and-classification-system}
+## Produktionsfehlerbehandlungs- und Klassifizierungssystem {#production-error-handling-and-classification-system}
 
 Eine unserer wertvollsten Best Practices für die Produktionsbereitstellung von Node.js ist die intelligente Fehlerklassifizierung, die für jede Node.js-Anwendung gilt:
 
@@ -257,7 +257,7 @@ Dieses Muster funktioniert für jede Node.js-Anwendung – egal, ob Sie E-Commer
 
 **Unsere Logger-Integration:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Unser Logger verwendet `isCodeBug`, um Warnstufen und Feldredaktionen zu bestimmen. Dadurch wird sichergestellt, dass wir über echte Probleme benachrichtigt werden, während gleichzeitig Rauschen in unserer Node.js-Produktionsumgebung herausgefiltert wird.
+Unser Logger verwendet `isCodeBug`, um Warnstufen und Feldredaktionen zu bestimmen und sicherzustellen, dass wir über echte Probleme benachrichtigt werden, während gleichzeitig Rauschen in unserer Node.js-Produktionsumgebung herausgefiltert wird.
 
 ### Ähnliche Inhalte {#related-content-1}
 
@@ -278,7 +278,7 @@ Wir verwenden erweiterte Profiling-Tools, um Heap-Snapshots zu analysieren und O
 * [`cpupro`](https://github.com/discoveryjs/cpupro) – Zum Analysieren von CPU-Profilen und Heap-Snapshots
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> Wir nutzen v8-profiler-next und cpupro gemeinsam, um einen umfassenden Performance-Debugging-Workflow für unsere Node.js-Anwendungen zu erstellen. Diese Kombination hilft uns, Speicherlecks und Performance-Engpässe zu identifizieren und unseren Produktionscode zu optimieren.
 
 ### So implementieren wir die Heap-Snapshot-Analyse {#how-we-implement-heap-snapshot-analysis}
 
@@ -319,7 +319,7 @@ Unsere Produktionsüberwachung umfasst die automatische Generierung von Heap-Sna
 4. **Leistungsverbesserungen vor/nach** überwachen
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> Das Erstellen von Heap-Snapshots und CPU-Profilen kann die Leistung beeinträchtigen. Wir empfehlen, eine Drosselung zu implementieren und die Profilerstellung nur bei der Untersuchung spezifischer Probleme oder während Wartungsfenstern zu aktivieren.
 
 ### Integration mit unserer Produktionsüberwachung {#integration-with-our-production-monitoring}
 
@@ -348,7 +348,7 @@ Unsere wichtigsten Sicherheitsmaßnahmen für Node.js-Produktionsumgebungen:
 * **Kernel-Parameter-Optimierung** für Sicherheit und Leistung.
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Bei der Implementierung von Best Practices für die Node.js-Produktionsbereitstellung kann die Deaktivierung des Swap-Speichers zu Abstürzen aufgrund von Speichermangel führen, wenn Ihre Anwendung den verfügbaren RAM überschreitet. Wir überwachen die Speichernutzung sorgfältig und dimensionieren unsere Server entsprechend.
 
 ### Anwendungssicherheit für Node.js-Anwendungen {#application-security-for-nodejs-applications}
 
@@ -377,7 +377,7 @@ Erfahren Sie mehr über unseren Sicherheitsansatz:
 
 Wir verwenden einen hybriden Datenbankansatz, der für unsere Node.js-Anwendungen optimiert ist. Diese Muster können für jede Node.js-Anwendung angepasst werden:
 
-### SQLite-Implementierung für die Node.js-Produktion {#sqlite-implementation-for-nodejs-production}
+### SQLite-Implementierung für Node.js-Produktion {#sqlite-implementation-for-nodejs-production}
 
 **Was wir verwenden:**
 
@@ -395,7 +395,7 @@ Wir verwenden SQLite für benutzerspezifische Daten in unseren Node.js-Anwendung
 
 Dieses Muster eignet sich gut für SaaS-Anwendungen, Multi-Tenant-Systeme oder jede Node.js-Anwendung, die eine Datenisolierung benötigt.
 
-### MongoDB-Implementierung für die Node.js-Produktion {#mongodb-implementation-for-nodejs-production}
+### MongoDB-Implementierung für Node.js-Produktion {#mongodb-implementation-for-nodejs-production}
 
 **Was wir verwenden:**
 
@@ -415,7 +415,7 @@ Wir verwenden MongoDB für Anwendungsdaten in unserer Node.js-Produktionsumgebun
 * **Umfangreiche Abfragesprache**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Unser hybrider Ansatz ist optimal auf unseren spezifischen Anwendungsfall abgestimmt. Analysieren Sie die tatsächlichen Datenbanknutzungsmuster in der Codebasis, um zu verstehen, ob dieser Ansatz für Ihre Node.js-Anwendung geeignet ist.
 
 ## Node.js-Produktions-Hintergrundjobverarbeitung {#nodejs-production-background-job-processing}
 
@@ -427,9 +427,9 @@ Wir haben unsere Hintergrundjob-Architektur um Bree herum aufgebaut, um eine zuv
 
 **Unsere Ansible-Bereitstellung:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
-### Beispiele für Produktionsaufträge {#production-job-examples}
+### Beispiele für Produktionsjobs {#production-job-examples}
 
-**Gesundheitsüberwachung:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+**Integritätsüberwachung:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 **Automatisierung der Bereinigung:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
@@ -461,14 +461,14 @@ Wir implementieren proaktive Wartung, um häufige Produktionsprobleme in Node.js
 Unsere automatisierte Wartung für Node.js-Produktionsanwendungen zielt auf Folgendes ab:
 
 * **Temporäre Dateien**, die älter als 24 Stunden sind
-* **Protokolldateien**, die die Aufbewahrungsfristen überschreiten
+* **Protokolldateien**, die die Aufbewahrungsfrist überschreiten
 * **Cache-Dateien** und temporäre Daten
 * **Hochgeladene Dateien**, die nicht mehr benötigt werden
 * **Heap-Snapshots** aus der Leistungsbereinigung
 
 Diese Muster gelten für jede Node.js-Anwendung, die temporäre Dateien, Protokolle oder zwischengespeicherte Daten generiert.
 
-### Speicherplatzverwaltung für die Node.js-Produktion {#disk-space-management-for-nodejs-production}
+### Speicherplatzverwaltung für Node.js-Produktion {#disk-space-management-for-nodejs-production}
 
 **Unsere Überwachungsschwellenwerte:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 

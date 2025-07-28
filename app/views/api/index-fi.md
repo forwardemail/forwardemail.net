@@ -94,7 +94,7 @@ Nykyinen HTTP-perus-URI-polku on: `BASE_URI`.
 
 ## Todennus {#authentication}
 
-Kaikki päätepisteet vaativat, että [API-avain](https://forwardemail.net/my-account/security) asetetaan pyynnön [Perusvaltuutus](https://en.wikipedia.org/wiki/Basic_access_authentication) -otsikon "käyttäjätunnus"-arvoksi (lukuun ottamatta [Alias-yhteystiedot](#alias-contacts), [Alias-kalenterit](#alias-calendars) ja [Alias-postilaatikot](#alias-mailboxes), jotka käyttävät [luotu alias-käyttäjätunnus ja salasana](/faq#do-you-support-receiving-email-with-imap)).
+Kaikki päätepisteet edellyttävät, että [API-avain](https://forwardemail.net/my-account/security) on asetettu pyynnön [Perusvaltuutus](https://en.wikipedia.org/wiki/Basic_access_authentication)-otsikon "username"-arvoksi (lukuun ottamatta [Alias-yhteystiedot](#alias-contacts)-, [Alias-kalenterit](#alias-calendars)- ja [Alias-postilaatikot](#alias-mailboxes)-otsikoita, jotka käyttävät [luotu alias-käyttäjätunnus ja salasana](/faq#do-you-support-receiving-email-with-imap)-arvoa).
 
 Älä huoli – esimerkkejä on alla, jos et ole varma, mistä on kyse.
 
@@ -117,22 +117,22 @@ Jos virheitä ilmenee, API-pyynnön vastauksen runko sisältää yksityiskohtais
 | 504 | Yhdyskäytävän aikakatkaisu |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Jos saat 5xx-tilakoodin (mitä ei pitäisi tapahtua), ota meihin yhteyttä osoitteessa <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>, niin autamme sinua ratkaisemaan ongelmasi välittömästi.
 
 ## Lokalisointi {#localization}
 
-Palvelumme on käännetty yli 25 eri kielelle. Kaikki API-vastausviestit käännetään käyttäjän viimeksi havaitsemaan kieliasetukseen, joka teki API-pyynnön. Voit ohittaa tämän antamalla mukautetun `Accept-Language` -otsikon. Voit kokeilla sitä tämän sivun alareunassa olevan kielivalikon avulla.
+Palvelumme on käännetty yli 25 eri kielelle. Kaikki API-vastausviestit käännetään käyttäjän API-pyynnön viimeksi havaitsemaan kieliasetukseen. Voit ohittaa tämän antamalla mukautetun `Accept-Language`-otsikon. Voit kokeilla sitä tämän sivun alareunassa olevan kielivalikon avulla.
 
 ## Sivutus {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> 1. marraskuuta 2024 alkaen [Listaa verkkotunnukset](#list-domains)- ja [Listaa verkkotunnusaliakset](#list-domain-aliases)-sovellusliittymän päätepisteiden oletusarvo on `1000`, jonka enimmäistulokset sivua kohden ovat `1000`. Jos haluat ottaa tämän käyttöön jo aiemmin, voit välittää `?paginate=true`:n lisäkyselymerkkijonoparametrina päätepistekyselyn URL-osoitteeseen.
 
 Kaikki tuloksia listaavat API-päätepisteet tukevat sivutusta.
 
 Anna vain kyselymerkkijonon ominaisuudet `page` (ja valinnaisesti `limit`).
 
-Ominaisuuden `page` tulee olla luku, joka on suurempi tai yhtä suuri kuin `1`. Jos annat `limit` (myös luku), pienin arvo on `10` ja suurin on `50` (ellei toisin mainita).
+Ominaisuuden `page` tulee olla luku, joka on suurempi tai yhtä suuri kuin `1`. Jos annat `limit`:n (myös luku), pienin arvo on `10` ja suurin `50` (ellei toisin mainita).
 
 | Kyselymerkkijonojen parametrit | Pakollinen | Tyyppi | Kuvaus |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -160,11 +160,11 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ### Nouda lokit {#retrieve-logs}
 
-API-rajapintamme avulla voit ladata lokeja tilillesi ohjelmallisesti. Lähettämällä pyynnön tähän päätepisteeseen, kaikki tilisi lokit käsitellään ja lähetetään sinulle sähköpostin liitteenä ([Gzip](https://en.wikipedia.org/wiki/Gzip) pakattu [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) taulukkolaskentatiedosto), kun prosessi on valmis.
+API-rajapintamme avulla voit ladata lokeja tilillesi ohjelmallisesti. Pyynnön lähettäminen tähän päätepisteeseen käsittelee kaikki tilisi lokit ja lähettää ne sinulle sähköpostin liitteenä ([Gzip](https://en.wikipedia.org/wiki/Gzip) pakattu [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) taulukkolaskentatiedosto), kun se on valmis.
 
-Näin voit luoda taustatöitä [Cron-työ](https://en.wikipedia.org/wiki/Cron):n avulla tai käyttää [Node.js-työaikataulutusohjelmisto Bree](https://github.com/breejs/bree):a lokien vastaanottamiseen milloin tahansa. Huomaa, että tämä päätepiste on rajoitettu `10` pyyntöön päivässä.
+Näin voit luoda taustatöitä [Cron-työ](https://en.wikipedia.org/wiki/Cron)-kohteella tai käyttää [Node.js-työaikataulutusohjelmisto Bree](https://github.com/breejs/bree)-kohteitamme lokien vastaanottamiseen milloin tahansa. Huomaa, että tämä päätepiste on rajoitettu `10` pyyntöön päivässä.
 
-Liite on koodin `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` pienillä kirjaimilla kirjoitettu muoto, ja itse sähköpostiviesti sisältää lyhyen yhteenvedon noudetuista lokeista. Voit myös ladata lokit milloin tahansa osoitteesta [Oma tili → Lokit](/my-account/logs).
+Liite on `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`:n pienimuotoinen muoto, ja itse sähköpostiviesti sisältää lyhyen yhteenvedon noudetuista lokeista. Voit myös ladata lokit milloin tahansa osoitteesta [Oma tili → Lokit](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-yhteystiedot (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Toisin kuin muut API-päätepisteet, nämä vaativat perusvaltuutusotsikoiksi [Todennus](#authentication) "käyttäjätunnus", joka on sama kuin aliaksen käyttäjätunnus, ja "salasanan", joka on sama kuin aliaksen luoma salasana.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2024. Käytä sillä välin IMAP-asiakasohjelmaa verkkosivustomme navigoinnin "Sovellukset"-alasvetovalikosta.
 
 ### Listaa yhteystiedot {#list-contacts}
 
@@ -279,7 +279,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Tulossa pian**
 
-### Päivitä yhteystiedot {#update-contact}
+### Päivitä yhteystieto {#update-contact}
 
 > `PUT /v1/contacts/:id`
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-kalenterit (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Toisin kuin muut API-päätepisteet, nämä vaativat perusvaltuutusotsikoiksi [Todennus](#authentication) "käyttäjätunnus", joka on sama kuin aliaksen käyttäjätunnus, ja "salasanan", joka on sama kuin aliaksen luoma salasana.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2024. Käytä sillä välin IMAP-asiakasohjelmaa verkkosivustomme navigoinnin "Sovellukset"-alasvetovalikosta.
 
 ### Listaa kalenterit {#list-calendars}
 
@@ -332,16 +332,16 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-viestit (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Toisin kuin muut API-päätepisteet, nämä vaativat perusvaltuutusotsikoiksi [Todennus](#authentication) "käyttäjätunnus", joka on sama kuin aliaksen käyttäjätunnus, ja "salasanan", joka on sama kuin aliaksen luoma salasana.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2024. Käytä sillä välin IMAP-asiakasohjelmaa verkkosivustomme navigoinnin "Sovellukset"-alasvetovalikosta.
 
 Varmista, että olet noudattanut verkkotunnuksesi asennusohjeita.
 
 Nämä ohjeet löytyvät usein kysyttyjen kysymysten osiostamme [Tuetteko sähköpostin vastaanottamista IMAP-protokollan kautta?](/faq#do-you-support-receiving-email-with-imap).
 
-### Listaa ja hae viestejä {#list-and-search-for-messages}
+### Listaa ja etsii viestejä {#list-and-search-for-messages}
 
 > `GET /v1/messages`
 
@@ -350,7 +350,7 @@ Nämä ohjeet löytyvät usein kysyttyjen kysymysten osiostamme [Tuetteko sähk�
 ### Luo viesti {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Tämä **EI** lähetä sähköpostia – se vain lisää viestin postilaatikkoosi (esim. tämä on samanlainen kuin IMAP `APPEND` -komento). Jos haluat lähettää sähköpostia, katso [Luo lähtevä SMTP-sähköposti](#create-outbound-smtp-email) alla. Kun olet luonut lähtevän SMTP-sähköpostin, voit liittää sen kopion aliaksesi postilaatikkoon tallennusta varten tämän päätepisteen avulla.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Nämä ohjeet löytyvät usein kysyttyjen kysymysten osiostamme [Tuetteko sähk�
 ## Alias-kansiot (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Kansioiden päätepisteet, joiden päätepisteenä on kansion polku <code>/v1/folders/:path</code>, ovat keskenään vaihdettavissa kansion tunnuksen <code>:id</code> kanssa. Tämä tarkoittaa, että voit viitata kansioon joko sen <code>path</code>- tai <code>id</code>-arvolla.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Tämä päätepisteosio on keskeneräinen ja julkaistaan (toivottavasti) vuonna 2024. Käytä sillä välin IMAP-asiakasohjelmaa verkkosivustomme navigoinnin "Sovellukset"-alasvetovalikosta.
 
 ### Listaa kansiot {#list-folders}
 
@@ -424,9 +424,9 @@ Varmista, että olet noudattanut verkkotunnuksesi asennusohjeita.
 
 Nämä ohjeet löytyvät osoitteesta [Oma tili → Verkkotunnukset → Asetukset → Lähtevän SMTP:n asetukset](/my-account/domains). Sinun on varmistettava, että DKIM, Return-Path ja DMARC on määritetty lähtevän SMTP-viestin lähettämistä varten verkkotunnuksesi kautta.
 
-### Hanki lähtevän SMTP-sähköpostin rajoitus {#get-outbound-smtp-email-limit}
+### Hae lähtevän SMTP-sähköpostin rajoitus {#get-outbound-smtp-email-limit}
 
-Tämä on yksinkertainen päätepiste, joka palauttaa JSON-objektin, joka sisältää `count` ja `limit` päivittäisten SMTP-lähtevien viestien lukumäärälle tilikohtaisesti.
+Tämä on yksinkertainen päätepiste, joka palauttaa JSON-objektin, joka sisältää `count`- ja `limit`-arvot päivittäisten SMTP-lähtevien viestien määrälle tilikohtaisesti.
 
 > `GET /v1/emails/limit`
 
@@ -439,9 +439,9 @@ curl BASE_URI/v1/emails/limit \
 
 ### Listaa lähtevät SMTP-sähköpostit {#list-outbound-smtp-emails}
 
-Huomaa, että tämä päätepiste ei palauta ominaisuusarvoja sähköpostin `message`, `headers` eikä `rejectedErrors` -komennoille.
+Huomaa, että tämä päätepiste ei palauta sähköpostin `message`-, `headers`- eikä `rejectedErrors`-ominaisuuksien arvoja.
 
-Palauttaaksesi nämä ominaisuudet ja niiden arvot, käytä [Hae sähköposti](#retrieve-email) -päätepistettä sähköpostiosoitteen kanssa.
+Palauttaaksesi nämä ominaisuudet ja niiden arvot, käytä [Hae sähköposti](#retrieve-email)-päätepistettä ja sähköpostiosoitetta.
 
 > `GET /v1/emails`
 
@@ -462,13 +462,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Luo lähtevä SMTP-sähköposti {#create-outbound-smtp-email}
 
-Sähköpostin luomiseen tarkoitettu API-rajapintamme on saanut inspiraationsa Nodemailerin viestiasetusten määrityksistä ja hyödyntää niitä. Katso kaikki alla olevat viestiparametrit kohdasta [Nodemailer-viestin konfigurointi](https://nodemailer.com/message/).
+Sähköpostin luomiseen tarkoitettu API-rajapintamme on saanut inspiraationsa Nodemailerin viestiasetusten määrityksistä ja hyödyntää niitä. Käytä [Nodemailer-viestin konfigurointi](https://nodemailer.com/message/)-muuttujaa kaikkien alla olevien tekstiparametrien määrittämiseksi.
 
-Huomaa, että lukuun ottamatta `envelope` ja `dkim` (koska asetamme ne automaattisesti puolestasi), tuemme kaikkia Nodemailer-asetuksia. Asetamme automaattisesti `disableFileAccess` ja `disableUrlAccess` asetuksiksi `true` turvallisuussyistä.
+Huomaa, että `envelope`:aa ja `dkim`:tä lukuun ottamatta (koska asetamme ne automaattisesti puolestasi) tuemme kaikkia Nodemailer-asetuksia. Asetamme `disableFileAccess`- ja `disableUrlAccess`-asetuksiksi automaattisesti `true` turvallisuussyistä.
 
-Sinun tulisi joko välittää yksittäinen asetus `raw` raakasähköpostiviestisi mukana otsikot mukaan lukien **tai** välittää yksittäiset tekstiosan parametrit alla.
+Sinun tulisi joko antaa `raw`-niminen yksittäinen asetus raakasähköpostisi kanssa, joka sisältää otsikot, **tai** antaa yksittäiset alla olevat runkoparametrit.
 
-Tämä API-päätepiste koodaa emojeja automaattisesti, jos niitä löytyy otsikoista (esim. otsikkorivi `Subject: 🤓 Hello` muunnetaan automaattisesti muotoon `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tavoitteenamme oli tehdä erittäin kehittäjäystävällinen ja testeiltä suojattu sähköposti-API.
+Tämä API-päätepiste koodaa emojeja automaattisesti, jos niitä löytyy otsikoista (esim. otsikkorivi `Subject: 🤓 Hello` muunnetaan automaattisesti muotoon `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Tavoitteenamme oli luoda erittäin kehittäjäystävällinen ja testeiltä suojattu sähköposti-API.
 
 > `POST /v1/emails`
 
@@ -481,7 +481,7 @@ Tämä API-päätepiste koodaa emojeja automaattisesti, jos niitä löytyy otsik
 | `subject` | Ei | Jousi | Sähköpostin aihe. |
 | `text` | Ei | Merkkijono tai puskuri | Viestin selkokielinen versio. |
 | `html` | Ei | Merkkijono tai puskuri | Viestin HTML-versio. |
-| `attachments` | Ei | Array | Liitetiedostojen objekteja sisältävä taulukko (katso [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
+| `attachments` | Ei | Taulukko | Liitetiedostojen objekteja sisältävä taulukko (katso [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
 | `sender` | Ei | Jousi | "Lähettäjä"-otsikon sähköpostiosoite (katso [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)). |
 | `replyTo` | Ei | Jousi | "Vastaa"-otsikon sähköpostiosoite. |
 | `inReplyTo` | Ei | Jousi | Viestin ID, johon viesti on vastaus. |
@@ -490,7 +490,7 @@ Tämä API-päätepiste koodaa emojeja automaattisesti, jos niitä löytyy otsik
 | `watchHtml` | Ei | Jousi | Viestin Apple Watchille tarkoitettu HTML-versio ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), uusimmat kellot eivät vaadi tämän asettamista). |
 | `amp` | Ei | Jousi | Viestin AMP4EMAIL-kohtainen HTML-versio (katso [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
 | `icalEvent` | Ei | Esine | iCalendar-tapahtuma, jota käytetään vaihtoehtoisena viestisisältönä (katso [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
-| `alternatives` | Ei | Array | Vaihtoehtoisen viestisisällön taulukko (katso [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
+| `alternatives` | Ei | Taulukko | Vaihtoehtoisen viestisisällön taulukko (katso [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
 | `encoding` | Ei | Jousi | Tekstin ja HTML-merkkijonojen koodaus (oletusarvo on `"utf-8"`, mutta tukee myös `"hex"` ja `"base64"` koodausarvoja). |
 | `raw` | Ei | Merkkijono tai puskuri | Käytettävä mukautettu RFC822-muotoiltu viesti (Nodemailerin luoman viestin sijaan – katso [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
 | `textEncoding` | Ei | Jousi | Tekstiarvoille pakotettu koodaus (joko `"quoted-printable"` tai `"base64"`). Oletusarvo on lähimpänä havaittu arvo (ASCII-merkistössä käytä `"quoted-printable"`). |
@@ -532,7 +532,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Poista lähtevä SMTP-sähköposti {#delete-outbound-smtp-email}
 
-Sähköpostin poistaminen asettaa tilaksi `"rejected"` (eikä sitä myöhemmin käsitellä jonossa) vain ja ainoastaan jos nykyinen tila on jokin seuraavista: `"pending"`, `"queued"` tai `"deferred"`. Saatamme poistaa sähköpostit automaattisesti 30 päivän kuluttua niiden luomisesta ja/tai lähettämisestä – siksi sinun tulee säilyttää kopio lähtevistä SMTP-sähköposteista sähköpostiohjelmassasi, tietokannassasi tai sovelluksessasi. Voit halutessasi viitata sähköpostiosoitteemme arvoon tietokannassasi – tämä arvo palautetaan sekä [Luo sähköposti](#create-email) että [Hae sähköposti](#retrieve-email) päätepisteistä.
+Sähköpostin poistaminen asettaa tilan arvoon `"rejected"` (eikä sitä myöhemmin käsitellä jonossa) vain ja ainoastaan, jos nykyinen tila on jokin seuraavista: `"pending"`, `"queued"` tai `"deferred"`. Saatamme poistaa sähköposteja automaattisesti 30 päivän kuluttua niiden luomisesta ja/tai lähettämisestä – siksi sinun tulee säilyttää kopio lähtevistä SMTP-sähköposteista sähköpostiohjelmassasi, tietokannassasi tai sovelluksessasi. Voit halutessasi viitata sähköpostitunnukseemme tietokannassasi – tämä arvo palautetaan sekä [Luo sähköposti](#create-email)- että [Hae sähköposti](#retrieve-email)-päätepisteistä.
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Verkkotunnukset {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Verkkotunnusten päätepisteet, joiden päätepisteenä on verkkotunnuksen nimi <code>/v1/domains/:domain_name</code>, ovat keskenään vaihdettavissa verkkotunnuksen tunnuksen <code>:domain_id</code> kanssa. Tämä tarkoittaa, että voit viitata verkkotunnukseen joko sen <code>name</code>- tai <code>id</code>-arvolla.
 
 ### Listaa verkkotunnukset {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 1. marraskuuta 2024 alkaen [Listaa verkkotunnukset](#list-domains):n ja [Listaa verkkotunnusaliakset](#list-domain-aliases):n API-päätepisteiden oletusarvo on `1000`, jonka enimmäistulosmäärä sivua kohden on TEMP_PLACEHOLDER. Jos haluat ottaa tämän käyttöön jo aiemmin, voit välittää `?paginate=true`:n lisäkyselymerkkijonoparametrina päätepistekyselyn URL-osoitteeseen. Lisätietoja on kohdassa [Sivunumerointi](#pagination).
 
 > `GET /v1/domains`
 
@@ -577,12 +577,12 @@ curl BASE_URI/v1/domains \
 | Kehon parametri | Pakollinen | Tyyppi | Kuvaus |
 | ------------------------------ | -------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `domain` | Kyllä | Merkkijono (FQDN tai IP) | Täydellinen verkkotunnusnimi ("FQDN") tai IP-osoite |
-| `team_domain` | Ei | Merkkijono (verkkotunnuksen tunnus tai verkkotunnuksen nimi; FQDN) | Määritä tämä verkkotunnus automaattisesti samalle tiimille toisesta verkkotunnuksesta. Tämä tarkoittaa, että kaikki tämän verkkotunnuksen jäsenet määritetään tiimin jäseniksi ja `plan` asetetaan automaattisesti myös arvoon `team`. Voit asettaa arvoksi `"none"` tarvittaessa poistaaksesi tämän nimenomaisesti käytöstä, mutta se ei ole välttämätöntä. |
+| `team_domain` | Ei | Merkkijono (verkkotunnustunnus tai verkkotunnusnimi; FQDN) | Määritä tämä verkkotunnus automaattisesti samalle tiimille toisesta verkkotunnuksesta. Tämä tarkoittaa, että kaikki tämän verkkotunnuksen jäsenet määritetään tiimin jäseniksi ja `plan` asetetaan automaattisesti myös arvoon `team`. Voit asettaa arvoksi `"none"` tarvittaessa poistaaksesi tämän nimenomaisesti käytöstä, mutta se ei ole välttämätöntä. |
 | `plan` | Ei | Merkkijono (luetteloitava) | Sopimuksen tyyppi (täytyy olla `"free"`, `"enhanced_protection"` tai `"team"`, oletusarvo on `"free"` tai käyttäjän nykyinen maksullinen sopimus, jos sellainen on) |
 | `catchall` | Ei | Merkkijono (erotelluilla merkeillä sähköpostiosoitteet) tai totuusarvo | Luo oletusarvoinen keräilyalias, jonka oletusarvo on `true` (jos `true`, vastaanottajana käytetään API-käyttäjän sähköpostiosoitetta, ja jos `false`, keräilyaliasta ei luoda). Jos merkkijono annetaan, se on eroteltu luettelo sähköpostiosoitteista, joita käytetään vastaanottajina (eroteltuna rivinvaihdolla, välilyönnillä ja/tai pilkulla). |
 | `has_adult_content_protection` | Ei | Totuusarvo | Otetaanko käyttöön roskapostiskannerin aikuisille suunnatun sisällön suojaus tällä verkkotunnuksella |
 | `has_phishing_protection` | Ei | Totuusarvo | Otetaanko roskapostiskannerin tietojenkalastelusuoja käyttöön tässä verkkotunnuksessa |
-| `has_executable_protection` | Ei | Totuusarvo | Otetaanko käyttöön roskapostiskannerin suoritettavan tiedoston suojaus tällä verkkotunnuksella |
+| `has_executable_protection` | Ei | Totuusarvo | Otetaanko käyttöön Roskapostiskannerin suoritettavan tiedoston suojaus tällä verkkotunnuksella |
 | `has_virus_protection` | Ei | Totuusarvo | Otetaanko käyttöön roskapostiskannerin virustorjunta tässä verkkotunnuksessa |
 | `has_recipient_verification` | Ei | Totuusarvo | Globaali toimialueen oletusasetus sille, vaaditaanko aliasvastaanottajilta sähköpostin vahvistuslinkin napsauttamista sähköpostien kulkemiseksi |
 | `ignore_mx_check` | Ei | Totuusarvo | Ohitetaanko MX-tietueen tarkistus verkkotunnuksessa vahvistusta varten. Tämä koskee pääasiassa käyttäjiä, joilla on edistyneet MX-vaihdon määrityssäännöt ja joiden on säilytettävä nykyinen MX-vaihdonsa ja lähetettävä tiedot meille. |
@@ -621,7 +621,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-records \
   -u API_TOKEN:
 ```
 
-### Tarkista verkkotunnuksen SMTP-tietueet {#verify-domain-smtp-records}
+### Vahvista verkkotunnuksen SMTP-tietueet {#verify-domain-smtp-records}
 
 > `GET /v1/domains/DOMAIN_NAME/verify-smtp`
 
@@ -659,7 +659,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Poista koko verkkotunnuksen kattava keräilysalasana {#remove-domain-wide-catch-all-password}
+### Poista koko verkkotunnuksen kattava yleissalasana {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
@@ -679,7 +679,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | `smtp_port` | Ei | Merkkijono tai numero | Mukautettu portti SMTP-edelleenlähetystä varten (oletus on `"25"`) |
 | `has_adult_content_protection` | Ei | Totuusarvo | Otetaanko käyttöön roskapostiskannerin aikuisille suunnatun sisällön suojaus tällä verkkotunnuksella |
 | `has_phishing_protection` | Ei | Totuusarvo | Otetaanko roskapostiskannerin tietojenkalastelusuoja käyttöön tässä verkkotunnuksessa |
-| `has_executable_protection` | Ei | Totuusarvo | Otetaanko käyttöön roskapostiskannerin suoritettavan tiedoston suojaus tällä verkkotunnuksella |
+| `has_executable_protection` | Ei | Totuusarvo | Otetaanko käyttöön Roskapostiskannerin suoritettavan tiedoston suojaus tällä verkkotunnuksella |
 | `has_virus_protection` | Ei | Totuusarvo | Otetaanko käyttöön roskapostiskannerin virustorjunta tässä verkkotunnuksessa |
 | `has_recipient_verification` | Ei | Totuusarvo | Globaali toimialueen oletusasetus sille, vaaditaanko aliasvastaanottajilta sähköpostin vahvistuslinkin napsauttamista sähköpostien kulkemiseksi |
 | `ignore_mx_check` | Ei | Totuusarvo | Ohitetaanko MX-tietueen tarkistus verkkotunnuksessa vahvistusta varten. Tämä koskee pääasiassa käyttäjiä, joilla on edistyneet MX-vaihdon määrityssäännöt ja joiden on säilytettävä nykyinen MX-vaihdonsa ja lähetettävä tiedot meille. |
@@ -705,7 +705,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name \
   -u API_TOKEN:
 ```
 
-## Kutsut {#invites}
+## Kutsuu {#invites}
 
 ### Hyväksy verkkotunnuskutsu {#accept-domain-invite}
 
@@ -724,7 +724,7 @@ curl BASE_URI/v1/domains/:domain_name/invites \
 
 | Kehon parametri | Pakollinen | Tyyppi | Kuvaus |
 | -------------- | -------- | ------------------- | ----------------------------------------------------------------------------------------- |
-| `email` | Kyllä | Merkkijono (sähköpostiosoite) | Sähköpostiosoite, johon verkkotunnuksen jäsenluetteloon kutsutaan |
+| `email` | Kyllä | Merkkijono (sähköpostiosoite) | Sähköpostiosoite, johon haluat kutsua verkkotunnuksen jäsenluetteloon |
 | `group` | Kyllä | Merkkijono (luetteloitava) | Ryhmä, johon käyttäjä lisätään verkkotunnusjäsenyyteen (voi olla joko `"admin"` tai `"user"`) |
 
 > Esimerkkipyyntö:
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Jos kutsuttava käyttäjä on jo hyväksytty jäsen jollakin muulla verkkotunnuksella, johon kutsun lähettänyt ylläpitäjä kuuluu, kutsu hyväksytään automaattisesti eikä sähköpostia lähetetä.
 
 ### Poista verkkotunnuskutsu {#remove-domain-invite}
 
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Listaa verkkotunnusaliakset {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> 1. marraskuuta 2024 alkaen [Listaa verkkotunnukset](#list-domains):n ja [Listaa verkkotunnusaliakset](#list-domain-aliases):n API-päätepisteiden oletusarvo on `1000`, jonka enimmäistulosmäärä sivua kohden on TEMP_PLACEHOLDER. Jos haluat ottaa tämän käyttöön jo aiemmin, voit välittää `?paginate=true`:n lisäkyselymerkkijonoparametrina päätepistekyselyn URL-osoitteeseen. Lisätietoja on kohdassa [Sivunumerointi](#pagination).
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -844,9 +844,9 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `has_pgp` | Ei | Totuusarvo | Otetaanko käyttöön vai poistetaanko käytöstä [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) solulle [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) käyttäen aliasta `public_key`. |
 | `public_key` | Ei | Jousi | OpenPGP:n julkinen avain ASCII Armor -muodossa ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); esim. GPG-avain solulle `support@forwardemail.net`). Tämä pätee vain, jos `has_pgp` on asetettu arvoon `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Ei | Jousi | Tämän aliaksen tallennuskiintiön enimmäismäärä. Jätä tyhjäksi palauttaaksesi verkkotunnuksen nykyisen enimmäiskiintiön tai anna arvo, kuten "1 Gt", jonka [bytes](https://github.com/visionmedia/bytes.js) jäsentää. Vain verkkotunnuksen järjestelmänvalvojat voivat muuttaa tätä arvoa. |
-| `vacation_responder_is_enabled` | Ei | Totuusarvo | Otetaanko automaattinen lomavastaus käyttöön vai poistetaanko se käytöstä. |
+| `vacation_responder_is_enabled` | Ei | Totuusarvo | Otetaanko automaattinen lomaviesti käyttöön vai poistetaanko se käytöstä. |
 | `vacation_responder_start_date` | Ei | Jousi | Lomaviestin aloituspäivämäärä (jos käytössä eikä aloituspäivämäärää ole asetettu, oletetaan, että se on jo käynnistetty). Tuemme päivämäärämuotoja, kuten `MM/DD/YYYY`, `YYYY-MM-DD` ja muita päivämäärämuotoja älykkään jäsentämisen avulla käyttäen `dayjs`. |
-| `vacation_responder_end_date` | Ei | Jousi | Lomaviestin päättymispäivämäärä (jos käytössä eikä päättymispäivämäärää ole asetettu, oletetaan, että viesti ei koskaan pääty ja että se vastaa ikuisesti). Tuemme päivämäärämuotoja, kuten `MM/DD/YYYY`, `YYYY-MM-DD` ja muita päivämäärämuotoja älykkään jäsentämisen avulla käyttäen `dayjs`. |
+| `vacation_responder_end_date` | Ei | Jousi | Lomaviestin päättymispäivämäärä (jos käytössä eikä päättymispäivämäärää ole asetettu, oletetaan, että viesti ei lopu koskaan ja että se vastaa ikuisesti). Tuemme päivämäärämuotoja, kuten `MM/DD/YYYY`, `YYYY-MM-DD` ja muita päivämäärämuotoja älykkään jäsentämisen avulla käyttäen `dayjs`. |
 | `vacation_responder_subject` | Ei | Jousi | Lomaviestin aihe selkokielisenä, esim. "Poissa toimistolta". Käytämme `striptags` poistaaksemme kaiken HTML-koodin täältä. |
 | `vacation_responder_message` | Ei | Jousi | Lomavastaajalle tarkoitettu selkokielinen viesti, esim. "Olen poissa toimistolta helmikuuhun asti.". Käytämme `striptags` poistaaksemme kaiken HTML:n täältä. |
 
@@ -859,7 +859,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 ### Hae verkkotunnuksen alias {#retrieve-domain-alias}
 
-Voit hakea verkkotunnusaliaksen joko sen `id` tai `name` arvon perusteella.
+Voit hakea verkkotunnusaliaksen joko sen `id`- tai `name`-arvon perusteella.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
@@ -896,9 +896,9 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `has_pgp` | Ei | Totuusarvo | Otetaanko käyttöön vai poistetaanko käytöstä [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) solulle [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) käyttäen aliasta `public_key`. |
 | `public_key` | Ei | Jousi | OpenPGP:n julkinen avain ASCII Armor -muodossa ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); esim. GPG-avain solulle `support@forwardemail.net`). Tämä pätee vain, jos `has_pgp` on asetettu arvoon `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Ei | Jousi | Tämän aliaksen tallennuskiintiön enimmäismäärä. Jätä tyhjäksi palauttaaksesi verkkotunnuksen nykyisen enimmäiskiintiön tai anna arvo, kuten "1 Gt", jonka [bytes](https://github.com/visionmedia/bytes.js) jäsentää. Vain verkkotunnuksen järjestelmänvalvojat voivat muuttaa tätä arvoa. |
-| `vacation_responder_is_enabled` | Ei | Totuusarvo | Otetaanko automaattinen lomavastaus käyttöön vai poistetaanko se käytöstä. |
+| `vacation_responder_is_enabled` | Ei | Totuusarvo | Otetaanko automaattinen lomaviesti käyttöön vai poistetaanko se käytöstä. |
 | `vacation_responder_start_date` | Ei | Jousi | Lomaviestin aloituspäivämäärä (jos käytössä eikä aloituspäivämäärää ole asetettu, oletetaan, että se on jo käynnistetty). Tuemme päivämäärämuotoja, kuten `MM/DD/YYYY`, `YYYY-MM-DD` ja muita päivämäärämuotoja älykkään jäsentämisen avulla käyttäen `dayjs`. |
-| `vacation_responder_end_date` | Ei | Jousi | Lomaviestin päättymispäivämäärä (jos käytössä eikä päättymispäivämäärää ole asetettu, oletetaan, että viesti ei koskaan pääty ja että se vastaa ikuisesti). Tuemme päivämäärämuotoja, kuten `MM/DD/YYYY`, `YYYY-MM-DD` ja muita päivämäärämuotoja älykkään jäsentämisen avulla käyttäen `dayjs`. |
+| `vacation_responder_end_date` | Ei | Jousi | Lomaviestin päättymispäivämäärä (jos käytössä eikä päättymispäivämäärää ole asetettu, oletetaan, että viesti ei lopu koskaan ja että se vastaa ikuisesti). Tuemme päivämäärämuotoja, kuten `MM/DD/YYYY`, `YYYY-MM-DD` ja muita päivämäärämuotoja älykkään jäsentämisen avulla käyttäen `dayjs`. |
 | `vacation_responder_subject` | Ei | Jousi | Lomaviestin aihe selkokielisenä, esim. "Poissa toimistolta". Käytämme `striptags` poistaaksemme kaiken HTML-koodin täältä. |
 | `vacation_responder_message` | Ei | Jousi | Lomavastaajalle tarkoitettu selkokielinen viesti, esim. "Olen poissa toimistolta helmikuuhun asti.". Käytämme `striptags` poistaaksemme kaiken HTML:n täältä. |
 
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Salaa {#encrypt}
 
-Voit salata tietueita jopa ilmaisversiossa täysin ilmaiseksi. Yksityisyyden ei pitäisi olla ominaisuus, vaan sen tulisi olla sisäänrakennettu osa kaikkia tuotteen ominaisuuksia. Kuten [Tietosuojaoppaiden keskustelu](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) ja [GitHub-ongelmamme](https://github.com/forwardemail/forwardemail.net/issues/254) -versioissa on erittäin pyydetty, olemme lisänneet tämän.
+Voit salata tietueita jopa ilmaisversiossa täysin ilmaiseksi. Yksityisyyden ei pitäisi olla ominaisuus, vaan sen tulisi olla sisäänrakennettu osa kaikkia tuotteen ominaisuuksia. Olemme lisänneet tämän [Tietosuojaoppaiden keskustelu](https://discuss.privacyguides.net/t/forward-email-email-provider/13370)- ja [GitHub-ongelmamme](https://github.com/forwardemail/forwardemail.net/issues/254)-versioissa esitettyjen pyyntöjen mukaisesti.
 
 ### Salaa TXT-tietue {#encrypt-txt-record}
 

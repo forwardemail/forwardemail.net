@@ -1,4 +1,4 @@
-# Guida all'installazione dell'auto-hosting di Forward Email per Debian {#forward-email-self-hosting-installation-guide-for-debian}
+# Guida all'installazione di Forward Email Self-Hosting per Debian {#forward-email-self-hosting-installation-guide-for-debian}
 
 ## Indice {#table-of-contents}
 
@@ -55,8 +55,8 @@ Prima di iniziare l'installazione, assicurati di avere:
 
 * **Server Debian**: Versione 11 (Bullseye) o 12 (Bookworm)
 * **Accesso root**: Devi essere in grado di eseguire comandi come root (accesso sudo)
-* **Nome dominio**: Un dominio che controlli con accesso di gestione DNS
-* **Server pulito**: Si consiglia di utilizzare una nuova installazione Debian
+* **Nome di dominio**: Un dominio che controlli con accesso di gestione DNS
+* **Server pulito**: Si consiglia di utilizzare una nuova installazione di Debian
 * **Connessione Internet**: Necessaria per scaricare pacchetti e immagini Docker
 
 ## Requisiti di sistema {#system-requirements}
@@ -155,7 +155,7 @@ sleep 10
 snap version
 ```
 
-### Passaggio 5: Installa i pacchetti Snap {#step-5-install-snap-packages}
+### Passaggio 5: installa i pacchetti Snap {#step-5-install-snap-packages}
 
 Installa AWS CLI e Certbot tramite snap:
 
@@ -223,7 +223,7 @@ sleep 5
 docker info
 ```
 
-### Passaggio 8: Installa e configura il firewall UFW {#step-8-install-and-configure-ufw-firewall}
+### Passaggio 8: installare e configurare il firewall UFW {#step-8-install-and-configure-ufw-firewall}
 
 Le installazioni minime di Debian potrebbero non includere UFW, quindi installalo prima:
 
@@ -618,7 +618,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Imposta i cron job di backup {#set-up-backup-cron-jobs}
+### Imposta i processi cron di backup {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -705,9 +705,9 @@ nslookup google.com
 
 1. **Monitoraggio dello spazio su disco**: `df -h`
 2. **Controllo dello stato del servizio**: utilizzare il comando Docker Compose appropriato
-3. **Controllo dei log**: controllare i log dell'applicazione e di sistema
-4. **Aggiornare i pacchetti di sistema**: `apt update && apt upgrade`
-5. **Monitoraggio di snapd**: `snap list` e `snap refresh`
+3. **Controllo dei log**: controllare i log delle applicazioni e di sistema
+4. **Aggiorna i pacchetti di sistema**: `apt update && apt upgrade`
+5. **Monitoraggio degli snapd**: `snap list` e `snap refresh`
 
 ### Rinnovo del certificato {#certificate-renewal}
 
@@ -814,7 +814,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 1. **Mantieni il sistema aggiornato**: Aggiorna regolarmente Debian e i pacchetti
 2. **Monitora i log**: Imposta il monitoraggio dei log e gli avvisi
-3. **Esegui backup regolari**: Testa le procedure di backup e ripristino
+3. **Esegui backup regolarmente**: Testa le procedure di backup e ripristino
 4. **Usa password complesse**: Genera password complesse per tutti gli account
 5. **Abilita Fail2Ban**: Valuta l'installazione di fail2ban per una maggiore sicurezza
 6. **Verifiche di sicurezza regolari**: Rivedi periodicamente la tua configurazione

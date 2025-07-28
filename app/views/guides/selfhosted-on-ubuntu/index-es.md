@@ -597,8 +597,8 @@ crontab -l
 
 ### Tareas de mantenimiento regular {#regular-maintenance-tasks}
 
-1. **Supervisar el espacio en disco**: `df -h`
-2. **Verificar el estado del servicio**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
+1. **Supervisar espacio en disco**: `df -h`
+2. **Verificar estado del servicio**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **Revisar registros**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **Actualizar paquetes del sistema**: `apt update && apt upgrade`
 5. **Renovar certificados**: Los certificados se renuevan automáticamente, pero se supervisa su vencimiento.
@@ -650,7 +650,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * Verificar los certificados SSL: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
 * Verificar las credenciales de autenticación básicas
 
-### Obteniendo ayuda {#getting-help}
+### Obtención de ayuda {#getting-help}
 
 * **Documentación**: <https://forwardemail.net/self-hosted>
 * **Problemas de GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>

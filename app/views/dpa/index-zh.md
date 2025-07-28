@@ -20,7 +20,7 @@
   * [6. 子处理器](#6-subprocessors)
 * [3. 限制转让](#3-restricted-transfers)
   * [1.授权](#1-authorization)
-  * [2. 欧洲经济区外转移](#2-ex-eea-transfers)
+  * [2. 欧洲经济区外的转移](#2-ex-eea-transfers)
   * [3. 英国境外的转账](#3-ex-uk-transfers)
   * [4. 其他国际转移](#4-other-international-transfers)
 * [4.安全事件响应](#4-security-incident-response)
@@ -57,9 +57,9 @@
 
 ## 协议变更 {#changes-to-the-agreement}
 
-本文档是[通用纸质DPA标准术语（1.0版）](https://commonpaper.com/standards/data-processing-agreement/1.0)的衍生文档，并做出了以下更改：
+本文档是 [通用纸质DPA标准术语（1.0版）](https://commonpaper.com/standards/data-processing-agreement/1.0) 的衍生文档，并做出了以下更改：
 
-1. [适用法律和选定法院](#11-governing-law-and-chosen-courts) 已作为下方的一个部分包含在内，其中 `Governing State` 已在上文中标识。
+1. [适用法律和选定法院](#11-governing-law-and-chosen-courts) 已作为下方的一个部分包含在内，其中 `Governing State` 已在上方标识。
 2. [服务提供商关系](#12-service-provider-relationship) 已作为下方的一个部分包含在内。
 
 ## 1. 处理器和子处理器关系 {#1-processor-and-subprocessor-relationships}
@@ -78,11 +78,11 @@
 
 封面上的附件 I(B) 描述了此处理的主题、性质、目的和持续时间，以及所收集的<strong>个人数据类别</strong>和<strong>数据主体类别</strong>。
 
-### 2. 处理说明 {#2-processing-instructions}
+### 2.处理说明 {#2-processing-instructions}
 
 <strong>客户</strong>指示<strong>提供商</strong>处理客户个人数据：(a) 提供和维护服务；(b) 通过在<strong>客户</strong>使用服务时进一步指定；(c) 按照<strong>协议</strong>中的规定；以及 (d) 按照<strong>客户</strong>给出的并且<strong>提供商</strong>确认的关于根据本 DPA 处理客户个人数据的任何其他书面指示中的规定。<strong>提供商</strong>将遵守这些指示，除非适用法律禁止这样做。如果<strong>提供商</strong>无法遵循处理指示，将立即通知<strong>客户</strong>。<strong>客户</strong>已经给出并且只会给出符合适用法律的指示。
 
-### 3. 提供商处理 {#3-processing-by-provider}
+### 3. 由提供商处理 {#3-processing-by-provider}
 
 <strong>提供商</strong>将仅根据本 DPA 处理客户个人数据，包括封面中的详细信息。如果<strong>提供商</strong>更新服务以更新现有产品、特性或功能或包含新的产品、特性或功能，<strong>提供商</strong>可根据需要更改<strong>数据主体类别</strong>、<strong>个人数据类别</strong>、<strong>特殊类别数据</strong>、<strong>特殊类别数据限制或保障措施</strong>、<strong>传输频率</strong>、<strong>处理的性质和目的</strong>以及<strong>处理持续时间</strong>，并通过将更新和变更通知<strong>客户</strong>来反映更新。
 
@@ -94,23 +94,23 @@
 
 <strong>客户</strong>已经遵守并将继续遵守有关向<strong>提供商</strong>和/或服务提供客户个人数据的所有适用数据保护法，包括进行所有披露、获得所有同意、提供充分的选择以及实施适用数据保护法所要求的相关保障措施。
 
-### 6. 子处理器 {#6-subprocessors}
+### 6. 分包商 {#6-subprocessors}
 
 a. 除非<strong>客户</strong>已批准子处理商，否则<strong>提供商</strong>不会向子处理商提供、转移或移交任何客户个人数据。<strong>已批准子处理商</strong>的当前列表包括子处理商的身份、其所在国家/地区以及其预期的处理任务。<strong>提供商</strong>将至少提前 10 个工作日以书面形式通知<strong>客户</strong>任何<strong>已批准子处理商</strong>的拟议变更，无论是增加还是更换子处理商，这让<strong>客户</strong>有足够的时间在<strong>提供商</strong>开始使用新的子处理商之前反对这些变更。<strong>提供商</strong>将向<strong>客户提供必要信息，以允许<strong>客户</strong>行使其反对<strong>已批准子处理商</strong>变更的权利。 <strong>客户</strong>在收到<strong>批准的子处理商</strong>变更通知后，有 30 天的时间提出异议，否则<strong>客户</strong>将被视为接受变更。如果<strong>客户</strong>在通知后 30 天内对变更提出异议，<strong>客户</strong>和<strong>提供商</strong>应真诚合作，以解决<strong>客户</strong>的异议或疑虑。
 
-b. 在聘用分包商时，<strong>提供商</strong>将与分包商签订书面协议，确保分包商仅在 (i) 履行分包义务所需的范围内，以及 (ii) 与<strong>协议</strong>的条款一致的情况下访问和使用客户个人数据。
+b. 在聘用分包商时，<strong>提供商</strong>将与分包商签订书面协议，确保分包商仅在 (i) 履行分包义务所需的范围内，以及 (ii) 符合<strong>协议</strong>的条款的情况下访问和使用客户个人数据。
 
 c. 如果 GDPR 适用于客户个人数据的处理，则 (i) 本 DPA 中所述的数据保护义务（如适用，请参阅 GDPR 第 28(3) 条）也适用于分包商，以及 (ii) <strong>提供商</strong>与分包商的协议将纳入这些义务，包括关于<strong>提供商</strong>及其分包商将如何协调以响应有关客户个人数据处理的问询或请求的详细信息。此外，<strong>提供商</strong>将根据<strong>客户</strong>的要求，与其分包商共享其协议（包括任何修订）的副本。在保护商业秘密或其他机密信息（包括个人数据）所需的范围内，<strong>提供商</strong>可在共享副本之前编辑其与分包商的协议文本。
 
 d. <strong>提供商</strong>对其分包给子处理商的所有义务负全部责任，包括其子处理商在处理客户个人数据方面的作为和不作为。如果其子处理商未能根据<strong>提供商</strong>与子处理商之间的协议履行有关客户个人数据的重大义务，<strong>提供商</strong>将通知客户。
 
-## 3. 限制传输 {#3-restricted-transfers}
+## 3. 限制转移 {#3-restricted-transfers}
 
 ### 1. 授权 {#1-authorization}
 
 <strong>客户</strong>同意<strong>提供商</strong>可以根据需要将客户个人数据转移到欧洲经济区 (EEA)、英国或其他相关地理区域以外，以提供服务。如果<strong>提供商</strong>将客户个人数据转移到欧盟委员会或其他相关监管机构尚未发布充分性决定的地区，<strong>提供商</strong>将根据适用的数据保护法，对客户个人数据转移到该地区采取适当的保护措施。
 
-### 2. 欧洲经济区以外转移 {#2-ex-eea-transfers}
+### 2. 欧洲经济区外转移 {#2-ex-eea-transfers}
 
 <strong>客户</strong>和<strong>提供商</strong>同意，如果 GDPR 保护客户个人数据的传输，且该传输是从<strong>客户</strong>从 EEA 内部传输到<strong>提供商</strong> EEA 外部的，并且该传输不受欧盟委员会作出的充分性决定的约束，则通过签订本 DPA，<strong>客户</strong>和<strong>提供商</strong>将被视为已签署 EEA SCC 及其附件，这些条款通过引用纳入本 DPA。任何此类传输均根据 EEA SCC 进行，其填写方式如下：
 
@@ -144,7 +144,7 @@ b. 英国附录表 4 修改如下：任何一方均不得按照英国附录第 1
 
 c. 封面包含英国附录附件 1A、附件 1B、附件 II 和附件 III 所要求的信息。
 
-### 4. 其他国际转移 {#4-other-international-transfers}
+### 4. 其他国际转账 {#4-other-international-transfers}
 
 对于个人数据传输，如果瑞士法律（而非任何欧洲经济区成员国或英国的法律）适用于传输的国际性质，则在法律要求的范围内，欧洲经济区标准条款第 4 条中对 GDPR 的引用将被修改为参考瑞士联邦数据保护法或其后续法案，而监管机构的概念将包括瑞士联邦数据保护和信息专员。
 
@@ -154,7 +154,7 @@ c. 封面包含英国附录附件 1A、附件 1B、附件 II 和附件 III 所�
 
 ## 5. 审计与报告 {#5-audit--reports}
 
-### 1. 审计权利 {#1-audit-rights}
+### 1. 审计权限 {#1-audit-rights}
 
 <strong>提供商</strong>将向<strong>客户</strong>提供所有合理必要的信息，以证明其遵守本 DPA，并且<strong>提供商</strong>将允许并协助审计（包括<strong>客户</strong>的检查），以评估<strong>提供商</strong>对本 DPA 的遵守情况。但是，如果<strong>客户</strong>访问信息会对<strong>提供商</strong>的知识产权、保密义务或适用法律规定的其他义务产生负面影响，则<strong>提供商</strong>可以限制对数据或信息的访问。<strong>客户</strong>承认并同意，其将仅通过指示<strong>提供商</strong>遵守以下报告和尽职调查要求来行使其在本 DPA 下的审计权利以及适用数据保护法授予的任何审计权利。<strong>提供商</strong>将在 DPA 结束后保留其遵守本 DPA 的记录 3 年。
 
@@ -236,7 +236,7 @@ b. 如果<strong>客户</strong>和<strong>提供商</strong>已作为本 DPA �
 
 8.“欧洲经济区”或“EEA”是指欧盟成员国、挪威、冰岛和列支敦士登。
 
-9.“GDPR”是指相关欧洲经济区成员国当地法律实施的欧盟法规 2016/679。
+9.“GDPR”是指根据相关欧洲经济区成员国当地法律实施的欧盟法规 2016/679。
 
 10.“个人数据”将具有适用数据保护法中对个人信息、个人数据或其他类似术语所赋予的含义。
 
@@ -258,8 +258,8 @@ b. 如果<strong>客户</strong>和<strong>提供商</strong>已作为本 DPA �
 
 19. **“英国 GDPR”** 是指根据英国 2018 年《欧盟（退出）法案》第 3 条在英国实施的欧盟条例 2016/679。
 
-20. **“英国附录”**是指信息专员根据 2018 年《数据保护法》S119A(1) 为进行限制性转移的各方颁发的 EEA SCC 的国际数据传输附录。
+20. **“英国附录”**是指信息专员根据 2018 年数据保护法 S119A(1) 为进行限制性转移的各方颁发的 EEA SCC 的国际数据传输附录。
 
 ## 积分 {#credits}
 
-本文档是[通用纸质DPA标准术语（1.0版）](https://commonpaper.com/standards/data-processing-agreement/1.0)的衍生文档，并根据[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)获得许可。
+本文档是 [通用纸质DPA标准术语（1.0版）](https://commonpaper.com/standards/data-processing-agreement/1.0) 的衍生文档，并根据 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) 获得许可。

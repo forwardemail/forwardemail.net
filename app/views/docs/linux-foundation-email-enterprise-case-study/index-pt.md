@@ -6,7 +6,7 @@
 
 * [Introdução](#introduction)
 * [O Desafio](#the-challenge)
-* [A solução](#the-solution)
+* [A Solução](#the-solution)
   * [Arquitetura 100% Open Source](#100-open-source-architecture)
   * [Design com foco na privacidade](#privacy-focused-design)
   * [Segurança de nível empresarial](#enterprise-grade-security)
@@ -23,7 +23,7 @@
 
 ## Introdução {#introduction}
 
-O [Fundação Linux](https://en.wikipedia.org/wiki/Linux_Foundation) gerencia mais de 900 projetos de código aberto em mais de 250 domínios, incluindo [linux.com](https://www.linux.com/) e [jQuery.com](https://jquery.com/). Este estudo de caso explora como eles firmaram uma parceria com o [Encaminhar e-mail](https://forwardemail.net) para otimizar o gerenciamento de e-mails, mantendo o alinhamento com os princípios de código aberto.
+O [Fundação Linux](https://en.wikipedia.org/wiki/Linux_Foundation) gerencia mais de 900 projetos de código aberto em mais de 250 domínios, incluindo [linux.com](https://www.linux.com/) e [jQuery.com](https://jquery.com/). Este estudo de caso explora como eles fizeram parceria com o [Encaminhar e-mail](https://forwardemail.net) para otimizar o gerenciamento de e-mails, mantendo o alinhamento com os princípios de código aberto.
 
 ## O Desafio {#the-challenge}
 
@@ -53,11 +53,11 @@ graph TD
 
 ### Arquitetura 100% de código aberto {#100-open-source-architecture}
 
-Como o único serviço de e-mail com uma plataforma totalmente de código aberto (frontend e backend), o Forward Email alinhou-se perfeitamente ao compromisso da Linux Foundation com os princípios de código aberto. Semelhante à nossa implementação com [Canônico/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), essa transparência permitiu que sua equipe técnica verificasse as implementações de segurança e até mesmo contribuísse com melhorias.
+Sendo o único serviço de e-mail com uma plataforma totalmente de código aberto (frontend e backend), o Forward Email alinhou-se perfeitamente ao compromisso da Linux Foundation com os princípios de código aberto. Semelhante à nossa implementação com [Canônico/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study), essa transparência permitiu que a equipe técnica verificasse as implementações de segurança e até contribuísse com melhorias.
 
 ### Design com foco na privacidade {#privacy-focused-design}
 
-O rigoroso [políticas de privacidade](https://forwardemail.net/privacy) do Forward Email forneceu a segurança exigida pela Linux Foundation. Nosso [implementação técnica de proteção de privacidade de e-mail](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) garante que todas as comunicações permaneçam seguras por padrão, sem registro ou verificação do conteúdo do e-mail.
+O rigoroso [políticas de privacidade](https://forwardemail.net/privacy) do Forward Email forneceu a segurança necessária para a Linux Foundation. Nosso [implementação técnica de proteção de privacidade de e-mail](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) garante que todas as comunicações permaneçam seguras por padrão, sem registro ou verificação do conteúdo do e-mail.
 
 Conforme detalhado em nossa documentação de implementação técnica:
 
@@ -73,7 +73,7 @@ O [preços empresariais](https://forwardemail.net/pricing) da Forward Email ofer
 
 ### API amigável ao desenvolvedor {#developer-friendly-api}
 
-Seguindo um [Abordagem README-first](https://tom.preston-werner.com/2010/08/23/readme-driven-development) e inspirado por [Design da API RESTful do Stripe](https://amberonrails.com/building-stripes-api), o [API](https://forwardemail.net/api) da Forward Email permitiu uma integração profunda com o Centro de Controle de Projetos da Linux Foundation. Essa integração foi crucial para automatizar o gerenciamento de e-mails em seu diversificado portfólio de projetos.
+Seguindo o [Abordagem README-first](https://tom.preston-werner.com/2010/08/23/readme-driven-development) e inspirado no [Design da API RESTful do Stripe](https://amberonrails.com/building-stripes-api), o [API](https://forwardemail.net/api) da Forward Email permitiu uma integração profunda com o Centro de Controle de Projetos da Linux Foundation. Essa integração foi crucial para automatizar o gerenciamento de e-mails em seu diversificado portfólio de projetos.
 
 ## Processo de implementação {#implementation-process}
 
@@ -111,13 +111,13 @@ A implementação proporcionou benefícios significativos:
 * Integração mais rápida de projetos (de dias para minutos)
 * Gerenciamento simplificado de mais de 250 domínios a partir de uma única interface
 
-### Gerenciamento de Custos {#cost-management}
+### Gestão de Custos {#cost-management}
 
 * Preço fixo, independentemente do crescimento de domínios ou usuários
 * Eliminação de taxas de licenciamento por usuário
 * Semelhante ao nosso [estudo de caso universitário](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), a Linux Foundation obteve economias de custo substanciais em comparação com soluções tradicionais
 
-### Segurança aprimorada {#enhanced-security}
+### Segurança Aprimorada {#enhanced-security}
 
 * Criptografia quântica resistente em todos os domínios
 * Autenticação abrangente de e-mails, prevenindo spoofing e phishing
@@ -132,11 +132,11 @@ A implementação proporcionou benefícios significativos:
 
 ## Conclusão {#conclusion}
 
-A parceria da Linux Foundation com a Forward Email demonstra como as organizações podem lidar com desafios complexos de gerenciamento de e-mail, mantendo o alinhamento com seus valores essenciais. Ao selecionar uma solução que prioriza princípios de código aberto, privacidade e segurança, a Linux Foundation transformou o gerenciamento de e-mail de um fardo administrativo em uma vantagem estratégica.
+A parceria da Linux Foundation com a Forward Email demonstra como as organizações podem enfrentar desafios complexos de gerenciamento de e-mail, mantendo o alinhamento com seus valores fundamentais. Ao selecionar uma solução que prioriza os princípios de código aberto, privacidade e segurança, a Linux Foundation transformou o gerenciamento de e-mail de um fardo administrativo em uma vantagem estratégica.
 
-Como visto em nosso trabalho com [Canônico/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) e [principais universidades](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organizações com portfólios de domínio complexos podem obter melhorias significativas em eficiência, segurança e gerenciamento de custos por meio da solução empresarial da Forward Email.
+Como visto em nosso trabalho com [Canônico/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) e [grandes universidades](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), organizações com portfólios de domínio complexos podem obter melhorias significativas em eficiência, segurança e gerenciamento de custos por meio da solução empresarial da Forward Email.
 
-Para obter mais informações sobre como o Forward Email pode ajudar sua organização a gerenciar e-mails em vários domínios, visite [forwardemail.net](https://forwardemail.net) ou explore nossos detalhados [documentação](https://forwardemail.net/email-api) e [guias](https://forwardemail.net/guides).
+Para obter mais informações sobre como o Forward Email pode ajudar sua organização a gerenciar e-mails em vários domínios, visite [forwardemail.net](https://forwardemail.net) ou explore nossos [documentação](https://forwardemail.net/email-api) e [guias](https://forwardemail.net/guides) detalhados.
 
 ## Referências {#references}
 

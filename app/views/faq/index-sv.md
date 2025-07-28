@@ -30,11 +30,11 @@
   * [Var finns era servrar](#where-are-your-servers-located)
   * [Hur exporterar och säkerhetskopierar jag min e-postlåda](#how-do-i-export-and-backup-my-mailbox)
   * [Hur importerar och migrerar jag min befintliga postlåda](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Stöder du självhotell](#do-you-support-self-hosting)
+  * [Stödjer du självhosting?](#do-you-support-self-hosting)
 * [E-postkonfiguration](#email-configuration)
   * [Hur kommer jag igång och konfigurerar vidarebefordran av e-post](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Kan jag använda flera MX-börser och servrar för avancerad vidarebefordran?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [Hur ställer jag in en semestersvarare (automatisk svarare utanför kontoret)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Hur ställer jag in en semestersvarare (autosvarare för frånvarande)?](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [Hur konfigurerar jag SPF för vidarebefordran av e-post?](#how-do-i-set-up-spf-for-forward-email)
   * [Hur konfigurerar jag DKIM för vidarebefordran av e-post?](#how-do-i-set-up-dkim-for-forward-email)
   * [Hur konfigurerar jag DMARC för vidarebefordran av e-post](#how-do-i-set-up-dmarc-for-forward-email)
@@ -81,14 +81,14 @@
   * [Erbjuder ni en testmiljö](#do-you-offer-a-test-environment)
   * [Tillhandahåller ni övervaknings- och varningsverktyg?](#do-you-provide-monitoring-and-alerting-tools)
   * [Hur säkerställer du hög tillgänglighet](#how-do-you-ensure-high-availability)
-  * [Följer du kraven i avsnitt 889 i lagen om nationell försvarsauktorisering (NDAA)?](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
+  * [Följer du kraven i avsnitt 889 i National Defense Authorization Act (NDAA)?](#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa)
 * [System- och tekniska detaljer](#system-and-technical-details)
   * [Lagrar ni e-postmeddelanden och deras innehåll](#do-you-store-emails-and-their-contents)
   * [Hur fungerar ert system för vidarebefordran av e-post?](#how-does-your-email-forwarding-system-work)
   * [Hur hanterar man ett e-postmeddelande för vidarebefordran](#how-do-you-process-an-email-for-forwarding)
   * [Hur hanterar ni problem med e-postleverans](#how-do-you-handle-email-delivery-issues)
   * [Hur hanterar du blockeringar av dina IP-adresser?](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Vad är postmästaradresser](#what-are-postmaster-addresses)
+  * [Vad är postmasteradresser](#what-are-postmaster-addresses)
   * [Vad är adresser utan svarsregler](#what-are-no-reply-addresses)
   * [Vilka är din servers IP-adresser](#what-are-your-servers-ip-addresses)
   * [Har du en tillåtelselista](#do-you-have-an-allowlist)
@@ -135,28 +135,28 @@
 
 ## Snabbstart {#quick-start}
 
-Så här kommer du igång med vidarebefordran av e-post:
+För att komma igång med vidarebefordran av e-post:
 
 1. **Skapa ett konto** på [forwardemail.net/register](https://forwardemail.net/register)
 
 2. **Lägg till och verifiera din domän** under [Mitt konto → Domäner](/my-account/domains)
 
-3. **Lägg till och konfigurera e-postalias/brevlådor** under [Mitt konto → Domäner](/my-account/domains) → Alias
+3. **Lägg till och konfigurera e-postalias/postlådor** under [Mitt konto → Domäner](/my-account/domains) → Alias
 
 4. **Testa din installation** genom att skicka ett e-postmeddelande till ett av dina nya alias
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> Det kan ta upp till 24–48 timmar innan DNS-ändringar sprider sig globalt, men de träder ofta i kraft mycket tidigare.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> För förbättrad leveransbarhet rekommenderar vi att du konfigurerar [SPF](#how-do-i-set-up-spf-for-forward-email)-, [DKIM](#how-do-i-set-up-dkim-for-forward-email)- och [DMARC](#how-do-i-set-up-dmarc-for-forward-email)-poster.
 
 ## Introduktion {#introduction}
 
 ### Vad är vidarebefordran av e-post {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Vidarebefordra e-post är perfekt för individer, småföretag och utvecklare som vill ha professionella e-postadresser utan kostnaden och underhållet av en komplett e-posthostinglösning.
 
 Forward Email är en **fullfjädrad e-postleverantör** och **e-posthotellleverantör för anpassade domännamn**.
 
@@ -177,7 +177,7 @@ Viktiga funktioner för vidarebefordran av e-post:
 Du kan jämföra oss med fler än 56 andra e-postleverantörer på [vår sida om e-postjämförelse](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Läs mer om vidarebefordran av e-post genom att läsa vår kostnadsfria [Teknisk vitbok](/technical-whitepaper.pdf)
 
 ### Vem använder vidarebefordran av e-post {#who-uses-forward-email}
 
@@ -195,9 +195,9 @@ Vi erbjuder e-posthosting och vidarebefordran av e-post till över 500 000 domä
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
 | Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| I mänskligheten | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Gratis | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| University of Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Cambridges universitet | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | University of Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | University of Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Tufts universitet | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
@@ -209,14 +209,14 @@ Vi erbjuder e-posthosting och vidarebefordran av e-post till över 500 000 domä
 | Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | David Heinemeier Hansson (Ruby on Rails) |  |
 
-### Vad är historiken för vidarebefordrade e-postmeddelanden {#what-is-forward-emails-history}
+### Vad är historiken för vidarebefordran av e-post? {#what-is-forward-emails-history}
 
-Du kan läsa mer om vidarebefordran av e-post på [vår Om-sida](/about).
+Du kan läsa mer om att vidarebefordra e-post på [vår Om-sida](/about).
 
 ### Hur snabb är den här tjänsten {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Vårt system är utformat för hastighet och tillförlitlighet, med flera redundanta servrar för att säkerställa att dina e-postmeddelanden levereras snabbt.
 
 Vidarebefordra e-post levererar meddelanden med minimal fördröjning, vanligtvis inom några sekunder efter mottagandet.
 
@@ -285,7 +285,7 @@ För Android:
 2. Ange din vidarebefordransadress och ditt lösenord
 3. För serverinställningar, använd samma IMAP- och SMTP-inställningar som ovan
 
-### Hur man skickar e-post som med Gmail {#how-to-send-mail-as-using-gmail}
+### Så här skickar du e-post som med Gmail {#how-to-send-mail-as-using-gmail}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -331,7 +331,7 @@ Om du är en utvecklare, se våra <a class="alert-link" href="/email-api#outboun
 
 3. Klicka på <strong class="text-success"><i class="fa fa-key"></i>Generera lösenord</strong> bredvid det nyskapade aliaset. Kopiera till Urklipp och lagra det genererade lösenordet som visas på skärmen på ett säkert sätt.
 
-4. Gå till [Gmail](https://gmail.com) och under [Inställningar <i class="fa fa-angle-right"></i> Konton och import <i class="fa fa-angle-right"></i> Skicka e-post som](https://mail.google.com/mail/u/0/#settings/accounts) klickar du på "Lägg till ytterligare en e-postadress".
+4. Gå till [Gmail](https://gmail.com) och klicka på "Lägg till ytterligare en e-postadress" under [Inställningar <i class="fa fa-angle-right"></i> Konton och import <i class="fa fa-angle-right"></i> Skicka e-post som](https://mail.google.com/mail/u/0/#settings/accounts).
 
 5. När du blir ombedd att ange "Namn", ange namnet som du vill att din e-postadress ska visas som "Från" (t.ex. "Linus Torvalds").
 
@@ -371,7 +371,7 @@ Du har slutfört alla steg.
 
 </div>
 
-### Vilken är den kostnadsfria guiden för Skicka e-post som med Gmail? {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Vilken är den äldre kostnadsfria guiden för Skicka e-post som med Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}}
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Viktigt:</strong> Denna äldre gratisguide är föråldrad från och med maj 2023 eftersom <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we nu stöder utgående SMTP</a>. Om du använder guiden nedan kommer <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this att få din utgående e-post</a> att visa "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" i Gmail.</a></div>
 
@@ -397,7 +397,7 @@ Om du har följt instruktionerna ovan under <a href="#how-do-i-get-started-and-s
 
 1. Du måste ha [Gmails tvåfaktorsautentisering][gmail-2fa] aktiverat för att detta ska fungera. Besök <https://www.google.com/landing/2step/> om du inte har det aktiverat.
 
-2. När tvåfaktorsautentisering är aktiverat (eller om du redan hade det aktiverat), besök <https://myaccount.google.com/apppasswords>.
+2. När tvåfaktorsautentisering är aktiverat (eller om du redan hade det aktiverat) besöker du <https://myaccount.google.com/apppasswords>.
 
 3. När du uppmanas att välja "Välj den app och enhet du vill generera applösenordet för":
 * Välj "E-post" i rullgardinsmenyn för "Välj app"
@@ -515,11 +515,11 @@ För Microsoft 365-användare (tidigare Office 365) som vill konfigurera avancer
 * "Omdirigera meddelandet till..."
 * Välj "Följande e-postserver"
 * Ange `mx1.forwardemail.net` och port 25
-* Lägg till `mx2.forwardemail.net` som en säkerhetskopia
+* Lägg till `mx2.forwardemail.net` som en säkerhetskopieringsserver
 7. Under **Förutom om**, välj:
 * "Mottagaren är..."
-* Lägg till alla dina befintliga postlådor som inte ska vara vidarebefordrad
-8. Ställ in regelprioriteten för att säkerställa att den körs efter andra regler för e-postflödet
+* Lägg till alla dina befintliga postlådor som inte ska vidarebefordras
+8. Ställ in regelprioriteten för att säkerställa att den körs efter andra regler för e-postflöde
 9. Klicka på **Spara** för att aktivera regeln
 
 ## Felsökning {#troubleshooting}
@@ -528,7 +528,7 @@ För Microsoft 365-användare (tidigare Office 365) som vill konfigurera avancer
 
 Om du skickar ett testmejl till dig själv kanske det inte visas i din inkorg eftersom det har samma rubrik som "Meddelande-ID".
 
-Detta är ett allmänt känt problem och påverkar även tjänster som Gmail. <a href="https://support.google.com/a/answer/1703601">Here" är det officiella svaret från Gmail angående detta problem</a>.
+Detta är ett allmänt känt problem och påverkar även tjänster som Gmail. <a href="https://support.google.com/a/answer/1703601">Here är det officiella svaret från Gmail angående detta problem</a>.
 
 Om du fortsätter att ha problem är det troligtvis ett problem med DNS-spridningen. Du måste vänta lite längre och försöka igen (eller försöka ställa in ett lägre TTL-värde för dina <strong class="notranslate">TXT</strong>-poster).
 
@@ -592,33 +592,33 @@ Du kan prova att använda ett eller flera av dessa verktyg för att kontrollera 
 | Spamhaus IP- och domänrykteskontroll | <https://check.spamhaus.org/> | DNSBL |
 | Cisco Talos IP- och domänryktescenter | <https://talosintelligence.com/reputation_center> | Rykte |
 | Barracuda IP och domänryktessökning | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| MX Toolbox Blacklist Check | <https://mxtoolbox.com/blacklists.aspx> | Svarta listan |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Rykte |
-| Yahoo Sender Hub | <https://senders.yahooinc.com/> | Rykte |
-| MultiRBL.valli.org Blacklist Check | <https://multirbl.valli.org/lookup/> | DNSBL |
-| Avsändarens poäng | <https://senderscore.org/act/blocklist-remover/> | Rykte |
+| Kontroll av svartlistan i MX Toolbox | <https://mxtoolbox.com/blacklists.aspx> | Svarta listan |
+| Google Postmaster-verktyg | <https://www.gmail.com/postmaster/> | Rykte |
+| Yahoo-avsändarhubb | <https://senders.yahooinc.com/> | Rykte |
+| Kontroll av svartlista på MultiRBL.valli.org | <https://multirbl.valli.org/lookup/> | DNSBL |
+| Avsändarpoäng | <https://senderscore.org/act/blocklist-remover/> | Rykte |
 | Värdering | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP-borttagning | <https://ipcheck.proofpoint.com/> | Borttagning |
-| Cloudmark IP-borttagning | <https://csi.cloudmark.com/en/reset/> | Borttagning |
+| Borttagning av Apple/Proofpoint IP | <https://ipcheck.proofpoint.com/> | Borttagning |
+| Borttagning av Cloudmark IP | <https://csi.cloudmark.com/en/reset/> | Borttagning |
 | SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| Microsoft Outlook och Office 365 IP-borttagning | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Borttagning |
+| Borttagning av IP-adresser i Microsoft Outlook och Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Borttagning |
 | UCEPROTECTs nivåer 1, 2 och 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
 | UCEPROTECTs backscatterer.org | <https://www.backscatterer.org/> | Skydd mot bakåtspridning |
-| UCEPROTECTs whitelisted.org | <https://www.whitelisted.org/> (kräver en avgift) | DNSWL |
+| UCEPROTECTs vitlistade.org | <https://www.whitelisted.org/> (kräver en avgift) | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | Borttagning |
 | AOL/Verizon (t.ex. `[IPTS04]`) | <https://senders.yahooinc.com/> | Borttagning |
 | Cox Communications | `unblock.request@cox.net` | Borttagning |
 | t-online.de (tyska/T-Mobile) | `tobr@rx.t-online.de` | Borttagning |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Börja med en låg volym av högkvalitativa e-postmeddelanden för att bygga ett positivt rykte innan du skickar in större volymer.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Om din domän finns på en svartlista har varje svartlista sin egen borttagningsprocess. Se deras webbplatser för instruktioner.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Om du behöver ytterligare hjälp eller upptäcker att vi har blivit falskt positivt listade som skräppost av en viss e-postleverantör, vänligen <a href="/help">kontakta oss</a>.
 
 ### Vad ska jag göra om jag får skräppost {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -636,30 +636,30 @@ Du kan helt enkelt klicka på "Ser säkert ut". Om du till exempel skulle skicka
 
 Men om de ser det här meddelandet beror det på att de normalt sett var vana vid att se dina e-postmeddelanden komma från <john@gmail.com> istället för <john@customdomain.com> (bara ett exempel). Gmail kommer att varna användarna bara för att se till att allt är säkert ifall det inte finns någon lösning.
 
-### Kan jag ta bort via forwardemail punkt .net i Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
+### Kan jag ta bort via forwardemail punkt .NET i Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}}
 
 Det här ämnet är relaterat till en [allmänt känt problem i Gmail där extra information visas bredvid avsändarens namn](https://support.google.com/mail/answer/1311182).
 
 Från och med maj 2023 stöder vi e-post med SMTP som ett tillägg för alla betalande användare – vilket innebär att du kan ta bort <span class="notranslate">via forwardemail dot net</span> i Gmail.
 
-Observera att detta FAQ-ämne är specifikt för dem som använder [Hur man skickar e-post som med Gmail](#how-to-send-mail-as-using-gmail)-funktionen.
+Observera att den här FAQ-delen är specifik för de som använder [Hur man skickar e-post som med Gmail](#how-to-send-mail-as-using-gmail)-funktionen.
 
 Se avsnittet om [Stöder ni att skicka e-post med SMTP](#do-you-support-sending-email-with-smtp) för konfigurationsinstruktioner.
 
 ## Datahantering {#data-management}
 
-### Var finns era servrar? {#where-are-your-servers-located}
+### Var finns dina servrar {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Vi kan snart komma att tillkännage vår EU-datacenterplats som ligger under [forwardemail.eu](https://forwardemail.eu). Prenumerera på diskussionen på <https://github.com/orgs/forwardemail/discussions/336> för uppdateringar.
 
-Våra servrar finns huvudsakligen i Denver, Colorado – se <https://forwardemail.net/ips> för vår kompletta lista över IP-adresser.
+Våra servrar finns huvudsakligen i Denver, Colorado – se <https://forwardemail.net/ips> för vår fullständiga lista över IP-adresser.
 
 Du kan läsa mer om våra underleverantörer på våra sidor [GDPR](/gdpr), [DPA](/dpa) och [Privatliv](/privacy).
 
 ### Hur exporterar och säkerhetskopierar jag min postlåda {#how-do-i-export-and-backup-my-mailbox}
 
-Du kan när som helst exportera dina brevlådor i formaten [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) eller krypterade [SQLite](https://en.wikipedia.org/wiki/SQLite).
+Du kan när som helst exportera dina postlådor i formaten [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) eller krypterade [SQLite](https://en.wikipedia.org/wiki/SQLite).
 
 Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Ladda ner säkerhetskopia och välj önskad exportformattyp.
 
@@ -669,12 +669,12 @@ Observera att den här exportlänken för nedladdning upphör att gälla efter 4
 
 Om du behöver granska dina exporterade EML- eller Mbox-format kan dessa verktyg med öppen källkod vara användbara:
 
-| Namn | Formatera | Plattform | GitHub URL |
+| Namn | Formatera | Plattform | GitHub-URL |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/ename/mboxviewer> |
-| mbox-web-viewer | Mbox | Alla plattformar | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
-| E-postläsare | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
+| MBox-visare | Mbox | Fönster | <https://github.com/ename/mboxviewer> |
+| mbox-webbvisare | Mbox | Alla plattformar | <https://github.com/PHMRanger/mbox-web-viewer> |
+| EmlReader | EML | Fönster | <https://github.com/ayamadori/EmlReader> |
+| E-postläsare | EML | VS-kod | <https://github.com/joelharkes/vscode_email_viewer> |
 | eml-läsare | EML | Alla plattformar | <https://github.com/s0ph1e/eml-reader> |
 
 Om du dessutom behöver konvertera en Mbox-fil till en EML-fil kan du använda <https://github.com/noelmartinon/mboxzilla>.
@@ -700,7 +700,7 @@ Du måste följa alla följande steg för att importera din befintliga e-post.
 | Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
 | Syn | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tips:</strong> <span>Om du använder Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST-exportformat</a>), kan du helt enkelt följa instruktionerna under "Övrigt" nedan. Vi har dock länkar nedan för att konvertera PST till MBOX/EML-format baserat på ditt operativsystem:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba för Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst för Windows cygwin</a> – (t.ex. <code>readpst -u -o $OUT_DIR $IN_DIR</code> ersätter <code>$OUT_DIR</code> och <code>$IN_DIR</code> med utdatakatalogen och indatakatalogen) sökvägar).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst för Ubuntu/Linux</a> – (t.ex. <code>sudo apt-get install readpst</code> och sedan <code>readpst -u -o $OUT_DIR $IN_DIR</code>, och ersätter <code>$OUT_DIR</code> och <code>$IN_DIR</code> med sökvägarna till utdatakatalogen respektive indatakatalogen).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst för macOS (via brew)</a> – (t.ex. <code>brew install libpst</code> och sedan <code>readpst -u -o $OUT_DIR $IN_DIR</code>, och ersätter <code>$OUT_DIR</code> och <code>$IN_DIR</code> med sökvägarna för utdatakatalogen respektive indatakatalogen).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST-konverterare för Windows (GitHub)</a></li></ul><br /></span></div> |
 | Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
+| Snabbpost | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
 | Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
 | Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
 | Tänka | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
@@ -749,9 +749,9 @@ Du har slutfört alla steg.
 </div>
 </div>
 
-### Stöder ni egenhosting {#do-you-support-self-hosting}
+### Stöder du egenhosting? {#do-you-support-self-hosting}
 
-Ja, från och med mars 2025 stöder vi ett alternativ med egen webbhotell. Läs bloggen [här](https://forwardemail.net/blog/docs/self-hosted-solution). Kolla in [självvärd guide](https://forwardemail.net/self-hosted) för att komma igång. Och för de som är intresserade av en mer detaljerad steg-för-steg-version, se våra [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) eller [Debian](https://forwardemail.net/guides/selfhosted-on-debian) baserade guider.
+Ja, från och med mars 2025 stöder vi ett alternativ med egen webbhotell. Läs bloggen [här](https://forwardemail.net/blog/docs/self-hosted-solution). Kolla in [självhjälpsguide](https://forwardemail.net/self-hosted) för att komma igång. Och för de som är intresserade av en mer detaljerad steg-för-steg-version, se våra [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)- eller [Debian](https://forwardemail.net/guides/selfhosted-on-debian)-baserade guider.
 
 ## E-postkonfiguration {#email-configuration}
 
@@ -792,21 +792,20 @@ Du måste öppna en ny flik och logga in hos din domänregistrator. Du kan enkel
 <table id="table-dns-management-by-registrar" class="table table-striped table-hover my-3">
 <thead class="thead-dark">
 <tr> <th>Registrator</th> <th>Steg för att konfigurera</th>
-</tr> </thead> <tbody> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>
-<td>Logga in <i class="fa fa-angle-right"></i> Domäncenter <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Redigera DNS-inställningar</td>
+</tr> </thead> <tbody> <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://login.ionos.com/">1&amp;1</a></td>">Logga in <i class="fa fa-angle-right"></i> Domäncenter <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Redigera DNS-inställningar</td>
 </tr>
 <tr> <td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon Rutt 53</a></td>
 <td>Logga in <i class="fa fa-angle-right"></i> Hostade zoner <i class="fa fa-angle-right"></i> (Välj din domän)</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>"
 <td>Logga in <i class="fa fa-angle-right"></i> Mina servrar <i class="fa fa-angle-right"></i> Domänhantering <i class="fa fa-angle-right"></i> DNS-hanterare</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>FÖR ROCK: Logga in <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> (Klicka på ikonen ▼ bredvid för att hantera) <i class="fa fa-angle-right"></i> DNS
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>"
+<td>FÖR ROCK: Logga in <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> (Klicka på ikonen ▼ bredvid för att hantera) <i class="fa" fa-angle-right"></i> DNS
 <br />
-FÖR ÄLDRE VERSIONER: Logga in <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> Zonredigerare <i class="fa fa-angle-right"></i> (Välj din domän)</td>
+FÖR ÄLDRE: Logga in <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> Zonredigerare <i class="fa fa-angle-right"></i> (Välj din domän)</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
@@ -817,7 +816,7 @@ FÖR ÄLDRE VERSIONER: Logga in <i class="fa fa-angle-right"></i> Domäner <i cl
 <td>Logga in <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Välj din domän)</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>"
 <td>Logga in <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Hantera</td>
 </tr>
 <tr>
@@ -825,92 +824,86 @@ FÖR ÄLDRE VERSIONER: Logga in <i class="fa fa-angle-right"></i> Domäner <i cl
 <td>Logga in <i class="fa fa-angle-right"></i> Nätverk <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Mer <i class="fa fa-angle-right"></i> Hantera domän</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>"
 <td>Logga in <i class="fa fa-angle-right"></i> I kortvyn, klicka på hantera på din domän <i class="fa fa-angle-right"></i> I listvyn, klicka på
 kugghjulsikonen <i class="fa fa-angle-right"></i> DNS och namnservrar <i class="fa fa-angle-right"></i> DNS-poster</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>"
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Titta</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Titta</a>
 </td>
 <td>Logga in <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Hantera <i class="fa fa-angle-right"></i> (klicka på kugghjulsikonen) <i class="fa fa-angle-right"></i> Klicka på DNS och namnservrar i vänstermenyn</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
 <td>Logga in <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> Hantera domäner <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
 <td>Logga in <i class="fa fa-angle-right"></i> Översikt <i class="fa fa-angle-right"></i> Hantera <i class="fa fa-angle-right"></i> Enkel redigerare <i class="fa fa-angle-right"></i> Poster</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
 <td>Logga in <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Hantering <i class="fa fa-angle-right"></i> Redigera zonen</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Titta</a>
-</td>
-<td>Logga in <i class="fa fa-angle-right"></i> Hantera mina domäner <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Hantera DNS</td>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Titta</a>
+</td> <td>Logga in <i class="fa fa-angle-right"></i> Hantera mina domäner <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Hantera DNS</td>
+</tr> <tr> <td> <a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Domäner</a>
+<br /> <a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Titta</a>
+</td> <td>Logga in <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Konfigurera DNS</td>
 </tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domäner</a>
+<tr> <td> <a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Övervaka</a>
-</td>
-<td>Logga in <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Konfigurera DNS</td>
-</tr>
-<tr>
-<td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
-<br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Övervaka</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Övervaka</a>
 </td>
 <td>Logga in <i class="fa fa-angle-right"></i> Domänlista <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Hantera <i class="fa fa-angle-right"></i> Avancerad DNS</td>
 </tr>
-<tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+<tr> <td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0"
 <td>Logga in <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Konfigurera Netlify DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Lösningar</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Lösningar</a></td>
 <td>Logga in <i class="fa fa-angle-right"></i> Kontohanterare <i class="fa fa-angle-right"></i> Mina domännamn <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> Hantera <i class="fa fa-angle-right"></i> Ändra var domänen pekar <i class="fa fa-angle-right"></i> Avancerad DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener" noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Titta</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Titta</a>
 </td>
-<td>Logga in <i class="fa fa-angle-right"></i> Hanterade domäner <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> DNS Inställningar</td>
+<td>Logga in <i class="fa fa-angle-right"></i> Hanterade domäner <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> DNS-inställningar</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
 <td>Logga in <i class="fa fa-angle-right"></i> Hemmeny <i class="fa fa-angle-right"></i> Inställningar <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i>
 Avancerade inställningar <i class="fa fa-angle-right"></i> Anpassade poster</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Nu</a></td>
-<td>Använda "now" CLI <i class="fa fa-angle-right"></i> <code>now dns lägg till [domän] '@' MX [postvärde] [prioritet]</kod></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Nu</a></td>
+<td>Använda "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>Logga in <i class="fa fa-angle-right"></i> Domänsidan <i class="fa fa-angle-right"></i> (Välj din domän) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
 <td>Logga in <i class="fa fa-angle-right"></i> Domänsidan <i class="fa fa-angle-right"></i> (Klicka på ikonen <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Välj Hantera DNS-poster</td>
 </tr>
-<tr> <td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<tr>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>Logga in <i class="fa fa-angle-right"></i> Domäner <i class="fa fa-angle-right"></i> Mina domäner</td>
 </tr>
-<tr> <td>Annat</td>
-<td> <div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Viktigt:</strong> Ser du inte ditt registrarnamn listat här? Sök bara på internet efter "hur man ändrar DNS-poster på $REGISTRAR" (ersätt $REGISTRAR med namnet på din registrar &ndash; t.ex. "hur man ändrar DNS-poster på GoDaddy" om du använder GoDaddy).</div>
+<tr>
+<td>Annat</td>
+<td>
+<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Viktigt:</strong> Ser du inte ditt registrarnamn listat här? Sök bara på internet efter "hur man ändrar DNS-poster på $REGISTRAR" (ersätt $REGISTRAR med namnet på din registrar &ndash; t.ex. "hur man ändrar DNS-poster på GoDaddy" om du använder GoDaddy).</div>
 </td>
 </tr>
 </tbody>
@@ -1138,7 +1131,7 @@ Tips:
 </strong>
 <span>
 </span>
-Om du inte får testmejl, eller får ett testmejl som säger "Var försiktig med det här meddelandet", se då svaren för <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Varför får jag inte mina testmejl</a> respektive <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Varför visas mina testmejl som skickas till mig själv i Gmail som "misstänkta"</a>.
+Om du inte får testmejl, eller får ett testmejl som säger "Var försiktig med det här meddelandet", se svaren för <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Varför får jag inte mina testmejl</a> respektive <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Varför visas mina testmejl som skickas till mig själv i Gmail som "misstänkta"</a>.
 </div>
 
 </li><li class="mb-2 mb-md-3 mb-lg-5">Om du vill "Skicka e-post som" från Gmail måste du <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">titta på den här videon</a></strong> eller följa stegen under <a href="#how-to-send-mail-as-using-gmail">How för att skicka e-post som med Gmail</a> nedan.
@@ -1189,11 +1182,11 @@ Om du använder Google Workspace och vill vidarebefordra alla icke-matchande ali
 
 Om du använder Microsoft 365 (Outlook) och vill vidarebefordra alla icke-matchande alias till vår tjänst, se <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> och <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### Hur ställer jag in en semestersvarare (autosvarare för frånvarande) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Hur ställer jag in en semestersvarare (autosvarare för frånvaro) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
 Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Alias och skapa eller redigera det alias du vill konfigurera ett autosvar för semesteranvändning för.
 
-Du har möjlighet att konfigurera ett startdatum, slutdatum, ämne och meddelande och aktivera eller inaktivera det när som helst:
+Du kan konfigurera startdatum, slutdatum, ämne och meddelande, och aktivera eller inaktivera det när som helst:
 
 * Ämne och meddelande i klartext stöds för närvarande (vi använder `striptags`-paketet internt för att ta bort all HTML).
 
@@ -1206,7 +1199,7 @@ Du har möjlighet att konfigurera ett startdatum, slutdatum, ämne och meddeland
 * Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i> Domäner</a> <i class="fa fa-angle-right"></i> Inställningar <i class="fa fa-angle-right"></i> Utgående SMTP-konfiguration och följ installationsanvisningarna.
 
 * Semestersvar kan inte aktiveras på globala vanity-domännamn (t.ex. stöds inte [engångsadresser](/disposable-addresses)).
-* Semestersvar kan inte aktiveras för alias med jokertecken/allt-i-ett-uttryck (`*`) eller reguljära uttryck.
+* Semestersvar kan inte aktiveras för alias med jokertecken/allmänt uttryck (`*`) eller reguljära uttryck.
 
 Till skillnad från e-postsystem som `postfix` (t.ex. som använder semesterfiltertillägget `sieve`) – lägger Vidarebefordra e-post automatiskt till din DKIM-signatur, dummysäkrar anslutningsproblem när du skickar semestersvar (t.ex. på grund av vanliga SSL/TLS-anslutningsproblem och äldre servrar) och stöder till och med Open WKD- och PGP-kryptering för semestersvar.
 
@@ -1215,23 +1208,24 @@ Till skillnad från e-postsystem som `postfix` (t.ex. som använder semesterfilt
 * Alla betalda konton inkluderar 300 krediter per dag som standard. Om du behöver ett större belopp, vänligen kontakta oss.
 -->
 
-1. Vi skickar bara en gång per [tillåten på listan](#do-you-have-an-allowlist) avsändare var fjärde dag (vilket liknar Gmails beteende).
+1. Vi skickar bara en gång per [tillåten på listan](#do-you-have-an-allowlist)-sändare var fjärde dag (vilket liknar Gmails beteende).
 
 * Vår Redis-cache använder ett fingeravtryck på `alias_id` och `sender`, medan `alias_id` är alias MongoDB-ID och `sender` är antingen Från-adressen (om den är tillåten) eller rotdomänen i Från-adressen (om den inte är tillåten). För enkelhetens skull är utgångsdatumet för detta fingeravtryck i cachen satt till 4 dagar.
 
 * Vår metod att använda rotdomänen som analyserats i Från-adressen för avsändare som inte finns med på tillåtelselistan förhindrar att missbruk från relativt okända avsändare (t.ex. illvilliga aktörer) översvämmar semestersvarsmeddelanden.
 
-2. Vi skickar bara när MAIL FRÅN och/eller Från inte är tomma och inte innehåller (skiftlägeskänsligt) en [postmaster användarnamn](#what-are-postmaster-addresses) (delen före @ i ett e-postmeddelande).
+2. Vi skickar bara när MAIL FROM och/eller From inte är tomma och inte innehåller (skiftlägeskänsligt) en [postmaster användarnamn](#what-are-postmaster-addresses) (delen före @ i ett e-postmeddelande).
 
 3. Vi skickar inte om det ursprungliga meddelandet hade någon av följande rubriker (skiftlägeskänsligt):
 
-* Rubrik för `auto-submitted` med ett värde som inte är lika med `no`. * Rubrik för `x-auto-response-suppress` med värdet `dr`, `autoreply`, `auto-reply`, `auto_reply` eller `all`
-* Rubrik för `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` eller `x-auto-respond` (oavsett värde).
-* Rubrik för `precedence` med värdet `bulk`, `autoreply`, `auto-reply`, `auto_reply` eller `list`.
+* Rubrik för `auto-submitted` med ett värde som inte är lika med `no`.
+* Rubrik för `x-auto-response-suppress` med ett värde på `dr`, `autoreply`, `auto-reply`, `auto_reply` eller `all`.
+* Rubrik för `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 eller `no`7 (oavsett värde).
+* Rubrik för `no`8 med värdet `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 eller `x-auto-response-suppress`3.
 
-4. Vi skickar inte om e-postadressen MAIL FRÅN eller Från slutar med `+donotreply`, `-donotreply`, `+noreply` eller `-noreply`.
+4. Vi skickar inte om e-postadressen MAIL FROM eller From slutar med `+donotreply`, `-donotreply`, `+noreply` eller `-noreply`.
 
-5. Vi skickar inte om användarnamnsdelen för e-postadressen "Från" var `mdaemon` och den hade en rubrik med `X-MDDSN-Message` som inte känsligt för gemener och versaler.
+5. Vi skickar inte om användarnamnsdelen för e-postadressen "Från" var `mdaemon` och den hade en rubrik som inte känsligt för gemener och versaler, `X-MDDSN-Message`.
 
 6. Vi skickar inte om det fanns en `content-type`-rubrik som inte är skiftlägeskänslig för `multipart/report`.
 
@@ -1302,7 +1296,7 @@ Gå till <a href="/my-account/domains" class="alert-link" target="_blank" rel="n
 
 ### Hur lägger jag till fler kalendrar och hanterar befintliga kalendrar {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-Om du vill lägga till ytterligare kalendrar lägger du bara till en ny kalender-URL: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**se till att ersätta `calendar-name` med ditt önskade kalendernamn**)
+Om du vill lägga till ytterligare kalendrar lägger du bara till en ny kalender-URL: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**se till att ersätta `calendar-name` med önskat kalendernamn**)
 
 Du kan ändra en kalenders namn och färg efter att den har skapats – använd bara ditt föredragna kalenderprogram (t.ex. Apple Mail eller [Thunderbird](https://thunderbird.net)).
 
@@ -1314,7 +1308,7 @@ Vi konfigurerar automatiskt [Avsändarens omskrivningsschema](https://en.wikiped
 
 Se [vår sektion om MTA-STS](#do-you-support-mta-sts) för mer information.
 
-### Hur lägger jag till en profilbild i min e-postadress {#how-do-i-add-a-profile-picture-to-my-email-address}
+### Hur lägger jag till en profilbild i min e-postadress {#how-do-i-add-a-profile-picture-to-my-email-address}}
 
 Om du använder Gmail följer du stegen nedan:
 
@@ -1325,7 +1319,7 @@ Om du använder Gmail följer du stegen nedan:
 5. Välj "Använd min nuvarande e-postadress istället".
 6. Ange din e-postadress för ditt anpassade domännamn.
 7. Hämta verifieringsmejlet som skickades till din e-postadress.
-8. Ange verifieringskoden från det här mejlet.
+8. Ange verifieringskoden från detta mejl.
 9. Fyll i profilinformationen för ditt nya Google-konto.
 10. Godkänn alla sekretess- och användarvillkor.
 11. Gå till <https://google.com> och klicka på din profilikon i det övre högra hörnet och klicka på knappen "ändra".
@@ -1339,9 +1333,9 @@ Om du använder Gmail följer du stegen nedan:
 
 Ja, du kan läsa mer på <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Observera att för att bibehålla IP-rykte och säkerställa leveransbarhet har Forward Email en manuell granskningsprocess per domän för **godkännande av nyhetsbrev**. Skicka e-post till <support@forwardemail.net> eller öppna en [hjälp begäran](https://forwardemail.net/help) för godkännande. Detta tar vanligtvis mindre än 24 timmar, och de flesta förfrågningar hanteras inom 1–2 timmar. Inom en snar framtid strävar vi efter att göra denna process omedelbar med ytterligare skräppostkontroller och varningar. Denna process säkerställer att dina e-postmeddelanden når inkorgen och att dina meddelanden inte markeras som skräppost.
+Observera att för att bibehålla IP-rykte och säkerställa leveransbarhet har Forward Email en manuell granskningsprocess per domän för **godkännande av nyhetsbrev**. Skicka e-post till <support@forwardemail.net> eller öppna en [hjälpförfrågan](https://forwardemail.net/help) för godkännande. Detta tar vanligtvis mindre än 24 timmar, och de flesta förfrågningar hanteras inom 1–2 timmar. Inom en snar framtid strävar vi efter att göra denna process omedelbar med ytterligare skräppostkontroller och varningar. Denna process säkerställer att dina e-postmeddelanden når inkorgen och att dina meddelanden inte markeras som skräppost.
 
-### Stöder ni e-post med API {#do-you-support-sending-email-with-api}
+### Stöder ni att skicka e-post med API {#do-you-support-sending-email-with-api}
 
 Ja, från och med maj 2023 stöder vi e-post med API som ett tillägg för alla betalande användare.
 
@@ -1355,13 +1349,13 @@ Var god läs vår <a href="/terms" class="alert-link" target="_blank">Villkor</a
 </span>
 </div>
 
-Se vårt avsnitt om [E-postmeddelanden](/email-api#outbound-emails) i vår API-dokumentation för alternativ, exempel och mer insikt.
+Se avsnittet om [E-postmeddelanden](/email-api#outbound-emails) i vår API-dokumentation för alternativ, exempel och mer insikt.
 
 För att kunna skicka utgående e-post med vårt API måste du använda din API-token som finns tillgänglig under [Min säkerhet](/my-account/security).
 
-### Stöder ni e-post med IMAP? {#do-you-support-receiving-email-with-imap}
+### Stöder ni e-postmottagning med IMAP {#do-you-support-receiving-email-with-imap}
 
-Ja, från och med den 16 oktober 2023 stöder vi e-post via IMAP som ett tillägg för alla betalande användare. **Läs vår djupgående artikel** om [hur vår krypterade SQLite-postlådelagringsfunktion fungerar](/blog/docs/best-quantum-safe-encrypted-email-service).
+Ja, från och med den 16 oktober 2023 stöder vi e-post via IMAP som ett tillägg för alla betalande användare. **Läs vår djupgående artikel** om [hur vår krypterade SQLite-postlådelagringsfunktion fungerar](/blog/docs/best-quantum-safe-encrypted-email-service).**
 
 <div id="imap-instruktioner">
 
@@ -1388,7 +1382,7 @@ Tips:
 <span>Vi rekommenderar att du använder <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> eller <a href="/blog/open-source" class="alert-link" target="_blank">ett öppen källkod och integritetsfokuserat alternativ</a>.</span>
 </div>
 
-4. När du blir ombedd att ange IMAP-servernamnet, ange `imap.forwardemail.net`
+4. När du blir ombedd att ange IMAP-servernamnet anger du `imap.forwardemail.net`
 
 5. När du blir ombedd att ange IMAP-serverport, ange `993` (SSL/TLS) – se [alternativa IMAP-portar](/faq#what-are-your-imap-server-configuration-settings) om det behövs
 <div class="alert my-3 alert-warning">
@@ -1396,7 +1390,7 @@ Tips:
 <strong class="font-weight-bold">
 Tips:
 </strong>
-<span>Om du använder Thunderbird, se till att "Anslutningssäkerhet" är inställt på "SSL/TLS" och autentiseringsmetoden är inställd på "Normalt lösenord".</span>
+<span>Om du använder Thunderbird, se till att "Anslutningssäkerhet" är inställd på "SSL/TLS" och autentiseringsmetod är inställd på "Normalt lösenord".</span>
 </div>
 
 6. När du blir ombedd att ange lösenordet för IMAP-servern, klistra in lösenordet från <strong class="text-success"><i class="fa fa-key"></i>Generera lösenord</strong> i steg 2 ovan.
@@ -1419,7 +1413,7 @@ Du har slutfört alla steg.
 
 ### Stöder du POP3 {#do-you-support-pop3}
 
-Ja, från och med den 4 december 2023 stöder vi [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) som ett tillägg för alla betalande användare. **Läs gärna vår djupgående artikel** om [hur vår krypterade SQLite-postlådelagringsfunktion fungerar](/blog/docs/best-quantum-safe-encrypted-email-service).
+Ja, från och med den 4 december 2023 stöder vi [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) som ett tillägg för alla betalande användare. **Läs vår djupgående artikel** om [hur vår krypterade SQLite-postlådelagringsfunktion fungerar](/blog/docs/best-quantum-safe-encrypted-email-service).**
 
 <div id="pop3-instruktioner">
 
@@ -1446,9 +1440,9 @@ Tips:
 <span>Vi rekommenderar att du använder <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> eller <a href="/blog/open-source" class="alert-link" target="_blank">ett öppen källkod och integritetsfokuserat alternativ</a>.</span>
 </div>
 
-4. När du blir ombedd att ange POP3-servernamnet, ange `pop3.forwardemail.net`
+4. När du blir ombedd att ange POP3-servernamnet anger du `pop3.forwardemail.net`
 
-5. När du blir ombedd att ange POP3-serverporten, ange `995` (SSL/TLS) – se [alternativa POP3-portar](/faq#what-are-your-pop3-server-configuration-settings) om det behövs
+5. När du blir ombedd att ange POP3-serverport, ange `995` (SSL/TLS) – se [alternativa POP3-portar](/faq#what-are-your-pop3-server-configuration-settings) om det behövs
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1488,7 +1482,7 @@ Den stöder både IPv4 och IPv6 och är tillgänglig via port `443` (HTTPS).
 
 För att använda kalenderstöd måste **användaren** vara e-postadressen till ett alias som finns för domänen på <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mitt konto <i class="fa fa-angle-right"></i>-domäner</a> – och **lösenordet** måste vara ett aliasspecifikt genererat lösenord.
 
-### Stöder ni kontakter (CardDAV) {#do-you-support-contacts-carddav}
+### Stödjer du kontakter (CardDAV) {#do-you-support-contacts-carddav}
 
 Ja, från och med den 12 juni 2025 har vi lagt till den här funktionen. Vår server är `carddav.forwardemail.net` och övervakas även på vår <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussida</a>.
 
@@ -1542,7 +1536,7 @@ Tips:
 <span>Vi rekommenderar att du använder <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> eller <a href="/blog/open-source" class="alert-link" target="_blank">ett öppen källkod och integritetsfokuserat alternativ</a>.</span>
 </div>
 
-5. När du blir ombedd att ange SMTP-servernamnet, ange `smtp.forwardemail.net`
+5. När du blir ombedd att ange SMTP-servernamnet anger du `smtp.forwardemail.net`
 
 6. När du blir ombedd att ange SMTP-serverport, ange `465` (SSL/TLS) – se [alternativa SMTP-portar](/faq#what-are-your-smtp-server-configuration-settings) om det behövs
 <div class="alert my-3 alert-warning">
@@ -1550,7 +1544,7 @@ Tips:
 <strong class="font-weight-bold">
 Tips:
 </strong>
-<span>Om du använder Thunderbird, se till att "Anslutningssäkerhet" är inställt på "SSL/TLS" och autentiseringsmetoden är inställd på "Normalt lösenord".</span>
+<span>Om du använder Thunderbird, se till att "Anslutningssäkerhet" är inställd på "SSL/TLS" och autentiseringsmetoden är inställd på "Normalt lösenord".</span>
 </div>
 
 7. När du blir ombedd att ange lösenordet för SMTP-servern, klistra in lösenordet från <strong class="text-success"><i class="fa fa-key"></i>Generera lösenord</strong> i steg 3 ovan.
@@ -1583,7 +1577,7 @@ Du har slutfört alla steg.
 
 ### Stöder ni OpenPGP/MIME, end-to-end-kryptering ("E2EE") och Web Key Directory ("WKD")? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Ja, vi stöder [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end-kryptering ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption) och identifiering av publika nycklar med hjälp av [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD). Du kan konfigurera OpenPGP med hjälp av [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) eller [självhosta dina egna nycklar](https://wiki.gnupg.org/WKDHosting) (se [denna referens för WKD-serverinstallation](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Ja, vi stöder [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [end-to-end-kryptering ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption) och identifiering av publika nycklar med hjälp av [Webbnyckelkatalog ("WKD")](https://wiki.gnupg.org/WKD). Du kan konfigurera OpenPGP med hjälp av [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) eller [självhosta dina egna nycklar](https://wiki.gnupg.org/WKDHosting) (se [denna referens för WKD-serverinstallation](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
 * WKD-sökningar cachas i 1 timme för att säkerställa snabb e-postleverans → Om du lägger till, ändrar eller tar bort din WKD-nyckel, vänligen maila oss på `support@forwardemail.net` med din e-postadress så att vi kan rensa cachen manuellt.
 
@@ -1624,7 +1618,7 @@ Du måste följa alla följande steg för att aktivera OpenPGP för ditt anpassa
 | Gmail | Webbläsare | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietär licens) | Gmail stöder inte OpenPGP, men du kan ladda ner plugin-programmet med öppen källkod [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
 | Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail stöder inte OpenPGP, men du kan ladda ner plugin-programmet med öppen källkod [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
 | Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) eller [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (proprietär licens) | Apple Mail stöder inte OpenPGP, men du kan ladda ner plugin-programmet med öppen källkod [PGPro](https://github.com/opensourceios/PGPro/) eller [FlowCrypt](https://flowcrypt.com/download). |
-| Syn | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlooks e-postklient för skrivbordet stöder inte OpenPGP, men du kan ladda ner plugin-programmet med öppen källkod [gpg4win](https://www.gpg4win.de/index.html). |
+| Syn | Fönster | [gpg4win](https://www.gpg4win.de/index.html) | Outlooks e-postklient för skrivbordet stöder inte OpenPGP, men du kan ladda ner plugin-programmet med öppen källkod [gpg4win](https://www.gpg4win.de/index.html). |
 | Syn | Webbläsare | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietär licens) | Outlooks webbaserade e-postklient stöder inte OpenPGP, men du kan ladda ner plugin-programmet med öppen källkod [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
 | Android | Mobil | [OpenKeychain](https://www.openkeychain.org/) eller [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) som [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) och [FairEmail](https://github.com/M66B/FairEmail) stöder båda plugin-programmet med öppen källkod [OpenKeychain](https://www.openkeychain.org/). Alternativt kan du använda plugin-programmet med öppen källkod (proprietär licens) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
 | Google Chrome | Webbläsare | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietär licens) | Du kan ladda ner webbläsartillägget med öppen källkod [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
@@ -1633,7 +1627,7 @@ Du måste följa alla följande steg för att aktivera OpenPGP för ditt anpassa
 | Modig | Webbläsare | [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download) (proprietär licens) | Du kan ladda ner webbläsartillägget med öppen källkod [Mailvelope](https://mailvelope.com/) eller [FlowCrypt](https://flowcrypt.com/download). |
 | Balsa | Skrivbord | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsa har inbyggt stöd för OpenPGP. |
 | KMail | Skrivbord | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMail har inbyggt stöd för OpenPGP. |
-| GNOME Evolution | Skrivbord | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution har inbyggt stöd för OpenPGP. |
+| GNOME-utvecklingen | Skrivbord | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolution har inbyggt stöd för OpenPGP. |
 | Terminal | Skrivbord | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | Du kan använda den öppna källkoden [gpg command line tool](https://www.gnupg.org/download/) för att generera en ny nyckel från kommandoraden. |
 
 2. Öppna plugin-programmet, skapa din publika nyckel och konfigurera din e-postklient för att använda den.
@@ -1680,7 +1674,7 @@ Du har slutfört alla steg.
 </div>
 </div>
 
-### Stöder du MTA-STS {#do-you-support-mta-sts}
+### Stödjer du MTA-STS {#do-you-support-mta-sts}
 
 Ja, från och med den 2 mars 2023 stöder vi [MTA-STS](https://www.hardenize.com/blog/mta-sts). Du kan använda [den här mallen](https://github.com/jpawlowski/mta-sts.template) om du vill aktivera det på din domän.
 
@@ -1688,7 +1682,7 @@ Vår konfiguration finns tillgänglig offentligt på GitHub på <https://github.
 
 ### Stöder ni lösenord och WebAuthn {#do-you-support-passkeys-and-webauthn}
 
-Ja! Från och med den 13 december 2023 har vi lagt till stöd för lösenord [på grund av hög efterfrågan](https://github.com/orgs/forwardemail/discussions/182).
+Ja! Från och med den 13 december 2023 har vi lagt till stöd för lösenorden [på grund av hög efterfrågan](https://github.com/orgs/forwardemail/discussions/182).
 
 Med lösenordsnycklar kan du logga in säkert utan att behöva lösenord och tvåfaktorsautentisering.
 
@@ -1718,30 +1712,30 @@ Letar du efter dokumentation om e-postwebhooks? Se <a href="/faq#do-you-support-
 </span>
 </div>
 
-Ja, från och med den 14 augusti 2024 har vi lagt till den här funktionen. Du kan nu gå till Mitt konto → Domäner → Inställningar → Bounce Webhook-URL och konfigurera en `http://` eller `https://` URL som vi skickar en `POST` begäran till när utgående SMTP-e-postmeddelanden studsar.
+Ja, från och med den 14 augusti 2024 har vi lagt till den här funktionen. Du kan nu gå till Mitt konto → Domäner → Inställningar → Bounce Webhook URL och konfigurera en `http://`- eller `https://`-URL som vi skickar en `POST`-förfrågan till när utgående SMTP-e-postmeddelanden studsar.
 
 Detta är användbart för att hantera och övervaka din utgående SMTP – och kan användas för att underhålla prenumeranter, välja bort och upptäcka när avvisningar inträffar.
 
 Bounce webhook-nyttolaster skickas som en JSON med dessa egenskaper:
 
-* `email_id` (Sträng) - e-postadress som motsvarar en e-postadress i Mitt konto → E-postmeddelanden (utgående SMTP)
+* `email_id` (Sträng) - e-post-ID som motsvarar en e-postadress i Mitt konto → E-postmeddelanden (utgående SMTP)
 * `list_id` (Sträng) - `List-ID`-rubrikens värde (skiftlägesokänsligt), om sådant finns, från det ursprungliga utgående e-postmeddelandet
 * `list_unsubscribe` (Sträng) - `List-Unsubscribe`-rubrikens värde (skiftlägesokänsligt), om sådant finns, från det ursprungliga utgående e-postmeddelandet
 * `feedback_id` (Sträng) - `Feedback-ID`-rubrikens värde (skiftlägesokänsligt), om sådant finns, från det ursprungliga utgående e-postmeddelandet
-* `recipient` (Sträng) - e-postadressen till mottagaren som studsade eller fick ett fel
-* `message` (Sträng) - ett detaljerat felmeddelande för studsen
+* `recipient` (Sträng) - e-postadressen till mottagaren som studsade eller orsakade ett fel
+* `message` (Sträng) - ett detaljerat felmeddelande för studsningen
 * `response` (Sträng) - SMTP-svarsmeddelandet
-* `response_code` (Nummer) - den analyserade SMTP-svarskoden
-* `truth_source` (Sträng) - om svarskoden kom från en betrodd källa kommer detta värde att fyllas i med rotdomännamnet (t.ex. `google.com` eller `yahoo.com`)
-* `bounce` (Objekt) - ett objekt som innehåller följande egenskaper som specificerar studs- och avvisningsstatus
-* `action` (Sträng) - studsningsåtgärd (t.ex. `"reject"`)
-* `message` (Sträng) - orsak till studs (t.ex. `"Message Sender Blocked By Receiving Server"`)
-* `category` (Sträng) - studskategori (t.ex. `"block"`)
-* `code` (Nummer) - kod för studsstatus (t.ex. `554`)
-* `status` (Sträng) - studskod från svarsmeddelande (t.ex. `5.7.1`)
-* `line` (Nummer) - analyserat radnummer, om sådant finns, [från Zone-MTA-avvisningsparslistan](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (t.ex. `526`)
-* `headers` (Objekt) - nyckelvärdespar av rubriker för det utgående e-postmeddelandet
-* `bounced_at` (Sträng) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formaterat datum för när avvisningsfelet inträffade
+* `list_id`0 (Nummer) - den parsad SMTP-svarskod
+* `list_id`1 (Sträng) - om svarskoden kom från en betrodd källa kommer detta värde att fyllas i med rotdomännamnet (t.ex. `list_id`2 eller `list_id`3)
+* `list_id`4 (Objekt) - ett objekt som innehåller följande egenskaper som specificerar studs- och avvisningsstatus
+* `list_id`5 (Sträng) - studsåtgärd (t.ex. `list_id`6)
+* `list_id`7 (Sträng) - studsorsak (t.ex. `list_id`8)
+* `list_id`9 (Sträng) - studskategori (t.ex. `List-ID`0)
+* `List-ID`1 (Nummer) - studsstatuskod (t.ex. `List-ID`2)
+* `List-ID`3 (Sträng) - studskod från svarsmeddelande (t.ex. `List-ID`4)
+* `List-ID`5 (Nummer) - analyserat radnummer, om sådant finns, `List-ID`6 (t.ex. `List-ID`7)
+* `List-ID`8 (Objekt) - nyckelvärdespar av rubriker för det utgående e-postmeddelandet
+* `List-ID`9 (Sträng) - `list_unsubscribe`0 formaterat datum för när studsfelet inträffade
 
 Till exempel:
 
@@ -1768,20 +1762,23 @@ Till exempel:
 
 Här är några ytterligare anmärkningar angående studsande webhooks:
 
-* Om webhook-nyttolasten innehåller ett `list_id`, `list_unsubscribe` eller `feedback_id` värde, bör du vidta lämpliga åtgärder för att ta bort `recipient` från listan om det behövs.
+* Om webhook-nyttolasten innehåller ett värde på `list_id`, `list_unsubscribe` eller `feedback_id`, bör du vidta lämpliga åtgärder för att ta bort `recipient` från listan om det behövs.
 
-* Om `bounce.category` värdet var ett av följande: `"block"`, `"recipient"`, `"spam"` eller `"virus"`, bör du definitivt ta bort användaren från listan.
+* Om värdet på `bounce.category` var ett av följande: `"block"`, `"recipient"`, `"spam"` eller `"virus"`, bör du definitivt ta bort användaren från listan.
 
-* Om du behöver verifiera webhook-nyttolaster (för att säkerställa att de faktiskt kommer från vår server) kan du [hitta fjärrklientens IP-adress för klientens värdnamn med hjälp av en omvänd sökning](https://nodejs.org/api/dns.html#dnspromisesreverseip) – det ska vara `smtp.forwardemail.net`.
-* Du kan också kontrollera IP-adressen mot [våra publicerade IP-adresser](#what-are-your-servers-ip-addresses).
+* Om du behöver verifiera webhook-nyttolaster (för att säkerställa att de faktiskt kommer från vår server) kan du använda [hitta fjärrklientens IP-adress för klientens värdnamn med hjälp av en omvänd sökning](https://nodejs.org/api/dns.html#dnspromisesreverseip) – det ska vara `list_unsubscribe`0.
+
+* Du kan också kontrollera IP-adressen mot `list_unsubscribe`1.
+
 * Gå till Mitt konto → Domäner → Inställningar → Webhook Signature Payload Verification Key för att få din webhook-nyckel.
-* Du kan rotera den här nyckeln när som helst av säkerhetsskäl.
-* Beräkna och jämför `X-Webhook-Signature`-värdet från vår webhook-förfrågan med det beräknade body-värdet med hjälp av den här nyckeln. Ett exempel på hur man gör detta finns på [detta Stack Overflow-inlägg](https://stackoverflow.com/a/68885281).
-* Se diskussionen på <https://github.com/forwardemail/free-email-forwarding/issues/235> för mer insikt.
-* Vi väntar i upp till `5` sekunder på att din webhook-slutpunkt ska svara med statuskoden `200`, och vi försöker igen i upp till `1` tid.
-* Om vi upptäcker att din studsande webhook-URL innehåller ett fel när vi försöker skicka en begäran till den, skickar vi ett e-postmeddelande till dig en gång i veckan.
 
-### Stöder ni webhooks {#do-you-support-webhooks}
+* Du kan rotera den här nyckeln när som helst av säkerhetsskäl.
+* Beräkna och jämför `list_unsubscribe`2-värdet från vår webhook-förfrågan med det beräknade värdet med hjälp av denna nyckel. Ett exempel på hur man gör detta finns på `list_unsubscribe`3.
+* Se diskussionen på <`list_unsubscribe`4 för mer information.
+* Vi väntar i upp till `list_unsubscribe`5 sekunder på att din webhook-slutpunkt ska svara med statuskoden `list_unsubscribe`6, och vi försöker igen i upp till `list_unsubscribe`7 sekunder.
+* Om vi upptäcker att din studsande webhook-URL har ett fel när vi försöker skicka en förfrågan till den, skickar vi ett e-postmeddelande till dig en gång i veckan.
+
+### Stöder ni webhooks {#do-you-support-webhooks}}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1807,15 +1804,13 @@ Om du har ett betalt abonnemang (som har förbättrat integritetsskydd) går du 
 
 Om du har gratisplanen lägger du helt enkelt till en ny DNS-<strong class="notranslate">TXT</strong>-post enligt nedan:
 
-Om jag till exempel vill att alla e-postmeddelanden som går till `alias@example.com` ska vidarebefordras till en ny [förfrågningsfack](https://requestbin.com/r/en8pfhdgcculn?inspect) testslutpunkt:
+Om jag till exempel vill att alla e-postmeddelanden som går till `alias@example.com` ska vidarebefordras till en ny testslutpunkt av typen [förfrågningsfack](https://requestbin.com/r/en8pfhdgcculn?inspect):
 
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
+<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=alias:https://requestbin.com/r/en8pfhdgcculn</code></td>
 </tr> </tbody>
 </table>
 
-Eller kanske vill du att alla e-postmeddelanden som går till `example.com` ska vidarebefordras till denna slutpunkt:
+Eller kanske du vill att alla e-postmeddelanden som går till `example.com` ska vidarebefordras till denna slutpunkt:
 
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=https://requestbin.com/r/en8pfhdgcculn</code></td>
 </tr> </tbody>
@@ -1823,24 +1818,25 @@ Eller kanske vill du att alla e-postmeddelanden som går till `example.com` ska 
 
 **Här är ytterligare information om webhooks:**
 
-* Om du behöver verifiera webhook-nyttolaster (för att säkerställa att de faktiskt kommer från vår server) kan du [hitta fjärrklientens IP-adress för klientens värdnamn med hjälp av en omvänd sökning](https://nodejs.org/api/dns.html#dnspromisesreverseip) – det ska antingen vara `mx1.forwardemail.net` eller `mx2.forwardemail.net`.
+* Om du behöver verifiera webhook-nyttolaster (för att säkerställa att de faktiskt kommer från vår server) kan du använda [hitta fjärrklientens IP-adress för klientens värdnamn med hjälp av en omvänd sökning](https://nodejs.org/api/dns.html#dnspromisesreverseip) – det ska vara antingen `mx1.forwardemail.net` eller `mx2.forwardemail.net`.
 * Du kan också kontrollera IP-adressen mot [våra publicerade IP-adresser](#what-are-your-servers-ip-addresses).
 * Om du har ett betalt abonnemang går du till Mitt konto → Domäner → Inställningar → Webhook Signature Payload Verification Key för att få din webhook-nyckel.
 * Du kan rotera den här nyckeln när som helst av säkerhetsskäl.
-* Beräkna och jämför `X-Webhook-Signature`-värdet från vår webhook-förfrågan med det beräknade body-värdet med hjälp av den här nyckeln. Ett exempel på hur du gör detta finns på [detta Stack Overflow-inlägg](https://stackoverflow.com/a/68885281).
+* Beräkna och jämför `X-Webhook-Signature`-värdet från vår webhook-förfrågan med det beräknade kroppsvärdet med hjälp av den här nyckeln. Ett exempel på hur du gör detta finns på [detta Stack Overflow-inlägg](https://stackoverflow.com/a/68885281).
 * Se diskussionen på <https://github.com/forwardemail/free-email-forwarding/issues/235> för mer insikt.
-* Om en webhook inte svarar med statuskoden `200`, lagrar vi dess svar i [fellogg skapad](#do-you-store-error-logs) – vilket är användbart för felsökning.
-* Webhook HTTP-förfrågningar försöker igen upp till 3 gånger per SMTP-anslutningsförsök, med en maximal timeout på 60 sekunder per slutpunkts-POST-förfrågan. **Observera att detta inte betyder att den bara försöker igen 3 gånger**, den kommer faktiskt att försöka igen kontinuerligt över tid genom att skicka SMTP-koden 421 (vilket indikerar för avsändaren att försöka igen senare) efter det tredje misslyckade HTTP POST-förfrågningsförsöket. Detta innebär att e-postmeddelandet försöker igen kontinuerligt i flera dagar tills statuskoden 200 uppnås.
+* Om en webhook inte svarar med statuskoden `200` lagrar vi dess svar i [fellogg skapad](#do-you-store-error-logs) – vilket är användbart för felsökning.
+* Webhook HTTP-förfrågningar försöker igen upp till 3 gånger per SMTP-anslutningsförsök, med en maximal timeout på 60 sekunder per slutpunkts-POST-förfrågan. **Observera att detta inte betyder att den bara försöker igen 3 gånger**, den kommer faktiskt att försöka igen kontinuerligt över tid genom att skicka SMTP-koden 421 (vilket indikerar för avsändaren att det ska försöka igen senare) efter det tredje misslyckade HTTP POST-förfrågningsförsöket. Detta innebär att e-postmeddelandet försöker igen kontinuerligt i flera dagar tills statuskoden 200 uppnås.
 * Vi försöker igen automatiskt baserat på standardstatusen och felkoderna som används i [superagentens återförsöksmetod](https://ladjs.github.io/superagent/#retrying-requests) (vi är underhållare).
-* Vi grupperar webhook HTTP-förfrågningar till samma slutpunkt i en förfrågan istället för flera) för att spara resurser och snabba upp svarstiden. Om du till exempel skickar ett e-postmeddelande till <webhook1@example.com>, <webhook2@example.com> och <webhook3@example.com>, och alla dessa är konfigurerade för att träffa samma *exakta* slutpunkts-URL, kommer endast en begäran att göras. Vi grupperar tillsammans efter exakt slutpunktsmatchning med strikt likhet.
-* Observera att vi använder [mailparser](https://nodemailer.com/extras/mailparser/)-bibliotekets "simpleParser"-metod för att analysera meddelandet till ett JSON-vänligt objekt.
+* Vi grupperar webhook HTTP-förfrågningar till samma slutpunkt i en begäran istället för flera) för att spara resurser och snabba upp svarstiden. Om du till exempel skickar ett e-postmeddelande till <webhook1@example.com>, <webhook2@example.com> och <webhook3@example.com>, och alla dessa är konfigurerade för att träffa samma *exakta* slutpunkts-URL, kommer endast en begäran att göras. Vi grupperar tillsammans efter exakt slutpunktsmatchning med strikt likhet.
+* Observera att vi använder `mx1.forwardemail.net`0-bibliotekets metod "simpleParser" för att analysera meddelandet till ett JSON-vänligt objekt.
 * Rå e-postvärde som en sträng anges som egenskapen "raw".
 * Autentiseringsresultat anges som egenskaperna "dkim", "spf", "arc", "dmarc" och "bimi".
 * De analyserade e-postrubrikerna anges som egenskapen "headers" – men observera också att du kan använda "headerLines" för enklare iteration och parsning.
 * De grupperade mottagarna för denna webhook grupperas tillsammans och anges som egenskapen "recipients".
-* SMTP-sessionsinformationen anges som egenskapen "session". Denna innehåller information om meddelandets avsändare, meddelandets ankomsttid, HELO och klientens värdnamn. Klientens värdnamnsvärde som `session.clientHostname` är antingen FQDN (från en omvänd PTR-sökning) eller `session.remoteAddress` omslutet av hakparenteser (t.ex. `"[127.0.0.1]"`).
-* Om du behöver ett snabbt sätt att få värdet för `X-Original-To` kan du använda värdet för `session.recipient` (se exemplet nedan). Rubriken `X-Original-To` är en rubrik som vi lägger till i meddelanden för felsökning med den ursprungliga mottagaren (innan maskerad vidarebefordran) för meddelandet. * Om du behöver ta bort egenskaperna `attachments` och/eller `raw` från nyttolasten, lägg helt enkelt till `?attachments=false`, `?raw=false` eller `?attachments=false&raw=false` till din webhook-slutpunkt som en frågesträngparameter (t.ex. `https://example.com/webhook?attachments=false&raw=false`).
-* Om det finns bilagor kommer de att läggas till i `attachments`-arrayen med buffertvärden. Du kan analysera dem tillbaka till innehållet med hjälp av en metod med JavaScript som:
+* SMTP-sessionsinformationen anges som egenskapen "session". Denna innehåller information om meddelandets avsändare, meddelandets ankomsttid, HELO och klientens värdnamn. Klientens värdnamnsvärde som `mx1.forwardemail.net`1 är antingen FQDN (från en omvänd PTR-sökning) eller `mx1.forwardemail.net`2 inom hakparenteser (t.ex. `mx1.forwardemail.net`3).
+* Om du behöver ett snabbt sätt att få värdet för `mx1.forwardemail.net`4 kan du använda värdet för `mx1.forwardemail.net`5 (se exemplet nedan). Rubriken `mx1.forwardemail.net`6 är en rubrik som vi lägger till i meddelanden för felsökning med den ursprungliga mottagaren (före maskerad vidarebefordran) för meddelandet.
+* Om du behöver ta bort egenskaperna `mx1.forwardemail.net`7 och/eller `mx1.forwardemail.net`8 från nyttolasten, lägg helt enkelt till `mx1.forwardemail.net`9, `mx2.forwardemail.net`0 eller `mx2.forwardemail.net`1 till din webhook-slutpunkt som en frågesträngparameter (t.ex. `mx2.forwardemail.net`2).
+* Om det finns bilagor kommer de att läggas till i `mx2.forwardemail.net`3-arrayen med buffertvärden. Du kan analysera dem tillbaka till innehållet med hjälp av en metod med JavaScript som:
 
   ```js
   const data = [
@@ -2059,9 +2055,9 @@ Nyfiken på hur webhook-förfrågan ser ut från vidarebefordrade e-postmeddelan
 
 Ja, från och med den 27 september 2021 har vi lagt till den här funktionen. Du kan helt enkelt skriva reguljära uttryck ("regex") för att matcha alias och utföra substitutioner.
 
-Alias som stöds av reguljära uttryck är de som börjar med `/` och slutar med `/` och deras mottagare är e-postadresser eller webhooks. Mottagarna kan också inkludera stöd för regex-ersättning (t.ex. `$1`, `$2`).
+Alias som stöds av reguljära uttryck är sådana som börjar med `/` och slutar med `/` och deras mottagare är e-postadresser eller webhooks. Mottagarna kan också inkludera stöd för regex-ersättning (t.ex. `$1`, `$2`).
 
-Vi stöder två flaggor för reguljära uttryck, inklusive `i` och `g`. Den skiftlägeskänsliga flaggan `i` är en permanent standard och tillämpas alltid. Den globala flaggan `g` kan läggas till av dig genom att lägga till ändelsen `/` med `/g`.
+Vi stöder två flaggor för reguljära uttryck, inklusive `i` och `g`. Den skiftlägeskänsliga flaggan `i` är en permanent standard och tillämpas alltid. Den globala flaggan `g` kan läggas till av dig genom att lägga till `/g` i slutet `/`.
 
 Observera att vi även stöder vår <a href="#can-i-disable-specific-aliases">disabled aliasfunktion</a> för mottagardelen med vårt stöd för regex.
 
@@ -2091,7 +2087,7 @@ Om du har gratisplanen lägger du helt enkelt till en ny DNS-<strong class="notr
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Exempel på ersättning av förnamn och efternamn:</strong> Tänk dig att alla dina företags e-postadresser har mönstret `firstname.lastname@example.com`. Om jag vill att alla e-postmeddelanden som går till mönstret `firstname.lastname@example.com` ska vidarebefordras till `firstname.lastname@company.com` med stöd för ersättning (<a href="https://regexr.com/66hnu" class="alert-link">visa test på RegExr</a>):
+<strong>Exempel på förnamns- och efternamnssubstitution:</strong> Tänk dig att alla dina företags e-postadresser har mönstret `firstname.lastname@example.com`. Om jag vill att alla e-postmeddelanden som går till mönstret `firstname.lastname@example.com` ska vidarebefordras till `firstname.lastname@company.com` med stöd för substitution (<a href="https://regexr.com/66hnu" class="alert-link">visa test på RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2112,12 +2108,10 @@ Om du har gratisplanen lägger du helt enkelt till en ny DNS-<strong class="notr
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Exempel på Webhook Querystring-substitution:</strong> Du kanske vill att alla e-postmeddelanden som går till `example.com` ska gå till en <a href="#do-you-support-webhooks" class="alert-link">webhook</a> och ha en dynamisk querystring-nyckel "till" med värdet "användarnamnsdelen" av e-postadressen (<a href="https://regexr.com/66ho4" class="alert-link">visa test på RegExr</a>):
+<strong>Exempel på Webhook Querystring-substitution:</strong> Du kanske vill att alla e-postmeddelanden som går till `example.com` ska gå till en <a href="#do-you-support-webhooks" class="alert-link">webhook</a> och ha en dynamisk querysträngnyckel "till" med värdet "användarnamnsdelen" av e-postadressen (<a href="https://regexr.com/66ho4" class="alert-link">visa test på RegExr</a>):
 </div>
 
-<table class="table table-striped table-hover my-3">
-<thead class="thead-dark">
-<tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
+<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(.*?)$/:https://example.com/webhook?username=$1</code></td>
 </tr> </tbody>
 </table>
 
@@ -2140,8 +2134,11 @@ Om du har gratisplanen lägger du helt enkelt till en ny DNS-<strong class="notr
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong>Exempel på fullständig avvisning:</strong> Om du vill att alla e-postmeddelanden som matchar ett visst mönster ska inaktiveras och fullständigt avvisas med statuskoden `550` (se <a href="#can-i-disable-specific-aliases" class="alert-link">Kan jag inaktivera specifika alias</a>), använd helt enkelt samma metod med ett trippelt utropstecken "!!!". Detta indikerar för avsändaren ett permanent fel och e-postmeddelanden kommer inte att försöka igen, de kommer att avvisas för detta alias.
+</div>
 
-<table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td> </tr> </tbody>
+<table class="table table-striped table-hover my-3">
+<thead class="thead-dark">
+<tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=/^(linus|torvalds)$/:!!!</code></td> </tr> </tbody>
 </table>
 
 <div class="alert my-3 alert-primary">
@@ -2149,18 +2146,18 @@ Om du har gratisplanen lägger du helt enkelt till en ny DNS-<strong class="notr
 <strong class="font-weight-bold">
 Tips:
 </strong>
-Nyfiken på hur man skriver ett reguljärt uttryck eller behöver testa din ersättning? Du kan gå till den kostnadsfria webbplatsen för testning av reguljära uttryck <a href="https://regexr.com" class="alert-link">RegExr</a> på <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.
+Nyfiken på hur man skriver ett reguljärt uttryck eller behöver testa din ersättning? Du kan gå till den kostnadsfria webbplatsen för testning av reguljära uttryck <a href="https://regexr.com" class="alert-link">RegExr</a> på <a href="https://regexr.com/" class="alert-link">https://regexr.com</a>.">
 <span>
 </span>
 </div>
 
 ### Vilka är dina utgående SMTP-gränser {#what-are-your-outbound-smtp-limits}
 
-Vi begränsar användare och domäner till 300 utgående SMTP-meddelanden per dag. Detta innebär i genomsnitt 9000+ e-postmeddelanden under en kalendermånad. Om du behöver överskrida detta antal eller har genomgående stora e-postmeddelanden, vänligen [kontakta oss](https://forwardemail.net/help).
+Vi begränsar användare och domäner till 300 utgående SMTP-meddelanden per dag. Detta innebär i genomsnitt 9000+ e-postmeddelanden under en kalendermånad. Om du behöver överskrida detta antal eller har konsekvent stora e-postmeddelanden, vänligen [kontakta oss](https://forwardemail.net/help).
 
 ### Behöver jag godkännande för att aktivera SMTP {#do-i-need-approval-to-enable-smtp}
 
-Ja, observera att för att bibehålla IP-rykte och säkerställa leveransbarhet har Forward Email en manuell granskningsprocess per domän för utgående SMTP-godkännande. Skicka e-post till <support@forwardemail.net> eller öppna en [hjälp begäran](https://forwardemail.net/help) för godkännande. Detta tar vanligtvis mindre än 24 timmar, och de flesta förfrågningar hanteras inom 1–2 timmar. Inom en snar framtid strävar vi efter att göra denna process omedelbar med ytterligare skräppostkontroller och varningar. Denna process säkerställer att dina e-postmeddelanden når inkorgen och att dina meddelanden inte markeras som skräppost.
+Ja, observera att för att bibehålla IP-rykte och säkerställa leveransbarhet har Forward Email en manuell granskningsprocess per domän för utgående SMTP-godkännande. Skicka e-post till <support@forwardemail.net> eller öppna en [hjälpförfrågan](https://forwardemail.net/help) för godkännande. Detta tar vanligtvis mindre än 24 timmar, och de flesta förfrågningar hanteras inom 1–2 timmar. Inom en snar framtid strävar vi efter att göra denna process omedelbar med ytterligare skräppostkontroller och aviseringar. Denna process säkerställer att dina e-postmeddelanden når inkorgen och att dina meddelanden inte markeras som skräppost.
 
 ### Vilka är dina SMTP-serverkonfigurationsinställningar {#what-are-your-smtp-server-configuration-settings}
 
@@ -2315,7 +2312,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### Avancerade serverhärdningstekniker {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Läs mer om vår säkerhetsinfrastruktur på [vår säkerhetssida](/security).
 
 Vidarebefordra e-post implementerar ett flertal serverhärdningstekniker för att säkerställa säkerheten för vår infrastruktur och dina data:
 
@@ -2333,10 +2330,10 @@ Vidarebefordra e-post implementerar ett flertal serverhärdningstekniker för at
 * Endast nyckelbaserad autentisering
 
 3. **Applikationssäkerhet**:
-* CSP-rubriker (Content Security Policy)
+* Rubriker för Content Security Policy (CSP)
 * HTTPS Strict Transport Security (HSTS)
-* XSS-skyddsrubriker
-* Ramalternativ och hänvisningspolicyrubriker
+* Rubriker för XSS-skydd
+* Rubriker för ramalternativ och hänvisningspolicyer
 * Regelbundna beroendegranskningar
 
 4. **Dataskydd**:
@@ -2352,15 +2349,15 @@ Vidarebefordra e-post implementerar ett flertal serverhärdningstekniker för at
 * Procedurer för incidenthantering
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Våra säkerhetsrutiner uppdateras kontinuerligt för att hantera nya hot och sårbarheter.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> För maximal säkerhet rekommenderar vi att du använder vår tjänst med end-to-end-kryptering via OpenPGP.
 
 ### Har du SOC 2- eller ISO 27001-certifieringar? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Vidarebefordra e-post använder infrastruktur som tillhandahålls av certifierade underleverantörer för att säkerställa att branschstandarder följs.
 
 Vidarebefordran av e-post har inte direkt SOC 2 Typ II- eller ISO 27001-certifieringar. Tjänsten drivs dock på infrastruktur som tillhandahålls av certifierade underleverantörer:
 
@@ -2390,7 +2387,7 @@ Källa: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 * TLS-feldetektering: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
 * MTA-STS-tillämpning i hjälpen för att skicka e-post: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-Tredjepartsvalidering: <https://www.hardenize.com/report/forwardemail.net/1750312779> visar betyget "Bra" för alla TLS- och transportsäkerhetsåtgärder.
+Tredjepartsvalidering: <https://www.hardenize.com/report/forwardemail.net/1750312779> visar betygen "Bra" för alla TLS- och transportsäkerhetsåtgärder.
 
 ### Bevarar ni rubriker för e-postautentisering? {#do-you-preserve-email-authentication-headers}
 
@@ -2408,7 +2405,7 @@ Validering: Internet.nl Mail Test visar 100/100 poäng specifikt för implemente
 ### Bevarar ni ursprungliga e-postrubriker och förhindrar ni förfalskning? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Vidarebefordra e-post implementerar sofistikerat skydd mot förfalskning för att förhindra missbruk av e-post.
 
 Vidarebefordra e-post bevarar ursprungliga e-postrubriker samtidigt som det implementerar omfattande skydd mot förfalskning genom MX-kodbasen:
 
@@ -2422,7 +2419,7 @@ Vidarebefordra e-post bevarar ursprungliga e-postrubriker samtidigt som det impl
 * Huvudsaklig MX-datahanterare: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 * Godtycklig e-postfiltrering (anti-spoofing): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-Hjälpern `isArbitrary` implementerar sofistikerade regler mot förfalskning, inklusive detektering av domänimitation, blockerade fraser och olika nätfiskemönster.
+Hjälparen `isArbitrary` implementerar sofistikerade regler mot förfalskning, inklusive detektering av domänimitation, blockerade fraser och olika nätfiskemönster.
 
 Källa: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
@@ -2443,23 +2440,23 @@ Källor:
 * <https://www.datapacket.com/datacenters/denver> (DDoS-skyddsinformation)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Lagrar ni e-postinnehåll på disk? {#do-you-store-email-content-on-disk}
+### Lagrar du e-postinnehåll på disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Vidarebefordra e-post använder en nollkunskapsarkitektur som förhindrar att e-postinnehåll skrivs till disk.
 
 * **Nollkunskapsarkitektur**: Individuellt krypterade SQLite-postlådor innebär att vidarebefordran av e-post inte kan komma åt e-postinnehåll
 * **Minnesbaserad bearbetning**: E-postbearbetning sker helt i minnet, vilket undviker disklagring
 * **Ingen innehållsloggning**: "Vi loggar eller lagrar inte e-postinnehåll eller metadata på disk"
 * **Sandlådebaserad kryptering**: Krypteringsnycklar lagras aldrig på disk i klartext
 
-**Bevis för MX-kodbas**: MX-servern bearbetar e-postmeddelanden helt i minnet utan att skriva innehåll till disk. Den huvudsakliga hanteraren för e-postbearbetning demonstrerar denna metod i minnet: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**MX-kodbasbevis**: MX-servern bearbetar e-postmeddelanden helt i minnet utan att skriva innehåll till disk. Den huvudsakliga e-postbearbetningshanteraren demonstrerar denna metod i minnet: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
 Källor:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Sammanfattning)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Nollkunskapsinformation)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandlådekryptering)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Nollkunskapsdetaljer)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandlådebaserad kryptering)
 
 ### Kan e-postinnehåll exponeras vid systemkrascher {#can-email-content-be-exposed-during-system-crashes}
 
@@ -2505,7 +2502,7 @@ Källor:
 ### Vilka infrastrukturleverantörer använder du {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Vidarebefordra e-post använder flera infrastrukturunderprocessorer med omfattande efterlevnadscertifieringar.
 
 Fullständig information finns på vår sida om GDPR-efterlevnad: <https://forwardemail.net/gdpr>
 
@@ -2551,7 +2548,7 @@ Fullständig information finns på vår sida om GDPR-efterlevnad: <https://forwa
 * **Stripe**: Certifierad enligt Data Privacy Framework - <https://stripe.com/legal/privacy-center>
 * **PayPal**: Inte DPF-certifierad - <https://www.paypal.com/uk/legalhub/privacy-full>
 
-### Erbjuder ni ett databehandlingsavtal (DPA)? {#do-you-offer-a-data-processing-agreement-dpa}
+### Erbjuder ni ett databehandlingsavtal (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
 Ja, Vidarebefordra e-post erbjuder ett omfattande databehandlingsavtal (DPA) som kan undertecknas med vårt företagsavtal. En kopia av vårt DPA finns tillgänglig på: <https://forwardemail.net/dpa>
 
@@ -2563,14 +2560,14 @@ Ja, Vidarebefordra e-post erbjuder ett omfattande databehandlingsavtal (DPA) som
 * Anpassade DPA-arrangemang tillgängliga via Enterprise License
 
 **GDPR-efterlevnadsramverk:**
-Vårt dataskyddsavtal beskriver i detalj efterlevnaden av GDPR samt internationella krav på dataöverföring. Fullständig information finns på: <https://forwardemail.net/gdpr>
+Vårt dataskyddsavtal beskriver efterlevnaden av GDPR samt internationella krav på dataöverföring. Fullständig information finns på: <https://forwardemail.net/gdpr>
 
 För företagskunder som behöver anpassade DPA-villkor eller specifika avtalsarrangemang kan dessa hanteras via vårt **Företagslicensprogram (250 USD/månad)**.
 
 ### Hur hanterar ni anmälningar om dataintrång {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Vidarebefordra e-postens nollkunskapsarkitektur begränsar intrångets inverkan avsevärt.
 
 * **Begränsad dataexponering**: Kan inte komma åt krypterat e-postinnehåll på grund av nollkunskapsarkitektur
 * **Minimal datainsamling**: Endast grundläggande prenumerantinformation och begränsade IP-loggar för säkerhet
@@ -2633,10 +2630,10 @@ Källor:
 * <https://forwardemail.net> (Visning av realtidsövervakning)
 * <https://github.com/forwardemail/forwardemail.net> (Implementering av övervakning)
 
-### Hur säkerställer du hög tillgänglighet {#how-do-you-ensure-high-availability}
+### Hur säkerställer ni hög tillgänglighet {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Vidarebefordra e-post implementerar omfattande redundans över flera infrastrukturleverantörer.
 
 * **Distribuerad infrastruktur**: Flera leverantörer (DigitalOcean, Vultr, DataPacket) över geografiska regioner
 * **Geografisk lastbalansering**: Cloudflare-baserad geolokaliserad lastbalansering med automatisk redundans
@@ -2653,16 +2650,16 @@ Källor:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Följer du kraven i avsnitt 889 i National Defense Authorization Act (NDAA)? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Följer du avsnitt 889 i National Defense Authorization Act (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Vidarebefordran av e-post följer helt avsnitt 889 genom noggrant urval av infrastrukturpartners.
 
 Ja, vidarebefordran av e-post är **kompatibel med avsnitt 889**. Avsnitt 889 i National Defense Authorization Act (NDAA) förbjuder myndigheter att använda eller ingå avtal med enheter som använder telekommunikations- och videoövervakningsutrustning från specifika företag (Huawei, ZTE, Hikvision, Dahua och Hytera).
 
 **Hur vidarebefordran av e-post uppnår efterlevnad av avsnitt 889:**
 
-Vidarebefordra e-post förlitar sig uteslutande på två viktiga infrastrukturleverantörer, varav ingen använder utrustning som är förbjuden enligt paragraf 889:
+Vidarebefordra e-post förlitar sig uteslutande på två viktiga infrastrukturleverantörer, och ingen av dem använder utrustning som är förbjuden enligt paragraf 889:
 
 1. **Cloudflare**: Vår primära partner för nätverkstjänster och e-postsäkerhet
 2. **DataPacket**: Vår primära leverantör av serverinfrastruktur (med exklusiva Arista Networks- och Cisco-utrustning)
@@ -2674,7 +2671,7 @@ Vidarebefordra e-post förlitar sig uteslutande på två viktiga infrastrukturle
 
 För fullständig information om vårt ramverk för efterlevnad av myndighetsregler, inklusive bredare federala bestämmelser, läs vår omfattande fallstudie: [Kompatibel med avsnitt 889 i den federala regeringens e-posttjänst](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## System- och tekniska detaljer {#system-and-technical-details}
+## System och tekniska detaljer {#system-and-technical-details}
 
 ### Lagrar ni e-postmeddelanden och deras innehåll? {#do-you-store-emails-and-their-contents}
 
@@ -2684,19 +2681,19 @@ Allt görs i minnet och [vår källkod finns på GitHub](https://github.com/forw
 
 ### Hur fungerar ert system för vidarebefordran av e-post? {#how-does-your-email-forwarding-system-work}
 
-E-post är beroende av [SMTP-protokoll](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Detta protokoll består av kommandon som skickas till en server (som oftast körs på port 25). Det finns en initial anslutning, sedan anger avsändaren vem e-postmeddelandet kommer ifrån ("MAIL FROM"), följt av vart det ska ("RCPT TO"), och slutligen rubrikerna och själva e-postmeddelandets brödtext ("DATA"). Flödet i vårt system för vidarebefordran av e-post beskrivs i förhållande till varje SMTP-protokollkommando nedan:
+E-post använder [SMTP-protokoll](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Detta protokoll består av kommandon som skickas till en server (som oftast körs på port 25). Det finns en initial anslutning, sedan anger avsändaren vem e-postmeddelandet kommer ifrån ("MAIL FROM"), följt av vart det ska ("RCPT TO"), och slutligen rubrikerna och själva e-postmeddelandets brödtext ("DATA"). Flödet i vårt system för vidarebefordran av e-post beskrivs nedan i förhållande till varje SMTP-protokollkommando:
 
-* Initial anslutning (inget kommandonamn, t.ex. `telnet example.com 25`) – Detta är den initiala anslutningen. Vi kontrollerar avsändare som inte finns i vår [tillåtelselista](#do-you-have-an-allowlist) mot vår [denylist](#do-you-have-a-denylist). Slutligen, om en avsändare inte finns i vår tillåtelselista, kontrollerar vi om de har blivit [grålistad](#do-you-have-a-greylist).
+* Initial anslutning (inget kommandonamn, t.ex. `telnet example.com 25`) – Detta är den initiala anslutningen. Vi kontrollerar avsändare som inte finns i vår [tillåtelselista](#do-you-have-an-allowlist) mot vår [avvisarlista](#do-you-have-a-denylist). Slutligen, om en avsändare inte finns i vår tillåtelselista, kontrollerar vi om de har varit [grålistad](#do-you-have-a-greylist).
 
 * `HELO` – Detta indikerar en hälsning som identifierar avsändarens FQDN, IP-adress eller e-posthanterarens namn. Detta värde kan förfalskas, så vi förlitar oss inte på dessa data utan använder istället omvänd värdnamnssökning av anslutningens IP-adress.
 
-* `MAIL FROM` – Detta anger e-postens kuvertadress. Om ett värde anges måste det vara en giltig RFC 5322-e-postadress. Tomma värden är tillåtna. Vi [kontrollera efter bakåtspridning](#how-do-you-protect-against-backscatter) här, och vi kontrollerar även MAIL FROM mot vår [denylist](#do-you-have-a-denylist). Vi kontrollerar slutligen avsändare som inte finns på tillåtelselistan för hastighetsbegränsning (se avsnittet om [Hastighetsbegränsande](#do-you-have-rate-limiting) och [tillåtelselista](#do-you-have-an-allowlist) för mer information).
+* `MAIL FROM` - Detta anger kuvertadressen för e-postmeddelandet. Om ett värde anges måste det vara en giltig RFC 5322-e-postadress. Tomma värden är tillåtna. Vi använder [kontrollera efter bakåtspridning](#how-do-you-protect-against-backscatter) här, och vi kontrollerar även MAIL FROM mot vår [avvisarlista](#do-you-have-a-denylist). Vi kontrollerar slutligen avsändare som inte finns på tillåtelselistan för hastighetsbegränsning (se avsnittet om [Hastighetsbegränsande](#do-you-have-rate-limiting) och [tillåtelselista](#do-you-have-an-allowlist) för mer information).
 
-* `RCPT TO` – Detta anger mottagaren/mottagarna av e-postmeddelandet. Dessa måste vara giltiga RFC 5322-e-postadresser. Vi tillåter endast upp till 50 kuvertmottagare per meddelande (detta skiljer sig från "Till"-rubriken i ett e-postmeddelande). Vi kontrollerar också om det finns en giltig [Avsändarens omskrivningsschema](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS")-adress här för att skydda mot förfalskning med vårt SRS-domännamn.
+* `RCPT TO` – Detta anger mottagaren/mottagarna av e-postmeddelandet. Dessa måste vara giltiga RFC 5322-e-postadresser. Vi tillåter endast upp till 50 kuvertmottagare per meddelande (detta skiljer sig från "Till"-rubriken i ett e-postmeddelande). Vi kontrollerar också om det finns en giltig [Avsändarens omskrivningsschema](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)-adress ("SRS") här för att skydda mot förfalskning med vårt SRS-domännamn.
 
-* `DATA` – Detta är kärndelen av vår tjänst som behandlar e-post. Se avsnittet [Hur hanterar man ett e-postmeddelande för vidarebefordran](#how-do-you-process-an-email-for-forwarding) nedan för mer information.
+* `DATA` – Detta är kärndelen av vår tjänst som behandlar e-postmeddelanden. Se avsnittet [Hur hanterar man ett e-postmeddelande för vidarebefordran](#how-do-you-process-an-email-for-forwarding) nedan för mer information.
 
-### Hur vidarebefordrar man ett e-postmeddelande? {#how-do-you-process-an-email-for-forwarding}
+### Hur bearbetar man ett e-postmeddelande för vidarebefordran {#how-do-you-process-an-email-for-forwarding}
 
 Det här avsnittet beskriver vår process relaterad till SMTP-protokollkommandot `DATA` i avsnittet [Hur fungerar ert system för vidarebefordran av e-post?](#how-does-your-email-forwarding-system-work) ovan – det handlar om hur vi bearbetar ett e-postmeddelandes rubriker, brödtext, säkerhet, avgör vart det ska levereras och hur vi hanterar anslutningar.
 
@@ -2719,37 +2716,39 @@ Det här avsnittet beskriver vår process relaterad till SMTP-protokollkommandot
 * Detta är användbart för att avgöra vart ett e-postmeddelande ursprungligen levererades (utöver rubriken "Received").
 * Detta läggs till per mottagare vid tidpunkten för IMAP och/eller maskerad vidarebefordran (för att skydda integriteten).
 * `X-Forward-Email-Website` - innehåller en länk till vår webbplats <https://forwardemail.net>
-* `X-Forward-Email-Version` - den aktuella [SemVer](https://semver.org/)-versionen från `package.json` av vår kodbas.
-* `X-Forward-Email-Session-ID` - ett sessions-ID-värde som används för felsökning (gäller endast i icke-produktionsmiljöer).
-* `X-Forward-Email-Sender` - en kommaseparerad lista som innehåller den ursprungliga kuvertadressen MAIL FROM (om den inte var tom), den omvända PTR-klientens FQDN (om den finns) och avsändarens IP-adress.
-* `X-Forward-Email-ID` - detta gäller endast för utgående SMTP och korrelerar med e-post-ID:t som lagras i Mitt konto → E-postmeddelanden.
-* `X-Report-Abuse` - med värdet `abuse@forwardemail.net`.
-* `X-Report-Abuse-To` - med värdet `abuse@forwardemail.net`.
-* `X-Complaints-To` - med värdet `abuse@forwardemail.net`.
+* `X-Forward-Email-Version` - den aktuella [SemVer](https://semver.org/)-versionen från `package.json` i vår kodbas.
+* `X-Forward-Email-Session-ID` - ett sessions-ID-värde som används för felsökningsändamål (gäller endast i icke-produktionsmiljöer).
+* `X-Forward-Email-Sender` - en kommaseparerad lista som innehåller den ursprungliga kuvertadressen för MAIL FROM (om den inte var tom), den omvända PTR-klientens FQDN (om den finns) och avsändarens IP-adress.
+* `X-Forward-Email-ID` - detta gäller endast för utgående SMTP och korrelerar med e-postadressen som lagras i Mitt konto → E-postmeddelanden.
+* `X-Original-To`0 - med värdet `X-Original-To`1.
+* `X-Original-To`2 - med värdet `X-Original-To`3.
+* `X-Original-To`4 - med värdet `X-Original-To`5.
 
 8. Vi kontrollerar sedan meddelandet för [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) och [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* Om meddelandet misslyckades med DMARC och domänen hade en avvisningspolicy (t.ex. `p=reject` [fanns i DMARC-policyn](https://wikipedia.org/wiki/DMARC)), avvisas det med felkoden 550. Vanligtvis finns en DMARC-policy för en domän i underdomänens <strong class="notranslate">TXT</strong>-post (t.ex. `dig _dmarc.example.com txt`).
+* Om meddelandet misslyckades med DMARC och domänen hade en avvisningspolicy (t.ex. `p=reject` [fanns i DMARC-policyn](https://wikipedia.org/wiki/DMARC)), avvisas det med felkoden 550. Vanligtvis finns en DMARC-policy för en domän i underdomänposten `_dmarc`, <strong class="notranslate">TXT</strong> (t.ex. `dig _dmarc.example.com txt`).
 
 * Om meddelandet misslyckades med SPF och domänen hade en hård felpolicy (t.ex. `-all` fanns i SPF-policyn istället för `~all` eller ingen policy alls), avvisas det med felkoden 550. Vanligtvis finns en SPF-policy för en domän i <strong class="notranslate">TXT</strong>-posten för rotdomänen (t.ex. `dig example.com txt`). Se det här avsnittet för mer information om [skicka e-post som med Gmail](#can-i-send-mail-as-in-gmail-with-this) angående SPF.
 
 9. Nu bearbetar vi mottagarna av meddelandet som samlats in från kommandot `RCPT TO` i avsnittet [Hur fungerar ert system för vidarebefordran av e-post?](#how-does-your-email-forwarding-system-work) ovan. För varje mottagare utför vi följande operationer:
 
-* Vi söker upp <strong class="notranslate">TXT</strong>-posterna för domännamnet (delen efter symbolen `@`, t.ex. `example.com` om e-postadressen var `test@example.com`). Om domänen till exempel är `example.com` gör vi en DNS-sökning, till exempel `dig example.com txt`.
+* Vi söker upp <strong class="notranslate">TXT</strong>-posterna för domännamnet (delen efter symbolen `@`, t.ex. `example.com` om e-postadressen var `test@example.com`). Om domänen till exempel är `example.com` gör vi en DNS-sökning som `dig example.com txt`.
 
-* Vi analyserar alla <strong class="notranslate">TXT</strong>-poster som börjar med antingen `forward-email=` (gratisabonnemang) eller `forward-email-site-verification=` (betalda abonnemang). Observera att vi analyserar båda för att kunna bearbeta e-postmeddelanden medan en användare uppgraderar eller nedgraderar abonnemang. * Från dessa analyserade <strong class="notranslate">TXT</strong>-poster itererar vi över dem för att extrahera vidarebefordringskonfigurationen (som beskrivs i avsnittet [Hur kommer jag igång och konfigurerar vidarebefordran av e-post](#how-do-i-get-started-and-set-up-email-forwarding) ovan). Observera att vi endast stöder ett `forward-email-site-verification=`-värde, och om fler än ett anges kommer ett 550-fel att uppstå och avsändaren får en studs för denna mottagare.
+* Vi analyserar alla <strong class="notranslate">TXT</strong>-poster som börjar med antingen `forward-email=` (gratisabonnemang) eller `forward-email-site-verification=` (betalda abonnemang). Observera att vi analyserar båda för att kunna bearbeta e-postmeddelanden medan en användare uppgraderar eller nedgraderar abonnemang.
 
-* Rekursivt itererar vi över den extraherade vidarebefordringskonfigurationen för att bestämma global vidarebefordring, regex-baserad vidarebefordring och alla andra vidarebefordringskonfigurationer som stöds – vilka nu kallas våra "vidarebefordringsadresser".
-
-* För varje vidarebefordringsadress stöder vi en rekursiv sökning (som startar denna serie operationer om på den angivna adressen). Om en rekursiv matchning hittades kommer det överordnade resultatet att tas bort från vidarebefordringsadresserna och de underordnade läggs till.
+* Från dessa analyserade <strong class="notranslate">TXT</strong>-poster itererar vi över dem för att extrahera vidarebefordringskonfigurationen (som beskrivs i avsnittet [Hur kommer jag igång och konfigurerar vidarebefordran av e-post](#how-do-i-get-started-and-set-up-email-forwarding) ovan). Observera att vi endast stöder ett `forward-email-site-verification=`-värde, och om fler än ett anges kommer ett 550-fel att uppstå och avsändaren får en studs för denna mottagare.
+* Rekursivt itererar vi över den extraherade vidarebefordringskonfigurationen för att fastställa global vidarebefordring, regex-baserad vidarebefordring och alla andra vidarebefordringskonfigurationer som stöds – vilka nu kallas våra "vidarebefordringsadresser".
+* För varje vidarebefordringsadress stöder vi en rekursiv sökning (som startar denna serie operationer om på den angivna adressen). Om en rekursiv matchning hittades tas det överordnade resultatet bort från vidarebefordringsadresserna och de underordnade adresserna läggs till.
 * Vidarebefordringsadresser analyseras för unikhet (eftersom vi inte vill skicka dubbletter till en adress eller skapa ytterligare onödiga SMTP-klientanslutningar).
-* För varje vidarebefordringsadress söker vi upp dess domännamn mot vår API-slutpunkt `/v1/max-forwarded-addresses` (för att avgöra hur många adresser domänen får vidarebefordra e-post till per alias, t.ex. 10 som standard – se avsnittet om [maximal gräns för vidarebefordran per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Om denna gräns överskrids uppstår ett 550-fel och avsändaren får en studs för denna mottagare.
-* Vi söker upp inställningarna för den ursprungliga mottagaren mot vår API-slutpunkt `/v1/settings`, som stöder en sökning för betalande användare (med en reserv för gratisanvändare). Detta returnerar ett konfigurationsobjekt för avancerade inställningar för `port` (tal, t.ex. `25`), `has_adult_content_protection` (booleskt), `has_phishing_protection` (booleskt), `has_executable_protection` (booleskt) och `has_virus_protection` (booleskt).
-* Baserat på dessa inställningar kontrollerar vi sedan mot Spam Scanners resultat och om några fel uppstår avvisas meddelandet med felkoden 554 (t.ex. om `has_virus_protection` är aktiverat kontrollerar vi Spam Scanners resultat för virus). Observera att alla användare av gratisplanen kommer att välja att kontrollera mot vuxeninnehåll, nätfiske, körbara filer och virus. Som standard är alla användare av betalande abonnemang också aktiverade, men den här konfigurationen kan ändras under inställningssidan för en domän i instrumentpanelen för vidarebefordran av e-post.
+* För varje vidarebefordringsadress söker vi upp dess domännamn mot vår API-slutpunkt `/v1/max-forwarded-addresses` (för att avgöra hur många adresser domänen får vidarebefordra e-post till per alias, t.ex. 10 som standard – se avsnittet om `example.com`0). Om denna gräns överskrids uppstår ett 550-fel och avsändaren får en studs för denna mottagare.
+
+* Vi söker upp inställningarna för den ursprungliga mottagaren mot vår API-slutpunkt `example.com`1, som stöder en sökning för betalande användare (med en reserv för gratisanvändare). Detta returnerar ett konfigurationsobjekt för avancerade inställningar för `example.com`2 (nummer, t.ex. `example.com`3), `example.com`4 (booleskt), `example.com`5 (booleskt), `example.com`6 (booleskt) och `example.com`7 (booleskt).
+
+* Baserat på dessa inställningar kontrollerar vi sedan mot Spam Scanners resultat och om några fel uppstår avvisas meddelandet med felkoden 554 (t.ex. om `example.com`8 är aktiverat kontrollerar vi Spam Scanners resultat för virus). Observera att alla användare av gratisplanen kommer att vara aktiverade för kontroller mot vuxeninnehåll, nätfiske, körbara filer och virus. Som standard är alla användare av betalande planer också aktiverade, men denna konfiguration kan ändras under inställningssidan för en domän i instrumentpanelen för vidarebefordran av e-post).
 
 10. För varje bearbetad mottagares vidarebefordringsadress utför vi sedan följande operationer:
 
-* Adressen kontrolleras mot vår [denylist](#do-you-have-a-denylist), och om den listades kommer en 421-felkod att visas (indikerar för avsändaren att försöka igen senare).
+* Adressen kontrolleras mot vår [avvisarlista](#do-you-have-a-denylist), och om den listades kommer en 421-felkod att visas (indikerar för avsändaren att försöka igen senare).
 
 * Om adressen är en webhook ställer vi in ett booleskt värde för framtida åtgärder (se nedan – vi grupperar liknande webhooks för att göra en POST-förfrågan istället för flera för leverans).
 
@@ -2761,8 +2760,8 @@ Det här avsnittet beskriver vår process relaterad till SMTP-protokollkommandot
 
 * Om några fel uppstår när vi skickar e-postmeddelanden lagrar vi dem i minnet för senare bearbetning.
 * Vi tar den lägsta felkoden (om någon) från att skicka e-postmeddelanden – och använder den som svarskod på kommandot `DATA`. Det betyder att e-postmeddelanden som inte levererats vanligtvis försöks skickas igen av den ursprungliga avsändaren, men e-postmeddelanden som redan levererats skickas inte igen nästa gång meddelandet skickas (eftersom vi använder [Fingeravtryck](#how-do-you-determine-an-email-fingerprint)).
-* Om inga fel uppstod skickar vi en 250 lyckad SMTP-svarsstatuskod.
-* En studs definieras som varje leveransförsök som resulterar i en statuskod som är >= 500 (permanenta fel).
+* Om inga fel uppstod skickar vi en statuskod för lyckat SMTP-svar på 250.
+* En avvisning definieras som varje leveransförsök som resulterar i en statuskod som är >= 500 (permanenta fel).
 
 13. Om inga studsar inträffade (permanenta fel) returnerar vi en SMTP-svarsstatuskod med den lägsta felkoden från icke-permanenta fel (eller en statuskod för lyckade 250 om inga fel förekom).
 
@@ -2770,7 +2769,7 @@ Det här avsnittet beskriver vår process relaterad till SMTP-protokollkommandot
 
 ### Hur hanterar ni problem med e-postleverans? {#how-do-you-handle-email-delivery-issues}
 
-Observera att vi kommer att göra en "Friendly-From"-omskrivning av e-postmeddelandena om och endast om avsändarens DMARC-policy inte godkändes OCH inga DKIM-signaturer var anpassade till "Från"-huvudet.  Det betyder att vi kommer att ändra rubriken "Från" på meddelandet, ställa in "X-Original-Från" och även ställa in ett "Svara-till" om det inte redan var inställt.  Vi kommer också att återförsegla ARC-förseglingen på meddelandet efter att ha ändrat dessa rubriker.
+Observera att vi kommer att göra en omskrivning av "Friendly-From" på e-postmeddelandena endast om avsändarens DMARC-policy inte godkändes OCH inga DKIM-signaturer var i linje med "Från"-rubriken. Det betyder att vi kommer att ändra "Från"-rubriken på meddelandet, ställa in "X-Original-From" och även ställa in en "Svara till" om den inte redan var inställd. Vi kommer också att återförsegla ARC-förseglingen på meddelandet efter att ha ändrat dessa rubriker.
 
 Vi använder också smart parsing av felmeddelanden på varje nivå i vår stack – i vår kod, DNS-förfrågningar, Node.js interna funktioner, HTTP-förfrågningar (t.ex. 408, 413 och 429 mappas till SMTP-svarskoden 421 om mottagaren är en webhook) och e-postserversvar (t.ex. svar med "defer" eller "slowdown" skulle försökas igen som 421-fel).
 
@@ -2780,7 +2779,7 @@ Om mottagaren är en webhook tillåter vi en timeout på 60 sekunder för att be
 
 Om mottagaren är en e-postadress försöker vi skicka e-postmeddelandet med opportunistisk TLS (vi försöker använda STARTTLS om det är tillgängligt på mottagarens e-postserver). Om ett SSL/TLS-fel uppstår när vi försöker skicka e-postmeddelandet försöker vi skicka e-postmeddelandet utan TLS (utan att använda STARTTLS).
 
-Om några DNS- eller anslutningsfel uppstår, returnerar vi SMTP-svarskoden 421 till kommandot `DATA`. Annars skickas returer om det finns fel på nivån >= 500.
+Om några DNS- eller anslutningsfel uppstår returnerar vi SMTP-svarskoden 421 till `DATA`-kommandot. Annars skickas returer om det finns fel på nivån >= 500.
 
 Om vi upptäcker att en e-postserver som vi försöker leverera till har en eller flera av våra IP-adresser blockerade (t.ex. av den teknik de använder för att avvisa spammare), skickar vi en SMTP-svarskod på 421 till avsändaren så att de kan försöka skicka meddelandet igen senare (och vi meddelas om problemet så att vi förhoppningsvis kan lösa det före nästa försök).
 
@@ -2794,7 +2793,7 @@ Våra IP-adresser är offentligt tillgängliga, [se avsnittet nedan för mer ins
 
 ### Vad är postmasteradresser {#what-are-postmaster-addresses}
 
-För att förhindra missriktade avvisningar och att skicka semestersvarsmeddelanden till oövervakade eller obefintliga postlådor, upprätthåller vi en lista över mailer-daemon-liknande användarnamn:
+För att förhindra felaktigt avvisade e-postmeddelanden och att semestersvar skickas till oövervakade eller obefintliga e-postlådor, har vi en lista med användarnamn som liknar mailer-daemons:
 
 * `automailer`
 * `autoresponder`
@@ -2813,7 +2812,7 @@ För att förhindra missriktade avvisningar och att skicka semestersvarsmeddelan
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [och eventuell obesvarad adress](#what-are-no-reply-addresses)
+* [och eventuella svarsfria adresser](#what-are-no-reply-addresses)
 
 Se [RFC 5320 Avsnitt 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) för mer insikt i hur listor som dessa används för att skapa effektiva e-postsystem.
 
@@ -2846,9 +2845,9 @@ Denna lista underhålls [som ett öppen källkodsprojekt på GitHub](https://git
 
 Vi publicerar våra IP-adresser på <https://forwardemail.net/ips>.
 
-### Har du en godkännandelista {#do-you-have-an-allowlist}
+### Har du en tillåtelselista {#do-you-have-an-allowlist}
 
-Ja, vi har en [lista över domännamnstillägg](#what-domain-name-extensions-are-allowlisted-by-default) som är tillåtelselistad som standard och en dynamisk, cachad och rullande tillåtelselista baserad på [strikta kriterier](#what-is-your-allowlist-criteria).
+Ja, vi har en [lista över domännamnstillägg](#what-domain-name-extensions-are-allowlisted-by-default) som är tillåten som standard och en dynamisk, cachad och rullande tillåtelselista baserad på [strikta kriterier](#what-is-your-allowlist-criteria).
 
 Alla e-postadresser, domäner och mottagare från kunder med betalda abonnemang läggs automatiskt till i vår godkännandelista.
 
@@ -2998,17 +2997,16 @@ Vi inkluderade specifikt inte `cz`, `ru` och `ua` på grund av hög spamaktivite
 
 Vi har en statisk lista med [domännamnstillägg tillåtna som standard](#what-domain-name-extensions-are-allowlisted-by-default) – och vi underhåller även en dynamisk, cachad, rullande tillåtelselista baserad på följande strikta kriterier:
 
-* Avsändarens rotdomän måste vara av en [domännamnstillägg som matchar listan vi erbjuder i vår gratisplan](#what-domain-name-extensions-can-be-used-for-free) (med tillägg av `biz` och `info`). Vi inkluderar även `edu`, `gov` och `mil` delvisa matchningar, såsom `xyz.gov.au` och `xyz.edu.au`.
+* Avsändarens rotdomän måste vara av typen [domännamnstillägg som matchar listan vi erbjuder i vår gratisplan](#what-domain-name-extensions-can-be-used-for-free) (med tillägg av `biz` och `info`). Vi inkluderar även partiella matchningar av `edu`, `gov` och `mil`, såsom `xyz.gov.au` och `xyz.edu.au`.
 
-* Avsändarens rotdomän måste vara bland de 100 000 bästa unika rotdomänerna som analyserats i [Paraply popularitetslista](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
+* Avsändarens rotdomän måste vara bland de 100 000 bästa unika rotdomänerna som analyserats från [Paraply popularitetslista](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
 
 * Avsändarens rotdomän måste vara bland de 50 000 bästa resultaten från unika rotdomäner som förekommer i minst 4 av de senaste 7 dagarna av UPL:er (\~50%+).
 
-* Avsändarens rotdomän får inte vara [kategoriserad](https://radar.cloudflare.com/categorization-feedback/) klassad som vuxeninnehåll eller skadlig kod av Cloudflare.
+* Avsändarens rotdomän får inte vara [kategoriserad](https://radar.cloudflare.com/categorization-feedback/) som vuxeninnehåll eller skadlig kod från Cloudflare.
 
 * Avsändarens rotdomän måste ha antingen A- eller MX-poster angivna.
-
-* Avsändarens rotdomän måste ha antingen A-post(er), MX-post(er), DMARC-post med `p=reject` eller `p=quarantine`, eller en SPF-post med kvalificeringen `-all` eller `~all`.
+* Avsändarens rotdomän måste ha antingen A-post(er), MX-post(er), DMARC-post med `biz`0 eller `biz`1, eller en SPF-post med kvalificeraren `biz`2 eller `biz`3.
 
 Om detta kriterium är uppfyllt kommer avsändarens rotdomän att cacha i 7 dagar. Observera att vårt automatiserade jobb körs dagligen – därför är detta en rullande cache för tillåtelselistan som uppdateras dagligen.
 
@@ -3044,7 +3042,7 @@ Denna nya regel tillåter endast följande domännamnstillägg att användas i v
 
 ### Har du en grålista {#do-you-have-a-greylist}
 
-Ja, vi har en väldigt slapp [grålistning av e-post](https://en.wikipedia.org/wiki/Greylisting_\(email\)) policy. Grålistning gäller endast för avsändare som inte finns på vår godkännandelista och lagras i vår cache i 30 dagar.
+Ja, vi har en väldigt slapp [grålistning av e-post](https://en.wikipedia.org/wiki/Greylisting_\(email\))-policy. Grålistning gäller endast för avsändare som inte finns på vår godkännandelista och lagras i vår cache i 30 dagar.
 
 För alla nya avsändare lagrar vi en nyckel i vår Redis-databas i 30 dagar med ett värde satt till den ursprungliga ankomsttiden för deras första begäran. Vi avvisar sedan deras e-postmeddelande med statuskoden 450 för återförsök och tillåter det bara att passera när det har gått 5 minuter.
 
@@ -3052,9 +3050,9 @@ Om de har väntat i 5 minuter från denna ursprungliga ankomsttid kommer deras e
 
 Nyckeln består antingen av FQDN-rotdomänen eller avsändarens IP-adress. Det betyder att alla underdomäner som passerar grålistan också kommer att passera för rotdomänen, och vice versa (detta är vad vi menar med en "väldigt slapp" policy).
 
-Om till exempel ett e-postmeddelande kommer från `test.example.com` innan vi ser ett e-postmeddelande komma från `example.com`, då måste alla e-postmeddelanden från `test.example.com` och/eller `example.com` vänta 5 minuter från anslutningens ursprungliga ankomsttid. Vi låter inte både `test.example.com` och `example.com` vänta sina egna 5-minutersperioder (vår grålistningspolicy gäller på rotdomännivå).
+Om till exempel ett e-postmeddelande kommer från `test.example.com` innan vi ser ett e-postmeddelande komma från `example.com`, måste alla e-postmeddelanden från `test.example.com` och/eller `example.com` vänta 5 minuter från anslutningens ursprungliga ankomsttid. Vi låter inte både `test.example.com` och `example.com` vänta sina egna 5-minutersperioder (vår grålistningspolicy gäller på rotdomännivå).
 
-Observera att grålistning inte gäller någon avsändare på vår [tillåtelselista](#do-you-have-an-allowlist) (t.ex. Meta, Amazon, Netflix, Google, Microsoft i skrivande stund).
+Observera att grålistning inte gäller för någon avsändare på vår [tillåtelselista](#do-you-have-an-allowlist) (t.ex. Meta, Amazon, Netflix, Google, Microsoft i skrivande stund).
 
 ### Har du en avvisningslista {#do-you-have-a-denylist}
 
@@ -3070,52 +3068,54 @@ Genom att använda en statuskod 421 istället för en statuskod 554 kan potentie
 
 Alla begäranden om borttagning från avvisningslista övervakas i realtid av administratörer (t.ex. så att återkommande falska positiva resultat permanent kan tillåtas av administratörer).
 
-Begäran om borttagning från avvisningslista kan begäras på <https://forwardemail.net/denylist>. Betalda användares begäran om borttagning från avvisningslista behandlas omedelbart, medan icke-betalda användare måste vänta på att administratörer ska behandla deras begäran.
+Begäran om borttagning från avvisningslista kan begäras på <https://forwardemail.net/denylist>. Betalda användare får sina begäran om borttagning från avvisningslistan behandlad direkt, medan icke-betalda användare måste vänta på att administratörer ska behandla deras begäran.
 
 Avsändare som upptäcks skicka skräppost eller virusinnehåll läggs till i nekallistan på följande sätt:
 
 1. [fingeravtryck för första meddelandet](#how-do-you-determine-an-email-fingerprint) grålistas vid upptäckt av skräppost eller blockeringslista från en "betrodd" avsändare (t.ex. `gmail.com`, `microsoft.com`, `apple.com`).
-* Om avsändaren var tillåten grålistas meddelandet i 1 timme.
-* Om avsändaren inte är tillåten grålistas meddelandet i 6 timmar.
+* Om avsändaren var godkänd grålistas meddelandet i 1 timme.
+* Om avsändaren inte är godkänd grålistas meddelandet i 6 timmar.
 
 2. Vi analyserar nekningslistanycklar från information från avsändaren och meddelandet, och för var och en av dessa nycklar skapar vi (om en inte redan finns) en räknare, ökar den med 1 och cachar den i 24 timmar.
-* För avsändare på godkännandelistan:
-* Lägg till en nyckel för kuvertets e-postadress "MAIL FROM" om den hade godkänd SPF eller ingen SPF, och den inte var [ett postmaster användarnamn](#what-are-postmaster-addresses) eller [ett användarnamn utan svar](#what-are-no-reply-addresses).
-* Om "Från"-rubriken var godkänd, lägg då till en nyckel för "Från"-rubrikens e-postadress om den hade godkänd SPF eller godkänd och justerad DKIM.
-* Om "Från"-rubriken inte var godkänd, lägg då till en nyckel för "Från"-rubrikens e-postadress och dess rotparsade domännamn.
-* För avsändare som inte är godkända:
-* Lägg till en nyckel för kuvertets e-postadress "MAIL FROM" om den hade godkänd SPF.
-* Om "Från"-rubriken var godkänd, lägg då till en nyckel för "Från"-rubrikens e-postadress om den hade godkänd SPF eller godkänd och justerad DKIM.
-* Om "Från"-rubriken inte var godkänd, lägg då till en nyckel för "Från"-rubrikens e-postadress och dess rotparsade domännamn.
+* För godkända avsändare:
+* Lägg till en nyckel för kuvertets e-postadress "MAIL FROM" om den hade godkänd SPF eller ingen SPF, och den inte var [ett postmaster-användarnamn](#what-are-postmaster-addresses) eller [ett användarnamn som inte kräver svar](#what-are-no-reply-addresses).
+
+* Om "Från"-rubriken var tillåten, lägg till en nyckel för e-postadressen i "Från"-rubriken om den hade godkänd SPF eller godkänd och justerad DKIM.
+* Om "Från"-rubriken inte var tillåten, lägg till en nyckel för e-postadressen i "Från"-rubriken och dess rot-parsade domännamn.
+* För avsändare som inte är tillåtna:
+* Lägg till en nyckel för kuvertet "MAIL FROM"-e-postadress om den hade godkänd SPF.
+* Om "Från"-rubriken var tillåten, lägg till en nyckel för e-postadressen i "Från"-rubriken om den hade godkänd SPF eller godkänd och justerad DKIM.
+* Om "Från"-rubriken inte var tillåten, lägg till en nyckel för e-postadressen i "Från"-rubriken och dess rot-parsade domännamn.
 * Lägg till en nyckel för avsändarens fjärr-IP-adress.
-* Lägg till en nyckel för klientens värdnamn genom omvänd sökning från avsändarens IP-adress (om sådan finns).
-* Lägg till en nyckel för rotdomänen för klientens värdnamn (om sådan finns, och om den skiljer sig från klientens värdnamn).
+* Lägg till en nyckel för klientens matchade värdnamn genom omvänd sökning från avsändarens IP-adress (om sådan finns).
+* Lägg till en nyckel för rotdomänen för klientens matchade värdnamn (om sådan finns, och om den skiljer sig från klientens matchade värdnamn).
+3. Om räknaren når 5 för en avsändare och nyckel som inte finns med på tillåtelselistan, nekar vi nyckeln i 30 dagar och ett e-postmeddelande skickas till vårt missbruksteam. Dessa siffror kan ändras och uppdateringar kommer att visas här när vi övervakar missbruk.
 
-3. Om räknaren når 5 för en avsändare och nyckel som inte finns på godkännandelistan, nekar vi nyckeln i 30 dagar och ett e-postmeddelande skickas till vårt missbruksteam. Dessa siffror kan ändras och uppdateringar kommer att visas här när vi övervakar missbruk.
-
-4. Om räknaren når 10 för en avsändare och nyckel som finns på godkännandelistan, nekar vi nyckeln i 7 dagar och ett e-postmeddelande skickas till vårt missbruksteam. Dessa siffror kan ändras och uppdateringar kommer att visas här när vi övervakar missbruk.
+4. Om räknaren når 10 för en avsändare och nyckel som finns med på tillåtelselistan, nekar vi nyckeln i 7 dagar och ett e-postmeddelande skickas till vårt missbruksteam. Dessa siffror kan ändras och uppdateringar kommer att visas här när vi övervakar missbruk.
 
 > **OBS:** Inom en snar framtid kommer vi att introducera ryktesövervakning. Ryktesövervakningen kommer istället att beräkna när en avsändare ska nekas baserat på en procentuell tröskel (i motsats till en rudimentär räknare som nämnts ovan).
 
 ### Har du en hastighetsbegränsning {#do-you-have-rate-limiting}
 
-Begränsningen av avsändarhastigheten sker antingen via rotdomänen som analyserats från en omvänd PTR-sökning på avsändarens IP-adress – eller om det inte ger något resultat används helt enkelt avsändarens IP-adress. Observera att vi refererar till detta som `Sender` nedan.
+Avsändarhastighetsbegränsningen sker antingen genom rotdomänen som analyserats från en omvänd PTR-sökning på avsändarens IP-adress – eller om det inte ger något resultat används helt enkelt avsändarens IP-adress. Observera att vi refererar till detta som `Sender` nedan.
 
 Våra MX-servrar har dagliga gränser för inkommande e-post som tas emot för [krypterad IMAP-lagring](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-* Istället för att begränsa sändningshastigheten för inkommande e-post som tas emot på individuella alias (t.ex. `you@yourdomain.com`) – begränsar vi sändningshastigheten utifrån aliaset själva domännamnet (t.ex. `yourdomain.com`). Detta förhindrar att `Senders` översvämmar inkorgarna för alla alias i din domän samtidigt.
+* Istället för att begränsa inkommande e-post som tas emot på individuella alias (t.ex. `you@yourdomain.com`) – begränsar vi gränserna utifrån aliaset själva domännamnet (t.ex. `yourdomain.com`). Detta förhindrar att `Senders` översvämmar inkorgarna för alla alias i din domän samtidigt.
 
 * Vi har generella gränser som gäller för alla `Senders` i vår tjänst oavsett mottagare:
 
 * `Senders` som vi anser vara "betrodda" som en sanningskälla (t.ex. `gmail.com`, `microsoft.com`, `apple.com`) är begränsade till att skicka 100 GB per dag.
 
 * `Senders` som är [tillåten på listan](#do-you-have-an-allowlist) är begränsade till att skicka 10 GB per dag.
-* Alla andra `Senders` är begränsade till att skicka 1 GB och/eller 1000 meddelanden per dag.
-* Vi har en specifik gräns per `Sender` och `yourdomain.com` på 1 GB och/eller 1000 meddelanden dagligen.
 
-MX-servrarna begränsar också vidarebefordran av meddelanden till en eller flera mottagare genom hastighetsbegränsning – men detta gäller endast `Senders` som inte är på [tillåtelselista](#do-you-have-an-allowlist):
+* Alla andra `yourdomain.com`0 är begränsade till att skicka 1 GB och/eller 1000 meddelanden per dag.
 
-* Vi tillåter endast upp till 100 anslutningar per timme, per `Sender` upplöst FQDN-rotdomän (eller) `Sender` fjärr-IP-adress (om ingen omvänd PTR är tillgänglig), och per kuvertmottagare. Vi lagrar nyckeln för hastighetsbegränsning som en kryptografisk hash i vår Redis-databas.
+* Vi har en specifik gräns per `yourdomain.com`1 och `yourdomain.com`2 på 1 GB och/eller 1000 meddelanden dagligen.
+
+MX-servrarna begränsar också vidarebefordran av meddelanden till en eller flera mottagare genom hastighetsbegränsning – men detta gäller bara `Senders`, inte på [tillåtelselista](#do-you-have-an-allowlist):
+
+* Vi tillåter endast upp till 100 anslutningar per timme, per `Sender`-matchad FQDN-rotdomän (eller) `Sender` fjärr-IP-adress (om ingen omvänd PTR är tillgänglig), och per kuvertmottagare. Vi lagrar nyckeln för hastighetsbegränsning som en kryptografisk hash i vår Redis-databas.
 
 * Om du skickar e-post via vårt system, se till att du har konfigurerat en omvänd PTR för alla dina IP-adresser (annars kommer varje unik FQDN-rotdomän eller IP-adress du skickar från att vara hastighetsbegränsad).
 
@@ -3127,23 +3127,23 @@ MX-servrarna begränsar också vidarebefordran av meddelanden till en eller fler
 
 Våra IMAP- och SMTP-servrar begränsar dina alias från att ha fler än `60` samtidiga anslutningar.
 
-Våra MX-servrar begränsar [inte tillåten på listan](#do-you-have-an-allowlist) avsändare från att upprätta fler än 10 samtidiga anslutningar (med ett cache-utgångsdatum på 3 minuter för räknaren, vilket speglar vår socket-timeout på 3 minuter).
+Våra MX-servrar begränsar [inte tillåten på listan](#do-you-have-an-allowlist)-sändare från att upprätta fler än 10 samtidiga anslutningar (med 3 minuters cacheutgång för räknaren, vilket speglar vår socket-timeout på 3 minuter).
 
-### Hur skyddar man sig mot bakåtspridning {#how-do-you-protect-against-backscatter}
+### Hur skyddar man mot bakåtspridning {#how-do-you-protect-against-backscatter}
 
-Felriktade studsar eller bounce spam (känt som "[Backscatter](https://en.wikipedia.org/wiki/Backscatter_\(email\))") kan orsaka negativt rykte för avsändarens IP-adresser.
+Felriktade studsar eller bounce spam (känt som "[Bakåtspridning](https://en.wikipedia.org/wiki/Backscatter_\(email\))") kan orsaka negativt rykte för avsändarens IP-adresser.
 
 Vi vidtar två steg för att skydda mot bakåtspridning, vilket beskrivs i följande avsnitt [Förhindra studsar från kända E-POSTFRÅN-spammare](#prevent-bounces-from-known-mail-from-spammers) och [Förhindra onödiga studsar för att skydda mot bakåtspridning](#prevent-unnecessary-bounces-to-protect-against-backscatter) nedan.
 
-### Förhindra studsar från kända E-POST FRÅN spammare {#prevent-bounces-from-known-mail-from-spammers}
+### Förhindra studsar från kända E-POSTFRÅN-spammare {#prevent-bounces-from-known-mail-from-spammers}
 
-Vi hämtar listan från [Backscatter.org](https://www.backscatterer.org/) (drivs av [UCEPROTECT](https://www.uceprotect.net/)) på <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> varje timme och matar in den i vår Redis-databas (vi jämför också skillnaden i förväg; ifall några IP-adresser har tagits bort som behöver respekteras).
+Vi hämtar listan från [Backscatter.org](https://www.backscatterer.org/) (drivs av [UCEPROTECT](https://www.uceprotect.net/)) vid <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> varje timme och matar in den i vår Redis-databas (vi jämför också skillnaden i förväg; ifall några IP-adresser har tagits bort som behöver respekteras).
 
-Om MAIL FRÅN är tomt ELLER är lika med (skiftlägesokänsligt) någon av [postmästaradresser](#what-are-postmaster-addresses) (delen före @ i ett e-postmeddelande), kontrollerar vi om avsändarens IP-adress matchar någon från den här listan.
+Om MAIL FROM är tomt ELLER är lika med (skiftlägesokänsligt) någon av [postmästarens adresser](#what-are-postmaster-addresses) (delen före @ i ett e-postmeddelande), kontrollerar vi om avsändarens IP-adress matchar en från den här listan.
 
 Om avsändarens IP-adress finns med i listan (och inte finns i vår [tillåtelselista](#do-you-have-an-allowlist)) skickar vi ett 554-fel med meddelandet `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Vi får ett meddelande om en avsändare finns både på Backscatterer-listan och i vår tillåtelselista så att vi kan lösa problemet om det behövs.
 
-Teknikerna som beskrivs i det här avsnittet följer rekommendationen "SAFE MODE" på <https://www.backscatterer.org/?target=usage> – där vi bara kontrollerar avsändarens IP-adress om vissa villkor redan är uppfyllda.
+Teknikerna som beskrivs i det här avsnittet följer rekommendationen "SAFE MODE" vid <https://www.backscatterer.org/?target=usage> – där vi bara kontrollerar avsändarens IP-adress om vissa villkor redan är uppfyllda.
 
 ### Förhindra onödiga studsar för att skydda mot bakåtspridning {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
@@ -3153,25 +3153,26 @@ En vanlig anledning till att man hamnar på Backscatterer-listan är felriktade 
 
 1. Vi skickar endast när >= 500 statuskodfel uppstår (när e-postmeddelanden som försökts vidarebefordras har misslyckats, t.ex. Gmail svarar med ett fel på nivå 500).
 
-2. Vi skickar bara en gång och endast en gång (vi använder en beräknad studsfingeravtrycksnyckel och lagrar den i cachen för att förhindra att dubbletter skickas). Stödfingeravtrycket är en nyckel som är meddelandets fingeravtryck kombinerat med en hash av studsadressen och dess felkod). Se avsnittet om [Fingeravtryck](#how-do-you-determine-an-email-fingerprint) för mer insikt i hur meddelandets fingeravtryck beräknas. Skickade studsfingeravtryck upphör att gälla efter 7 dagar i vår Redis-cache.
+2. Vi skickar bara en gång och endast en gång (vi använder en beräknad fingeravtrycksnyckel för studsade meddelanden och lagrar den i cachen för att förhindra att dubbletter skickas). Stödfingeravtrycket är en nyckel som är meddelandets fingeravtryck kombinerat med en hash av studsadressen och dess felkod). Se avsnittet om [Fingeravtryck](#how-do-you-determine-an-email-fingerprint) för mer insikt i hur meddelandets fingeravtryck beräknas. Skickade fingeravtryck för studsade meddelanden upphör att gälla efter 7 dagar i vår Redis-cache.
 
-3. Vi skickar bara när MAIL FRÅN och/eller Från inte är tomma och inte innehåller (skiftlägeskänsligt) en [postmaster användarnamn](#what-are-postmaster-addresses) (delen före @ i ett e-postmeddelande).
+3. Vi skickar bara när MAIL FROM och/eller From inte är tomma och inte innehåller (skiftlägeskänsligt) en [postmaster användarnamn](#what-are-postmaster-addresses) (delen före @ i ett e-postmeddelande).
 
 4. Vi skickar inte om det ursprungliga meddelandet hade någon av följande rubriker (skiftlägeskänsligt):
 
-* Rubrik för `auto-submitted` med ett värde som inte är lika med `no`. * Rubrik för `x-auto-response-suppress` med värdet `dr`, `autoreply`, `auto-reply`, `auto_reply` eller `all`
-* Rubrik för `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply` `x-autorespond`, eller `x-auto-respond` (oavsett värde).
-* Rubrik för `precedence` med värdet `bulk`, `autoreply`, `auto-reply`, `auto_reply`, eller `list`.
+* Rubrik för `auto-submitted` med ett värde som inte är lika med `no`.
+* Rubrik för `x-auto-response-suppress` med ett värde på `dr`, `autoreply`, `auto-reply`, `auto_reply` eller `all`.
+* Rubrik för `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 eller `no`7 (oavsett värde).
+* Rubrik för `no`8 med värdet `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 eller `x-auto-response-suppress`3.
 
-5. Vi skickar inte om e-postadressen MAIL FRÅN eller Från slutar med `+donotreply`, `-donotreply`, `+noreply` eller `-noreply`.
+5. Vi skickar inte om e-postadressen MAIL FROM eller From slutar med `+donotreply`, `-donotreply`, `+noreply` eller `-noreply`.
 
-6. Vi skickar inte om delen med användarnamnet i e-postadressen "Från" var `mdaemon` och den hade en rubrik med `X-MDDSN-Message` som inte känsligt för gemener och versaler.
+6. Vi skickar inte om användarnamnsdelen för e-postadressen "Från" var `mdaemon` och den hade en rubrik som inte känsligt för gemener och versaler, `X-MDDSN-Message`.
 
 7. Vi skickar inte om det fanns en `content-type`-rubrik som inte är skiftlägeskänslig för `multipart/report`.
 
-### Hur avgör man ett e-postfingeravtryck {#how-do-you-determine-an-email-fingerprint}
+### Hur fastställer man ett e-postfingeravtryck {#how-do-you-determine-an-email-fingerprint}
 
-Ett e-postmeddelandes fingeravtryck används för att avgöra hur unikt det är och för att förhindra att dubbletter av meddelanden levereras och att [duplicerade avvisningar](#prevent-unnecessary-bounces-to-protect-against-backscatter) skickas.
+Ett e-postmeddelandes fingeravtryck används för att avgöra hur unikt ett e-postmeddelande är och för att förhindra att dubbletter av meddelanden levereras och att [duplicerade avvisningar](#prevent-unnecessary-bounces-to-protect-against-backscatter) skickas.
 
 Fingeravtrycket beräknas från följande lista:
 
@@ -3218,7 +3219,7 @@ Det vanligaste scenariot för anpassad portvidarebefordran är när du vill vida
 <table class="table table-striped table-hover my-3"> <thead class="thead-dark"> <tr> <th>Namn/Värd/Alias</th> <th class="text-center">TTL</th> <th>Typ</th> <th>Svar/Värde</th> </tr> </thead> <tbody> <tr> <td><em>"@", ".", eller tomt</em></td> <td class="text-center">3600</td> <td class="notranslate">TXT</td> <td><code>forward-email=example.com</code></td> </tr> </tbody>
 </table>
 
-### Stöder den plustecknet + för Gmail-alias {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Stöder den plustecknet + för Gmail-alias {#does-it-support-the-plus--symbol-for-gmail-aliases}}
 
 Ja, absolut.
 
@@ -3226,7 +3227,7 @@ Ja, absolut.
 
 Ja, absolut. Istället för att använda "@", "." eller blankt som namn/värd/alias använder du bara underdomännamnet som värde istället.
 
-Om du vill att `foo.example.com` ska vidarebefordra e-postmeddelanden, ange då `foo` som namn/värd/alias-värd i dina DNS-inställningar (för både MX- och <strong class="notranslate">TXT</strong>-poster).
+Om du vill att `foo.example.com` ska vidarebefordra e-postmeddelanden, ange då `foo` som namn/värd/alias-värde i dina DNS-inställningar (för både MX- och <strong class="notranslate">TXT</strong>-poster).
 
 ### Vidarebefordrar detta mina e-postrubriker {#does-this-forward-my-emails-headers}
 
@@ -3236,9 +3237,9 @@ Ja, absolut.
 
 Ja, den har tester skrivna med [ava](https://github.com/avajs/ava) och har även kodtäckning.
 
-### Skickar du vidare SMTP-svarsmeddelanden och koder? {#do-you-pass-along-smtp-response-messages-and-codes}
+### Skickar du vidare SMTP-svarsmeddelanden och koder {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Ja, absolut. Om du till exempel skickar ett e-postmeddelande till `hello@example.com` och det är registrerat för vidarebefordran till `user@gmail.com`, så kommer SMTP-svarsmeddelandet och koden från SMTP-servern "gmail.com" att returneras istället för proxyservern på "mx1.forwardemail.net" eller "mx2.forwardemail.net".
+Ja, absolut. Om du till exempel skickar ett e-postmeddelande till `hello@example.com` och det är registrerat för vidarebefordran till `user@gmail.com`, kommer SMTP-svarsmeddelandet och koden från SMTP-servern "gmail.com" att returneras istället för proxyservern på "mx1.forwardemail.net" eller "mx2.forwardemail.net".
 
 ### Hur förhindrar du spammare och säkerställer ett gott rykte för vidarebefordran av e-post? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
@@ -3246,7 +3247,7 @@ Se våra avsnitt om [Hur fungerar ert system för vidarebefordran av e-post?](#h
 
 ### Hur utför man DNS-sökningar på domännamn {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Vi skapade ett programvaruprojekt med öppen källkod :tangerine: [Mandarin](https://github.com/forwardemail/tangerine) och använder det för DNS-sökningar. Standard-DNS-servrarna som används är `1.1.1.1` och `1.0.0.1`, och DNS-frågor går via [DNS över HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") på applikationslagret.
+Vi skapade ett öppen källkodsprogramvaruprojekt :tangerine: [Mandarin](https://github.com/forwardemail/tangerine) och använder det för DNS-sökningar. Standard-DNS-servrarna som används är `1.1.1.1` och `1.0.0.1`, och DNS-frågor går via [DNS över HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") på applikationslagret.
 
 :tangerine: [Mandarin](https://github.com/tangerine) använder [CloudFlares integritetsfokuserade konsument-DNS-tjänst som standard][cloudflare-dns].
 
@@ -3256,7 +3257,7 @@ Vi skapade ett programvaruprojekt med öppen källkod :tangerine: [Mandarin](htt
 
 Ja! Automatiska återbetalningar sker när du uppgraderar, nedgraderar eller avslutar ditt konto inom 30 dagar från det att din plan först startade. Detta gäller endast för förstagångskunder.
 
-### Om jag byter abonnemang, betalar ni då proportionellt och återbetalar mellanskillnaden? {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### Om jag byter abonnemang, betalar ni då proportionellt och återbetalar mellanskillnaden {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
 Vi varken proportionellt beräknar eller återbetalar skillnaden när du byter abonnemang. Istället omvandlar vi den återstående perioden från ditt befintliga abonnemangs utgångsdatum till den närmaste relativa perioden för ditt nya abonnemang (avrundat nedåt med månad).
 
@@ -3282,11 +3283,11 @@ Ja, redigera bara din DNS-<strong class="notranslate">TXT</strong>-post och läg
 
 Observera att du *bör* behålla mappningen ":", eftersom detta krävs om du någonsin väljer att inaktivera detta (och det används även för import om du uppgraderar till ett av våra betalda abonnemang).
 
-**Vid tyst avvisning (verkar för avsändaren som om meddelandet skickades, men leder egentligen ingenstans) (statuskod `250`):** Om du prefixar ett alias med "!" (enkelt utropstecken) kommer det att returnera en lyckad statuskod på `250` till avsändare som försöker skicka till den här adressen, men själva e-postmeddelandena kommer ingenstans (t.ex. ett svart hål eller `/dev/null`).
+**För tyst avvisning (verkar för avsändaren som om meddelandet skickades, men leder egentligen ingenstans) (statuskod `250`):** Om du lägger prefixet "!" (enkelt utropstecken) till ett alias kommer statuskoden `250` att returneras till avsändare som försöker skicka till den här adressen, men själva e-postmeddelandena kommer ingenstans (t.ex. ett svart hål eller `/dev/null`).
 
-**För mjuk avvisning (statuskod `421`):** Om du prefixar ett alias med "!!" (dubbelt utropstecken) returneras en mjuk felstatuskod på `421` till avsändare som försöker skicka till denna adress, och e-postmeddelandena kommer ofta att försökas skickas igen i upp till 5 dagar innan de avvisas och studsar.
+**För mjuk avvisning (statuskod `421`):** Om du sätter prefixet "!!" (dubbelt utropstecken) till ett alias returneras en mjuk felstatuskod `421` till avsändare som försöker skicka till den här adressen, och e-postmeddelandena kommer ofta att försökas igen i upp till 5 dagar innan de avvisas och studsar.
 
-**För hård avvisning (statuskod `550`):** Om du prefixar ett alias med "!!!" (trippelt utropstecken) returneras en permanent felkod på `550` till avsändare som försöker skicka till denna adress och e-postmeddelandena kommer att avvisas och studsa.
+**För hård avvisning (statuskod `550`):** Om du sätter prefixet "!!!" (trippelt utropstecken) för ett alias returneras en permanent felkod `550` till avsändare som försöker skicka till denna adress, och e-postmeddelandena kommer att avvisas och studsa.
 
 Om jag till exempel vill att alla e-postmeddelanden som går till `alias@example.com` ska sluta flöda vidare till `user@gmail.com` och bli avvisade och studsade (t.ex. använd tre utropstecken):
 
@@ -3323,7 +3324,7 @@ Om du vill ha ökad säkerhet kan du också ta bort delen ":user@gmail.com" (ell
 
 Ja, absolut. Ange bara flera mottagare i dina <strong class="notranslate">TXT</strong>-poster.
 
-Om jag till exempel vill att ett e-postmeddelande som går till `hello@example.com` ska vidarebefordras till `user+a@gmail.com` och `user+b@gmail.com`, då skulle min <strong class="notranslate">TXT</strong>-post se ut så här:
+Om jag till exempel vill att ett e-postmeddelande som går till `hello@example.com` ska vidarebefordras till `user+a@gmail.com` och `user+b@gmail.com`, så skulle min <strong class="notranslate">TXT</strong>-post se ut så här:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -3395,10 +3396,10 @@ Vår gratisnivå stöds av:
 4. **Rimliga användningsgränser**: Gratisnivån har policyer för rättvis användning för att förhindra missbruk.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Vi strävar efter att hålla grundläggande vidarebefordran av e-post gratis samtidigt som vi erbjuder premiumfunktioner för användare med mer avancerade behov.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Om du tycker att vår tjänst är värdefull kan du överväga att uppgradera till en betald plan för att stödja kontinuerlig utveckling och underhåll.
 
 ### Vad är den maximala storleksgränsen för e-postmeddelanden {#what-is-the-max-email-size-limit}
 
@@ -3418,7 +3419,7 @@ Allt görs i minnet och [vår källkod finns på GitHub](https://github.com/forw
 
 Från och med februari 2023 lagrar vi felloggar för SMTP-svarskoderna `4xx` och `5xx` i 7 dagar – vilka innehåller SMTP-felet, kuvertet och e-postrubriker (vi **lagrar** inte e-postmeddelandets brödtext eller bilagor).
 
-Felloggar låter dig kontrollera om viktiga e-postmeddelanden saknas och minska risken för falska positiva resultat från skräppost för [dina domäner](/my-account/domains). De är också en utmärkt resurs för att felsöka problem med [e-postwebhooks](#do-you-support-webhooks) (eftersom felloggarna innehåller webhook-slutpunktssvaret).
+Felloggar låter dig kontrollera om viktiga e-postmeddelanden saknas och minska falska positiva resultat från skräppost för [dina domäner](/my-account/domains). De är också en utmärkt resurs för att felsöka problem med [e-postwebhooks](#do-you-support-webhooks) (eftersom felloggarna innehåller webhook-slutpunktssvaret).
 
 Felloggar för [hastighetsbegränsande](#do-you-have-rate-limiting) och [grålistning](#do-you-have-a-greylist) är inte tillgängliga eftersom anslutningen avslutas tidigt (t.ex. innan kommandona `RCPT TO` och `MAIL FROM` kan överföras).
 
@@ -3450,7 +3451,7 @@ Om du använder Gmail (t.ex. Skicka e-post som) eller G Suite måste du lägga t
 </span>
 </div>
 
-### Kan jag "skicka e-post som" i Outlook med denna {#can-i-send-mail-as-in-outlook-with-this}
+### Kan jag "skicka e-post som" i Outlook med detta {#can-i-send-mail-as-in-outlook-with-this}
 
 Ja! Från och med den 2 oktober 2018 har vi lagt till den här funktionen. Se bara dessa två länkar från Microsoft nedan:
 
@@ -3477,7 +3478,7 @@ Om du prenumererar på iCloud+ kan du använda en anpassad domän. [Vår tjänst
 
 Se <https://support.apple.com/en-us/102540> för mer information.
 
-### Kan jag vidarebefordra obegränsat antal e-postmeddelanden med denna {#can-i-forward-unlimited-emails-with-this}
+### Kan jag vidarebefordra ett obegränsat antal e-postmeddelanden med denna {#can-i-forward-unlimited-emails-with-this}
 
 Ja, men "relativt okända" avsändare är begränsade till 100 anslutningar per timme per värdnamn eller IP-adress. Se avsnittet om [Hastighetsbegränsande](#do-you-have-rate-limiting) och [Grålistning](#do-you-have-a-greylist) ovan.
 
@@ -3489,7 +3490,7 @@ Om denna gräns överskrids skickar vi en svarskod 421 som ber avsändarens e-po
 
 Ja. Oavsett vilket abonnemang du har betalar du bara en månadsavgift – som täcker alla dina domäner.
 
-### Vilka betalningsmetoder accepterar ni? {#which-payment-methods-do-you-accept}
+### Vilka betalningsmetoder accepterar ni {#which-payment-methods-do-you-accept}
 
 Vidarebefordran av e-post accepterar följande engångs- eller månatliga/kvartalsvisa/årliga betalningsmetoder:
 
@@ -3498,22 +3499,22 @@ Vidarebefordran av e-post accepterar följande engångs- eller månatliga/kvarta
 3. **Kryptovaluta**: Vi accepterar betalningar via Stripes stablecoin-betalningar på Ethereum-, Polygon- och Solana-nätverk
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Vi lagrar begränsad betalningsinformation på våra servrar, vilken endast inkluderar betalningsidentifierare och referenser till transaktions-, kund-, prenumerations- och betalnings-ID:n för [Rand](https://stripe.com/global) och [PayPal](https://www.paypal.com).
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> För maximal integritet, överväg att använda kryptovalutabetalningar.
 
 Alla betalningar behandlas säkert via Stripe eller PayPal. Dina betalningsuppgifter lagras aldrig på våra servrar.
 
 ## Ytterligare resurser {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Våra artiklar nedan uppdateras regelbundet med nya guider, tips och teknisk information. Kom tillbaka ofta för det senaste innehållet.
 
 * [Fallstudier och utvecklardokumentation](/blog/docs)
 * [Resurser](/resources)
 * [Guider](/guides)
 
-[gmail-2fa]: __SKYDDAD_URL_868__
+[gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/

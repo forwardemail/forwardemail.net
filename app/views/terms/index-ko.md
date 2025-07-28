@@ -1,4 +1,4 @@
-# 약관 {#terms}
+# 용어 {#terms}
 
 <img 로딩="게으른" src="/img/articles/terms.webp" alt="" 클래스="둥근-lg" />
 
@@ -34,7 +34,7 @@ Forward Email 웹사이트와 관련 서비스("서비스")의 자료는 "있는
 
 또한 Forward Email은 해당 서비스의 자료 사용에 관한 정확성, 예상 결과 또는 신뢰성에 대해 보증하거나 어떠한 진술도 하지 않으며, 그러한 자료와 관련된 내용이나 이 사이트에 링크된 다른 사이트에 관한 내용도 보증하지 않습니다.
 
-<u>**귀하는 특히 [Stripe의 금지된 사업](https://stripe.com/legal/restricted-businesses) 및 [PayPal의 금지된 활동](https://www.paypal.com/us/legalhub/acceptableuse-full) 모두에 대한 사업이나 관련 자료에 서비스를 사용하지 않을 것에 동의합니다.**</u>
+<u>**귀하는 [Stripe의 금지된 사업](https://stripe.com/legal/restricted-businesses) 및 [PayPal의 금지된 활동](https://www.paypal.com/us/legalhub/acceptableuse-full) 모두에 대한 사업이나 관련 자료에 서비스를 사용하지 않을 것에 특별히 동의합니다.**</u>
 
 <u>**귀하는 Forward Email 서비스를 사용함으로써 Forward Email이 다음에 대해 책임을 지지 아니하며, 귀하는 서비스를 사용하여 다음 중 어떤 것도 생성, 읽기, 수정 또는 전송하지 않을 것에 특별히 동의합니다:**</u>
 
@@ -42,7 +42,7 @@ Forward Email 웹사이트와 관련 서비스("서비스")의 자료는 "있는
 * [아웃바운드 SMTP](/faq#do-you-support-sending-email-with-smtp) 서비스를 사용하는 경우 다음 사항에 동의하는 것으로 간주됩니다.
 * [거래용 이메일](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) 및 [이메일 마케팅](https://en.wikipedia.org/wiki/Email_marketing)에 사용할 수 있습니다.
 * 이메일 마케팅 자료를 발송하는 경우 `List-Unsubscribe` 헤더를 포함해야 하며, 구독자는 수신 동의를 해야 합니다.
-* [리스트몽크](https://github.com/knadh/listmonk)(<https://github.com/knadh/listmonk>.)과 같은 오픈소스 뉴스레터 관리자를 사용하는 것이 좋습니다.
+* [리스트몽크](https://github.com/knadh/listmonk)(<https://github.com/knadh/listmonk>.>)와 같은 오픈소스 뉴스레터 관리자를 사용하는 것이 좋습니다.
 * 향후 자체 뉴스레터 관리자를 출시할 계획입니다.
 * 이메일 마케팅 자료에는 유사한 내용, 제목, 본문을 가진 홍보, 대량 또는 상업적 이메일이 포함됩니다(예: 뉴스레터 및 공지사항).
 * [2003년 CAN-SPAM법](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003)을 준수해야 합니다.
@@ -94,7 +94,7 @@ Forward Email 웹사이트와 관련 서비스("서비스")의 자료는 "있는
 
 ### 계약 {#agreement}
 
-Forward Email은 모든 합리적인 상업적 노력(적절하고 합리적인 업계 기준 이상)을 기울여 유료 고객이 매월 99.99%의 시간 동안 Forward Email 서비스를 이용할 수 있도록 보장합니다. 그렇지 않은 경우, [적임](#eligibility)에 따라 아래 설명된 [크레딧](#credits)을 수신할 수 있습니다.
+Forward Email은 모든 합리적인 상업적 노력(적절하고 합리적인 업계 기준 이상)을 기울여 유료 고객이 매월 99.99%의 시간 동안 Forward Email 서비스를 이용할 수 있도록 보장합니다. 그렇지 않은 경우, [적임](#eligibility)에 따라 아래 설명된 [크레딧](#credits)을 받을 수 있습니다.
 
 ### 크레딧 {#credits}
 
@@ -108,9 +108,9 @@ Forward Email은 모든 합리적인 상업적 노력(적절하고 합리적인 
 
 ### 자격 {#eligibility}
 
-최소 크레딧 금액은 $1.00 이상이어야 합니다. 최대 크레딧은 다운타임 관련 최근 30일 또는 고객이 지불하는 총 금액(둘 중 더 큰 금액)으로 제한됩니다. 다운타임으로 인해 영향을 받는 유료 고객은 다운타임 발생일로부터 30일 이내에 [도움 요청](/help)을 제출하여 크레딧을 요청해야 합니다. 크레딧은 Forward Email의 주요 관리 범위 내에 있는 다운타임 요인에 대해서만 적용됩니다.
+최소 크레딧 금액은 $1.00 이상이어야 합니다. 최대 크레딧은 다운타임 관련 최근 30일 또는 고객이 지불하는 총 금액(둘 중 더 큰 금액)으로 제한됩니다. 다운타임으로 인해 영향을 받는 유료 고객은 다운타임 발생일로부터 30일 이내에 [도움 요청](/help) 양식을 제출하여 크레딧을 요청해야 합니다. 크레딧은 Forward Email의 주요 관리 범위 내에 있는 다운타임 요인에 대해서만 적용됩니다.
 
-## 개정 및 오류 {#revisions-and-errata}
+## 수정 사항 및 오류 {#revisions-and-errata}
 
 Forward Email 웹사이트에 게재된 자료에는 기술적, 인쇄적 또는 사진적 오류가 포함될 수 있습니다. Forward Email은 웹사이트 자료의 정확성, 완전성 또는 최신성을 보증하지 않습니다. Forward Email은 언제든지 사전 통지 없이 웹사이트 자료를 변경할 수 있습니다. 그러나 Forward Email은 자료의 업데이트에 대한 어떠한 약속도 하지 않습니다.
 
@@ -130,4 +130,4 @@ Forward Email 웹사이트와 관련된 모든 청구는 법률 조항의 충돌
 
 ## 추가 공개 {#additional-disclosures}
 
-이 사이트는 Cloudflare의 보호를 받으며 [개인정보 보호정책](https://www.cloudflare.com/privacypolicy/) 및 [서비스 약관](https://www.cloudflare.com/website-terms/)가 적용됩니다.
+이 사이트는 Cloudflare의 보호를 받으며 [개인정보 보호정책](https://www.cloudflare.com/privacypolicy/) 및 [서비스 약관](https://www.cloudflare.com/website-terms/)이 적용됩니다.

@@ -14,11 +14,11 @@
 
 Forward Email is een bedrijf dat zich richt op privacy en uw gegevens beschermt.
 
-De [Algemene Verordening Gegevensbescherming](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("AVG") regelt de gegevensoverdracht buiten de EU en de EER en heeft als doel uw controle en rechten over uw persoonsgegevens te vergroten. Gelukkig verkopen wij de gegevens die wij verwerken, opslaan en/of overdragen niet – noch gebruiken wij deze gegevens voor andere doeleinden dan het leveren van onze diensten aan u.
+De [Algemene Verordening Gegevensbescherming](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) ("AVG") regelt de doorgifte van gegevens buiten de EU en de EER en heeft als doel uw controle en rechten over uw persoonsgegevens te vergroten. Gelukkig verkopen wij de gegevens die wij verwerken, opslaan en/of overdragen niet – noch gebruiken wij deze gegevens voor andere doeleinden dan het leveren van onze diensten aan u.
 
-U kunt **op elk gewenst moment** uw persoonlijke gegevens wijzigen onder [Mijn account → Profiel](/my-account/profile) en zelfs uw volledige account en alle gerelateerde informatie verwijderen onder [Mijn account → Beveiliging](/my-account/security). Omdat **we 100% open source** zijn op <https://github.com/forwardemail>, kan onze broncode ook op elk gewenst moment worden gecontroleerd op naleving van de privacywetgeving.
+U kunt **op elk gewenst moment** uw persoonlijke gegevens onder [Mijn account → Profiel](/my-account/profile) wijzigen en zelfs uw volledige account en alle gerelateerde informatie onder [Mijn account → Beveiliging](/my-account/security) verwijderen. Omdat **we bij <https://github.com/forwardemail> 100% open source** zijn, kan onze broncode ook op elk gewenst moment worden gecontroleerd op naleving van de privacywetgeving.
 
-In ons [Gegevensverwerkingsovereenkomst](/dpa)-beleid beschrijven we hoe we voldoen aan de AVG en de EU-VS- en Zwitserland-VS-privacyschildkaders met betrekking tot de privacy van verwerkte, opgeslagen en overgedragen gegevens.
+In ons [Gegevensverwerkingsovereenkomst](/dpa)-document beschrijven we hoe we voldoen aan de AVG en de EU-VS- en Zwitserland-VS-privacyschildkaders met betrekking tot de privacy van verwerkte, opgeslagen en overgedragen gegevens.
 
 Door akkoord te gaan met onze [Servicevoorwaarden](/terms), gaat u automatisch akkoord met onze DPA en hoeft u geen apart document te ondertekenen. We doen ons uiterste best om al uw persoonsgegevens te beschermen in overeenstemming met onze [Privacybeleid](/privacy) – **ongeacht de locatie** waar deze worden verwerkt, opgeslagen en overgedragen. U kunt ook meer informatie vinden in onze [Servicevoorwaarden](/terms) en [Privacybeleid](/privacy).
 
@@ -39,7 +39,7 @@ Hieronder vindt u de providers die wij gebruiken voor internationale gegevensove
 
 ## AVG-vertegenwoordiger {#gdpr-representative}
 
-In overeenstemming met [Artikel 27 van de AVG](https://gdpr-info.eu/art-27-gdpr/) hebben we vertegenwoordigers van de lidstaten, zoals hieronder vermeld:
+Overeenkomstig [Artikel 27 van de AVG](https://gdpr-info.eu/art-27-gdpr/) hebben we vertegenwoordigers van de lidstaten, zoals hieronder vermeld:
 
 ### EU-vertegenwoordiger {#eu-representative}
 

@@ -1,22 +1,22 @@
-# Debian için E-postayı İlet Kendi Kendine Barındırma Kurulum Kılavuzu {#forward-email-self-hosting-installation-guide-for-debian}
+# Debian {#forward-email-self-hosting-installation-guide-for-debian} için E-postayı İlet Kendi Kendine Barındırma Kurulum Kılavuzu
 
 ## İçindekiler {#table-of-contents}
 
-* [Genel bakış](#overview)
+* [Genel Bakış](#overview)
 * [Ön koşullar](#prerequisites)
 * [Sistem Gereksinimleri](#system-requirements)
 * [Adım Adım Kurulum](#step-by-step-installation)
   * [Adım 1: İlk Sistem Kurulumu](#step-1-initial-system-setup)
   * [Adım 2: DNS Çözücülerini Yapılandırın](#step-2-configure-dns-resolvers)
   * [Adım 3: Sistem Bağımlılıklarını Yükleyin](#step-3-install-system-dependencies)
-  * [Adım 4: Snapd'i yükleyin ve yapılandırın](#step-4-install-and-configure-snapd)
+  * [Adım 4: Snapd'i Kurun ve Yapılandırın](#step-4-install-and-configure-snapd)
   * [Adım 5: Snap Paketlerini Yükleyin](#step-5-install-snap-packages)
   * [Adım 6: Docker'ı yükleyin](#step-6-install-docker)
   * [Adım 7: Docker Hizmetini Yapılandırın](#step-7-configure-docker-service)
   * [Adım 8: UFW Güvenlik Duvarını Kurun ve Yapılandırın](#step-8-install-and-configure-ufw-firewall)
-  * [Adım 9: Forward E-posta Deposunu Klonla](#step-9-clone-forward-email-repository)
+  * [Adım 9: Forward E-posta Deposunu Klonlayın](#step-9-clone-forward-email-repository)
   * [Adım 10: Ortam Yapılandırmasını Ayarlayın](#step-10-set-up-environment-configuration)
-  * [Adım 11: Etki Alanınızı Yapılandırın](#step-11-configure-your-domain)
+  * [Adım 11: Alan Adınızı Yapılandırın](#step-11-configure-your-domain)
   * [Adım 12: SSL Sertifikaları Oluşturun](#step-12-generate-ssl-certificates)
   * [Adım 13: Şifreleme Anahtarlarını Oluşturun](#step-13-generate-encryption-keys)
   * [Adım 14: Yapılandırmada SSL Yollarını Güncelleyin](#step-14-update-ssl-paths-in-configuration)
@@ -27,11 +27,11 @@
   * [DNS Kayıtları Kurulumu](#dns-records-setup)
   * [İlk Giriş](#first-login)
 * [Yedekleme Yapılandırması](#backup-configuration)
-  * [S3 Uyumlu Yedeklemeyi Ayarlayın](#set-up-s3-compatible-backup)
-  * [Yedekleme Cron İşlerini Ayarla](#set-up-backup-cron-jobs)
+  * [S3 Uyumlu Yedekleme Kurulumu](#set-up-s3-compatible-backup)
+  * [Yedekleme Cron İşlerini Ayarlayın](#set-up-backup-cron-jobs)
 * [Otomatik Güncelleme Yapılandırması](#auto-update-configuration)
 * [Debian'a Özgü Hususlar](#debian-specific-considerations)
-  * [Paket Yönetimi Farkları](#package-management-differences)
+  * [Paket Yönetimi Farklılıkları](#package-management-differences)
   * [Hizmet Yönetimi](#service-management)
   * [Ağ Yapılandırması](#network-configuration)
 * [Bakım ve İzleme](#maintenance-and-monitoring)
@@ -47,7 +47,7 @@
 
 ## Genel Bakış {#overview}
 
-Bu kılavuz, Forward Email'in kendi kendine barındırılan çözümünün Debian sistemlerine kurulumu için adım adım talimatlar sağlar. Bu kılavuz özellikle Debian 11 (Bullseye) ve Debian 12 (Bookworm) için tasarlanmıştır.
+Bu kılavuz, Forward Email'in kendi barındırdığı çözümün Debian sistemlerine kurulumu için adım adım talimatlar sunar. Bu kılavuz, özellikle Debian 11 (Bullseye) ve Debian 12 (Bookworm) için tasarlanmıştır.
 
 ## Önkoşullar {#prerequisites}
 
@@ -57,7 +57,7 @@ Kuruluma başlamadan önce şunlara sahip olduğunuzdan emin olun:
 * **Kök Erişimi**: Komutları kök olarak çalıştırabilmeniz gerekir (sudo erişimi)
 * **Alan Adı**: DNS yönetim erişimiyle kontrol ettiğiniz bir alan
 * **Temiz Sunucu**: Yeni bir Debian kurulumu kullanmanız önerilir
-* **İnternet Bağlantısı**: Paketleri ve Docker görüntülerini indirmek için gereklidir
+* **İnternet Bağlantısı**: Paketleri ve Docker imajlarını indirmek için gereklidir
 
 ## Sistem Gereksinimleri {#system-requirements}
 
@@ -133,9 +133,9 @@ apt-get install -y \
     software-properties-common
 ```
 
-### Adım 4: Snapd'i Yükleyin ve Yapılandırın {#step-4-install-and-configure-snapd}
+### Adım 4: Snapd'i Kurun ve Yapılandırın {#step-4-install-and-configure-snapd}
 
-Debian'da snapd varsayılan olarak bulunmuyor, bu yüzden onu kurup yapılandırmamız gerekiyor:
+Debian varsayılan olarak snapd'yi içermez, bu yüzden onu kurup yapılandırmamız gerekir:
 
 ```bash
 # Install snapd
@@ -265,7 +265,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-### Adım 9: Yönlendirme E-posta Deposunu Klonla {#step-9-clone-forward-email-repository}
+### Adım 9: İletme E-posta Deposunu Klonla {#step-9-clone-forward-email-repository}
 
 Forward Email kaynak kodunu indirin:
 
@@ -305,7 +305,7 @@ mkdir -p "$SELF_HOST_DIR/mongo-backups"
 mkdir -p "$SELF_HOST_DIR/redis-backups"
 ```
 
-### Adım 11: Alan Adınızı Yapılandırın {#step-11-configure-your-domain}
+### Adım 11: Etki Alanınızı Yapılandırın {#step-11-configure-your-domain}
 
 Alan adınızı ayarlayın ve ortam değişkenlerini güncelleyin:
 
@@ -362,7 +362,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Önemli**: İstendiğinde, DNS'inizde TXT kayıtları oluşturmanız gerekecektir. Aynı alan adı için birden fazla zorluk görebilirsiniz - **TÜMÜNÜ oluşturun**. İkincisini eklerken ilk TXT kaydını kaldırmayın.
+**Önemli**: İstendiğinde, DNS'inizde TXT kayıtları oluşturmanız gerekecektir. Aynı alan adı için birden fazla sorgu görebilirsiniz - **TÜMÜNÜ oluşturun**. İkinci TXT kaydını eklerken ilk TXT kaydını kaldırmayın.
 
 #### Seçenek B: Cloudflare DNS (Cloudflare kullanıyorsanız) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -403,7 +403,7 @@ ls -la "$SELF_HOST_DIR/ssl/"
 
 ### Adım 13: Şifreleme Anahtarlarını Oluşturun {#step-13-generate-encryption-keys}
 
-Güvenli işlem için gerekli çeşitli şifreleme anahtarlarını oluşturun:
+Güvenli işlem için gereken çeşitli şifreleme anahtarlarını oluşturun:
 
 ```bash
 # Generate helper encryption key
@@ -432,7 +432,7 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 echo "✅ All encryption keys generated successfully"
 ```
 
-### Adım 14: Yapılandırmada SSL Yollarını Güncelleyin {#step-14-update-ssl-paths-in-configuration}
+### Adım 14: {#step-14-update-ssl-paths-in-configuration} Yapılandırmasında SSL Yollarını Güncelleyin
 
 Ortam dosyasında SSL sertifika yollarını yapılandırın:
 
@@ -535,7 +535,7 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 ### DNS Kayıtları Kurulumu {#dns-records-setup}
 
-Alan adınız için aşağıdaki DNS kayıtlarını yapılandırmanız gerekiyor:
+Alan adınız için aşağıdaki DNS kayıtlarını yapılandırmanız gerekir:
 
 #### MX Kaydı {#mx-record}
 
@@ -571,7 +571,7 @@ DKIM genel anahtarınızı alın:
 openssl rsa -in "$SELF_HOST_DIR/ssl/dkim.key" -pubout -outform DER | openssl base64 -A
 ```
 
-DKIM DNS kaydı oluştur:
+DKIM DNS kaydı oluşturun:
 
 ```
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
@@ -585,14 +585,14 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### İlk Giriş {#first-login}
 
-1. Web tarayıcınızı açın ve `https://yourdomain.com` adresine gidin
-2. Daha önce kaydettiğiniz temel kimlik doğrulama bilgilerini girin
-3. İlk kurulum sihirbazını tamamlayın
-4. İlk e-posta hesabınızı oluşturun
+1. Web tarayıcınızı açın ve `https://yourdomain.com` adresine gidin.
+2. Daha önce kaydettiğiniz temel kimlik doğrulama bilgilerini girin.
+3. İlk kurulum sihirbazını tamamlayın.
+4. İlk e-posta hesabınızı oluşturun.
 
 ## Yedekleme Yapılandırması {#backup-configuration}
 
-### S3 Uyumlu Yedeklemeyi Ayarlayın {#set-up-s3-compatible-backup}
+### S3 Uyumlu Yedeklemeyi Ayarla {#set-up-s3-compatible-backup}
 
 S3 uyumlu depolamaya otomatik yedeklemeleri yapılandırın:
 
@@ -618,7 +618,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Yedekleme Cron İşlerini Ayarlayın {#set-up-backup-cron-jobs}
+### Yedekleme Cron İşlerini Ayarla {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -658,10 +658,10 @@ crontab -l
 
 ### Paket Yönetimi Farklılıkları {#package-management-differences}
 
-* **Snapd**: Debian'da varsayılan olarak kurulmaz, manuel kurulum gerektirir
-* **Docker**: Debian'a özgü depoları ve GPG anahtarlarını kullanır
-* **UFW**: Minimum Debian kurulumlarına dahil olmayabilir
-* **systemd**: Davranış Ubuntu'dan biraz farklı olabilir
+* **Snapd**: Debian'da varsayılan olarak kurulu değildir, manuel kurulum gerektirir.
+* **Docker**: Debian'a özgü depoları ve GPG anahtarlarını kullanır.
+* **UFW**: Minimum Debian kurulumlarına dahil olmayabilir.
+* **systemd**: Davranışı Ubuntu'dan biraz farklı olabilir.
 
 ### Hizmet Yönetimi {#service-management}
 
@@ -695,19 +695,19 @@ nslookup google.com
 
 ### Günlük Konumları {#log-locations}
 
-* **Docker Compose günlükleri**: Kuruluma göre uygun docker compose komutunu kullanın
+* **Docker Compose günlükleri**: Kuruluma bağlı olarak uygun Docker Compose komutunu kullanın.
 * **Sistem günlükleri**: `/var/log/syslog`
-* **Yedek günlükleri**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
+* **Yedekleme günlükleri**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Otomatik güncelleme günlükleri**: `/var/log/autoupdate.log`
 * **Snapd günlükleri**: `journalctl -u snapd`
 
 ### Düzenli Bakım Görevleri {#regular-maintenance-tasks}
 
-1. **Disk alanını izleyin**: `df -h`
-2. **Hizmet durumunu kontrol edin**: Uygun docker compose komutunu kullanın
-3. **Günlükleri inceleyin**: Hem uygulama hem de sistem günlüklerini kontrol edin
-4. **Sistem paketlerini güncelleyin**: `apt update && apt upgrade`
-5. **Snapd'yi izleyin**: `snap list` ve `snap refresh`
+1. **Disk alanını izle**: `df -h`
+2. **Hizmet durumunu kontrol et**: Uygun docker compose komutunu kullan
+3. **Günlükleri incele**: Hem uygulama hem de sistem günlüklerini kontrol et
+4. **Sistem paketlerini güncelle**: `apt update && apt upgrade`
+5. **Snapd'yi izle**: `snap list` ve `snap refresh`
 
 ### Sertifika Yenileme {#certificate-renewal}
 
@@ -779,7 +779,7 @@ apt-mark showhold
 
 ### Yaygın Sorunlar {#common-issues}
 
-#### 1. Docker Hizmeti Başlamıyor {#1-docker-service-wont-start}
+#### 1. Docker Servisi Başlamıyor {#1-docker-service-wont-start}
 
 ```bash
 # Check Docker status
@@ -795,7 +795,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 #### 2. Sertifika Oluşturma Başarısız {#2-certificate-generation-fails}
 
 * 80 ve 443 portlarının erişilebilir olduğundan emin olun
-* DNS kayıtlarının sunucunuzu işaret ettiğini doğrulayın
+* DNS kayıtlarının sunucunuzu gösterdiğini doğrulayın
 * Güvenlik duvarı ayarlarını `ufw status` ile kontrol edin
 
 #### 3. E-posta Teslimat Sorunları {#3-email-delivery-issues}
@@ -818,19 +818,19 @@ nohup dockerd >/dev/null 2>/dev/null &
 4. **Güçlü Parolalar Kullanın**: Tüm hesaplar için güçlü parolalar oluşturun
 5. **Fail2Ban'ı Etkinleştirin**: Ek güvenlik için fail2ban'ı yüklemeyi düşünün
 6. **Düzenli Güvenlik Denetimleri**: Yapılandırmanızı düzenli olarak inceleyin
-7. **Snapd'ı İzleyin**: Snap paketlerini `snap refresh` ile güncel tutun
+7. **Snapd'yi İzleyin**: Snap paketlerini `snap refresh` ile güncel tutun
 
 ## Sonuç {#conclusion}
 
-Forward Email self-hosted kurulumunuz artık tamamlanmış ve Debian'da çalışıyor olmalı. Şunları unutmayın:
+Forward Email'inizin kendi barındırdığınız kurulumu artık tamamlanmış ve Debian'da çalışıyor olmalı. Unutmayın:
 
-1. DNS kayıtlarınızı düzgün bir şekilde yapılandırın
+1. DNS kayıtlarınızı doğru şekilde yapılandırın
 2. E-posta gönderme ve alma işlemlerini test edin
 3. Düzenli yedeklemeler ayarlayın
 4. Sisteminizi düzenli olarak izleyin
 5. Kurulumunuzu güncel tutun
-6. Snapd ve snap paketlerini izleyin
+6. Snapd ve Snap paketlerini izleyin
 
-Ubuntu'dan temel farklar snapd kurulumu ve Docker deposu yapılandırmasıdır. Bunlar düzgün bir şekilde ayarlandığında, Forward Email uygulaması her iki sistemde de aynı şekilde davranır.
+Ubuntu'dan temel farkları, snapd kurulumu ve Docker deposu yapılandırmasıdır. Bunlar doğru şekilde ayarlandıktan sonra, Forward Email uygulaması her iki sistemde de aynı şekilde çalışır.
 
 Ek yapılandırma seçenekleri ve gelişmiş özellikler için <https://forwardemail.net/self-hosted#configuration>. adresindeki resmi E-posta İletme belgelerine bakın

@@ -16,11 +16,11 @@ Forward Email er et personvernfokusert selskap som er forpliktet til å beskytte
 
 [Personvernforordningen](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) («GDPR») regulerer overføring av data utenfor EU og EØS, og målene er å forbedre din kontroll og dine rettigheter over dine personopplysninger. Heldigvis selger vi ikke noen data vi behandler, lagrer og/eller overfører – og vi bruker heller ikke slike data til noe annet formål enn å tilby deg tjenestene våre.
 
-Du kan når som helst endre din personlige informasjon under [Min konto → Profil](/my-account/profile) og til og med slette hele kontoen din og all relatert informasjon under [Min konto → Sikkerhet](/my-account/security). Siden **vi er 100 % åpen kildekode** på <https://github.com/forwardemail> – kan kildekoden vår også revideres for å sikre samsvar med personvernlover når som helst.
+Du kan når som helst endre din personlige informasjon under [Min konto → Profil](/my-account/profile) og til og med slette hele kontoen din og all relatert informasjon under [Min konto → Sikkerhet](/my-account/security). Siden vi er 100 % åpen kildekode på <https://github.com/forwardemail>, kan kildekoden vår også revideres for å sikre samsvar med personvernlover når som helst.
 
 Vår [Databehandleravtale](/dpa) beskriver vår overholdelse av GDPR samt rammeverket for personvern mellom EU og USA og mellom Sveits og USA, med hensyn til personvern for data som behandles, lagres og overføres.
 
-Ved å godta vår [Vilkår for bruk](/terms), godtar du automatisk vår databehandleravtale og trenger ikke å signere et separat dokument. Vi vil gjøre vårt beste for å beskytte alle dine personopplysninger i samsvar med vår [Personvernerklæring](/privacy) – **uansett hvor** de behandles, lagres og overføres. Du kan også lære mer ved å lese vår [Vilkår for bruk](/terms) og [Personvernerklæring](/privacy).
+Ved å godta vår [Vilkår for bruk](/terms), godtar du automatisk vår databehandleravtale og trenger ikke å signere et separat dokument. Vi vil gjøre vårt beste for å beskytte alle dine personopplysninger i samsvar med vår [Personvernerklæring](/privacy) – **uansett hvor** de behandles, lagres og overføres. Du kan også lære mer ved å lese våre [Vilkår for bruk](/terms) og [Personvernerklæring](/privacy).
 
 ## Internasjonal dataoverføring {#international-data-transfer}
 

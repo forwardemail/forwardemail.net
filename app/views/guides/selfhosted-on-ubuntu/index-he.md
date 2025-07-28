@@ -1,9 +1,9 @@
-# מדריך התקנה של העברת דוא"ל לאירוח עצמי עבור אובונטו {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# מדריך התקנה של אירוח עצמי של דוא"ל העברת דוא"ל עבור אובונטו {#forward-email-self-hosting-installation-guide-for-ubuntu}
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [סקירה כללית](#overview)
-* [דרישות מוקדמות](#prerequisites)
+* [דרישות קדם](#prerequisites)
 * [דרישות מערכת](#system-requirements)
 * [התקנה שלב אחר שלב](#step-by-step-installation)
   * [שלב 1: הגדרת מערכת ראשונית](#step-1-initial-system-setup)
@@ -39,7 +39,7 @@
 * [שיטות עבודה מומלצות לאבטחה](#security-best-practices)
 * [מַסְקָנָה](#conclusion)
 
-## סקירה כללית {#overview}
+## סקירה כללית של {#overview}
 
 מדריך זה מספק הוראות שלב אחר שלב להתקנת פתרון אירוח עצמי של Forward Email במערכות Ubuntu. מדריך זה מותאם במיוחד לגרסאות Ubuntu 20.04, 22.04 ו-24.04 LTS.
 
@@ -304,7 +304,7 @@ update_env_file "WEBSITE_URL" "$DOMAIN"
 update_env_file "AUTH_BASIC_ENABLED" "true"
 ```
 
-### שלב 11: יצירת תעודות SSL {#step-11-generate-ssl-certificates}
+### שלב 11: יצירת אישורי SSL {#step-11-generate-ssl-certificates}
 
 #### אפשרות א': אתגר DNS ידני (מומלץ לרוב המשתמשים) {#option-a-manual-dns-challenge-recommended-for-most-users}
 
@@ -467,7 +467,7 @@ curl -I https://$DOMAIN
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## הגדרות לאחר התקנה {#post-installation-configuration}
+## תצורה לאחר התקנה {#post-installation-configuration}
 
 ### הגדרת רשומות DNS {#dns-records-setup}
 
@@ -675,4 +675,4 @@ nohup dockerd >/dev/null 2>/dev/null &
 4. ניטור המערכת שלך באופן קבוע
 5. שמור על ההתקנה שלך מעודכנת
 
-לאפשרויות תצורה נוספות ותכונות מתקדמות, עיינו בתיעוד הרשמי של העברת דוא"ל בכתובת <https://forwardemail.net/self-hosted#configuration>.
+לאפשרויות תצורה נוספות ותכונות מתקדמות, עיין בתיעוד הרשמי של העברת דוא"ל בכתובת <https://forwardemail.net/self-hosted#configuration>.

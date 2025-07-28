@@ -10,7 +10,7 @@
   * [Cure53](#cure53)
   * [Radikalt åben sikkerhed](#radically-open-security)
   * [Assured AB](#assured-ab)
-  * [Trail of Bits](#trail-of-bits)
+  * [Spor af bits](#trail-of-bits)
 * [Virksomhedssammenligning](#company-comparison)
 * [Udvælgelseskriterier](#selection-criteria)
 
@@ -58,7 +58,7 @@ Deres non-profit-model giver dem mulighed for udelukkende at fokusere på sikker
 
 * [Droid2Tracking sikkerhedsvurdering](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Analyse af mobilsporing
 * [Tauri-programmets sikkerhedsvurdering 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluering af applikationsrammeværk på tværs af platforme
-* [Mullvad VPN-sikkerhedsvurdering 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Analyse af VPN-tjenestesikkerhed
+* [Mullvad VPN Sikkerhedsvurdering 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Analyse af VPN-tjenestesikkerhed
 
 ### Sikret AB {#assured-ab}
 
@@ -89,7 +89,7 @@ Virksomheden har særlig ekspertise inden for blockchain-sikkerhed, kryptografis
 **Væsentlige publikationer og rapporter**:
 
 * [Homebrew Sikkerhedsanmeldelse 2023](https://github.com/trailofbits/publications/blob/master/reviews/2023-08-28-homebrew-securityreview.pdf) - Sikkerhedsvurdering af pakkehåndtering
-* [Hey Security-anmeldelse](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Sikkerhedsevaluering af e-mail-tjeneste
+* [Hey Security-anmeldelse](https://github.com/trailofbits/publications/blob/master/reviews/Hey.pdf) - Sikkerhedsevaluering af e-mailtjeneste
 * [cURL-sikkerhedsgennemgang 2022](https://github.com/trailofbits/publications/blob/master/reviews/2022-12-curl-securityreview.pdf) - Sikkerhedsanalyse af netværksbibliotek
 
 ## Virksomhedssammenligning {#company-comparison}
@@ -115,4 +115,4 @@ Da vi evaluerede disse sikkerhedsrevisionsvirksomheder, overvejede vi flere krit
 
 **Kontinuerlig forbedring**: Alle anbefalede virksomheder holder sig ajour med udviklende trusselslandskaber og nye teknologier og sikrer, at deres vurderinger forbliver relevante og omfattende.
 
-Sikkerhedsrevisionslandskabet udvikler sig løbende, og vi anbefaler, at organisationer udfører deres egen evaluering baseret på specifikke behov, budgetbegrænsninger og projektkrav. Imidlertid vil alle disse virksomheder tilbyde exceptionelle sikkerhedsvurderingstjenester til organisationer, der tager beskyttelsen af deres infrastruktur og brugerdata alvorligt.
+Sikkerhedsrevisionslandskabet udvikler sig løbende, og vi anbefaler, at organisationer udfører deres egen evaluering baseret på specifikke behov, budgetbegrænsninger og projektkrav. Enhver af disse virksomheder vil dog tilbyde exceptionelle sikkerhedsvurderingstjenester til organisationer, der tager beskyttelsen af deres infrastruktur og brugerdata alvorligt.

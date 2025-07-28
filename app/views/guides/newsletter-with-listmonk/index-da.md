@@ -14,8 +14,8 @@
   * [6. Start Listmonk](#6-start-listmonk)
   * [7. Konfigurer SMTP til videresendelse af e-mail i Listmonk](#7-configure-forward-email-smtp-in-listmonk)
   * [8. Konfigurer afvisningsbehandling](#8-configure-bounce-processing)
-* [Afprøvning](#testing)
-  * [Opret en postliste](#create-a-mailing-list)
+* [Testning](#testing)
+  * [Opret en mailingliste](#create-a-mailing-list)
   * [Tilføj abonnenter](#add-subscribers)
   * [Opret og send en kampagne](#create-and-send-a-campaign)
 * [Verifikation](#verification)
@@ -24,7 +24,7 @@
 
 ## Oversigt {#overview}
 
-Denne vejledning giver udviklere trinvise instruktioner til opsætning af [Listmonk](https://listmonk.app/), en effektiv open source-nyhedsbrevs- og mailinglisteadministrator, til at bruge [Videresend e-mail](https://forwardemail.net/) som SMTP-udbyder. Denne kombination giver dig mulighed for at administrere dine kampagner effektivt, samtidig med at du sikrer sikker, privat og pålidelig e-maillevering.
+Denne vejledning giver udviklere trinvise instruktioner til opsætning af [Listemonk](https://listmonk.app/), en effektiv open source-nyhedsbrevs- og mailinglisteadministrator, til at bruge [Videresend e-mail](https://forwardemail.net/) som SMTP-udbyder. Denne kombination giver dig mulighed for at administrere dine kampagner effektivt, samtidig med at du sikrer sikker, privat og pålidelig e-maillevering.
 
 * **Listmonk**: Håndterer abonnentadministration, listeorganisering, kampagneoprettelse og præstationssporing.
 * **Videresend e-mail**: Fungerer som den sikre SMTP-server, der håndterer selve afsendelsen af e-mails med indbyggede sikkerhedsfunktioner som SPF, DKIM, DMARC og TLS-kryptering.
@@ -51,7 +51,7 @@ Før du begynder, skal du sørge for at have følgende:
 
 * En aktiv konto med [Videresend e-mail](https://forwardemail.net/).
 
-* Root- eller `sudo` adgang til din VPS.
+* Root- eller `sudo`-adgang til din VPS.
 
 * Grundlæggende kendskab til Linux-kommandolinjeoperationer.
 
@@ -107,9 +107,9 @@ Det er afgørende for sikkerheden at køre Listmonk over HTTPS. Du har to primæ
 
 Hvis dit domænes DNS administreres af Cloudflare, kan du udnytte deres proxyfunktion til nem HTTPS.
 
-1. **Point DNS**: Opret en `A` record i Cloudflare for dit Listmonk-underdomæne (f.eks. `listmonk.yourdomain.com`), der peger på din VPS IP-adresse. Sørg for, at **Proxy-status** er indstillet til **Proxy** (orange sky).
+1. **Point DNS**: Opret en `A`-post i Cloudflare for dit Listmonk-underdomæne (f.eks. `listmonk.yourdomain.com`), der peger på din VPS IP-adresse. Sørg for, at **Proxy-status** er indstillet til **Proxy** (orange sky).
 
-2. **Rediger Docker Compose**: Rediger den `docker-compose.yml` fil, du downloadede:
+2. **Rediger Docker Compose**: Rediger den `docker-compose.yml`-fil, du downloadede:
 
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
@@ -146,7 +146,6 @@ Konfigurer derefter Listmonk til at sende e-mails ved hjælp af din videresendte
 1. **Aktivér SMTP i Videresend e-mail**: Sørg for, at du har genereret SMTP-legitimationsoplysninger i dit dashboard til Videresend e-mail. Følg [Guide til videresendelse af e-mail til at sende e-mail med et brugerdefineret domæne via SMTP](https://forwardemail.net/en/guides/send-email-with-custom-domain-smtp), hvis du ikke allerede har gjort det.
 
 2. **Konfigurer Listmonk**: Log ind på dit Listmonk-administrationspanel.
-
 * Naviger til **Indstillinger -> SMTP**.
 
 * Listmonk har indbygget understøttelse af videresendelse af e-mail. Vælg **Videresendelse af e-mail** fra udbyderlisten, eller indtast følgende oplysninger manuelt:
@@ -161,7 +160,7 @@ Konfigurer derefter Listmonk til at sende e-mails ved hjælp af din videresendte
 | **TLS** | `SSL/TLS` |
 | **Fra e-mail** | Din ønskede `From`-adresse (f.eks. `newsletter@yourdomain.com`). Sørg for, at dette domæne er konfigureret i Videresend e-mail. |
 
-* **Vigtigt**: Brug altid port `465` med `SSL/TLS` for sikre forbindelser med videresendelse af e-mail. Brug ikke STARTTLS (port 587).
+* **Vigtigt**: Brug altid port `465` sammen med `SSL/TLS` for sikre forbindelser med videresendelse af e-mail. Brug ikke STARTTLS (port 587).
 
 * Klik på **Gem**.
 3. **Send test-e-mail**: Brug knappen "Send test-e-mail" på SMTP-indstillingssiden. Indtast en modtageradresse, du har adgang til, og klik på **Send**. Bekræft, at e-mailen ankommer til modtagerens indbakke.
@@ -176,13 +175,14 @@ Afvisningsbehandling gør det muligt for Listmonk automatisk at håndtere e-mail
 2. Naviger til **Domæner**, vælg det domæne, du bruger til at sende, og gå til siden **Indstillinger**.
 3. Rul ned til sektionen **Afvis Webhook URL**.
 4. Indtast følgende URL, og erstat `<your_listmonk_domain>` med det faktiske domæne eller underdomæne, hvor din Listmonk-instans er tilgængelig:
+
 ```sh
    https://<your_listmonk_domain>/webhooks/service/forwardemail
    ```
 *Eksempel*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
 5. Rul længere ned til sektionen **Webhook Signature Payload Verification Key**.
 6. **Kopier** den genererede bekræftelsesnøgle. Du skal bruge denne i Listmonk.
-7. Gem ændringerne i dine domæneindstillinger for Videresend e-mail.
+7. Gem ændringerne i dine domæneindstillinger for videresendelse af e-mail.
 
 #### Listmonk-opsætning {#listmonk-setup}
 
@@ -194,7 +194,7 @@ Afvisningsbehandling gør det muligt for Listmonk automatisk at håndtere e-mail
 6. Indsæt den **Webhook-signaturbekræftelsesnøgle**, som du kopierede fra dashboardet til videresendelse af e-mail, i feltet **Videresend e-mailnøgle**.
 7. Klik på **Gem** nederst på siden.
 8. Afvisningsbehandling er nu konfigureret! Når Videresend e-mail registrerer en afvisning for en e-mail sendt af Listmonk, vil den underrette din Listmonk-instans via webhooken, og Listmonk vil markere abonnenten i overensstemmelse hermed.
-9. Udfør nedenstående trin i [Afprøvning](#testing) for at sikre, at alt fungerer.
+9. Udfør nedenstående trin i [Testning](#testing) for at sikre, at alt fungerer.
 
 ## Testning af {#testing}
 
@@ -229,7 +229,7 @@ Her er et hurtigt overblik over Listmonks kernefunktioner:
 
 * **SMTP-levering**: Send regelmæssigt test-e-mails via Listmonks SMTP-indstillingsside og testkampagner for at sikre, at e-mails leveres korrekt.
 * **Håndtering af afvisninger**: Send en testkampagne til en kendt ugyldig e-mailadresse (f.eks. `bounce-test@yourdomain.com`, hvis du ikke har en rigtig en ved hånden, selvom resultaterne kan variere). Tjek kampagnestatistikkerne i Listmonk efter et kort stykke tid for at se, om afvisningen er registreret.
-* **E-mail-headere**: Brug værktøjer som [Mail Tester](https://www.mail-tester.com/), eller inspicer e-mail-headere manuelt for at bekræfte, at SPF, DKIM og DMARC sendes, hvilket indikerer korrekt opsætning via Videresend e-mail.
+* **E-mail-headere**: Brug værktøjer som [Mailtester](https://www.mail-tester.com/), eller inspicer e-mail-headere manuelt for at bekræfte, at SPF, DKIM og DMARC sendes, hvilket indikerer korrekt opsætning via Videresend e-mail.
 * **Logfiler til Videresend e-mail**: Tjek dine logfiler til dashboardet Videresend e-mail, hvis du har mistanke om leveringsproblemer, der stammer fra SMTP-serveren.
 
 ## Udviklernoter {#developer-notes}
@@ -237,7 +237,7 @@ Her er et hurtigt overblik over Listmonks kernefunktioner:
 * **Skabeloner**: Listmonk bruger Gos skabelonmotor. Udforsk dokumentationen for avanceret personalisering: `{{ .Subscriber.Attribs.your_custom_field }}`.
 * **API**: Listmonk leverer en omfattende REST API til administration af lister, abonnenter, kampagner, skabeloner og mere. Find linket til API-dokumentationen i din Listmonk-instans' sidefod.
 * **Brugerdefinerede felter**: Definer brugerdefinerede abonnentfelter under **Indstillinger -> Abonnentfelter** for at gemme yderligere data.
-* **Webhooks**: Udover bounces kan Listmonk sende webhooks til andre hændelser (f.eks. abonnementer), hvilket muliggør integration med andre systemer.
+* **Webhooks**: Udover bounces kan Listmonk sende webhooks til andre begivenheder (f.eks. abonnementer), hvilket muliggør integration med andre systemer.
 
 ## Konklusion {#conclusion}
 

@@ -1,10 +1,10 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Kendinden Barındırılan Sürümler {#self-hosted-releases}
 
-Bu bölümde, ForwardEmail'in kendi kendine barındırılan çözümü için CI/CD iş akışı belgelendirilmekte ve Docker görüntülerinin nasıl oluşturulduğu, yayınlandığı ve dağıtıldığı açıklanmaktadır.
+Bu bölüm, ForwardEmail'in kendi kendine barındırılan çözümü için CI/CD iş akışını belgeliyor ve Docker görüntülerinin nasıl oluşturulduğunu, yayınlandığını ve dağıtıldığını açıklıyor.
 
-## Table of Contents {#table-of-contents}
+## İçindekiler {#table-of-contents}
 
-* [Genel bakış](#overview)
+* [Genel Bakış](#overview)
 * [CI/CD İş Akışı](#cicd-workflow)
   * [GitHub Eylemleri İş Akışı](#github-actions-workflow)
   * [Docker Görüntü Yapısı](#docker-image-structure)
@@ -19,20 +19,20 @@ Bu bölümde, ForwardEmail'in kendi kendine barındırılan çözümü için CI/
 * [Görüntülere Erişim](#accessing-images)
 * [Katkıda bulunmak](#contributing)
 
-## Overview {#overview}
+## Genel Bakış {#overview}
 
-ForwardEmail'in kendi kendine barındırılan çözümü, yeni bir sürüm oluşturulduğunda otomatik olarak Docker görüntüleri oluşturmak ve yayınlamak için GitHub Actions'ı kullanır. Bu görüntüler daha sonra kullanıcıların sağlanan kurulum betiğini kullanarak kendi sunucularına dağıtmaları için kullanılabilir.
+ForwardEmail'in kendi kendine barındırılan çözümü, yeni bir sürüm oluşturulduğunda Docker görüntülerini otomatik olarak oluşturmak ve yayınlamak için GitHub Actions'ı kullanır. Bu görüntüler daha sonra kullanıcıların, sağlanan kurulum betiğini kullanarak kendi sunucularına dağıtmaları için kullanılabilir.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Ayrıca [kendi kendine barındırılan blog](https://forwardemail.net/blog/docs/self-hosted-solution) ve [kendi kendine barındırılan geliştirici kılavuzu](https://forwardemail.net/self-hosted) versiyonlarımız da mevcut.
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Daha ayrıntılı adım adım versiyonlar için [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) veya [Debian](https://forwardemail.net/guides/selfhosted-on-debian) tabanlı kılavuzlara bakın.
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD İş Akışı {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub Eylemleri İş Akışı {#github-actions-workflow}
 
-Kendi kendine barındırılan Docker görüntüsü oluşturma ve yayınlama süreci `.github/workflows/docker-image-build-publish.yml` içinde tanımlanmıştır. Bu iş akışı:
+Kendi kendine barındırılan Docker görüntüsü oluşturma ve yayınlama süreci `.github/workflows/docker-image-build-publish.yml`'da tanımlanmıştır. Bu iş akışı:
 
 1. **Tetikleyiciler**: Yeni bir GitHub Sürümü yayınlandığında otomatik olarak çalışır
 2. **Ortam**: Node.js 18.20.4 ile Ubuntu'da çalışır
@@ -41,7 +41,7 @@ Kendi kendine barındırılan Docker görüntüsü oluşturma ve yayınlama sür
 * Çoklu platform derlemeleri için Docker Buildx'i ayarlar
 * GitHub Container Registry'ye (GHCR) giriş yapar
 * Kendi kendine barındırılan dağıtım için şemayı günceller
-* Docker imajını `self-hosting/Dockerfile-selfhosted` kullanarak derler
+* `self-hosting/Dockerfile-selfhosted` kullanarak Docker imajını oluşturur
 * İmajı hem sürüm numarası hem de `latest` ile etiketler
 * İmajları GitHub Container Registry'ye gönderir
 
@@ -71,7 +71,7 @@ jobs:
 
 ### Docker Görüntü Yapısı {#docker-image-structure}
 
-Docker görüntüsü, `self-hosting/Dockerfile-selfhosted`'de tanımlanan çok aşamalı bir yaklaşım kullanılarak oluşturulur:
+Docker görüntüsü `self-hosting/Dockerfile-selfhosted`'da tanımlanan çok aşamalı bir yaklaşım kullanılarak oluşturulur:
 
 1. **Builder Aşaması**:
 * Temel görüntü olarak Node.js 20'yi kullanır
@@ -80,7 +80,7 @@ Docker görüntüsü, `self-hosting/Dockerfile-selfhosted`'de tanımlanan çok a
 * Uygulamayı üretim modunda derler
 
 2. **Son Aşama**:
-* Daha ince bir Node.js 20 görüntüsü kullanır
+* Daha sade bir Node.js 20 imajı kullanır
 * Yalnızca gerekli sistem bağımlılıklarını yükler
 * Veri depolama için gerekli dizinleri oluşturur
 * Oluşturulan uygulamayı oluşturucu aşamasından kopyalar
@@ -103,7 +103,7 @@ Bu betik:
 2. Ortamı kurar
 3. DNS ve güvenlik duvarı ayarlarını yapılandırır
 4. SSL sertifikaları oluşturur
-5. En son Docker görüntülerini çeker
+5. En son Docker imajlarını çeker
 6. Docker Compose kullanarak hizmetleri başlatır
 
 ### Docker Compose Yapılandırması {#docker-compose-configuration}
@@ -121,7 +121,7 @@ Bu betik:
 * **Redis**: Bellek içi veri deposu
 * **SQLite**: E-postaları depolamak için veritabanı
 
-Her servis aynı Docker imajını kullanır ancak farklı giriş noktalarıyla, bu da bakımın basitleştirilmesini sağlarken modüler bir mimariye olanak tanır.
+Her servis aynı Docker imajını kullanır ancak farklı giriş noktaları kullanır, bu da bakımın basitleştirilmesini sağlarken modüler bir mimariye olanak tanır.
 
 ## Bakım Özellikleri {#maintenance-features}
 
@@ -131,9 +131,9 @@ Kendinden barındırılan çözüm çeşitli bakım özelliklerini içerir:
 
 Kullanıcılar aşağıdakileri sağlayacak otomatik güncellemeleri etkinleştirebilir:
 
-* En son Docker imajını her gece çek
-* Hizmetleri güncellenmiş imajla yeniden başlat
-* Güncelleme sürecini kaydet
+* Her gece en son Docker imajını çekin
+* Hizmetleri güncellenen imajla yeniden başlatın
+* Güncelleme işlemini kaydedin
 
 ```bash
 # Setup auto-updates (runs at 1 AM daily)
@@ -142,11 +142,11 @@ Kullanıcılar aşağıdakileri sağlayacak otomatik güncellemeleri etkinleşti
 
 ### Yedekleme ve Geri Yükleme {#backup-and-restore}
 
-Kurulum aşağıdakiler için seçenekler sunar:
+Kurulum şu seçenekleri sunar:
 
-* S3 uyumlu depolamaya düzenli yedeklemeler yapılandırma
-* MongoDB, Redis ve SQLite verilerini yedekleme
-* Arıza durumunda yedeklemelerden geri yükleme
+* S3 uyumlu depolamaya düzenli yedekleme yapılandırma
+* MongoDB, Redis ve SQLite verilerinin yedeklenmesi
+* Arıza durumunda yedeklerden geri yükleme
 
 ### Sertifika Yenileme {#certificate-renewal}
 
@@ -156,25 +156,25 @@ SSL sertifikaları otomatik olarak şu seçeneklerle yönetilir:
 * Gerektiğinde sertifikaları yenileyin
 * E-posta kimlik doğrulaması için DKIM'i yapılandırın
 
-## Sürüm Oluşturma {#versioning}
+## Sürümü {#versioning}
 
-Her GitHub Sürümü, şu etiketlerle etiketlenen yeni bir Docker görüntüsü oluşturur:
+Her GitHub Sürümü, şu etiketlerle etiketlenmiş yeni bir Docker görüntüsü oluşturur:
 
-1. Belirli sürüm sürümü (örneğin, `v1.0.0`)
+1. Belirli sürüm (örneğin, `v1.0.0`)
 2. En son sürüm için `latest` etiketi
 
-Kullanıcılar, kararlılık için belirli bir sürümü kullanmayı veya her zaman en yeni özelliklere sahip olmak için `latest` etiketini kullanmayı seçebilirler.
+Kullanıcılar istikrar için belirli bir sürümü kullanmayı veya her zaman en yeni özelliklere sahip olmak için `latest` etiketini kullanmayı seçebilirler.
 
-## Görsellere Erişim {#accessing-images}
+## Görüntülere Erişim {#accessing-images}
 
-Docker görüntüleri herkese açık olarak şu adreste mevcuttur:
+Docker görüntüleri şu adreste herkese açıktır:
 
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (örnek sürüm etiketi)
 
-Bu görüntüleri çekmek için herhangi bir kimlik doğrulamaya gerek yoktur.
+Bu görselleri çekmek için herhangi bir kimlik doğrulamaya gerek yoktur.
 
-## Katkıda Bulunan {#contributing}
+## {#contributing}'e Katkıda Bulunuyor
 
 Kendi kendine barındırılan çözüme katkıda bulunmak için:
 

@@ -37,7 +37,7 @@
 * [Onderhoud en monitoring](#maintenance-and-monitoring)
   * [Logboeklocaties](#log-locations)
   * [Regelmatige onderhoudswerkzaamheden](#regular-maintenance-tasks)
-  * [Certificaat Vernieuwing](#certificate-renewal)
+  * [Certificaatvernieuwing](#certificate-renewal)
 * [Probleemoplossing](#troubleshooting)
   * [Debian-specifieke problemen](#debian-specific-issues)
   * [Veelvoorkomende problemen](#common-issues)
@@ -75,7 +75,7 @@ Voordat u met de installatie begint, moet u ervoor zorgen dat u het volgende hee
 
 ## Stapsgewijze installatie {#step-by-step-installation}
 
-### Stap 1: Eerste systeeminstallatie {#step-1-initial-system-setup}
+### Stap 1: Initiële systeeminstallatie {#step-1-initial-system-setup}
 
 Zorg er eerst voor dat uw systeem up-to-date is en schakel over naar rootgebruiker:
 
@@ -133,7 +133,7 @@ apt-get install -y \
     software-properties-common
 ```
 
-### Stap 4: Snapd installeren en configureren {#step-4-install-and-configure-snapd}
+### Stap 4: Snapd {#step-4-install-and-configure-snapd} installeren en configureren
 
 Debian bevat snapd standaard niet, dus we moeten het installeren en configureren:
 
@@ -265,7 +265,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-Stap 9: Kloon de doorstuur-e-mailrepository {#step-9-clone-forward-email-repository}
+### Stap 9: Kloon doorstuur-e-mailrepository {#step-9-clone-forward-email-repository}
 
 Download de broncode van Forward Email:
 
@@ -509,7 +509,7 @@ else
 fi
 ```
 
-### Stap 17: Controleer de installatie {#step-17-verify-installation}
+### Stap 17: Controleer installatie {#step-17-verify-installation}
 
 Controleer of alle services correct werken:
 
@@ -585,10 +585,10 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Eerste aanmelding {#first-login}
 
-1. Open uw webbrowser en ga naar `https://yourdomain.com`
-2. Voer de basisauthenticatiegegevens in die u eerder hebt opgeslagen.
-3. Voltooi de wizard voor de eerste installatie.
-4. Maak uw eerste e-mailaccount aan.
+1. Open je webbrowser en ga naar `https://yourdomain.com`
+2. Voer de basisauthenticatiegegevens in die je eerder hebt opgeslagen
+3. Voltooi de wizard voor de eerste installatie
+4. Maak je eerste e-mailaccount aan
 
 ## Back-upconfiguratie {#backup-configuration}
 
@@ -701,11 +701,11 @@ nslookup google.com
 * **Logs voor automatische updates**: `/var/log/autoupdate.log`
 * **Snapd-logs**: `journalctl -u snapd`
 
-### Regelmatige onderhoudswerkzaamheden {#regular-maintenance-tasks}
+### Regelmatige onderhoudstaken {#regular-maintenance-tasks}
 
 1. **Schijfruimte controleren**: `df -h`
 2. **Servicestatus controleren**: Gebruik de juiste docker compose-opdracht
-3. **Logboeken controleren**: Controleer zowel de applicatie- als de systeemlogboeken
+3. **Logboeken bekijken**: Controleer zowel de applicatie- als de systeemlogboeken
 4. **Systeempakketten bijwerken**: `apt update && apt upgrade`
 5. **Snapd controleren**: `snap list` en `snap refresh`
 
@@ -728,7 +728,7 @@ else
 fi
 ```
 
-## Problemen oplossen {#troubleshooting}
+## Problemen oplossen met {#troubleshooting}
 
 ### Debian-specifieke problemen {#debian-specific-issues}
 
@@ -795,7 +795,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 #### 2. Certificaatgeneratie mislukt {#2-certificate-generation-fails}
 
 * Zorg ervoor dat poorten 80 en 443 toegankelijk zijn
-* Controleer of de DNS-records naar uw server verwijzen
+* Controleer of DNS-records naar uw server verwijzen
 * Controleer de firewallinstellingen met `ufw status`
 
 #### 3. Problemen met e-mailbezorging {#3-email-delivery-issues}
@@ -831,6 +831,6 @@ Uw zelfgehoste installatie van Forward Email zou nu voltooid moeten zijn en op D
 5. Houd uw installatie up-to-date
 6. Controleer snapd en snap-pakketten
 
-De belangrijkste verschillen met Ubuntu zijn de snapd-installatie en de configuratie van de Docker-repository. Zodra deze correct zijn ingesteld, gedraagt de applicatie Forward Email zich op beide systemen identiek.
+De belangrijkste verschillen met Ubuntu zijn de snapd-installatie en de configuratie van de Docker-repository. Zodra deze correct zijn ingesteld, werkt de applicatie Forward Email op beide systemen identiek.
 
 Voor aanvullende configuratieopties en geavanceerde functies raadpleegt u de officiële documentatie voor het doorsturen van e-mails op <https://forwardemail.net/self-hosted#configuration>.

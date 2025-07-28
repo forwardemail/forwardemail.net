@@ -55,12 +55,12 @@
 | <strong>Beveiligingsbeleid</strong> | Bekijk [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | <strong>Regerende Staat</strong> | De staat Delaware, Verenigde Staten |
 
-## Wijzigingen in de Overeenkomst {#changes-to-the-agreement}
+## Wijzigingen in de overeenkomst {#changes-to-the-agreement}
 
 Dit document is een afgeleide van [Standaardvoorwaarden Common Paper DPA (versie 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) en de volgende wijzigingen zijn aangebracht:
 
-1. [Toepasselijk recht en gekozen rechtbanken](#11-governing-law-and-chosen-courts) is hieronder opgenomen als sectie, met `Governing State` hierboven geïdentificeerd.
-2. [Relatie met serviceprovider](#12-service-provider-relationship) is hieronder opgenomen als sectie.
+1. [Toepasselijk recht en gekozen rechtbanken](#11-governing-law-and-chosen-courts) is hieronder opgenomen, terwijl `Governing State` hierboven is geïdentificeerd.
+2. [Relatie met serviceprovider](#12-service-provider-relationship) is hieronder opgenomen.
 
 ## 1. Relaties tussen verwerkers en subverwerkers {#1-processor-and-subprocessor-relationships}
 
@@ -70,19 +70,19 @@ In situaties waarin <strong>Klant</strong> de verwerkingsverantwoordelijke is va
 
 ### 2. Leverancier als subverwerker {#2-provider-as-subprocessor}
 
-In situaties waarin <strong>Klant</strong> een Verwerker is van de Persoonsgegevens van de Klant, wordt <strong>Provider</strong> beschouwd als een Subverwerker van de Persoonsgegevens van de Klant.
+In situaties waarin <strong>Klant</strong> een Verwerker is van de Persoonsgegevens van Klant, wordt <strong>Provider</strong> beschouwd als een Subverwerker van de Persoonsgegevens van Klant.
 
-## 2. Verwerken van {#2-processing}
+## 2. Verwerken {#2-processing}
 
 ### 1. Verwerkingsdetails {#1-processing-details}
 
-In Bijlage I(B) op het voorblad worden het onderwerp, de aard, het doel en de duur van deze verwerking beschreven, evenals de verzamelde <strong>categorieën persoonsgegevens</strong> en <strong>categorieën betrokkenen</strong>.
+In Bijlage I(B) op het voorblad worden het onderwerp, de aard, het doel en de duur van deze verwerking beschreven, evenals de <strong>categorieën persoonsgegevens</strong> die worden verzameld en de <strong>categorieën betrokkenen</strong>.
 
 ### 2. Verwerkingsinstructies {#2-processing-instructions}
 
 <strong>Klant</strong> geeft <strong>Provider</strong> opdracht om Persoonsgegevens van Klant te Verwerken: (a) om de Dienst te verlenen en te onderhouden; (b) zoals nader gespecificeerd via het gebruik van de Dienst door <strong>Klant</strong>; (c) zoals vastgelegd in de <strong>Overeenkomst</strong>; en (d) zoals vastgelegd in andere schriftelijke instructies van <strong>Klant</strong> en erkend door <strong>Provider</strong> over het Verwerken van Persoonsgegevens van Klant onder deze DPA. <strong>Provider</strong> zal zich aan deze instructies houden, tenzij dit verboden is door de Toepasselijke Wetgeving. <strong>Provider</strong> zal <strong>Klant</strong> onmiddellijk informeren indien hij de Verwerkingsinstructies niet kan opvolgen. <strong>Klant</strong> heeft instructies gegeven en zal deze alleen geven die voldoen aan de Toepasselijke Wetgeving.
 
-### 3. Verwerking door Provider {#3-processing-by-provider}
+### 3. Verwerking door provider {#3-processing-by-provider}
 
 <strong>Provider</strong> verwerkt Persoonsgegevens van Klant uitsluitend in overeenstemming met deze Gegevensverwerkingsovereenkomst (DPA), inclusief de details op de voorpagina. Indien <strong>Provider</strong> de Dienst bijwerkt om bestaande producten, functies of functionaliteiten bij te werken of nieuwe producten, functies of functionaliteiten toe te voegen, kan <strong>Provider</strong> de <strong>Categorieën van Betrokkenen</strong>, <strong>Categorieën van Persoonsgegevens</strong>, <strong>Speciale Gegevenscategorieën</strong>, <strong>Beperkingen of Waarborgen voor Speciale Gegevenscategorieën</strong>, <strong>Frequentie van Doorgifte</strong>, <strong>Aard en Doel van de Verwerking</strong> en <strong>Duur van de Verwerking</strong> naar behoefte wijzigen om de updates te weerspiegelen door <strong>Klant</strong> op de hoogte te stellen van de updates en wijzigingen.
 
@@ -98,7 +98,7 @@ Wanneer <strong>Klant</strong> een Verwerker is en <strong>Provider</strong> een
 
 a. <strong>Provider</strong> zal geen Persoonsgegevens van de Klant aan een Subverwerker verstrekken, overdragen of overhandigen, tenzij <strong>Klant</strong> de Subverwerker heeft goedgekeurd. De huidige lijst met <strong>Goedgekeurde Subverwerkers</strong> bevat de identiteit van de Subverwerkers, hun land van vestiging en hun verwachte Verwerkingstaken. <strong>Provider</strong> zal <strong>Klant</strong> ten minste 10 werkdagen van tevoren schriftelijk informeren over eventuele voorgenomen wijzigingen in de <strong>Goedgekeurde Subverwerkers</strong>, ongeacht of dit door toevoeging of vervanging van een Subverwerker gaat, zodat <strong>Klant</strong> voldoende tijd heeft om bezwaar te maken tegen de wijzigingen voordat <strong>Provider</strong> de nieuwe Subverwerker(s) in gebruik neemt. <strong>Provider</strong> zal <strong>Klant</strong> de informatie verstrekken die nodig is om <strong>Klant</strong> in staat te stellen zijn recht uit te oefenen om bezwaar te maken tegen de wijziging in <strong>Goedgekeurde Subverwerkers</strong>. <strong>Klant</strong> heeft 30 dagen na kennisgeving van een wijziging aan de <strong>Goedgekeurde Subverwerkers</strong> de tijd om bezwaar aan te tekenen, anders wordt <strong>Klant</strong> geacht de wijzigingen te accepteren. Indien <strong>Klant</strong> binnen 30 dagen na kennisgeving bezwaar maakt tegen de wijziging, zullen <strong>Klant</strong> en <strong>Provider</strong> te goeder trouw samenwerken om het bezwaar of de zorg van <strong>Klant</strong> op te lossen.
 
-b. Bij het inschakelen van een Subverwerker zal <strong>Provider</strong> een schriftelijke overeenkomst met de Subverwerker hebben waarin wordt gewaarborgd dat de Subverwerker alleen toegang heeft tot en gebruikmaakt van Persoonsgegevens van de Klant (i) voor zover dat nodig is om de aan hem uitbesteedde verplichtingen na te komen, en (ii) in overeenstemming met de voorwaarden van de <strong>Overeenkomst</strong>.
+b. Bij het inschakelen van een Subverwerker heeft <strong>Provider</strong> een schriftelijke overeenkomst met de Subverwerker waarin wordt gewaarborgd dat de Subverwerker alleen toegang heeft tot en gebruikmaakt van Persoonsgegevens van de Klant (i) voor zover dat nodig is om de aan hem uitbesteedde verplichtingen na te komen, en (ii) in overeenstemming met de voorwaarden van de <strong>Overeenkomst</strong>.
 
 c. Indien de AVG van toepassing is op de verwerking van Persoonsgegevens van Klant, (i) worden de in deze DPA beschreven verplichtingen inzake gegevensbescherming (zoals bedoeld in artikel 28(3) van de AVG, indien van toepassing) ook opgelegd aan de Subverwerker, en (ii) zal de overeenkomst van <strong>Provider</strong> met de Subverwerker deze verplichtingen omvatten, inclusief details over hoe <strong>Provider</strong> en zijn Subverwerker zullen samenwerken om te reageren op vragen of verzoeken over de Verwerking van Persoonsgegevens van Klant. Daarnaast zal <strong>Provider</strong> op verzoek van <strong>Klant</strong> een kopie van zijn overeenkomsten (inclusief eventuele wijzigingen) met zijn Subverwerkers delen. Voor zover noodzakelijk om bedrijfsgeheimen of andere vertrouwelijke informatie, waaronder persoonsgegevens, te beschermen, mag <strong>Provider</strong> de tekst van zijn overeenkomst met zijn Subverwerker redigeren voordat een kopie wordt gedeeld.
 
@@ -108,11 +108,11 @@ d. <strong>Provider</strong> blijft volledig aansprakelijk voor alle verplichtin
 
 ### 1. Autorisatie {#1-authorization}
 
-<strong>Klant</strong> stemt ermee in dat <strong>Provider</strong> Persoonsgegevens van Klant mag overdragen buiten de EER, het Verenigd Koninkrijk of een ander relevant geografisch gebied, indien nodig om de Dienst te verlenen. Indien <strong>Provider</strong> Persoonsgegevens van Klant overdraagt naar een gebied waarvoor de Europese Commissie of een andere relevante toezichthoudende autoriteit geen adequaatheidsbesluit heeft uitgevaardigd, zal <strong>Provider</strong> passende waarborgen implementeren voor de overdracht van Persoonsgegevens van Klant naar dat gebied, in overeenstemming met de Toepasselijke Wetgeving inzake Gegevensbescherming.
+<strong>Klant</strong> stemt ermee in dat <strong>Provider</strong> Persoonsgegevens van Klant mag overdragen buiten de EER, het Verenigd Koninkrijk of een ander relevant geografisch gebied, indien nodig om de Dienst te leveren. Indien <strong>Provider</strong> Persoonsgegevens van Klant overdraagt naar een gebied waarvoor de Europese Commissie of een andere relevante toezichthoudende autoriteit geen adequaatheidsbesluit heeft uitgevaardigd, zal <strong>Provider</strong> passende waarborgen implementeren voor de overdracht van Persoonsgegevens van Klant naar dat gebied, in overeenstemming met de Toepasselijke Wetgeving inzake Gegevensbescherming.
 
 ### 2. Overdrachten buiten de EER {#2-ex-eea-transfers}
 
-<strong>Klant</strong> en <strong>Provider</strong> komen overeen dat indien de AVG de overdracht van Persoonsgegevens van Klant beschermt, de overdracht plaatsvindt van <strong>Klant</strong> binnen de EER naar <strong>Provider</strong> buiten de EER, en de overdracht niet wordt beheerst door een adequaatheidsbesluit van de Europese Commissie, <strong>Klant</strong> en <strong>Provider</strong> door het aangaan van deze DPA geacht worden de EER-SCC's en de bijlagen daarbij, die door middel van verwijzing zijn opgenomen, te hebben ondertekend. Een dergelijke overdracht vindt plaats overeenkomstig de EER-SCC's, die als volgt zijn ingevuld:
+<strong>Klant</strong> en <strong>Provider</strong> komen overeen dat indien de AVG de overdracht van Persoonsgegevens van Klant beschermt, de overdracht plaatsvindt van <strong>Klant</strong> binnen de EER naar <strong>Provider</strong> buiten de EER, en de overdracht niet wordt beheerst door een adequaatheidsbesluit van de Europese Commissie, <strong>Klant</strong> en <strong>Provider</strong> door het aangaan van deze DPA geacht worden de EER-SCC's en de bijlagen daarbij, die bij verwijzing zijn opgenomen, te hebben ondertekend. Een dergelijke overdracht vindt plaats overeenkomstig de EER-SCC's, die als volgt zijn ingevuld:
 
 a. Module twee (Verwerkingsverantwoordelijke naar Verwerker) van de EER-SCC's is van toepassing wanneer <strong>Klant</strong> een verwerkingsverantwoordelijke is en <strong>Aanbieder</strong> Persoonsgegevens van Klant verwerkt voor <strong>Klant</strong> als Verwerker.
 
@@ -134,7 +134,7 @@ c. Voor elke module geldt (indien van toepassing) het volgende:
 
 7. De voorpagina van deze DPA bevat de informatie die vereist is in Bijlage I, Bijlage II en Bijlage III van de EER-SCC's.
 
-### 3. Overdrachten buiten het VK {#3-ex-uk-transfers}
+### 3. Ex-VK-overdrachten {#3-ex-uk-transfers}
 
 <strong>Klant</strong> en <strong>Provider</strong> komen overeen dat, indien de Britse AVG de overdracht van Persoonsgegevens van Klant beschermt, de overdracht plaatsvindt van <strong>Klant</strong> vanuit het Verenigd Koninkrijk naar <strong>Provider</strong> buiten het Verenigd Koninkrijk, en de overdracht niet wordt beheerst door een adequaatheidsbesluit van de Britse minister van Buitenlandse Zaken, <strong>Klant</strong> en <strong>Provider</strong> door het aangaan van deze DPA geacht worden het Britse Addendum en de bijbehorende Bijlagen te hebben ondertekend, die door middel van verwijzing zijn opgenomen. Een dergelijke overdracht vindt plaats overeenkomstig het Britse Addendum, dat als volgt is ingevuld:
 
@@ -144,11 +144,11 @@ b. Tabel 4 van het Britse Addendum wordt als volgt gewijzigd: Geen van beide par
 
 c. De voorpagina bevat de informatie die vereist is in Bijlage 1A, Bijlage 1B, Bijlage II en Bijlage III van het Britse addendum.
 
-### 4. Andere internationale overdrachten {#4-other-international-transfers}
+### 4. Andere internationale overboekingen {#4-other-international-transfers}
 
 Voor de overdracht van persoonsgegevens waarbij het Zwitserse recht (en niet het recht van een EER-lidstaat of het Verenigd Koninkrijk) van toepassing is op het internationale karakter van de overdracht, worden verwijzingen naar de AVG in clausule 4 van de EER-SCC's, voor zover wettelijk vereist, gewijzigd zodat er wordt verwezen naar de Zwitserse federale wet inzake gegevensbescherming of de opvolger daarvan. Het begrip toezichthoudende autoriteit omvat dan ook de Zwitserse federale commissaris voor gegevensbescherming en informatie.
 
-## 4. Reactie op beveiligingsincidenten {#4-security-incident-response}
+## 4. Reactie op beveiligingsincident {#4-security-incident-response}
 
 1. Zodra <strong>Provider</strong> op de hoogte is van een Beveiligingsincident, zal <strong>Provider</strong>: (a) <strong>Klant</strong> onverwijld op de hoogte stellen, indien mogelijk, maar uiterlijk binnen 72 uur nadat <strong>Klant</strong> op de hoogte is gesteld van het Beveiligingsincident; (b) tijdig informatie verstrekken over het Beveiligingsincident zodra dit bekend wordt of redelijkerwijs door <strong>Klant</strong> wordt verzocht; en (c) onmiddellijk redelijke stappen ondernemen om het Beveiligingsincident te beperken en te onderzoeken. De melding van of reactie van <strong>Provider</strong> op een Beveiligingsincident, zoals vereist door deze Gegevensverwerkingsovereenkomst, zal niet worden opgevat als een erkenning door <strong>Provider</strong> van enige schuld of aansprakelijkheid voor het Beveiligingsincident.
 
@@ -176,13 +176,13 @@ Indien <strong>Provider</strong> een vraag of verzoek van iemand anders ontvangt
 
 Indien vereist door de toepasselijke wetgeving inzake gegevensbescherming, zal <strong>Provider</strong> <strong>Klant</strong> redelijkerwijs bijstaan bij het uitvoeren van verplichte gegevensbeschermingseffectbeoordelingen of gegevensoverdrachtseffectbeoordelingen en overleg met relevante gegevensbeschermingsautoriteiten, rekening houdend met de aard van de Verwerking en de Persoonsgegevens van de Klant.
 
-## 7. Verwijdering van persoonlijke gegevens van de klant {#7-deletion-of-customer-personal-data}
+## 7. Verwijdering van persoonlijke gegevens van klanten {#7-deletion-of-customer-personal-data}
 
 ### 1. Verwijdering door klant {#1-deletion-by-customer}
 
 <strong>Provider</strong> stelt <strong>Klant</strong> in staat om Persoonsgegevens van Klant te verwijderen op een manier die consistent is met de functionaliteit van de Diensten. <strong>Provider</strong> zal zo spoedig als redelijkerwijs mogelijk is aan deze instructie voldoen, behalve wanneer verdere opslag van Persoonsgegevens van Klant vereist is door de Toepasselijke Wetgeving.
 
-### 2. Verwijdering bij het verlopen van de DPA {#2-deletion-at-dpa-expiration}
+### 2. Verwijdering bij DPA-vervaldatum {#2-deletion-at-dpa-expiration}
 
 a. Na afloop van de DPA zal <strong>Provider</strong> de Persoonsgegevens van de Klant retourneren of verwijderen op verzoek van <strong>Klant</strong>, tenzij verdere opslag van de Persoonsgegevens van de Klant vereist of toegestaan is door de Toepasselijke Wetgeving. Indien retourneren of vernietigen onuitvoerbaar of verboden is door de Toepasselijke Wetgeving, zal <strong>Provider</strong> redelijke inspanningen leveren om verdere Verwerking van de Persoonsgegevens van de Klant te voorkomen en zal <strong>Provider</strong> de Persoonsgegevens van de Klant die nog in haar bezit, beheer of controle zijn, blijven beschermen. Toepasselijke Wetgeving kan bijvoorbeeld vereisen dat <strong>Provider</strong> de Persoonsgegevens van de Klant blijft hosten of verwerken.
 
@@ -190,7 +190,7 @@ b. Indien <strong>Klant</strong> en <strong>Provider</strong> de EER-SCC's of he
 
 ## 8. Beperking van aansprakelijkheid {#8-limitation-of-liability}
 
-### 1. Aansprakelijkheidslimieten en schadevergoeding {#1-liability-caps-and-damages-waiver}
+### 1. Aansprakelijkheidslimieten en schadevrijstelling {#1-liability-caps-and-damages-waiver}
 
 **Voor zover maximaal toegestaan volgens de toepasselijke wetgeving inzake gegevensbescherming, is de totale cumulatieve aansprakelijkheid van elke partij jegens de andere partij die voortvloeit uit of verband houdt met deze DPA onderworpen aan de vrijstellingen, uitsluitingen en beperkingen van aansprakelijkheid zoals vermeld in de <strong>Overeenkomst</strong>.**
 
@@ -210,11 +210,11 @@ b. Indien <strong>Klant</strong> en <strong>Provider</strong> de EER-SCC's of he
 
 Deze DPA gaat in wanneer <strong>Provider</strong> en <strong>Klant</strong> akkoord gaan met een voorpagina voor de DPA en de <strong>Overeenkomst</strong> ondertekenen of elektronisch accepteren, en blijft van kracht totdat de <strong>Overeenkomst</strong> afloopt of wordt beëindigd. <strong>Provider</strong> en <strong>Klant</strong> blijven echter beiden onderworpen aan de verplichtingen in deze DPA en de toepasselijke wetgeving inzake gegevensbescherming totdat <strong>Klant</strong> stopt met het doorgeven van Persoonsgegevens van Klant aan <strong>Provider</strong> en <strong>Provider</strong> stopt met het Verwerken van Persoonsgegevens van Klant.
 
-## 11. Toepasselijk recht en bevoegde rechtbanken {#11-governing-law-and-chosen-courts}
+## 11. Toepasselijk recht en gekozen rechtbanken {#11-governing-law-and-chosen-courts}
 
 Onverminderd het toepasselijk recht of vergelijkbare bepalingen in de <strong>Overeenkomst</strong>, zijn alle interpretaties en geschillen over deze Gegevensverwerkingsovereenkomst onderworpen aan het recht van de <strong>Regerende Staat</strong>, ongeacht de bepalingen inzake conflictenrecht. Bovendien, en onverminderd de forumkeuze, jurisdictie of vergelijkbare bepalingen in de <strong>Overeenkomst</strong>, komen de partijen overeen om alle rechtszaken, gerechtelijke stappen of procedures met betrekking tot deze Gegevensverwerkingsovereenkomst aanhangig te maken bij de rechtbanken van de <strong>Regerende Staat</strong>, en elke partij onderwerpt zich onherroepelijk aan de exclusieve jurisdictie van deze rechtbanken.
 
-## 12. Relatie met serviceprovider {#12-service-provider-relationship}
+## 12. Serviceproviderrelatie {#12-service-provider-relationship}
 
 Voor zover de California Consumer Privacy Act, Cal. Civ. Code § 1798.100 e.v. ("CCPA") van toepassing is, erkennen en komen partijen overeen dat <strong>Provider</strong> een dienstverlener is en Persoonsgegevens van <strong>Klant</strong> ontvangt om de Dienst te verlenen zoals overeengekomen in de <strong>Overeenkomst</strong>, hetgeen een zakelijk doel vormt. <strong>Provider</strong> zal geen Persoonsgegevens verkopen die door <strong>Klant</strong> onder de <strong>Overeenkomst</strong> zijn verstrekt. Bovendien zal <strong>Provider</strong> geen Persoonsgegevens bewaren, gebruiken of openbaar maken die door <strong>Klant</strong> onder de <strong>Overeenkomst</strong> zijn verstrekt, behalve voor zover noodzakelijk voor het verlenen van de Dienst aan <strong>Klant</strong>, zoals vermeld in de <strong>Overeenkomst</strong> of zoals toegestaan door de Toepasselijke Wetgeving inzake Gegevensbescherming. <strong>Provider</strong> verklaart de beperkingen van deze paragraaf te begrijpen.
 
@@ -242,7 +242,7 @@ Voor zover de California Consumer Privacy Act, Cal. Civ. Code § 1798.100 e.v. (
 
 11. **"Verwerken"** of **"Verwerken"** heeft de betekenis(sen) die daaraan worden toegekend in de Toepasselijke Wetgeving inzake Gegevensbescherming voor elk gebruik van Persoonsgegevens of de uitvoering van een computerbewerking op Persoonsgegevens, inclusief via geautomatiseerde procedés.
 
-12. **"Verwerker"** heeft de betekenis(sen) die daaraan worden toegekend in de toepasselijke wetgeving inzake gegevensbescherming voor het bedrijf dat persoonsgegevens verwerkt namens de verwerkingsverantwoordelijke.
+12. **"Verwerker"** heeft de betekenis(sen) die daaraan worden toegekend in de toepasselijke wetgeving inzake gegevensbescherming voor het bedrijf dat Persoonsgegevens verwerkt namens de Verwerkingsverantwoordelijke.
 
 13. **"Rapport"** betekent auditrapporten die door een ander bedrijf zijn opgesteld volgens de normen die zijn vastgelegd in het Beveiligingsbeleid namens Provider.
 
@@ -254,7 +254,7 @@ Voor zover de California Consumer Privacy Act, Cal. Civ. Code § 1798.100 e.v. (
 
 17. **"Bijzondere categoriegegevens"** heeft de betekenis die daaraan wordt gegeven in Artikel 9 van de AVG.
 
-18. **"Subverwerker"** heeft de betekenis(sen) die daaraan in de toepasselijke wetgeving inzake gegevensbescherming worden toegekend voor een bedrijf dat, met de goedkeuring en acceptatie van de Verwerkingsverantwoordelijke, de Verwerker helpt bij het Verwerken van Persoonsgegevens namens de Verwerkingsverantwoordelijke.
+18. **"Subverwerker"** heeft de betekenis(sen) die daaraan worden toegekend in de toepasselijke wetgeving inzake gegevensbescherming voor een bedrijf dat, met de goedkeuring en acceptatie van de Verwerkingsverantwoordelijke, de Verwerker helpt bij het Verwerken van Persoonsgegevens namens de Verwerkingsverantwoordelijke.
 
 19. **"UK GDPR"** betekent Verordening 2016/679 van de Europese Unie, zoals geïmplementeerd door artikel 3 van de European Union (Withdrawal) Act van 2018 van het Verenigd Koninkrijk in het Verenigd Koninkrijk.
 

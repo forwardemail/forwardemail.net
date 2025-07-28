@@ -62,7 +62,7 @@
   * [Den store udslettelse](#the-great-erasure)
   * [Tredjepartsredningen](#the-third-party-rescue)
 * [Den 11 år lange Capture Bug-katastrofe: $1.899 og det bliver flere](#the-11-year-capture-bug-disaster-1899-and-counting)
-  * [Tab på 1.899 dollars for videresendt e-mail](#forward-emails-1899-loss)
+  * [Tab på $1.899 på videresendte e-mails](#forward-emails-1899-loss)
   * [Den oprindelige rapport fra 2013: 11+ års uagtsomhed](#the-2013-original-report-11-years-of-negligence)
   * [2016-indrømmelsen: PayPal bryder deres eget SDK](#the-2016-admission-paypal-breaks-their-own-sdk)
   * [Eskaleringen i 2024: Stadig ødelagt](#the-2024-escalation-still-broken)
@@ -163,7 +163,7 @@ Det er her, det bliver rigtig interessant. Alle, der modtog vores feedback i 202
 **Tekniske ledere, der gav løfter og derefter forlod virksomheden:**
 
 * **Mark Stuart** (lovede at feedback ville være "katalysator") → [Nu hos Ripple](https://www.linkedin.com/in/markstuartsf)
-* **Jim Magats** (18-årig PayPal-veteran) → [Administrerende direktør for MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
+* **Jim Magats** (18 års PayPal-veteran) → [Administrerende direktør for MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
 * **John Kunze** (VP Global Consumer Product) → [Pensioneret](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
 * **Edwin Aoki** (en af de sidste tilbageværende) → [Lige taget afsted til Nasdaq](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (januar 2025)
 
@@ -175,7 +175,7 @@ Dette forklarer, hvorfor svaret på GitHub-problemet i 2025 virkede fuldstændig
 
 Spol frem til 2025, og præcis det samme mønster viser sig. Efter år uden fremskridt rækker PayPals nye ledelse ud igen.
 
-### Den nye administrerende direktør involverer sig {#the-new-ceo-gets-involved}
+### Den nye administrerende direktør bliver involveret {#the-new-ceo-gets-involved}
 
 Den 30. juni 2025 eskalerede vi direkte til PayPals nye administrerende direktør, Alex Chriss. Hans svar var kort:
 
@@ -193,7 +193,7 @@ Vi afslog et nyt møde og forklarede vores frustration:
 
 > Tak. Men jeg føler ikke, at det at besvare et opkald vil gøre noget. Her er hvorfor... Jeg blev besvaret et opkald før, og det førte absolut ingen vegne. Jeg spildte 2+ timer af min tid på at tale med hele teamet og ledelsen, og intet blev gjort... Tonsvis af e-mails frem og tilbage. Absolut intet blev gjort. Feedback førte ingen vegne. Jeg prøvede i årevis, blev lyttet til, og så førte det ingen vegne.
 
-### Marty Brodbecks svar på overdreven engineering {#marty-brodbecks-overengineering-response}
+### Marty Brodbecks svar på overengineering {#marty-brodbecks-overengineering-response}
 
 Så kontaktede Marty Brodbeck, der leder forbrugerteknik hos PayPal, ham:
 
@@ -233,7 +233,7 @@ Samtalerne med Alex Chriss, Michelle Gill og Marty Brodbeck i 2025 viser den sam
 
 Dette mønster forklarer, hvorfor PayPal-teams i 2025 synes fuldstændig afkoblet fra den omfattende feedback, der blev givet i 2020 - de personer, der modtog den feedback, er væk, og den nye ledelse gentager de samme fejl.
 
-## Årevis med fejlrapporter, de ignorerede {#years-of-bug-reports-they-ignored}
+## År med fejlrapporter, de ignorerede {#years-of-bug-reports-they-ignored}
 
 Vi klagede ikke kun over manglende funktioner. Vi rapporterede aktivt fejl og forsøgte at hjælpe dem med at forbedre dem. Her er en omfattende tidslinje over de problemer, vi dokumenterede:
 
@@ -324,7 +324,7 @@ Sri Shivananda (CTO) takkede os:
 
 At arbejde med PayPals API'er er som at rejse 10 år tilbage i tiden. Her er de tekniske problemer, vi har dokumenteret:
 
-### Brugergrænseflade i stykker {#broken-user-interface}
+### Brugergrænsefladen er defekt {#broken-user-interface}
 
 PayPals udviklerdashboard er en katastrofe. Her er hvad vi håndterer dagligt:
 
@@ -467,9 +467,9 @@ Vi er gået i stå med at understøtte en defekt platform, fordi PayPal har skab
 
 Da PayPal ikke tilbyder grundlæggende funktionalitet til abonnementslister, har udviklerfællesskabet fundet løsninger. Vi har oprettet et script, der hjælper med at administrere PayPal-abonnementer: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Dette script refererer til en [fællesskabsresumé](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4), hvor udviklere deler løsninger. Brugere er faktisk [takker os](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) for at levere, hvad PayPal burde have bygget for år tilbage.
+Dette script refererer til en [fællesskabsresumé](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4), hvor udviklere deler løsninger. Brugerne er faktisk [takker os](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) for at levere, hvad PayPal burde have bygget for år tilbage.
 
-## Blokering af PayPal-skabeloner på grund af phishing {#blocking-paypal-templates-due-to-phishing}
+## Blokerer PayPal-skabeloner på grund af phishing {#blocking-paypal-templates-due-to-phishing}
 
 Problemerne går ud over API'er. PayPals e-mailskabeloner er så dårligt designet, at vi var nødt til at implementere specifik filtrering i vores e-mailtjeneste, fordi de ikke kan skelnes fra phishing-forsøg.
 
@@ -479,7 +479,7 @@ Vi modtager regelmæssigt rapporter om PayPal-e-mails, der ligner præcis phishi
 
 **Emne:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-Denne e-mail blev videresendt til `abuse@microsoft.com`, fordi den så ud til at være et phishing-forsøg. Problemet? Den var faktisk fra PayPals sandbox-miljø, men deres skabelondesign er så dårligt, at det udløser phishing-detektionssystemer.
+Denne e-mail blev videresendt til `abuse@microsoft.com`, fordi det så ud til at være et phishing-forsøg. Problemet? Den var faktisk fra PayPals sandbox-miljø, men deres skabelondesign er så dårligt, at det udløser phishing-detektionssystemer.
 
 ### Vores implementering {#our-implementation}
 
@@ -568,7 +568,7 @@ For at gøre tingene værre påvirkede dette vores leveringsevne med Yahoo, hvil
 
 Et af de mest frustrerende aspekter ved PayPals platform er deres bagvendte tilgang til compliance og Know Your Customer (KYC)-procedurer. I modsætning til alle andre betalingsudbydere giver PayPal udviklere mulighed for at integrere deres API'er og begynde at indsamle betalinger i produktion, før de har gennemført korrekt verifikation.
 
-### Sådan burde det fungere {#how-it-should-work}
+### Sådan skal det fungere {#how-it-should-work}
 
 Enhver legitim betalingsudbyder følger denne logiske rækkefølge:
 
@@ -643,7 +643,7 @@ Enhver moderne betalingsudbyder tilbyder:
 * Webhook-notifikationer for abonnementsændringer
 * Omfattende dokumentation med fungerende eksempler
 
-### Hvad andre betalingssystemer tilbyder i forhold til PayPal {#what-other-processors-provide-vs-paypal}
+### Hvad andre processorer tilbyder vs. PayPal {#what-other-processors-provide-vs-paypal}
 
 **Stripe - Vis alle abonnementer:**
 
@@ -705,7 +705,7 @@ Authorization: Bearer access_token
 * ❌ Ingen `GET /v1/billing/subscriptions` (angiv alle)
 * ❌ Ingen søgefunktion
 * ❌ Ingen filtrering efter status, kunde, dato
-* ❌ Ingen pagineringsunderstøttelse
+* ❌ Ingen understøttelse af paginering
 
 PayPal er den eneste større betalingsudbyder, der tvinger udviklere til manuelt at spore abonnements-ID'er i deres egne databaser.
 
@@ -713,7 +713,7 @@ PayPal er den eneste større betalingsudbyder, der tvinger udviklere til manuelt
 
 I et træk, der perfekt indkapsler PayPals tilgang til håndtering af kritik, tog de for nylig hele deres communityforum offline, hvilket effektivt lukkede over 6 millioner medlemmer ned og slettede hundredtusindvis af opslag, der dokumenterede deres fiaskoer.
 
-### Den store sletning {#the-great-erasure}
+### Den store udslettelse {#the-great-erasure}
 
 Det oprindelige PayPal-fællesskab på `paypal-community.com` havde **6.003.558 medlemmer** og indeholdt hundredtusindvis af indlæg, fejlrapporter, klager og diskussioner om PayPals API-fejl. Dette repræsenterede over et årtis dokumenteret bevis på PayPals systematiske problemer.
 
@@ -736,7 +736,7 @@ Fjernelsen af forummet repræsenterer det hidtil mest skamløse forsøg på at s
 
 Mens PayPal havde travlt med at organisere feedbackmøder og give løfter, har deres kernebetalingssystem været fundamentalt i stykker i over 11 år. Beviserne er ødelæggende.
 
-### Tab på $1.899 ved videresendelse af e-mail {#forward-emails-1899-loss}
+### Videresend e-mails tab på $1.899 {#forward-emails-1899-loss}
 
 I vores produktionssystemer opdagede vi 108 PayPal-betalinger på i alt **1.899 USD**, som gik tabt på grund af PayPals fejl i betalingsprocessen. Disse betalinger viser et ensartet mønster:
 
@@ -775,9 +775,9 @@ Reaktionen fra lokalsamfundet i 2013 var sigende:
 
 **11+ år senere arbejder de stadig på det.**
 
-### Indrømmelsen fra 2016: PayPal bryder deres eget SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
+### 2016-optagelsen: PayPal bryder deres eget SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-I 2016 dokumenterede PayPals eget GitHub-arkiv, at [massive fangstfejl](https://github.com/paypal/PayPal-PHP-SDK/issues/660) påvirkede deres officielle PHP SDK. Omfanget var svimlende:
+I 2016 dokumenterede PayPals eget GitHub-lager, at [massive fangstfejl](https://github.com/paypal/PayPal-PHP-SDK/issues/660) påvirkede deres officielle PHP SDK. Omfanget var svimlende:
 
 > "Siden 20/9/2016 har alle PayPal-indsamlingsforsøg mislykkedes med 'INVALID_RESOURCE_ID - Anmodet ressource-ID blev ikke fundet.'. Intet blev ændret mellem 19/9 og 20/9 i API-integrationen. **100% af indsamlingsforsøgene siden 20/9 har returneret denne fejl.**"
 
@@ -810,7 +810,7 @@ Forhandleren beskriver det samme mønster, som han oplevede ved at videresende e
 
 > "Efter at have forsøgt at registrere ordren, returnerer PayPal en 404-fejl. Ved hentning af ordreoplysninger: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **Dette er uden spor af en vellykket registrering fra vores side.**"
 
-### Webhooks pålidelighedskatastrofe {#the-webhook-reliability-disaster}
+### Webhook-pålidelighedskatastrofen {#the-webhook-reliability-disaster}
 
 En anden [bevaret fællesskabsdiskussion](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) afslører, at PayPals webhook-system fundamentalt er upålideligt:
 
@@ -859,15 +859,15 @@ Dette tvinger enhver handlende til at:
 
 Capture-fejlkatastrofen er blot ét eksempel på PayPals systematiske tilgang til at bedrage kunder og skjule deres fejl.
 
-### Aktion fra New York Department of Financial Services {#the-new-york-department-of-financial-services-action}
+### Handling fra New York Department of Financial Services {#the-new-york-department-of-financial-services-action}
 
-I januar 2025 udstedte New York Department of Financial Services en [håndhævelsesaktion mod PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) for vildledende praksis, hvilket demonstrerede, at PayPals mønster af bedrag strækker sig langt ud over deres API'er.
+I januar 2025 udstedte New York Department of Financial Services en [håndhævelsesaktion mod PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf)-certificering for vildledende praksis, hvilket demonstrerede, at PayPals mønster af bedrag strækker sig langt ud over deres API'er.
 
 Denne lovgivningsmæssige handling viser PayPals villighed til at anvende vildledende praksis på tværs af hele deres forretning, ikke kun deres udviklerværktøjer.
 
 ### Honning-sagen: Omskrivning af affilierede links {#the-honey-lawsuit-rewriting-affiliate-links}
 
-PayPals opkøb af Honey har resulteret i [Retssager om, at Honey omskriver affilierede links](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), hvor de stjal provisioner fra indholdsskabere og influencers. Dette repræsenterer endnu en form for systematisk bedrag, hvor PayPal tjener penge ved at omdirigere indtægter, der burde gå til andre.
+PayPals opkøb af Honey har resulteret i, at [Retssager om, at Honey omskriver affilierede links](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) stjæler provisioner fra indholdsskabere og influencers. Dette repræsenterer endnu en form for systematisk bedrag, hvor PayPal profiterer ved at omdirigere indtægter, der burde gå til andre.
 
 Mønsteret er tydeligt:
 
@@ -915,7 +915,7 @@ Mønsteret er tydeligt:
 
 I mellemtiden er udviklere tvunget til at bygge løsninger, kompromittere sikkerheden og håndtere ødelagte brugergrænseflader bare for at acceptere betalinger.
 
-Hvis du er ved at opbygge et betalingssystem, så lær af vores erfaring: byg din [trifecta-tilgangen](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) med flere processorer, men forvent ikke, at PayPal leverer den grundlæggende funktionalitet, du har brug for. Planlæg at bygge løsninger fra dag ét.
+Hvis du er ved at opbygge et betalingssystem, så lær af vores erfaring: Byg din [trifecta-tilgangen](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) med flere processorer, men forvent ikke, at PayPal leverer den grundlæggende funktionalitet, du har brug for. Planlæg at bygge løsninger fra dag ét.
 
 > Dette indlæg dokumenterer vores 11-årige erfaring med PayPals API'er til videresendelse af e-mail. Alle kodeeksempler og links er fra vores faktiske produktionssystemer. Vi fortsætter med at understøtte PayPal-betalinger på trods af disse problemer, fordi nogle kunder ikke har andre muligheder.
 

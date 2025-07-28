@@ -3,7 +3,7 @@
 ## Зміст {#table-of-contents}
 
 * [Огляд](#overview)
-* [передумови](#prerequisites)
+* [Передумови](#prerequisites)
 * [Системні вимоги](#system-requirements)
 * [Покрокове встановлення](#step-by-step-installation)
   * [Крок 1: Початкове налаштування системи](#step-1-initial-system-setup)
@@ -37,7 +37,7 @@
 * [Технічне обслуговування та моніторинг](#maintenance-and-monitoring)
   * [Розташування журналів](#log-locations)
   * [Регулярні завдання з технічного обслуговування](#regular-maintenance-tasks)
-  * [Відновлення сертифіката](#certificate-renewal)
+  * [Поновлення сертифіката](#certificate-renewal)
 * [Усунення несправностей](#troubleshooting)
   * [Проблеми, специфічні для Debian](#debian-specific-issues)
   * [Поширені проблеми](#common-issues)
@@ -49,7 +49,7 @@
 
 Цей посібник містить покрокові інструкції щодо встановлення самостійно розміщеного рішення Forward Email на системах Debian. Цей посібник спеціально розроблений для Debian 11 (Bullseye) та Debian 12 (Bookworm).
 
-## Необхідні умови {#prerequisites}
+## Передумови {#prerequisites}
 
 Перш ніж розпочати встановлення, переконайтеся, що у вас є:
 
@@ -265,7 +265,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-### Крок 9: Клонування сховища електронної пошти для пересилання {#step-9-clone-forward-email-repository}
+### Крок 9: Клонування сховища пересилання електронної пошти {#step-9-clone-forward-email-repository}
 
 Завантажте вихідний код пересилання електронної пошти:
 
@@ -364,7 +364,7 @@ certbot certonly \
 
 **Важливо**: Коли з’явиться запит, вам потрібно буде створити TXT-записи у вашому DNS. Ви можете зіткнутися з кількома проблемами для одного й того ж домену – **створіть їх УСІ**. Не видаляйте перший TXT-запис під час додавання другого.
 
-#### Варіант B: Cloudflare DNS (якщо ви використовуєте Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
+#### Варіант B: DNS Cloudflare (якщо ви використовуєте Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
 Якщо ваш домен використовує Cloudflare для DNS, ви можете автоматизувати генерацію сертифікатів:
 
@@ -543,7 +543,7 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Записи {#a-records}
+#### Записи A {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -585,7 +585,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Перший вхід {#first-login}
 
-1. Відкрийте веббраузер і перейдіть за посиланням `https://yourdomain.com`
+1. Відкрийте веббраузер і перейдіть до `https://yourdomain.com`
 2. Введіть основні облікові дані автентифікації, які ви зберегли раніше
 3. Завершіть роботу майстра початкового налаштування
 4. Створіть свій перший обліковий запис електронної пошти
@@ -618,7 +618,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Налаштування резервного копіювання завдань Cron {#set-up-backup-cron-jobs}
+### Налаштувати резервне копіювання завдань Cron {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -730,7 +730,7 @@ fi
 
 ## Виправлення неполадок {#troubleshooting}
 
-### Проблеми, характерні для Debian {#debian-specific-issues}
+### Проблеми, специфічні для Debian {#debian-specific-issues}
 
 #### 1. Snapd не працює {#1-snapd-not-working}
 
@@ -749,7 +749,7 @@ echo 'export PATH=$PATH:/snap/bin' >> ~/.bashrc
 source ~/.bashrc
 ```
 
-#### 2. Команду Docker Compose не знайдено {#2-docker-compose-command-not-found}
+#### 2. Команда Docker Compose не знайдена {#2-docker-compose-command-not-found}
 
 ```bash
 # Check which docker compose command is available
@@ -792,7 +792,7 @@ journalctl -u docker
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Помилка створення сертифіката {#2-certificate-generation-fails}
+#### 2. Не вдалося створити сертифікат {#2-certificate-generation-fails}
 
 * Переконайтеся, що порти 80 та 443 доступні
 * Перевірте, чи записи DNS вказують на ваш сервер
@@ -810,7 +810,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * **Проблеми GitHub**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Документація Debian**: <https://www.debian.org/doc/>
 
-## Найкращі методи безпеки {#security-best-practices}
+## Рекомендації щодо безпеки {#security-best-practices}
 
 1. **Оновлюйте систему**: Регулярно оновлюйте Debian та пакети
 2. **Моніторинг журналів**: Налаштуйте моніторинг журналів та сповіщення

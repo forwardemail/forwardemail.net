@@ -4,48 +4,48 @@
 
 <img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
 
-__CHRÁNĚNÁ_URL_4__ Obsah {__CHRÁNĚNÁ_URL_5__
+## Obsah {#table-of-contents}
 
 * [Klíčové pojmy](#key-terms)
-* [Změny Smlouvy](#changes-to-the-agreement)
-* [1. Vztahy mezi procesory a subprocesory](#1-processor-and-subprocessor-relationships)
+* [Změny smlouvy](#changes-to-the-agreement)
+* [1. Vztahy zpracovatele a subzpracovatele](#1-processor-and-subprocessor-relationships)
   * [1. Poskytovatel jako zpracovatel](#1-provider-as-processor)
-  * [2. Poskytovatel jako dílčí zpracovatel](#2-provider-as-subprocessor)
+  * [2. Poskytovatel jako subzpracovatel](#2-provider-as-subprocessor)
 * [2. Zpracování](#2-processing)
   * [1. Podrobnosti o zpracování](#1-processing-details)
-  * [2. Pokyny pro zpracování](#2-processing-instructions)
+  * [2. Pokyny ke zpracování](#2-processing-instructions)
   * [3. Zpracování Poskytovatelem](#3-processing-by-provider)
-  * [4. Zákaznické zpracování](#4-customer-processing)
+  * [4. Zpracování zákazníků](#4-customer-processing)
   * [5. Souhlas se zpracováním](#5-consent-to-processing)
-  * [6. Subzpracovatelé](#6-subprocessors)
+  * [6. Dílčí zpracovatelé](#6-subprocessors)
 * [3. Omezené převody](#3-restricted-transfers)
   * [1. Autorizace](#1-authorization)
-  * [2. Převody z EHP](#2-ex-eea-transfers)
-  * [3. Převody ze Spojeného království](#3-ex-uk-transfers)
-  * [4. Jiné mezinárodní převody](#4-other-international-transfers)
-* [4. Reakce na bezpečnostní incident](#4-security-incident-response)
+  * [2. Převody mimo EHP](#2-ex-eea-transfers)
+  * [3. Převody z/do Spojeného království](#3-ex-uk-transfers)
+  * [4. Ostatní mezinárodní převody](#4-other-international-transfers)
+* [4. Reakce na bezpečnostní incidenty](#4-security-incident-response)
 * [5. Audit a zprávy](#5-audit--reports)
-  * [1. Práva auditu](#1-audit-rights)
+  * [1. Auditní práva](#1-audit-rights)
   * [2. Bezpečnostní zprávy](#2-security-reports)
   * [3. Bezpečnostní due diligence](#3-security-due-diligence)
 * [6. Koordinace a spolupráce](#6-coordination--cooperation)
   * [1. Reakce na dotazy](#1-response-to-inquiries)
-  * [2. DPIA a DTIA](#2-dpias-and-dtias)
-* [7. Výmaz osobních údajů zákazníka](#7-deletion-of-customer-personal-data)
-  * [1. Vymazání zákazníkem](#1-deletion-by-customer)
-  * [2. Smazání při vypršení platnosti DPA](#2-deletion-at-dpa-expiration)
+  * [2. Posouzení vlivu na ochranu osobních údajů a posouzení odvrácení dopadu na ochranu osobních údajů](#2-dpias-and-dtias)
+* [7. Výmaz osobních údajů zákazníků](#7-deletion-of-customer-personal-data)
+  * [1. Smazání zákazníkem](#1-deletion-by-customer)
+  * [2. Smazání po uplynutí platnosti DPA](#2-deletion-at-dpa-expiration)
 * [8. Omezení odpovědnosti](#8-limitation-of-liability)
-  * [1. Omezení odpovědnosti a zřeknutí se škod](#1-liability-caps-and-damages-waiver)
+  * [1. Limity odpovědnosti a zřeknutí se odpovědnosti za škody](#1-liability-caps-and-damages-waiver)
   * [2. Nároky spřízněných stran](#2-related-party-claims)
   * [3. Výjimky](#3-exceptions)
 * [9. Konflikty mezi dokumenty](#9-conflicts-between-documents)
 * [10. Doba trvání smlouvy](#10-term-of-agreement)
-* [11. Rozhodné právo a vybrané soudy](#11-governing-law-and-chosen-courts)
-* [12. Vztah poskytovatele služeb](#12-service-provider-relationship)
+* [11. Rozhodné právo a zvolené soudy](#11-governing-law-and-chosen-courts)
+* [12. Vztah s poskytovatelem služeb](#12-service-provider-relationship)
 * [13. Definice](#13-definitions)
 * [Kredity](#credits)
 
-__CHRÁNĚNÁ_URL_6__ Klíčové pojmy {__CHRÁNĚNÁ_URL_7__
+## Klíčové pojmy {#key-terms}
 
 | Období | Hodnota |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -57,12 +57,11 @@ __CHRÁNĚNÁ_URL_6__ Klíčové pojmy {__CHRÁNĚNÁ_URL_7__
 
 ## Změny smlouvy {#changes-to-the-agreement}
 
-Tento dokument je odvozen od [Společné tištěné standardní podmínky DPA (verze 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) a byly provedeny následující změny:
+Tento dokument je odvozen od dokumentu [Standardní podmínky pro společné papírové dokumenty DPA (verze 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) a byly provedeny následující změny:
 
-1. [Rozhodné právo a vybrané soudy](#11-governing-law-and-chosen-courts) byl zahrnut jako sekce níže s `Governing State` identifikovaným výše.
-2. [Vztah poskytovatele služeb](#12-service-provider-relationship) byl zahrnut jako sekce níže.
+1. [Rozhodné právo a zvolené soudy](#11-governing-law-and-chosen-courts) byl zahrnut jako sekce níže s `Governing State` identifikovaným výše. 2. [Vztah s poskytovatelem služeb](#12-service-provider-relationship) byl zahrnut jako sekce níže.
 
-## 1. Vztahy mezi zpracovateli a subzpracovateli {#1-processor-and-subprocessor-relationships}
+## 1. Vztahy mezi zpracovatelem a subzpracovatelem {#1-processor-and-subprocessor-relationships}
 
 ### 1. Poskytovatel jako zpracovatel {#1-provider-as-processor}
 
@@ -72,21 +71,21 @@ V situacích, kdy je <strong>Zákazník</strong> Správcem Osobních údajů Zá
 
 V situacích, kdy je <strong>Zákazník</strong> Zpracovatelem Osobních údajů Zákazníka, bude <strong>Poskytovatel</strong> považován za Subzpracovatele Osobních údajů Zákazníka.
 
-__CHRÁNĚNÁ_URL_16__ 2. Zpracování {__CHRÁNĚNÁ_URL_17__
+## 2. Zpracování {#2-processing}
 
 ### 1. Podrobnosti o zpracování {#1-processing-details}
 
 Příloha I(B) na titulní straně popisuje předmět, povahu, účel a dobu trvání tohoto zpracování, jakož i **kategorie shromažďovaných osobních údajů** a **kategorie subjektů údajů**.
 
-### 2. Pokyny ke zpracování {#2-processing-instructions}
+### 2. Pokyny pro zpracování {#2-processing-instructions}
 
-<strong>Zákazník</strong> pověřuje <strong>Poskytovatele</strong> zpracováním osobních údajů zákazníků: (a) za účelem poskytování a údržby Služby; (b) jak může být dále specifikováno v rámci používání Služby zákazníkem; (c) jak je zdokumentováno ve <strong>Smlouvě</strong>; a (d) jak je zdokumentováno v jakýchkoli jiných písemných pokynech poskytnutých <strong>Zákazníkem</strong> a potvrzených <strong>Poskytovatelem</strong> ohledně zpracování osobních údajů zákazníků v rámci této Dohody o zpracování osobních údajů. <strong>Poskytovatel</strong> se bude těmito pokyny řídit, pokud to nezakazují Platné právní předpisy. <strong>Poskytovatel</strong> bude <strong>Zákazníka</strong> neprodleně informovat, pokud nebude moci pokyny ke zpracování dodržovat. <strong>Zákazník</strong> vydal a bude dávat pouze pokyny, které jsou v souladu s Platnými právními předpisy.
+<strong>Zákazník</strong> pověřuje <strong>Poskytovatele</strong> Zpracováním Osobních údajů Zákazníka: (a) za účelem poskytování a údržby Služby; (b) jak může být dále specifikováno prostřednictvím <strong>Zákazníkova</strong> používání Služby; (c) jak je zdokumentováno ve <strong>Smlouvě</strong>; a (d) jak je zdokumentováno v jakýchkoli jiných písemných pokynech poskytnutých <strong>Zákazníkem</strong> a potvrzených <strong>Poskytovatelem</strong> ohledně Zpracování Osobních údajů Zákazníka v rámci této Dohody o zpracování osobních údajů. <strong>Poskytovatel</strong> se bude těmito pokyny řídit, pokud mu to nezakazují Platné právní předpisy. <strong>Poskytovatel</strong> bude <strong>Zákazníka</strong> neprodleně informovat, pokud nebude schopen dodržet pokyny ke Zpracování. <strong>Zákazník</strong> dal a bude dávat pouze pokyny, které jsou v souladu s Platnými právními předpisy.
 
 ### 3. Zpracování poskytovatelem {#3-processing-by-provider}
 
 <strong>Poskytovatel</strong> bude zpracovávat osobní údaje zákazníků pouze v souladu s touto dohodou o zpracování osobních údajů (DPA), včetně podrobností uvedených na titulní straně. Pokud <strong>Poskytovatel</strong> aktualizuje Službu za účelem aktualizace stávajících nebo zahrnutí nových produktů, funkcí či možností, může <strong>Poskytovatel</strong> podle potřeby změnit <strong>Kategorie subjektů údajů</strong>, <strong>Kategorie osobních údajů</strong>, <strong>Údaje zvláštní kategorie</strong>, <strong>Omezení nebo ochranná opatření pro údaje zvláštní kategorie</strong>, <strong>Četnost přenosu</strong>, <strong>Povahu a účel zpracování</strong> a <strong>Dobu trvání zpracování</strong> tak, aby odrážely aktualizace, a to oznámením <strong>Zákazníka</strong> o aktualizacích a změnách.
 
-### 4. Zpracování zákazníků {#4-customer-processing}
+### 4. Zpracování zákazníka {#4-customer-processing}
 
 Pokud je <strong>Zákazník</strong> Zpracovatelem a <strong>Poskytovatel</strong> Subzpracovatelem, bude <strong>Zákazník</strong> dodržovat všechny Platné zákony, které se vztahují na <strong>Zákazníkovo</strong> zpracování osobních údajů. Smlouva <strong>Zákazníka</strong> s jeho Správcem bude obdobně vyžadovat, aby <strong>Zákazník</strong> dodržoval všechny Platné zákony, které se vztahují na <strong>Zákazníka</strong> jako Zpracovatele. Kromě toho bude <strong>Zákazník</strong> dodržovat požadavky na Subzpracovatele uvedené v <strong>Zákazníkově</strong> smlouvě s jeho Správcem.
 
@@ -118,7 +117,7 @@ a. Modul dva (od správce ke zpracovateli) standardních smluvních doložek EHP
 
 b. Modul tři (Zpracovatel vůči Subzpracovateli) standardních smluvních doložek EHP se uplatní, pokud je <strong>Zákazník</strong> Zpracovatelem a <strong>Poskytovatel</strong> zpracovává osobní údaje Zákazníka jménem <strong>Zákazníka</strong> jako Subzpracovatel.
 
-C. Pro každý modul platí následující (pokud je to možné):
+c. Pro každý modul platí (pokud je to relevantní) následující:
 
 1. Volitelná klauzule o dokování v článku 7 se nepoužije;
 
@@ -134,27 +133,27 @@ C. Pro každý modul platí následující (pokud je to možné):
 
 7. Titulní strana této dohody o zpracování dat obsahuje informace požadované v příloze I, příloze II a příloze III standardních smluvních doložek EHP.
 
-### 3. Převody z/do Spojeného království {#3-ex-uk-transfers}
+### 3. Převody mimo Spojené království {#3-ex-uk-transfers}
 
 <strong>Zákazník</strong> a <strong>Poskytovatel</strong> se dohodli, že pokud britské GDPR chrání přenos osobních údajů zákazníků, přenos probíhá od <strong>Zákazníka</strong> ze Spojeného království k <strong>Poskytovateli</strong> mimo Spojené království a přenos se neřídí rozhodnutím o odpovídající ochraně vydaným ministrem zahraničí Spojeného království, pak uzavřením této DPA se má za to, že <strong>Zákazník</strong> a <strong>Poskytovatel</strong> podepsali dodatek pro Spojené království a jeho přílohy, které jsou začleněny odkazem. Jakýkoli takový přenos se provádí v souladu s dodatkem pro Spojené království, který se vyplňuje takto:
 
-A. Oddíl 3.2 této DPA obsahuje informace požadované v tabulce 2 dodatku pro Spojené království.
+a. Oddíl 3.2 této dohody o zpracování dat obsahuje informace požadované v tabulce 2 dodatku pro Spojené království.
 
-b. Tabulka 4 Dodatku pro Spojené království je upravena takto: Žádná ze stran nesmí ukončit Dodatek pro Spojené království, jak je uvedeno v části 19 Dodatku pro Spojené království; v rozsahu, v jakém ICO vydá revidovaný schválený dodatek podle oddílu ‎18 dodatku pro Spojené království, budou strany v dobré víře pracovat na odpovídající revizi tohoto DPA.
+b. Tabulka 4 dodatku pro Spojené království se upravuje takto: Žádná ze stran nesmí ukončit dodatek pro Spojené království, jak je stanoveno v § 19 dodatku pro Spojené království; v rozsahu, v jakém ICO vydá revidovaný schválený dodatek podle § ‎18 dodatku pro Spojené království, budou strany v dobré víře pracovat na odpovídající revizi této DPA.
 
-C. Titulní strana obsahuje informace požadované přílohou 1A, přílohou 1B, přílohou II a přílohou III dodatku Spojeného království.
+c. Titulní strana obsahuje informace požadované přílohou 1A, přílohou 1B, přílohou II a přílohou III dodatku pro Spojené království.
 
 ### 4. Ostatní mezinárodní převody {#4-other-international-transfers}
 
-U předávání osobních údajů, kde se na mezinárodní povahu předávání vztahuje švýcarské právo (a nikoli právo v žádném členském státě EHP nebo Spojeném království), jsou odkazy na GDPR v článku 4 SCC EHP v rozsahu, v jakém to vyžaduje zákon, pozměněny tak, aby odkazovaly na švýcarský federální zákon o ochraně údajů nebo jeho nástupce, a pojem dozorčího úřadu bude zahrnovat švýcarského federálního komisaře pro ochranu údajů a informací.
+V případě předávání osobních údajů, u nichž se na mezinárodní povahu předávání vztahuje švýcarské právo (a nikoli právo v jakémkoli členském státě EHP nebo Spojeném království), se odkazy na GDPR v článku 4 standardních smluvních doložek EHP v rozsahu vyžadovaném zákonem upravují tak, aby odkazovaly na švýcarský federální zákon o ochraně osobních údajů nebo jeho nástupce, a pojem dozorového orgánu bude zahrnovat švýcarského federálního komisaře pro ochranu osobních údajů a informace.
 
 ## 4. Reakce na bezpečnostní incident {#4-security-incident-response}
 
-1. Jakmile se <strong>Poskytovatel</strong> dozví o jakémkoli bezpečnostním incidentu, <strong>(poskytovatel)</strong>: (a) bez zbytečného odkladu informuje <strong>Zákazníka</strong>, pokud je to proveditelné, nejpozději však do 72 hodin od zjištění bezpečnostního incidentu; (b) poskytne včasné informace o bezpečnostním incidentu, jakmile se o něm dozví nebo jak si <strong>Zákazník</strong> rozumně vyžádá; a (c) neprodleně podnikne přiměřené kroky k omezení a vyšetření bezpečnostního incidentu. Oznámení <strong>Poskytovatele</strong> o bezpečnostním incidentu nebo jeho reakce na něj, jak vyžaduje tato Dohoda o zpracování dat, nebude vykládáno jako uznání jakékoli viny nebo odpovědnosti za bezpečnostní incident ze strany <strong>Poskytovatele</strong>.
+1. Jakmile se <strong>Poskytovatel</strong> dozví o jakémkoli bezpečnostním incidentu, <strong>(poskytovatel)</strong>: (a) bez zbytečného odkladu informuje <strong>Zákazníka</strong>, pokud je to proveditelné, nejpozději však do 72 hodin od zjištění bezpečnostního incidentu; (b) poskytne včasné informace o bezpečnostním incidentu, jakmile se o něm dozví nebo jak si <strong>Zákazník</strong> důvodně vyžádá; a (c) neprodleně podnikne přiměřené kroky k omezení a vyšetření bezpečnostního incidentu. Oznámení <strong>Poskytovatele</strong> o bezpečnostním incidentu nebo jeho reakce na něj, jak vyžaduje tato Dohoda o zpracování dat, nebude vykládáno jako uznání jakékoli viny nebo odpovědnosti za bezpečnostní incident ze strany <strong>Poskytovatele</strong>.
 
-__CHRÁNĚNÁ_URL_42__ 5. Audit a zprávy {__CHRÁNĚNÁ_URL_43__
+## 5. Audit a reporty {#5-audit--reports}
 
-__CHRÁNĚNÁ_URL_44__ 1. Auditní práva {__CHRÁNĚNÁ_URL_45__
+### 1. Auditní práva {#1-audit-rights}
 
 <strong>Poskytovatel</strong> poskytne <strong>Zákazníkovi</strong> veškeré informace přiměřeně nezbytné k prokázání souladu s touto Dohodou o ochraně osobních údajů (DPA) a <strong>Poskytovatel</strong> umožní a bude se podílet na auditech, včetně inspekcí ze strany <strong>Zákazníka</strong>, za účelem posouzení souladu s touto Dohodou o ochraně osobních údajů ze strany <strong>Poskytovatel</strong>. <strong>Poskytovatel</strong> však může omezit přístup k datům nebo informacím, pokud by přístup <strong>Zákazníka</strong> k informacím negativně ovlivnil práva duševního vlastnictví <strong>Poskytovatele</strong>, povinnosti mlčenlivosti nebo jiné povinnosti podle Platných zákonů. <strong>Zákazník</strong> bere na vědomí a souhlasí s tím, že svá auditorská práva podle této Dohody o ochraně osobních údajů a veškerá auditorská práva udělená Platnými zákony o ochraně osobních údajů uplatní pouze tím, že <strong>Poskytovateli</strong> dá pokyn k dodržování níže uvedených požadavků na podávání zpráv a due diligence. <strong>Poskytovatel</strong> bude uchovávat záznamy o svém souladu s touto Dohodou o ochraně osobních údajů po dobu 3 let po skončení Dohody.
 
@@ -184,11 +183,11 @@ Poskytovatel umožní Zákazníkovi smazat Osobní údaje Zákazníka způsobem,
 
 ### 2. Smazání po vypršení platnosti DPA {#2-deletion-at-dpa-expiration}
 
-a. Po uplynutí platnosti DPA <strong>Poskytovatel</strong> vrátí nebo smaže Osobní údaje Zákazníka na pokyn <strong>Zákazníka</strong>, pokud není další ukládání Osobních údajů Zákazníka vyžadováno nebo povoleno Platnými právními předpisy. Pokud je vrácení nebo zničení neproveditelné nebo zakázáno Platnými právními předpisy, <strong>Poskytovatel</strong> vynaloží přiměřené úsilí, aby zabránil dalšímu zpracování Osobních údajů Zákazníka, a bude i nadále chránit Osobní údaje Zákazníka, které zůstávají v jeho držení, úschově nebo pod jeho kontrolou. Platné právní předpisy mohou například vyžadovat, aby <strong>Poskytovatel</strong> pokračoval v ukládání nebo zpracování Osobních údajů Zákazníka.
+a. Po uplynutí platnosti DPA <strong>Poskytovatel</strong> vrátí nebo smaže Osobní údaje Zákazníka na pokyn <strong>Zákazníka</strong>, pokud není další ukládání Osobních údajů Zákazníka vyžadováno nebo povoleno Platnými právními předpisy. Pokud je vrácení nebo zničení neproveditelné nebo zakázáno Platnými právními předpisy, <strong>Poskytovatel</strong> vynaloží přiměřené úsilí, aby zabránil dalšímu zpracování Osobních údajů Zákazníka, a bude i nadále chránit Osobní údaje Zákazníka, které zůstávají v jeho držení, úschově nebo pod jeho kontrolou. Platné právní předpisy mohou například vyžadovat, aby <strong>Poskytovatel</strong> pokračoval v hostování nebo zpracovávání Osobních údajů Zákazníka.
 
 b. Pokud <strong>Zákazník</strong> a <strong>Poskytovatel</strong> v rámci této Dohody o zpracování osobních údajů uzavřeli SSD EHP nebo dodatek Spojeného království, <strong>Poskytovatel</strong> vydá <strong>Zákazníkovi</strong> potvrzení o výmazu Osobních údajů popsané v článku 8.1(d) a článku 8.5 SSD EHP pouze tehdy, pokud si o něj <strong>Zákazník</strong> požádá.
 
-__CHRÁNĚNÁ_URL_62__ 8. Omezení odpovědnosti {__CHRÁNĚNÁ_URL_63__
+## 8. Omezení odpovědnosti {#8-limitation-of-liability}
 
 ### 1. Limity odpovědnosti a zřeknutí se odpovědnosti za škody {#1-liability-caps-and-damages-waiver}
 
@@ -210,15 +209,15 @@ __CHRÁNĚNÁ_URL_62__ 8. Omezení odpovědnosti {__CHRÁNĚNÁ_URL_63__
 
 Tato Dohoda o ochraně osobních údajů (DPA) začne platit okamžikem, kdy se <strong>Poskytovatel</strong> a <strong>Zákazník</strong> dohodnou na titulní straně Dohody o ochraně osobních údajů a podepíší nebo elektronicky přijmou <strong>Smlouvu</strong>, a bude platit až do vypršení platnosti nebo ukončení <strong>Smlouvy</strong>. <strong>Poskytovatel</strong> i <strong>Zákazník</strong> však budou i nadále vázáni povinnostmi vyplývajícími z této Dohody o ochraně osobních údajů a platných zákonů na ochranu osobních údajů, dokud <strong>Zákazník</strong> nepřestane předávat Osobní údaje zákazníka <strong>Poskytovateli</strong> a <strong>Poskytovatel</strong> nepřestane Osobní údaje zákazníka zpracovávat.
 
-__CHRÁNĚNÁ_URL_74__ 11. Rozhodné právo a zvolené soudy {__CHRÁNĚNÁ_URL_75__
+## 11. Rozhodné právo a zvolené soudy {#11-governing-law-and-chosen-courts}
 
 Bez ohledu na rozhodné právo nebo podobná ustanovení Smlouvy se veškeré výklady a spory týkající se této Dohody o zpracování dat řídí zákony Správního státu bez ohledu na jeho ustanovení o kolizi právních norem. Kromě toho a bez ohledu na výběr soudu, jurisdikci nebo podobná ustanovení Smlouvy se strany dohodly, že jakékoli soudní spory, žaloby nebo řízení týkající se této Dohody o zpracování dat budou vést u soudů Správního státu a každá strana se neodvolatelně podřizuje výlučné jurisdikci těchto soudů.
 
-## 12. Vztah s poskytovatelem služeb {#12-service-provider-relationship}
+## 12. Vztah poskytovatele služeb {#12-service-provider-relationship}
 
 V rozsahu, v jakém se uplatňuje kalifornský zákon o ochraně soukromí spotřebitelů, kalifornský občanský zákoník § 1798.100 a násl. („CCPA“), strany berou na vědomí a souhlasí s tím, že <strong>Poskytovatel</strong> je poskytovatelem služeb a přijímá osobní údaje od <strong>Zákazníka</strong> za účelem poskytování Služby, jak je dohodnuto ve <strong>Smlouvě</strong>, což představuje obchodní účel. <strong>Poskytovatel</strong> nebude prodávat žádné osobní údaje poskytnuté <strong>Zákazníkem</strong> v rámci <strong>Smlouvy</strong>. Kromě toho <strong>Poskytovatel</strong> nebude uchovávat, používat ani zveřejňovat žádné osobní údaje poskytnuté <strong>Zákazníkem</strong> v rámci <strong>Smlouvy</strong>, s výjimkou případů, kdy je to nezbytné pro poskytování Služby pro <strong>Zákazníka</strong>, jak je uvedeno ve <strong>Smlouvě</strong>, nebo jak to povolují platné zákony na ochranu osobních údajů. <strong>Poskytovatel</strong> potvrzuje, že rozumí omezením tohoto odstavce.
 
-__CHRÁNĚNÁ_URL_78__ 13. Definice {__CHRÁNĚNÁ_URL_79__
+## 13. Definice {#13-definitions}
 
 1. **„Platné zákony“** znamenají zákony, pravidla, nařízení, soudní příkazy a další závazné požadavky příslušného vládního orgánu, které se vztahují na stranu nebo se jimi řídí.
 
@@ -260,6 +259,6 @@ __CHRÁNĚNÁ_URL_78__ 13. Definice {__CHRÁNĚNÁ_URL_79__
 
 20. **„Dodatek pro Spojené království“** znamená dodatek k standardním smluvním podmínkám EHP o mezinárodním předávání údajů vydaný informačním komisařem pro strany provádějící omezené předávání podle § 119A(1) zákona o ochraně osobních údajů z roku 2018.
 
-## Autorské práva {#credits}
+## Kredity {#credits}
 
-Tento dokument je odvozen od [Společné tištěné standardní podmínky DPA (verze 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) a je licencován pod [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Tento dokument je odvozen od [Standardní podmínky pro společné papírové dokumenty DPA (verze 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) a je licencován pod licencí [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

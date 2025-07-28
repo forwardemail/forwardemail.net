@@ -34,9 +34,9 @@ export function Email(props) {
 }
 ```
 
-ในตัวอย่างนี้ เราใช้ไลบรารี **[โนเดเมลเลอร์](https://github.com/nodemailer/nodemailer)** และผู้สนับสนุนอย่างเป็นทางการ **[ส่งต่ออีเมล์](https://forwardemail.net)** เพื่อส่งและดูตัวอย่างอีเมลขาออก
+ในตัวอย่างนี้ เราใช้ไลบรารี **[โหนดเมเลอร์](https://github.com/nodemailer/nodemailer)** และผู้สนับสนุนอย่างเป็นทางการ **[ส่งต่ออีเมล์](https://forwardemail.net)** เพื่อส่งและดูตัวอย่างอีเมลขาออก
 
-คุณจะต้อง <strong class="text-success"><i class="fa fa-key"></i>สร้างรหัสผ่าน</strong> เพื่อส่งอีเมลขาออก – โปรดปฏิบัติตาม **[ส่งอีเมลด้วยคู่มือ SMTP โดเมนที่กำหนดเอง](/guides/send-email-with-custom-domain-smtp)** ของเรา
+คุณจะต้อง <strong class="text-success"><i class="fa fa-key"></i> สร้างรหัสผ่าน</strong> เพื่อส่งอีเมลขาออก – โปรดปฏิบัติตาม **[ส่งอีเมลด้วยคู่มือ SMTP โดเมนที่กำหนดเอง](/guides/send-email-with-custom-domain-smtp)** ของเรา
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -76,6 +76,6 @@ transporter.sendMail(options);
 node app
 ```
 
-ตอนนี้คุณสามารถไปที่ **[บัญชีของฉัน → อีเมล์](/my-account/emails)** เพื่อดูสถานะการจัดส่งอีเมลแบบเรียลไทม์ บันทึกการจัดส่งอีเมล และการแสดงตัวอย่าง HTML/ข้อความธรรมดา/ไฟล์แนบ
+ตอนนี้คุณสามารถไปที่ **[บัญชีของฉัน → อีเมล](/my-account/emails)** เพื่อดูสถานะการจัดส่งอีเมลแบบเรียลไทม์ บันทึกการจัดส่งอีเมล และการแสดงตัวอย่าง HTML/ข้อความธรรมดา/ไฟล์แนบ
 
-> ป.ล. :tada: คุณยังสามารถ **[ดูตัวอย่างอีเมลในเบราว์เซอร์และ iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** และ **[สร้างเทมเพลตอีเมลด้วย Node.js](/docs/send-emails-with-node-js-javascript)** ได้ด้วย
+> P.S. :tada: คุณยังสามารถ **[ดูตัวอย่างอีเมลในเบราว์เซอร์และ iOS Simulator](/docs/test-preview-email-rendering-browsers-ios-simulator)** และ **[สร้างเทมเพลตอีเมลด้วย Node.js](/docs/send-emails-with-node-js-javascript)** ได้ด้วย

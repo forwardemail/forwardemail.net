@@ -60,7 +60,7 @@ L'auto-hébergement de votre messagerie électronique offre une approche fondame
 
 Comme l'a dit un utilisateur : « Héberger moi-même ma messagerie est l'équivalent numérique de cultiver ma propre nourriture : cela demande plus de travail, mais je sais exactement ce qu'il y a dedans. »
 
-## Notre implémentation auto-hébergée : aperçu technique {#our-self-hosted-implementation-technical-overview}
+## Notre implémentation auto-hébergée : Présentation technique {#our-self-hosted-implementation-technical-overview}
 
 Notre solution de messagerie auto-hébergée repose sur les mêmes principes de confidentialité que tous nos produits. Découvrons la mise en œuvre technique qui rend cela possible.
 
@@ -86,9 +86,9 @@ L'architecture comprend des conteneurs pour :
 * SQLite pour le stockage sécurisé et chiffré des boîtes aux lettres
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> N'oubliez pas de consulter notre [guide du développeur auto-hébergé](https://forwardemail.net/self-hosted)
 
-### Installation du script Bash : l'accessibilité rencontre la sécurité {#bash-script-installation-accessibility-meets-security}
+Installation du script Bash ### : l'accessibilité rencontre la sécurité {#bash-script-installation-accessibility-meets-security}
 
 Nous avons conçu le processus d'installation pour qu'il soit aussi simple que possible tout en maintenant les meilleures pratiques de sécurité :
 
@@ -109,7 +109,7 @@ Pour ceux qui s'inquiètent de l'intégration de scripts à Bash (et c'est norma
 
 ### Chiffrement quantique sécurisé pour une confidentialité à l'épreuve du temps {#quantum-safe-encryption-for-future-proof-privacy}
 
-Tout comme notre service hébergé, notre solution auto-hébergée implémente un chiffrement résistant aux attaques quantiques utilisant ChaCha20-Poly1305 comme chiffrement pour les bases de données SQLite. Cette approche protège vos données de messagerie non seulement contre les menaces actuelles, mais aussi contre les futures attaques informatiques quantiques.
+Tout comme notre service hébergé, notre solution auto-hébergée implémente un chiffrement résistant aux attaques quantiques utilisant ChaCha20-Poly1305 comme chiffrement pour les bases de données SQLite. Cette approche protège vos données de messagerie non seulement contre les menaces actuelles, mais aussi contre les futures attaques quantiques.
 
 Chaque boîte aux lettres est stockée dans son propre fichier de base de données SQLite chiffré, offrant une isolation complète entre les utilisateurs, un avantage de sécurité significatif par rapport aux approches traditionnelles de base de données partagée.
 
@@ -145,7 +145,7 @@ Notre solution de messagerie auto-hébergée, comme tous nos produits, est 100 %
 3. **Sécurité par l'ouverture** : Les vulnérabilités peuvent être identifiées et corrigées par une communauté mondiale.
 4. **Pas de dépendance vis-à-vis d'un fournisseur** : Vous ne dépendez jamais de l'existence de notre entreprise.
 
-L'intégralité de la base de code est disponible sur GitHub à l'adresse <https://github.com/forwardemail/forwardemail.net>.
+L'intégralité de la base de code est disponible sur GitHub à <https://github.com/forwardemail/forwardemail.net>.
 
 ## Auto-hébergé ou géré : faire le bon choix {#self-hosted-vs-managed-making-the-right-choice}
 
@@ -189,7 +189,7 @@ Les deux options offrent les mêmes avantages en matière de confidentialité et
 
 Prêt à prendre le contrôle de votre infrastructure de messagerie ? Voici comment commencer :
 
-Configuration requise pour ### {#system-requirements}
+### Configuration requise pour {#system-requirements}
 
 * Ubuntu 20.04 LTS ou version ultérieure (recommandé)
 * 1 Go de RAM minimum (2 Go et plus recommandés)
@@ -200,9 +200,9 @@ Configuration requise pour ### {#system-requirements}
 * Prise en charge IPv4 et IPv6
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> Nous recommandons plusieurs fournisseurs de serveurs de messagerie à <https://forwardemail.net/blog/docs/best-mail-server-providers> (source à <https://github.com/forwardemail/awesome-mail-server-providers>)
 
-Étapes d'installation de ### {#installation-steps}
+### Étapes d'installation de {#installation-steps}
 
 1. **Exécutez le script d'installation** :
 ```bash
@@ -215,11 +215,11 @@ Configuration requise pour ### {#system-requirements}
 * Configurez les enregistrements DNS comme indiqué
 * Choisissez vos options de configuration préférées
 
-3. **Vérifier l'installation** :
+3. **Vérification de l'installation** :
 Une fois l'installation terminée, vous pouvez vérifier que tout fonctionne :
-* En vérifiant l'état du conteneur : `docker ps`
-* En envoyant un e-mail de test
-* En vous connectant à l'interface web
+* Vérification de l'état du conteneur : `docker ps`
+* Envoi d'un e-mail de test
+* Connexion à l'interface web
 
 ## L'avenir de la messagerie électronique auto-hébergée {#the-future-of-self-hosted-email}
 
@@ -239,7 +239,7 @@ Les e-mails sont trop importants pour être contrôlés par des systèmes fermé
 
 Nous pensons que la confidentialité n'est pas qu'une simple fonctionnalité ; c'est un droit fondamental. Avec notre option de messagerie auto-hébergée, nous rendons ce droit plus accessible que jamais.
 
-Prêt à prendre le contrôle de votre courrier électronique ? [Commencez dès aujourd'hui](https://forwardemail.net/self-hosted) ou explorez notre [Dépôt GitHub](https://github.com/forwardemail/forwardemail.net) pour en savoir plus.
+Prêt à prendre le contrôle de votre messagerie ? [Commencez dès aujourd'hui](https://forwardemail.net/self-hosted) ou explorez notre [Dépôt GitHub](https://github.com/forwardemail/forwardemail.net) pour en savoir plus.
 
 ## Références {#references}
 

@@ -7,10 +7,10 @@
 * [Yêu cầu hệ thống](#system-requirements)
 * [Cài đặt từng bước](#step-by-step-installation)
   * [Bước 1: Thiết lập hệ thống ban đầu](#step-1-initial-system-setup)
-  * [Bước 2: Cấu hình DNS Resolver](#step-2-configure-dns-resolvers)
+  * [Bước 2: Cấu hình Bộ giải quyết DNS](#step-2-configure-dns-resolvers)
   * [Bước 3: Cài đặt các phụ thuộc hệ thống](#step-3-install-system-dependencies)
   * [Bước 4: Cài đặt và cấu hình Snapd](#step-4-install-and-configure-snapd)
-  * [Bước 5: Cài đặt Snap Packages](#step-5-install-snap-packages)
+  * [Bước 5: Cài đặt gói Snap](#step-5-install-snap-packages)
   * [Bước 6: Cài đặt Docker](#step-6-install-docker)
   * [Bước 7: Cấu hình dịch vụ Docker](#step-7-configure-docker-service)
   * [Bước 8: Cài đặt và cấu hình tường lửa UFW](#step-8-install-and-configure-ufw-firewall)
@@ -19,8 +19,8 @@
   * [Bước 11: Cấu hình tên miền của bạn](#step-11-configure-your-domain)
   * [Bước 12: Tạo chứng chỉ SSL](#step-12-generate-ssl-certificates)
   * [Bước 13: Tạo khóa mã hóa](#step-13-generate-encryption-keys)
-  * [Bước 14: Cập nhật Đường dẫn SSL trong Cấu hình](#step-14-update-ssl-paths-in-configuration)
-  * [Bước 15: Thiết lập Xác thực Cơ bản](#step-15-set-up-basic-authentication)
+  * [Bước 14: Cập nhật đường dẫn SSL trong cấu hình](#step-14-update-ssl-paths-in-configuration)
+  * [Bước 15: Thiết lập xác thực cơ bản](#step-15-set-up-basic-authentication)
   * [Bước 16: Triển khai với Docker Compose](#step-16-deploy-with-docker-compose)
   * [Bước 17: Xác minh cài đặt](#step-17-verify-installation)
 * [Cấu hình sau khi cài đặt](#post-installation-configuration)
@@ -31,21 +31,21 @@
   * [Thiết lập công việc sao lưu Cron](#set-up-backup-cron-jobs)
 * [Cấu hình tự động cập nhật](#auto-update-configuration)
 * [Những cân nhắc dành riêng cho Debian](#debian-specific-considerations)
-  * [Sự khác biệt của Quản lý gói](#package-management-differences)
+  * [Sự khác biệt về quản lý gói](#package-management-differences)
   * [Quản lý dịch vụ](#service-management)
   * [Cấu hình mạng](#network-configuration)
-* [Bảo trì và giám sát](#maintenance-and-monitoring)
+* [Bảo trì và Giám sát](#maintenance-and-monitoring)
   * [Vị trí nhật ký](#log-locations)
   * [Nhiệm vụ bảo trì thường xuyên](#regular-maintenance-tasks)
   * [Gia hạn chứng chỉ](#certificate-renewal)
 * [Xử lý sự cố](#troubleshooting)
   * [Các vấn đề cụ thể của Debian](#debian-specific-issues)
-  * [Các vấn đề thường gặp](#common-issues)
+  * [Các vấn đề chung](#common-issues)
   * [Nhận trợ giúp](#getting-help)
 * [Thực hành bảo mật tốt nhất](#security-best-practices)
 * [Phần kết luận](#conclusion)
 
-## Tổng quan {#overview}
+## Tổng quan về {#overview}
 
 Hướng dẫn này cung cấp hướng dẫn từng bước để cài đặt giải pháp tự lưu trữ của Forward Email trên hệ thống Debian. Hướng dẫn này được thiết kế riêng cho Debian 11 (Bullseye) và Debian 12 (Bookworm).
 
@@ -54,17 +54,17 @@ Hướng dẫn này cung cấp hướng dẫn từng bước để cài đặt g
 Trước khi bắt đầu cài đặt, hãy đảm bảo bạn có:
 
 * **Debian Server**: Phiên bản 11 (Bullseye) hoặc 12 (Bookworm)
-* **Quyền truy cập gốc**: Bạn phải có thể chạy lệnh dưới dạng gốc (quyền truy cập sudo)
-* **Tên miền**: Một tên miền mà bạn kiểm soát bằng quyền truy cập quản lý DNS
+* **Quyền truy cập gốc**: Bạn phải có khả năng chạy lệnh dưới quyền root (truy cập sudo)
+* **Tên miền**: Tên miền mà bạn kiểm soát bằng quyền quản lý DNS
 * **Máy chủ sạch**: Nên sử dụng bản cài đặt Debian mới
 * **Kết nối Internet**: Cần thiết để tải xuống các gói và hình ảnh Docker
 
 ## Yêu cầu hệ thống {#system-requirements}
 
 * **RAM**: Tối thiểu 2GB (khuyến nghị 4GB cho sản xuất)
-* **Lưu trữ**: Tối thiểu 20GB dung lượng khả dụng (khuyến nghị 50GB+ cho sản xuất)
+* **Lưu trữ**: Tối thiểu 20GB dung lượng trống (khuyến nghị 50GB trở lên cho sản xuất)
 * **CPU**: Tối thiểu 1 vCPU (khuyến nghị 2+ vCPU cho sản xuất)
-* **Mạng**: Địa chỉ IP công khai có thể truy cập các cổng sau:
+* **Mạng**: Địa chỉ IP công cộng với các cổng sau có thể truy cập:
 * 22 (SSH)
 * 25 (SMTP)
 * 80 (HTTP)
@@ -73,7 +73,7 @@ Trước khi bắt đầu cài đặt, hãy đảm bảo bạn có:
 * 993 (IMAPS)
 * 995 (POP3S)
 
-## Cài đặt từng bước {#step-by-step-installation}
+## Hướng dẫn cài đặt từng bước {#step-by-step-installation}
 
 ### Bước 1: Thiết lập hệ thống ban đầu {#step-1-initial-system-setup}
 
@@ -89,7 +89,7 @@ sudo su -
 
 ### Bước 2: Cấu hình Bộ giải quyết DNS {#step-2-configure-dns-resolvers}
 
-Cấu hình hệ thống của bạn để sử dụng máy chủ DNS của Cloudflare nhằm tạo chứng chỉ đáng tin cậy:
+Cấu hình hệ thống của bạn để sử dụng máy chủ DNS của Cloudflare để tạo chứng chỉ đáng tin cậy:
 
 ```bash
 # Stop and disable systemd-resolved if running
@@ -135,7 +135,7 @@ apt-get install -y \
 
 ### Bước 4: Cài đặt và cấu hình Snapd {#step-4-install-and-configure-snapd}
 
-Theo mặc định, Debian không bao gồm snapd, vì vậy chúng ta cần cài đặt và cấu hình nó:
+Debian không bao gồm snapd theo mặc định, vì vậy chúng ta cần cài đặt và cấu hình nó:
 
 ```bash
 # Install snapd
@@ -157,7 +157,7 @@ snap version
 
 ### Bước 5: Cài đặt các gói Snap {#step-5-install-snap-packages}
 
-Cài đặt AWS CLI và Certbot thông qua snap:
+Cài đặt AWS CLI và Certbot qua snap:
 
 ```bash
 # Install AWS CLI
@@ -225,7 +225,7 @@ docker info
 
 ### Bước 8: Cài đặt và cấu hình Tường lửa UFW {#step-8-install-and-configure-ufw-firewall}
 
-Bản cài đặt tối thiểu của Debian có thể không bao gồm UFW, vì vậy hãy cài đặt nó trước:
+Bản cài đặt Debian tối thiểu có thể không bao gồm UFW, vì vậy hãy cài đặt nó trước:
 
 ```bash
 # Install UFW if not present
@@ -362,7 +362,7 @@ certbot certonly \
   -d "$DOMAIN"
 ```
 
-**Quan trọng**: Khi được nhắc, bạn sẽ cần tạo bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều thử thách cho cùng một tên miền - **hãy tạo TẤT CẢ các thử thách đó**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
+**Quan trọng**: Khi được nhắc, bạn sẽ cần tạo bản ghi TXT trong DNS của mình. Bạn có thể thấy nhiều yêu cầu cho cùng một tên miền - **hãy tạo TẤT CẢ các yêu cầu đó**. Không xóa bản ghi TXT đầu tiên khi thêm bản ghi thứ hai.
 
 #### Tùy chọn B: Cloudflare DNS (Nếu bạn sử dụng Cloudflare) {#option-b-cloudflare-dns-if-you-use-cloudflare}
 
@@ -389,7 +389,7 @@ certbot certonly \
   --email "your-email@example.com"
 ```
 
-#### Sao chép chứng chỉ {#copy-certificates}
+#### Bản sao chứng chỉ {#copy-certificates}
 
 Sau khi tạo chứng chỉ, hãy sao chép chúng vào thư mục ứng dụng:
 
@@ -401,7 +401,7 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### Bước 13: Tạo khóa mã hóa {#step-13-generate-encryption-keys}
+### Bước 13: Tạo Khóa Mã hóa {#step-13-generate-encryption-keys}
 
 Tạo các khóa mã hóa khác nhau cần thiết cho hoạt động an toàn:
 
@@ -471,7 +471,7 @@ echo ""
 
 ### Bước 16: Triển khai với Docker Compose {#step-16-deploy-with-docker-compose}
 
-Bắt đầu tất cả các dịch vụ Chuyển tiếp Email:
+Khởi động tất cả các dịch vụ Chuyển tiếp Email:
 
 ```bash
 # Set Docker Compose file path
@@ -543,7 +543,7 @@ Bạn cần cấu hình các bản ghi DNS sau cho tên miền của mình:
 @ MX 10 mx.yourdomain.com
 ```
 
-#### Bản ghi A {#a-records}
+#### A Bản ghi {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -556,7 +556,7 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-#### Bản ghi SPF {#spf-record}
+Bản ghi #### SPF {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
@@ -585,8 +585,8 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### Đăng nhập lần đầu {#first-login}
 
-1. Mở trình duyệt web của bạn và điều hướng đến `https://yourdomain.com`
-2. Nhập thông tin xác thực cơ bản mà bạn đã lưu trước đó
+1. Mở trình duyệt web và điều hướng đến `https://yourdomain.com`
+2. Nhập thông tin xác thực cơ bản bạn đã lưu trước đó
 3. Hoàn tất trình hướng dẫn thiết lập ban đầu
 4. Tạo tài khoản email đầu tiên của bạn
 
@@ -618,7 +618,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Thiết lập tác vụ sao lưu Cron {#set-up-backup-cron-jobs}
+### Thiết lập công việc sao lưu Cron {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -635,7 +635,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## Cấu hình tự động cập nhật {#auto-update-configuration}
+## Tự động cập nhật cấu hình {#auto-update-configuration}
 
 Thiết lập cập nhật tự động cho cài đặt Forward Email của bạn:
 
@@ -658,10 +658,10 @@ crontab -l
 
 ### Sự khác biệt về quản lý gói {#package-management-differences}
 
-* **Snapd**: Không được cài đặt theo mặc định trên Debian, yêu cầu cài đặt thủ công
+* **Snapd**: Không được cài đặt mặc định trên Debian, cần cài đặt thủ công
 * **Docker**: Sử dụng kho lưu trữ và khóa GPG dành riêng cho Debian
 * **UFW**: Có thể không được bao gồm trong các bản cài đặt Debian tối thiểu
-* **systemd**: Hành vi có thể hơi khác so với Ubuntu
+* **systemd**: Hoạt động có thể hơi khác so với Ubuntu
 
 ### Quản lý dịch vụ {#service-management}
 
@@ -695,7 +695,7 @@ nslookup google.com
 
 ### Vị trí nhật ký {#log-locations}
 
-* **Nhật ký Docker Compose**: Sử dụng lệnh docker compose phù hợp dựa trên cài đặt
+* **Nhật ký Docker Compose**: Sử dụng lệnh Docker Compose phù hợp dựa trên cài đặt
 * **Nhật ký hệ thống**: `/var/log/syslog`
 * **Nhật ký sao lưu**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Nhật ký tự động cập nhật**: `/var/log/autoupdate.log`
@@ -703,11 +703,11 @@ nslookup google.com
 
 ### Nhiệm vụ bảo trì thường xuyên {#regular-maintenance-tasks}
 
-1. **Giám sát dung lượng đĩa**: `df -h`
+1. **Theo dõi dung lượng đĩa**: `df -h`
 2. **Kiểm tra trạng thái dịch vụ**: Sử dụng lệnh docker compose phù hợp
 3. **Xem lại nhật ký**: Kiểm tra cả nhật ký ứng dụng và nhật ký hệ thống
-4. **Cập nhật các gói hệ thống**: `apt update && apt upgrade`
-5. **Giám sát snapd**: `snap list` và `snap refresh`
+4. **Cập nhật gói hệ thống**: `apt update && apt upgrade`
+5. **Theo dõi snapd**: `snap list` và `snap refresh`
 
 ### Gia hạn chứng chỉ {#certificate-renewal}
 
@@ -779,7 +779,7 @@ apt-mark showhold
 
 ### Các vấn đề thường gặp {#common-issues}
 
-#### 1. Dịch vụ Docker không khởi động được {#1-docker-service-wont-start}
+#### 1. Dịch vụ Docker không khởi động {#1-docker-service-wont-start}
 
 ```bash
 # Check Docker status
@@ -792,15 +792,15 @@ journalctl -u docker
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. Việc tạo chứng chỉ không thành công {#2-certificate-generation-fails}
+#### 2. Không tạo được chứng chỉ {#2-certificate-generation-fails}
 
-* Đảm bảo các cổng 80 và 443 có thể truy cập được
+* Đảm bảo cổng 80 và 443 có thể truy cập được
 * Xác minh bản ghi DNS trỏ đến máy chủ của bạn
 * Kiểm tra cài đặt tường lửa bằng `ufw status`
 
 #### 3. Sự cố gửi email {#3-email-delivery-issues}
 
-* Xác minh bản ghi MX là chính xác
+* Kiểm tra bản ghi MX có chính xác không
 * Kiểm tra bản ghi SPF, DKIM và DMARC
 * Đảm bảo cổng 25 không bị nhà cung cấp dịch vụ lưu trữ của bạn chặn
 
@@ -812,25 +812,25 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 ## Thực hành bảo mật tốt nhất {#security-best-practices}
 
-1. **Luôn cập nhật hệ thống**: Cập nhật Debian và các gói thường xuyên
-2. **Theo dõi nhật ký**: Thiết lập theo dõi nhật ký và cảnh báo
-3. **Sao lưu thường xuyên**: Kiểm tra các quy trình sao lưu và khôi phục
-4. **Sử dụng mật khẩu mạnh**: Tạo mật khẩu mạnh cho tất cả các tài khoản
+1. **Luôn cập nhật hệ thống**: Thường xuyên cập nhật Debian và các gói
+2. **Theo dõi nhật ký**: Thiết lập giám sát và cảnh báo nhật ký
+3. **Sao lưu thường xuyên**: Kiểm tra quy trình sao lưu và khôi phục
+4. **Sử dụng mật khẩu mạnh**: Tạo mật khẩu mạnh cho tất cả tài khoản
 5. **Bật Fail2Ban**: Cân nhắc cài đặt fail2ban để tăng cường bảo mật
-6. **Kiểm tra bảo mật thường xuyên**: Xem xét cấu hình của bạn theo định kỳ
-7. **Theo dõi Snapd**: Giữ các gói snap được cập nhật với `snap refresh`
+6. **Kiểm tra bảo mật thường xuyên**: Định kỳ xem lại cấu hình của bạn
+7. **Theo dõi Snapd**: Luôn cập nhật các gói snap với `snap refresh`
 
 ## Kết luận {#conclusion}
 
-Cài đặt tự lưu trữ Forward Email của bạn hiện đã hoàn tất và đang chạy trên Debian. Hãy nhớ:
+Quá trình cài đặt Forward Email tự lưu trữ của bạn hiện đã hoàn tất và đang chạy trên Debian. Hãy nhớ:
 
-1. Cấu hình bản ghi DNS của bạn đúng cách
+1. Cấu hình đúng bản ghi DNS
 2. Kiểm tra việc gửi và nhận email
 3. Thiết lập sao lưu thường xuyên
-4. Theo dõi hệ thống của bạn thường xuyên
-5. Giữ cho cài đặt của bạn được cập nhật
-6. Theo dõi snapd và các gói snap
+4. Giám sát hệ thống thường xuyên
+5. Cập nhật cài đặt
+6. Giám sát snapd và các gói snap
 
-Sự khác biệt chính so với Ubuntu là cài đặt snapd và cấu hình kho lưu trữ Docker. Khi những thứ này được thiết lập đúng, ứng dụng Forward Email hoạt động giống hệt nhau trên cả hai hệ thống.
+Điểm khác biệt chính so với Ubuntu là cài đặt snapd và cấu hình kho lưu trữ Docker. Sau khi thiết lập đúng, ứng dụng Forward Email sẽ hoạt động giống hệt nhau trên cả hai hệ thống.
 
 Để biết thêm các tùy chọn cấu hình và tính năng nâng cao, hãy tham khảo tài liệu chính thức về Chuyển tiếp Email tại <https://forwardemail.net/self-hosted#configuration>.

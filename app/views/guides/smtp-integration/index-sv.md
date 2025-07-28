@@ -3,23 +3,23 @@
 ## Innehållsförteckning {#table-of-contents}
 
 * [Förord](#foreword)
-* [Hur vidarebefordra e-posts SMTP-bearbetning fungerar](#how-forward-emails-smtp-processing-works)
-  * [E-postkö och försök igen](#email-queue-and-retry-system)
-  * [Dummy-säkrad för tillförlitlighet](#dummy-proofed-for-reliability)
+* [Hur vidarebefordran av e-posts SMTP-behandling fungerar](#how-forward-emails-smtp-processing-works)
+  * [E-postkö och system för återförsök](#email-queue-and-retry-system)
+  * [Testad för tillförlitlighet](#dummy-proofed-for-reliability)
 * [Node.js-integration](#nodejs-integration)
-  * [Använder Nodemailer](#using-nodemailer)
-  * [Använder Express.js](#using-expressjs)
+  * [Använda Nodemailer](#using-nodemailer)
+  * [Använda Express.js](#using-expressjs)
 * [Python-integration](#python-integration)
-  * [Använder smtplib](#using-smtplib)
-  * [Använder Django](#using-django)
+  * [Använda smtplib](#using-smtplib)
+  * [Använda Django](#using-django)
 * [PHP-integration](#php-integration)
-  * [Använder PHPMailer](#using-phpmailer)
-  * [Använder Laravel](#using-laravel)
-* [Ruby Integration](#ruby-integration)
-  * [Använder Ruby Mail Gem](#using-ruby-mail-gem)
+  * [Använda PHPMailer](#using-phpmailer)
+  * [Använda Laravel](#using-laravel)
+* [Ruby-integration](#ruby-integration)
+  * [Använda Ruby Mail Gem](#using-ruby-mail-gem)
 * [Java-integration](#java-integration)
-  * [Använder JavaMail API](#using-javamail-api)
-* [E-postklientkonfiguration](#email-client-configuration)
+  * [Använda Java Mail API](#using-javamail-api)
+* [Konfiguration av e-postklient](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
   * [Gmail (Skicka e-post som)](#gmail-send-mail-as)
@@ -31,11 +31,11 @@
 
 ## Förord {#foreword}
 
-Den här guiden ger detaljerade exempel på hur man integrerar med Forward Emails SMTP-tjänst med hjälp av olika programmeringsspråk, ramverk och e-postklienter. Vår SMTP-tjänst är designad för att vara pålitlig, säker och enkel att integrera med dina befintliga applikationer.
+Den här guiden ger detaljerade exempel på hur man integrerar med Forward Emails SMTP-tjänst med hjälp av olika programmeringsspråk, ramverk och e-postklienter. Vår SMTP-tjänst är utformad för att vara tillförlitlig, säker och enkel att integrera med dina befintliga applikationer.
 
-## Så här fungerar SMTP-behandling av vidarebefordran av e-post {#how-forward-emails-smtp-processing-works}
+## Hur vidarebefordran av e-posts SMTP-behandling fungerar {#how-forward-emails-smtp-processing-works}
 
-Innan du dyker in i integrationsexemplen är det viktigt att förstå hur vår SMTP-tjänst behandlar e-postmeddelanden:
+Innan vi går in på integrationsexemplen är det viktigt att förstå hur vår SMTP-tjänst behandlar e-postmeddelanden:
 
 ### E-postkö och system för återförsök {#email-queue-and-retry-system}
 
@@ -52,24 +52,24 @@ När du skickar ett e-postmeddelande via SMTP till våra servrar:
 5. **Aviseringar om leveransstatus**: Avsändare får aviseringar om statusen för sina e-postmeddelanden (levererade, försenade eller avvisade)
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Efter lyckad leverans redigeras utgående SMTP-e-postinnehåll efter en konfigurerbar kvarhållningsperiod (standard 30 dagar) för säkerhet och integritet. Endast ett platshållarmeddelande återstår som indikerar lyckad leverans.
 
 ### Dummy-säker för tillförlitlighet {#dummy-proofed-for-reliability}
 
-Vårt system är designat för att hantera olika kantfall:
+Vårt system är utformat för att hantera olika marginalfall:
 
 * Om en blockeringslista upptäcks kommer e-postmeddelandet automatiskt att försökas skickas igen.
 * Om nätverksproblem uppstår kommer leveransförsöket att göras igen.
 * Om mottagarens inkorg är full kommer systemet att försöka igen senare.
 * Om den mottagande servern tillfälligt inte är tillgänglig kommer vi att fortsätta försöka.
 
-Detta tillvägagångssätt förbättrar leveranshastigheterna avsevärt samtidigt som sekretess och säkerhet bibehålls.
+Denna metod förbättrar leveranshastigheterna avsevärt samtidigt som integritet och säkerhet bibehålls.
 
 ## Node.js-integration {#nodejs-integration}
 
 ### Använder Nodemailer {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) är en populär modul för att skicka e-post från Node.js-applikationer.
+[Nodemailer](https://nodemailer.com/) är en populär modul för att skicka e-postmeddelanden från Node.js-applikationer.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -107,7 +107,7 @@ sendEmail();
 
 ### Använder Express.js {#using-expressjs}
 
-Så här integrerar du Forward Email SMTP med en Express.js-applikation:
+Så här integrerar du vidarebefordran av e-post via SMTP med en Express.js-applikation:
 
 ```javascript
 const express = require('express');
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Skicka sedan e-postmeddelanden i dina åsikter:
+Skicka sedan e-postmeddelanden i dina vyer:
 
 ```python
 from django.core.mail import send_mail
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Skicka sedan e-post med Laravels Mail-fasad:
+Skicka sedan e-postmeddelanden med Laravels Mail-fasad:
 
 ```php
 <?php
@@ -504,21 +504,21 @@ flowchart TD
 
 ### Få hjälp {#getting-help}
 
-Om du stöter på problem som inte täcks här, vänligen:
+Om du stöter på problem som inte tas upp här, vänligen:
 
 1. Kolla vår [FAQ-sida](/faq) för vanliga frågor
-2. Läs vår [blogginlägg om e-postleverans](/blog/docs/best-email-forwarding-service) för detaljerad information
+2. Granska vår [blogginlägg om e-postleverans](/blog/docs/best-email-forwarding-service) för detaljerad information
 3. Kontakta vårt supportteam på <support@forwardemail.net>
 
 ## Ytterligare resurser {#additional-resources}
 
-* [Vidarebefordra e-postdokumentation](/docs)
-* [SMTP-servergränser och -konfiguration](/faq#what-are-your-outbound-smtp-limits)
-* [E-postguide för bästa praxis](/blog/docs/best-email-forwarding-service)
-* [Säkerhetspraxis](/security)
+* [Dokumentation för vidarebefordran av e-post](/docs)
+* [SMTP-servergränser och konfiguration](/faq#what-are-your-outbound-smtp-limits)
+* [Guide till bästa praxis för e-post](/blog/docs/best-email-forwarding-service)
+* [Säkerhetsrutiner](/security)
 
 ## Slutsats {#conclusion}
 
-Forward Emails SMTP-tjänst tillhandahåller ett pålitligt, säkert och sekretessfokuserat sätt att skicka e-post från dina applikationer och e-postklienter. Med vårt intelligenta kösystem, mekanism för 5-dagars försök och omfattande leveransstatusmeddelanden kan du vara säker på att dina e-postmeddelanden når sin destination.
+SMTP-tjänsten Forward Email erbjuder ett pålitligt, säkert och integritetsfokuserat sätt att skicka e-postmeddelanden från dina applikationer och e-postklienter. Med vårt intelligenta kösystem, 5-dagars återförsöksmekanism och omfattande leveransstatusmeddelanden kan du vara säker på att dina e-postmeddelanden når sin destination.
 
-För mer avancerade användningsfall eller anpassade integrationer, vänligen kontakta vårt supportteam.
+För mer avancerade användningsområden eller anpassade integrationer, vänligen kontakta vårt supportteam.

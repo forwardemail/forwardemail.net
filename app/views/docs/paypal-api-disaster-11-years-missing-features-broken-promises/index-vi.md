@@ -2,8 +2,8 @@
 
 <img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
-<p class="lead mt-3">Tại Forward Email, chúng tôi đã xử lý các API bị hỏng của PayPal trong hơn một thập kỷ. Những gì bắt đầu như những sự thất vọng nhỏ đã biến thành một thảm họa hoàn toàn buộc chúng tôi phải xây dựng các giải pháp thay thế của riêng mình, chặn các mẫu lừa đảo của họ và cuối cùng dừng tất cả các khoản thanh toán PayPal trong quá trình di chuyển tài khoản quan trọng.</p>
-<p class="lead mt-3">Đây là câu chuyện về 11 năm PayPal phớt lờ các nhu cầu cơ bản của nhà phát triển trong khi chúng tôi đã thử mọi cách để nền tảng của họ hoạt động.</p>
+<p class="lead mt-3">Tại Forward Email, chúng tôi đã xử lý các API bị lỗi của PayPal trong hơn một thập kỷ. Những gì bắt đầu từ những sự cố nhỏ đã trở thành một thảm họa thực sự, buộc chúng tôi phải tự xây dựng các giải pháp thay thế, chặn các mẫu lừa đảo của chúng và cuối cùng là dừng tất cả các khoản thanh toán PayPal trong quá trình di chuyển tài khoản quan trọng.</p>
+<p class="lead mt-3">Đây là câu chuyện về 11 năm PayPal phớt lờ các nhu cầu cơ bản của nhà phát triển trong khi chúng tôi đã cố gắng hết sức để nền tảng của họ hoạt động.</p>
 
 ## Mục lục {#table-of-contents}
 
@@ -21,7 +21,7 @@
   * [Phản ứng quá mức của Marty Brodbeck](#marty-brodbecks-overengineering-response)
   * [Mâu thuẫn "CRUD đơn giản"](#the-simple-crud-contradiction)
   * [Sự ngắt kết nối trở nên rõ ràng](#the-disconnect-becomes-clear)
-* [Nhiều năm báo cáo lỗi mà họ bỏ qua](#years-of-bug-reports-they-ignored)
+* [Nhiều năm báo cáo lỗi mà họ đã bỏ qua](#years-of-bug-reports-they-ignored)
   * [2016: Những khiếu nại ban đầu về UI/UX](#2016-early-uiux-complaints)
   * [2021: Báo cáo lỗi email doanh nghiệp](#2021-business-email-bug-report)
   * [2021: Đề xuất cải tiến giao diện người dùng](#2021-ui-improvement-suggestions)
@@ -80,18 +80,18 @@
 
 Đây là điều khiến chúng tôi ngạc nhiên: PayPal đã áp dụng hình thức thanh toán theo đăng ký từ năm 2014, nhưng họ chưa bao giờ cung cấp cách để các thương gia liệt kê các đăng ký của riêng họ.
 
-Hãy nghĩ về điều đó trong một giây. Bạn có thể tạo đăng ký, bạn có thể hủy chúng nếu bạn có ID, nhưng bạn không thể có được danh sách tất cả các đăng ký đang hoạt động cho tài khoản của mình. Giống như có một cơ sở dữ liệu không có câu lệnh SELECT.
+Hãy suy nghĩ về điều đó một chút. Bạn có thể tạo đăng ký, hủy đăng ký nếu có ID, nhưng bạn không thể có danh sách tất cả các đăng ký đang hoạt động cho tài khoản của mình. Giống như việc có một cơ sở dữ liệu không có câu lệnh SELECT vậy.
 
 Chúng tôi cần điều này cho các hoạt động kinh doanh cơ bản:
 
-* Hỗ trợ khách hàng (khi ai đó gửi email hỏi về đăng ký của họ)
+* Hỗ trợ khách hàng (khi có người gửi email hỏi về đăng ký)
 * Báo cáo tài chính và đối chiếu
-* Quản lý thanh toán tự động
+* Quản lý hóa đơn tự động
 * Tuân thủ và kiểm toán
 
-Nhưng PayPal thì sao? Họ chỉ... không bao giờ xây dựng nó.
+Nhưng PayPal thì sao? Họ... chưa bao giờ xây dựng nó.
 
-## 2014-2017: Vấn đề nổi lên {#2014-2017-the-problem-emerges}
+## 2014-2017: Vấn đề nảy sinh {#2014-2017-the-problem-emerges}
 
 Vấn đề về danh sách đăng ký lần đầu tiên xuất hiện trên diễn đàn cộng đồng của PayPal vào năm 2017. Các nhà phát triển đã đặt ra câu hỏi hiển nhiên: "Làm thế nào để tôi có được danh sách tất cả các đăng ký của mình?"
 
@@ -99,7 +99,7 @@ Phản ứng của PayPal là gì? Im lặng.
 
 Các thành viên cộng đồng bắt đầu cảm thấy bực bội:
 
-> "Thật kỳ lạ khi một thương gia không thể liệt kê tất cả các Thỏa thuận đang hoạt động. Nếu ID Thỏa thuận bị mất thì điều này có nghĩa là chỉ người dùng mới có thể hủy hoặc tạm dừng một thỏa thuận." - leafspider
+> "Thật kỳ lạ khi một thương gia không thể liệt kê tất cả các Thỏa thuận đang hoạt động. Nếu ID Thỏa thuận bị mất, điều này có nghĩa là chỉ người dùng mới có thể hủy hoặc tạm dừng thỏa thuận." - leafspider
 
 > "+1. Đã gần 3 năm rồi." - laudukang (có nghĩa là vấn đề đã tồn tại từ \~2014)
 
@@ -107,35 +107,35 @@ Các thành viên cộng đồng bắt đầu cảm thấy bực bội:
 
 ## 2020: Chúng tôi cung cấp cho họ phản hồi rộng rãi {#2020-we-give-them-extensive-feedback}
 
-Vào tháng 10 năm 2020, PayPal đã liên hệ với chúng tôi để có một buổi phản hồi chính thức. Đây không phải là một cuộc trò chuyện thông thường - họ đã tổ chức một cuộc gọi Microsoft Teams kéo dài 45 phút với 8 giám đốc điều hành của PayPal bao gồm Sri Shivananda (CTO), Edwin Aoki, Jim Magats, John Kunze và những người khác.
+Vào tháng 10 năm 2020, PayPal đã liên hệ với chúng tôi để tổ chức một buổi phản hồi chính thức. Đây không phải là một buổi trò chuyện thông thường - họ đã tổ chức một cuộc gọi Microsoft Teams kéo dài 45 phút với 8 giám đốc điều hành của PayPal, bao gồm Sri Shivananda (CTO), Edwin Aoki, Jim Magats, John Kunze và những người khác.
 
 ### Danh sách phản hồi gồm 27 mục {#the-27-item-feedback-list}
 
 Chúng tôi đã chuẩn bị sẵn sàng. Sau 6 giờ cố gắng tích hợp với API của họ, chúng tôi đã tổng hợp được 27 vấn đề cụ thể. Mark Stuart từ nhóm PayPal Checkout cho biết:
 
-> Này Nick, cảm ơn vì đã chia sẻ với mọi người hôm nay! Tôi nghĩ đây sẽ là chất xúc tác để nhận được thêm sự hỗ trợ và đầu tư cho nhóm của chúng tôi để khắc phục những vấn đề này. Thật khó để nhận được phản hồi phong phú như những gì bạn đã để lại cho chúng tôi cho đến nay.
+> Chào Nick, cảm ơn bạn đã chia sẻ với mọi người hôm nay! Tôi nghĩ đây sẽ là động lực để nhóm chúng tôi nhận được thêm sự hỗ trợ và đầu tư để khắc phục những vấn đề này. Thật khó để nhận được những phản hồi chất lượng như những gì bạn đã để lại cho chúng tôi cho đến nay.
 
-Phản hồi này không mang tính lý thuyết - nó xuất phát từ những nỗ lực tích hợp thực tế:
+Phản hồi không phải là lý thuyết - nó đến từ những nỗ lực tích hợp thực tế:
 
 1. **Việc tạo mã thông báo truy cập không hoạt động**:
 
-> Tạo mã thông báo truy cập không hoạt động. Ngoài ra, cần có nhiều hơn là chỉ các ví dụ cURL.
+> Việc tạo mã thông báo truy cập không hoạt động. Ngoài ra, cần có nhiều ví dụ hơn là chỉ cURL.
 
 2. **Không có giao diện người dùng web để tạo đăng ký**:
 
-> Làm sao bạn có thể tạo đăng ký mà không cần phải sử dụng cURL? Có vẻ như không có giao diện người dùng web nào để thực hiện việc này (giống như Stripe)
+> Làm sao bạn có thể tạo đăng ký mà không cần dùng cURL? Hình như không có giao diện web nào để làm việc này (như Stripe)
 
-Mark Stuart nhận thấy vấn đề về mã thông báo truy cập đặc biệt đáng lo ngại:
+Mark Stuart thấy vấn đề về mã thông báo truy cập đặc biệt đáng lo ngại:
 
-> Chúng tôi thường không nghe thấy các vấn đề liên quan đến việc tạo mã thông báo truy cập.
+> Chúng tôi thường không nghe thấy bất kỳ vấn đề nào liên quan đến việc tạo mã thông báo truy cập.
 
-### Các đội đã tham gia, những lời hứa đã được thực hiện {#teams-got-involved-promises-were-made}
+### Các đội đã tham gia, lời hứa đã được đưa ra {#teams-got-involved-promises-were-made}
 
-Khi chúng tôi phát hiện thêm nhiều vấn đề, PayPal tiếp tục thêm nhiều nhóm vào cuộc trò chuyện. Darshan Raju từ nhóm Giao diện người dùng quản lý đăng ký đã tham gia và cho biết:
+Khi chúng tôi phát hiện thêm nhiều vấn đề, PayPal liên tục bổ sung thêm các nhóm vào cuộc thảo luận. Darshan Raju từ nhóm Giao diện người dùng Quản lý Đăng ký đã tham gia và phát biểu:
 
-> Xác nhận khoảng cách. Chúng tôi sẽ theo dõi và giải quyết vấn đề này. Cảm ơn bạn một lần nữa vì phản hồi!
+> Hãy thừa nhận sai sót. Chúng tôi sẽ theo dõi và khắc phục. Cảm ơn bạn một lần nữa vì phản hồi!
 
-Phiên họp được mô tả là nhằm mục đích tìm kiếm:
+Phiên họp được mô tả là nhằm tìm kiếm:
 
 > chia sẻ thẳng thắn về trải nghiệm của bạn
 
@@ -151,16 +151,16 @@ Bất chấp phiên phản hồi chính thức, danh sách 27 mục dài, sự t
 
 vấn đề, hoàn toàn không có gì được sửa chữa.
 
-## Cuộc di cư của các nhà điều hành: PayPal đã đánh mất toàn bộ ký ức của tổ chức như thế nào {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
+## Cuộc di cư của các giám đốc điều hành: PayPal đã đánh mất toàn bộ ký ức của tổ chức như thế nào {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
-Đây là nơi mọi thứ trở nên thực sự thú vị. Mọi người nhận được phản hồi năm 2020 của chúng tôi đều đã rời khỏi PayPal:
+Đây mới là phần thú vị nhất. Tất cả những người nhận được phản hồi năm 2020 của chúng tôi đều đã rời khỏi PayPal:
 
 **Thay đổi lãnh đạo:**
 
 * [Dan Schulman (Giám đốc điều hành trong 9 năm) → Alex Chriss](https://www.fastcompany.com/90938418/paypal-ceo-alex-chriss-dan-schulman-what-to-know/) (Tháng 9 năm 2023)
-* [Sri Shivananda (Giám đốc công nghệ tổ chức phản hồi) → JPMorgan Chase](https://www.pymnts.com/personnel/2024/jpmorgan-names-paypal-vet-shivananda-as-new-tech-chief/) (Tháng 1 năm 2024)
+* [Sri Shivananda (Giám đốc công nghệ, người tổ chức phản hồi) → JPMorgan Chase](https://www.pymnts.com/personnel/2024/jpmorgan-names-paypal-vet-shivananda-as-new-tech-chief/) (Tháng 1 năm 2024)
 
-**Các nhà lãnh đạo kỹ thuật đã hứa hẹn rồi bỏ đi:**
+**Các nhà lãnh đạo kỹ thuật đã hứa hẹn rồi rời đi:**
 
 * **Mark Stuart** (hứa hẹn phản hồi sẽ là "chất xúc tác") → [Hiện tại Ripple](https://www.linkedin.com/in/markstuartsf)
 * **Jim Magats** (cựu chiến binh PayPal 18 năm) → [Tổng giám đốc điều hành của MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
@@ -169,41 +169,41 @@ vấn đề, hoàn toàn không có gì được sửa chữa.
 
 PayPal đã trở thành nơi các giám đốc điều hành thu thập phản hồi của nhà phát triển, đưa ra lời hứa, sau đó chuyển sang các công ty tốt hơn như JPMorgan, Ripple và các công ty công nghệ tài chính khác.
 
-Điều này giải thích tại sao phản hồi về sự cố GitHub năm 2025 dường như hoàn toàn không liên quan đến phản hồi năm 2020 của chúng tôi - thực tế là tất cả những người nhận được phản hồi đó đều đã rời khỏi PayPal.
+Điều này giải thích tại sao phản hồi về sự cố GitHub năm 2025 có vẻ hoàn toàn không liên quan đến phản hồi năm 2020 của chúng tôi - thực tế là tất cả những người nhận được phản hồi đó đều đã rời khỏi PayPal.
 
 ## 2025: Lãnh đạo mới, vấn đề cũ {#2025-new-leadership-same-problems}
 
-Đến năm 2025, mô hình tương tự lại xuất hiện. Sau nhiều năm không có tiến triển, ban lãnh đạo mới của PayPal lại tiếp tục vươn lên.
+Đến năm 2025, mô hình tương tự lại xuất hiện. Sau nhiều năm không có tiến triển, ban lãnh đạo mới của PayPal lại một lần nữa lên tiếng.
 
 ### Tổng Giám đốc Điều hành Mới Tham gia {#the-new-ceo-gets-involved}
 
-Vào ngày 30 tháng 6 năm 2025, chúng tôi đã trao đổi trực tiếp với CEO mới của PayPal là Alex Chriss. Câu trả lời của ông rất ngắn gọn:
+Vào ngày 30 tháng 6 năm 2025, chúng tôi đã liên hệ trực tiếp với CEO mới của PayPal, Alex Chriss. Ông ấy trả lời ngắn gọn:
 
-> Xin chào Nick – Cảm ơn bạn đã liên hệ và phản hồi. Michelle (cc'd) đang cùng nhóm của cô ấy tham gia và giải quyết vấn đề này với bạn. Cảm ơn -A
+> Chào Nick – Cảm ơn bạn đã liên hệ và phản hồi. Michelle (đã gửi kèm) đang cùng nhóm của cô ấy tích cực hỗ trợ và giải quyết vấn đề này với bạn. Cảm ơn -A
 
 ### Phản hồi của Michelle Gill {#michelle-gills-response}
 
-Michelle Gill, Phó chủ tịch điều hành kiêm Tổng giám đốc bộ phận Doanh nghiệp nhỏ và Dịch vụ tài chính, trả lời:
+Michelle Gill, Phó chủ tịch điều hành kiêm Tổng giám đốc phụ trách Doanh nghiệp nhỏ và Dịch vụ tài chính, trả lời:
 
-> Cảm ơn Nick rất nhiều, chuyển Alex sang bcc. Chúng tôi đã xem xét vấn đề này kể từ bài đăng trước của bạn. Chúng tôi sẽ gọi điện cho bạn trước khi tuần này kết thúc. Bạn có thể vui lòng gửi cho tôi thông tin liên lạc của bạn để một trong những đồng nghiệp của tôi có thể liên lạc được không. Michelle
+> Cảm ơn Nick rất nhiều, đã chuyển Alex sang BCC. Chúng tôi đã xem xét việc này từ bài đăng trước của bạn. Chúng tôi sẽ gọi cho bạn trước khi tuần này kết thúc. Bạn vui lòng gửi cho tôi thông tin liên lạc để một đồng nghiệp của tôi có thể liên lạc nhé. Michelle
 
 ### Phản hồi của chúng tôi: Không còn cuộc họp nào nữa {#our-response-no-more-meetings}
 
 Chúng tôi từ chối một cuộc họp khác và giải thích sự thất vọng của mình:
 
-> Cảm ơn bạn. Tuy nhiên, tôi không cảm thấy việc gọi điện sẽ có tác dụng gì. Đây là lý do tại sao... Tôi đã gọi điện trong quá khứ và nó chẳng đi đến đâu cả. Tôi đã lãng phí hơn 2 giờ đồng hồ để nói chuyện với toàn bộ nhóm và ban lãnh đạo và chẳng có gì được thực hiện... Hàng tấn email qua lại. Hoàn toàn chẳng có gì được thực hiện. Phản hồi chẳng đi đến đâu. Tôi đã cố gắng trong nhiều năm, được lắng nghe, và rồi chẳng đi đến đâu cả.
+> Cảm ơn bạn. Tuy nhiên, tôi không cảm thấy việc gọi điện thoại sẽ mang lại kết quả gì. Lý do là... Trước đây tôi đã từng gọi điện thoại nhưng chẳng đi đến đâu cả. Tôi đã lãng phí hơn 2 tiếng đồng hồ để nói chuyện với toàn bộ nhóm và ban lãnh đạo mà chẳng được gì... Hàng tá email qua lại. Hoàn toàn chẳng được gì. Phản hồi chẳng đi đến đâu. Tôi đã cố gắng nhiều năm, được lắng nghe, nhưng rồi chẳng đi đến đâu cả.
 
 ### Phản hồi về kỹ thuật quá mức của Marty Brodbeck {#marty-brodbecks-overengineering-response}
 
 Sau đó, Marty Brodbeck, người đứng đầu bộ phận kỹ thuật tiêu dùng tại PayPal, đã liên hệ:
 
-> Xin chào Nick, tôi là Marty Brodbeck. Tôi là người đứng đầu bộ phận kỹ thuật tiêu dùng tại PayPal và đã thúc đẩy quá trình phát triển API cho công ty. Bạn và tôi có thể trao đổi về vấn đề bạn đang gặp phải và cách chúng ta có thể giúp đỡ ở đây không.
+Chào Nick, tôi là Marty Brodbeck. Tôi phụ trách toàn bộ mảng kỹ thuật tiêu dùng tại PayPal và đang thúc đẩy phát triển API cho công ty. Bạn có thể chia sẻ với tôi về vấn đề bạn đang gặp phải và cách chúng ta có thể hỗ trợ bạn không?
 
 Khi chúng tôi giải thích nhu cầu đơn giản về điểm cuối danh sách đăng ký, phản hồi của anh ấy đã chỉ ra vấn đề chính xác:
 
 > Cảm ơn Nick, chúng tôi đang trong quá trình tạo một API đăng ký duy nhất với SDK đầy đủ (hỗ trợ xử lý lỗi đầy đủ, theo dõi đăng ký dựa trên sự kiện, thời gian hoạt động mạnh mẽ) trong đó việc thanh toán cũng được tách thành một API riêng để các thương gia sử dụng thay vì phải sắp xếp trên nhiều điểm cuối để nhận được một phản hồi duy nhất.
 
-Đây chính xác là cách tiếp cận sai lầm. Chúng ta không cần nhiều tháng kiến trúc phức tạp. Chúng ta cần một điểm cuối REST đơn giản liệt kê các đăng ký - thứ đáng lẽ phải tồn tại từ năm 2014.
+Đây hoàn toàn là cách tiếp cận sai lầm. Chúng ta không cần hàng tháng trời xây dựng kiến trúc phức tạp. Chúng ta chỉ cần một điểm cuối REST đơn giản liệt kê các đăng ký - một thứ lẽ ra đã phải tồn tại từ năm 2014.
 
 ```http
 GET /v1/billing/subscriptions
@@ -216,54 +216,54 @@ Khi chúng tôi chỉ ra rằng đây là chức năng CRUD cơ bản đáng l�
 
 > Các thao tác Crud đơn giản là một phần của API cốt lõi, bạn của tôi ạ, vì vậy sẽ không mất nhiều tháng để phát triển
 
-PayPal TypeScript SDK, hiện chỉ hỗ trợ ba điểm cuối sau nhiều tháng phát triển, cùng với mốc thời gian lịch sử của nó, chứng minh rõ ràng rằng những dự án như vậy cần nhiều hơn một vài tháng để hoàn thành.
+PayPal TypeScript SDK, hiện chỉ hỗ trợ ba điểm cuối sau nhiều tháng phát triển, cùng với mốc thời gian lịch sử của nó, chứng minh rõ ràng rằng những dự án như vậy cần nhiều hơn vài tháng để hoàn thành.
 
-Phản hồi này cho thấy anh ta không hiểu API của chính mình. Nếu "các hoạt động CRUD đơn giản là một phần của API cốt lõi", thì điểm cuối của danh sách đăng ký ở đâu? Chúng tôi đã trả lời:
+Câu trả lời này cho thấy anh ta không hiểu API của chính mình. Nếu "các thao tác CRUD đơn giản là một phần của API cốt lõi", vậy thì điểm cuối của danh sách đăng ký nằm ở đâu? Chúng tôi đã trả lời:
 
-> Nếu 'các hoạt động CRUD đơn giản là một phần của API cốt lõi' thì điểm cuối của danh sách đăng ký ở đâu? Các nhà phát triển đã yêu cầu 'hoạt động CRUD đơn giản' này kể từ năm 2014. Đã 11 năm trôi qua. Mọi bộ xử lý thanh toán khác đều có chức năng cơ bản này ngay từ ngày đầu tiên.
+> Nếu "các thao tác CRUD đơn giản là một phần của API cốt lõi" thì điểm cuối của danh sách đăng ký ở đâu? Các nhà phát triển đã yêu cầu "thao tác CRUD đơn giản" này từ năm 2014. Đã 11 năm trôi qua. Mọi bộ xử lý thanh toán khác đều đã có chức năng cơ bản này ngay từ ngày đầu.
 
-### Sự ngắt kết nối trở nên rõ ràng {#the-disconnect-becomes-clear}
+### Ngắt kết nối trở nên rõ ràng {#the-disconnect-becomes-clear}
 
 Các cuộc trao đổi năm 2025 với Alex Chriss, Michelle Gill và Marty Brodbeck cho thấy cùng một sự rối loạn chức năng của tổ chức:
 
-1. **Lãnh đạo mới không biết về các buổi phản hồi trước đó**
-2. **Họ đề xuất các giải pháp được thiết kế quá mức tương tự**
-3. **Họ không hiểu những hạn chế về API của chính họ**
+1. **Lãnh đạo mới không biết gì về các buổi phản hồi trước đó**
+2. **Họ đề xuất cùng một giải pháp được thiết kế quá mức**
+3. **Họ không hiểu những hạn chế của API của chính mình**
 4. **Họ muốn có nhiều cuộc họp hơn thay vì chỉ giải quyết vấn đề**
 
 Mẫu hình này giải thích lý do tại sao các nhóm PayPal vào năm 2025 dường như hoàn toàn không liên quan đến phản hồi toàn diện được cung cấp vào năm 2020 - những người nhận được phản hồi đó đã không còn nữa và ban lãnh đạo mới đang lặp lại những sai lầm tương tự.
 
-## Nhiều năm báo cáo lỗi bị bỏ qua {#years-of-bug-reports-they-ignored}
+## Nhiều năm báo cáo lỗi mà họ đã bỏ qua {#years-of-bug-reports-they-ignored}
 
-Chúng tôi không chỉ phàn nàn về các tính năng bị thiếu. Chúng tôi đã tích cực báo cáo lỗi và cố gắng giúp họ cải thiện. Sau đây là dòng thời gian toàn diện về các vấn đề mà chúng tôi đã ghi lại:
+Chúng tôi không chỉ phàn nàn về việc thiếu tính năng. Chúng tôi còn tích cực báo cáo lỗi và cố gắng cải thiện. Dưới đây là dòng thời gian đầy đủ về các vấn đề mà chúng tôi đã ghi nhận:
 
 ### 2016: Khiếu nại ban đầu về UI/UX {#2016-early-uiux-complaints}
 
-Ngay cả vào năm 2016, chúng tôi đã công khai liên hệ với ban lãnh đạo PayPal bao gồm Dan Schulman về các vấn đề giao diện và khả năng sử dụng. Đây là 9 năm trước và các vấn đề về UI/UX vẫn tồn tại cho đến ngày nay.
+Ngay từ năm 2016, chúng tôi đã công khai liên hệ với ban lãnh đạo PayPal, bao gồm cả Dan Schulman, về các vấn đề giao diện và khả năng sử dụng. 9 năm trước, và những vấn đề về UI/UX vẫn tồn tại cho đến ngày nay.
 
 ### 2021: Báo cáo lỗi email doanh nghiệp {#2021-business-email-bug-report}
 
-Vào tháng 3 năm 2021, chúng tôi đã báo cáo rằng hệ thống email doanh nghiệp của PayPal đã gửi thông báo hủy không chính xác. Mẫu email có các biến được hiển thị không chính xác, hiển thị các thông báo gây nhầm lẫn cho khách hàng.
+Vào tháng 3 năm 2021, chúng tôi đã báo cáo rằng hệ thống email doanh nghiệp của PayPal đã gửi thông báo hủy không chính xác. Mẫu email có các biến được hiển thị không chính xác, khiến khách hàng khó hiểu về thông báo.
 
 Mark Stuart đã thừa nhận vấn đề này:
 
-> Cảm ơn Nick! Chuyển sang BCC. @Prasy, nhóm của bạn có chịu trách nhiệm cho email này không hay bạn biết ai chịu trách nhiệm không? "Niftylettuce, LLC, chúng tôi sẽ không tính phí bạn nữa" khiến tôi tin rằng có sự nhầm lẫn về người nhận và nội dung của email.
+> Cảm ơn Nick! Chuyển sang BCC. @Prasy, nhóm của anh có chịu trách nhiệm về email này không, hay anh biết ai chịu trách nhiệm không? Câu "Niftylettuce, LLC, chúng tôi sẽ không tính phí cho anh nữa" khiến tôi tin rằng có sự nhầm lẫn về người nhận và nội dung email.
 
 **Kết quả**: Họ thực sự đã sửa lỗi này! Mark Stuart đã xác nhận:
 
-> Vừa nghe từ nhóm thông báo rằng mẫu email đã được sửa và triển khai. Cảm ơn bạn đã liên hệ để báo cáo. Cảm ơn bạn!
+> Tôi vừa nhận được thông báo từ nhóm thông báo rằng mẫu email đã được sửa và triển khai. Cảm ơn bạn đã liên hệ để báo cáo. Cảm ơn bạn!
 
-Điều này cho thấy họ CÓ THỂ sửa chữa mọi thứ khi họ muốn - họ chỉ chọn không sửa hầu hết các vấn đề.
+Điều này cho thấy họ CÓ THỂ sửa chữa mọi thứ khi họ muốn - họ chỉ chọn không sửa chữa hầu hết các vấn đề.
 
 ### 2021: Đề xuất cải tiến giao diện người dùng {#2021-ui-improvement-suggestions}
 
 Vào tháng 2 năm 2021, chúng tôi đã cung cấp phản hồi chi tiết về giao diện người dùng bảng điều khiển của họ, cụ thể là phần "Hoạt động gần đây của PayPal":
 
-> Tôi nghĩ bảng điều khiển tại paypal.com, cụ thể là "Hoạt động gần đây của PayPal" cần được cải thiện. Tôi không nghĩ bạn nên hiển thị dòng trạng thái "Đã tạo" của khoản thanh toán định kỳ $0 - nó chỉ thêm một loạt các dòng thừa và bạn không thể dễ dàng nhìn thoáng qua để biết được thu nhập tạo ra trong ngày/vài ngày qua là bao nhiêu.
+> Tôi nghĩ bảng điều khiển tại paypal.com, cụ thể là "Hoạt động gần đây của PayPal" cần được cải thiện. Tôi không nghĩ bạn nên hiển thị dòng trạng thái "Đã tạo" của khoản thanh toán định kỳ $0 - nó chỉ thêm hàng tá dòng thừa và bạn không thể dễ dàng nhìn thoáng qua để biết được doanh thu tạo ra trong ngày/vài ngày qua là bao nhiêu.
 
-Mark Stuart đã chuyển tiếp nó tới nhóm sản phẩm tiêu dùng:
+Mark Stuart đã chuyển tiếp nó cho nhóm sản phẩm tiêu dùng:
 
-> Cảm ơn! Tôi không chắc nhóm nào chịu trách nhiệm về Hoạt động, nhưng tôi đã chuyển tiếp cho người đứng đầu bộ phận sản phẩm tiêu dùng để tìm đúng nhóm. Thanh toán định kỳ $0,00 có vẻ như là lỗi. Có lẽ nên lọc ra.
+> Cảm ơn! Tôi không chắc nhóm nào chịu trách nhiệm về Hoạt động, nhưng tôi đã chuyển tiếp thông tin này cho trưởng bộ phận sản phẩm tiêu dùng để tìm đúng nhóm. Khoản thanh toán định kỳ $0,00 có vẻ là lỗi. Có lẽ nên được lọc bỏ.
 
 **Kết quả**: Không bao giờ sửa được. Giao diện người dùng vẫn hiển thị những mục $0 vô dụng này.
 
@@ -272,43 +272,43 @@ Mark Stuart đã chuyển tiếp nó tới nhóm sản phẩm tiêu dùng:
 Vào tháng 11 năm 2021, chúng tôi đã báo cáo các sự cố nghiêm trọng với môi trường thử nghiệm của PayPal:
 
 * Khóa API bí mật của Sandbox đã bị thay đổi ngẫu nhiên và bị vô hiệu hóa
-* Tất cả các tài khoản thử nghiệm Sandbox đã bị xóa mà không cần thông báo
-* Thông báo lỗi khi cố gắng xem thông tin chi tiết về tài khoản Sandbox
+* Tất cả tài khoản thử nghiệm Sandbox đã bị xóa mà không cần thông báo
+* Thông báo lỗi khi cố gắng xem chi tiết tài khoản Sandbox
 * Lỗi tải không liên tục
 
-> Vì một lý do nào đó, khóa API bí mật sandbox của tôi đã bị thay đổi và bị Vô hiệu hóa. Ngoài ra, tất cả các tài khoản thử nghiệm Sandbox cũ của tôi đã bị xóa.
+> Vì lý do nào đó, khóa API bí mật Sandbox của tôi đã bị thay đổi và bị Vô hiệu hóa. Ngoài ra, tất cả tài khoản thử nghiệm Sandbox cũ của tôi cũng đã bị xóa.
 
-> Đôi khi chúng tải được và đôi khi thì không. Điều này thực sự rất bực bội.
+> Đôi khi chúng tải được, đôi khi lại không. Điều này thực sự rất khó chịu.
 
-**Kết quả**: Không có phản hồi, không có cách khắc phục. Các nhà phát triển vẫn phải đối mặt với các vấn đề về độ tin cậy của hộp cát.
+**Kết quả**: Không có phản hồi, không có cách khắc phục. Các nhà phát triển vẫn gặp phải vấn đề về độ tin cậy của hộp cát.
 
-### 2021: Hệ thống báo cáo bị hỏng hoàn toàn {#2021-reports-system-completely-broken}
+### 2021: Báo cáo Hệ thống bị hỏng hoàn toàn {#2021-reports-system-completely-broken}
 
 Vào tháng 5 năm 2021, chúng tôi đã báo cáo rằng hệ thống tải xuống báo cáo giao dịch của PayPal đã bị hỏng hoàn toàn:
 
-> Có vẻ như báo cáo tải xuống không hoạt động ngay bây giờ và không hoạt động cả ngày. Ngoài ra, có lẽ nên nhận thông báo qua email nếu không thành công.
+> Có vẻ như tính năng báo cáo lượt tải xuống hiện không hoạt động và đã không hoạt động cả ngày nay. Ngoài ra, có lẽ nên nhận thông báo qua email nếu không hoạt động.
 
 Chúng tôi cũng chỉ ra thảm họa quản lý phiên:
 
-> Ngoài ra, nếu bạn không hoạt động khi đăng nhập vào PayPal trong khoảng 5 phút, bạn sẽ bị đăng xuất. Vì vậy, khi bạn làm mới lại nút bên cạnh báo cáo mà bạn muốn kiểm tra trạng thái (sau khi bạn đợi mãi), thật là phiền phức khi phải đăng nhập lại.
+> Ngoài ra, nếu bạn không hoạt động khi đăng nhập vào PayPal trong khoảng 5 phút, bạn sẽ bị đăng xuất. Vì vậy, khi bạn làm mới lại nút bên cạnh báo cáo bạn muốn kiểm tra trạng thái (sau khi bạn chờ đợi rất lâu), thật bất tiện khi phải đăng nhập lại.
 
 Mark Stuart đã thừa nhận vấn đề hết thời gian phiên:
 
-> Tôi nhớ bạn đã từng báo cáo rằng phiên của bạn thường xuyên hết hạn và làm gián đoạn luồng phát triển của bạn khi bạn chuyển đổi giữa IDE và developer.paypal.com hoặc bảng điều khiển của đơn vị bán hàng, sau đó bạn quay lại và lại bị đăng xuất.
+> Tôi nhớ bạn đã báo cáo rằng trước đây phiên của bạn thường xuyên hết hạn và làm gián đoạn luồng phát triển của bạn khi bạn chuyển đổi giữa IDE và developer.paypal.com hoặc bảng điều khiển của người bán, sau đó bạn quay lại và lại bị đăng xuất.
 
 **Kết quả**: Thời gian chờ phiên vẫn là 60 giây. Hệ thống báo cáo vẫn thường xuyên bị lỗi.
 
 ### 2022: Tính năng API cốt lõi bị thiếu (một lần nữa) {#2022-core-api-feature-missing-again}
 
-Vào tháng 1 năm 2022, chúng tôi lại tiếp tục đưa ra vấn đề về danh sách đăng ký, lần này còn chi tiết hơn về cách tài liệu của họ sai:
+Vào tháng 1 năm 2022, chúng tôi lại đưa vấn đề về danh sách đăng ký lên cấp cao hơn, lần này còn nêu chi tiết hơn về cách tài liệu của họ sai:
 
 > Không có GET liệt kê tất cả các đăng ký (trước đây gọi là thỏa thuận thanh toán)
 
 Chúng tôi phát hiện ra tài liệu chính thức của họ hoàn toàn không chính xác:
 
-> Tài liệu API cũng hoàn toàn không chính xác. Chúng tôi nghĩ rằng chúng tôi có thể giải quyết bằng cách tải xuống danh sách ID đăng ký được mã hóa cứng. Nhưng điều đó thậm chí không hiệu quả!
+> Tài liệu API cũng hoàn toàn không chính xác. Chúng tôi nghĩ có thể giải quyết vấn đề bằng cách tải xuống danh sách ID đăng ký được mã hóa cứng. Nhưng điều đó thậm chí không hiệu quả!
 
-> Theo tài liệu chính thức tại đây... Tài liệu nói rằng bạn có thể làm điều này... Vấn đề là không có trường "ID đăng ký" nào ở bất kỳ đâu để có thể đánh dấu chọn.
+> Theo tài liệu chính thức tại đây... Tài liệu nói rằng bạn có thể làm điều này... Vấn đề là không có trường "ID đăng ký" nào để bạn có thể đánh dấu chọn.
 
 Christina Monti từ PayPal đã trả lời:
 
@@ -316,21 +316,21 @@ Christina Monti từ PayPal đã trả lời:
 
 Sri Shivananda (CTO) đã cảm ơn chúng tôi:
 
-> Cảm ơn sự giúp đỡ liên tục của bạn để giúp chúng tôi tốt hơn. Rất cảm kích.
+> Cảm ơn sự giúp đỡ liên tục của bạn để chúng tôi ngày càng tốt hơn. Chúng tôi rất trân trọng điều đó.
 
-**Kết quả**: Tài liệu không bao giờ được sửa. Điểm cuối danh sách đăng ký không bao giờ được tạo.
+**Kết quả**: Tài liệu chưa bao giờ được sửa. Điểm cuối danh sách đăng ký chưa bao giờ được tạo.
 
-## Cơn ác mộng về trải nghiệm của nhà phát triển {#the-developer-experience-nightmare}
+## Cơn ác mộng trải nghiệm của nhà phát triển {#the-developer-experience-nightmare}
 
-Làm việc với API của PayPal giống như quay ngược thời gian 10 năm. Sau đây là các vấn đề kỹ thuật mà chúng tôi đã ghi nhận:
+Làm việc với API của PayPal giống như quay ngược thời gian 10 năm về trước. Dưới đây là các vấn đề kỹ thuật mà chúng tôi đã ghi nhận:
 
 ### Giao diện người dùng bị hỏng {#broken-user-interface}
 
-Bảng điều khiển dành cho nhà phát triển PayPal là một thảm họa. Sau đây là những gì chúng tôi phải giải quyết hàng ngày:
+Bảng điều khiển dành cho nhà phát triển của PayPal thật là thảm họa. Dưới đây là những gì chúng tôi phải đối mặt hàng ngày:
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Giao diện người dùng của PayPal bị hỏng đến mức bạn thậm chí không thể bỏ qua thông báo
+Giao diện người dùng của PayPal bị lỗi đến mức bạn thậm chí không thể tắt thông báo.
 </div></figcaption>
 <video class="lazyframe-bordered" loading="lazy" controls>
 <source src="/img/articles/pypl-notifications.mp4" type="video/mp4">
@@ -340,41 +340,45 @@ Trình duyệt của bạn không hỗ trợ thẻ video.
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Bảng điều khiển dành cho nhà phát triển thực sự khiến bạn phải kéo thanh trượt rồi đăng xuất sau 60 giây
+Bảng điều khiển dành cho nhà phát triển thực sự bắt bạn kéo một thanh trượt rồi đăng xuất sau 60 giây.
 </div></figcaption>
 <video class="lazyframe-bordered" loading="lazy" controls>
 <source src="/img/articles/pypl-kapture-1.mp4" type="video/mp4">
+
 Trình duyệt của bạn không hỗ trợ thẻ video.
 </video>
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Nhiều thảm họa giao diện người dùng hơn trong giao diện nhà phát triển PayPal cho thấy quy trình làm việc bị hỏng
+
+Thêm nhiều lỗi giao diện người dùng trong giao diện nhà phát triển PayPal cho thấy quy trình làm việc bị lỗi
 </div></figcaption>
+
 <video class="lazyframe-bordered" loading="lazy" controls>
 <source src="/img/articles/pypl-kapture-2.mp4" type="video/mp4">
+
 Trình duyệt của bạn không hỗ trợ thẻ video.
 </video>
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Giao diện quản lý đăng ký - giao diện quá tệ đến nỗi chúng tôi phải dựa vào mã để tạo sản phẩm và gói đăng ký
+Giao diện quản lý đăng ký - giao diện tệ đến mức chúng tôi phải dựa vào mã để tạo sản phẩm và gói đăng ký.
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-subscriptions.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Giao diện đăng ký bị hỏng với chức năng bị thiếu (bạn không thể dễ dàng tạo sản phẩm/gói/đăng ký &ndash; và dường như không có cách nào để xóa sản phẩm hoặc gói sau khi đã tạo trong UI)
+Hình ảnh giao diện đăng ký bị hỏng, thiếu chức năng (bạn không thể dễ dàng tạo sản phẩm/gói/đăng ký &ndash; và dường như không có cách nào để xóa sản phẩm hoặc gói sau khi đã tạo trong giao diện người dùng)
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-subscriptions-2.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
-Các thông báo lỗi điển hình của PayPal - khó hiểu và không hữu ích
+Thông báo lỗi thường gặp của PayPal - khó hiểu và không hữu ích
 </div></figcaption>
 <img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
 </figure>
@@ -467,13 +471,13 @@ Bất chấp tất cả những vấn đề này, chúng tôi không thể hoàn
 
 Vì PayPal không cung cấp chức năng liệt kê đăng ký cơ bản, cộng đồng nhà phát triển đã xây dựng các giải pháp thay thế. Chúng tôi đã tạo một tập lệnh giúp quản lý đăng ký PayPal: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Tập lệnh này tham chiếu đến [ý chính của cộng đồng](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4) nơi các nhà phát triển chia sẻ giải pháp. Người dùng thực sự được [cảm ơn chúng tôi](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) bảo vệ vì đã cung cấp những gì PayPal đáng lẽ phải xây dựng từ nhiều năm trước.
+Tập lệnh này tham chiếu đến [ý chính của cộng đồng](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4), nơi các nhà phát triển chia sẻ giải pháp. Người dùng thực ra là [cảm ơn chúng tôi](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) vì đã cung cấp những gì PayPal đáng lẽ phải xây dựng từ nhiều năm trước.
 
-## Chặn các mẫu PayPal do lừa đảo {#blocking-paypal-templates-due-to-phishing}
+## Đang chặn các mẫu PayPal do lừa đảo {#blocking-paypal-templates-due-to-phishing}
 
 Vấn đề không chỉ nằm ở API. Các mẫu email của PayPal được thiết kế kém đến mức chúng tôi phải triển khai bộ lọc cụ thể trong dịch vụ email của mình vì chúng không thể phân biệt được với các nỗ lực lừa đảo.
 
-### Vấn đề thực sự: Mẫu của PayPal trông giống như lừa đảo {#the-real-problem-paypals-templates-look-like-scams}
+### Vấn đề thực sự: Các mẫu của PayPal trông giống như lừa đảo {#the-real-problem-paypals-templates-look-like-scams}
 
 Chúng tôi thường xuyên nhận được báo cáo về các email PayPal trông giống hệt các nỗ lực lừa đảo. Dưới đây là một ví dụ thực tế từ các báo cáo lạm dụng của chúng tôi:
 
@@ -481,7 +485,7 @@ Chúng tôi thường xuyên nhận được báo cáo về các email PayPal tr
 
 Email này đã được chuyển tiếp đến `abuse@microsoft.com` vì có vẻ như đây là một nỗ lực lừa đảo. Vấn đề là gì? Thực ra, nó đến từ môi trường sandbox của PayPal, nhưng thiết kế mẫu của họ quá kém đến mức kích hoạt hệ thống phát hiện lừa đảo.
 
-### Việc triển khai của chúng tôi {#our-implementation}
+### Triển khai của chúng tôi {#our-implementation}
 
 Bạn có thể thấy bộ lọc dành riêng cho PayPal của chúng tôi được triển khai trong [mã lọc email](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172):
 
@@ -518,7 +522,7 @@ Chúng tôi thực hiện điều này vì PayPal từ chối khắc phục các
 * **PPC001017** - Xác nhận thanh toán có vấn đề
 * **RT000542** - Nỗ lực hack tin nhắn quà tặng
 
-### Mức độ nghiêm trọng của vấn đề {#the-scale-of-the-problem}
+### Mức độ của vấn đề {#the-scale-of-the-problem}
 
 Nhật ký lọc thư rác của chúng tôi cho thấy khối lượng lớn thư rác hóa đơn PayPal mà chúng tôi xử lý hàng ngày. Ví dụ về các chủ đề bị chặn bao gồm:
 
@@ -533,7 +537,7 @@ Nhật ký kỹ thuật của chúng tôi cho thấy những email rác này ch�
 * `X-Email-Type-Id: RT000238` (cùng ID chúng tôi chặn)
 * `From: "service@paypal.com" <service@paypal.com>`
 * Chữ ký DKIM hợp lệ từ `paypal.com`
-* Bản ghi SPF chính xác hiển thị máy chủ thư của PayPal
+* Bản ghi SPF phù hợp hiển thị máy chủ thư của PayPal
 
 Điều này tạo ra một tình huống không thể xảy ra: cả email PayPal hợp pháp và thư rác đều có đặc điểm kỹ thuật giống hệt nhau.
 
@@ -545,9 +549,9 @@ PayPal, một công ty đáng lẽ phải đi đầu trong cuộc chiến chốn
 
 ### Tác động thực tế: Các vụ lừa đảo PayPal mới {#real-world-impact-novel-paypal-scams}
 
-Vấn đề không chỉ nằm ở thiết kế mẫu kém. Hệ thống hóa đơn của PayPal dễ bị khai thác đến mức kẻ lừa đảo thường xuyên lợi dụng nó để gửi các hóa đơn giả mạo trông có vẻ hợp lệ. Nhà nghiên cứu bảo mật Gavin Anderegg đã ghi nhận [Một trò lừa đảo mới của PayPal](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), trong đó kẻ lừa đảo gửi các hóa đơn PayPal thật vượt qua mọi bước kiểm tra xác thực:
+Vấn đề không chỉ nằm ở thiết kế mẫu kém. Hệ thống hóa đơn của PayPal dễ bị khai thác đến mức kẻ lừa đảo thường xuyên lợi dụng nó để gửi các hóa đơn giả mạo trông có vẻ hợp lệ. Nhà nghiên cứu bảo mật Gavin Anderegg đã ghi nhận trường hợp [Một trò lừa đảo mới của PayPal](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), trong đó kẻ lừa đảo gửi hóa đơn PayPal thật vượt qua mọi bước kiểm tra xác thực:
 
-> "Kiểm tra nguồn gốc, email trông giống như được gửi từ PayPal (SPF, DKIM và DMARC đều vượt qua). Nút này cũng liên kết đến một URL trông giống như của PayPal hợp lệ... Phải mất một giây tôi mới nhận ra đó là email hợp lệ. Tôi vừa nhận được một 'hóa đơn' ngẫu nhiên từ một kẻ lừa đảo."
+> "Kiểm tra nguồn gốc, email trông giống như được gửi từ PayPal (SPF, DKIM và DMARC đều vượt qua). Nút này cũng liên kết đến một URL trông giống như URL PayPal hợp lệ... Phải mất một giây tôi mới nhận ra đó là email hợp lệ. Tôi vừa nhận được một 'hóa đơn' ngẫu nhiên từ một kẻ lừa đảo."
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
@@ -577,9 +581,9 @@ Mọi bộ xử lý thanh toán hợp pháp đều tuân theo trình tự logic 
 3. **Cung cấp quyền truy cập API sản xuất**
 4. **Cho phép thu tiền**
 
-Điều này bảo vệ cả bên xử lý thanh toán và bên bán bằng cách đảm bảo tuân thủ trước khi chuyển tiền.
+Điều này bảo vệ cả bên xử lý thanh toán và bên bán bằng cách đảm bảo tuân thủ trước khi giao dịch.
 
-### Cách thức hoạt động thực tế của PayPal {#how-paypal-actually-works}
+### PayPal thực sự hoạt động như thế nào {#how-paypal-actually-works}
 
 Quy trình của PayPal hoàn toàn ngược lại:
 
@@ -590,7 +594,7 @@ Quy trình của PayPal hoàn toàn ngược lại:
 5. **Không thông báo cho người bán**
 6. **Cho phép khách hàng tự phát hiện sự cố và báo cáo**
 
-### Tác động trong thế giới thực {#the-real-world-impact}
+### Tác động thực tế {#the-real-world-impact}
 
 Quá trình ngược này gây ra thảm họa cho doanh nghiệp:
 
@@ -613,7 +617,7 @@ Cách tiếp cận tuân thủ của PayPal cho thấy sự hiểu lầm cơ b�
 
 Quá trình ngược này là triệu chứng của các vấn đề tổ chức rộng hơn của PayPal: họ ưu tiên các quy trình nội bộ hơn trải nghiệm của người bán và khách hàng, dẫn đến những thảm họa hoạt động khiến doanh nghiệp tránh xa nền tảng của họ.
 
-## Cách thức hoạt động của các bộ xử lý thanh toán khác nhau {#how-every-other-payment-processor-does-it-right}
+## Cách thức hoạt động đúng đắn của từng bộ xử lý thanh toán khác {#how-every-other-payment-processor-does-it-right}
 
 Chức năng liệt kê đăng ký mà PayPal từ chối triển khai đã trở thành tiêu chuẩn trong ngành trong hơn một thập kỷ. Sau đây là cách các bộ xử lý thanh toán khác xử lý yêu cầu cơ bản này:
 
@@ -625,7 +629,7 @@ Stripe đã có danh sách đăng ký kể từ khi API của họ ra mắt. Tà
 
 Paddle cung cấp các API quản lý đăng ký toàn diện, bao gồm danh sách, lọc và phân trang. Họ hiểu rằng các nhà bán hàng cần theo dõi các luồng doanh thu định kỳ của mình.
 
-### Thương mại Coinbase {#coinbase-commerce}
+### Coinbase Commerce {#coinbase-commerce}
 
 Ngay cả các bộ xử lý thanh toán bằng tiền điện tử như Coinbase Commerce cũng cung cấp dịch vụ quản lý đăng ký tốt hơn PayPal.
 
@@ -633,7 +637,7 @@ Ngay cả các bộ xử lý thanh toán bằng tiền điện tử như Coinbas
 
 API của Square bao gồm danh sách đăng ký như một tính năng cơ bản, không phải là tính năng bổ sung.
 
-### Tiêu chuẩn Công nghiệp {#the-industry-standard}
+### Tiêu chuẩn công nghiệp {#the-industry-standard}
 
 Mọi bộ xử lý thanh toán hiện đại đều cung cấp:
 
@@ -715,7 +719,7 @@ Trong một động thái thể hiện hoàn hảo cách tiếp cận của PayP
 
 ### Sự xóa sổ vĩ đại {#the-great-erasure}
 
-Cộng đồng PayPal ban đầu tại `paypal-community.com` có **6.003.558 thành viên** và chứa hàng trăm nghìn bài đăng, báo cáo lỗi, khiếu nại và thảo luận về các lỗi API của PayPal. Điều này đại diện cho hơn một thập kỷ bằng chứng được ghi nhận về các vấn đề mang tính hệ thống của PayPal.
+Cộng đồng PayPal ban đầu tại `paypal-community.com` đã lưu trữ **6.003.558 thành viên** và chứa hàng trăm nghìn bài đăng, báo cáo lỗi, khiếu nại và thảo luận về các lỗi API của PayPal. Điều này đại diện cho hơn một thập kỷ bằng chứng được ghi nhận về các vấn đề mang tính hệ thống của PayPal.
 
 Vào ngày 30 tháng 6 năm 2025, PayPal đã lặng lẽ đưa toàn bộ diễn đàn ngoại tuyến. Tất cả các liên kết `paypal-community.com` hiện trả về lỗi 404. Đây không phải là bản cập nhật hay nâng cấp.
 
@@ -732,7 +736,7 @@ Mô hình che giấu bằng chứng này không phải là mới đối với Pa
 
 Việc gỡ bỏ diễn đàn này là nỗ lực trắng trợn nhất từ trước đến nay nhằm che giấu những thất bại có hệ thống của họ khỏi sự giám sát của công chúng.
 
-## Thảm họa bắt côn trùng kéo dài 11 năm: 1.899 đô la và vẫn tiếp tục tăng {#the-11-year-capture-bug-disaster-1899-and-counting}
+## Thảm họa bắt bọ kéo dài 11 năm: 1.899 đô la và vẫn tiếp tục tăng {#the-11-year-capture-bug-disaster-1899-and-counting}
 
 Trong khi PayPal bận rộn tổ chức các buổi phản hồi và đưa ra lời hứa, hệ thống xử lý thanh toán cốt lõi của họ đã bị hỏng hoàn toàn trong hơn 11 năm. Bằng chứng thật tàn khốc.
 
@@ -740,7 +744,7 @@ Trong khi PayPal bận rộn tổ chức các buổi phản hồi và đưa ra l
 
 Trong hệ thống sản xuất của chúng tôi, chúng tôi đã phát hiện 108 khoản thanh toán PayPal với tổng giá trị **$1.899** bị mất do lỗi xử lý của PayPal. Các khoản thanh toán này cho thấy một mô hình nhất quán:
 
-* `CHECKOUT.ORDER.APPROVED` webhooks đã được nhận
+* Đã nhận được `CHECKOUT.ORDER.APPROVED` webhooks
 * API thu thập của PayPal trả về lỗi 404
 * Không thể truy cập đơn hàng thông qua API của PayPal
 
@@ -752,7 +756,7 @@ Con số này chỉ đại diện cho một doanh nghiệp. **Tổng thiệt h�
 
 Lý do duy nhất khiến chúng tôi phát hiện ra điều này là vì chúng tôi cực kỳ tỉ mỉ và dựa trên dữ liệu.
 
-### Báo cáo gốc năm 2013: Hơn 11 năm bỏ bê {#the-2013-original-report-11-years-of-negligence}
+### Báo cáo gốc năm 2013: Hơn 11 năm bất cẩn {#the-2013-original-report-11-years-of-negligence}
 
 Báo cáo được ghi chép sớm nhất về vấn đề này xuất hiện trên [Stack Overflow vào tháng 11 năm 2013](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([đã lưu trữ](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)):
 
@@ -775,9 +779,9 @@ Phản ứng của cộng đồng vào năm 2013 cho thấy:
 
 **Hơn 11 năm sau, họ vẫn đang "xử lý vấn đề đó".**
 
-### Bản thừa nhận năm 2016: PayPal phá vỡ SDK của chính họ {#the-2016-admission-paypal-breaks-their-own-sdk}
+### Bản ghi nhớ năm 2016: PayPal phá vỡ SDK của chính họ {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-Năm 2016, kho lưu trữ GitHub của PayPal đã ghi nhận [thất bại bắt giữ hàng loạt](https://github.com/paypal/PayPal-PHP-SDK/issues/660) ảnh hưởng đến SDK PHP chính thức của họ. Quy mô thật đáng kinh ngạc:
+Năm 2016, kho lưu trữ GitHub của PayPal đã ghi nhận lỗi [thất bại bắt giữ hàng loạt](https://github.com/paypal/PayPal-PHP-SDK/issues/660) ảnh hưởng đến SDK PHP chính thức của họ. Quy mô của lỗi này thật đáng kinh ngạc:
 
 > "Kể từ ngày 20/9/2016, tất cả các nỗ lực thu thập thông tin PayPal đều không thành công với lỗi 'INVALID_RESOURCE_ID - Không tìm thấy ID tài nguyên được yêu cầu.'. Không có thay đổi nào trong quá trình tích hợp API từ ngày 19/9 đến ngày 20/9. **100% các nỗ lực thu thập thông tin kể từ ngày 20/9 đều trả về lỗi này.**"
 
@@ -802,7 +806,7 @@ Ngay cả sau khi "sửa" được vấn đề, các thương gia vẫn báo cá
 
 ### Sự leo thang năm 2024: Vẫn chưa hoàn thành {#the-2024-escalation-still-broken}
 
-Các báo cáo gần đây từ Cộng đồng PayPal được bảo tồn cho thấy vấn đề thực sự đã trở nên nghiêm trọng hơn. Một [Thảo luận tháng 9 năm 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([đã lưu trữ](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) ghi lại chính xác những vấn đề tương tự:
+Các báo cáo gần đây từ Cộng đồng PayPal được bảo tồn cho thấy vấn đề thực sự đã trở nên nghiêm trọng hơn. [Thảo luận tháng 9 năm 2024](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([đã lưu trữ](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) ghi lại chính xác những vấn đề tương tự:
 
 > "Vấn đề này chỉ mới bắt đầu xuất hiện khoảng 2 tuần trước và không ảnh hưởng đến tất cả các đơn hàng. **Lỗi phổ biến hơn có vẻ là lỗi 404 khi chụp.**"
 
@@ -812,7 +816,7 @@ Người bán hàng mô tả cùng một mô hình mà Forward Email đã trải
 
 ### Thảm họa về độ tin cậy của Webhook {#the-webhook-reliability-disaster}
 
-Một [thảo luận cộng đồng được bảo tồn](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) khác tiết lộ hệ thống webhook của PayPal về cơ bản là không đáng tin cậy:
+Một [thảo luận cộng đồng được bảo tồn](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) khác cho thấy hệ thống webhook của PayPal về cơ bản là không đáng tin cậy:
 
 > "Về mặt lý thuyết, sự kiện Webhook phải có hai sự kiện (CHECKOUT.ORDER.APPROVED và PAYMENT.CAPTURE.COMPLETED). Trên thực tế, **hai sự kiện này hiếm khi được nhận ngay lập tức, PAYMENT.CAPTURE.COMPLETED hầu như không thể nhận được hoặc sẽ được nhận trong vài giờ.**"
 
@@ -840,7 +844,7 @@ Bằng chứng kéo dài hơn 11 năm và cho thấy một mô hình rõ ràng:
 2. **Thực hiện các thay đổi không được ghi chép rõ ràng**
 3. **Cung cấp các bản sửa lỗi không đầy đủ và không hiệu quả**
 4. **Bỏ qua tác động tài chính đối với doanh nghiệp**
-5. **Ẩn bằng chứng bằng cách gỡ bỏ các diễn đàn cộng đồng**
+5. **Ẩn bằng chứng bằng cách xóa bỏ các diễn đàn cộng đồng**
 
 ### Yêu cầu không có tài liệu {#the-undocumented-requirement}
 
@@ -859,15 +863,15 @@ Không có chỗ nào trong tài liệu chính thức của PayPal đề cập �
 
 Thảm họa bắt lỗi chỉ là một ví dụ về cách tiếp cận có hệ thống của PayPal nhằm lừa dối khách hàng và che giấu những thất bại của họ.
 
-### Cơ quan Hành động của Sở Dịch vụ Tài chính New York {#the-new-york-department-of-financial-services-action}
+### Hành động của Sở Dịch vụ Tài chính New York {#the-new-york-department-of-financial-services-action}
 
-Vào tháng 1 năm 2025, Sở Dịch vụ Tài chính New York đã ban hành lệnh [hành động thực thi chống lại PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) về các hành vi lừa đảo, chứng minh rằng mô hình lừa đảo của PayPal không chỉ giới hạn ở API của họ.
+Vào tháng 1 năm 2025, Sở Dịch vụ Tài chính New York đã ban hành [hành động thực thi chống lại PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf) về các hành vi lừa đảo, chứng minh rằng mô hình lừa đảo của PayPal không chỉ giới hạn ở API của họ.
 
 Hành động quản lý này cho thấy PayPal sẵn sàng thực hiện các hành vi lừa đảo trên toàn bộ doanh nghiệp của họ, không chỉ riêng các công cụ dành cho nhà phát triển.
 
-### Vụ kiện Honey: Viết lại liên kết liên kết {#the-honey-lawsuit-rewriting-affiliate-links}
+### Vụ kiện Honey: Viết lại các liên kết liên kết {#the-honey-lawsuit-rewriting-affiliate-links}
 
-Việc PayPal mua lại Honey đã dẫn đến việc [các vụ kiện cáo buộc Honey viết lại các liên kết liên kết](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer) đánh cắp hoa hồng từ các nhà sáng tạo nội dung và người có sức ảnh hưởng. Đây là một hình thức lừa đảo có hệ thống khác, trong đó PayPal kiếm lời bằng cách chuyển hướng doanh thu đáng lẽ phải thuộc về người khác.
+Việc PayPal mua lại Honey đã dẫn đến [các vụ kiện cáo buộc Honey viết lại các liên kết liên kết](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer), đánh cắp hoa hồng từ các nhà sáng tạo nội dung và người có sức ảnh hưởng. Đây là một hình thức lừa đảo có hệ thống khác, trong đó PayPal kiếm lời bằng cách chuyển hướng doanh thu đáng lẽ phải thuộc về người khác.
 
 Mô hình này rất rõ ràng:
 
@@ -887,7 +891,7 @@ Khoản lỗ 1.899 đô la của Forward Email chỉ là phần nổi của tả
 
 Nếu một dịch vụ email nhỏ mất gần 2.000 đô la và vấn đề này đã tồn tại trong hơn 11 năm, ảnh hưởng đến hàng nghìn thương gia, thì tổng thiệt hại tài chính có thể lên tới **hàng trăm triệu đô la**.
 
-### Tài liệu nói dối {#the-documentation-lie}
+### Tài liệu nằm {#the-documentation-lie}
 
 Tài liệu chính thức của PayPal thường không đề cập đến những hạn chế và lỗi quan trọng mà người bán sẽ gặp phải. Ví dụ:
 
@@ -898,7 +902,7 @@ Tài liệu chính thức của PayPal thường không đề cập đến nhữ
 
 Việc bỏ sót thông tin quan trọng một cách có hệ thống này buộc các thương gia phải khám phá ra những hạn chế của PayPal thông qua quá trình thử nghiệm trong hệ thống sản xuất, thường dẫn đến tổn thất tài chính.
 
-## Điều này có ý nghĩa gì đối với các nhà phát triển {#what-this-means-for-developers}
+## Điều này có ý nghĩa gì đối với nhà phát triển {#what-this-means-for-developers}
 
 Việc PayPal không đáp ứng được nhu cầu cơ bản của nhà phát triển một cách có hệ thống trong khi vẫn thu thập phản hồi rộng rãi cho thấy một vấn đề cốt lõi trong tổ chức. Họ coi việc thu thập phản hồi như một giải pháp thay thế cho việc thực sự khắc phục sự cố.
 
@@ -915,7 +919,7 @@ Mô hình này rất rõ ràng:
 
 Trong khi đó, các nhà phát triển buộc phải xây dựng các giải pháp thay thế, đánh đổi bảo mật và xử lý giao diện người dùng bị hỏng chỉ để chấp nhận thanh toán.
 
-Nếu bạn đang xây dựng một hệ thống thanh toán, hãy học hỏi từ kinh nghiệm của chúng tôi: hãy xây dựng [cách tiếp cận ba bên](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) của bạn với nhiều bộ xử lý, nhưng đừng mong đợi PayPal cung cấp các chức năng cơ bản bạn cần. Hãy lên kế hoạch xây dựng các giải pháp thay thế ngay từ ngày đầu.
+Nếu bạn đang xây dựng một hệ thống thanh toán, hãy học hỏi từ kinh nghiệm của chúng tôi: xây dựng [cách tiếp cận ba bên](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) với nhiều bộ xử lý, nhưng đừng mong đợi PayPal cung cấp các chức năng cơ bản bạn cần. Hãy lên kế hoạch xây dựng các giải pháp thay thế ngay từ ngày đầu.
 
 > Bài viết này ghi lại 11 năm kinh nghiệm của chúng tôi với API PayPal tại Forward Email. Tất cả các ví dụ mã và liên kết đều được lấy từ hệ thống sản xuất thực tế của chúng tôi. Chúng tôi vẫn tiếp tục hỗ trợ thanh toán PayPal bất chấp những vấn đề này vì một số khách hàng không có lựa chọn nào khác.
 

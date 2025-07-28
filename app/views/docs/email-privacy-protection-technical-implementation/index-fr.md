@@ -6,7 +6,7 @@
 
 * [Avant-propos](#foreword)
 * [Qu'est-ce que la redirection d'e-mails](#what-is-email-forwarding)
-* [Fonctionnement de la redirection d'e-mails : explication technique](#how-email-forwarding-works-the-technical-explanation)
+* [Fonctionnement du transfert d'e-mails : explication technique](#how-email-forwarding-works-the-technical-explanation)
   * [Le processus de transfert des e-mails](#the-email-forwarding-process)
   * [Le rôle du SRS (Sender Rewriting Scheme)](#the-role-of-srs-sender-rewriting-scheme)
 * [Comment fonctionne la redirection d'e-mails : une explication simple](#how-email-forwarding-works-the-simple-explanation)
@@ -62,7 +62,7 @@ Cette capacité apparemment simple offre de puissants avantages :
 
 Pour ceux qui s'intéressent aux détails techniques, explorons ce qui se passe dans les coulisses lorsqu'un e-mail est transféré.
 
-### Le processus de transfert d'e-mails {#the-email-forwarding-process}
+### Le processus de transfert des e-mails {#the-email-forwarding-process}
 
 1. **Configuration DNS** : Le processus commence par les enregistrements DNS de votre domaine. Lorsque vous configurez la redirection d'e-mails, vous configurez des enregistrements MX (Mail Exchange) qui indiquent à Internet où les e-mails de votre domaine doivent être distribués. Ces enregistrements pointent vers nos serveurs de messagerie.
 
@@ -99,7 +99,7 @@ Avec le transfert d'e-mail :
 
 C'est aussi simple que ça ! Vous pouvez utiliser des adresses e-mail professionnelles sans modifier votre flux de messagerie actuel.
 
-## Configuration du transfert d'e-mails avec Forward Email {#setting-up-email-forwarding-with-forward-email}
+## Configuration du transfert d'e-mails avec le transfert d'e-mails {#setting-up-email-forwarding-with-forward-email}
 
 L'un des principaux avantages de la fonction de transfert d'e-mails est sa simplicité de configuration. Voici un guide étape par étape :
 
@@ -118,7 +118,7 @@ Nous vous fournirons les enregistrements DNS exacts à ajouter à votre domaine.
 * Ajout d'enregistrements MX pointant vers nos serveurs de messagerie
 * Ajout d'enregistrements TXT à des fins de vérification et de sécurité
 
-La plupart des bureaux d'enregistrement de domaines proposent une interface simple pour ajouter ces enregistrements. Nous fournissons des guides détaillés pour tous les principaux bureaux d'enregistrement de domaines afin de simplifier ce processus.
+La plupart des bureaux d'enregistrement de noms de domaine proposent une interface simple pour ajouter ces enregistrements. Nous fournissons des guides détaillés pour tous les principaux bureaux d'enregistrement de noms de domaine afin de simplifier ce processus.
 
 ### 4. Créer des transferts d'e-mails {#4-create-email-forwards}
 
@@ -143,19 +143,19 @@ Créez des adresses e-mail spécifiques ou anonymes qui redirigent vers votre co
 
 Transférez une même adresse à plusieurs destinataires pour faciliter le partage d'informations au sein de votre équipe. Vous pouvez également utiliser des adresses génériques (transfert universel) pour recevoir les e-mails envoyés à n'importe quelle adresse de votre domaine.
 
-Intégration ### « Envoyer le courrier en tant que » {#send-mail-as-integration}
+Intégration ### « Envoyer un e-mail en tant que » {#send-mail-as-integration}
 
 Vous n'aurez plus besoin de quitter votre boîte de réception pour envoyer des e-mails depuis votre domaine personnalisé. Envoyez et répondez aux messages comme s'ils provenaient de <vous@votredomaine.com>, directement depuis votre compte Gmail ou Outlook.
 
-### Sécurité résistante aux attaques quantiques {#quantum-resistant-security}
+### Sécurité résistante aux quanta {#quantum-resistant-security}
 
 Nous sommes le premier et le seul service de messagerie électronique au monde à utiliser un cryptage résistant aux quanta, protégeant vos communications contre les menaces futures les plus avancées.
 
 ### Boîtes aux lettres SQLite chiffrées individuellement {#individually-encrypted-sqlite-mailboxes}
 
-Contrairement à d'autres fournisseurs qui stockent tous les e-mails des utilisateurs dans des bases de données partagées, nous utilisons des boîtes aux lettres SQLite cryptées individuellement pour une confidentialité et une sécurité inégalées.
+Contrairement à d’autres fournisseurs qui stockent tous les e-mails des utilisateurs dans des bases de données partagées, nous utilisons des boîtes aux lettres SQLite cryptées individuellement pour une confidentialité et une sécurité inégalées.
 
-## Pourquoi choisir Forward Email plutôt que vos concurrents ? {#why-choose-forward-email-over-competitors}
+## Pourquoi choisir Forward Email plutôt que les concurrents ? {#why-choose-forward-email-over-competitors}
 
 Le marché de la redirection d'e-mails compte plusieurs acteurs, mais Forward Email se démarque de plusieurs manières importantes :
 
@@ -167,7 +167,7 @@ Nous sommes le seul service de transfert d'e-mails entièrement open source, y c
 
 Nous avons créé ce service car vous avez droit à la confidentialité. Nous utilisons un chiffrement robuste avec TLS, ne conservons pas les journaux SMTP (sauf pour les erreurs et les messages SMTP sortants) et n'enregistrons pas vos e-mails sur disque dur.
 
-### 3. Aucune confiance envers des tiers {#3-no-third-party-reliance}
+### 3. Aucune dépendance à un tiers {#3-no-third-party-reliance}
 
 Contrairement à nos concurrents qui s'appuient sur Amazon SES ou d'autres services tiers, nous conservons un contrôle total sur notre infrastructure, améliorant ainsi à la fois la fiabilité et la confidentialité.
 
@@ -183,7 +183,7 @@ Nous n'imposons pas de limites artificielles aux domaines, aux alias ou aux adre
 
 Notre service est utilisé par plus de 500 000 domaines, y compris des organisations notables comme [L'Académie navale américaine](/blog/docs/federal-government-email-service-section-889-compliant), Netflix, [La Fondation Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Disney Ad Sales et bien d'autres.
 
-## Cas d'utilisation courants pour la redirection d'e-mails {#common-use-cases-for-email-forwarding}
+## Cas d'utilisation courants pour le transfert d'e-mails {#common-use-cases-for-email-forwarding}
 
 La redirection de courrier électronique résout de nombreux problèmes pour différents types d’utilisateurs :
 
@@ -191,7 +191,7 @@ La redirection de courrier électronique résout de nombreux problèmes pour dif
 
 * Créez des adresses e-mail professionnelles pour différents services (ventes@, support@, info@)
 * Gérez facilement les communications par e-mail de votre équipe
-* Maintenez la cohérence de votre marque dans toutes vos communications
+* Préservez la cohérence de votre marque dans toutes vos communications
 * Simplifiez la gestion des e-mails lors des changements de personnel
 
 ### Pour les développeurs {#for-developers}
@@ -208,7 +208,7 @@ La redirection de courrier électronique résout de nombreux problèmes pour dif
 * Préservez votre confidentialité en protégeant votre adresse e-mail principale.
 * Désactivez facilement les adresses qui commencent à recevoir du spam.
 
-## Meilleures pratiques pour la redirection des e-mails {#best-practices-for-email-forwarding}
+## Meilleures pratiques pour le transfert d'e-mails {#best-practices-for-email-forwarding}
 
 Pour tirer le meilleur parti du transfert d’e-mails, tenez compte de ces bonnes pratiques :
 
@@ -228,11 +228,11 @@ Vérifiez régulièrement vos transferts d'e-mails pour désactiver ceux qui ne 
 
 Configurez votre client de messagerie principal pour envoyer des e-mails en tant qu'adresses de domaine personnalisées pour une expérience cohérente lors de la réponse aux e-mails transférés.
 
-### 5. Utilisez les adresses fourre-tout avec prudence {#5-use-catch-all-addresses-cautiously}
+### 5. Utilisez les adresses fourre-tout avec précaution {#5-use-catch-all-addresses-cautiously}
 
 Bien que les adresses fourre-tout soient pratiques, elles peuvent potentiellement recevoir davantage de spam. Pensez à créer des redirections spécifiques pour les communications importantes.
 
-Conclusion
+## Conclusion {#conclusion}
 
 La redirection d'e-mails est un outil puissant qui apporte professionnalisme, confidentialité et simplicité à vos communications par e-mail. Avec Forward Email, vous bénéficiez du service de redirection d'e-mails le plus sécurisé, privé et flexible du marché.
 
@@ -240,7 +240,7 @@ En tant que seul fournisseur 100 % open source doté d'un cryptage résistant au
 
 Que vous cherchiez à créer des adresses e-mail professionnelles pour votre entreprise, à protéger votre vie privée avec des adresses jetables ou à simplifier la gestion de plusieurs comptes de messagerie, Forward Email fournit la solution parfaite.
 
-Prêt à transformer votre expérience de messagerie ? [Inscrivez-vous gratuitement](https://forwardemail.net) aujourd'hui et rejoignez plus de 500 000 domaines qui bénéficient déjà de notre service.
+Prêt à transformer votre expérience de messagerie ? Inscrivez-vous dès aujourd'hui et rejoignez plus de 500 000 domaines qui bénéficient déjà de notre service.
 
 ---
 

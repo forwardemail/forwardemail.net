@@ -14,11 +14,11 @@
 
 Forward Email on ainoa täysin avoimen lähdekoodin sähköpostipalvelu, joka keskittyy turvallisuuteen ja yksityisyyteen. Lue lisää historiastamme osoitteessa [Tietoja-sivumme](/about).
 
-Palvelumme perustettiin vuonna 2017, ja se tarjoaa sähköpostia yli 500 000 verkkotunnukselle – mukaan lukien merkittävät käyttäjät, kuten [Yhdysvaltain laivastoakatemia](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux-säätiö](/blog/docs/linux-foundation-email-enterprise-case-study), [useita yliopistoja](/blog/docs/alumni-email-forwarding-university-case-study) sekä valtiot ja paljon muuta.
+Palvelumme perustettiin vuonna 2017, ja se tarjoaa sähköpostia yli 500 000 verkkotunnukselle – mukaan lukien merkittäviä käyttäjiä, kuten [Yhdysvaltain laivastoakatemia](/blog/docs/federal-government-email-service-section-889-compliant), [Kanoninen/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux-säätiö](/blog/docs/linux-foundation-email-enterprise-case-study), [useita yliopistoja](/blog/docs/alumni-email-forwarding-university-case-study) sekä valtioille ja muille.
 
-Tavoitteenamme on olla yritystason sähköposti- ja tietoturvainfrastruktuurialusta – ja noudatamme [useita periaatteita](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles) -standardia.
+Tavoitteenamme on olla yritystason sähköposti- ja tietoturvainfrastruktuurialusta – ja noudatamme [useita periaatteita](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles)-periaatetta.
 
-Jos olet lehdistön jäsen, toimittaja tai median edustaja ja haluat keskustella kanssamme, esittää kysymyksiä tai oppia lisää, ota meihin yhteyttä osoitteessa `press@forwardemail.net`.
+Jos olet lehdistön jäsen, toimittaja tai median edustaja ja haluat keskustella kanssamme, esittää kysymyksiä tai saada lisätietoja, ota meihin yhteyttä osoitteessa `press@forwardemail.net`.
 
 ## Fontit {#fonts}
 

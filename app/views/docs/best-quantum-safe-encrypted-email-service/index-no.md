@@ -25,7 +25,7 @@
 ## Forord {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> E-posttjenesten vår er [100 % åpen kildekode](https://github.com/forwardemail) og personvernfokusert gjennom sikre og krypterte SQLite-postbokser.
 
 Inntil vi lanserte [IMAP-støtte](/faq#do-you-support-receiving-email-with-imap), brukte vi MongoDB for våre behov for vedvarende datalagring.
 
@@ -35,7 +35,7 @@ Teamet vårt hos [Videresend e-post](https://forwardemail.net) trengte en utvikl
 
 I stedet for å bruke en delt database til å lagre postkassene dine, lagrer og krypterer vi postkassene dine individuelt med passordet ditt (som bare du har). **E-posttjenesten vår er så sikker at hvis du glemmer passordet ditt, mister du postkassen din** (og må gjenopprette med offline sikkerhetskopier eller starte på nytt).
 
-Fortsett å lese mens vi tar et dykk i dybden nedenfor med [sammenligning av e-postleverandører](#email-service-provider-comparison), [hvordan tjenesten vår fungerer](#how-does-it-work), [vår teknologistabel](#technologies) og mer.
+Fortsett å lese mens vi dykker dypt ned nedenfor med [sammenligning av e-postleverandører](#email-service-provider-comparison), [hvordan tjenesten vår fungerer](#how-does-it-work), [vår teknologistabel](#technologies) og mer.
 
 ## Sammenligning av e-postleverandører {#email-service-provider-comparison}
 
@@ -47,14 +47,14 @@ Vi er den eneste e-postleverandøren med 100 % åpen kildekode og personvernfoku
 
 ## Hvordan fungerer det {#how-does-it-work}
 
-1. Ved å bruke e-postklienten din, for eksempel Apple Mail, Thunderbird, Gmail eller Outlook, kobler du deg til våre sikre [IMAP](/faq#do-you-support-receiving-email-with-imap)-servere med brukernavn og passord:
+1. Ved å bruke e-postklienten din, for eksempel Apple Mail, Thunderbird, Gmail eller Outlook, kobler du deg til våre sikre [IMAP](/faq#do-you-support-receiving-email-with-imap)-servere med brukernavnet og passordet ditt:
 
-* Brukernavnet ditt er ditt fulle alias med domenet ditt, for eksempel `hello@example.com`.
+* Brukernavnet ditt er ditt fulle aliaset med domenet ditt, for eksempel `hello@example.com`.
 * Passordet ditt genereres tilfeldig og vises bare i 30 sekunder når du klikker på <strong class="text-success"><i class="fa fa-key"></i> Generer passord</strong> fra <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domener</a> <i class="fa fa-angle-right"></i> Aliaser.
 
-2. Når du er koblet til, vil e-postklienten din sende [IMAP-protokollkommandoer](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) til IMAP-serveren vår for å holde innboksen din synkronisert. Dette inkluderer å skrive og lagre utkast til e-post og andre handlinger du kan gjøre (f.eks. merke en e-post som viktig eller flagge en e-post som spam/søppelpost).
+2. Når den er koblet til, sender e-postklienten din [IMAP-protokollkommandoer](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) til IMAP-serveren vår for å holde postkassen din synkronisert. Dette inkluderer å skrive og lagre utkast til e-poster og andre handlinger du kan gjøre (f.eks. merke en e-post som viktig eller flagge en e-post som spam/søppelpost).
 
-3. E-postutvekslingsservere (vanligvis kjent som «MX»-servere) mottar ny innkommende e-post og lagrer den i postkassen din. Når dette skjer, vil e-postklienten din bli varslet og synkronisere postkassen din. Våre e-postutvekslingsservere kan videresende e-posten din til én eller flere mottakere (inkludert [webhooks](/faq#do-you-support-webhooks)), lagre e-posten din for deg i din krypterte IMAP-lagring hos oss, **eller begge deler**!
+3. E-postutvekslingsservere (vanligvis kjent som «MX»-servere) mottar ny innkommende e-post og lagrer den i postkassen din. Når dette skjer, vil e-postklienten din bli varslet og synkronisere postkassen din. Våre e-postutvekslingsservere kan videresende e-posten din til én eller flere mottakere (inkludert [netthooks](/faq#do-you-support-webhooks)), lagre e-posten din for deg i din krypterte IMAP-lagring hos oss, **eller begge deler**!
 
 > \[!TIP]
 > Interessert i å lære mer? Les [hvordan sette opp videresending av e-post](/faq#how-do-i-get-started-and-set-up-email-forwarding), [hvordan postutvekslingstjenesten vår fungerer](/faq#how-does-your-email-forwarding-system-work), eller se [våre guider](/guides).
@@ -88,7 +88,7 @@ Vi er den eneste e-postleverandøren med 100 % åpen kildekode og personvernfoku
          IMAP->>You: Success!
      ```
 
-5. [Sikkerhetskopier av dine krypterte postkasser](#backups) lages daglig. Du kan også be om en ny sikkerhetskopi når som helst, eller laste ned den nyeste sikkerhetskopien fra <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Mine konto <i class="fa fa-angle-right"></i> Domener</a> <i class="fa fa-angle-right"></i> Aliaser. Hvis du bestemmer deg for å bytte til en annen e-posttjeneste, kan du enkelt migrere, laste ned, eksportere og slette postkassene og sikkerhetskopiene dine når som helst.
+5. [Sikkerhetskopier av dine krypterte postkasser](#backups) lages daglig. Du kan også be om en ny sikkerhetskopi når som helst, eller laste ned den nyeste sikkerhetskopien fra <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Min konto <i class="fa fa-angle-right"></i> Domener</a> <i class="fa fa-angle-right"></i> Aliaser. Hvis du bestemmer deg for å bytte til en annen e-posttjeneste, kan du enkelt migrere, laste ned, eksportere og slette postkassene og sikkerhetskopiene dine når som helst.
 
 ## Teknologier {#technologies}
 
@@ -122,9 +122,9 @@ Målet vårt er å ha så få [enkeltstående feilpunkt](https://en.wikipedia.or
 
 [SQLite er ekstremt populært](https://www.sqlite.org/mostdeployed.html) innebygd database – den kjører for øyeblikket på telefonen og datamaskinen din – [og brukes av nesten alle større teknologier](https://www.sqlite.org/famous.html).
 
-For eksempel, på våre krypterte servere finnes det en SQLite-databasepostkasse for `linux@example.com`, `info@example.com`, `hello@example.com` og så videre – én for hver som en `.sqlite` databasefil. Vi navngir heller ikke databasefilene med e-postadressen – i stedet bruker vi BSON ObjectID og unike genererte UUID-er som ikke deler hvem postkassen tilhører eller hvilken e-postadresse den er under (f.eks. `353a03f21e534321f5d6e267.sqlite`).
+For eksempel, på våre krypterte servere finnes det en SQLite-databasepostkasse for `linux@example.com`, `info@example.com`, `hello@example.com` og så videre – én for hver som en `.sqlite`-databasefil. Vi navngir heller ikke databasefilene med e-postadressen – i stedet bruker vi BSON ObjectID og unike genererte UUID-er som ikke deler hvem postkassen tilhører eller hvilken e-postadresse den er under (f.eks. `353a03f21e534321f5d6e267.sqlite`).
 
-Hver av disse databasene er kryptert med passordet ditt (som bare du har) ved hjelp av [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Dette betyr at postkassene dine er individuelt krypterte, selvstendige, [sandkasse](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) og bærbare.
+Hver av disse databasene er kryptert med passordet ditt (som bare du har) ved hjelp av [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Dette betyr at postboksene dine er individuelt krypterte, selvstendige, [sandkasse](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) og bærbare.
 
 Vi har finjustert SQLite med følgende [PRAGMA](https://www.sqlite.org/pragma.html):
 
@@ -152,18 +152,18 @@ Uansett hvilken IMAP-server e-postklienten din kobler seg til, ønsker vi at til
 
 #### Skriver {#writes}
 
-Å skrive til databasen din er litt annerledes – siden SQLite er en innebygd database og postkassen din som standard ligger i én enkelt fil.
+Å skrive til databasen din er litt annerledes – siden SQLite er en innebygd database og postkassen din ligger i én enkelt fil som standard.
 
 Vi hadde utforsket alternativer som `litestream`, `rqlite` og `dqlite` nedenfor – men ingen av disse oppfylte kravene våre.
 
-For å utføre skrivinger med write-ahead-logging ("[WAL](https://www.sqlite.org/wal.html)") aktivert – må vi sørge for at bare én server ("Primær") er ansvarlig for å gjøre det. [WAL](https://www.sqlite.org/wal.html) øker samtidighet drastisk og tillater én skribent og flere lesere.
+For å utføre skrivinger med write-ahead-logging ("[WAL](https://www.sqlite.org/wal.html)") aktivert, må vi sørge for at bare én server ("Primær") er ansvarlig for å gjøre det. [WAL](https://www.sqlite.org/wal.html) øker samtidighet drastisk og tillater én skriver og flere lesere.
 
 Primærserveren kjører på dataserverne med de monterte volumene som inneholder de krypterte postboksene. Fra et distribusjonssynspunkt kan du anse alle de individuelle IMAP-serverne bak `imap.forwardemail.net` som sekundære servere ("Sekundær").
 
 Vi oppnår toveiskommunikasjon med [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
-* Primærservere bruker en instans av [ws](https://github.com/websockets/ws) sin `WebSocketServer`-server.
-* Sekundærservere bruker en instans av [ws](https://github.com/websockets/ws) sin `WebSocket`-klient som er pakket inn med [websocket-som-lovet](https://github.com/vitalets/websocket-as-promised) og [reconnecting-websocket](https://github.com/opensumi/reconnecting-websocket). Disse to wrapperne sikrer at `WebSocket` kobler seg til på nytt og kan sende og motta data for spesifikke databaseskrivinger.
+* Primære servere bruker en instans av [ws](https://github.com/websockets/ws)s `WebSocketServer`-server.
+* Sekundære servere bruker en instans av [ws](https://github.com/websockets/ws)s `WebSocket`-klient som er pakket inn med [websocket-som-lovet](https://github.com/vitalets/websocket-as-promised) og [koble til websocket på nytt](https://github.com/opensumi/reconnecting-websocket). Disse to wrapperne sikrer at `WebSocket` kobler seg til på nytt og kan sende og motta data for spesifikke databaseskrivinger.
 
 ### Sikkerhetskopier {#backups}
 
@@ -173,14 +173,14 @@ For sikkerhetskopier kjører vi ganske enkelt SQLite `VACUUM INTO`-kommandoen hv
 
 Merk at vi bruker `VACUUM INTO`-kommandoen i motsetning til den innebygde `backup`-kommandoen, fordi hvis en side endres under en `backup`-kommandooperasjon, må den starte på nytt. `VACUUM INTO`-kommandoen tar et øyeblikksbilde. Se disse kommentarene om [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) og [Hackernyheter](https://news.ycombinator.com/item?id=31387556) for mer innsikt.
 
-I tillegg bruker vi `VACUUM INTO` i motsetning til `backup`, fordi `backup`-kommandoen ville la databasen være ukryptert i en kort periode inntil `rekey` kalles (se denne GitHub [kommentar](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) for innsikt).
+I tillegg bruker vi `VACUUM INTO` i motsetning til `backup`, fordi `backup`-kommandoen ville la databasen være ukryptert i en kort periode inntil `rekey` kalles (se GitHub [kommentar](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) for innsikt).
 
 Sekundæren vil instruere primæren via `WebSocket`-tilkoblingen om å utføre sikkerhetskopieringen – og primæren vil deretter motta kommandoen om å gjøre det og vil deretter:
 
 1. Koble til den krypterte postkassen din.
 2. Skaff deg en skrivelås.
 3. Kjør et WAL-sjekkpunkt via `wal_checkpoint(PASSIVE)`.
-4. Kjør `VACUUM INTO` SQLite-kommandoen.
+4. Kjør SQLite-kommandoen `VACUUM INTO`.
 5. Sørg for at den kopierte filen kan åpnes med det krypterte passordet (safeguard/dummyproofing).
 6. Last den opp til Cloudflare R2 for lagring (eller din egen leverandør hvis spesifisert).
 
@@ -246,8 +246,8 @@ Her er en tabell som viser prosjekter vi bruker i kildekoden og utviklingsproses
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | DNS-leverandør, helsesjekker, lastfordelere og sikkerhetskopiering av lagring ved hjelp av [Cloudflare R2](https://developers.cloudflare.com/r2). |
 | [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikert serverhosting og administrerte databaser. |
-| [Vultr](https://www.vultr.com/?ref=7429848) | Dedikert server hosting. |
-| [DataPacket](https://www.datapacket.com) | Dedikert server hosting. |
+| [Vultr](https://www.vultr.com/?ref=7429848) | Dedikert serverhosting. |
+| [DataPacket](https://www.datapacket.com) | Dedikert serverhosting. |
 
 ## Tanker {#thoughts}
 
@@ -257,9 +257,8 @@ Videresendt e-post er utformet i henhold til disse prinsippene:
 
 1. Vær alltid utviklervennlig, sikkerhets- og personvernfokusert og transparent.
 
-2. Følg [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Tolv faktor](https://12factor.net/), [Occams barberhøvel](https://en.wikipedia.org/wiki/Occam%27s_razor) og [dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)
-
-3. Rett deg mot utviklere med dårlige funksjoner, bootstrappede funksjoner og [ramen-lønnsom](http://www.paulgraham.com/ramenprofitable.html)
+2. Følg [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Tolv faktor](https://12factor.net/), [Occams barberhøvel](https://en.wikipedia.org/wiki/Occam%27s_razor) og [dogfooding](https://en.wikipedia.org/wiki/Eating_your_own_dog_food).
+3. Rett deg mot utviklere med dårlige funksjoner, bootstrapp-utviklere og [ramen-lønnsom](http://www.paulgraham.com/ramenprofitable.html)-utviklere.
 
 ### Eksperimenter {#experiments}
 
@@ -269,38 +268,41 @@ Vi har gjort noen eksperimenter som har ført opp til vår endelige SQLite-løsn
 
 En av disse var å prøve å bruke [rclone]() og SQLite sammen med et S3-kompatibelt lagringslag.
 
-Det eksperimentet førte oss til bedre forståelse og avdekking av kanttilfeller rundt bruk av rclone, SQLite og [VFS](https://en.wikipedia.org/wiki/Virtual_file_system):
+Dette eksperimentet førte til at vi bedre forsto og oppdaget kanttilfeller rundt bruk av rclone, SQLite og [VFS](https://en.wikipedia.org/wiki/Virtual_file_system):
 
-* Hvis du aktiverer flagget `--vfs-cache-mode writes` med rclone, vil lesingen gå bra, men skrivingen vil bli mellomlagret.
+* Hvis du aktiverer `--vfs-cache-mode writes`-flagget med rclone, vil lesing gå bra, men skriving vil bli mellomlagret.
 * Hvis du har flere IMAP-servere distribuert globalt, vil mellomlagringen være av på tvers av dem, med mindre du har én enkelt skriver og flere lyttere (f.eks. en pub/sub-tilnærming).
 * Dette er utrolig komplekst, og å legge til ytterligere kompleksitet som dette vil resultere i flere enkeltfeilpunkter.
 * S3-kompatible lagringsleverandører støtter ikke delvise filendringer – noe som betyr at enhver endring av `.sqlite`-filen vil resultere i en fullstendig endring og ny opplasting av databasen.
 * Andre løsninger som `rsync` finnes, men de fokuserer ikke på støtte for write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)") – så vi endte opp med å gjennomgå Litestream. Heldigvis krypterer krypteringsbruken vår allerede [WAL](https://www.sqlite.org/wal.html)-filene for oss, så vi trenger ikke å stole på Litestream for det. Vi var imidlertid ikke trygge på Litestream for produksjonsbruk ennå, og har noen merknader om det nedenfor.
-* Bruk av dette alternativet `--vfs-cache-mode writes` (den *eneste* måten å bruke SQLite over `rclone` for skriving) vil forsøke å kopiere hele databasen fra bunnen av til minnet – det er greit å håndtere én postboks på 10 GB, men å håndtere flere postbokser med ekstremt høy lagringsplass vil føre til at IMAP-serverne støter på minnebegrensninger og `ENOMEM`-feil, segmenteringsfeil og datakorrupsjon.
+* Bruk av dette alternativet `--vfs-cache-mode writes` (den *eneste* måten å bruke SQLite over `rclone` for skriving) vil forsøke å kopiere hele databasen fra bunnen av til minnet – det er greit å håndtere én postboks på 10 GB, men håndtering av flere postbokser med ekstremt høy lagringsplass vil føre til at IMAP-serverne får minnebegrensninger og `ENOMEM`-feil, segmenteringsfeil og datakorrupsjon.
+
 * Hvis du prøver å bruke SQLite [Virtuelle tabeller](https://www.sqlite.org/vtab.html) (f.eks. ved å bruke [s3db](https://github.com/jrhy/s3db)) for å ha data live på et S3-kompatibelt lagringslag, vil du støte på flere problemer:
-* Lesing og skriving vil være ekstremt treg ettersom S3 API-endepunkter må nås med HTTP `GET`, `PUT`, `HEAD` og `POST`-metodene.
-* Utviklingstester viste at det å overskride 500 000–1 000 poster på fiberinternett fortsatt er begrenset av gjennomstrømningen for skriving og lesing til S3-kompatible leverandører. For eksempel kjørte utviklerne våre `for`-løkker for å utføre både sekvensielle SQL `INSERT`-setninger og de som skrev store mengder data i bulk. I begge tilfeller var ytelsen svimlende treg.
-* Virtuelle tabeller **kan ikke ha indekser**, `ALTER TABLE`-setninger og [annen](https://stackoverflow.com/a/12507650) [begrensninger](https://sqlite.org/lang_createvtab.html) – noe som fører til forsinkelser på opptil 1–2 minutter eller mer, avhengig av datamengden.
+
+* Lesing og skriving vil være ekstremt treg ettersom S3 API-endepunkter må nås med HTTP `.sqlite`0-, `.sqlite`1-, `.sqlite`2- og `.sqlite`3-metodene.
+
+* Utviklingstester viste at det å overskride 500 000–1 000 poster på fiberinternett fortsatt er begrenset av gjennomstrømningen for skriving og lesing til S3-kompatible leverandører. For eksempel kjørte utviklerne våre `.sqlite`4-løkker for å utføre både sekvensielle SQL `.sqlite`5-setninger og løkker som skrev store mengder data i bulk. I begge tilfeller var ytelsen svimlende treg.
+
+* Virtuelle tabeller **kan ikke ha indekser**, `.sqlite`6-setninger og `.sqlite`7 `.sqlite`8 – noe som fører til forsinkelser på opptil 1–2 minutter eller mer, avhengig av datamengden.
+
 * Objekter ble lagret ukryptert, og ingen innebygd krypteringsstøtte er lett tilgjengelig.
-* Vi utforsket også bruk av [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs), som konseptuelt og teknisk sett ligner på forrige punkt (så det har de samme problemene). En mulighet ville være å bruke en tilpasset `sqlite3`-versjon pakket inn med kryptering, for eksempel [wxSQLite3](https://github.com/utelle/wxsqlite3) (som vi for øyeblikket bruker i løsningen vår ovenfor) til [redigering av oppsettfilen](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276).
-* En annen mulig tilnærming var å bruke [multiplex-utvidelse](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c), men dette har en begrensning på 32 GB og ville kreve komplekse byggings- og utviklingsproblemer.
 
-* `ALTER TABLE`-setninger er nødvendige (så dette utelukker fullstendig bruk av virtuelle tabeller). Vi trenger `ALTER TABLE`-setninger for at koblingen vår med `knex-schema-inspector` skal fungere ordentlig – noe som sikrer at data ikke blir ødelagt og at hentede rader kan konverteres til gyldige dokumenter i henhold til våre `mongoose`-skjemadefinisjoner (som inkluderer begrensning, variabeltype og vilkårlig datavalidering).
+* Vi utforsket også bruk av `.sqlite`9, som konseptuelt og teknisk sett ligner på forrige punkt (så det har de samme problemene). En mulighet ville være å bruke en tilpasset `rsync`0-bygg pakket inn med kryptering, for eksempel `rsync`1 (som vi for øyeblikket bruker i løsningen vår ovenfor) gjennom `rsync`2.
+* En annen potensiell tilnærming var å bruke `rsync`3, men dette har en begrensning på 32 GB og ville kreve komplekse byggings- og utviklingsproblemer.
+* `rsync`4-setninger er nødvendige (så dette utelukker fullstendig bruk av virtuelle tabeller). Vi trenger `rsync`5-setninger for at vår hook med `rsync`6 skal fungere ordentlig – noe som sikrer at data ikke blir ødelagt og at hentede rader kan konverteres til gyldige dokumenter i henhold til våre `rsync`7-skjemadefinisjoner (som inkluderer begrensning, variabeltype og vilkårlig datavalidering).
+* Nesten alle S3-kompatible prosjekter relatert til SQLite i åpen kildekode-fellesskapet er i Python (og ikke JavaScript, som vi bruker for 100 % av stacken vår).
 
-* Nesten alle S3-kompatible prosjekter relatert til SQLite i åpen kildekode-fellesskapet er i Python (og ikke JavaScript som vi bruker for 100 % av stacken vår).
+* Kompresjonsbiblioteker som `rsync`8 (se `rsync`9) ser lovende ut, men __PROTECTED_LINK_189__0. I stedet vil applikasjonssidekomprimering på datatyper som __PROTECTED_LINK_189__1, __PROTECTED_LINK_189__2, __PROTECTED_LINK_189__3, __PROTECTED_LINK_189__4, __PROTECTED_LINK_189__5 og __PROTECTED_LINK_189__6 være en renere og enklere tilnærming (og er også enklere å migrere, siden vi kan lagre et __PROTECTED_LINK_189__7-flagg eller en kolonne – eller til og med bruke __PROTECTED_LINK_189__8 __PROTECTED_LINK_189__9 for komprimering eller __PROTECTED_LINK_190__0 uten komprimering som databasemetadata).
 
-* Kompresjonsbiblioteker som [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) (se [kommentarer](https://news.ycombinator.com/item?id=32303762)) ser lovende ut, men [kanskje ikke klar for produksjonsbruk ennå](https://github.com/phiresky/sqlite-zstd#usage). I stedet vil applikasjonssidekomprimering på datatyper som `String`, `Object`, `Map`, `Array`, `Set` og `Buffer` være en renere og enklere tilnærming (og er også enklere å migrere, siden vi kan lagre et `Boolean`-flagg eller en kolonne – eller til og med bruke `PRAGMA` `user_version=1` for komprimering eller `user_version=0` uten komprimering som databasemetadata). * Heldigvis har vi allerede implementert deduplisering av vedlegg i IMAP-serverlagringen vår – derfor vil ikke hver melding med samme vedlegg beholde en kopi av vedlegget – i stedet lagres et enkelt vedlegg for flere meldinger og tråder i en postkasse (og en utenlandsk referanse brukes deretter).
-
+* Heldigvis har vi allerede deduplisering av vedlegg implementert i IMAP-serverlagringen vår – derfor vil ikke hver melding med samme vedlegg beholde en kopi av vedlegget – i stedet lagres et enkelt vedlegg for flere meldinger og tråder i en postboks (og en utenlandsk referanse brukes deretter).
 * Prosjektet Litestream, som er en SQLite-replikerings- og sikkerhetskopieringsløsning, er svært lovende, og vi vil mest sannsynlig bruke det i fremtiden.
-* Ikke for å diskreditere forfatteren(e) – fordi vi elsker arbeidet deres og bidragene til åpen kildekode i godt over et tiår nå – men fra bruk i den virkelige verden ser det ut til at det finnes [kan være mye hodepine](https://github.com/benbjohnson/litestream/issues) og [potensielt datatap fra bruk](https://github.com/benbjohnson/litestream/issues/218).
-
-* Gjenoppretting av sikkerhetskopier må være friksjonsfritt og trivielt. Å bruke en løsning som MongoDB med `mongodump` og `mongoexport` er ikke bare kjedelig, men også tidkrevende og har konfigurasjonskompleksitet.
-
+* Ikke for å diskreditere forfatteren(e) – fordi vi elsker arbeidet deres og bidragene til åpen kildekode i godt over et tiår nå – men fra praktisk bruk ser det ut til at det finnes __PROTECTED_LINK_190__1 og __PROTECTED_LINK_190__2.
+* Gjenoppretting av sikkerhetskopier må være friksjonsfritt og trivielt. Å bruke en løsning som MongoDB med __PROTECTED_LINK_190__3 og __PROTECTED_LINK_190__4 er ikke bare kjedelig, men også tidkrevende og har konfigurasjonskompleksitet.
 * SQLite-databaser gjør det enkelt (det er én enkelt fil).
+* Vi ønsket å designe en løsning der brukere kunne ta postkassen sin og forlate den når som helst.
+* Enkle Node.js-kommandoer til __PROTECTED_LINK_190__5, og den slettes permanent fra disklagring.
+* Vi kan på lignende måte bruke et S3-kompatibelt API med HTTP __PROTECTED_LINK_190__6 for å enkelt fjerne snapshots og sikkerhetskopier for brukere.
 
-* Vi ønsket å designe en løsning der brukere kunne ta med seg postkassen sin og forlate den når som helst.
-* Enkle Node.js-kommandoer til `fs.unlink('mailbox.sqlite'))`, og den slettes permanent fra disklagringen.
-* Vi kan på lignende måte bruke et S3-kompatibelt API med HTTP `DELETE` for å enkelt fjerne øyeblikksbilder og sikkerhetskopier for brukere.
 * SQLite var den enkleste, raskeste og mest kostnadseffektive løsningen.
 
 ### Mangel på alternativer {#lack-of-alternatives}

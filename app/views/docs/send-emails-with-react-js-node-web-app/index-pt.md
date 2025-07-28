@@ -76,6 +76,6 @@ Execute o aplicativo para enviar o e-mail:
 node app
 ```
 
-Agora você pode acessar **[Minha conta → E-mails](/my-account/emails)** para ver seu status de entrega de e-mail em tempo real, registros de entrega de e-mail e visualizações de HTML/texto simples/anexos.
+Agora você pode ir para **[Minha conta → E-mails](/my-account/emails)** para ver seu status de entrega de e-mail em tempo real, registros de entrega de e-mail e visualizações de HTML/texto simples/anexos.
 
 > P.S. :tada: Você também pode **[visualizar e-mails em navegadores e no simulador iOS](/docs/test-preview-email-rendering-browsers-ios-simulator)** e **[crie modelos de e-mail com Node.js](/docs/send-emails-with-node-js-javascript)**.

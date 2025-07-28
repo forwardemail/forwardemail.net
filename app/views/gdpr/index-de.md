@@ -14,13 +14,13 @@
 
 Forward Email ist ein datenschutzorientiertes Unternehmen, das sich dem Schutz Ihrer Daten verpflichtet fühlt.
 
-Die DSGVO („DSGVO“) regelt die Datenübertragung außerhalb der EU und des EWR. Ihr Ziel ist es, Ihre Kontrolle und Rechte in Bezug auf Ihre personenbezogenen Daten zu stärken. Wir verkaufen die von uns verarbeiteten, gespeicherten und/oder übermittelten Daten nicht und nutzen sie auch nicht für andere Zwecke als die Bereitstellung unserer Dienste.
+Die DSGVO („DSGVO“) regelt die Datenübertragung außerhalb der EU und des EWR. Ihr Ziel ist es, Ihre Kontrolle und Rechte hinsichtlich Ihrer personenbezogenen Daten zu stärken. Wir verkaufen die von uns verarbeiteten, gespeicherten und/oder übermittelten Daten nicht und nutzen sie auch nicht für andere Zwecke als die Bereitstellung unserer Dienste.
 
-Sie können Ihre persönlichen Daten jederzeit unter [Mein Konto → Profil](/my-account/profile) ändern und sogar Ihr gesamtes Konto und alle zugehörigen Informationen unter [Mein Konto → Sicherheit](/my-account/security) löschen. Da wir bei <https://github.com/forwardemail> **100 % Open Source** sind, kann unser Quellcode jederzeit auf die Einhaltung der Datenschutzgesetze überprüft werden.
+Sie können Ihre persönlichen Daten jederzeit unter [Mein Konto → Profil](/my-account/profile) ändern und sogar Ihr gesamtes Konto und alle zugehörigen Informationen unter [Mein Konto → Sicherheit](/my-account/security) löschen. Da wir bei <https://github.com/forwardemail> **zu 100 % Open Source** sind, kann unser Quellcode jederzeit auf die Einhaltung der Datenschutzgesetze überprüft werden.
 
-In unserem [Datenverarbeitungsvereinbarung](/dpa) wird unsere Einhaltung der DSGVO sowie der EU-US- und Swiss-US-Datenschutzschild-Rahmenbestimmungen im Hinblick auf den Datenschutz bei der Verarbeitung, Speicherung und Übertragung von Daten detailliert beschrieben.
+In unserem [Datenverarbeitungsvereinbarung](/dpa) wird unsere Einhaltung der DSGVO sowie der EU-US- und Swiss-US-Datenschutzschild-Rahmenbedingungen im Hinblick auf den Datenschutz der verarbeiteten, gespeicherten und übertragenen Daten detailliert beschrieben.
 
-Mit der Zustimmung zu unseren [Servicebedingungen](/terms) akzeptieren Sie automatisch unsere Datenverarbeitungsvereinbarung (DPA) und müssen kein separates Dokument unterzeichnen. Wir werden uns nach besten Kräften bemühen, alle Ihre personenbezogenen Daten gemäß unseren [Datenschutzrichtlinie](/privacy) zu schützen – **unabhängig vom Ort**, an dem sie verarbeitet, gespeichert und übertragen werden. Weitere Informationen finden Sie in unseren [Servicebedingungen](/terms) und [Datenschutzrichtlinie](/privacy).
+Mit Ihrer Zustimmung zu unserem [Servicebedingungen](/terms) akzeptieren Sie automatisch unsere Datenverarbeitungsvereinbarung (DPA) und müssen kein separates Dokument unterzeichnen. Wir werden uns nach besten Kräften bemühen, alle Ihre personenbezogenen Daten gemäß unserem [Datenschutzrichtlinie](/privacy) zu schützen – **unabhängig vom Ort**, an dem sie verarbeitet, gespeichert und übertragen werden. Weitere Informationen finden Sie in unseren [Servicebedingungen](/terms) und [Datenschutzrichtlinie](/privacy).
 
 ## Internationaler Datentransfer {#international-data-transfer}
 
@@ -39,12 +39,12 @@ Nachfolgend sind unsere Anbieter aufgeführt, die wir für die internationale Da
 
 ## DSGVO-Vertreter {#gdpr-representative}
 
-Gemäß [Artikel 27 der DSGVO](https://gdpr-info.eu/art-27-gdpr/) verfügen wir über die nachstehend aufgeführten Vertreter der Mitgliedstaaten:
+In Übereinstimmung mit [Artikel 27 der DSGVO](https://gdpr-info.eu/art-27-gdpr/) verfügen wir über die nachstehend aufgeführten Vertreter der Mitgliedstaaten:
 
 ### EU-Vertreter {#eu-representative}
 
 <blockquote class="notranslate">Osano International Compliance Services Limited<br />ATTN: LFHC<br />3 Dublin Landings<br />North Wall Quay<br />Dublin 1<br />D01C4E0</blockquote>
 
-### Vertreter in Großbritannien {#uk-representative}
+### UK-Vertreter {#uk-representative}
 
 <blockquote class="notranslate">Osano UK Compliance LTD<br />ATTN: LFHC<br />42-46 Fountain Street<br />Belfast<br />Antrim<br />BT1 - 5EF</blockquote>

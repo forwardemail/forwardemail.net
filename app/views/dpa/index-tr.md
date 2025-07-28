@@ -2,14 +2,14 @@
 
 <!-- v1.0 <https://github.com/CommonPaper/DPA> --> adresinden
 
-<img loading="tembel" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 
 * [Anahtar Terimler](#key-terms)
-* [Anlaşmada Değişiklikler](#changes-to-the-agreement)
+* [Sözleşmede Değişiklikler](#changes-to-the-agreement)
 * [1. İşlemci ve Alt İşlemci İlişkileri](#1-processor-and-subprocessor-relationships)
-  * [1. İşlemci Olarak Sağlayıcı](#1-provider-as-processor)
+  * [1. Sağlayıcı İşlemci Olarak](#1-provider-as-processor)
   * [2. Alt İşlemci Olarak Sağlayıcı](#2-provider-as-subprocessor)
 * [2. İşleme](#2-processing)
   * [1. İşlem Ayrıntıları](#1-processing-details)
@@ -17,13 +17,13 @@
   * [3. Sağlayıcı Tarafından İşleme](#3-processing-by-provider)
   * [4. Müşteri İşlemleri](#4-customer-processing)
   * [5. İşleme Onayı](#5-consent-to-processing)
-  * [6. Alt işlemciler](#6-subprocessors)
+  * [6. Alt İşlemciler](#6-subprocessors)
 * [3. Sınırlı Transferler](#3-restricted-transfers)
   * [1. Yetkilendirme](#1-authorization)
-  * [2. Ex-EEA Transferleri](#2-ex-eea-transfers)
-  * [3. İngiltere'den yapılan transferler](#3-ex-uk-transfers)
+  * [2. Eski AEA Transferleri](#2-ex-eea-transfers)
+  * [3. İngiltere'den Yurtdışına Transferler](#3-ex-uk-transfers)
   * [4. Diğer Uluslararası Transferler](#4-other-international-transfers)
-* [4. Güvenlik Olayı Müdahalesi](#4-security-incident-response)
+* [4. Güvenlik Olaylarına Müdahale](#4-security-incident-response)
 * [5. Denetim ve Raporlar](#5-audit--reports)
   * [1. Denetim Hakları](#1-audit-rights)
   * [2. Güvenlik Raporları](#2-security-reports)
@@ -57,9 +57,9 @@
 
 ## Sözleşmede Yapılan Değişiklikler {#changes-to-the-agreement}
 
-Bu belge [Ortak Kağıt DPA Standart Terimleri (Sürüm 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0)'nin bir türevidir ve aşağıdaki değişiklikler yapılmıştır:
+Bu belge [Ortak Kağıt DPA Standart Terimleri (Sürüm 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0)'ın bir türevidir ve aşağıdaki değişiklikler yapılmıştır:
 
-1. [Yürürlükteki Hukuk ve Seçilen Mahkemeler](#11-governing-law-and-chosen-courts), yukarıda belirtilen `Governing State` ile birlikte aşağıda bir bölüm olarak eklenmiştir.
+1. [Yürürlükteki Hukuk ve Seçilen Mahkemeler](#11-governing-law-and-chosen-courts), yukarıda tanımlanan `Governing State` ile birlikte aşağıda bir bölüm olarak eklenmiştir.
 2. [Hizmet Sağlayıcı İlişkisi](#12-service-provider-relationship), aşağıda bir bölüm olarak eklenmiştir.
 
 ## 1. İşlemci ve Alt İşlemci İlişkileri {#1-processor-and-subprocessor-relationships}
@@ -82,11 +82,11 @@ Kapak Sayfasındaki Ek I(B), bu İşlemenin konusunu, niteliğini, amacını ve 
 
 <strong>Müşteri</strong>, <strong>Sağlayıcı</strong>'ya Müşteri Kişisel Verilerini şu amaçlarla işlemesi talimatını verir: (a) Hizmeti sağlamak ve sürdürmek; (b) <strong>Müşterinin</strong> Hizmeti kullanımıyla daha ayrıntılı olarak açıklanabileceği şekilde; (c) <strong>Sözleşme</strong>'de belgelendiği şekilde; ve (d) <strong>Müşteri</strong> tarafından verilen ve <strong>Sağlayıcı</strong> tarafından bu DPA kapsamında Müşteri Kişisel Verilerinin İşlenmesi hakkında kabul edilen diğer yazılı talimatlarda belgelendiği şekilde. <strong>Sağlayıcı</strong>, yürürlükteki yasalarca yasaklanmadığı sürece bu talimatlara uyacaktır. <strong>Sağlayıcı</strong>, İşleme talimatlarını takip edememesi durumunda derhal <strong>Müşteri</strong>'yi bilgilendirecektir. <strong>Müşteri</strong>, yalnızca yürürlükteki yasalara uygun talimatlar vermiştir ve verecektir.
 
-### 3. Sağlayıcı Tarafından İşleme {#3-processing-by-provider}
+### 3. Sağlayıcı Tarafından İşleniyor {#3-processing-by-provider}
 
 <strong>Sağlayıcı</strong>, Müşteri Kişisel Verilerini yalnızca Kapak Sayfasındaki bilgiler de dahil olmak üzere bu DPA'ya uygun olarak işleyecektir. <strong>Sağlayıcı</strong>, mevcut ürünleri, özellikleri veya işlevleri güncellemek veya yeni ürünler, özellikler veya işlevler eklemek için Hizmeti güncellerse, <strong>Veri Sahipleri Kategorilerini</strong>, <strong>Kişisel Veri Kategorilerini</strong>, <strong>Özel Kategori Verilerini</strong>, <strong>Özel Kategori Veri Kısıtlamalarını veya Korumalarını</strong>, <strong>Aktarım Sıklığını</strong>, <strong>İşlemenin Niteliğini ve Amacını</strong> ve <strong>İşleme Süresini</strong>, güncellemeleri ve değişiklikleri yansıtmak için gerektiği şekilde <strong>Müşteri</strong>'yi bilgilendirerek değiştirebilir.
 
-### 4. Müşteri İşlemleri {#4-customer-processing}
+### 4. Müşteri İşleme {#4-customer-processing}
 
 <strong>Müşteri</strong> bir İşlemci ve <strong>Sağlayıcı</strong> bir Alt İşlemci olduğunda, <strong>Müşteri</strong>, Müşteri Kişisel Verilerinin <strong>Müşteri</strong> tarafından İşlenmesine ilişkin tüm Geçerli Yasalara uyacaktır. <strong>Müşterinin</strong> Denetleyicisi ile yaptığı sözleşme, <strong>Müşteri</strong>'nin İşlemci olarak <strong>Müşteri</strong>'ye uygulanan tüm Geçerli Yasalara uymasını gerektirecektir. Ayrıca, <strong>Müşteri</strong>, Denetleyicisi ile yaptığı sözleşmedeki Alt İşlemci gerekliliklerine uyacaktır.
 
@@ -98,7 +98,7 @@ Kapak Sayfasındaki Ek I(B), bu İşlemenin konusunu, niteliğini, amacını ve 
 
 a. <strong>Sağlayıcı</strong>, <strong>Müşteri</strong> Alt İşlemciyi onaylamadığı sürece hiçbir Müşteri Kişisel Verisini bir Alt İşlemciye sağlamayacak, devretmeyecek veya teslim etmeyecektir. Güncel <strong>Onaylı Alt İşlemciler</strong> listesi, Alt İşlemcilerin kimliklerini, bulundukları ülkeyi ve öngörülen İşleme görevlerini içerir. <strong>Sağlayıcı</strong>, <strong>Onaylı Alt İşlemcilerde</strong>, bir Alt İşlemcinin eklenmesi veya değiştirilmesi yoluyla yapılması planlanan tüm değişiklikler hakkında <strong>Müşteri</strong>'yi en az 10 iş günü önceden ve yazılı olarak bilgilendirecektir. Bu, <strong>Müşteri</strong>'ye, <strong>Sağlayıcı</strong> yeni Alt İşlemci(ler)i kullanmaya başlamadan önce değişikliklere itiraz etmek için yeterli zaman tanır. <strong>Sağlayıcı</strong>, <strong>Müşteri</strong>'ye, <strong>Onaylı Alt İşlemciler</strong>'deki değişikliğe itiraz etme hakkını kullanabilmesi için gerekli bilgileri verecektir. <strong>Müşteri</strong>, <strong>Onaylı Alt İşlemciler</strong>'deki bir değişikliğin bildiriminden itibaren 30 gün içinde itiraz edebilir; aksi takdirde <strong>Müşteri</strong> değişiklikleri kabul etmiş sayılır. <strong>Müşteri</strong>, bildirimden itibaren 30 gün içinde değişikliğe itiraz ederse, <strong>Müşteri</strong> ve <strong>Sağlayıcı</strong>, <strong>Müşteri</strong>'nin itirazını veya endişesini gidermek için iyi niyetle iş birliği yapacaktır.
 
-b. Bir Alt İşlemci ile çalışırken, <strong>Sağlayıcı</strong>, Alt İşlemcinin yalnızca (i) kendisine alt sözleşmeyle verilen yükümlülükleri yerine getirmek için gereken ölçüde ve (ii) <strong>Sözleşme</strong>'nin şartlarıyla tutarlı bir şekilde Müşteri Kişisel Verilerine erişmesini ve bunları kullanmasını garanti eden Alt İşlemci ile yazılı bir sözleşmeye sahip olacaktır.
+b. Bir Alt İşlemci ile çalışırken, <strong>Sağlayıcı</strong>, Alt İşlemcinin Müşteri Kişisel Verilerine yalnızca (i) kendisine alt sözleşmeyle verilen yükümlülükleri yerine getirmek için gereken ölçüde ve (ii) <strong>Sözleşme</strong> şartlarıyla tutarlı bir şekilde erişmesini ve kullanmasını garanti eden Alt İşlemci ile yazılı bir sözleşmeye sahip olacaktır.
 
 c. GDPR, Müşteri Kişisel Verilerinin İşlenmesine uygulanıyorsa, (i) bu DPA'da açıklanan veri koruma yükümlülükleri (geçerliyse, GDPR'nin 28(3) Maddesinde belirtildiği gibi) Alt İşlemciye de uygulanır ve (ii) <strong>Sağlayıcı</strong>'nın Alt İşlemci ile olan sözleşmesi, <strong>Sağlayıcı</strong> ve Alt İşlemcisinin Müşteri Kişisel Verilerinin İşlenmesiyle ilgili sorulara veya taleplere nasıl yanıt vermek için koordine olacaklarına dair ayrıntılar da dahil olmak üzere bu yükümlülükleri içerecektir. Ayrıca, <strong>Sağlayıcı</strong>, <strong>Müşterinin</strong> talebi üzerine, sözleşmelerinin bir kopyasını (değişiklikler dahil) Alt İşlemcileriyle paylaşacaktır. Ticari sırları veya kişisel veriler de dahil olmak üzere diğer gizli bilgileri korumak için gerekli olduğu ölçüde, <strong>Sağlayıcı</strong>, bir kopya paylaşmadan önce Alt İşlemcisiyle yaptığı sözleşmenin metnini düzenleyebilir.
 
@@ -122,7 +122,7 @@ c. Her modül için aşağıdakiler geçerlidir (uygulanabilir olduğunda):
 
 1. Madde 7'deki isteğe bağlı yerleştirme hükmü uygulanmaz;
 
-2. Madde 9'da, Seçenek 2 (genel yazılı yetki) geçerlidir ve Alt İşlemci değişikliklerine ilişkin önceden bildirim için asgari süre 10 iş günüdür;
+2. Madde 9'da, Seçenek 2 (genel yazılı yetki) geçerlidir ve Alt İşlemci değişikliklerinin önceden bildirilmesi için asgari süre 10 iş günüdür;
 
 3. Madde 11'de isteğe bağlı ifade uygulanmaz;
 
@@ -132,21 +132,21 @@ c. Her modül için aşağıdakiler geçerlidir (uygulanabilir olduğunda):
 
 6. Madde 18(b)'de, uyuşmazlıklar <strong>Yönetim Üyesi Devlet</strong> mahkemelerinde çözülecektir; ve
 
-7. Bu DPA'nın Kapak Sayfası, AEA SCC'lerinin Ek I, Ek II ve Ek III'ünde gerekli olan bilgileri içerir.
+7. Bu DPA'nın Kapak Sayfası, AEA SCC'lerinin Ek I, Ek II ve Ek III'ünde gerekli olan bilgileri içermektedir.
 
-### 3. Birleşik Krallık'tan Transferler {#3-ex-uk-transfers}
+### 3. Eski Birleşik Krallık Transferleri {#3-ex-uk-transfers}
 
 <strong>Müşteri</strong> ve <strong>Sağlayıcı</strong>, Birleşik Krallık GDPR'sinin Müşteri Kişisel Verilerinin aktarımını koruması durumunda, aktarımın Birleşik Krallık içindeki <strong>Müşteri</strong>'den Birleşik Krallık dışındaki <strong>Sağlayıcı</strong>'ya yapılması ve aktarımın Birleşik Krallık Dışişleri Bakanlığı tarafından verilen bir yeterlilik kararına tabi olmaması durumunda, bu DPA'yı imzalayarak <strong>Müşteri</strong> ve <strong>Sağlayıcı</strong>'nın, atıf yoluyla dahil edilen Birleşik Krallık Eki ve Eklerini imzalamış sayılacağı konusunda anlaşmışlardır. Bu tür aktarımlar, aşağıdaki şekilde tamamlanan Birleşik Krallık Eki uyarınca yapılır:
 
-a. Bu DPA'nın 3.2. Bölümü, Birleşik Krallık Eki'nin 2. Tablosunda gerekli olan bilgileri içerir.
+a. Bu DPA'nın 3.2. Bölümü, Birleşik Krallık Eki'nin 2. Tablosunda gerekli olan bilgileri içermektedir.
 
-b. Birleşik Krallık Eki'nin 4. Tablosu aşağıdaki şekilde değiştirilmiştir: Tarafların hiçbiri Birleşik Krallık Eki'nin 19. Bölümünde belirtildiği şekilde Birleşik Krallık Eki'ni sonlandıramaz; ICO'nun Birleşik Krallık Eki'nin 18. Bölümü uyarınca revize edilmiş bir Onaylanmış Ek yayınlaması durumunda, taraflar bu DPA'yı buna göre revize etmek için iyi niyetle çalışacaklardır.
+b. Birleşik Krallık Ek Sözleşmesi'nin 4. Tablosu aşağıdaki şekilde değiştirilmiştir: Tarafların hiçbiri Birleşik Krallık Ek Sözleşmesi'ni Birleşik Krallık Ek Sözleşmesi'nin 19. Bölümü'nde belirtildiği şekilde sonlandıramaz; ICO, Birleşik Krallık Ek Sözleşmesi'nin 18. Bölümü uyarınca revize edilmiş bir Onaylanmış Ek Sözleşmesi yayınladığı ölçüde, taraflar bu DPA'yı buna göre revize etmek için iyi niyetle çalışacaklardır.
 
-c. Kapak Sayfası, Birleşik Krallık Eki'nin Ek 1A, Ek 1B, Ek II ve Ek III'ünde gerekli görülen bilgileri içerir.
+c. Kapak Sayfası, Birleşik Krallık Ek Sözleşmesinin Ek 1A, Ek 1B, Ek II ve Ek III'ünde istenen bilgileri içerir.
 
 ### 4. Diğer Uluslararası Transferler {#4-other-international-transfers}
 
-Uluslararası nitelikteki transferlere İsviçre hukukunun (herhangi bir AEA üye devletinin veya Birleşik Krallık'ın hukukunun değil) uygulandığı Kişisel Veri transferleri için, AEA SCC'lerinin 4. Maddesindeki GDPR'ye yapılan atıflar, yasal olarak gerekli olduğu ölçüde, İsviçre Federal Veri Koruma Yasası'na veya onun halefine atıfta bulunacak şekilde değiştirilecek ve denetim makamı kavramı İsviçre Federal Veri Koruma ve Bilgi Komiseri'ni de içerecektir.
+Uluslararası nitelikteki aktarımlara İsviçre hukukunun (herhangi bir AEA üye devletinin veya Birleşik Krallık'ın hukukunun değil) uygulandığı Kişisel Veri aktarımları için, AEA SCC'lerinin 4. Maddesindeki GDPR'ye yapılan atıflar, yasal olarak gerekli olduğu ölçüde, İsviçre Federal Veri Koruma Yasası'na veya onun halefine atıfta bulunacak şekilde değiştirilecek ve denetleyici makam kavramı İsviçre Federal Veri Koruma ve Bilgi Komiseri'ni de içerecektir.
 
 ## 4. Güvenlik Olayı Müdahalesi {#4-security-incident-response}
 
@@ -164,7 +164,7 @@ Uluslararası nitelikteki transferlere İsviçre hukukunun (herhangi bir AEA üy
 
 ### 3. Güvenlik Durum Tespiti {#3-security-due-diligence}
 
-Rapora ek olarak, <strong>Sağlayıcı</strong>, <strong>Müşteri</strong> tarafından <strong>Sağlayıcı</strong>'nın bu DPA'ya uyumunu teyit etmek için yapılan makul bilgi taleplerine yanıt verecektir. Bu talepler arasında bilgi güvenliği, gerekli özen ve denetim anketlerine verilen yanıtlar veya bilgi güvenliği programı hakkında ek bilgiler yer almaktadır. Bu tür tüm talepler yazılı olmalı ve <strong>Sağlayıcı Güvenlik İrtibat Kişisi</strong>'ne iletilmelidir ve yılda yalnızca bir kez yapılabilir.
+Rapora ek olarak, <strong>Sağlayıcı</strong>, <strong>Müşteri</strong> tarafından <strong>Sağlayıcı</strong>'nın bu DPA'ya uyumunu teyit etmek için yapılan makul bilgi taleplerine yanıt verecektir. Bu talepler arasında bilgi güvenliği, gerekli özen ve denetim anketlerine verilen yanıtlar veya bilgi güvenliği programı hakkında ek bilgiler yer almaktadır. Bu tür taleplerin tümü yazılı olmalı ve <strong>Sağlayıcı Güvenlik İrtibat Kişisi</strong>'ne iletilmelidir ve yılda yalnızca bir kez yapılabilir.
 
 ## 6. Koordinasyon ve İşbirliği {#6-coordination--cooperation}
 
@@ -184,7 +184,7 @@ Uygulanabilir Veri Koruma Yasaları tarafından gerektirildiği takdirde, <stron
 
 ### 2. DPA Süresi Dolduğunda Silme {#2-deletion-at-dpa-expiration}
 
-a. DPA'nın süresi dolduktan sonra, <strong>Sağlayıcı</strong>, Müşteri Kişisel Verilerinin daha fazla saklanması Geçerli Yasa tarafından gerekli kılınmadığı veya yetkilendirilmediği sürece, Müşteri'nin talimatı üzerine Müşteri Kişisel Verilerini iade edecek veya silecektir. İade veya imhanın Geçerli Yasalar tarafından mümkün olmaması veya yasaklanması durumunda, <strong>Sağlayıcı</strong>, Müşteri Kişisel Verilerinin daha fazla işlenmesini önlemek için makul çabayı gösterecek ve elinde, muhafazasında veya kontrolünde kalan Müşteri Kişisel Verilerini korumaya devam edecektir. Örneğin, Geçerli Yasalar, <strong>Sağlayıcı</strong>'nın Müşteri Kişisel Verilerini barındırmaya veya işlemeye devam etmesini gerektirebilir.
+a. DPA'nın süresi dolduktan sonra, <strong>Sağlayıcı</strong>, Müşteri Kişisel Verilerinin daha fazla saklanması Geçerli Yasa tarafından gerekli kılınmadığı veya yetkilendirilmediği sürece, Müşteri'nin talimatı üzerine Müşteri Kişisel Verilerini iade edecek veya silecektir. İade veya imhanın Uygulanabilir Yasalar tarafından mümkün olmaması veya yasaklanması durumunda, <strong>Sağlayıcı</strong>, Müşteri Kişisel Verilerinin daha fazla işlenmesini önlemek için makul çabayı gösterecek ve elinde, muhafazasında veya kontrolünde kalan Müşteri Kişisel Verilerini korumaya devam edecektir. Örneğin, Geçerli Yasalar, <strong>Sağlayıcı</strong>'nın Müşteri Kişisel Verilerini barındırmaya veya İşlemeye devam etmesini gerektirebilir.
 
 b. <strong>Müşteri</strong> ve <strong>Sağlayıcı</strong>, bu DPA'nın bir parçası olarak AEA SCC'lerine veya Birleşik Krallık Eki'ne girmişlerse, <strong>Sağlayıcı</strong>, yalnızca <strong>Müşteri</strong>'nin talep etmesi halinde AEA SCC'lerinin 8.1(d) ve 8.5 Maddelerinde açıklanan Kişisel Verilerin silinmesine ilişkin sertifikayı verecektir.
 
@@ -200,7 +200,7 @@ b. <strong>Müşteri</strong> ve <strong>Sağlayıcı</strong>, bu DPA'nın bir 
 
 ### 3. İstisnalar {#3-exceptions}
 
-1. Bu DPA, bir bireyin Uygulanabilir Veri Koruma Yasaları kapsamındaki veri koruma haklarıyla ilgili herhangi bir sorumluluğunu sınırlamaz. Ayrıca, bu DPA, taraflar arasındaki AEA SCC'leri veya Birleşik Krallık Eki'nin ihlalleri için herhangi bir sorumluluğu sınırlamaz.
+1. Bu DPA, bir bireyin Geçerli Veri Koruma Yasaları kapsamındaki veri koruma haklarına ilişkin sorumluluğunu sınırlamaz. Ayrıca, bu DPA, taraflar arasındaki AEA SCC'leri veya Birleşik Krallık Eki'nin ihlalleri nedeniyle ortaya çıkan sorumluluğu sınırlamaz.
 
 ## 9. Belgeler Arasındaki Çakışmalar {#9-conflicts-between-documents}
 
@@ -210,7 +210,7 @@ b. <strong>Müşteri</strong> ve <strong>Sağlayıcı</strong>, bu DPA'nın bir 
 
 Bu DPA, <strong>Sağlayıcı</strong> ve <strong>Müşteri</strong>'nin DPA için bir Kapak Sayfası üzerinde anlaşıp <strong>Sözleşme</strong>'yi imzalamaları veya elektronik olarak kabul etmeleri ile başlayacak ve <strong>Sözleşme</strong> sona erene veya feshedilene kadar devam edecektir. Ancak, <strong>Sağlayıcı</strong> ve <strong>Müşteri</strong>, <strong>Müşteri</strong>, Müşteri Kişisel Verilerini <strong>Sağlayıcı</strong>'ya aktarmayı ve <strong>Sağlayıcı</strong>, Müşteri Kişisel Verilerini İşlemeyi durdurana kadar bu DPA ve Geçerli Veri Koruma Yasaları kapsamındaki yükümlülüklere tabi olmaya devam edecektir.
 
-## 11. Geçerli Hukuk ve Seçilen Mahkemeler {#11-governing-law-and-chosen-courts}
+## 11. Yürürlükteki Hukuk ve Seçilen Mahkemeler {#11-governing-law-and-chosen-courts}
 
 <strong>Sözleşme</strong>'nin yürürlükteki yasalarına veya benzer maddelerine bakılmaksızın, bu DPA ile ilgili tüm yorumlar ve anlaşmazlıklar, kanunlar ihtilafı hükümleri dikkate alınmaksızın <strong>Yönetim Devleti</strong> yasalarına tabi olacaktır. Ayrıca, <strong>Sözleşme</strong>'nin mahkeme seçimi, yargı yetkisi veya benzer maddelerine bakılmaksızın, taraflar bu DPA ile ilgili herhangi bir hukuki dava, eylem veya yargılamayı <strong>Yönetim Devleti</strong> mahkemelerinde açmayı kabul eder ve her iki taraf da geri dönülmez bir şekilde bu mahkemelerin münhasır yargı yetkisine tabi olur.
 
@@ -220,7 +220,7 @@ Kaliforniya Tüketici Gizliliği Yasası, Cal. Civ. Code § 1798.100 ve devamı 
 
 ## 13. Tanımlar {#13-definitions}
 
-1. **"Uygulanabilir Yasalar"**, bir tarafa uygulanan veya onu yöneten ilgili bir hükümet otoritesinin yasaları, kuralları, yönetmelikleri, mahkeme emirleri ve diğer bağlayıcı gereklilikleri anlamına gelir.
+1. **"Uygulanabilir Yasalar"**, bir tarafa uygulanan veya onu yöneten ilgili bir devlet otoritesinin yasaları, kuralları, yönetmelikleri, mahkeme emirleri ve diğer bağlayıcı gereklilikleri anlamına gelir.
 
 2. **"Uygulanabilir Veri Koruma Yasaları"**, Hizmetin bir bireyin kişisel bilgilerini, kişisel verilerini, kişisel olarak tanımlanabilir bilgilerini veya diğer benzer terimleri nasıl işleyebileceğini veya kullanabileceğini düzenleyen Uygulanabilir Yasalar anlamına gelir.
 
@@ -232,7 +232,7 @@ Kaliforniya Tüketici Gizliliği Yasası, Cal. Civ. Code § 1798.100 ve devamı 
 
 6. **"DPA"**, bu DPA Standart Şartları, <strong>Sağlayıcı</strong> ile <strong>Müşteri</strong> arasındaki Kapak Sayfası ve Kapak Sayfasında atıfta bulunulan veya Kapak Sayfasına eklenen politikalar ve belgeler anlamına gelir.
 
-7. **"AEA SCC'leri"**, Avrupa Komisyonu'nun 4 Haziran 2021 tarihli 2021/914 sayılı Uygulama Kararı'na eklenen, Avrupa Parlamentosu ve Avrupa Konseyi'nin (AB) 2016/679 sayılı Tüzüğü uyarınca üçüncü ülkelere kişisel verilerin aktarılmasına ilişkin standart sözleşme hükümlerini ifade eder.
+7. **"AEA SCC'leri"**, Avrupa Komisyonu'nun 4 Haziran 2021 tarihli 2021/914 sayılı Uygulama Kararı'na eklenen, Avrupa Parlamentosu ve Avrupa Konseyi'nin (AB) 2016/679 sayılı Tüzüğü uyarınca kişisel verilerin üçüncü ülkelere aktarılmasına ilişkin standart sözleşme hükümlerini ifade eder.
 
 8. **"Avrupa Ekonomik Alanı"** veya **"AEA"** Avrupa Birliği üye devletleri, Norveç, İzlanda ve Lihtenştayn anlamına gelir.
 
@@ -240,26 +240,26 @@ Kaliforniya Tüketici Gizliliği Yasası, Cal. Civ. Code § 1798.100 ve devamı 
 
 10. **"Kişisel Veriler"**, Kişisel Bilgi, Kişisel Veri veya benzeri terimler için Uygulanabilir Veri Koruma Kanunlarında belirtilen anlamı taşıyacaktır.
 
-11. **"İşleme"** veya **"İşlem"**, otomatik yöntemler de dahil olmak üzere, Kişisel Verilerin herhangi bir şekilde kullanılması veya bunlar üzerinde bir bilgisayar işlemi gerçekleştirilmesi için Uygulanabilir Veri Koruma Yasalarında belirtilen anlamı taşıyacaktır.
+11. **"İşleme"** veya **"İşlem"**, otomatik yöntemler de dahil olmak üzere, Kişisel Verilerin herhangi bir şekilde kullanılması veya Kişisel Veriler üzerinde bir bilgisayar işlemi gerçekleştirilmesi için Uygulanabilir Veri Koruma Yasalarında verilen anlamı taşıyacaktır.
 
-12. **"İşlemci"**, Denetleyici adına Kişisel Verileri İşleyen şirket için Uygulanabilir Veri Koruma Yasalarında belirtilen anlamı taşıyacaktır.
+12. **"İşlemci"**, Denetleyici adına Kişisel Verileri İşleyen şirket için Uygulanabilir Veri Koruma Kanunlarında belirtilen anlamı taşıyacaktır.
 
-13. **"Rapor"**, Güvenlik Politikası'nda tanımlanan standartlara uygun olarak Sağlayıcı adına başka bir şirket tarafından hazırlanan denetim raporları anlamına gelir.
+13. **“Rapor”**, Güvenlik Politikasında tanımlanan standartlara uygun olarak Sağlayıcı adına başka bir şirket tarafından hazırlanan denetim raporları anlamına gelir.
 
-14. **"Sınırlı Aktarım"** (a) GDPR'nin uygulandığı durumlarda, kişisel verilerin Avrupa Ekonomik Alanı'ndan, Avrupa Komisyonu tarafından yeterliliğe ilişkin bir tespite tabi olmayan Avrupa Ekonomik Alanı dışındaki bir ülkeye aktarılması; ve (b) Birleşik Krallık GDPR'sinin uygulandığı durumlarda, kişisel verilerin Birleşik Krallık'tan, Birleşik Krallık Veri Koruma Yasası 2018'in 17A Bölümü uyarınca kabul edilen yeterliliğe ilişkin düzenlemelere tabi olmayan herhangi bir başka ülkeye aktarılması anlamına gelir.
+14. **"Sınırlı Aktarım"** (a) GDPR'nin uygulandığı durumlarda, kişisel verilerin Avrupa Ekonomik Alanı'ndan (AEA) Avrupa Komisyonu tarafından yeterliliğe ilişkin bir tespite tabi olmayan AEA dışındaki bir ülkeye aktarılması; ve (b) Birleşik Krallık GDPR'sinin uygulandığı durumlarda, kişisel verilerin Birleşik Krallık'tan Birleşik Krallık Veri Koruma Yasası 2018'in 17A Bölümü uyarınca kabul edilen yeterliliğe ilişkin düzenlemelere tabi olmayan herhangi bir başka ülkeye aktarılması anlamına gelir.
 
-15. **"Güvenlik Olayı"**, GDPR'nin 4. maddesinde tanımlanan Kişisel Veri İhlali anlamına gelir.
+15. **“Güvenlik Olayı”**, GDPR’nin 4. maddesinde tanımlanan Kişisel Veri İhlali anlamına gelir.
 
 16. **"Hizmet"**, <strong>Sözleşme</strong>'de açıklanan ürün ve/veya hizmetler anlamına gelir.
 
-17. **“Özel Kategori Veriler”** GDPR’nin 9. maddesinde belirtilen anlamı taşıyacaktır.
+17. **“Özel Nitelikli Veriler”** GDPR’nin 9. maddesinde belirtilen anlamı taşıyacaktır.
 
-18. **"Alt İşlemci"**, Denetleyicinin onayı ve kabulüyle Denetleyici adına Kişisel Verilerin İşlenmesinde İşlemciye yardımcı olan bir şirket için Uygulanabilir Veri Koruma Yasalarında belirtilen anlama/anlamlara sahip olacaktır.
+18. **"Alt İşlemci"**, Denetleyicinin onayı ve kabulüyle Denetleyici adına Kişisel Verilerin İşlenmesinde İşlemciye yardımcı olan bir şirket için Uygulanabilir Veri Koruma Kanunlarında verilen anlamı taşıyacaktır.
 
-19. **"Birleşik Krallık GDPR"**, Birleşik Krallık'ın 2018 tarihli Avrupa Birliği (Çekilme) Yasası'nın 3. bölümü uyarınca Birleşik Krallık'ta uygulanan 2016/679 sayılı Avrupa Birliği Tüzüğü anlamına gelir.
+19. **"BK GDPR"** Birleşik Krallık'ın 2018 tarihli Avrupa Birliği (Çekilme) Yasası'nın 3. bölümü uyarınca Birleşik Krallık'ta uygulanan 2016/679 sayılı Avrupa Birliği Tüzüğü anlamına gelir.
 
-20. **"Birleşik Krallık Eki"**, S119A(1) Veri Koruma Yasası 2018 uyarınca Sınırlı Transferler yapan Taraflar için Bilgi Komiseri tarafından AEA SCC'lerine verilen uluslararası veri transferi eki anlamına gelir.
+20. **"BK Eki"**, S119A(1) Veri Koruma Yasası 2018 uyarınca Kısıtlı Transferler yapan Taraflar için Bilgi Komiseri tarafından AEA SCC'lerine verilen uluslararası veri transferi eki anlamına gelir.
 
-## Telif Hakkı {#credits}
+## Krediler {#credits}
 
-Bu belge [Ortak Kağıt DPA Standart Terimleri (Sürüm 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0)'ün bir türevidir ve [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) lisansı altında lisanslanmıştır.
+Bu belge [Ortak Kağıt DPA Standart Terimleri (Sürüm 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0)'ın bir türevidir ve [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) lisansı altında lisanslanmıştır.

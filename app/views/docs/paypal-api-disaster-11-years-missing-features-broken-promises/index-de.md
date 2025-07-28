@@ -103,7 +103,7 @@ Die Community-Mitglieder wurden allmählich frustriert:
 
 > „+1. Es sind fast 3 Jahre vergangen.“ – laudukang (was bedeutet, dass das Problem seit ~2014 besteht)
 
-Der [ursprünglicher Community-Beitrag](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) aus dem Jahr 2017 zeigt, wie Entwickler um diese grundlegende Funktionalität betteln. PayPal reagierte darauf mit der Archivierung des Repositorys, in dem Benutzer das Problem meldeten.
+Der [ursprünglicher Community-Beitrag](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) aus dem Jahr 2017 zeigt, wie Entwickler um diese grundlegende Funktionalität bettelten. PayPal reagierte darauf mit der Archivierung des Repositorys, in dem das Problem gemeldet wurde.
 
 ## 2020: Wir geben ihnen umfassendes Feedback {#2020-we-give-them-extensive-feedback}
 
@@ -129,7 +129,7 @@ Mark Stuart fand das Problem mit dem Zugriffstoken besonders besorgniserregend:
 
 > Normalerweise hören wir nichts von Problemen im Zusammenhang mit der Generierung von Zugriffstoken.
 
-### Teams beteiligten sich, Versprechen wurden gemacht {#teams-got-involved-promises-were-made}
+### Teams haben sich beteiligt, Versprechen wurden gemacht {#teams-got-involved-promises-were-made}
 
 Als wir weitere Probleme entdeckten, beteiligten sich weitere Teams bei PayPal an der Diskussion. Darshan Raju vom UI-Team für Abonnementverwaltung beteiligte sich ebenfalls und sagte:
 
@@ -162,8 +162,8 @@ Und jetzt wird es richtig interessant. Jede einzelne Person, die unser Feedback 
 
 **Technische Führungskräfte, die Versprechungen machten und dann gingen:**
 
-* **Mark Stuart** (versprochenes Feedback würde „Katalysator“ sein) → [Jetzt bei Ripple](https://www.linkedin.com/in/markstuartsf)
-* **Jim Magats** (18 Jahre PayPal-Veteran) → [CEO von MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
+* **Mark Stuart** (versprochenes Feedback wäre ein Katalysator) → [Jetzt bei Ripple](https://www.linkedin.com/in/markstuartsf)
+* **Jim Magats** (18 Jahre PayPal-Erfahrung) → [CEO von MX](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022)
 * **John Kunze** (Vizepräsident Global Consumer Product) → [Im Ruhestand](https://www.linkedin.com/in/john-kunze-5724a86) (2023)
 * **Edwin Aoki** (einer der letzten Verbliebenen) → [Bin gerade zum Nasdaq aufgebrochen](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (Januar 2025)
 
@@ -185,7 +185,7 @@ Am 30. Juni 2025 haben wir uns direkt an den neuen CEO von PayPal, Alex Chriss, 
 
 Michelle Gill, EVP und General Manager für Kleinunternehmen und Finanzdienstleistungen, antwortete:
 
-Vielen Dank, Nick, dass du Alex in BCC verschoben hast. Wir haben uns seit deinem letzten Beitrag damit befasst. Wir werden dich noch vor Ende der Woche anrufen. Kannst du mir bitte deine Kontaktdaten schicken, damit sich einer meiner Kollegen melden kann? Michelle
+Vielen Dank, Nick, dass du Alex in BCC verschoben hast. Wir haben uns seit deinem letzten Beitrag damit befasst. Wir werden dich noch vor Ende der Woche anrufen. Könntest du mir bitte deine Kontaktdaten schicken, damit sich einer meiner Kollegen melden kann? Michelle
 
 ### Unsere Antwort: Keine weiteren Meetings {#our-response-no-more-meetings}
 
@@ -210,7 +210,7 @@ GET /v1/billing/subscriptions
 Authorization: Bearer {access_token}
 ```
 
-### Der "Simple CRUD" Widerspruch {#the-simple-crud-contradiction}
+### Der „Simple CRUD“-Widerspruch {#the-simple-crud-contradiction}
 
 Als wir darauf hinwiesen, dass es sich hierbei um eine grundlegende CRUD-Funktionalität handele, die es eigentlich schon seit 2014 geben sollte, war Martys Antwort vielsagend:
 
@@ -222,7 +222,7 @@ Diese Antwort zeigt, dass er seine eigene API nicht versteht. Wenn „einfache C
 
 > Wenn „einfache CRUD-Operationen Teil der Kern-API sind“, wo ist dann der Endpunkt für die Abonnementliste? Entwickler fordern diese „einfache CRUD-Operation“ seit 2014. Das ist elf Jahre her. Jeder andere Zahlungsprozessor verfügt seit dem ersten Tag über diese grundlegende Funktionalität.
 
-### Die Trennung wird deutlich {#the-disconnect-becomes-clear}
+### Die Trennung wird klar {#the-disconnect-becomes-clear}
 
 Der Austausch mit Alex Chriss, Michelle Gill und Marty Brodbeck im Jahr 2025 zeigt die gleiche organisatorische Dysfunktion:
 
@@ -247,7 +247,7 @@ Im März 2021 berichteten wir, dass das Geschäfts-E-Mail-System von PayPal fals
 
 Mark Stuart erkannte das Problem an:
 
-> Danke, Nick! Ich stelle auf BCC um. @Prasy, ist Ihr Team für diese E-Mail zuständig oder wissen Sie, wer es ist? Der Hinweis „Niftylettuce, LLC, wir werden Ihnen keine Rechnungen mehr stellen“ lässt mich vermuten, dass es eine Verwechslung zwischen Adressat und Inhalt der E-Mail gibt.
+> Danke, Nick! Ich stelle auf BCC um. @Prasy, ist Ihr Team für diese E-Mail zuständig oder wissen Sie, wer es ist? Die Nachricht „Niftylettuce, LLC, wir werden Ihnen keine Rechnungen mehr stellen“ lässt mich vermuten, dass es eine Verwechslung zwischen Adressat und Inhalt der E-Mail gibt.
 
 **Ergebnis**: Das Problem wurde tatsächlich behoben! Mark Stuart bestätigte:
 
@@ -282,11 +282,11 @@ Im November 2021 haben wir kritische Probleme mit der Sandbox-Umgebung von PayPa
 
 **Ergebnis**: Keine Antwort, keine Lösung. Entwickler haben weiterhin Probleme mit der Zuverlässigkeit der Sandbox.
 
-### 2021: Berichte, dass das System völlig kaputt ist {#2021-reports-system-completely-broken}
+### 2021: Meldet, dass das System völlig kaputt ist {#2021-reports-system-completely-broken}
 
 Im Mai 2021 berichteten wir, dass das Download-System von PayPal für Transaktionsberichte völlig kaputt war:
 
-> Das Melden von Downloads scheint derzeit nicht zu funktionieren und das schon den ganzen Tag. Außerdem sollte man wahrscheinlich eine E-Mail-Benachrichtigung erhalten, wenn es fehlschlägt.
+> Das Melden von Downloads funktioniert anscheinend momentan nicht und schon den ganzen Tag nicht. Außerdem sollte man wahrscheinlich eine E-Mail-Benachrichtigung erhalten, wenn es fehlschlägt.
 
 Wir haben auch auf das Desaster bei der Sitzungsverwaltung hingewiesen:
 
@@ -381,7 +381,7 @@ Typische PayPal-Fehlermeldungen – kryptisch und wenig hilfreich
 
 ### SDK-Probleme {#sdk-problems}
 
-* Einmalzahlungen und Abonnements können nicht gleichzeitig verarbeitet werden, ohne dass komplexe Workarounds erforderlich sind, die das Austauschen und Neu-Rendering von Schaltflächen beim erneuten Laden des SDK mit Skript-Tags erfordern.
+* Einmalzahlungen und Abonnements können nicht gleichzeitig verarbeitet werden, ohne dass komplexe Workarounds erforderlich sind, die das Austauschen und erneute Rendern von Schaltflächen beim erneuten Laden des SDK mit Skript-Tags erfordern.
 * Das JavaScript SDK verstößt gegen grundlegende Konventionen (Klassennamen in Kleinbuchstaben, keine Instanzprüfung).
 * Fehlermeldungen geben nicht an, welche Felder fehlen.
 * Inkonsistente Datentypen (Beträge werden als Zeichenfolgen statt als Zahlen angegeben).
@@ -462,7 +462,7 @@ Unklare Nachricht und immer noch keine Lösung. Keine Informationen, Hinweise od
 
 ## Warum wir PayPal nicht einfach fallen lassen können {#why-we-cant-just-drop-paypal}
 
-Trotz all dieser Probleme können wir PayPal nicht vollständig aufgeben, da einige Kunden nur PayPal als Zahlungsoption nutzen. Wie ein Kunde auf unserer [Statusseite](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515) schrieb:
+Trotz all dieser Probleme können wir PayPal nicht vollständig aufgeben, da einige Kunden nur PayPal als Zahlungsoption nutzen. Wie ein Kunde auf unserer [Statusseite](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515)-Seite schrieb:
 
 > PayPal ist meine einzige Zahlungsmöglichkeit
 
@@ -472,7 +472,7 @@ Trotz all dieser Probleme können wir PayPal nicht vollständig aufgeben, da ein
 
 Da PayPal keine grundlegende Abonnementliste bereitstellt, hat die Entwickler-Community Workarounds entwickelt. Wir haben ein Skript zur Verwaltung von PayPal-Abonnements erstellt: [set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-Dieses Skript verweist auf eine [Gemeinschaftskern](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4), auf der Entwickler Lösungen austauschen. Benutzer sind tatsächlich [dankt uns](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775) dafür verantwortlich, das bereitzustellen, was PayPal schon vor Jahren hätte entwickeln sollen.
+Dieses Skript verweist auf einen [Gemeinschaftskern](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4), wo Entwickler Lösungen teilen. Benutzer sind tatsächlich [dankt uns](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775), weil sie das bereitstellen, was PayPal schon vor Jahren hätte entwickeln sollen.
 
 ## Blockieren von PayPal-Vorlagen aufgrund von Phishing {#blocking-paypal-templates-due-to-phishing}
 
@@ -488,7 +488,7 @@ Diese E-Mail wurde an `abuse@microsoft.com` weitergeleitet, da es sich offenbar 
 
 ### Unsere Implementierung {#our-implementation}
 
-Sie können unsere PayPal-spezifische Filterung in unserem [E-Mail-Filtercode](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) sehen:
+Sie können unsere PayPal-spezifische Filterung sehen, die in unserem [E-Mail-Filtercode](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) implementiert ist:
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -515,7 +515,7 @@ if (
 }
 ```
 
-### Warum wir PayPal blockieren mussten {#why-we-had-to-block-paypal}
+### Warum wir PayPal sperren mussten {#why-we-had-to-block-paypal}
 
 Wir haben dies eingeführt, weil PayPal sich trotz wiederholter Meldungen an die Missbrauchsteams weigerte, massive Spam-, Phishing- und Betrugsprobleme zu beheben. Zu den von uns blockierten E-Mail-Typen gehören:
 
@@ -550,7 +550,7 @@ Dies ist in der Sicherheitsforschung dokumentiert: [Vorsicht vor PayPal-Adressbe
 
 ### Auswirkungen auf die reale Welt: Neuartige PayPal-Betrügereien {#real-world-impact-novel-paypal-scams}
 
-Das Problem geht über das schlechte Design der Vorlagen hinaus. Das Rechnungssystem von PayPal ist so leicht auszunutzen, dass Betrüger es regelmäßig missbrauchen, um legitim aussehende betrügerische Rechnungen zu versenden. Der Sicherheitsforscher Gavin Anderegg dokumentierte [Ein neuartiger PayPal-Betrug](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), wie Betrüger echte PayPal-Rechnungen versenden, die alle Authentifizierungsprüfungen bestehen:
+Das Problem geht über das schlechte Design der Vorlagen hinaus. Das Rechnungssystem von PayPal ist so leicht auszunutzen, dass Betrüger es regelmäßig missbrauchen, um legitim aussehende betrügerische Rechnungen zu versenden. Der Sicherheitsforscher Gavin Anderegg dokumentierte [Ein neuartiger PayPal-Betrug](https://anderegg.ca/2023/02/01/a-novel-paypal-scam), wo Betrüger echte PayPal-Rechnungen versenden, die alle Authentifizierungsprüfungen bestehen:
 
 > „Bei genauerer Betrachtung der Quelle sah die E-Mail so aus, als käme sie tatsächlich von PayPal (SPF, DKIM und DMARC wurden alle bestanden). Der Button verlinkte außerdem auf eine scheinbar legitime PayPal-URL … Erst nach einer Sekunde dämmerte mir, dass es sich um eine seriöse E-Mail handelte. Ich hatte gerade eine zufällige ‚Rechnung‘ von einem Betrüger erhalten.“
 
@@ -569,7 +569,7 @@ Dies veranschaulicht das Problem perfekt: Die eigenen legitimen Systeme von PayP
 
 Um die Sache noch schlimmer zu machen, beeinträchtigte dies unsere Zustellbarkeit bei Yahoo, was zu Kundenbeschwerden und stundenlangen sorgfältigen Tests und Musterprüfungen führte.
 
-## Der rückwärts gerichtete KYC-Prozess von PayPal {#paypals-backwards-kyc-process}
+## PayPals rückwärts gerichteter KYC-Prozess {#paypals-backwards-kyc-process}
 
 Einer der frustrierendsten Aspekte der PayPal-Plattform ist ihr rückständiger Ansatz in Bezug auf Compliance und Know-Your-Customer-Verfahren (KYC). Im Gegensatz zu anderen Zahlungsabwicklern ermöglicht PayPal Entwicklern, ihre APIs zu integrieren und Zahlungen in der Produktion einzuziehen, bevor die ordnungsgemäße Verifizierung abgeschlossen ist.
 
@@ -584,7 +584,7 @@ Jeder legitime Zahlungsabwickler folgt dieser logischen Abfolge:
 
 Dies schützt sowohl den Zahlungsabwickler als auch den Händler, indem die Einhaltung der Vorschriften sichergestellt wird, bevor Geld den Besitzer wechselt.
 
-### Wie PayPal tatsächlich funktioniert {#how-paypal-actually-works}
+### So funktioniert PayPal tatsächlich {#how-paypal-actually-works}
 
 Der Prozess von PayPal ist völlig verkehrt herum:
 
@@ -700,7 +700,7 @@ Authorization: Bearer access_token
 **Verfügbare Endpunkte von PayPal:**
 
 * `POST /v1/billing/subscriptions` – Abonnement erstellen
-* `GET /v1/billing/subscriptions/{id}` – EIN Abonnement abschließen (sofern Sie die ID kennen)
+* `GET /v1/billing/subscriptions/{id}` – EIN Abonnement abschließen (falls Sie die ID kennen)
 * `PATCH /v1/billing/subscriptions/{id}` – Abonnement aktualisieren
 * `POST /v1/billing/subscriptions/{id}/cancel` – Abonnement kündigen
 * `POST /v1/billing/subscriptions/{id}/suspend` – Abonnement pausieren
@@ -714,7 +714,7 @@ Authorization: Bearer access_token
 
 PayPal ist der einzige große Zahlungsabwickler, der Entwickler dazu zwingt, Abonnement-IDs manuell in ihren eigenen Datenbanken zu verfolgen.
 
-## PayPals systematische Vertuschung: 6 Millionen Stimmen zum Schweigen gebracht {#paypals-systematic-cover-up-silencing-6-million-voices}
+## PayPals systematische Vertuschung: 6 Millionen Stimmen werden zum Schweigen gebracht {#paypals-systematic-cover-up-silencing-6-million-voices}
 
 In einem Schritt, der PayPals Ansatz im Umgang mit Kritik perfekt verkörpert, hat das Unternehmen vor Kurzem sein gesamtes Community-Forum offline genommen, wodurch über sechs Millionen Mitglieder effektiv zum Schweigen gebracht und Hunderttausende von Posts gelöscht wurden, die seine Fehler dokumentierten.
 
@@ -722,18 +722,18 @@ In einem Schritt, der PayPals Ansatz im Umgang mit Kritik perfekt verkörpert, h
 
 Die ursprüngliche PayPal-Community unter `paypal-community.com` hatte **6.003.558 Mitglieder** und enthielt Hunderttausende von Beiträgen, Fehlerberichten, Beschwerden und Diskussionen über PayPals API-Fehler. Dies entspricht über einem Jahrzehnt dokumentierter Beweise für die systematischen Probleme von PayPal.
 
-Am 30. Juni 2025 nahm PayPal das gesamte Forum stillschweigend offline. Alle `paypal-community.com`-Links liefern nun 404-Fehler. Dies war weder eine Migration noch ein Upgrade.
+Am 30. Juni 2025 hat PayPal das gesamte Forum stillschweigend offline genommen. Alle `paypal-community.com`-Links geben nun 404-Fehler zurück. Dies war keine Migration oder Aktualisierung.
 
 ### Die Rettung durch Drittanbieter {#the-third-party-rescue}
 
-Glücklicherweise hat ein Drittanbieterdienst unter [ppl.lithium.com](https://ppl.lithium.com/) einen Teil der Inhalte gesichert, sodass wir auf die Diskussionen zugreifen können, die PayPal zu verbergen versuchte. Diese Sicherung durch den Drittanbieter ist jedoch unvollständig und könnte jederzeit verschwinden.
+Glücklicherweise hat ein Drittanbieterdienst unter [ppl.lithium.com](https://ppl.lithium.com/) einen Teil der Inhalte gespeichert, sodass wir auf die Diskussionen zugreifen können, die PayPal zu verbergen versuchte. Diese Speicherung durch den Drittanbieter ist jedoch unvollständig und könnte jederzeit verloren gehen.
 
 Dieses Muster der Beweisverschleierung ist für PayPal nichts Neues. Das Unternehmen verfügt über eine dokumentierte Geschichte von:
 
 * Kritische Fehlerberichte werden aus der öffentlichen Ansicht entfernt.
 * Entwicklertools werden ohne Vorankündigung eingestellt.
 * APIs werden ohne entsprechende Dokumentation geändert.
-* Diskussionen in der Community über ihre Fehler werden unterdrückt.
+* Community-Diskussionen über ihre Fehler werden unterdrückt.
 
 Die Abschaltung des Forums stellt den bislang dreistesten Versuch dar, ihre systematischen Fehler vor der Öffentlichkeit zu verbergen.
 
@@ -741,7 +741,7 @@ Die Abschaltung des Forums stellt den bislang dreistesten Versuch dar, ihre syst
 
 Während PayPal eifrig Feedback-Sitzungen organisierte und Versprechungen machte, ist das zentrale Zahlungsabwicklungssystem seit über elf Jahren grundlegend kaputt. Die Beweise sind verheerend.
 
-### Verlust von 1.899 $ durch weitergeleitete E-Mails {#forward-emails-1899-loss}
+### Verlust von 1.899 $ durch Weiterleitung der E-Mail {#forward-emails-1899-loss}
 
 In unseren Produktionssystemen entdeckten wir 108 PayPal-Zahlungen im Gesamtwert von **1.899 US-Dollar**, die aufgrund von Erfassungsfehlern bei PayPal verloren gingen. Diese Zahlungen weisen ein einheitliches Muster auf:
 
@@ -780,9 +780,9 @@ Die Reaktion der Community im Jahr 2013 war aufschlussreich:
 
 **Über 11 Jahre später arbeiten sie immer noch daran.**
 
-### Das Eingeständnis von 2016: PayPal bricht sein eigenes SDK {#the-2016-admission-paypal-breaks-their-own-sdk}
+### Das Eingeständnis von 2016: PayPal macht sein eigenes SDK kaputt {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-Im Jahr 2016 dokumentierte PayPals GitHub-Repository [massive Erfassungsfehler](https://github.com/paypal/PayPal-PHP-SDK/issues/660), die das offizielle PHP SDK beeinträchtigten. Das Ausmaß war erschütternd:
+Im Jahr 2016 dokumentierte PayPals GitHub-Repository den Fehler [massive Erfassungsfehler](https://github.com/paypal/PayPal-PHP-SDK/issues/660), der das offizielle PHP SDK beeinträchtigte. Das Ausmaß war erschütternd:
 
 > „Seit dem 20.09.2016 schlagen alle PayPal-Erfassungsversuche mit der Fehlermeldung ‚INVALID_RESOURCE_ID – Die angeforderte Ressourcen-ID wurde nicht gefunden.‘ fehl. Zwischen dem 19.09. und dem 20.09. wurde an der API-Integration nichts geändert. **100 % der Erfassungsversuche seit dem 20.09. haben diesen Fehler zurückgegeben.**“
 
@@ -817,9 +817,9 @@ Der Händler beschreibt dasselbe Muster, das bei der Weiterleitung von E-Mails a
 
 ### Die Webhook-Zuverlässigkeitskatastrophe {#the-webhook-reliability-disaster}
 
-Ein weiterer [erhaltene Community-Diskussion](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) enthüllt, dass das Webhook-System von PayPal grundsätzlich unzuverlässig ist:
+Ein weiterer [erhaltene Community-Diskussion](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) zeigt, dass das Webhook-System von PayPal grundsätzlich unzuverlässig ist:
 
-> „Theoretisch sollte es zwei Ereignisse (CHECKOUT.ORDER.APPROVED und PAYMENT.CAPTURE.COMPLETED) vom Webhook-Ereignis geben. Tatsächlich **werden diese beiden Ereignisse selten sofort empfangen, PAYMENT.CAPTURE.COMPLETED kann meistens nicht empfangen werden oder würde erst nach ein paar Stunden empfangen werden.**“
+> „Theoretisch sollte es zwei Ereignisse (CHECKOUT.ORDER.APPROVED und PAYMENT.CAPTURE.COMPLETED) vom Webhook-Ereignis geben. Tatsächlich **werden diese beiden Ereignisse selten sofort empfangen, PAYMENT.CAPTURE.COMPLETED kann meistens nicht empfangen werden oder würde erst nach ein paar Stunden empfangen werden.“
 
 Für Abonnementzahlungen:
 
@@ -864,9 +864,9 @@ Dies zwingt jeden Händler dazu:
 
 Das Capture-Bug-Desaster ist nur ein Beispiel für die systematische Vorgehensweise von PayPal, Kunden zu täuschen und ihre Fehler zu vertuschen.
 
-### Maßnahmen des New Yorker Finanzministeriums {#the-new-york-department-of-financial-services-action}
+### Maßnahmen des New York Department of Financial Services {#the-new-york-department-of-financial-services-action}
 
-Im Januar 2025 erließ das New York Department of Financial Services eine [Zwangsmaßnahmen gegen PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf)-Strafanzeige wegen betrügerischer Praktiken, was zeigt, dass das Täuschungsmuster von PayPal weit über seine APIs hinausgeht.
+Im Januar 2025 verhängte das New York Department of Financial Services eine [Zwangsmaßnahmen gegen PayPal](https://www.dfs.ny.gov/system/files/documents/2025/01/ea20250123-paypal-inc.pdf)-Strafanzeige wegen betrügerischer Praktiken. Dies zeigt, dass das Betrugsmuster von PayPal weit über die APIs hinausgeht.
 
 Diese Regulierungsmaßnahme zeigt, dass PayPal bereit ist, im gesamten Unternehmen irreführende Praktiken anzuwenden, nicht nur bei seinen Entwicklertools.
 
@@ -878,7 +878,7 @@ Das Muster ist klar:
 
 1. **API-Fehler**: Defekte Funktionen verbergen, Händler beschuldigen
 2. **Community zum Schweigen bringen**: Hinweise auf Probleme beseitigen
-3. **Regelverstöße**: Irreführende Praktiken
+3. **Verstöße gegen Vorschriften**: Täuschende Praktiken
 4. **Affiliate-Diebstahl**: Provisionen durch technische Manipulation stehlen
 
 ### Die Kosten der Nachlässigkeit von PayPal {#the-cost-of-paypals-negligence}
@@ -920,7 +920,7 @@ Das Muster ist klar:
 
 In der Zwischenzeit sind Entwickler gezwungen, Workarounds zu erstellen, die Sicherheit zu gefährden und mit defekten Benutzeroberflächen zu kämpfen, nur um Zahlungen akzeptieren zu können.
 
-Wenn Sie ein Zahlungssystem entwickeln, profitieren Sie von unserer Erfahrung: Bauen Sie Ihr [Trifecta-Ansatz](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) mit mehreren Prozessoren auf, aber erwarten Sie nicht, dass PayPal Ihnen die benötigten Grundfunktionen bietet. Planen Sie von Anfang an Workarounds ein.
+Wenn Sie ein Zahlungssystem entwickeln, profitieren Sie von unserer Erfahrung: Bauen Sie Ihren [Trifecta-Ansatz](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) mit mehreren Prozessoren auf, erwarten Sie jedoch nicht, dass PayPal die benötigten Grundfunktionen bereitstellt. Planen Sie von Anfang an Workarounds ein.
 
 > Dieser Beitrag dokumentiert unsere elfjährige Erfahrung mit den PayPal-APIs bei Forward Email. Alle Codebeispiele und Links stammen aus unseren aktuellen Produktionssystemen. Wir unterstützen PayPal-Zahlungen trotz dieser Probleme weiterhin, da manche Kunden keine andere Wahl haben.
 

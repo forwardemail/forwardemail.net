@@ -14,7 +14,7 @@
 
 Forward Email is de enige 100% open-source e-mailhostingservice die zich richt op beveiliging en privacy. Lees meer over onze geschiedenis op [onze Over ons pagina](/about).
 
-Onze dienst is in 2017 opgericht en verzorgt e-mail voor meer dan 500.000 domeinen, waaronder bekende gebruikers zoals [De Amerikaanse Marine Academie](/blog/docs/federal-government-email-service-section-889-compliant), [Canoniek/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [De Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [meerdere universiteiten](/blog/docs/alumni-email-forwarding-university-case-study), overheden en meer.
+Onze dienst is in 2017 opgericht en verzorgt e-mail voor meer dan 500.000 domeinen, waaronder bekende gebruikers zoals [De Amerikaanse Marine Academie](/blog/docs/federal-government-email-service-section-889-compliant), [Canoniek/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [De Linux Foundation](/blog/docs/linux-foundation-email-enterprise-case-study), [verschillende universiteiten](/blog/docs/alumni-email-forwarding-university-case-study), overheden en meer.
 
 Ons doel is om het e-mail- en beveiligingsinfrastructuurplatform van ondernemingsniveau te zijn, en we houden ons aan [verschillende principes](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
@@ -22,9 +22,9 @@ Bent u lid van de pers, journalist of vertegenwoordiger van de media en wilt u m
 
 ## Lettertypen {#fonts}
 
-* **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (vetgedrukt; 700 gewicht)
-* **Body:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normaal; 400 gewicht)
-* **Koppen:** [VC Honing](https://verycoolstudio.com/typefaces/honey) (vetgedrukt; 700 gewicht)
+* **Logo:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (vetgedrukt; gewicht 700)
+* **Body:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (normaal; gewicht 400)
+* **Koppen:** [VC Honing](https://verycoolstudio.com/typefaces/honey) (vetgedrukt; gewicht 700)
 * **Pictogrammen:** [Lettertype Awesome 5](https://fontawesome.com/)
 
 ## Kleuren {#colors}

@@ -3,47 +3,47 @@
 ## Tartalomjegyzék {#table-of-contents}
 
 * [Előszó](#foreword)
-* [Hogyan működik az e-mail-továbbítás SMTP-feldolgozása](#how-forward-emails-smtp-processing-works)
-  * [E-mail sor és újrapróbálkozás rendszer](#email-queue-and-retry-system)
+* [Hogyan működik a továbbított e-mail SMTP-feldolgozása?](#how-forward-emails-smtp-processing-works)
+  * [E-mail sorkezelő és újrapróbálkozó rendszer](#email-queue-and-retry-system)
   * [Dummy-biztos a megbízhatóság érdekében](#dummy-proofed-for-reliability)
 * [Node.js integráció](#nodejs-integration)
   * [Nodemailer használata](#using-nodemailer)
-  * [Express.js használatával](#using-expressjs)
+  * [Express.js használata](#using-expressjs)
 * [Python integráció](#python-integration)
-  * [Az smtplib használatával](#using-smtplib)
+  * [smtplib használata](#using-smtplib)
   * [Django használata](#using-django)
 * [PHP integráció](#php-integration)
   * [PHPMailer használata](#using-phpmailer)
   * [Laravel használata](#using-laravel)
 * [Ruby integráció](#ruby-integration)
-  * [A Ruby Mail Gem használata](#using-ruby-mail-gem)
+  * [Ruby Mail Gem használata](#using-ruby-mail-gem)
 * [Java integráció](#java-integration)
-  * [JavaMail API használata](#using-javamail-api)
-* [E-mail kliens konfigurációja](#email-client-configuration)
+  * [A Java Mail API használata](#using-javamail-api)
+* [E-mail kliens konfiguráció](#email-client-configuration)
   * [Thunderbird](#thunderbird)
   * [Apple Mail](#apple-mail)
-  * [Gmail (levél küldése másként)](#gmail-send-mail-as)
+  * [Gmail (E-mail küldése másként)](#gmail-send-mail-as)
 * [Hibaelhárítás](#troubleshooting)
   * [Gyakori problémák és megoldások](#common-issues-and-solutions)
-  * [Segítség kérése](#getting-help)
+  * [Segítségkérés](#getting-help)
 * [További források](#additional-resources)
 * [Következtetés](#conclusion)
 
 ## Előszó {#foreword}
 
-Ez az útmutató részletes példákat mutat be a Forward Email SMTP szolgáltatásával való integráláshoz különféle programozási nyelvek, keretrendszerek és e-mail kliensek használatával. SMTP szolgáltatásunkat úgy terveztük, hogy megbízható, biztonságos és könnyen integrálható legyen a meglévő alkalmazásaival.
+Ez az útmutató részletes példákat mutat be arról, hogyan integrálható a Forward Email SMTP szolgáltatásával különböző programozási nyelvek, keretrendszerek és e-mail kliensek használatával. SMTP szolgáltatásunkat úgy terveztük, hogy megbízható, biztonságos és könnyen integrálható legyen a meglévő alkalmazásaival.
 
 ## Hogyan működik az e-mailek továbbításának SMTP-feldolgozása {#how-forward-emails-smtp-processing-works}
 
-Mielőtt belemerülnénk az integrációs példákba, fontos megérteni, hogyan dolgozza fel SMTP-szolgáltatásunk az e-maileket:
+Mielőtt belemerülnénk az integrációs példákba, fontos megérteni, hogyan dolgozza fel az SMTP szolgáltatásunk az e-maileket:
 
 ### E-mail sorkezelő és újrapróbálkozási rendszer {#email-queue-and-retry-system}
 
-Amikor SMTP-n keresztül küld el e-mailt szervereinkre:
+Amikor SMTP-n keresztül küld e-mailt a szervereinknek:
 
 1. **Kezdeti feldolgozás**: Az e-mailt ellenőrzik, átvizsgálják kártevők szempontjából és ellenőrzik a spamszűrők ellen.
 2. **Intelligens sorba állítás**: Az e-maileket egy kifinomult sorrendszerbe helyezik a kézbesítéshez.
-3. **Intelligens újrapróbálkozási mechanizmus**: Ha a kézbesítés átmenetileg meghiúsul, rendszerünk a következőket teszi:
+3. **Intelligens újrapróbálkozási mechanizmus**: Ha a kézbesítés átmenetileg meghiúsul, a rendszerünk a következőket teszi:
 * Elemzi a hibaüzenetet a `getBounceInfo` függvényünkkel.
 * Meghatározza, hogy a probléma átmeneti (pl. „próbálja újra később”, „ideiglenesen elhalasztva”) vagy állandó (pl. „felhasználó ismeretlen”).
 * Ideiglenes problémák esetén megjelöli az e-mailt újrapróbálkozásra.
@@ -52,24 +52,24 @@ Amikor SMTP-n keresztül küld el e-mailt szervereinkre:
 5. **Kézbesítési állapotértesítések**: A feladók értesítést kapnak e-mailjeik állapotáról (kézbesített, késleltetett vagy visszapattanó).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> A sikeres kézbesítés után a kimenő SMTP e-mailek tartalmát egy konfigurálható megőrzési időszak (alapértelmezett 30 nap) elteltével a rendszer biztonsági és adatvédelmi okokból kitakarja. Csak egy helykitöltő üzenet marad, amely jelzi a sikeres kézbesítést.
 
-### Megbízhatósági tesztvizsgálattal tesztelve {#dummy-proofed-for-reliability}
+### Megbízhatósági teszttel tesztelve {#dummy-proofed-for-reliability}
 
-Rendszerünket különféle éles esetek kezelésére tervezték:
+Rendszerünket úgy terveztük, hogy különféle szélsőséges eseteket kezeljen:
 
 * Ha a rendszer tiltólistát észlel, az e-mailt automatikusan újrapróbáljuk.
 * Hálózati problémák esetén a kézbesítést újrapróbáljuk.
 * Ha a címzett postaládája megtelt, a rendszer később újrapróbálkozik.
 * Ha a fogadó szerver átmenetileg nem érhető el, továbbra is próbálkozunk.
 
-Ez a megközelítés jelentősen javítja a kézbesítési arányt, miközben megőrzi a magánéletet és a biztonságot.
+Ez a megközelítés jelentősen javítja a kézbesítési arányokat, miközben megőrzi az adatvédelmet és a biztonságot.
 
-## Node.js integráció {#nodejs-integration}
+## Node.js integráció {#nodejs-integration}}
 
 ### Nodemailer használata {#using-nodemailer}
 
-A [Nodemailer](https://nodemailer.com/) egy népszerű modul Node.js alkalmazásokból történő e-mail küldéshez.
+A [Nodemailer](https://nodemailer.com/) egy népszerű modul e-mailek Node.js alkalmazásokból történő küldéséhez.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -107,7 +107,7 @@ sendEmail();
 
 ### Express.js használata {#using-expressjs}
 
-A következőképpen integrálhatja a Forward Email SMTP-t egy Express.js alkalmazással:
+Így integrálhatja a Forward Email SMTP-t egy Express.js alkalmazással:
 
 ```javascript
 const express = require('express');
@@ -159,9 +159,9 @@ app.listen(port, () => {
 });
 ```
 
-## Python integráció {#python-integration}
+## Python-integráció {#python-integration}
 
-### Az smtplib {#using-smtplib} használata
+### Az smtplib {#using-smtplib}} használata
 
 ```python
 import smtplib
@@ -204,7 +204,7 @@ except Exception as e:
 
 ### Django használata {#using-django}
 
-Django alkalmazások esetén add hozzá a következőket a `settings.py` kódodhoz:
+Django alkalmazások esetén add hozzá a következőket a `settings.py`-hoz:
 
 ```python
 # Email settings
@@ -236,7 +236,7 @@ def send_email_view(request):
 
 ## PHP integráció {#php-integration}
 
-### A PHPMailer használata {#using-phpmailer}
+### PHPMailer használata {#using-phpmailer}
 
 ```php
 <?php
@@ -277,7 +277,7 @@ try {
 
 ### Laravel használata {#using-laravel}
 
-Laravel alkalmazások esetén frissítsd a `.env` fájlt:
+Laravel alkalmazások esetén frissítse a `.env` fájlt:
 
 ```sh
 MAIL_MAILER=smtp
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Ezután küldjön e-maileket a Laravel's Mail homlokzatával:
+Ezután küldj e-maileket a Laravel Mail facade használatával:
 
 ```php
 <?php
@@ -312,7 +312,7 @@ class EmailController extends Controller
 }
 ```
 
-## Ruby integráció {#ruby-integration}
+## Ruby integráció {#ruby-integration}}
 
 ### Ruby Mail Gem használata {#using-ruby-mail-gem}
 
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## E-mail kliens konfiguráció {#email-client-configuration}
 
-### Thunderbird {#thunderbird}
+IDEIGLENES_HELYTARTÓ_0 Thunderbird {IDEIGLENES_HELYTARTÓ_1
 
 ```mermaid
 flowchart TD
@@ -502,9 +502,9 @@ flowchart TD
 * Győződjön meg arról, hogy rendszere CA-tanúsítványai naprakészek
 * Próbálja ki az explicit TLS-t az implicit TLS helyett
 
-### Segítségkérés {#getting-help}
+### Segítség kérése {#getting-help}
 
-Ha itt nem tárgyalt problémákkal találkozik, kérjük:
+Ha olyan problémákkal találkozik, amelyekre itt nem tér ki, kérjük:
 
 1. A gyakori kérdésekért tekintse meg a [GYIK oldal](/faq) oldalunkat.
 2. Részletes információkért tekintse át a [blogbejegyzés az e-mail kézbesítésről](/blog/docs/best-email-forwarding-service) oldalunkat.
@@ -512,13 +512,13 @@ Ha itt nem tárgyalt problémákkal találkozik, kérjük:
 
 ## További források {#additional-resources}
 
-* [E-mail dokumentáció továbbítása](/docs)
-* [SMTP-kiszolgáló korlátai és konfigurációja](/faq#what-are-your-outbound-smtp-limits)
-* [Útmutató e-mailben a bevált módszerekhez](/blog/docs/best-email-forwarding-service)
+* [E-mail továbbítási dokumentáció](/docs)
+* [SMTP szerver korlátai és konfigurációja](/faq#what-are-your-outbound-smtp-limits)
+* [E-mail bevált gyakorlatok útmutatója](/blog/docs/best-email-forwarding-service)
 * [Biztonsági gyakorlatok](/security)
 
 ## Következtetés {#conclusion}
 
-A Forward Email SMTP szolgáltatása megbízható, biztonságos és az adatvédelemre összpontosító módot kínál az alkalmazásokból és levelezőprogramokból származó e-mailek küldésére. Intelligens sorrendszerünknek, 5 napos újrapróbálkozási mechanizmusunknak és átfogó kézbesítési állapotértesítéseinknek köszönhetően biztos lehet benne, hogy e-mailjei célba érnek.
+A Forward Email SMTP szolgáltatása megbízható, biztonságos és adatvédelmet biztosító módot kínál e-mailek küldésére alkalmazásaiból és levelezőprogramjaiból. Intelligens várólistás rendszerünkkel, 5 napos újrapróbálkozási mechanizmusunkkal és átfogó kézbesítési állapotértesítéseinkkel biztos lehet benne, hogy e-mailjei eljutnak a címzetthez.
 
-Speciálisabb használati esetekért vagy egyéni integrációkért forduljon ügyfélszolgálatunkhoz.
+Speciálisabb használati esetekért vagy egyéni integrációkért kérjük, vegye fel a kapcsolatot ügyfélszolgálatunkkal.

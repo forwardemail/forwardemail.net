@@ -25,13 +25,13 @@
 ## 序文 {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> 当社のメールサービスは[100%オープンソース](https://github.com/forwardemail)であり、安全で暗号化されたSQLiteメールボックスを通じてプライバシーを重視しています。
 
 [IMAPサポート](/faq#do-you-support-receiving-email-with-imap) をリリースするまでは、永続的なデータ ストレージのニーズには MongoDB を使用していました。
 
 この技術は素晴らしいもので、現在でも使用されていますが、MongoDB で保存時の暗号化を行うには、Digital Ocean や Mongo Atlas などの MongoDB Enterprise を提供するプロバイダーを使用するか、エンタープライズ ライセンスを購入する必要があります (その後、営業チームの対応に追われることになります)。
 
-[メールを転送する](https://forwardemail.net) のチームは、開発者にとって使いやすく、スケーラブルで信頼性が高く、暗号化された IMAP メールボックス用ストレージソリューションを必要としていました。オープンソース開発者として、保存時の暗号化機能を利用するためにライセンス料を支払う必要があるテクノロジーを使用することは、[私たちの原則](#principles) にとって好ましくありませんでした。そこで私たちは、これらのニーズを満たすために、実験と調査を重ね、ゼロから新しいソリューションを開発しました。
+[メールを転送する](https://forwardemail.net) のチームは、開発者にとって使いやすく、拡張性と信頼性に優れた、IMAP メールボックス向けの暗号化ストレージソリューションを必要としていました。オープンソース開発者として、保存時の暗号化機能を利用するためにライセンス料を支払う必要があるテクノロジーを使用することは、[私たちの原則](#principles) にとって好ましくありませんでした。そこで私たちは、これらのニーズを満たすために、実験と調査を重ね、ゼロから新しいソリューションを開発しました。
 
 お客様のメールボックスを共有データベースに保存するのではなく、お客様専用のパスワード（お客様のみが持つパスワード）を使用して個別に暗号化し、保存します。**当社のメールサービスは非常に安全であるため、パスワードを忘れた場合、メールボックスは失われます**（その場合、オフラインバックアップで復元するか、最初からやり直す必要があります）。
 
@@ -47,12 +47,12 @@
 
 ## 仕組み {#how-does-it-work}
 
-1. Apple Mail、Thunderbird、Gmail、Outlook などのメール クライアントを使用して、ユーザー名とパスワードで当社の安全な [IMAP](/faq#do-you-support-receiving-email-with-imap) サーバーに接続します。
+1. Apple Mail、Thunderbird、Gmail、Outlook などのメール クライアントを使用して、ユーザー名とパスワードで安全な [IMAP](/faq#do-you-support-receiving-email-with-imap) サーバーに接続します。
 
 * ユーザー名は、`hello@example.com` のように、ドメインを含む完全なエイリアスです。
 * パスワードはランダムに生成され、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント > <i class="fa fa-angle-right"></i> ドメイン</a> > <i class="fa fa-angle-right"></i> エイリアス</strong>から <strong class="text-success"><i class="fa fa-key"></i> パスワードを生成</strong> をクリックした際に30秒間のみ表示されます。
 
-2. 接続が完了すると、メールクライアントは[IMAPプロトコルコマンド](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)をIMAPサーバーに送信し、メールボックスの同期を維持します。これには、メールの作成と下書きの保存、その他の操作（例：メールに「重要」ラベルを付ける、メールに「スパム/迷惑メール」フラグを付ける）が含まれます。
+2. 接続が完了すると、メールクライアントは[IMAPプロトコルコマンド](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)をIMAPサーバーに送信し、メールボックスの同期を維持します。これには、メールの作成と下書きの保存、その他の操作（例：メールに「重要」ラベルを付ける、メールに「スパム/迷惑メール」フラグを付けるなど）が含まれます。
 
 3. メール交換サーバー（一般に「MXサーバー」と呼ばれます）は、新しい受信メールを受信し、お客様のメールボックスに保存します。この処理が行われると、お客様のメールクライアントに通知が届き、メールボックスが同期されます。当社のメール交換サーバーは、お客様のメールを1人以上の受信者（[ウェブフック](/faq#do-you-support-webhooks)を含む）に転送したり、お客様の暗号化されたIMAPストレージにメールを保存したり、**またはその両方**を行うことができます。
 
@@ -88,7 +88,7 @@
          IMAP->>You: Success!
      ```
 
-5. [暗号化されたメールボックスのバックアップ](#backups) は毎日作成されます。また、いつでも新しいバックアップをリクエストしたり、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント > <i class="fa fa-angle-right"></i> ドメイン</a> > <i class="fa fa-angle-right"></i> エイリアス</a> から最新のバックアップをダウンロードしたりすることもできます。別のメールサービスに乗り換える場合でも、メールボックスとバックアップはいつでも簡単に移行、ダウンロード、エクスポート、消去できます。
+5. [暗号化されたメールボックスのバックアップ](#backups)は毎日作成されます。また、いつでも新しいバックアップをリクエストしたり、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント > <i class="fa fa-angle-right"></i> ドメイン</a> > <i class="fa fa-angle-right"></i> エイリアス</a>から最新のバックアップをダウンロードしたりすることもできます。別のメールサービスに乗り換える場合でも、メールボックスとバックアップはいつでも簡単に移行、ダウンロード、エクスポート、消去できます。
 
 ## テクノロジーズ {#technologies}
 
@@ -106,13 +106,13 @@
 | [MariaDB](https://mariadb.com/) | :white_check_mark: [For InnoDB only](https://mariadb.com/kb/en/data-at-rest-encryption-overview/#which-storage-engines-does-mariadb-encryption-support) | :x: リレーショナルデータベース | :white_check_mark: `GPLv2` と `BUSL-1.1` | :x: |
 | [CockroachDB](https://www.cockroachlabs.com/product/) | :x: [Enterprise-only feature](https://www.cockroachlabs.com/docs/v23.1/enterprise-licensing) | :x: リレーショナルデータベース | :x: `BUSL-1.1` など | :x: |
 
-> 上記の表には[いくつかのSQLiteデータベースストレージオプションを比較したブログ投稿](https://gcore.com/learning/comparing-litestream-rqlite-dqlite/) があります。
+> 上記の表には [いくつかのSQLiteデータベースストレージオプションを比較したブログ投稿](https://gcore.com/learning/comparing-litestream-rqlite-dqlite/) があります。
 
 ### セキュリティ {#security}
 
-メールボックスでは、常に[保存時の暗号化](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard))、[転送中の暗号化](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security))、:tangerine: [タンジェリン](https://tangeri.ne) を使用した [DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH")、および [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-ポリ1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) 暗号化を使用しています。さらに、トークンベースの2要素認証（[中間者攻撃](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) の影響を受ける可能性のあるSMSではなく）、ルートアクセスを無効にしたSSHキーのローテーション、制限されたIPアドレスによるサーバーへの排他的アクセスなどを採用しています。
+メールボックスでは、[保存時の暗号化](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard))、[転送中の暗号化](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security))、[DNS over HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) (「DoH」) 暗号化を常に使用しています。:tangerine: [タンジェリン](https://tangeri.ne)、[sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-ポリ1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) 暗号化も使用しています。さらに、トークンベースの2要素認証 ([中間者攻撃](https://en.wikipedia.org/wiki/Man-in-the-middle_attack) の影響を受けやすいSMSではなく)、ルートアクセスを無効化したSSHキーのローテーション、制限されたIPアドレスによるサーバーへの排他的アクセスなどを採用しています。
 
-[邪悪なメイドの攻撃](https://en.wikipedia.org/wiki/Evil_maid_attack) やサードパーティベンダーの不正な従業員による攻撃があった場合でも、**メールボックスは生成されたパスワードでのみ開けます**。SOC Type 2準拠のサーバープロバイダーであるCloudflare、DataPacket、Digital Ocean、Vultr以外のサードパーティベンダーには依存していませんのでご安心ください。
+[邪悪なメイドの攻撃](https://en.wikipedia.org/wiki/Evil_maid_attack) やサードパーティベンダーの不正な従業員による不正アクセスがあった場合でも、**メールボックスは生成されたパスワードでのみ開けます**。SOC Type 2準拠のサーバープロバイダーであるCloudflare、DataPacket、Digital Ocean、Vultr以外のサードパーティベンダーには依存していませんのでご安心ください。
 
 私たちの目標は、[単一障害点](https://en.wikipedia.org/wiki/Single_point_of_failure) をできるだけ少なくすることです。
 
@@ -122,9 +122,9 @@
 
 [SQLiteは非常に人気のある](https://www.sqlite.org/mostdeployed.html) 埋め込みデータベース – 現在、携帯電話とコンピューターで実行されています – [ほぼすべての主要技術で使用されている](https://www.sqlite.org/famous.html)。
 
-例えば、当社の暗号化サーバーには、`linux@example.com`、`info@example.com`、`hello@example.com` といったSQLiteデータベースメールボックスがあり、それぞれが`.sqlite` データベースファイルとして保存されています。データベースファイル名もメールアドレスと同じではなく、BSONオブジェクトIDと、メールボックスの所有者やメールアドレスが特定されない一意のUUID（例：`353a03f21e534321f5d6e267.sqlite`）を使用しています。
+例えば、暗号化サーバーには、`linux@example.com`、`info@example.com`、`hello@example.com` といったSQLiteデータベースメールボックスがあり、それぞれが`.sqlite`データベースファイルとして存在します。データベースファイル名もメールアドレスと同じではなく、BSONオブジェクトIDと、メールボックスの所有者やメールアドレスが特定されない一意のUUID（例：`353a03f21e534321f5d6e267.sqlite`）を使用しています。
 
-これらのデータベースはそれぞれ、[sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-ポリ1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) を使用して、あなただけが知っているパスワードで暗号化されています。つまり、メールボックスは個別に暗号化され、自己完結型で、[サンドボックス化された](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\))、持ち運び可能です。
+これらのデータベースはそれぞれ、[sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)（[ChaCha20-ポリ1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)）を使用して、あなただけが知っているパスワードで暗号化されています。つまり、メールボックスは個別に暗号化され、自己完結型で、[サンドボックス化された](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)（__PROTECTED_LINK_158__）であり、持ち運び可能です。
 
 次の [PRAGMA](https://www.sqlite.org/pragma.html) を使用して SQLite を微調整しました。
 
@@ -138,13 +138,13 @@
 | `foreign_keys=ON` | 外部キー参照 (あるテーブルから別のテーブルへの関係など) が強制されます。[By default this is not turned on in SQLite](https://www.sqlite.org/foreignkeys.html) ですが、検証とデータの整合性のために有効にする必要があります。 |
 | `encoding='UTF-8'` | 開発者の健全性を確保するために使用する[Default encoding](https://www.sqlite.org/pragma.html#pragma_encoding)。 |
 
-> その他すべてのデフォルトは、[公式PRAGMAドキュメント](https://www.sqlite.org/pragma.html#pragma_auto_vacuum) で指定されている SQLite からのものです。
+> その他すべてのデフォルトは、[公式PRAGMAドキュメント](https://www.sqlite.org/pragma.html#pragma_auto_vacuum) で指定された SQLite から取得されます。
 
 ### 同時実行 {#concurrency}
 
 > **tldr;** 暗号化された SQLite メールボックスへの同時読み取りと書き込みには `WebSocket` を使用します。
 
-#### は {#reads} を読み取ります
+#### 読み取り {#reads}
 
 携帯電話のメール クライアントでは、`imap.forwardemail.net` が Digital Ocean の IP アドレスの 1 つに解決される場合があります。また、デスクトップ クライアントでは、まったく別の [プロバイダー](#providers) から別の IP が解決される場合があります。
 
@@ -154,32 +154,32 @@
 
 データベースへの書き込みは少し異なります。SQLite は埋め込みデータベースであり、メールボックスはデフォルトで 1 つのファイルに保存されるためです。
 
-私たちは、以下の`litestream`、`rqlite`、`dqlite` などのオプションを検討しましたが、どれも要件を満たしていませんでした。
+以下の `litestream`、`rqlite`、`dqlite` などのオプションを検討しましたが、いずれも要件を満たしていませんでした。
 
-先行書き込みログ ("[WAL](https://www.sqlite.org/wal.html)") を有効にして書き込みを実行するには、書き込みを担当するサーバーが 1 台だけ ("プライマリ") であることを確認する必要があります。[WAL](https://www.sqlite.org/wal.html) により同時実行速度が大幅に向上し、1 つの書き込みと複数の読み取りが可能になります。
+先行書き込みログ（「[WAL](https://www.sqlite.org/wal.html)」）を有効にして書き込みを実行するには、1 つのサーバー（「プライマリ」）のみが書き込みを担当するようにする必要があります。[WAL](https://www.sqlite.org/wal.html) は同時実行性を大幅に向上させ、1 つの書き込みと複数の読み取りを可能にします。
 
-プライマリは、暗号化されたメールボックスを含むボリュームがマウントされたデータサーバー上で実行されています。分散の観点からは、`imap.forwardemail.net` の背後にあるすべての個々の IMAP サーバーをセカンダリサーバー（「セカンダリ」）と見なすことができます。
+プライマリは、暗号化されたメールボックスを含むボリュームがマウントされたデータサーバー上で実行されています。分散の観点から見ると、`imap.forwardemail.net` の背後にあるすべての個々の IMAP サーバーをセカンダリサーバー（「セカンダリ」）と見なすことができます。
 
 [Webソケット](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket) との双方向通信を実現します。
 
 * プライマリサーバーは、[ws](https://github.com/websockets/ws) の `WebSocketServer` サーバーのインスタンスを使用します。
-* セカンダリサーバーは、[約束通りのWebSocket](https://github.com/vitalets/websocket-as-promised) と [ウェブソケットの再接続](https://github.com/opensumi/reconnecting-websocket) でラップされた [ws](https://github.com/websockets/ws) の `WebSocket` クライアントのインスタンスを使用します。これらの 2 つのラッパーにより、`WebSocket` が再接続され、特定のデータベース書き込みデータの送受信が可能になります。
+* セカンダリサーバーは、[ws](https://github.com/websockets/ws) の `WebSocket` クライアントのインスタンスを使用します。このインスタンスは、[約束通りのWebSocket](https://github.com/vitalets/websocket-as-promised) と [ウェブソケットの再接続](https://github.com/opensumi/reconnecting-websocket) でラップされています。これらの 2 つのラッパーにより、`WebSocket` が再接続され、特定のデータベース書き込みデータの送受信が可能になります。
 
 ### バックアップ {#backups}
 
 > **tldr;** 暗号化されたメールボックスのバックアップは毎日作成されます。また、<a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">マイアカウント > <i class="fa fa-angle-right"></i> ドメイン</a> > <i class="fa fa-angle-right"></i> エイリアス</a> から、いつでも新しいバックアップをリクエストしたり、最新のバックアップをダウンロードしたりできます。
 
-バックアップは、IMAPコマンド処理中に毎日SQLiteの`VACUUM INTO`コマンドを実行することで行われます。このコマンドは、メモリ内のIMAP接続から暗号化されたパスワードを利用します。既存のバックアップが検出されない場合、または最新のバックアップと比較してファイルの[SHA-256](https://en.wikipedia.org/wiki/SHA-2)ハッシュが変更された場合に、バックアップが保存されます。
+バックアップは、IMAPコマンド処理中に毎日SQLiteの`VACUUM INTO`コマンドを実行するだけで実行できます。このコマンドは、メモリ内のIMAP接続から暗号化されたパスワードを利用します。既存のバックアップが検出されない場合、または最新のバックアップと比較してファイルの[SHA-256](https://en.wikipedia.org/wiki/SHA-2)ハッシュが変更された場合に、バックアップが保存されます。
 
-組み込みの`backup`コマンドではなく`VACUUM INTO`コマンドを使用していることに注意してください。これは、`backup`コマンドの実行中にページが変更された場合、最初からやり直す必要があるためです。`VACUUM INTO`コマンドはスナップショットを取得します。詳細については、[GitHub](https://github.com/benbjohnson/litestream.io/issues/56)と[ハッカーニュース](https://news.ycombinator.com/item?id=31387556)に関するコメントをご覧ください。
+組み込みの`backup`コマンドではなく、`VACUUM INTO`コマンドを使用している点にご注意ください。これは、`backup`コマンドの実行中にページが変更された場合、最初からやり直す必要があるためです。`VACUUM INTO`コマンドはスナップショットを取得します。詳細については、[GitHub](https://github.com/benbjohnson/litestream.io/issues/56)と[ハッカーニュース](https://news.ycombinator.com/item?id=31387556)に関するコメントをご覧ください。
 
-さらに、`backup` コマンドでは、`rekey` が呼び出されるまで、データベースが短時間暗号化されないため、`backup` ではなく `VACUUM INTO` を使用します (詳細については、この GitHub [コメント](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) を参照してください)。
+さらに、`backup` コマンドは、`rekey` が呼び出されるまで、データベースを短時間暗号化しないままにするため、`backup` ではなく `VACUUM INTO` を使用します (詳細については、この GitHub [コメント](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) を参照してください)。
 
 セカンダリは `WebSocket` 接続を介してプライマリにバックアップの実行を指示します。プライマリはバックアップ実行のコマンドを受信し、その後、次の処理を実行します。
 
 1. 暗号化されたメールボックスに接続します。
 2. 書き込みロックを取得します。
-3. `wal_checkpoint(PASSIVE)` を使用して WAL チェックポイントを実行します。
+3. `wal_checkpoint(PASSIVE)` 経由で WAL チェックポイントを実行します。
 4. `VACUUM INTO` SQLite コマンドを実行します。
 5. コピーしたファイルが暗号化されたパスワードで開けることを確認します（安全対策/ダミープルーフ）。
 6. 保存用に Cloudflare R2 にアップロードします（または、指定されている場合は独自のプロバイダーにアップロードします）。
@@ -191,7 +191,7 @@
 
 メールボックスは暗号化されていることに注意してください。WebSocket 通信には IP 制限やその他の認証手段が講じられていますが、悪意のある攻撃者による攻撃があった場合でも、WebSocket ペイロードに IMAP パスワードが含まれていない限り、データベースを開くことはできませんのでご安心ください。
 
-現時点ではメールボックスごとに 1 つのバックアップのみが保存されますが、将来的にはポイントインタイムリカバリ ("[PITR](https://en.wikipedia.org/wiki/Point-in-time_recovery)") が提供される予定です。
+現時点ではメールボックスごとに 1 つのバックアップのみが保存されますが、将来的にはポイントインタイムリカバリ (「[PITR](https://en.wikipedia.org/wiki/Point-in-time_recovery)」) が提供される予定です。
 
 ### 検索 {#search}
 
@@ -199,7 +199,7 @@
 
 高速な検索パフォーマンスは、[FTS5](https://www.sqlite.org/fts5.html) と [sqlite正規表現](https://github.com/asg017/sqlite-regex#sqlite-regex) のおかげです。
 
-`Date` 値は、[Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) を介して [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) 文字列として SQLite メールボックスに保存されます (等価比較が適切に機能するために UTC タイムゾーンを使用)。
+`Date` の値は、[Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) を介して [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) 文字列として SQLite メールボックスに保存されます (等価比較が適切に機能するために UTC タイムゾーンを使用)。
 
 検索クエリに含まれるすべてのプロパティのインデックスも保存されます。
 
@@ -238,7 +238,7 @@
 | [smtp-server](https://github.com/nodemailer/smtp-server) | SMTP サーバー ライブラリ – メール交換 ("MX") サーバーおよび送信 SMTP サーバーにこれを使用します。 |
 | [ImapTest](https://www.imapwiki.org/ImapTest) | IMAPサーバーのベンチマークテストやRFC仕様に基づくIMAPプロトコルの互換性テストに役立つツールです。このプロジェクトは、2002年7月から活動しているオープンソースのIMAPおよびPOP3サーバーである[Dovecot](https://en.wikipedia.org/wiki/Dovecot_\(software\))チームによって作成されました。私たちはこのツールを用いて、IMAPサーバーを徹底的にテストしました。 |
 
-> 私たちが使用している他のプロジェクトについては、[GitHub上のソースコード](https://github.com/forwardemail) をご覧ください。
+> 私たちが使用している他のプロジェクトは [GitHub上のソースコード](https://github.com/forwardemail) で見つかります。
 
 ### プロバイダー {#providers}
 
@@ -249,15 +249,15 @@
 | [Vultr](https://www.vultr.com/?ref=7429848) | 専用サーバーホスティング。 |
 | [DataPacket](https://www.datapacket.com) | 専用サーバーホスティング。 |
 
-## の考え {#thoughts}
+## 考え {#thoughts}
 
 ### 原則 {#principles}
 
 転送メールは、次の原則に従って設計されています。
 
 1. 常に開発者フレンドリーで、セキュリティとプライバシーを重視し、透明性を確保してください。
-2. [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)、[Unix](https://en.wikipedia.org/wiki/Unix_philosophy)、[KISS](https://en.wikipedia.org/wiki/KISS_principle)、[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)、[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)、[12ファクター](https://12factor.net/)、[オッカムの剃刀](https://en.wikipedia.org/wiki/Occam%27s_razor)、および[ドッグフーディング](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) を遵守してください。
-3. 意欲的で、自力で開発した、[ラーメン利益](http://www.paulgraham.com/ramenprofitable.html) 開発者をターゲットにしてください。
+2. [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)、[Unix](https://en.wikipedia.org/wiki/Unix_philosophy)、[KISS](https://en.wikipedia.org/wiki/KISS_principle)、[DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)、[YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)、[12ファクター](https://12factor.net/)、[オッカムの剃刀](https://en.wikipedia.org/wiki/Occam%27s_razor)、[ドッグフーディング](https://en.wikipedia.org/wiki/Eating_your_own_dog_food) を遵守してください。
+3. 積極的で、自力で開発に取り組んだ、[ラーメン利益](http://www.paulgraham.com/ramenprofitable.html) な開発者をターゲットにしてください。
 
 ### 実験 {#experiments}
 
@@ -271,29 +271,29 @@
 
 * rclone で `--vfs-cache-mode writes` フラグを有効にすると、読み取りは正常に動作しますが、書き込みはキャッシュされます。
 * 複数の IMAP サーバーがグローバルに分散されている場合、単一の書き込みサーバーと複数のリスナー (pub/sub 方式など) を使用しない限り、サーバー間でキャッシュは無効になります。
-* これは非常に複雑であり、このような複雑さを追加すると、単一障害点が増加します。
+* これは非常に複雑であり、このような複雑さをさらに追加すると、単一障害点が増加します。
 * S3 互換のストレージプロバイダーは部分的なファイル変更をサポートしていません。つまり、`.sqlite` ファイルに変更を加えると、データベースが完全に変更され、再アップロードされます。
-* `rsync` などの他のソリューションもありますが、これらは write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)") のサポートに重点を置いていないため、最終的に Litestream を検討しました。幸いにも、当社の暗号化システムでは既に [WAL](https://www.sqlite.org/wal.html) ファイルが暗号化されているため、Litestream に依存する必要はありません。ただし、Litestream が本番環境での使用にまだ十分とは言えないため、以下にいくつか注意事項を記載します。
-* このオプション `--vfs-cache-mode writes` を使用すると（書き込みに `rclone` ではなく SQLite を使用する唯一の方法）、データベース全体をメモリ内に最初からコピーしようとします。10 GB のメールボックスを 1 つ処理する場合は問題ありませんが、ストレージ容量が非常に大きい複数のメールボックスを処理すると、IMAP サーバーでメモリ制限が発生し、`ENOMEM` エラー、セグメンテーション違反、データ破損が発生します。
-* S3 互換ストレージレイヤーにデータを保持するために SQLite [仮想テーブル](https://www.sqlite.org/vtab.html) を使用しようとすると（例：[s3db](https://github.com/jrhy/s3db) を使用）、さらにいくつかの問題が発生します。
-* S3 API エンドポイントに HTTP `GET`、`PUT`、`HEAD`、および `POST` メソッドを実行する必要があるため、読み取りと書き込みが非常に遅くなります。
-* 開発テストでは、光ファイバーインターネット上で 50 万～100 万件を超えるレコードを処理する場合、S3 互換プロバイダーへの書き込みと読み取りのスループットによって制限されることが示されました。例えば、開発者は`for` ループを使用して、シーケンシャル SQL `INSERT` 文と大量のデータを一括書き込みする SQL 文の両方を実行しました。どちらの場合も、パフォーマンスは著しく低下しました。
-* 仮想テーブルは **インデックス**、`ALTER TABLE` 文、および [他の](https://stackoverflow.com/a/12507650) [制限](https://sqlite.org/lang_createvtab.html) を持つことができません。そのため、データ量によっては 1～2 分以上の遅延が発生します。
+* `rsync` などの他のソリューションもありますが、これらは write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)") のサポートに重点を置いていないため、最終的に Litestream を検討することにしました。幸いにも、当社の暗号化機能では既に [WAL](https://www.sqlite.org/wal.html) ファイルが暗号化されているため、Litestream に依存する必要はありません。ただし、Litestream を本番環境で使用した場合の信頼性はまだ高くないため、以下にいくつか注意事項を記載します。
+* `--vfs-cache-mode writes` のこのオプション（書き込みに `rclone` ではなく SQLite を使用する唯一の方法）を使用すると、データベース全体をメモリ内に最初からコピーしようとします。10 GB のメールボックス 1 つを処理する場合は問題ありませんが、ストレージ容量が非常に大きい複数のメールボックスを処理すると、IMAP サーバーでメモリ制限が発生し、`ENOMEM` エラー、セグメンテーション違反、データ破損が発生します。
+* S3 互換ストレージレイヤーにデータを保存するために SQLite [仮想テーブル](https://www.sqlite.org/vtab.html)（例：[s3db](https://github.com/jrhy/s3db)）を使用しようとすると、さらにいくつかの問題が発生します。
+* S3 API エンドポイントに HTTP `.sqlite`0、`.sqlite`1、`.sqlite`2、および `.sqlite`3 メソッドでアクセスする必要があるため、読み取りと書き込みが非常に遅くなります。
+* 開発テストでは、光ファイバーインターネットで 50 万～100 万件を超えるレコードを処理する場合、S3 互換プロバイダーへの書き込みと読み取りのスループットによって制限されることが示されました。例えば、当社の開発者は、`.sqlite`4 ループを実行して、順次実行される SQL `.sqlite`5 ステートメントと、大量のデータを一括して書き込むステートメントの両方を実行しました。どちらの場合も、パフォーマンスは驚くほど低下しました。
+* 仮想テーブルには**インデックス**、`.sqlite`6 ステートメント、`.sqlite`7 `.sqlite`8 を含めることができません。そのため、データ量によっては 1～2 分以上の遅延が発生します。
 * オブジェクトは暗号化されずに保存されており、ネイティブの暗号化サポートはすぐには利用できません。
-* また、概念的にも技術的にも前の箇条書きに類似している [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs) の使用も検討しました（そのため、同じ問題があります）。一つの可能性として、暗号化でラップされたカスタムの`sqlite3`ビルド（例えば、上記のソリューションで現在使用している[wxSQLite3](https://github.com/utelle/wxsqlite3)）を[セットアップファイルの編集](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276)経由で使用することが挙げられます。
-* もう1つの可能性として、[マルチプレックス拡張](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c)を使用することが挙げられますが、これは32GBという制限があり、複雑なビルドと開発が必要になります。
-* `ALTER TABLE`ステートメントが必要です（したがって、仮想テーブルの使用は完全に不可能です）。`knex-schema-inspector`を使用したフックが正しく機能するには、`ALTER TABLE`ステートメントが必要です。これにより、データが破損せず、取得した行が`mongoose`スキーマ定義（制約、変数型、任意のデータ検証を含む）に従って有効なドキュメントに変換されることが保証されます。
-* オープンソース コミュニティにおける SQLite 関連の S3 互換プロジェクトはほぼすべて Python で作成されています (スタックの 100% で使用されている JavaScript ではありません)。
-* [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) ([コメント](https://news.ycombinator.com/item?id=32303762) を参照) などの圧縮ライブラリは有望に見えますが、[まだ本番環境での使用には適していない可能性があります](https://github.com/phiresky/sqlite-zstd#usage) は不適切です。代わりに、`String`、`Object`、`Map`、`Array`、`Set`、`Buffer` などのデータ型に対するアプリケーション側圧縮は、よりクリーンで簡単なアプローチになります (`Boolean` フラグまたは列を保存したり、圧縮の場合は `PRAGMA` `user_version=1`、圧縮しない場合は `user_version=0` をデータベース メタデータとして使用したりできるため、移行も簡単になります)。
-* 幸いなことに、IMAP サーバーストレージには既に添付ファイルの重複排除機能が実装されているため、同じ添付ファイルを持つすべてのメッセージに添付ファイルのコピーが保存されることはありません。代わりに、メールボックス内の複数のメッセージとスレッドに対して 1 つの添付ファイルが保存されます（その後、外部参照が使用されます）。
-* SQLite のレプリケーションおよびバックアップ ソリューションである Litestream プロジェクトは非常に有望であり、将来的には使用する可能性が高いでしょう。
-* 作者を非難するつもりはありません。私たちは 10 年以上にわたり、彼らの取り組みとオープンソースへの貢献を高く評価しています。しかし、実際の使用状況から判断すると、[頭痛がするかもしれない](https://github.com/benbjohnson/litestream/issues) と [使用による潜在的なデータ損失](https://github.com/benbjohnson/litestream/issues/218) が存在するようです。
-* バックアップの復元は、スムーズで簡単なものでなければなりません。`mongodump` と `mongoexport` を備えた MongoDB などのソリューションを使用すると、面倒なだけでなく、時間がかかり、設定も複雑になります。
-* SQLite データベースはシンプルです（単一ファイルです）。
-* ユーザーがいつでもメールボックスを持ち出してすぐに退出できるソリューションを設計したいと考えました。
-* `fs.unlink('mailbox.sqlite'))` へのシンプルな Node.js コマンドで、ディスクストレージから完全に消去されます。
-* 同様に、HTTP `DELETE` を使用した S3 互換 API を使用して、ユーザーのスナップショットやバックアップを簡単に削除できます。
-* SQLite は、最もシンプルで高速、そして最も費用対効果の高いソリューションでした。
+* また、概念的にも技術的にも前の箇条書きに類似している `.sqlite`9 の使用も検討しました（そのため、同じ問題があります）。可能性としては、`rsync`2 を介して、`rsync`1（上記のソリューションで現在使用しているもの）などの暗号化でラップされたカスタム `rsync`0 ビルドを使用することが挙げられます。
+* もう 1 つの可能性として、`rsync`3 を使用することが挙げられますが、これは 32 GB という制限があり、複雑なビルドと開発が必要になります。
+* `rsync`4 ステートメントが必要です（そのため、仮想テーブルの使用は完全に除外されます）。`rsync`6 を使用したフックが正しく機能するには、`rsync`5 ステートメントが必要です。これにより、データが破損せず、取得した行が `rsync`7 スキーマ定義（制約、変数型、任意のデータ検証を含む）に従って有効なドキュメントに変換されることが保証されます。
+* オープンソースコミュニティにおける SQLite 関連の S3 互換プロジェクトはほぼすべて Python で作成されています（スタックの 100% で使用されている JavaScript ではありません）。
+* `rsync`8（`rsync`9 を参照）などの圧縮ライブラリは有望に見えますが、__PROTECTED_LINK_189__0 は期待できません。代わりに、__PROTECTED_LINK_189__1、__PROTECTED_LINK_189__2、__PROTECTED_LINK_189__3、__PROTECTED_LINK_189__4、__PROTECTED_LINK_189__5、__PROTECTED_LINK_189__6 などのデータ型をアプリケーション側で圧縮する方が、よりクリーンで容易なアプローチとなります（また、__PROTECTED_LINK_189__7 フラグまたは列を保存したり、圧縮の場合は __PROTECTED_LINK_189__8 または __PROTECTED_LINK_189__9、非圧縮の場合は __PROTECTED_LINK_190__0 をデータベース メタデータとして使用したりできるため、移行も容易です）。
+* 幸いなことに、IMAP サーバー ストレージには添付ファイルの重複排除が既に実装されているため、同じ添付ファイルを持つすべてのメッセージに添付ファイルのコピーが保存されることはありません。代わりに、メールボックス内の複数のメッセージとスレッドに対して 1 つの添付ファイルが保存されます（その後、外部参照が使用されます）。
+* SQLite のレプリケーションおよびバックアップソリューションである Litestream プロジェクトは非常に有望であり、将来的にも活用する可能性が高いでしょう。
+* 作者を非難するつもりはありません。10 年以上にわたり、彼らの取り組みとオープンソースへの貢献を高く評価しているからです。しかし、実際の使用状況から判断すると、__PROTECTED_LINK_190__1 と __PROTECTED_LINK_190__2 が存在するようです。
+* バックアップの復元は、スムーズで簡単なものでなければなりません。MongoDB などのソリューションを __PROTECTED_LINK_190__3 と __PROTECTED_LINK_190__4 と共に使用するのは、面倒なだけでなく、時間がかかり、設定も複雑です。
+* SQLite データベースはこれをシンプルにします（単一ファイルです）。
+* ユーザーがいつでもメールボックスを持ち出して離れることができるソリューションを設計したいと考えました。
+* __PROTECTED_LINK_190__5 にシンプルな Node.js コマンドを実行すると、ディスクストレージから完全に消去されます。
+* 同様に、HTTP __PROTECTED_LINK_190__6 を使用した S3 互換 API を使用すると、ユーザーのスナップショットとバックアップを簡単に削除できます。
+* SQLite は、最もシンプルで高速かつコスト効率の高いソリューションでした。
 
 ### 代替手段がない {#lack-of-alternatives}
 

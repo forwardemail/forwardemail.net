@@ -1,4 +1,4 @@
-# Bedingungen {#terms}
+# Begriffe {#terms}
 
 <img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
@@ -34,18 +34,18 @@ Forward Email übernimmt keine ausdrücklichen oder stillschweigenden Garantien 
 
 Darüber hinaus übernimmt Forward Email keine Garantie oder Zusicherung hinsichtlich der Genauigkeit, der wahrscheinlichen Ergebnisse oder der Zuverlässigkeit der Verwendung der Materialien seines Dienstes oder in sonstiger Weise in Bezug auf diese Materialien oder auf Websites, die mit dieser Website verlinkt sind.
 
-<u>**Sie erklären sich ausdrücklich damit einverstanden, dass Sie den Dienst nicht für geschäftliche Zwecke oder für Materialien verwenden, die mit [Verbotene Geschäfte von Stripe](https://stripe.com/legal/restricted-businesses) und [Verbotene Aktivitäten von PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full) in Zusammenhang stehen.**</u>
+<u>**Sie erklären sich ausdrücklich damit einverstanden, dass Sie den Dienst weder für geschäftliche Zwecke noch für Materialien verwenden, die mit [Verbotene Geschäfte von Stripe](https://stripe.com/legal/restricted-businesses) und [Verbotene Aktivitäten von PayPal](https://www.paypal.com/us/legalhub/acceptableuse-full) in Zusammenhang stehen.**</u>
 
 <u>**Sie erklären sich ausdrücklich damit einverstanden, dass Forward Email durch die Nutzung des Dienstes nicht für Folgendes verantwortlich ist oder haftet und dass Sie mit dem Dienst keines der folgenden Elemente erstellen, lesen, ändern oder übermitteln:**</u>
 
-* **Sie dürfen unseren Service nicht nutzen, um einen Dienst zu betreiben, der Dritten (mit Ausnahme Ihrer eigenen Mitarbeiter und Auftragnehmer) Zugriff auf unseren Service gewährt, ihn nutzt oder davon profitiert. Sollten Sie diesbezüglich eine Ausnahme wünschen, kontaktieren Sie uns bitte, um eine Unternehmensvereinbarung zu besprechen. Weitere Informationen finden Sie in unserem [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md).**
+* **Sie dürfen unseren Service nicht nutzen, um einen Dienst zu betreiben, der Dritten (mit Ausnahme Ihrer eigenen Mitarbeiter und Auftragnehmer) Zugriff auf unseren Service, dessen Nutzung oder Vorteile ermöglicht. Sollten Sie diesbezüglich eine Ausnahme wünschen, kontaktieren Sie uns bitte, um eine Unternehmensvereinbarung zu besprechen. Weitere Informationen finden Sie in unserem [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md).**
 * Wenn Sie unseren [Ausgehendes SMTP](/faq#do-you-support-sending-email-with-smtp)-Dienst nutzen, stimmen Sie Folgendem zu:
 * Sie dürfen ihn für [Transaktions-E-Mail](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) und [E-Mail-Marketing](https://en.wikipedia.org/wiki/Email_marketing) verwenden.
 * Wenn Sie E-Mail-Marketingmaterial versenden, müssen Sie einen `List-Unsubscribe`-Header einfügen, und Ihre Abonnenten müssen dem Opt-in zustimmen.
 * Wir empfehlen Ihnen die Verwendung eines Open-Source-Newsletter-Managers wie [ListMonk](https://github.com/knadh/listmonk) unter <https://github.com/knadh/listmonk>..
 * Beachten Sie, dass wir planen, in Zukunft einen eigenen Newsletter-Manager zu veröffentlichen.
 * E-Mail-Marketing-Material umfasst Werbe-, Massen- oder kommerzielle E-Mails an eine Kontaktliste mit ähnlichem Inhalt, Betreff und Nachrichtentext (z. B. Newsletter und Ankündigungen).
-* Sie müssen die [CAN-SPAM-Gesetz von 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003) einhalten.
+* Sie müssen den [CAN-SPAM-Gesetz von 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003) einhalten.
 * Sie müssen Nutzer, die sich abgemeldet, abgemeldet oder Ihre E-Mail als Spam markiert haben, entweder sofort oder innerhalb von 24 Stunden entfernen.
 * Beim ersten Versuch, über Ihre Domain einen Newsletter zu versenden, wird Ihre Domain von einem Administrator geprüft und für den Newsletter-Versand freigegeben (normalerweise innerhalb von 2–4 Stunden, manchmal kann es aber auch länger dauern).
 * Alles, was den Dienst, seinen Betrieb und/oder seine Kunden beeinträchtigt.
@@ -94,9 +94,9 @@ Ihr Konto wird automatisch und dauerhaft gesperrt, wenn Sie einen Streitfall mit
 
 ### Vereinbarung {#agreement}
 
-Forward Email unternimmt alle angemessenen kommerziellen Anstrengungen (mindestens gemäß den akzeptablen und angemessenen Branchenstandards), um sicherzustellen, dass der Forward Email-Dienst für zahlende Kunden 99,99 % der Zeit in einem Kalendermonat verfügbar ist. Ist dies nicht der Fall, haben Sie möglicherweise Anspruch auf den unten beschriebenen [Credits](#credits) gemäß [Teilnahmeberechtigung](#eligibility).
+Forward Email unternimmt alle angemessenen kommerziellen Anstrengungen (mindestens gemäß akzeptablen und angemessenen Branchenstandards), um sicherzustellen, dass der Forward Email-Dienst zahlenden Kunden 99,99 % der Zeit in einem Kalendermonat zur Verfügung steht. Ist dies nicht der Fall, haben Sie möglicherweise Anspruch auf den unten beschriebenen [Credits](#credits) gemäß [Teilnahmeberechtigung](#eligibility).
 
-### Credits {#credits}
+### Guthaben {#credits}
 
 | Monatlicher Betriebszeitprozentsatz | Diensttage* |
 | ------------------------- | ---------------- |
@@ -106,7 +106,7 @@ Forward Email unternimmt alle angemessenen kommerziellen Anstrengungen (mindeste
 
 \* Anstatt Ihrem Konto Servicetage gutgeschrieben zu bekommen, können Sie sich auch für eine anteilige Rückerstattung durch uns entscheiden.
 
-### Teilnahmeberechtigung {#eligibility}
+### Berechtigung {#eligibility}
 
 Der Mindestguthabenbetrag beträgt mindestens 1,00 $. Das maximale Guthaben ist auf die 30 Tage oder den Gesamtbetrag begrenzt, den der Kunde im letzten Kalendermonat für die Ausfallzeit bezahlt hat (je nachdem, welcher Betrag höher ist). Zahlende Kunden, die von einer Ausfallzeit betroffen sind, müssen innerhalb von 30 Tagen nach dem Ausfalldatum eine Gutschrift per [Hilfeanfrage](/help) beantragen. Gutschriften gelten nur für Ausfallzeiten, die in der primären Kontrolle von Forward Email liegen.
 
@@ -130,4 +130,4 @@ Allgemeine Geschäftsbedingungen für die Nutzung einer Website.
 
 ## Zusätzliche Angaben {#additional-disclosures}
 
-Diese Site ist durch Cloudflare geschützt und es gelten die [Datenschutzrichtlinie](https://www.cloudflare.com/privacypolicy/) und [Servicebedingungen](https://www.cloudflare.com/website-terms/).
+Diese Site wird durch Cloudflare geschützt und es gelten die [Datenschutzrichtlinie](https://www.cloudflare.com/privacypolicy/) und [Servicebedingungen](https://www.cloudflare.com/website-terms/).

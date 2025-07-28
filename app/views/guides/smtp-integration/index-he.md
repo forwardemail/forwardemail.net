@@ -1,28 +1,28 @@
 # דוגמאות לשילוב SMTP {#smtp-integration-examples}
 
-תוכן עניינים {##
+## תוכן עניינים
 
 * [הַקדָמָה](#foreword)
-* [כיצד פועל עיבוד ה-SMTP של דואר אלקטרוני](#how-forward-emails-smtp-processing-works)
-  * [תור דוא"ל ומערכת נסה שוב](#email-queue-and-retry-system)
-  * [מוגן דמה לאמינות](#dummy-proofed-for-reliability)
-* [שילוב Node.js](#nodejs-integration)
+* [כיצד פועל עיבוד ה-SMTP של דוא"ל קדמי](#how-forward-emails-smtp-processing-works)
+  * [מערכת תור וניסיון חוזר של דוא"ל](#email-queue-and-retry-system)
+  * [אטום לאמינות](#dummy-proofed-for-reliability)
+* [אינטגרציה עם Node.js](#nodejs-integration)
   * [שימוש ב-Nodemailer](#using-nodemailer)
   * [שימוש ב-Express.js](#using-expressjs)
-* [שילוב פייתון](#python-integration)
-  * [באמצעות smtplib](#using-smtplib)
-  * [משתמש ב-Django](#using-django)
-* [שילוב PHP](#php-integration)
+* [אינטגרציה של פייתון](#python-integration)
+  * [שימוש ב-smtplib](#using-smtplib)
+  * [שימוש בדג'נגו](#using-django)
+* [אינטגרציה של PHP](#php-integration)
   * [שימוש ב-PHPMailer](#using-phpmailer)
-  * [שימוש ב-Laravel](#using-laravel)
-* [שילוב רובי](#ruby-integration)
-  * [שימוש Ruby Mail Gem](#using-ruby-mail-gem)
-* [אינטגרציה של Java](#java-integration)
-  * [שימוש ב-JavaMail API](#using-javamail-api)
-* [תצורת לקוח אימייל](#email-client-configuration)
-  * [Thunderbird](#thunderbird)
+  * [שימוש בלראבל](#using-laravel)
+* [אינטגרציה של רובי](#ruby-integration)
+  * [שימוש באבני דואר רובי](#using-ruby-mail-gem)
+* [אינטגרציה של ג'אווה](#java-integration)
+  * [שימוש ב-API של Java Mail](#using-javamail-api)
+* [תצורת לקוח דוא"ל](#email-client-configuration)
+  * [ת'אנדרברד](#thunderbird)
   * [אפל מייל](#apple-mail)
-  * [Gmail (שלח דואר בשם)](#gmail-send-mail-as)
+  * [ג'ימייל (שלח דואר כ)](#gmail-send-mail-as)
 * [פתרון בעיות](#troubleshooting)
   * [בעיות נפוצות ופתרונות](#common-issues-and-solutions)
   * [קבלת עזרה](#getting-help)
@@ -31,13 +31,13 @@
 
 ## הקדמה {#foreword}
 
-מדריך זה מספק דוגמאות מפורטות כיצד להשתלב עם שירות ה-SMTP של Forward Email באמצעות שפות תכנות שונות, מסגרות ולקוחות דוא"ל. שירות ה-SMTP שלנו נועד להיות אמין, מאובטח וקל לשילוב עם היישומים הקיימים שלך.
+מדריך זה מספק דוגמאות מפורטות כיצד לשלב עם שירות ה-SMTP של Forward Email באמצעות שפות תכנות, מסגרות ולקוחות דוא"ל שונים. שירות ה-SMTP שלנו נועד להיות אמין, מאובטח וקל לשילוב עם היישומים הקיימים שלך.
 
 ## כיצד פועל עיבוד ה-SMTP של העברת דוא"ל {#how-forward-emails-smtp-processing-works}
 
-לפני שצולל לתוך דוגמאות האינטגרציה, חשוב להבין כיצד שירות ה-SMTP שלנו מעבד מיילים:
+לפני שנצלול לדוגמאות האינטגרציה, חשוב להבין כיצד שירות ה-SMTP שלנו מעבד מיילים:
 
-### מערכת תור וניסיון חוזר של דוא"ל {#email-queue-and-retry-system}
+### מערכת תור דוא"ל וניסיון חוזר {#email-queue-and-retry-system}
 
 כאשר אתה שולח דוא"ל באמצעות SMTP לשרתים שלנו:
 
@@ -52,20 +52,20 @@
 5. **הודעות סטטוס מסירה**: שולחים מקבלים התראות על סטטוס האימיילים שלהם (נמסרו, התעכבו או הוחזרו).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> לאחר מסירה מוצלחת, תוכן דוא"ל SMTP יוצא מוסר לאחר תקופת שמירה הניתנת להגדרה (ברירת מחדל 30 יום) למטרות אבטחה ופרטיות. נותרת רק הודעת placeholder המציינת מסירה מוצלחת.
 
 ### הוכחה לאמינות באמצעות דמה {#dummy-proofed-for-reliability}
 
-המערכת שלנו נועדה לטפל במקרים קצה שונים:
+המערכת שלנו מתוכננת להתמודד עם מגוון מקרי קצה:
 
 * אם מזוהה רשימת חסימה, ייעשה ניסיון חוזר אוטומטי של שליחת האימייל
 * אם יתרחשו בעיות רשת, ייעשה ניסיון חוזר למשלוח
 * אם תיבת הדואר של הנמען מלאה, המערכת תנסה שוב מאוחר יותר
 * אם שרת המקבל אינו זמין באופן זמני, נמשיך לנסות
 
-גישה זו משפרת משמעותית את שיעורי האספקה תוך שמירה על פרטיות ואבטחה.
+גישה זו משפרת משמעותית את שיעורי המסירה תוך שמירה על פרטיות ואבטחה.
 
-## אינטגרציה עם Node.js {#nodejs-integration}
+## שילוב Node.js {#nodejs-integration}
 
 ### שימוש ב-Nodemailer {#using-nodemailer}
 
@@ -107,7 +107,7 @@ sendEmail();
 
 ### שימוש ב-Express.js {#using-expressjs}
 
-כך ניתן לשלב SMTP של Forward Email עם יישום Express.js:
+כך ניתן לשלב Forward Email SMTP עם יישום Express.js:
 
 ```javascript
 const express = require('express');
@@ -159,7 +159,7 @@ app.listen(port, () => {
 });
 ```
 
-## אינטגרציה עם פייתון {#python-integration}
+## אינטגרציה של פייתון {#python-integration}
 
 ### שימוש ב-smtplib {#using-smtplib}
 
@@ -204,7 +204,7 @@ except Exception as e:
 
 ### שימוש ב-Django {#using-django}
 
-עבור יישומי Django, הוסף את הפרטים הבאים לקובץ `settings.py` שלך:
+עבור יישומי Django, הוסף את הפרטים הבאים ל-`settings.py` שלך:
 
 ```python
 # Email settings
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-לאחר מכן שלח אימיילים בתצוגות שלך:
+לאחר מכן שלח מיילים בתצוגות שלך:
 
 ```python
 from django.core.mail import send_mail
@@ -234,7 +234,7 @@ def send_email_view(request):
     return HttpResponse('Email sent!')
 ```
 
-## אינטגרציה עם PHP {#php-integration}
+## אינטגרציית PHP {#php-integration}
 
 ### שימוש ב-PHPMailer {#using-phpmailer}
 
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-לאחר מכן שלח אימיילים באמצעות חזית הדואר של Laravel:
+לאחר מכן, שלחו מיילים באמצעות חזית הדואר של Laravel:
 
 ```php
 <?php
@@ -312,7 +312,7 @@ class EmailController extends Controller
 }
 ```
 
-## אינטגרציה עם רובי {#ruby-integration}
+## אינטגרציה של רובי {#ruby-integration}
 
 ### שימוש ב-Ruby Mail Gem {#using-ruby-mail-gem}
 
@@ -351,9 +351,9 @@ mail.deliver!
 puts "Email sent successfully!"
 ```
 
-## שילוב ג'אווה {#java-integration}
+## אינטגרציית ג'אווה {#java-integration}
 
-### שימוש בממשק ה-API של JavaMail {#using-javamail-api}
+### שימוש ב-API של JavaMail {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -420,7 +420,7 @@ public class SendEmail {
 }
 ```
 
-## הגדרות לקוח דוא"ל {#email-client-configuration}
+## תצורת לקוח דוא"ל {#email-client-configuration}
 
 ### ת'אנדרבירד {#thunderbird}
 
@@ -443,7 +443,7 @@ flowchart TD
 1. פתחו את Thunderbird ועברו להגדרות חשבון
 2. לחצו על "פעולות חשבון" ובחרו "הוספת חשבון דואר"
 3. הזינו את שמכם, כתובת הדוא"ל והסיסמה שלכם
-4. לחצו על "תצורה ידנית" והזינו את הפרטים הבאים:
+4. לחצו על "הגדרה ידנית" והזינו את הפרטים הבאים:
 * שרת נכנס:
 * IMAP: imap.forwardemail.net, יציאה: 993, SSL/TLS
 * POP3: pop3.forwardemail.net, יציאה: 995, SSL/TLS
@@ -504,21 +504,21 @@ flowchart TD
 
 ### קבלת עזרה {#getting-help}
 
-אם אתה נתקל בבעיות שאינן מכוסות כאן, בבקשה:
+אם נתקלת בבעיות שלא מכוסות כאן, אנא:
 
-1. עיינו ב-[דף שאלות נפוצות](/faq) שלנו לשאלות נפוצות
-2. עיינו ב-[פוסט בבלוג על משלוח דואר אלקטרוני](/blog/docs/best-email-forwarding-service) שלנו למידע מפורט
-3. צרו קשר עם צוות התמיכה שלנו בכתובת <support@forwardemail.net>
+1. בדוק את ה-[דף שאלות נפוצות](/faq) שלנו לשאלות נפוצות
+2. עיין ב-[פוסט בבלוג על משלוח דוא"ל](/blog/docs/best-email-forwarding-service) שלנו למידע מפורט
+3. צור קשר עם צוות התמיכה שלנו בכתובת <support@forwardemail.net>
 
 ## משאבים נוספים {#additional-resources}
 
-* [העבר תיעוד אימייל](/docs)
+* [תיעוד העברת דוא"ל](/docs)
 * [מגבלות ותצורה של שרת SMTP](/faq#what-are-your-outbound-smtp-limits)
-* [מדריך שיטות עבודה מומלצות בדוא"ל](/blog/docs/best-email-forwarding-service)
+* [מדריך שיטות עבודה מומלצות לדוא"ל](/blog/docs/best-email-forwarding-service)
 * [נוהלי אבטחה](/security)
 
 ## מסקנה {#conclusion}
 
-שירות ה-SMTP של Forward Email מספק דרך אמינה, מאובטחת וממוקדת פרטיות לשלוח מיילים מהאפליקציות ומלקוחות הדוא"ל שלך. עם מערכת התורים החכמה שלנו, מנגנון ניסיון חוזר של 5 ימים והודעות סטטוס מסירה מקיפות, אתה יכול להיות בטוח שהמיילים שלך יגיעו ליעדם.
+שירות ה-SMTP של Forward Email מספק דרך אמינה, מאובטחת וממוקדת פרטיות לשליחת דוא"ל מהיישומים ולקוחות הדוא"ל שלך. בעזרת מערכת התורים החכמה שלנו, מנגנון ניסיון חוזר תוך 5 ימים והודעות מקיפות על סטטוס המסירה, אתה יכול להיות בטוח שהדוא"ל שלך יגיע ליעדו.
 
-למקרי שימוש מתקדמים יותר או אינטגרציות מותאמות אישית, אנא צור קשר עם צוות התמיכה שלנו.
+עבור מקרי שימוש מתקדמים יותר או אינטגרציות מותאמות אישית, אנא צרו קשר עם צוות התמיכה שלנו.

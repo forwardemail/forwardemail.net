@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# الإصدارات المستضافة ذاتيًا {#self-hosted-releases}
 
 يوثق هذا القسم سير عمل CI/CD لحل ForwardEmail المستضاف ذاتيًا، ويشرح كيفية بناء صور Docker ونشرها وتوزيعها.
 
-## Table of Contents {#table-of-contents}
+## جدول المحتويات {#table-of-contents}
 
 * [ملخص](#overview)
 * [سير عمل CI/CD](#cicd-workflow)
@@ -19,20 +19,20 @@
 * [الوصول إلى الصور](#accessing-images)
 * [المساهمة](#contributing)
 
-## Overview {#overview}
+## نظرة عامة على {#overview}
 
 يستخدم حل ForwardEmail المُستضاف ذاتيًا إجراءات GitHub لإنشاء ونشر صور Docker تلقائيًا عند إنشاء إصدار جديد. بعد ذلك، تصبح هذه الصور متاحة للمستخدمين لنشرها على خوادمهم باستخدام برنامج الإعداد المُرفق.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> يتوفر أيضًا [مدونة ذاتية الاستضافة](https://forwardemail.net/blog/docs/self-hosted-solution) و[دليل المطور المستضاف ذاتيًا](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> وللحصول على إصدارات أكثر تفصيلًا خطوة بخطوة، راجع الدليلين المستندين إلى [أوبونتو](https://forwardemail.net/guides/selfhosted-on-ubuntu) أو [ديبيان](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+سير عمل ## CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### سير عمل إجراءات GitHub {#github-actions-workflow}
 
-تم تعريف عملية إنشاء ونشر صورة Docker ذاتية الاستضافة في `.github/workflows/docker-image-build-publish.yml`. سير العمل هذا:
+عملية بناء ونشر صورة Docker ذاتية الاستضافة مُعرّفة في `.github/workflows/docker-image-build-publish.yml`. سير العمل هذا:
 
 ١. **المشغلات**: يتم التشغيل تلقائيًا عند نشر إصدار جديد من GitHub.
 ٢. **البيئة**: يعمل على Ubuntu مع Node.js 18.20.4.
@@ -42,7 +42,7 @@
 * تسجيل الدخول إلى سجل حاويات GitHub (GHCR).
 * تحديث المخطط للنشر الذاتي.
 * بناء صورة Docker باستخدام `self-hosting/Dockerfile-selfhosted`.
-* وضع علامة على الصورة بكل من إصدار الإصدار و`latest`.
+* وضع علامة على الصورة باستخدام كلٍّ من إصدار الإصدار و`latest`.
 * دفع الصور إلى سجل حاويات GitHub.
 
 ```yaml
@@ -87,9 +87,9 @@ jobs:
 
 يضمن هذا النهج تحسين الصورة النهائية من حيث الحجم والأمان.
 
-## عملية النشر {#deployment-process}
+## عملية نشر {#deployment-process}
 
-### التثبيت {#installation}
+### تثبيت {#installation}
 
 يمكن للمستخدمين نشر الحل المستضاف ذاتيًا باستخدام البرنامج النصي للإعداد المقدم:
 
@@ -123,7 +123,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 تستخدم كل خدمة نفس صورة Docker ولكن بنقاط دخول مختلفة، مما يسمح بهندسة معيارية مع تبسيط الصيانة.
 
-## ميزات الصيانة {#maintenance-features}
+## ميزات صيانة {#maintenance-features}
 
 يتضمن الحل المستضاف ذاتيًا العديد من ميزات الصيانة:
 
@@ -148,7 +148,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * نسخ بيانات MongoDB وRedis وSQLite احتياطيًا
 * استعادة البيانات من النسخ الاحتياطية في حال حدوث أي عطل
 
-### تجديد الشهادة {#certificate-renewal}
+### تجديد شهادة {#certificate-renewal}
 
 يتم إدارة شهادات SSL تلقائيًا مع خيارات لـ:
 
@@ -160,7 +160,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 يقوم كل إصدار GitHub بإنشاء صورة Docker جديدة تحمل العلامة:
 
-1. إصدار الإصدار المحدد (مثلًا، `v1.0.0`)
+1. إصدار الإصدار المحدد (مثل `v1.0.0`)
 2. وسم `latest` لأحدث إصدار
 
 يمكن للمستخدمين اختيار استخدام إصدار محدد للاستقرار أو علامة `latest` للحصول دائمًا على أحدث الميزات.
@@ -174,11 +174,11 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 لا يلزم المصادقة لسحب هذه الصور.
 
-## المساهمة {#contributing}
+## المساهم {#contributing}
 
 للمساهمة في الحل المستضاف ذاتيًا:
 
-1. قم بإجراء تعديلات على الملفات ذات الصلة في مجلد `self-hosting`
-2. اختبر محليًا أو على خادم VPS يعمل بنظام Ubuntu باستخدام البرنامج النصي `setup.sh` المُرفق
-3. أرسل طلب سحب
+1. قم بإجراء تغييرات على الملفات ذات الصلة في مجلد `self-hosting`.
+2. اختبر محليًا أو على خادم VPS يعمل بنظام Ubuntu باستخدام البرنامج النصي `setup.sh` المُرفق.
+3. أرسل طلب سحب.
 4. بمجرد الدمج وإنشاء إصدار جديد، سيقوم سير عمل CI تلقائيًا ببناء ونشر نسخة Docker المُحدثة.

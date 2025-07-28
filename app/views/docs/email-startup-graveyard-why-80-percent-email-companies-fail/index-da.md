@@ -5,10 +5,10 @@
 <p class="lead mt-3">Selvom mange e-mail-startups har investeret millioner i at løse oplevede problemer, har vi hos <a href="https://forwardemail.net">Forward Email</a> fokuseret på at opbygge en pålidelig e-mail-infrastruktur fra bunden siden 2017. Denne analyse undersøger mønstrene bag resultaterne af e-mail-startups og de grundlæggende udfordringer ved e-mail-infrastruktur.</p>
 
 > \[!NOTE]
-> **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
+> **Vigtig indsigt**: De fleste e-mail-startups bygger ikke en egentlig e-mail-infrastruktur fra bunden. Mange bygger oven på eksisterende løsninger som Amazon SES eller open source-systemer som Postfix. Kerneprotokollerne fungerer godt - udfordringen ligger i implementeringen.
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **Teknisk dybdegående analyse**: For omfattende detaljer om vores tilgang, arkitektur og sikkerhedsimplementering, se vores [Teknisk hvidbog om videresendelse af e-mail](https://forwardemail.net/technical-whitepaper.pdf) og [Om siden](https://forwardemail.net/en/about), som dokumenterer vores komplette udviklingstidslinje siden 2017.
 
 ## Indholdsfortegnelse {#table-of-contents}
 
@@ -27,7 +27,7 @@
   * [Acceleratoranalysen](#the-accelerator-analysis)
   * [Venturekapitalfælden](#the-venture-capital-trap)
 * [Den tekniske virkelighed: Moderne e-mail-stakke](#the-technical-reality-modern-email-stacks)
-  * [Hvad driver egentlig "e-mail startups"?](#what-actually-powers-email-startups)
+  * [Hvad driver egentlig "e-mail-startups"?](#what-actually-powers-email-startups)
   * [Ydelsesproblemerne](#the-performance-problems)
 * [Opkøbsmønstrene: Succes vs. Nedlukning](#the-acquisition-patterns-success-vs-shutdown)
   * [De to mønstre](#the-two-patterns)
@@ -40,7 +40,7 @@
 * [Den moderne AI Email Grift](#the-modern-ai-email-grift)
   * [Den seneste bølge](#the-latest-wave)
   * [De samme gamle problemer](#the-same-old-problems)
-* [Hvad der rent faktisk virker: De virkelige succeshistorier om e-mails](#what-actually-works-the-real-email-success-stories)
+* [Hvad der rent faktisk virker: De virkelige succeshistorier med e-mails](#what-actually-works-the-real-email-success-stories)
   * [Infrastrukturvirksomheder (vinderne)](#infrastructure-companies-the-winners)
   * [E-mailudbydere (The Survivors)](#email-providers-the-survivors)
   * [Undtagelsen: Xobnis succeshistorie](#the-exception-xobnis-success-story)
@@ -96,10 +96,10 @@
   * [E-mailudvidelser og serviceopkøb](#email-extension-and-service-acquisitions)
   * [Overlevende: E-mailfirmaer, der rent faktisk virker](#the-survivors-email-companies-that-actually-work)
 
-## Matrixen for fejl ved opstart af e-mail {#the-email-startup-failure-matrix}
+## Matrixen for fejl i e-mailopstart {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Failure Rate Alert**: [Techstars alone has 28 email-related companies](https://www.techstars.com/portfolio) with only 5 exits - an exceedingly high failure rate (sometimes calculated to be 80%+).
+> **Advarsel om fejlrate**: [Techstars alene har 28 e-mail-relaterede virksomheder](https://www.techstars.com/portfolio) med kun 5 udgange - en ekstremt høj fejlrate (nogle gange beregnet til at være 80%+).
 
 Her er alle større fiaskoer inden for e-mail-opstart, vi kunne finde, organiseret efter accelerator, finansiering og resultat:
 
@@ -117,10 +117,10 @@ Her er alle større fiaskoer inden for e-mail-opstart, vi kunne finde, organiser
 | **remail** | 2009 | YC | ~$20K (YC 2009) | [Acquired by Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → Nedlukning | 😵 Død | [iPhone email search](https://www.ycombinator.com/companies/remail) |
 | **Posthaven** | 2016 | 500 Globale | ~$100.000 (500 standard) | Afsluttet | Ukendt | [Package tracking](https://medium.com/@Kela/the-mailhaven-a-smarter-way-to-track-manage-and-receive-packages-edf202d73b06) |
 
-## Realitetstjekket af infrastrukturen {#the-infrastructure-reality-check}
+## Infrastrukturens realitetstjek {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **The Hidden Truth**: Every single "email startup" is just building UI on top of existing infrastructure. They're not building actual email servers - they're building apps that connect to real email infrastructure.
+> **Den skjulte sandhed**: Hver eneste "e-mail-startup" bygger blot brugergrænseflade oven på eksisterende infrastruktur. De bygger ikke rigtige e-mail-servere - de bygger apps, der forbinder til rigtig e-mail-infrastruktur.
 
 ### Hvad der rent faktisk kører e-mail {#what-actually-runs-email}
 
@@ -157,23 +157,23 @@ graph LR
 ```
 
 > \[!TIP]
-> **Key Pattern for Email Success**: The companies that actually succeed in email don't try to reinvent the wheel. Instead, they build **infrastructure and tools that enhance** existing email workflows. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), and [Postmark](https://postmarkapp.com/) became billion-dollar companies by providing reliable SMTP APIs and delivery services - they work **with** email protocols, not against them. This is the same approach we take at Forward Email.
+> **Nøglemønster for succes med e-mail**: De virksomheder, der rent faktisk har succes med e-mail, forsøger ikke at genopfinde hjulet. I stedet bygger de **infrastruktur og værktøjer, der forbedrer** eksisterende e-mail-arbejdsgange. [SendGrid](https://sendgrid.com/), [Postpistol](https://www.mailgun.com/) og [Poststempel](https://postmarkapp.com/) blev milliardvirksomheder ved at levere pålidelige SMTP API'er og leveringstjenester - de arbejder **med** e-mailprotokoller, ikke imod dem. Dette er den samme tilgang, som vi bruger hos Forward Email.
 
 ## Hvorfor de fleste e-mail-startups mislykkes {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **The Fundamental Pattern**: Email *client* startups typically fail because they try to replace working protocols, while email *infrastructure* companies can succeed by enhancing existing workflows. The key is understanding what users actually need versus what entrepreneurs think they need.
+> **Det grundlæggende mønster**: E-mail-*klient-*startups mislykkes typisk, fordi de forsøger at erstatte arbejdsprotokoller, mens e-mail-*infrastruktur*-virksomheder kan få succes ved at forbedre eksisterende arbejdsgange. Nøglen er at forstå, hvad brugerne rent faktisk har brug for, versus hvad iværksættere tror, de har brug for.
 
 ### 1. E-mailprotokoller virker, implementering gør det ofte ikke {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Email Statistics**: [347.3 billion emails sent daily](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) without major issues, serving [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023.
+> **E-mailstatistik**: [347,3 milliarder e-mails sendes dagligt](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) uden større problemer, betjener [4,37 milliarder e-mailbrugere på verdensplan](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) fra 2023.
 
 De centrale e-mailprotokoller er solide, men implementeringskvaliteten varierer meget:
 
 * **Universal kompatibilitet**: Alle enheder, alle platforme understøtter [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501) og [POP3](https://tools.ietf.org/html/rfc1939)
-* **Decentraliseret**: Intet enkelt fejlpunkt på tværs af [milliarder af e-mailservere verden over](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
-* **Standardiseret**: SMTP, IMAP, POP3 er kamptestede protokoller fra 1980'erne-1990'erne
+* **Decentraliseret**: Ingen single point of failure på tværs af [milliarder af e-mailservere verden over](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
+* **Standardiseret**: SMTP, IMAP, POP3 er gennemprøvede protokoller fra 1980'erne-1990'erne
 * **Pålidelig**: [347,3 milliarder e-mails sendes dagligt](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) uden større problemer
 
 **Den reelle mulighed**: Bedre implementering af eksisterende protokoller, ikke protokoludskiftning.
@@ -185,27 +185,27 @@ E-mails netværkseffekt er absolut:
 * **Alle har e-mail**: [4,37 milliarder e-mailbrugere på verdensplan](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) fra 2023
 * **Cross-platform**: Fungerer problemfrit mellem alle udbydere
 * **Forretningskritisk**: [99% af virksomheder bruger e-mail dagligt](https://blog.hubspot.com/marketing/email-marketing-stats) for drift
-* **Omkostninger ved at skifte e-mailadresse**: Ændring af e-mailadresser ødelægger alt, der er forbundet med den
+* **Omkostninger ved at skifte e-mailadresse**: Ændring af e-mailadresser ødelægger alt, der er forbundet med den.
 
-### 3. De går ofte efter de forkerte problemer {#3-they-often-target-the-wrong-problems}
+### 3. De fokuserer ofte på de forkerte problemer {#3-they-often-target-the-wrong-problems}
 
 Mange e-mail-startups fokuserer på opfattede problemer snarere end reelle smertepunkter:
 
 * **"E-mail er for kompleks"**: Den grundlæggende arbejdsgang er enkel - [Send, modtag, organiser siden 1971](https://en.wikipedia.org/wiki/History_of_email)
 * **"E-mail har brug for AI"**: [Gmail har allerede effektive smarte funktioner](https://support.google.com/mail/answer/9116836) som Smart Svar og Prioriteret indbakke
 * **"E-mail har brug for bedre sikkerhed"**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) og [DMARC](https://tools.ietf.org/html/rfc7489) giver solid godkendelse
-* **"E-mail har brug for en ny brugerflade"**: [Outlook](https://outlook.com/) og [Gmail](https://gmail.com/) brugerfladerne er forfinet gennem årtiers brugerforskning
+* **"E-mail har brug for en ny brugerflade"**: [Udsigter](https://outlook.com/) og [Gmail](https://gmail.com/) brugerflader er forfinet gennem årtiers brugerforskning
 
 **Reelle problemer, der er værd at løse**: Infrastrukturens pålidelighed, leveringsevne, spamfiltrering og udviklerværktøjer.
 
-### 4. Teknisk gæld er massiv {#4-technical-debt-is-massive}
+### 4. Teknisk gæld er enorm {#4-technical-debt-is-massive}
 
 Opbygning af en rigtig e-mailinfrastruktur kræver:
 
 * **SMTP-servere**: Kompleks levering og [omdømmehåndtering](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
-* **Spamfiltrering**: Konstant udvikling [trusselslandskab](https://www.spamhaus.org/)
-* **Lagersystemer**: Pålidelig [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) implementering
-* **Autentificering**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617) overholdelse
+* **Spamfiltrering**: Konstant udvikling af [trusselslandskab](https://www.spamhaus.org/)
+* **Lagringssystemer**: Pålidelig implementering af [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
+* **Godkendelse**: Overholdelse af [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617)
 * **Leverbarhed**: ISP-relationer og [omdømmehåndtering](https://sendgrid.com/blog/what-is-email-deliverability/)
 
 ### 5. Infrastrukturen eksisterer allerede {#5-the-infrastructure-already-exists}
@@ -213,10 +213,10 @@ Opbygning af en rigtig e-mailinfrastruktur kræver:
 Hvorfor genopfinde, når man kan bruge:
 
 * **[Amazon SES](https://aws.amazon.com/ses/)**: Dokumenteret leveringsinfrastruktur
-* **[Postfix](http://www.postfix.org/)**: Kamptestet SMTP-server
+* **[Postfix](http://www.postfix.org/)**: Gennemprøvet SMTP-server
 * **[Dueslag](https://www.dovecot.org/)**: Pålidelig IMAP/POP3-server
 * **[SpamAssassin](https://spamassassin.apache.org/)**: Effektiv spamfiltrering
-* **Eksisterende udbydere**: [Gmail](https://gmail.com/), [Outlook](https://outlook.com/), [FastMail](https://www.fastmail.com/) fungerer fint
+* **Eksisterende udbydere**: [Gmail](https://gmail.com/), [Udsigter](https://outlook.com/), [FastMail](https://www.fastmail.com/) fungerer fint
 
 ## Casestudier: Når e-mail-startups mislykkes {#case-studies-when-email-startups-fail}
 
@@ -226,7 +226,7 @@ Skiff er et perfekt eksempel på alt, hvad der er galt med e-mail-startups.
 
 #### Opsætningen {#the-setup}
 
-* **Positionering**: "E-mail- og produktivitetsplatform med fokus på privatliv først"
+* **Positionering**: "E-mail- og produktivitetsplatform med privatliv først"
 * **Finansiering**: [Betydelig venturekapital](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
 * **Løfte**: Bedre e-mail gennem privatliv og kryptering
 
@@ -268,7 +268,7 @@ Skiff er et perfekt eksempel på alt, hvad der er galt med e-mail-startups.
 ### Venturekapitalfælden {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
+> **VC-finansieringsparadokset**: VC'er elsker e-mail-startups, fordi de lyder simple, men faktisk er umulige. De grundlæggende antagelser, der tiltrækker investeringer, er præcis det, der garanterer fiasko.
 
 VC'er elsker e-mail-startups, fordi de lyder simple, men faktisk er umulige:
 
@@ -317,10 +317,10 @@ graph LR
 * **Nylas Mail**: [1 GB+ hukommelsesforbrug](https://github.com/nylas/nylas-mail/issues/3501) før nedlukning
 * **[Postkasse](https://www.postbox-inc.com/)**: [300 MB+ inaktiv hukommelse](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Canary Mail](https://canarymail.io/)**: [Hyppige nedbrud på grund af hukommelsesproblemer](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
-* **[Thunderbird](https://www.thunderbird.net/)**: [Højt RAM-forbrug på op til 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) af systemhukommelse
+* **[Thunderbird](https://www.thunderbird.net/)**: [Højt RAM-forbrug på op til 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) af systemhukommelsen
 
 > \[!WARNING]
-> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
+> **Electron-ydeevnekrise**: Moderne e-mailklienter bygget med Electron og React Native lider af alvorlige hukommelsesproblemer og ydeevneproblemer. Disse platformsuafhængige frameworks er, selvom de er praktiske for udviklere, ressourcekrævende applikationer, der bruger hundredvis af megabyte til gigabyte RAM til grundlæggende e-mailfunktionalitet.
 
 **Batterilådning**: Konstant synkronisering og ineffektiv kode:
 
@@ -370,9 +370,9 @@ flowchart TD
 **Fejl i klientapps**:
 
 * **Postkasse → Dropbox → Nedlukning** (2013-2015)
-* **[Spurv → Google → Nedlukning](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[reMail → Google → Luk ned](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **[Skiff → Begreb → Nedlukning](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
+* **MIDLERTIDIG_PLACEHOLDER_0** (2012-2013)
+* **MIDLERTIDIG_PLACEHOLDER_1** (2010-2011)
+* **MIDLERTIDIG_PLACEHOLDER_2** (2024)
 
 **Bemærkelsesværdig undtagelse**:
 
@@ -409,7 +409,7 @@ Under branchekonsolidering drager brugerne fordel af:
 
 ## Hacker News-realitetstjekket {#the-hacker-news-reality-check}
 
-Alle e-mail-startups får de samme kommentarer på [Hackernyheder](https://news.ycombinator.com/):
+Alle e-mail-opstartsvirksomheder får de samme kommentarer på [Hackernyheder](https://news.ycombinator.com/):
 
 * ["E-mail fungerer fint, dette løser et ikke-problem"](https://news.ycombinator.com/item?id=35982757)
 * ["Bare brug Gmail/Outlook ligesom alle andre"](https://news.ycombinator.com/item?id=36001234)
@@ -439,7 +439,7 @@ Tilføjelsen af "AI" løser ikke de grundlæggende udfordringer:
 
 **Den virkelige udfordring**: AI-funktioner kræver betydelige investeringer i infrastruktur, samtidig med at de adresserer relativt små smertepunkter.
 
-## Hvad der rent faktisk virker: De virkelige succeshistorier med e-mails {#what-actually-works-the-real-email-success-stories}
+## Hvad der rent faktisk virker: De virkelige succeshistorier om e-mails {#what-actually-works-the-real-email-success-stories}
 
 ### Infrastrukturvirksomheder (Vinderne) {#infrastructure-companies-the-winners}
 
@@ -458,10 +458,10 @@ Tilføjelsen af "AI" løser ikke de grundlæggende udfordringer:
 * **Vi**: 7+ år, profitabel, voksende
 
 > \[!WARNING]
-> **The JMAP Investment Question**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with limited adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that many users request. This represents a strategic choice to prioritize protocol innovation over user-requested features. Whether JMAP will gain broader adoption remains to be seen, but the current email client ecosystem continues to rely primarily on IMAP/SMTP.
+> **Spørgsmålet om investering i JMAP**: Fastmail investerer ressourcer i [JMAP](https://jmap.io/), en protokol der er [10+ år gammel med begrænset adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), men samtidig [nægte at implementere PGP-kryptering](https://www.fastmail.com/blog/why-we-dont-offer-pgp/), som mange brugere efterspørger. Dette repræsenterer et strategisk valg om at prioritere protokolinnovation frem for brugeranmodede funktioner. Om JMAP vil vinde bredere anvendelse, er endnu uvist, men det nuværende økosystem af e-mailklienter er fortsat primært afhængigt af IMAP/SMTP.
 
 > \[!TIP]
-> **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
+> **Virksomhedssucces**: Videresendt e-mail driver [alumni e-mailløsninger til topuniversiteter](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), inklusive University of Cambridge med 30.000 alumni-adresser, og leverer årlige omkostningsbesparelser på 87.000 USD sammenlignet med traditionelle løsninger.
 
 **Mønster**: De forbedrer e-mail, erstatter den ikke.
 
@@ -490,7 +490,7 @@ Tilføjelsen af "AI" løser ikke de grundlæggende udfordringer:
 [Matt Brezina](https://www.linkedin.com/in/mattbrezina/) og [Adam Smith](https://www.linkedin.com/in/adamjsmith/) stoppede ikke efter Xobni:
 
 * **Matt Brezina**: Blev en aktiv [engelinvestor](https://mercury.com/investor-database/matt-brezina) med investeringer i Dropbox, Mailbox og andre
-* **Adam Smith**: Fortsatte med at opbygge succesfulde virksomheder inden for produktivitetsområdet
+* **Adam Smith**: Fortsatte med at opbygge succesfulde virksomheder inden for produktivitet
 * **Begge grundlæggere**: Demonstrerede, at succes med e-mail kommer fra forbedring, ikke erstatning
 
 ### Mønsteret {#the-pattern}
@@ -506,7 +506,7 @@ Virksomheder har succes med e-mail, når de:
 
 Dette er et afgørende spørgsmål, der rammer kernen i e-mailinnovation. Det korte svar er: **ingen har med succes erstattet e-mail, men nogle har med succes forbedret den**.
 
-### Hvad der egentlig sad fast {#what-actually-stuck}
+### Hvad der rent faktisk sad fast {#what-actually-stuck}
 
 Et kig på e-mail-innovationer i løbet af de sidste 20 år:
 
@@ -522,14 +522,14 @@ Et kig på e-mail-innovationer i løbet af de sidste 20 år:
 * **[Slack](https://slack.com/)**: Fantastisk til teamchat, men sender stadig e-mail-notifikationer
 * **[Disharmoni](https://discord.com/)**: Fremragende til fællesskaber, men bruger e-mail til kontoadministration
 * **[WhatsApp](https://www.whatsapp.com/)**: Perfekt til beskeder, men virksomheder bruger stadig e-mail
-* **[Zoom](https://zoom.us/)**: Essentiel til videoopkald, men mødeinvitationer sendes via e-mail
+* **[Zoom](https://zoom.us/)**: Vigtig til videoopkald, men mødeinvitationer sendes via e-mail
 
 ### HEY-eksperimentet {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Real-World Validation**: HEY's founder [DHH](https://dhh.dk/) actually uses our service at Forward Email for his personal domain `dhh.dk` and has for several years, demonstrating that even email innovators rely on proven infrastructure.
+> **Validering i den virkelige verden**: HEYs grundlægger [DHH](https://dhh.dk/) bruger faktisk vores tjeneste hos Forward Email til sit personlige domæne `dhh.dk` og har gjort det i flere år, hvilket viser, at selv e-mail-innovatører er afhængige af en gennemprøvet infrastruktur.
 
-[HEY](https://hey.com/) af [Basecamp](https://basecamp.com/) repræsenterer det mest seriøse nylige forsøg på at "genopfinde" e-mail:
+[HEY](https://hey.com/) af [Basecamp](https://basecamp.com/) repræsenterer det mest seriøse forsøg på at "genopfinde" e-mail:
 
 * **Lanceret**: [2020 med stor fanfare](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
 * **Tilgang**: Helt nyt e-mailparadigme med screening, bundling og arbejdsgange
@@ -538,7 +538,7 @@ Et kig på e-mail-innovationer i løbet af de sidste 20 år:
 
 ### Hvad der rent faktisk virker {#what-actually-works}
 
-De mest succesfulde e-mail-innovationer har været:
+De mest succesfulde e-mailinnovationer har været:
 
 1. **Bedre infrastruktur**: Hurtigere servere, bedre spamfiltrering, forbedret leveringsevne
 2. **Forbedrede grænseflader**: [Gmails samtalevisning](https://support.google.com/mail/answer/5900), [Outlooks kalenderintegration](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
@@ -586,13 +586,13 @@ Det succesfulde mønster er simpelt: **forbedr eksisterende e-mail-arbejdsgange 
 
 ## Vores tilgang: Hvorfor vi er anderledes {#our-approach-why-were-different}
 
-### Hvad vi gør {#what-we-do}
+### Hvad vi laver {#what-we-do}
 
 * **Byg faktisk infrastruktur**: Brugerdefinerede SMTP/IMAP-servere fra bunden
 * **Fokus på pålidelighed**: [99,99% oppetid](https://status.forwardemail.net), korrekt fejlhåndtering
 * **Forbedr eksisterende arbejdsgange**: Arbejd med alle e-mailklienter
 * **Betjen udviklere**: API'er og værktøjer, der rent faktisk fungerer
-* **Oprethold kompatibilitet**: Fuld [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939) overholdelse
+* **Oprethold kompatibilitet**: Fuld [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)-overholdelse
 
 ### Hvad vi ikke gør {#what-we-dont-do}
 
@@ -601,7 +601,7 @@ Det succesfulde mønster er simpelt: **forbedr eksisterende e-mail-arbejdsgange 
 * Tilføj unødvendige AI-funktioner
 * Lover at "rette" e-mail
 
-## Sådan bygger vi en e-mailinfrastruktur, der rent faktisk fungerer {#how-we-build-email-infrastructure-that-actually-works}
+## Sådan bygger vi e-mailinfrastruktur, der rent faktisk fungerer {#how-we-build-email-infrastructure-that-actually-works}
 
 ### Vores anti-startup-tilgang {#our-anti-startup-approach}
 
@@ -614,10 +614,10 @@ Mens andre virksomheder bruger millioner på at genopfinde e-mail, fokuserer vi 
 ### Hvad gør os anderledes {#what-makes-us-different}
 
 > \[!TIP]
-> **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
+> **Overholdelse af regler i henhold til offentlig myndighed**: Videresendt e-mail er [Overholder paragraf 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) og betjener organisationer som US Naval Academy, hvilket demonstrerer vores engagement i at opfylde strenge føderale sikkerhedskrav.
 
 > \[!NOTE]
-> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+> **OpenPGP og OpenWKD implementering**: I modsætning til Fastmail, som [nægter at implementere PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) nævner bekymringer om kompleksitet, yder Forward Email fuld OpenPGP-understøttelse med OpenWKD (Web Key Directory)-kompatibilitet, hvilket giver brugerne den kryptering, de rent faktisk ønsker, uden at tvinge dem til at bruge eksperimentelle protokoller som JMAP.
 
 **Teknisk staksammenligning**:
 
@@ -640,7 +640,7 @@ graph TD
     H --> N[Web-native design]
 ```
 
-* \= [APNIC-blogindlæg](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) bekræfter at Proton bruger postfix-mta-sts-resolver, hvilket indikerer at de kører en Postfix-stak
+* \= [APNIC-blogindlæg](https://blog.apnic.net/2024/10/04/smtp-downgrade-attacks-and-mta-sts/#:\~:text=Logs%20indicate%20that%20Proton%20Mail%20uses%C2%A0postfix%2Dmta%2Dsts%2Dresolver%2C%20hinting%20that%20they%20run%20a%20Postfix%20stack) bekræfter, at Proton bruger postfix-mta-sts-resolver, hvilket indikerer, at de kører en Postfix-stak
 
 **Vigtige forskelle**:
 
@@ -651,14 +651,14 @@ graph TD
 * **Ingen ældre kode**: Ren, moderne kodebase uden årtiers patches
 
 > \[!NOTE]
-> **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
+> **Privatliv gennem design**: Vores [privatlivspolitik](https://forwardemail.net/en/privacy) sikrer, at vi ikke gemmer videresendte e-mails på disk eller i databaser, ikke gemmer metadata om e-mails og ikke gemmer logfiler eller IP-adresser - de fungerer kun i hukommelsen til e-mail-videresendelsestjenester.
 
 **Teknisk dokumentation**: For omfattende oplysninger om vores tilgang, arkitektur og sikkerhedsimplementering, se vores [teknisk hvidbog](https://forwardemail.net/technical-whitepaper.pdf) og omfattende teknisk dokumentation.
 
 ### Sammenligning af e-mailudbydere: Vækst gennem dokumenterede protokoller {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+> **Reelle væksttal**: Mens andre udbydere jagter eksperimentelle protokoller, fokuserer Forward Email på, hvad brugerne rent faktisk ønsker - pålidelig IMAP, POP3, SMTP, CalDAV og CardDAV, der fungerer på tværs af alle enheder. Vores vækst demonstrerer værdien af denne tilgang.
 
 | Udbyder | Domænenavne (2024 via [SecurityTrails](https://securitytrails.com/)) | Domænenavne (2025 via [ViewDNS](https://viewdns.info/reversemx/)) | Procentuel ændring | MX-post |
 | ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
@@ -719,7 +719,7 @@ graph TD
 ## Sikkerhedsudfordringer i e-mailinfrastruktur {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Quantum-Safe Email Security**: Forward Email is the [world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), providing unprecedented security against future quantum computing threats.
+> **Kvantesikker e-mailsikkerhed**: Videresendt e-mail er [Verdens første og eneste e-mailtjeneste, der bruger kvanteresistente og individuelt krypterede SQLite-postkasser](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), der giver hidtil uset sikkerhed mod fremtidige kvantecomputertrusler.
 
 E-mailsikkerhed er en kompleks udfordring, der påvirker alle udbydere i branchen. I stedet for at fremhæve individuelle hændelser er det mere værdifuldt at forstå de fælles sikkerhedsovervejelser, som alle udbydere af e-mailinfrastruktur skal tage højde for.
 
@@ -733,7 +733,7 @@ Alle e-mailudbydere står over for lignende sikkerhedsudfordringer:
 * **Overholdelse af regler**: Opfyldelse af forskellige lovgivningsmæssige krav som [GDPR](https://gdpr.eu/) og [CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Advanced Encryption**: Our [security practices](https://forwardemail.net/en/security) include ChaCha20-Poly1305 encryption for mailboxes, full disk encryption with LUKS v2, and comprehensive protection with encryption-at-rest, encryption-in-memory, and encryption-in-transit.
+> **Avanceret kryptering**: Vores [sikkerhedspraksis](https://forwardemail.net/en/security) inkluderer ChaCha20-Poly1305-kryptering til postkasser, fuld diskkryptering med LUKS v2 og omfattende beskyttelse med kryptering i hvile, kryptering i hukommelsen og kryptering under overførsel.
 
 ### Værdien af gennemsigtighed {#the-value-of-transparency}
 
@@ -768,7 +768,7 @@ Efter at have analyseret hundredvis af e-mail-startups:
 * **Klientapps mislykkes normalt**: Opkøb betyder normalt død for e-mailklienter
 * **Infrastruktur kan lykkes**: Virksomheder, der bygger SMTP/API-tjenester, trives ofte
 * **VC-finansiering skaber pres**: Venturekapital skaber urealistiske vækstforventninger
-* **Teknisk gæld ophobes**: Opbygning af e-mail-infrastruktur er sværere end det ser ud til
+* **Teknisk gæld akkumuleres**: Det er sværere at opbygge e-mail-infrastruktur, end det ser ud til
 
 ### Den historiske kontekst {#the-historical-context}
 
@@ -787,19 +787,19 @@ E-mail har været "uddød" i over 20 år ifølge startups:
 
 Lærdommen er ikke, at e-mail ikke kan forbedres. Det handler om at vælge den rigtige tilgang:
 
-1. **E-mailprotokoller virker**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) er kamptestede
+1. **E-mailprotokoller virker**: [SMTP](https://tools.ietf.org/html/rfc5321), [IMAP](https://tools.ietf.org/html/rfc3501), [POP3](https://tools.ietf.org/html/rfc1939) er gennemprøvede
 2. **Infrastruktur er vigtig**: Pålidelighed og ydeevne overgår prangende funktioner
 3. **Forbedring overgår udskiftning**: Arbejd med e-mail, kæmp ikke imod den
-4. **Bæredygtighed overgår vækst**: Profitable virksomheder overlever venturekapitalfinansierede virksomheder
+4. **Bæredygtighed overgår vækst**: Profitable virksomheder overlever VC-finansierede virksomheder
 5. **Tjen udviklere**: Værktøjer og API'er skaber mere værdi end slutbrugerapps
 
 **Muligheden**: Bedre implementering af gennemprøvede protokoller, ikke protokoludskiftning.
 
 > \[!TIP]
-> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
+> **Omfattende analyse af e-mailtjenester**: For en dybdegående sammenligning af 79 e-mailtjenester i 2025, inklusive detaljerede anmeldelser, skærmbilleder og teknisk analyse, se vores omfattende guide: [79 bedste e-mailtjenester](https://forwardemail.net/en/blog/best-email-service). Denne analyse viser, hvorfor videresendelse af e-mail konsekvent rangerer som det anbefalede valg med hensyn til pålidelighed, sikkerhed og overholdelse af standarder.
 
 > \[!NOTE]
-> **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
+> **Validering i den virkelige verden**: Vores tilgang fungerer for organisationer fra [Offentlige myndigheder, der kræver overholdelse af paragraf 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) til [store universiteter, der håndterer titusindvis af alumni-adresser](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study) og beviser, at opbygning af pålidelig infrastruktur er vejen til succes med e-mail.
 
 Hvis du overvejer at opbygge en e-mail-startup, så overvej i stedet at opbygge en e-mail-infrastruktur. Verden har brug for bedre e-mail-servere, ikke flere e-mail-apps.
 
@@ -811,7 +811,7 @@ Google har, på trods af at de ejer [Gmail](https://gmail.com/), lukket flere e-
 
 * **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "E-mail-dræber" som ingen forstod
 * **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Katastrofe med integration af sociale e-mails
-* **[Indbakke via Gmail](https://killedbygoogle.com/)** (2014-2019): Gmails "smarte" efterfølger, forladt
+* **[Indbakke via Gmail](https://killedbygoogle.com/)** (2014-2019): Gmails "smarte" efterfølger, opgivet
 * **[Google+](https://killedbygoogle.com/)** E-mail-funktioner (2011-2019): Integration af sociale netværks-e-mails
 
 **Mønster**: Selv Google kan ikke genopfinde e-mail med succes.
@@ -826,7 +826,7 @@ Google har, på trods af at de ejer [Gmail](https://gmail.com/), lukket flere e-
 
 **Lektion**: E-mailklienter kan ikke opretholde abonnementsmodeller.
 
-### Apps der aldrig blev lanceret {#the-apps-that-never-launched}
+### Apps, der aldrig blev lanceret {#the-apps-that-never-launched}
 
 Mange e-mail-startups døde før lanceringen:
 
@@ -834,7 +834,7 @@ Mange e-mail-startups døde før lanceringen:
 * **[Mailstrøm](https://mailstrom.co/)** (2011): Værktøj til e-mailhåndtering, erhvervet før udgivelsen
 * **Fluent** (2013): E-mailklient, udvikling stoppet
 
-### Mønsteret fra erhvervelse til nedlukning {#the-acquisition-to-shutdown-pattern}
+### Mønsteret fra optagelse til nedlukning {#the-acquisition-to-shutdown-pattern}
 
 * **[Spurv → Google → Nedlukning](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → Luk ned](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
@@ -844,11 +844,11 @@ Mange e-mail-startups døde før lanceringen:
 
 ### Konsolidering af e-mailinfrastruktur {#email-infrastructure-consolidation}
 
-* **[Postkasse → eM-klient](https://www.postbox-inc.com/)** (2024): Postkasse lukkes øjeblikkeligt ned efter opkøb
+* **[Postkasse → eM-klient](https://www.postbox-inc.com/)** (2024): Postkasse lukkes ned med det samme efter opkøb
 * **Flere opkøb**: [ImprovMX](https://improvmx.com/) er blevet opkøbt flere gange, med [bekymringer om privatlivets fred rejst](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) og [annonceringer af opkøb](https://improvmx.com/blog/improvmx-has-been-acquired) og [virksomhedsfortegnelser](https://quietlight.com/listings/15877422)
 * **Tjenesteforringelse**: Mange tjenester forværres efter opkøb
 
-## Kirkegården for open source-e-mails: Når "gratis" ikke er bæredygtigt {#the-open-source-email-graveyard-when-free-isnt-sustainable}
+## Kirkegården for åben kildekode-e-mails: Når "gratis" ikke er bæredygtigt {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
 ### Nylas Mail → Mailspring: Forken der ikke kunne {#nylas-mail--mailspring-the-fork-that-couldnt}
 
@@ -879,7 +879,7 @@ Open source e-mail-projekter mislykkes fordi:
 * **Kompatibilitet**: Skal fungere med alle e-mailudbydere
 * **Ressourcer**: Udbrændthed blandt frivillige udviklere
 
-## Den stigende AI-e-mail-startup: Historien gentager sig med "intelligens" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
+## AI Email Startup-bølgen: Historien gentager sig med "Intelligens" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
 ### Den nuværende AI-e-mail-guldfeber {#the-current-ai-email-gold-rush}
 
@@ -889,7 +889,7 @@ AI e-mail-startups i 2024:
 * **[Kortbølge](https://www.shortwave.com/)**: Y Combinator, Gmail + AI
 * **[SaneBox](https://www.sanebox.com/)**: AI e-mailfiltrering (faktisk rentabel)
 * **[Boomerang](https://www.boomeranggmail.com/)**: AI-planlægning og -svar
-* **[Mail-0/Nul](https://github.com/Mail-0/Zero)**: AI-drevet e-mailklient-startup bygger endnu en e-mailgrænseflade
+* **[Mail-0/Nul](https://github.com/Mail-0/Zero)**: AI-drevet e-mailklient-startup, der bygger endnu en e-mailgrænseflade
 * **[Indbakke nul](https://github.com/elie222/inbox-zero)**: Open source AI e-mailassistent forsøger at automatisere e-mailhåndtering
 
 ### Finansieringsvanviddet {#the-funding-frenzy}
@@ -912,7 +912,7 @@ VC'er smider penge efter "AI + Email":
 ### Det uundgåelige resultat {#the-inevitable-outcome}
 
 * **2025**: [Grammarly har med succes opkøbt Superhuman](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) - en sjælden succesfuld exit for en e-mailklient
-* **2025-2026**: De fleste tilbageværende AI e-mail startups vil ændre sig eller lukke ned
+* **2025-2026**: De fleste resterende AI e-mail startups vil ændre sig eller lukke ned
 * **2027**: Overlevende virksomheder vil blive opkøbt med blandede resultater
 * **2028**: "Blockchain e-mail" eller den næste trend vil dukke op
 
@@ -925,16 +925,16 @@ E-mailbranchen har konsolideret sig dramatisk:
 * **[ActiveCampaign har erhvervet Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
 * **[Sinch opkøbte Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
 * **[Twilio opkøbte SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **Flere [ImprovMX](https://improvmx.com/) opkøb** (igangværende) med [bekymringer om privatlivets fred](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) og [annonceringer af opkøb](https://improvmx.com/blog/improvmx-has-been-acquired) og [virksomhedsfortegnelser](https://quietlight.com/listings/15877422)
+* **Flere [ImprovMX](https://improvmx.com/)-opkøb** (igangværende) med [bekymringer om privatlivets fred](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) og [annonceringer af opkøb](https://improvmx.com/blog/improvmx-has-been-acquired) og [virksomhedsfortegnelser](https://quietlight.com/listings/15877422)
 
-### Outlook: "Overlevenden", der ikke kan stoppe med at bryde igennem {#outlook-the-survivor-that-cant-stop-breaking}
+### Udsigter: "Overlevenden", der ikke kan holde op med at bryde sammen {#outlook-the-survivor-that-cant-stop-breaking}
 
 [Microsoft Outlook](https://outlook.com/) har, på trods af at være en "overlever", konstante problemer:
 
 * **Hukommelseslækager**: [Outlook bruger gigabyte RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) og [kræver hyppige genstarter](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
 * **Synkroniseringsproblemer**: E-mails forsvinder og dukker op igen tilfældigt
 * **Ydeevneproblemer**: Langsom opstart, hyppige nedbrud
-* **Kompatibilitetsproblemer**: Fejl med tredjeparts e-mailudbydere
+* **Kompatibilitetsproblemer**: Afbrydelser med tredjeparts e-mailudbydere
 
 **Vores praktiske erfaring**: Vi hjælper regelmæssigt kunder, hvis Outlook-opsætninger ikke fungerer korrekt i vores fuldt kompatible IMAP-implementering.
 
@@ -949,7 +949,7 @@ Efter [ActiveCampaigns opkøb](https://postmarkapp.com/blog/postmark-and-dmarc-d
 
 ### Seneste tab af e-mailklienter (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-**[Postkasse → eM-klient](https://www.postbox-inc.com/) Opkøb**: I 2024 opkøbte eM Client Postbox og [luk den straks ned](https://www.postbox-inc.com/), hvilket tvang tusindvis af brugere til at migrere.
+**[Postkasse → eM-klient](https://www.postbox-inc.com/)-opkøb**: I 2024 opkøbte eM Client Postbox og [luk den straks ned](https://www.postbox-inc.com/), hvilket tvang tusindvis af brugere til at migrere.
 
 **[Canary Mail](https://canarymail.io/) Problemer**: Trods [Sequoia-bagside](https://www.sequoiacap.com/) rapporterer brugerne ikke-fungerende funktioner og dårlig kundesupport.
 
@@ -957,35 +957,35 @@ Efter [ActiveCampaigns opkøb](https://postmarkapp.com/blog/postmark-and-dmarc-d
 
 **[Mailbird](https://www.getmailbird.com/) Licensproblemer**: Windows-brugere oplever licensproblemer og forvirring omkring abonnementer.
 
-**[Luftpost](https://airmailapp.com/) Afvisning**: Mac/iOS e-mailklienten, baseret på den fejlslagne Sparrow-kodebase, fortsætter med at modtage [dårlige anmeldelser](https://airmailapp.com/) for pålidelighedsproblemer.
+**[Luftpost](https://airmailapp.com/) Afvisning**: Mac/iOS e-mailklienten, baseret på den fejlslagne Sparrow-kodebase, fortsætter med at modtage [dårlige anmeldelser](https://airmailapp.com/) på grund af pålidelighedsproblemer.
 
-### E-mailudvidelser og tjenesteopkøb {#email-extension-and-service-acquisitions}
+### E-mailudvidelser og serviceerhvervelser {#email-extension-and-service-acquisitions}
 
-**[HubSpot-sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Udgået**: HubSpots e-mail-sporingsudvidelse blev [udgået i 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) og erstattet med "HubSpot Sales".
+**[HubSpot-sidekick](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Udgået**: HubSpots e-mail-sporingsudvidelse var [udgået i 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) og erstattet med "HubSpot Sales".
 
-**[Engager dig for Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Udgået**: Salesforces Gmail-udvidelse var [pensioneret i juni 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), hvilket tvang brugerne til at migrere til andre løsninger.
+**[Engager dig til Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Udgået**: Salesforces Gmail-udvidelse var [pensioneret i juni 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), hvilket tvang brugerne til at migrere til andre løsninger.
 
-### De overlevende: E-mailfirmaer, der rent faktisk virker {#the-survivors-email-companies-that-actually-work}
+### Overlevende: E-mailfirmaer, der rent faktisk virker {#the-survivors-email-companies-that-actually-work}
 
 Ikke alle e-mailfirmaer fejler. Her er dem, der rent faktisk virker:
 
 **[Mailmodo](https://www.mailmodo.com/)**: [Y Combinator succeshistorie](https://www.ycombinator.com/companies/mailmodo), [2 millioner dollars fra Sequoias Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) ved at fokusere på interaktive e-mailkampagner.
 
-**[Mixmax](https://mixmax.com/)**: Indsamlede [Samlet finansiering på 13,3 millioner dollars](https://www.mixmax.com/about) og fortsætter med at fungere som en succesfuld platform til salgsengagement.
+**[Mixmax](https://mixmax.com/)**: [Samlet finansiering på 13,3 millioner dollars](https://www.mixmax.com/about) er hævet og fortsætter med at fungere som en succesfuld platform til salgsengagement.
 
-**[Outreach.io](https://www.outreach.io/)**: Nåede [Værdiansættelse på over 4,4 mia. dollars](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) og forbereder sig på en potentiel børsnotering som en platform til salgsengagement.
+**[Outreach.io](https://www.outreach.io/)**: Nåede [Værdiansættelse på over 4,4 mia. dollars](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) og forbereder sig på en potentiel børsnotering som en platform for salgsengagement.
 
-**[Apollo.io](https://www.apollo.io/)**: Opnåede [Værdiansættelse på 1,6 mia. dollars](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) med en Serie D-investering på 100 millioner dollars i 2023 for deres salgsintelligensplatform.
+**[Apollo.io](https://www.apollo.io/)**: Opnåede [Værdiansættelse på 1,6 mia. dollars](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) med en Serie D-indtjening på 100 millioner dollars i 2023 for deres salgsintelligensplatform.
 
 **[GMass](https://www.gmass.co/)**: Bootstrap-succeshistorie, der genererer [140.000 kr./måned](https://www.indiehackers.com/product/gmass) som en Gmail-udvidelse til e-mailmarkedsføring.
 
-**[Streak CRM](https://www.streak.com/)**: Succesfuld Gmail-baseret CRM, der har kørt [siden 2012](https://www.streak.com/about) uden større problemer.
+**[Streak CRM](https://www.streak.com/)**: Vellykket Gmail-baseret CRM, der har kørt [siden 2012](https://www.streak.com/about) uden større problemer.
 
-**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [opkøbt af Marketo i 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) har succesfuldt rejst over 15 millioner dollars i finansiering.
+**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [opkøbt af Marketo i 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) er blevet rejst efter at have indsamlet mere end 15 millioner dollars i finansiering.
 
-**[Banantag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Opkøbt af Staffbase i 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) og fortsætter med at fungere som "Staffbase Email".
+**[Banantag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Opkøbt af Staffbase i 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) og fortsætter med at fungere som "Medarbejderbase-e-mail".
 
 **Nøglemønster**: Disse virksomheder har succes, fordi de **forbedrer eksisterende e-mail-arbejdsgange** i stedet for at forsøge at erstatte e-mail helt. De bygger værktøjer, der fungerer **med** e-mail-infrastrukturen, ikke imod den.
 
 > \[!TIP]
-> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight.
+> **Kan du ikke se en udbyder, du kender, nævnt her?** (f.eks. Posteo, Mailbox.org, Migadu osv.) Se vores [omfattende side med sammenligning af e-mailtjenester](https://forwardemail.net/en/blog/best-email-service) for mere indsigt.

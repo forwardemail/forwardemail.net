@@ -2,7 +2,7 @@
 
 ## Daftar Isi {#table-of-contents}
 
-* [Cara mengatasi pemblokiran SMTP masuk oleh ISP pada port 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
+* [Cara mengatasi pemblokiran SMTP masuk oleh ISP di port 25](#how-to-workaround-isp-blocking-inbound-smtp-on-port-25)
 * [Cara mengatasi pemblokiran SMTP keluar oleh ISP pada port 25](#how-to-workaround-isp-blocking-outbound-smtp-on-port-25)
 * [Bagaimana cara memeriksa apakah ISP saya memblokir port?](#how-can-i-check-if-my-isp-blocks-ports)
 
@@ -22,4 +22,4 @@ Jika ISP Anda memblokir port keluar 25, maka Anda harus mencari solusi alternati
 
 ## Bagaimana cara memeriksa apakah ISP saya memblokir port {#how-can-i-check-if-my-isp-blocks-ports}
 
-Anda dapat menjalankan `telnet smtp.forwardemail.net 25` dari baris perintah atau terminal untuk melihat apakah koneksi port keluar 25 Anda diblokir.
+Anda dapat menjalankan `telnet smtp.forwardemail.net 25` dari baris perintah atau terminal untuk melihat apakah koneksi keluar port 25 Anda diblokir.

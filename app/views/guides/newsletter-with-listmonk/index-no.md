@@ -15,7 +15,7 @@
   * [7. Konfigurer SMTP for videresending av e-post i Listmonk](#7-configure-forward-email-smtp-in-listmonk)
   * [8. Konfigurer avvisningsbehandling](#8-configure-bounce-processing)
 * [Testing](#testing)
-  * [Lag en e-postliste](#create-a-mailing-list)
+  * [Opprett en e-postliste](#create-a-mailing-list)
   * [Legg til abonnenter](#add-subscribers)
   * [Opprett og send en kampanje](#create-and-send-a-campaign)
 * [Bekreftelse](#verification)
@@ -44,7 +44,7 @@ Ved å integrere disse to beholder du full kontroll over dataene og infrastruktu
 
 Før du begynner, sørg for at du har følgende:
 
-* En virtuell privat server (VPS) som kjører en nyere Linux-distribusjon (Ubuntu 20.04+ anbefales) med minst 1 CPU og 1 GB RAM (2 GB anbefales).
+* En virtuell privat server (VPS) som kjører en nylig Linux-distribusjon (Ubuntu 20.04+ anbefales) med minst 1 CPU og 1 GB RAM (2 GB anbefales).
 
 * Trenger du en leverandør? Sjekk ut [anbefalt VPS-liste](https://github.com/forwardemail/awesome-mail-server-providers).
 
@@ -106,9 +106,9 @@ Det er avgjørende for sikkerheten å kjøre Listmonk over HTTPS. Du har to hove
 
 #### Alternativ A: Bruk av Cloudflare-proxy (anbefales for enkelhets skyld) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
-Hvis DNS-en til domenet ditt administreres av Cloudflare, kan du utnytte proxy-funksjonen deres for enkel HTTPS.
+Hvis DNS-en til domenet ditt administreres av Cloudflare, kan du bruke proxy-funksjonen deres for enkel HTTPS.
 
-1. **Punkt-DNS**: Opprett en `A`-post i Cloudflare for ditt Listmonk-underdomene (f.eks. `listmonk.yourdomain.com`) som peker til din VPS IP-adresse. Sørg for at **Proxy-statusen** er satt til **Proxy** (oransje sky).
+1. **Punkt-DNS**: Opprett en `A`-post i Cloudflare for Listmonk-underdomenet ditt (f.eks. `listmonk.yourdomain.com`) som peker til VPS-IP-adressen din. Sørg for at **Proxy-statusen** er satt til **Proxy** (oransje sky).
 
 2. **Endre Docker Compose**: Rediger `docker-compose.yml`-filen du lastet ned:
 
@@ -121,11 +121,11 @@ Dette gjør Listmonk tilgjengelig internt på port 80, som Cloudflare deretter k
 
 Alternativt kan du sette opp en omvendt proxy som Nginx eller Caddy på VPS-en din for å håndtere HTTPS-terminering og proxy-forespørsler til Listmonk (kjører på port 9000 som standard).
 
-* Behold standard `ports: - "127.0.0.1:9000:9000"` i `docker-compose.yml` for å sikre at Listmonk bare er tilgjengelig lokalt.
+* Behold standardinnstillingen `ports: - "127.0.0.1:9000:9000"` i `docker-compose.yml` for å sikre at Listmonk bare er tilgjengelig lokalt.
 
-* Konfigurer den valgte reverse proxyen til å lytte på port 80 og 443, håndtere SSL-sertifikatinnhenting (f.eks. via Let's Encrypt) og videresende trafikk til `http://127.0.0.1:9000`.
+* Konfigurer den valgte omvendte proxyen til å lytte på port 80 og 443, håndtere SSL-sertifikatinnhenting (f.eks. via Let's Encrypt) og videresende trafikk til `http://127.0.0.1:9000`.
 
-* Detaljert oppsett av reverse proxy er utenfor rammen av denne veiledningen, men mange veiledninger er tilgjengelige på nettet.
+* Detaljert oppsett av omvendt proxy er utenfor rammen av denne veiledningen, men mange veiledninger er tilgjengelige på nettet.
 
 ### 6. Start Listmonk {#6-start-listmonk}
 
@@ -183,7 +183,7 @@ Avvisningsbehandling lar Listmonk automatisk håndtere e-poster som ikke kunne l
 *Eksempel*: `https://listmonk.yourdomain.com/webhooks/service/forwardemail`
 5. Bla videre ned til delen **Webhook Signature Payload Verification Key**.
 6. **Kopier** den genererte bekreftelsesnøkkelen. Du trenger denne i Listmonk.
-7. Lagre endringene i domeneinnstillingene dine for Videresend e-post.
+7. Lagre endringene i domeneinnstillingene dine for videresending av e-post.
 
 #### Listmonk-oppsett {#listmonk-setup}
 

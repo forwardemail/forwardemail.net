@@ -25,9 +25,9 @@
 ## Prefazione {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> Il nostro servizio di posta elettronica è [100% open source](https://github.com/forwardemail) e incentrato sulla privacy, tramite caselle di posta SQLite sicure e crittografate.
 
-Prima del lancio di [Supporto IMAP](/faq#do-you-support-receiving-email-with-imap), utilizzavamo MongoDB per le nostre esigenze di archiviazione dati persistente.
+Fino al lancio di [Supporto IMAP](/faq#do-you-support-receiving-email-with-imap), abbiamo utilizzato MongoDB per le nostre esigenze di archiviazione dati persistente.
 
 Questa tecnologia è straordinaria e la utilizziamo ancora oggi, ma per avere la crittografia a riposo con MongoDB è necessario utilizzare un provider che offra MongoDB Enterprise, come Digital Ocean o Mongo Atlas, oppure pagare una licenza aziendale (e di conseguenza dover lavorare con la latenza del team di vendita).
 
@@ -35,7 +35,7 @@ Il nostro team di [Inoltra e-mail](https://forwardemail.net) necessitava di una 
 
 Invece di utilizzare un database condiviso per archiviare le tue caselle di posta, le memorizziamo e le criptiamo individualmente con la tua password (che possiedi solo tu). **Il nostro servizio di posta elettronica è così sicuro che se dimentichi la password, perdi la tua casella di posta** (e devi recuperarla con backup offline o ricominciare da capo).
 
-Continua a leggere perché di seguito approfondiremo [confronto dei fornitori di servizi di posta elettronica](#email-service-provider-comparison), [come funziona il nostro servizio](#how-does-it-work), [il nostro stack tecnologico](#technologies) e altro ancora.
+Continua a leggere perché di seguito analizzeremo in dettaglio [confronto dei fornitori di servizi di posta elettronica](#email-service-provider-comparison), [come funziona il nostro servizio](#how-does-it-work), [il nostro stack tecnologico](#technologies) e altro ancora.
 
 ## Confronto tra fornitori di servizi di posta elettronica {#email-service-provider-comparison}
 
@@ -54,7 +54,7 @@ Siamo l'unico fornitore di servizi di posta elettronica open source al 100% e in
 
 2. Una volta connesso, il tuo client di posta elettronica invierà [Comandi del protocollo IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) al nostro server IMAP per mantenere sincronizzata la tua casella di posta. Questo include la scrittura e l'archiviazione delle bozze di email e altre azioni che potresti eseguire (ad esempio, etichettare un'email come Importante o contrassegnarla come Spam/Posta indesiderata).
 
-3. I server di scambio di posta (comunemente noti come server "MX") ricevono le nuove email in arrivo e le archiviano nella tua casella di posta. Quando ciò accade, il tuo client di posta elettronica riceverà una notifica e sincronizzerà la tua casella di posta. I nostri server di scambio di posta possono inoltrare le tue email a uno o più destinatari (inclusi [webhook](/faq#do-you-support-webhooks)), archiviare le tue email per te nel tuo archivio IMAP crittografato, **o entrambe le cose**!
+3. I server di scambio di posta (comunemente noti come server "MX") ricevono le nuove email in arrivo e le archiviano nella tua casella di posta. Quando ciò accade, il tuo client di posta elettronica riceverà una notifica e sincronizzerà la tua casella di posta. I nostri server di scambio di posta possono inoltrare le tue email a uno o più destinatari (incluso [webhook](/faq#do-you-support-webhooks)), archiviare le tue email per te nel tuo archivio IMAP crittografato, **o entrambe le cose**!
 
 > \[!TIP]
 > Vuoi saperne di più? Leggi [come impostare l'inoltro e-mail](/faq#how-do-i-get-started-and-set-up-email-forwarding), [come funziona il nostro servizio di scambio di posta](/faq#how-does-your-email-forwarding-system-work) o visualizza [le nostre guide](/guides).
@@ -112,7 +112,7 @@ Abbiamo esplorato altri possibili livelli di archiviazione del database, ma ness
 
 Utilizziamo sempre la crittografia [crittografia a riposo](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [crittografia in transito](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS su HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") con :tangerine: [mandarino](https://tangeri.ne) e [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)) sulle caselle di posta. Inoltre, utilizziamo l'autenticazione a due fattori basata su token (al contrario degli SMS, che sono sospetti di [attacchi man-in-the-middle](https://en.wikipedia.org/wiki/Man-in-the-middle_attack)), chiavi SSH ruotate con accesso root disabilitato, accesso esclusivo ai server tramite indirizzi IP riservati e altro ancora.
 
-In caso di [attacco della cameriera malvagia](https://en.wikipedia.org/wiki/Evil_maid_attack) o di un dipendente non autorizzato di un fornitore terzo, **la tua casella di posta potrà comunque essere aperta solo con la password generata**. Non preoccuparti, non ci affidiamo a fornitori terzi, fatta eccezione per i nostri fornitori di server certificati SOC Tipo 2: Cloudflare, DataPacket, Digital Ocean e Vultr.
+In caso di [attacco della cameriera malvagia](https://en.wikipedia.org/wiki/Evil_maid_attack) o di un dipendente non autorizzato di un fornitore terzo, **la tua casella di posta potrà comunque essere aperta solo con la password generata**. Non preoccuparti, non ci affidiamo a fornitori terzi, a parte i nostri fornitori di server certificati SOC Tipo 2: Cloudflare, DataPacket, Digital Ocean e Vultr.
 
 Il nostro obiettivo è avere il minor numero possibile di [singolo punto di errore](https://en.wikipedia.org/wiki/Single_point_of_failure).
 
@@ -120,13 +120,13 @@ Il nostro obiettivo è avere il minor numero possibile di [singolo punto di erro
 
 > **tldr;** I nostri server IMAP utilizzano database SQLite crittografati individualmente per ciascuna delle tue caselle di posta.
 
-Database incorporato [SQLite è estremamente popolare](https://www.sqlite.org/mostdeployed.html) – attualmente in esecuzione sul tuo telefono e sul tuo computer – [e utilizzato da quasi tutte le principali tecnologie](https://www.sqlite.org/famous.html).
+Database incorporato [SQLite è estremamente popolare](https://www.sqlite.org/mostdeployed.html): attualmente in esecuzione sul telefono e sul computer – [e utilizzato da quasi tutte le principali tecnologie](https://www.sqlite.org/famous.html).
 
-Ad esempio, sui nostri server crittografati è presente una casella di posta del database SQLite per `linux@example.com`, `info@example.com`, `hello@example.com` e così via, una per ciascuno come file di database `.sqlite`. Non nominiamo i file di database con l'indirizzo email, ma utilizziamo l'ObjectID BSON e gli UUID univoci generati, che non rivelano a chi appartiene la casella di posta o a quale indirizzo email appartiene (ad esempio, `353a03f21e534321f5d6e267.sqlite`).
+Ad esempio, sui nostri server crittografati è presente una casella di posta del database SQLite per `linux@example.com`, `info@example.com`, `hello@example.com` e così via, una per ciascuno come file di database `.sqlite`. Non nominiamo i file di database con l'indirizzo email, ma utilizziamo invece l'ObjectID BSON e gli UUID univoci generati che non rivelano a chi appartiene la casella di posta o a quale indirizzo email appartiene (ad esempio, `353a03f21e534321f5d6e267.sqlite`).
 
-Ciascuno di questi database è crittografato a sua volta utilizzando la tua password (di cui solo tu sei in possesso) con [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Ciò significa che le tue caselle di posta sono crittografate individualmente, autonome, [in modalità sandbox](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) e portabili.
+Ciascuno di questi database è crittografato autonomamente utilizzando la tua password (di cui solo tu sei in possesso) con [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Ciò significa che le tue caselle di posta sono crittografate individualmente, autonome, [in modalità sandbox](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\) e portabili.
 
-Abbiamo ottimizzato SQLite con quanto segue [PRAGMA](https://www.sqlite.org/pragma.html):
+Abbiamo ottimizzato SQLite con il seguente [PRAGMA](https://www.sqlite.org/pragma.html):
 
 | `PRAGMA` | Scopo |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -146,7 +146,7 @@ Abbiamo ottimizzato SQLite con quanto segue [PRAGMA](https://www.sqlite.org/prag
 
 #### Legge {#reads}
 
-Il client di posta elettronica sul tuo telefono potrebbe risolvere `imap.forwardemail.net` in uno dei nostri indirizzi IP Digital Ocean, mentre il client desktop potrebbe risolvere un IP separato da un [fornitore](#providers) completamente diverso.
+Il tuo client di posta elettronica sul tuo telefono potrebbe risolvere `imap.forwardemail.net` in uno dei nostri indirizzi IP Digital Ocean, mentre il tuo client desktop potrebbe risolvere un IP separato da un [fornitore](#providers) completamente diverso.
 
 Indipendentemente dal server IMAP a cui si connette il tuo client di posta elettronica, vogliamo che la connessione legga i dati dal tuo database in tempo reale con una precisione del 100%. Questo avviene tramite WebSocket.
 
@@ -154,16 +154,16 @@ Indipendentemente dal server IMAP a cui si connette il tuo client di posta elett
 
 La scrittura sul database è un po' diversa, poiché SQLite è un database incorporato e la casella di posta è salvata per impostazione predefinita in un singolo file.
 
-Abbiamo valutato opzioni quali `litestream`, `rqlite` e `dqlite` di seguito, ma nessuna di queste soddisfaceva i nostri requisiti.
+Di seguito abbiamo esaminato opzioni quali `litestream`, `rqlite` e `dqlite`, ma nessuna di queste soddisfaceva i nostri requisiti.
 
-Per eseguire scritture con la funzione write-ahead-logging ("[WAL](https://www.sqlite.org/wal.html)") abilitata, dobbiamo assicurarci che sia responsabile di tale operazione un solo server ("Primario"). [WAL](https://www.sqlite.org/wal.html) velocizza notevolmente la concorrenza e consente un solo scrittore e più lettori.
+Per eseguire scritture con il write-ahead-logging ("[WAL](https://www.sqlite.org/wal.html)") abilitato, dobbiamo assicurarci che un solo server ("Primary") sia responsabile di tale operazione. [WAL](https://www.sqlite.org/wal.html) velocizza notevolmente la concorrenza e consente un solo writer e più reader.
 
 Il server primario è in esecuzione sui server dati con i volumi montati contenenti le caselle di posta crittografate. Dal punto di vista della distribuzione, si potrebbero considerare tutti i singoli server IMAP dietro `imap.forwardemail.net` come server secondari ("Secondario").
 
 Realizziamo una comunicazione bidirezionale con [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):
 
 * I server primari utilizzano un'istanza del server `WebSocketServer` di [ws](https://github.com/websockets/ws).
-* I server secondari utilizzano un'istanza del client `WebSocket` di [ws](https://github.com/websockets/ws), che è incapsulata con [websocket-come-promesso](https://github.com/vitalets/websocket-as-promised) e [riconnessione-websocket](https://github.com/opensumi/reconnecting-websocket). Questi due wrapper garantiscono che `WebSocket` si riconnetta e possa inviare e ricevere dati per specifiche scritture nel database.
+* I server secondari utilizzano un'istanza del client `WebSocket` di [ws](https://github.com/websockets/ws), che è incapsulata con [websocket-come-promesso](https://github.com/vitalets/websocket-as-promised) e [riconnessione-websocket](https://github.com/opensumi/reconnecting-websocket). Questi due wrapper garantiscono che `WebSocket` si riconnetta e possa inviare e ricevere dati per specifiche scritture sul database.
 
 ### Backup {#backups}
 
@@ -171,9 +171,9 @@ Realizziamo una comunicazione bidirezionale con [WebSocket](https://developer.mo
 
 Per i backup, eseguiamo semplicemente il comando SQLite `VACUUM INTO` ogni giorno durante l'elaborazione dei comandi IMAP, che sfrutta la password crittografata da una connessione IMAP in memoria. I backup vengono archiviati se non viene rilevato alcun backup esistente o se l'hash [SHA-256](https://en.wikipedia.org/wiki/SHA-2) del file è cambiato rispetto al backup più recente.
 
-Si noti che utilizziamo il comando `VACUUM INTO` anziché il comando integrato `backup` perché se una pagina viene modificata durante un'operazione con il comando `backup`, deve ricominciare da capo. Il comando `VACUUM INTO` eseguirà uno snapshot. Per ulteriori informazioni, consultare i commenti su [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) e [Notizie sugli hacker](https://news.ycombinator.com/item?id=31387556).
+Si noti che utilizziamo il comando `VACUUM INTO` anziché il comando integrato `backup`, perché se una pagina viene modificata durante un'operazione con il comando `backup`, deve ricominciare da capo. Il comando `VACUUM INTO` eseguirà uno snapshot. Per ulteriori informazioni, consultare i commenti su [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) e [Notizie sugli hacker](https://news.ycombinator.com/item?id=31387556).
 
-Inoltre utilizziamo `VACUUM INTO` anziché `backup`, perché il comando `backup` lascerebbe il database non crittografato per un breve periodo finché non viene richiamato `rekey` (vedere questo GitHub [commento](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) per approfondimenti).
+Inoltre utilizziamo `VACUUM INTO` anziché `backup`, perché il comando `backup` lascerebbe il database non crittografato per un breve periodo finché non viene richiamato `rekey` (per approfondimenti, vedere questo comando [commento](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) su GitHub).
 
 Il Secondario istruirà il Primario tramite la connessione `WebSocket` per eseguire il backup. Il Primario riceverà quindi il comando per farlo e successivamente:
 
@@ -191,13 +191,13 @@ Il Secondario istruirà il Primario tramite la connessione `WebSocket` per esegu
 
 Ricorda che le tue caselle di posta sono crittografate e, nonostante siano in atto restrizioni IP e altre misure di autenticazione per la comunicazione WebSocket, nel caso di un malintenzionato puoi stare certo che, a meno che il payload WebSocket non abbia la tua password IMAP, non potrà aprire il tuo database.
 
-Al momento viene archiviato un solo backup per casella di posta, ma in futuro potremmo offrire il ripristino in un dato momento ("[PITR](https://en.wikipedia.org/wiki/Point-in-time_recovery)").
+Al momento viene archiviato un solo backup per casella di posta, ma in futuro potremmo offrire il ripristino point-in-time ("[PITR](https://en.wikipedia.org/wiki/Point-in-time_recovery)").
 
 ### Cerca {#search}
 
 I nostri server IMAP supportano il comando `SEARCH` con query complesse, espressioni regolari e altro ancora.
 
-Le prestazioni di ricerca veloci sono garantite da [FTS5](https://www.sqlite.org/fts5.html) e [sqlite-espressione regolare](https://github.com/asg017/sqlite-regex#sqlite-regex).
+Le prestazioni di ricerca veloci sono garantite da [FTS5](https://www.sqlite.org/fts5.html) e [sqlite-regex](https://github.com/asg017/sqlite-regex#sqlite-regex).
 
 Memorizziamo i valori `Date` nelle caselle di posta di SQLite come stringhe [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) tramite [Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) (con fuso orario UTC affinché i confronti di uguaglianza funzionino correttamente).
 
@@ -256,8 +256,8 @@ Ecco una tabella che riassume i progetti che utilizziamo nel nostro codice sorge
 Forward Email è progettato secondo questi principi:
 
 1. Siate sempre attenti agli sviluppatori, attenti alla sicurezza e alla privacy e trasparenti.
-2. Rispettate le linee guida [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Dodici Fattori](https://12factor.net/), [Il rasoio di Occam](https://en.wikipedia.org/wiki/Occam%27s_razor) e [cibo per cani](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)
-3. Prendete di mira gli sviluppatori intraprendenti, autonomi e [ramen redditizio](http://www.paulgraham.com/ramenprofitable.html)
+2. Rispettate [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Dodici Fattori](https://12factor.net/), [Il rasoio di Occam](https://en.wikipedia.org/wiki/Occam%27s_razor) e [cibo per cani](https://en.wikipedia.org/wiki/Eating_your_own_dog_food).
+3. Puntate allo sviluppatore intraprendente, bootstrapper e [ramen redditizio](http://www.paulgraham.com/ramenprofitable.html).
 
 ### Esperimenti {#experiments}
 
@@ -269,28 +269,28 @@ Uno di questi era provare a utilizzare [rclone]() e SQLite insieme a un livello 
 
 Questo esperimento ci ha portato a comprendere meglio e scoprire casi limite riguardanti l'utilizzo di rclone, SQLite e [VFS](https://en.wikipedia.org/wiki/Virtual_file_system):
 
-* Se si abilita il flag `--vfs-cache-mode writes` con rclone, le letture saranno accettate, mentre le scritture verranno memorizzate nella cache.
+* Se si abilita il flag `--vfs-cache-mode writes` con rclone, le letture saranno corrette, mentre le scritture verranno memorizzate nella cache.
 * Se si dispone di più server IMAP distribuiti a livello globale, la cache sarà disattivata su di essi, a meno che non si disponga di un singolo writer e di più listener (ad esempio, un approccio pub/sub).
 * Questo è incredibilmente complesso e l'aggiunta di ulteriori complessità come questa comporterà ulteriori singoli punti di errore.
-* I provider di storage compatibili con S3 non supportano modifiche parziali ai file, il che significa che qualsiasi modifica del file `.sqlite` comporterà una modifica completa e un nuovo caricamento del database.
-* Esistono altre soluzioni come `rsync`, ma non sono focalizzate sul supporto write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)"), quindi abbiamo deciso di esaminare Litestream. Fortunatamente, il nostro utilizzo della crittografia crittografa già i file [WAL](https://www.sqlite.org/wal.html), quindi non abbiamo bisogno di affidarci a Litestream per questo. Tuttavia, non eravamo ancora sicuri di Litestream per l'uso in produzione e di seguito riportiamo alcune note a riguardo.
-* L'utilizzo di questa opzione di `--vfs-cache-mode writes` (l'*unico* modo per utilizzare SQLite su `rclone` per le scritture) tenterà di copiare l'intero database da zero in memoria: gestire una casella di posta da 10 GB è accettabile, tuttavia la gestione di più caselle di posta con uno spazio di archiviazione eccessivamente elevato causerà limitazioni di memoria nei server IMAP e causerà errori di `ENOMEM`, errori di segmentazione e danneggiamento dei dati. * Se si tenta di utilizzare SQLite [Tavoli virtuali](https://www.sqlite.org/vtab.html) (ad esempio, utilizzando [s3db](https://github.com/jrhy/s3db)) per archiviare i dati su un livello di archiviazione compatibile con S3, si incontreranno diversi altri problemi:
-* Le operazioni di lettura e scrittura saranno estremamente lente poiché gli endpoint dell'API S3 dovranno essere gestiti con i metodi HTTP `GET`, `PUT`, `HEAD` e `POST`.
-* I test di sviluppo hanno dimostrato che superare i 500.000-1.000+ record su Internet in fibra ottica è ancora limitato dalla velocità di scrittura e lettura verso provider compatibili con S3. Ad esempio, i nostri sviluppatori hanno eseguito cicli `for` per eseguire sia istruzioni SQL sequenziali `INSERT` sia istruzioni che scrivevano grandi quantità di dati in blocco. In entrambi i casi, le prestazioni erano incredibilmente lente.
-* Le tabelle virtuali **non possono avere indici**, istruzioni `ALTER TABLE` e [altro](https://stackoverflow.com/a/12507650) [limitazioni](https://sqlite.org/lang_createvtab.html), il che causa ritardi di oltre 1-2 minuti o più a seconda della quantità di dati.
-* Gli oggetti venivano archiviati in chiaro e non era disponibile alcun supporto nativo per la crittografia.
-* Abbiamo anche valutato l'utilizzo di [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs), che è simile concettualmente e tecnicamente al punto precedente (quindi presenta gli stessi problemi). Una possibilità sarebbe quella di utilizzare una build `sqlite3` personalizzata con crittografia come [wxSQLite3](https://github.com/utelle/wxsqlite3) (che attualmente utilizziamo nella nostra soluzione precedente) fino a [modifica del file di installazione](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276).
-* Un altro possibile approccio potrebbe essere quello di utilizzare [estensione multiplex](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c), tuttavia questo ha una limitazione di 32 GB e richiederebbe complesse procedure di compilazione e sviluppo.
-* Sono necessarie istruzioni `ALTER TABLE` (quindi questo esclude completamente l'utilizzo di tabelle virtuali). Abbiamo bisogno di istruzioni `ALTER TABLE` affinché il nostro hook con `knex-schema-inspector` funzioni correttamente, il che garantisce che i dati non siano corrotti e che le righe recuperate possano essere convertite in documenti validi in base alle nostre definizioni dello schema `mongoose` (che includono vincoli, tipi di variabili e convalida dei dati arbitrari).
+* I provider di storage compatibili con S3 non supportano modifiche parziali ai file, il che significa che qualsiasi modifica al file `.sqlite` comporterà una modifica completa e un nuovo caricamento del database.
+* Esistono altre soluzioni come `rsync`, ma non sono focalizzate sul supporto write-ahead-log ("[WAL](https://www.sqlite.org/wal.html)"), quindi abbiamo deciso di valutare Litestream. Fortunatamente, il nostro utilizzo della crittografia crittografa già i file [WAL](https://www.sqlite.org/wal.html), quindi non abbiamo bisogno di affidarci a Litestream per questo. Tuttavia, non eravamo ancora sicuri di Litestream per l'uso in produzione e di seguito riportiamo alcune note a riguardo.
+* L'utilizzo di questa opzione di `--vfs-cache-mode writes` (l'*unico* modo per utilizzare SQLite su `rclone` per le scritture) tenterà di copiare l'intero database da zero in memoria: gestire una casella di posta da 10 GB è accettabile, ma gestire più caselle di posta con uno spazio di archiviazione eccessivamente elevato causerà limitazioni di memoria nei server IMAP e causerà errori `ENOMEM`, errori di segmentazione e danneggiamento dei dati. * Se si tenta di utilizzare SQLite [Tavoli virtuali](https://www.sqlite.org/vtab.html) (ad esempio, utilizzando [s3db](https://github.com/jrhy/s3db)) per archiviare i dati su un livello di archiviazione compatibile con S3, si incontreranno diversi altri problemi:
+* Le operazioni di lettura e scrittura saranno estremamente lente poiché gli endpoint dell'API S3 dovranno essere raggiunti con i metodi HTTP `.sqlite`0, `.sqlite`1, `.sqlite`2 e `.sqlite`3.
+* I test di sviluppo hanno dimostrato che superare i 500.000-1.000.000 record su una connessione Internet in fibra ottica è ancora limitato dalla velocità di scrittura e lettura verso provider compatibili con S3. Ad esempio, i nostri sviluppatori hanno eseguito cicli `.sqlite`4 per eseguire sia istruzioni SQL sequenziali `.sqlite`5 sia istruzioni che scrivono in blocco grandi quantità di dati. In entrambi i casi, le prestazioni sono state incredibilmente lente. * Le tabelle virtuali **non possono avere indici**, istruzioni `.sqlite`6 e `.sqlite`7 `.sqlite`8, il che causa ritardi di 1-2 minuti o più a seconda della quantità di dati.
+* Gli oggetti sono stati archiviati in formato non crittografato e non è disponibile alcun supporto nativo per la crittografia.
+* Abbiamo anche valutato l'utilizzo di `.sqlite`9, che è concettualmente e tecnicamente simile al punto precedente (quindi presenta gli stessi problemi). Una possibilità sarebbe quella di utilizzare una build personalizzata di `rsync`0 con crittografia, come `rsync`1 (che attualmente utilizziamo nella nostra soluzione precedente) tramite `rsync`2.
+* Un altro possibile approccio consisteva nell'utilizzare `rsync`3, tuttavia questo ha una limitazione di 32 GB e richiederebbe complesse procedure di compilazione e sviluppo.
+* Sono richieste istruzioni `rsync`4 (quindi questo esclude completamente l'utilizzo di tabelle virtuali). Abbiamo bisogno delle istruzioni `rsync`5 affinché il nostro hook con `rsync`6 funzioni correttamente, il che garantisce che i dati non siano corrotti e che le righe recuperate possano essere convertite in documenti validi in base alle definizioni dello schema `rsync`7 (che includono vincoli, tipi di variabili e convalida dei dati arbitrari).
 * Quasi tutti i progetti compatibili con S3 relativi a SQLite nella community open source sono in Python (e non in JavaScript, che utilizziamo per il 100% del nostro stack).
-* Librerie di compressione come [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) (vedi [commenti](https://news.ycombinator.com/item?id=32303762)) sembrano promettenti, ma [potrebbe non essere ancora pronto per l'uso in produzione](https://github.com/phiresky/sqlite-zstd#usage). Invece, la compressione lato applicazione su tipi di dati come `String`, `Object`, `Map`, `Array`, `Set` e `Buffer` sarà un approccio più pulito e semplice (ed è anche più facile da migrare, poiché potremmo memorizzare un flag o una colonna `Boolean`, o persino utilizzare `PRAGMA` `user_version=1` per la compressione o `user_version=0` per nessuna compressione come metadati del database). * Fortunatamente abbiamo già implementato la deduplicazione degli allegati nello storage del nostro server IMAP, quindi ogni messaggio con lo stesso allegato non ne conserverà una copia, ma un singolo allegato verrà invece archiviato per più messaggi e thread in una casella di posta (e successivamente verrà utilizzato un riferimento esterno).
-* Il progetto Litestream, una soluzione di replica e backup di SQLite, è molto promettente e molto probabilmente lo utilizzeremo in futuro.
-* Senza voler screditare gli autori, perché adoriamo il loro lavoro e il loro contributo all'open source da oltre un decennio, tuttavia dall'utilizzo pratico sembra che ci siano [potrebbero esserci molti mal di testa](https://github.com/benbjohnson/litestream/issues) e [potenziale perdita di dati dall'utilizzo](https://github.com/benbjohnson/litestream/issues/218).
-* Il ripristino del backup deve essere semplice e senza intoppi. Utilizzare una soluzione come MongoDB con `mongodump` e `mongoexport` non è solo noioso, ma richiede anche molto tempo e presenta complessità di configurazione. * I database SQLite semplificano le cose (si tratta di un singolo file).
-* Volevamo progettare una soluzione in cui gli utenti potessero prendere la propria casella di posta e andarsene in qualsiasi momento.
-* Semplici comandi Node.js per `fs.unlink('mailbox.sqlite'))` e la casella viene cancellata definitivamente dall'archiviazione su disco.
-* Allo stesso modo, possiamo utilizzare un'API compatibile con S3 con HTTP `DELETE` per rimuovere facilmente snapshot e backup per gli utenti.
-* SQLite è stata la soluzione più semplice, veloce ed economica.
+* Le librerie di compressione come `rsync`8 (vedi `rsync`9) sembrano promettenti, ma __PROTECTED_LINK_189__0. Invece, la compressione lato applicazione su tipi di dati come __PROTECTED_LINK_189__1, __PROTECTED_LINK_189__2, __PROTECTED_LINK_189__3, __PROTECTED_LINK_189__4, __PROTECTED_LINK_189__5 e __PROTECTED_LINK_189__6 sarà un approccio più pulito e semplice (ed è anche più facile da migrare, poiché potremmo memorizzare un flag o una colonna __PROTECTED_LINK_189__7, o persino utilizzare __PROTECTED_LINK_189__8 e __PROTECTED_LINK_189__9 per la compressione o __PROTECTED_LINK_190__0 per nessuna compressione come metadati del database).
+* Fortunatamente abbiamo già implementato la deduplicazione degli allegati nello storage del nostro server IMAP, quindi ogni messaggio con lo stesso allegato non conserverà una copia dell'allegato; al suo posto, un singolo allegato viene memorizzato per più messaggi e thread in una casella di posta (e successivamente viene utilizzato un riferimento esterno).
+* Il progetto Litestream, una soluzione di replica e backup di SQLite, è molto promettente e molto probabilmente lo utilizzeremo in futuro. * Senza voler screditare gli autori, perché amiamo il loro lavoro e il loro contributo all'open source da oltre un decennio, tuttavia dall'utilizzo pratico sembra che esistano __PROTECTED_LINK_190__1 e __PROTECTED_LINK_190__2.
+* Il ripristino dei backup deve essere semplice e senza intoppi. Utilizzare una soluzione come MongoDB con __PROTECTED_LINK_190__3 e __PROTECTED_LINK_190__4 non è solo noioso, ma richiede anche molto tempo e presenta complessità di configurazione.
+* I database SQLite semplificano il tutto (si tratta di un singolo file).
+* Volevamo progettare una soluzione in cui gli utenti potessero utilizzare la propria casella di posta e andarsene in qualsiasi momento.
+* Semplici comandi Node.js per __PROTECTED_LINK_190__5 e questo viene cancellato definitivamente dall'archiviazione su disco.
+* Allo stesso modo, possiamo utilizzare un'API compatibile con S3 con HTTP __PROTECTED_LINK_190__6 per rimuovere facilmente snapshot e backup per gli utenti.
+* SQLite si è rivelata la soluzione più semplice, veloce ed economica.
 
 ### Mancanza di alternative {#lack-of-alternatives}
 
@@ -302,6 +302,6 @@ La maggior parte, se non tutti, i provider di servizi di posta elettronica esist
 
 **La parte più delicata della posta elettronica** (l'interazione vera e propria tra archiviazione/IMAP/SMTP) **viene eseguita interamente sul back-end (server) e *non* sul front-end (client)**.
 
-### Prova Inoltra email {#try-out-forward-email}
+### Prova l'inoltro email {#try-out-forward-email}
 
 Iscriviti oggi su <https://forwardemail.net>! :rocket:

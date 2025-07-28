@@ -57,7 +57,7 @@ En tant que seul service de messagerie électronique doté d'une plateforme enti
 
 ### Conception axée sur la confidentialité {#privacy-focused-design}
 
-La sécurité stricte [politiques de confidentialité](https://forwardemail.net/privacy) de Forward Email offrait la sécurité requise par la Fondation Linux. Notre [mise en œuvre technique de la protection de la confidentialité des e-mails](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) garantit la sécurité de toutes les communications, sans journalisation ni analyse du contenu des e-mails.
+Le paramètre [politiques de confidentialité](https://forwardemail.net/privacy) strict de Forward Email assurait la sécurité requise par la Fondation Linux. Notre paramètre [mise en œuvre technique de la protection de la confidentialité des e-mails](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) garantit la sécurité de toutes les communications, sans journalisation ni analyse du contenu des e-mails.
 
 Comme détaillé dans notre documentation d'implémentation technique :
 
@@ -65,17 +65,17 @@ Comme détaillé dans notre documentation d'implémentation technique :
 
 ### Sécurité de niveau entreprise {#enterprise-grade-security}
 
-L'implémentation de [cryptage résistant aux quanta](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) avec ChaCha20-Poly1305 a assuré une sécurité de pointe, chaque boîte aux lettres étant un fichier chiffré distinct. Cette approche garantit que, même si les ordinateurs quantiques deviennent capables de contourner les normes de chiffrement actuelles, les communications de la Fondation Linux resteront sécurisées.
+L'implémentation de [cryptage résistant aux quanta](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service) avec ChaCha20-Poly1305 a fourni une sécurité de pointe, chaque boîte aux lettres étant un fichier chiffré distinct. Cette approche garantit que, même si les ordinateurs quantiques deviennent capables de contourner les normes de chiffrement actuelles, les communications de la Fondation Linux resteront sécurisées.
 
 ### Modèle d'entreprise à prix fixe {#fixed-price-enterprise-model}
 
-La solution [tarifs d'entreprise](https://forwardemail.net/pricing) de Forward Email offrait un coût mensuel fixe, quels que soient les domaines ou les utilisateurs. Cette approche a permis à d'autres grandes organisations de réaliser des économies significatives, comme le démontre notre solution [étude de cas sur les e-mails des anciens étudiants](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), où les institutions ont économisé jusqu'à 99 % par rapport aux solutions de messagerie traditionnelles par utilisateur.
+Le service [tarifs d'entreprise](https://forwardemail.net/pricing) de Forward Email offrait un coût mensuel fixe, quels que soient les domaines ou les utilisateurs. Cette approche a permis à d'autres grandes organisations de réaliser des économies significatives, comme le démontre notre service [étude de cas sur les e-mails des anciens étudiants](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), où les institutions ont économisé jusqu'à 99 % par rapport aux solutions de messagerie traditionnelles par utilisateur.
 
 ### API conviviale pour les développeurs {#developer-friendly-api}
 
-Suivant un [Approche README en premier](https://tom.preston-werner.com/2010/08/23/readme-driven-development) et inspiré par [Conception de l'API RESTful de Stripe](https://amberonrails.com/building-stripes-api), [API](https://forwardemail.net/api) de Forward Email a permis une intégration poussée avec le Centre de contrôle de projets de la Fondation Linux. Cette intégration était cruciale pour automatiser la gestion des e-mails dans l'ensemble de leur portefeuille de projets diversifié.
+Suivant un [Approche README en premier](https://tom.preston-werner.com/2010/08/23/readme-driven-development) et inspiré par [Conception de l'API RESTful de Stripe](https://amberonrails.com/building-stripes-api), le [API](https://forwardemail.net/api) de Forward Email a permis une intégration poussée avec le Centre de contrôle de projets de la Fondation Linux. Cette intégration était cruciale pour automatiser la gestion des e-mails dans l'ensemble de leur portefeuille de projets diversifié.
 
-Processus de mise en œuvre de ## {#implementation-process}
+## Processus d'implémentation {#implementation-process}
 
 La mise en œuvre a suivi une approche structurée :
 
@@ -115,7 +115,7 @@ La mise en œuvre a apporté des avantages significatifs :
 
 * Tarification fixe, quelle que soit la croissance des domaines ou des utilisateurs
 * Suppression des frais de licence par utilisateur
-* À l'instar de notre [étude de cas universitaire](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), la Fondation Linux a réalisé des économies substantielles par rapport aux solutions traditionnelles.
+* À l'instar de notre solution [étude de cas universitaire](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), la Fondation Linux a réalisé des économies substantielles par rapport aux solutions traditionnelles.
 
 ### Sécurité renforcée {#enhanced-security}
 
@@ -130,9 +130,9 @@ La mise en œuvre a apporté des avantages significatifs :
 * Expérience cohérente dans tous les domaines de la Fondation Linux
 * Distribution fiable des e-mails avec authentification robuste
 
-Conclusion
+## Conclusion {#conclusion}
 
-Le partenariat de la Fondation Linux avec Forward Email démontre comment les organisations peuvent relever les défis complexes de la gestion des e-mails tout en restant fidèles à leurs valeurs fondamentales. En choisissant une solution privilégiant les principes open source, la confidentialité et la sécurité, la Fondation Linux a transformé la gestion des e-mails, autrefois une charge administrative, en un avantage stratégique.
+Le partenariat de la Fondation Linux avec Forward Email démontre comment les organisations peuvent relever des défis complexes en matière de gestion des e-mails tout en restant fidèles à leurs valeurs fondamentales. En choisissant une solution privilégiant les principes open source, la confidentialité et la sécurité, la Fondation Linux a transformé la gestion des e-mails, autrefois une charge administrative, en un avantage stratégique.
 
 Comme le montre notre travail avec [Canonical/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) et [grandes universités](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study), les organisations disposant de portefeuilles de domaines complexes peuvent obtenir des améliorations significatives en termes d'efficacité, de sécurité et de gestion des coûts grâce à la solution d'entreprise de Forward Email.
 

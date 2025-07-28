@@ -1,10 +1,10 @@
-# O přeposlání e-mailu {#about-forward-email}
+# O přeposílaném e-mailu {#about-forward-email}
 
 <img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
 
-# About Forward Email {#about-forward-email-1}
+# O přeposílaném e-mailu {#about-forward-email-1}
 
-__CHRÁNĚNÁ_URL_13__ Obsah {__CHRÁNĚNÁ_URL_14__
+## Obsah {#table-of-contents}
 
 * [Přehled](#overview)
 * [Zakladatel a poslání](#founder-and-mission)
@@ -20,18 +20,18 @@ __CHRÁNĚNÁ_URL_13__ Obsah {__CHRÁNĚNÁ_URL_14__
 * [Základní principy](#core-principles)
 * [Aktuální stav](#current-status)
 
-## Overview {#overview}
+## Přehled {#overview}
 
 > \[!TIP]
-> For technical details about our architecture, security implementations, and roadmap, see the [Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf).
+> Technické podrobnosti o naší architektuře, implementacích zabezpečení a plánu naleznete v dokumentu [Technická bílá kniha](https://forwardemail.net/technical-whitepaper.pdf).
 
-Přeposílání e-mailů je služba [zdarma a s otevřeným zdrojovým kódem](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [přeposílání emailů](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") zaměřená na [právo na soukromí](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy") uživatele. To, co začalo jako jednoduché řešení pro přeposílání e-mailů v roce 2017, se vyvinulo v komplexní e-mailovou platformu nabízející neomezený počet vlastních domén, neomezený počet e-mailových adres a aliasů, neomezený počet jednorázových e-mailových adres, ochranu proti spamu a phishingu, šifrované úložiště poštovní schránky a řadu pokročilých funkcí.
+Přeposílání e-mailů je služba [zdarma a s otevřeným zdrojovým kódem](https://en.wikipedia.org/wiki/Free_and_open-source "Free and open-source") [přeposílání e-mailů](https://en.wikipedia.org/wiki/Email_forwarding "Email forwarding") zaměřená na uživatele [právo na soukromí](https://en.wikipedia.org/wiki/Right_to_privacy "Right to privacy"). To, co začalo jako jednoduché řešení pro přeposílání e-mailů v roce 2017, se vyvinulo v komplexní e-mailovou platformu nabízející neomezený počet vlastních domén, neomezený počet e-mailových adres a aliasů, neomezený počet jednorázových e-mailových adres, ochranu proti spamu a phishingu, šifrované úložiště poštovní schránky a řadu pokročilých funkcí.
 
 Službu spravuje a vlastní její původní zakládající tým designérů a vývojářů. Je postavena na 100% open-source softwaru s využitím [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript"), [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"), [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), [HTTPS](https://en.wikipedia.org/wiki/HTTPS "HTTPS"), [TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security "TLS") a [SMTP](https://en.wikipedia.org/wiki/SMTP "SMTP").
 
-## Founder and Mission {#founder-and-mission}
+## Zakladatel a poslání {#founder-and-mission}
 
-Forward Email was founded by **Nicholas Baugh** in 2017. According to the [Technická bílá kniha pro přeposílání e-mailů](https://forwardemail.net/technical-whitepaper.pdf), Baugh was initially searching for a cost-effective and simple solution for enabling email on domain names for his side-projects. After researching available options, he began coding his own solution and purchased the domain `forwardemail.net` on October 2, 2017.
+Společnost Forward Email založil **Nicholas Baugh** v roce 2017. Podle uživatele [Technická bílá kniha pro přeposílání e-mailů](https://forwardemail.net/technical-whitepaper.pdf) Baugh zpočátku hledal cenově dostupné a jednoduché řešení pro povolení e-mailu na doménových jménech pro své vedlejší projekty. Po prozkoumání dostupných možností začal programovat vlastní řešení a 2. října 2017 zakoupil doménu `forwardemail.net`.
 
 Poslání společnosti Forward Email přesahuje rámec poskytování e-mailových služeb – jejím cílem je transformovat přístup odvětví k ochraně soukromí a zabezpečení e-mailů. Mezi klíčové hodnoty společnosti patří transparentnost, kontrola uživatelů a ochrana soukromí prostřednictvím technické implementace, nikoli pouze prostřednictvím politických slibů.
 
@@ -41,7 +41,7 @@ Poslání společnosti Forward Email přesahuje rámec poskytování e-mailovýc
 
 **2. října 2017**: Nicholas Baugh zakoupil doménu `forwardemail.net` poté, co prozkoumal cenově výhodná e-mailová řešení pro své vedlejší projekty.
 
-**5. listopadu 2017**: Baugh vytvořil 634řádkový JavaScriptový soubor s použitím [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") pro přeposílání e-mailů pro libovolný vlastní název domény. Tato počáteční implementace byla publikována jako open-source na [GitHub](https://github.com/forwardemail) a služba byla spuštěna pomocí GitHub Pages.
+**5. listopadu 2017**: Baugh vytvořil 634řádkový JavaScriptový soubor s použitím [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") pro přeposílání e-mailů pro libovolný vlastní název domény. Tato počáteční implementace byla publikována jako open-source pro [GitHub](https://github.com/forwardemail) a služba byla spuštěna pomocí GitHub Pages.
 
 **Listopad 2017**: Po prvním vydání bylo oficiálně spuštěno přeposílání e-mailů. První verze byla založena čistě na DNS bez registrace účtu nebo registrace – pouze soubor README napsaný v Markdownu s pokyny. Uživatelé si mohli nastavit přeposílání e-mailů konfigurací záznamů MX tak, aby odkazovaly na `mx1.forwardemail.net` a `mx2.forwardemail.net`, a přidáním záznamu TXT s `forward-email=user@gmail.com`.
 
@@ -49,31 +49,31 @@ Jednoduchost a efektivita tohoto řešení přilákala pozornost významných v�
 
 ### 2018 - Infrastruktura a integrace {#2018---infrastructure-and-integration}
 
-**Duben 2018**: Když společnost [mračna](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") spustila službu [služba DNS pro spotřebitele na prvním místě](https://blog.cloudflare.com/announcing-1111/), služba Forward Email přešla z používání služby [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") na [mračna](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") pro zpracování vyhledávání [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), což demonstruje závazek společnosti k volbám infrastruktury zaměřeným na soukromí.
+**Duben 2018**: Když společnost [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") spustila protokol [Služba DNS pro spotřebitele s prioritou soukromí](https://blog.cloudflare.com/announcing-1111/), služba Forward Email přešla z protokolu [OpenDNS](https://en.wikipedia.org/wiki/OpenDNS "OpenDNS") na protokol [Cloudflare](https://en.wikipedia.org/wiki/Cloudflare "Cloudflare") pro zpracování vyhledávání [DNS](https://en.wikipedia.org/wiki/Domain_Name_System "Domain Name System"), což demonstruje závazek společnosti k volbám infrastruktury zaměřeným na soukromí.
 
-**Říjen 2018**: Funkce Přeposílání e-mailů umožnila uživatelům „Odesílat poštu jako“ s [Gmail](https://en.wikipedia.org/wiki/Gmail "Gmail") a [Výhled](https://en.wikipedia.org/wiki/Outlook "Outlook"), čímž se rozšířily možnosti integrace s oblíbenými poskytovateli e-mailu.
+**Říjen 2018**: Funkce Přeposílání e-mailů umožnila uživatelům „Odesílat poštu jako“ s parametry [Gmail](https://en.wikipedia.org/wiki/Gmail "Gmail") a [Výhled](https://en.wikipedia.org/wiki/Outlook "Outlook"), čímž se rozšířily možnosti integrace s oblíbenými poskytovateli e-mailu.
 
-__CHRÁNĚNÁ_URL_41__ 2019 - Revoluce ve výkonu {__CHRÁNĚNÁ_URL_42__
+### 2019 - Revoluce ve výkonu {#2019---performance-revolution}
 
-**Květen 2019**: Vydána verze 2 služby Forward Email, která představovala zásadní přepracování původních verzí. Tato aktualizace se zaměřila na vylepšení [výkon](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing") pomocí [proudy](https://en.wikipedia.org/wiki/Streams "Streams") od [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js") a položila tak základy pro škálovatelnost platformy.
+**Květen 2019**: Vydána verze 2 pro Forward Email, která představovala zásadní přepracování původních verzí. Tato aktualizace se zaměřila na vylepšení [výkon](https://en.wikipedia.org/wiki/Software_performance_testing "Software performance testing") pomocí [proudy](https://en.wikipedia.org/wiki/Streams "Streams") z [Node.js](https://en.wikipedia.org/wiki/Node.js "Node.js"), čímž položil základy pro škálovatelnost platformy.
 
 ### 2020 – Zaměření na soukromí a bezpečnost {#2020---privacy-and-security-focus}
 
-**Únor 2020**: Společnost Forward Email vydala plán Enhanced Privacy Protection, který uživatelům umožňuje vypnout nastavování záznamů veřejného DNS s aliasy v konfiguraci přesměrování e-mailů. Díky tomuto plánu jsou informace o aliasech e-mailů uživatele skryty před veřejným vyhledáváním na internetu. Společnost také vydala funkci, která umožňuje povolit nebo zakázat konkrétní aliasy a zároveň jim umožňuje zobrazovat se jako platné e-mailové adresy a vracet úspěšnou chybu [Stavové kódy SMTP](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes"), přičemž e-maily jsou okamžitě zahozeny (podobně jako při přesměrování výstupu na [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")).
+**Únor 2020**: Společnost Forward Email vydala plán Enhanced Privacy Protection, který uživatelům umožňuje vypnout nastavování záznamů veřejného DNS s aliasy konfigurace pro přesměrování e-mailů. Díky tomuto plánu jsou informace o aliasech e-mailů uživatele skryty před veřejným vyhledáváním na internetu. Společnost také vydala funkci, která umožňuje povolit nebo zakázat konkrétní aliasy a zároveň jim umožňuje zobrazovat se jako platné e-mailové adresy a vracet úspěšnou hodnotu [Stavové kódy SMTP](https://en.wikipedia.org/wiki/List_of_SMTP_server_return_codes "List of SMTP server return codes"), přičemž e-maily jsou okamžitě zahozeny (podobně jako při přesměrování výstupu na [/dev/null](https://en.wikipedia.org/wiki/Null_device "Null device")).
 
-**Duben 2020**: Poté, co společnost narazila na nespočet překážek u stávajících řešení pro detekci spamu, která nerespektovala zásady ochrany osobních údajů společnosti Forward Email, vydala svou první alfa verzi Spam Scanneru. Toto zcela bezplatné a open-source řešení [antispamové filtrování](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") využívá přístup [Naivní Bayesův spamový filtr](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") v kombinaci s ochranou [anti-phishing](https://en.wikipedia.org/wiki/Phishing "Phishing") a [Útok homografu IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Společnost Forward Email také vydala [dvoufaktorové ověřování](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) s použitím [jednorázová hesla](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) pro zvýšení zabezpečení účtu.
+**Duben 2020**: Poté, co společnost narazila na nespočet překážek u stávajících řešení pro detekci spamu, která nerespektovala zásady ochrany osobních údajů společnosti Forward Email, vydala svou první alfa verzi Spam Scanneru. Toto zcela bezplatné a open-source řešení [filtrování spamu](https://en.wikipedia.org/wiki/Anti-spam_techniques "Anti-spam techniques") používá přístup [Naivní Bayesův spamový filtr](https://en.wikipedia.org/wiki/Naive_Bayes_spam_filtering "Naive Bayes spam filtering") v kombinaci s ochranou [anti-phishing](https://en.wikipedia.org/wiki/Phishing "Phishing") a [Útok na homograf IDN](https://en.wikipedia.org/wiki/IDN_homograph_attack "IDN homograph attack"). Společnost Forward Email také vydala [dvoufaktorové ověřování](https://en.wikipedia.org/wiki/Multi-factor_authentication "Multi-factor authentication") (2FA) s využitím [jednorázová hesla](https://en.wikipedia.org/wiki/One-time_password "One-time password") (OTP) pro zvýšení zabezpečení účtu.
 
-**Květen 2020**: Funkce Forward Email umožnila uživatelům použít vlastní [přesměrování portů](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") jako alternativní řešení pro obejití blokování portů pomocí jejich [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Společnost také vydala [Zdarma RESTful API pro předávání e-mailů](email-api) s kompletní dokumentací a příklady požadavků a odpovědí v reálném čase, spolu s podporou webhooků.
+**Květen 2020**: Funkce Forward Email povolila uživateli vlastní [přesměrování portů](https://en.wikipedia.org/wiki/Port_forwarding "Port forwarding") jako alternativní řešení pro obejití blokování portů pomocí [ISP](https://en.wikipedia.org/wiki/Internet_service_provider "Internet service provider"). Společnost také vydala [Bezplatné RESTful API pro přeposílání e-mailů](email-api) s kompletní dokumentací a příklady požadavků a odpovědí v reálném čase, spolu s podporou webhooků.
 
-**Srpen 2020**: Funkce Forward Email přidala podporu pro systém ověřování e-mailů [Autentizovaný řetězec přijatých zpráv](arc) („ARC“), čímž se dále posílilo zabezpečení a doručitelnost e-mailů.
+**Srpen 2020**: Funkce Forward Email přidala podporu pro systém ověřování e-mailů [Ověřený přijatý řetězec](arc) („ARC“), čímž se dále posílilo zabezpečení a doručitelnost e-mailů.
 
 **23. listopadu 2020**: Služba Forward Email byla veřejně spuštěna po ukončení beta testování, což představuje významný milník ve vývoji platformy.
 
 ### 2021 - Modernizace platformy {#2021---platform-modernization}
 
-**Únor 2021**: Společnost Forward Email provedla refaktoring své kódové základny, aby odstranila všechny závislosti [Krajta](https://en.wikipedia.org/wiki/Python_\(programming_language\) „Python (programovací jazyk)“), což umožnilo, aby se jejich stack stal 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") a [Node.js](https://en.wikipedia.org/wiki/Node.js). Toto architektonické rozhodnutí bylo v souladu se závazkem společnosti udržovat konzistentní technologický stack s otevřeným zdrojovým kódem.
+**Únor 2021**: Společnost Forward Email provedla refaktoring své kódové základny, aby odstranila všechny závislosti [Krajta](https://en.wikipedia.org/wiki/Python_\(programming_language\) ("Python (programovací jazyk)"), což umožnilo, aby se jejich stack stal 100% [JavaScript](https://en.wikipedia.org/wiki/JavaScript "JavaScript") a [Node.js](https://en.wikipedia.org/wiki/Node.js). Toto architektonické rozhodnutí bylo v souladu se závazkem společnosti udržovat konzistentní technologický stack s otevřeným zdrojovým kódem.
 
-**27. září 2021**: Přeposílání e-mailů [přidaná podpora](email-forwarding-regex-pattern-filter) pro aliasy pro přeposílání e-mailů odpovídající [regulární výrazy](https://en.wikipedia.org/wiki/Regular_expression "Regular expression"), což uživatelům poskytuje sofistikovanější možnosti směrování e-mailů.
+**27. září 2021**: Přeposílání e-mailu [přidaná podpora](email-forwarding-regex-pattern-filter) pro aliasy pro přeposílání e-mailů, které odpovídají [regulární výrazy](https://en.wikipedia.org/wiki/Regular_expression "Regular expression"), což uživatelům poskytuje sofistikovanější možnosti směrování e-mailů.
 
 ### 2023 – Rozšíření infrastruktury a funkcí {#2023---infrastructure-and-feature-expansion}
 
@@ -81,15 +81,15 @@ __CHRÁNĚNÁ_URL_41__ 2019 - Revoluce ve výkonu {__CHRÁNĚNÁ_URL_42__
 
 **Únor 2023**: Společnost přidala podporu pro [protokoly chyb](/faq#do-you-store-error-logs) a implementovala barevné schéma webových stránek [tmavý režim](https://en.wikipedia.org/wiki/Light-on-dark_color_scheme), které reaguje na preference uživatelů a potřeby přístupnosti.
 
-**Březen 2023**: Společnost Forward Email vydala [Mandarinka](https://github.com/forwardemail/tangerine#readme) a integrovala ji do celé své infrastruktury, což umožnilo použití [DNS přes HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) („DoH“) na aplikační vrstvě. Společnost také přidala podporu pro [MTA-STS](/faq#do-you-support-mta-sts) a přešla z [hCaptcha](/) na [Turniket Cloudflare](https://developers.cloudflare.com/turnstile).
+**Březen 2023**: Společnost Forward Email vydala [Mandarinka](https://github.com/forwardemail/tangerine#readme) a integrovala ho do celé své infrastruktury, což umožnilo použití [DNS přes HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) („DoH“) na aplikační vrstvě. Společnost také přidala podporu pro [MTA-STS](/faq#do-you-support-mta-sts) a přešla z [hCaptcha](/) na [Turniket Cloudflare](https://developers.cloudflare.com/turnstile).
 
-**Duben 2023**: Implementace a automatizace zcela nové infrastruktury pro přeposílání e-mailů. Celá služba začala běžet na globálně vyvažovaném DNS s DNS založeným na blízkosti, s kontrolami stavu a failoverem pomocí [mračna](https://cloudflare.com), čímž nahradil předchozí přístup DNS typu round-robin. Společnost přešla na **bare metal servery** u více poskytovatelů, včetně [Vultr](https://www.vultr.com/?ref=429848) a [Digitální oceán](https://m.do.co/c/a7cecd27e071), kteří jsou oba kompatibilní s SOC 2 Type 1. Databáze MongoDB a Redis byly přesunuty do clusterovaných konfigurací s primárními a záložními uzly pro zajištění vysoké dostupnosti, end-to-end SSL šifrování, šifrování v klidu a obnovení v daném bodě (PITR).
+**Duben 2023**: Implementace a automatizace zcela nové infrastruktury pro přeposílání e-mailů. Celá služba začala běžet na globálně vyvažovaném DNS s DNS založeným na blízkosti, s kontrolami stavu a failoverem pomocí [Cloudflare](https://cloudflare.com), čímž nahradil předchozí přístup DNS typu round robin. Společnost přešla na **bare metal servery** u více poskytovatelů, včetně [Vultr](https://www.vultr.com/?ref=429848) a [Digitální oceán](https://m.do.co/c/a7cecd27e071), kteří jsou oba kompatibilní s SOC 2 Type 1. Databáze MongoDB a Redis byly přesunuty do clusterovaných konfigurací s primárními a záložními uzly pro zajištění vysoké dostupnosti, end-to-end SSL šifrování, šifrování v klidu a obnovení v daném bodě (PITR).
 
-**Květen 2023**: Společnost Forward Email spustila funkci **odchozí SMTP** pro požadavky [odesílání e-mailů pomocí SMTP](/faq#do-you-support-sending-email-with-smtp) a [odesílání e-mailů pomocí API](/faq#do-you-support-sending-email-with-api). Tato funkce zahrnuje vestavěná ochranná opatření pro zajištění vysoké doručitelnosti, moderní a robustní systém front a opakování a [podporuje protokoly chyb v reálném čase](/faq#do-you-store-error-logs).
+**Květen 2023**: Společnost Forward Email spustila funkci **odchozí SMTP** pro požadavky [odesílání e-mailů přes SMTP](/faq#do-you-support-sending-email-with-smtp) a [odesílání e-mailů pomocí API](/faq#do-you-support-sending-email-with-api). Tato funkce zahrnuje vestavěná ochranná opatření pro zajištění vysoké doručitelnosti, moderní a robustní systém front a opakování a také funkci [podporuje protokolování chyb v reálném čase](/faq#do-you-store-error-logs).
 
-**Listopad 2023**: Společnost Forward Email spustila funkci [**šifrované úložiště poštovní schránky**](/blog/docs/best-quantum-safe-encrypted-email-service) pro [podpora IMAP](/faq#do-you-support-receiving-email-with-imap), což představuje významný pokrok v oblasti ochrany soukromí a zabezpečení e-mailů.
+**Listopad 2023**: Společnost Forward Email spustila funkci [**šifrované úložiště poštovní schránky**](/blog/docs/best-quantum-safe-encrypted-email-service) pro e-mail [Podpora IMAPu](/faq#do-you-support-receiving-email-with-imap), což představuje významný pokrok v oblasti ochrany soukromí a zabezpečení e-mailů.
 
-**Prosinec 2023**: Společnost [přidaná podpora](/faq#do-you-support-pop3) pro monitorování [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [přístupové klíče a WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [čas do doručené pošty](/faq#i) a [OpenPGP pro úložiště IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
+**Prosinec 2023**: Společnost [přidaná podpora](/faq#do-you-support-pop3) pro monitorování [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol), [přístupové klíče a WebAuthn](/faq#do-you-support-passkeys-and-webauthn), [čas na doručení](/faq#i) a [OpenPGP pro úložiště IMAP](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd).
 
 ### 2024 – Optimalizace služeb a pokročilé funkce {#2024---service-optimization-and-advanced-features}
 
@@ -97,19 +97,19 @@ __CHRÁNĚNÁ_URL_41__ 2019 - Revoluce ve výkonu {__CHRÁNĚNÁ_URL_42__
 
 **Březen až červenec 2024**: Společnost Forward Email vydala zásadní optimalizace a vylepšení svých služeb IMAP, POP3 a CalDAV s cílem zrychlit svou službu na úroveň alternativ, ne-li dokonce rychlejší.
 
-**Červenec 2024**: Společnost [přidána podpora pro iOS Push](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) se chystá řešit nedostatečnou podporu příkazu IMAP `IDLE` v aplikaci Apple Mail na iOS, což umožňuje odesílání oznámení v reálném čase pro zařízení Apple iOS. Funkce Forward Email také přidala čas do monitorování doručené pošty („TTI“) pro vlastní službu a Yahoo/AOL a začala uživatelům umožňovat šifrování celého TXT záznamu DNS i v bezplatném tarifu. Jak bylo požadováno v [Diskuse o Průvodcích ochranou osobních údajů](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) a [Problémy s GitHubem](https://github.com/forwardemail/forwardemail.net/issues/254), společnost přidala možnost, aby aliasy buď tiše odmítaly `250`, měkce odmítaly `421` nebo tvrdě odmítaly `550`, pokud jsou zakázány.
+**Červenec 2024**: Společnost [přidána podpora pro iOS Push](https://github.com/nodemailer/wildduck/issues/711#issuecomment-2254114016) se chystá řešit nedostatečnou podporu příkazu IMAP `IDLE` v aplikaci Apple Mail na iOS, čímž umožní odesílání oznámení v reálném čase pro zařízení Apple iOS. Funkce Forward Email také přidala čas do monitorování doručené pošty („TTI“) pro vlastní službu a Yahoo/AOL a začala uživatelům umožňovat šifrování celého TXT záznamu DNS i v bezplatném tarifu. Jak bylo požadováno v dokumentech [Diskuse o Průvodcích ochranou osobních údajů](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) a [Problémy s GitHubem](https://github.com/forwardemail/forwardemail.net/issues/254), společnost přidala možnost pro aliasy buď tiše odmítnout `250`, měkce odmítnout `421` nebo tvrdě odmítnout `550`, pokud je tato možnost zakázána.
 
-**Srpen 2024**: Funkce Forward Email přidala podporu pro export poštovních schránek ve formátech [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) a [Mbox](https://en.wikipedia.org/wiki/Mbox) (kromě stávajícího exportního formátu [SQLite](https://en.wikipedia.org/wiki/SQLite)). [Byla přidána podpora podpisů webhooků](https://forwardemail.net/faq#do-you-support-bounce-webhooks) a společnost začala uživatelům umožňovat odesílání newsletterů, oznámení a e-mailového marketingu prostřednictvím své odchozí služby SMTP. Byly také implementovány kvóty úložiště pro IMAP/POP3/CalDAV v rámci celé domény a pro specifické aliasy.
+**Srpen 2024**: Funkce Forward Email přidala podporu pro export poštovních schránek ve formátech [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions) a [Mbox](https://en.wikipedia.org/wiki/Mbox) (kromě stávajícího exportního formátu [SQLite](https://en.wikipedia.org/wiki/SQLite)), [Byla přidána podpora podpisů webhooků](https://forwardemail.net/faq#do-you-support-bounce-webhooks) a společnost začala uživatelům umožňovat odesílání newsletterů, oznámení a e-mailového marketingu prostřednictvím své odchozí služby SMTP. Byly také implementovány kvóty úložiště pro IMAP/POP3/CalDAV v rámci celé domény a pro specifické aliasy.
 
-### 2025 – Neustálé inovace {#2025---continued-innovation}
+### 2025 - Pokračující inovace {#2025---continued-innovation}
 
-**Září 2024 až leden 2025**: Přeposílání e-mailů [přidána velmi žádaná funkce odpovědi na dovolenou a šifrování OpenPGP/WKD pro přeposílání e-mailů](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) v návaznosti na již implementované možnosti šifrovaného úložiště poštovních schránek.
+**Září 2024 až leden 2025**: Přeposílání e-mailů [přidána velmi žádaná funkce odpovědi na dovolenou a šifrování OpenPGP/WKD pro přeposílání e-mailů](https://discuss.privacyguides.net/t/forward-email-email-provider/13370/254) na základě již implementovaných možností šifrovaného úložiště poštovních schránek.
 
-**21. ledna 2025**: Nejlepší přítel zakladatele „Jack“, jeho věrný psí společník, pokojně zemřel ve věku téměř 11 let. Jackovi [bude vždycky vzpomínáno](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) za jeho neochvějnou společnost, která podpořila vznik služby Forward Email. [Technická bílá kniha pro přeposílání e-mailů](https://forwardemail.net/technical-whitepaper.pdf) je věnováno Jackovi a uznává jeho roli při vývoji služby.
+**21. ledna 2025**: Nejlepší přítel zakladatele „Jack“, jeho věrný psí společník, pokojně zemřel ve věku téměř 11 let. Jack [bude vždycky vzpomínáno](https://github.com/forwardemail/forwardemail.net/commit/994ce771f0338cbe77f10bd613989e0924883f9b) za jeho neochvějnou společnost, která podpořila vznik služby Forward Email. [Technická bílá kniha pro přeposílání e-mailů](https://forwardemail.net/technical-whitepaper.pdf) je věnováno Jackovi a uznává jeho roli při vývoji služby.
 
-**Únor 2025**: Společnost Forward Email přešla na [DataPacket](https://www.datapacket.com) jako nového primárního poskytovatele datového centra a implementovala vlastní, výkonnostně orientovaný hardware bez nutnosti instalace, aby dále zvýšila spolehlivost a rychlost služeb.
+**Únor 2025**: Služba Forward Email přešla na [Datový paket](https://www.datapacket.com) jako nového primárního poskytovatele datového centra a implementovala vlastní, výkonnostně orientovaný hardware bez nutnosti instalace pro další zvýšení spolehlivosti a rychlosti služeb.
 
-**Červen 2025**: Služba Forward Email spustila podporu pro [Protokol CardDAV](/faq#do-you-support-contacts-carddav) a rozšířila tak možnosti platformy o synchronizaci kontaktů vedle stávajících e-mailových a kalendářových služeb.
+**Červen 2025**: Služba Forward Email spustila podporu pro [Protokol CardDAV](/faq#do-you-support-contacts-carddav), čímž rozšířila možnosti platformy o synchronizaci kontaktů vedle stávajících e-mailových a kalendářových služeb.
 
 ## Základní principy {#core-principles}
 
@@ -125,7 +125,7 @@ Od svého vzniku se společnost Forward Email pevně zavázala k zásadám ochra
 
 **Kontrola uživatelů**: Poskytnutí uživatelům možností, včetně možnosti samostatného hostování celé platformy, pokud si to přejí.
 
-__CHRÁNĚNÁ_URL_70__ Aktuální stav {__CHRÁNĚNÁ_URL_71__
+## Aktuální stav {#current-status}
 
 V roce 2025 služba Forward Email obsluhuje více než 500 000 domén po celém světě, včetně významných organizací a lídrů v oboru, jako například:
 

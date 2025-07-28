@@ -3,7 +3,7 @@
 ## Mục lục {#table-of-contents}
 
 * [Lời nói đầu](#foreword)
-* [Quá trình xử lý SMTP của Forward Email hoạt động như thế nào](#how-forward-emails-smtp-processing-works)
+* [Cách thức hoạt động của quy trình xử lý SMTP của Forward Email](#how-forward-emails-smtp-processing-works)
   * [Hệ thống hàng đợi và thử lại email](#email-queue-and-retry-system)
   * [Được chứng minh là đáng tin cậy](#dummy-proofed-for-reliability)
 * [Tích hợp Node.js](#nodejs-integration)
@@ -21,17 +21,17 @@
   * [Sử dụng Java Mail API](#using-javamail-api)
 * [Cấu hình máy khách email](#email-client-configuration)
   * [Chim Sấm Sét](#thunderbird)
-  * [Thư Apple](#apple-mail)
+  * [Apple Mail](#apple-mail)
   * [Gmail (Gửi thư dưới dạng)](#gmail-send-mail-as)
 * [Xử lý sự cố](#troubleshooting)
-  * [Các vấn đề thường gặp và giải pháp](#common-issues-and-solutions)
+  * [Các vấn đề phổ biến và giải pháp](#common-issues-and-solutions)
   * [Nhận trợ giúp](#getting-help)
 * [Tài nguyên bổ sung](#additional-resources)
 * [Phần kết luận](#conclusion)
 
 ## Lời nói đầu {#foreword}
 
-Hướng dẫn này cung cấp các ví dụ chi tiết về cách tích hợp với dịch vụ SMTP của Forward Email bằng nhiều ngôn ngữ lập trình, khuôn khổ và ứng dụng email khác nhau. Dịch vụ SMTP của chúng tôi được thiết kế để đáng tin cậy, an toàn và dễ tích hợp với các ứng dụng hiện có của bạn.
+Hướng dẫn này cung cấp các ví dụ chi tiết về cách tích hợp với dịch vụ SMTP của Forward Email bằng nhiều ngôn ngữ lập trình, khung và ứng dụng email khác nhau. Dịch vụ SMTP của chúng tôi được thiết kế để đảm bảo độ tin cậy, bảo mật và dễ dàng tích hợp với các ứng dụng hiện có của bạn.
 
 ## Cách thức hoạt động của quy trình xử lý SMTP của Email chuyển tiếp {#how-forward-emails-smtp-processing-works}
 
@@ -52,16 +52,16 @@ Khi bạn gửi email qua SMTP tới máy chủ của chúng tôi:
 5. **Thông báo trạng thái gửi đi**: Người gửi sẽ nhận được thông báo về trạng thái email của họ (đã gửi, bị trì hoãn hoặc bị trả lại).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Sau khi gửi thành công, nội dung email SMTP gửi đi sẽ được biên tập lại sau một khoảng thời gian lưu trữ có thể cấu hình (mặc định là 30 ngày) để đảm bảo an toàn và riêng tư. Chỉ còn lại một thông báo giữ chỗ cho biết việc gửi thành công.
 
-### Đã được kiểm chứng để đảm bảo độ tin cậy {#dummy-proofed-for-reliability}
+### Đã được kiểm chứng về độ tin cậy {#dummy-proofed-for-reliability}
 
 Hệ thống của chúng tôi được thiết kế để xử lý nhiều trường hợp ngoại lệ:
 
-* Nếu phát hiện danh sách chặn, email sẽ tự động được thử lại
-* Nếu xảy ra sự cố mạng, việc gửi sẽ được thử lại
-* Nếu hộp thư của người nhận đã đầy, hệ thống sẽ thử lại sau
-* Nếu máy chủ nhận tạm thời không khả dụng, chúng tôi sẽ tiếp tục thử
+* Nếu phát hiện có danh sách chặn, email sẽ tự động được thử lại.
+* Nếu xảy ra sự cố mạng, việc gửi thư sẽ được thử lại.
+* Nếu hộp thư của người nhận đã đầy, hệ thống sẽ thử lại sau.
+* Nếu máy chủ nhận thư tạm thời không khả dụng, chúng tôi sẽ tiếp tục thử.
 
 Cách tiếp cận này cải thiện đáng kể tỷ lệ gửi thư trong khi vẫn đảm bảo quyền riêng tư và bảo mật.
 
@@ -69,7 +69,7 @@ Cách tiếp cận này cải thiện đáng kể tỷ lệ gửi thư trong khi
 
 ### Sử dụng Nodemailer {#using-nodemailer}
 
-[Người gửi thư nút](https://nodemailer.com/) là một mô-đun phổ biến để gửi email từ các ứng dụng Node.js.
+[Nodemailer](https://nodemailer.com/) là một mô-đun phổ biến để gửi email từ các ứng dụng Node.js.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -422,7 +422,7 @@ public class SendEmail {
 
 ## Cấu hình máy khách email {#email-client-configuration}
 
-__URL_BẢO_VỆ_54__ Thunderbird {__URL_BẢO_VỆ_55__
+### Thunderbird {#thunderbird}
 
 ```mermaid
 flowchart TD
@@ -440,43 +440,43 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Mở Thunderbird và vào Cài đặt tài khoản
-2. Nhấp vào "Hành động tài khoản" và chọn "Thêm tài khoản thư"
+1. Mở Thunderbird và vào Cài đặt Tài khoản
+2. Nhấp vào "Hành động Tài khoản" và chọn "Thêm Tài khoản Thư"
 3. Nhập tên, địa chỉ email và mật khẩu của bạn
-4. Nhấp vào "Cấu hình thủ công" và nhập các thông tin chi tiết sau:
-* Máy chủ đến:
+4. Nhấp vào "Cấu hình Thủ công" và nhập các thông tin sau:
+* Máy chủ Thư đến:
 * IMAP: imap.forwardemail.net, Cổng: 993, SSL/TLS
 * POP3: pop3.forwardemail.net, Cổng: 995, SSL/TLS
-* Máy chủ đi (SMTP): smtp.forwardemail.net, Cổng: 465, SSL/TLS
-* Xác thực: Mật khẩu thông thường
+* Máy chủ Thư đi (SMTP): smtp.forwardemail.net, Cổng: 465, SSL/TLS
+* Xác thực: Mật khẩu Thường
 * Tên người dùng: địa chỉ email đầy đủ của bạn
-5. Nhấp vào "Kiểm tra" rồi "Hoàn tất"
+5. Nhấp vào "Kiểm tra" rồi chọn "Hoàn tất"
 
-__URL_BẢO_VỆ_56__ Apple Mail {__URL_BẢO_VỆ_57__
+### Apple Mail {#apple-mail}
 
-1. Mở Mail và vào Mail > Preferences > Accounts
+1. Mở Mail và vào Mail > Tùy chọn > Tài khoản
 2. Nhấp vào nút "+" để thêm tài khoản mới
-3. Chọn "Other Mail Account" và nhấp vào "Continue"
-4. Nhập tên, địa chỉ email và mật khẩu của bạn, sau đó nhấp vào "Sign In"
-5. Khi thiết lập tự động không thành công, hãy nhập các thông tin chi tiết sau:
-* Incoming Mail Server: imap.forwardemail.net (hoặc pop3.forwardemail.net cho POP3)
-* Outgoing Mail Server: smtp.forwardemail.net
-* Username: địa chỉ email đầy đủ của bạn
-* Password: mật khẩu của bạn
-6. Nhấp vào "Sign In" để hoàn tất thiết lập
+3. Chọn "Tài khoản Mail Khác" và nhấp vào "Tiếp tục"
+4. Nhập tên, địa chỉ email và mật khẩu của bạn, sau đó nhấp vào "Đăng nhập"
+5. Khi thiết lập tự động không thành công, hãy nhập các thông tin sau:
+* Máy chủ Thư đến: imap.forwardemail.net (hoặc pop3.forwardemail.net cho POP3)
+* Máy chủ Thư đi: smtp.forwardemail.net
+* Tên người dùng: địa chỉ email đầy đủ của bạn
+* Mật khẩu: mật khẩu của bạn
+6. Nhấp vào "Đăng nhập" để hoàn tất thiết lập
 
 ### Gmail (Gửi thư dưới dạng) {#gmail-send-mail-as}
 
-1. Mở Gmail và vào Settings > Accounts and Import
-2. Trong "Send mail as", nhấp vào "Add another email address"
-3. Nhập tên và địa chỉ email của bạn, sau đó nhấp vào "Next Step"
-4. Nhập các thông tin chi tiết về máy chủ SMTP sau:
-* SMTP Server: smtp.forwardemail.net
-* Port: 465
-* Username: địa chỉ email đầy đủ của bạn
-* Password: mật khẩu của bạn
-* Chọn "Secured connection using SSL"
-5. Nhấp vào "Add Account" và xác minh địa chỉ email của bạn
+1. Mở Gmail và vào Cài đặt > Tài khoản và Nhập
+2. Trong mục "Gửi thư bằng địa chỉ", nhấp vào "Thêm địa chỉ email khác"
+3. Nhập tên và địa chỉ email của bạn, sau đó nhấp vào "Bước tiếp theo"
+4. Nhập thông tin máy chủ SMTP sau:
+* Máy chủ SMTP: smtp.forwardemail.net
+* Cổng: 465
+* Tên người dùng: địa chỉ email đầy đủ của bạn
+* Mật khẩu: mật khẩu của bạn
+* Chọn "Kết nối bảo mật sử dụng SSL"
+5. Nhấp vào "Thêm tài khoản" và xác minh địa chỉ email của bạn
 
 ## Khắc phục sự cố {#troubleshooting}
 
@@ -485,22 +485,22 @@ __URL_BẢO_VỆ_56__ Apple Mail {__URL_BẢO_VỆ_57__
 1. **Xác thực không thành công**
 * Xác minh tên người dùng (địa chỉ email đầy đủ) và mật khẩu của bạn
 * Đảm bảo bạn đang sử dụng đúng cổng (465 cho SSL/TLS)
-* Kiểm tra xem tài khoản của bạn có bật quyền truy cập SMTP không
+* Kiểm tra xem tài khoản của bạn đã bật quyền truy cập SMTP chưa
 
 2. **Hết thời gian kết nối**
 * Kiểm tra kết nối internet của bạn
-* Xác minh cài đặt tường lửa không chặn lưu lượng SMTP
+* Xác minh rằng cài đặt tường lửa không chặn lưu lượng SMTP
 * Thử sử dụng một cổng khác (587 với STARTTLS)
 
 3. **Tin nhắn bị từ chối**
-* Đảm bảo địa chỉ "Từ" của bạn khớp với email đã xác thực của bạn
+* Đảm bảo địa chỉ "Từ" của bạn khớp với email đã xác thực
 * Kiểm tra xem IP của bạn có bị đưa vào danh sách đen không
 * Xác minh nội dung tin nhắn của bạn không kích hoạt bộ lọc thư rác
 
 4. **Lỗi TLS/SSL**
 * Cập nhật ứng dụng/thư viện của bạn để hỗ trợ các phiên bản TLS hiện đại
 * Đảm bảo chứng chỉ CA của hệ thống được cập nhật
-* Hãy thử TLS rõ ràng thay vì TLS ngầm định
+* Hãy thử sử dụng TLS rõ ràng thay vì TLS ngầm định
 
 ### Nhận trợ giúp {#getting-help}
 
@@ -519,6 +519,6 @@ Nếu bạn gặp phải vấn đề không được đề cập ở đây, vui 
 
 ## Kết luận {#conclusion}
 
-Dịch vụ SMTP của Forward Email cung cấp một cách đáng tin cậy, an toàn và tập trung vào quyền riêng tư để gửi email từ các ứng dụng và máy khách email của bạn. Với hệ thống hàng đợi thông minh, cơ chế thử lại trong 5 ngày và thông báo trạng thái phân phối toàn diện, bạn có thể tự tin rằng email của mình sẽ đến đích.
+Dịch vụ SMTP của Forward Email cung cấp một giải pháp đáng tin cậy, an toàn và tập trung vào quyền riêng tư để gửi email từ các ứng dụng và máy khách email của bạn. Với hệ thống xếp hàng thông minh, cơ chế thử lại sau 5 ngày và thông báo trạng thái gửi email toàn diện, bạn có thể hoàn toàn yên tâm rằng email của mình sẽ đến đích.
 
-Đối với các trường hợp sử dụng nâng cao hơn hoặc tích hợp tùy chỉnh, vui lòng liên hệ với nhóm hỗ trợ của chúng tôi.
+Để biết thêm các trường hợp sử dụng nâng cao hoặc tích hợp tùy chỉnh, vui lòng liên hệ với nhóm hỗ trợ của chúng tôi.

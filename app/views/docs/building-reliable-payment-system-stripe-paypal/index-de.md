@@ -210,7 +210,7 @@ const requestBody = {
 };
 ```
 
-Ähnlich wie bei Stripe verwenden wir die Parameter `return_url` und `cancel_url` für Weiterleitungen nach der Zahlung. Wenn PayPal den Nutzer zurück auf unsere Website leitet, können wir die Zahlungsdetails erfassen und unsere Datenbank aktualisieren.
+Ähnlich wie bei Stripe geben wir die Parameter `return_url` und `cancel_url` an, um Weiterleitungen nach der Zahlung zu handhaben. Wenn PayPal den Nutzer zurück auf unsere Website leitet, können wir die Zahlungsdetails erfassen und unsere Datenbank aktualisieren.
 
 ```mermaid
 sequenceDiagram
@@ -336,7 +336,7 @@ async function webhook(ctx) {
 
 Die Funktion `stripe.webhooks.constructEvent` überprüft die Signatur anhand unseres Endpunktgeheimnisses. Wenn die Signatur gültig ist, verarbeiten wir das Ereignis asynchron, um eine Blockierung der Webhook-Antwort zu vermeiden.
 
-### PayPal Webhook-Implementierung {#paypal-webhook-implementation}
+### PayPal-Webhook-Implementierung {#paypal-webhook-implementation}
 
 In ähnlicher Weise überprüft unser PayPal-Webhook-Handler die Authentizität eingehender Benachrichtigungen:
 
@@ -381,7 +381,7 @@ Beide Webhook-Handler folgen demselben Muster: Signaturprüfung, Empfangsbestät
 
 ## Ebene 3: Automatisierte Jobs mit Bree {#layer-3-automated-jobs-with-bree}
 
-Die letzte Ebene unseres Dreifachansatzes besteht aus einer Reihe automatisierter Jobs, die Zahlungsdaten regelmäßig prüfen und abgleichen. Wir verwenden Bree, einen Job-Scheduler für Node.js, um diese Jobs in regelmäßigen Abständen auszuführen.
+Die letzte Ebene unseres Dreifachansatzes besteht aus einer Reihe automatisierter Jobs, die regelmäßig Zahlungsdaten prüfen und abgleichen. Wir verwenden Bree, einen Job-Scheduler für Node.js, um diese Jobs in regelmäßigen Abständen auszuführen.
 
 ### Abonnement-Genauigkeitsprüfung {#subscription-accuracy-checker}
 
@@ -583,7 +583,7 @@ Dieser Ansatz minimiert die Auswirkungen von Streitigkeiten auf unser Geschäft 
 
 ## Code-Wiederverwendung: KISS- und DRY-Prinzipien {#code-reuse-kiss-and-dry-principles}
 
-In unserem gesamten Zahlungssystem halten wir uns an die Prinzipien KISS (Keep It Simple, Stupid) und DRY (Don't Repeat Yourself). Hier einige Beispiele:
+In unserem gesamten Zahlungssystem halten wir uns an die Prinzipien KISS (Keep It Simple, Stupid) und DRY (Don't Repeat Yourself). Hier sind einige Beispiele:
 
 1. **Gemeinsam genutzte Hilfsfunktionen**: Wir haben wiederverwendbare Hilfsfunktionen für allgemeine Aufgaben wie das Synchronisieren von Zahlungen und das Senden von E-Mails erstellt.
 
@@ -852,6 +852,6 @@ Unser Dreifachansatz zur Zahlungsabwicklung bietet mehrere wichtige Vorteile:
 
 Wenn Sie ein Zahlungssystem implementieren, das mehrere Prozessoren unterstützt, empfehlen wir Ihnen diesen Dreifachansatz. Zwar ist der Entwicklungsaufwand im Vorfeld höher, die langfristigen Vorteile hinsichtlich Zuverlässigkeit und Genauigkeit lohnen sich jedoch.
 
-Weitere Informationen zu Forward Email und unseren datenschutzorientierten E-Mail-Diensten finden Sie auf unserer [Webseite](https://forwardemail.net).
+Weitere Informationen zu Forward Email und unseren datenschutzorientierten E-Mail-Diensten finden Sie in unserem [Webseite](https://forwardemail.net).
 
 <!-- *Schlüsselwörter: Zahlungsabwicklung, Stripe-Integration, PayPal-Integration, Webhook-Bearbeitung, Zahlungssynchronisierung, Abonnementverwaltung, Betrugsprävention, Streitbeilegung, Node.js-Zahlungssystem, Multiprozessor-Zahlungssystem, Zahlungsgateway-Integration, Echtzeit-Zahlungsüberprüfung, Zahlungsdatenkonsistenz, Abonnementabrechnung, Zahlungssicherheit, Zahlungsautomatisierung, Zahlungs-Webhooks, Zahlungsabgleich, Grenzfälle bei Zahlungen, Zahlungsfehlerbehandlung, VISA-Abonnementanforderungen, Benachrichtigungen vor Verlängerung, Abonnementkonformität* -->

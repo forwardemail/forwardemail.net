@@ -5,7 +5,7 @@
 * [Kata pengantar](#foreword)
 * [Cara Kerja Pemrosesan SMTP Email Terusan](#how-forward-emails-smtp-processing-works)
   * [Sistem Antrean dan Coba Ulang Email](#email-queue-and-retry-system)
-  * [Diuji Keandalannya](#dummy-proofed-for-reliability)
+  * [Diuji secara Dummy untuk Keandalan](#dummy-proofed-for-reliability)
 * [Integrasi Node.js](#nodejs-integration)
   * [Menggunakan Nodemailer](#using-nodemailer)
   * [Menggunakan Express.js](#using-expressjs)
@@ -18,12 +18,12 @@
 * [Integrasi Ruby](#ruby-integration)
   * [Menggunakan Ruby Mail Gem](#using-ruby-mail-gem)
 * [Integrasi Java](#java-integration)
-  * [Menggunakan API JavaMail](#using-javamail-api)
+  * [Menggunakan Java Mail API](#using-javamail-api)
 * [Konfigurasi Klien Email](#email-client-configuration)
-  * [burung guntur](#thunderbird)
-  * [Surat Apple](#apple-mail)
+  * [Burung Guntur](#thunderbird)
+  * [Apple Mail](#apple-mail)
   * [Gmail (Kirim Email Sebagai)](#gmail-send-mail-as)
-* [Penyelesaian Masalah](#troubleshooting)
+* [Pemecahan Masalah](#troubleshooting)
   * [Masalah Umum dan Solusinya](#common-issues-and-solutions)
   * [Mendapatkan Bantuan](#getting-help)
 * [Sumber Daya Tambahan](#additional-resources)
@@ -31,15 +31,15 @@
 
 ## Kata Pengantar {#foreword}
 
-Panduan ini menyediakan contoh terperinci tentang cara mengintegrasikan dengan layanan SMTP Forward Email menggunakan berbagai bahasa pemrograman, kerangka kerja, dan klien email. Layanan SMTP kami dirancang agar dapat diandalkan, aman, dan mudah diintegrasikan dengan aplikasi Anda yang sudah ada.
+Panduan ini memberikan contoh detail tentang cara berintegrasi dengan layanan SMTP Forward Email menggunakan berbagai bahasa pemrograman, kerangka kerja, dan klien email. Layanan SMTP kami dirancang agar andal, aman, dan mudah diintegrasikan dengan aplikasi Anda yang sudah ada.
 
-## Cara Kerja Pemrosesan SMTP Email Terusan {#how-forward-emails-smtp-processing-works}
+## Cara Kerja Pemrosesan SMTP Email Penerusan {#how-forward-emails-smtp-processing-works}
 
 Sebelum menyelami contoh integrasi, penting untuk memahami bagaimana layanan SMTP kami memproses email:
 
-### Sistem Antrean dan Coba Ulang Email {#email-queue-and-retry-system}
+### Sistem Antrean Email dan Coba Ulang {#email-queue-and-retry-system}
 
-Ketika Anda mengirimkan email melalui SMTP ke server kami:
+Saat Anda mengirimkan email melalui SMTP ke server kami:
 
 1. **Pemrosesan Awal**: Email divalidasi, dipindai untuk mendeteksi malware, dan diperiksa dengan filter spam.
 2. **Antrean Cerdas**: Email ditempatkan dalam sistem antrean canggih untuk pengiriman.
@@ -52,16 +52,16 @@ Ketika Anda mengirimkan email melalui SMTP ke server kami:
 5. **Notifikasi Status Pengiriman**: Pengirim menerima notifikasi tentang status email mereka (terkirim, tertunda, atau terpental).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Setelah pengiriman berhasil, konten email SMTP keluar akan dihapus setelah periode penyimpanan yang dapat dikonfigurasi (default 30 hari) demi keamanan dan privasi. Hanya pesan placeholder yang tersisa yang menunjukkan pengiriman berhasil.
 
-### Diuji dengan Dummy untuk Keandalan {#dummy-proofed-for-reliability}
+### Diuji Coba untuk Keandalan {#dummy-proofed-for-reliability}
 
-Sistem kami dirancang untuk menangani berbagai kasus ekstrem:
+Sistem kami dirancang untuk menangani berbagai kasus khusus:
 
-* Jika daftar blokir terdeteksi, email akan dicoba lagi secara otomatis
-* Jika terjadi masalah jaringan, pengiriman akan dicoba lagi
-* Jika kotak surat penerima penuh, sistem akan mencoba lagi nanti
-* Jika server penerima tidak tersedia untuk sementara, kami akan terus mencoba
+* Jika daftar blokir terdeteksi, email akan dicoba ulang secara otomatis.
+* Jika terjadi masalah jaringan, pengiriman akan dicoba ulang.
+* Jika kotak surat penerima penuh, sistem akan mencoba lagi nanti.
+* Jika server penerima sementara tidak tersedia, kami akan terus mencoba.
 
 Pendekatan ini secara signifikan meningkatkan tingkat pengiriman dengan tetap menjaga privasi dan keamanan.
 
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-Kemudian kirim email dalam tampilan Anda:
+Lalu kirim email dalam tampilan Anda:
 
 ```python
 from django.core.mail import send_mail
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Kemudian kirim email menggunakan fasad Mail Laravel:
+Kemudian kirim email menggunakan façade Mail Laravel:
 
 ```php
 <?php
@@ -440,8 +440,8 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Buka Thunderbird dan masuk ke Pengaturan Akun
-2. Klik "Tindakan Akun" dan pilih "Tambah Akun Email"
+1. Buka Thunderbird dan buka Pengaturan Akun
+2. Klik "Tindakan Akun" dan pilih "Tambahkan Akun Email"
 3. Masukkan nama, alamat email, dan kata sandi Anda
 4. Klik "Konfigurasi Manual" dan masukkan detail berikut:
 * Server Masuk:
@@ -450,37 +450,37 @@ flowchart TD
 * Server Keluar (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS
 * Autentikasi: Kata Sandi Normal
 * Nama Pengguna: alamat email lengkap Anda
-5. Klik "Uji" dan kemudian "Selesai"
+5. Klik "Uji" lalu "Selesai"
 
 ### Apple Mail {#apple-mail}
 
-1. Buka Mail dan masuk ke Mail > Preferences > Accounts
+1. Buka Mail dan buka Mail > Preferensi > Akun
 2. Klik tombol "+" untuk menambahkan akun baru
-3. Pilih "Other Mail Account" dan klik "Continue"
-4. Masukkan nama, alamat email, dan kata sandi Anda, lalu klik "Sign In"
+3. Pilih "Akun Mail Lainnya" dan klik "Lanjutkan"
+4. Masukkan nama, alamat email, dan kata sandi Anda, lalu klik "Masuk"
 5. Jika pengaturan otomatis gagal, masukkan detail berikut:
-* Incoming Mail Server: imap.forwardemail.net (atau pop3.forwardemail.net untuk POP3)
-* Outgoing Mail Server: smtp.forwardemail.net
-* Username: alamat email lengkap Anda
-* Password: kata sandi Anda
-6. Klik "Sign In" untuk menyelesaikan pengaturan
+* Server Email Masuk: imap.forwardemail.net (atau pop3.forwardemail.net untuk POP3)
+* Server Email Keluar: smtp.forwardemail.net
+* Nama Pengguna: alamat email lengkap Anda
+* Kata Sandi: kata sandi Anda
+6. Klik "Masuk" untuk menyelesaikan pengaturan
 
 ### Gmail (Kirim Email Sebagai) {#gmail-send-mail-as}
 
-1. Buka Gmail dan masuk ke Setelan > Akun dan Impor
-2. Di bawah "Kirim email sebagai", klik "Tambahkan alamat email lain"
+1. Buka Gmail dan buka Setelan > Akun dan Impor
+2. Di bagian "Kirim email sebagai", klik "Tambahkan alamat email lain"
 3. Masukkan nama dan alamat email Anda, lalu klik "Langkah Berikutnya"
 4. Masukkan detail server SMTP berikut:
 * Server SMTP: smtp.forwardemail.net
 * Port: 465
-* Nama pengguna: alamat email lengkap Anda
-* Kata sandi: kata sandi Anda
-* Pilih "Sambungan aman menggunakan SSL"
+* Nama Pengguna: alamat email lengkap Anda
+* Kata Sandi: kata sandi Anda
+* Pilih "Koneksi aman menggunakan SSL"
 5. Klik "Tambahkan Akun" dan verifikasi alamat email Anda
 
 ## Pemecahan Masalah {#troubleshooting}
 
-### Masalah Umum dan Solusinya {#common-issues-and-solutions}
+### Masalah Umum dan Solusi {#common-issues-and-solutions}
 
 1. **Otentikasi Gagal**
 * Verifikasi nama pengguna (alamat email lengkap) dan kata sandi Anda
@@ -493,20 +493,20 @@ flowchart TD
 * Coba gunakan port lain (587 dengan STARTTLS)
 
 3. **Pesan Ditolak**
-* Pastikan alamat "Dari" Anda sesuai dengan alamat email yang diautentikasi
+* Pastikan alamat "Dari" Anda sesuai dengan alamat email terautentikasi Anda
 * Periksa apakah IP Anda masuk daftar hitam
-* Pastikan konten pesan Anda tidak memicu filter spam
+* Pastikan isi pesan Anda tidak memicu filter spam
 
 4. **Kesalahan TLS/SSL**
-* Perbarui aplikasi/pustaka Anda untuk mendukung versi TLS modern
+* Perbarui aplikasi/pustaka Anda agar mendukung versi TLS terbaru
 * Pastikan sertifikat CA sistem Anda mutakhir
-* Coba TLS eksplisit alih-alih TLS implisit
+* Coba TLS eksplisit, bukan TLS implisit
 
 ### Mendapatkan Bantuan {#getting-help}
 
 Jika Anda mengalami masalah yang tidak tercakup di sini, silakan:
 
-1. Periksa [halaman FAQ](/faq) kami untuk pertanyaan umum
+1. Periksa [Halaman FAQ](/faq) kami untuk pertanyaan umum
 2. Tinjau [postingan blog tentang pengiriman email](/blog/docs/best-email-forwarding-service) kami untuk informasi lebih lanjut
 3. Hubungi tim dukungan kami di <support@forwardemail.net>
 
@@ -519,6 +519,6 @@ Jika Anda mengalami masalah yang tidak tercakup di sini, silakan:
 
 ## Kesimpulan {#conclusion}
 
-Layanan SMTP Forward Email menyediakan cara yang andal, aman, dan berfokus pada privasi untuk mengirim email dari aplikasi dan klien email Anda. Dengan sistem antrean cerdas, mekanisme coba ulang 5 hari, dan pemberitahuan status pengiriman yang komprehensif, Anda dapat yakin bahwa email Anda akan sampai ke tujuannya.
+Layanan SMTP Forward Email menyediakan cara yang andal, aman, dan mengutamakan privasi untuk mengirim email dari aplikasi dan klien email Anda. Dengan sistem antrean cerdas kami, mekanisme coba ulang 5 hari, dan notifikasi status pengiriman yang komprehensif, Anda dapat yakin bahwa email Anda akan sampai ke tujuannya.
 
 Untuk kasus penggunaan lebih lanjut atau integrasi khusus, silakan hubungi tim dukungan kami.

@@ -75,12 +75,12 @@ So viel sparen unsere Partneruniversitäten jährlich, wenn sie sich für Forwar
 | Universität von Maryland | 25,000 | $75,000 | $3,000 | $72,000 |
 
 > \[!NOTE]
-> Forward Email enterprise only costs $250/month typically, with no extra cost per user, whitelisted API rate limitations, and the only additional cost is storage if you need additional GB/TB for students (+$3 per 10 GB additional storage). We use NVMe SSD drives for fast support of IMAP/POP3/SMTP/CalDAV/CardDAV as well.
+> Forward Email Enterprise kostet in der Regel nur 250 $/Monat, ohne zusätzliche Kosten pro Benutzer, mit Whitelist-API-Ratenbeschränkungen und lediglich zusätzlichen Speicherkosten, falls Sie zusätzliche GB/TB für Studierende benötigen (+3 $ pro 10 GB zusätzlichen Speicher). Wir verwenden NVMe-SSD-Laufwerke für die schnelle Unterstützung von IMAP/POP3/SMTP/CalDAV/CardDAV.
 
 > \[!IMPORTANT]
-> Unlike Google and Microsoft, who have repeatedly increased their prices while integrating AI features that analyze your data, Forward Email maintains stable pricing with a strict privacy focus. We don't use AI, don't track usage patterns, and don't store logs or emails to disk (all processing is done in-memory), ensuring complete privacy for your alumni communications.
+> Im Gegensatz zu Google und Microsoft, die ihre Preise wiederholt erhöht und gleichzeitig KI-Funktionen zur Datenanalyse integriert haben, bietet Forward Email stabile Preise und legt dabei großen Wert auf Datenschutz. Wir verwenden keine KI, erfassen keine Nutzungsmuster und speichern weder Protokolle noch E-Mails auf der Festplatte (die gesamte Verarbeitung erfolgt im Arbeitsspeicher). So ist die vollständige Vertraulichkeit Ihrer Alumni-Kommunikation gewährleistet.
 
-Dies stellt eine erhebliche Kostenreduzierung im Vergleich zu herkömmlichen E-Mail-Hosting-Lösungen dar – Mittel, die Universitäten für Stipendien, Forschung oder andere unternehmenskritische Aktivitäten verwenden können. Laut einer Analyse von Email Vendor Selection aus dem Jahr 2023 suchen Bildungseinrichtungen zunehmend nach kostengünstigen Alternativen zu herkömmlichen E-Mail-Anbietern, da die Preise durch die Integration von KI-Funktionen weiter steigen ([Auswahl des E-Mail-Anbieters, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
+Dies stellt eine erhebliche Kostenreduzierung im Vergleich zu herkömmlichen E-Mail-Hosting-Lösungen dar – Mittel, die Universitäten für Stipendien, Forschung oder andere unternehmenskritische Aktivitäten einsetzen können. Laut einer Analyse von Email Vendor Selection aus dem Jahr 2023 suchen Bildungseinrichtungen zunehmend nach kostengünstigen Alternativen zu herkömmlichen E-Mail-Anbietern, da die Preise durch die Integration von KI-Funktionen weiter steigen ([Auswahl des E-Mail-Anbieters, 2023](https://www.emailvendorselection.com/email-service-provider-list/)).
 
 ## Die E-Mail-Challenge für Universitäts-Alumni {#the-university-alumni-email-challenge}
 
@@ -92,16 +92,16 @@ Alumni-E-Mail-Adressen (wie `firstname.lastname@cl.cam.ac.uk` oder `username@ter
 
 * Pflege der institutionellen Verbindung und der Markenidentität
 * Förderung der kontinuierlichen Kommunikation mit der Universität
-* Stärkung der beruflichen Glaubwürdigkeit der Absolventinnen und Absolventen
+* Stärkung der beruflichen Glaubwürdigkeit der Absolventen
 * Förderung der Alumni-Vernetzung und des Community-Aufbaus
 * Bereitstellung einer stabilen, lebenslangen Anlaufstelle
 
 Untersuchungen von Tekade (2020) zeigen, dass Bildungs-E-Mail-Adressen Alumni zahlreiche Vorteile bieten, darunter Zugang zu akademischen Ressourcen, berufliche Glaubwürdigkeit und exklusive Rabatte auf verschiedene Dienste ([Mittel, 2020](https://medium.com/coders-capsule/top-20-benefits-of-having-an-educational-email-address-91a09795e05)).
 
 > \[!TIP]
-> Visit our new [AlumniEmail.com](https://alumniemail.com) directory for a comprehensive resource on university alumni email services, including setup guides, best practices, and a searchable directory of alumni email domains. It serves as a central hub for all alumni email information.
+> Besuchen Sie unser neues [AlumniEmail.com](https://alumniemail.com)-Verzeichnis. Es bietet umfassende Informationen zu E-Mail-Diensten für Universitäts-Alumni. Es enthält Einrichtungsanleitungen, Best Practices und ein durchsuchbares Verzeichnis der Alumni-E-Mail-Domains. Es dient als zentrale Anlaufstelle für alle Informationen rund um Alumni-E-Mails.
 
-### Herkömmliche Lösungen reichen nicht aus {#traditional-solutions-fall-short}
+### Traditionelle Lösungen reichen nicht aus {#traditional-solutions-fall-short}
 
 Herkömmliche E-Mail-Systeme weisen mehrere Einschränkungen auf, wenn sie auf die E-Mail-Anforderungen von Alumni angewendet werden:
 
@@ -111,7 +111,7 @@ Herkömmliche E-Mail-Systeme weisen mehrere Einschränkungen auf, wenn sie auf d
 * **Eingeschränkte Flexibilität**: Starre Systeme können sich nicht an die besonderen Anforderungen der E-Mail-Weiterleitung von Alumni anpassen.
 * **Datenschutzprobleme**: Viele Anbieter scannen E-Mail-Inhalte zu Werbezwecken.
 
-Eine Quora-Diskussion über die Wartung von Universitäts-E-Mails zeigt, dass Sicherheitsbedenken ein Hauptgrund dafür sind, dass Universitäten die E-Mail-Adressen von Alumni beschränken oder löschen, da ungenutzte Konten anfällig für Hackerangriffe und Identitätsdiebstahl sein können ([Quora, 2011](https://www.quora.com/Is-there-any-cost-for-a-college-or-university-to-maintain-edu-e-mail-addresses)).
+Eine Quora-Diskussion zur E-Mail-Wartung an Universitäten zeigt, dass Sicherheitsbedenken ein Hauptgrund dafür sind, dass Universitäten die E-Mail-Adressen von Alumni beschränken oder löschen, da ungenutzte Konten anfällig für Hackerangriffe und Identitätsdiebstahl sein können ([Quora, 2011](https://www.quora.com/Is-there-any-cost-for-a-college-or-university-to-maintain-edu-e-mail-addresses)).
 
 ### Die Lösung zum Weiterleiten von E-Mails {#the-forward-email-solution}
 
@@ -123,7 +123,7 @@ Unser Ansatz begegnet diesen Herausforderungen durch ein grundlegend anderes Mod
 * Datenschutzorientiertes Design ohne Inhaltsprüfung
 * Spezialfunktionen für das Identitätsmanagement von Universitäten
 
-## Technische Umsetzung: So funktioniert es {#technical-implementation-how-it-works}
+## Technische Implementierung: So funktioniert es {#technical-implementation-how-it-works}
 
 Unsere Lösung nutzt eine ausgeklügelte und dennoch elegant einfache technische Architektur, um eine zuverlässige und sichere E-Mail-Weiterleitung im großen Maßstab zu ermöglichen.
 
@@ -173,15 +173,15 @@ const response = await fetch('https://forwardemail.net/api/v1/domains/example.ed
 Eine korrekte DNS-Konfiguration ist für die E-Mail-Zustellung entscheidend. Unser Team unterstützt Sie bei:
 
 * [DNS](https://en.wikipedia.org/wiki/Domain_Name_System)-Konfiguration inklusive MX-Einträgen
-* Umfassende Implementierung der E-Mail-Sicherheit mit unserem Open-Source-Paket [Mailauth](https://www.npmjs.com/package/mailauth), einem Schweizer Taschenmesser für die E-Mail-Authentifizierung. Es umfasst:
+* Umfassende Implementierung der E-Mail-Sicherheit mit unserem Open-Source-Paket [Mailauth](https://www.npmjs.com/package/mailauth), einem Allroundtalent für die E-Mail-Authentifizierung. Es umfasst:
 * [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework) (Sender Policy Framework) zur Verhinderung von E-Mail-Spoofing
 * [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail) (DomainKeys Identified Mail) zur E-Mail-Authentifizierung
-* [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Domänenbasierte Nachrichtenauthentifizierung, Reporting & Konformität) zur Richtliniendurchsetzung
+* [DMARC](https://en.wikipedia.org/wiki/Email_authentication) (Domainbasierte Nachrichtenauthentifizierung, Reporting & Konformität) zur Richtliniendurchsetzung
 * [MTA-STS](https://en.wikipedia.org/wiki/Opportunistic_TLS) (SMTP MTA Strict Transport Security) zur Durchsetzung der TLS-Verschlüsselung
-* [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Authenticated Received Chain) zur Aufrechterhaltung der Authentifizierung bei Nachrichtenweiterleitung
+* [ARC](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail#Authenticated_Received_Chain) (Authenticated Received Chain) zur Aufrechterhaltung der Authentifizierung bei Nachrichtenweiterleitungen
 * [SRS](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) (Sender Rewriting Scheme) zur Aufrechterhaltung der SPF-Validierung während der Weiterleitung
-* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Markenindikatoren zur Nachrichtenidentifizierung) für die Logoanzeige in unterstützenden E-Mail-Clients
-* DNS-TXT-Eintragsüberprüfung für den Domänenbesitz
+* [BIMI](https://en.wikipedia.org/wiki/Email_authentication) (Brand Indicators for Message Identification) zur Logoanzeige in unterstützenden E-Mails Kunden
+* DNS-TXT-Eintragsüberprüfung für Domaininhaber
 
 Das Paket `mailauth` (<http://npmjs.com/package/mailauth>) ist eine vollständig Open-Source-Lösung, die alle Aspekte der E-Mail-Authentifizierung in einer integrierten Bibliothek abdeckt. Im Gegensatz zu proprietären Lösungen gewährleistet dieser Ansatz Transparenz, regelmäßige Sicherheitsupdates und vollständige Kontrolle über den E-Mail-Authentifizierungsprozess.
 
@@ -195,7 +195,7 @@ Vor der vollständigen Bereitstellung führen wir strenge Tests durch:
 * Validierung der API-Integration
 * Benutzerakzeptanztests mit Alumni-Vertretern
 
-## Zeitplan für die Implementierung {#implementation-timeline}
+## Implementierungszeitplan {#implementation-timeline}
 
 ```mermaid
 gantt
@@ -303,7 +303,7 @@ Forward Email hat eine umfassende Lösung implementiert:
 * E-Mail-Weiterleitung für alle @cam.ac.uk-Alumni-Adressen
 * Individuell gestaltetes Portal für Alumni-Self-Service
 * API-Integration mit der Cambridge-Alumni-Datenbank
-* Umfassende E-Mail-Sicherheitsimplementierung
+* Umfassende Implementierung von E-Mail-Sicherheit
 
 ### Ergebnisse {#results}
 
@@ -315,7 +315,7 @@ Die Implementierung brachte erhebliche Vorteile:
 * Verbesserte Sicherheit durch moderne E-Mail-Authentifizierung
 * Positives Feedback von Alumni zur Systemnutzbarkeit
 
-## Vorteile für Hochschulen und Alumni {#benefits-for-universities-and-alumni}
+## Vorteile für Universitäten und Alumni {#benefits-for-universities-and-alumni}
 
 Unsere Lösung bietet sowohl den Institutionen als auch ihren Absolventen konkrete Vorteile.
 
@@ -333,13 +333,13 @@ Laut BulkSignature (2023) bieten E-Mail-Plattformen für Bildungseinrichtungen e
 
 * **Professionelle Identität**: Renommierte Universitäts-E-Mail-Adresse
 * **E-Mail-Kontinuität**: Weiterleitung an jede private E-Mail-Adresse
-* **Datenschutz**: Kein Scannen von Inhalten oder Data Mining
+* **Datenschutz**: Keine Inhaltsprüfung oder Datenauswertung
 * **Vereinfachte Verwaltung**: Einfache Empfängeraktualisierung
 * **Erhöhte Sicherheit**: Moderne E-Mail-Authentifizierung
 
 Eine Studie des International Journal of Education & Literacy Studies unterstreicht die Bedeutung einer angemessenen E-Mail-Kommunikation im akademischen Umfeld und weist darauf hin, dass E-Mail-Kompetenz sowohl für Studierende als auch für Alumni im beruflichen Kontext eine entscheidende Fähigkeit darstellt ([IJELS, 2021](https://files.eric.ed.gov/fulltext/EJ1319324.pdf)).
 
-### Adoptionsraten unter Alumni {#adoption-rates-among-alumni}
+### Akzeptanzraten unter Alumni {#adoption-rates-among-alumni}
 
 Universitäten berichten von hohen Akzeptanz- und Zufriedenheitsraten in ihren Alumni-Gemeinschaften.
 
@@ -362,9 +362,9 @@ Unsere Lösung umfasst mehrere Sicherheitsebenen:
 * Transparenter Open-Source-Code zur Sicherheitsüberprüfung
 
 > \[!WARNING]
-> Many email providers scan email content for advertising purposes or to train AI models. This practice raises serious privacy concerns, especially for professional and academic communications. Forward Email never scans email content and processes all emails in-memory to ensure complete privacy.
+> Viele E-Mail-Anbieter scannen E-Mail-Inhalte zu Werbezwecken oder zum Trainieren von KI-Modellen. Diese Vorgehensweise wirft ernsthafte Datenschutzbedenken auf, insbesondere bei beruflicher und akademischer Kommunikation. Forward Email scannt niemals E-Mail-Inhalte und verarbeitet alle E-Mails im Speicher, um absolute Vertraulichkeit zu gewährleisten.
 
-### Compliance-Rahmenwerk {#compliance-framework}
+### Compliance-Framework {#compliance-framework}
 
 Wir halten uns strikt an die geltenden Vorschriften:
 
@@ -399,4 +399,4 @@ flowchart LR
     A -->|SSO Authentication| F
 ```
 
-Universitäten, die mehr darüber erfahren möchten, wie Forward Email ihre Alumni-E-Mail-Dienste umgestalten kann, können sich unter <support@forwardemail.net> an unser Team wenden oder [forwardemail.net](https://forwardemail.net) besuchen, um mehr über unsere Unternehmenslösungen zu erfahren.
+Universitäten, die mehr darüber erfahren möchten, wie Forward Email ihre E-Mail-Dienste für Alumni umgestalten kann, können sich unter <support@forwardemail.net> an unser Team wenden oder [forwardemail.net](https://forwardemail.net) besuchen, um mehr über unsere Unternehmenslösungen zu erfahren.

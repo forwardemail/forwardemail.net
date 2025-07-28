@@ -14,7 +14,7 @@
   * [Traitement des tâches en arrière-plan : Bree pour la fiabilité de la production](#background-job-processing-bree-for-production-reliability)
   * [Gestion des erreurs : @hapi/boom pour la fiabilité de la production](#error-handling-hapiboom-for-production-reliability)
 * [Comment surveiller les applications Node.js en production](#how-to-monitor-nodejs-applications-in-production)
-  * [Surveillance de la production Node.js au niveau du système](#system-level-nodejs-production-monitoring)
+  * [Surveillance de la production Node.js au niveau système](#system-level-nodejs-production-monitoring)
   * [Surveillance au niveau des applications pour la production Node.js](#application-level-monitoring-for-nodejs-production)
   * [Surveillance spécifique à l'application](#application-specific-monitoring)
 * [Surveillance de la production Node.js avec les contrôles de santé PM2](#nodejs-production-monitoring-with-pm2-health-checks)
@@ -69,14 +69,14 @@ Chez Forward Email, nous avons passé des années à perfectionner la configurat
 Lors de la migration des processeurs Intel vers AMD Ryzen, nous avons obtenu une amélioration des performances de **573 %** dans nos applications Node.js. Il ne s'agissait pas d'une simple optimisation mineure : elle a fondamentalement transformé les performances de nos applications Node.js en production et démontre l'importance de l'optimisation des performances monocœur pour toute application Node.js.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Pour les bonnes pratiques de déploiement en production de Node.js, le choix du matériel est crucial. Nous avons spécifiquement choisi l'hébergement DataPacket pour sa disponibilité sur AMD Ryzen, car les performances monocœur sont cruciales pour les applications Node.js, l'exécution JavaScript étant monothread.
 
 ### Pourquoi l'optimisation des performances monocœur est importante pour Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Notre migration d'Intel vers AMD Ryzen a abouti à :
 
-* **Amélioration des performances de 573 %** dans le traitement des requêtes (documentée dans [Problème GitHub de notre page d'état #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **Délai de traitement éliminé** pour des réponses quasi instantanées (mentionné dans [Problème GitHub #298](https://github.com/forwardemail/forwardemail.net/issues/298))
+* **Amélioration des performances de 573 %** dans le traitement des requêtes (documentée dans [Problème GitHub #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **Suppression des délais de traitement** pour des réponses quasi instantanées (mentionné dans [Problème GitHub #298](https://github.com/forwardemail/forwardemail.net/issues/298))
 * **Meilleur rapport prix/performances** pour les environnements de production Node.js
 * **Temps de réponse améliorés** sur tous nos points de terminaison applicatifs
 
@@ -86,14 +86,14 @@ L'amélioration des performances a été si significative que nous considérons 
 
 Pour plus de détails sur nos choix d'infrastructure, consultez :
 
-* [Meilleur service de transfert d'e-mails]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Comparaisons de performances)
+* [Meilleur service de transfert d'e-mails]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - Comparaisons des performances)
 * [Solution auto-hébergée](https://forwardemail.net/blog/docs/self-hosted-solution) - Recommandations matérielles
 
 ## Configuration de l'environnement de production Node.js : notre pile technologique {#nodejs-production-environment-setup-our-technology-stack}
 
 Nos bonnes pratiques de déploiement Node.js en production reposent sur des choix technologiques réfléchis, fruit de nombreuses années d'expérience en production. Voici ce que nous utilisons et pourquoi ces choix s'appliquent à toute application Node.js :
 
-Gestionnaire de paquets : pnpm pour l'efficacité de la production {#package-manager-pnpm-for-production-efficiency}
+Gestionnaire de paquets ### : pnpm pour l'efficacité de la production {#package-manager-pnpm-for-production-efficiency}
 
 **Ce que nous utilisons :** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (version épinglée)
 
@@ -105,7 +105,7 @@ Nous avons choisi pnpm plutôt que npm et yarn pour la configuration de notre en
 * **Meilleures performances** dans les déploiements de production
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Dans le cadre de nos bonnes pratiques de déploiement de production Node.js, nous attribuons des versions exactes d'outils critiques comme pnpm afin de garantir un comportement cohérent dans tous les environnements et sur les machines des membres de l'équipe.
 
 **Détails de mise en œuvre :**
 
@@ -132,7 +132,7 @@ Ces modèles s'appliquent que vous créiez des API REST, des serveurs GraphQL, d
 
 ### Traitement des tâches en arrière-plan : Bree pour la fiabilité de la production {#background-job-processing-bree-for-production-reliability}
 
-**Ce que nous utilisons :** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) planificateur
+**Ce que nous utilisons :** planificateur [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 Nous avons créé et maintenons Bree car les planificateurs de tâches existants ne répondaient pas à nos besoins en matière de prise en charge des threads de travail et de fonctionnalités JavaScript modernes dans les environnements Node.js de production. Ce problème s'applique à toute application Node.js nécessitant un traitement en arrière-plan, des tâches planifiées ou des threads de travail.
 
@@ -143,7 +143,7 @@ Nous avons créé et maintenons Bree car les planificateurs de tâches existants
 * [Travail de contrôle de santé PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 * [Mise en œuvre du travail de nettoyage](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### Gestion des erreurs : @hapi/boom pour la fiabilité de la production {#error-handling-hapiboom-for-production-reliability}
+Gestion des erreurs ### : @hapi/boom pour la fiabilité de la production {#error-handling-hapiboom-for-production-reliability}
 
 **Ce que nous utilisons :** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
@@ -172,7 +172,7 @@ Nos seuils de surveillance de la production (à partir de notre code de producti
 * **Seuil d'avertissement d'utilisation du disque à 75 %**
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Ces seuils fonctionnent pour notre configuration matérielle spécifique. Lors de la mise en œuvre de la surveillance de production Node.js, examinez notre implémentation de monitor-server.js pour comprendre la logique exacte et adapter les valeurs à votre configuration.
 
 ### Surveillance au niveau de l'application pour la production Node.js {#application-level-monitoring-for-nodejs-production}
 
@@ -217,7 +217,7 @@ Notre surveillance de production Node.js avec contrôles de santé PM2 comprend�
 * **Évite les boucles de redémarrage** grâce à des contrôles d'intégrité intelligents
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Pour les bonnes pratiques de déploiement en production de Node.js, nous exigeons un temps de disponibilité d'au moins 15 minutes avant de considérer un processus comme sain afin d'éviter les boucles de redémarrage. Cela évite les pannes en cascade lorsque les processus rencontrent des problèmes de mémoire ou d'autres problèmes.
 
 ### Notre configuration de production PM2 {#our-pm2-production-configuration}
 
@@ -230,7 +230,7 @@ Notre surveillance de production Node.js avec contrôles de santé PM2 comprend�
 
 Ces modèles s'appliquent que vous exécutiez des applications Express, des serveurs Koa, des API GraphQL ou toute autre application Node.js.
 
-### Déploiement automatisé PM2 {#automated-pm2-deployment}
+### Déploiement PM2 automatisé {#automated-pm2-deployment}
 
 **Déploiement PM2 :** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
@@ -259,7 +259,7 @@ Ce modèle fonctionne pour n'importe quelle application Node.js, que vous créie
 
 Notre enregistreur utilise `isCodeBug` pour déterminer les niveaux d'alerte et la rédaction des champs, garantissant que nous sommes informés des problèmes réels tout en filtrant le bruit dans notre environnement de production Node.js.
 
-### Contenu associé {#related-content-1}
+### Contenu associé à {#related-content-1}
 
 En savoir plus sur nos modèles de gestion des erreurs :
 
@@ -274,11 +274,11 @@ Nous utilisons des outils de profilage avancés pour analyser les snapshots de t
 
 **Outils que nous recommandons :**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Pour générer des instantanés de tas et des profils de processeur
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - Pour analyser les profils de processeur et les instantanés de tas
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Pour générer des instantanés de tas et des profils CPU
+* [`cpupro`](https://github.com/discoveryjs/cpupro) - Pour analyser les profils CPU et les instantanés de tas
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> Nous utilisons conjointement v8-profiler-next et cpupro pour créer un workflow complet de débogage des performances pour nos applications Node.js. Cette combinaison nous aide à identifier les fuites de mémoire, les goulots d'étranglement des performances et à optimiser notre code de production.
 
 ### Comment nous mettons en œuvre l'analyse des instantanés de tas {#how-we-implement-heap-snapshot-analysis}
 
@@ -301,7 +301,7 @@ Notre surveillance de la production inclut la génération automatique d'instant
 * [Travaux de nettoyage](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Conservation et nettoyage des snapshots
 * [Intégration du logger](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Journalisation des performances
 
-### Implémentation recommandée pour votre application Node.js {#recommended-implementation-for-your-nodejs-application}
+Implémentation recommandée ### pour votre application Node.js {#recommended-implementation-for-your-nodejs-application}
 
 **Pour l'analyse des instantanés de tas :**
 
@@ -319,7 +319,7 @@ Notre surveillance de la production inclut la génération automatique d'instant
 4. **Surveiller les améliorations de performances avant/après**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> La génération d'instantanés de tas et de profils CPU peut impacter les performances. Nous recommandons de limiter les performances et d'activer le profilage uniquement lors de l'analyse de problèmes spécifiques ou pendant les périodes de maintenance.
 
 ### Intégration avec notre surveillance de production {#integration-with-our-production-monitoring}
 
@@ -348,7 +348,7 @@ Nos principales mesures de sécurité pour les environnements de production Node
 * **Réglage des paramètres du noyau** pour la sécurité et les performances
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Lors de la mise en œuvre des bonnes pratiques de déploiement en production de Node.js, la désactivation du swap peut entraîner des arrêts prématurés par manque de mémoire si votre application dépasse la RAM disponible. Nous surveillons attentivement l'utilisation de la mémoire et dimensionnons nos serveurs en conséquence.
 
 ### Sécurité des applications pour les applications Node.js {#application-security-for-nodejs-applications}
 
@@ -395,7 +395,7 @@ Nous utilisons SQLite pour les données spécifiques à l'utilisateur dans nos a
 
 Ce modèle fonctionne bien pour les applications SaaS, les systèmes multi-locataires ou toute application Node.js nécessitant une isolation des données.
 
-### Implémentation de MongoDB pour la production Node.js {#mongodb-implementation-for-nodejs-production}
+### Implémentation MongoDB pour la production Node.js {#mongodb-implementation-for-nodejs-production}
 
 **Ce que nous utilisons :**
 
@@ -415,7 +415,7 @@ Nous utilisons MongoDB pour les données d'application dans notre environnement 
 * **Langage de requête enrichi**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Notre approche hybride est optimisée pour notre cas d'utilisation spécifique. Étudiez nos modèles d'utilisation de base de données réels dans le code source pour déterminer si cette approche répond aux besoins de votre application Node.js.
 
 ## Traitement des tâches d'arrière-plan de production Node.js {#nodejs-production-background-job-processing}
 
@@ -427,7 +427,7 @@ Nous avons construit notre architecture de tâches d'arrière-plan autour de Bre
 
 **Notre déploiement Ansible :** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
-Exemples de tâches de production ### {#production-job-examples}
+### Exemples de tâches de production {#production-job-examples}
 
 **Surveillance de la santé :** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
@@ -442,7 +442,7 @@ Ces modèles s'appliquent à toute application Node.js qui a besoin de :
 * Surveillance et maintenance de l'état de santé
 * Utilisation des threads de travail pour les tâches gourmandes en ressources processeur
 
-### Nos modèles de planification des tâches pour la production Node.js {#our-job-scheduling-patterns-for-nodejs-production}
+### Nos modèles de planification de tâches pour la production Node.js {#our-job-scheduling-patterns-for-nodejs-production}
 
 Étudiez nos modèles réels de planification des tâches dans notre répertoire d'emplois pour comprendre :
 
@@ -454,7 +454,7 @@ Ces modèles s'appliquent à toute application Node.js qui a besoin de :
 
 Nous mettons en œuvre une maintenance proactive pour prévenir les problèmes courants de production de Node.js. Ces modèles s'appliquent à toutes les applications Node.js :
 
-### Notre mise en œuvre du nettoyage {#our-cleanup-implementation}
+### Notre implémentation de nettoyage {#our-cleanup-implementation}
 
 **Source :** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
@@ -483,7 +483,7 @@ Ces modèles s'appliquent à toute application Node.js qui génère des fichiers
 * [Déploiement de l'environnement](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/env.yml)
 * [Gestion des clés de déploiement](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
 
-Guide d'implémentation du déploiement de production Node.js {#nodejs-production-deployment-implementation-guide}
+## Guide d'implémentation du déploiement de production Node.js {#nodejs-production-deployment-implementation-guide}
 
 ### Étudiez notre code actuel pour les meilleures pratiques de production {#study-our-actual-code-for-production-best-practices}
 
@@ -521,7 +521,7 @@ Guide d'implémentation du déploiement de production Node.js {#nodejs-productio
 * [Étude de cas canonique Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * [Transfert de courrier électronique des anciens élèves](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 
-Conclusion : Bonnes pratiques de déploiement en production de Node.js {#conclusion-nodejs-production-deployment-best-practices}
+Conclusion : bonnes pratiques de déploiement en production Node.js {#conclusion-nodejs-production-deployment-best-practices}
 
 Notre infrastructure de production Node.js démontre que les applications Node.js peuvent atteindre une fiabilité de niveau entreprise grâce à :
 
@@ -556,7 +556,7 @@ Notre infrastructure de production Node.js démontre que les applications Node.j
 * [serveur IMAP](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [serveur POP3](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-### Notre infrastructure Automatisation {#our-infrastructure-automation}
+### Notre automatisation de l'infrastructure {#our-infrastructure-automation}
 
 * [Tous nos playbooks Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
 * [Renforcement de la sécurité](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)

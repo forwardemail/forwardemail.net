@@ -7,7 +7,7 @@
 
 ## Installation og krav {#install-and-requirements}
 
-Du skal installere `@react-email/render` og `nodemailer` npm-afhængigheder:
+Du skal installere `@react-email/render` og `nodemailer` npm-afhængighederne:
 
 ```sh
 npm install @react-email/render nodemailer
@@ -36,7 +36,7 @@ export function Email(props) {
 
 I dette eksempel bruger vi biblioteket **[Nodemailer](https://github.com/nodemailer/nodemailer)** og dets officielle sponsor **[Videresend e-mail](https://forwardemail.net)** til at sende og forhåndsvise udgående post.
 
-Du skal <strong class="text-success"><i class="fa fa-key"></i> generere en adgangskode</strong> for at sende udgående e-mail – følg venligst vores **[Send e-mail med brugerdefineret domæne SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
+Du skal <strong class="text-success"><i class="fa fa-key"></i>Generere en adgangskode</strong> for at sende udgående e-mail – følg venligst vores **[Send e-mail med brugerdefineret domæne SMTP-guide](/guides/send-email-with-custom-domain-smtp)**.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

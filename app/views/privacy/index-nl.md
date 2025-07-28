@@ -11,13 +11,13 @@
 * [Informatie verwijderen](#information-removal)
 * [Aanvullende openbaarmakingen](#additional-disclosures)
 
-Vrijwaring ##
+## Vrijwaring {#disclaimer}
 
-Raadpleeg onze [Voorwaarden](/terms) aangezien deze op de hele site van toepassing is.
+Raadpleeg onze [Voorwaarden](/terms) aangezien deze sitebreed van toepassing is.
 
 ## Informatie niet verzameld {#information-not-collected}
 
-**Met uitzondering van [fouten](/faq#do-you-store-error-logs), [uitgaande SMTP-e-mails](/faq#do-you-support-sending-email-with-smtp) en/of wanneer spam of kwaadaardige activiteit wordt gedetecteerd (bijvoorbeeld voor snelheidsbeperking):**
+**Met uitzondering van [fouten](/faq#do-you-store-error-logs), [uitgaande SMTP-e-mails](/faq#do-you-support-sending-email-with-smtp) en/of wanneer spam of schadelijke activiteit wordt gedetecteerd (bijvoorbeeld voor snelheidsbeperking):**
 
 * We slaan geen doorgestuurde e-mails op in schijfopslag of databases.
 * We slaan geen metadata over e-mails op in schijfopslag of databases.
@@ -36,19 +36,19 @@ Voor transparantie kunt u op elk moment <a href="https://github.com/forwardemail
 * Back-ups van uw IMAP/POP3/CalDAV/CardDAV-opslag zijn versleuteld in rust, versleuteld tijdens verzending en opgeslagen op [Cloudflare R2](https://www.cloudflare.com/developer-platform/r2/).
 * We slaan een cookie op tijdens een sessie voor uw websiteverkeer.
 * We slaan het e-mailadres op dat u ons verstrekt. * We bewaren uw domeinnamen, aliassen en configuraties die u ons verstrekt.
-* We bewaren `4xx` en `5xx` SMTP-responscode [foutlogboeken](/faq#do-you-store-error-logs) gedurende 7 dagen.
+* We bewaren de SMTP-responscode `4xx` en `5xx` [foutlogboeken](/faq#do-you-store-error-logs) gedurende 7 dagen.
 * We bewaren [uitgaande SMTP-e-mails](/faq#do-you-support-sending-email-with-smtp) gedurende \~30 dagen.
-* Deze lengte varieert op basis van de "Date"-header; we staan toe dat e-mails in de toekomst worden verzonden als er een toekomstige "Date"-header bestaat. * **Houd er rekening mee dat zodra een e-mail succesvol is afgeleverd of er permanente fouten zijn opgetreden, we de berichttekst zullen redigeren en verwijderen.**
-* Als u wilt dat de berichttekst van uw uitgaande SMTP-e-mail langer wordt bewaard dan de standaardperiode van 0 dagen (na succesvolle aflevering of permanente fouten), ga dan naar Geavanceerde instellingen voor uw domein en voer een waarde in tussen `0` en `30`.
-* Sommige gebruikers gebruiken graag de previewfunctie [Mijn account > E-mails](/my-account/emails) om te zien hoe hun e-mails worden weergegeven. Daarom ondersteunen we een configureerbare bewaartermijn.
-* Houd er rekening mee dat we ook [OpenPGP/E2EE](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) ondersteunen.
-* Alle aanvullende informatie die u ons vrijwillig verstrekt, zoals opmerkingen of vragen die u per e-mail of op onze <a href="/help">help</a>-pagina hebt ingediend.
+* Deze lengte varieert op basis van de "Date"-header; we staan immers toe dat e-mails in de toekomst worden verzonden als er een toekomstige "Date"-header bestaat.
+* **Houd er rekening mee dat zodra een e-mail succesvol is afgeleverd of er permanente fouten zijn opgetreden, we de berichttekst zullen redigeren en verwijderen.**
+* Als u wilt dat de berichttekst van uw uitgaande SMTP-e-mail langer wordt bewaard dan de standaardperiode van 0 dagen (na succesvolle aflevering of permanente fout), ga dan naar Geavanceerde instellingen voor uw domein en voer een waarde in tussen `0` en `30`. * Sommige gebruikers vinden het prettig om de previewfunctie van [Mijn account > E-mails](/my-account/emails) te gebruiken om te zien hoe hun e-mails worden weergegeven. Daarom ondersteunen we een configureerbare bewaartermijn.
+* Houd er rekening mee dat we ook __PROTECTED_LINK_30__0 ondersteunen.
+* Alle aanvullende informatie die u ons vrijwillig verstrekt, zoals opmerkingen of vragen die u per e-mail of op onze <a href="/help">help</a>-pagina indient.
 
 ## Gedeelde informatie {#information-shared}
 
 Wij delen uw gegevens niet met derden. We maken ook geen gebruik van analyse- of telemetriesoftware van derden.
 
-Het kan zijn dat we aan een door de rechtbank bevolen juridisch verzoek moeten voldoen en dat zullen we ook doen (houd er echter rekening mee dat [Wij verzamelen geen informatie zoals hierboven vermeld onder "Informatie niet verzameld"](#information-not-collected), dus we kunnen het in eerste instantie niet verstrekken).
+Het kan zijn dat we aan een verzoek van de rechtbank moeten voldoen en dat zullen we ook doen (houd er echter rekening mee dat [Wij verzamelen geen informatie zoals hierboven vermeld onder "Informatie niet verzameld"](#information-not-collected), waardoor we het in eerste instantie niet kunnen verstrekken).
 
 ## Informatie verwijderen {#information-removal}
 

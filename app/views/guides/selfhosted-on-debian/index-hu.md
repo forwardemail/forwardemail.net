@@ -1,4 +1,4 @@
-# E-mail továbbítása saját tárhelyszolgáltatáshoz – telepítési útmutató Debianhoz {#forward-email-self-hosting-installation-guide-for-debian}
+# E-mail továbbítása saját tárhelyszolgáltatáshoz Telepítési útmutató Debianhoz {#forward-email-self-hosting-installation-guide-for-debian}
 
 ## Tartalomjegyzék {#table-of-contents}
 
@@ -41,7 +41,7 @@
 * [Hibaelhárítás](#troubleshooting)
   * [Debian-specifikus problémák](#debian-specific-issues)
   * [Gyakori problémák](#common-issues)
-  * [Segítség kérése](#getting-help)
+  * [Segítségkérés](#getting-help)
 * [Biztonsági bevált gyakorlatok](#security-best-practices)
 * [Következtetés](#conclusion)
 
@@ -133,7 +133,7 @@ apt-get install -y \
     software-properties-common
 ```
 
-### 4. lépés: A Snapd telepítése és konfigurálása {#step-4-install-and-configure-snapd}
+### 4. lépés: A Snapd {#step-4-install-and-configure-snapd}} telepítése és konfigurálása
 
 A Debian alapértelmezés szerint nem tartalmazza a snapd-t, ezért telepítenünk és konfigurálnunk kell:
 
@@ -155,7 +155,7 @@ sleep 10
 snap version
 ```
 
-### 5. lépés: Telepítse a Snap csomagokat {#step-5-install-snap-packages}
+### 5. lépés: Snap csomagok telepítése {#step-5-install-snap-packages}
 
 Az AWS CLI és a Certbot telepítése snap-en keresztül:
 
@@ -432,7 +432,7 @@ update_env_file "SMTP_TRANSPORT_PASS" "$(openssl rand -base64 32)"
 echo "✅ All encryption keys generated successfully"
 ```
 
-### 14. lépés: SSL-útvonalak frissítése a(z) {#step-14-update-ssl-paths-in-configuration} konfigurációban
+### 14. lépés: SSL-útvonalak frissítése a {#step-14-update-ssl-paths-in-configuration}} konfigurációban
 
 Konfigurálja az SSL tanúsítványok elérési útjait a környezeti fájlban:
 
@@ -469,7 +469,7 @@ echo "You'll need these to access the web interface after installation."
 echo ""
 ```
 
-### 16. lépés: Telepítés a Docker Compose segítségével {#step-16-deploy-with-docker-compose}
+### 16. lépés: Telepítés a Docker Compose {#step-16-deploy-with-docker-compose} használatával
 
 Indítsa el az összes e-mail továbbítási szolgáltatást:
 
@@ -537,13 +537,13 @@ ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 
 A következő DNS-rekordokat kell konfigurálnia a domainjéhez:
 
-#### MX rekord {#mx-record}
+#### MX rekord {#mx-record}}
 
 ```
 @ MX 10 mx.yourdomain.com
 ```
 
-#### A-rekordok {#a-records}
+#### A Rekordok {#a-records}
 
 ```
 @ A YOUR_SERVER_IP
@@ -562,7 +562,7 @@ carddav A YOUR_SERVER_IP
 @ TXT "v=spf1 mx ~all"
 ```
 
-#### DKIM-rekord {#dkim-record}
+#### DKIM rekord {#dkim-record}
 
 Szerezd meg a DKIM nyilvános kulcsodat:
 
@@ -577,7 +577,7 @@ DKIM DNS-rekord létrehozása:
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-#### DMARC-rekord {#dmarc-record}
+#### DMARC rekord {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -693,7 +693,7 @@ nslookup google.com
 
 ## Karbantartás és felügyelet {#maintenance-and-monitoring}
 
-### Naplózási helyek {#log-locations}
+### Naplóhelyek {#log-locations}
 
 * **Docker Compose naplók**: Használja a telepítésnek megfelelő docker compose parancsot
 * **Rendszernaplók**: `/var/log/syslog`
@@ -709,7 +709,7 @@ nslookup google.com
 4. **Rendszercsomagok frissítése**: `apt update && apt upgrade`
 5. **Snapd figyelése**: `snap list` és `snap refresh`
 
-### Tanúsítványmegújítás {#certificate-renewal}
+### Tanúsítvány megújítása {#certificate-renewal}
 
 A tanúsítványoknak automatikusan megújulniuk kellene, de szükség esetén manuálisan is megújíthatja őket:
 
@@ -794,13 +794,13 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 #### 2. A tanúsítvány létrehozása sikertelen {#2-certificate-generation-fails}
 
-* Győződjön meg arról, hogy a 80-as és 443-as portok elérhetők.* Ellenőrizze, hogy a DNS-rekordok a szerverére mutatnak-e.* Ellenőrizze a tűzfal beállításait a `ufw status` kóddal.
+* Győződjön meg arról, hogy a 80-as és 443-as portok elérhetők.* Ellenőrizze, hogy a DNS-rekordok a szerverére mutatnak-e.* Ellenőrizze a tűzfal beállításait a `ufw status` paraméterrel.
 
 #### 3. E-mail kézbesítési problémák {#3-email-delivery-issues}
 
 * Ellenőrizze az MX rekordok helyességét.* Ellenőrizze az SPF, DKIM és DMARC rekordokat.* Győződjön meg arról, hogy a tárhelyszolgáltatója nem blokkolja a 25-ös portot.
 
-### Segítségkérés {#getting-help}
+### Segítség kérése {#getting-help}
 
 * **Dokumentáció**: <https://forwardemail.net/self-hosted>
 * **GitHub problémák**: <https://github.com/forwardemail/forwardemail.net/issues>
@@ -814,7 +814,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 4. **Erős jelszavak használata**: Erős jelszavak generálása minden fiókhoz
 5. **Fail2Ban engedélyezése**: A fokozott biztonság érdekében érdemes megfontolni a fail2ban telepítését
 6. **Rendszeres biztonsági auditok**: A konfiguráció rendszeres ellenőrzése
-7. **Snapd figyelése**: A snap csomagok naprakészen tartása a `snap refresh` kóddal
+7. **Snapd figyelése**: A snap csomagok naprakészen tartása a `snap refresh` paraméterrel
 
 ## Következtetés {#conclusion}
 

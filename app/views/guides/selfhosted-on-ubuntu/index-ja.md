@@ -1,4 +1,4 @@
-# Ubuntu 向けメール転送セルフホスティングインストールガイド {#forward-email-self-hosting-installation-guide-for-ubuntu}
+# メール転送 Ubuntu 向けセルフホスティングインストールガイド {#forward-email-self-hosting-installation-guide-for-ubuntu}
 
 ## 目次 {#table-of-contents}
 
@@ -221,7 +221,7 @@ echo "y" | ufw enable
 ufw status numbered
 ```
 
-### ステップ 8: 転送メールリポジトリのクローンを作成する {#step-8-clone-forward-email-repository}
+### ステップ8: 転送メールリポジトリのクローン作成 {#step-8-clone-forward-email-repository}
 
 転送メールのソースコードをダウンロードしてください:
 
@@ -306,7 +306,7 @@ update_env_file "AUTH_BASIC_ENABLED" "true"
 
 ### ステップ11: SSL証明書を生成する {#step-11-generate-ssl-certificates}
 
-#### オプション A: 手動 DNS チャレンジ (ほとんどのユーザーに推奨) {#option-a-manual-dns-challenge-recommended-for-most-users}
+#### オプションA: 手動DNSチャレンジ（ほとんどのユーザーに推奨）{#option-a-manual-dns-challenge-recommended-for-most-users}
 
 ```bash
 # Generate certificates using manual DNS challenge
@@ -357,7 +357,7 @@ cp /etc/letsencrypt/live/$DOMAIN*/* "$SELF_HOST_DIR/ssl/"
 ls -la "$SELF_HOST_DIR/ssl/"
 ```
 
-### ステップ12: 暗号化キーを生成する {#step-12-generate-encryption-keys}
+### ステップ12: 暗号化キーの生成 {#step-12-generate-encryption-keys}
 
 安全な操作に必要なさまざまな暗号化キーを作成します。
 
@@ -425,7 +425,7 @@ echo "You'll need these to access the web interface after installation."
 echo ""
 ```
 
-### ステップ15: Docker Compose でデプロイする {#step-15-deploy-with-docker-compose}
+### ステップ15: Docker Composeでデプロイする {#step-15-deploy-with-docker-compose}
 
 すべてのメール転送サービスを開始します。
 
@@ -467,7 +467,7 @@ curl -I https://$DOMAIN
 netstat -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-## インストール後の設定 {#post-installation-configuration}
+## インストール後の構成 {#post-installation-configuration}
 
 ### DNSレコードの設定 {#dns-records-setup}
 
@@ -521,7 +521,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ### 初回ログイン {#first-login}
 
-1. ウェブブラウザを開き、`https://yourdomain.com` に移動します。
+1. Webブラウザを開き、`https://yourdomain.com`に移動します。
 2. 先ほど保存した基本認証情報を入力します。
 3. 初期設定ウィザードを完了します。
 4. 最初のメールアカウントを作成します。
@@ -554,7 +554,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### バックアップ Cron ジョブを設定する {#set-up-backup-cron-jobs}
+### バックアップ Cron ジョブの設定 {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -571,7 +571,7 @@ chmod +x "$ROOT_DIR/self-hosting/scripts/backup-redis.sh"
 crontab -l
 ```
 
-## 自動更新設定 {#auto-update-configuration}
+## 自動更新構成 {#auto-update-configuration}
 
 Forward Email インストールの自動更新を設定します。
 
@@ -601,7 +601,7 @@ crontab -l
 2. **サービスステータスを確認**: `docker compose -f $DOCKER_COMPOSE_FILE ps`
 3. **ログを確認**: `docker compose -f $DOCKER_COMPOSE_FILE logs --tail=100`
 4. **システムパッケージを更新**: `apt update && apt upgrade`
-5. **証明書を更新**: 証明書は自動更新されますが、有効期限も監視します
+5. **証明書を更新**: 証明書は自動更新されますが、有効期限を監視します
 
 ### 証明書の更新 {#certificate-renewal}
 
@@ -632,7 +632,7 @@ systemctl status docker
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. 証明書生成に失敗する {#2-certificate-generation-fails}
+#### 2. 証明書の生成に失敗しました {#2-certificate-generation-fails}
 
 * ポート80と443にアクセスできることを確認してください
 * DNSレコードがサーバーを指していることを確認してください
@@ -648,7 +648,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 
 * ファイアウォール設定を確認してください: `ufw status`
 * SSL証明書を確認してください: `openssl x509 -in $SELF_HOST_DIR/ssl/fullchain.pem -text -noout`
-* ベーシック認証の認証情報を確認してください
+* 基本認証の認証情報を確認してください
 
 ### ヘルプの取得 {#getting-help}
 
@@ -675,4 +675,4 @@ Forward Emailのセルフホストインストールが完了し、Ubuntuで実�
 4. システムを定期的に監視する
 5. インストールを最新の状態に保つ
 
-追加の設定オプションと高度な機能については、<https://forwardemail.net/self-hosted#configuration>. にある公式のメール転送ドキュメントを参照してください。
+追加の設定オプションと高度な機能については、<https://forwardemail.net/self-hosted#configuration>.> にあるメール転送の公式ドキュメントを参照してください。

@@ -37,7 +37,7 @@
 * [Vedlikehold og overvåking](#maintenance-and-monitoring)
   * [Loggplasseringer](#log-locations)
   * [Regelmessige vedlikeholdsoppgaver](#regular-maintenance-tasks)
-  * [Sertifikatfornyelse](#certificate-renewal)
+  * [Fornyelse av sertifikat](#certificate-renewal)
 * [Feilsøking](#troubleshooting)
   * [Debian-spesifikke problemer](#debian-specific-issues)
   * [Vanlige problemer](#common-issues)
@@ -592,7 +592,7 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 
 ## Sikkerhetskopieringskonfigurasjon {#backup-configuration}
 
-### Konfigurer S3-kompatibel sikkerhetskopi {#set-up-s3-compatible-backup}
+### Konfigurer S3-kompatibel sikkerhetskopiering {#set-up-s3-compatible-backup}
 
 Konfigurer automatiserte sikkerhetskopier til S3-kompatibel lagring:
 
@@ -695,7 +695,7 @@ nslookup google.com
 
 ### Loggplasseringer {#log-locations}
 
-* **Docker Compose-logger**: Bruk riktig docker compose-kommando basert på installasjonen
+* **Docker Compose-logger**: Bruk riktig Docker Compose-kommando basert på installasjonen
 * **Systemlogger**: `/var/log/syslog`
 * **Sikkerhetskopieringslogger**: `/var/log/mongo-backup.log`, `/var/log/redis-backup.log`
 * **Automatisk oppdatering av logger**: `/var/log/autoupdate.log`
@@ -810,7 +810,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 * **GitHub-problemer**: <https://github.com/forwardemail/forwardemail.net/issues>
 * **Debian-dokumentasjon**: <https://www.debian.org/doc/>
 
-## Beste sikkerhetspraksis {#security-best-practices}
+## Beste praksis for sikkerhet {#security-best-practices}
 
 1. **Hold systemet oppdatert**: Oppdater Debian og pakker regelmessig
 2. **Overvåk logger**: Sett opp loggovervåking og varsling

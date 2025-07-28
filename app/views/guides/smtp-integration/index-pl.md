@@ -4,12 +4,12 @@
 
 * [Przedmowa](#foreword)
 * [Jak działa przetwarzanie SMTP usługi Forward Email](#how-forward-emails-smtp-processing-works)
-  * [Kolejka wiadomości e-mail i system ponawiania prób](#email-queue-and-retry-system)
+  * [System kolejkowania i ponawiania prób wysyłania wiadomości e-mail](#email-queue-and-retry-system)
   * [Zabezpieczony przed błędami dla niezawodności](#dummy-proofed-for-reliability)
 * [Integracja Node.js](#nodejs-integration)
-  * [Korzystanie z Nodemailer](#using-nodemailer)
+  * [Korzystanie z Nodemailera](#using-nodemailer)
   * [Korzystanie z Express.js](#using-expressjs)
-* [Integracja Pythona](#python-integration)
+* [Integracja z Pythonem](#python-integration)
   * [Korzystanie z smtplib](#using-smtplib)
   * [Korzystanie z Django](#using-django)
 * [Integracja PHP](#php-integration)
@@ -20,7 +20,7 @@
 * [Integracja Java](#java-integration)
   * [Korzystanie z interfejsu API poczty Java](#using-javamail-api)
 * [Konfiguracja klienta poczty e-mail](#email-client-configuration)
-  * [Ptak piorunowy](#thunderbird)
+  * [Thunderbird](#thunderbird)
   * [Poczta Apple](#apple-mail)
   * [Gmail (Wyślij pocztę jako)](#gmail-send-mail-as)
 * [Rozwiązywanie problemów](#troubleshooting)
@@ -31,37 +31,37 @@
 
 ## Przedmowa {#foreword}
 
-Ten przewodnik zawiera szczegółowe przykłady integracji z usługą SMTP Forward Email przy użyciu różnych języków programowania, struktur i klientów poczty e-mail. Nasza usługa SMTP została zaprojektowana tak, aby była niezawodna, bezpieczna i łatwa do zintegrowania z istniejącymi aplikacjami.
+Ten przewodnik zawiera szczegółowe przykłady integracji z usługą SMTP Forward Email przy użyciu różnych języków programowania, frameworków i klientów poczty e-mail. Nasza usługa SMTP została zaprojektowana tak, aby była niezawodna, bezpieczna i łatwa do zintegrowania z istniejącymi aplikacjami.
 
 ## Jak działa przetwarzanie SMTP usługi Forward Email {#how-forward-emails-smtp-processing-works}
 
-Zanim przejdziemy do przykładów integracji, ważne jest zrozumienie, w jaki sposób nasza usługa SMTP przetwarza wiadomości e-mail:
+Zanim przejdziemy do przykładów integracji, ważne jest, aby zrozumieć, w jaki sposób nasza usługa SMTP przetwarza wiadomości e-mail:
 
-### System kolejkowania i ponawiania wiadomości e-mail {#email-queue-and-retry-system}
+### Kolejka wiadomości e-mail i system ponawiania prób {#email-queue-and-retry-system}
 
 Kiedy wysyłasz wiadomość e-mail za pośrednictwem protokołu SMTP na nasze serwery:
 
-1. **Wstępne przetwarzanie**: Wiadomość e-mail jest weryfikowana, skanowana pod kątem złośliwego oprogramowania i sprawdzana pod kątem filtrów spamu.
+1. **Wstępne przetwarzanie**: Wiadomość e-mail jest weryfikowana, skanowana pod kątem złośliwego oprogramowania i sprawdzana pod kątem filtrów antyspamowych.
 2. **Inteligentne kolejkowanie**: Wiadomości e-mail są umieszczane w zaawansowanym systemie kolejkowania w celu dostarczenia.
 3. **Inteligentny mechanizm ponawiania prób**: Jeśli dostarczenie wiadomości e-mail tymczasowo się nie powiedzie, nasz system:
-* Przeanalizuje odpowiedź błędu za pomocą naszej funkcji `getBounceInfo`.
+* Przeanalizuje odpowiedź błędu za pomocą funkcji `getBounceInfo`.
 * Określi, czy problem jest tymczasowy (np. „spróbuj ponownie później”, „tymczasowo odroczony”), czy trwały (np. „użytkownik nieznany”).
 * W przypadku problemów tymczasowych oznaczy wiadomość e-mail do ponowienia.
-* W przypadku problemów trwałych wygeneruje powiadomienie o odesłaniu.
+* W przypadku problemów trwałych wygeneruje powiadomienie o niedostarczeniu.
 4. **5-dniowy okres ponawiania prób**: Ponawiamy próby dostarczenia wiadomości e-mail przez maksymalnie 5 dni (podobnie jak w przypadku standardów branżowych, takich jak Postfix), dając czas na rozwiązanie problemów tymczasowych.
-5. **Powiadomienia o statusie dostarczenia**: Nadawcy otrzymują powiadomienia o statusie swoich wiadomości e-mail (dostarczone, opóźnione, lub odbił się)
+5. **Powiadomienia o statusie dostarczenia**: Nadawcy otrzymują powiadomienia o statusie swoich wiadomości e-mail (dostarczone, opóźnione lub odesłane).
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> Po pomyślnym dostarczeniu, treść wiadomości e-mail SMTP wychodzących jest redagowana po konfigurowalnym okresie przechowywania (domyślnie 30 dni) ze względów bezpieczeństwa i prywatności. Pozostaje tylko komunikat zastępczy informujący o pomyślnym dostarczeniu.
 
-### Zabezpieczenie przed błędami dla zapewnienia niezawodności {#dummy-proofed-for-reliability}
+### Niezawodność zabezpieczona przed błędami {#dummy-proofed-for-reliability}
 
-Nasz system jest zaprojektowany tak, aby radzić sobie z różnymi przypadkami skrajnymi:
+Nasz system jest zaprojektowany tak, aby radzić sobie z różnymi przypadkami brzegowymi:
 
-* Jeśli zostanie wykryta lista bloków, e-mail zostanie automatycznie ponowiony
-* Jeśli wystąpią problemy z siecią, próba dostarczenia zostanie ponowiona
-* Jeśli skrzynka pocztowa odbiorcy jest pełna, system spróbuje ponownie później
-* Jeśli serwer odbiorczy jest tymczasowo niedostępny, będziemy próbować dalej
+* W przypadku wykrycia listy blokowanych wiadomości e-mail zostanie automatycznie ponowiona próba wysłania wiadomości.
+* W przypadku problemów z siecią, próba doręczenia zostanie ponowiona.
+* Jeśli skrzynka odbiorcza odbiorcy jest pełna, system spróbuje ponownie później.
+* Jeśli serwer odbiorczy jest tymczasowo niedostępny, będziemy kontynuować próbę.
 
 Takie podejście znacząco zwiększa wskaźnik doręczeń, zapewniając jednocześnie prywatność i bezpieczeństwo.
 
@@ -69,7 +69,7 @@ Takie podejście znacząco zwiększa wskaźnik doręczeń, zapewniając jednocze
 
 ### Korzystanie z Nodemailer {#using-nodemailer}
 
-[Nodemailer](https://nodemailer.com/) to popularny moduł umożliwiający wysyłanie wiadomości e-mail z aplikacji Node.js.
+[Nodemailer](https://nodemailer.com/) to popularny moduł służący do wysyłania wiadomości e-mail z aplikacji Node.js.
 
 ```javascript
 const nodemailer = require('nodemailer');
@@ -204,7 +204,7 @@ except Exception as e:
 
 ### Korzystanie z Django {#using-django}
 
-W przypadku aplikacji Django dodaj następujący kod do kodu `settings.py`:
+W przypadku aplikacji Django dodaj następujący kod do `settings.py`:
 
 ```python
 # Email settings
@@ -236,7 +236,7 @@ def send_email_view(request):
 
 ## Integracja PHP {#php-integration}
 
-### Korzystanie z PHPMailera {#using-phpmailer}
+### Korzystanie z PHPMailer {#using-phpmailer}
 
 ```php
 <?php
@@ -275,7 +275,7 @@ try {
 }
 ```
 
-### Używanie Laravel {#using-laravel}
+### Korzystanie z Laravel {#using-laravel}
 
 W przypadku aplikacji Laravel zaktualizuj plik `.env`:
 
@@ -290,7 +290,7 @@ MAIL_FROM_ADDRESS=your-username@your-domain.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-Następnie wyślij wiadomości e-mail, korzystając z fasady Mail Laravela:
+Następnie wyślij wiadomości e-mail korzystając z fasady Mail Laravela:
 
 ```php
 <?php
@@ -440,25 +440,25 @@ flowchart TD
     L --> M[Test and Create Account]
 ```
 
-1. Otwórz Thunderbirda i przejdź do Ustawień konta
-2. Kliknij „Akcje konta” i wybierz „Dodaj konto pocztowe”
-3. Wprowadź swoje imię, adres e-mail i hasło
+1. Otwórz Thunderbirda i przejdź do Ustawień konta.
+2. Kliknij „Akcje konta” i wybierz „Dodaj konto pocztowe”.
+3. Wprowadź swoje imię i nazwisko, adres e-mail i hasło.
 4. Kliknij „Konfiguracja ręczna” i wprowadź następujące dane:
-* Serwer przychodzący:
+* Serwer poczty przychodzącej:
 * IMAP: imap.forwardemail.net, Port: 993, SSL/TLS
 * POP3: pop3.forwardemail.net, Port: 995, SSL/TLS
-* Serwer wychodzący (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS
-* Uwierzytelnianie: Normalne hasło
-* Nazwa użytkownika: Twój pełny adres e-mail
-5. Kliknij „Test”, a następnie „Gotowe”
+* Serwer poczty wychodzącej (SMTP): smtp.forwardemail.net, Port: 465, SSL/TLS
+* Uwierzytelnianie: Zwykłe hasło.
+* Nazwa użytkownika: Twój pełny adres e-mail.
+5. Kliknij „Test”, a następnie „Gotowe”.
 
 ### Apple Mail {#apple-mail}
 
-1. Otwórz Mail i przejdź do Mail > Preferencje > Konta
+1. Otwórz aplikację Poczta i przejdź do Poczta > Preferencje > Konta
 2. Kliknij przycisk „+”, aby dodać nowe konto
 3. Wybierz „Inne konto pocztowe” i kliknij „Kontynuuj”
-4. Wprowadź swoje imię, adres e-mail i hasło, a następnie kliknij „Zaloguj się”
-5. Gdy automatyczna konfiguracja się nie powiedzie, wprowadź następujące dane:
+4. Wprowadź swoje imię i nazwisko, adres e-mail i hasło, a następnie kliknij „Zaloguj się”
+5. Jeśli automatyczna konfiguracja się nie powiedzie, wprowadź następujące dane:
 * Serwer poczty przychodzącej: imap.forwardemail.net (lub pop3.forwardemail.net dla POP3)
 * Serwer poczty wychodzącej: smtp.forwardemail.net
 * Nazwa użytkownika: Twój pełny adres e-mail
@@ -467,15 +467,15 @@ flowchart TD
 
 ### Gmail (Wyślij pocztę jako) {#gmail-send-mail-as}
 
-1. Otwórz Gmaila i przejdź do Ustawienia > Konta i import
-2. W obszarze „Wyślij pocztę jako” kliknij „Dodaj inny adres e-mail”
+1. Otwórz Gmaila i przejdź do Ustawienia > Konta i importowanie
+2. W sekcji „Wyślij jako” kliknij „Dodaj inny adres e-mail”
 3. Wprowadź swoje imię i nazwisko oraz adres e-mail, a następnie kliknij „Następny krok”
 4. Wprowadź następujące dane serwera SMTP:
 * Serwer SMTP: smtp.forwardemail.net
 * Port: 465
 * Nazwa użytkownika: Twój pełny adres e-mail
 * Hasło: Twoje hasło
-* Wybierz „Zabezpieczone połączenie przy użyciu protokołu SSL”
+* Wybierz „Bezpieczne połączenie SSL”
 5. Kliknij „Dodaj konto” i zweryfikuj swój adres e-mail
 
 ## Rozwiązywanie problemów {#troubleshooting}
@@ -487,27 +487,27 @@ flowchart TD
 * Upewnij się, że używasz prawidłowego portu (465 dla SSL/TLS)
 * Sprawdź, czy Twoje konto ma włączony dostęp SMTP
 
-2. **Limit czasu połączenia**
+2. **Przekroczenie limitu czasu połączenia**
 * Sprawdź połączenie internetowe
-* Sprawdź, czy ustawienia zapory nie blokują ruchu SMTP
+* Sprawdź, czy ustawienia zapory sieciowej nie blokują ruchu SMTP
 * Spróbuj użyć innego portu (587 z STARTTLS)
 
 3. **Wiadomość odrzucona**
 * Upewnij się, że adres „Od” jest zgodny z Twoim uwierzytelnionym adresem e-mail
-* Sprawdź, czy Twój adres IP jest na czarnej liście
-* Sprawdź, czy treść Twojej wiadomości nie uruchamia filtrów spamu
+* Sprawdź, czy Twój adres IP nie znajduje się na czarnej liście
+* Sprawdź, czy treść wiadomości nie uruchamia filtrów spamu
 
 4. **Błędy TLS/SSL**
-* Zaktualizuj swoją aplikację/bibliotekę, aby obsługiwała nowoczesne wersje TLS
-* Upewnij się, że certyfikaty CA Twojego systemu są aktualne
+* Zaktualizuj aplikację/bibliotekę, aby obsługiwała nowoczesne wersje TLS
+* Upewnij się, że certyfikaty CA systemu są aktualne
 * Wypróbuj jawny TLS zamiast ukrytego TLS
 
 ### Uzyskiwanie pomocy {#getting-help}
 
 Jeżeli natrafisz na problemy, które nie zostały tutaj omówione, prosimy:
 
-1. Sprawdź nasz [Strona FAQ](/faq), aby uzyskać odpowiedzi na często zadawane pytania
-2. Sprawdź nasz [wpis na blogu o dostarczaniu poczty e-mail](/blog/docs/best-email-forwarding-service), aby uzyskać szczegółowe informacje
+1. Sprawdź [Strona FAQ](/faq), aby uzyskać odpowiedzi na często zadawane pytania
+2. Sprawdź [wpis na blogu o dostarczaniu wiadomości e-mail](/blog/docs/best-email-forwarding-service), aby uzyskać szczegółowe informacje
 3. Skontaktuj się z naszym zespołem wsparcia pod adresem <support@forwardemail.net>
 
 ## Dodatkowe zasoby {#additional-resources}
@@ -517,8 +517,8 @@ Jeżeli natrafisz na problemy, które nie zostały tutaj omówione, prosimy:
 * [Przewodnik po najlepszych praktykach dotyczących poczty e-mail](/blog/docs/best-email-forwarding-service)
 * [Praktyki bezpieczeństwa](/security)
 
-## Wnioski {#conclusion}
+## Wniosek {#conclusion}
 
-Usługa SMTP Forward Email zapewnia niezawodny, bezpieczny i skoncentrowany na prywatności sposób wysyłania wiadomości e-mail z aplikacji i klientów poczty e-mail. Dzięki naszemu inteligentnemu systemowi kolejek, 5-dniowemu mechanizmowi ponawiania prób i kompleksowym powiadomieniom o statusie dostawy możesz mieć pewność, że Twoje wiadomości e-mail dotrą do celu.
+Usługa SMTP Forward Email zapewnia niezawodny, bezpieczny i zapewniający prywatność sposób wysyłania wiadomości e-mail z aplikacji i klientów pocztowych. Dzięki naszemu inteligentnemu systemowi kolejkowania, 5-dniowemu mechanizmowi ponawiania prób i kompleksowym powiadomieniom o statusie doręczenia możesz mieć pewność, że Twoje wiadomości dotrą do adresata.
 
-Jeśli potrzebujesz bardziej zaawansowanych zastosowań lub integracji niestandardowych, skontaktuj się z naszym zespołem wsparcia.
+W przypadku bardziej zaawansowanych przypadków użycia lub niestandardowych integracji skontaktuj się z naszym zespołem wsparcia.

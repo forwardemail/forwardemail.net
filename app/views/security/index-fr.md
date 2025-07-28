@@ -32,7 +32,7 @@
 
 Chez Forward Email, la sécurité est notre priorité absolue. Nous avons mis en place des mesures de sécurité complètes pour protéger vos communications par e-mail et vos données personnelles. Ce document décrit nos pratiques de sécurité et les mesures que nous prenons pour garantir la confidentialité, l'intégrité et la disponibilité de vos e-mails.
 
-## Sécurité de l'infrastructure {#infrastructure-security}
+## Sécurité des infrastructures {#infrastructure-security}
 
 ### Centres de données sécurisés {#secure-data-centers}
 
@@ -56,7 +56,7 @@ Nous mettons en œuvre plusieurs couches de sécurité réseau :
 * Protection par analyse des ports avec blocage automatique des activités suspectes
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Toutes les données en transit sont chiffrées à l'aide de TLS 1.2+ et de suites de chiffrement modernes.
 
 ## Sécurité des e-mails {#email-security}
 
@@ -69,14 +69,14 @@ Nous mettons en œuvre plusieurs couches de sécurité réseau :
 * **Protection complète** : Nous mettons en œuvre le chiffrement au repos, le chiffrement en mémoire et le chiffrement en transit
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Nous sommes le premier et le seul service de messagerie au monde à utiliser **[boîtes aux lettres SQLite résistantes aux quanta et chiffrées individuellement](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Authentification et autorisation {#authentication-and-authorization}
 
-* **Signature DKIM** : Tous les e-mails sortants sont signés avec DKIM
-* **SPF et DMARC** : Prise en charge complète de SPF et DMARC pour empêcher l'usurpation d'adresse e-mail
-* **MTA-STS** : Prise en charge de MTA-STS pour appliquer le chiffrement TLS
-* **Authentification multifacteur** : Disponible pour tous les accès aux comptes
+* **Signature DKIM** : Tous les e-mails sortants sont signés avec DKIM
+* **SPF et DMARC** : Prise en charge complète de SPF et DMARC pour empêcher l'usurpation d'adresse e-mail
+* **MTA-STS** : Prise en charge de MTA-STS pour appliquer le chiffrement TLS
+* **Authentification multifacteur** : Disponible pour tous les accès aux comptes
 
 ### Mesures anti-abus {#anti-abuse-measures}
 
@@ -116,7 +116,7 @@ Nous sélectionnons soigneusement nos prestataires de services afin de garantir 
 | [Stripe](https://stripe.com) | Traitement des paiements | ✅ Oui | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Traitement des paiements | ❌ Non | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Nous faisons appel à ces prestataires afin de garantir une prestation de services fiable et sécurisée, tout en respectant les réglementations internationales en matière de protection des données. Tous les transferts de données sont effectués avec les garanties appropriées pour protéger vos informations personnelles.
+Nous faisons appel à ces prestataires pour garantir une prestation de services fiable et sécurisée, tout en respectant les réglementations internationales en matière de protection des données. Tous les transferts de données sont effectués avec les garanties appropriées pour protéger vos informations personnelles.
 
 ## Conformité et audit {#compliance-and-auditing}
 
@@ -149,7 +149,7 @@ Notre plan de réponse aux incidents de sécurité comprend :
 6. **Analyse post-incident** : Examen complet et amélioration
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Si vous découvrez une faille de sécurité, veuillez la signaler immédiatement à <security@forwardemail.net>.
 
 ## Cycle de vie du développement de la sécurité {#security-development-lifecycle}
 
@@ -179,7 +179,7 @@ Tout le code subit :
 
 ## Renforcement du serveur {#server-hardening}
 
-Notre [Configuration d'Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) met en œuvre de nombreuses mesures de renforcement du serveur :
+Notre [Configuration d'Ansible](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implémente de nombreuses mesures de renforcement du serveur :
 
 * **Accès USB désactivé** : Les ports physiques sont désactivés par la mise sur liste noire du module noyau usb-storage
 * **Règles de pare-feu** : Règles iptables strictes autorisant uniquement les connexions nécessaires
@@ -199,7 +199,7 @@ Notre [Configuration d'Ansible](https://github.com/forwardemail/forwardemail.net
 
 ## Accord de niveau de service {#service-level-agreement}
 
-Nous maintenons un niveau élevé de disponibilité et de fiabilité de service. Notre infrastructure est conçue pour la redondance et la tolérance aux pannes afin de garantir le bon fonctionnement de votre service de messagerie. Bien que nous ne publiions pas de contrat de niveau de service (SLA) officiel, nous nous engageons à :
+Nous maintenons un niveau élevé de disponibilité et de fiabilité de nos services. Notre infrastructure est conçue pour la redondance et la tolérance aux pannes afin de garantir le bon fonctionnement de votre service de messagerie. Bien que nous ne publiions pas de contrat de niveau de service (SLA) officiel, nous nous engageons à :
 
 * Disponibilité de plus de 99,9 % pour tous les services
 * Réponse rapide aux interruptions de service

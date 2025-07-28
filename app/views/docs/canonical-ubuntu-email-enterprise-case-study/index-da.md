@@ -5,38 +5,38 @@
 ## Indholdsfortegnelse {#table-of-contents}
 
 * [Forord](#foreword)
-* [Udfordringen: Håndtering af et komplekst e-mail-økosystem](#the-challenge-managing-a-complex-email-ecosystem)
-* [Nøgle takeaways](#key-takeaways)
+* [Udfordringen: Håndtering af et komplekst e-mailøkosystem](#the-challenge-managing-a-complex-email-ecosystem)
+* [Vigtige konklusioner](#key-takeaways)
 * [Hvorfor videresende e-mail](#why-forward-email)
-* [Implementeringen: Sømløs SSO-integration](#the-implementation-seamless-sso-integration)
-  * [Autentificeringsflowvisualisering](#authentication-flow-visualization)
+* [Implementeringen: Problemfri SSO-integration](#the-implementation-seamless-sso-integration)
+  * [Visualisering af godkendelsesflow](#authentication-flow-visualization)
   * [Tekniske implementeringsdetaljer](#technical-implementation-details)
-* [DNS-konfiguration og e-mail-routing](#dns-configuration-and-email-routing)
+* [DNS-konfiguration og e-mailrouting](#dns-configuration-and-email-routing)
 * [Resultater: Strømlinet e-mailhåndtering og forbedret sikkerhed](#results-streamlined-email-management-and-enhanced-security)
   * [Operationel effektivitet](#operational-efficiency)
   * [Forbedret sikkerhed og privatliv](#enhanced-security-and-privacy)
   * [Omkostningsbesparelser](#cost-savings)
   * [Forbedret bidragyderoplevelse](#improved-contributor-experience)
-* [Ser fremad: Fortsat samarbejde](#looking-forward-continued-collaboration)
-* [Konklusion: Et perfekt Open-Source-partnerskab](#conclusion-a-perfect-open-source-partnership)
-* [Support af Enterprise-kunder](#supporting-enterprise-clients)
-  * [Tag kontakt](#get-in-touch)
+* [Fremadrettet: Fortsat samarbejde](#looking-forward-continued-collaboration)
+* [Konklusion: Et perfekt open source-partnerskab](#conclusion-a-perfect-open-source-partnership)
+* [Support til virksomhedskunder](#supporting-enterprise-clients)
+  * [Kontakt os](#get-in-touch)
   * [Om videresendelse af e-mail](#about-forward-email)
 
 ## Forord {#foreword}
 
-I open source-softwareverdenen er der få navne, der bærer så meget vægt som [Kanonisk](https://en.wikipedia.org/wiki/Canonical_\(company\)), virksomheden bag [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), en af de mest populære Linux-distributioner globalt. Med et stort økosystem, der spænder over flere distributioner, herunder Ubuntu, [I menneskeheden](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) og andre, stod Canonical over for unikke udfordringer med at administrere e-mailadresser på tværs af deres mange domæner. Denne casestudie undersøger, hvordan Canonical indgik et partnerskab med Forward Email for at skabe en problemfri, sikker og privatlivsfokuseret e-mail-administrationsløsning til virksomheder, der stemmer perfekt overens med deres open source-værdier.
+I open source-softwareverdenen er der få navne, der bærer så meget vægt som [Kanonisk](https://en.wikipedia.org/wiki/Canonical_\(company\)), virksomheden bag [Ubuntu](https://en.wikipedia.org/wiki/Ubuntu), en af de mest populære Linux-distributioner globalt. Med et stort økosystem, der spænder over flere distributioner, herunder Ubuntu, [Gratis](https://en.wikipedia.org/wiki/Kubuntu), [Lubuntu](https://en.wikipedia.org/wiki/Lubuntu), [Edubuntu](https://en.wikipedia.org/wiki/Edubuntu) og andre, stod Canonical over for unikke udfordringer med at administrere e-mailadresser på tværs af deres mange domæner. Denne casestudie undersøger, hvordan Canonical indgik et partnerskab med Forward Email for at skabe en problemfri, sikker og privatlivsfokuseret e-mail-administrationsløsning til virksomheder, der er perfekt i overensstemmelse med deres open source-værdier.
 
 ## Udfordringen: Håndtering af et komplekst e-mailøkosystem {#the-challenge-managing-a-complex-email-ecosystem}
 
-Canonicals økosystem er mangfoldigt og ekspansivt. Med millioner af brugere verden over og tusindvis af bidragydere på tværs af forskellige projekter, gav det betydelige udfordringer at administrere e-mail-adresser på tværs af flere domæner. Kernebidragydere havde brug for officielle e-mailadresser (@ubuntu.com, @kubuntu.org osv.), der afspejlede deres involvering i projektet, samtidig med at sikkerheden og brugervenligheden bevares gennem et robust Ubuntu-domænestyringssystem.
+Canonicals økosystem er mangfoldigt og omfattende. Med millioner af brugere verden over og tusindvis af bidragydere på tværs af forskellige projekter, var det en betydelig udfordring at administrere e-mailadresser på tværs af flere domæner. Kernebidragydere havde brug for officielle e-mailadresser (@ubuntu.com, @kubuntu.org osv.), der afspejlede deres involvering i projektet, samtidig med at sikkerhed og brugervenlighed blev opretholdt gennem et robust Ubuntu-domæneadministrationssystem.
 
-Inden implementeringen af Forward Email, kæmpede Canonical med:
+Før implementeringen af Videresendt E-mail, kæmpede Canonical med:
 
 * Administration af e-mailadresser på tværs af flere domæner (@ubuntu.com, @kubuntu.org, @lubuntu.me, @edubuntu.org og @ubuntu.net)
 * Tilbyder en ensartet e-mailoplevelse for kernebidragydere
-* Integrering af e-mailtjenester med deres eksisterende [Ubuntu One](https://en.wikipedia.org/wiki/Ubuntu_One) Single Sign-On (SSO) system
-* Finder en løsning, der stemmer overens med deres engagement i privatliv, sikkerhed og open source e-mailsikkerhed
+* Integrering af e-mailtjenester med deres eksisterende [Ubuntu One](https://en.wikipedia.org/wiki/Ubuntu_One) Single Sign-On (SSO)-system
+* Finder en løsning, der stemmer overens med deres engagement i privatliv, sikkerhed og open source-e-mailsikkerhed
 * Skalerer deres sikre e-mailinfrastruktur omkostningseffektivt
 
 ## Vigtige konklusioner {#key-takeaways}
@@ -49,9 +49,9 @@ Inden implementeringen af Forward Email, kæmpede Canonical med:
 
 ## Hvorfor videresende e-mail {#why-forward-email}
 
-Som den eneste 100 % open source e-mail-tjenesteudbyder med fokus på privatliv og sikkerhed, var Forward Email en naturlig pasform til Canonicals behov for videresendelse af e-mails til virksomheder. Vores værdier passede perfekt til Canonicals forpligtelse til open source-software og privatliv.
+Som den eneste 100 % open source-e-mailudbyder med fokus på privatliv og sikkerhed, var Forward Email et naturligt match for Canonicals behov for videresendelse af e-mail til virksomheder. Vores værdier stemte perfekt overens med Canonicals engagement i open source-software og privatliv.
 
-Nøglefaktorer, der gjorde Videresend e-mail til det ideelle valg, omfattede:
+Nøglefaktorer, der gjorde Forward Email til det ideelle valg, var blandt andet:
 
 1. **Komplet open source-kodebase**: Hele vores platform er open source og tilgængelig på [GitHub](https://en.wikipedia.org/wiki/GitHub), hvilket giver mulighed for gennemsigtighed og bidrag fra fællesskabet. I modsætning til mange "privatlivsfokuserede" e-mailudbydere, der kun open source deres frontends, mens de holder deres backends lukkede, har vi gjort hele vores kodebase - både frontend og backend - tilgængelig for alle at inspicere på [GitHub](https://github.com/forwardemail/forwardemail.net).
 
@@ -65,11 +65,11 @@ Nøglefaktorer, der gjorde Videresend e-mail til det ideelle valg, omfattede:
 
 ## Implementeringen: Problemfri SSO-integration {#the-implementation-seamless-sso-integration}
 
-Et af de mest kritiske aspekter af implementeringen var integration med Canonicals eksisterende Ubuntu One SSO-system. Denne integration ville give kernebidragydere mulighed for at administrere deres @ubuntu.com-e-mailadresser ved hjælp af deres eksisterende Ubuntu One-legitimationsoplysninger.
+Et af de mest kritiske aspekter ved implementeringen var integrationen med Canonicals eksisterende Ubuntu One SSO-system. Denne integration ville give kernebidragydere mulighed for at administrere deres @ubuntu.com e-mailadresser ved hjælp af deres eksisterende Ubuntu One-loginoplysninger.
 
 ### Visualisering af godkendelsesflow {#authentication-flow-visualization}
 
-Følgende diagram illustrerer hele godkendelses- og e-mail-klargøringsflowet:
+Følgende diagram illustrerer den komplette godkendelses- og e-mailklargøringsproces:
 
 ```mermaid
 flowchart TD
@@ -113,7 +113,7 @@ flowchart TD
 
 ### Tekniske implementeringsdetaljer {#technical-implementation-details}
 
-Integrationen mellem Forward Email og Ubuntu One SSO blev opnået gennem en tilpasset implementering af pas-ubuntu-godkendelsesstrategien. Dette muliggjorde et problemfrit autentificeringsflow mellem Ubuntu One og Forward Emails systemer.
+Integrationen mellem Forward Email og Ubuntu One SSO blev opnået gennem en brugerdefineret implementering af passport-ubuntu-godkendelsesstrategien. Dette muliggjorde en problemfri godkendelsesstrøm mellem Ubuntu One og Forward Emails systemer.
 
 #### Godkendelsesflowet {#the-authentication-flow}
 
@@ -122,7 +122,7 @@ Godkendelsesprocessen fungerer som følger:
 1. Brugere besøger den dedikerede Ubuntu e-mail-administrationsside på [forwardemail.net/ubuntu](https://forwardemail.net/ubuntu)
 2. De klikker på "Log ind med Ubuntu One" og omdirigeres til Ubuntu SSO-tjenesten
 3. Efter at have godkendt med deres Ubuntu One-legitimationsoplysninger, omdirigeres de tilbage til Videresend e-mail med deres godkendte profil
-4. Videresend e-mail verificerer deres bidragyderstatus og klargør eller administrerer deres e-mailadresse i overensstemmelse hermed
+4. Videresend e-mail verificerer deres bidragyderstatus og tildeler eller administrerer deres e-mailadresse i overensstemmelse hermed
 
 Den tekniske implementering udnyttede [`passport-ubuntu`](https://www.npmjs.com/package/passport-ubuntu)-pakken, som er en [Pas](https://www.npmjs.com/package/passport)-strategi til godkendelse med Ubuntu ved hjælp af [OpenID](https://en.wikipedia.org/wiki/OpenID). Konfigurationen omfattede:
 
@@ -226,7 +226,7 @@ async function syncUbuntuUser(user, map) {
 }
 ```
 
-For at forenkle håndteringen af teammedlemskaber på tværs af forskellige Ubuntu-domæner, skabte vi en ligetil kortlægning mellem domænenavne og deres tilsvarende Launchpad-teams:
+For at forenkle administrationen af teammedlemskaber på tværs af forskellige Ubuntu-domæner har vi oprettet en enkel kortlægning mellem domænenavne og deres tilsvarende Launchpad-teams:
 
 ```javascript
 ubuntuTeamMapping: {
@@ -239,7 +239,7 @@ ubuntuTeamMapping: {
 },
 ```
 
-Denne enkle kortlægning giver os mulighed for at automatisere processen med at kontrollere teammedlemskaber og klargøre e-mail-adresser, hvilket gør systemet nemt at vedligeholde og udvide, efterhånden som nye domæner tilføjes.
+Denne enkle kortlægning giver os mulighed for at automatisere processen med at kontrollere teammedlemskaber og klargøre e-mailadresser, hvilket gør systemet nemt at vedligeholde og udvide, efterhånden som nye domæner tilføjes.
 
 #### Fejlhåndtering og notifikationer {#error-handling-and-notifications}
 
@@ -250,22 +250,22 @@ Vi implementerede et robust fejlhåndteringssystem, der:
 3. Giver administratorer besked, når nye bidragydere tilmelder sig og får oprettet e-mailadresser
 4. Håndterer edge-sager, såsom brugere, der ikke har underskrevet Ubuntus adfærdskodeks
 
-Dette sikrer, at eventuelle problemer hurtigt identificeres og løses, hvilket bevarer e-mailsystemets integritet.
+Dette sikrer, at eventuelle problemer hurtigt identificeres og håndteres, hvilket opretholder e-mailsystemets integritet.
 
 ## DNS-konfiguration og e-mailrouting {#dns-configuration-and-email-routing}
 
-For hvert domæne, der administreres via Videresend e-mail, tilføjede Canonical en simpel DNS TXT-post til validering:
+For hvert domæne, der administreres via Forward Email, tilføjede Canonical en simpel DNS TXT-post til validering:
 
 ```sh
 ❯ dig ubuntu.com txt
 ubuntu.com.             600     IN      TXT     "forward-email-site-verification=6IsURgl2t7"
 ```
 
-Denne bekræftelsespost bekræfter domæneejerskab og gør det muligt for vores system at administrere e-mail for disse domæner sikkert. Canonical ruter post gennem vores service via Postfix, som giver en pålidelig og sikker e-mail-leveringsinfrastruktur.
+Denne verifikationspost bekræfter domæneejerskab og gør det muligt for vores system at administrere e-mail for disse domæner sikkert. Canonical sender e-mail gennem vores tjeneste via Postfix, som leverer en pålidelig og sikker e-mailleveringsinfrastruktur.
 
 ## Resultater: Strømlinet e-mailhåndtering og forbedret sikkerhed {#results-streamlined-email-management-and-enhanced-security}
 
-Implementeringen af Forward Emails virksomhedsløsning har givet betydelige fordele for Canonicals e-mail-administration på tværs af alle deres domæner:
+Implementeringen af Forward Emails virksomhedsløsning har givet Canonical betydelige fordele for e-mailhåndtering på tværs af alle deres domæner:
 
 ### Driftseffektivitet {#operational-efficiency}
 
@@ -293,7 +293,7 @@ Implementeringen af Forward Emails virksomhedsløsning har givet betydelige ford
 * **Konsistent branding**: En samlet oplevelse på tværs af alle Ubuntu-relaterede tjenester
 * **Pålidelig e-maillevering**: IP-omdømme af høj kvalitet sikrer, at e-mails når deres destination
 
-Integrationen med Forward Email har strømlinet Canonicals e-mailhåndteringsproces markant. Bidragydere har nu en problemfri oplevelse med at administrere deres @ubuntu.com-e-mailadresser med reducerede administrative omkostninger og forbedret sikkerhed.
+Integrationen med Forward Email har strømlinet Canonicals e-mailhåndteringsproces betydeligt. Bidragydere har nu en problemfri oplevelse med at administrere deres @ubuntu.com e-mailadresser med reduceret administrativ belastning og forbedret sikkerhed.
 
 ## Fremadrettet: Fortsat samarbejde {#looking-forward-continued-collaboration}
 
@@ -306,21 +306,21 @@ Partnerskabet mellem Canonical og Forward Email fortsætter med at udvikle sig. 
 
 ## Konklusion: Et perfekt open source-partnerskab {#conclusion-a-perfect-open-source-partnership}
 
-Samarbejdet mellem Canonical og Forward Email demonstrerer styrken af partnerskaber bygget på fælles værdier. Ved at vælge Forward Email som deres e-mail-tjenesteudbyder fandt Canonical en løsning, der ikke kun opfyldte deres tekniske krav, men også passede perfekt til deres engagement i open source-software, privatliv og sikkerhed.
+Samarbejdet mellem Canonical og Forward Email demonstrerer styrken i partnerskaber bygget på fælles værdier. Ved at vælge Forward Email som deres e-mailudbyder fandt Canonical en løsning, der ikke kun opfyldte deres tekniske krav, men også passede perfekt til deres engagement i open source-software, privatliv og sikkerhed.
 
-For organisationer, der administrerer flere domæner og kræver problemfri godkendelse med eksisterende systemer, tilbyder Forward Email en fleksibel, sikker og privatlivsfokuseret løsning. Vores [open source tilgang](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) sikrer gennemsigtighed og giver mulighed for bidrag fra lokalsamfundet, hvilket gør den til et ideelt valg for organisationer, der værdsætter disse principper.
+For organisationer, der administrerer flere domæner og kræver problemfri godkendelse med eksisterende systemer, tilbyder Forward Email en fleksibel, sikker og privatlivsfokuseret løsning. Vores [open source-tilgang](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy) sikrer gennemsigtighed og giver mulighed for bidrag fra fællesskabet, hvilket gør den til et ideelt valg for organisationer, der værdsætter disse principper.
 
-Da både Canonical og Forward Email fortsætter med at innovere inden for deres respektive områder, står dette partnerskab som et vidnesbyrd om styrken af open source-samarbejde og fælles værdier i at skabe effektive løsninger.
+I takt med at både Canonical og Forward Email fortsætter med at innovere inden for deres respektive områder, står dette partnerskab som et bevis på styrken ved open source-samarbejde og fælles værdier i forbindelse med at skabe effektive løsninger.
 
 Du kan tjekke vores [servicestatus i realtid](https://status.forwardemail.net) for at se vores nuværende e-mailleveringsydelse, som vi overvåger løbende for at sikre et IP-omdømme og e-mailleveringsevne af høj kvalitet.
 
-## Understøttelse af virksomhedsklienter {#supporting-enterprise-clients}
+## Support til virksomhedskunder {#supporting-enterprise-clients}
 
-Mens dette casestudie fokuserer på vores partnerskab med Canonical, støtter Forward Email stolt adskillige virksomhedskunder på tværs af forskellige brancher, som værdsætter vores forpligtelse til privatliv, sikkerhed og open source-principper.
+Selvom denne casestudie fokuserer på vores partnerskab med Canonical, støtter Forward Email med stolthed adskillige virksomhedskunder på tværs af forskellige brancher, der værdsætter vores engagement i privatliv, sikkerhed og open source-principper.
 
-Vores virksomhedsløsninger er skræddersyet til at imødekomme de specifikke behov hos organisationer af alle størrelser og tilbyder:
+Vores virksomhedsløsninger er skræddersyet til at imødekomme de specifikke behov hos organisationer i alle størrelser og tilbyder:
 
-* Brugerdefineret domæne [e-mail-håndtering](/) på tværs af flere domæner
+* Brugerdefineret domæne [e-mailhåndtering](/) på tværs af flere domæner
 * Problemfri integration med eksisterende godkendelsessystemer
 * Dedikeret Matrix chat supportkanal
 * Forbedrede sikkerhedsfunktioner, herunder [kvanteresistent kryptering](/blog/docs/best-quantum-safe-encrypted-email-service)
@@ -329,14 +329,14 @@ Vores virksomhedsløsninger er skræddersyet til at imødekomme de specifikke be
 
 ### Kontakt os {#get-in-touch}
 
-Hvis din organisation har virksomheds-e-mailbehov, eller du er interesseret i at lære mere om, hvordan Videresend e-mail kan hjælpe med at strømline din e-mail-administration og samtidig forbedre privatlivets fred og sikkerhed, vil vi meget gerne høre fra dig:
+Hvis din organisation har behov for e-mail i virksomheder, eller du er interesseret i at lære mere om, hvordan Videresend Email kan hjælpe med at strømline din e-mailadministration og samtidig forbedre privatlivets fred og sikkerhed, vil vi meget gerne høre fra dig:
 
 * Send os en e-mail direkte på `support@forwardemail.net`
 * Indsend en anmodning om hjælp på vores [hjælpeside](https://forwardemail.net/help)
 * Tjek vores [prisside](https://forwardemail.net/pricing) for virksomhedsabonnementer
 
-Vores team er klar til at diskutere dine specifikke krav og udvikle en skræddersyet løsning, der stemmer overens med din organisations værdier og tekniske behov.
+Vores team er klar til at drøfte dine specifikke krav og udvikle en skræddersyet løsning, der er i overensstemmelse med din organisations værdier og tekniske behov.
 
 ### Om videresendelse af e-mail {#about-forward-email}
 
-Forward Email er en 100% open source og privatlivsfokuseret e-mailtjeneste. Vi tilbyder e-mail-videresendelse med brugerdefinerede domæner, SMTP, IMAP og POP3-tjenester med fokus på sikkerhed, privatliv og gennemsigtighed. Hele vores kodebase er tilgængelig på [GitHub](https://github.com/forwardemail/forwardemail.net), og vi er forpligtet til at levere e-mailtjenester, der respekterer brugernes privatliv og sikkerhed. Lær mere om [hvorfor open source e-mail er fremtiden](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hvordan vores videresendelse af e-mail fungerer](https://forwardemail.net/blog/docs/best-email-forwarding-service) og [vores tilgang til beskyttelse af personlige oplysninger via e-mail](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).
+Forward Email er en 100% open source og privatlivsfokuseret e-mailtjeneste. Vi tilbyder e-mail-videresendelse via brugerdefinerede domæner, SMTP, IMAP og POP3-tjenester med fokus på sikkerhed, privatliv og gennemsigtighed. Hele vores kodebase er tilgængelig på [GitHub](https://github.com/forwardemail/forwardemail.net), og vi er forpligtet til at levere e-mailtjenester, der respekterer brugernes privatliv og sikkerhed. Få mere at vide om [Hvorfor open source e-mail er fremtiden](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy), [hvordan vores videresendelse af e-mails fungerer](https://forwardemail.net/blog/docs/best-email-forwarding-service) og [vores tilgang til beskyttelse af e-mail-privatlivets fred](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation).

@@ -7,9 +7,9 @@
 ## Mục lục {#table-of-contents}
 
 * [Các thuật ngữ chính](#key-terms)
-* [Thay đổi Thỏa thuận](#changes-to-the-agreement)
+* [Những thay đổi trong Thỏa thuận](#changes-to-the-agreement)
 * [1. Mối quan hệ giữa bộ xử lý và bộ xử lý phụ](#1-processor-and-subprocessor-relationships)
-  * [1. Nhà cung cấp là Bộ xử lý](#1-provider-as-processor)
+  * [1. Nhà cung cấp là bên xử lý](#1-provider-as-processor)
   * [2. Nhà cung cấp là Bộ xử lý phụ](#2-provider-as-subprocessor)
 * [2. Xử lý](#2-processing)
   * [1. Chi tiết xử lý](#1-processing-details)
@@ -45,7 +45,7 @@
 * [13. Định nghĩa](#13-definitions)
 * [Tín dụng](#credits)
 
-## Các thuật ngữ chính {#key-terms}
+## Thuật ngữ chính {#key-terms}
 
 | Thuật ngữ | Giá trị |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -55,11 +55,11 @@
 | <strong>Chính sách bảo mật</strong> | Xem [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | <strong>Nhà nước quản lý</strong> | Tiểu bang Delaware, Hoa Kỳ |
 
-## Những thay đổi đối với Thỏa thuận {#changes-to-the-agreement}
+## Thay đổi đối với Thỏa thuận {#changes-to-the-agreement}
 
 Tài liệu này là phiên bản phái sinh của [Các thuật ngữ tiêu chuẩn DPA phổ biến (Phiên bản 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) và đã thực hiện những thay đổi sau:
 
-1. [Luật điều chỉnh và Tòa án được lựa chọn](#11-governing-law-and-chosen-courts) đã được đưa vào phần bên dưới với `Governing State` được xác định ở trên.
+1. [Luật điều chỉnh và Tòa án được lựa chọn](#11-governing-law-and-chosen-courts) đã được đưa vào phần bên dưới với `Governing State` đã được xác định ở trên.
 2. [Mối quan hệ với nhà cung cấp dịch vụ](#12-service-provider-relationship) đã được đưa vào phần bên dưới.
 
 ## 1. Mối quan hệ giữa Bộ xử lý và Bộ xử lý phụ {#1-processor-and-subprocessor-relationships}
@@ -100,17 +100,17 @@ a. <strong>Nhà cung cấp</strong> sẽ không cung cấp, chuyển giao hoặc
 
 b. Khi thuê một Bộ xử lý phụ, <strong>Nhà cung cấp</strong> sẽ có một thỏa thuận bằng văn bản với Bộ xử lý phụ đảm bảo rằng Bộ xử lý phụ chỉ truy cập và sử dụng Dữ liệu cá nhân của Khách hàng (i) trong phạm vi cần thiết để thực hiện các nghĩa vụ được giao cho Nhà cung cấp phụ và (ii) phù hợp với các điều khoản của <strong>Thỏa thuận</strong>.
 
-c. Nếu GDPR áp dụng cho việc Xử lý Dữ liệu Cá nhân của Khách hàng, (i) các nghĩa vụ bảo vệ dữ liệu được mô tả trong DPA này (như được đề cập trong Điều 28(3) của GDPR, nếu có) cũng được áp dụng cho Bộ xử lý phụ và (ii) thỏa thuận của <strong>Nhà cung cấp</strong> với Bộ xử lý phụ sẽ kết hợp các nghĩa vụ này, bao gồm các chi tiết về cách <strong>Nhà cung cấp</strong> và Bộ xử lý phụ của mình sẽ phối hợp để trả lời các câu hỏi hoặc yêu cầu về việc Xử lý Dữ liệu Cá nhân của Khách hàng. Ngoài ra, <strong>Nhà cung cấp</strong> sẽ chia sẻ, theo yêu cầu của <strong>Khách hàng</strong>, một bản sao các thỏa thuận của mình (bao gồm bất kỳ sửa đổi nào) với các Bộ xử lý phụ của mình. Trong phạm vi cần thiết để bảo vệ bí mật kinh doanh hoặc thông tin bí mật khác, bao gồm dữ liệu cá nhân, <strong>Nhà cung cấp</strong> có thể biên tập văn bản thỏa thuận của mình với Bộ xử lý phụ trước khi chia sẻ một bản sao.
+c. Nếu GDPR áp dụng cho việc Xử lý Dữ liệu Cá nhân của Khách hàng, (i) các nghĩa vụ bảo vệ dữ liệu được mô tả trong DPA này (như được đề cập trong Điều 28(3) của GDPR, nếu có) cũng được áp dụng cho Bộ xử lý phụ và (ii) thỏa thuận của <strong>Nhà cung cấp</strong> với Bộ xử lý phụ sẽ kết hợp các nghĩa vụ này, bao gồm các chi tiết về cách <strong>Nhà cung cấp</strong> và Bộ xử lý phụ của mình sẽ phối hợp để trả lời các câu hỏi hoặc yêu cầu về việc Xử lý Dữ liệu Cá nhân của Khách hàng. Ngoài ra, <strong>Nhà cung cấp</strong> sẽ chia sẻ, theo yêu cầu của <strong>Khách hàng</strong>, một bản sao các thỏa thuận của mình (bao gồm bất kỳ sửa đổi nào) với các Bộ xử lý phụ của mình. Trong phạm vi cần thiết để bảo vệ bí mật kinh doanh hoặc thông tin bí mật khác, bao gồm dữ liệu cá nhân, <strong>Nhà cung cấp</strong> có thể biên tập văn bản thỏa thuận của mình với Bộ xử lý phụ trước khi chia sẻ bản sao.
 
 d. <strong>Nhà cung cấp</strong> vẫn hoàn toàn chịu trách nhiệm đối với mọi nghĩa vụ được giao cho các Bộ xử lý phụ của mình, bao gồm cả hành vi và thiếu sót của các Bộ xử lý phụ trong việc Xử lý Dữ liệu Cá nhân của Khách hàng. <strong>Nhà cung cấp</strong> sẽ thông báo cho Khách hàng về bất kỳ trường hợp nào các Bộ xử lý phụ của mình không thực hiện nghĩa vụ quan trọng liên quan đến Dữ liệu Cá nhân của Khách hàng theo thỏa thuận giữa <strong>Nhà cung cấp</strong> và Bộ xử lý phụ.
 
-## 3. Chuyển giao bị hạn chế {#3-restricted-transfers}
+## 3. Chuyển nhượng bị hạn chế {#3-restricted-transfers}
 
 ### 1. Ủy quyền {#1-authorization}
 
 <strong>Khách hàng</strong> đồng ý rằng <strong>Nhà cung cấp</strong> có thể chuyển Dữ liệu Cá nhân của Khách hàng ra ngoài Khu vực Kinh tế Châu Âu (EEA), Vương quốc Anh hoặc các lãnh thổ địa lý liên quan khác khi cần thiết để cung cấp Dịch vụ. Nếu <strong>Nhà cung cấp</strong> chuyển Dữ liệu Cá nhân của Khách hàng đến một lãnh thổ mà Ủy ban Châu Âu hoặc cơ quan giám sát có liên quan khác chưa ban hành quyết định về tính đầy đủ, <strong>Nhà cung cấp</strong> sẽ thực hiện các biện pháp bảo vệ phù hợp cho việc chuyển Dữ liệu Cá nhân của Khách hàng đến lãnh thổ đó, phù hợp với Luật Bảo vệ Dữ liệu Hiện hành.
 
-### 2. Chuyển giao ngoài EEA {#2-ex-eea-transfers}
+### 2. Chuyển nhượng ngoài EEA {#2-ex-eea-transfers}
 
 <strong>Khách hàng</strong> và <strong>Nhà cung cấp</strong> đồng ý rằng nếu GDPR bảo vệ việc chuyển giao Dữ liệu Cá nhân của Khách hàng, việc chuyển giao sẽ được thực hiện từ <strong>Khách hàng</strong> trong EEA đến <strong>Nhà cung cấp</strong> bên ngoài EEA, và việc chuyển giao không chịu sự điều chỉnh của quyết định về tính đầy đủ của Ủy ban Châu Âu, thì bằng việc ký kết DPA này, <strong>Khách hàng</strong> và <strong>Nhà cung cấp</strong> được coi là đã ký các SCC của EEA và các Phụ lục của chúng, được hợp nhất bằng cách tham chiếu. Bất kỳ việc chuyển giao nào như vậy đều được thực hiện theo các SCC của EEA, được hoàn thành như sau:
 
@@ -118,15 +118,15 @@ a. Mô-đun Hai (Bộ điều khiển đến Bộ xử lý) của SCC EEA áp d�
 
 b. Mô-đun Ba (Bộ xử lý đến Bộ xử lý phụ) của SCC EEA được áp dụng khi <strong>Khách hàng</strong> là Bộ xử lý và <strong>Nhà cung cấp</strong> đang Xử lý Dữ liệu cá nhân của Khách hàng thay mặt cho <strong>Khách hàng</strong> với tư cách là Bộ xử lý phụ.
 
-c. Đối với mỗi mô-đun, các điều sau đây được áp dụng (khi áp dụng):
+c. Đối với mỗi mô-đun, những điều sau đây được áp dụng (khi có thể):
 
 1. Điều khoản neo đậu tùy chọn trong Điều 7 không áp dụng;
 
-2. Trong Điều khoản 9, Tùy chọn 2 (ủy quyền chung bằng văn bản) được áp dụng và thời hạn tối thiểu để thông báo trước về những thay đổi của Bộ xử lý phụ là 10 ngày làm việc;
+2. Trong Điều khoản 9, Tùy chọn 2 (ủy quyền chung bằng văn bản) được áp dụng và thời gian tối thiểu để thông báo trước về những thay đổi của Bộ xử lý phụ là 10 ngày làm việc;
 
 3. Trong Điều 11, ngôn ngữ tùy chọn không được áp dụng;
 
-4. Tất cả các dấu ngoặc vuông trong Mục 13 đều bị xóa bỏ;
+4. Tất cả các dấu ngoặc vuông trong Điều 13 đều bị xóa bỏ;
 
 5. Trong Điều khoản 17 (Tùy chọn 1), các SCC EEA sẽ được điều chỉnh bởi luật pháp của <strong>Quốc gia thành viên quản lý</strong>;
 
@@ -138,15 +138,15 @@ c. Đối với mỗi mô-đun, các điều sau đây được áp dụng (khi 
 
 <strong>Khách hàng</strong> và <strong>Nhà cung cấp</strong> đồng ý rằng nếu GDPR của Vương quốc Anh bảo vệ việc chuyển giao Dữ liệu Cá nhân của Khách hàng, việc chuyển giao sẽ được thực hiện từ <strong>Khách hàng</strong> trong Vương quốc Anh đến <strong>Nhà cung cấp</strong> bên ngoài Vương quốc Anh, và việc chuyển giao không chịu sự điều chỉnh của quyết định về tính đầy đủ do Bộ trưởng Ngoại giao Vương quốc Anh đưa ra, thì bằng việc ký kết DPA này, <strong>Khách hàng</strong> và <strong>Nhà cung cấp</strong> được coi là đã ký Phụ lục Vương quốc Anh và các Phụ lục của Phụ lục này, được hợp nhất bằng cách tham chiếu. Bất kỳ việc chuyển giao nào như vậy đều được thực hiện theo Phụ lục Vương quốc Anh, được hoàn thành như sau:
 
-a. Mục 3.2 của DPA này chứa thông tin được yêu cầu trong Bảng 2 của Phụ lục Vương quốc Anh.
+a. Mục 3.2 của DPA này chứa thông tin được yêu cầu trong Bảng 2 của Phụ lục của Vương quốc Anh.
 
-b. Bảng 4 của Phụ lục Vương quốc Anh được sửa đổi như sau: Không bên nào được chấm dứt Phụ lục Vương quốc Anh theo quy định tại Mục 19 của Phụ lục Vương quốc Anh; trong phạm vi ICO ban hành Phụ lục được phê duyệt đã sửa đổi theo Mục ‎18 của Phụ lục Vương quốc Anh, các bên sẽ làm việc thiện chí để sửa đổi DPA này cho phù hợp.
+b. Bảng 4 của Phụ lục Vương quốc Anh được sửa đổi như sau: Không bên nào được chấm dứt Phụ lục Vương quốc Anh theo quy định tại Mục 19 của Phụ lục Vương quốc Anh; trong phạm vi ICO ban hành Phụ lục được phê duyệt sửa đổi theo Mục 18 của Phụ lục Vương quốc Anh, các bên sẽ hợp tác thiện chí để sửa đổi DPA này cho phù hợp.
 
 c. Trang bìa chứa thông tin theo yêu cầu của Phụ lục 1A, Phụ lục 1B, Phụ lục II và Phụ lục III của Phụ lục Vương quốc Anh.
 
 ### 4. Chuyển khoản quốc tế khác {#4-other-international-transfers}
 
-Đối với việc chuyển Dữ liệu cá nhân mà luật Thụy Sĩ (và không phải luật của bất kỳ quốc gia thành viên EEA nào hoặc Vương quốc Anh) áp dụng cho bản chất quốc tế của việc chuyển giao, các tham chiếu đến GDPR trong Điều khoản 4 của SCC EEA, trong phạm vi pháp luật yêu cầu, được sửa đổi để thay thế bằng Đạo luật Bảo vệ Dữ liệu Liên bang Thụy Sĩ hoặc văn bản kế nhiệm, và khái niệm về cơ quan giám sát sẽ bao gồm Ủy viên Thông tin và Bảo vệ Dữ liệu Liên bang Thụy Sĩ.
+Đối với việc chuyển Dữ liệu cá nhân mà luật Thụy Sĩ (và không phải luật của bất kỳ quốc gia thành viên EEA nào hoặc Vương quốc Anh) áp dụng cho bản chất quốc tế của việc chuyển giao, các tham chiếu đến GDPR trong Điều khoản 4 của SCC EEA, trong phạm vi pháp luật yêu cầu, sẽ được sửa đổi để đề cập đến Đạo luật bảo vệ dữ liệu liên bang của Thụy Sĩ hoặc văn bản kế nhiệm, và khái niệm về cơ quan giám sát sẽ bao gồm Ủy viên thông tin và bảo vệ dữ liệu liên bang của Thụy Sĩ.
 
 ## 4. Phản hồi sự cố bảo mật {#4-security-incident-response}
 
@@ -162,13 +162,13 @@ Nhà cung cấp sẽ cung cấp cho Khách hàng tất cả thông tin cần thi
 
 <strong>Khách hàng</strong> thừa nhận rằng <strong>Nhà cung cấp</strong> được kiểm toán định kỳ theo các tiêu chuẩn được xác định trong <strong>Chính sách Bảo mật</strong> bởi các kiểm toán viên bên thứ ba độc lập. Khi có yêu cầu bằng văn bản, <strong>Nhà cung cấp</strong> sẽ cung cấp cho <strong>Khách hàng</strong> một bản tóm tắt Báo cáo hiện hành của mình trên cơ sở bảo mật để <strong>Khách hàng</strong> có thể xác minh việc <strong>Nhà cung cấp</strong> tuân thủ các tiêu chuẩn được xác định trong <strong>Chính sách Bảo mật</strong>.
 
-### 3. Thẩm định bảo mật {#3-security-due-diligence}
+### 3. Thẩm định an ninh {#3-security-due-diligence}
 
 Ngoài Báo cáo, <strong>Nhà cung cấp</strong> sẽ phản hồi các yêu cầu thông tin hợp lý do <strong>Khách hàng</strong> đưa ra để xác nhận việc <strong>Nhà cung cấp</strong> tuân thủ DPA này, bao gồm các phản hồi về bảo mật thông tin, thẩm định và bảng câu hỏi kiểm toán, hoặc bằng cách cung cấp thêm thông tin về chương trình bảo mật thông tin của mình. Tất cả các yêu cầu như vậy phải được lập thành văn bản và gửi đến <strong>Người liên hệ về bảo mật của Nhà cung cấp</strong> và chỉ được thực hiện mỗi năm một lần.
 
 ## 6. Phối hợp & Hợp tác {#6-coordination--cooperation}
 
-### 1. Phản hồi các yêu cầu {#1-response-to-inquiries}
+### 1. Phản hồi yêu cầu {#1-response-to-inquiries}
 
 Nếu <strong>Nhà cung cấp</strong> nhận được bất kỳ yêu cầu hoặc thắc mắc nào từ bất kỳ ai khác về việc Xử lý Dữ liệu Cá nhân của Khách hàng, <strong>Nhà cung cấp</strong> sẽ thông báo cho <strong>Khách hàng</strong> về yêu cầu đó và <strong>Nhà cung cấp</strong> sẽ không phản hồi yêu cầu mà không có sự đồng ý trước của <strong>Khách hàng</strong>. Ví dụ về các loại yêu cầu và thắc mắc này bao gồm lệnh của cơ quan tư pháp, hành chính hoặc quản lý về Dữ liệu Cá nhân của Khách hàng, trong trường hợp việc thông báo cho <strong>Khách hàng</strong> không bị Luật Hiện hành cấm, hoặc yêu cầu từ chủ thể dữ liệu. Nếu được Luật Hiện hành cho phép, <strong>Nhà cung cấp</strong> sẽ tuân theo các hướng dẫn hợp lý của <strong>Khách hàng</strong> về các yêu cầu này, bao gồm việc cung cấp cập nhật trạng thái và các thông tin khác mà <strong>Khách hàng</strong> yêu cầu một cách hợp lý. Nếu chủ thể dữ liệu đưa ra yêu cầu hợp lệ theo Luật Bảo vệ Dữ liệu Hiện hành để xóa hoặc từ chối việc <strong>Khách hàng</strong> cung cấp Dữ liệu Cá nhân của Khách hàng cho <strong>Nhà cung cấp</strong>, <strong>Nhà cung cấp</strong> sẽ hỗ trợ <strong>Khách hàng</strong> thực hiện yêu cầu theo Luật Bảo vệ Dữ liệu Hiện hành. <strong>Nhà cung cấp</strong> sẽ hợp tác và cung cấp hỗ trợ hợp lý cho <strong>Khách hàng</strong>, với chi phí <strong>do</strong> Khách hàng chi trả, trong bất kỳ phản hồi pháp lý hoặc hành động thủ tục nào khác do <strong>Khách hàng</strong> thực hiện để đáp lại yêu cầu của bên thứ ba về việc <strong>Nhà cung cấp</strong> Xử lý Dữ liệu Cá nhân của Khách hàng theo DPA này.
 
@@ -176,7 +176,7 @@ Nếu <strong>Nhà cung cấp</strong> nhận được bất kỳ yêu cầu ho�
 
 Nếu được yêu cầu theo Luật bảo vệ dữ liệu hiện hành, <strong>Nhà cung cấp</strong> sẽ hỗ trợ <strong>Khách hàng</strong> một cách hợp lý trong việc tiến hành bất kỳ đánh giá tác động bảo vệ dữ liệu bắt buộc nào hoặc đánh giá tác động chuyển giao dữ liệu và tham vấn với các cơ quan bảo vệ dữ liệu có liên quan, có tính đến bản chất của Dữ liệu cá nhân của Khách hàng và Xử lý.
 
-## 7. Xóa Dữ liệu Cá nhân của Khách hàng {#7-deletion-of-customer-personal-data}
+## 7. Xóa dữ liệu cá nhân của khách hàng {#7-deletion-of-customer-personal-data}
 
 ### 1. Xóa bởi Khách hàng {#1-deletion-by-customer}
 
@@ -194,13 +194,13 @@ b. Nếu <strong>Khách hàng</strong> và <strong>Nhà cung cấp</strong> đã
 
 **Ở mức độ tối đa được phép theo Luật bảo vệ dữ liệu hiện hành, tổng trách nhiệm tích lũy của mỗi bên đối với bên kia phát sinh từ hoặc liên quan đến DPA này sẽ tuân theo các điều khoản miễn trừ, loại trừ và giới hạn trách nhiệm được nêu trong <strong>Thỏa thuận</strong>.**
 
-### 2. Khiếu nại của Bên liên quan {#2-related-party-claims}
+### 2. Khiếu nại của bên liên quan {#2-related-party-claims}
 
 **Mọi khiếu nại đối với <strong>Nhà cung cấp</strong> hoặc các Công ty liên kết của Nhà cung cấp phát sinh từ hoặc liên quan đến DPA này chỉ có thể được đưa ra bởi thực thể <strong>Khách hàng</strong> là một bên tham gia <strong>Thỏa thuận</strong>.**
 
 ### 3. Ngoại lệ {#3-exceptions}
 
-1. DPA này không giới hạn bất kỳ trách nhiệm nào đối với cá nhân về quyền bảo vệ dữ liệu của cá nhân theo Luật bảo vệ dữ liệu hiện hành. Ngoài ra, DPA này không giới hạn bất kỳ trách nhiệm nào giữa các bên đối với hành vi vi phạm SCC của EEA hoặc Phụ lục của Vương quốc Anh.
+1. DPA này không giới hạn bất kỳ trách nhiệm pháp lý nào đối với cá nhân liên quan đến quyền bảo vệ dữ liệu của cá nhân theo Luật Bảo vệ Dữ liệu Hiện hành. Ngoài ra, DPA này không giới hạn bất kỳ trách nhiệm pháp lý nào giữa các bên đối với việc vi phạm các Điều khoản và Điều kiện Chung của Khu vực Kinh tế Châu Âu (EEA SCC) hoặc Phụ lục Vương quốc Anh.
 
 ## 9. Xung đột giữa các tài liệu {#9-conflicts-between-documents}
 
@@ -214,7 +214,7 @@ DPA này sẽ bắt đầu có hiệu lực khi <strong>Nhà cung cấp</strong>
 
 Bất chấp luật áp dụng hoặc các điều khoản tương tự của <strong>Thỏa thuận</strong>, mọi diễn giải và tranh chấp liên quan đến DPA này sẽ được điều chỉnh bởi luật pháp của <strong>Quốc gia Quản lý</strong> mà không tính đến các điều khoản xung đột pháp luật của quốc gia đó. Ngoài ra, bất chấp việc lựa chọn diễn đàn, thẩm quyền tài phán hoặc các điều khoản tương tự của <strong>Thỏa thuận</strong>, các bên đồng ý đưa bất kỳ vụ kiện, hành động hoặc thủ tục pháp lý nào liên quan đến DPA này ra, và mỗi bên đồng ý tuân theo thẩm quyền độc quyền của tòa án <strong>Quốc gia Quản lý</strong>.
 
-## 12. Mối quan hệ với Nhà cung cấp dịch vụ {#12-service-provider-relationship}
+## 12. Mối quan hệ với nhà cung cấp dịch vụ {#12-service-provider-relationship}
 
 Trong phạm vi áp dụng Đạo luật Quyền riêng tư của Người tiêu dùng California, Bộ luật Dân sự California § 1798.100 et seq ("CCPA"), các bên thừa nhận và đồng ý rằng <strong>Nhà cung cấp</strong> là nhà cung cấp dịch vụ và đang nhận Dữ liệu Cá nhân từ <strong>Khách hàng</strong> để cung cấp Dịch vụ theo thỏa thuận trong <strong>Thỏa thuận</strong>, đây là mục đích kinh doanh. <strong>Nhà cung cấp</strong> sẽ không bán bất kỳ Dữ liệu Cá nhân nào do <strong>Khách hàng</strong> cung cấp theo <strong>Thỏa thuận</strong>. Ngoài ra, <strong>Nhà cung cấp</strong> sẽ không lưu giữ, sử dụng hoặc tiết lộ bất kỳ Dữ liệu Cá nhân nào do <strong>Khách hàng</strong> cung cấp theo <strong>Thỏa thuận</strong>, trừ khi cần thiết để cung cấp Dịch vụ cho <strong>Khách hàng</strong>, như đã nêu trong <strong>Thỏa thuận</strong>, hoặc được Luật Bảo vệ Dữ liệu Hiện hành cho phép. <strong>Nhà cung cấp</strong> xác nhận rằng mình hiểu các hạn chế của đoạn này.
 
@@ -244,11 +244,11 @@ Trong phạm vi áp dụng Đạo luật Quyền riêng tư của Người tiêu
 
 12. **"Bộ xử lý"** sẽ có nghĩa như được nêu trong Luật bảo vệ dữ liệu hiện hành đối với công ty Xử lý Dữ liệu cá nhân thay mặt cho Bộ điều khiển.
 
-13. **"Báo cáo"** có nghĩa là các báo cáo kiểm toán do một công ty khác lập theo các tiêu chuẩn được xác định trong Chính sách bảo mật thay mặt cho Nhà cung cấp.
+13. **"Báo cáo"** có nghĩa là báo cáo kiểm toán do một công ty khác lập theo các tiêu chuẩn được xác định trong Chính sách bảo mật thay mặt cho Nhà cung cấp.
 
 14. **"Chuyển giao bị hạn chế"** có nghĩa là (a) khi GDPR được áp dụng, việc chuyển giao dữ liệu cá nhân từ EEA sang một quốc gia bên ngoài EEA không phải tuân theo quyết định về tính đầy đủ của Ủy ban Châu Âu; và (b) khi GDPR của Vương quốc Anh được áp dụng, việc chuyển giao dữ liệu cá nhân từ Vương quốc Anh sang bất kỳ quốc gia nào khác không phải tuân theo các quy định về tính đầy đủ được thông qua theo Mục 17A của Đạo luật Bảo vệ Dữ liệu của Vương quốc Anh năm 2018.
 
-15. **"Sự cố bảo mật"** có nghĩa là Vi phạm dữ liệu cá nhân theo định nghĩa tại Điều 4 của GDPR.
+15. **"Sự cố bảo mật"** có nghĩa là Vi phạm dữ liệu cá nhân như được định nghĩa trong Điều 4 của GDPR.
 
 16. **"Dịch vụ"** có nghĩa là sản phẩm và/hoặc dịch vụ được mô tả trong <strong>Thỏa thuận</strong>.
 
@@ -256,10 +256,10 @@ Trong phạm vi áp dụng Đạo luật Quyền riêng tư của Người tiêu
 
 18. **"Bộ xử lý phụ"** sẽ có nghĩa như được nêu trong Luật bảo vệ dữ liệu hiện hành đối với một công ty, với sự chấp thuận và chấp thuận của Bộ điều khiển, hỗ trợ Bộ xử lý trong việc Xử lý Dữ liệu cá nhân thay mặt cho Bộ điều khiển.
 
-19. **"GDPR của Anh"** có nghĩa là Quy định 2016/679 của Liên minh Châu Âu được thực hiện theo phần 3 của Đạo luật (Rút lui) Liên minh Châu Âu của Vương quốc Anh năm 2018 tại Vương quốc Anh.
+19. **"GDPR của Vương quốc Anh"** có nghĩa là Quy định 2016/679 của Liên minh Châu Âu được thực hiện theo phần 3 của Đạo luật (Rút lui) Liên minh Châu Âu của Vương quốc Anh năm 2018 tại Vương quốc Anh.
 
-20. **"Phụ lục của Vương quốc Anh"** có nghĩa là phụ lục chuyển dữ liệu quốc tế cho SCC của EEA do Ủy viên thông tin ban hành cho các Bên thực hiện Chuyển giao bị hạn chế theo Đạo luật Bảo vệ dữ liệu S119A(1) năm 2018.
+20. **"Phụ lục của Vương quốc Anh"** có nghĩa là phụ lục chuyển dữ liệu quốc tế cho các SCC của EEA do Ủy viên thông tin ban hành cho các Bên thực hiện Chuyển giao bị hạn chế theo Đạo luật Bảo vệ dữ liệu S119A(1) năm 2018.
 
 ## Tín dụng {#credits}
 
-Tài liệu này là bản phái sinh của [Các thuật ngữ tiêu chuẩn DPA phổ biến (Phiên bản 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) và được cấp phép theo [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Tài liệu này là phiên bản phái sinh của [Các thuật ngữ tiêu chuẩn DPA phổ biến (Phiên bản 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) và được cấp phép theo [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

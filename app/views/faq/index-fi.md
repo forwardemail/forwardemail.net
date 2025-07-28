@@ -19,7 +19,7 @@
   * [Mikä on vanha ilmainen opas Lähetä sähköpostia nimellä -toiminnolle Gmailissa?](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
   * [Gmailin reitityksen lisäasetukset](#advanced-gmail-routing-configuration)
   * [Outlookin reitityksen lisäasetukset](#advanced-outlook-routing-configuration)
-* [Vianetsintä](#troubleshooting)
+* [Vianmääritys](#troubleshooting)
   * [Miksi en saa testisähköpostejani](#why-am-i-not-receiving-my-test-emails)
   * [Miten sähköpostiohjelmani määritetään toimimaan sähköpostin edelleenlähetyksen kanssa?](#how-do-i-configure-my-email-client-to-work-with-forward-email)
   * [Miksi sähköpostini päätyvät roskapostikansioon ja miten voin tarkistaa verkkotunnukseni maineen?](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
@@ -30,11 +30,11 @@
   * [Missä palvelimenne sijaitsevat](#where-are-your-servers-located)
   * [Miten vien ja varmuuskopioin postilaatikon](#how-do-i-export-and-backup-my-mailbox)
   * [Miten tuon ja siirrän olemassa olevan postilaatikon](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Tuetko itsepalvelumajoitusta](#do-you-support-self-hosting)
+  * [Tuetteko omaa hostingia?](#do-you-support-self-hosting)
 * [Sähköpostin määritys](#email-configuration)
   * [Miten pääsen alkuun ja määritän sähköpostin edelleenlähetyksen](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Voinko käyttää useita MX-keskusten ja palvelimien toimintoja edistyneeseen edelleenlähetykseen?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [Miten määritän lomavastaajan (automaattinen poissaolovastaaja)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Miten määritän lomaviestin (poissaoloviestin automaattisen vastaajan)?](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [Miten määritän SPF:n sähköpostin edelleenlähetystä varten](#how-do-i-set-up-spf-for-forward-email)
   * [Miten otan DKIM:n käyttöön sähköpostin edelleenlähetystä varten](#how-do-i-set-up-dkim-for-forward-email)
   * [Miten määritän DMARC:n sähköpostin edelleenlähetystä varten](#how-do-i-set-up-dmarc-for-forward-email)
@@ -60,7 +60,7 @@
   * [Tuetteko webhookeja?](#do-you-support-webhooks)
   * [Tuetteko säännöllisiä lausekkeita tai regex-lausekkeita?](#do-you-support-regular-expressions-or-regex)
   * [Mitkä ovat lähtevän SMTP-viestien rajoituksesi?](#what-are-your-outbound-smtp-limits)
-  * [Tarvitsenko hyväksynnän ottaakseni käyttöön SMTP:n?](#do-i-need-approval-to-enable-smtp)
+  * [Tarvitsenko hyväksynnän SMTP:n käyttöönottoon?](#do-i-need-approval-to-enable-smtp)
   * [Mitkä ovat SMTP-palvelimesi asetukset](#what-are-your-smtp-server-configuration-settings)
   * [Mitkä ovat IMAP-palvelimesi asetukset](#what-are-your-imap-server-configuration-settings)
   * [Mitkä ovat POP3-palvelimesi asetukset](#what-are-your-pop3-server-configuration-settings)
@@ -88,7 +88,7 @@
   * [Miten sähköpostia käsitellään edelleenlähetystä varten](#how-do-you-process-an-email-for-forwarding)
   * [Miten käsittelet sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues)
   * [Miten käsittelet IP-osoitteiden estymisen](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Mitä ovat postmaster-osoitteet](#what-are-postmaster-addresses)
+  * [Mitä ovat postinjakajien osoitteet](#what-are-postmaster-addresses)
   * [Mitä ovat vastausta vaativat osoitteet?](#what-are-no-reply-addresses)
   * [Mitkä ovat palvelimesi IP-osoitteet](#what-are-your-servers-ip-addresses)
   * [Onko sinulla sallittujen lista](#do-you-have-an-allowlist)
@@ -108,7 +108,7 @@
   * [Lähettääkö tämä sähköpostini otsikot edelleen?](#does-this-forward-my-emails-headers)
   * [Onko tämä hyvin testattu](#is-this-well-tested)
   * [Välitätkö SMTP-vastausviestejä ja -koodeja?](#do-you-pass-along-smtp-response-messages-and-codes)
-  * [Miten estät roskapostittajat ja varmistat hyvän sähköpostin edelleenlähetysmaineen](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
+  * [Kuinka estät roskapostittajat ja varmistat hyvän sähköpostin edelleenlähetysmaineen](#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation)
   * [Miten teet DNS-hakuja verkkotunnuksille?](#how-do-you-perform-dns-lookups-on-domain-names)
 * [Tili ja laskutus](#account-and-billing)
   * [Tarjoatteko rahat takaisin -takuun maksullisille paketeille?](#do-you-offer-a-money-back-guarantee-on-paid-plans)
@@ -146,17 +146,17 @@ Sähköpostin edelleenlähetyksen aloittaminen:
 4. **Testaa asetukset** lähettämällä sähköpostia yhdelle uusista aliaksistasi.
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> DNS-muutosten voimaantulo maailmanlaajuisesti voi kestää jopa 24–48 tuntia, vaikka ne tulevat usein voimaan paljon nopeammin.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Toimitettavuuden parantamiseksi suosittelemme [SPF](#how-do-i-set-up-spf-for-forward-email)-, [DKIM](#how-do-i-set-up-dkim-for-forward-email)- ja [DMARC](#how-do-i-set-up-dmarc-for-forward-email)-tietueiden määrittämistä.
 
 ## Johdanto {#introduction}
 
 ### Mikä on sähköpostin edelleenlähetys {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Sähköpostin edelleenlähetys on täydellinen valinta yksityishenkilöille, pienyrityksille ja kehittäjille, jotka haluavat ammattimaiset sähköpostiosoitteet ilman täyden sähköpostipalvelun ylläpitokustannuksia.
 
 Forward Email on **täysin varusteltu sähköpostipalveluntarjoaja** ja **sähköpostipalveluntarjoaja mukautetuille verkkotunnuksille**.
 
@@ -177,7 +177,7 @@ Sähköpostin edelleenlähetyksen tärkeimmät ominaisuudet:
 Voit verrata meitä yli 56 muuhun sähköpostipalveluntarjoajaan osoitteessa [sähköpostivertailusivumme](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Lue lisää sähköpostin edelleenlähetyksestä lukemalla ilmainen [Tekninen raportti](/technical-whitepaper.pdf)-oppaamme
 
 ### Kuka käyttää sähköpostin edelleenlähetystä {#who-uses-forward-email}
 
@@ -195,7 +195,7 @@ Tarjoamme sähköpostin ylläpito- ja edelleenlähetyspalveluita yli 500 000 ver
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
 | Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Ihmisyydessä | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Ilmainen | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Cambridgen yliopisto | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Marylandin yliopisto | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
@@ -209,14 +209,14 @@ Tarjoamme sähköpostin ylläpito- ja edelleenlähetyspalveluita yli 500 000 ver
 | Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | David Heinemeier Hansson (Ruby on Rails) |  |
 
-### Mikä on sähköpostin edelleenlähetyksen historia {#what-is-forward-emails-history}
+### Mikä on edelleenlähetetyn sähköpostin historia? {#what-is-forward-emails-history}
 
-Lisätietoja sähköpostin edelleenlähetyksestä on osoitteessa [Tietoja-sivumme](/about).
+Voit lukea lisää sähköpostin edelleenlähetyksestä osoitteesta [Tietoja-sivumme](/about).
 
 ### Kuinka nopea tämä palvelu on {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Järjestelmämme on suunniteltu nopeaksi ja luotettavaksi, ja siinä on useita redundantteja palvelimia, jotka varmistavat sähköpostiesi nopean toimituksen.
 
 Sähköpostin välityspalvelu toimittaa viestit minimaalisella viiveellä, tyypillisesti muutamassa sekunnissa vastaanottamisesta.
 
@@ -229,13 +229,13 @@ Suorituskykymittarit:
 
 Toimimme reaaliajassa, toisin kuin muut palveluntarjoajat, jotka luottavat viivästyneisiin jonoihin.
 
-Emme kirjoita levylle emmekä tallenna lokeja – [virheitä lukuun ottamatta](#do-you-store-error-logs) ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp) -linkkien avulla (katso [Tietosuojakäytäntö](/privacy)).
+Emme kirjoita levylle emmekä tallenna lokeja – käytämme [virheitä lukuun ottamatta](#do-you-store-error-logs)- ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp)-muuttujaa (katso [Tietosuojakäytäntö](/privacy)).
 
-Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail).
+Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail)-kohteessa.
 
 ## Sähköpostiohjelmat {#email-clients}
 
-### Thunderbird {#thunderbird}
+VÄLIAIKAINEN_PAIKKAPIDÄN_0 Thunderbird {VÄLIAIKAINEN_PAIKKAPIDÄN_1
 
 1. Luo uusi alias ja luo salasana sähköpostin edelleenlähetyshallintapaneelissa.
 2. Avaa Thunderbird ja mene kohtaan **Muokkaa → Tilin asetukset → Tilin toiminnot → Lisää sähköpostitili**.
@@ -247,9 +247,9 @@ Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/
 
 ### Microsoft Outlook {#microsoft-outlook}
 
-1. Luo uusi alias ja luo salasana Sähköpostin edelleenlähetyshallintapaneelissa.
+1. Luo uusi alias ja luo salasana Sähköpostin välityshallintapaneelissa.
 2. Siirry kohtaan **Tiedosto → Lisää tili**.
-3. Anna edelleenlähetyssähköpostiosoitteesi ja napsauta **Yhdistä**.
+3. Anna sähköpostin välitysosoitteesi ja napsauta **Yhdistä**.
 4. Valitse **Lisäasetukset** ja valitse **Anna minun määrittää tilini manuaalisesti**.
 5. Valitse **IMAP** ja syötä:
 * Saapuva: `imap.forwardemail.net`, portti 993, SSL
@@ -260,14 +260,14 @@ Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/
 
 ### Apple Mail {#apple-mail}
 
-1. Luo uusi alias ja luo salasana Sähköpostin edelleenlähetys -hallintapaneelissa.
+1. Luo uusi alias ja luo salasana Sähköpostin edelleenlähetyshallintapaneelissa.
 2. Siirry kohtaan **Sähköposti → Asetukset → Tilit → +**.
 3. Valitse **Muu sähköpostitili**.
-4. Anna nimesi, Sähköpostin edelleenlähetysosoite ja salasana.
+4. Anna nimesi, Sähköpostin edelleenlähetysosoitteesi ja salasanasi.
 5. Palvelimen asetuksiin anna:
 * Saapuva: `imap.forwardemail.net`
 * Lähtevä: `smtp.forwardemail.net`
-* Käyttäjätunnus: Koko sähköpostiosoitteesi.
+* Käyttäjätunnus: Koko sähköpostiosoitteesi
 * Salasana: Luomasi salasana.
 6. Napsauta **Kirjaudu sisään**.
 
@@ -299,7 +299,7 @@ Androidille:
 Aloittaminen:
 </strong>
 <span>
-Jos olet noudattanut yllä olevia ohjeita kohdassa <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Miten aloitan ja määritän sähköpostin edelleenlähetyksen</a>, voit jatkaa lukemista alta.
+Jos olet noudattanut yllä olevia ohjeita kohdassa <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Aloitus ja sähköpostin edelleenlähetyksen määrittäminen</a>, voit jatkaa lukemista alta.
 </span>
 </div>
 
@@ -311,7 +311,7 @@ Jos olet noudattanut yllä olevia ohjeita kohdassa <a href="#how-do-i-get-starte
 Tärkeää:
 </strong>
 <span>
-Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a>, <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> ja <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">lähtevän SMTP-liikenteen rajoituksemme</a> – käyttöäsi pidetään hyväksyntänä ja hyväksyntänä.
+Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a>, <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> ja <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">lähtevän SMTP-liikenteen rajoituksemme</a> – käyttösi katsotaan tiedoksi ja hyväksyt sen.
 </span>
 </div>
 
@@ -331,7 +331,7 @@ Jos olet kehittäjä, tutustu <a class="alert-link" href="/email-api#outbound-em
 
 3. Napsauta <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> -painiketta juuri luodun aliaksen vieressä. Kopioi leikepöydälle ja tallenna näytöllä näkyvä luotu salasana turvallisesti.
 
-4. Siirry osoitteeseen [Gmail](https://gmail.com) ja napsauta [Asetukset <i class="fa fa-angle-right"></i> Tilit ja tuonti <i class="fa fa-angle-right"></i> Lähetä sähköpostia muodossa](https://mail.google.com/mail/u/0/#settings/accounts) -kohdasta "Lisää toinen sähköpostiosoite".
+4. Siirry kohtaan [Gmail](https://gmail.com) ja napsauta kohdassa [Asetukset <i class="fa fa-angle-right"></i> Tilit ja tuonti <i class="fa fa-angle-right"></i> Lähetä sähköpostia muodossa](https://mail.google.com/mail/u/0/#settings/accounts) kohtaa "Lisää toinen sähköpostiosoite".
 
 5. Kun sinulta kysytään "Nimi", anna nimi, jolla haluat sähköpostisi näkyvän "Lähettäjä"-kentässä (esim. "Linus Torvalds").
 
@@ -351,7 +351,7 @@ Jos olet kehittäjä, tutustu <a class="alert-link" href="/email-api#outbound-em
 
 13. Jatka napsauttamalla "Lisää tili"
 
-14. Avaa uusi välilehti osoitteeseen [Gmail](https://gmail.com) ja odota vahvistussähköpostin saapumista (saat vahvistuskoodin, joka vahvistaa, että olet sen sähköpostiosoitteen omistaja, jota yrität lähettää sähköpostia nimellä).
+14. Avaa uusi välilehti [Gmail](https://gmail.com)-sivustolle ja odota vahvistussähköpostin saapumista (saat vahvistuskoodin, joka vahvistaa, että olet sen sähköpostiosoitteen omistaja, jota yrität lähettää sähköpostitse).
 
 15. Kun se saapuu, kopioi ja liitä vahvistuskoodi edellisessä vaiheessa saamaasi kehotteeseen.
 
@@ -371,7 +371,7 @@ Olet suorittanut kaikki vaiheet onnistuneesti.
 
 </div>
 
-### Mikä on vanha ilmainen opas Lähetä sähköpostia nimellä -toiminnolle Gmailissa {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Mikä on vanha ilmainen opas Lähetä sähköpostia nimellä -toiminnolle Gmailissa? {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
 <div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Tärkeää:</strong> Tämä vanha ilmainen opas on vanhentunut toukokuusta 2023 lähtien, koska <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we tukee nyt lähtevää SMTP:tä</a>. Jos käytät alla olevaa opasta, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this saa lähtevän sähköpostisi</a> näkyviin Gmailissa tekstin "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>".</a></div>
 
@@ -387,7 +387,7 @@ Olet suorittanut kaikki vaiheet onnistuneesti.
 Aloittaminen:
 </strong>
 <span>
-Jos olet noudattanut yllä olevia ohjeita kohdassa <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Miten aloitan ja määritän sähköpostin edelleenlähetyksen</a>, voit jatkaa lukemista alta.
+Jos olet noudattanut yllä olevia ohjeita kohdassa <a href="#how-do-i-get-started-and-set-up-email-forwarding" class="alert-link">Aloitus ja sähköpostin edelleenlähetyksen määrittäminen</a>, voit jatkaa lukemista alta.
 </span>
 </div>
 
@@ -415,7 +415,7 @@ Jos käytät G Suitea, siirry hallintapaneeliisi <a class="alert-link" href="htt
 </span>
 </div>
 
-5. Siirry osoitteeseen [Gmail](https://gmail.com) ja napsauta kohdassa [Asetukset <i class="fa fa-angle-right"></i> Tilit ja tuonti <i class="fa fa-angle-right"></i> Lähetä sähköpostia muodossa](https://mail.google.com/mail/u/0/#settings/accounts) kohtaa "Lisää toinen sähköpostiosoite".
+5. Siirry kohtaan [Gmail](https://gmail.com) ja napsauta kohdassa [Asetukset <i class="fa fa-angle-right"></i> Tilit ja tuonti <i class="fa fa-angle-right"></i> Lähetä sähköpostia muodossa](https://mail.google.com/mail/u/0/#settings/accounts) kohtaa "Lisää toinen sähköpostiosoite".
 
 6. Kun sinulta kysytään "Nimi", anna nimi, jolla haluat sähköpostisi näkyvän "Lähettäjä"-kentässä (esim. "Linus Torvalds")
 
@@ -444,7 +444,7 @@ Jos "Käyttäjätunnus"-osio täytetään automaattisesti, <u><strong>sinun on m
 
 14. Jatka napsauttamalla "Lisää tili"
 
-15. Avaa uusi välilehti osoitteeseen [Gmail](https://gmail.com) ja odota vahvistussähköpostin saapumista (saat vahvistuskoodin, joka vahvistaa, että olet sen sähköpostiosoitteen omistaja, jota yrität lähettää sähköpostia nimellä).
+15. Avaa uusi välilehti [Gmail](https://gmail.com)-sivustolle ja odota vahvistussähköpostin saapumista (saat vahvistuskoodin, joka vahvistaa, että olet sen sähköpostiosoitteen omistaja, jota yrität lähettää sähköpostitse).
 
 16. Kun se saapuu, kopioi ja liitä vahvistuskoodi edellisessä vaiheessa saamaasi kehotteeseen.
 
@@ -477,10 +477,10 @@ Jos haluat määrittää Gmailin reitityksen lisäasetukset siten, että sähkö
 
 **Sähköpostipalvelimen asetukset:**
 
-* Valitse "Reitti isännälle" ja anna `mx1.forwardemail.net` ensisijaiseksi palvelimeksi
+* Valitse "Reitti isäntään" ja anna `mx1.forwardemail.net` ensisijaiseksi palvelimeksi
 * Lisää `mx2.forwardemail.net` varapalvelimeksi
 * Aseta portiksi 25
-* Valitse "Vaadi TLS" suojauksen vuoksi
+* Valitse "Vaadi TLS suojauksen vuoksi"
 
 4. Luo reitti napsauttamalla **Tallenna**
 
@@ -502,25 +502,25 @@ Tämä määritys toimii vain Google Workspace -tileillä, joilla on mukautetut 
 <span>15–30 minuuttia</span>
 </div>
 
-Microsoft 365:n (entinen Office 365) käyttäjille, jotka haluavat määrittää edistyneen reitityksen niin, että postilaatikkoon vastaamattomat aliakset välittävät viestit edelleen Forward Email -viestien vaihtoon:
+Microsoft 365:n (entinen Office 365) käyttäjille, jotka haluavat määrittää edistyneen reitityksen niin, että postilaatikkoon vastaamattomat aliakset välittävät viestit edelleen Lähetä sähköposti -palvelun sähköpostivaihtoon:
 
 1. Kirjaudu Microsoft 365 -hallintakeskukseen osoitteessa [admin.microsoft.com](https://admin.microsoft.com)
 2. Siirry kohtaan **Exchange → Sähköpostin kulku → Säännöt**
 3. Napsauta **Lisää sääntö** ja valitse **Luo uusi sääntö**
 4. Nimeä sääntösi (esim. "Lähetä olemattomat postilaatikot edelleen Lähetä sähköpostia" -kohtaan)
-5. Valitse **Käytä tätä sääntöä, jos** -kohdasta:
+5. Valitse kohdassa **Käytä tätä sääntöä, jos**:
 * "Vastaanottajan osoite vastaa..."
 * Anna malli, joka vastaa kaikkia verkkotunnuksesi osoitteita (esim. `*@yourdomain.com`)
-6. Valitse **Tee seuraavat** -kohdasta:
+6. Valitse kohdassa **Tee seuraavat**:
 * "Ohjaa viesti uudelleen..."
 * Valitse "Seuraava sähköpostipalvelin"
 * Kirjoita `mx1.forwardemail.net` ja portti 25
 * Lisää `mx2.forwardemail.net` varapalvelimeksi
-7. Valitse **Paitsi jos** -kohdasta:
+7. Valitse kohdassa **Paitsi jos**:
 * "Vastaanottaja on..."
-* Lisää kaikki olemassa olevat osoitteesi postilaatikot, joita ei tule edelleenlähettää
-8. Aseta säännön prioriteetti varmistaaksesi, että se suoritetaan muiden postinkulkusääntöjen jälkeen
-9. Aktivoi sääntö napsauttamalla **Tallenna**
+* Lisää kaikki olemassa olevat postilaatikot, joita ei pitäisi edelleenlähettää
+8. Aseta säännön prioriteetti varmistaaksesi, että se suoritetaan muiden sähköpostin kulkusääntöjen jälkeen
+9. Aktivoi napsauttamalla **Tallenna** sääntö
 
 ## Vianmääritys {#troubleshooting}
 
@@ -534,7 +534,7 @@ Jos ongelmat jatkuvat, kyseessä on todennäköisesti DNS-etenemisongelma. Sinun
 
 **Onko ongelmia edelleen?** <a href="/help">ota meihin yhteyttä</a>, jotta voimme tutkia ongelmaa ja löytää nopean ratkaisun.
 
-### Miten määritän sähköpostiohjelmani toimimaan sähköpostin edelleenlähetyksen kanssa {#how-do-i-configure-my-email-client-to-work-with-forward-email}
+### Miten määritän sähköpostiohjelmani toimimaan sähköpostin edelleenlähetyksen kanssa? {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
 Palvelumme toimii suosittujen sähköpostiohjelmien, kuten:
@@ -570,9 +570,9 @@ Vinkki:
 
 ### Miksi sähköpostini päätyvät roskapostikansioon ja miten voin tarkistaa verkkotunnukseni maineen {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
-Tässä osiossa neuvotaan, jos lähtevä postisi käyttää SMTP-palvelimiamme (esim. `smtp.forwardemail.net`) (tai lähetetään edelleen `mx1.forwardemail.net` tai `mx2.forwardemail.net` kautta) ja se toimitetaan vastaanottajien roskapostikansioon.
+Tässä osiossa neuvotaan, jos lähtevä postisi käyttää SMTP-palvelimiamme (esim. `smtp.forwardemail.net`) (tai lähetetään edelleen `mx1.forwardemail.net`:n tai `mx2.forwardemail.net`:n kautta) ja se toimitetaan vastaanottajien roskapostikansioon.
 
-Valvomme rutiininomaisesti [IP-osoitteet](#what-are-your-servers-ip-addresses)-sivustoamme [kaikki hyvämaineiset DNS-estolistat](#how-do-you-handle-your-ip-addresses-becoming-blocked)-sivustoa vastaan, **siksi kyseessä on todennäköisesti verkkotunnuksen maineeseen liittyvä ongelma**.
+Seuraamme rutiininomaisesti [IP-osoitteet](#what-are-your-servers-ip-addresses)-ominaisuuttamme [kaikki hyvämaineiset DNS-estolistat](#how-do-you-handle-your-ip-addresses-becoming-blocked)-ominaisuutta vasten, **siksi kyseessä on todennäköisesti verkkotunnuksen maineeseen liittyvä ongelma**.
 
 Sähköpostit voivat päätyä roskapostikansioon useista syistä:
 
@@ -593,14 +593,14 @@ Voit kokeilla yhtä tai useampaa näistä työkaluista tarkistaaksesi verkkotunn
 | Cisco Talos IP- ja verkkotunnusten mainekeskus | <https://talosintelligence.com/reputation_center> | Maine |
 | Barracudan IP-osoitteen ja verkkotunnuksen maineen haku | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
 | MX Toolboxin mustan listan tarkistus | <https://mxtoolbox.com/blacklists.aspx> | Musta lista |
-| Google Postmaster Tools | <https://www.gmail.com/postmaster/> | Maine |
+| Google Postmaster -työkalut | <https://www.gmail.com/postmaster/> | Maine |
 | Yahoo Sender Hub | <https://senders.yahooinc.com/> | Maine |
-| MultiRBL.valli.org mustan listan tarkistus | <https://multirbl.valli.org/lookup/> | DNSBL |
+| MultiRBL.valli.org Mustan listan tarkistus | <https://multirbl.valli.org/lookup/> | DNSBL |
 | Lähettäjän pisteet | <https://senderscore.org/act/blocklist-remover/> | Maine |
 | Arvostus | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| Apple/Proofpoint IP:n poisto | <https://ipcheck.proofpoint.com/> | Poistaminen |
-| Cloudmark IP:n poisto | <https://csi.cloudmark.com/en/reset/> | Poistaminen |
+| Apple/Proofpoint IP-osoitteen poisto | <https://ipcheck.proofpoint.com/> | Poistaminen |
+| Cloudmark IP-osoitteen poisto | <https://csi.cloudmark.com/en/reset/> | Poistaminen |
 | SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
 | Microsoft Outlookin ja Office 365:n IP-osoitteiden poisto | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Poistaminen |
 | UCEPROTECTin tasot 1, 2 ja 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
@@ -612,13 +612,13 @@ Voit kokeilla yhtä tai useampaa näistä työkaluista tarkistaaksesi verkkotunn
 | t-online.de (saksa/T-Mobile) | `tobr@rx.t-online.de` | Poistaminen |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Aloita lähettämällä pienemmän määrän, mutta laadukkaita sähköposteja rakentaaksesi positiivisen maineen ennen kuin lähetät suurempia määriä.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Jos verkkotunnuksesi on mustalla listalla, jokaisella mustalla listalla on oma poistoprosessinsa. Tarkista ohjeet heidän verkkosivuiltaan.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Jos tarvitset lisäapua tai huomaat, että jokin sähköpostipalveluntarjoaja on luokitellut meidät roskapostiksi, <a href="/help">ota meihin yhteyttä</a>.
 
 ### Mitä minun pitäisi tehdä, jos saan roskapostia {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -628,7 +628,7 @@ Sinun kannattaa peruuttaa sähköpostilistan tilaus (jos mahdollista) ja estää
 
 **Roskapostin edelleenlähetyssähköpostiosoite on:** <abuse@forwardemail.net>
 
-### Miksi minulle Gmailissa lähetetyt testisähköpostit näkyvät "epäilyttävinä" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### Miksi minulle lähetetyt testisähköpostit Gmailissa näkyvät "epäilyttävinä" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
 Jos näet tämän virheilmoituksen Gmailissa, kun lähetät itsellesi testiviestin tai kun henkilö, jolle lähetät sähköpostia alias-tunnuksellasi, näkee sinulta sähköpostin ensimmäistä kertaa, **älä huoli** – tämä on Gmailin sisäänrakennettu turvaominaisuus.
 
@@ -638,28 +638,28 @@ Jos he kuitenkin näkevät tämän viestin, se johtuu siitä, että he ovat tott
 
 ### Voinko poistaa via forwardemail-pistemerkinnän Gmailissa {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
-Tämä aihe liittyy aiheeseen [Gmailissa yleisesti tunnettu ongelma, jossa lähettäjän nimen vieressä näkyy lisätietoja](https://support.google.com/mail/answer/1311182).
+Tämä aihe liittyy [Gmailissa yleisesti tunnettu ongelma, jossa lähettäjän nimen vieressä näkyy lisätietoja](https://support.google.com/mail/answer/1311182)-kohteeseen.
 
 Toukokuusta 2023 alkaen tuemme sähköpostin lähettämistä SMTP:n avulla lisäosana kaikille maksaville käyttäjille – tämä tarkoittaa, että voit poistaa <span class="notranslate">via forwardemail dot net</span> -tunnisteen Gmailissa.
 
-Huomaa, että tämä usein kysyttyjen kysymysten aihe on tarkoitettu erityisesti [Kuinka lähettää sähköpostia Gmailin avulla](#how-to-send-mail-as-using-gmail) -ominaisuuden käyttäjille.
+Huomaa, että tämä usein kysyttyjen kysymysten aihe on tarkoitettu erityisesti [Kuinka lähettää sähköpostia Gmailin avulla](#how-to-send-mail-as-using-gmail)-ominaisuuden käyttäjille.
 
-Katso määritysohjeet osiosta [Tuetteko sähköpostin lähettämistä SMTP:n kautta?](#do-you-support-sending-email-with-smtp).
+Katso määritysohjeet [Tuetteko sähköpostin lähettämistä SMTP:n kautta?](#do-you-support-sending-email-with-smtp)-osiosta.
 
 ## Tiedonhallinta {#data-management}
 
 ### Missä palvelimesi sijaitsevat {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Saatamme pian ilmoittaa EU:n datakeskuksemme sijainnin [forwardemail.eu](https://forwardemail.eu):n alaisuudessa. Tilaa keskustelu osoitteessa <https://github.com/orgs/forwardemail/discussions/336> saadaksesi päivityksiä.
 
 Palvelimemme sijaitsevat pääasiassa Denverissä, Coloradossa – katso täydellinen IP-osoitteiden luettelo osoitteesta <https://forwardemail.net/ips>.
 
-Voit lukea lisää alihankkijoistamme [GDPR](/gdpr), [DPA](/dpa) ja [Tietosuoja](/privacy) sivuiltamme.
+Voit lukea lisää alihankkijoistamme [GDPR](/gdpr)-, [DPA](/dpa)- ja [Tietosuoja](/privacy)-sivuiltamme.
 
-### Miten vien ja varmuuskopioin postilaatikkoni {#how-do-i-export-and-backup-my-mailbox}
+### Miten vien ja varmuuskopioin postilaatikoni {#how-do-i-export-and-backup-my-mailbox}
 
-Voit milloin tahansa viedä postilaatikkosi [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)-, [Mbox](https://en.wikipedia.org/wiki/Mbox)- tai salatuissa [SQLite](https://en.wikipedia.org/wiki/SQLite)-muodoissa.
+Voit milloin tahansa viedä postilaatikosi [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions)-, [Mbox](https://en.wikipedia.org/wiki/Mbox)- tai salatuissa [SQLite](https://en.wikipedia.org/wiki/SQLite)-muodoissa.
 
 Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset <i class="fa fa-angle-right"></i> Lataa varmuuskopio ja valitse haluamasi vientimuoto.
 
@@ -671,17 +671,17 @@ Jos sinun on tarkasteltava vietyjä EML- tai Mbox-muotojasi, näistä avoimen l�
 
 | Nimi | Muoto | Alusta | GitHub-URL-osoite |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| MBox Viewer | Mbox | Windows | <https://github.com/eneam/mboxviewer> |
+| MBox-katseluohjelma | Mbox | Ikkunat | <https://github.com/eneam/mboxviewer> |
 | mbox-web-viewer | Mbox | Kaikki alustat | <https://github.com/PHMRanger/mbox-web-viewer> |
-| EmlReader | EML | Windows | <https://github.com/ayamadori/EmlReader> |
+| EmlReader | EML | Ikkunat | <https://github.com/ayamadori/EmlReader> |
 | Sähköpostin katseluohjelma | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
 | eml-lukija | EML | Kaikki alustat | <https://github.com/s0ph1e/eml-reader> |
 
 Lisäksi, jos sinun on muunnettava Mbox-tiedosto EML-tiedostoksi, voit käyttää <https://github.com/noelmartinon/mboxzilla>.
 
-### Miten tuon ja siirrän olemassa olevan postilaatikoni {#how-do-i-import-and-migrate-my-existing-mailbox}
+### Miten tuon ja siirrän olemassa olevan postilaatikon {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-Voit helposti tuoda sähköpostisi Forward Email -palveluun (esim. käyttämällä [Thunderbird](https://www.thunderbird.net)) alla olevien ohjeiden avulla:
+Voit helposti tuoda sähköpostisi Forward Email -toimintoon (esim. käyttämällä [Thunderbird](https://www.thunderbird.net)-ominaisuutta) alla olevien ohjeiden mukaisesti:
 
 <div class="alert alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -700,7 +700,7 @@ Sinun on noudatettava kaikkia seuraavia vaiheita voidaksesi tuoda olemassa oleva
 | Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
 | Näkymät | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Vinkki:</strong> <span>Jos käytät Outlookia (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">PST-vientimuoto</a>), voit yksinkertaisesti seurata alla olevia "Muu"-kohdan ohjeita. Olemme kuitenkin antaneet alla linkkejä PST-tiedostojen muuntamiseen MBOX/EML-muotoon käyttöjärjestelmäsi perusteella:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba Windowsille</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst Windowsille, cygwinille</a> – (esim. <code>readpst -u -o $OUT_DIR $IN_DIR</code> korvaamalla <code>$OUT_DIR</code> ja <code>$IN_DIR</code> tulostushakemistolla ja syötekansiopolkuja vastaavasti).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst Ubuntu/Linuxille</a> – (esim. <code>sudo apt-get install readpst</code> ja sitten <code>readpst -u -o $OUT_DIR $IN_DIR</code>, korvaamalla <code>$OUT_DIR</code> ja <code>$IN_DIR</code> vastaavasti tulostus- ja syöttökansiopoluilla).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst macOS:lle (brew'n kautta)</a> – (esim. <code>brew install libpst</code> ja sitten <code>readpst -u -o $OUT_DIR $IN_DIR</code>, korvaamalla <code>$OUT_DIR</code> ja <code>$IN_DIR</code> sekä vastaavat tulostus- ja syöttöhakemistopolut).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">PST-muunnin Windowsille (GitHub)</a></li></ul><br /></span></div> |
 | Apple Mail | MBOX | <https://support.apple.com/guide/mail/import-or-export-mailboxes-mlhlp1030/mac#apd37a3190755974> |
-| Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
+| Pikaposti | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Download-all-your-data#downloadmail> |
 | Proton Mail | MBOX/EML | <https://proton.me/support/export-emails-import-export-app> |
 | Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
 | Ajatella | EML | <https://docs.gandi.net/en/gandimail/common_operations/backup_email.html#contents> |
@@ -711,9 +711,9 @@ Sinun on noudatettava kaikkia seuraavia vaiheita voidaksesi tuoda olemassa oleva
 
 3. Luo uusi tili käyttämällä aliaksesi koko sähköpostiosoitetta (esim. <koodi><sinä@verkkotunnuksesi.com></koodi>) ja luomaasi salasanaa. <strong>Jos sinulla ei vielä ole luotua salasanaa, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">katso asennusohjeet</a></strong>.
 
-4. Lataa ja asenna [TuoVientiTyökalut OF](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird-lisäosa.
+4. Lataa ja asenna [TuoVientiTyökalut OF](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) Thunderbird -laajennus.
 
-5. Luo uusi paikallinen kansio Thunderbirdissä ja napsauta sitä hiiren kakkospainikkeella → valitse `ImportExportTools NG` -vaihtoehto → valitse `Import mbox file` (MBOX-vientimuotoa varten) – tai – `Import messages` / `Import all messages from a directory` (EML-vientimuotoa varten).
+5. Luo uusi paikallinen kansio Thunderbirdissä ja napsauta sitä hiiren kakkospainikkeella → valitse `ImportExportTools NG`-vaihtoehto → valitse `Import mbox file` (MBOX-vientimuotoa varten) – tai – `Import messages` / `Import all messages from a directory` (EML-vientimuotoa varten).
 
 6. Vedä/pudota paikallisesta kansiosta uuteen (tai olemassa olevaan) IMAP-kansioon Thunderbirdissä, johon haluat ladata viestit IMAP-tallennustilassa palvelumme avulla. Tämä varmistaa, että ne varmuuskopioidaan verkossa SQLite-salatulla tallennustilallamme.
 
@@ -749,9 +749,9 @@ Olet suorittanut kaikki vaiheet onnistuneesti.
 </div>
 </div>
 
-### Tuetteko omaa ylläpitoa {#do-you-support-self-hosting}
+### Tuetteko omaa ylläpitoa? {#do-you-support-self-hosting}
 
-Kyllä, maaliskuusta 2025 lähtien tuemme itse isännöityä vaihtoehtoa. Lue blogi [tässä](https://forwardemail.net/blog/docs/self-hosted-solution). Tutustu [itse isännöity opas](https://forwardemail.net/self-hosted) -blogiin päästäksesi alkuun. Ja jos olet kiinnostunut yksityiskohtaisemmasta vaiheittaisesta versiosta, katso [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) tai [Debian](https://forwardemail.net/guides/selfhosted-on-debian) -pohjaiset oppaamme.
+Kyllä, maaliskuusta 2025 lähtien tuemme itse isännöityä vaihtoehtoa. Lue blogi [tässä](https://forwardemail.net/blog/docs/self-hosted-solution). Tutustu [itse isännöity opas](https://forwardemail.net/self-hosted)-blogiin päästäksesi alkuun. Ja jos olet kiinnostunut yksityiskohtaisemmasta vaiheittaisesta versiosta, katso [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu)- tai [Debian](https://forwardemail.net/guides/selfhosted-on-debian)-pohjaiset oppaamme.
 
 ## Sähköpostin määritys {#email-configuration}
 
@@ -811,108 +811,109 @@ Sinun on avattava uusi välilehti ja kirjauduttava verkkotunnusrekisterinpitäj�
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>FOR ROCK: Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa" fa-angle-right"></i> (Napsauta vieressä olevaa ▼-kuvaketta hallitaksesi) <i class="fa fa-angle-right"></i> DNS
+<td>ROCKILLE: Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> (Napsauta vieressä olevaa ▼-kuvaketta hallitaksesi) <i class="fa" fa-angle-right"></i> DNS
 <br /> VANHEMMAT VERKOT: Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> Vyöhykeeditori <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi)</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>"
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cp.dnsmadeeasy.com/">DNS Helppoa</a></td>
-<td>Kirjaudu sisään <i class="fa" fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi)</td>
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi)</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://dnsimple.com/dashboard">DNSimple</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Hallinta</td>
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> DNS <i class="fa fa-angle-right"></i> Hallinnoi</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkostoituminen <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa" fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Lisää <i class="fa fa-angle-right"></i> Hallinnoi verkkotunnusta</td>
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkostoituminen <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Lisää <i class="fa fa-angle-right"></i> Hallinnoi verkkotunnusta</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Korttinäkymässä napsauta verkkotunnuksesi hallinta -painiketta <i class="fa fa-angle-right"></i> Luettelonäkymässä napsauta rataskuvaketta <i class="fa fa-angle-right"></i> DNS- ja nimipalvelimet <i class="fa fa-angle-right"></i> DNS-tietueet</td>
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Korttinäkymässä napsauta verkkotunnuksesi hallinta -painiketta <i class="fa fa-angle-right"></i> Luettelonäkymässä napsauta
+rataskuvaketta <i class="fa fa-angle-right"></i> DNS- ja nimipalvelimet <i class="fa fa-angle-right"></i> DNS-tietueet</td>
 </tr>
 <tr>
 <td>
 <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Katso</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Katso</a>
 </td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> (napsauta rataskuvaketta) <i class="fa fa-angle-right"></i> Napsauta DNS- ja nimipalvelimet vasemmanpuoleisessa valikossa</td>
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> (napsauta rataskuvaketta) <i class="fa fa-angle-right"></i> Napsauta DNS ja nimipalvelimet vasemmanpuoleisessa valikossa</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Paneeli <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> Hallinnoi verkkotunnuksia <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Yleiskatsaus <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> Yksinkertainen editori <i class="fa fa-angle-right"></i> Tietueita</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Yleiskatsaus <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> Yksinkertainen editori <i class="fa fa-angle-right"></i> Tietueet</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinta <i class="fa" fa-angle-right"></i> Muokkaa vyöhykettä</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinta <i class="fa fa-angle-right"></i> Muokkaa vyöhykettä</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Katso</a>
+<a class="btn" btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Seuraa</a>
 </td>
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Hallinnoi verkkotunnuksiani <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi DNS:ää</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Verkkotunnukset</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Verkkotunnukset</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Katso</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Seuraa</a>
 </td>
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Määritä DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa" fa-play-circle"></i> Katso</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Seuraa</a>
 </td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnusluettelo <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> Lisäasetukset DNS:ssä</td>
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnusluettelo <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallitse <i class="fa fa-angle-right"></i> Lisäasetukset DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Asenna Netlify DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Netlify DNS:n määrittäminen</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Ratkaisut</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Asiakkuuspäällikkö <i class="fa fa-angle-right"></i> Omat verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> Muuta verkkotunnuksen osoitetta <i class="fa fa-angle-right"></i> DNS-lisäasetukset</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Ratkaisut</a></td>
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Asiakkuuspäällikkö <i class="fa fa-angle-right"></i> Omat verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> Hallinnoi <i class="fa fa-angle-right"></i> Muuta verkkotunnuksen osoitetta <i class="fa fa-angle-right"></i> DNS:n lisäasetukset</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Katso</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Katso</a>
 </td>
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Hallitut verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> DNS-asetukset</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Etusivu <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
+<td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Etusivu-valikko <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i>
 Lisäasetukset <i class="fa fa-angle-right"></i> Mukautetut tietueet</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-<td>Käytetään "now"-käyttöliittymää <i class="fa fa-angle-right"></i> <code>now dns lisää [domain] '@' MX [tietueen-arvo] [prioriteetti]</code></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Now</a></td>
+<td>Käyttäen "now"-komentoliittymää <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6"
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset-sivu <i class="fa fa-angle-right"></i> (Valitse verkkotunnuksesi) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7"
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset-sivu <i class="fa fa-angle-right"></i> (Napsauta <i class="fa fa-ellipsis-h"></i> -kuvaketta) <i class="fa fa-angle-right"></i> Valitse Hallitse DNS-tietueita</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8"
 <td>Kirjaudu sisään <i class="fa fa-angle-right"></i> Verkkotunnukset <i class="fa fa-angle-right"></i> Omat verkkotunnukset</td>
 </tr>
 <tr>
@@ -1016,7 +1017,7 @@ Jos uudelleenohjaat kaikki sähköpostit verkkotunnuksestasi (esim. "all@example
 Vinkki:
 </strong>
 <span>
-Muista korvata yllä olevat arvot "Arvo"-sarakkeessa omalla sähköpostiosoitteellasi. "TTL"-arvon ei tarvitse olla 3600, se voi olla tarvittaessa pienempi tai suurempi arvo. Pienempi "TTL"-arvo varmistaa, että kaikki tulevat DNS-tietueisiisi tehdyt muutokset leviävät nopeammin Internetissä – ajattele tätä siten, että se tarkoittaa sitä, kuinka kauan ne tallennetaan välimuistiin (sekunteina). Voit lukea lisää <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL:stä Wikipediassa</a>.
+Muista korvata yllä olevat arvot "Arvo"-sarakkeessa omalla sähköpostiosoitteellasi. "TTL"-arvon ei tarvitse olla 3600, se voi olla tarvittaessa pienempi tai suurempi. Pienempi "TTL"-arvo varmistaa, että kaikki tulevat DNS-tietueisiisi tehdyt muutokset leviävät nopeammin Internetiin – ajattele tätä siten, että se tarkoittaa sitä, kuinka kauan ne tallennetaan välimuistiin (sekunteina). Voit lukea lisää <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL:stä Wikipediassa</a>.
 </span>
 </div>
 
@@ -1192,7 +1193,7 @@ Voit myös määrittää verkkotunnuksen <strong class="notranslate">TXT</strong
 Vaihtoehto F:
 </strong>
 <span>
-Voit käyttää webhookeja jopa globaalina tai yksittäisenä aliaksena sähköpostien edelleenlähettämiseen. Katso esimerkki ja koko webhookeja käsittelevä osio <a href="#do-you-support-webhooks" class="alert-link">Tuetteko webhookeja</a> alta.
+Voit käyttää webhookeja jopa globaalina tai yksittäisenä aliaksena sähköpostien edelleenlähettämiseen. Katso esimerkki ja koko webhookeja käsittelevä osio <a href="#do-you-support-webhooks" class="alert-link">Tuetaanko webhookeja</a> alta.
 </span>
 </div>
 
@@ -1231,12 +1232,12 @@ Voit käyttää jopa säännöllisiä lausekkeita ("regex") aliaksien yhteensovi
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Tarvitsetko edistynyttä säännöllistä lauseketta substituutiolla?</strong> Katso esimerkit ja koko osio säännöllisistä lausekkeista otsikolla <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Tuetaanko säännöllisiä lausekkeita vai regexejä</a> alta.
+<strong>Tarvitsetko edistynyttä säännöllistä lauseketta substituutiolla?</strong> Katso esimerkit ja koko säännöllisiä lausekkeita käsittelevä osio <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Tuetaanko säännöllisiä lausekkeita vai regexejä</a> alta.
 </div>
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Yksinkertainen esimerkki:</strong> Jos haluan, että kaikki osoitteeseen `linus@example.com` tai `torvalds@example.com` menevät sähköpostit lähetetään edelleen osoitteeseen `user@gmail.com`:
+<strong>Yksinkertainen esimerkki:</strong> Jos haluan, että kaikki `linus@example.com`- tai `torvalds@example.com`-postiin menevät sähköpostit välitetään edelleen `user@gmail.com`-postiin:
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -1342,7 +1343,7 @@ Vinkki:
 Jos et saa testisähköposteja tai saat testisähköpostin, jossa lukee "Ole varovainen tämän viestin kanssa", katso vastaukset kysymyksille <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Miksi en saa testisähköpostejani</a> ja <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Miksi minulle lähetetyt testisähköpostini näkyvät Gmailissa "epäilyttävinä"</a>.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Jos haluat käyttää Gmailissa Lähetä sähköpostia nimellä -toimintoa, sinun on <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">katsottava tämä video</a></strong> tai noudatettava alla olevia ohjeita kohdassa <a href="#how-to-send-mail-as-using-gmail">How Lähetä sähköpostia Gmailissa</a>.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Jos haluat käyttää Gmailissa "Lähetä sähköpostia nimellä", sinun on <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">katsottava tämä video</a></strong> tai noudatettava alla olevia ohjeita kohdassa <a href="#how-to-send-mail-as-using-gmail">How Lähetä sähköpostia nimellä Gmailin avulla</a>.
 
 </li></ol>
 
@@ -1384,9 +1385,9 @@ Kyllä, mutta **DNS-tietueissasi tulisi olla vain yksi MX-vaihto**.
 
 Älä yritä käyttää "Prioriteetti"-asetusta useiden MX-keskusten määrittämiseen.
 
-Sen sijaan sinun on määritettävä olemassa oleva MX-vaihtopalvelusi välittämään kaikkien epäsopivien aliaksien posti palvelumme vaihtopalveluihin (`mx1.forwardemail.net` ja/tai `mx2.forwardemail.net`).
+Sen sijaan sinun on määritettävä olemassa oleva MX-sähköpostinvaihtosi välittämään kaikkien epäsopivien aliaksien posti palvelumme sähköpostinvaihtopisteisiin (`mx1.forwardemail.net` ja/tai `mx2.forwardemail.net`).
 
-Jos käytät Google Workspacea ja haluat välittää kaikki epäsopivat aliakset palveluumme, katso <https://support.google.com/a/answer/6297084>.
+Jos käytät Google Workspacea ja haluat välittää kaikki epätäsmäävät aliakset palveluumme, katso <https://support.google.com/a/answer/6297084>.
 
 Jos käytät Microsoft 365:tä (Outlook) ja haluat välittää kaikki epätäsmäävät aliakset palveluumme, katso <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> ja <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
@@ -1394,42 +1395,44 @@ Jos käytät Microsoft 365:tä (Outlook) ja haluat välittää kaikki epätäsm�
 
 Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset ja luo tai muokkaa aliasta, jolle haluat määrittää loma-automaattivastaajan.
 
-Voit määrittää aloituspäivän, lopetuspäivän, aiheen ja viestin ja ottaa ne käyttöön tai poistaa ne käytöstä milloin tahansa:
+Voit määrittää aloituspäivämäärän, päättymispäivämäärän, aiheen ja viestin sekä ottaa ne käyttöön tai poistaa ne käytöstä milloin tahansa:
 
-* Selkokielinen aihe ja viesti ovat tällä hetkellä tuettuja (käytämme sisäisesti `striptags` -pakettia HTML-koodin poistamiseen).
+* Selkotekstistä otsikkoa ja viestiä tuetaan tällä hetkellä (käytämme sisäisesti `striptags`-pakettia HTML-koodin poistamiseen).
 * Aihe on rajoitettu 100 merkkiin.
 * Viestin pituus on rajoitettu 1000 merkkiin.
 * Asennus vaatii lähtevän SMTP-viestin määrityksen (esim. sinun on määritettävä DKIM-, DMARC- ja Return-Path DNS-tietueet).
 * Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Asetukset <i class="fa fa-angle-right"></i> Lähtevän SMTP-määritykset ja noudata asennusohjeita.
-* Lomavastaajaa ei voi ottaa käyttöön globaaleilla vanity-verkkotunnuksilla (esim. [kertakäyttöiset osoitteet](/disposable-addresses) ei ole tuettu).
-* Lomavastaajaa ei voi ottaa käyttöön jokerimerkkejä/keräilymerkkejä (`*`) käyttäville aliaksille eikä säännöllisille lausekkeille.
+* Lomavastaajaa ei voi ottaa käyttöön globaaleilla vanity-verkkotunnuksilla (esim. [kertakäyttöiset osoitteet](/disposable-addresses)-verkkotunnusta ei tueta).
+* Lomavastaajaa ei voi ottaa käyttöön jokerimerkkiä/kaikki-merkitsevää tunnistetta (`*`) käyttäville aliaksille eikä säännöllisille lausekkeille.
 
-Toisin kuin sähköpostijärjestelmät, kuten `postfix` (esim. jotka käyttävät `sieve` loma-suodattimen laajennusta), Forward Email lisää automaattisesti DKIM-allekirjoituksesi, estää yhteysongelmat lomavastauksia lähetettäessä (esim. yleisten SSL/TLS-yhteysongelmien ja vanhojen palvelimien ylläpitämien ongelmien vuoksi) ja tukee jopa Open WKD- ja PGP-salausta lomavastauksissa.
+Toisin kuin sähköpostijärjestelmät, kuten `postfix` (jotka esimerkiksi käyttävät `sieve`-lomasähköpostisuodatinlaajennusta), Forward Email lisää automaattisesti DKIM-allekirjoituksesi, estää yhteysongelmat lomasähköpostivastauksia lähetettäessä (esim. yleisten SSL/TLS-yhteysongelmien ja vanhojen palvelimien ylläpitämien ongelmien vuoksi) ja tukee jopa Open WKD- ja PGP-salausta lomasähköpostivastauksissa.
 
 <!--
 * Väärinkäytösten estämiseksi jokaisesta lähetetystä lomaviestistä vähennetään yksi lähtevä SMTP-krediitti.
 * Kaikkiin maksullisiin tileihin sisältyy oletuksena 300 krediittiä päivässä. Jos tarvitset suuremman summan, ota meihin yhteyttä.
 -->
 
-1. Lähetämme viestin vain kerran per [sallittujen listalla](#do-you-have-an-allowlist) lähettäjä neljän päivän välein (mikä on samanlaista kuin Gmailin toiminta).
+1. Lähetämme viestin vain kerran per [sallittujen listalla](#do-you-have-an-allowlist)-lähettäjä neljän päivän välein (mikä on samanlaista kuin Gmailissa).
 
-* Redis-välimuistissamme käytetään sormenjälkiä `alias_id` ja `sender`, kun taas `alias_id` on MongoDB-alias-ID ja `sender` on joko lähettäjän osoite (jos sallittujen listalla) tai lähettäjän osoitteen juuriverkkotunnus (jos ei sallittujen listalla). Yksinkertaisuuden vuoksi tämän sormenjäljen vanhenemispäivä välimuistissa on asetettu 4 päivään.
+* Redis-välimuistissamme käytetään `alias_id`:n ja `sender`:n sormenjälkiä, kun taas `alias_id` on MongoDB-alias-ID ja `sender` on joko lähettäjän osoite (jos sallittujen listalla) tai lähettäjän osoitteen juuriverkkotunnus (jos ei sallittujen listalla). Yksinkertaisuuden vuoksi tämän sormenjäljen vanhenemispäivä välimuistissa on asetettu 4 päivään.
 
 * Lähestymistapamme, jossa käytetään lähettäjän osoitteesta jäsennettyä juuriverkkotunnusta muiden kuin sallittujen lähettäjien kohdalla, estää suhteellisen tuntemattomien lähettäjien (esim. pahantahtoisten toimijoiden) aiheuttaman väärinkäytön tulvimasta lomaviestien piiriin.
 
-2. Lähetämme viestin vain, kun SÄHKÖPOSTI LÄHETTÄJÄLTÄ ja/tai LÄHETTÄJÄLTÄ ei ole tyhjä eikä sisällä (kirjainkokoa ei erotella) [postmasterin käyttäjätunnus](#what-are-postmaster-addresses) (sähköpostin @-merkkiä edeltävä osa).
+2. Lähetämme viestin vain, kun MAIL FROM ja/tai From ei ole tyhjä eikä sisällä (kirjainkokoa ei erotella) [postin pääkäyttäjän käyttäjätunnus](#what-are-postmaster-addresses)-kohtaa (sähköpostin @-merkkiä edeltävä osa).
 
 3. Emme lähetä viestiä, jos alkuperäisessä viestissä oli jokin seuraavista otsikoista (kirjainkokoa ei erotella):
 
-* `auto-submitted` -otsikko, jonka arvo ei ole yhtä suuri kuin `no`. * `x-auto-response-suppress` -otsikko, jonka arvo on `dr`, `autoreply`, `auto-reply`, `auto_reply` tai `all`
-* `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` tai `x-auto-respond` (arvosta riippumatta).
-* `precedence` -otsikko, jonka arvo on `bulk`, `autoreply`, `auto-reply`, `auto_reply` tai `list`.
+* `auto-submitted`-otsikko, jonka arvo ei ole yhtä suuri kuin `no`.
+* `x-auto-response-suppress`-otsikko, jonka arvo on `dr`, `autoreply`, `auto-reply`, `auto_reply` tai `all`.
 
-4. Emme lähetä viestiä, jos MAIL FROM- tai Lähettäjä-sähköpostiosoite päättyy merkkijonoihin `+donotreply`, `-donotreply`, `+noreply` tai `-noreply`.
+* `list-id`-, `list-subscribe`-, `no`0-, `no`1-, `no`2-, `no`3-, `no`4-, `no`5-, `no`6- tai `no`7-otsikko (arvosta riippumatta).
+* `no`8-otsikko, jonka arvo on `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 tai `x-auto-response-suppress`3.
 
-5. Emme lähetä viestiä, jos Lähettäjän sähköpostiosoite ja käyttäjätunnus -osio oli `mdaemon` ja sen kirjainkokoa ei erotella otsikossa `X-MDDSN-Message`.
+4. Emme lähetä viestiä, jos MAIL FROM- tai Lähettäjä-sähköpostiosoite päättyy `+donotreply`-, `-donotreply`-, `+noreply`- tai `-noreply`-osoitukseen.
 
-6. Emme lähetä, jos `multipart/report`-otsikkokoodissa on kirjainkokoa ei-herkkä `content-type`.
+5. Emme lähetä, jos Lähettäjän sähköpostiosoite ja käyttäjätunnus -osio oli `mdaemon` ja sen kirjainkokoa ei erotella otsikossa `X-MDDSN-Message`.
+
+6. Emme lähetä, jos `multipart/report`-otsikko on kirjainkokoa ei-herkkä `content-type`.
 
 ### Miten määritän SPF:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-spf-for-forward-email}
 
@@ -1507,41 +1510,41 @@ Siirry kohtaan <a href="/my-account/domains" class="alert-link" target="_blank" 
 
 ### Miten yhdistän ja määritän kalenterini {#how-do-i-connect-and-configure-my-calendars}
 
-**Kalenterin määrittämiseksi käytä CalDAV-URL-osoitetta:** `https://caldav.forwardemail.net` (tai yksinkertaisesti `caldav.forwardemail.net`, jos asiakkaasi sallii sen)
+**Määritä kalenterisi käyttämällä CalDAV-URL-osoitetta:** `https://caldav.forwardemail.net` (tai yksinkertaisesti `caldav.forwardemail.net`, jos asiakkaasi sallii sen)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Sähköpostin edelleenlähetyskalenterin CalDAV Thunderbird -esimerkkiasetus" />
 
 ### Miten lisään kalentereita ja hallitsen olemassa olevia kalentereita {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-Jos haluat lisätä kalentereita, lisää uusi kalenterin URL-osoite: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**muista korvata `calendar-name` haluamallasi kalenterinimellä**)
+Jos haluat lisätä kalentereita, lisää vain uusi kalenterin URL-osoite: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**muista korvata `calendar-name` haluamallasi kalenterin nimellä**)
 
 Voit muuttaa kalenterin nimeä ja väriä luomisen jälkeen – käytä vain haluamaasi kalenterisovellusta (esim. Apple Mail tai [Thunderbird](https://thunderbird.net)).
 
 ### Miten määritän SRS:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-srs-for-forward-email}
 
-Määritämme [Lähettäjän uudelleenkirjoitusjärjestelmä](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") automaattisesti – sinun ei tarvitse tehdä tätä itse.
+Määritämme [Lähettäjän uudelleenkirjoitusjärjestelmä](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme):n ("SRS") automaattisesti – sinun ei tarvitse tehdä tätä itse.
 
 ### Miten määritän MTA-STS:n sähköpostin edelleenlähetystä varten {#how-do-i-set-up-mta-sts-for-forward-email}
 
-Lisätietoja on osoitteessa [MTA-STS-osiomme](#do-you-support-mta-sts).
+Lisätietoja on kohdassa [MTA-STS-osiomme](#do-you-support-mta-sts).
 
 ### Miten lisään profiilikuvan sähköpostiosoitteeseeni {#how-do-i-add-a-profile-picture-to-my-email-address}
 
 Jos käytät Gmailia, noudata seuraavia ohjeita:
 
-1. Siirry osoitteeseen <https://google.com> ja kirjaudu ulos kaikista sähköpostitileistä.
+1. Siirry kohtaan <https://google.com> ja kirjaudu ulos kaikista sähköpostitileistä.
 2. Napsauta "Kirjaudu sisään" ja napsauta avattavasta valikosta "toinen tili".
 3. Valitse "Käytä toista tiliä".
 4. Valitse "Luo tili".
 5. Valitse "Käytä nykyistä sähköpostiosoitettani".
-6. Anna mukautettu verkkotunnusnimi eli sähköpostiosoite.
+6. Anna mukautettu verkkotunnusnimesi sähköpostiosoite.
 7. Hae sähköpostiosoitteeseesi lähetetty vahvistussähköposti.
 8. Anna tästä sähköpostista saatu vahvistuskoodi.
 9. Täytä uuden Google-tilisi profiilitiedot.
 10. Hyväksy kaikki tietosuoja- ja käyttöehdot.
-11. Siirry osoitteeseen <https://google.com> ja napsauta profiilikuvakettasi oikeassa yläkulmassa ja napsauta sitten "muuta"-painiketta.
+11. Siirry kohtaan <https://google.com> ja napsauta profiilikuvakettasi oikeassa yläkulmassa ja napsauta sitten "muuta"-painiketta.
 12. Lataa uusi valokuva tai avatar tilillesi.
-13. Muutosten voimaantulo kestää noin 1–2 tuntia, mutta joskus muutokset voivat tapahtua hyvin nopeasti.
+13. Muutosten voimaantulo kestää noin 1–2 tuntia, mutta joskus se voi tapahtua hyvin nopeasti.
 14. Lähetä testisähköposti, niin profiilikuvan pitäisi tulla näkyviin.
 
 ## Lisäominaisuudet {#advanced-features}
@@ -1550,9 +1553,9 @@ Jos käytät Gmailia, noudata seuraavia ohjeita:
 
 Kyllä, voit lukea lisää osoitteesta <https://forwardemail.net/guides/newsletter-with-listmonk>.
 
-Huomaa, että IP-osoitteen maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emaililla on manuaalinen tarkistusprosessi verkkotunnuskohtaisesti **uutiskirjeen hyväksymistä** varten. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [avunpyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää yleensä alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin kuluessa. Lähitulevaisuudessa pyrimme tekemään tästä prosessista välittömän lisäämällä roskapostin hallintaa ja ilmoituksia. Tämä prosessi varmistaa, että sähköpostisi päätyvät postilaatikkoon eivätkä viestisi merkitä roskapostiksi.
+Huomaa, että IP-osoitteen maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emaililla on manuaalinen tarkistusprosessi verkkotunnuskohtaisesti **uutiskirjeen hyväksymistä** varten. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [avunpyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää yleensä alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin kuluessa. Lähitulevaisuudessa pyrimme tekemään tästä prosessista välittömän lisäämällä roskapostinhallintaa ja -hälytyksiä. Tämä prosessi varmistaa, että sähköpostisi päätyvät postilaatikkoon eivätkä viestisi merkitä roskapostiksi.
 
-### Tuetaanko sähköpostin lähettämistä API:n {#do-you-support-sending-email-with-api}} kautta?
+### Tuetteko sähköpostin lähettämistä API:n kautta? {#do-you-support-sending-email-with-api}
 
 Kyllä, toukokuusta 2023 alkaen tuemme sähköpostin lähettämistä API:n avulla lisäosana kaikille maksaville käyttäjille.
 
@@ -1568,9 +1571,9 @@ Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank"
 
 Katso vaihtoehtoja, esimerkkejä ja lisätietoja API-dokumentaatiomme osiosta [Sähköpostit](/email-api#outbound-emails).
 
-Jotta voit lähettää lähteviä sähköposteja API:mme kautta, sinun on käytettävä API-tunnustasi, joka on saatavilla osoitteessa [Oma turvallisuus](/my-account/security).
+Jotta voit lähettää lähteviä sähköposteja API:n kautta, sinun on käytettävä API-tunnustasi, joka on saatavilla kohdassa [Oma turvallisuus](/my-account/security).
 
-### Tuetteko sähköpostin vastaanottamista IMAP-protokollan avulla? {#do-you-support-receiving-email-with-imap}
+### Tuetteko sähköpostin vastaanottamista IMAP-protokollan kautta? {#do-you-support-receiving-email-with-imap}
 
 Kyllä, 16. lokakuuta 2023 alkaen tuemme sähköpostin vastaanottamista IMAP-protokollan kautta lisäosana kaikille maksaville käyttäjille. **Lue perusteellinen artikkelimme** osoitteessa [miten salattu SQLite-postilaatikon tallennustoiminto toimii](/blog/docs/best-quantum-safe-encrypted-email-service).
 
@@ -1596,10 +1599,10 @@ Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank"
 <strong class="font-weight-bold">
 Vinkki:
 </strong>
-<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a> tai <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Applen käyttöä. Mail</a> tai <a href="/blog/open-source" class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
+<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mailin</a> tai <a href="/blog/open-source" käyttöä. class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
 </div>
 
-4. Kun sinulta kysytään IMAP-palvelimen nimeä, kirjoita `imap.forwardemail.net`
+4. Kun IMAP-palvelimen nimeä pyydetään antamaan, kirjoita `imap.forwardemail.net`
 
 5. Kun sinulta kysytään IMAP-palvelimen porttia, anna `993` (SSL/TLS) – katso tarvittaessa [vaihtoehtoiset IMAP-portit](/faq#what-are-your-imap-server-configuration-settings)
 <div class="alert my-3 alert-warning">
@@ -1628,9 +1631,9 @@ Olet suorittanut kaikki vaiheet onnistuneesti.
 
 </div>
 
-### Tuetteko POP3-protokollaa {#do-you-support-pop3}
+### Tuetko POP3:a? {#do-you-support-pop3}
 
-Kyllä, 4. joulukuuta 2023 alkaen tuemme [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) -linkkiä lisäosana kaikille maksaville käyttäjille. **Lue perusteellinen artikkelimme** [miten salattu SQLite-postilaatikon tallennustoiminto toimii](/blog/docs/best-quantum-safe-encrypted-email-service) -linkistä.**
+Kyllä, 4. joulukuuta 2023 alkaen tuemme [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol):aa lisäosana kaikille maksaville käyttäjille. **Lue perusteellinen artikkelimme** [miten salattu SQLite-postilaatikon tallennustoiminto toimii](/blog/docs/best-quantum-safe-encrypted-email-service):stä.**
 
 <div id="pop3-ohjeet">
 
@@ -1654,10 +1657,10 @@ Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank"
 <strong class="font-weight-bold">
 Vinkki:
 </strong>
-<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a> tai <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Applen käyttöä. Mail</a> tai <a href="/blog/open-source" class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
+<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mailin</a> tai <a href="/blog/open-source" käyttöä. class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
 </div>
 
-4. Kun sinulta kysytään POP3-palvelimen nimeä, kirjoita `pop3.forwardemail.net`
+4. Kun POP3-palvelimen nimeä pyydetään antamaan, kirjoita `pop3.forwardemail.net`
 
 5. Kun sinulta kysytään POP3-palvelimen porttia, anna `995` (SSL/TLS) – katso tarvittaessa [vaihtoehtoiset POP3-portit](/faq#what-are-your-pop3-server-configuration-settings)
 <div class="alert my-3 alert-warning">
@@ -1688,7 +1691,7 @@ Olet suorittanut kaikki vaiheet onnistuneesti.
 
 ### Tuetteko kalentereita (CalDAV)? {#do-you-support-calendars-caldav}
 
-Kyllä, 5. helmikuuta 2024 alkaen olemme lisänneet tämän ominaisuuden. Palvelimemme koodi on `caldav.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussivullamme</a>.
+Kyllä, 5. helmikuuta 2024 alkaen olemme lisänneet tämän ominaisuuden. Palvelimemme on `caldav.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussivullamme</a>.
 
 Se tukee sekä IPv4- että IPv6-protokollia ja on käytettävissä portin `443` (HTTPS) kautta.
 
@@ -1703,7 +1706,7 @@ Kalenterituen käyttämiseksi **käyttäjän** on oltava sellaisen aliaksen säh
 
 Kyllä, 12. kesäkuuta 2025 alkaen olemme lisänneet tämän ominaisuuden. Palvelimemme on `carddav.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussivullamme</a>.
 
-Se tukee sekä IPv4:ää että IPv6:tta ja on käytettävissä portin `443` (HTTPS) kautta.
+Se tukee sekä IPv4- että IPv6-protokollia ja on käytettävissä portin `443` (HTTPS) kautta.
 
 | Kirjaudu sisään | Esimerkki | Kuvaus |
 | -------- | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -1724,7 +1727,7 @@ Kyllä, toukokuusta 2023 alkaen tuemme sähköpostin lähettämistä SMTP:n avul
 Tärkeää:
 </strong>
 <span>
-Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a>, <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> ja <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">lähtevän SMTP-liikenteen rajoituksemme</a> – käyttöäsi pidetään hyväksyntänä ja hyväksyntänä.
+Varmista, että olet lukenut <a href="/terms" class="alert-link" target="_blank">käyttöehtomme</a>, <a href="/privacy" class="alert-link" target="_blank">tietosuojakäytäntömme</a> ja <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">lähtevän SMTP-liikenteen rajoituksemme</a> – käyttösi katsotaan tiedoksi ja hyväksyt sen.
 </span>
 </div>
 
@@ -1750,10 +1753,10 @@ Jos käytät Gmailia, katso <a class="alert-link" href="/guides/send-mail-as-gma
 <strong class="font-weight-bold">
 Vinkki:
 </strong>
-<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a> tai <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Applen käyttöä. Mail</a> tai <a href="/blog/open-source" class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
+<span>Suosittelemme <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbirdin</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobilen</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mailin</a> tai <a href="/blog/open-source" käyttöä. class="alert-link" target="_blank">avoimen lähdekoodin ja yksityisyyteen keskittyvä vaihtoehto</a>.</span>
 </div>
 
-5. Kun sinulta kysytään SMTP-palvelimen nimeä, kirjoita `smtp.forwardemail.net`
+5. Kun SMTP-palvelimen nimeä pyydetään antamaan, kirjoita `smtp.forwardemail.net`
 
 6. Kun sinulta kysytään SMTP-palvelimen porttia, anna `465` (SSL/TLS) – katso tarvittaessa [vaihtoehtoiset SMTP-portit](/faq#what-are-your-smtp-server-configuration-settings)
 <div class="alert my-3 alert-warning">
@@ -1794,13 +1797,13 @@ Olet suorittanut kaikki vaiheet onnistuneesti.
 
 ### Tuetteko OpenPGP/MIME:tä, päästä päähän -salausta ("E2EE") ja Web Key Directorya ("WKD")? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Kyllä, tuemme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [päästä päähän -salaus ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption) ja julkisten avainten etsimistä [Web Key Directory ("WKD")](https://wiki.gnupg.org/WKD):n avulla. Voit määrittää OpenPGP:n käyttämällä [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) tai [isännöi omia avaimiasi](https://wiki.gnupg.org/WKDHosting) (katso [tämä WKD-palvelimen asennuksen ydin](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Kyllä, tuemme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP):aa ja [päästä päähän -salaus ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption):tä sekä julkisten avainten etsimistä [Verkkoavainten hakemisto ("WKD")](https://wiki.gnupg.org/WKD):n avulla. Voit määrittää OpenPGP:n [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service):n tai [isännöi omia avaimiasi](https://wiki.gnupg.org/WKDHosting):n avulla (katso [tämä WKD-palvelimen asennuksen ydin](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD-haut tallennetaan välimuistiin 1 tunniksi sähköpostin oikea-aikaisen toimituksen varmistamiseksi → jos siis lisäät, muutat tai poistat WKD-avaimesi, lähetä meille sähköpostia osoitteeseen `support@forwardemail.net` ja anna sähköpostiosoitteesi, jotta voimme tyhjentää välimuistin manuaalisesti.
+* WKD-haut tallennetaan välimuistiin 1 tunniksi, jotta sähköpostit toimitetaan oikea-aikaisesti → jos siis lisäät, muutat tai poistat WKD-avaimesi, lähetä meille sähköpostia osoitteeseen `support@forwardemail.net` ja kerro sähköpostiosoitteesi, jotta voimme tyhjentää välimuistin manuaalisesti.
 * Tuemme PGP-salausta viesteille, jotka lähetetään edelleen WKD-haun kautta tai käyttämällä käyttöliittymässämme ladattua PGP-avainta.
-* Ladatut avaimet ovat voimassa, kunhan PGP-valintaruutu on käytössä/valittu.
+* Ladatut avaimet ovat voimassa niin kauan kuin PGP-valintaruutu on käytössä/valittu.
 * Webhookeihin lähetettyjä viestejä ei tällä hetkellä salata PGP:llä.
-* Jos sinulla on useita aliaksia, jotka vastaavat tiettyä edelleenlähetysosoitetta (esim. säännöllinen lauseke/jokerimerkki/tarkka yhdistelmä), ja jos useampi kuin yksi näistä sisältää ladatun PGP-avaimen ja PGP on tarkistettu → lähetämme sinulle virheilmoituksen sähköpostitse emmekä salaa viestiä ladatulla PGP-avaimellasi. Tämä on hyvin harvinaista ja koskee yleensä vain edistyneitä käyttäjiä, joilla on monimutkaiset aliassäännöt. * **PGP-salausta ei käytetä sähköpostin edelleenlähetykseen MX-palvelimiemme kautta, jos lähettäjällä on DMARC-hylkäyskäytäntö. Jos tarvitset PGP-salausta *kaikelle* sähköpostille, suosittelemme IMAP-palvelumme käyttöä ja PGP-avaimesi määrittämistä saapuvan postin aliakselle.**
+* Jos sinulla on useita aliaksia, jotka vastaavat tiettyä edelleenlähetysosoitetta (esim. säännöllinen lauseke/jokerimerkki/tarkka yhdistelmä), ja jos useampi kuin yksi näistä sisältää ladatun PGP-avaimen ja PGP on tarkistettu → lähetämme sinulle virheilmoituksen sähköpostitse emmekä salaa viestiä ladatulla PGP-avaimellasi. Tämä on hyvin harvinaista ja koskee yleensä vain edistyneitä käyttäjiä, joilla on monimutkaisia alias-sääntöjä. * **PGP-salausta ei käytetä sähköpostin edelleenlähetykseen MX-palvelimiemme kautta, jos lähettäjällä on DMARC-hylkäyskäytäntö. Jos tarvitset PGP-salausta *kaikelle* sähköpostille, suosittelemme IMAP-palvelumme käyttöä ja PGP-avaimesi määrittämistä saapuvan postin aliakselle.**
 
 **Voit vahvistaa Web Key Directory -asetuksesi osoitteessa <https://wkd.chimbosonic.com/> (avoimen lähdekoodin hakemisto) tai <https://www.webkeydirectory.com/> (omistusoikeudella suojattu hakemisto).**
 
@@ -1809,7 +1812,7 @@ Kyllä, tuemme [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenP
 <strong class="font-weight-bold">
 Automaattinen salaus:
 </strong>
-<span>Jos käytät <a href="#do-you-support-sending-email-with-smtp" class="alert-link">lähtevää SMTP-palveluamme</a> ja lähetät salaamattomia viestejä, yritämme automaattisesti salata viestit vastaanottajakohtaisesti käyttämällä <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
+<span>Jos käytät <a href="#do-you-support-sending-email-with-smtp" class="alert-link">lähtevää SMTP-palveluamme</a> ja lähetät salaamattomia viestejä, yritämme automaattisesti salata viestit vastaanottajakohtaisesti käyttämällä <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web-avainhakemistoa ("WKD")</a>.</span>
 </div>
 
 <div class="alert alert-warning">
@@ -1830,7 +1833,7 @@ Sinun on noudatettava kaikkia seuraavia vaiheita ottaaksesi OpenPGP:n käyttöö
 | Gmail | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Gmail ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
 | Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
 | Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) tai [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (omistusoikeudellinen lisenssi) | Apple Mail ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [PGPro](https://github.com/opensourceios/PGPro/) tai [FlowCrypt](https://flowcrypt.com/download). |
-| Näkymät | Windows | [gpg4win](https://www.gpg4win.de/index.html) | Outlookin työpöytäsähköpostiohjelma ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [gpg4win](https://www.gpg4win.de/index.html). |
+| Näkymät | Ikkunat | [gpg4win](https://www.gpg4win.de/index.html) | Outlookin työpöytäsähköpostiohjelma ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [gpg4win](https://www.gpg4win.de/index.html). |
 | Näkymät | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Outlookin verkkopohjainen sähköpostiohjelma ei tue OpenPGP:tä, mutta voit ladata avoimen lähdekoodin laajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
 | Android | Mobiili | [OpenKeychain](https://www.openkeychain.org/) tai [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients), kuten [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) ja [FairEmail](https://github.com/M66B/FairEmail), tukevat molemmat avoimen lähdekoodin laajennusta [OpenKeychain](https://www.openkeychain.org/). Voit vaihtoehtoisesti käyttää avoimen lähdekoodin (omistusoikeudella lisensoitua) laajennusta [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
 | Google Chrome | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Voit ladata avoimen lähdekoodin selainlaajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
@@ -1839,7 +1842,7 @@ Sinun on noudatettava kaikkia seuraavia vaiheita ottaaksesi OpenPGP:n käyttöö
 | Rohkea | Selain | [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download) (omistusoikeudellinen lisenssi) | Voit ladata avoimen lähdekoodin selainlaajennuksen [Mailvelope](https://mailvelope.com/) tai [FlowCrypt](https://flowcrypt.com/download). |
 | Balsa | Työpöytä | [Configure OpenPGP in Balsa](https://www.mynetcologne.de/~nc-dreszal/balsa/balsa23-secure-mail.html#USING) | Balsalla on sisäänrakennettu tuki OpenPGP:lle. |
 | KMail | Työpöytä | [Configure OpenPGP in KMail](https://userbase.kde.org/KMail/PGP_MIME) | KMailissa on sisäänrakennettu OpenPGP-tuki. |
-| GNOME Evolution | Työpöytä | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolutionissa on sisäänrakennettu OpenPGP-tuki. |
+| GNOME-kehitys | Työpöytä | [Configure OpenPGP in Evolution](https://help.gnome.org/users/evolution/stable/mail-encryption.html.en) | GNOME Evolutionissa on sisäänrakennettu OpenPGP-tuki. |
 | Terminaali | Työpöytä | [Configure gpg in Terminal](https://docs.github.com/en/authentication/managing-commit-signature-verification/generating-a-new-gpg-key#generating-a-gpg-key) | Voit käyttää avoimen lähdekoodin [gpg command line tool](https://www.gnupg.org/download/) -komentoa uuden avaimen luomiseen komentoriviltä. |
 
 2. Avaa lisäosa, luo julkinen avaimesi ja määritä sähköpostiohjelmasi käyttämään sitä.
@@ -1864,7 +1867,7 @@ Jos käytät <a class="alert-link" href="/blog/docs/best-quantum-safe-encrypted-
 </span>
 </div>
 
-4. Lisää uusi `CNAME` -tietue verkkotunnukseesi (esim. `example.com`):
+4. Lisää uusi `CNAME`-tietue verkkotunnukseesi (esim. `example.com`):
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -1905,13 +1908,13 @@ Olet suorittanut kaikki vaiheet onnistuneesti.
 </div>
 </div>
 
-### Tuetko MTA-STS:ää {#do-you-support-mta-sts}
+### Tuetko MTA-STS:ää? {#do-you-support-mta-sts}
 
-Kyllä, 2. maaliskuuta 2023 alkaen tuemme [MTA-STS](https://www.hardenize.com/blog/mta-sts). Voit käyttää [tämä malli](https://github.com/jpawlowski/mta-sts.template), jos haluat ottaa sen käyttöön verkkotunnuksessasi.
+Kyllä, 2. maaliskuuta 2023 alkaen tuemme [MTA-STS](https://www.hardenize.com/blog/mta-sts):aa. Voit käyttää [tämä malli](https://github.com/jpawlowski/mta-sts.template):aa, jos haluat ottaa sen käyttöön verkkotunnuksessasi.
 
 Kokoonpanomme löytyy julkisesti GitHubista osoitteesta <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
-### Tuetteko todentamisavaimia ja WebAuthnia? {#do-you-support-passkeys-and-webauthn}
+### Tuetteko todennuksia ja WebAuthnia? {#do-you-support-passkeys-and-webauthn}
 
 Kyllä! 13. joulukuuta 2023 alkaen olemme lisänneet tuen salasanoille [suuren kysynnän vuoksi](https://github.com/orgs/forwardemail/discussions/182).
 
@@ -1927,11 +1930,11 @@ Lisätietoja salasanoista löydät seuraavista linkeistä:
 * [Kirjautuminen sovelluksiin ja verkkosivustoille iPhonessa salasanojen avulla](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (Apple)
 * [Wikipedian artikkeli salasanoista](https://en.wikipedia.org/wiki/Passkey_\(credential\))
 
-### Tuetteko sähköpostin parhaita käytäntöjä {#do-you-support-email-best-practices}
+### Tuetko sähköpostin parhaita käytäntöjä? {#do-you-support-email-best-practices}
 
 Kyllä. Kaikissa paketeissamme on sisäänrakennettu tuki SPF:lle, DKIM:lle, DMARC:lle, ARC:lle ja SRS:lle. Olemme myös tehneet laajasti yhteistyötä näiden spesifikaatioiden alkuperäisten tekijöiden ja muiden sähköpostiasiantuntijoiden kanssa varmistaaksemme täydellisyyden ja korkean toimitettavuuden.
 
-### Tuetteko bounce-webhookeja {#do-you-support-bounce-webhooks}
+### Tuetteko webhookien palautusta? {#do-you-support-bounce-webhooks}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1943,30 +1946,30 @@ Etsitkö dokumentaatiota sähköpostin webhookeista? Katso lisätietoja kohdasta
 </span>
 </div>
 
-Kyllä, 14. elokuuta 2024 alkaen olemme lisänneet tämän ominaisuuden. Voit nyt siirtyä kohtaan Oma tili → Verkkotunnukset → Asetukset → Palautuswebhook-URL ja määrittää `http://` tai `https://` URL-osoitteen, johon lähetämme `POST` pyynnön aina, kun lähtevät SMTP-sähköpostit palautuvat.
+Kyllä, 14. elokuuta 2024 alkaen olemme lisänneet tämän ominaisuuden. Voit nyt siirtyä kohtaan Oma tili → Verkkotunnukset → Asetukset → Palautuswebhookin URL-osoite ja määrittää `http://`- tai `https://`-URL-osoitteen, johon lähetämme `POST`-pyynnön aina, kun lähtevät SMTP-sähköpostit palautuvat.
 
 Tämä on hyödyllistä lähtevän SMTP-postin hallintaan ja valvontaan – ja sitä voidaan käyttää tilaajien ylläpitoon, tilausten peruuttamiseen ja palautusten havaitsemiseen.
 
 Bounce-webhook-hyötykuormat lähetetään JSON-muodossa, jolla on seuraavat ominaisuudet:
 
-* `email_id` (Merkkijono) - sähköpostiosoite, joka vastaa Oma tili -osiossa → Sähköpostit (lähtevä SMTP) olevaa sähköpostia
-* `list_id` (Merkkijono) - alkuperäisen lähtevän sähköpostin `List-ID` otsikkoarvo (kirjainkokoa ei erotella), jos sellainen on
-* `list_unsubscribe` (Merkkijono) - alkuperäisen lähtevän sähköpostin `List-Unsubscribe` otsikkoarvo (kirjainkokoa ei erotella), jos sellainen on
-* `feedback_id` (Merkkijono) - alkuperäisen lähtevän sähköpostin `Feedback-ID` otsikkoarvo (kirjainkokoa ei erotella), jos sellainen on
-* `recipient` (Merkkijono) - palautuneen tai virheellisen viestin lähettäneen vastaanottajan sähköpostiosoite
-* `message` (Merkkijono) - yksityiskohtainen virheilmoitus palautuksesta
+* `email_id` (Merkkijono) - sähköpostiosoite, joka vastaa Oma tili -osiossa olevaa sähköpostia → Sähköpostit (lähtevä SMTP)
+* `list_id` (Merkkijono) - `List-ID`-otsikkoarvo (kirjainkokoa ei erottele), jos sellainen on, alkuperäisestä lähtevästä sähköpostista
+* `list_unsubscribe` (Merkkijono) - `List-Unsubscribe`-otsikkoarvo (kirjainkokoa ei erottele), jos sellainen on, alkuperäisestä lähtevästä sähköpostista
+* `feedback_id` (Merkkijono) - `Feedback-ID`-otsikkoarvo (kirjainkokoa ei erottele), jos sellainen on, alkuperäisestä lähtevästä sähköpostista
+* `recipient` (Merkkijono) - palautuneen tai virheellisen viestin vastaanottajan sähköpostiosoite
+* `message` (Merkkijono) - palautuksen yksityiskohtainen virheilmoitus
 * `response` (Merkkijono) - SMTP-vastausviesti
-* `response_code` (Numero) - jäsennetyn SMTP-vastauskoodin
-* `truth_source` (Merkkijono) - jos vastauskoodi oli luotettavasta lähteestä, tähän arvoon lisätään pääverkkotunnuksen nimi (esim. `google.com` tai `yahoo.com`)
-* `bounce` (Objekti) - objekti, joka sisältää seuraavat ominaisuudet, jotka kuvaavat palautus- ja hylkäystilan
-* `action` (Merkkijono) - palautustoiminto (esim. `"reject"`)
-* `message` (Merkkijono) - palautuksen syy (esim. `"Message Sender Blocked By Receiving Server"`)
-* `category` (Merkkijono) - palautuksen kategoria (esim. `"block"`)
-* `code` (Numero) - palautuksen tilakoodi (esim. `554`)
-* `status` (Merkkijono) - palautuskoodi vastausviestistä (esim. `5.7.1`)
-* `line` (Numero) - jäsennetyn rivin numero, jos sellainen on, [Zone-MTA:n palautusjäsennysluettelosta](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (esim. `526`)
-* `headers` (Objekti) - lähtevän sähköpostin avain-arvo-otsikkopari
-* `bounced_at` (Merkkijono) - [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) muotoiltu päivämäärä, jolloin palautusvirhe tapahtui
+* `list_id`0 (Numero) - jäsennetyn SMTP-vastauskoodi
+* `list_id`1 (Merkkijono) - jos vastauskoodi oli luotettavasta lähteestä, tähän arvoon lisätään pääverkkotunnuksen nimi (esim. `list_id`2 tai `list_id`3)
+* `list_id`4 (Objekti) - objekti, joka sisältää seuraavat ominaisuudet, jotka kuvaavat palautus- ja hylkäystilaa:
+* `list_id`5 (Merkkijono) - palautustoiminto (esim. `list_id`6)
+* `list_id`7 (Merkkijono) - palautuksen syy (esim. `list_id`8)
+* `list_id`9 (Merkkijono) - palautusluokka (esim. `List-ID`0)
+* `List-ID`1 (Numero) - palautuksen tilakoodi (esim. `List-ID`2)
+* `List-ID`3 (Merkkijono) - vastauksen palautuskoodi viesti (esim. `List-ID`4)
+* `List-ID`5 (Numero) - jäsennetyn rivin numero, jos sellainen on, `List-ID`6 (esim. `List-ID`7)
+* `List-ID`8 (Objekti) - lähtevän sähköpostin avain-arvo-otsikkopari
+* `List-ID`9 (Merkkijono) - `list_unsubscribe`0-muotoiltu päivämäärä, jolloin palautusvirhe tapahtui
 
 Esimerkiksi:
 
@@ -1993,17 +1996,17 @@ Esimerkiksi:
 
 Tässä on muutamia lisähuomautuksia bounce-webhookeista:
 
-* Jos webhook-hyötykuorma sisältää arvon `list_id`, `list_unsubscribe` tai `feedback_id`, sinun tulee tarvittaessa poistaa `recipient` listalta.
-* Jos `bounce.category` arvo oli `"block"`, `"recipient"`, `"spam"` tai `"virus"`, sinun tulee ehdottomasti poistaa käyttäjä listalta.
-* Jos sinun on tarkistettava webhook-hyötykuormat (jotta ne todella tulevat palvelimeltamme), voit [selvitä etäasiakkaan IP-osoite ja asiakkaan isäntänimi käänteisen haun avulla](https://nodejs.org/api/dns.html#dnspromisesreverseip) – sen pitäisi olla `smtp.forwardemail.net`.
-* Voit myös tarkistaa IP-osoitteen [julkaistut IP-osoitteemme](#what-are-your-servers-ip-addresses):ää vasten.
-* Siirry kohtaan Oma tili → Verkkotunnukset → Asetukset → Webhook Signature Payload Verification Key saadaksesi webhook-avaimesi.
-* Voit kierrättää tätä avainta milloin tahansa turvallisuussyistä.
-* Laske ja vertaa webhook-pyynnöstämme saatua `X-Webhook-Signature`-arvoa tällä avaimella laskettuun rungon arvoon. Esimerkki tästä on osoitteessa [tämä Stack Overflow -viesti](https://stackoverflow.com/a/68885281).
-* Lisätietoja on keskustelussa osoitteessa <https://github.com/forwardemail/free-email-forwarding/issues/235>. * Odotamme webhook-päätepisteesi vastausta `200` tilakoodilla enintään `5` sekuntia, ja yritämme uudelleen enintään `1` kertaa.
-* Jos havaitsemme, että webhook-osoitteesi palautusosoitteessa on virhe, kun yritämme lähettää sille pyynnön, lähetämme sinulle kohteliaisuussähköpostin kerran viikossa.
+* Jos webhook-hyötykuorma sisältää `list_id`-, `list_unsubscribe`- tai `feedback_id`-arvon, sinun tulee tarvittaessa poistaa `recipient` luettelosta.
+* Jos `bounce.category`-arvo oli `"block"`, `"recipient"`, `"spam"` tai `"virus"`, sinun tulee ehdottomasti poistaa käyttäjä luettelosta.
+* Jos sinun on tarkistettava webhook-hyötykuormat (varmistaaksesi, että ne todella tulevat palvelimeltamme), voit käyttää [selvitä etäasiakkaan IP-osoite ja asiakkaan isäntänimi käänteisen haun avulla](https://nodejs.org/api/dns.html#dnspromisesreverseip)-arvoa – sen pitäisi olla `list_unsubscribe`0.
+* Voit myös tarkistaa IP-osoitteen `list_unsubscribe`1-arvoa vasten.
+* Siirry kohtaan Oma tili → Verkkotunnukset → Asetukset → Webhook-allekirjoituksen hyötykuorman vahvistusavain saadaksesi webhook-avaimesi.
+* Voit vaihtaa tätä avainta milloin tahansa turvallisuussyistä. * Laske ja vertaa webhook-pyyntömme `list_unsubscribe`2-arvoa laskettuun rungon arvoon käyttämällä tätä avainta. Esimerkki tästä on saatavilla osoitteessa `list_unsubscribe`3.
+* Katso lisätietoja keskustelusta osoitteessa <`list_unsubscribe`4.
+* Odotamme enintään `list_unsubscribe`5 sekuntia, että webhook-päätepisteesi vastaa `list_unsubscribe`6-tilakoodilla, ja yritämme uudelleen enintään `list_unsubscribe`7 sekunnin kuluttua.
+* Jos havaitsemme, että webhook-päätepisteesi palautus-URL-osoitteessa on virhe, kun yritämme lähettää sille pyynnön, lähetämme sinulle kohteliaisuussähköpostin kerran viikossa.
 
-### Tuetteko webhookeja {#do-you-support-webhooks}
+### Tuetteko webhookeja? {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -2029,7 +2032,7 @@ Jos käytät maksullista tilausta (jossa on parannettu yksityisyyden suoja), sii
 
 Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</strong>-tietue alla olevan kuvan mukaisesti:
 
-Jos esimerkiksi haluan kaikkien osoitteeseen `alias@example.com` tulevien sähköpostien edelleenlähettävän uuteen [pyyntölokero](https://requestbin.com/r/en8pfhdgcculn?inspect) testipäätepisteeseen:
+Jos esimerkiksi haluan kaikkien `alias@example.com`-osoitteeseen menevien sähköpostien välittävän uuteen [pyyntölokero](https://requestbin.com/r/en8pfhdgcculn?inspect)-testipäätepisteeseen:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -2050,7 +2053,7 @@ Jos esimerkiksi haluan kaikkien osoitteeseen `alias@example.com` tulevien sähk�
 </tbody>
 </table>
 
-Tai ehkä haluat, että kaikki osoitteeseen `example.com` menevät sähköpostit välitetään edelleen tähän päätepisteeseen:
+Tai ehkä haluat, että kaikki `example.com`-osoitteeseen menevät sähköpostit välitetään edelleen tähän päätepisteeseen:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -2073,23 +2076,24 @@ Tai ehkä haluat, että kaikki osoitteeseen `example.com` menevät sähköpostit
 
 **Tässä on lisähuomautuksia webhookeista:**
 
-* Jos sinun on tarkistettava webhook-hyötykuormat (jotta ne todella tulevat palvelimeltamme), voit [selvitä etäasiakkaan IP-osoite ja asiakkaan isäntänimi käänteisen haun avulla](https://nodejs.org/api/dns.html#dnspromisesreverseip) – sen pitäisi olla joko `mx1.forwardemail.net` tai `mx2.forwardemail.net`.
-* Voit myös tarkistaa IP-osoitteen [julkaistut IP-osoitteemme](#what-are-your-servers-ip-addresses):a vasten.
-* Jos käytät maksullista tilausta, siirry kohtaan Oma tili → Verkkotunnukset → Asetukset → Webhook-allekirjoituksen hyötykuorman vahvistusavain saadaksesi webhook-avaimesi.
-* Voit vaihtaa tätä avainta milloin tahansa turvallisuussyistä.
-* Laske ja vertaa webhook-pyynnöstämme saamaamme `X-Webhook-Signature`-arvoa tällä avaimella laskettuun rungon arvoon. Esimerkki tästä on osoitteessa [tämä Stack Overflow -viesti](https://stackoverflow.com/a/68885281). * Lisätietoja on keskustelussa osoitteessa <https://github.com/forwardemail/free-email-forwarding/issues/235>.
-* Jos webhook ei vastaa `200` -tilakoodilla, tallennamme sen vastauksen [virheloki luotu](#do-you-store-error-logs) -tiedostoon – mikä on hyödyllistä virheenkorjauksessa.
-* Webhook HTTP -pyynnöt yrittävät uudelleen jopa 3 kertaa jokaista SMTP-yhteysyritystä kohden, ja päätepisteen POST-pyyntöjen enimmäisaikakatkaisuaika on 60 sekuntia. **Huomaa, että tämä ei tarkoita, että se yrittäisi uudelleen vain 3 kertaa**, vaan se yrittää uudelleen jatkuvasti ajan kuluessa lähettämällä SMTP-koodin 421 (joka ilmoittaa lähettäjälle, että hänen on yritettävä uudelleen myöhemmin) kolmannen epäonnistuneen HTTP POST -pyyntöyrityksen jälkeen. Tämä tarkoittaa, että sähköposti yrittää uudelleen jatkuvasti päivien ajan, kunnes tilakoodi 200 saavutetaan.
-* Yritämme uudelleen automaattisesti [superagentin uudelleenyritysmenetelmä](https://ladjs.github.io/superagent/#retrying-requests) -tiedostossa käytettyjen oletustila- ja virhekoodien perusteella (olemme ylläpitäjiä).
-* Ryhmittelemme samaan päätepisteeseen tulevat webhook HTTP -pyynnöt yhteen pyyntöön useiden sijaan resurssien säästämiseksi ja vastausajan nopeuttamiseksi. Jos esimerkiksi lähetät sähköpostia osoitteisiin <webhook1@example.com>, <webhook2@example.com> ja <webhook3@example.com>, ja kaikki nämä on määritetty osumaan samaan *täsmälleen* samaan päätepisteen URL-osoitteeseen, tehdään vain yksi pyyntö. Ryhmittelemme pyynnöt tarkan päätepisteiden vastaavuuden perusteella ja tiukalla yhtäläisyydellä.
-* Huomaa, että käytämme [sähköpostin jäsentäjä](https://nodemailer.com/extras/mailparser/) -kirjaston "simpleParser"-metodia viestin jäsentämiseen JSON-ystävälliseksi objektiksi.
+* Jos sinun on tarkistettava webhook-hyötykuormat (jotta ne todella tulevat palvelimeltamme), voit käyttää [selvitä etäasiakkaan IP-osoite ja asiakkaan isäntänimi käänteisen haun avulla](https://nodejs.org/api/dns.html#dnspromisesreverseip) – sen pitäisi olla joko `mx1.forwardemail.net` tai `mx2.forwardemail.net`.
+* Voit myös verrata IP-osoitetta [julkaistut IP-osoitteemme](#what-are-your-servers-ip-addresses):aan.
+* Jos käytät maksullista sopimusta, siirry kohtaan Oma tili → Verkkotunnukset → Asetukset → Webhook Signature Payload Verification Key saadaksesi webhook-avaimesi.
+* Voit kierrättää tätä avainta milloin tahansa turvallisuussyistä.
+* Laske ja vertaa webhook-pyynnöstämme saamaamme `X-Webhook-Signature`-arvoa laskettuun rungon arvoon tällä avaimella. Esimerkki tästä on osoitteessa [tämä Stack Overflow -viesti](https://stackoverflow.com/a/68885281).
+* Lisätietoja on keskustelussa osoitteessa <https://github.com/forwardemail/free-email-forwarding/issues/235>.
+* Jos webhook ei vastaa `200`-tilakoodilla, tallennamme sen vastauksen [virheloki luotu](#do-you-store-error-logs)-muuttujaan – mikä on hyödyllistä virheenkorjauksessa. * Webhook HTTP -pyynnöt yrittävät uudelleen jopa 3 kertaa jokaista SMTP-yhteysyritystä kohden, ja päätepisteen POST-pyyntöjen enimmäisaikakatkaisuaika on 60 sekuntia. **Huomaa, että tämä ei tarkoita, että se yrittäisi uudelleen vain 3 kertaa**, vaan se yrittää itse asiassa jatkuvasti uudelleen lähettämällä SMTP-koodin 421 (joka ilmoittaa lähettäjälle, että hän yrittää uudelleen myöhemmin) kolmannen epäonnistuneen HTTP POST -pyyntöyrityksen jälkeen. Tämä tarkoittaa, että sähköposti yrittää uudelleen jatkuvasti päivien ajan, kunnes tilakoodi 200 saavutetaan.
+* Yritämme uudelleen automaattisesti [superagentin uudelleenyritysmenetelmä](https://ladjs.github.io/superagent/#retrying-requests):ssä käytettyjen oletustila- ja virhekoodien perusteella (olemme ylläpitäjiä).
+* Ryhmittelemme samaan päätepisteeseen lähetetyt webhook HTTP -pyynnöt yhdeksi pyynnöksi useiden sijaan resurssien säästämiseksi ja vastausajan nopeuttamiseksi. Jos esimerkiksi lähetät sähköpostia osoitteisiin <webhook1@example.com>, <webhook2@example.com> ja <webhook3@example.com>, ja kaikki nämä on määritetty osumaan *täsmälleen* samaan päätepisteen URL-osoitteeseen, tehdään vain yksi pyyntö. Ryhmittely perustuu täsmälliseen päätepisteiden yhteensovittamiseen ja ehdottomaan yhtäläisyyteen.
+* Huomaa, että käytämme `mx1.forwardemail.net`0-kirjaston "simpleParser"-metodia viestin jäsentämiseen JSON-ystävälliseksi objektiksi.
 * Raaka sähköpostiviestin arvo merkkijonona annetaan ominaisuutena "raw".
 * Todennustulokset annetaan ominaisuuksina "dkim", "spf", "arc", "dmarc" ja "bimi".
-* Jäsennetyt sähköpostiotsikot annetaan ominaisuutena "headers" – mutta huomaa myös, että voit käyttää "headerLines"-ominaisuutta helpottaaksesi iterointia ja jäsentämistä. * Tämän webhookin ryhmitellyt vastaanottajat ryhmitellään yhteen ja annetaan ominaisuutena "vastaanottajat".
-* SMTP-istunnon tiedot annetaan ominaisuutena "session". Tämä sisältää tietoja viestin lähettäjästä, viestin saapumisajasta, HELO:sta ja asiakkaan isäntänimestä. Asiakkaan isäntänimen arvo muodossa `session.clientHostname` on joko FQDN (käänteisestä PTR-hausta) tai se on `session.remoteAddress` hakasulkeissa (esim. `"[127.0.0.1]"`).
-* Jos tarvitset nopean tavan saada `X-Original-To` arvon, voit käyttää `session.recipient` arvoa (katso esimerkki alla). Otsikko `X-Original-To` on otsikko, jonka lisäämme viesteihin virheenkorjausta varten viestin alkuperäisen vastaanottajan kanssa (ennen peitettyä edelleenlähetystä).
-* Jos sinun on poistettava `attachments` ja/tai `raw` ominaisuudet hyötykuorman rungosta, lisää yksinkertaisesti `?attachments=false`, `?raw=false` tai `?attachments=false&raw=false` webhook-päätepisteeseesi kyselymerkkijonoparametrina (esim. `https://example.com/webhook?attachments=false&raw=false`).
-* Jos liitteitä on, ne liitetään `attachments`-taulukkoon puskuriarvoilla. Voit jäsentää ne takaisin sisällöksi käyttämällä JavaScriptiä hyödyntävää lähestymistapaa, kuten:
+* Jäsennetyt sähköpostiotsikot annetaan ominaisuutena "headers" – mutta huomaa myös, että voit käyttää "headerLines"-ominaisuutta helpottaaksesi iterointia ja jäsentämistä.
+* Tämän webhookin ryhmitellyt vastaanottajat ryhmitellään yhteen ja annetaan ominaisuutena "recipients".
+* SMTP-istunnon tiedot annetaan ominaisuutena "session". Tämä sisältää tietoja viestin lähettäjästä, viestin saapumisajasta, HELO:sta ja asiakkaan isäntänimestä. Asiakkaan isäntänimen arvo muodossa `mx1.forwardemail.net`1 on joko täydellinen toimialuenimi (käänteisestä PTR-hausta) tai se on `mx1.forwardemail.net`2 hakasulkeissa (esim. `mx1.forwardemail.net`3).
+* Jos tarvitset nopean tavan saada `mx1.forwardemail.net`4-arvon, voit käyttää `mx1.forwardemail.net`5-arvoa (katso esimerkki alla). Otsikko `mx1.forwardemail.net`6 on otsikko, jonka lisäämme viesteihin virheenkorjausta varten viestin alkuperäisen vastaanottajan kanssa (ennen peitettyä edelleenlähetystä).
+* Jos sinun on poistettava `mx1.forwardemail.net`7- ja/tai `mx1.forwardemail.net`8-ominaisuudet hyötykuorman rungosta, lisää `mx1.forwardemail.net`9, `mx2.forwardemail.net`0 tai `mx2.forwardemail.net`1 webhook-päätepisteeseesi kyselymerkkijonoparametrina (esim. `mx2.forwardemail.net`2).
+* Jos liitteitä on, ne lisätään `mx2.forwardemail.net`3-taulukkoon puskuriarvoilla. Voit jäsentää ne takaisin sisällöksi käyttämällä JavaScript-lähestymistapaa, kuten:
 
   ```js
   const data = [
@@ -2304,15 +2308,15 @@ Oletko utelias, miltä webhook-pyyntö näyttää edelleenlähetetyistä sähkö
 }
 ```
 
-### Tuetaanko säännöllisiä lausekkeita tai regex-lausekkeita? {#do-you-support-regular-expressions-or-regex}
+### Tuetaanko säännöllisiä lausekkeita tai regexiä? {#do-you-support-regular-expressions-or-regex}
 
 Kyllä, olemme lisänneet tämän ominaisuuden 27. syyskuuta 2021 alkaen. Voit yksinkertaisesti kirjoittaa säännöllisiä lausekkeita ("regex") aliasten täsmäykseen ja korvausten suorittamiseen.
 
-Säännöllisiä lausekkeita tukevat aliakset alkavat merkeillä `/` ja päättyvät merkeihin `/`, ja niiden vastaanottajat ovat sähköpostiosoitteita tai webhookeja. Vastaanottajat voivat myös sisältää säännöllisten lausekkeiden korvaamisen tuen (esim. `$1`, `$2`).
+Säännöllisten lausekkeiden tuetut aliakset alkavat merkeillä `/` ja päättyvät merkeihin `/`, ja niiden vastaanottajat ovat sähköpostiosoitteita tai webhookeja. Vastaanottajat voivat myös sisältää säännöllisten lausekkeiden korvaamisen tuen (esim. `$1`, `$2`).
 
-Tuemme kahta säännöllisen lausekkeen lippua, mukaan lukien `i` ja `g`. Kirjainkokoa erottelematon lippu `i` on pysyvä oletusarvo ja sitä noudatetaan aina. Voit lisätä globaalin lipun `g` liittämällä `/` loppuun `/g`.
+Tuemme kahta säännöllisen lausekkeen lippua, mukaan lukien `i` ja `g`. Kirjainkokoa ei erotteleva `i`-lippu on pysyvä oletusarvo, ja sitä käytetään aina. Voit lisätä globaalin `g`-lipun liittämällä `/`:n loppuun `/g`.
 
-Huomaa, että tuemme myös <a href="#can-i-disable-specific-aliases">disabled alias-ominaisuuttamme</a> vastaanottajaosassa säännöllisten lausekkeiden tuella.
+Huomaa, että tuemme myös <a href="#can-i-disable-specific-aliases">disabled-aliasominaisuuttamme</a> vastaanottajaosassa säännöllisten lausekkeiden tuella.
 
 Säännöllisiä lausekkeita ei tueta <a href="/disposable-addresses" target="_blank">globaaleilla vanity-verkkotunnuksilla</a> (koska tämä voi olla tietoturvahaavoittuvuus).
 
@@ -2330,7 +2334,7 @@ Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</s
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Yksinkertainen esimerkki:</strong> Jos haluan, että kaikki osoitteeseen `linus@example.com` tai `torvalds@example.com` menevät sähköpostit lähetetään edelleen osoitteeseen `user@gmail.com`:
+<strong>Yksinkertainen esimerkki:</strong> Jos haluan, että kaikki `linus@example.com`- tai `torvalds@example.com`-postiin menevät sähköpostit välitetään edelleen `user@gmail.com`-postiin:
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2354,7 +2358,7 @@ Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</s
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Etu- ja sukunimen korvaamisen esimerkki:</strong> Kuvittele, että kaikki yrityksesi sähköpostiosoitteet ovat muotoa `firstname.lastname@example.com`. Jos haluan, että kaikki sähköpostit, jotka ovat muotoa `firstname.lastname@example.com`, lähetetään edelleen osoitteeseen `firstname.lastname@company.com` korvaamisen tuella (<a href="https://regexr.com/66hnu" class="alert-link">katsele RegExr-lauseketta</a>):
+<strong>Etunimi Sukunimi Korvausesimerkki:</strong> Kuvittele, että kaikki yrityksesi sähköpostiosoitteet ovat `firstname.lastname@example.com`-mallia. Jos haluan, että kaikki `firstname.lastname@example.com`-malliin kuuluvat sähköpostit lähetetään edelleen `firstname.lastname@company.com`-malliin korvauksen tuella (<a href="https://regexr.com/66hnu" class="alert-link">katsele RegExr-lauseketta</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2378,7 +2382,7 @@ Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</s
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki plus-symbolin suodatuksesta ja korvaamisesta:</strong> Jos haluan, että kaikki osoitteeseen `info@example.com` tai `support@example.com` menevät sähköpostit lähetetään edelleen osoitteeseen `user+info@gmail.com` tai `user+support@gmail.com` (korvaustuella) (<a href="https://regexr.com/66ho7" class="alert-link">katsele RegExr-lauseketta</a>):
+<strong>Plus-symbolin suodatuksen korvaamisen esimerkki:</strong> Jos haluan, että kaikki `info@example.com`- tai `support@example.com`-kansioon menevät sähköpostit välitetään vastaavasti `user+info@gmail.com`- tai `user+support@gmail.com`-kansioon (korvaustuella) (<a href="https://regexr.com/66ho7" class="alert-link">katsele RegExr-lauseketta</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2402,7 +2406,7 @@ Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</s
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki webhookin kyselymerkkijonon korvaamisesta:</strong> Ehkä haluat, että kaikki sähköpostit, jotka menevät osoitteeseen `example.com`, menevät <a href="#do-you-support-webhooks" class="alert-link">webhookiin</a> ja että niillä on dynaaminen kyselymerkkijonon avain "to" ja sähköpostiosoitteen käyttäjätunnusosan arvo (<a href="https://regexr.com/66ho4" class="alert-link">katsele RegExr-lauseketta</a>):
+<strong>Esimerkki webhookin kyselymerkkijonon korvaamisesta:</strong> Ehkä haluat, että kaikki `example.com`-kohteeseen menevät sähköpostit menevät <a href="#do-you-support-webhooks" class="alert-link">webhookiin</a> ja että niillä on dynaaminen kyselymerkkijonon avain "to" ja sähköpostiosoitteen käyttäjätunnusosan arvo (<a href="https://regexr.com/66ho4" class="alert-link">katsele RegExr-lauseketta</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2426,7 +2430,7 @@ Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</s
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki hiljaisesta hylkäämisestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään hiljaisesti (lähettäjälle viesti näyttää siltä kuin se olisi lähetetty onnistuneesti, mutta todellisuudessa se ei johda mihinkään) tilakoodilla `250` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa yhdellä huutomerkillä "!". Tämä osoittaa lähettäjälle, että viesti toimitettiin onnistuneesti, mutta se ei todellisuudessa johda mihinkään (esim. mustaan reikään tai `/dev/null`).
+<strong>Esimerkki hiljaisesta hylkäämisestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään hiljaisesti (lähettäjälle viesti näyttää siltä kuin se olisi lähetetty onnistuneesti, mutta todellisuudessa se ei etene mihinkään) tilakoodilla `250` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa yhdellä huutomerkillä "!". Tämä osoittaa lähettäjälle, että viesti toimitettiin onnistuneesti, mutta se ei todellisuudessa mennyt mihinkään (esim. mustaan reikään tai `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2450,7 +2454,7 @@ Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</s
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki pehmeästä hylkäyksestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään pehmeästi tilakoodilla `421` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa kaksoishuutomerkillä "!!". Tämä kehottaa lähettäjää yrittämään sähköpostin lähettämistä uudelleen, ja tälle aliakselle lähetettyjä sähköposteja yritetään uudelleen noin viiden päivän ajan, minkä jälkeen ne hylätään pysyvästi.
+<strong>Esimerkki pehmeästä hylkäyksestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään pehmeästi tilakoodilla `421` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa kaksoishuutomerkillä "!!". Tämä kehottaa lähettäjää yrittämään sähköpostin lähettämistä uudelleen, ja tähän aliakseen lähetettyjä sähköposteja yritetään uudelleen noin viiden päivän ajan, minkä jälkeen ne hylätään pysyvästi.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2474,7 +2478,7 @@ Jos käytät ilmaisversiota, lisää uusi DNS-<strong class="notranslate">TXT</s
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Esimerkki tiukasta hylkäämisestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään tiukasti tilakoodilla `550` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tietyt aliakset käytöstä</a>), käytä samaa lähestymistapaa kolminkertaisella huutomerkillä "!!!". Tämä ilmoittaa lähettäjälle pysyvästä virheestä, eikä sähköposteja yritetä uudelleen, vaan ne hylätään tämän aliaksen perusteella.
+<strong>Esimerkki tiukasta hylkäämisestä:</strong> Jos haluat, että kaikki tiettyä mallia vastaavat sähköpostit poistetaan käytöstä ja hylätään tiukasti tilakoodilla `550` (katso <a href="#can-i-disable-specific-aliases" class="alert-link">Voinko poistaa tiettyjä aliaksia käytöstä</a>), käytä samaa lähestymistapaa kolminkertaisella huutomerkillä "!!!". Tämä ilmoittaa lähettäjälle pysyvästä virheestä, eivätkä sähköpostit yritä uudelleen, vaan ne hylätään tämän aliaksen vuoksi.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2506,19 +2510,19 @@ Oletko utelias kirjoittamaan säännöllisen lausekkeen tai testaamaan korvaavaa
 </span>
 </div>
 
-### Mitkä ovat lähtevän SMTP-viestien rajoituksesi {#what-are-your-outbound-smtp-limits}
+### Mitkä ovat lähtevän SMTP-viestinnän rajoituksesi? {#what-are-your-outbound-smtp-limits}
 
-Rajoitamme käyttäjien ja verkkotunnusten lähtevien SMTP-viestien määrän 300:aan päivässä. Tämä tarkoittaa keskimäärin yli 9000 sähköpostia kalenterikuukaudessa. Jos sinun on ylitettävä tämä määrä tai sinulla on jatkuvasti suuria sähköposteja, ole hyvä ja [ota meihin yhteyttä](https://forwardemail.net/help).
+Rajoitamme käyttäjien ja verkkotunnusten lähtevien SMTP-viestien määrän 300:aan päivässä. Tämä tarkoittaa keskimäärin yli 9000 sähköpostia kalenterikuukaudessa. Jos sinun on ylitettävä tämä määrä tai sinulla on jatkuvasti suuria sähköposteja, käytä [ota meihin yhteyttä](https://forwardemail.net/help)-rajoitusta.
 
-### Tarvitsenko hyväksynnän SMTP:n {#do-i-need-approval-to-enable-smtp} käyttöönottamiseksi
+### Tarvitsenko hyväksynnän SMTP:n käyttöönottoon? {#do-i-need-approval-to-enable-smtp}
 
-Kyllä, huomioithan, että IP-osoitteen maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emaililla on manuaalinen tarkistusprosessi lähtevien SMTP-viestien hyväksymiseksi verkkotunnuskohtaisesti. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [avunpyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää yleensä alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin kuluessa. Lähitulevaisuudessa pyrimme tekemään tästä prosessista välittömän lisäämällä roskapostin hallintaa ja hälytyksiä. Tämä prosessi varmistaa, että sähköpostisi päätyvät postilaatikkoon eivätkä viestisi merkitä roskapostiksi.
+Kyllä, huomioithan, että IP-osoitteen maineen ylläpitämiseksi ja toimitettavuuden varmistamiseksi Forward Emaililla on manuaalinen tarkistusprosessi lähtevien SMTP-viestien hyväksyntää varten verkkotunnuskohtaisesti. Lähetä sähköpostia osoitteeseen <support@forwardemail.net> tai avaa [avunpyyntö](https://forwardemail.net/help) hyväksyntää varten. Tämä kestää yleensä alle 24 tuntia, ja useimmat pyynnöt käsitellään 1–2 tunnin kuluessa. Lähitulevaisuudessa pyrimme tekemään tästä prosessista välittömän lisäämällä roskapostin hallintaa ja ilmoituksia. Tämä prosessi varmistaa, että sähköpostisi päätyvät postilaatikkoon eivätkä viestisi merkitä roskapostiksi.
 
-### Mitkä ovat SMTP-palvelimesi määritysasetukset {#what-are-your-smtp-server-configuration-settings}
+### Mitkä ovat SMTP-palvelimesi määritysasetukset? {#what-are-your-smtp-server-configuration-settings}
 
-Palvelimemme koodi on `smtp.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
+Palvelimemme on `smtp.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
 
-Se tukee sekä IPv4- että IPv6-protokollaa ja on käytettävissä porttien `465` ja `2465` kautta SSL/TLS:lle ja porttien `587`, `2587`, `2525` ja `25` kautta TLS:lle (STARTTLS).
+Se tukee sekä IPv4:ää että IPv6:tta ja on käytettävissä porttien `465` ja `2465` kautta SSL/TLS:lle sekä porttien `587`, `2587`, `2525` ja `25` kautta TLS:lle (STARTTLS).
 
 | Protokolla | Isäntänimi | Portit | IPv4 | IPv6 |
 | :--------------------------------------------------------------: | ----------------------- | :-------------------------: | :----------------: | :----------------: |
@@ -2532,13 +2536,13 @@ Se tukee sekä IPv4- että IPv6-protokollaa ja on käytettävissä porttien `465
 
 Jotta lähtevää sähköpostia voidaan lähettää SMTP:n kautta, **SMTP-käyttäjän** on oltava sellaisen aliaksen sähköpostiosoite, joka on olemassa verkkotunnukselle kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> – ja **SMTP-salasanan** on oltava aliakselle erikseen luotu salasana.
 
-Katso vaiheittaiset ohjeet osoitteesta [Tuetteko sähköpostin lähettämistä SMTP:n kautta?](#do-you-support-sending-email-with-smtp).
+Katso vaiheittaiset ohjeet kohdasta [Tuetteko sähköpostin lähettämistä SMTP:n kautta?](#do-you-support-sending-email-with-smtp).
 
-### Mitkä ovat IMAP-palvelimesi määritysasetukset {#what-are-your-imap-server-configuration-settings}
+### Mitkä ovat IMAP-palvelimesi määritysasetukset? {#what-are-your-imap-server-configuration-settings}
 
-Palvelimemme koodi on `imap.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussivullamme</a>.
+Palvelimemme on `imap.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
 
-Se tukee sekä IPv4:ää että IPv6:tta ja on käytettävissä porttien `993` ja `2993` kautta SSL/TLS-salausta varten.
+Se tukee sekä IPv4- että IPv6-protokollaa ja on käytettävissä porttien `993` ja `2993` kautta SSL/TLS-salausta varten.
 
 | Protokolla | Isäntänimi | Portit | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
@@ -2551,13 +2555,13 @@ Se tukee sekä IPv4:ää että IPv6:tta ja on käytettävissä porttien `993` ja
 
 Jotta IMAP-yhteys voidaan muodostaa, **IMAP-käyttäjän** sähköpostiosoitteen on oltava verkkotunnukselle <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> -osiossa olevan aliaksen sähköpostiosoite – ja **IMAP-salasanan** on oltava aliakselle erikseen luotu salasana.
 
-Katso vaiheittaiset ohjeet osoitteesta [Tuetko sähköpostin vastaanottamista IMAP-protokollan kautta?](#do-you-support-receiving-email-with-imap).
+Katso vaiheittaiset ohjeet kohdasta [Tuetko sähköpostin vastaanottamista IMAP-protokollan kautta?](#do-you-support-receiving-email-with-imap).
 
-### Mitkä ovat POP3-palvelimesi määritysasetukset {#what-are-your-pop3-server-configuration-settings}
+### Mitkä ovat POP3-palvelimesi määritysasetukset? {#what-are-your-pop3-server-configuration-settings}
 
-Palvelimemme koodi on `pop3.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">statussivullamme</a>.
+Palvelimemme on `pop3.forwardemail.net` ja sitä valvotaan myös <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">tilasivullamme</a>.
 
-Se tukee sekä IPv4:ää että IPv6:tta ja on käytettävissä porttien `995` ja `2995` kautta SSL/TLS-salausta varten.
+Se tukee sekä IPv4- että IPv6-protokollaa ja on käytettävissä porttien `995` ja `2995` kautta SSL/TLS-salausta varten.
 
 | Protokolla | Isäntänimi | Portit | IPv4 | IPv6 |
 | :---------------------: | ----------------------- | :-----------: | :----------------: | :----------------: |
@@ -2570,9 +2574,9 @@ Se tukee sekä IPv4:ää että IPv6:tta ja on käytettävissä porttien `995` ja
 
 POP3-yhteyden muodostamiseksi **POP3-käyttäjän** sähköpostiosoitteen on oltava aliaksen sähköpostiosoite, joka on olemassa verkkotunnukselle kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Oma tili <i class="fa fa-angle-right"></i>Verkkotunnukset</a> – ja **IMAP-salasanan** on oltava aliakselle erikseen luotu salasana.
 
-Katso vaiheittaiset ohjeet osoitteesta [Tuetko POP3-palvelua?](#do-you-support-pop3).
+Katso vaiheittaiset ohjeet kohdasta [Tuetko POP3-palvelua?](#do-you-support-pop3).
 
-### Postfixin SMTP-välityspalvelimen konfigurointi {#postfix-smtp-relay-configuration}
+### Postfix SMTP -välityspalvelimen määritys {#postfix-smtp-relay-configuration}
 
 Voit määrittää Postfixin välittämään sähköposteja Forward Emailin SMTP-palvelimien kautta. Tämä on hyödyllistä palvelinsovelluksille, joiden on lähetettävä sähköposteja.
 
@@ -2609,7 +2613,7 @@ brew install postfix
 
 2. Valitse asennuksen aikana "Internet-sivusto", kun sinulta kysytään määritystyyppiä.
 
-#### Konfiguraatio {#configuration}
+####-määritys {#configuration}
 
 1. Muokkaa Postfixin pääasetustiedostoa:
 
@@ -2654,7 +2658,7 @@ sudo postmap /etc/postfix/sasl_passwd
 sudo systemctl restart postfix
 ```
 
-#### Testataan kohdetta {#testing}
+#### Testataan {#testing}
 
 Testaa kokoonpanoasi lähettämällä testisähköposti:
 
@@ -2664,10 +2668,10 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ## Tietoturva {#security}
 
-### Edistyneet palvelimen suojaustekniikat {#advanced-server-hardening-techniques}
+### Palvelimen suojauksen edistyneet tekniikat {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Lue lisää suojausinfrastruktuuristamme osoitteessa [Tietoturvasivumme](/security).
 
 Forward Email käyttää useita palvelimen suojaustekniikoita varmistaakseen infrastruktuurimme ja tietojesi turvallisuuden:
 
@@ -2704,15 +2708,15 @@ Forward Email käyttää useita palvelimen suojaustekniikoita varmistaakseen inf
 * Tapahtumiin reagointimenettelyt
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Tietoturvakäytäntöjämme päivitetään jatkuvasti uusien uhkien ja haavoittuvuuksien varalta.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Parhaan mahdollisen turvallisuuden takaamiseksi suosittelemme käyttämään palveluamme OpenPGP:n kautta tapahtuvalla päästä päähän -salauksella.
 
 ### Onko sinulla SOC 2- tai ISO 27001 -sertifikaatit? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Sähköpostin edelleenlähetys toimii sertifioitujen alihankkijoiden tarjoaman infrastruktuurin avulla varmistaakseen alan standardien noudattamisen.
 
 Forward Emaililla ei ole suoraan SOC 2 Type II- tai ISO 27001 -sertifikaatteja. Palvelu toimii kuitenkin sertifioitujen alihankkijoiden tarjoaman infrastruktuurin avulla:
 
@@ -2720,16 +2724,16 @@ Forward Emaililla ei ole suoraan SOC 2 Type II- tai ISO 27001 -sertifikaatteja. 
 
 * **Vultr**: SOC 2+ (HIPAA) -sertifioitu, ISO/IEC-sertifioinnit: 20000-1:2018, 27001:2022, 27017:2015, 27018:2019. Tiedot: <https://www.vultr.com/legal/compliance/>
 
-* **DataPacket**: SOC 2 -yhteensopiva (ota yhteyttä suoraan DataPacketiin sertifioinnin saamiseksi), yritystason infrastruktuurin tarjoaja (Denverin toimipiste). Tiedot: <https://www.datapacket.com/datacenters/denver>
+* **DataPacket**: SOC 2 -yhteensopiva (ota yhteyttä suoraan DataPacketiin sertifioinnin hankkimiseksi), yritystason infrastruktuurin tarjoaja (Denverin toimipiste). Tiedot: <https://www.datapacket.com/datacenters/denver>
 
 Forward Email noudattaa alan parhaita käytäntöjä tietoturvatarkastuksissa ja on säännöllisesti yhteydessä riippumattomiin tietoturvatutkijoihin. Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
-### Käytättekö TLS-salausta sähköpostin edelleenlähetykseen? {#do-you-use-tls-encryption-for-email-forwarding}
+### Käytätkö TLS-salausta sähköpostin edelleenlähetykseen? {#do-you-use-tls-encryption-for-email-forwarding}
 
 Kyllä. Sähköpostin edelleenlähetyspalvelu käyttää tiukasti TLS 1.2+ -salausta kaikissa yhteyksissä (HTTPS, SMTP, IMAP, POP3) ja käyttää MTA-STS:ää parannetun TLS-tuen takaamiseksi. Toteutus sisältää:
 
 * TLS 1.2+ -salauksen valvonta kaikissa sähköpostiyhteyksissä
-* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) -avaintenvaihto täydellisen eteenpäin suuntautuvan salauksen takaamiseksi
+* ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) -avaintenvaihto täydellisen edelleenlähetyssalaisuuden takaamiseksi
 * Nykyaikaiset salausohjelmistot säännöllisillä tietoturvapäivityksillä
 * HTTP/2-tuki parannetun suorituskyvyn ja tietoturvan takaamiseksi
 * HSTS (HTTP Strict Transport Security) esiasennuksella tärkeimmissä selaimissa
@@ -2742,7 +2746,7 @@ Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 * TLS-virheiden tunnistus: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
 * MTA-STS-valvonta sähköpostin lähetysapuohjelmassa: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
-Kolmannen osapuolen validointi: <https://www.hardenize.com/report/forwardemail.net/1750312779> näyttää "Hyvät"-arvosanat kaikille TLS- ja tiedonsiirron suojausmenetelmille.
+Kolmannen osapuolen vahvistus: <https://www.hardenize.com/report/forwardemail.net/1750312779> näyttää "Hyvät"-arvosanat kaikille TLS- ja tiedonsiirron suojausmenetelmille.
 
 ### Säilytätkö sähköpostin todennusotsikot {#do-you-preserve-email-authentication-headers}
 
@@ -2755,12 +2759,12 @@ Kyllä. Sähköpostin edelleenlähetys toteuttaa ja säilyttää sähköpostin t
 
 Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Validointi: Internet.nl Mail Test antaa 100/100-pistemäärän erityisesti "SPF-, DKIM- ja DMARC-toteutuksille". Hardenize-arviointi vahvistaa SPF:n ja DMARC:n "hyvät"-arvosanat: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+Validointi: Internet.nl Mail Test antaa 100/100-pistemäärän erityisesti "SPF-, DKIM- ja DMARC-toteutuksille". Hardenize-arviointi vahvistaa SPF- ja DMARC-toteutuksille "hyvät"-arvosanat: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
 ### Säilytätkö alkuperäiset sähköpostiotsikot ja estätkö väärentämisen? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Sähköpostin edelleenlähetystoiminto toteuttaa kehittyneen sähköpostihuijausten eston, joka estää sähköpostien väärinkäytön.
 
 Forward Email säilyttää alkuperäiset sähköpostiotsikot ja toteuttaa samalla kattavan huijaussuojauksen MX-koodikannan kautta:
 
@@ -2773,7 +2777,7 @@ Forward Email säilyttää alkuperäiset sähköpostiotsikot ja toteuttaa samall
 * Pääasiallinen MX-tietojen käsittelijä: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 * Sähköpostien mielivaltainen suodatus (huijausesto): <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-arbitrary.js>
 
-`isArbitrary` -apuohjelma toteuttaa kehittyneitä huijausvastaisia sääntöjä, mukaan lukien verkkotunnusten henkilöllisyyden anastamisen, estettyjen lausekkeiden ja erilaisten tietojenkalastelumallien tunnistuksen.
+`isArbitrary`-apuohjelma toteuttaa kehittyneitä huijausvastaisia sääntöjä, mukaan lukien verkkotunnusten henkilöllisyyden anastamisen, estettyjen lausekkeiden ja erilaisten tietojenkalastelumallien tunnistuksen.
 
 Lähde: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
@@ -2794,10 +2798,10 @@ Lähteet:
 * <https://www.datapacket.com/datacenters/denver> (DDoS-suojauksen tiedot)
 * <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/abuse-prevention-by-user-id.js>
 
-### Tallennatteko sähköpostisisältöä levylle {#do-you-store-email-content-on-disk}
+### Tallennatko sähköpostisisältöä levylle {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Sähköpostin edelleenlähetys käyttää nollatietoarkkitehtuuria, joka estää sähköpostisisällön kirjoittamisen levylle.
 
 * **Zero-Knowledge Architecture**: Yksittäin salatut SQLite-postilaatikot tarkoittavat, että Forward Email ei voi käyttää sähköpostin sisältöä.
 * **Muistissa tapahtuva käsittely**: Sähköpostin käsittely tapahtuu kokonaan muistissa, joten levylle ei tarvitse tallentaa.
@@ -2849,14 +2853,14 @@ Forward Email toteuttaa kattavat käyttöoikeuksien hallinnan 2–3 hengen suunn
 
 Lähteet:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Valtuutusvalvonta)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Valtuutusasetukset)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Verkon suojaus)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Pahansuopaaiden hyökkäysten esto)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Paholaisen hyökkäyksen esto)
 
 ### Mitä infrastruktuurin tarjoajia käytät {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Sähköpostin edelleenlähetys käyttää useita infrastruktuurin alikäsittelijöitä, joilla on kattavat vaatimustenmukaisuussertifikaatit.
 
 Täydelliset tiedot ovat saatavilla GDPR-vaatimustenmukaisuussivullamme: <https://forwardemail.net/gdpr>
 
@@ -2890,10 +2894,10 @@ Täydelliset tiedot ovat saatavilla GDPR-vaatimustenmukaisuussivullamme: <https:
 
 **Datapaketti**
 
-* SOC 2 -yhteensopiva (ota yhteyttä suoraan DataPacketiin sertifioinnin hankkimiseksi)
+* SOC 2 -yhteensopiva (ota yhteyttä suoraan DataPacketiin saadaksesi sertifioinnin)
 * Yritystason infrastruktuuri (Denverin toimipiste)
 * DDoS-suojaus Shield-kyberturvallisuuspinon kautta
-* Tekninen tuki 24/7
+* 24/7 tekninen tuki
 * Maailmanlaajuinen verkosto 58 datakeskuksessa
 * Tiedot: <https://www.datapacket.com/datacenters/denver>
 
@@ -2913,15 +2917,14 @@ Kyllä, Forward Email tarjoaa kattavan tietojenkäsittelysopimuksen (DPA), joka 
 * Erillistä allekirjoitusta ei vaadita vakiomuotoiseen DPA:han
 * Mukautetut DPA-järjestelyt saatavilla yrityslisenssin kautta
 
-**GDPR-vaatimustenmukaisuuskehys:**
-Tietojenkäsittelysopimuksessamme on yksityiskohtaisesti kuvattu GDPR:n sekä kansainvälisten tiedonsiirtovaatimusten noudattaminen. Täydelliset tiedot ovat saatavilla osoitteessa: <https://forwardemail.net/gdpr>
+**GDPR-vaatimustenmukaisuuskehys:** Tietosuojasopimuksessamme on yksityiskohtaisesti kuvattu GDPR:n sekä kansainvälisten tiedonsiirtovaatimusten noudattaminen. Täydelliset tiedot ovat saatavilla osoitteessa: <https://forwardemail.net/gdpr>
 
 Yritysasiakkaat, jotka tarvitsevat mukautettuja DPA-ehtoja tai erityisiä sopimusjärjestelyjä, voivat ratkaista nämä ongelmat **Yrityslisenssi (250 dollaria/kk)** -ohjelmamme kautta.
 
 ### Miten käsittelette tietomurtoilmoituksia {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Forward Emailin nollatietoarkkitehtuuri rajoittaa merkittävästi tietomurtojen vaikutusta.
 
 * **Rajoitettu tietomäärä**: Salattua sähköpostisisältöä ei voi käyttää nollatietoarkkitehtuurin vuoksi.
 * **Minimaalinen tiedonkeruu**: Vain tilaajien perustiedot ja rajoitetut IP-lokit turvallisuussyistä.
@@ -2949,7 +2952,7 @@ Lähteet:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59>
 * <https://forwardemail.net/gdpr>
 
-### Tarjoatteko testiympäristöä {#do-you-offer-a-test-environment}
+### Tarjoatteko testiympäristöä? {#do-you-offer-a-test-environment}
 
 Forward Emailin tekninen dokumentaatio ei kuvaa nimenomaisesti erillistä hiekkalaatikkotilaa. Mahdollisia testausmenetelmiä ovat kuitenkin:
 
@@ -2981,13 +2984,13 @@ Yritysasiakkaille, jotka tarvitsevat yksityiskohtaisia toimitustilan webhookeja 
 
 Lähteet:
 
-* <https://forwardemail.net> (Reaaliaikainen valvontanäyttö)
+* <https://forwardemail.net> (Reaaliaikaisen valvonnan näyttö)
 * <https://github.com/forwardemail/forwardemail.net> (Valvonnan toteutus)
 
 ### Miten varmistat korkean käytettävyyden {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Sähköpostin edelleenlähetys toteuttaa kattavan redundanssin useiden infrastruktuuripalveluntarjoajien välillä.
 
 * **Hajautettu infrastruktuuri**: Useita palveluntarjoajia (DigitalOcean, Vultr, DataPacket) eri maantieteellisillä alueilla
 * **Maantieteellinen kuormituksen tasapainotus**: Cloudflare-pohjainen maantieteellisesti paikannettu kuormituksen tasapainotus automaattisella vikasietoisuudella
@@ -3004,10 +3007,10 @@ Lähteet:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=18>
 * <https://www.datapacket.com/datacenters/denver>
 
-### Noudatatko kansallisen puolustusvaltuutuslain (NDAA) pykälän 889 määräyksiä? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
+### Noudatatko National Defense Authorization Actin (NDAA) pykälän 889 määräyksiä? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Sähköpostin edelleenlähetys on täysin säännön 889 mukainen infrastruktuurikumppaneiden huolellisen valinnan ansiosta.
 
 Kyllä, sähköpostin edelleenlähetys on **pykälän 889 mukainen**. Yhdysvaltain puolustusministeriön lain (NDAA) pykälä 889 kieltää valtion virastoja käyttämästä tiettyjen yritysten (Huawei, ZTE, Hikvision, Dahua ja Hytera) televiestintä- ja videovalvontalaitteita käyttäviä tahoja tai tekemästä sopimuksia niiden kanssa.
 
@@ -3021,35 +3024,35 @@ Forward Email luottaa yksinomaan kahteen keskeiseen infrastruktuuritoimittajaan,
 
 **Cloudflaren sitoumus**: Cloudflare toteaa nimenomaisesti kolmansien osapuolten käytännesäännöissään, ettei se käytä televiestintälaitteita, videovalvontatuotteita tai -palveluita miltään 889 §:n kieltämiltä tahoilta.
 
-**Viranomaisten käyttötapaus**: Yhteensopivuutemme pykälän 889 mukaisesti varmistettiin, kun **Yhdysvaltain laivastoakatemia** valitsi Forward Email -palvelun suojatun sähköpostin edelleenlähetystarpeisiinsa. Tämä edellytti dokumentaatiota liittovaltion vaatimustenmukaisuusstandardeistamme.
+**Viranomaisten käyttötapaus**: Yhteensopivuutemme pykälän 889 mukaisesti varmistettiin, kun **Yhdysvaltain laivastoakatemia** valitsi Forward Email -palvelun suojattuun sähköpostin edelleenlähetystarpeeseensa, mikä edellytti liittovaltion vaatimustenmukaisuusstandardiemme dokumentointia.
 
-Saat täydelliset tiedot viranomaisten vaatimustenmukaisuuskehyksestämme, mukaan lukien laajemmat liittovaltion määräykset, lukemalla kattavan tapaustutkimuksemme: [Liittovaltion hallituksen sähköpostipalvelu, pykälän 889 mukainen](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+Saat täydelliset tiedot viranomaisten vaatimustenmukaisuuskehyksestämme, mukaan lukien laajemmat liittovaltion määräykset, lukemalla kattavan tapaustutkimuksemme: [Liittovaltion hallituksen sähköpostipalvelu pykälän 889 mukainen](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
 ## Järjestelmä ja tekniset tiedot {#system-and-technical-details}
 
-### Tallennatteko sähköposteja ja niiden sisältöä {#do-you-store-emails-and-their-contents}
+### Säilytätkö sähköposteja ja niiden sisältöä {#do-you-store-emails-and-their-contents}
 
-Ei, emme kirjoita levylle emmekä tallenna lokeja – [virheitä lukuun ottamatta](#do-you-store-error-logs) ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp) -linkkien avulla (katso [Tietosuojakäytäntö](/privacy)).
+Ei, emme kirjoita levylle emmekä tallenna lokeja – [virheitä lukuun ottamatta](#do-you-store-error-logs)- ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp)-elementtien avulla (katso [Tietosuojakäytäntö](/privacy)).
 
-Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail).
+Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail)-kohteessa.
 
 ### Miten sähköpostin edelleenlähetysjärjestelmäsi toimii {#how-does-your-email-forwarding-system-work}
 
-Sähköposti perustuu [SMTP-protokolla](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)-protokollaan. Tämä protokolla koostuu palvelimelle lähetettävistä komennoista (yleisimmin portissa 25). Aluksi muodostetaan yhteys, jonka jälkeen lähettäjä ilmoittaa sähköpostin lähettäjän ("MAIL FROM"), minkä jälkeen viestin vastaanottajan ("RCPT TO") ja lopuksi sähköpostin otsikot ja rungon ("DATA"). Sähköpostin edelleenlähetysjärjestelmämme kulku on kuvattu alla kunkin SMTP-protokollakomennon osalta:
+Sähköposti perustuu [SMTP-protokolla](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)-protokollaan. Tämä protokolla koostuu palvelimelle lähetettävistä komennoista (yleisimmin portissa 25). Aluksi muodostetaan yhteys, jonka jälkeen lähettäjä ilmoittaa sähköpostin lähettäjän ("MAIL FROM"), minkä jälkeen viestin vastaanottajan ("RCPT TO") ja lopuksi itse sähköpostin otsikot ja rungon ("DATA"). Sähköpostin edelleenlähetysjärjestelmämme kulku on kuvattu alla kunkin SMTP-protokollakomennon osalta:
 
-* Ensimmäinen yhteys (ei komennon nimeä, esim. `telnet example.com 25`) - Tämä on ensimmäinen yhteys. Tarkistamme lähettäjät, jotka eivät ole [sallittujen lista](#do-you-have-an-allowlist)-luettelossamme, [kieltolista](#do-you-have-a-denylist)-luetteloamme vasten. Lopuksi, jos lähettäjää ei ole sallittujen listallamme, tarkistamme, onko hänet [harmaalle listalle](#do-you-have-a-greylist)-luetteloitu.
+* Ensimmäinen yhteys (ei komennon nimeä, esim. `telnet example.com 25`) - Tämä on ensimmäinen yhteys. Tarkistamme lähettäjät, jotka eivät ole [sallittujen lista](#do-you-have-an-allowlist)-luettelossamme, [kieltolista](#do-you-have-a-denylist)-luetteloamme vasten. Lopuksi, jos lähettäjää ei ole sallittujen luettelossamme, tarkistamme, onko se ollut [harmaalle listalle](#do-you-have-a-greylist)-luettelossa.
 
-* `HELO` - Tämä osoittaa tervehdyksen, joka tunnistaa lähettäjän FQDN-nimen, IP-osoitteen tai sähköpostin käsittelijän nimen. Tätä arvoa voidaan väärentää, joten emme luota tähän tietoon, vaan käytämme yhteyden IP-osoitteen käänteistä isäntänimen hakua.
+* `HELO` - Tämä osoittaa tervehdyksen, joka tunnistaa lähettäjän FQDN-nimen, IP-osoitteen tai sähköpostin käsittelijän nimen. Tämä arvo voidaan väärentää, joten emme luota tähän tietoon, vaan käytämme yhteyden IP-osoitteen käänteistä isäntänimen hakua.
 
-* `MAIL FROM` - Tämä osoittaa sähköpostin lähettäjän osoitteen. Jos arvo annetaan, sen on oltava kelvollinen RFC 5322 -sähköpostiosoite. Tyhjät arvot ovat sallittuja. Me [tarkista takaisinhajonta](#how-do-you-protect-against-backscatter) tässä, ja tarkistamme myös MAIL FROM -kentän [kieltolista](#do-you-have-a-denylist)-kenttäämme vasten. Lopuksi tarkistamme lähettäjät, jotka eivät ole sallittujen listalla, lähetysnopeuden rajoittamiseksi (lisätietoja on [Rate Limiting](#do-you-have-rate-limiting) ja [sallittujen lista](#do-you-have-an-allowlist) -osioissa).
+* `MAIL FROM` - Tämä osoittaa sähköpostin lähettäjän osoitteen kirjekuoressa. Jos arvo annetaan, sen on oltava kelvollinen RFC 5322 -sähköpostiosoite. Tyhjät arvot ovat sallittuja. Me käytämme [tarkista takaisinhajonta](#how-do-you-protect-against-backscatter)-arvoa tässä ja tarkistamme myös MAIL FROM -arvon [kieltolista](#do-you-have-a-denylist)-arvoa vasten. Lopuksi tarkistamme lähettäjät, jotka eivät ole sallittujen listalla, nopeusrajoitusten varalta (lisätietoja on [Nopeuden rajoittaminen](#do-you-have-rate-limiting)- ja [sallittujen lista](#do-you-have-an-allowlist)-osioissa).
 
-* `RCPT TO` - Tämä osoittaa sähköpostin vastaanottajan/vastaanottajat. Näiden on oltava kelvollisia RFC 5322 -sähköpostiosoitteita. Sallimme enintään 50 kirjekuorivastaanottajaa viestiä kohden (tämä eroaa sähköpostin "Vastaanottaja"-otsikosta). Tarkistamme myös, että [Lähettäjän uudelleenkirjoitusjärjestelmä](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") -osoite on kelvollinen suojataksemme SRS-verkkotunnusnimemme väärentämiseltä.
+* `RCPT TO` - Tämä osoittaa sähköpostin vastaanottajan/vastaanottajat. Näiden on oltava kelvollisia RFC 5322 -sähköpostiosoitteita. Sallimme enintään 50 kirjekuorivastaanottajaa viestiä kohden (tämä eroaa sähköpostin "Vastaanottaja"-otsikosta). Tarkistamme myös, että [Lähettäjän uudelleenkirjoitusjärjestelmä](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") -osoite on kelvollinen suojataksemme sitä SRS-verkkotunnusnimemme väärentämiseltä.
 
 * `DATA` - Tämä on palvelumme ydinosa, joka käsittelee sähköpostin. Katso lisätietoja alla olevasta osiosta [Miten sähköpostia käsitellään edelleenlähetystä varten](#how-do-you-process-an-email-for-forwarding).
 
 ### Miten sähköpostia käsitellään edelleenlähetystä varten {#how-do-you-process-an-email-for-forwarding}
 
-Tässä osiossa kuvataan yllä olevassa osiossa [Miten sähköpostin edelleenlähetysjärjestelmäsi toimii](#how-does-your-email-forwarding-system-work) käytettyyn SMTP-protokollakomentoon `DATA` liittyvä prosessimme – se kertoo, miten käsittelemme sähköpostin otsikot, rungon ja suojauksen, määritämme, minne viesti on toimitettava, ja miten käsittelemme yhteyksiä.
+Tässä osiossa kuvataan yllä olevassa osiossa `DATA` käytettyyn SMTP-protokollakomentoon `DATA` liittyvä prosessimme – se kertoo, miten käsittelemme sähköpostin otsikot, leipätekstin ja suojauksen, määritämme, minne viesti on toimitettava, ja miten käsittelemme yhteyksiä.
 
 1. Jos viesti ylittää 50 Mt:n enimmäiskoon, se hylätään virhekoodilla 552.
 
@@ -3057,64 +3060,65 @@ Tässä osiossa kuvataan yllä olevassa osiossa [Miten sähköpostin edelleenlä
 
 3. Jos viestissä oli yli 25 "Received"-otsikkoa, sen katsottiin juuttuneen uudelleenohjaussilmukkaan ja se hylättiin virhekoodilla 550.
 
-4. Sähköpostin sormenjäljen avulla (katso osio [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint)) tarkistamme, onko viestiä yritetty lähettää uudelleen yli 5 päivää (mikä vastaa [oletusarvoinen postfix-toiminto](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime)), ja jos näin on, se hylätään virhekoodilla 550.
+4. Sähköpostin sormenjäljen avulla (katso osio [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint)) tarkistamme, onko viestiä yritetty lähettää uudelleen yli 5 päivää (mikä vastaa [oletusarvoinen postfix-toiminto](http://www.postfix.org/postconf.5.html#maximal_queue_lifetime):tä). Jos näin on, viesti hylätään virhekoodilla 550.
 
-5. Tallennamme sähköpostin skannauksen tulokset muistiin käyttämällä [Roskapostiskanneri](https://spamscanner.net).
+5. Tallennamme sähköpostin skannauksen tulokset muistiin käyttämällä [Roskapostiskanneri](https://spamscanner.net)-metodia.
 
-6. Jos roskapostiskanneri antoi mielivaltaisia tuloksia, ne hylättiin virhekoodilla 554. Kirjoitushetkellä mielivaltaisiin tuloksiin sisältyy vain GTUBE-testi. Lisätietoja on osoitteessa <https://spamassassin.apache.org/gtube/>.
+6. Jos roskapostiskanneri antoi mielivaltaisia tuloksia, ne hylättiin virhekoodilla 554. Kirjoitushetkellä mielivaltaisiin tuloksiin sisältyy vain GTUBE-testi. Lisätietoja on kohdassa <https://spamassassin.apache.org/gtube/>.
 
 7. Lisäämme viestiin seuraavat otsikot virheenkorjausta ja väärinkäytösten estämiseksi:
 
 * `Received` - lisäämme tämän standardin mukaisen Received-otsikon, jossa on alkuperäisen IP-osoitteen ja isännän, lähetystyypin, TLS-yhteystiedot, päivämäärä/aika ja vastaanottaja.
 * `X-Original-To` - viestin alkuperäinen vastaanottaja:
 * Tämä on hyödyllinen sähköpostin alkuperäisen toimituksen vastaanottajan määrittämiseksi ("Received"-otsikon lisäksi).
-* Tämä lisätään vastaanottajakohtaisesti IMAP- ja/tai maskatun edelleenlähetyksen yhteydessä (yksityisyyden suojaamiseksi).
+* Tämä lisätään vastaanottajakohtaisesti IMAP- ja/tai peitetyn edelleenlähetyksen yhteydessä (yksityisyyden suojaamiseksi).
 * `X-Forward-Email-Website` - sisältää linkin verkkosivustollemme <https://forwardemail.net>
-* `X-Forward-Email-Version` - nykyinen [SemVer](https://semver.org/) versio koodikannastamme `package.json`.
-* `X-Forward-Email-Session-ID` - istuntotunnus, jota käytetään virheenkorjaukseen (koskee vain muita kuin tuotantoympäristöjä).
+* `X-Forward-Email-Version` - koodikantaamme kuuluvan `package.json`:n nykyinen [SemVer](https://semver.org/)-versio.
+* `X-Forward-Email-Session-ID` - istuntotunnusarvo, jota käytetään virheenkorjaustarkoituksiin (koskee vain muita kuin tuotantoympäristöjä).
 * `X-Forward-Email-Sender` - pilkuilla erotettu luettelo, joka sisältää alkuperäisen kirjekuoren MAIL FROM -osoitteen (jos se ei ollut tyhjä), käänteisen PTR-asiakkaan FQDN-nimen (jos se on olemassa) ja lähettäjän IP-osoitteen.
 * `X-Forward-Email-ID` - tämä koskee vain lähtevää SMTP-postia ja korreloi Oma tili → Sähköpostit -osioon tallennetun sähköpostitunnuksen kanssa.
-* `X-Report-Abuse` - arvolla `abuse@forwardemail.net`.
-* `X-Report-Abuse-To` - arvolla `abuse@forwardemail.net`.
-* `X-Complaints-To` - arvolla `abuse@forwardemail.net`.
+* `X-Original-To`0 - arvolla `X-Original-To`1.
+* `X-Original-To`2 - arvolla `X-Original-To`3.
+* `X-Original-To`4 - arvolla `X-Original-To`5.
 
-8. Tarkistamme sitten viestin [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) ja [DMARC](https://en.wikipedia.org/wiki/DMARC) osalta.
+8. Tarkistamme sitten viestin [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail):n, [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework):n, [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain):n ja [DMARC](https://en.wikipedia.org/wiki/DMARC):n osalta.
 
-* Jos viesti epäonnistui DMARC-tarkastuksessa ja verkkotunnuksella oli hylkäyskäytäntö (esim. `p=reject` [oli DMARC-käytännössä](https://wikipedia.org/wiki/DMARC)), se hylätään virhekoodilla 550. Yleensä verkkotunnuksen DMARC-käytäntö löytyy `_dmarc` aliverkkotunnuksen <strong class="notranslate">TXT</strong>-tietueesta (esim. `dig _dmarc.example.com txt`).
-* Jos viesti epäonnistui SPF-tarkastuksessa ja verkkotunnuksella oli vaikeasti virheellinen käytäntö (esim. `-all` oli SPF-käytännössä eikä `~all` tai ei käytäntöä ollenkaan), se hylätään virhekoodilla 550. Yleensä verkkotunnuksen SPF-käytäntö löytyy juuriverkkotunnuksen <strong class="notranslate">TXT</strong>-tietueesta (esim. `dig example.com txt`). Katso tästä osiosta lisätietoja [sähköpostin lähettäminen kuten Gmailissa](#can-i-send-mail-as-in-gmail-with-this) SPF:ään liittyen.
+* Jos viesti epäonnistui DMARC-tarkastuksessa ja verkkotunnuksella oli hylkäyskäytäntö (esim. `p=reject` [oli DMARC-käytännössä](https://wikipedia.org/wiki/DMARC)), se hylätään virhekoodilla 550. Tyypillisesti verkkotunnuksen DMARC-käytäntö löytyy `_dmarc`-aliverkkotunnuksen <strong class="notranslate">TXT</strong>-tietueesta (esim. `dig _dmarc.example.com txt`).
+* Jos viesti epäonnistui SPF-tarkastuksessa ja verkkotunnuksella oli vaikeasti hylätty käytäntö (esim. `-all` oli SPF-käytännössä `~all`:n sijaan tai ei käytäntöä ollenkaan), se hylätään virhekoodilla 550. Tyypillisesti verkkotunnuksen SPF-käytäntö löytyy juuriverkkotunnuksen <strong class="notranslate">TXT</strong>-tietueesta (esim. `dig example.com txt`). Katso tästä osiosta lisätietoja [sähköpostin lähettäminen kuten Gmailissa](#can-i-send-mail-as-in-gmail-with-this):stä SPF:n osalta.
 
-9. Käsittelemme nyt viestin vastaanottajat, jotka on kerätty yllä olevassa `RCPT TO` -komennossa [Miten sähköpostin edelleenlähetysjärjestelmäsi toimii](#how-does-your-email-forwarding-system-work) -osiossa. Suoritamme kullekin vastaanottajalle seuraavat toimenpiteet:
+9. Käsittelemme nyt viestin vastaanottajat, jotka on kerätty `RCPT TO`-komennolla yllä olevassa [Miten sähköpostin edelleenlähetysjärjestelmäsi toimii](#how-does-your-email-forwarding-system-work)-osiossa. Suoritamme kullekin vastaanottajalle seuraavat toiminnot:
 
-* Haemme verkkotunnuksen <strong class="notranslate">TXT</strong>-tietueita (osan `@` symbolin jälkeen, esim. `example.com`, jos sähköpostiosoite oli `test@example.com`). Esimerkiksi, jos verkkotunnus on `example.com`, teemme DNS-haun, kuten `dig example.com txt`.
-* Jäsennämme kaikki <strong class="notranslate">TXT</strong>-tietueet, jotka alkavat joko `forward-email=` (ilmaiset paketit) tai `forward-email-site-verification=` (maksulliset paketit). Huomaa, että jäsennämme molemmat voidaksemme käsitellä sähköposteja käyttäjän päivittäessä tai alentaessa paketteja. * Näistä jäsennetyistä <strong class="notranslate">TXT</strong>-tietueista iteroimme niiden läpi selvittääksemme edelleenlähetysmääritykset (kuten yllä olevassa [Miten pääsen alkuun ja määritän sähköpostin edelleenlähetyksen](#how-do-i-get-started-and-set-up-email-forwarding) -osiossa on kuvattu). Huomaa, että tuemme vain yhtä `forward-email-site-verification=` -arvoa, ja jos niitä annetaan useampi kuin yksi, tapahtuu 550-virhe ja lähettäjä saa palautuksen tälle vastaanottajalle.
-* Rekursiivisesti iteroimme poimitun edelleenlähetysmäärityksen läpi määrittääksemme globaalin edelleenlähetyksen, säännölliseen lausekkeeseen perustuvan edelleenlähetyksen ja kaikki muut tuetut edelleenlähetysmääritykset – joita nyt kutsutaan "edelleenlähetysosoitteiksi".
+* Haemme verkkotunnuksen <strong class="notranslate">TXT</strong>-tietueita (`@`-symbolin jälkeinen osa, esim. `example.com`, jos sähköpostiosoite oli `test@example.com`). Jos verkkotunnus on esimerkiksi `example.com`, teemme DNS-haun, kuten `dig example.com txt`.
+* Jäsennämme kaikki <strong class="notranslate">TXT</strong>-tietueet, jotka alkavat joko `forward-email=`:llä (ilmaiset paketit) tai `forward-email-site-verification=`:lla (maksulliset paketit). Huomaa, että jäsennämme molemmat voidaksemme käsitellä sähköposteja käyttäjän päivittäessä tai alentaessa paketteja.
+* Käymme näistä jäsennetyistä <strong class="notranslate">TXT</strong>-tietueista läpi selvittääksemme edelleenlähetysmääritykset (kuten yllä olevassa [Miten pääsen alkuun ja määritän sähköpostin edelleenlähetyksen](#how-do-i-get-started-and-set-up-email-forwarding)-osiossa on kuvattu). Huomaa, että tuemme vain yhtä `forward-email-site-verification=`-arvoa, ja jos niitä annetaan useampi kuin yksi, tapahtuu 550-virhe ja lähettäjä saa palautuksen tälle vastaanottajalle.
+* Käymme rekursiivisesti läpi poimitun edelleenlähetyskokoonpanon määrittääksemme globaalin edelleenlähetyksen, säännölliseen lausekkeeseen perustuvan edelleenlähetyksen ja kaikki muut tuetut edelleenlähetyskokoonpanot – joita nyt kutsutaan "edelleenlähetysosoitteiksi".
 * Jokaiselle edelleenlähetysosoitteelle tuemme yhtä rekursiivista hakua (joka aloittaa tämän toimintosarjan uudelleen annetusta osoitteesta). Jos rekursiivinen osuma löytyy, päätulos poistetaan edelleenlähetysosoitteista ja aliosoitteet lisätään.
-* Edelleenlähetysosoitteet jäsennetään yksilöllisyyden varalta (koska emme halua lähettää kaksoiskappaleita yhteen osoitteeseen tai luoda lisäksi tarpeettomia SMTP-asiakasyhteyksiä). * Jokaiselle edelleenlähetysosoitteelle etsimme sen verkkotunnusta API-päätepisteestämme `/v1/max-forwarded-addresses` (jotta voimme määrittää, kuinka moneen osoitteeseen verkkotunnus saa lähettää sähköpostia edelleen aliasta kohden, esim. 10 oletusarvoisesti – katso osio [edelleenlähetyksen enimmäisraja aliasta kohden](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Jos tämä raja ylittyy, tapahtuu 550-virhe ja lähettäjä saa palautuksen tästä vastaanottajasta.
-* Etsimme alkuperäisen vastaanottajan asetuksia API-päätepisteestämme `/v1/settings`, joka tukee hakua maksaville käyttäjille (ja varatoimintoa ilmaisille käyttäjille). Tämä palauttaa määritysobjektin lisäasetuksille `port` (numero, esim. `25`), `has_adult_content_protection` (totuusarvo), `has_phishing_protection` (totuusarvo), `has_executable_protection` (totuusarvo) ja `has_virus_protection` (totuusarvo).
-* Näiden asetusten perusteella tarkistamme roskapostiskannerin tulokset, ja jos virheitä ilmenee, viesti hylätään virhekoodilla 554 (esim. jos `has_virus_protection` on käytössä, tarkistamme roskapostiskannerin tulokset virusten varalta). Huomaa, että kaikki ilmaispaketin käyttäjät otetaan mukaan tarkistuksiin aikuisille suunnatun sisällön, tietojenkalastelun, suoritettavien tiedostojen ja virusten varalta. Oletusarvoisesti kaikki maksullisen sopimuksen käyttäjät ovat myös mukana, mutta tätä määritystä voidaan muuttaa verkkotunnuksen Asetukset-sivulla Sähköpostin edelleenlähetys -hallintapaneelissa.
+* Edelleenlähetysosoitteet jäsennetään yksilöllisyyden varalta (koska emme halua lähettää kaksoiskappaleita yhteen osoitteeseen tai luoda lisäksi tarpeettomia SMTP-asiakasyhteyksiä).
+* Jokaiselle edelleenlähetysosoitteelle etsimme sen verkkotunnusta API-päätepisteestämme `/v1/max-forwarded-addresses` (jotta voimme määrittää, kuinka moneen osoitteeseen verkkotunnus saa lähettää sähköpostia edelleen aliasta kohden, esim. 10 oletusarvoisesti – katso osio `example.com`0). Jos tämä raja ylittyy, tapahtuu virhe 550 ja lähettäjä saa palautuksen tästä vastaanottajasta.
+* Etsimme alkuperäisen vastaanottajan asetuksia API-päätepisteestämme `example.com`1, joka tukee hakua maksaville käyttäjille (ja varatoimintoa ilmaisille käyttäjille). Tämä palauttaa määritysobjektin lisäasetuksista `example.com`2:lle (numero, esim. `example.com`3), `example.com`4:lle (totuusarvo), `example.com`5:lle (totuusarvo), `example.com`6:lle (totuusarvo) ja `example.com`7:lle (totuusarvo). * Näiden asetusten perusteella tarkistamme roskapostiskannerin tulokset, ja jos virheitä ilmenee, viesti hylätään virhekoodilla 554 (esim. jos `example.com`8 on käytössä, tarkistamme roskapostiskannerin tulokset virusten varalta). Huomaa, että kaikki ilmaisen paketin käyttäjät otetaan mukaan tarkistuksiin aikuisille suunnatun sisällön, tietojenkalastelun, suoritettavien tiedostojen ja virusten varalta. Oletusarvoisesti kaikki maksullisen paketin käyttäjät otetaan mukaan, mutta tätä määritystä voidaan muuttaa verkkotunnuksen Asetukset-sivulla Sähköpostin edelleenlähetys -hallintapaneelissa).
 
 10. Suoritamme sitten seuraavat toimenpiteet kullekin käsitellylle vastaanottajan edelleenlähetysosoitteelle:
 
-* Osoitetta tarkistetaan [kieltolista](#do-you-have-a-denylist) -osoitetta vasten, ja jos se oli listalla, ilmenee 421-virhekoodi (joka kehottaa lähettäjää yrittämään uudelleen myöhemmin).
+* Osoitetta verrataan [kieltolista](#do-you-have-a-denylist)-osoitteeseemme, ja jos se oli listalla, ilmenee 421-virhekoodi (joka kehottaa lähettäjää yrittämään uudelleen myöhemmin).
 * Jos osoite on webhook, asetamme totuusarvon tulevia toimintoja varten (katso alla – ryhmittelemme samankaltaiset webhookit yhden POST-pyynnön tekemiseksi useiden toimitusta varten).
 * Jos osoite on sähköpostiosoite, jäsennämme isännän tulevia toimintoja varten (katso alla – ryhmittelemme samankaltaiset isännät yhden yhteyden tekemiseksi useiden yksittäisten toimitusta varten).
 
 11. Jos vastaanottajia ei ole eikä palautuksia ole, vastaamme virheellä 550 "Virheelliset vastaanottajat".
 
-12. Jos vastaanottajia on, käymme heidät läpi (ryhmiteltyinä saman isännän toimesta) ja toimitamme sähköpostit. Katso lisätietoja alla olevasta osiosta [Miten käsittelet sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues).
+12. Jos vastaanottajia on, käymme heidät läpi (ryhmiteltyinä saman isännän mukaan) ja toimitamme sähköpostit. Katso lisätietoja alla olevasta osiosta [Miten käsittelet sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues).
 
 * Jos sähköpostien lähettämisessä tapahtuu virheitä, tallennamme ne muistiin myöhempää käsittelyä varten.
-* Käytämme sähköpostien lähettämisestä pienintä virhekoodia (jos sellaista on) vastauskoodina `DATA` -komennolle. Tämä tarkoittaa, että alkuperäinen lähettäjä yrittää yleensä uudelleen lähettää toimittamatta jääneitä sähköposteja, mutta jo toimitettuja sähköposteja ei lähetetä uudelleen seuraavan kerran, kun viesti lähetetään (koska käytämme [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint) -komentoa).
-* Jos virheitä ei ilmennyt, lähetämme SMTP-vastauskoodin 250 onnistuneesta viestistä.
+* Käytämme sähköpostien lähettämisestä pienintä virhekoodia (jos sellaista on) vastauskoodina `DATA`-komennolle. Tämä tarkoittaa, että alkuperäinen lähettäjä yrittää yleensä uudelleen lähettää toimittamatta jääneitä sähköposteja, mutta jo toimitettuja sähköposteja ei lähetetä uudelleen seuraavan kerran, kun viesti lähetetään (koska käytämme [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint)-komentoa).
+* Jos virheitä ei ilmennyt, lähetämme 250 onnistuneen SMTP-vastauksen tilakoodin.
 * Palautukseksi määritellään mikä tahansa toimitusyritys, jonka tuloksena on tilakoodi, joka on >= 500 (pysyvät virheet).
 
-13. Jos palautuksia ei ole tapahtunut (pysyviä virheitä), palautamme SMTP-vastauksen tilakoodin, joka vastaa ei-pysyvien virheiden joukosta pienintä virhekoodia (tai 250 onnistunutta tilakoodia, jos virheitä ei ole ollut).
+13. Jos palautuksia ei ole tapahtunut (pysyviä virheitä), palautamme SMTP-vastauksen tilakoodina pienimmän virhekoodin ei-pysyvien virheiden joukosta (tai 250 onnistunut-tilakoodin, jos virheitä ei ole ollut).
 
-14. Jos viestit palautuvat, lähetämme palautussähköpostit taustalla palautettuamme lähettäjälle pienimmän kaikista virhekoodeista. Jos pienin virhekoodi on kuitenkin >= 500, emme lähetä palautussähköposteja. Tämä johtuu siitä, että jos lähettäisimme, lähettäjät saisivat kaksinkertaisen palautussähköpostin (esim. yhden lähtevältä MTA:lta, kuten Gmaililta, ja toisen meiltä). Lisätietoja on alla olevassa [Miten suojaudut takaisinsironnalta](#how-do-you-protect-against-backscatter) -osiossa.
+14. Jos viestit palautuvat, lähetämme palautussähköpostit taustalla palautettuamme lähettäjälle pienimmän kaikista virhekoodeista. Jos pienin virhekoodi on kuitenkin >= 500, emme lähetä palautussähköposteja. Tämä johtuu siitä, että jos lähettäisimme, lähettäjät saisivat kaksinkertaisen palautussähköpostin (esim. yhden lähtevältä MTA:lta, kuten Gmaililta, ja toisen meiltä). Lisätietoja on alla olevassa [Miten suojaudut takaisinsironnalta](#how-do-you-protect-against-backscatter)-osiossa.
 
 ### Miten käsittelette sähköpostin toimitusongelmia {#how-do-you-handle-email-delivery-issues}
 
-Huomaa, että kirjoitamme "Friendly-From" uudelleen sähköposteihin, jos ja vain jos lähettäjän DMARC-käytäntö ei läpäissyt EIKÄ DKIM-allekirjoituksia ole kohdistettu "From"-otsikon kanssa.  Tämä tarkoittaa, että muutamme viestin "From"-otsikkoa, asetamme "X-Original-From" ja asetamme myös "Reply-To", jos sitä ei ole jo asetettu.  Sinetöimme myös viestin ARC-sinetin uudelleen näiden otsikoiden muuttamisen jälkeen.
+Huomaa, että teemme sähköposteihin "Friendly-From"-uudelleenkirjoituksen vain jos ja vain jos lähettäjän DMARC-käytäntö ei läpäissyt lähetystä JA DKIM-allekirjoituksia ei ollut linjassa "From"-otsikon kanssa. Tämä tarkoittaa, että muutamme viestin "From"-otsikkoa, asetamme "X-Original-From":n ja asetamme myös "Reply-To":n, jos sitä ei ole jo asetettu. Sinetöimme myös viestin ARC-sinetin uudelleen näiden otsikoiden muuttamisen jälkeen.
 
 Käytämme myös virheilmoitusten älykästä jäsentämistä pinon jokaisella tasolla – koodissamme DNS-pyynnöissä, Node.js:n sisäisissä osioissa, HTTP-pyynnöissä (esim. 408, 413 ja 429 on yhdistetty SMTP-vastauskoodiin 421, jos vastaanottaja on webhook) ja sähköpostipalvelimen vastauksissa (esim. vastaukset, joissa on "defer" tai "slowdown", yritetään uudelleen 421-virheinä).
 
@@ -3124,13 +3128,13 @@ Jos vastaanottaja on webhook, sallimme pyynnön valmistumiselle 60 sekunnin aika
 
 Muussa tapauksessa, jos vastaanottaja on sähköpostiosoite, yritämme lähettää sähköpostin käyttäen opportunistista TLS-salausta (yritämme käyttää STARTTLS:ää, jos se on käytettävissä vastaanottajan sähköpostipalvelimella). Jos sähköpostin lähettämisen aikana tapahtuu SSL/TLS-virhe, yritämme lähettää sähköpostin ilman TLS:ää (ilman STARTTLS:ää).
 
-Jos DNS- tai yhteysvirheitä ilmenee, palautamme `DATA` -komennolle SMTP-vastauskoodin 421. Muussa tapauksessa, jos virheitä on >= 500, lähetetään palautusviestit.
+Jos DNS- tai yhteysvirheitä ilmenee, palautamme `DATA`-komennolle SMTP-vastauskoodin 421. Muussa tapauksessa, jos virheitä on >= 500, lähetetään palautusviestit.
 
 Jos havaitsemme, että sähköpostipalvelimella, jolle yritämme toimittaa viestiä, on yksi tai useampi sähköpostinvaihdon IP-osoitteistamme estetty (esim. millä tahansa roskapostittajien estämiseen käytetyllä tekniikalla), lähetämme lähettäjälle SMTP-vastauskoodin 421, jotta hän voi yrittää lähettää viestinsä uudelleen myöhemmin (ja meille ilmoitetaan ongelmasta, jotta voimme toivottavasti ratkaista sen ennen seuraavaa yritystä).
 
-### Miten käsittelette IP-osoitteidenne estymisen? {#how-do-you-handle-your-ip-addresses-becoming-blocked}
+### Miten käsittelet IP-osoitteiden estymisen? {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
-Valvomme rutiininomaisesti kaikkia tärkeimpiä DNS-estolistaa, ja jos jokin sähköpostinvaihdon ("MX") IP-osoitteistamme on listattu tärkeällä estolistalla, poistamme sen asiaankuuluvasta DNS A -tietueen round robin -kyselystä, jos mahdollista, kunnes ongelma on ratkaistu.
+Valvomme rutiininomaisesti kaikkia tärkeimpiä DNS-estolistoja, ja jos jokin sähköpostinvaihdon ("MX") IP-osoitteistamme on listattu tärkeällä estolistalla, poistamme sen asiaankuuluvasta DNS A -tietueen round robin -kyselystä, jos mahdollista, kunnes ongelma on ratkaistu.
 
 Tämän kirjoitushetkellä meidät on myös listattu useilla DNS-sallittujen listoilla, ja otamme estolistojen valvonnan vakavasti. Jos huomaat ongelmia ennen kuin meillä on aikaa ratkaista ne, ilmoita niistä meille kirjallisesti osoitteeseen <support@forwardemail.net>.
 
@@ -3138,7 +3142,7 @@ IP-osoitteemme ovat julkisesti saatavilla, [katso lisätietoja alla olevasta osi
 
 ### Mitä ovat postin päällikön osoitteet {#what-are-postmaster-addresses}
 
-Estäksemme väärin suunnatut pomput ja lomavastausviestien lähettäminen valvomattomiin tai olemattomiin postilaatikoihin, ylläpidämme luetteloa postittajista, kuten käyttäjänimistä:
+Estääksemme harhaanjohtavat palautukset ja lomavastausviestien lähettämisen valvomattomiin tai olemattomiin postilaatikoihin, ylläpidämme luetteloa sähköpostipalvelua muistuttavista käyttäjätunnuksista:
 
 * `automailer`
 * `autoresponder`
@@ -3157,9 +3161,9 @@ Estäksemme väärin suunnatut pomput ja lomavastausviestien lähettäminen valv
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [ja kaikki ei-vastausosoite](#what-are-no-reply-addresses)
+* [ja kaikkiin osoitteisiin, joihin ei vastata](#what-are-no-reply-addresses)
 
-Katso lisätietoja siitä, miten tällaisia listoja käytetään tehokkaiden sähköpostijärjestelmien luomiseen, osoitteesta [RFC 5320 Kohta 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6).
+Katso lisätietoja siitä, miten tällaisia listoja käytetään tehokkaiden sähköpostijärjestelmien luomiseen kohdasta [RFC 5320, kohta 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6).
 
 ### Mitä ovat vastausta vaatimattomat osoitteet {#what-are-no-reply-addresses}
 
@@ -3184,7 +3188,7 @@ Sähköpostiosoitteet, jotka ovat jonkin seuraavista (kirjainkokoa ei erotella),
 * `noreply`
 * `noreplys`
 
-Tätä listaa ylläpidetään [avoimen lähdekoodin projektina GitHubissa](https://github.com/forwardemail/reserved-email-addresses-list).
+Tätä listaa ylläpidetään [avoimen lähdekoodin projektina GitHubissa](https://github.com/forwardemail/reserved-email-addresses-list):na.
 
 ### Mitkä ovat palvelimesi IP-osoitteet {#what-are-your-servers-ip-addresses}
 
@@ -3192,11 +3196,11 @@ Julkaisemme IP-osoitteemme osoitteessa <https://forwardemail.net/ips>.
 
 ### Onko sinulla sallittujen lista {#do-you-have-an-allowlist}
 
-Kyllä, meillä on [verkkotunnuspäätteiden luettelo](#what-domain-name-extensions-are-allowlisted-by-default), jotka ovat oletuksena sallittujen listalla, ja dynaaminen, välimuistissa oleva ja päivittyvä sallittujen lista, joka perustuu [tiukat kriteerit](#what-is-your-allowlist-criteria)-listaan.
+Kyllä, meillä on [verkkotunnuspäätteiden luettelo](#what-domain-name-extensions-are-allowlisted-by-default)-luettelo, joka on oletuksena sallittujen luettelossa, ja dynaaminen, välimuistissa oleva ja päivittyvä sallittujen luettelo, joka perustuu [tiukat kriteerit](#what-is-your-allowlist-criteria)-luetteloon.
 
 Kaikki maksullisten sopimusten asiakkaiden sähköpostiosoitteet, verkkotunnukset ja vastaanottajat lisätään automaattisesti sallittujen listallemme.
 
-### Mitkä verkkotunnuspäätteet ovat oletuksena sallittujen listalla {#what-domain-name-extensions-are-allowlisted-by-default}
+### Mitkä verkkotunnuspäätteet on oletuksena sallittujen luettelossa {#what-domain-name-extensions-are-allowlisted-by-default}
 
 Seuraavia verkkotunnuspäätteitä pidetään oletuksena sallittuina (riippumatta siitä, ovatko ne sateenvarjo-suosioluettelossa vai eivät):
 
@@ -3410,7 +3414,7 @@ Seuraavia verkkotunnuspäätteitä pidetään oletuksena sallittuina (riippumatt
 <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-Lisäksi nämä [brändi- ja yritysverkkotunnukset](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) ovat oletuksena sallittujen listalla (esim. `apple` Apple Card -pankkitilioteille `applecard.apple`):
+Lisäksi nämä [brändi- ja yritysverkkotunnukset](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains)-kohteet ovat oletusarvoisesti sallittujen listalla (esim. `apple` Apple Card -pankkitilioteiden `applecard.apple`-kohteelle):
 
 <ul class="list-inline">
 <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3871,18 +3875,17 @@ Lisäksi nämä [brändi- ja yritysverkkotunnukset](https://en.wikipedia.org/wik
 <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-Emme nimenomaisesti sisällyttäneet mukaan kohteita `cz`, `ru` ja `ua` niiden suuren roskapostiaktiivisuuden vuoksi.
+Emme nimenomaisesti sisällyttäneet `cz`:aa, `ru`:tä ja `ua`:ta niiden suuren roskapostiaktiivisuuden vuoksi.
 
-### Mitkä ovat sallittujen listan kriteerisi {#what-is-your-allowlist-criteria}
+### Mitkä ovat sallittujen listan kriteerisi? {#what-is-your-allowlist-criteria}
 
 Meillä on staattinen lista [verkkotunnuspäätteet sallittujen listalla oletuksena](#what-domain-name-extensions-are-allowlisted-by-default) – ja ylläpidämme myös dynaamista, välimuistissa olevaa, jatkuvasti päivittyvää sallittujen luetteloa, joka perustuu seuraaviin tiukkoihin kriteereihin:
 
-* Lähettäjän juuriverkkotunnuksen on oltava muotoa [verkkotunnuspääte, joka vastaa ilmaisessa paketissamme tarjoamaamme luetteloa](#what-domain-name-extensions-can-be-used-for-free) (lisättynä `biz` ja `info`). Sisällytämme myös osittaiset osumat `edu`, `gov` ja `mil`, kuten `xyz.gov.au` ja `xyz.edu.au`.
-
-* Lähettäjän juuriverkkotunnuksen on oltava [Sateenvarjojen suosioluettelo](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL") -hausta jäsennettyjen 100 000 parhaan yksilöllisen juuriverkkotunnuksen joukossa. * Lähettäjän juuriverkkotunnuksen on oltava 50 000 parhaan joukossa yksilöllisistä juuriverkkotunnuksista, jotka ovat esiintyneet vähintään neljänä viimeisen seitsemän päivän aikana UPL-haussa (\~50%+).
-* Lähettäjän juuriverkkotunnusta ei saa [luokiteltu](https://radar.cloudflare.com/categorization-feedback/) luokitella aikuisille suunnatuksi sisällöksi tai haittaohjelmaksi Cloudflaren toimesta.
-* Lähettäjän juuriverkkotunnuksella on oltava joko A- tai MX-tietueet.
-* Lähettäjän juuriverkkotunnuksella on oltava joko A-tietue(ita), MX-tietue(ita), DMARC-tietue, jossa on `p=reject` tai `p=quarantine`, tai SPF-tietue, jossa on `-all` tai `~all`.
+* Lähettäjän juuriverkkotunnuksen on oltava [verkkotunnuspääte, joka vastaa ilmaisessa paketissamme tarjoamaamme luetteloa](#what-domain-name-extensions-can-be-used-for-free)-luokassa (lisättynä `biz` ja `info`). Sisällytämme myös osittaiset osumat `edu`, `gov` ja `mil`, kuten `xyz.gov.au` ja `xyz.edu.au`.
+* Lähettäjän juuriverkkotunnuksen on oltava 100 000 parhaan yksilöllisen juuriverkkotunnuksen joukossa [Sateenvarjojen suosioluettelo](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List")-luokituksesta ("UPL").
+* Lähettäjän juuriverkkotunnuksen on oltava 50 000 parhaan yksilöllisen juuriverkkotunnuksen joukossa, jotka ovat esiintyneet vähintään 4 päivänä viimeisten 7 päivän aikana UPL-luokituksissa (\~50%+).
+* Lähettäjän juuriverkkotunnus ei saa olla [luokiteltu](https://radar.cloudflare.com/categorization-feedback/)-luokituksessa aikuisille suunnattu sisältö tai Cloudflaren haittaohjelma.
+* Lähettäjän juuriverkkotunnuksella on oltava joko A- tai MX-tietueet asetettuna. * Lähettäjän juuriverkkotunnuksella on oltava joko A-tietue(ita), MX-tietue(ita), DMARC-tietue, jossa on `biz`0 tai `biz`1, tai SPF-tietue, jossa on `biz`2 tai `biz`3.
 
 Jos tämä kriteeri täyttyy, lähettäjän juuriverkkotunnus tallennetaan välimuistiin 7 päiväksi. Huomaa, että automaattinen työmme suoritetaan päivittäin – siksi tämä on päivittäin päivittyvä sallittujen luettelon välimuisti.
 
@@ -3890,9 +3893,9 @@ Automaattinen työmme lataa UPL:n muistissa olevat edelliset 7 päivää, purkaa
 
 Tämän kirjoitushetkellä suositut verkkotunnukset, kuten Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify ja muut – ovat tietenkin mukana.
 
-Jos lähettäjäsi ei ole sallittujen luettelossamme, ensimmäisen kerran, kun FQDN-juuriverkkotunnuksesi tai IP-osoitteesi lähettää sähköpostia, sinut suojataan [rajoitettu nopeus](#do-you-have-rate-limiting) ja [harmaalle listalle](#do-you-have-a-greylist). Huomaa, että tämä on sähköpostistandardina omaksuttu käytäntö. Useimmat sähköpostipalvelinohjelmat yrittävät uudelleen, jos ne saavat nopeusrajoitus- tai harmaan listan virheen (esim. 421- tai 4xx-tason virhekoodin).
+Jos lähettäjäsi ei ole sallittujen listallamme, ensimmäisen kerran, kun FQDN-juuriverkkotunnuksesi tai IP-osoitteesi lähettää sähköpostia, sinut asetetaan [rajoitettu nopeus](#do-you-have-rate-limiting)- ja [harmaalle listalle](#do-you-have-a-greylist)-arvoiksi. Huomaa, että tämä on sähköpostin standardikäytäntö. Useimmat sähköpostipalvelinohjelmat yrittävät yrittää uudelleen, jos ne saavat nopeusrajoitus- tai harmaan listan virheen (esim. 421- tai 4xx-tason virhekoodin).
 
-**Huomaa, että tietyt lähettäjät, kuten `a@gmail.com`, `b@xyz.edu` ja `c@gov.au`, voidaan silti [kiellettyjen listalla](#do-you-have-a-denylist)** suojata (esim. jos havaitsemme automaattisesti roskapostia, tietojenkalastelua tai haittaohjelmia kyseisiltä lähettäjiltä).**
+**Huomaa, että tietyt lähettäjät, kuten `a@gmail.com`, `b@xyz.edu` ja `c@gov.au`, voivat silti olla [kiellettyjen listalla](#do-you-have-a-denylist)** (esim. jos havaitsemme automaattisesti roskapostia, tietojenkalastelua tai haittaohjelmia kyseisiltä lähettäjiltä).**
 
 ### Mitä verkkotunnuspäätteitä voi käyttää ilmaiseksi {#what-domain-name-extensions-can-be-used-for-free}
 
@@ -4001,63 +4004,62 @@ Jos he ovat odottaneet onnistuneesti viisi minuuttia tästä alkuperäisestä sa
 
 Avain koostuu joko FQDN-juuriverkkotunnuksesta tai lähettäjän IP-osoitteesta. Tämä tarkoittaa, että kaikki harmaalle listalle päässeet aliverkkotunnukset läpäisevät myös juuriverkkotunnuksen ja päinvastoin (tätä tarkoitamme "erittäin löyhällä" käytännöllä).
 
-Jos esimerkiksi sähköposti tulee osoitteesta `test.example.com` ennen kuin näemme sähköpostin tulevan osoitteesta `example.com`, kaikkien osoitteesta `test.example.com` ja/tai `example.com` tulevien sähköpostien on odotettava 5 minuuttia yhteyden alkuperäisestä saapumisajasta. Emme aseta sekä `test.example.com` että `example.com` omia 5 minuutin odotusaikojaan (harmaalistauskäytäntömme koskee juuriverkkotunnusta).
+Jos esimerkiksi sähköposti tulee `test.example.com`:lta ennen kuin näemme sähköpostin tulevan `example.com`:ltä, kaikkien `test.example.com`:lta ja/tai `example.com`:lta tulevien sähköpostien on odotettava 5 minuuttia yhteyden alkuperäisestä saapumisajasta. Emme aseta sekä `test.example.com`:lle että `example.com`:lle omia 5 minuutin odotusaikojaan (harmaalistauskäytäntömme koskee juuriverkkotunnustasolla).
 
-Huomaa, että harmaalistaus ei koske lähettäjiä [sallittujen lista](#do-you-have-an-allowlist) -sivullamme (esim. Meta, Amazon, Netflix, Google, Microsoft tämän kirjoitushetkellä).
+Huomaa, että harmaalistaus ei koske [sallittujen lista](#do-you-have-an-allowlist)-tietokannan lähettäjiä (esim. Meta, Amazon, Netflix, Google, Microsoft tämän kirjoitushetkellä).
 
 ### Onko sinulla estolista {#do-you-have-a-denylist}
 
 Kyllä, meillä on oma estolista ja päivitämme sitä automaattisesti reaaliajassa ja manuaalisesti havaitun roskapostin ja haitallisen toiminnan perusteella.
 
-Haemme myös kaikki IP-osoitteet UCEPROTECTin tason 1 kieltolistalta osoitteesta <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> tunnin välein ja syötämme ne kieltolistallemme 7 päivän voimassaoloajalla.
+Haemme myös kaikki IP-osoitteet UCEPROTECTin tason 1 kieltolistalta kohdasta <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> tunnin välein ja syötämme ne kieltolistallemme 7 päivän voimassaoloajalla.
 
-Estoluettelosta löytyvät lähettäjät saavat virhekoodin 421 (joka kehottaa lähettäjää yrittämään uudelleen myöhemmin), jos he [eivät ole sallittujen listalla](#do-you-have-an-allowlist).
+Estoluettelosta löytyvät lähettäjät saavat virhekoodin 421 (joka kehottaa lähettäjää yrittämään uudelleen myöhemmin), jos niiden [eivät ole sallittujen listalla](#do-you-have-an-allowlist).
 
 Käyttämällä 421-tilakoodia 554-tilakoodin sijaan voidaan vähentää mahdollisia vääriä positiivisia tuloksia reaaliajassa ja viesti voidaan toimittaa onnistuneesti seuraavalla yrityksellä.
 
-**Tämä on suunniteltu toisin kuin muissa sähköpostipalveluissa**, joissa estolistalle lisätty viesti aiheuttaa pysyvän virheen. Lähettäjien pyytäminen lähettämään viestejä uudelleen on usein vaikeaa (etenkin suurista organisaatioista), joten tämä lähestymistapa antaa lähettäjälle, vastaanottajalle tai meille noin viisi päivää ensimmäisestä sähköpostiyrityksestä puuttua asiaan ja korjata ongelman (pyytämällä estolistalta poistamista).
+**Tämä on suunniteltu toisin kuin muissa sähköpostipalveluissa**, joissa estolistalle lisätty viesti aiheuttaa pysyvän virheen. Lähettäjien pyytäminen lähettämään viestit uudelleen on usein vaikeaa (etenkin suurista organisaatioista), joten tämä lähestymistapa antaa lähettäjälle, vastaanottajalle tai meille noin viisi päivää ensimmäisestä sähköpostiyrityksestä puuttua asiaan ja korjata ongelman (pyytämällä estolistalta poistamista).
 
 Ylläpitäjät seuraavat kaikkia kieltolistalta poistopyyntöjä reaaliajassa (esim. jotta toistuvat väärät positiiviset tulokset voidaan pysyvästi lisätä sallittujen listalle).
 
-Estolistan poistopyyntöjä voi pyytää osoitteessa <https://forwardemail.net/denylist>. Maksavien käyttäjien estolistan poistopyyntöjä käsitellään välittömästi, kun taas maksamattomien käyttäjien on odotettava, että ylläpitäjät käsittelevät pyyntönsä.
+Estolistan poistopyyntöjä voi pyytää osoitteessa <https://forwardemail.net/denylist>.. Maksavien käyttäjien estolistan poistopyyntöjä käsitellään välittömästi, kun taas maksamattomien käyttäjien on odotettava, että ylläpitäjät käsittelevät pyyntönsä.
 
 Roskapostia tai virussisältöä lähettäviksi havaittujen lähettäjien luetteloon lisätään seuraavalla tavalla:
 
 1. [alkuperäisen viestin sormenjälki](#how-do-you-determine-an-email-fingerprint) lisätään harmaalle listalle, kun se havaitsee roskapostia tai estolistalla olevaa viestiä "luotettavalta" lähettäjältä (esim. `gmail.com`, `microsoft.com`, `apple.com`).
 * Jos lähettäjä oli sallittujen listalla, viesti on harmaalla listalla 1 tunnin ajan.
 * Jos lähettäjää ei ole sallittujen listalla, viesti on harmaalla listalla 6 tuntia.
-
-2. Jäsennämme estolista-avaimet lähettäjän ja viestin tiedoista, ja jokaiselle näistä avaimista luomme (jos sellaista ei jo ole) laskurin, kasvatamme sitä yhdellä ja tallennamme sen välimuistiin 24 tunniksi. * Sallittujen lähettäjien osalta:
-* Lisää avain kirjekuoren "MAIL FROM" -sähköpostiosoitteelle, jos sillä oli SPF-varmistus tai ei SPF-varmistusta, eikä se ollut [postmasterin käyttäjätunnus](#what-are-postmaster-addresses) tai [käyttäjätunnus, joka ei vastaa](#what-are-no-reply-addresses).
-* Jos "Lähettäjä"-otsikko oli sallittujen luettelossa, lisää avain "Lähettäjä"-otsikkosähköpostiosoitteelle, jos sillä oli SPF-varmistus tai DKIM-varmistus ja kohdistettu.
-* Jos "Lähettäjä"-otsikko ei ollut sallittujen luettelossa, lisää avain "Lähettäjä"-otsikkosähköpostiosoitteelle ja sen juurijäsennetylle verkkotunnukselle.
+2. Jäsennämme estolista-avaimet lähettäjän ja viestin tiedoista, ja jokaiselle näistä avaimista luomme (jos sellaista ei vielä ole) laskurin, kasvatamme sitä yhdellä ja tallennamme sen välimuistiin 24 tunniksi.
+* Sallittujen lähettäjien osalta:
+* Lisää avain kirjekuoren "MAIL FROM" -sähköpostiosoitteelle, jos sillä oli SPF-tarkistus tai ei SPF-tarkistusta, ja se ei ollut [postmaster-käyttäjätunnus](#what-are-postmaster-addresses) tai [käyttäjätunnus, johon ei vastata](#what-are-no-reply-addresses). * Jos "Lähettäjä"-otsikko oli sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle, jos sillä oli SPF-varmenne tai DKIM-varmenne ja kohdistettu.
+* Jos "Lähettäjä"-otsikko ei ollut sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle ja sen juurijäsennetylle verkkotunnukselle.
 * Ei-sallittujen lähettäjien osalta:
-* Lisää avain kirjekuoren "MAIL FROM" -sähköpostiosoitteelle, jos sillä oli SPF-varmistus.
-* Jos "Lähettäjä"-otsikko oli sallittujen luettelossa, lisää avain "Lähettäjä"-otsikkosähköpostiosoitteelle, jos sillä oli SPF-varmistus tai DKIM-varmistus ja kohdistettu.
-* Jos "Lähettäjä"-otsikko ei ollut sallittujen luettelossa, lisää avain "Lähettäjä"-otsikkosähköpostiosoitteelle ja sen juurijäsennetylle verkkotunnukselle. * Lisää avain lähettäjän etä-IP-osoitteelle.
-* Lisää avain asiakkaan selvittämälle isäntänimelle käänteishaulla lähettäjän IP-osoitteesta (jos sellainen on).
-* Lisää avain asiakkaan selvittämän isäntänimen juuriverkkotunnukselle (jos sellainen on ja jos se eroaa asiakkaan selvittämästä isäntänimestä).
-3. Jos laskuri saavuttaa arvon 5 ei-sallittujen lähettäjien ja avainten kohdalla, estämme avaimen 30 päiväksi ja väärinkäyttötiimillemme lähetetään sähköposti. Nämä luvut voivat muuttua ja päivitykset näkyvät tässä väärinkäytösten seurannan yhteydessä.
+* Lisää avain "SÄHKÖPOSTIA"-kirjekuoren sähköpostiosoitteelle, jos sillä oli SPF-varmenne.
+* Jos "Lähettäjä"-otsikko oli sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle, jos sillä oli SPF-varmenne tai DKIM-varmenne ja kohdistettu.
+* Jos "Lähettäjä"-otsikko ei ollut sallittujen listalla, lisää avain "Lähettäjä"-otsikon sähköpostiosoitteelle ja sen juurijäsennetylle verkkotunnukselle.
+* Lisää avain lähettäjän etä-IP-osoitteelle.
+* Lisää avain asiakkaan selvittämälle isäntänimelle käänteisen haun avulla lähettäjän IP-osoitteesta (jos sellainen on).
+* Lisää avain asiakkaan selvitetyn isäntänimen juuriverkkotunnukselle (jos sellainen on ja jos se eroaa asiakkaan selvitetystä isäntänimestä). 3. Jos laskuri saavuttaa luvun 5 lähettäjälle ja avaimelle, joka ei ole sallittujen listalla, estämme avaimen 30 päiväksi ja lähetämme sähköpostin väärinkäyttötiimillemme. Nämä luvut voivat muuttua, ja päivitykset näkyvät tässä väärinkäytösten seurannan myötä.
 
-4. Jos laskuri saavuttaa arvon 10 sallittujen lähettäjien ja avainten kohdalla, estämme avaimen 7 päiväksi ja väärinkäyttötiimillemme lähetetään sähköposti. Nämä luvut voivat muuttua ja päivitykset näkyvät tässä väärinkäytösten seurannan yhteydessä.
+4. Jos laskuri saavuttaa luvun 10 lähettäjälle ja avaimelle, estämme avaimen 7 päiväksi ja lähetämme sähköpostin väärinkäyttötiimillemme. Nämä luvut voivat muuttua, ja päivitykset näkyvät tässä väärinkäytösten seurannan myötä.
 
-> **HUOM:** Lähitulevaisuudessa otamme käyttöön maineen seurannan. Maineen seuranta laskee sen sijaan lähettäjän hylkäyspäivämäärän prosenttikynnyksen perusteella (toisin kuin yllä mainittu alkeellinen laskuri).
+> **HUOM:** Lähitulevaisuudessa otamme käyttöön maineen seurannan. Maineen seuranta laskee sen sijaan lähettäjän hylkäyslistan saamisen prosenttikynnyksen perusteella (toisin kuin yllä mainittu alkeellinen laskuri).
 
-### Onko teillä nopeusrajoitusta {#do-you-have-rate-limiting}
+### Onko sinulla nopeusrajoitus {#do-you-have-rate-limiting}
 
 Lähettäjän lähetysnopeuden rajoitus perustuu joko lähettäjän IP-osoitteen käänteisestä PTR-hausta jäsennettyyn juuriverkkotunnukseen – tai jos se ei tuota tulosta, käytetään yksinkertaisesti lähettäjän IP-osoitetta. Huomaa, että viittaamme tähän jäljempänä nimellä `Sender`.
 
-MX-palvelimillamme on päivittäiset rajoitukset saapuvalle postille osoitteeseen [salattu IMAP-tallennustila](/blog/docs/best-quantum-safe-encrypted-email-service):
+MX-palvelimillamme on päivittäiset rajoitukset saapuvalle postille, jota vastaanotetaan [salattu IMAP-tallennustila](/blog/docs/best-quantum-safe-encrypted-email-service):lle:
 
-* Sen sijaan, että saapuvan postin määrää rajoitettaisiin yksittäisten aliasten perusteella (esim. `you@yourdomain.com`), hinnoittelemme sen itse verkkotunnuksen mukaan (esim. `yourdomain.com`). Tämä estää `Senders`:tä tulvimasta kaikkien verkkotunnuksesi aliasten postilaatikoihin samanaikaisesti. * Meillä on yleisiä rajoituksia, jotka koskevat kaikkia `Senders` -kohteita palvelussamme vastaanottajasta riippumatta:
-* `Senders` -kohteita, joita pidämme "luotettavina" totuuden lähteinä (esim. `gmail.com`, `microsoft.com`, `apple.com`), lähettävät enintään 100 Gt päivässä.
-* `Senders` -kohteita, jotka ovat [sallittujen listalla](#do-you-have-an-allowlist), lähettävät enintään 10 Gt päivässä.
-* Kaikki muut `Senders` -kohteet voivat lähettää enintään 1 Gt ja/tai 1000 viestiä päivässä.
-* Meillä on `Sender` ja `yourdomain.com` kohtien erityinen rajoitus, joka on 1 Gt ja/tai 1000 viestiä päivässä.
+* Sen sijaan, että saapuvan postin määrää rajoitettaisiin yksittäisten aliasten perusteella (esim. `you@yourdomain.com`), rajoitamme saapuvan postin määrää itse aliaksen verkkotunnuksen mukaan (esim. `yourdomain.com`). Tämä estää `Senders`-aliasta tulvimasta kaikkien verkkotunnuksesi aliasten postilaatikoita samanaikaisesti.
+* Meillä on yleisiä rajoituksia, jotka koskevat kaikkia `Senders`-aliaksia koko palvelussamme vastaanottajasta riippumatta:
+* `Senders`-aliaksien, joita pidämme "luotettavina" totuuden lähteinä (esim. `gmail.com`, `microsoft.com`, `apple.com`), lähetysrajoitus on 100 Gt päivässä.
+* `Senders`-aliaksien, jotka ovat [sallittujen listalla](#do-you-have-an-allowlist)-aliaksia, lähetysrajoitus on 10 Gt päivässä.
+* Kaikkien muiden `yourdomain.com`0-aliaksien lähetysrajoitus on 1 Gt ja/tai 1000 viestiä päivässä. * Meillä on `yourdomain.com`1- ja `yourdomain.com`2-kohtainen tietty rajoitus, joka on 1 Gt ja/tai 1000 viestiä päivässä.
 
-MX-palvelimet rajoittavat myös viestien edelleenlähetystä yhdelle tai useammalle vastaanottajalle nopeusrajoituksen avulla – mutta tämä koskee vain `Senders` -koodia, ei [sallittujen lista](#do-you-have-an-allowlist) -koodia:
+MX-palvelimet rajoittavat myös viestien edelleenlähettämistä yhdelle tai useammalle vastaanottajalle nopeusrajoituksen avulla – mutta tämä koskee vain `Senders`-objektia, ei [sallittujen lista](#do-you-have-an-allowlist)-objektia:
 
-* Sallimme enintään 100 yhteyttä tunnissa per `Sender` ratkaistu FQDN-juuriverkkotunnus (tai) `Sender` etä-IP-osoite (jos käänteistä PTR:ää ei ole saatavilla) ja per kirjekuoren vastaanottaja. Tallennamme nopeusrajoituksen avaimen kryptografisena tiivisteenä Redis-tietokantaamme.
+* Sallimme enintään 100 yhteyttä tunnissa per `Sender`-selvitetty FQDN-juuriverkkotunnus (tai `Sender`-etä-IP-osoite (jos käänteistä PTR-ominaisuutta ei ole saatavilla) ja per kirjekuoren vastaanottaja. Tallennamme nopeusrajoituksen avaimen kryptografisena tiivisteenä Redis-tietokantaamme.
 
 * Jos lähetät sähköpostia järjestelmämme kautta, varmista, että sinulla on käänteinen PTR-asetus käytössä kaikille IP-osoitteillesi (muuten jokaista yksilöllistä FQDN-juuriverkkotunnusta tai IP-osoitetta, josta lähetät, rajoitetaan nopeudella).
 
@@ -4065,27 +4067,27 @@ MX-palvelimet rajoittavat myös viestien edelleenlähetystä yhdelle tai useamma
 
 * Jos lähetät viestiä verkkotunnuksesta, kuten `test.abc.123.example.com`, nopeusrajoitus asetetaan verkkotunnukselle `example.com`. Monet roskapostittajat käyttävät satoja aliverkkotunnuksia kiertääkseen yleisiä roskapostisuodattimia, jotka rajoittavat nopeusrajoituksia vain yksilöllisille isäntänimille yksilöllisten FQDN-juuriverkkotunnusten sijaan.
 
-* `Senders`, jotka ylittävät nopeusrajoituksen, hylätään virheellä 421.
+* Nopeusrajan ylittävät `Senders`-arvot hylätään virheellä 421.
 
-IMAP- ja SMTP-palvelimemme rajoittavat aliaksiesi samanaikaisen yhteydenpidon yli `60`.
+IMAP- ja SMTP-palvelimemme rajoittavat aliaksiesi samanaikaisen yhteydenpidon `60` yhteyteen.
 
-MX-palvelimemme rajoittavat [ei sallittujen listalla](#do-you-have-an-allowlist) lähettäjien muodostamia yli 10 samanaikaista yhteyttä (laskurin välimuistin vanhenemisaika on 3 minuuttia, mikä heijastaa soketin aikakatkaisuamme, joka on 3 minuuttia).
+MX-palvelimemme rajoittavat [ei sallittujen listalla](#do-you-have-an-allowlist)-lähettäjien muodostamia yhteyksiä yli 10 samanaikaisesti (laskurin välimuistin vanhenemisaika on 3 minuuttia, mikä vastaa soketin aikakatkaisuaikaamme, joka on 3 minuuttia).
 
 ### Miten suojaudut takaisinsironnalta {#how-do-you-protect-against-backscatter}
 
-Väärin ohjatut palautuvat viestit tai palautuva roskaposti (tunnetaan nimellä "[Takaisinhajonta](https://en.wikipedia.org/wiki/Backscatter_\(email\)") voivat aiheuttaa lähettäjän IP-osoitteille negatiivisen maineen.
+Väärin ohjatut palautuvat viestit tai roskapostin palautus (tunnetaan nimellä "[Takaisinhajonta](https://en.wikipedia.org/wiki/Backscatter_\(email\)") voi aiheuttaa lähettäjän IP-osoitteille negatiivisen maineen.
 
 Suojaudumme takaisinhajottamiselta kahdella tavalla, jotka on kuvattu yksityiskohtaisesti seuraavissa osioissa [Estä tunnetuilta roskapostittajilta tulevan sähköpostin palautuminen](#prevent-bounces-from-known-mail-from-spammers) ja [Estää tarpeettomat pomppimiset suojautuakseen takaisinhajottamiselta](#prevent-unnecessary-bounces-to-protect-against-backscatter).
 
 ### Estä tunnettujen roskapostittajien lähettämien sähköpostien palautuminen {#prevent-bounces-from-known-mail-from-spammers}
 
-Haemme listan osoitteesta <[Backscatter.org](https://www.backscatterer.org/) (jonka tarjoaa [UCEPROTECT](https://www.uceprotect.net/)) osoitteesta <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> tunnin välein ja syötämme sen Redis-tietokantaamme (vertaamme eroja myös etukäteen siltä varalta, että IP-osoitteita on poistettu ja ne on otettava huomioon).
+Noudamme listan [Backscatter.org](https://www.backscatterer.org/):sta ([UCEPROTECT](https://www.uceprotect.net/):n avulla) kohdasta <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> joka tunti ja syötämme sen Redis-tietokantaamme (vertaamme eroja myös etukäteen siltä varalta, että IP-osoitteita on poistettu ja ne on otettava huomioon).
 
-Jos MAIL FROM on tyhjä TAI on yhtä suuri kuin (kirjainkokoa ei erotella) jokin [postipäälliköiden osoitteet](#what-are-postmaster-addresses) (sähköpostin @-merkkiä edeltävä osa) -kohdasta, tarkistamme, vastaako lähettäjän IP-osoite jotakin tästä listasta.
+Jos MAIL FROM on tyhjä TAI on yhtä suuri kuin (kirjainkokoa ei erotella) jokin [postinjakajien osoitteet](#what-are-postmaster-addresses)-arvoista (osa ennen @-merkkiä sähköpostissa), tarkistamme, vastaako lähettäjän IP-osoite jotakin tästä luettelosta.
 
-Jos lähettäjän IP-osoite on luettelossa (eikä [sallittujen lista](#do-you-have-an-allowlist)-luettelossamme), lähetämme 554-virheen viestillä `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Saamme ilmoituksen, jos lähettäjä on sekä takaisinsirottavien listalla että sallittujen listallamme, jotta voimme tarvittaessa ratkaista ongelman.
+Jos lähettäjän IP-osoite on luettelossa (eikä [sallittujen lista](#do-you-have-an-allowlist)-luettelossamme), lähetämme 554-virheen viestillä `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Saamme ilmoituksen, jos lähettäjä on sekä takaisinsirottavien luettelossa että sallittujen luettelossamme, jotta voimme tarvittaessa ratkaista ongelman.
 
-Tässä osiossa kuvatut tekniikat noudattavat osoitteessa <https://www.backscatterer.org/?target=usage> annettua "SAFE MODE" -suositusta, jossa tarkistamme lähettäjän IP-osoitteen vain, jos tietyt ehdot ovat jo täyttyneet.
+Tässä osiossa kuvatut tekniikat noudattavat kohdassa <https://www.backscatterer.org/?target=usage> annettua "SAFE MODE" -suositusta, jossa tarkistamme lähettäjän IP-osoitteen vain, jos tietyt ehdot ovat jo täyttyneet.
 
 ### Estä tarpeettomat heijastukset suojataksesi takaisinsironnalta {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
@@ -4097,36 +4099,38 @@ Yleinen syy takaisinsirontalistalle joutumiseen on väärin ohjatut palautukset 
 
 2. Lähetämme viestin vain kerran ja ainoastaan kerran (käytämme laskettua palautussormenjälkiavainta ja tallennamme sen välimuistiin kaksoiskappaleiden lähettämisen estämiseksi). Palautussormenjälki on avain, joka on viestin sormenjälki yhdistettynä palautusosoitteen tiivisteeseen ja sen virhekoodiin). Katso lisätietoja viestin sormenjäljen laskemisesta osiosta [Sormenjälkien ottaminen](#how-do-you-determine-an-email-fingerprint). Onnistuneesti lähetetyt palautussormenjäljet vanhenevat 7 päivän kuluttua Redis-välimuistissamme.
 
-3. Lähetämme viestin vain, kun SÄHKÖPOSTI LÄHETTÄJÄ- ja/tai LÄHETTÄJÄ-kenttä ei ole tyhjä eikä sisällä (kirjainkokoa ei erotella) [postmasterin käyttäjätunnus](#what-are-postmaster-addresses) (sähköpostin @-merkkiä edeltävä osa).
+3. Lähetämme viestin vain, kun MAIL FROM ja/tai From ei ole tyhjä eikä sisällä (kirjainkokoa ei erotella) [postin pääkäyttäjän käyttäjätunnus](#what-are-postmaster-addresses)-kohtaa (sähköpostin @-merkkiä edeltävä osa).
 
 4. Emme lähetä viestiä, jos alkuperäisessä viestissä oli jokin seuraavista otsikoista (kirjainkokoa ei erotella):
 
-* `auto-submitted` -otsikko, jonka arvo ei ole yhtä suuri kuin `no`. * `x-auto-response-suppress` -otsikko, jonka arvo on `dr`, `autoreply`, `auto-reply`, `auto_reply` tai `all`
-* `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` tai `x-auto-respond` (arvosta riippumatta).
-* `precedence` -otsikko, jonka arvo on `bulk`, `autoreply`, `auto-reply`, `auto_reply` tai `list`.
+* `auto-submitted`-otsikko, jonka arvo ei ole yhtä suuri kuin `no`.
+* `x-auto-response-suppress`-otsikko, jonka arvo on `dr`, `autoreply`, `auto-reply`, `auto_reply` tai `all`.
 
-5. Emme lähetä viestiä, jos MAIL FROM- tai Lähettäjä-sähköpostiosoite päättyy merkkijonoihin `+donotreply`, `-donotreply`, `+noreply` tai `-noreply`.
+* `list-id`-, `list-subscribe`-, `no`0-, `no`1-, `no`2-, `no`3-, `no`4-, `no`5-, `no`6- tai `no`7-otsikko (arvosta riippumatta).
+* `no`8-otsikko, jonka arvo on `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 tai `x-auto-response-suppress`3.
 
-6. Emme lähetä viestiä, jos Lähettäjän sähköpostiosoite ja käyttäjätunnus -osio oli `mdaemon` ja sen kirjainkokoa ei erotella otsikossa `X-MDDSN-Message`.
+5. Emme lähetä viestiä, jos MAIL FROM- tai Lähettäjä-sähköpostiosoite päättyy `+donotreply`-, `-donotreply`-, `+noreply`- tai `-noreply`-osoitukseen.
 
-7. Emme lähetä, jos `multipart/report`-otsikkokoodissa oli kirjainkokoa ei-herkkä `content-type`.
+6. Emme lähetä, jos Lähettäjän sähköpostiosoite ja käyttäjätunnus -osio oli `mdaemon` ja sen kirjainkokoa ei erotella otsikossa `X-MDDSN-Message`.
+
+7. Emme lähetä, jos `multipart/report`-otsikko on kirjainkokoa ei-herkkä `content-type`.
 
 ### Miten sähköpostin sormenjälki määritetään {#how-do-you-determine-an-email-fingerprint}
 
-Sähköpostin sormenjälkeä käytetään sähköpostin yksilöllisyyden määrittämiseen ja kaksoisviestien toimittamisen ja [kaksoispalautukset](#prevent-unnecessary-bounces-to-protect-against-backscatter) lähettämisen estämiseen.
+Sähköpostin sormenjälkeä käytetään sähköpostin yksilöllisyyden määrittämiseen ja kaksoisviestien toimittamisen sekä [kaksoispalautukset](#prevent-unnecessary-bounces-to-protect-against-backscatter):n lähettämisen estämiseen.
 
 Sormenjälki lasketaan seuraavasta luettelosta:
 
 * Asiakkaan selvittämä FQDN-isäntänimi tai IP-osoite
-* `Message-ID` otsikkoarvo (jos on)
-* `Date` otsikkoarvo (jos on)
-* `From` otsikkoarvo (jos on)
-* `To` otsikkoarvo (jos on)
-* `Cc` otsikkoarvo (jos on)
-* `Subject` otsikkoarvo (jos on)
-* `Body` arvo (jos on)
+* `Message-ID`-otsikkoarvo (jos on)
+* `Date`-otsikkoarvo (jos on)
+* `From`-otsikkoarvo (jos on)
+* `To`-otsikkoarvo (jos on)
+* `Cc`-otsikkoarvo (jos on)
+* `Subject`-otsikkoarvo (jos on)
+* `Body`-arvo (jos on)
 
-### Voinko lähettää sähköposteja edelleen muihin portteihin kuin 25 (esim. jos internet-palveluntarjoajani on estänyt portin 25)? {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
+### Voinko lähettää sähköposteja edelleen muihin portteihin kuin 25 (esim. jos internet-palveluntarjoajani on estänyt portin 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
 Kyllä, olemme lisänneet tämän ominaisuuden 5. toukokuuta 2020 alkaen. Tällä hetkellä ominaisuus on verkkotunnuskohtainen, ei aliaskohtainen. Jos tarvitset sen olevan aliaskohtainen, ota meihin yhteyttä ja kerro tarpeistasi.
 
@@ -4142,7 +4146,7 @@ Jos käytät maksullista tilausta (jossa on parannettu yksityisyyden suoja), sii
 
 Jos käytät ilmaisversiota, lisää uusi DNS <strong class="notranslate">TXT</strong>-tietue alla olevan kuvan mukaisesti, mutta muuta portti 25:stä valitsemaasi porttiin.
 
-Jos esimerkiksi haluan, että kaikki osoitteeseen `example.com` menevät sähköpostit lähetetään edelleen aliasvastaanottajien SMTP-porttiin 1337 portin 25 sijaan:
+Jos esimerkiksi haluan, että kaikki `example.com`-osoitteeseen menevät sähköpostit lähetetään edelleen aliasvastaanottajien SMTP-porttiin 1337 25:n sijaan:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4192,7 +4196,7 @@ Yleisin mukautetun porttiohjauksen määritystapa on silloin, kun haluat ohjata 
 </tbody>
 </table>
 
-### Tukeeko se plus-merkkiä (+) Gmail-aliaksille {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Tukeeko se plus-merkkiä (+) Gmail-aliaksille? {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
 Kyllä, ehdottomasti.
 
@@ -4200,9 +4204,9 @@ Kyllä, ehdottomasti.
 
 Kyllä, ehdottomasti. Sen sijaan, että nimenä/isännänä/aliaksena käytettäisiin @-merkkiä, "."-merkkiä tai tyhjää kohtaa, käytetään arvona aliverkkotunnuksen nimeä.
 
-Jos haluat, että `foo.example.com` välittää sähköposteja, anna DNS-asetuksissasi nimeksi/isäntäksi/alias-arvoksi `foo` (sekä MX- että TXT-tietueille).
+Jos haluat `foo.example.com`:n lähettävän sähköpostit edelleen, anna `foo` DNS-asetuksissasi nimeksi/isäntäksi/alias-arvoksi (sekä MX- että TXT-tietueille).
 
-### Lähettääkö tämä sähköpostini otsikot edelleen {#does-this-forward-my-emails-headers}
+### Lähettääkö tämä sähköpostini otsikot edelleen? {#does-this-forward-my-emails-headers}
 
 Kyllä, ehdottomasti.
 
@@ -4210,7 +4214,7 @@ Kyllä, ehdottomasti.
 
 Kyllä, siinä on [ava](https://github.com/avajs/ava):lla kirjoitettuja testejä ja se sisältää myös koodikattavuutta.
 
-### Välitätkö SMTP-vastausviestejä ja -koodeja {#do-you-pass-along-smtp-response-messages-and-codes}
+### Välitätkö SMTP-vastausviestejä ja -koodeja? {#do-you-pass-along-smtp-response-messages-and-codes}
 
 Kyllä, ehdottomasti. Jos esimerkiksi lähetät sähköpostia osoitteeseen `hello@example.com` ja se on rekisteröity edelleenlähetettäväksi osoitteeseen `user@gmail.com`, palautetaan SMTP-vastausviesti ja -koodi SMTP-palvelimelta "gmail.com" välityspalvelimen "mx1.forwardemail.net" tai "mx2.forwardemail.net" sijaan.
 
@@ -4218,9 +4222,9 @@ Kyllä, ehdottomasti. Jos esimerkiksi lähetät sähköpostia osoitteeseen `hell
 
 Katso yllä olevat osiot [Miten sähköpostin edelleenlähetysjärjestelmäsi toimii](#how-does-your-email-forwarding-system-work), [Miten käsittelet sähköpostin toimitusongelmia](#how-do-you-handle-email-delivery-issues) ja [Miten käsittelet IP-osoitteiden estymisen](#how-do-you-handle-your-ip-addresses-becoming-blocked).
 
-### Miten DNS-hakuja suoritetaan verkkotunnuksille {#how-do-you-perform-dns-lookups-on-domain-names}
+### Miten suoritat DNS-hakuja verkkotunnuksille {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Loimme avoimen lähdekoodin ohjelmistoprojektin :tangerine: [Mandariini](https://github.com/forwardemail/tangerine) ja käytämme sitä DNS-hakuihin. Oletusarvoisesti käytetyt DNS-palvelimet ovat `1.1.1.1` ja `1.0.0.1`, ja DNS-kyselyt tehdään sovelluskerroksen [DNS HTTPS:n kautta](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") kautta.
+Loimme avoimen lähdekoodin ohjelmistoprojektin :tangerine: [Mandariini](https://github.com/forwardemail/tangerine) ja käytämme sitä DNS-hakuihin. Oletusarvoisesti käytetyt DNS-palvelimet ovat `1.1.1.1` ja `1.0.0.1`, ja DNS-kyselyt tehdään [DNS HTTPS:n kautta](https://en.wikipedia.org/wiki/DNS_over_HTTPS):n ("DoH") kautta sovellustasolla.
 
 :tangerine: [Mandariini](https://github.com/tangerine) käyttää [oletuksena CloudFlaren yksityisyyttä ensisijaisesti huomioivaa kuluttajille suunnattua DNS-palvelua][cloudflare-dns].
 
@@ -4256,13 +4260,13 @@ Kyllä, muokkaa vain DNS-<strong class="notranslate">TXT</strong>-tietuettasi ja
 
 Huomaa, että sinun *tulisi* säilyttää ":"-määritykset, sillä niitä tarvitaan, jos päätät joskus poistaa tämän käytöstä (ja niitä käytetään myös tuontiin, jos päivität johonkin maksullisiin paketteihimme).
 
-**Hiljaiselle hylkäykselle (lähettäjälle viesti näyttää lähetetyltä onnistuneesti, mutta ei todellisuudessa etene mihinkään) (tilakoodi `250`):** Jos lisäät aliaksen etuliitteeksi "!" (yksi huutomerkki), se palauttaa onnistumistilakoodin `250` lähettäjille, jotka yrittävät lähettää viestin tähän osoitteeseen, mutta itse sähköpostit eivät mene mihinkään (esim. mustaan aukkoon tai `/dev/null`).
+**Hiljaista hylkäämistä varten (lähettäjälle viesti näyttää siltä kuin se olisi lähetetty onnistuneesti, mutta ei todellisuudessa mene minnekään) (tilakoodi `250`):** Jos lisäät aliaksen etuliitteeksi "!" (yksi huutomerkki), se palauttaa onnistumistilakoodin `250` lähettäjille, jotka yrittävät lähettää viestin tähän osoitteeseen, mutta itse sähköpostit eivät mene minnekään (esim. mustaan aukkoon tai `/dev/null`).
 
 **Pehmeää hylkäämistä varten (tilakoodi `421`):** Jos lisäät aliaksen etuliitteeksi "!!" (kaksoishuutomerkki), se palauttaa pehmeän virhekoodin `421` lähettäjille, jotka yrittävät lähettää sähköpostia tähän osoitteeseen. Sähköpostien lähetystä yritetään usein uudelleen jopa viiden päivän ajan ennen hylkäämistä ja palautumista.
 
-**Kova hylkäys (tilakoodi `550`):** Jos lisäät aliaksen etuliitteeksi "!!!" (kolminkertainen huutomerkki), se palauttaa pysyvän virhekoodin `550` lähettäjille, jotka yrittävät lähettää viestiä tähän osoitteeseen, ja sähköpostit hylätään ja palautetaan.
+**Järjestelmän hylkääminen (tilakoodi `550`):** Jos lisäät aliaksen etuliitteeksi kolmoishuutomerkin (!!!), se palauttaa pysyvän virhekoodin `550` lähettäjille, jotka yrittävät lähettää viestiä tähän osoitteeseen, ja sähköpostit hylätään ja palautetaan.
 
-Jos esimerkiksi haluan, että kaikki sähköpostit, jotka menevät osoitteeseen `alias@example.com`, eivät enää kulje osoitteeseen `user@gmail.com` ja että ne hylätään ja palautetaan (esim. käytä kolmea huutomerkkiä):
+Jos esimerkiksi haluan, että kaikki `alias@example.com`-kansioon menevät sähköpostit eivät enää kulje `user@gmail.com`-kansioon, vaan ne hylätään ja palautetaan (esim. käytä kolmea huutomerkkiä):
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4345,7 +4349,7 @@ Jos haluat parantaa tietoturvaa, voit myös poistaa osan ":user@gmail.com" (tai 
 
 Kyllä, ehdottomasti. Määritä vain useita vastaanottajia TXT-tietueissasi.
 
-Jos esimerkiksi haluan sähköpostin, joka menee osoitteeseen `hello@example.com`, lähetettävän edelleen osoitteisiin `user+a@gmail.com` ja `user+b@gmail.com`, niin <strong class="notranslate">TXT</strong>-tietueeni näyttäisi tältä:
+Jos esimerkiksi haluan sähköpostin, joka menee osoitteeseen `hello@example.com`, välitettävän osoitteeseen `user+a@gmail.com` ja `user+b@gmail.com`, niin <strong class="notranslate">TXT</strong>-tietueeni näyttäisi tältä:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4395,11 +4399,11 @@ Tai voit määrittää ne kahdella eri rivillä, kuten tässä:
 
 Se on sinusta kiinni!
 
-### Voinko määrittää useita yleisiä keräilyvastaanottajia {#can-i-have-multiple-global-catch-all-recipients}
+### Voinko määrittää useita yleisiä keräilyvastaanottajia? {#can-i-have-multiple-global-catch-all-recipients}
 
 Kyllä voit. Määritä vain useita globaaleja keräilyvastaanottajia <strong class="notranslate">TXT</strong>-tietueissasi.
 
-Jos esimerkiksi haluan, että jokainen sähköposti, joka menee osoitteeseen `*@example.com` (tähti tarkoittaa, että kyseessä on jokerimerkki eli keräilykohde), lähetetään edelleen osoitteisiin `user+a@gmail.com` ja `user+b@gmail.com`, niin <strong class="notranslate">TXT</strong>-tietueeni näyttäisi tältä:
+Jos esimerkiksi haluan, että jokainen sähköposti, joka menee `*@example.com`:aan (tähti tarkoittaa, että kyseessä on jokerimerkki eli keräilyviesti), lähetetään edelleen `user+a@gmail.com`:een ja `user+b@gmail.com`:een, niin <strong class="notranslate">TXT</strong>-tietueeni näyttäisi tältä:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4449,9 +4453,9 @@ Tai voit määrittää ne kahdella eri rivillä, kuten tässä:
 
 Se on sinusta kiinni!
 
-### Onko sähköpostiosoitteiden määrälle ylärajaa, johon voin edelleenlähettää viestit per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}?
+### Onko olemassa enimmäismäärää sähköpostiosoitteita, joihin voin edelleenlähettää viestit per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}}
 
-Kyllä, oletusraja on 10. Tämä EI tarkoita, että verkkotunnuksellasi voi olla vain 10 aliasta. Voit käyttää niin montaa aliasta kuin haluat (rajattomasti). Se tarkoittaa, että voit välittää vain yhden aliaksen 10 yksilölliseen sähköpostiosoitteeseen. Sinulla voi olla `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (1-10) – ja kaikki osoitteeseen `hello@example.com` lähetetyt sähköpostit välitetään osoitteeseen `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (1-10).
+Kyllä, oletusraja on 10. Tämä EI tarkoita, että verkkotunnuksellasi voi olla vain 10 aliasta. Voit käyttää niin montaa aliasta kuin haluat (rajattomasti). Se tarkoittaa, että voit edelleenlähettää vain yhden aliaksen 10 yksilölliseen sähköpostiosoitteeseen. Sinulla voi olla `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (1–10) – ja kaikki osoitteeseen `hello@example.com` lähetetyt sähköpostit välitetään osoitteeseen `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (1–10).
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4465,7 +4469,7 @@ Tarvitsetko yli 10 vastaanottajaa aliasta kohden? Lähetä meille sähköpostia,
 
 ### Voinko lähettää sähköposteja rekursiivisesti edelleen {#can-i-recursively-forward-emails}
 
-Kyllä, voit, mutta sinun on silti noudatettava enimmäisrajaa. Jos sinulla on `hello:linus@example.com` ja `linus:user@gmail.com`, osoitteeseen `hello@example.com` lähetetyt sähköpostit välitetään osoitteisiin `linus@example.com` ja `user@gmail.com`. Huomaa, että jos yrität lähettää sähköposteja rekursiivisesti edelleen enimmäisrajan ylittävän määrän, seurauksena on virhe.
+Kyllä, voit, mutta sinun on silti noudatettava enimmäisrajaa. Jos sinulla on `hello:linus@example.com` ja `linus:user@gmail.com`, osoitteeseen `hello@example.com` olevat sähköpostit välitetään osoitteeseen `linus@example.com` ja `user@gmail.com`. Huomaa, että jos yrität lähettää sähköposteja rekursiivisesti edelleen enimmäisrajan ylittävän määrän, saat virheen.
 
 ### Voivatko ihmiset rekisteröidä sähköpostin edelleenlähetykseni tai poistaa sen rekisteröinnin ilman lupaani? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
@@ -4486,10 +4490,10 @@ Ilmaista tasoamme tukevat:
 4. **Kohtuulliset käyttörajoitukset**: Ilmaisella tasolla on kohtuullisen käytön käytännöt väärinkäytösten estämiseksi.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Olemme sitoutuneet pitämään sähköpostin perus-edelleenohjauksen ilmaisina ja tarjoamaan samalla premium-ominaisuuksia käyttäjille, joilla on edistyneempiä tarpeita.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Jos palvelumme on mielestäsi arvokas, harkitse maksulliseen tilaukseen päivittämistä jatkuvan kehityksen ja ylläpidon tukemiseksi.
 
 ### Mikä on sähköpostin enimmäiskokoraja {#what-is-the-max-email-size-limit}
 
@@ -4499,21 +4503,21 @@ Jos tiedostokokoraja ylitetään, palautetaan virhe oikealla vastauskoodilla.
 
 ### Tallennatteko sähköpostilokeja {#do-you-store-logs-of-emails}
 
-Ei, emme kirjoita levylle emmekä tallenna lokeja – [virheitä lukuun ottamatta](#do-you-store-error-logs) ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp) -linkkien avulla (katso [Tietosuojakäytäntö](/privacy)).
+Ei, emme kirjoita levylle emmekä tallenna lokeja – [virheitä lukuun ottamatta](#do-you-store-error-logs)- ja [lähtevä SMTP](#do-you-support-sending-email-with-smtp)-elementtien avulla (katso [Tietosuojakäytäntö](/privacy)).
 
-Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail).
+Kaikki tehdään muistissa ja [lähdekoodimme on GitHubissa](https://github.com/forwardemail)-kohteessa.
 
-### Tallennatteko virhelokeja {#do-you-store-error-logs}
+### Tallennatko virhelokeja {#do-you-store-error-logs}
 
 **Kyllä. Voit tarkastella virhelokeja kohdassa [Oma tili → Lokit](/my-account/logs) tai [Oma tili → Verkkotunnukset](/my-account/domains).**
 
-Helmikuusta 2023 lähtien olemme säilyttäneet `4xx` ja `5xx` SMTP-vastauskoodien virhelokeja 7 päivän ajan – nämä lokit sisältävät SMTP-virheen, kirjekuoren ja sähköpostin otsikot (emme tallenna sähköpostin runkoa emmekä liitteitä).
+Helmikuusta 2023 lähtien olemme säilyttäneet `4xx`- ja `5xx`-SMTP-vastauskoodien virhelokeja 7 päivän ajan – nämä lokit sisältävät SMTP-virheen, kirjekuoren ja sähköpostin otsikot (emme tallenna sähköpostin runkoa emmekä liitteitä).
 
-Virhelokien avulla voit tarkistaa puuttuvat tärkeät sähköpostit ja vähentää roskapostin vääriä positiivisia tuloksia [verkkotunnuksesi](/my-account/domains) -kohteessa. Ne ovat myös erinomainen resurssi [sähköpostin webhookit](#do-you-support-webhooks) -ongelmien vianmääritykseen (koska virhelokit sisältävät webhook-päätepisteen vastauksen).
+Virhelokien avulla voit tarkistaa puuttuvat tärkeät sähköpostit ja vähentää roskapostin vääriä positiivisia tuloksia [verkkotunnuksesi](/my-account/domains):lle. Ne ovat myös erinomainen resurssi [sähköpostin webhookit](#do-you-support-webhooks)-ongelmien virheenkorjaukseen (koska virhelokit sisältävät webhook-päätepisteen vastauksen).
 
-Virhelokit [nopeuden rajoittaminen](#do-you-have-rate-limiting) ja [harmaalistaus](#do-you-have-a-greylist) eivät ole käytettävissä, koska yhteys päättyy ennenaikaisesti (esim. ennen kuin `RCPT TO` ja `MAIL FROM` -komennot voidaan lähettää).
+[nopeuden rajoittaminen](#do-you-have-rate-limiting):n ja [harmaalistaus](#do-you-have-a-greylist):n virhelokit eivät ole käytettävissä, koska yhteys päättyy ennenaikaisesti (esim. ennen kuin `RCPT TO`- ja `MAIL FROM`-komennot voidaan lähettää).
 
-Katso lisätietoja [Tietosuojakäytäntö](/privacy)-sivultamme.
+Katso lisätietoja [Tietosuojakäytäntö](/privacy)-kohdasta.
 
 ### Luetko sähköpostejani? {#do-you-read-my-emails}
 
@@ -4523,7 +4527,7 @@ Monet muut sähköpostin edelleenlähetyspalvelut tallentavat ja voivat mahdolli
 
 Uskomme, että sinulla tulisi olla oikeus yksityisyyteen ja kunnioitamme sitä ehdottomasti. Palvelimelle asennettu koodi on [avoimen lähdekoodin ohjelmisto GitHubissa](https://github.com/forwardemail) läpinäkyvyyden ja luottamuksen rakentamisen takaamiseksi.
 
-### Voinko lähettää sähköpostia osoitteena Gmailissa tällä {#can-i-send-mail-as-in-gmail-with-this}-osoitteella
+### Voinko lähettää sähköpostia Gmailissa tällä osoitteella: {#can-i-send-mail-as-in-gmail-with-this}
 
 Kyllä! Olemme lisänneet tämän ominaisuuden 2. lokakuuta 2018 alkaen. Katso yllä oleva [Kuinka lähettää sähköpostia Gmailin avulla](#how-to-send-mail-as-using-gmail)!
 
@@ -4541,7 +4545,7 @@ Jos käytät Gmailia (esim. Lähetä sähköpostia nimellä) tai G Suitea, sinun
 </span>
 </div>
 
-### Voinko lähettää sähköpostia nimellä Outlookissa tällä {#can-i-send-mail-as-in-outlook-with-this}-osoitteella
+### Voinko lähettää sähköpostia nimellä Outlookissa tällä {#can-i-send-mail-as-in-outlook-with-this}}-asetuksella?
 
 Kyllä! Olemme lisänneet tämän ominaisuuden 2. lokakuuta 2018 alkaen. Katso vain nämä kaksi Microsoftin linkkiä alta:
 
@@ -4562,21 +4566,21 @@ Jos käytät Microsoft Outlookia tai Live.comia, sinun on lisättävä <code>inc
 </span>
 </div>
 
-### Voinko lähettää sähköpostia nimellä Apple Mailissa ja iCloud Mailissa tällä {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} -osoitteella?
+### Voinko lähettää sähköpostia nimellä Apple Mailissa ja iCloud Mailissa tällä {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}}-osoitteella?
 
 Jos olet iCloud+:n tilaaja, voit käyttää mukautettua verkkotunnusta. [Palvelumme on yhteensopiva myös Apple Mailin kanssa.](#apple-mail).
 
-Lisätietoja on osoitteessa <https://support.apple.com/en-us/102540>.
+Lisätietoja on kohdassa <https://support.apple.com/en-us/102540>.
 
-### Voinko lähettää rajattomasti sähköposteja tällä {#can-i-forward-unlimited-emails-with-this}_ -palvelulla?
+### Voinko lähettää edelleen rajattomasti sähköposteja tällä {#can-i-forward-unlimited-emails-with-this}}
 
-Kyllä, "suhteellisen tuntemattomien" lähettäjien yhteyksien määrä on kuitenkin rajoitettu 100 yhteyteen tunnissa isäntänimeä tai IP-osoitetta kohden. Katso yllä oleva osio [Rate Limiting](#do-you-have-rate-limiting) ja [Harmaalistaus](#do-you-have-a-greylist).
+Kyllä, "suhteellisen tuntemattomien" lähettäjien yhteysnopeus on kuitenkin rajoitettu 100 yhteyteen tunnissa isäntänimeä tai IP-osoitetta kohden. Katso yllä oleva osio [Nopeuden rajoittaminen](#do-you-have-rate-limiting) ja [Harmaalistaus](#do-you-have-a-greylist).
 
-"Suhteellisen tuntemattomalla" tarkoitamme lähettäjiä, jotka eivät näy [sallittujen lista](#do-you-have-an-allowlist)-luettelossa.
+"Suhteellisen tuntemattomalla" tarkoitamme lähettäjiä, jotka eivät näy [sallittujen lista](#do-you-have-an-allowlist)-kohteessa.
 
 Jos tämä raja ylittyy, lähetämme 421-vastauskoodin, joka käskee lähettäjän sähköpostipalvelinta yrittämään uudelleen myöhemmin.
 
-### Tarjoatteko rajattomasti verkkotunnuksia yhteen hintaan {#do-you-offer-unlimited-domains-for-one-price}
+### Tarjoatteko rajattomasti verkkotunnuksia yhteen hintaan? {#do-you-offer-unlimited-domains-for-one-price}
 
 Kyllä. Maksat kuukausittain vain yhden hinnan riippumatta siitä, mikä paketti on käytössäsi – ja se kattaa kaikki verkkotunnuksesi.
 
@@ -4589,22 +4593,22 @@ Sähköpostin edelleenlähetys hyväksyy seuraavat kertaluonteiset tai kuukausit
 3. **Kryptovaluutta**: Hyväksymme maksut Stripen stablecoin-maksuina Ethereum-, Polygon- ja Solana-verkoissa.
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Tallennamme palvelimillemme rajoitetusti maksutietoja, jotka sisältävät vain maksutunnisteet ja viittaukset [Raita](https://stripe.com/global)- ja [PayPal](https://www.paypal.com)-tapahtuma-, asiakas-, tilaus- ja maksutunnuksiin.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Parhaan yksityisyyden takaamiseksi harkitse kryptovaluuttojen käyttöä maksuvälineenä.
 
 Kaikki maksut käsitellään turvallisesti Stripen tai PayPalin kautta. Maksutietojasi ei koskaan tallenneta palvelimillemme.
 
 ## Lisäresurssit {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Alla olevia artikkeleitamme päivitetään säännöllisesti uusilla oppailla, vinkeillä ja teknisillä tiedoilla. Tarkista usein uusin sisältö.
 
 * [Case-tutkimukset ja kehittäjädokumentaatio](/blog/docs)
 * [Resurssit](/resources)
 * [Oppaat](/guides)
 
-[gmail-2fa]: __SUOJATTU_URL_868__
+[gmail-2fa]: VÄLIAIKAINEN_PAIKKAPIDÄN_0
 
 [cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/

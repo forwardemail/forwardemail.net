@@ -21,7 +21,7 @@
   * [El enfoque similar de Tutanota](#tutanotas-similar-approach)
   * [El debate sobre las guías de privacidad](#the-privacy-guides-debate)
 * [El futuro es de código abierto](#the-future-is-open-source)
-  * [Por qué el código abierto está ganando](#why-open-source-is-winning)
+  * [¿Por qué el código abierto está ganando?](#why-open-source-is-winning)
 * [Cómo cambiar al reenvío de correo electrónico](#making-the-switch-to-forward-email)
 * [Conclusión: Correo electrónico de código abierto para un futuro privado](#conclusion-open-source-email-for-a-private-future)
 
@@ -29,7 +29,7 @@
 
 En una era donde la preocupación por la privacidad digital está en su punto más alto, los servicios de correo electrónico que elegimos son más importantes que nunca. Si bien muchos proveedores afirman priorizar la privacidad, existe una diferencia fundamental entre quienes solo hablan de privacidad y quienes realmente la cumplen. En Forward Email, hemos construido nuestro servicio sobre la base de una transparencia total mediante el desarrollo de código abierto, no solo en nuestras aplicaciones frontend, sino en toda nuestra infraestructura.
 
-Esta entrada de blog explora por qué las soluciones de correo electrónico de código abierto son superiores a las alternativas de código cerrado, cómo nuestro enfoque se diferencia del de competidores como Proton Mail y Tutanota, y por qué, a pesar de nuestro compromiso con las opciones de autohospedaje, nuestro servicio pago ofrece el mejor valor para la mayoría de los usuarios.
+Esta entrada de blog explora por qué las soluciones de correo electrónico de código abierto son superiores a las alternativas de código cerrado, cómo nuestro enfoque se diferencia de competidores como Proton Mail y Tutanota, y por qué, a pesar de nuestro compromiso con las opciones de autohospedaje, nuestro servicio pago ofrece el mejor valor para la mayoría de los usuarios.
 
 ## La ventaja del código abierto: más que solo marketing {#the-open-source-advantage-more-than-just-marketing}
 
@@ -88,7 +88,7 @@ Las bases de datos relacionales compartidas (p. ej., MongoDB, SQL Server, Postgr
 
 #### Cifrado resistente a los datos cuánticos {#quantum-resistant-encryption}
 
-Mientras otros proveedores aún se están poniendo al día, ya hemos implementado métodos de cifrado resistentes a la computación cuántica para proteger la privacidad de su correo electrónico frente a las amenazas emergentes de la computación cuántica.
+Mientras otros proveedores aún se están poniendo al día, nosotros ya hemos implementado métodos de cifrado resistentes a la computación cuántica para proteger la privacidad de su correo electrónico frente a las amenazas emergentes de la computación cuántica.
 
 #### Sin dependencias de terceros {#no-third-party-dependencies}
 
@@ -96,7 +96,7 @@ A diferencia de la competencia, que depende de servicios como Amazon SES para la
 
 ## La opción de autoalojamiento: libertad de elección {#the-self-hosting-option-freedom-of-choice}
 
-Uno de los aspectos más potentes del software de código abierto es la libertad que ofrece. Con Forward Email, nunca estás limitado: puedes autoalojar toda nuestra plataforma si lo deseas.
+Uno de los aspectos más potentes del software de código abierto es la libertad que ofrece. Con Forward Email, nunca estás limitado: puedes autoalojar toda nuestra plataforma si así lo deseas.
 
 ### Por qué apoyamos el autohospedaje {#why-we-support-self-hosting}
 
@@ -161,7 +161,7 @@ Al elegir Reenviar correo electrónico, obtendrá:
 3. **Rentabilidad**: Menor costo total que el autoalojamiento.
 4. **Sin dependencia**: La opción de autoalojamiento siempre está disponible.
 
-## El engaño del código cerrado: lo que Proton y Tutanota no te cuentan {#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you}
+El engaño de las fuentes cerradas: lo que Proton y Tutanota no te cuentan {#the-closed-source-deception-what-proton-and-tutanota-dont-tell-you}
 
 Analicemos con más detalle cómo nuestro enfoque se diferencia del de los proveedores de correo electrónico más populares "centrados en la privacidad".
 
@@ -174,7 +174,7 @@ Proton Mail se anuncia como de código abierto, pero esto solo aplica a sus apli
 * Las vulnerabilidades de seguridad en su backend permanecen ocultas al escrutinio público.
 * Estás atado a su ecosistema sin opciones de autoalojamiento.
 
-### El enfoque similar de Tutanota {#tutanotas-similar-approach}
+### Enfoque similar de Tutanota {#tutanotas-similar-approach}
 
 Al igual que Proton Mail, Tutanota solo publica su interfaz en código abierto, mientras que su backend es propietario. [^8] Se enfrentan a los mismos problemas de confianza:
 
@@ -191,9 +191,9 @@ Estas limitaciones no han pasado desapercibidas en la comunidad de privacidad. E
 
 También dijimos:
 
-> "No se han realizado auditorías públicas de las infraestructuras de backend de ningún proveedor de servicios de correo electrónico de PG que figure actualmente en la lista, ni se han compartido fragmentos de código abierto sobre cómo procesan el correo electrónico entrante".\[^10]
+> "No se han realizado auditorías públicas de las infraestructuras de backend de ningún proveedor de servicios de correo electrónico de PG que figure actualmente en la lista, ni se han compartido fragmentos de código fuente abierto sobre cómo procesan el correo electrónico entrante".\[^10]
 
-Esta falta de transparencia crea un problema fundamental de confianza. Sin backends de código abierto, los usuarios se ven obligados a confiar en las declaraciones de privacidad en lugar de en la verificación.
+Esta falta de transparencia crea un problema fundamental de confianza. Sin backends de código abierto, los usuarios se ven obligados a confiar en las declaraciones de privacidad en lugar de basarse en la verificación.
 
 ## El futuro es de código abierto {#the-future-is-open-source}
 
@@ -215,7 +215,7 @@ Las ventajas del código abierto son cada vez más claras:
 4. **Libertad de dependencia de proveedores**: Los usuarios mantienen el control sobre sus datos y servicios.
 5. **Soporte comunitario**: Una comunidad global ayuda a identificar y solucionar problemas.
 
-## Cambiar al reenvío de correo electrónico {#making-the-switch-to-forward-email}
+## Haciendo el cambio al reenvío de correo electrónico {#making-the-switch-to-forward-email}
 
 Pasar a Forward Email es sencillo, independientemente de si proviene de un proveedor tradicional como Gmail u otro servicio centrado en la privacidad como Proton Mail o Tutanota.
 
@@ -225,7 +225,7 @@ Nuestro servicio ofrece:
 * Compatibilidad con protocolos estándar (SMTP, IMAP, POP3) sin puentes propietarios
 * Integración perfecta con clientes de correo electrónico existentes
 * Proceso de configuración sencillo con documentación completa
-* Planes de precios asequibles desde tan solo $3 al mes
+* Planes de precios asequibles desde solo $3 al mes
 
 ## Conclusión: Correo electrónico de código abierto para un futuro privado {#conclusion-open-source-email-for-a-private-future}
 
@@ -243,13 +243,13 @@ El futuro del correo electrónico es abierto, transparente y prioriza la privaci
 
 \[^3]: Comunidad de Guías de Privacidad. "Reenvío de correo electrónico (proveedor de correo electrónico) - Desarrollo del sitio / Sugerencias de herramientas". [Discusión sobre guías de privacidad](https://discuss.privacyguides.net/t/forward-email-email-provider/13370?page=9)
 
-\[^4]: RunCloud. "Por lo general, puedes esperar gastar entre $5 y $50 al mes en un servidor privado virtual (VPS) básico para administrar tu servidor de correo electrónico." [Las 10 mejores plataformas de servidores de correo electrónico autoalojados para usar en 2025](https://runcloud.io/blog/best-self-hosted-email-server)
+\[^4]: RunCloud. "Por lo general, puede esperar gastar entre $5 y $50 al mes en un servidor privado virtual (VPS) básico para administrar su servidor de correo electrónico." [Las 10 mejores plataformas de servidores de correo electrónico autoalojados para usar en 2025](https://runcloud.io/blog/best-self-hosted-email-server)
 
 \[^5]: Foro de Mail-in-a-Box. "El mantenimiento me llevó unas 16 horas en ese periodo..." [Los servidores de correo autoalojados están mal vistos](https://discourse.mailinabox.email/t/self-hosting-mail-server-frowned-upon/4143)
 
 \[^6]: Reddit r/selfhosted. "En resumen: Como todo lo que se aloja en uno mismo, REQUERIRÁ TU TIEMPO. Si no tienes tiempo para dedicarle, siempre es mejor optar por un hosting..." [¿Autoalojar un servidor de correo electrónico? ¿Por qué sí o por qué no? ¿Qué es popular?](https://www.reddit.com/r/selfhosted/comments/1etb8jh/selfhosting_an_email_server_why_or_why_not_whats/)
 
-\[^7]: Reenvío de correo electrónico. «Proton Mail afirma ser de código abierto, pero su backend en realidad es de código cerrado». [Comparación entre Tutanota y Proton Mail (2025)](https://forwardemail.net/blog/tutanota-vs-proton-mail-email-service-comparison)
+\[^7]: Reenvío de correo electrónico. "Proton Mail afirma ser de código abierto, pero su backend en realidad es de código cerrado." [Comparación entre Tutanota y Proton Mail (2025)](https://forwardemail.net/blog/tutanota-vs-proton-mail-email-service-comparison)
 
 \[^8]: Reenviar correo electrónico. "Tutanota afirma ser de código abierto, pero su backend es de código cerrado." [Comparación entre Proton Mail y Tutanota (2025)](https://forwardemail.net/blog/proton-mail-vs-tutanota-email-service-comparison)
 

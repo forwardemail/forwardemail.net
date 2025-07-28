@@ -1,25 +1,25 @@
 # Pertanyaan yang Sering Diajukan {#frequently-asked-questions}
 
-<img memuat="malas" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
 ## Daftar Isi {#table-of-contents}
 
 * [Mulai Cepat](#quick-start)
 * [Perkenalan](#introduction)
   * [Apa itu Email Terusan](#what-is-forward-email)
-  * [Siapa yang menggunakan Forward Email?](#who-uses-forward-email)
-  * [Apa sejarah Forward Email?](#what-is-forward-emails-history)
+  * [Siapa yang menggunakan Forward Email](#who-uses-forward-email)
+  * [Apa sejarah Forward Email](#what-is-forward-emails-history)
   * [Seberapa cepat layanan ini?](#how-fast-is-this-service)
 * [Klien Email](#email-clients)
-  * [burung guntur](#thunderbird)
+  * [Burung Guntur](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
-  * [Surat Apple](#apple-mail)
+  * [Apple Mail](#apple-mail)
   * [Perangkat Seluler](#mobile-devices)
   * [Cara Mengirim Email Menggunakan Gmail](#how-to-send-mail-as-using-gmail)
   * [Apa panduan gratis lama untuk Kirim Email Sebagai menggunakan Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
   * [Konfigurasi Perutean Gmail Lanjutan](#advanced-gmail-routing-configuration)
   * [Konfigurasi Perutean Outlook Lanjutan](#advanced-outlook-routing-configuration)
-* [Penyelesaian Masalah](#troubleshooting)
+* [Pemecahan Masalah](#troubleshooting)
   * [Mengapa saya tidak menerima email pengujian saya?](#why-am-i-not-receiving-my-test-emails)
   * [Bagaimana cara mengonfigurasi klien email saya agar berfungsi dengan Forward Email?](#how-do-i-configure-my-email-client-to-work-with-forward-email)
   * [Mengapa email saya masuk ke Spam dan Junk dan bagaimana cara memeriksa reputasi domain saya](#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation)
@@ -30,7 +30,7 @@
   * [Di mana server Anda berada?](#where-are-your-servers-located)
   * [Bagaimana cara mengekspor dan mencadangkan kotak surat saya?](#how-do-i-export-and-backup-my-mailbox)
   * [Bagaimana cara mengimpor dan memigrasikan kotak surat saya yang sudah ada?](#how-do-i-import-and-migrate-my-existing-mailbox)
-  * [Apakah Anda mendukung hosting mandiri?](#do-you-support-self-hosting)
+  * [Apakah Anda mendukung self-hosting?](#do-you-support-self-hosting)
 * [Konfigurasi Email](#email-configuration)
   * [Bagaimana cara memulai dan mengatur penerusan email?](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Bisakah saya menggunakan beberapa bursa dan server MX untuk penerusan lanjutan?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
@@ -66,14 +66,14 @@
   * [Apa pengaturan konfigurasi server POP3 Anda?](#what-are-your-pop3-server-configuration-settings)
   * [Konfigurasi Relai SMTP Postfix](#postfix-smtp-relay-configuration)
 * [Keamanan](#security)
-  * [Teknik Pengerasan Server Tingkat Lanjut](#advanced-server-hardening-techniques)
+  * [Teknik Pengerasan Server Lanjutan](#advanced-server-hardening-techniques)
   * [Apakah Anda memiliki sertifikasi SOC 2 atau ISO 27001?](#do-you-have-soc-2-or-iso-27001-certifications)
   * [Apakah Anda menggunakan enkripsi TLS untuk penerusan email?](#do-you-use-tls-encryption-for-email-forwarding)
-  * [Apakah Anda menyimpan header autentikasi email?](#do-you-preserve-email-authentication-headers)
+  * [Apakah Anda menyimpan header otentikasi email?](#do-you-preserve-email-authentication-headers)
   * [Apakah Anda mempertahankan header email asli dan mencegah spoofing?](#do-you-preserve-original-email-headers-and-prevent-spoofing)
-  * [Bagaimana Anda melindungi dari spam dan penyalahgunaan?](#how-do-you-protect-against-spam-and-abuse)
+  * [Bagaimana Anda melindungi diri dari spam dan penyalahgunaan?](#how-do-you-protect-against-spam-and-abuse)
   * [Apakah Anda menyimpan konten email di disk?](#do-you-store-email-content-on-disk)
-  * [Bisakah konten email terekspos saat sistem crash?](#can-email-content-be-exposed-during-system-crashes)
+  * [Dapatkah konten email terekspos saat sistem mengalami crash?](#can-email-content-be-exposed-during-system-crashes)
   * [Siapa yang memiliki akses ke infrastruktur email Anda](#who-has-access-to-your-email-infrastructure)
   * [Penyedia infrastruktur apa yang Anda gunakan?](#what-infrastructure-providers-do-you-use)
   * [Apakah Anda menawarkan Perjanjian Pemrosesan Data (DPA)](#do-you-offer-a-data-processing-agreement-dpa)
@@ -88,7 +88,7 @@
   * [Bagaimana Anda memproses email untuk diteruskan?](#how-do-you-process-an-email-for-forwarding)
   * [Bagaimana Anda menangani masalah pengiriman email?](#how-do-you-handle-email-delivery-issues)
   * [Bagaimana Anda menangani alamat IP Anda yang diblokir?](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Apa alamat kepala kantor pos?](#what-are-postmaster-addresses)
+  * [Apa itu alamat kepala kantor pos?](#what-are-postmaster-addresses)
   * [Apa itu alamat no-reply?](#what-are-no-reply-addresses)
   * [Apa alamat IP server Anda?](#what-are-your-servers-ip-addresses)
   * [Apakah Anda memiliki daftar yang diizinkan?](#do-you-have-an-allowlist)
@@ -135,7 +135,7 @@
 
 ## Mulai Cepat {#quick-start}
 
-Untuk memulai dengan Email Terusan:
+Untuk memulai dengan Forward Email:
 
 1. **Buat akun** di [forwardemail.net/register](https://forwardemail.net/register)
 
@@ -146,17 +146,17 @@ Untuk memulai dengan Email Terusan:
 4. **Uji pengaturan Anda** dengan mengirimkan email ke salah satu alias baru Anda
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> Perubahan DNS dapat memakan waktu hingga 24-48 jam untuk diterapkan secara global, meskipun sering kali berlaku jauh lebih cepat.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Untuk meningkatkan kemampuan pengiriman, kami sarankan untuk menyiapkan rekaman [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), dan [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
 ## Pendahuluan {#introduction}
 
 ### Apa itu Email Terusan {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email sangat cocok untuk individu, usaha kecil, dan pengembang yang menginginkan alamat email profesional tanpa biaya dan pemeliharaan solusi hosting email lengkap.
 
 Forward Email adalah **penyedia layanan email berfitur lengkap** dan **penyedia hosting email untuk nama domain khusus**.
 
@@ -167,41 +167,41 @@ Layanan kami meneruskan email yang dikirim ke domain khusus Anda ke akun email A
 Fitur utama Forward Email:
 
 * **Email Domain Kustom**: Gunakan alamat email profesional dengan nama domain Anda sendiri
-* **Tingkat Gratis**: Penerusan email dasar tanpa biaya
+* **Paket Gratis**: Penerusan email dasar tanpa biaya
 * **Privasi yang Ditingkatkan**: Kami tidak membaca email Anda atau menjual data Anda
 * **Sumber Terbuka**: Seluruh basis kode kami tersedia di GitHub
-* **Dukungan SMTP, IMAP, dan POP3**: Kemampuan mengirim dan menerima email secara penuh
-* **Enkripsi Ujung-ke-Ujung**: Dukungan untuk OpenPGP/MIME
+* **Dukungan SMTP, IMAP, dan POP3**: Kemampuan mengirim dan menerima email secara lengkap
+* **Enkripsi End-to-End**: Dukungan untuk OpenPGP/MIME
 * **Alias Catch-All Kustom**: Buat alias email tanpa batas
 
 Anda dapat membandingkan kami dengan 56+ penyedia layanan email lainnya di [halaman Perbandingan Email kami](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Pelajari lebih lanjut tentang Forward Email dengan membaca [Buku Putih Teknis](/technical-whitepaper.pdf) gratis kami
 
-### Siapa yang menggunakan Forward Email {#who-uses-forward-email}
+### Siapa yang menggunakan Email Terusan {#who-uses-forward-email}
 
-Kami menyediakan layanan hosting email dan penerusan email ke lebih dari 500.000 domain dan pengguna terkemuka berikut ini:
+Kami menyediakan layanan hosting email dan penerusan email ke lebih dari 500.000 domain dan pengguna terkemuka berikut:
 
 | Pelanggan | Studi Kasus |
 | ---------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | Akademi Angkatan Laut AS | [:page_facing_up: Case Study](/blog/docs/federal-government-email-service-section-889-compliant) |
 | Resmi | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Permainan Netflix |  |
+| Game Netflix |  |
 | Yayasan Linux | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | Yayasan PHP |  |
 | Radio Berita Fox |  |
 | Penjualan Iklan Disney |  |
-| Bahasa Indonesia: jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
+| jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
 | Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| Dalam kemanusiaan | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Bebas | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Universitas Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Universitas Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Universitas Washington | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Universitas Tufts | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
-| Universitas Swarthmore | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
+| Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Pemerintah Australia Selatan |  |
 | Pemerintah Republik Dominika |  |
 | Terbang<span>.</span>io |  |
@@ -209,20 +209,20 @@ Kami menyediakan layanan hosting email dan penerusan email ke lebih dari 500.000
 | Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | David Heinemeier Hansson (Ruby on Rails) |  |
 
-### Apa riwayat Forward Email {#what-is-forward-emails-history}
+### Apa riwayat Email Terusan {#what-is-forward-emails-history}
 
 Anda dapat mempelajari lebih lanjut tentang Forward Email di [halaman Tentang kami](/about).
 
 ### Seberapa cepat layanan ini {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Sistem kami dirancang untuk kecepatan dan keandalan, dengan beberapa server redundan untuk memastikan email Anda terkirim tepat waktu.
 
 Email Terusan menyampaikan pesan dengan penundaan minimal, biasanya dalam hitungan detik setelah diterima.
 
 Metrik kinerja:
 
-* **Waktu Pengiriman Rata-Rata**: Kurang dari 5-10 detik dari penerimaan hingga penerusan ([lihat halaman pemantauan Waktu Masuk "TTI" kami](/tti))
+* **Waktu Pengiriman Rata-Rata**: Kurang dari 5-10 detik dari penerimaan hingga penerusan ([lihat halaman pemantauan "TTI" Waktu Masuk kami](/tti))
 * **Waktu Aktif**: Ketersediaan layanan 99,9%+
 * **Infrastruktur Global**: Server ditempatkan secara strategis untuk perutean optimal
 * **Penskalaan Otomatis**: Sistem kami diskalakan selama periode email puncak
@@ -241,8 +241,8 @@ Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://git
 2. Buka Thunderbird dan buka **Edit → Pengaturan Akun → Tindakan Akun → Tambahkan Akun Email**
 3. Masukkan nama, alamat Email Terusan, dan kata sandi Anda.
 4. Klik **Konfigurasi secara manual** dan masukkan:
-* Email Masuk: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
-* Email Keluar: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
+* Masuk: IMAP, `imap.forwardemail.net`, port 993, SSL/TLS
+* Keluar: SMTP, `smtp.forwardemail.net`, port 587, STARTTLS
 5. Klik **Selesai**
 
 ### Microsoft Outlook {#microsoft-outlook}
@@ -265,8 +265,8 @@ Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://git
 3. Pilih **Akun Email Lain**
 4. Masukkan nama, alamat Email Terusan, dan kata sandi Anda
 5. Untuk pengaturan server, masukkan:
-* Email Masuk: `imap.forwardemail.net`
-* Email Keluar: `smtp.forwardemail.net`
+* Masuk: `imap.forwardemail.net`
+* Keluar: `smtp.forwardemail.net`
 * Nama Pengguna: Alamat email lengkap Anda
 * Kata Sandi: Kata sandi yang Anda buat
 6. Klik **Masuk**
@@ -275,13 +275,13 @@ Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://git
 
 Untuk iOS:
 
-1. Buka **Pengaturan → Email → Akun → Tambah Akun → Lainnya**
-2. Ketuk **Tambah Akun Email** dan masukkan detail Anda
+1. Buka **Pengaturan → Mail → Akun → Tambah Akun → Lainnya**
+2. Ketuk **Tambah Akun Mail** dan masukkan detail Anda
 3. Untuk pengaturan server, gunakan pengaturan IMAP dan SMTP yang sama seperti di atas
 
 Untuk Android:
 
-1. Buka **Pengaturan → Akun → Tambahkan Akun → Pribadi (IMAP)**
+1. Buka **Pengaturan → Akun → Tambah Akun → Pribadi (IMAP)**
 2. Masukkan alamat Email Penerusan dan kata sandi Anda
 3. Untuk pengaturan server, gunakan pengaturan IMAP dan SMTP yang sama seperti di atas
 
@@ -321,41 +321,41 @@ Pastikan Anda telah membaca <a href="/terms" class="alert-link" target="_blank">
 Penting:
 </strong>
 <span>
-Jika Anda seorang pengembang, silakan merujuk ke <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentasi API email</a> kami.
+Jika Anda seorang pengembang, silakan lihat <a class="alert-link" href="/email-api#outbound-emails" target="_blank">dokumentasi API email</a> kami.
 </span>
 </div>
 
 1. Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan
 
-2. Buat alias baru untuk domain Anda di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+2. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
 
-3. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan dengan aman kata sandi yang dibuat yang ditampilkan di layar.
+3. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan yang ditampilkan di layar dengan aman.
 
 4. Buka [Gmail](https://gmail.com) dan di bawah [Pengaturan <i class="fa fa-angle-right"></i> Akun dan Impor <i class="fa fa-angle-right"></i> Kirim email sebagai](https://mail.google.com/mail/u/0/#settings/accounts), klik "Tambahkan alamat email lain"
 
-5. Saat diminta "Nama", masukkan nama yang Anda inginkan agar email Anda dilihat sebagai "Dari" (misalnya "Linus Torvalds").
+5. Saat diminta "Nama", masukkan nama yang Anda inginkan untuk dilihat sebagai "Dari" email Anda (misalnya "Linus Torvalds").
 
-6. Saat diminta untuk "Alamat email", masukkan alamat email lengkap alias yang Anda buat di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+6. Saat diminta "Alamat email", masukkan alamat email lengkap alias yang Anda buat di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
 
-7. Hapus tanda centang "Perlakukan sebagai alias"
+7. Hapus centang "Perlakukan sebagai alias"
 
 8. Klik "Langkah Berikutnya" untuk melanjutkan
 
-9. Saat diminta "SMTP Server", masukkan <code>smtp.forwardemail.net</code> dan biarkan port sebagai <code>587</code>
+9. Saat diminta "Server SMTP", masukkan <code>smtp.forwardemail.net</code> dan biarkan port sebagai <code>587</code>
 
-10. Saat diminta "Nama Pengguna", masukkan alamat email lengkap alias yang Anda buat di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+10. Saat diminta "Nama Pengguna", masukkan alamat email lengkap alias yang Anda buat di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
 
 11. Saat diminta "Kata Sandi", tempel kata sandi dari <strong class="text-success"><i class="fa fa-key"></i> Hasilkan Kata Sandi</strong> pada langkah 3 di atas
 
-12. Biarkan tombol radio dicentang untuk "Koneksi aman menggunakan TLS"
+12. Biarkan tombol radio dicentang untuk "Koneksi aman menggunakan TLS".
 
 13. Klik "Tambah Akun" untuk melanjutkan
 
 14. Buka tab baru ke [Gmail](https://gmail.com) dan tunggu email verifikasi Anda tiba (Anda akan menerima kode verifikasi yang mengonfirmasi bahwa Anda adalah pemilik alamat email yang Anda coba "Kirim Email Sebagai")
 
-15. Setelah sampai, copy dan paste kode verifikasi pada prompt yang Anda terima pada langkah sebelumnya
+15. Setelah sampai, salin dan tempel kode verifikasi pada prompt yang Anda terima pada langkah sebelumnya
 
-16. Setelah Anda melakukannya, kembali ke email dan klik tautan untuk "konfirmasi permintaan". Anda kemungkinan besar perlu melakukan langkah ini dan langkah sebelumnya agar email dikonfigurasi dengan benar.
+16. Setelah itu, kembali ke email dan klik tautan "konfirmasi permintaan". Kemungkinan besar Anda perlu melakukan langkah ini dan langkah sebelumnya agar email dikonfigurasi dengan benar.
 
 <div class="text-center my-3 my-md-5">
 <div class="alert my-3 alert-success d-inline-block">
@@ -399,10 +399,10 @@ Jika Anda telah mengikuti petunjuk di atas pada bagian <a href="#how-do-i-get-st
 
 2. Setelah Autentikasi Dua Faktor diaktifkan (atau jika Anda sudah mengaktifkannya), kunjungi <https://myaccount.google.com/apppasswords>.
 
-3. Saat diminta untuk "Pilih aplikasi dan perangkat yang ingin Anda buatkan kata sandi aplikasinya":
-* Pilih "Mail" di bawah menu tarik-turun untuk "Pilih aplikasi"
-* Pilih "Other" di bawah menu tarik-turun untuk "Pilih perangkat"
-* Saat diminta untuk memasukkan teks, masukkan alamat email domain kustom yang Anda gunakan untuk meneruskan (misalnya <code><hello@example.com></code> - ini akan membantu Anda melacak jika Anda menggunakan layanan ini untuk beberapa akun)
+3. Saat diminta "Pilih aplikasi dan perangkat yang ingin Anda buatkan kata sandi aplikasinya":
+* Pilih "Mail" di menu tarik-turun untuk "Pilih aplikasi"
+* Pilih "Lainnya" di menu tarik-turun untuk "Pilih perangkat"
+* Saat diminta memasukkan teks, masukkan alamat email domain kustom Anda yang ingin Anda teruskan (misalnya <code><hello@example.com></code> - ini akan membantu Anda melacak jika Anda menggunakan layanan ini untuk beberapa akun)
 
 4. Salin kata sandi ke clipboard Anda yang dibuat secara otomatis
 <div class="alert my-3 alert-warning">
@@ -417,38 +417,38 @@ Jika Anda menggunakan G Suite, kunjungi panel admin Anda <a class="alert-link" h
 
 5. Buka [Gmail](https://gmail.com) dan di bawah [Pengaturan <i class="fa fa-angle-right"></i> Akun dan Impor <i class="fa fa-angle-right"></i> Kirim email sebagai](https://mail.google.com/mail/u/0/#settings/accounts), klik "Tambahkan alamat email lain"
 
-6. Saat diminta "Nama", masukkan nama yang Anda inginkan agar email Anda dilihat sebagai "Dari" (misalnya "Linus Torvalds")
+6. Saat diminta "Nama", masukkan nama yang Anda inginkan untuk dilihat sebagai "Dari" email Anda (misalnya "Linus Torvalds")
 
-7. Saat diminta "Alamat email", masukkan alamat email dengan domain khusus yang Anda gunakan di atas (misalnya <code><hello@example.com></code>)
+7. Saat diminta "Alamat email", masukkan alamat email dengan domain khusus yang Anda gunakan sebelumnya (misalnya <code><hello@example.com></code>)
 
-8. Hapus tanda centang "Perlakukan sebagai alias"
+8. Hapus centang "Perlakukan sebagai alias"
 
 9. Klik "Langkah Berikutnya" untuk melanjutkan
 
-10. Saat diminta "SMTP Server", masukkan <code>smtp.gmail.com</code> dan biarkan port sebagai <code>587</code>
+10. Saat diminta "Server SMTP", masukkan <code>smtp.gmail.com</code> dan biarkan port sebagai <code>587</code>
 
-11. Saat diminta untuk "Nama Pengguna", masukkan bagian alamat Gmail Anda tanpa bagian <span>gmail.com</span> (misalnya, cukup "pengguna" jika email saya adalah <span><user@gmail.com></span>)
+11. Saat diminta "Nama Pengguna", masukkan bagian alamat Gmail Anda tanpa bagian <span>gmail.com</span> (misalnya, cukup "pengguna" jika email saya <span><user@gmail.com></span>)
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 Penting:
 </strong>
 <span>
-Jika bagian "Nama Pengguna" diisi otomatis, maka <u><strong>Anda perlu mengubahnya</strong></u> ke bagian nama pengguna alamat Gmail Anda.
+Jika bagian "Nama Pengguna" terisi otomatis, maka <u><strong>Anda perlu mengubahnya</strong></u> ke bagian nama pengguna alamat Gmail Anda.
 </span>
 </div>
 
-12. Saat diminta "Kata Sandi", tempel dari clipboard Anda kata sandi yang Anda buat pada langkah 2 di atas
+12. Saat diminta "Kata Sandi", tempel dari clipboard kata sandi yang Anda buat pada langkah 2 di atas
 
-13. Biarkan tombol radio dicentang untuk "Koneksi aman menggunakan TLS"
+13. Biarkan tombol radio dicentang untuk "Koneksi aman menggunakan TLS".
 
 14. Klik "Tambah Akun" untuk melanjutkan
 
 15. Buka tab baru ke [Gmail](https://gmail.com) dan tunggu email verifikasi Anda tiba (Anda akan menerima kode verifikasi yang mengonfirmasi bahwa Anda adalah pemilik alamat email yang Anda coba "Kirim Email Sebagai")
 
-16. Setelah sampai, copy dan paste kode verifikasi pada prompt yang Anda terima pada langkah sebelumnya
+16. Setelah sampai, salin dan tempel kode verifikasi pada prompt yang Anda terima pada langkah sebelumnya
 
-17. Setelah Anda melakukannya, kembali ke email dan klik tautan untuk "konfirmasi permintaan". Anda kemungkinan besar perlu melakukan langkah ini dan langkah sebelumnya agar email dikonfigurasi dengan benar.
+17. Setelah itu, kembali ke email dan klik tautan "konfirmasi permintaan". Kemungkinan besar Anda perlu melakukan langkah ini dan langkah sebelumnya agar email dikonfigurasi dengan benar.
 
 Bahasa Indonesia:
 
@@ -460,7 +460,7 @@ Bahasa Indonesia:
 <span>15-30 menit</span>
 </div>
 
-Jika Anda ingin menyiapkan perutean lanjutan di Gmail sehingga alias yang tidak cocok dengan kotak surat akan diteruskan ke bursa email Forward Email, ikuti langkah-langkah berikut:
+Jika Anda ingin menyiapkan perutean lanjutan di Gmail sehingga alias yang tidak cocok dengan kotak surat akan diteruskan ke pertukaran email Forward Email, ikuti langkah-langkah berikut:
 
 1. Masuk ke konsol Google Admin Anda di [admin.google.com](https://admin.google.com)
 2. Buka **Aplikasi → Google Workspace → Gmail → Perutean**
@@ -468,8 +468,8 @@ Jika Anda ingin menyiapkan perutean lanjutan di Gmail sehingga alias yang tidak 
 
 **Pengaturan Penerima Tunggal:**
 
-* Pilih "Ubah penerima amplop" dan masukkan alamat Gmail utama Anda
-* Centang "Tambahkan header X-Gm-Original-To dengan penerima asli"
+* Pilih "Ubah penerima amplop" dan masukkan alamat Gmail utama Anda.
+* Centang "Tambahkan header X-Gm-Original-To dengan penerima asli".
 
 **Pola Penerima Amplop:**
 
@@ -502,66 +502,63 @@ Konfigurasi ini hanya akan berfungsi untuk akun Google Workspace dengan domain k
 <span>15-30 menit</span>
 </div>
 
-Untuk pengguna Microsoft 365 (sebelumnya Office 365) yang ingin menyiapkan perutean tingkat lanjut sehingga alias yang tidak cocok dengan kotak surat akan diteruskan ke bursa email Teruskan Email:
+Untuk pengguna Microsoft 365 (sebelumnya Office 365) yang ingin menyiapkan perutean tingkat lanjut sehingga alias yang tidak cocok dengan kotak surat akan diteruskan ke pertukaran email Forward Email:
 
 1. Masuk ke pusat admin Microsoft 365 di [admin.microsoft.com](https://admin.microsoft.com)
 2. Buka **Exchange → Alur email → Aturan**
 3. Klik **Tambahkan aturan** dan pilih **Buat aturan baru**
-4. Beri nama aturan Anda (misalnya, "Teruskan kotak surat yang tidak ada ke Teruskan Email")
-5. Pada bagian **Terapkan aturan ini jika**, pilih:
+4. Beri nama aturan Anda (misalnya, "Teruskan kotak surat yang tidak ada untuk Meneruskan Email")
+5. Pada **Terapkan aturan ini jika**, pilih:
 * "Alamat penerima cocok dengan..."
 * Masukkan pola yang cocok dengan semua alamat di domain Anda (misalnya, `*@yourdomain.com`)
-6. Pada bagian **Lakukan hal berikut**, pilih:
+6. Pada **Lakukan hal berikut**, pilih:
 * "Arahkan pesan ke..."
 * Pilih "Server email berikut"
 * Masukkan `mx1.forwardemail.net` dan port 25
 * Tambahkan `mx2.forwardemail.net` sebagai server cadangan
-7. Pada bagian **Kecuali jika**, pilih:
-* "Penerimanya adalah..."
+7. Pada **Kecuali jika**, pilih:
+* "Penerima adalah..."
 * Tambahkan semua kotak surat Anda yang ada yang tidak boleh diteruskan
-8. Atur prioritas aturan untuk memastikannya berjalan setelah aturan alur surat lainnya
-9. Klik **Simpan** untuk mengaktifkan aturan
+8. Tetapkan prioritas aturan untuk memastikan aturan tersebut berjalan setelah aturan alur email lainnya.
+9. Klik **Simpan** untuk mengaktifkan aturan.
 
 ## Pemecahan Masalah {#troubleshooting}
 
 ### Mengapa saya tidak menerima email pengujian saya {#why-am-i-not-receiving-my-test-emails}
 
-Jika Anda mengirim email percobaan kepada diri Anda sendiri, maka email tersebut mungkin tidak muncul di kotak masuk Anda karena memiliki tajuk "Message-ID" yang sama.
+Jika Anda mengirim email percobaan kepada diri Anda sendiri, email tersebut mungkin tidak muncul di kotak masuk Anda karena memiliki tajuk "Message-ID" yang sama.
 
 Ini adalah masalah yang diketahui secara luas, dan juga memengaruhi layanan seperti Gmail. <a href="https://support.google.com/a/answer/1703601">Here adalah jawaban resmi Gmail mengenai masalah ini</a>.
 
-Jika Anda terus mengalami masalah, kemungkinan besar masalahnya ada pada propagasi DNS. Anda perlu menunggu sedikit lebih lama dan mencoba lagi (atau coba tetapkan nilai TTL yang lebih rendah pada rekaman <strong class="notranslate">TXT</strong> Anda).
+Jika Anda terus mengalami masalah, kemungkinan besar masalahnya ada pada propagasi DNS. Anda perlu menunggu sedikit lebih lama dan mencoba lagi (atau coba tetapkan nilai TTL yang lebih rendah pada data <strong class="notranslate">TXT</strong> Anda).
 
 **Masih mengalami masalah?** Silakan <a href="/help">hubungi kami</a> agar kami dapat membantu menyelidiki masalah tersebut dan menemukan penyelesaian yang cepat.
 
 ### Bagaimana cara mengonfigurasi klien email saya agar berfungsi dengan Forward Email {#how-do-i-configure-my-email-client-to-work-with-forward-email}
 
 <div class="mb-3">
-Layanan kami bekerja dengan klien email populer seperti:
+Layanan kami kompatibel dengan klien email populer seperti:
 <ul class="ml-1 h4 d-inline list-inline mb-0 pl-0">
 <li class="list-inline-item"><a href="/blog/open-source/apple-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Apple&reg;</a></li>
 <li class="list-inline-item"><a href="/blog/open-source/windows-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Windows&reg;</a></li>
 <li class="list-inline-item"><a href="/blog/open-source/android-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-android"></i> Android&trade;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="lencana badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="lencana badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
-<li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="lencana badge-light bg-light text-dark"><i kelas="fab fa-firefox-browser"></i> Mozilla Firefox&reg;</a></li>
-
-<li kelas="daftar-item-sebaris"><a href="/blog/open-source/safari-email-clients" target="_blank" kelas="lencana lencana-terang bg-terang teks-gelap">Safari&reg;</a></li>
-
-<li kelas="daftar-item-sebaris"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" kelas="lencana lencana-terang bg-terang teks-gelap"><i kelas="fab fa-chrome"></i> Google Chrome&reg;</a></li>
-
-<li kelas="daftar-item-sebaris"><a href="/blog/open-source/terminal-email-clients" target="_blank" kelas="lencana lencana-terang bg-terang teks-gelap"><i kelas="fas fa-terminal"></i> Terminal</a></li>
+<li class="list-inline-item"><a href="/blog/open-source/linux-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-linux"></i> Linux&reg;</a></li>
+<li class="list-inline-item"><a href="/blog/open-source/desktop-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-desktop"></i> Desktop</a></li>
+<li class="list-inline-item"><a href="/blog/open-source/mozilla-firefox-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-firefox-browser"></i> Mozilla Firefox¹</a></li>
+<li class="list-inline-item"><a href="/blog/open-source/safari-email-clients" target="_blank" class="badge badge-light bg-light text-dark">Safari¹</a></li>
+<li class="list-inline-item"><a href="/blog/open-source/google-chrome-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fab fa-chrome"></i> Google Chrome¹</a></li>
+<li class="list-inline-item"><a href="/blog/open-source/terminal-email-clients" target="_blank" class="badge badge-light bg-light text-dark"><i class="fas fa-terminal"></i> Terminal</a></li>
   </ul>
 </div>
 
 <div class="alert alert-primary">
-Nama pengguna Anda adalah alamat email alias Anda dan kata sandinya berasal dari <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> ("Kata Sandi Normal").
+Nama pengguna Anda adalah alamat email alias Anda dan kata sandi berasal dari <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> ("Kata Sandi Normal").
 </div>
 
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
-Kiat:
+Tips:
 </strong>
 <span>Jika Anda menggunakan Thunderbird, pastikan "Keamanan koneksi" diatur ke "SSL/TLS" dan Metode autentikasi diatur ke "Kata sandi normal".</span>
 </div>
@@ -595,7 +592,7 @@ Anda dapat mencoba menggunakan satu atau beberapa alat ini untuk memeriksa reput
 | Pemeriksa Reputasi IP dan Domain Spamhaus | <https://check.spamhaus.org/> | DNSBL |
 | Pusat Reputasi IP dan Domain Cisco Talos | <https://talosintelligence.com/pusat_reputasi> | Reputasi |
 | Pencarian IP dan Reputasi Domain Barracuda | <https://www.barracudacentral.org/lookups/lookup-reputation> | DNSBL |
-| Pemeriksaan Daftar Hitam Kotak Alat MX | <https://mxtoolbox.com/daftar hitam.aspx> | Daftar Hitam |
+| Pemeriksaan Daftar Hitam Kotak Alat MX | <https://mxtoolbox.com/daftar hitam.aspx> | Daftar hitam |
 | Alat Google Postmaster | <https://www.gmail.com/postmaster/> | Reputasi |
 | Pusat Pengirim Yahoo | <https://senders.yahooinc.com/> | Reputasi |
 | Pemeriksaan Daftar Hitam MultiRBL.valli.org | <https://multirbl.valli.org/lookup/> | DNSBL |
@@ -607,21 +604,21 @@ Anda dapat mencoba menggunakan satu atau beberapa alat ini untuk memeriksa reput
 | Polisi Spam | <https://www.spamcop.net/bl.shtml> | DNSBL |
 | Penghapusan IP Microsoft Outlook dan Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Pemindahan |
 | Tingkat 1, 2, dan 3 UCEPROTECT | <https://www.uceprotect.net/id/rblcheck.php> | DNSBL |
-| UCEPROTECT's backscatterer.org | <https://www.backscatterer.org/> | Perlindungan Hamburan Balik |
-| UCEPROTECT masuk daftar putih.org | <https://www.whitelisted.org/> (memerlukan biaya) | DNSWL |
+| backscatterer.org UCEPROTECT | <https://www.backscatterer.org/> | Perlindungan Hamburan Balik |
+| Daftar putih UCEPROTECT.org | <https://www.whitelisted.org/> (memerlukan biaya) | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | Pemindahan |
 | AOL/Verizon (misalnya `[IPTS04]`) | <https://senders.yahooinc.com/> | Pemindahan |
 | Komunikasi Cox | `unblock.request@cox.net` | Pemindahan |
 | t-online.de (Jerman/T-Mobile) | `tobr@rx.t-online.de` | Pemindahan |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Mulailah dengan email berkualitas tinggi dalam jumlah sedikit untuk membangun reputasi positif sebelum mengirimkan email dalam jumlah yang lebih besar.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Jika domain Anda masuk daftar hitam, setiap daftar hitam memiliki proses penghapusannya sendiri. Periksa situs web mereka untuk petunjuk lebih lanjut.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Jika Anda memerlukan bantuan tambahan atau mendapati kami tercantum sebagai spam oleh penyedia layanan email tertentu, silakan <a href="/help">hubungi kami</a>.
 
 ### Apa yang harus saya lakukan jika saya menerima email spam {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -635,9 +632,9 @@ Harap jangan melaporkan pesan tersebut sebagai spam, tetapi teruskan ke sistem p
 
 Jika Anda melihat pesan kesalahan ini di Gmail saat Anda mengirim email percobaan ke diri Anda sendiri, atau saat orang yang Anda kirimi email dengan alias Anda melihat email dari Anda untuk pertama kalinya, maka **jangan khawatir** – karena ini adalah fitur keamanan bawaan Gmail.
 
-Anda cukup mengeklik "Terlihat aman". Misalnya, jika Anda mengirim pesan uji coba menggunakan fitur kirim email sebagai (ke orang lain), maka mereka tidak akan melihat pesan ini.
+Anda cukup mengeklik "Terlihat aman". Misalnya, jika Anda mengirim pesan percobaan menggunakan fitur "kirim email sebagai" (kepada orang lain), mereka tidak akan melihat pesan ini.
 
-Namun jika mereka melihat pesan ini, itu karena mereka biasanya melihat email Anda berasal dari <john@gmail.com> dan bukan dari <john@customdomain.com> (hanya contoh). Gmail akan mengingatkan pengguna hanya untuk memastikan semuanya aman, untuk berjaga-jaga, tidak ada solusi.
+Namun, jika mereka melihat pesan ini, itu karena mereka biasanya terbiasa melihat email Anda berasal dari <john@gmail.com>, bukan <john@customdomain.com> (hanya contoh). Gmail akan memberi tahu pengguna hanya untuk memastikan semuanya aman, untuk berjaga-jaga jika tidak ada solusi.
 
 ### Bisakah saya menghapus via forwardemail dot net di Gmail {#can-i-remove-the-via-forwardemail-dot-net-in-gmail}
 
@@ -654,15 +651,15 @@ Silakan lihat bagian [Apakah Anda mendukung pengiriman email dengan SMTP?](#do-y
 ### Di mana server Anda berada {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Kami mungkin akan segera mengumumkan lokasi pusat data Uni Eropa kami yang dihosting di [forwardemail.eu](https://forwardemail.eu). Berlangganan diskusi di <https://github.com/orgs/forwardemail/discussions/336> untuk mendapatkan informasi terbaru.
 
 Server kami terutama berlokasi di Denver, Colorado – lihat <https://forwardemail.net/ips> untuk daftar lengkap alamat IP kami.
 
-Anda dapat mempelajari tentang subprosesor kami di halaman [GDPR](/gdpr), [DPA](/dpa), dan [Pribadi](/privacy) kami.
+Anda dapat mempelajari tentang subprosesor kami di halaman [GDPR](/gdpr), [DPA](/dpa), dan [Pribadi](/privacy).
 
 ### Bagaimana cara mengekspor dan mencadangkan kotak surat saya {#how-do-i-export-and-backup-my-mailbox}
 
-Kapan saja Anda dapat mengekspor kotak surat Anda sebagai format [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Kotak M](https://en.wikipedia.org/wiki/Mbox), atau terenkripsi [Bahasa SQLite](https://en.wikipedia.org/wiki/SQLite).
+Kapan saja Anda dapat mengekspor kotak surat Anda sebagai format [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox), atau [SQLite](https://en.wikipedia.org/wiki/SQLite) yang terenkripsi.
 
 Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias <i class="fa fa-angle-right"></i> Unduh Cadangan dan pilih jenis format ekspor yang Anda inginkan.
 
@@ -674,8 +671,8 @@ Jika Anda perlu memeriksa format EML atau Mbox yang diekspor, maka alat sumber t
 
 | Nama | Format | Platform | URL GitHub |
 | --------------- | :----: | ------------- | --------------------------------------------------- |
-| Penampil MBox | Kotak M | Jendela | <https://github.com/eneam/mboxviewer> |
-| mbox-web-viewer | Kotak M | Semua platform | <https://github.com/PHMRanger/mbox-web-viewer> |
+| Penampil MBox | Mbox | Jendela | <https://github.com/eneam/mboxviewer> |
+| mbox-web-viewer | Mbox | Semua platform | <https://github.com/PHMRanger/mbox-web-viewer> |
 | Pembaca Eml | EML | Jendela | <https://github.com/ayamadori/EmlReader> |
 | Penampil email | EML | Kode VSC | <https://github.com/joelharkes/vscode_email_viewer> |
 | pembaca eml | EML | Semua platform | <https://github.com/s0ph1e/eml-reader> |
@@ -684,7 +681,7 @@ Selain itu jika Anda perlu mengonversi file Mbox ke file EML, maka Anda dapat me
 
 ### Bagaimana cara mengimpor dan memigrasikan kotak surat saya yang sudah ada {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-Anda dapat dengan mudah mengimpor email Anda ke Forward Email (misalnya menggunakan [burung guntur](https://www.thunderbird.net)) dengan petunjuk di bawah ini:
+Anda dapat dengan mudah mengimpor email Anda ke Forward Email (misalnya menggunakan [Burung Guntur](https://www.thunderbird.net)) dengan petunjuk di bawah ini:
 
 <div class="alert alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -702,15 +699,15 @@ Anda harus mengikuti semua langkah berikut untuk mengimpor email Anda yang sudah
 | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Gmail | MBOX | <https://takeout.google.com/settings/takeout/custom/gmail> |
 | Pandangan | PST | <div class="alert my-3 alert-danger"><i class="fa fa-info-circle font-weight-bold"></i> <strong class="font-weight-bold">Tips:</strong> <span>Jika Anda menggunakan Outlook (<a href="https://support.microsoft.com/en-us/office/back-up-your-email-e5845b0b-1aeb-424f-924c-aa1c33b18833#:~:text=Select%20File%20%3E%20Open%20%26%20Export%20%3E,back%20up%20and%20select%20Next." class="alert-link">format ekspor PST</a>), Anda cukup mengikuti petunjuk pada "Lainnya" di bawah ini. Namun, kami telah menyediakan tautan di bawah ini untuk mengonversi PST ke format MBOX/EML berdasarkan sistem operasi Anda:<ul class="mb-0 mt-3"><li><a class="alert-link" href="https://github.com/BaselineIT/Zinkuba/releases/download/release-1.2/Zinkuba.App.exe">Zinkuba untuk Windows</a> (<a class="alert-link" href="https://github.com/BaselineIT/Zinkuba?tab=readme-ov-file#zinkuba">GitHub</a>)</li><li><a class="alert-link" href="https://cygwin.com/packages/summary/readpst.html">readpst untuk Windows cygwin</a> – (misalnya, <code>readpst -u -o $OUT_DIR $IN_DIR</code> mengganti <code>$OUT_DIR</code> dan <code>$IN_DIR</code> dengan direktori keluaran dan jalur direktori masukan masing-masing).</li><li><a class="alert-link" href="https://manpages.ubuntu.com/manpages/trusty/man1/readpst.1.html">readpst untuk Ubuntu/Linux</a> – (misalnya <code>sudo apt-get install readpst</code> lalu <code>readpst -u -o $OUT_DIR $IN_DIR</code>, mengganti <code>$OUT_DIR</code> dan <code>$IN_DIR</code> dengan jalur direktori keluaran dan direktori masukan masing-masing).</li><li><a class="alert-link" href="https://formulae.brew.sh/formula/libpst">readpst untuk macOS (melalui brew)</a> – (misalnya <code>brew install libpst</code> lalu <code>readpst -u -o $OUT_DIR $IN_DIR</code>, mengganti <code>$OUT_DIR</code> dan <code>$IN_DIR</code> dengan jalur direktori keluaran dan direktori masukan masing-masing).</li><li><a class="alert-link" href="https://github.com/juanirm/pst-converter/tree/master?tab=readme-ov-file#pst-converter">Konverter PST untuk Windows (GitHub)</a></li></ul><br /></span></div> |
-| Surat Apple | MBOX | <https://support.apple.com/guide/mail/impor-atau-ekspor-kotak-surat-mlhlp1030/mac#apd37a3190755974> |
+| Apple Mail | MBOX | <https://support.apple.com/guide/mail/impor-atau-ekspor-kotak-surat-mlhlp1030/mac#apd37a3190755974> |
 | Fastmail | EML | <https://www.fastmail.help/hc/en-us/articles/360060590573-Unduh-semua-data-anda#downloadmail> |
 | Proton Mail | MBOX/EML | <https://proton.me/support/email-ekspor-aplikasi-ekspor-impor> |
 | Tutanota | EML | <https://github.com/crepererum-oss/tatutanatata> |
 | Memikirkan | EML | <https://docs.gandi.net/id/gandimail/operasi_umum/email_cadangan.html#isi> |
-| Bahasa Indonesia | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
+| Zoho | EML | <https://www.zoho.com/mail/help/import-export-emails.html#alink2> |
 | Lainnya | [Use Thunderbird](https://www.thunderbird.net) | Siapkan akun email Anda yang sudah ada di Thunderbird, lalu gunakan plugin [ImportExportTools NG](https://addons.thunderbird.net/en-GB/thunderbird/addon/importexporttools-ng/) untuk mengekspor dan mengimpor email Anda. **Anda juga dapat menyalin/menempel atau menyeret/meletakkan email dari satu akun ke akun lainnya.** |
 
-2. Unduh, instal, dan buka [burung guntur](https://www.thunderbird.net).
+2. Unduh, instal, dan buka [Burung Guntur](https://www.thunderbird.net).
 
 3. Buat akun baru menggunakan alamat email lengkap alias Anda (misalnya <code><you@yourdomain.com></code>) dan kata sandi yang Anda buat. <strong>Jika Anda belum memiliki kata sandi, <a href="/faq#do-you-support-receiving-email-with-imap" target="_blank">lihat petunjuk pengaturan kami</a></strong>.
 
@@ -754,7 +751,7 @@ Anda telah berhasil menyelesaikan semua langkah.
 
 ### Apakah Anda mendukung hosting mandiri {#do-you-support-self-hosting}
 
-Ya, mulai Maret 2025, kami mendukung opsi hosting mandiri. Baca blog [Di Sini](https://forwardemail.net/blog/docs/self-hosted-solution). Lihat [panduan yang diselenggarakan sendiri](https://forwardemail.net/self-hosted) untuk memulai. Dan bagi yang tertarik dengan versi langkah demi langkah yang lebih rinci, lihat panduan kami yang berbasis [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) atau [Bahasa Indonesia: Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+Ya, mulai Maret 2025, kami mendukung opsi hosting mandiri. Baca blog [Di Sini](https://forwardemail.net/blog/docs/self-hosted-solution). Lihat [panduan yang diselenggarakan sendiri](https://forwardemail.net/self-hosted) untuk memulai. Dan bagi yang tertarik dengan versi langkah demi langkah yang lebih rinci, lihat panduan kami yang berbasis [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) atau [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
 ## Konfigurasi Email {#email-configuration}
 
@@ -772,7 +769,7 @@ Ya, mulai Maret 2025, kami mendukung opsi hosting mandiri. Baca blog [Di Sini](h
 Memulai:
 </strong>
 <span>
-Bacalah dengan saksama dan ikuti langkah satu hingga delapan yang tercantum di bawah ini. Pastikan untuk mengganti alamat email <code>user@gmail.com</code> dengan alamat email tujuan penerusan email (jika belum akurat). Demikian pula, pastikan untuk mengganti <code>example.com</code> dengan nama domain khusus Anda (jika belum akurat).
+Baca dengan saksama dan ikuti langkah satu hingga delapan yang tercantum di bawah ini. Pastikan untuk mengganti alamat email <code>user@gmail.com</code> dengan alamat email tujuan penerusan email (jika belum akurat). Demikian pula, pastikan untuk mengganti <code>example.com</code> dengan nama domain khusus Anda (jika belum akurat).
 </span>
 </div>
 
@@ -832,104 +829,104 @@ UNTUK LEGACY: Masuk <i class="fa fa-angle-right"></i> Domain <i class="fa fa-ang
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Jaringan <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Lainnya <i class="fa fa-angle-right"></i> Kelola Domain</td>
+<td>Masuk <i class="fa fa-angle-right"></i> Jaringan <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Selengkapnya <i class="fa fa-angle-right"></i> Kelola Domain</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
 <td>Masuk <i class="fa fa-angle-right"></i> Pada tampilan kartu, klik kelola domain Anda <i class="fa fa-angle-right"></i> Pada tampilan daftar, klik
-ikon roda gigi <i class="fa fa-angle-right"></i> DNS & Nameserver <i class="fa fa-angle-right"></i> Rekaman DNS</td>
+ikon roda gigi <i class="fa fa-angle-right"></i> DNS & Server Nama <i class="fa fa-angle-right"></i> Rekaman DNS</td>
 </tr>
 <tr>
 <td>
 <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Tonton</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Tonton</a>
 </td>
 <td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> (klik ikon roda gigi) <i class="fa fa-angle-right"></i> Klik DNS & Nameserver di menu sebelah kiri</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
 <td>Masuk <i class="fa fa-angle-right"></i> Panel <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> Kelola Domain <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
 <td>Masuk <i class="fa fa-angle-right"></i> Ikhtisar <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> Editor Sederhana <i class="fa fa-angle-right"></i> Rekaman</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
 <td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Manajemen <i class="fa fa-angle-right"></i> Edit zona</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Tonton</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Tonton</a>
 </td>
 <td>Masuk <i class="fa fa-angle-right"></i> Kelola Domain Saya <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domain</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Domain</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Tonton</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Pantau</a>
 </td>
 <td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Konfigurasi DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Tonton</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Pantau</a>
 </td>
 <td>Masuk <i class="fa fa-angle-right"></i> Daftar Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> DNS Lanjutan</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
 <td>Masuk <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Siapkan DNS Netlify</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Solusi</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Manajer Akun <i class="fa fa-angle-right"></i> Nama Domain Saya <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> Ubah Arah Domain <i class="fa fa-angle-right"></i> DNS Lanjutan</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Solusi</a></td>
+<td>Masuk <i class="fa fa-angle-right"></i> Manajer Akun <i class="fa Nama Domain Saya <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Kelola <i class="fa fa-angle-right"></i> Ubah Arah Domain <i class="fa fa-angle-right"></i> DNS Lanjutan</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Pantau</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Pantau</a>
 </td>
 <td>Masuk <i class="fa fa-angle-right"></i> Domain Terkelola <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> Pengaturan DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
 <td>Masuk <i class="fa fa-angle-right"></i> Menu Beranda <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i>
-Pengaturan Lanjutan <i class="fa fa-angle-right"></i> Catatan Kustom</td>
+Pengaturan Lanjutan <i class="fa fa-angle-right"></i> Rekaman Kustom</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Sekarang</a></td>
-<td>Menggunakan CLI "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [nilai-rekaman] [prioritas]</code></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Sekarang</a></td>
+<td>Menggunakan "sekarang" CLI <i class="fa fa-angle-right"></i> <code>sekarang tambahkan DNS [domain] '@' MX [nilai-rekaman] [prioritas]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>Masuk <i class="fa fa-angle-right"></i> Halaman Domain <i class="fa fa-angle-right"></i> (Pilih domain Anda) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-<td>Masuk <i class="fa fa-angle-right"></i> Halaman Domain <i class="fa fa-angle-right"></i> (Klik ikon <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Pilih Kelola Data DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
+<td>Masuk <i class="fa fa-angle-right"></i> Halaman Domain <i class="fa fa-angle-right"></i> (Klik <i class="fa ikon fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Pilih Kelola Data DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>Masuk <i class="fa fa-angle-right"></i> Domain <i class="fa fa-angle-right"></i> Domain Saya</td>
 </tr>
 <tr>
 <td>Lainnya</td>
 <td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Penting:</strong> Tidak melihat nama registrar Anda tercantum di sini? Cukup cari di internet dengan kata kunci "cara mengubah data DNS di $REGISTRAR" (ganti $REGISTRAR dengan nama registrar Anda – misalnya "cara mengubah data DNS di GoDaddy" jika Anda menggunakan GoDaddy).</div>
+<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Penting:</strong> Tidak melihat nama registrar Anda tercantum di sini? Cukup cari di internet dengan kata kunci "cara mengubah data DNS di $REGISTRAR" (ganti $REGISTRAR dengan nama registrar Anda – misalnya "cara mengubah rekaman DNS di GoDaddy" jika Anda menggunakan GoDaddy).</div>
 </td>
 </tr>
 </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">Gunakan halaman manajemen DNS registrar Anda (tab lain yang telah Anda buka), atur data "MX" berikut:
+<li class="mb-2 mb-md-3 mb-lg-5">Gunakan halaman manajemen DNS registrar Anda (tab lain yang telah Anda buka), atur rekaman "MX" berikut:
 
 <div class="alert my-3 alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -1345,10 +1342,10 @@ Tips:
 </strong>
 <span>
 </span>
-Jika Anda tidak menerima email uji coba, atau menerima email uji coba yang bertuliskan "Hati-hati dengan pesan ini", lihat jawaban untuk <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Mengapa saya tidak menerima email uji coba saya</a> dan <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Mengapa email uji coba yang saya kirim ke alamat saya sendiri di Gmail ditampilkan sebagai "mencurigakan"</a>.
+Jika Anda tidak menerima email percobaan, atau menerima email percobaan yang bertuliskan "Hati-hati dengan pesan ini", lihat jawaban untuk <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">Mengapa saya tidak menerima email percobaan saya</a> dan <a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">Mengapa email percobaan saya yang dikirimkan kepada saya di Gmail ditampilkan sebagai "mencurigakan"</a>.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">Jika Anda ingin "Kirim Email Sebagai" dari Gmail, Anda perlu <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">menonton video ini</a></strong>, atau ikuti langkah-langkah di bawah <a href="#how-to-send-mail-as-using-gmail">How untuk Mengirim Email Sebagai Menggunakan Gmail</a> di bawah ini.
+</li><li class="mb-2 mb-md-3 mb-lg-5">Jika Anda ingin "Kirim Email Sebagai" dari Gmail, maka Anda perlu <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">menonton video ini</a></strong>, atau ikuti langkah-langkah di bawah <a href="#how-to-send-mail-as-using-gmail">How untuk Mengirim Email Sebagai Menggunakan Gmail</a> di bawah ini.
 
 </li></ol>
 
@@ -1384,7 +1381,7 @@ Jika Anda menggunakan fitur <a class="alert-link" href="#how-to-send-mail-as-usi
 </span>
 </div>
 
-### Dapatkah saya menggunakan beberapa bursa dan server MX untuk penerusan lanjutan? {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
+### Bisakah saya menggunakan beberapa bursa dan server MX untuk penerusan lanjutan {#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding}
 
 Ya, tetapi **Anda seharusnya hanya memiliki satu pertukaran MX yang tercantum dalam catatan DNS Anda**.
 
@@ -1396,7 +1393,7 @@ Jika Anda menggunakan Google Workspace dan ingin meneruskan semua alias yang tid
 
 Jika Anda menggunakan Microsoft 365 (Outlook) dan ingin meneruskan semua alias yang tidak cocok ke layanan kami, lihat <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> dan <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
-### Bagaimana cara mengatur penjawab saat libur (penjawab otomatis saat sedang tidak di kantor) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
+### Bagaimana cara mengatur penjawab saat libur (penjawab otomatis saat di luar kantor) {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
 Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias dan buat atau edit alias yang ingin Anda konfigurasikan untuk penjawab otomatis liburan.
 
@@ -1405,9 +1402,9 @@ Anda memiliki kemampuan untuk mengonfigurasi tanggal mulai, tanggal akhir, subje
 * Subjek dan pesan teks biasa saat ini didukung (kami menggunakan paket `striptags` secara internal untuk menghapus HTML apa pun).
 * Subjek dibatasi hingga 100 karakter.
 * Pesan dibatasi hingga 1000 karakter.
-* Pengaturan memerlukan konfigurasi SMTP Keluar (misalnya, Anda perlu menyiapkan rekaman DKIM, DMARC, dan DNS Return-Path).
+* Pengaturan memerlukan konfigurasi SMTP Keluar (misalnya, Anda perlu menyiapkan data DKIM, DMARC, dan DNS Return-Path).
 * Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan.
-* Penjawab liburan tidak dapat diaktifkan pada nama domain vanity global (misalnya, [alamat sekali pakai](/disposable-addresses) tidak didukung). * Penjawab liburan tidak dapat diaktifkan untuk alias dengan wildcard/catch-all (`*`) maupun ekspresi reguler.
+* Penjawab liburan tidak dapat diaktifkan pada nama domain khusus global (misalnya, [alamat sekali pakai](/disposable-addresses) tidak didukung). * Penjawab liburan tidak dapat diaktifkan untuk alias dengan wildcard/catch-all (`*`) maupun ekspresi reguler.
 
 Berbeda dengan sistem surel seperti `postfix` (misalnya yang menggunakan ekstensi filter liburan `sieve`) – Forward Email secara otomatis menambahkan tanda tangan DKIM Anda, mengatasi masalah koneksi secara palsu saat mengirim balasan liburan (misalnya karena masalah koneksi SSL/TLS umum dan server yang dikelola lama), dan bahkan mendukung enkripsi Open WKD dan PGP untuk balasan liburan.
 
@@ -1416,19 +1413,20 @@ Berbeda dengan sistem surel seperti `postfix` (misalnya yang menggunakan ekstens
 * Semua akun berbayar sudah termasuk 300 kredit per hari secara default. Jika Anda membutuhkan jumlah yang lebih besar, silakan hubungi kami.
 -->
 
-1. Kami hanya mengirim satu kali per [masuk daftar putih](#do-you-have-an-allowlist) pengirim setiap 4 hari (yang mirip dengan perilaku Gmail).
+1. Kami hanya mengirim satu kali per pengirim [masuk daftar putih](#do-you-have-an-allowlist) setiap 4 hari (mirip dengan perilaku Gmail).
 
 * Cache Redis kami menggunakan sidik jari `alias_id` dan `sender`, sedangkan `alias_id` adalah alias ID MongoDB dan `sender` adalah alamat Dari (jika diizinkan) atau domain root di alamat Dari (jika tidak diizinkan). Untuk menyederhanakannya, masa berlaku sidik jari ini di cache diatur ke 4 hari.
 
 * Pendekatan kami dalam menggunakan domain root yang diurai dalam alamat Dari untuk pengirim yang tidak masuk daftar putih mencegah penyalahgunaan dari pengirim yang relatif tidak dikenal (misalnya pelaku jahat) yang membanjiri pesan penjawab liburan.
 
-2. Kami hanya mengirim apabila MAIL FROM dan/atau From tidak kosong dan tidak mengandung (tanpa memperhatikan huruf besar/kecil) [nama pengguna kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email).
+2. Kami hanya mengirim bila MAIL FROM dan/atau From tidak kosong dan tidak berisi (tanpa memperhatikan huruf besar/kecil) [nama pengguna kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email).
 
 3. Kami tidak mengirim jika pesan asli memiliki salah satu tajuk berikut (tidak peka huruf besar-kecil):
 
-* Header `auto-submitted` dengan nilai yang tidak sama dengan `no`. * Header dari `x-auto-response-suppress` dengan nilai `dr`, `autoreply`, `auto-reply`, `auto_reply`, atau `all`
-* Header dari `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, atau `x-auto-respond` (tanpa memandang nilai).
-* Header dari `precedence` dengan nilai `bulk`, `autoreply`, `auto-reply`, `auto_reply`, atau `list`.
+* Header `auto-submitted` dengan nilai yang tidak sama dengan `no`.
+* Header `x-auto-response-suppress` dengan nilai `dr`, `autoreply`, `auto-reply`, `auto_reply`, atau `all`
+* Header `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6, atau `no`7 (terlepas dari nilainya).
+* Header `no`8 dengan nilai `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2, atau `x-auto-response-suppress`3.
 
 4. Kami tidak mengirim jika alamat email MAIL FROM atau From diakhiri dengan `+donotreply`, `-donotreply`, `+noreply`, atau `-noreply`.
 
@@ -1503,7 +1501,7 @@ Anda mungkin juga perlu menyertakan catatan SPF untuk host tempat Anda mengirim 
 
 Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan.
 
-### Bagaimana cara mengatur DMARC untuk Penerusan Email {#how-do-i-set-up-dmarc-for-forward-email}
+### Bagaimana cara mengatur DMARC untuk Meneruskan Email {#how-do-i-set-up-dmarc-for-forward-email}
 
 Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan.
 
@@ -1517,13 +1515,13 @@ Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noope
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="Contoh Pengaturan CalDAV Thunderbird untuk Meneruskan Email Kalender" />
 
-### Bagaimana cara menambahkan lebih banyak kalender dan mengelola kalender yang sudah ada? {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### Bagaimana cara menambahkan lebih banyak kalender dan mengelola kalender yang ada {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
 Jika Anda ingin menambahkan kalender tambahan, tambahkan saja URL kalender baru: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**pastikan untuk mengganti `calendar-name` dengan nama kalender yang Anda inginkan**)
 
-Anda dapat mengubah nama dan warna kalender setelah dibuat – cukup gunakan aplikasi kalender pilihan Anda (misalnya Apple Mail atau [burung guntur](https://thunderbird.net)).
+Anda dapat mengubah nama dan warna kalender setelah dibuat – cukup gunakan aplikasi kalender pilihan Anda (misalnya Apple Mail atau [Burung Guntur](https://thunderbird.net)).
 
-### Bagaimana cara mengatur SRS untuk Meneruskan Email {#how-do-i-set-up-srs-for-forward-email}
+### Bagaimana cara mengatur SRS untuk Email Terusan {#how-do-i-set-up-srs-for-forward-email}
 
 Kami secara otomatis mengonfigurasi [Skema Penulisan Ulang Pengirim](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") – Anda tidak perlu melakukannya sendiri.
 
@@ -1572,7 +1570,7 @@ Pastikan Anda telah membaca <a href="/terms" class="alert-link" target="_blank">
 </span>
 </div>
 
-Silakan lihat bagian kami pada [Surel](/email-api#outbound-emails) dalam dokumentasi API kami untuk opsi, contoh, dan wawasan lebih lanjut.
+Silakan lihat bagian kami pada [Email](/email-api#outbound-emails) dalam dokumentasi API kami untuk opsi, contoh, dan wawasan lebih lanjut.
 
 Untuk mengirim email keluar dengan API kami, Anda harus menggunakan token API yang tersedia di [Keamanan Saya](/my-account/security).
 
@@ -1665,7 +1663,7 @@ Tips:
 
 4. Saat diminta nama server POP3, masukkan `pop3.forwardemail.net`
 
-5. Saat diminta port server POP3, masukkan `995` (SSL/TLS) – lihat [port POP3 alternatif](/faq#what-are-your-pop3-server-configuration-settings) jika perlu
+5. Saat dimintai port server POP3, masukkan `995` (SSL/TLS) – lihat [port POP3 alternatif](/faq#what-are-your-pop3-server-configuration-settings) jika perlu
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1707,7 +1705,7 @@ Agar dapat menggunakan dukungan kalender, **pengguna** harus berupa alamat email
 
 ### Apakah Anda mendukung kontak (CardDAV) {#do-you-support-contacts-carddav}
 
-Ya, kami telah menambahkan fitur ini mulai 12 Juni 2025. Server kami adalah `carddav.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+Ya, fitur ini telah ditambahkan per 12 Juni 2025. Server kami adalah `carddav.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
 
 Mendukung IPv4 dan IPv6 dan tersedia melalui port `443` (HTTPS).
 
@@ -1746,9 +1744,9 @@ Jika Anda menggunakan Gmail, silakan lihat <a class="alert-link" href="/guides/s
 
 1. Buka <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Pengaturan <i class="fa fa-angle-right"></i> Konfigurasi SMTP Keluar dan ikuti petunjuk pengaturan
 
-2. Buat alias baru untuk domain Anda di bawah <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
+2. Buat alias baru untuk domain Anda di <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Akun Saya <i class="fa fa-angle-right"></i> Domain</a> <i class="fa fa-angle-right"></i> Alias (misalnya <code><hello@example.com></code>)
 
-3. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan dengan aman kata sandi yang dibuat yang ditampilkan di layar.
+3. Klik <strong class="text-success"><i class="fa fa-key"></i> Buat Kata Sandi</strong> di samping alias yang baru dibuat. Salin ke clipboard Anda dan simpan kata sandi yang dihasilkan yang ditampilkan di layar dengan aman.
 
 4. Gunakan aplikasi email pilihan Anda, tambahkan atau konfigurasikan akun dengan alias yang baru Anda buat (misalnya <code><hello@example.com></code>)
 <div class="alert my-3 alert-primary">
@@ -1800,16 +1798,15 @@ Bahasa Indonesia:
 
 ### Apakah Anda mendukung OpenPGP/MIME, enkripsi ujung ke ujung ("E2EE"), dan Direktori Kunci Web ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Ya, kami mendukung [BukaPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [enkripsi ujung ke ujung ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), dan penemuan kunci publik menggunakan [Direktori Kunci Web ("WKD")](https://wiki.gnupg.org/WKD). Anda dapat mengonfigurasi OpenPGP menggunakan [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) atau [host sendiri kunci Anda](https://wiki.gnupg.org/WKDHosting) (lihat [inti ini untuk pengaturan server WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Ya, kami mendukung [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [enkripsi ujung ke ujung ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption), dan penemuan kunci publik menggunakan [Direktori Kunci Web ("WKD")](https://wiki.gnupg.org/WKD). Anda dapat mengonfigurasi OpenPGP menggunakan [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) atau [host sendiri kunci Anda](https://wiki.gnupg.org/WKDHosting) (lihat [inti ini untuk pengaturan server WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
 * Pencarian WKD di-cache selama 1 jam untuk memastikan pengiriman email yang tepat waktu → oleh karena itu, jika Anda menambahkan, mengubah, atau menghapus kunci WKD Anda, silakan kirimkan email kepada kami di `support@forwardemail.net` dengan alamat email Anda agar kami dapat menghapus cache secara manual.
 * Kami mendukung enkripsi PGP untuk pesan yang diteruskan melalui pencarian WKD atau menggunakan kunci PGP yang diunggah di antarmuka kami.
 * Kunci yang diunggah akan berlaku selama kotak centang PGP diaktifkan/dicentang.
 * Pesan yang dikirim ke webhook saat ini tidak dienkripsi dengan PGP.
-* Jika Anda memiliki beberapa alias yang cocok untuk alamat penerusan tertentu (misalnya regex/wildcard/kombinasi persis) dan jika lebih dari satu alias tersebut berisi kunci PGP yang diunggah dan telah dicentang PGP → maka kami akan mengirimkan email peringatan kesalahan dan tidak akan mengenkripsi pesan dengan kunci PGP yang Anda unggah. Hal ini sangat jarang terjadi dan biasanya hanya berlaku untuk pengguna tingkat lanjut dengan aturan alias yang kompleks.
-* **Enkripsi PGP tidak akan diterapkan pada penerusan email melalui server MX kami jika pengirim memiliki kebijakan penolakan DMARC. Jika Anda memerlukan enkripsi PGP pada *semua* email, kami sarankan untuk menggunakan layanan IMAP kami dan mengonfigurasi kunci PGP Anda untuk alias email masuk.**
+* Jika Anda memiliki beberapa alias yang cocok untuk alamat penerusan tertentu (misalnya kombinasi regex/wildcard/exact) dan jika lebih dari satu alias tersebut berisi kunci PGP yang diunggah dan telah dicentang PGP → maka kami akan mengirimkan email peringatan kesalahan dan tidak akan mengenkripsi pesan dengan kunci PGP yang Anda unggah. Hal ini sangat jarang terjadi dan biasanya hanya berlaku untuk pengguna tingkat lanjut dengan aturan alias yang kompleks. **Enkripsi PGP tidak akan diterapkan pada penerusan email melalui server MX kami jika pengirim memiliki kebijakan penolakan DMARC. Jika Anda memerlukan enkripsi PGP pada *semua* email, kami sarankan untuk menggunakan layanan IMAP kami dan mengonfigurasi kunci PGP Anda untuk alias email masuk.**
 
-**Anda dapat memvalidasi pengaturan Direktori Kunci Web Anda di <https://wkd.chimbosonic.com/> (sumber terbuka) atau <https://www.webkeydirectory.com/> (milik).**
+**Anda dapat memvalidasi pengaturan Direktori Kunci Web di <https://wkd.chimbosonic.com/> (sumber terbuka) atau <https://www.webkeydirectory.com/> (milik).**
 
 <div class="alert my-3 alert-success">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -1833,13 +1830,13 @@ Anda harus mengikuti semua langkah berikut untuk mengaktifkan OpenPGP untuk nama
 
 | Klien Email | Platform | Plugin yang Direkomendasikan | Catatan |
 | --------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| burung guntur | Meja kerja | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird memiliki dukungan bawaan untuk OpenPGP. |
+| Burung Guntur | Meja kerja | [Configure OpenPGP in Thunderbird](https://support.mozilla.org/en-US/kb/openpgp-thunderbird-howto-and-faq#w_i-have-never-used-openpgp-with-thunderbird-before-how-do-i-setup-openpgp) | Thunderbird memiliki dukungan bawaan untuk OpenPGP. |
 | Gmail | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Gmail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Surat Apple | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
-| Surat Apple | Bahasa Indonesia: | [PGPro](https://github.com/opensourceios/PGPro/) atau [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (lisensi kepemilikan) | Apple Mail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [PGPro](https://github.com/opensourceios/PGPro/) atau [FlowCrypt](https://flowcrypt.com/download). |
+| Apple Mail | macOS | [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation) | Apple Mail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [Free-GPGMail](https://github.com/Free-GPGMail/Free-GPGMail?tab=readme-ov-file#installation). |
+| Apple Mail | iOS | [PGPro](https://github.com/opensourceios/PGPro/) atau [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (lisensi kepemilikan) | Apple Mail tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [PGPro](https://github.com/opensourceios/PGPro/) atau [FlowCrypt](https://flowcrypt.com/download). |
 | Pandangan | Jendela | [gpg4win](https://www.gpg4win.de/index.html) | Klien email desktop Outlook tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [gpg4win](https://www.gpg4win.de/index.html). |
 | Pandangan | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Klien email berbasis web Outlook tidak mendukung OpenPGP, namun Anda dapat mengunduh plugin sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
-| Bahasa Indonesia: Android | Seluler | [OpenKeychain](https://www.openkeychain.org/) atau [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) seperti [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) dan [FairEmail](https://github.com/M66B/FairEmail) keduanya mendukung plugin sumber terbuka [OpenKeychain](https://www.openkeychain.org/). Sebagai alternatif, Anda dapat menggunakan plugin sumber terbuka (lisensi kepemilikan) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+| Android | Seluler | [OpenKeychain](https://www.openkeychain.org/) atau [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | [Android mail clients](/blog/open-source/android-email-clients) seperti [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) dan [FairEmail](https://github.com/M66B/FairEmail) keduanya mendukung plugin sumber terbuka [OpenKeychain](https://www.openkeychain.org/). Sebagai alternatif, Anda dapat menggunakan plugin sumber terbuka (lisensi kepemilikan) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
 | Google Chrome | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Anda dapat mengunduh ekstensi peramban sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
 | Mozilla Firefox | Peramban | [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download) (lisensi kepemilikan) | Anda dapat mengunduh ekstensi peramban sumber terbuka [Mailvelope](https://mailvelope.com/) atau [FlowCrypt](https://flowcrypt.com/download). |
 | Microsoft Edge | Peramban | [Mailvelope](https://mailvelope.com/) | Anda dapat mengunduh ekstensi peramban sumber terbuka [Mailvelope](https://mailvelope.com/). |
@@ -1950,7 +1947,7 @@ Mencari dokumentasi tentang webhook email? Lihat <a href="/faq#do-you-support-we
 </span>
 </div>
 
-Ya, mulai 14 Agustus 2024, kami telah menambahkan fitur ini. Anda sekarang dapat membuka Akun Saya → Domain → Setelan → URL Webhook Bounce dan mengonfigurasi URL `http://` atau `https://` yang akan kami kirimi permintaan `POST` setiap kali email SMTP keluar mengalami bounce.
+Ya, mulai 14 Agustus 2024, kami telah menambahkan fitur ini. Anda sekarang dapat membuka Akun Saya → Domain → Setelan → URL Webhook Pentalan dan mengonfigurasi URL `http://` atau `https://` yang akan kami kirimi permintaan `POST` setiap kali email SMTP keluar terpental.
 
 Ini berguna bagi Anda untuk mengelola dan memantau SMTP keluar Anda – dan dapat digunakan untuk mempertahankan pelanggan, memilih keluar, dan mendeteksi setiap kali terjadi pentalan.
 
@@ -1961,19 +1958,19 @@ Muatan webhook bounce dikirim sebagai JSON dengan properti berikut:
 * `list_unsubscribe` (String) - nilai header `List-Unsubscribe` (tanpa memperhatikan huruf besar/kecil), jika ada, dari email keluar asli
 * `feedback_id` (String) - nilai header `Feedback-ID` (tanpa memperhatikan huruf besar/kecil), jika ada, dari email keluar asli
 * `recipient` (String) - alamat email penerima yang terpental atau mengalami kesalahan
-* `message` (String) - pesan kesalahan terperinci untuk pantulan
+* `message` (String) - pesan kesalahan terperinci untuk email terpental
 * `response` (String) - pesan respons SMTP
-* `response_code` (Angka) - kode respons SMTP yang diurai
-* `truth_source` (String) - jika kode respons berasal dari sumber tepercaya, nilai ini akan diisi dengan nama domain root (misalnya `google.com` atau `yahoo.com`)
-* `bounce` (Objek) - objek yang berisi properti berikut yang merinci Status pantulan dan penolakan
-* `action` (String) - tindakan pantulan (misalnya `"reject"`)
-* `message` (String) - alasan pantulan (misalnya `"Message Sender Blocked By Receiving Server"`)
-* `category` (String) - kategori pantulan (misalnya `"block"`)
-* `code` (Nomor) - kode status pantulan (misalnya `554`)
-* `status` (String) - kode pantulan dari pesan balasan (misalnya `5.7.1`)
-* `line` (Nomor) - nomor baris yang diurai, jika ada, [dari daftar parse pantulan Zona-MTA](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (misalnya `526`)
-* `headers` (Objek) - pasangan kunci nilai header untuk email keluar
-* `bounced_at` (String) - Tanggal yang diformat [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) untuk saat kesalahan pantulan terjadi
+* `list_id`0 (Angka) - kode respons SMTP yang diurai
+* `list_id`1 (String) - jika kode respons berasal dari sumber tepercaya, nilai ini akan diisi dengan nama domain root (misalnya `list_id`2 atau `list_id`3)
+* `list_id`4 (Objek) - objek yang berisi properti berikut yang merinci status pantulan dan penolakan
+* `list_id`5 (String) - tindakan pantulan (misalnya `list_id`6)
+* `list_id`7 (String) - alasan pantulan (misalnya `list_id`8)
+* `list_id`9 (String) - kategori pantulan (misalnya `List-ID`0)
+* `List-ID`1 (Angka) - kode status pantulan (misalnya `List-ID`2)
+* `List-ID`3 (String) - kode pantulan dari pesan balasan (misalnya `List-ID`4)
+* `List-ID`5 (Angka) - nomor baris yang diurai, jika ada, `List-ID`6 (misalnya `List-ID`7)
+* `List-ID`8 (Objek) - pasangan kunci nilai header untuk email keluar
+* `List-ID`9 (String) - Tanggal yang diformat `list_unsubscribe`0 untuk terjadinya kesalahan pantulan
 
 Misalnya:
 
@@ -2000,16 +1997,15 @@ Misalnya:
 
 Berikut beberapa catatan tambahan mengenai webhook pentalan:
 
-* Jika muatan webhook berisi nilai `list_id`, `list_unsubscribe`, atau `feedback_id`, maka Anda harus mengambil tindakan yang tepat untuk menghapus `recipient` dari daftar jika perlu.
-* Jika nilai `bounce.category` adalah `"block"`, `"recipient"`, `"spam"`, atau `"virus"`, maka Anda harus menghapus pengguna tersebut dari daftar.
-* Jika Anda perlu memverifikasi payload webhook (untuk memastikan payload tersebut benar-benar berasal dari server kami), Anda dapat [selesaikan alamat IP klien jarak jauh nama host klien menggunakan pencarian terbalik](https://nodejs.org/api/dns.html#dnspromisesreverseip) – seharusnya `smtp.forwardemail.net`.
-* Anda juga dapat memeriksa IP dengan [alamat IP kami yang dipublikasikan](#what-are-your-servers-ip-addresses).
-* Buka Akun Saya → Domain → Pengaturan → Kunci Verifikasi Payload Tanda Tangan Webhook untuk mendapatkan kunci webhook Anda.
+* Jika payload webhook berisi nilai `list_id`, `list_unsubscribe`, atau `feedback_id`, Anda harus mengambil tindakan yang tepat untuk menghapus `recipient` dari daftar jika perlu.
+* Jika nilai `bounce.category` adalah `"block"`, `"recipient"`, `"spam"`, atau `"virus"`, Anda harus menghapus pengguna dari daftar.
+* Jika Anda perlu memverifikasi payload webhook (untuk memastikan payload tersebut benar-benar berasal dari server kami), Anda dapat menggunakan [selesaikan alamat IP klien jarak jauh nama host klien menggunakan pencarian terbalik](https://nodejs.org/api/dns.html#dnspromisesreverseip) – seharusnya `list_unsubscribe`0.
+* Anda juga dapat memeriksa IP dengan `list_unsubscribe`1. * Buka Akun Saya → Domain → Pengaturan → Kunci Verifikasi Muatan Tanda Tangan Webhook untuk mendapatkan kunci webhook Anda.
 * Anda dapat merotasi kunci ini kapan saja demi alasan keamanan.
-* Hitung dan bandingkan nilai `X-Webhook-Signature` dari permintaan webhook kami dengan nilai isi yang dihitung menggunakan kunci ini. Contoh cara melakukannya tersedia di [postingan Stack Overflow ini](https://stackoverflow.com/a/68885281).
-* Lihat diskusi di <https://github.com/forwardemail/free-email-forwarding/issues/235> untuk informasi lebih lanjut.
-* Kami akan menunggu hingga `5` detik hingga titik akhir webhook Anda merespons dengan kode status `200`, dan kami akan mencoba lagi hingga `1` kali.
-* Jika kami mendeteksi URL webhook bounce Anda mengalami kesalahan saat kami mencoba mengirimkan permintaan, kami akan mengirimkan email balasan seminggu sekali.
+* Hitung dan bandingkan nilai `list_unsubscribe`2 dari permintaan webhook kami dengan nilai isi yang dihitung menggunakan kunci ini. Contoh cara melakukannya tersedia di `list_unsubscribe`3.
+* Lihat diskusi di <`list_unsubscribe`4 untuk informasi lebih lanjut.
+* Kami akan menunggu hingga `list_unsubscribe`5 detik hingga titik akhir webhook Anda merespons dengan kode status `list_unsubscribe`6, dan kami akan mencoba lagi hingga `list_unsubscribe`7.
+* Jika kami mendeteksi bahwa URL webhook bounce Anda mengalami kesalahan saat kami mencoba mengirimkan permintaan, kami akan mengirimkan email balasan kepada Anda seminggu sekali.
 
 ### Apakah Anda mendukung webhook {#do-you-support-webhooks}
 
@@ -2086,19 +2082,17 @@ Atau mungkin Anda ingin semua email yang masuk ke `example.com` diteruskan ke ti
 * Jika Anda menggunakan paket berbayar, buka Akun Saya → Domain → Pengaturan → Kunci Verifikasi Payload Tanda Tangan Webhook untuk mendapatkan kunci webhook Anda.
 * Anda dapat merotasi kunci ini kapan saja demi alasan keamanan.
 * Hitung dan bandingkan nilai `X-Webhook-Signature` dari permintaan webhook kami dengan nilai isi yang dihitung menggunakan kunci ini. Contoh cara melakukannya tersedia di [postingan Stack Overflow ini](https://stackoverflow.com/a/68885281).
-* Lihat diskusi di <https://github.com/forwardemail/free-email-forwarding/issues/235> untuk informasi lebih lanjut.
-* Jika webhook tidak merespons dengan kode status `200`, maka kami akan menyimpan responsnya di [log kesalahan dibuat](#do-you-store-error-logs) – yang berguna untuk debugging.
-* Permintaan HTTP webhook akan mencoba ulang hingga 3 kali setiap upaya koneksi SMTP, dengan batas waktu maksimal 60 detik per permintaan POST titik akhir. **Perhatikan bahwa ini tidak berarti hanya mencoba ulang 3 kali**, webhook akan mencoba ulang secara terus-menerus seiring waktu dengan mengirimkan kode SMTP 421 (yang memberi tahu pengirim untuk mencoba ulang nanti) setelah upaya permintaan POST HTTP ke-3 yang gagal. Ini berarti email akan mencoba ulang terus-menerus selama berhari-hari hingga kode status 200 tercapai.
-* Kami akan mencoba ulang secara otomatis berdasarkan status default dan kode kesalahan yang digunakan dalam [metode percobaan ulang superagent](https://ladjs.github.io/superagent/#retrying-requests) (kami adalah pengelola). * Kami mengelompokkan permintaan HTTP webhook ke titik akhir yang sama dalam satu permintaan, alih-alih beberapa permintaan, untuk menghemat sumber daya dan mempercepat waktu respons. Misalnya, jika Anda mengirim email ke <webhook1@example.com>, <webhook2@example.com>, dan <webhook3@example.com>, dan semuanya dikonfigurasi untuk mencapai URL titik akhir *yang sama persis*, maka hanya satu permintaan yang akan dibuat. Kami mengelompokkan berdasarkan pencocokan titik akhir yang tepat dengan kesetaraan yang ketat.
-* Perhatikan bahwa kami menggunakan metode "simpleParser" dari pustaka [pengurai surat](https://nodemailer.com/extras/mailparser/) untuk mengurai pesan menjadi objek yang ramah JSON.
+* Lihat diskusi di <https://github.com/forwardemail/free-email-forwarding/issues/235> untuk informasi lebih lanjut. * Jika webhook tidak merespons dengan kode status `200`, kami akan menyimpan responsnya di [log kesalahan dibuat](#do-you-store-error-logs) – yang berguna untuk debugging.
+* Permintaan HTTP webhook akan mencoba ulang hingga 3 kali setiap upaya koneksi SMTP, dengan batas waktu maksimal 60 detik per permintaan POST titik akhir. **Perhatikan bahwa ini tidak berarti webhook hanya mencoba ulang 3 kali**, webhook akan mencoba ulang secara terus-menerus seiring waktu dengan mengirimkan kode SMTP 421 (yang memberi tahu pengirim untuk mencoba ulang nanti) setelah upaya permintaan POST HTTP ke-3 yang gagal. Ini berarti email akan mencoba ulang terus-menerus selama berhari-hari hingga kode status 200 tercapai.
+* Kami akan mencoba ulang secara otomatis berdasarkan status default dan kode kesalahan yang digunakan dalam [metode percobaan ulang superagent](https://ladjs.github.io/superagent/#retrying-requests) (kami adalah pengelola).
+* Kami mengelompokkan permintaan HTTP webhook ke titik akhir yang sama dalam satu permintaan, bukan beberapa) untuk menghemat sumber daya dan mempercepat waktu respons. Misalnya, jika Anda mengirim email ke <webhook1@example.com>, <webhook2@example.com>, dan <webhook3@example.com>, dan semuanya dikonfigurasi untuk mencapai URL titik akhir *persis* yang sama, maka hanya satu permintaan yang akan dibuat. Kami mengelompokkan berdasarkan pencocokan titik akhir yang persis dengan kesetaraan yang ketat.
+* Perhatikan bahwa kami menggunakan metode "simpleParser" dari pustaka `mx1.forwardemail.net`0 untuk mengurai pesan menjadi objek yang ramah JSON.
 * Nilai email mentah sebagai String diberikan sebagai properti "raw".
 * Hasil autentikasi diberikan sebagai properti "dkim", "spf", "arc", "dmarc", dan "bimi".
-* Header email yang diurai diberikan sebagai properti "headers" – tetapi perlu diketahui juga bahwa Anda dapat menggunakan "headerLines" untuk iterasi dan penguraian yang lebih mudah.
-* Penerima yang dikelompokkan untuk webhook ini dikelompokkan bersama dan diberikan sebagai properti "penerima".
-* Informasi sesi SMTP diberikan sebagai properti "sesi". Ini berisi informasi tentang pengirim pesan, waktu kedatangan pesan, HELO, dan nama host klien. Nilai nama host klien sebagai `session.clientHostname` adalah FQDN (dari pencarian PTR terbalik) atau `session.remoteAddress` yang diapit tanda kurung (misalnya `"[127.0.0.1]"`).
-* Jika Anda membutuhkan cara cepat untuk mendapatkan nilai `X-Original-To`, Anda dapat menggunakan nilai `session.recipient` (lihat contoh di bawah). Header `X-Original-To` adalah header yang kami tambahkan ke pesan untuk debugging dengan penerima asli (sebelum penerusan tersamar) untuk pesan tersebut.
-* Jika Anda perlu menghapus properti `attachments` dan/atau `raw` dari isi payload, cukup tambahkan `?attachments=false`, `?raw=false`, atau `?attachments=false&raw=false` ke titik akhir webhook Anda sebagai parameter querystring (misalnya `https://example.com/webhook?attachments=false&raw=false`).
-* Jika ada lampiran, lampiran tersebut akan ditambahkan ke Array `attachments` dengan nilai Buffer. Anda dapat menguraikannya kembali menjadi konten menggunakan pendekatan dengan JavaScript seperti:
+* Header email yang telah diurai diberikan sebagai properti "headers" – tetapi perlu diketahui juga bahwa Anda dapat menggunakan "headerLines" untuk iterasi dan penguraian yang lebih mudah.
+* Penerima yang dikelompokkan untuk webhook ini dikelompokkan bersama dan diberikan sebagai properti "recipients". * Informasi sesi SMTP diberikan sebagai properti "session". Properti ini berisi informasi tentang pengirim pesan, waktu kedatangan pesan, HELO, dan nama host klien. Nilai nama host klien sebagai `mx1.forwardemail.net`1 adalah FQDN (dari pencarian PTR terbalik) atau `mx1.forwardemail.net`2 yang diapit tanda kurung (misalnya `mx1.forwardemail.net`3).
+* Jika Anda membutuhkan cara cepat untuk mendapatkan nilai `mx1.forwardemail.net`4, Anda dapat menggunakan nilai `mx1.forwardemail.net`5 (lihat contoh di bawah). Header `mx1.forwardemail.net`6 adalah header yang kami tambahkan ke pesan untuk debugging dengan penerima asli (sebelum penerusan tersamar) untuk pesan tersebut. * Jika Anda perlu menghapus properti `mx1.forwardemail.net`7 dan/atau `mx1.forwardemail.net`8 dari badan payload, cukup tambahkan `mx1.forwardemail.net`9, `mx2.forwardemail.net`0, atau `mx2.forwardemail.net`1 ke titik akhir webhook Anda sebagai parameter querystring (misalnya `mx2.forwardemail.net`2).
+* Jika terdapat lampiran, lampiran tersebut akan ditambahkan ke Array `mx2.forwardemail.net`3 dengan nilai Buffer. Anda dapat mengurainya kembali menjadi konten menggunakan pendekatan dengan JavaScript seperti:
 
   ```js
   const data = [
@@ -2319,9 +2313,9 @@ Ya, mulai 27 September 2021, kami telah menambahkan fitur ini. Anda cukup menuli
 
 Alias yang didukung ekspresi reguler adalah alias yang dimulai dengan `/` dan diakhiri dengan `/`, dan penerimanya berupa alamat email atau webhook. Penerima juga dapat menyertakan dukungan substitusi regex (misalnya `$1`, `$2`).
 
-Kami mendukung dua tanda ekspresi reguler, yaitu `i` dan `g`. Tanda `i` yang tidak peka huruf besar/kecil merupakan nilai default permanen dan selalu diterapkan. Tanda global `g` dapat Anda tambahkan dengan menambahkan akhiran `/` dengan `/g`.
+Kami mendukung dua flag ekspresi reguler, yaitu `i` dan `g`. Flag `i` yang tidak peka huruf besar/kecil merupakan default permanen dan selalu diterapkan. Flag global `g` dapat Anda tambahkan dengan menambahkan akhiran `/` dengan `/g`.
 
-Perhatikan bahwa kami juga mendukung fitur <a href="#can-i-disable-specific-aliases">disabled alias</a> untuk bagian penerima dengan dukungan regex kami.
+Perhatikan bahwa kami juga mendukung <a href="fitur alias #can-i-disable-specific-aliases">disabled</a> untuk bagian penerima dengan dukungan regex kami.
 
 Ekspresi reguler tidak didukung pada <a href="/disposable-addresses" target="_blank">domain khusus global</a> (karena ini dapat menjadi kerentanan keamanan).
 
@@ -2363,7 +2357,7 @@ Jika Anda menggunakan paket gratis, cukup tambahkan rekaman DNS <strong class="n
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh Substitusi Nama Depan Nama Belakang:</strong> Bayangkan semua alamat email perusahaan Anda berpola `firstname.lastname@example.com`. Jika saya ingin semua email yang berpola `firstname.lastname@example.com` diteruskan ke `firstname.lastname@company.com` dengan dukungan substitusi (<a href="https://regexr.com/66hnu" class="alert-link">lihat uji coba di RegExr</a>):
+<strong>Contoh Substitusi Nama Depan Nama Belakang:</strong> Bayangkan semua alamat email perusahaan Anda berpola `firstname.lastname@example.com`. Jika saya ingin semua email yang berpola `firstname.lastname@example.com` diteruskan ke `firstname.lastname@company.com` dengan dukungan substitusi (<a href="https://regexr.com/66hnu" class="alert-link">lihat pengujian di RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2411,7 +2405,7 @@ Jika Anda menggunakan paket gratis, cukup tambahkan rekaman DNS <strong class="n
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh Substitusi String Kueri Webhook:</strong> Mungkin Anda ingin semua email yang masuk ke `example.com` masuk ke <a href="#do-you-support-webhooks" class="alert-link">webhook</a> dan memiliki kunci string kueri dinamis "kepada" dengan nilai bagian nama pengguna dari alamat email (<a href="https://regexr.com/66ho4" class="alert-link">uji tampilan di RegExr</a>):
+<strong>Contoh Substitusi String Kueri Webhook:</strong> Mungkin Anda ingin semua email yang masuk ke `example.com` masuk ke <a href="#do-you-support-webhooks" class="alert-link">webhook</a> dan memiliki kunci string kueri dinamis "kepada" dengan nilai bagian nama pengguna dari alamat email (<a href="https://regexr.com/66ho4" class="alert-link">tampilkan uji coba di RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2483,7 +2477,7 @@ Jika Anda menggunakan paket gratis, cukup tambahkan rekaman DNS <strong class="n
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Contoh penolakan keras:</strong> Jika Anda ingin semua email yang cocok dengan pola tertentu dinonaktifkan dan ditolak keras dengan kode status `550` (lihat <a href="#can-i-disable-specific-aliases" class="alert-link">Dapatkah saya menonaktifkan alias tertentu</a>), maka cukup gunakan pendekatan yang sama dengan tanda seru tiga kali "!!!". Ini menandakan kesalahan permanen kepada pengirim dan email tidak akan dicoba lagi, email akan ditolak untuk alias ini.
+<strong>Contoh penolakan keras:</strong> Jika Anda ingin semua email yang cocok dengan pola tertentu dinonaktifkan dan ditolak keras dengan kode status `550` (lihat <a href="#can-i-disable-specific-aliases" class="alert-link">Dapatkah saya menonaktifkan alias tertentu</a>), cukup gunakan pendekatan yang sama dengan tiga tanda seru "!!!". Ini menandakan kesalahan permanen kepada pengirim dan email tidak akan dicoba lagi, email akan ditolak untuk alias ini.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2525,7 +2519,7 @@ Ya, perlu diketahui bahwa untuk menjaga reputasi IP dan memastikan pengiriman, F
 
 ### Apa pengaturan konfigurasi server SMTP Anda {#what-are-your-smtp-server-configuration-settings}
 
-Server kami `smtp.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+Server kami adalah `smtp.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
 
 Mendukung IPv4 dan IPv6 dan tersedia melalui port `465` dan `2465` untuk SSL/TLS dan `587`, `2587`, `2525`, dan `25` untuk TLS (STARTTLS).
 
@@ -2545,7 +2539,7 @@ Silakan lihat [Apakah Anda mendukung pengiriman email dengan SMTP?](#do-you-supp
 
 ### Apa pengaturan konfigurasi server IMAP Anda {#what-are-your-imap-server-configuration-settings}
 
-Server kami `imap.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+Server kami adalah `imap.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
 
 Mendukung IPv4 dan IPv6 dan tersedia melalui port `993` dan `2993` untuk SSL/TLS.
 
@@ -2564,7 +2558,7 @@ Silakan lihat [Apakah Anda mendukung penerimaan email dengan IMAP?](#do-you-supp
 
 ### Apa pengaturan konfigurasi server POP3 Anda {#what-are-your-pop3-server-configuration-settings}
 
-Server kami `pop3.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
+Server kami adalah `pop3.forwardemail.net` dan juga dipantau di <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">halaman status</a> kami.
 
 Mendukung IPv4 dan IPv6 dan tersedia melalui port `995` dan `2995` untuk SSL/TLS.
 
@@ -2618,7 +2612,7 @@ brew install postfix
 
 2. Selama instalasi, pilih "Situs Internet" saat diminta untuk jenis konfigurasi.
 
-Konfigurasi #### {#configuration}
+#### Konfigurasi {#configuration}
 
 1. Edit file konfigurasi utama Postfix:
 
@@ -2663,7 +2657,7 @@ sudo postmap /etc/postfix/sasl_passwd
 sudo systemctl restart postfix
 ```
 
-#### Pengujian {#testing}
+#### Menguji {#testing}
 
 Uji konfigurasi Anda dengan mengirimkan email uji:
 
@@ -2676,9 +2670,9 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### Teknik Pengerasan Server Lanjutan {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Pelajari lebih lanjut tentang infrastruktur keamanan kami di [halaman Keamanan kami](/security).
 
-Forward Email menerapkan sejumlah teknik penguatan server untuk memastikan keamanan infrastruktur dan data Anda:
+Forward Email menerapkan berbagai teknik penguatan server untuk memastikan keamanan infrastruktur dan data Anda:
 
 1. **Keamanan Jaringan**:
 * Firewall tabel IP dengan aturan ketat
@@ -2713,17 +2707,17 @@ Forward Email menerapkan sejumlah teknik penguatan server untuk memastikan keama
 * Prosedur respons insiden
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Praktik keamanan kami terus diperbarui untuk mengatasi ancaman dan kerentanan yang muncul.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Untuk keamanan maksimal, kami sarankan menggunakan layanan kami dengan enkripsi ujung ke ujung melalui OpenPGP.
 
 ### Apakah Anda memiliki sertifikasi SOC 2 atau ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email beroperasi pada infrastruktur yang disediakan oleh subprosesor bersertifikat untuk memastikan kepatuhan terhadap standar industri.
 
-Forward Email tidak secara langsung memiliki sertifikasi SOC 2 Tipe II atau ISO 27001. Namun, layanan ini beroperasi pada infrastruktur yang disediakan oleh subprosesor bersertifikat:
+Forward Email tidak secara langsung memiliki sertifikasi SOC 2 Tipe II atau ISO 27001. Namun, layanan ini beroperasi pada infrastruktur yang disediakan oleh subprosesor tersertifikasi:
 
 **DigitalOcean**: Bersertifikasi SOC 2 Tipe II dan SOC 3 Tipe II (diaudit oleh Schellman & Company LLC), bersertifikat ISO 27001 di beberapa pusat data. Detail: <https://www.digitalocean.com/trust/certification-reports>
 
@@ -2749,13 +2743,13 @@ Sumber: <https://forwardemail.net/technical-whitepaper.pdf#page=25>
 **Implementasi MTA-STS**: Forward Email menerapkan penerapan MTA-STS yang ketat dalam basis kode. Ketika terjadi kesalahan TLS dan MTA-STS diterapkan, sistem akan menampilkan 421 kode status SMTP untuk memastikan email dicoba lagi nanti, alih-alih terkirim secara tidak aman. Detail implementasi:
 
 * Deteksi kesalahan TLS: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-tls-error.js>
-* Penerapan MTA-STS dalam helper kirim-email: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
+* Penerapan MTA-STS di helper kirim email: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/send-email.js>
 
 Validasi pihak ketiga: <https://www.hardenize.com/report/forwardemail.net/1750312779> menunjukkan peringkat "Baik" untuk semua TLS dan tindakan keamanan transportasi.
 
 ### Apakah Anda menyimpan header autentikasi email {#do-you-preserve-email-authentication-headers}
 
-Ya. Forward Email secara komprehensif menerapkan dan memelihara header autentikasi email:
+Ya. Forward Email mengimplementasikan dan mempertahankan header autentikasi email secara komprehensif:
 
 * **SPF (Sender Policy Framework)**: Diimplementasikan dan dipertahankan dengan baik
 * **DKIM (DomainKeys Identified Mail)**: Dukungan penuh dengan manajemen kunci yang tepat
@@ -2769,7 +2763,7 @@ Validasi: Tes Email Internet.nl menunjukkan skor 100/100, khususnya untuk implem
 ### Apakah Anda mempertahankan header email asli dan mencegah spoofing {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email menerapkan perlindungan anti-spoofing yang canggih untuk mencegah penyalahgunaan email.
 
 Forward Email mempertahankan header email asli sambil menerapkan perlindungan anti-spoofing yang komprehensif melalui basis kode MX:
 
@@ -2807,14 +2801,14 @@ Sumber:
 ### Apakah Anda menyimpan konten email di disk {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email menggunakan arsitektur zero-knowledge yang mencegah konten email ditulis ke disk.
 
 * **Arsitektur Tanpa Pengetahuan**: Kotak surat SQLite yang dienkripsi secara individual berarti Forward Email tidak dapat mengakses konten email.
 * **Pemrosesan Dalam Memori**: Pemrosesan email sepenuhnya terjadi di memori, sehingga menghindari penyimpanan disk.
 * **Tanpa Pencatatan Konten**: "Kami tidak mencatat atau menyimpan konten email atau metadata ke disk."
 * **Enkripsi Sandbox**: Kunci enkripsi tidak pernah disimpan di disk dalam bentuk teks biasa.
 
-**Bukti Basis Kode MX**: Server MX memproses email sepenuhnya di dalam memori tanpa menulis konten ke disk. Handler pemrosesan email utama mendemonstrasikan pendekatan dalam memori ini: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
+**Bukti Basis Kode MX**: Server MX memproses email sepenuhnya di dalam memori tanpa menulis konten ke disk. Handler pemrosesan email utama mendemonstrasikan pendekatan di dalam memori ini: <https://github.com/forwardemail/forwardemail.net/blob/master/helpers/on-data-mx.js>
 
 Sumber:
 
@@ -2822,7 +2816,7 @@ Sumber:
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Detail tanpa pengetahuan)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Enkripsi sandbox)
 
-### Bisakah konten email terekspos saat sistem crash? {#can-email-content-be-exposed-during-system-crashes}
+### Bisakah konten email terekspos saat sistem mengalami crash {#can-email-content-be-exposed-during-system-crashes}
 
 Tidak. Forward Email menerapkan perlindungan komprehensif terhadap paparan data terkait kerusakan:
 
@@ -2861,18 +2855,18 @@ Sumber:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Kontrol Otorisasi)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Keamanan Jaringan)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Pencegahan Serangan Maid Jahat)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Pencegahan Serangan Pembantu Jahat)
 
 ### Penyedia infrastruktur apa yang Anda gunakan {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email menggunakan beberapa subprosesor infrastruktur dengan sertifikasi kepatuhan yang komprehensif.
 
-Rincian lengkap tersedia di halaman kepatuhan GDPR kami: <https://forwardemail.net/gdpr>
+Detail lengkap tersedia di halaman kepatuhan GDPR kami: <https://forwardemail.net/gdpr>
 
 **Subprosesor Infrastruktur Utama:**
 
-| Penyedia | Kerangka Privasi Data Bersertifikat | Halaman Kepatuhan GDPR |
+| Penyedia | Kerangka Kerja Privasi Data Tersertifikasi | Halaman Kepatuhan GDPR |
 | ---------------- | -------------------------------- | ----------------------------------------------- |
 | **Cloudflare** | ✅ Ya | <https://www.cloudflare.com/trust-hub/gdpr/> |
 | **Paket Data** | ❌ Tidak | <https://www.datapacket.com/kebijakan-privasi> |
@@ -2931,7 +2925,7 @@ Untuk pelanggan perusahaan yang memerlukan ketentuan DPA khusus atau pengaturan 
 ### Bagaimana Anda menangani notifikasi pelanggaran data {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Arsitektur zero-knowledge Forward Email secara signifikan membatasi dampak pelanggaran.
 
 * **Paparan Data Terbatas**: Tidak dapat mengakses konten email terenkripsi karena arsitektur zero-knowledge
 * **Pengumpulan Data Minimal**: Hanya informasi pelanggan dasar dan log IP terbatas untuk keamanan
@@ -2961,7 +2955,7 @@ Sumber:
 
 ### Apakah Anda menawarkan lingkungan pengujian {#do-you-offer-a-test-environment}
 
-Dokumentasi teknis Forward Email tidak secara eksplisit menjelaskan mode sandbox khusus. Namun, pendekatan pengujian yang potensial meliputi:
+Dokumentasi teknis Forward Email tidak secara eksplisit menjelaskan mode sandbox khusus. Namun, beberapa pendekatan pengujian yang mungkin meliputi:
 
 **Opsi Hosting Mandiri**: Kemampuan hosting mandiri yang komprehensif untuk menciptakan lingkungan pengujian
 * **Antarmuka API**: Potensi untuk pengujian konfigurasi secara terprogram
@@ -2997,7 +2991,7 @@ Sumber:
 ### Bagaimana Anda memastikan ketersediaan tinggi {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email menerapkan redundansi komprehensif di berbagai penyedia infrastruktur.
 
 * **Infrastruktur Terdistribusi**: Beberapa penyedia (DigitalOcean, Vultr, DataPacket) di seluruh wilayah geografis
 * **Penyeimbangan Beban Geografis**: Penyeimbangan beban berbasis lokasi geografis Cloudflare dengan failover otomatis
@@ -3007,7 +3001,7 @@ Sumber:
 * **Replikasi Basis Data**: Sinkronisasi data real-time di berbagai lokasi
 * **Pemantauan dan Pemberitahuan**: Pemantauan 24/7 dengan respons insiden otomatis
 
-**Komitmen Uptime**: Ketersediaan layanan 99,9%+ dengan pemantauan transparan tersedia di <https://forwardemail.net>
+**Komitmen Waktu Aktif**: Ketersediaan layanan 99,9%+ dengan pemantauan transparan tersedia di <https://forwardemail.net>
 
 Sumber:
 
@@ -3017,13 +3011,13 @@ Sumber:
 ### Apakah Anda mematuhi Bagian 889 dari Undang-Undang Otorisasi Pertahanan Nasional (NDAA) {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email sepenuhnya mematuhi Bagian 889 melalui pemilihan mitra infrastruktur yang cermat.
 
 Ya, Forward Email **mematuhi Pasal 889**. Pasal 889 Undang-Undang Otorisasi Pertahanan Nasional (NDAA) melarang instansi pemerintah menggunakan atau berkontrak dengan entitas yang menggunakan peralatan telekomunikasi dan pengawasan video dari perusahaan tertentu (Huawei, ZTE, Hikvision, Dahua, dan Hytera).
 
 **Bagaimana Email Terusan Mencapai Kepatuhan Bagian 889:**
 
-Forward Email bergantung secara eksklusif pada dua penyedia infrastruktur utama, yang mana keduanya tidak menggunakan peralatan yang dilarang oleh Bagian 889:
+Forward Email bergantung secara eksklusif pada dua penyedia infrastruktur utama, yang keduanya tidak menggunakan peralatan yang dilarang Bagian 889:
 
 1. **Cloudflare**: Mitra utama kami untuk layanan jaringan dan keamanan email
 2. **DataPacket**: Penyedia utama kami untuk infrastruktur server (hanya menggunakan peralatan Arista Networks dan Cisco)
@@ -3033,9 +3027,9 @@ Forward Email bergantung secara eksklusif pada dua penyedia infrastruktur utama,
 
 **Kasus Penggunaan Pemerintah**: Kepatuhan Bagian 889 kami divalidasi ketika **Akademi Angkatan Laut AS** memilih Forward Email untuk kebutuhan penerusan email aman mereka, yang memerlukan dokumentasi standar kepatuhan federal kami.
 
-Untuk detail lengkap tentang kerangka kepatuhan pemerintah kami, termasuk peraturan federal yang lebih luas, baca studi kasus komprehensif kami: [Layanan Email Pemerintah Federal Sesuai dengan Bagian 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+Untuk detail lengkap tentang kerangka kepatuhan pemerintah kami, termasuk peraturan federal yang lebih luas, baca studi kasus komprehensif kami: [Layanan Email Pemerintah Federal Sesuai Bagian 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
-## Detail Sistem dan Teknis {#system-and-technical-details}
+## Sistem dan Detail Teknis {#system-and-technical-details}
 
 ### Apakah Anda menyimpan email dan isinya {#do-you-store-emails-and-their-contents}
 
@@ -3047,13 +3041,13 @@ Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://git
 
 Email bergantung pada [Protokol SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Protokol ini terdiri dari perintah-perintah yang dikirim ke server (umumnya berjalan di port 25). Ada koneksi awal, lalu pengirim menunjukkan asal email ("MAIL FROM"), diikuti dengan tujuan ("RCPT TO"), dan terakhir header dan isi email itu sendiri ("DATA"). Alur sistem penerusan email kami dijelaskan relatif terhadap setiap perintah protokol SMTP di bawah ini:
 
-* Koneksi Awal (tanpa nama perintah, misalnya `telnet example.com 25`) - Ini adalah koneksi awal. Kami memeriksa pengirim yang tidak ada dalam [daftar putih](#do-you-have-an-allowlist) kami dengan [daftar penolakan](#do-you-have-a-denylist) kami. Terakhir, jika pengirim tidak ada dalam daftar putih kami, kami akan memeriksa apakah mereka telah [masuk daftar abu-abu](#do-you-have-a-greylist).
+* Koneksi Awal (tanpa nama perintah, misalnya `telnet example.com 25`) - Ini adalah koneksi awal. Kami memeriksa pengirim yang tidak ada di [daftar putih](#do-you-have-an-allowlist) dengan [daftar penolakan](#do-you-have-a-denylist). Terakhir, jika pengirim tidak ada dalam daftar putih kami, kami akan memeriksa apakah mereka ada di [masuk daftar abu-abu](#do-you-have-a-greylist).
 
 * `HELO` - Ini menunjukkan salam untuk mengidentifikasi FQDN, alamat IP, atau nama pengelola email pengirim. Nilai ini dapat dipalsukan, jadi kami tidak mengandalkan data ini dan sebagai gantinya menggunakan pencarian nama host terbalik dari alamat IP koneksi.
 
-* `MAIL FROM` - Ini menunjukkan alamat asal surat dari email. Jika ada nilai yang dimasukkan, alamat tersebut harus merupakan alamat email RFC 5322 yang valid. Nilai kosong diperbolehkan. Kami menggunakan [periksa hamburan balik](#how-do-you-protect-against-backscatter) di sini, dan kami juga memeriksa MAIL FROM dengan [daftar penolakan](#do-you-have-a-denylist) kami. Terakhir, kami memeriksa pengirim yang tidak ada dalam daftar yang diizinkan untuk pembatasan tarif (lihat bagian [Pembatasan Kecepatan](#do-you-have-rate-limiting) dan [daftar putih](#do-you-have-an-allowlist) untuk informasi selengkapnya).
+* `MAIL FROM` - Ini menunjukkan alamat asal surat dari email. Jika ada nilai yang dimasukkan, alamat tersebut harus merupakan alamat email RFC 5322 yang valid. Nilai kosong diperbolehkan. Kami menggunakan [periksa hamburan balik](#how-do-you-protect-against-backscatter) di sini, dan kami juga memeriksa MAIL FROM dengan [daftar penolakan](#do-you-have-a-denylist). Terakhir, kami memeriksa pengirim yang tidak ada dalam daftar yang diizinkan untuk pembatasan tarif (lihat bagian [Pembatasan Kecepatan](#do-you-have-rate-limiting) dan [daftar putih](#do-you-have-an-allowlist) untuk informasi selengkapnya).
 
-* `RCPT TO` - Ini menunjukkan penerima email. Alamat email ini harus valid sesuai RFC 5322. Kami hanya mengizinkan maksimal 50 penerima amplop per pesan (ini berbeda dengan header "Kepada" pada email). Kami juga memeriksa alamat [Skema Penulisan Ulang Pengirim](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") yang valid di sini untuk melindungi dari spoofing dengan nama domain SRS kami.
+* `RCPT TO` - Ini menunjukkan penerima email. Alamat email ini harus valid sesuai RFC 5322. Kami hanya mengizinkan maksimal 50 penerima amplop per pesan (ini berbeda dengan header "Kepada" pada email). Kami juga memeriksa alamat [Skema Penulisan Ulang Pengirim](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") yang valid di sini untuk mencegah pemalsuan nama domain SRS kami.
 
 * `DATA` - Ini adalah bagian inti dari layanan kami yang memproses email. Lihat bagian [Bagaimana Anda memproses email untuk diteruskan?](#how-do-you-process-an-email-for-forwarding) di bawah untuk informasi lebih lanjut.
 
@@ -3081,33 +3075,33 @@ Bagian ini menguraikan proses kami yang terkait dengan perintah protokol SMTP `D
 * Ini ditambahkan per penerima pada saat penerusan IMAP dan/atau tersamar (untuk melindungi privasi).
 * `X-Forward-Email-Website` - berisi tautan ke situs web kami <https://forwardemail.net>
 * `X-Forward-Email-Version` - versi [SemVer](https://semver.org/) saat ini dari `package.json` basis kode kami.
-* `X-Forward-Email-Session-ID` - nilai ID sesi yang digunakan untuk tujuan debug (hanya berlaku di lingkungan non-produksi).
-* `X-Forward-Email-Sender` - daftar yang dipisahkan koma berisi alamat MAIL FROM amplop asli (jika tidak kosong), FQDN klien PTR terbalik (jika ada), dan alamat IP pengirim.
+* `X-Forward-Email-Session-ID` - nilai ID sesi yang digunakan untuk tujuan debug (hanya berlaku di lingkungan non-produksi). * `X-Forward-Email-Sender` - daftar yang dipisahkan koma berisi alamat MAIL FROM amplop asli (jika tidak kosong), FQDN klien PTR terbalik (jika ada), dan alamat IP pengirim.
 * `X-Forward-Email-ID` - ini hanya berlaku untuk SMTP keluar dan berkorelasi dengan ID email yang tersimpan di Akun Saya → Email
-* `X-Report-Abuse` - dengan nilai `abuse@forwardemail.net`.
-* `X-Report-Abuse-To` - dengan nilai `abuse@forwardemail.net`.
-* `X-Complaints-To` - dengan nilai `abuse@forwardemail.net`.
+* `X-Original-To`0 - dengan nilai `X-Original-To`1.
+* `X-Original-To`2 - dengan nilai `X-Original-To`3.
+* `X-Original-To`4 - dengan nilai `X-Original-To`5.
 
-8. Kami kemudian memeriksa pesan untuk [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), dan [DMARC](https://en.wikipedia.org/wiki/DMARC).
+8. Kemudian kami memeriksa pesan untuk [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain), dan [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* Jika pesan gagal melewati DMARC dan domain memiliki kebijakan penolakan (misalnya `p=reject` [ada dalam kebijakan DMARC](https://wikipedia.org/wiki/DMARC)), maka pesan akan ditolak dengan kode kesalahan 550. Biasanya, kebijakan DMARC untuk domain dapat ditemukan dalam rekaman <strong class="notranslate">TXT</strong> subdomain `_dmarc` (misalnya `dig _dmarc.example.com txt`).
-* Jika pesan gagal melewati SPF dan domain memiliki kebijakan gagal keras (misalnya `-all` ada dalam kebijakan SPF, bukan `~all` atau tidak ada kebijakan sama sekali), maka pesan akan ditolak dengan kode kesalahan 550. Biasanya, kebijakan SPF untuk suatu domain dapat ditemukan dalam rekaman <strong class="notranslate">TXT</strong> untuk domain root (misalnya `dig example.com txt`). Lihat bagian ini untuk informasi lebih lanjut tentang [mengirim email seperti dengan Gmail](#can-i-send-mail-as-in-gmail-with-this) terkait SPF.
+* Jika pesan gagal DMARC dan domain memiliki kebijakan penolakan (misalnya `p=reject` [ada dalam kebijakan DMARC](https://wikipedia.org/wiki/DMARC)), maka pesan akan ditolak dengan kode galat 550. Biasanya, kebijakan DMARC untuk domain dapat ditemukan dalam rekaman <strong class="notranslate">TXT</strong> subdomain `_dmarc` (misalnya `dig _dmarc.example.com txt`).
+* Jika pesan gagal SPF dan domain memiliki kebijakan gagal keras (misalnya `-all` ada dalam kebijakan SPF, bukan `~all` atau tidak ada kebijakan sama sekali), maka pesan akan ditolak dengan kode galat 550. Biasanya, kebijakan SPF untuk domain dapat ditemukan dalam rekaman <strong class="notranslate">TXT</strong> untuk domain root (misalnya `dig example.com txt`). Lihat bagian ini untuk informasi lebih lanjut tentang [mengirim email seperti dengan Gmail](#can-i-send-mail-as-in-gmail-with-this) mengenai SPF.
 
 9. Sekarang, kami memproses penerima pesan yang dikumpulkan dari perintah `RCPT TO` di bagian [Bagaimana cara kerja sistem penerusan email Anda?](#how-does-your-email-forwarding-system-work) di atas. Untuk setiap penerima, kami melakukan operasi berikut:
 
-* Kami mencari data <strong class="notranslate">TXT</strong> dari nama domain (bagian setelah simbol `@`, misalnya `example.com` jika alamat emailnya adalah `test@example.com`). Misalnya, jika domainnya adalah `example.com`, kami melakukan pencarian DNS seperti `dig example.com txt`.
-* Kami mengurai semua data <strong class="notranslate">TXT</strong> yang dimulai dengan `forward-email=` (paket gratis) atau `forward-email-site-verification=` (paket berbayar). Perlu diketahui bahwa kami mengurai keduanya untuk memproses email saat pengguna meningkatkan atau menurunkan paket. * Dari rekaman <strong class="notranslate">TXT</strong> yang telah diurai ini, kami mengulanginya untuk mengekstrak konfigurasi penerusan (seperti yang dijelaskan di bagian [Bagaimana cara memulai dan mengatur penerusan email?](#how-do-i-get-started-and-set-up-email-forwarding) di atas). Perhatikan bahwa kami hanya mendukung satu nilai `forward-email-site-verification=`, dan jika lebih dari satu diberikan, maka akan terjadi kesalahan 550 dan pengirim akan menerima pantulan untuk penerima ini.
-* Secara rekursif, kami mengulangi konfigurasi penerusan yang telah diekstrak untuk menentukan penerusan global, penerusan berbasis regex, dan semua konfigurasi penerusan lain yang didukung – yang sekarang dikenal sebagai "Alamat Penerusan" kami.
-* Untuk setiap Alamat Penerusan, kami mendukung satu pencarian rekursif (yang akan memulai rangkaian operasi ini pada alamat yang diberikan). Jika kecocokan rekursif ditemukan, maka hasil induk akan dihapus dari Alamat Penerusan, dan turunannya akan ditambahkan. * Alamat Penerusan diurai untuk keunikannya (karena kami tidak ingin mengirim duplikat ke satu alamat atau memunculkan koneksi klien SMTP yang tidak perlu).
-* Untuk setiap Alamat Penerusan, kami mencari nama domainnya di titik akhir API kami `/v1/max-forwarded-addresses` (untuk menentukan berapa banyak alamat yang diizinkan untuk meneruskan email per alias oleh domain tersebut, misalnya 10 secara default – lihat bagian tentang [batas maksimum penerusan per alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Jika batas ini terlampaui, maka akan terjadi kesalahan 550 dan pengirim akan menerima pesan pantulan untuk penerima ini.
-* Kami mencari pengaturan penerima asli di titik akhir API kami `/v1/settings`, yang mendukung pencarian untuk pengguna berbayar (dengan fallback untuk pengguna gratis). Ini mengembalikan objek konfigurasi untuk pengaturan lanjutan untuk `port` (Angka, misalnya `25`), `has_adult_content_protection` (Boolean), `has_phishing_protection` (Boolean), `has_executable_protection` (Boolean), dan `has_virus_protection` (Boolean).
-* Berdasarkan pengaturan ini, kami kemudian memeriksa hasil Pemindai Spam dan jika terjadi kesalahan, maka pesan akan ditolak dengan kode kesalahan 554 (misalnya, jika `has_virus_protection` diaktifkan, maka kami akan memeriksa hasil Pemindai Spam untuk virus). Perlu diketahui bahwa semua pengguna paket gratis akan diikutsertakan dalam pemeriksaan konten dewasa, phishing, file yang dapat dieksekusi, dan virus. Secara default, semua pengguna paket berbayar juga telah diikutsertakan, tetapi konfigurasi ini dapat diubah di halaman Pengaturan untuk domain di dasbor Teruskan Email.
+* Kami mencari data <strong class="notranslate">TXT</strong> dari nama domain (bagian setelah simbol `@`, misalnya `example.com` jika alamat emailnya `test@example.com`). Misalnya, jika domainnya `example.com`, kami melakukan pencarian DNS seperti `dig example.com txt`.
+* Kami mengurai semua data <strong class="notranslate">TXT</strong> yang dimulai dengan `forward-email=` (paket gratis) atau `forward-email-site-verification=` (paket berbayar). Perlu diketahui bahwa kami mengurai keduanya untuk memproses email saat pengguna meningkatkan atau menurunkan paket.
+* Dari data <strong class="notranslate">TXT</strong> yang telah diurai ini, kami mengulanginya untuk mengekstrak konfigurasi penerusan (seperti yang dijelaskan di bagian [Bagaimana cara memulai dan mengatur penerusan email?](#how-do-i-get-started-and-set-up-email-forwarding) di atas). Perlu diketahui bahwa kami hanya mendukung satu nilai `forward-email-site-verification=`, dan jika lebih dari satu nilai diberikan, maka akan terjadi kesalahan 550 dan pengirim akan menerima pantulan untuk penerima ini.
+* Secara rekursif, kami mengulangi konfigurasi penerusan yang diekstrak untuk menentukan penerusan global, penerusan berbasis regex, dan semua konfigurasi penerusan lain yang didukung – yang sekarang dikenal sebagai "Alamat Penerusan" kami.
+* Untuk setiap Alamat Penerusan, kami mendukung satu pencarian rekursif (yang akan memulai rangkaian operasi ini pada alamat yang diberikan). Jika kecocokan rekursif ditemukan, maka hasil induk akan dihapus dari Alamat Penerusan, dan turunannya akan ditambahkan.
+* Alamat Penerusan diurai untuk keunikan (karena kami tidak ingin mengirim duplikat ke satu alamat atau memunculkan koneksi klien SMTP yang tidak perlu). * Untuk setiap Alamat Penerusan, kami mencari nama domainnya di titik akhir API `/v1/max-forwarded-addresses` (untuk menentukan berapa banyak alamat yang diizinkan untuk meneruskan email per alias oleh domain tersebut, misalnya 10 secara default – lihat bagian `example.com`0). Jika batas ini terlampaui, maka akan terjadi kesalahan 550 dan pengirim akan menerima pesan pantulan untuk penerima ini.
+* Kami mencari pengaturan penerima asli di titik akhir API `example.com`1, yang mendukung pencarian untuk pengguna berbayar (dengan fallback untuk pengguna gratis). Ini mengembalikan objek konfigurasi untuk pengaturan lanjutan untuk `example.com`2 (Angka, misalnya `example.com`3), `example.com`4 (Boolean), `example.com`5 (Boolean), `example.com`6 (Boolean), dan `example.com`7 (Boolean).
+* Berdasarkan pengaturan ini, kami kemudian memeriksa hasil Pemindai Spam dan jika terjadi kesalahan, pesan akan ditolak dengan kode kesalahan 554 (misalnya, jika `example.com`8 diaktifkan, kami akan memeriksa hasil Pemindai Spam untuk virus). Perlu diketahui bahwa semua pengguna paket gratis akan diikutsertakan dalam pemeriksaan konten dewasa, phishing, file yang dapat dieksekusi, dan virus. Secara default, semua pengguna paket berbayar juga diikutsertakan, tetapi konfigurasi ini dapat diubah di halaman Pengaturan untuk domain di dasbor Teruskan Email).
 
 10. Untuk setiap Alamat Penerusan penerima yang diproses, kami kemudian melakukan operasi berikut:
 
-* Alamat tersebut diperiksa berdasarkan [daftar penolakan](#do-you-have-a-denylist) kami, dan jika tercantum, maka kode kesalahan 421 akan muncul (menginstruksikan pengirim untuk mencoba lagi nanti).
-* Jika alamat tersebut adalah webhook, maka kami menetapkan nilai Boolean untuk operasi selanjutnya (lihat di bawah – kami mengelompokkan webhook serupa untuk membuat satu permintaan POST vs. beberapa untuk pengiriman).
-* Jika alamat tersebut adalah alamat email, maka kami mengurai host untuk operasi selanjutnya (lihat di bawah – kami mengelompokkan host serupa untuk membuat satu koneksi vs. beberapa koneksi individual untuk pengiriman).
+* Alamat diperiksa berdasarkan [daftar penolakan](#do-you-have-a-denylist) kami, dan jika tercantum, kode kesalahan 421 akan muncul (mengindikasikan pengirim untuk mencoba lagi nanti).
+* Jika alamatnya adalah webhook, maka kami menetapkan nilai Boolean untuk operasi selanjutnya (lihat di bawah – kami mengelompokkan webhook serupa untuk membuat satu permintaan POST vs. beberapa untuk pengiriman).
+* Jika alamatnya adalah alamat email, maka kami mengurai host untuk operasi selanjutnya (lihat di bawah – kami mengelompokkan host serupa untuk membuat satu koneksi vs. beberapa koneksi individual untuk pengiriman).
 
 11. Jika tidak ada penerima dan tidak ada pantulan, maka kami akan merespons dengan kesalahan 550 "Penerima tidak valid".
 
@@ -3124,17 +3118,17 @@ Bagian ini menguraikan proses kami yang terkait dengan perintah protokol SMTP `D
 
 ### Bagaimana Anda menangani masalah pengiriman email {#how-do-you-handle-email-delivery-issues}
 
-Perhatikan bahwa kami akan melakukan penulisan ulang "Friendly-From" pada email jika dan hanya jika kebijakan DMARC pengirim tidak lolos DAN tidak ada tanda tangan DKIM yang selaras dengan header "From". Ini berarti bahwa kami akan mengubah header "From" pada pesan, menetapkan "X-Original-From", dan juga menetapkan "Reply-To" jika belum ditetapkan. Kami juga akan menyegel ulang segel ARC pada pesan setelah mengubah header ini.
+Perlu diketahui bahwa kami akan melakukan penulisan ulang "Friendly-From" pada email jika dan hanya jika kebijakan DMARC pengirim tidak lolos DAN tidak ada tanda tangan DKIM yang selaras dengan header "From". Ini berarti kami akan mengubah header "From" pada pesan, menetapkan "X-Original-From", dan juga menetapkan "Reply-To" jika belum ditetapkan. Kami juga akan menyegel ulang segel ARC pada pesan setelah mengubah header ini.
 
 Kami juga menggunakan penguraian cerdas pesan kesalahan di setiap tingkat tumpukan kami – dalam kode kami, permintaan DNS, internal Node.js, permintaan HTTP (misalnya 408, 413, dan 429 dipetakan ke kode respons SMTP 421 jika penerima adalah webhook), dan respons server email (misalnya respons dengan "defer" atau "slowdown" akan dicoba lagi sebagai kesalahan 421).
 
 Logika kami anti-dummy dan akan mencoba lagi untuk kesalahan SSL/TLS, masalah koneksi, dan lainnya. Tujuan dari pembuktian dummy adalah untuk memaksimalkan pengiriman ke semua penerima untuk konfigurasi penerusan.
 
-Jika penerima adalah webhook, kami akan memberikan batas waktu 60 detik agar permintaan selesai dengan maksimal 3 kali percobaan ulang (total 4 permintaan sebelum gagal). Perhatikan bahwa kami mengurai kode kesalahan 408, 413, dan 429 dengan benar dan memetakannya ke kode respons SMTP 421.
+Jika penerimanya adalah webhook, kami akan memberikan batas waktu 60 detik agar permintaan selesai dengan maksimal 3 kali percobaan ulang (total 4 permintaan sebelum gagal). Perhatikan bahwa kami mengurai kode kesalahan 408, 413, dan 429 dengan benar dan memetakannya ke kode respons SMTP 421.
 
 Jika penerima adalah alamat email, kami akan mencoba mengirim email dengan TLS oportunistik (kami akan mencoba menggunakan STARTTLS jika tersedia di server email penerima). Jika terjadi kesalahan SSL/TLS saat mencoba mengirim email, kami akan mencoba mengirim email tanpa TLS (tanpa menggunakan STARTTLS).
 
-Jika terjadi kesalahan DNS atau koneksi, maka kami akan kembali ke perintah `DATA` kode respons SMTP 421, sebaliknya jika terjadi kesalahan level >= 500, maka pantulan akan dikirim.
+Jika terjadi kesalahan DNS atau koneksi, maka kami akan mengembalikan kode respons SMTP 421 ke perintah `DATA`. Sebaliknya, jika terjadi kesalahan level >= 500, maka pantulan akan dikirim.
 
 Jika kami mendeteksi bahwa server email yang kami coba kirimi memiliki satu atau beberapa alamat IP pertukaran email yang diblokir (misalnya dengan teknologi apa pun yang mereka gunakan untuk menangguhkan pengirim spam), maka kami akan mengirimkan kode respons SMTP 421 bagi pengirim untuk mencoba lagi pesannya nanti (dan kami akan diberitahu tentang masalah tersebut sehingga kami berharap dapat mengatasinya sebelum percobaan berikutnya).
 
@@ -3167,7 +3161,7 @@ Untuk mencegah pantulan yang salah arah dan pengiriman pesan balasan liburan ke 
 * `mailerdaemon`
 * `majordomo`
 * `postmaster`
-* [dan alamat yang tidak ada balasannya](#what-are-no-reply-addresses)
+* [dan alamat yang tidak dibalas](#what-are-no-reply-addresses)
 
 Lihat [RFC 5320 Bagian 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6) untuk wawasan lebih lanjut tentang bagaimana daftar seperti ini digunakan untuk membuat sistem email yang efisien.
 
@@ -3194,11 +3188,11 @@ Nama pengguna email yang sama dengan salah satu dari berikut ini (tidak memperha
 * `noreply`
 * `noreplys`
 
-Daftar ini dipelihara [sebagai proyek sumber terbuka di GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
+Daftar ini dipertahankan pada [sebagai proyek sumber terbuka di GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
 ### Apa alamat IP server Anda {#what-are-your-servers-ip-addresses}
 
-Kami mempublikasikan alamat IP kami di <https://forwardemail.net/ips>.
+Kami menerbitkan alamat IP kami di <https://forwardemail.net/ips>.
 
 ### Apakah Anda memiliki daftar putih {#do-you-have-an-allowlist}
 
@@ -3890,10 +3884,9 @@ Kami memiliki daftar statis [ekstensi nama domain yang diizinkan secara default]
 
 * Domain root pengirim harus bertipe [ekstensi nama domain yang sesuai dengan daftar yang kami tawarkan pada paket gratis kami](#what-domain-name-extensions-can-be-used-for-free) (dengan tambahan `biz` dan `info`). Kami juga menyertakan kecocokan parsial `edu`, `gov`, dan `mil`, seperti `xyz.gov.au` dan `xyz.edu.au`.
 * Domain root pengirim harus berada dalam 100.000 hasil parsing domain root unik teratas dari [Daftar Popularitas Payung](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* Domain root pengirim harus berada dalam 50.000 hasil teratas dari domain root unik yang muncul setidaknya dalam 4 dari 7 hari terakhir UPL (~50%+).
-* Domain root pengirim tidak boleh [dikategorikan](https://radar.cloudflare.com/categorization-feedback/) sebagai konten dewasa atau malware oleh Cloudflare.
-* Domain root pengirim harus memiliki rekaman A atau MX yang ditetapkan.
-* Domain root pengirim harus memiliki rekaman A, rekaman MX, rekaman DMARC dengan `p=reject` atau `p=quarantine`, atau rekaman SPF dengan kualifikasi `-all` atau `~all`.
+* Domain root pengirim harus berada dalam 50.000 hasil parsing domain root unik teratas yang muncul setidaknya dalam 4 dari 7 hari terakhir UPL (~50%+).
+* Domain root pengirim tidak boleh bertipe [dikategorikan](https://radar.cloudflare.com/categorization-feedback/) sebagai konten dewasa atau malware oleh Cloudflare. * Domain root pengirim harus memiliki rekaman A atau MX yang ditetapkan.
+* Domain root pengirim harus memiliki rekaman A, rekaman MX, rekaman DMARC dengan kualifikasi `biz`0 atau `biz`1, atau rekaman SPF dengan kualifikasi `biz`2 atau `biz`3.
 
 Jika kriteria ini terpenuhi, domain root pengirim akan di-cache selama 7 hari. Harap dicatat bahwa pekerjaan otomatis kami berjalan setiap hari – oleh karena itu, ini adalah cache daftar putih bergulir yang diperbarui setiap hari.
 
@@ -3901,7 +3894,7 @@ Pekerjaan otomatis kami akan mengunduh UPL 7 hari sebelumnya dalam memori, menge
 
 Domain yang populer saat artikel ini ditulis seperti Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify, dan lainnya – tentu saja disertakan.
 
-Jika Anda bukan pengirim dalam daftar putih kami, saat pertama kali domain root FQDN atau alamat IP Anda mengirim email, Anda akan [tarif terbatas](#do-you-have-rate-limiting) dan [masuk daftar abu-abu](#do-you-have-a-greylist). Harap dicatat bahwa ini adalah praktik standar yang diadopsi sebagai standar email. Sebagian besar klien server email akan mencoba lagi jika menerima batas kecepatan atau kesalahan daftar abu-abu (misalnya, kode status kesalahan level 421 atau 4xx).
+Jika Anda bukan pengirim dalam daftar putih kami, saat pertama kali domain root FQDN atau alamat IP Anda mengirim email, Anda akan menjadi [tarif terbatas](#do-you-have-rate-limiting) dan [masuk daftar abu-abu](#do-you-have-a-greylist). Harap dicatat bahwa ini adalah praktik standar yang diadopsi sebagai standar email. Sebagian besar klien server email akan mencoba lagi jika menerima kesalahan batas kecepatan atau daftar abu-abu (misalnya, kode status kesalahan level 421 atau 4xx).
 
 **Perhatikan bahwa pengirim tertentu seperti `a@gmail.com`, `b@xyz.edu`, dan `c@gov.au` masih dapat menjadi [ditolak](#do-you-have-a-denylist)** (misalnya jika kami secara otomatis mendeteksi spam, phishing, atau malware dari pengirim tersebut).
 
@@ -4016,7 +4009,7 @@ Jika mereka berhasil menunggu selama 5 menit dari waktu kedatangan awal ini, mak
 
 Kuncinya terdiri dari domain root FQDN atau alamat IP pengirim. Ini berarti bahwa setiap subdomain yang lolos daftar abu-abu juga akan lolos sebagai domain root, dan sebaliknya (inilah yang kami maksud dengan kebijakan "sangat longgar").
 
-Misalnya, jika sebuah email datang dari `test.example.com` sebelum kami melihat email datang dari `example.com`, maka email apa pun dari `test.example.com` dan/atau `example.com` harus menunggu 5 menit dari waktu kedatangan awal koneksi. Kami tidak membuat `test.example.com` dan `example.com` masing-masing menunggu selama 5 menit (kebijakan daftar abu-abu kami berlaku di tingkat domain root).
+Misalnya, jika sebuah email datang dari `test.example.com` sebelum kami melihat email datang dari `example.com`, maka email apa pun dari `test.example.com` dan/atau `example.com` harus menunggu 5 menit dari waktu kedatangan awal koneksi. Kami tidak membuat `test.example.com` dan `example.com` menunggu masing-masing selama 5 menit (kebijakan daftar abu-abu kami berlaku di tingkat domain root).
 
 Perhatikan bahwa daftar abu-abu tidak berlaku untuk pengirim mana pun di [daftar putih](#do-you-have-an-allowlist) kami (misalnya Meta, Amazon, Netflix, Google, Microsoft pada saat penulisan ini).
 
@@ -4024,7 +4017,7 @@ Perhatikan bahwa daftar abu-abu tidak berlaku untuk pengirim mana pun di [daftar
 
 Ya, kami mengoperasikan daftar penolakan kami sendiri dan memperbaruinya secara otomatis dalam waktu nyata dan manual berdasarkan spam dan aktivitas berbahaya yang terdeteksi.
 
-Kami juga menarik semua alamat IP dari daftar tolak UCEPROTECT Level 1 di <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> setiap jam dan memasukkannya ke dalam daftar tolak kami dengan masa berlaku 7 hari.
+Kami juga menarik semua alamat IP dari daftar penolakan UCEPROTECT Level 1 di <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> setiap jam dan memasukkannya ke dalam daftar penolakan kami dengan masa berlaku 7 hari.
 
 Pengirim yang ditemukan dalam daftar tolak akan menerima kode kesalahan 421 (menunjukkan kepada pengirim untuk mencoba lagi nanti) jika mereka [tidak masuk daftar yang diizinkan](#do-you-have-an-allowlist).
 
@@ -4034,43 +4027,42 @@ Dengan menggunakan kode status 421 dan bukan kode status 554, potensi positif pa
 
 Semua permintaan penghapusan daftar tolak dipantau secara real-time oleh admin (misalnya agar positif palsu yang berulang dapat dimasukkan ke daftar putih secara permanen oleh admin).
 
-Permintaan penghapusan daftar penolakan dapat diajukan di <https://forwardemail.net/denylist>.. Pengguna berbayar akan langsung memproses permintaan penghapusan daftar penolakan mereka, sementara pengguna tidak berbayar harus menunggu admin memproses permintaan mereka.
+Permintaan penghapusan daftar tolak dapat diajukan di <https://forwardemail.net/denylist>. Pengguna berbayar akan langsung memproses permintaan penghapusan daftar tolak mereka, sedangkan pengguna tidak berbayar harus menunggu admin memproses permintaan mereka.
 
 Pengirim yang terdeteksi mengirim konten spam atau virus akan ditambahkan ke daftar tolak dengan pendekatan berikut:
 
-1. [sidik jari pesan awal](#how-do-you-determine-an-email-fingerprint) masuk daftar abu-abu setelah terdeteksi spam atau daftar blokir dari pengirim "tepercaya" (misalnya `gmail.com`, `microsoft.com`, `apple.com`).
-* Jika pengirim masuk daftar putih, pesan masuk daftar abu-abu selama 1 jam.
-* Jika pengirim tidak masuk daftar putih, pesan masuk daftar abu-abu selama 6 jam.
+1. [sidik jari pesan awal](#how-do-you-determine-an-email-fingerprint) masuk daftar abu-abu setelah mendeteksi spam atau daftar blokir dari pengirim "tepercaya" (misalnya `gmail.com`, `microsoft.com`, `apple.com`).
+* Jika pengirim masuk daftar putih, pesan akan masuk daftar abu-abu selama 1 jam.
+* Jika pengirim tidak masuk daftar putih, pesan akan masuk daftar abu-abu selama 6 jam.
 2. Kami mengurai kunci daftar putih dari informasi pengirim dan pesan, dan untuk setiap kunci ini kami membuat (jika belum ada) penghitung, menambahkannya 1, dan menyimpannya dalam cache selama 24 jam.
-* Untuk pengirim yang diizinkan:
-* Tambahkan kunci untuk alamat email amplop "MAIL FROM" jika memiliki SPF yang lulus atau tanpa SPF, dan bukan [nama pengguna kepala kantor pos](#what-are-postmaster-addresses) atau [nama pengguna tanpa balasan](#what-are-no-reply-addresses).
-* Jika header "From" diizinkan, tambahkan kunci untuk alamat email header "From" jika memiliki SPF yang lulus atau DKIM yang lulus dan selaras.
-* Jika header "From" tidak diizinkan, tambahkan kunci untuk alamat email header "From" dan nama domain root-nya yang telah diurai.
+* Untuk pengirim yang masuk daftar putih:
+* Tambahkan kunci untuk alamat email amplop "MAIL FROM" jika memiliki SPF yang lolos atau tidak memiliki SPF, dan bukan [nama pengguna postmaster](#what-are-postmaster-addresses) atau [nama pengguna tanpa balasan](#what-are-no-reply-addresses). * Jika header "Dari" diizinkan, tambahkan kunci untuk alamat email header "Dari" jika memiliki SPF yang lulus atau DKIM yang lulus dan selaras.
+* Jika header "Dari" tidak diizinkan, tambahkan kunci untuk alamat email header "Dari" dan nama domain root-nya yang telah diurai.
 * Untuk pengirim yang tidak diizinkan:
-* Tambahkan kunci untuk alamat email amplop "MAIL FROM" jika memiliki SPF yang lulus.
-* Jika header "From" diizinkan, tambahkan kunci untuk alamat email header "From" jika memiliki SPF yang lulus atau DKIM yang lulus dan selaras.
-* Jika header "Dari" tidak diizinkan, tambahkan kunci untuk alamat email header "Dari" dan nama domain root yang diurai.
+* Tambahkan kunci untuk alamat email amplop "KIRIM DARI" jika memiliki SPF yang lulus.
+* Jika header "Dari" diizinkan, tambahkan kunci untuk alamat email header "Dari" jika memiliki SPF yang lulus atau DKIM yang lulus dan selaras.
+* Jika header "Dari" tidak diizinkan, tambahkan kunci untuk alamat email header "Dari" dan nama domain root-nya yang telah diurai.
 * Tambahkan kunci untuk alamat IP jarak jauh pengirim.
-* Tambahkan kunci untuk nama host klien yang telah diselesaikan dengan pencarian terbalik dari alamat IP pengirim (jika ada).
-* Tambahkan kunci untuk domain root dari nama host klien yang telah diselesaikan (jika ada, dan jika berbeda dengan nama host klien yang telah diselesaikan).
-3. Jika angka penghitung mencapai 5 untuk pengirim dan kunci yang tidak diizinkan, maka kami akan memasukkan kunci ke dalam daftar penolakan selama 30 hari dan email akan dikirimkan ke tim penyalahgunaan kami. Angka-angka ini dapat berubah dan pembaruan akan ditampilkan di sini saat kami memantau penyalahgunaan.
-4. Jika angka penghitung mencapai 10 untuk pengirim dan kunci yang diizinkan, maka kami akan memasukkan kunci ke dalam daftar penolakan selama 7 hari dan email akan dikirimkan ke tim penyalahgunaan kami. Angka-angka ini dapat berubah dan pembaruan akan ditampilkan di sini saat kami memantau penyalahgunaan.
+* Tambahkan kunci untuk nama host yang diselesaikan klien dengan pencarian terbalik dari alamat IP pengirim (jika ada). * Tambahkan kunci untuk domain root dari nama host klien yang telah diselesaikan (jika ada, dan jika berbeda dengan nama host klien yang telah diselesaikan).
+3. Jika penghitung mencapai angka 5 untuk pengirim dan kunci yang tidak masuk daftar putih, kami akan memasukkan kunci tersebut ke dalam daftar hitam selama 30 hari dan mengirimkan email ke tim penyalahgunaan kami. Angka-angka ini dapat berubah dan pembaruan akan ditampilkan di sini saat kami memantau penyalahgunaan.
+4. Jika penghitung mencapai angka 10 untuk pengirim dan kunci yang masuk daftar putih, kami akan memasukkan kunci tersebut ke dalam daftar hitam selama 7 hari dan mengirimkan email ke tim penyalahgunaan kami. Angka-angka ini dapat berubah dan pembaruan akan ditampilkan di sini saat kami memantau penyalahgunaan.
 
 **CATATAN:** Dalam waktu dekat, kami akan memperkenalkan pemantauan reputasi. Pemantauan reputasi akan menghitung kapan harus memasukkan pengirim ke daftar penolakan berdasarkan ambang batas persentase (bukan penghitung dasar seperti yang disebutkan di atas).
 
 ### Apakah Anda memiliki pembatasan kecepatan {#do-you-have-rate-limiting}
 
-Pembatasan laju pengirim dilakukan melalui domain root yang diurai dari pencarian PTR terbalik pada alamat IP pengirim – atau jika tidak menghasilkan hasil, maka hanya menggunakan alamat IP pengirim. Perhatikan bahwa kami menyebutnya sebagai `Sender` di bawah ini.
+Pembatasan laju pengirim dilakukan oleh domain root yang diurai dari pencarian PTR terbalik pada alamat IP pengirim – atau jika tidak menghasilkan hasil, maka hanya menggunakan alamat IP pengirim. Perhatikan bahwa kami menyebutnya sebagai `Sender` di bawah.
 
 Server MX kami memiliki batasan harian untuk surat masuk yang diterima untuk [penyimpanan IMAP terenkripsi](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-* Alih-alih membatasi jumlah email masuk yang diterima berdasarkan alias individual (misalnya `you@yourdomain.com`) – kami membatasi jumlah email masuk berdasarkan nama domain alias itu sendiri (misalnya `yourdomain.com`). Hal ini mencegah `Senders` membanjiri kotak masuk semua alias di seluruh domain Anda sekaligus. * Kami memiliki batasan umum yang berlaku untuk semua `Senders` di seluruh layanan kami, terlepas dari penerimanya:
-* `Senders` yang kami anggap "tepercaya" sebagai sumber kebenaran (misalnya `gmail.com`, `microsoft.com`, `apple.com`) dibatasi pengirimannya hingga 100 GB per hari.
-* `Senders` yang merupakan [masuk daftar putih](#do-you-have-an-allowlist) dibatasi pengirimannya hingga 10 GB per hari.
-* Semua `Senders` lainnya dibatasi pengirimannya hingga 1 GB dan/atau 1000 pesan per hari.
-* Kami memiliki batasan khusus per `Sender` dan `yourdomain.com` sebesar 1 GB dan/atau 1000 pesan setiap hari.
+* Alih-alih membatasi laju email masuk yang diterima berdasarkan alias individual (misalnya `you@yourdomain.com`) – kami membatasi laju email berdasarkan nama domain alias itu sendiri (misalnya `yourdomain.com`). Hal ini mencegah `Senders` membanjiri kotak masuk semua alias di seluruh domain Anda sekaligus.
+* Kami memiliki batasan umum yang berlaku untuk semua `Senders` di seluruh layanan kami, terlepas dari penerimanya:
+* `Senders` yang kami anggap "tepercaya" sebagai sumber kebenaran (misalnya `gmail.com`, `microsoft.com`, `apple.com`) dibatasi hingga 100 GB per hari.
+* `Senders` yang merupakan [masuk daftar putih](#do-you-have-an-allowlist) dibatasi hingga 10 GB per hari.
+* Semua `yourdomain.com`0 lainnya dibatasi untuk mengirim 1 GB dan/atau 1000 pesan per hari.
+* Kami memiliki batas khusus per `yourdomain.com`1 dan `yourdomain.com`2 sebesar 1 GB dan/atau 1000 pesan per hari.
 
-Server MX juga membatasi pesan yang diteruskan ke satu atau lebih penerima melalui pembatasan kecepatan – tetapi ini hanya berlaku untuk `Senders` bukan pada [daftar putih](#do-you-have-an-allowlist):
+Server MX juga membatasi pesan yang diteruskan ke satu atau lebih penerima melalui pembatasan kecepatan – tetapi ini hanya berlaku untuk `Senders`, bukan [daftar putih](#do-you-have-an-allowlist):
 
 * Kami hanya mengizinkan hingga 100 koneksi per jam, per domain root FQDN `Sender` yang telah diselesaikan (atau) alamat IP jarak jauh `Sender` (jika tidak ada PTR terbalik yang tersedia), dan per penerima amplop. Kami menyimpan kunci untuk pembatasan laju sebagai hash kriptografi di basis data Redis kami.
 
@@ -4078,27 +4070,27 @@ Server MX juga membatasi pesan yang diteruskan ke satu atau lebih penerima melal
 
 * Perlu diketahui bahwa jika Anda mengirim melalui sistem populer seperti Amazon SES, maka Anda tidak akan dibatasi karena (pada saat penulisan ini) Amazon SES tercantum dalam daftar putih kami.
 
-* Jika Anda mengirim dari domain seperti `test.abc.123.example.com`, maka batas kecepatan akan diberlakukan pada `example.com`. Banyak pengirim spam menggunakan ratusan subdomain untuk mengakali filter spam umum yang hanya membatasi nama host unik, bukan domain root FQDN unik.
+* Jika Anda mengirim dari domain seperti `test.abc.123.example.com`, maka batas kecepatan akan diberlakukan pada `example.com`. Banyak spammer menggunakan ratusan subdomain untuk mengakali filter spam umum yang hanya membatasi kecepatan nama host unik, bukan domain root FQDN unik.
 
 * `Senders` yang melampaui batas kecepatan akan ditolak dengan kesalahan 421.
 
 Server IMAP dan SMTP kami membatasi alias Anda agar tidak memiliki lebih dari `60` koneksi bersamaan sekaligus.
 
-Server MX kami membatasi pengirim [tidak masuk daftar yang diizinkan](#do-you-have-an-allowlist) dari membuat lebih dari 10 koneksi bersamaan (dengan waktu kedaluwarsa cache 3 menit untuk penghitung, yang mencerminkan batas waktu soket kami selama 3 menit).
+Server MX kami membatasi pengirim [tidak masuk daftar yang diizinkan](#do-you-have-an-allowlist) dari membuat lebih dari 10 koneksi bersamaan (dengan kedaluwarsa cache 3 menit untuk penghitung, yang mencerminkan batas waktu soket kami selama 3 menit).
 
-### Bagaimana Anda melindungi dari backscatter {#how-do-you-protect-against-backscatter}
+### Bagaimana Anda melindungi dari hamburan balik {#how-do-you-protect-against-backscatter}
 
 Pantulan yang salah arah atau spam pantulan (dikenal sebagai "[Hamburan balik](https://en.wikipedia.org/wiki/Backscatter_\(email\))") dapat menyebabkan reputasi negatif pada alamat IP pengirim.
 
 Kami mengambil dua langkah untuk melindungi terhadap backscatter, yang dirinci dalam bagian berikut [Cegah pantulan dari pengirim MAIL FROM yang diketahui](#prevent-bounces-from-known-mail-from-spammers) dan [Cegah pantulan yang tidak perlu untuk melindungi dari hamburan balik](#prevent-unnecessary-bounces-to-protect-against-backscatter) di bawah.
 
-### Mencegah pantulan dari EMAIL yang diketahui DARI spammer {#prevent-bounces-from-known-mail-from-spammers}
+### Cegah pantulan dari pengirim spam MAIL FROM yang diketahui {#prevent-bounces-from-known-mail-from-spammers}
 
 Kami menarik daftar dari [Backscatter.org](https://www.backscatterer.org/) (didukung oleh [UCEPROTECT](https://www.uceprotect.net/)) pada <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> setiap jam dan memasukkannya ke dalam basis data Redis kami (kami juga membandingkan perbedaannya terlebih dahulu; apabila ada IP yang dihapus yang perlu dihormati).
 
-Jika MAIL FROM kosong ATAU sama dengan (tanpa memperhatikan huruf besar/kecil) salah satu dari [alamat kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email), maka kami memeriksa untuk melihat apakah IP pengirim cocok dengan salah satu dari daftar ini.
+Jika MAIL FROM kosong ATAU sama dengan (tanpa memperhatikan huruf besar/kecil) salah satu [alamat kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email), maka kami memeriksa apakah IP pengirim cocok dengan salah satu dari daftar ini.
 
-Jika IP pengirim tercantum (dan tidak ada dalam [daftar putih](#do-you-have-an-allowlist) kami), maka kami akan mengirimkan pesan kesalahan 554 dengan pesan `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Kami akan diberi tahu jika pengirim ada dalam daftar Backscatterer dan daftar putih kami sehingga kami dapat menyelesaikan masalah tersebut jika diperlukan.
+Jika IP pengirim tercantum (dan tidak ada di [daftar putih](#do-you-have-an-allowlist) kami), maka kami akan mengirimkan pesan kesalahan 554 dengan `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Kami akan diberi tahu jika pengirim ada di daftar Backscatterer dan daftar putih kami sehingga kami dapat menyelesaikan masalah tersebut jika diperlukan.
 
 Teknik yang dijelaskan di bagian ini mematuhi rekomendasi "SAFE MODE" di <https://www.backscatterer.org/?target=usage> – di mana kami hanya memeriksa IP pengirim jika kondisi tertentu telah terpenuhi.
 
@@ -4110,15 +4102,16 @@ Salah satu alasan umum mengapa situs Anda masuk dalam daftar Backscatterer adala
 
 1. Kami hanya mengirim bila terjadi kesalahan kode status >= 500 (bila email yang dicoba diteruskan gagal, misalnya Gmail merespons dengan kesalahan level 500).
 
-2. Kami hanya mengirim sekali dan sekali saja (kami menggunakan kunci sidik jari pantulan yang telah dihitung dan menyimpannya dalam cache untuk mencegah pengiriman duplikat). Sidik jari pantulan adalah kunci yang merupakan gabungan sidik jari pesan dengan hash alamat pantulan dan kode kesalahannya. Lihat bagian [Sidik jari](#how-do-you-determine-an-email-fingerprint) untuk informasi lebih lanjut tentang cara penghitungan sidik jari pesan. Sidik jari pantulan yang berhasil dikirim akan kedaluwarsa setelah 7 hari di cache Redis kami.
+2. Kami hanya mengirim sekali dan sekali saja (kami menggunakan kunci sidik jari pantulan yang telah dihitung dan menyimpannya dalam cache untuk mencegah pengiriman duplikat). Sidik jari pantulan adalah kunci yang merupakan sidik jari pesan yang digabungkan dengan hash alamat pantulan dan kode kesalahannya. Lihat bagian [Sidik jari](#how-do-you-determine-an-email-fingerprint) untuk informasi lebih lanjut tentang cara penghitungan sidik jari pesan. Sidik jari pantulan yang berhasil dikirim akan kedaluwarsa setelah 7 hari di cache Redis kami.
 
-3. Kami hanya mengirim apabila MAIL FROM dan/atau From tidak kosong dan tidak mengandung (tanpa memperhatikan huruf besar/kecil) [nama pengguna kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email).
+3. Kami hanya mengirim bila MAIL FROM dan/atau From tidak kosong dan tidak berisi (tanpa memperhatikan huruf besar/kecil) [nama pengguna kepala kantor pos](#what-are-postmaster-addresses) (bagian sebelum @ dalam email).
 
 4. Kami tidak mengirim jika pesan asli memiliki salah satu tajuk berikut (tidak peka huruf besar-kecil):
 
-* Header `auto-submitted` dengan nilai yang tidak sama dengan `no`. * Header dari `x-auto-response-suppress` dengan nilai `dr`, `autoreply`, `auto-reply`, `auto_reply`, atau `all`
-* Header dari `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond`, atau `x-auto-respond` (tanpa memandang nilai).
-* Header dari `precedence` dengan nilai `bulk`, `autoreply`, `auto-reply`, `auto_reply`, atau `list`.
+* Header `auto-submitted` dengan nilai yang tidak sama dengan `no`.
+* Header `x-auto-response-suppress` dengan nilai `dr`, `autoreply`, `auto-reply`, `auto_reply`, atau `all`
+* Header `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6, atau `no`7 (terlepas dari nilainya).
+* Header `no`8 dengan nilai `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2, atau `x-auto-response-suppress`3.
 
 5. Kami tidak mengirim jika alamat email MAIL FROM atau From diakhiri dengan `+donotreply`, `-donotreply`, `+noreply`, atau `-noreply`.
 
@@ -4139,7 +4132,7 @@ Sidik jari dihitung dari daftar berikut:
 * Nilai header `To` (jika ada)
 * Nilai header `Cc` (jika ada)
 * Nilai header `Subject` (jika ada)
-* Nilai header `Body` (jika ada)
+* Nilai `Body` (jika ada)
 
 ### Dapatkah saya meneruskan email ke port selain 25 (misalnya jika ISP saya memblokir port 25) {#can-i-forward-emails-to-ports-other-than-25-eg-if-my-isp-has-blocked-port-25}
 
@@ -4211,7 +4204,7 @@ Skenario paling umum untuk pengaturan penerusan porta khusus adalah ketika Anda 
 
 Ya, tentu saja.
 
-### Apakah mendukung subdomain {#does-it-support-sub-domains}
+### Apakah ini mendukung subdomain {#does-it-support-sub-domains}
 
 Ya, tentu saja. Alih-alih menggunakan "@", ".", atau kosong sebagai nama/host/alias, Anda cukup menggunakan nama subdomain sebagai nilainya.
 
@@ -4227,11 +4220,11 @@ Ya, ia memiliki pengujian yang ditulis dengan [tersedia](https://github.com/avaj
 
 ### Apakah Anda meneruskan pesan dan kode respons SMTP {#do-you-pass-along-smtp-response-messages-and-codes}
 
-Ya, tentu saja. Misalnya, jika Anda mengirim email ke `hello@example.com` dan terdaftar untuk diteruskan ke `user@gmail.com`, maka pesan respons SMTP dan kode dari server SMTP "gmail.com" akan dikembalikan, bukan dari server proksi di "mx1.forwardemail.net" atau "mx2.forwardemail.net".
+Ya, tentu saja. Misalnya, jika Anda mengirim email ke `hello@example.com` dan terdaftar untuk diteruskan ke `user@gmail.com`, maka pesan respons SMTP dan kode dari server SMTP "gmail.com" akan dikembalikan, bukan server proksi di "mx1.forwardemail.net" atau "mx2.forwardemail.net".
 
 ### Bagaimana cara mencegah spammer dan memastikan reputasi penerusan email yang baik {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
-Lihat bagian kami tentang [Bagaimana cara kerja sistem penerusan email Anda?](#how-does-your-email-forwarding-system-work), [Bagaimana Anda menangani masalah pengiriman email?](#how-do-you-handle-email-delivery-issues), dan [Bagaimana Anda menangani alamat IP Anda yang diblokir?](#how-do-you-handle-your-ip-addresses-becoming-blocked) di atas.
+Lihat bagian kami pada [Bagaimana cara kerja sistem penerusan email Anda?](#how-does-your-email-forwarding-system-work), [Bagaimana Anda menangani masalah pengiriman email?](#how-do-you-handle-email-delivery-issues), dan [Bagaimana Anda menangani alamat IP Anda yang diblokir?](#how-do-you-handle-your-ip-addresses-becoming-blocked) di atas.
 
 ### Bagaimana Anda melakukan pencarian DNS pada nama domain {#how-do-you-perform-dns-lookups-on-domain-names}
 
@@ -4241,15 +4234,15 @@ Kami membuat proyek perangkat lunak sumber terbuka :tangerine: [Jeruk keprok](ht
 
 ## Akun dan Penagihan {#account-and-billing}
 
-### Apakah Anda menawarkan jaminan uang kembali untuk paket berbayar? {#do-you-offer-a-money-back-guarantee-on-paid-plans}
+### Apakah Anda menawarkan jaminan uang kembali untuk paket berbayar {#do-you-offer-a-money-back-guarantee-on-paid-plans}
 
 Ya! Pengembalian dana otomatis berlaku jika Anda meningkatkan, menurunkan, atau membatalkan akun dalam waktu 30 hari sejak paket pertama kali dimulai. Ini hanya berlaku untuk pelanggan baru.
 
 ### Jika saya mengganti paket, apakah Anda akan memberikan prorata dan mengembalikan selisihnya {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-Kami tidak menghitung prorata atau mengembalikan selisihnya saat Anda mengganti paket. Sebaliknya, kami mengonversi durasi yang tersisa dari tanggal kedaluwarsa paket yang ada ke durasi relatif terdekat untuk paket baru Anda (dibulatkan ke bawah berdasarkan bulan).
+Kami tidak melakukan prorata atau pengembalian selisihnya saat Anda beralih paket. Sebagai gantinya, kami mengonversi sisa durasi dari tanggal kedaluwarsa paket Anda yang ada ke durasi relatif terdekat untuk paket baru Anda (dibulatkan ke bawah berdasarkan bulan).
 
-Perlu diingat bahwa jika Anda meningkatkan atau menurunkan versi antar paket berbayar dalam kurun waktu 30 hari sejak pertama kali memulai paket berbayar, maka kami akan secara otomatis mengembalikan jumlah penuh dari paket Anda yang sudah ada.
+Perlu diingat bahwa jika Anda meningkatkan atau menurunkan versi antar paket berbayar dalam kurun waktu 30 hari sejak pertama kali memulai paket berbayar, maka kami akan secara otomatis mengembalikan jumlah penuh dari paket Anda saat ini.
 
 ### Bisakah saya menggunakan layanan penerusan email ini sebagai server MX "fallback" atau "fallover" {#can-i-just-use-this-email-forwarding-service-as-a-fallback-or-fallover-mx-server}
 
@@ -4271,9 +4264,9 @@ Ya, cukup edit rekaman DNS <strong class="notranslate">TXT</strong> Anda dan ber
 
 Perlu diingat bahwa Anda *harus* mempertahankan pemetaan ":", karena ini diperlukan jika Anda memutuskan untuk menonaktifkannya (dan ini juga digunakan untuk mengimpor jika Anda meningkatkan ke salah satu paket berbayar kami).
 
-**Untuk penolakan diam-diam (pesan tampak berhasil terkirim bagi pengirim, tetapi sebenarnya tidak menghasilkan apa-apa) (kode status `250`):** Jika Anda menambahkan "!" (tanda seru tunggal) pada alias, maka kode status berhasil `250` akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini, tetapi email itu sendiri tidak akan menghasilkan apa-apa (misalnya lubang hitam atau `/dev/null`).
+**Untuk penolakan diam-diam (pesan tampak berhasil terkirim bagi pengirim, tetapi sebenarnya tidak menghasilkan apa-apa) (kode status `250`):** Jika Anda menambahkan "!" (tanda seru tunggal) pada alias, maka kode status `250` yang berhasil akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini, tetapi email itu sendiri tidak akan menghasilkan apa-apa (misalnya lubang hitam atau `/dev/null`).
 
-**Untuk penolakan lunak (kode status `421`):** Jika Anda menambahkan awalan "!!" (tanda seru ganda) pada alias, maka kode status kesalahan lunak `421` akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini. Email tersebut sering kali akan dicoba lagi hingga 5 hari sebelum ditolak dan terpental.
+**Untuk penolakan lunak (kode status `421`):** Jika Anda menambahkan awalan "!!" (tanda seru ganda) pada alias, maka kode status kesalahan lunak `421` akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini, dan email akan sering dicoba ulang hingga 5 hari sebelum ditolak dan terpental.
 
 **Untuk penolakan keras (kode status `550`):** Jika Anda memberi awalan "!!!" (tanda seru tiga kali) pada alias, maka kode status kesalahan permanen `550` akan dikembalikan kepada pengirim yang mencoba mengirim ke alamat ini, dan email akan ditolak dan terpental.
 
@@ -4356,7 +4349,7 @@ Jika Anda menginginkan keamanan yang lebih baik, Anda juga dapat menghapus bagia
 </tbody>
 </table>
 
-### Bisakah saya meneruskan email ke beberapa penerima? {#can-i-forward-emails-to-multiple-recipients}
+### Bisakah saya meneruskan email ke beberapa penerima {#can-i-forward-emails-to-multiple-recipients}
 
 Ya, tentu saja. Cukup tentukan beberapa penerima dalam data <strong class="notranslate">TXT</strong> Anda.
 
@@ -4410,7 +4403,7 @@ Atau, Anda dapat menentukannya dalam dua baris terpisah, seperti ini:
 
 Terserah Anda!
 
-### Bisakah saya memiliki beberapa penerima global yang dapat diakses semua orang? {#can-i-have-multiple-global-catch-all-recipients}
+### Bisakah saya memiliki beberapa penerima global yang dapat menangkap semua {#can-i-have-multiple-global-catch-all-recipients}
 
 Ya, Anda bisa. Cukup tentukan beberapa penerima global yang dapat diakses semua orang dalam data <strong class="notranslate">TXT</strong> Anda.
 
@@ -4464,7 +4457,7 @@ Atau, Anda dapat menentukannya dalam dua baris terpisah, seperti ini:
 
 Terserah Anda!
 
-### Apakah ada batas maksimum jumlah alamat email yang dapat saya teruskan per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+### Apakah ada batasan maksimum jumlah alamat email yang dapat saya teruskan per alias {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
 Ya, batas defaultnya adalah 10. Ini BUKAN berarti Anda hanya dapat memiliki 10 alias pada nama domain Anda. Anda dapat memiliki alias sebanyak yang Anda inginkan (jumlahnya tidak terbatas). Artinya, Anda hanya dapat meneruskan satu alias ke 10 alamat email unik. Anda dapat memiliki `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (dari 1-10) – dan email apa pun ke `hello@example.com` akan diteruskan ke `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (dari 1-10).
 
@@ -4482,7 +4475,7 @@ Butuh lebih dari 10 penerima per alias? Kirimkan email kepada kami dan kami akan
 
 Ya, Anda bisa, tetapi Anda tetap harus mematuhi batas maksimum. Jika Anda memiliki `hello:linus@example.com` dan `linus:user@gmail.com`, maka email ke `hello@example.com` akan diteruskan ke `linus@example.com` dan `user@gmail.com`. Harap dicatat bahwa kesalahan akan muncul jika Anda mencoba meneruskan email secara rekursif melebihi batas maksimum.
 
-### Bisakah orang lain membatalkan pendaftaran atau mendaftarkan penerusan email saya tanpa izin saya? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Bisakah orang lain membatalkan pendaftaran atau mendaftarkan penerusan email saya tanpa izin saya {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Kami menggunakan verifikasi data MX dan <strong class="notranslate">TXT</strong>. Oleh karena itu, jika Anda menambahkan data MX dan <strong class="notranslate">TXT</strong> masing-masing layanan ini, Anda akan terdaftar. Jika Anda menghapusnya, Anda akan dibatalkan pendaftarannya. Anda memiliki kepemilikan atas domain dan manajemen DNS Anda, jadi jika seseorang memiliki akses ke sana, itu akan menjadi masalah.
 
@@ -4501,14 +4494,14 @@ Tingkat gratis kami didukung oleh:
 4. **Batas Penggunaan Wajar**: Tingkat gratis memiliki kebijakan penggunaan wajar untuk mencegah penyalahgunaan.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Kami berkomitmen untuk menjaga penerusan email dasar tetap gratis sekaligus menawarkan fitur premium bagi pengguna dengan kebutuhan yang lebih lanjut.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Jika Anda merasa layanan kami bermanfaat, pertimbangkan untuk meningkatkan ke paket berbayar untuk mendukung pengembangan dan pemeliharaan berkelanjutan.
 
 ### Berapa batas ukuran email maksimum {#what-is-the-max-email-size-limit}
 
-Kami menetapkan batas ukuran standar 50 MB, yang mencakup konten, header, dan lampiran. Perlu diketahui bahwa layanan seperti Gmail dan Outlook hanya mengizinkan batas ukuran 25 MB, dan jika Anda melebihi batas tersebut saat mengirim ke alamat penyedia tersebut, Anda akan menerima pesan kesalahan.
+Kami menetapkan batas ukuran standar 50 MB, yang mencakup konten, header, dan lampiran. Perlu diketahui bahwa layanan seperti Gmail dan Outlook hanya mengizinkan batas ukuran 25 MB, dan jika Anda melebihi batas tersebut saat mengirim ke alamat di penyedia tersebut, Anda akan menerima pesan kesalahan.
 
 Kesalahan dengan kode respons yang tepat dikembalikan jika batas ukuran file terlampaui.
 
@@ -4520,7 +4513,7 @@ Semuanya dilakukan dalam memori dan [kode sumber kami ada di GitHub](https://git
 
 ### Apakah Anda menyimpan log kesalahan {#do-you-store-error-logs}
 
-**Ya. Anda dapat mengakses log kesalahan di bawah [Akun Saya → Log](/my-account/logs) atau [Akun Saya → Domain](/my-account/domains).**
+**Ya. Anda dapat mengakses log kesalahan di [Akun Saya → Log](/my-account/logs) atau [Akun Saya → Domain](/my-account/domains).**
 
 Per Februari 2023, kami menyimpan log kesalahan untuk kode respons SMTP `4xx` dan `5xx` selama 7 hari – yang berisi kesalahan SMTP, amplop, dan header email (kami **tidak** menyimpan isi email maupun lampirannya).
 
@@ -4536,9 +4529,9 @@ Tidak, sama sekali tidak. Lihat [Kebijakan Privasi](/privacy) kami.
 
 Banyak layanan penerusan email lainnya menyimpan dan berpotensi membaca email Anda. Tidak ada alasan mengapa email yang diteruskan perlu disimpan ke penyimpanan disk – dan oleh karena itu, kami merancang solusi sumber terbuka pertama yang melakukan semuanya di dalam memori.
 
-Kami percaya Anda berhak atas privasi dan kami sangat menghormatinya. Kode yang diterapkan ke server [perangkat lunak sumber terbuka di GitHub](https://github.com/forwardemail) demi transparansi dan membangun kepercayaan.
+Kami percaya Anda berhak atas privasi dan kami sangat menghormatinya. Kode yang diterapkan ke server adalah [perangkat lunak sumber terbuka di GitHub](https://github.com/forwardemail) demi transparansi dan membangun kepercayaan.
 
-### Bisakah saya "mengirim email sebagai" di Gmail dengan {#can-i-send-mail-as-in-gmail-with-this} ini?
+### Bisakah saya "mengirim email sebagai" di Gmail dengan {#can-i-send-mail-as-in-gmail-with-this} ini
 
 Ya! Kami telah menambahkan fitur ini mulai 2 Oktober 2018. Lihat [Cara Mengirim Email Menggunakan Gmail](#how-to-send-mail-as-using-gmail) di atas!
 
@@ -4556,7 +4549,7 @@ Jika Anda menggunakan Gmail (misalnya, Kirim Email Sebagai) atau G Suite, Anda p
 </span>
 </div>
 
-### Bisakah saya "mengirim email sebagai" di Outlook dengan {#can-i-send-mail-as-in-outlook-with-this} ini?
+### Bisakah saya "mengirim email sebagai" di Outlook dengan {#can-i-send-mail-as-in-outlook-with-this} ini
 
 Ya! Kami telah menambahkan fitur ini sejak 2 Oktober 2018. Silakan lihat dua tautan dari Microsoft di bawah ini:
 
@@ -4577,7 +4570,7 @@ Jika Anda menggunakan Microsoft Outlook atau Live.com, Anda perlu menambahkan <c
 </span>
 </div>
 
-### Bisakah saya "mengirim email sebagai" di Apple Mail dan iCloud Mail dengan {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} ini?
+### Bisakah saya "mengirim email sebagai" di Apple Mail dan iCloud Mail dengan {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} ini
 
 Jika Anda pelanggan iCloud+, Anda dapat menggunakan domain khusus. [Layanan kami juga kompatibel dengan Apple Mail](#apple-mail).
 
@@ -4587,7 +4580,7 @@ Silakan lihat <https://support.apple.com/en-us/102540> untuk informasi lebih lan
 
 Ya, namun pengirim yang "relatif tidak dikenal" dibatasi hingga 100 koneksi per jam per nama host atau IP. Lihat bagian [Pembatasan Kecepatan](#do-you-have-rate-limiting) dan [Daftar abu-abu](#do-you-have-a-greylist) di atas.
 
-Yang kami maksud dengan "relatif tidak dikenal" adalah pengirim yang tidak muncul dalam [daftar putih](#do-you-have-an-allowlist).
+Dengan "relatif tidak dikenal", yang kami maksud adalah pengirim yang tidak muncul dalam [daftar putih](#do-you-have-an-allowlist).
 
 Jika batas ini terlampaui, kami akan mengirimkan kode respons 421 yang memberi tahu server email pengirim untuk mencoba lagi nanti.
 
@@ -4595,26 +4588,26 @@ Jika batas ini terlampaui, kami akan mengirimkan kode respons 421 yang memberi t
 
 Ya. Apa pun paket yang Anda pilih, Anda hanya akan membayar satu tarif bulanan – yang mencakup semua domain Anda.
 
-### Metode pembayaran apa yang Anda terima? {#which-payment-methods-do-you-accept}
+### Metode pembayaran apa yang Anda terima {#which-payment-methods-do-you-accept}
 
-Forward Email menerima metode pembayaran satu kali atau bulanan/triwulanan/tahunan berikut ini:
+Forward Email menerima metode pembayaran satu kali atau bulanan/triwulanan/tahunan berikut:
 
 1. **Kartu Kredit/Debit/Transfer Bank**: Visa, Mastercard, American Express, Discover, JCB, Diners Club, dll.
 2. **PayPal**: Hubungkan akun PayPal Anda untuk pembayaran mudah
 3. **Mata Uang Kripto**: Kami menerima pembayaran melalui pembayaran stablecoin Stripe di jaringan Ethereum, Polygon, dan Solana
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Kami menyimpan informasi pembayaran terbatas di server kami, yang hanya mencakup pengenal pembayaran dan referensi ke ID transaksi, pelanggan, langganan, dan pembayaran [Garis](https://stripe.com/global) dan [PayPal](https://www.paypal.com).
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Untuk privasi maksimal, pertimbangkan untuk menggunakan pembayaran mata uang kripto.
 
-Semua pembayaran diproses secara aman melalui Stripe atau PayPal. Rincian pembayaran Anda tidak akan pernah disimpan di server kami.
+Semua pembayaran diproses secara aman melalui Stripe atau PayPal. Detail pembayaran Anda tidak pernah disimpan di server kami.
 
 ## Sumber Daya Tambahan {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Artikel kami di bawah ini diperbarui secara berkala dengan panduan, tips, dan informasi teknis baru. Kunjungi kembali secara berkala untuk mengetahui konten terbaru.
 
 * [Studi Kasus & Dokumentasi Pengembang](/blog/docs)
 * [Sumber daya](/resources)

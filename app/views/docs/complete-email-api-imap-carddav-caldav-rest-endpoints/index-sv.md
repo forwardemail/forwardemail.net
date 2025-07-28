@@ -3,7 +3,7 @@
 <img loading="lazy" src="/img/articles/complete-email-api.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">
-<strong>TL;DR:</strong> Vi byggde världens första kompletta REST API för e-posthantering med avancerade sökfunktioner som ingen annan tjänst erbjuder. Medan Gmail, Outlook och Apple tvingar utvecklare in i IMAP-helvetet eller hastighetsbegränsade API:er, levererar Forward Email blixtsnabba CRUD-åtgärder för meddelanden, mappar, kontakter och kalendrar genom ett enhetligt REST-gränssnitt med fler än 15 sökparametrar. Detta är e-post-API-utvecklare har väntat på.
+<strong>TL;DR:</strong> Vi byggde världens första kompletta REST API för e-posthantering med avancerade sökfunktioner som ingen annan tjänst erbjuder. Medan Gmail, Outlook och Apple tvingar utvecklare in i IMAP-helvetet eller hastighetsbegränsade API:er, levererar Forward Email blixtsnabba CRUD-åtgärder för meddelanden, mappar, kontakter och kalendrar genom ett enhetligt REST-gränssnitt med 15+ sökparametrar. Detta är e-post-API-utvecklare har väntat på.
 </p>
 
 ## Innehållsförteckning {#table-of-contents}
@@ -28,7 +28,7 @@
   * [Den tekniska implementeringen](#the-technical-implementation)
 * [Blixtsnabb prestandaarkitektur](#blazing-fast-performance-architecture)
   * [Prestandamått](#performance-benchmarks)
-  * [Arkitektur som fokuserar på integritet](#privacy-first-architecture)
+  * [Integritetsfokuserad arkitektur](#privacy-first-architecture)
 * [Varför vi är annorlunda: Den kompletta jämförelsen](#why-were-different-the-complete-comparison)
   * [Viktiga leverantörsbegränsningar](#major-provider-limitations)
   * [Fördelar med vidarebefordran av e-post](#forward-email-advantages)
@@ -83,7 +83,7 @@ Varje större e-postleverantör tvingar utvecklare till ett av två hemska val:
 Resultatet? Utvecklare överger antingen e-postintegrationen helt eller slösar veckor på att bygga ömtåliga IMAP-omslag som ständigt går sönder.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Den smutsiga hemligheten**: De flesta "e-post-API:er" är bara sändande API:er. Du kan inte programmatiskt organisera mappar, synkronisera kontakter eller hantera kalendrar via ett enkelt REST-gränssnitt. Fram tills nu.
 
 ## Vad utvecklarna faktiskt säger {#what-developers-are-actually-saying}
 
@@ -107,12 +107,12 @@ Frustrationen är verklig och dokumenterad överallt:
 
 Bevisen finns överallt:
 
-* **WordPress SMTP-problem**: [631 GitHub-problem](https://github.com/awesomemotive/WP-Mail-SMTP/issues) om misslyckade e-postleveranser
-* **Zapier-begränsningar**: [Klagomål från samhället](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om gränser på 10 e-postmeddelanden/timme och misslyckade IMAP-detekteringsfel
+* **Problem med WordPress SMTP**: [631 GitHub-problem](https://github.com/awesomemotive/WP-Mail-SMTP/issues) om leveransfel av e-post
+* **Begränsningar med Zapier**: [Klagomål från samhället](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om gränser för 10 e-postmeddelanden/timme och fel med IMAP-detektering
 * **IMAP API-projekt**: [Multipel](https://github.com/ewildgoose/imap-api) [öppen källkod](https://emailengine.app/) [projekt](https://www.npmjs.com/package/imapflow) finns specifikt för att "konvertera IMAP till REST" eftersom ingen leverantör erbjuder detta
-* **Frustrationer med Gmail API**: [Stacköverflöde](https://stackoverflow.com/questions/tagged/gmail-api) har 4 847 frågor taggade "gmail-api" med vanliga klagomål om hastighetsgränser och komplexitet
+* **Frustrationer med Gmail API**: [Stacköverflöde](https://stackoverflow.com/questions/tagged/gmail-api) har 4 847 frågor taggade med "gmail-api" med vanliga klagomål om hastighetsgränser och komplexitet
 
-## Den revolutionerande lösningen för vidarebefordran av e-post {#forward-emails-revolutionary-solution}
+## Vidarebefordra e-postens revolutionerande lösning {#forward-emails-revolutionary-solution}
 
 Vi är den första e-posttjänsten som erbjuder kompletta CRUD-operationer för all e-postdata via ett enhetligt REST API.
 
@@ -170,7 +170,7 @@ curl -u "alias@yourdomain.com:password" \
 
 * `GET /v1/calendars` - Lista kalenderhändelser med datumfiltrering
 * `POST /v1/calendars` - Skapa kalenderhändelse med deltagare och återkommande händelser
-* `GET /v1/calendars/:id` - Hämta händelseinformation med tidszonhantering
+* `GET /v1/calendars/:id` - Hämta händelseinformation med tidszonshantering
 * `PUT /v1/calendars/:id` - Uppdatera händelse med konfliktdetektering
 * `DELETE /v1/calendars/:id` - Ta bort händelse med deltagaraviseringar
 
@@ -226,7 +226,7 @@ Medan andra leverantörer i bästa fall erbjuder grundläggande filtrering, har 
 | **Okänsligt för versaler** | ✅ Alla sökningar | ✅ | ✅ | ❌ |
 | **Stöd för paginering** | ✅ Fungerar med alla sökparametrar | ✅ | ✅ | ❌ |
 
-### Exempel på verkliga sökresultat {#real-world-search-examples}
+### Sökexempel från verkligheten {#real-world-search-examples}
 
 **Hitta alla fakturor från förra kvartalet:**
 
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Fördelar för utvecklare**: Med Forward Emails sök-API kan du bygga e-postprogram som konkurrerar med skrivbordsklienter i funktionalitet samtidigt som du bibehåller enkelheten hos REST API:er.
 
 ## Blixtsnabb prestandaarkitektur {#blazing-fast-performance-architecture}
 
@@ -396,13 +396,13 @@ graph LR
 * **Kontaktsynkronisering**: 1000+ kontakter/sekund
 * **Drifttid**: 99,99 % SLA med redundant infrastruktur
 
-### Integritetsfokuserad arkitektur {#privacy-first-architecture}
+### Arkitektur med sekretess i första hand {#privacy-first-architecture}
 
 **Nollkunskapsdesign**: Endast du har åtkomst med ditt IMAP-lösenord – vi kan inte läsa dina e-postmeddelanden. Vår [nollkunskapsarkitektur](https://forwardemail.net/en/security) garanterar fullständig integritet samtidigt som den levererar blixtsnabb prestanda.
 
 ## Varför vi är annorlunda: Den kompletta jämförelsen {#why-were-different-the-complete-comparison}
 
-### Begränsningar för större leverantörer {#major-provider-limitations}
+### Viktiga leverantörsbegränsningar {#major-provider-limitations}
 
 | Leverantör | Kärnproblem | Specifika begränsningar |
 | ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -430,13 +430,13 @@ graph LR
 **ProtonMail och Tuta marknadsför sig själva som "öppen källkod" och "transparenta", men detta är vilseledande marknadsföring som bryter mot moderna integritetsprinciper.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Falska påståenden om transparens**: Både ProtonMail och Tuta marknadsför tydligt sina "öppna källkod"-inloggningsuppgifter samtidigt som de håller sin viktigaste serverkod proprietär och stängd.
 
 **ProtonMails bedrägeri:**
 
 * **Påståenden**: ["Vi är öppen källkod"](https://proton.me/blog/open-source) framträdande i marknadsföring
 * **Verklighet**: [Serverkoden är helt proprietär](https://github.com/ProtonMail) - endast klientappar är öppen källkod
-* **Påverkan**: Användare kan inte verifiera serversidans kryptering, datahantering eller sekretesskrav
+* **Konsekvens**: Användare kan inte verifiera serversidans kryptering, datahantering eller sekretesskrav
 * **Transparensöverträdelse**: Inget sätt att granska de faktiska e-postbehandlings- och lagringssystemen
 
 **Tutas vilseledande marknadsföring:**
@@ -464,7 +464,7 @@ graph LR
 * ✅ **Ingen leverantörslåsning** - dina data, din kontroll
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Riktig öppen källkod innebär att du kan verifiera alla påståenden.** Med Vidarebefordra e-post kan du granska vår kryptering, granska vår datahantering och till och med köra din egen instans. Det är sann transparens.
 
 ## 30+ exempel på verkliga integrationer {#30-real-world-integration-examples}
 
@@ -524,7 +524,7 @@ for (const contact of newContacts) {
 }
 ```
 
-### 4. Orderhantering för e-handel {#4-e-commerce-order-processing}
+### 4. Bearbetning av e-handelsorder {#4-e-commerce-order-processing}
 
 **Problem**: Manuell e-postbehandling av order för [e-handelsplattformar](https://en.wikipedia.org/wiki/E-commerce)
 **Lösning**: Automatiserad orderhanteringspipeline
@@ -571,7 +571,7 @@ for (const email of supportEmails) {
 ### 6. System för hantering av nyhetsbrev {#6-newsletter-management-system}
 
 **Problem**: Begränsade [nyhetsbrevsplattform](https://en.wikipedia.org/wiki/Email_marketing)-integrationer
-**Lösning**: Komplett hantering av prenumeranternas livscykel
+**Lösning**: Fullständig hantering av prenumeranternas livscykel
 
 ```javascript
 // Auto-manage newsletter subscriptions
@@ -698,8 +698,8 @@ for (const email of oldEmails) {
 
 ### 11. Integrering av e-post till kalender {#11-email-to-calendar-integration}
 
-**Problem**: Manuell [kalenderhändelse](https://tools.ietf.org/html/rfc4791) skapande från e-postmeddelanden
-**Lösning**: Automatisk händelseextrahering och skapande
+**Problem**: Manuell skapande av [kalenderhändelse](https://tools.ietf.org/html/rfc4791) från e-postmeddelanden
+**Lösning**: Automatisk extrahering och skapande av händelser
 
 ```javascript
 // Extract meeting details from emails
@@ -964,7 +964,7 @@ for (const email of invoiceEmails) {
 
 ### 23. E-postbaserad evenemangsregistrering {#23-email-based-event-registration}
 
-**Problem**: Manuell [evenemangsregistrering](https://en.wikipedia.org/wiki/Event_management) bearbetning från e-postsvar
+**Problem**: Manuell [evenemangsregistrering](https://en.wikipedia.org/wiki/Event_management)-bearbetning från e-postsvar
 **Lösning**: Automatiserad deltagarhantering och kalenderintegration
 
 ```javascript
@@ -1030,8 +1030,8 @@ for (const email of approvalEmails) {
 
 ### 25. E-postbaserad kundfeedbackanalys {#25-email-based-customer-feedback-analysis}
 
-**Problem**: Manuell [kundfeedback](https://en.wikipedia.org/wiki/Customer_feedback) insamling och sentimentanalys
-**Lösning**: Automatiserad feedbackbehandling och sentimentspårning
+**Problem**: Manuell [kundfeedback](https://en.wikipedia.org/wiki/Customer_feedback)-insamling och sentimentanalys
+**Lösning**: Automatiserad feedbackbearbetning och sentimentspårning
 
 ```javascript
 // Analyze customer feedback from emails
@@ -1096,8 +1096,8 @@ for (const application of applications) {
 
 ### 27. E-postbaserad bearbetning av utgiftsrapporter {#27-email-based-expense-report-processing}
 
-**Problem**: Manuell [utgiftsrapport](https://en.wikipedia.org/wiki/Expense_report) inlämning och godkännande
-**Lösning**: Automatiserat arbetsflöde för utdragsuttag och godkännande
+**Problem**: Manuell inlämning och godkännande av [utgiftsrapport](https://en.wikipedia.org/wiki/Expense_report)
+**Lösning**: Automatiserat arbetsflöde för utvinning och godkännande av utgifter
 
 ```javascript
 // Process expense report emails
@@ -1131,7 +1131,7 @@ for (const email of expenseEmails) {
 
 ### 28. E-postbaserad kvalitetssäkringsrapportering {#28-email-based-quality-assurance-reporting}
 
-**Problem**: Manuell [kvalitetssäkring](https://en.wikipedia.org/wiki/Quality_assurance) problemspårning
+**Problem**: Manuell [kvalitetssäkring](https://en.wikipedia.org/wiki/Quality_assurance)-problemspårning
 **Lösning**: Automatiserad QA-problemhantering och felspårning
 
 ```javascript
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. E-postbaserad övervakning av sociala medier {#30-email-based-social-media-monitoring}
 
-**Problem**: Manuell [sociala medier](https://en.wikipedia.org/wiki/Social_media_monitoring) spårning och svar på omnämnanden
+**Problem**: Manuell spårning och svar för [sociala medier](https://en.wikipedia.org/wiki/Social_media_monitoring)-omnämnanden
 **Lösning**: Automatiserad bearbetning av sociala medier-aviseringar och samordning av svar
 
 ```javascript
@@ -1290,7 +1290,7 @@ Besök [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) f�
 * **[Komplett API-dokumentation](https://forwardemail.net/en/email-api)** - Interaktiv OpenAPI 3.0-specifikation
 * **[Guide för egenhosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Distribuera vidarebefordran av e-post i din infrastruktur
 * **[Säkerhetsvitbok](https://forwardemail.net/technical-whitepaper.pdf)** - Teknisk arkitektur och säkerhetsdetaljer
-* **[GitHub Repository](https://github.com/forwardemail/forwardemail.net)** - Kodbas med öppen källkod
+* **[GitHub-arkivet](https://github.com/forwardemail/forwardemail.net)** - Kodbas med öppen källkod
 * **[Utvecklarsupport](mailto:api@forwardemail.net)** - Direktåtkomst till vårt teknikteam
 
 ---

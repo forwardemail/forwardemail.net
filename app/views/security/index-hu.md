@@ -11,32 +11,32 @@
 * [E-mail biztonság](#email-security)
   * [Titkosítás](#encryption)
   * [Hitelesítés és engedélyezés](#authentication-and-authorization)
-  * [Visszaélés elleni intézkedések](#anti-abuse-measures)
+  * [Bántalmazás elleni intézkedések](#anti-abuse-measures)
 * [Adatvédelem](#data-protection)
   * [Adatminimalizálás](#data-minimization)
   * [Biztonsági mentés és helyreállítás](#backup-and-recovery)
 * [Szolgáltatók](#service-providers)
-* [Megfelelés és auditálás](#compliance-and-auditing)
+* [Megfelelőség és auditálás](#compliance-and-auditing)
   * [Rendszeres biztonsági értékelések](#regular-security-assessments)
-  * [Megfelelés](#compliance)
-* [Incidensre adott válasz](#incident-response)
-* [Biztonságfejlesztési életciklus](#security-development-lifecycle)
-* [Szerver keményedés](#server-hardening)
-* [Szolgáltatási szint megállapodás](#service-level-agreement)
+  * [Megfelelőség](#compliance)
+* [Incidensreagálás](#incident-response)
+* [Biztonsági fejlesztési életciklus](#security-development-lifecycle)
+* [Szerver megerősítése](#server-hardening)
+* [Szolgáltatási szintű megállapodás](#service-level-agreement)
 * [Nyílt forráskódú biztonság](#open-source-security)
-* [Munkavállalói biztonság](#employee-security)
+* [Alkalmazotti biztonság](#employee-security)
 * [Folyamatos fejlesztés](#continuous-improvement)
 * [További források](#additional-resources)
 
 ## Előszó {#foreword}
 
-A Forward Emailnél a biztonság a legfőbb prioritásunk. Átfogó biztonsági intézkedéseket vezettünk be az e-mail kommunikáció és a személyes adatok védelme érdekében. Ez a dokumentum felvázolja biztonsági gyakorlatunkat, valamint azokat a lépéseket, amelyeket az Ön e-mailjei titkosságának, integritásának és elérhetőségének biztosítása érdekében teszünk.
+A Forward Emailnél a biztonság a legfontosabb prioritásunk. Átfogó biztonsági intézkedéseket vezettünk be az e-mailes kommunikáció és a személyes adatok védelme érdekében. Ez a dokumentum felvázolja biztonsági gyakorlatunkat és azokat a lépéseket, amelyeket e-mailjei bizalmasságának, integritásának és elérhetőségének biztosítása érdekében teszünk.
 
 ## Infrastruktúra biztonság {#infrastructure-security}
 
 ### Biztonságos adatközpontok {#secure-data-centers}
 
-Infrastruktúránk SOC 2-kompatibilis adatközpontokban található, amelyek:
+Infrastruktúránk SOC 2-kompatibilis adatközpontokban található, a következő helyeken:
 
 * 24/7-es fizikai biztonság és megfigyelés
 * Biometrikus hozzáférés-vezérlés
@@ -46,7 +46,7 @@ Infrastruktúránk SOC 2-kompatibilis adatközpontokban található, amelyek:
 
 ### Hálózati biztonság {#network-security}
 
-Több rétegű hálózati biztonságot valósítunk meg:
+Többszintű hálózati biztonságot valósítunk meg:
 
 * Vállalati szintű tűzfalak szigorú hozzáférés-vezérlési listákkal
 * DDoS-védelem és -csökkentés
@@ -56,7 +56,7 @@ Több rétegű hálózati biztonságot valósítunk meg:
 * Portszkennelési védelem a gyanús tevékenységek automatikus blokkolásával
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Minden átvitt adat TLS 1.2+ titkosítással és modern titkosítócsomagokkal van titkosítva.
 
 ## E-mail biztonság {#email-security}
 
@@ -69,7 +69,7 @@ Több rétegű hálózati biztonságot valósítunk meg:
 * **Átfogó védelem**: Inaktív, memóriában tárolt és átvitel közbeni titkosítást alkalmazunk.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Mi vagyunk a világ első és egyetlen e-mail szolgáltatója, amely a **[kvantum-rezisztens és egyedileg titkosított SQLite postaládák](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)** szolgáltatást használja.
 
 ### Hitelesítés és engedélyezés {#authentication-and-authorization}
 
@@ -93,7 +93,7 @@ Több rétegű hálózati biztonságot valósítunk meg:
 Az adatminimalizálás elvét követjük:
 
 * Csak a szolgáltatásunk nyújtásához szükséges adatokat gyűjtjük.
-* Az e-mail tartalmat a memóriában dolgozzuk fel, és nem tároljuk véglegesen, kivéve, ha az IMAP/POP3 kézbesítéshez szükséges.
+* Az e-mail tartalmat a memóriában dolgozzuk fel, és nem tároljuk állandó jelleggel, kivéve, ha az IMAP/POP3 kézbesítéshez szükséges.
 * A naplókat anonimizáljuk, és csak a szükséges ideig őrzzük meg.
 
 ### Biztonsági mentés és helyreállítás {#backup-and-recovery}
@@ -105,24 +105,24 @@ Az adatminimalizálás elvét követjük:
 
 ## Szolgáltatók {#service-providers}
 
-Gondosan választjuk ki szolgáltatóinkat, hogy megbizonyosodjunk arról, hogy megfelelnek magas biztonsági követelményeinknek. Az alábbiakban felsoroljuk azokat a szolgáltatókat, amelyeket nemzetközi adatátvitelhez használunk, és azok GDPR-megfelelőségi állapotát:
+Szolgáltatóinkat gondosan válogatjuk meg, hogy biztosan megfeleljenek magas biztonsági előírásainknak. Az alábbiakban felsoroljuk a nemzetközi adatátvitelhez igénybe vett szolgáltatóinkat és azok GDPR-megfelelőségi státuszát:
 
-| Szolgáltató | Cél | DPF tanúsítvánnyal rendelkezik | GDPR megfelelőségi oldal |
+| Szolgáltató | Cél | DPF-tanúsítvánnyal | GDPR megfelelőségi oldal |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com) | CDN, DDoS védelem, DNS | ✅ Igen | [Cloudflare GDPR](https://www.cloudflare.com/trust-hub/gdpr/) |
 | [DataPacket](https://www.datapacket.com) | Szerver infrastruktúra | ❌ Nem | [DataPacket Privacy](https://www.datapacket.com/privacy-policy) |
-| [Digital Ocean](https://www.digitalocean.com) | Felhő infrastruktúra | ❌ Nem | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
-| [Vultr](https://www.vultr.com) | Felhő infrastruktúra | ❌ Nem | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
-| [Stripe](https://stripe.com) | Fizetés feldolgozása | ✅ Igen | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
-| [PayPal](https://www.paypal.com) | Fizetés feldolgozása | ❌ Nem | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
+| [Digital Ocean](https://www.digitalocean.com) | Felhőinfrastruktúra | ❌ Nem | [DigitalOcean GDPR](https://www.digitalocean.com/legal/gdpr) |
+| [Vultr](https://www.vultr.com) | Felhőinfrastruktúra | ❌ Nem | [Vultr GDPR](https://www.vultr.com/legal/eea-gdpr-privacy/) |
+| [Stripe](https://stripe.com) | Fizetésfeldolgozás | ✅ Igen | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
+| [PayPal](https://www.paypal.com) | Fizetésfeldolgozás | ❌ Nem | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Ezeket a szolgáltatókat a megbízható, biztonságos szolgáltatásnyújtás biztosítására használjuk, miközben betartjuk a nemzetközi adatvédelmi előírásokat. Minden adatátvitelre megfelelő biztosítékok mellett kerül sor az Ön személyes adatainak védelme érdekében.
+Ezeket a szolgáltatókat a megbízható és biztonságos szolgáltatásnyújtás biztosítása érdekében használjuk, miközben betartjuk a nemzetközi adatvédelmi előírásokat. Minden adatátvitelt megfelelő biztosítékok mellett végzünk személyes adatainak védelme érdekében.
 
 ## Megfelelőség és auditálás {#compliance-and-auditing}
 
 ### Rendszeres biztonsági felmérések {#regular-security-assessments}
 
-Csapatunk rendszeresen figyeli, felülvizsgálja és értékeli a kódbázist, a szervereket, az infrastruktúrát és a gyakorlatokat. Átfogó biztonsági programot valósítunk meg, amely magában foglalja:
+Csapatunk rendszeresen figyeli, felülvizsgálja és értékeli a kódbázist, a szervereket, az infrastruktúrát és a gyakorlatokat. Átfogó biztonsági programot vezetünk be, amely a következőket tartalmazza:
 
 * SSH kulcsok rendszeres cseréje
 * Hozzáférési naplók folyamatos monitorozása
@@ -132,14 +132,14 @@ Csapatunk rendszeresen figyeli, felülvizsgálja és értékeli a kódbázist, a
 
 ### Megfelelőség {#compliance}
 
-* [GDPR](https://forwardemail.net/gdpr) megfelelő adatkezelési gyakorlatok
-* [Adatfeldolgozási szerződés (DPA)](https://forwardemail.net/dpa) elérhető üzleti ügyfelek számára
-* CCPA-kompatibilis adatvédelmi ellenőrzések
+* [GDPR](https://forwardemail.net/gdpr) szabványnak megfelelő adatkezelési gyakorlatok
+* [Adatfeldolgozási megállapodás (DPA)](https://forwardemail.net/dpa) üzleti ügyfelek számára elérhető
+* CCPA szabványnak megfelelő adatvédelmi szabályozások
 * SOC 2 II. típusú auditált folyamatok
 
 ## Eseményre adott válasz {#incident-response}
 
-Biztonsági incidensre adott választervünk a következőket tartalmazza:
+Biztonsági incidensekre vonatkozó elhárítási tervünk a következőket tartalmazza:
 
 1. **Észlelés**: Automatizált monitorozó és riasztórendszerek
 2. **Elszigetelés**: Az érintett rendszerek azonnali elszigetelése
@@ -149,7 +149,7 @@ Biztonsági incidensre adott választervünk a következőket tartalmazza:
 6. **Incidens utáni elemzés**: Átfogó felülvizsgálat és fejlesztés
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Ha biztonsági rést fedez fel, kérjük, azonnal jelentse a <security@forwardemail.net> címen.
 
 ## Biztonsági fejlesztési életciklus {#security-development-lifecycle}
 
@@ -168,7 +168,7 @@ flowchart LR
     F -.-> K[Vulnerability Management]
 ```
 
-Minden kód a következőkön megy keresztül:
+Minden kód a következőn megy keresztül:
 
 * Biztonsági követelmények összegyűjtése
 * Fenyegetésmodellezés a tervezés során
@@ -179,14 +179,14 @@ Minden kód a következőkön megy keresztül:
 
 ## Szerver megerősítése {#server-hardening}
 
-A [Lehetséges konfiguráció](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) számos szerverbiztonsági intézkedést valósít meg:
+A [Ansible konfiguráció](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) számos szerverbiztonsági intézkedést valósít meg:
 
 * **USB hozzáférés letiltva**: A fizikai portok letiltásra kerülnek az usb-storage kernel modul feketelistázásával.* **Tűzfal szabályok**: Szigorú iptables szabályok, amelyek csak a szükséges kapcsolatokat engedélyezik.* **SSH megerősítés**: Csak kulcsalapú hitelesítés, jelszóval történő bejelentkezés nélkül, root bejelentkezés letiltva.* **Szolgáltatás elkülönítése**: Minden szolgáltatás minimálisan szükséges jogosultságokkal fut.* **Automatikus frissítések**: A biztonsági javítások automatikusan kerülnek alkalmazásra.* **Biztonságos rendszerindítás**: Ellenőrzött rendszerindítási folyamat a manipuláció megakadályozása érdekében.* **Kernel megerősítés**: Biztonságos kernel paraméterek és sysctl konfigurációk.* **Fájlrendszer-korlátozások**: noexec, nosuid és nodev csatolási opciók, ahol szükséges.* **Alapszintű memóriaképek letiltva**: A rendszer konfigurálva van a biztonsági okokból a lapszintű memóriaképek megakadályozására.* **Csere letiltva**: A swap memória letiltva az adatszivárgás megakadályozása érdekében.* **Portszkennelés elleni védelem**: A portszkennelési kísérletek automatikus észlelése és blokkolása.* **Átlátszó hatalmas oldalak letiltva**: A THP letiltva a jobb teljesítmény és biztonság érdekében.* **Rendszerszolgáltatás-erősítés**: Nem létfontosságú szolgáltatások, mint például az Apport letiltva.* **Felhasználó Felügyelet**: A minimális jogosultságok elve különálló deploy és devops felhasználókkal
 * **Fájlleíró korlátok**: Megnövelt korlátok a jobb teljesítmény és biztonság érdekében
 
 ## Szolgáltatási szintű megállapodás {#service-level-agreement}
 
-Fenntartjuk a szolgáltatások magas szintű rendelkezésre állását és megbízhatóságát. Infrastruktúránkat redundanciára és hibatűrésre terveztük, hogy az e-mail szolgáltatás továbbra is működőképes maradjon. Bár nem teszünk közzé hivatalos SLA-dokumentumot, elkötelezettek vagyunk a következők mellett:
+Magas szintű szolgáltatási rendelkezésre állást és megbízhatóságot biztosítunk. Infrastruktúránkat redundanciára és hibatűrésre terveztük, hogy biztosítsuk e-mail szolgáltatása működőképességét. Bár nem teszünk közzé hivatalos SLA-dokumentumot, elkötelezettek vagyunk a következők iránt:
 
 * 99,9%+ rendelkezésre állás minden szolgáltatásra
 * Gyors reagálás a szolgáltatáskimaradásokra
@@ -195,7 +195,7 @@ Fenntartjuk a szolgáltatások magas szintű rendelkezésre állását és megb�
 
 ## Nyílt forráskódú biztonság {#open-source-security}
 
-[nyílt forráskódú szolgáltatás](https://github.com/forwardemail/forwardemail.net)-ként a biztonságunk a következőkből származik:
+[nyílt forráskódú szolgáltatás](https://github.com/forwardemail/forwardemail.net) felhasználóként a biztonságunk a következőkből származik:
 
 * Átlátható kód, amelyet bárki auditálhat
 * Közösség által vezérelt biztonsági fejlesztések
@@ -211,7 +211,7 @@ Fenntartjuk a szolgáltatások magas szintű rendelkezésre állását és megb�
 
 ## Folyamatos fejlesztés {#continuous-improvement}
 
-Folyamatosan fejlesztjük biztonsági helyzetünket az alábbiakkal:
+Biztonsági helyzetünket folyamatosan fejlesztjük az alábbiak révén:
 
 * Biztonsági trendek és felmerülő fenyegetések figyelése
 * Biztonsági szabályzatok rendszeres felülvizsgálata és frissítése
@@ -225,9 +225,9 @@ Biztonsági gyakorlatunkkal kapcsolatos további információkért vagy biztons�
 * [Adatvédelmi irányelvek](https://forwardemail.net/en/privacy)
 * [Szolgáltatási feltételek](https://forwardemail.net/en/terms)
 * [GDPR-megfelelőség](https://forwardemail.net/gdpr)
-* [Adatfeldolgozási szerződés (DPA)](https://forwardemail.net/dpa)
+* [Adatfeldolgozási megállapodás (DPA)](https://forwardemail.net/dpa)
 * [Visszaélés bejelentése](https://forwardemail.net/en/report-abuse)
 * [Biztonsági szabályzat](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [GitHub Repository](https://github.com/forwardemail/forwardemail.net)
+* [GitHub adattár](https://github.com/forwardemail/forwardemail.net)
 * [FAQ](https://forwardemail.net/en/faq)

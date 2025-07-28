@@ -51,7 +51,7 @@
   * [Hämta domän](#retrieve-domain)
   * [Verifiera domänposter](#verify-domain-records)
   * [Verifiera domänens SMTP-poster](#verify-domain-smtp-records)
-  * [Lista domänomfattande lösenord som omfattar alla](#list-domain-wide-catch-all-passwords)
+  * [Lista domänomfattande lösenord med alla lösenord](#list-domain-wide-catch-all-passwords)
   * [Skapa ett domänomfattande lösenord](#create-domain-wide-catch-all-password)
   * [Ta bort domänomfattande lösenord](#remove-domain-wide-catch-all-password)
   * [Uppdatera domän](#update-domain)
@@ -75,7 +75,7 @@
 
 ## Bibliotek {#libraries}
 
-Just nu har vi inte släppt några API-wrappers, men vi planerar att göra det inom en snar framtid. Skicka ett e-postmeddelande till <api@forwardemail.net> om du vill bli meddelad när ett visst programmeringsspråks API-wrapper släpps. Under tiden kan du använda dessa rekommenderade HTTP-förfrågningsbibliotek i din applikation, eller helt enkelt använda [ringla](https://stackoverflow.com/a/27442239/3586413) som i exemplen nedan.
+Just nu har vi inte släppt några API-omslag, men vi planerar att göra det inom en snar framtid. Skicka ett e-postmeddelande till <api@forwardemail.net> om du vill bli meddelad när ett visst programmeringsspråks API-omslag släpps. Under tiden kan du använda dessa rekommenderade HTTP-förfrågningsbibliotek i din applikation, eller helt enkelt använda [ringla](https://stackoverflow.com/a/27442239/3586413) som i exemplen nedan.
 
 | Språk | Bibliotek |
 | ---------- | ---------------------------------------------------------------------- |
@@ -94,7 +94,7 @@ Den nuvarande HTTP-bas-URI-sökvägen är: `BASE_URI`.
 
 ## Autentisering {#authentication}
 
-Alla slutpunkter kräver att din [API-nyckel](https://forwardemail.net/my-account/security) anges som "användarnamn"-värde i begäran [Grundläggande auktorisering](https://en.wikipedia.org/wiki/Basic_access_authentication)-rubrik (med undantag för [Aliaskontakter](#alias-contacts), [Aliaskalendrar](#alias-calendars) och [Alias-brevlådor](#alias-mailboxes) som använder en [genererat alias användarnamn och lösenord](/faq#do-you-support-receiving-email-with-imap)).
+Alla slutpunkter kräver att din [API-nyckel](https://forwardemail.net/my-account/security) anges som värdet "användarnamn" i begäranens [Grundläggande auktorisering](https://en.wikipedia.org/wiki/Basic_access_authentication)-rubrik (med undantag för [Aliaskontakter](#alias-contacts), [Aliaskalendrar](#alias-calendars) och [Alias-brevlådor](#alias-mailboxes) som använder en [genererat alias användarnamn och lösenord](/faq#do-you-support-receiving-email-with-imap)).
 
 Oroa dig inte – exempel finns nedan om du är osäker på vad det här är.
 
@@ -114,25 +114,25 @@ Om några fel uppstår kommer svarstexten i API-begäran att innehålla ett deta
 | 501 | Inte implementerad |
 | 502 | Dålig gateway |
 | 503 | Tjänsten är inte tillgänglig |
-| 504 | Gateway Time-out |
+| 504 | Gateway-timeout |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Om du får statuskoden 5xx (vilket inte borde hända), vänligen kontakta oss på <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> så hjälper vi dig att lösa problemet omedelbart.
 
 ## Lokalisering {#localization}
 
 Vår tjänst är översatt till över 25 olika språk. Alla API-svarsmeddelanden översätts till den senast identifierade språkinställningen för användaren som gjorde API-förfrågan. Du kan åsidosätta detta genom att skicka en anpassad `Accept-Language`-rubrik. Testa gärna med hjälp av språkmenyn längst ner på den här sidan.
 
-## Paginering {#pagination}
+## Sidnumrering {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> Från och med den 1 november 2024 kommer API-slutpunkterna för [Lista domäner](#list-domains) och [Lista domänalias](#list-domain-aliases) som standard att ha max `1000` resultat per sida. Om du vill välja att använda detta beteende tidigt kan du skicka `?paginate=true` som en extra frågesträngsparameter till URL:en för slutpunktsfrågan.
 
 Paginering stöds av alla API-slutpunkter som listar resultat.
 
 Ange helt enkelt frågesträngegenskaperna `page` (och valfritt `limit`).
 
-Egenskapen `page` ska vara ett tal större än eller lika med `1`. Om du anger `limit` (också ett tal), är det lägsta värdet `10` och det högsta värdet är `50` (om inget annat anges).
+Egenskapen `page` ska vara ett tal större än eller lika med `1`. Om du anger `limit` (också ett tal) är det minsta värdet `10` och det högsta värdet `50` (om inget annat anges).
 
 | Frågesträngparametrar | Nödvändig | Typ | Beskrivning |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -160,11 +160,11 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 ### Hämta loggar {#retrieve-logs}
 
-Vårt API låter dig programmatiskt ladda ner loggar för ditt konto. Om du skickar en begäran till denna slutpunkt bearbetas alla loggar för ditt konto och skickas till dig via e-post som en bilaga ([Gzip](https://en.wikipedia.org/wiki/Gzip) komprimerad [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) kalkylbladsfil) när det är klart.
+Vårt API låter dig programmatiskt ladda ner loggar för ditt konto. Om du skickar en begäran till denna slutpunkt bearbetas alla loggar för ditt konto och skickas till dig via e-post som en bilaga ([Gzip](https://en.wikipedia.org/wiki/Gzip) komprimerad [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) kalkylbladsfil) när den är klar.
 
-Detta låter dig skapa bakgrundsjobb med en [Cron-jobb](https://en.wikipedia.org/wiki/Cron) eller använda vår [Node.js jobbplaneringsprogramvara Bree](https://github.com/breejs/bree) för att ta emot loggar när du vill. Observera att denna slutpunkt är begränsad till `10` förfrågningar per dag.
+Detta gör att du kan skapa bakgrundsjobb med en [Cron-jobb](https://en.wikipedia.org/wiki/Cron) eller använda vår [Node.js jobbplaneringsprogramvara Bree](https://github.com/breejs/bree) för att ta emot loggar när du vill. Observera att denna slutpunkt är begränsad till `10` förfrågningar per dag.
 
-Bilagan är den gemena formen av `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` och själva e-postmeddelandet innehåller en kort sammanfattning av de hämtade loggarna. Du kan också ladda ner loggar när som helst från [Mitt konto → Loggar](/my-account/logs)
+Bilagan är i gemener för `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` och själva e-postmeddelandet innehåller en kort sammanfattning av de hämtade loggarna. Du kan också ladda ner loggar när som helst från [Mitt konto → Loggar](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Aliaskontakter (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Till skillnad från andra API-slutpunkter kräver dessa [Autentisering](#authentication) "användarnamn" lika med aliasanvändarnamnet och "lösenord" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Detta slutpunktsavsnitt är under utveckling och kommer (förhoppningsvis) att släppas under 2024. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn "Appar" i navigeringen på vår webbplats.
 
 ### Lista kontakter {#list-contacts}
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Aliaskalendrar (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Till skillnad från andra API-slutpunkter kräver dessa [Autentisering](#authentication) "användarnamn" lika med aliasanvändarnamnet och "lösenord" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Detta slutpunktsavsnitt är under utveckling och kommer (förhoppningsvis) att släppas under 2024. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn "Appar" i navigeringen på vår webbplats.
 
 ### Lista kalendrar {#list-calendars}
 
@@ -323,7 +323,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Kommer snart**
 
-### Ta bort kalender {#delete-calendar}
+### Ta bort kalendern {#delete-calendar}
 
 > `DELETE /v1/calendars/:id`
 
@@ -332,16 +332,16 @@ curl -X PUT BASE_URI/v1/account \
 ## Aliasmeddelanden (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Till skillnad från andra API-slutpunkter kräver dessa [Autentisering](#authentication) "användarnamn" lika med aliasanvändarnamnet och "lösenord" lika med det aliasgenererade lösenordet som grundläggande auktoriseringsrubriker.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Detta slutpunktsavsnitt är under utveckling och kommer (förhoppningsvis) att släppas under 2024. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn "Appar" i navigeringen på vår webbplats.
 
 Se till att du har följt installationsanvisningarna för din domän.
 
 Dessa instruktioner finns i vår FAQ-sektion [Stöder ni att ta emot e-post med IMAP?](/faq#do-you-support-receiving-email-with-imap).
 
-### Visa och sök efter meddelanden {#list-and-search-for-messages}
+### Lista och sök efter meddelanden {#list-and-search-for-messages}
 
 > `GET /v1/messages`
 
@@ -350,7 +350,7 @@ Dessa instruktioner finns i vår FAQ-sektion [Stöder ni att ta emot e-post med 
 ### Skapa meddelande {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Detta kommer **INTE** att skicka ett e-postmeddelande – det kommer bara att lägga till meddelandet i din inkorgsmapp (t.ex. liknar detta IMAP-kommandot `APPEND`). Om du vill skicka ett e-postmeddelande, se [Skapa utgående SMTP-e-post](#create-outbound-smtp-email) nedan. Efter att du har skapat det utgående SMTP-e-postmeddelandet kan du lägga till en kopia av det med hjälp av denna slutpunkt till ditt alias inkorg för lagringsändamål.
 
 > `POST /v1/messages`
 
@@ -362,7 +362,7 @@ Dessa instruktioner finns i vår FAQ-sektion [Stöder ni att ta emot e-post med 
 
 **Kommer snart**
 
-### Uppdateringsmeddelande {#update-message}
+### Uppdatera meddelande {#update-message}
 
 > `PUT /v1/messages/:id`
 
@@ -377,10 +377,10 @@ Dessa instruktioner finns i vår FAQ-sektion [Stöder ni att ta emot e-post med 
 ## Aliasmappar (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Mappslutpunkter med en mapps sökväg <code>/v1/folders/:path</code> som slutpunkt är utbytbara mot en mapps ID <code>:id</code>. Det betyder att du kan referera till mappen med antingen dess <code>path</code>- eller <code>id</code>-värde.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Detta slutpunktsavsnitt är under utveckling och kommer (förhoppningsvis) att släppas under 2024. Under tiden, vänligen använd en IMAP-klient från rullgardinsmenyn "Appar" i navigeringen på vår webbplats.
 
 ### Lista mappar {#list-folders}
 
@@ -400,13 +400,13 @@ Dessa instruktioner finns i vår FAQ-sektion [Stöder ni att ta emot e-post med 
 
 **Kommer snart**
 
-### Uppdatera mapp {#update-folder}
+### Uppdatera mappen {#update-folder}
 
 > `PUT /v1/folders/:id`
 
 **Kommer snart**
 
-### Ta bort mapp {#delete-folder}
+### Ta bort mappen {#delete-folder}
 
 > `DELETE /v1/folders/:id`
 
@@ -422,7 +422,7 @@ Dessa instruktioner finns i vår FAQ-sektion [Stöder ni att ta emot e-post med 
 
 Se till att du har följt installationsanvisningarna för din domän.
 
-Dessa instruktioner finns på [Mitt konto → Domäner → Inställningar → Utgående SMTP-konfiguration](/my-account/domains). Du måste se till att du har konfigurerat DKIM, Return-Path och DMARC för att skicka utgående SMTP med din domän.
+Dessa instruktioner finns på [Mitt konto → Domäner → Inställningar → Utgående SMTP-konfiguration](/my-account/domains). Du måste se till att DKIM, Return-Path och DMARC är konfigurerade för att skicka utgående SMTP med din domän.
 
 ### Hämta gräns för utgående SMTP-e-post {#get-outbound-smtp-email-limit}
 
@@ -441,7 +441,7 @@ curl BASE_URI/v1/emails/limit \
 
 Observera att denna slutpunkt inte returnerar egenskapsvärden för ett e-postmeddelandes `message`, `headers` eller `rejectedErrors`.
 
-För att returnera dessa egenskaper och deras värden, använd [Hämta e-post](#retrieve-email)-slutpunkten med ett e-postadress.
+För att returnera dessa egenskaper och deras värden, använd slutpunkten [Hämta e-post](#retrieve-email) med ett e-post-ID.
 
 > `GET /v1/emails`
 
@@ -462,9 +462,9 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Skapa utgående SMTP-e-post {#create-outbound-smtp-email}
 
-Vårt API för att skapa e-postmeddelanden är inspirerat av och använder Nodemailers konfiguration av meddelandealternativ. Vänligen hänvisa till [Konfiguration av Nodemailer-meddelande](https://nodemailer.com/message/) för alla brödtextparametrar nedan.
+Vårt API för att skapa ett e-postmeddelande är inspirerat av och använder Nodemailers konfiguration av meddelandealternativ. Vänligen hänvisa till [Konfiguration av Nodemailer-meddelande](https://nodemailer.com/message/) för alla brödtextparametrar nedan.
 
-Observera att med undantag för `envelope` och `dkim` (eftersom vi ställer in dem automatiskt åt dig), stöder vi alla Nodemailer-alternativ. Vi ställer automatiskt in alternativen `disableFileAccess` och `disableUrlAccess` till `true` av säkerhetsskäl.
+Observera att med undantag för `envelope` och `dkim` (eftersom vi ställer in dem automatiskt åt dig) stöder vi alla Nodemailer-alternativ. Vi ställer automatiskt in alternativen `disableFileAccess` och `disableUrlAccess` till `true` av säkerhetsskäl.
 
 Du bör antingen skicka det enda alternativet `raw` med din fullständiga råa e-postadress inklusive rubriker **eller** skicka individuella alternativ för brödtextparametern nedan.
 
@@ -476,21 +476,21 @@ Denna API-slutpunkt kommer automatiskt att koda emojis åt dig om de finns i rub
 | ---------------- | -------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `from` | Inga | Sträng (e-post) | Avsändarens e-postadress (måste finnas som ett alias för domänen). |
 | `to` | Inga | Sträng eller array | Kommaavgränsad lista eller en array med mottagare för "Till"-rubriken. |
-| `cc` | Inga | Sträng eller array | Kommaavgränsad lista eller en array med mottagare för "Cc"-rubriken. |
+| `cc` | Inga | Sträng eller array | Kommaavgränsad lista eller en array med mottagare för rubriken "Cc". |
 | `bcc` | Inga | Sträng eller array | Kommaavgränsad lista eller en array med mottagare för rubriken "Bcc". |
 | `subject` | Inga | Sträng | Ämnet för e-postmeddelandet. |
 | `text` | Inga | Sträng eller buffert | Klartextversionen av meddelandet. |
 | `html` | Inga | Sträng eller buffert | HTML-versionen av meddelandet. |
-| `attachments` | Inga | Array | En array av bilagor (se [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
+| `attachments` | Inga | Matris | En array av bilagor (se [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
 | `sender` | Inga | Sträng | E-postadressen för rubriken "Avsändare" (se [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)). |
 | `replyTo` | Inga | Sträng | E-postadressen för rubriken "Svara till". |
 | `inReplyTo` | Inga | Sträng | Meddelande-ID som meddelandet är som svar på. |
 | `references` | Inga | Sträng eller array | Mellanslagsavgränsad lista eller en array av meddelande-ID:n. |
-| `attachDataUrls` | Inga | Boolean | Om `true` konverteras `data:` bilder i meddelandets HTML-innehåll till inbäddade bilagor. |
+| `attachDataUrls` | Inga | Booleansk | Om `true` konverteras `data:` bilder i meddelandets HTML-innehåll till inbäddade bilagor. |
 | `watchHtml` | Inga | Sträng | En Apple Watch-specifik HTML-version av meddelandet ([according to the Nodemailer docs](https://nodemailer.com/message/#content-options]), de senaste klockorna kräver inte att detta ställs in). |
 | `amp` | Inga | Sträng | En AMP4EMAIL-specifik HTML-version av meddelandet (se [Nodemailer's example](https://nodemailer.com/message/#amp-example)). |
 | `icalEvent` | Inga | Objekt | En iCalendar-händelse att använda som alternativt meddelandeinnehåll (se [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
-| `alternatives` | Inga | Array | En array med alternativt meddelandeinnehåll (se [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
+| `alternatives` | Inga | Matris | En array med alternativt meddelandeinnehåll (se [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
 | `encoding` | Inga | Sträng | Kodning för text och HTML-strängar (standard är `"utf-8"`, men stöder även kodningsvärdena `"hex"` och `"base64"`). |
 | `raw` | Inga | Sträng eller buffert | Ett specialgenererat meddelande i RFC822-format att använda (istället för ett som genereras av Nodemailer – se [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
 | `textEncoding` | Inga | Sträng | Kodning som tvingas användas för textvärden (antingen `"quoted-printable"` eller `"base64"`). Standardvärdet är det närmaste värdet som upptäcks (för ASCII använd `"quoted-printable"`). |
@@ -532,7 +532,7 @@ curl BASE_URI/v1/emails/:id \
 
 ### Ta bort utgående SMTP-e-post {#delete-outbound-smtp-email}
 
-Borttagning av e-postmeddelanden sätter statusen till `"rejected"` (och bearbetar den därefter inte i kön) endast om den aktuella statusen är en av `"pending"`, `"queued"` eller `"deferred"`. Vi kan komma att rensa e-postmeddelanden automatiskt 30 dagar efter att de skapades och/eller skickades – därför bör du behålla en kopia av utgående SMTP-e-postmeddelanden i din klient, databas eller applikation. Du kan referera till vårt e-post-ID-värde i din databas om så önskas – detta värde returneras från både [Skapa e-post](#create-email) och [Hämta e-post](#retrieve-email) slutpunkter.
+Borttagning av e-postmeddelanden kommer att sätta statusen till `"rejected"` (och därefter inte bearbeta den i kön) om och endast om den aktuella statusen är en av `"pending"`, `"queued"` eller `"deferred"`. Vi kan komma att rensa e-postmeddelanden automatiskt 30 dagar efter att de skapades och/eller skickades – därför bör du behålla en kopia av utgående SMTP-e-postmeddelanden i din klient, databas eller applikation. Du kan referera till vårt e-post-ID-värde i din databas om så önskas – detta värde returneras från både [Skapa e-post](#create-email) och [Hämta e-post](#retrieve-email) slutpunkter.
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Domäner {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Domänslutpunkter med domännamnet <code>/v1/domains/:domain_name</code> som slutpunkt är utbytbara mot domänens ID <code>:domain_id</code>. Det betyder att du kan referera till domänen med antingen dess <code>name</code>- eller <code>id</code>-värde.
 
 ### Lista domäner {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Från och med den 1 november 2024 kommer API-slutpunkterna för [Lista domäner](#list-domains) och [Lista domänalias](#list-domain-aliases) som standard att ha max `1000` resultat per sida. Om du vill välja att använda detta beteende tidigt kan du skicka `?paginate=true` som en extra frågesträngsparameter till URL:en för slutpunktsfrågan. Se [Paginering](#pagination) för mer information.
 
 > `GET /v1/domains`
 
@@ -580,12 +580,12 @@ curl BASE_URI/v1/domains \
 | `team_domain` | Inga | Sträng (domän-ID eller domännamn; FQDN) | Tilldela automatiskt denna domän till samma team från en annan domän. Det betyder att alla medlemmar från denna domän kommer att tilldelas som teammedlemmar, och `plan` kommer automatiskt också att ställas in på `team`. Du kan ställa in detta på `"none"` om det behövs för att explicit inaktivera detta, men det är inte nödvändigt. |
 | `plan` | Inga | Sträng (uppräknningsbar) | Abonnemangstyp (måste vara `"free"`, `"enhanced_protection"` eller `"team"`, standardinställningen är `"free"` eller användarens nuvarande betalda abonnemang om sådant finns) |
 | `catchall` | Inga | Sträng (avgränsade e-postadresser) eller boolesk | Skapa ett standardalias för catch-all, standardvärdet är `true` (om `true` används API-användarens e-postadress som mottagare, och om `false` skapas ingen catch-all). Om en sträng skickas är det en avgränsad lista med e-postadresser som ska användas som mottagare (avgränsade med radbrytning, mellanslag och/eller kommatecken). |
-| `has_adult_content_protection` | Inga | Boolean | Huruvida skydd mot vuxeninnehåll ska aktiveras för Spam Scanner på den här domänen |
-| `has_phishing_protection` | Inga | Boolean | Huruvida Spam Scanner ska aktivera nätfiskeskydd på den här domänen |
-| `has_executable_protection` | Inga | Boolean | Huruvida skyddet för körbara filer i Spam Scanner ska aktiveras på den här domänen |
-| `has_virus_protection` | Inga | Boolean | Huruvida Spam Scanner-virusskydd ska aktiveras på den här domänen |
-| `has_recipient_verification` | Inga | Boolean | Global domänstandard för om aliasmottagare ska behöva klicka på en e-postverifieringslänk för att e-postmeddelanden ska kunna skickas vidare |
-| `ignore_mx_check` | Inga | Boolean | Huruvida MX-postkontrollen på domänen ska ignoreras för verifiering. Detta är främst för användare som har avancerade MX-utbyteskonfigurationsregler och behöver behålla sin befintliga MX-utbyte och vidarebefordra till vår. |
+| `has_adult_content_protection` | Inga | Booleansk | Huruvida skydd mot vuxeninnehåll ska aktiveras för Spam Scanner på den här domänen |
+| `has_phishing_protection` | Inga | Booleansk | Huruvida Spam Scanner ska aktivera nätfiskeskydd på den här domänen |
+| `has_executable_protection` | Inga | Booleansk | Huruvida skydd för körbara filer i Spam Scanner ska aktiveras på den här domänen |
+| `has_virus_protection` | Inga | Booleansk | Huruvida Spam Scanner-virusskydd ska aktiveras på den här domänen |
+| `has_recipient_verification` | Inga | Booleansk | Global domänstandard för om aliasmottagare ska behöva klicka på en e-postverifieringslänk för att e-postmeddelanden ska kunna skickas vidare |
+| `ignore_mx_check` | Inga | Booleansk | Huruvida MX-postkontrollen på domänen ska ignoreras för verifiering. Detta är främst för användare som har avancerade MX-utbyteskonfigurationsregler och behöver behålla sin befintliga MX-utbyte och vidarebefordra till vår. |
 | `retention_days` | Inga | Antal | Heltal mellan `0` och `30` som motsvarar antalet lagringsdagar för att lagra utgående SMTP-e-postmeddelanden när de har levererats eller fått permanent fel. Standardvärdet är `0`, vilket innebär att utgående SMTP-e-postmeddelanden rensas och redigeras omedelbart för din säkerhet. |
 | `bounce_webhook` | Inga | Sträng (URL) eller booleskt (falskt) | Webhookens URL för `http://` eller `https://` som du väljer att skicka studsande webhooks till. Vi skickar en `POST`-förfrågan till denna URL med information om utgående SMTP-fel (t.ex. mjuka eller hårda fel – så att du kan hantera dina prenumeranter och programmatiskt hantera din utgående e-post). |
 | `max_quota_per_alias` | Inga | Sträng | Maximal lagringskvot för alias på detta domännamn. Ange ett värde som "1 GB" som kommer att analyseras av [bytes](https://github.com/visionmedia/bytes.js). |
@@ -632,7 +632,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/verify-smtp \
   -u API_TOKEN:
 ```
 
-### Lista domänomfattande lösenord som kan komma i alla lägen {#list-domain-wide-catch-all-passwords}
+### Lista domänomfattande lösenord {#list-domain-wide-catch-all-passwords}
 
 > `GET /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
@@ -643,7 +643,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Skapa ett domänomfattande lösenord {#create-domain-wide-catch-all-password}
+### Skapa domänomfattande lösenord {#create-domain-wide-catch-all-password}
 
 > `POST /v1/domains/DOMAIN_NAME/catch-all-passwords`
 
@@ -659,7 +659,7 @@ curl BASE_URL/v1/domains/DOMAIN_NAME/catch-all-passwords \
   -u API_TOKEN:
 ```
 
-### Ta bort domänomfattande catch-all-lösenord {#remove-domain-wide-catch-all-password}
+### Ta bort domänomfattande lösenord {#remove-domain-wide-catch-all-password}
 
 > `DELETE /v1/domains/DOMAIN_NAME/catch-all-passwords/:token_id`
 
@@ -670,19 +670,19 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
   -u API_TOKEN:
 ```
 
-### Uppdatera domän {#update-domain}
+### Uppdatera domänen {#update-domain}
 
 > `PUT /v1/domains/DOMAIN_NAME`
 
 | Kroppsparameter | Nödvändig | Typ | Beskrivning |
 | ------------------------------ | -------- | ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `smtp_port` | Inga | Sträng eller tal | Anpassad port att konfigurera för SMTP-vidarebefordran (standard är `"25"`) |
-| `has_adult_content_protection` | Inga | Boolean | Huruvida skydd mot vuxeninnehåll ska aktiveras för Spam Scanner på den här domänen |
-| `has_phishing_protection` | Inga | Boolean | Huruvida Spam Scanner ska aktivera nätfiskeskydd på den här domänen |
-| `has_executable_protection` | Inga | Boolean | Huruvida skyddet för körbara filer i Spam Scanner ska aktiveras på den här domänen |
-| `has_virus_protection` | Inga | Boolean | Huruvida Spam Scanner-virusskydd ska aktiveras på den här domänen |
-| `has_recipient_verification` | Inga | Boolean | Global domänstandard för om aliasmottagare ska behöva klicka på en e-postverifieringslänk för att e-postmeddelanden ska kunna skickas vidare |
-| `ignore_mx_check` | Inga | Boolean | Huruvida MX-postkontrollen på domänen ska ignoreras för verifiering. Detta är främst för användare som har avancerade MX-utbyteskonfigurationsregler och behöver behålla sin befintliga MX-utbyte och vidarebefordra till vår. |
+| `has_adult_content_protection` | Inga | Booleansk | Huruvida skydd mot vuxeninnehåll ska aktiveras för Spam Scanner på den här domänen |
+| `has_phishing_protection` | Inga | Booleansk | Huruvida Spam Scanner ska aktivera nätfiskeskydd på den här domänen |
+| `has_executable_protection` | Inga | Booleansk | Huruvida skydd för körbara filer i Spam Scanner ska aktiveras på den här domänen |
+| `has_virus_protection` | Inga | Booleansk | Huruvida Spam Scanner-virusskydd ska aktiveras på den här domänen |
+| `has_recipient_verification` | Inga | Booleansk | Global domänstandard för om aliasmottagare ska behöva klicka på en e-postverifieringslänk för att e-postmeddelanden ska kunna skickas vidare |
+| `ignore_mx_check` | Inga | Booleansk | Huruvida MX-postkontrollen på domänen ska ignoreras för verifiering. Detta är främst för användare som har avancerade MX-utbyteskonfigurationsregler och behöver behålla sin befintliga MX-utbyte och vidarebefordra till vår. |
 | `retention_days` | Inga | Antal | Heltal mellan `0` och `30` som motsvarar antalet lagringsdagar för att lagra utgående SMTP-e-postmeddelanden när de har levererats eller fått permanent fel. Standardvärdet är `0`, vilket innebär att utgående SMTP-e-postmeddelanden rensas och redigeras omedelbart för din säkerhet. |
 | `bounce_webhook` | Inga | Sträng (URL) eller booleskt (falskt) | Webhookens URL för `http://` eller `https://` som du väljer att skicka studsande webhooks till. Vi skickar en `POST`-förfrågan till denna URL med information om utgående SMTP-fel (t.ex. mjuka eller hårda fel – så att du kan hantera dina prenumeranter och programmatiskt hantera din utgående e-post). |
 | `max_quota_per_alias` | Inga | Sträng | Maximal lagringskvot för alias på detta domännamn. Ange ett värde som "1 GB" som kommer att analyseras av [bytes](https://github.com/visionmedia/bytes.js). |
@@ -694,7 +694,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### Ta bort domän {#delete-domain}
+### Ta bort domänen {#delete-domain}
 
 > `DELETE /v1/domains/:domain_name`
 
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Om den inbjudna användaren redan är en accepterad medlem i andra domäner som administratören som bjuder in dem är medlem i, kommer inbjudan att accepteras automatiskt och inget e-postmeddelande skickas.
 
 ### Ta bort domäninbjudan {#remove-domain-invite}
 
@@ -786,15 +786,15 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 ### Generera ett aliaslösenord {#generate-an-alias-password}
 
-Observera att om du inte skickar instruktioner via e-post, kommer användarnamnet och lösenordet att finnas i JSON-svarstexten för en lyckad begäran i formatet `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
+Observera att om du inte skickar instruktioner via e-post kommer användarnamnet och lösenordet att finnas i JSON-svarstexten för en lyckad begäran i formatet `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }`.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
 | Kroppsparameter | Nödvändig | Typ | Beskrivning |
 | ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | Inga | Sträng | Ditt anpassade nya lösenord att använda för aliaset. Observera att du kan lämna detta tomt eller helt sakna detta i din API-förfrågning om du vill ha ett slumpmässigt genererat och starkt lösenord. |
+| `new_password` | Inga | Sträng | Ditt nya anpassade lösenord att använda för aliaset. Observera att du kan lämna detta tomt eller helt sakna detta i din API-förfrågning om du vill ha ett slumpmässigt genererat och starkt lösenord. |
 | `password` | Inga | Sträng | Befintligt lösenord för alias för att ändra lösenordet utan att ta bort den befintliga IMAP-postlådelagringen (se alternativet `is_override` nedan om du inte längre har det befintliga lösenordet). |
-| `is_override` | Inga | Boolean | **ANVÄND MED FÖRSIKTIGHET**: Detta kommer att åsidosätta det befintliga aliaslösenordet och databasen helt och permanent ta bort den befintliga IMAP-lagringen och återställa aliasets SQLite-e-postdatabas helt. Gör en säkerhetskopia om möjligt om du har en befintlig postlåda kopplad till detta alias. |
+| `is_override` | Inga | Booleansk | **ANVÄND MED FÖRSIKTIGHET**: Detta kommer att åsidosätta det befintliga aliaslösenordet och databasen helt och permanent ta bort den befintliga IMAP-lagringen och återställa aliasets SQLite-e-postdatabas helt. Gör en säkerhetskopia om möjligt om du har en befintlig postlåda kopplad till detta alias. |
 | `emailed_instructions` | Inga | Sträng | E-postadress att skicka aliaset lösenord och installationsanvisningar till. |
 
 > Exempelförfrågan:
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Lista domänalias {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Från och med den 1 november 2024 kommer API-slutpunkterna för [Lista domäner](#list-domains) och [Lista domänalias](#list-domain-aliases) som standard att ha max `1000` resultat per sida. Om du vill välja att använda detta beteende tidigt kan du skicka `?paginate=true` som en extra frågesträngsparameter till URL:en för slutpunktsfrågan. Se [Paginering](#pagination) för mer information.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -837,14 +837,14 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `recipients` | Inga | Sträng eller array | Lista över mottagare (måste vara radbrytnings-/mellanslags-/kommaavgränsad. Sträng eller array med giltiga e-postadresser, fullständigt kvalificerade domännamn ("FQDN"), IP-adresser och/eller webhook-URL:er – och om den inte anges eller är en tom array kommer användarens e-postadress som gör API-begäran att anges som mottagare) |
 | `description` | Inga | Sträng | Aliasbeskrivning |
 | `labels` | Inga | Sträng eller array | Lista med etiketter (måste vara radbrytnings-/mellanslags-/kommaseparerade, strängar eller arrayer) |
-| `has_recipient_verification` | Inga | Boolean | Kräv att mottagarna klickar på en länk för e-postverifiering för att e-postmeddelanden ska kunna skickas (standardinställningen är domänens inställning om den inte uttryckligen anges i begäran) |
-| `is_enabled` | Inga | Boolean | Huruvida detta alias ska aktiveras eller inaktiveras (om det är inaktiverat kommer e-postmeddelanden inte att dirigeras någonstans men returnerar lyckade statuskoder). Om ett värde skickas konverteras det till ett booleskt värde med hjälp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_recipient_verification` | Inga | Booleansk | Kräv att mottagarna klickar på en länk för e-postverifiering för att e-postmeddelanden ska kunna skickas (standardinställningen är domänens inställning om den inte uttryckligen anges i begäran) |
+| `is_enabled` | Inga | Booleansk | Huruvida detta alias ska aktiveras eller inaktiveras (om det är inaktiverat kommer e-postmeddelanden inte att dirigeras någonstans men returnerar lyckade statuskoder). Om ett värde skickas konverteras det till ett booleskt värde med hjälp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `error_code_if_disabled` | Inga | Nummer (antingen `250`, `421` eller `550`) | Inkommande e-post till detta alias kommer att avvisas om `is_enabled` är `false` med antingen `250` (leverera tyst ingenstans, t.ex. svart hål eller `/dev/null`), `421` (mjuk avvisning; och försök igen i upp till ~5 dagar) eller `550` permanent fel och avvisning. Standardinställningen är `250`. |
-| `has_imap` | Inga | Boolean | Huruvida IMAP-lagring ska aktiveras eller inaktiveras för detta alias (om det är inaktiverat lagras inte inkommande e-postmeddelanden i [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Om ett värde skickas konverteras det till ett booleskt värde med [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | Inga | Boolean | Huruvida [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) ska aktiveras eller inaktiveras för [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) med hjälp av aliaset `public_key`. |
+| `has_imap` | Inga | Booleansk | Huruvida IMAP-lagring ska aktiveras eller inaktiveras för detta alias (om det är inaktiverat lagras inte inkommande e-postmeddelanden i [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Om ett värde skickas konverteras det till ett booleskt värde med [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_pgp` | Inga | Booleansk | Huruvida [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) ska aktiveras eller inaktiveras för [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) med hjälp av aliaset `public_key`. |
 | `public_key` | Inga | Sträng | OpenPGP publik nyckel i ASCII Armor-format ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); t.ex. GPG-nyckel för `support@forwardemail.net`). Detta gäller endast om du har `has_pgp` inställt på `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Inga | Sträng | Maximal lagringskvot för detta alias. Lämna tomt för att återställa till domänens nuvarande maximala kvot eller ange ett värde som "1 GB" som kommer att analyseras av [bytes](https://github.com/visionmedia/bytes.js). Detta värde kan endast justeras av domänadministratörer. |
-| `vacation_responder_is_enabled` | Inga | Boolean | Om du vill aktivera eller inaktivera en automatisk semestersvarare. |
+| `vacation_responder_is_enabled` | Inga | Booleansk | Om en automatisk semestersvarare ska aktiveras eller inaktiveras. |
 | `vacation_responder_start_date` | Inga | Sträng | Startdatum för semestersvar (om det är aktiverat och inget startdatum är angivet här, antas det att det redan har startats). Vi stöder datumformat som `MM/DD/YYYY`, `YYYY-MM-DD` och andra datumformat via smart parsing med `dayjs`. |
 | `vacation_responder_end_date` | Inga | Sträng | Slutdatum för semestersvar (om det är aktiverat och inget slutdatum är angivet här, antas det att det aldrig slutar och svarar för alltid). Vi stöder datumformat som `MM/DD/YYYY`, `YYYY-MM-DD` och andra datumformat via smart parsing med `dayjs`. |
 | `vacation_responder_subject` | Inga | Sträng | Ämne i klartext för semestersvaret, t.ex. "Frånvarande". Vi använder `striptags` för att ta bort all HTML här. |
@@ -859,7 +859,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases \
 
 ### Hämta domänalias {#retrieve-domain-alias}
 
-Du kan hämta ett domänalias antingen genom dess `id` eller dess `name` värde.
+Du kan hämta ett domänalias antingen med hjälp av dess `id`- eller `name`-värde.
 
 > `GET /v1/domains/:domain_name/aliases/:alias_id`
 
@@ -886,17 +886,17 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | Kroppsparameter | Nödvändig | Typ | Beskrivning |
 | ------------------------------- | -------- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `name` | Inga | Sträng | Aliasnamn |
-| `recipients` | Inga | Sträng eller array | Lista över mottagare (måste vara radbrytnings-/mellanslags-/kommaavgränsad. Sträng eller array med giltiga e-postadresser, fullständigt kvalificerade domännamn ("FQDN"), IP-adresser och/eller webhook-URL:er) |
+| `recipients` | Inga | Sträng eller array | Lista över mottagare (måste vara radbrytnings-/mellanslags-/kommaavgränsad). Sträng eller array med giltiga e-postadresser, fullständigt kvalificerade domännamn ("FQDN"), IP-adresser och/eller webhook-URL:er. |
 | `description` | Inga | Sträng | Aliasbeskrivning |
 | `labels` | Inga | Sträng eller array | Lista med etiketter (måste vara radbrytnings-/mellanslags-/kommaseparerade, strängar eller arrayer) |
-| `has_recipient_verification` | Inga | Boolean | Kräv att mottagarna klickar på en länk för e-postverifiering för att e-postmeddelanden ska kunna skickas (standardinställningen är domänens inställning om den inte uttryckligen anges i begäran) |
-| `is_enabled` | Inga | Boolean | Huruvida detta alias ska aktiveras eller inaktiveras (om det är inaktiverat kommer e-postmeddelanden inte att dirigeras någonstans men returnerar lyckade statuskoder). Om ett värde skickas konverteras det till ett booleskt värde med hjälp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_recipient_verification` | Inga | Booleansk | Kräv att mottagarna klickar på en länk för e-postverifiering för att e-postmeddelanden ska kunna skickas (standardinställningen är domänens inställning om den inte uttryckligen anges i begäran) |
+| `is_enabled` | Inga | Booleansk | Huruvida detta alias ska aktiveras eller inaktiveras (om det är inaktiverat kommer e-postmeddelanden inte att dirigeras någonstans men returnerar lyckade statuskoder). Om ett värde skickas konverteras det till ett booleskt värde med hjälp av [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
 | `error_code_if_disabled` | Inga | Nummer (antingen `250`, `421` eller `550`) | Inkommande e-post till detta alias kommer att avvisas om `is_enabled` är `false` med antingen `250` (leverera tyst ingenstans, t.ex. svart hål eller `/dev/null`), `421` (mjuk avvisning; och försök igen i upp till ~5 dagar) eller `550` permanent fel och avvisning. Standardinställningen är `250`. |
-| `has_imap` | Inga | Boolean | Huruvida IMAP-lagring ska aktiveras eller inaktiveras för detta alias (om det är inaktiverat lagras inte inkommande e-postmeddelanden i [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Om ett värde skickas konverteras det till ett booleskt värde med [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
-| `has_pgp` | Inga | Boolean | Huruvida [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) ska aktiveras eller inaktiveras för [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) med hjälp av aliaset `public_key`. |
+| `has_imap` | Inga | Booleansk | Huruvida IMAP-lagring ska aktiveras eller inaktiveras för detta alias (om det är inaktiverat lagras inte inkommande e-postmeddelanden i [IMAP storage](/blog/docs/best-quantum-safe-encrypted-email-service). Om ett värde skickas konverteras det till ett booleskt värde med [boolean](https://github.com/thenativeweb/boolean#quick-start)) |
+| `has_pgp` | Inga | Booleansk | Huruvida [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) ska aktiveras eller inaktiveras för [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) med hjälp av aliaset `public_key`. |
 | `public_key` | Inga | Sträng | OpenPGP publik nyckel i ASCII Armor-format ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); t.ex. GPG-nyckel för `support@forwardemail.net`). Detta gäller endast om du har `has_pgp` inställt på `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | Inga | Sträng | Maximal lagringskvot för detta alias. Lämna tomt för att återställa till domänens nuvarande maximala kvot eller ange ett värde som "1 GB" som kommer att analyseras av [bytes](https://github.com/visionmedia/bytes.js). Detta värde kan endast justeras av domänadministratörer. |
-| `vacation_responder_is_enabled` | Inga | Boolean | Om du vill aktivera eller inaktivera en automatisk semestersvarare. |
+| `vacation_responder_is_enabled` | Inga | Booleansk | Om en automatisk semestersvarare ska aktiveras eller inaktiveras. |
 | `vacation_responder_start_date` | Inga | Sträng | Startdatum för semestersvar (om det är aktiverat och inget startdatum är angivet här, antas det att det redan har startats). Vi stöder datumformat som `MM/DD/YYYY`, `YYYY-MM-DD` och andra datumformat via smart parsing med `dayjs`. |
 | `vacation_responder_end_date` | Inga | Sträng | Slutdatum för semestersvar (om det är aktiverat och inget slutdatum är angivet här, antas det att det aldrig slutar och svarar för alltid). Vi stöder datumformat som `MM/DD/YYYY`, `YYYY-MM-DD` och andra datumformat via smart parsing med `dayjs`. |
 | `vacation_responder_subject` | Inga | Sträng | Ämne i klartext för semestersvaret, t.ex. "Frånvarande". Vi använder `striptags` för att ta bort all HTML här. |
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Kryptera {#encrypt}
 
-Vi låter dig kryptera poster även med gratisplanen utan kostnad. Sekretess bör inte vara en funktion, den bör vara inbyggd i alla aspekter av en produkt. Som efterfrågats i en [Diskussion om sekretessguider](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) och på [våra GitHub-problem](https://github.com/forwardemail/forwardemail.net/issues/254) har vi lagt till detta.
+Vi låter dig kryptera poster även med gratisplanen utan kostnad. Sekretess bör inte vara en funktion, den bör vara inbyggd i alla aspekter av en produkt. Som efterfrågats i [Diskussion om sekretessguider](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) och på [våra GitHub-problem](https://github.com/forwardemail/forwardemail.net/issues/254) har vi lagt till detta.
 
 ### Kryptera TXT-post {#encrypt-txt-record}
 

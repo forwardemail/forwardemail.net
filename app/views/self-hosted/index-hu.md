@@ -2,31 +2,31 @@
 
 ## Tartalomjegyzék {#table-of-contents}
 
-* [Kezdő lépések](#getting-started)
+* [Első lépések](#getting-started)
 * [Követelmények](#requirements)
-  * [Cloud-init / Felhasználói adatok](#cloud-init--user-data)
+  * [Felhőalapú init / Felhasználói adatok](#cloud-init--user-data)
 * [Telepítés](#install)
-  * [Telepítési szkript hibakeresése](#debug-install-script)
-  * [Kéri](#prompts)
-  * [Kezdeti beállítás (1. lehetőség)](#initial-setup-option-1)
+  * [Hibakeresési telepítőszkript](#debug-install-script)
+  * [Promptok](#prompts)
+  * [Kezdeti beállítás (1. opció)](#initial-setup-option-1)
 * [Szolgáltatások](#services)
-  * [Fontos fájl elérési utak](#important-file-paths)
+  * [Fontos fájlelérési utak](#important-file-paths)
 * [Konfiguráció](#configuration)
   * [Kezdeti DNS-beállítás](#initial-dns-setup)
-* [Felvétel](#onboarding)
+* [Bevezetés](#onboarding)
 * [Tesztelés](#testing)
   * [Az első alias létrehozása](#creating-your-first-alias)
-  * [Az első e-mail küldése / fogadása](#sending--receiving-your-first-email)
+  * [Első e-mail küldése / fogadása](#sending--receiving-your-first-email)
 * [Hibaelhárítás](#troubleshooting)
-  * [Mi az alapvető hitelesítési felhasználónév és jelszó](#what-is-the-basic-auth-username-and-password)
-  * [Honnan tudhatom, hogy mi fut](#how-do-i-know-what-is-running)
-  * [Honnan tudhatom, ha valami nem fut, annak lennie kellene](#how-do-i-know-if-something-isnt-running-that-should-be)
-  * [Hogyan találhatok naplókat](#how-do-i-find-logs)
-  * [Miért lépnek túl a kimenő e-mailjeim](#why-are-my-outgoing-emails-timing-out)
+  * [Mi az alapvető hitelesítési felhasználónév és jelszó?](#what-is-the-basic-auth-username-and-password)
+  * [Honnan tudom, hogy mi fut?](#how-do-i-know-what-is-running)
+  * [Honnan tudom, hogy valami nem működik, pedig annak működnie kellene?](#how-do-i-know-if-something-isnt-running-that-should-be)
+  * [Hogyan találok naplókat?](#how-do-i-find-logs)
+  * [Miért túllépik az időkorlátot a kimenő e-mailjeim?](#why-are-my-outgoing-emails-timing-out)
 
 ## Első lépések {#getting-started}
 
-Saját hosztolt e-mail megoldásunk, mint minden termékünk, 100%-ban nyílt forráskódú – előtérben és háttérben egyaránt. Ez azt jelenti:
+Saját tárhelyen futó e-mail megoldásunk, mint minden termékünk, 100%-ban nyílt forráskódú – mind a felhasználói felület, mind a háttérfelület tekintetében. Ez azt jelenti:
 
 1. **Teljes átláthatóság**: Minden egyes kódsor, amely az e-mailjeidet feldolgozza, nyilvánosan ellenőrizhető.
 2. **Közösségi hozzájárulások**: Bárki hozzájárulhat fejlesztésekhez vagy problémák megoldásához.
@@ -35,7 +35,7 @@ Saját hosztolt e-mail megoldásunk, mint minden termékünk, 100%-ban nyílt fo
 
 A teljes kódbázis elérhető a GitHubon a <https://github.com/forwardemail/forwardemail.net>, címen, MIT licenc alatt.
 
-Az architektúra konténereket tartalmaz:
+Az architektúra a következőkhöz tartalmaz konténereket:
 
 * SMTP szerver a kimenő e-mailekhez
 * IMAP/POP3 szerverek az e-mailek lekéréséhez
@@ -45,29 +45,29 @@ Az architektúra konténereket tartalmaz:
 * SQLite a biztonságos, titkosított postafiók-tároláshoz
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution)
+> Mindenképpen tekintse meg a [saját tárhelyen tárolt blog](https://forwardemail.net/blog/docs/self-hosted-solution) útmutatónkat
 >
-> And for those interested in a more broken down step-by-step version see our [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Azok számára, akiket érdekel egy részletesebb, lépésről lépésre bemutatott verzió, tekintse meg a [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) vagy [Debian](https://forwardemail.net/guides/selfhosted-on-debian) alapú útmutatóinkat.
 
 ## Követelmények {#requirements}
 
-A telepítő szkript futtatása előtt győződjön meg arról, hogy rendelkezik a következőkkel:
+A telepítőszkript futtatása előtt győződjön meg arról, hogy a következőkkel rendelkezik:
 
 * **Operációs rendszer**: Linux alapú szerver (jelenleg Ubuntu 22.04+ támogatással).
 * **Erőforrások**: 1 vCPU és 2 GB RAM
 * **Root hozzáférés**: Rendszergazdai jogosultságok parancsok végrehajtásához.
 * **Domain név**: Egyéni domain, amely készen áll a DNS-konfigurációra.
-* **Tiszta IP cím**: Győződjön meg róla, hogy szervere tiszta, korábbi spam hírnévtől mentes IP-címmel rendelkezik a tiltólisták ellenőrzésével. További információ: [itt](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
+* **Tiszta IP cím**: Győződjön meg róla, hogy szervere tiszta, korábbi spam hírnévnek örvendő IP-címmel rendelkezik a tiltólisták ellenőrzésével. További információ: [itt](#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation).
 * Nyilvános IP-cím 25-ös port támogatással
-* Lehetőség van a [fordított PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) beállítására
+* Lehetőség a [fordított PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) beállítására
 * IPv4 és IPv6 támogatás
 
 > \[!TIP]
-> See our list of [awesome mail server providers](https://github.com/forwardemail/awesome-mail-server-providers)
+> Tekintse meg a [nagyszerű levelezőszerver-szolgáltatók](https://github.com/forwardemail/awesome-mail-server-providers) listánkat
 
 ### Felhőalapú init / Felhasználói adatok {#cloud-init--user-data}
 
-A legtöbb felhőszolgáltató támogatja a felhő-init konfigurációt a virtuális magánkiszolgáló (VPS) kiépítéséhez. Ez nagyszerű módja annak, hogy bizonyos fájlokat és környezeti változókat idő előtt beállítson a szkriptek kezdeti beállítási logikájának használatára, amely megkerüli a további információk kérését, miközben a szkript fut.
+A legtöbb felhőszolgáltató támogatja a felhőalapú init konfigurációt a virtuális magánkiszolgáló (VPS) kiépítésekor. Ez egy nagyszerű módja annak, hogy előre beállítsunk néhány fájlt és környezeti változót a szkript kezdeti beállítási logikája számára, így nem kell további információkat kérnie a szkript futása közben.
 
 **Opciók**
 
@@ -75,7 +75,7 @@ A legtöbb felhőszolgáltató támogatja a felhő-init konfigurációt a virtu�
 * `DOMAIN` - egyéni domain (pl. `example.com`) saját tárhely beállításához
 * `AUTH_BASIC_USERNAME` - az első beállításkor használt felhasználónév a webhely védelméhez
 * `AUTH_BASIC_PASSWORD` - az első beállításkor használt jelszó a webhely védelméhez
-* `/root/.cloudflare.ini` - (**Csak Cloudflare felhasználóknak**) a certbot által a DNS-konfigurációhoz használt cloudflare konfigurációs fájl. Ehhez az API-tokent a `dns_cloudflare_api_token` segítségével kell beállítania. További információ: [itt](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
+* `/root/.cloudflare.ini` - (**Csak Cloudflare felhasználók**) a certbot által a DNS-konfigurációhoz használt cloudflare konfigurációs fájl. Ehhez az API-tokent a `dns_cloudflare_api_token` paraméteren keresztül kell beállítani. További információ: [itt](https://certbot-dns-cloudflare.readthedocs.io/en/stable/).
 
 Példa:
 
@@ -96,17 +96,17 @@ runcmd:
   - chmod +x /etc/profile.d/env.sh
 ```
 
-## Telepítse a(z) {#install} webhelyet
+## Telepítés {#install}
 
-Futtassa a következő parancsot a kiszolgálón a telepítőszkript letöltéséhez és végrehajtásához:
+Futtassa a következő parancsot a szerverén a telepítőszkript letöltéséhez és végrehajtásához:
 
 ```sh
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
 ```
 
-### Telepítőszkript hibakeresése {#debug-install-script}
+### Hibakeresési telepítőszkript {#debug-install-script}
 
-A részletes kimenet érdekében a telepítőszkript elé írjuk be a `DEBUG=true` kódot:
+A részletes kimenet érdekében a telepítőszkript elé adjuk hozzá a `DEBUG=true` karakterláncot:
 
 ```sh
 DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -127,7 +127,7 @@ DEBUG=true bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forw
 * **Kezdeti beállítás**: Töltse le a legújabb továbbítási e-mail kódot, konfigurálja a környezetet, kérje az egyéni domain megadását, és állítsa be az összes szükséges tanúsítványt, kulcsot és titkos kódot.
 * **Biztonsági mentés beállítása**: Beállít egy cront a mongoDB és a redis biztonsági mentéséhez egy S3-kompatibilis tároló használatával a biztonságos, távoli tárolás érdekében. Az sqlite külön biztonsági mentésre kerül bejelentkezéskor, ha változások történnek a biztonságos, titkosított biztonsági mentésekben.
 * **Frissítés beállítása**: Beállít egy cront az éjszakai frissítések kereséséhez, amelyek biztonságosan újraépítik és újraindítják az infrastruktúra-összetevőket.
-* **Tanúsítványok megújítása**: A Certbot /lets encrypt az SSL-tanúsítványokhoz használatos, és a kulcsok 3 havonta lejárnak. Ez megújítja a domain tanúsítványait, és a kapcsolódó komponensek számára a szükséges mappába helyezi azokat. Lásd: [fontos fájl útvonalak](#important-file-paths)
+* **Tanúsítványok megújítása**: A Certbot /lets encrypt az SSL-tanúsítványokhoz használatos, és a kulcsok 3 havonta lejárnak. Ez megújítja a domain tanúsítványait, és a kapcsolódó komponensek számára a szükséges mappába helyezi azokat. Lásd: [fontos fájlútvonalak](#important-file-paths)
 * **Visszaállítás biztonsági mentésből**: Elindítja a mongodb és a redis általi visszaállítást a biztonsági mentésből.
 
 ### Kezdeti beállítás (1. opció) {#initial-setup-option-1}
@@ -140,43 +140,43 @@ Ha kész, sikeres műveletről szóló üzenetet kell látnod. A `docker ps` par
 
 | Szolgáltatás neve | Alapértelmezett port | Leírás |
 | ------------ | :----------: | ------------------------------------------------------ |
-| Web | `443` | Webes felület minden adminisztrátori interakcióhoz |
-| API | `4000` | Api réteg absztrakt adatbázisokhoz |
-| Bree | Egyik sem | Háttér munka és feladat futó |
-| SMTP | `465/587` | SMTP szerver a kimenő e-mailekhez |
-| SMTP Bree | Egyik sem | SMTP háttérmunka |
-| MX | `2525` | Levélváltás bejövő e-mailekhez és e-mail-továbbításhoz |
+| Web | `443` | Webes felület az összes adminisztrációs interakcióhoz |
+| API | `4000` | API réteg absztrakt adatbázisokhoz |
+| Bree | Egyik sem | Háttérben futó feladatok és feladatok futtatása |
+| SMTP | `465/587` | SMTP-kiszolgáló a kimenő e-mailekhez |
+| SMTP Bree | Egyik sem | SMTP háttérfeladat |
+| MX | `2525` | Bejövő e-mailek levelezése és továbbítása |
 | IMAP | `993/2993` | IMAP szerver a bejövő e-mailek és postafiókok kezeléséhez |
-| POP3 | `995/2995` | POP3 szerver a bejövő e-mailek és postafiókok kezelésére |
-| SQLite | `3456` | SQLite szerver az sqlite adatbázis(ok)kal való interakcióhoz |
+| POP3 | `995/2995` | POP3 szerver a bejövő e-mailek és postafiókok kezeléséhez |
+| SQLite | `3456` | SQLite szerver az SQLite adatbázis(ok)kal való interakcióhoz |
 | SQLite Bree | Egyik sem | SQLite háttérmunka |
-| CalDAV | `5000` | CalDAV szerver naptárkezeléshez |
-| CardDAV | `6000` | CardDAV szerver naptárkezeléshez |
+| CalDAV | `5000` | CalDAV szerver a naptárkezeléshez |
+| CardDAV | `6000` | CardDAV szerver a naptár kezeléséhez |
 | MongoDB | `27017` | MongoDB adatbázis a legtöbb adatkezeléshez |
 | Redis | `6379` | Redis gyorsítótárazáshoz és állapotkezeléshez |
-| SQLite | Egyik sem | SQLite adatbázis(ok) titkosított postafiókokhoz |
+| SQLite | Egyik sem | SQLite adatbázis(ok) titkosított postaládákhoz |
 
 ### Fontos fájlútvonalak {#important-file-paths}
 
-Megjegyzés: Az alábbi *Host path* a `/root/forwardemail.net/self-hosting/`-hoz képest relatív.
+Megjegyzés: Az alábbi *Host path* a `/root/forwardemail.net/self-hosting/`-hoz képest értendő.
 
-| Összetevő | Gazda útvonala | Konténer útvonala |
+| Összetevő | Gazdagép elérési útja | Konténer elérési útja |
 | ---------------------- | :-------------------: | ---------------------------- |
 | MongoDB | `./mongo-backups` | `/backups` |
 | Redis | `./redis-data` | `/data` |
 | Sqlite | `./sqlite-data` | `/mnt/{SQLITE_STORAGE_PATH}` |
-| Env fájl | `./.env` | `/app/.env` |
-| SSL-tanúsítványok/kulcsok | `./ssl` | `/app/ssl/` |
+| Környezetfájl | `./.env` | `/app/.env` |
+| SSL tanúsítványok/kulcsok | `./ssl` | `/app/ssl/` |
 | Privát kulcs | `./ssl/privkey.pem` | `/app/ssl/privkey.pem` |
-| Teljes lánc tanúsítvány | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
-| CA tanúsítványok | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
+| Teljes láncú tanúsítvány | `./ssl/fullchain.pem` | `/app/ssl/fullchain.pem` |
+| Tanúsított hitelesítésszolgáltatók | `./ssl/cert.pem` | `/app/ssl/cert.pem` |
 | DKIM privát kulcs | `./ssl/dkim.key` | `/app/ssl/dkim.key` |
 
 > \[!IMPORTANT]
-> Save the `.env` file securely. It is critical for recovery in case of failure.
-> You can find this in `/root/forwardemail.net/self-hosting/.env`.
+> Mentse el biztonságosan a `.env` fájlt. Hiba esetén elengedhetetlen a helyreállításhoz.
+> Ezt a `/root/forwardemail.net/self-hosting/.env` mappában találja.
 
-## Konfiguráció {#configuration}
+## konfiguráció {#configuration}
 
 ### Kezdeti DNS-beállítás {#initial-dns-setup}
 
@@ -184,25 +184,25 @@ A választott DNS-szolgáltatódban konfiguráld a megfelelő DNS-rekordokat. Fe
 
 | Típus | Név | Tartalom | TTL |
 | ----- | ------------------ | ----------------------------- | ---- |
-| A | „@”, „.” vagy üres | <ip_cím> | auto |
-| CNAME | api | <domain_name> | auto |
-| CNAME | caldav | <domain_name> | auto |
-| CNAME | carddav | <domain_name> | auto |
-| CNAME | fe-pattan | <domain_name> | auto |
-| CNAME | imap | <domain_name> | auto |
-| CNAME | mx | <domain_name> | auto |
-| CNAME | pop3 | <domain_name> | auto |
-| CNAME | smtp | <domain_name> | auto |
-| MX | „@”, „.” vagy üres | mx.<domain_name> (0. prioritás) | auto |
-| TXT | „@”, „.” vagy üres | "v=spf1 a -all" | auto |
+| A | „@”, „.” vagy üres | <ip_cím> | autó |
+| CNAME | API | <tartománynév> | autó |
+| CNAME | caldav | <tartománynév> | autó |
+| CNAME | carddav | <tartománynév> | autó |
+| CNAME | fe-pattanások | <tartománynév> | autó |
+| CNAME | IMAP | <tartománynév> | autó |
+| CNAME | mx | <tartománynév> | autó |
+| CNAME | pop3 | <tartománynév> | autó |
+| CNAME | smtp | <tartománynév> | autó |
+| MX | „@”, „.” vagy üres | mx.<tartománynév> (0. prioritás) | autó |
+| TXT | „@”, „.” vagy üres | "v=spf1 a -all" | autó |
 
 #### Fordított DNS / PTR rekord {#reverse-dns--ptr-record}
 
-A fordított DNS (rDNS) vagy a fordított mutató rekordok (PTR rekordok) elengedhetetlenek az e-mail szerverek számára, mert segítenek ellenőrizni az e-mailt küldő szerver legitimitását. Minden felhőszolgáltató ezt másképp csinálja, ezért meg kell keresnie, hogyan adhatja hozzá a "Reverse DNS"-t, hogy a gazdagépet és az IP-t a megfelelő gazdagépnévhez rendelje. Valószínűleg a szolgáltató hálózati szakaszában.
+A fordított DNS (rDNS) vagy fordított mutatórekordok (PTR) elengedhetetlenek az e-mail-kiszolgálók számára, mivel segítenek ellenőrizni az e-mailt küldő kiszolgáló jogosságát. Minden felhőszolgáltató ezt másképp teszi, ezért meg kell néznie, hogyan adhatja hozzá a „Fordított DNS” rekordot a gazdagép és az IP-cím megfelelő gazdagépnévhez való leképezéséhez. Valószínűleg a szolgáltató hálózati részében található.
 
 #### 25-ös port blokkolva {#port-25-blocked}
 
-Egyes internetszolgáltatók és felhőszolgáltatók blokkolják a 25-öt, hogy elkerüljék a rossz szereplőket. Előfordulhat, hogy támogatási jegyet kell benyújtania a 25-ös port megnyitásához az SMTP / kimenő e-mailek számára.
+Néhány internetszolgáltató és felhőszolgáltató blokkolja a 25-ös portot a rosszindulatú szereplők elkerülése érdekében. Előfordulhat, hogy támogatási jegyet kell küldenie a 25-ös port SMTP / kimenő e-mailek számára történő megnyitásához.
 
 ## Bevezetés {#onboarding}
 
@@ -222,9 +222,9 @@ Navigáljon a https\://\<domain_név> oldalra, és a \<domain_név> részt cser�
 * Opcionálisan konfigurálja az **SMTP-t a kimenő e-mailekhez** a **Domainbeállításokban**. Ehhez további DNS-rekordok szükségesek.
 
 > \[!NOTE]
-> No information is sent outside of your server. The self hosted option and initial account is just for the admin login and web view to manage domains, aliases and related email configurations.
+> A szerveren kívülre nem küldünk információt. Az önállóan üzemeltetett opció és a kezdeti fiók csak az adminisztrátori bejelentkezéshez és a webes nézethez használható a domainek, aliasok és a kapcsolódó e-mail konfigurációk kezeléséhez.
 
-## A(z) {#testing} tesztelése
+## Tesztelés {#testing}
 
 ### Első alias létrehozása {#creating-your-first-alias}
 
@@ -259,18 +259,18 @@ Felhasználónév: `<alias name>`
 
 | Típus | Gazdagépnév | Kikötő | Kapcsolatbiztonság | Hitelesítés |
 | ---- | ------------------ | ---- | ------------------- | --------------- |
-| SMTP | smtp.<domain_name> | 465 | SSL / TLS | Normál jelszó |
-| IMAP | imap.<domain_name> | 993 | SSL / TLS | Normál jelszó |
+| SMTP | smtp.<tartománynév> | 465 | SSL / TLS | Normál jelszó |
+| IMAP | imap.<tartománynév> | 993 | SSL / TLS | Normál jelszó |
 
 ### Első e-mail küldése / fogadása {#sending--receiving-your-first-email}
 
-A konfigurálás után képesnek kell lennie arra, hogy e-maileket küldjön és fogadjon az újonnan létrehozott és saját e-mail címére!
+A konfigurálás után képesnek kell lennie e-mailek küldésére és fogadására az újonnan létrehozott és saját tárhelyen tárolt e-mail címére!
 
 ## Hibaelhárítás {#troubleshooting}
 
 #### Miért nem működik ez Ubuntu és Debian rendszeren kívül? {#why-doesnt-this-work-outside-of-ubuntu-and-debian}
 
-Jelenleg MacOS támogatást keresünk, és továbbiakat is keresünk. Kérjük, nyisson meg egy [vita](https://github.com/orgs/forwardemail/discussions) linket, vagy járuljon hozzá, ha szeretné, hogy mások is támogatást kapjanak.
+Jelenleg MacOS támogatást keresünk, és továbbiakat is keresünk. Kérjük, nyisson meg egy [vita](https://github.com/orgs/forwardemail/discussions) fájlt, vagy járuljon hozzá, ha szeretné, hogy mások is támogatást kapjanak.
 
 #### Miért hiúsul meg a certbot acme kihívás? {#why-is-the-certbot-acme-challenge-failing}
 
@@ -283,30 +283,30 @@ Két ehhez hasonló kihívással találkozhat:
 
 Az is lehetséges, hogy a DNS-terjesztés nem fejeződött be. Használhatsz olyan eszközöket, mint a `https://toolbox.googleapps.com/apps/dig/#TXT/_acme-challenge.<your_domain>`. Ez segít eldönteni, hogy a TXT rekord változásainak tükröződniük kellene-e. Az is lehetséges, hogy a gazdagépeden lévő helyi DNS-gyorsítótár továbbra is egy régi, elavult értéket használ, vagy nem vette fel a legutóbbi változásokat.
 
-Egy másik lehetőség az automatikus cerbot DNS-módosítások használata a `/root/.cloudflare.ini` fájl API-tokennel való beállításával a cloud-init / user-data mappában a VPS kezdeti beállításakor, vagy a fájl létrehozása és a szkript újbóli futtatása. Ez automatikusan kezeli a DNS-módosításokat és a kihívásokkal teli frissítéseket.
+Egy másik lehetőség az automatikus cerbot DNS-módosítások használata a `/root/.cloudflare.ini` fájl beállításával az API tokennel a cloud-init / user-data mappában a VPS kezdeti beállításakor, vagy a fájl létrehozása és a szkript újbóli futtatása. Ez automatikusan kezeli a DNS-módosításokat és a kihívásokkal teli frissítéseket.
 
 ### Mi az alapvető hitelesítési felhasználónév és jelszó? {#what-is-the-basic-auth-username-and-password}
 
-Saját tárhely esetén egy első alkalommal böngészőn keresztüli hitelesítési felugró ablakot adunk hozzá, amely egy egyszerű felhasználónévvel (`admin`) és jelszóval (véletlenszerűen generálva a kezdeti beállítás során) rendelkezik. Ezt csak védelemként adjuk hozzá arra az esetre, ha az automatizálás/adatgyűjtés valahogy megelőzné a webes felületen történő első regisztrációt. Ezt a jelszót a kezdeti beállítás után a `.env` fájlban találod a `AUTH_BASIC_USERNAME` és `AUTH_BASIC_PASSWORD` alatt.
+Saját tárhely esetén egy első alkalommal böngészőn keresztüli hitelesítési felugró ablakot adunk hozzá, amely egy egyszerű felhasználónévvel (`admin`) és jelszóval (véletlenszerűen generálva a kezdeti beállítás során) rendelkezik. Ezt csak védelemként adjuk hozzá arra az esetre, ha az automatizálás/adatgyűjtők valahogyan meghiúsítanák a webes felületen történő első regisztrációt. Ezt a jelszót a kezdeti beállítás után a `.env` fájlban találod a `AUTH_BASIC_USERNAME` és `AUTH_BASIC_PASSWORD` alatt.
 
-### Honnan tudom, hogy mi fut a(z) {#how-do-i-know-what-is-running} oldalon?
+### Honnan tudom, hogy mi fut {#how-do-i-know-what-is-running}
 
-A `docker ps` parancs futtatásával megtekintheted az összes futó konténert, amelyeket a `docker-compose-self-hosting.yml` fájlból állítanak elő. A `docker ps -a` parancs futtatásával mindent láthatsz (beleértve a nem futó konténereket is).
+A `docker ps` paranccsal megtekintheted az összes futó konténert, amelyeket a `docker-compose-self-hosting.yml` fájlból állítanak elő. A `docker ps -a` paranccsal mindent megtekinthetsz (beleértve a nem futó konténereket is).
 
-### Honnan tudom, hogy valami nem fut, pedig annak {#how-do-i-know-if-something-isnt-running-that-should-be} kellene lennie?
+### Honnan tudom, hogy valami nem fut, pedig annak kéne lennie? {#how-do-i-know-if-something-isnt-running-that-should-be}
 
-A `docker ps -a` parancs futtatásával mindent láthatsz (beleértve a nem futó konténereket is). Láthatsz egy kilépési naplót vagy megjegyzést.
+A `docker ps -a` parancs futtatásával mindent megtekinthetsz (beleértve a nem futó konténereket is). Előfordulhat, hogy kilépési naplót vagy megjegyzést látsz.
 
-### Hogyan találom meg a naplókat {#how-do-i-find-logs}
+### Hogyan találom meg a naplókat? {#how-do-i-find-logs}
 
-További naplókat a `docker logs -f <container_name>` fájlon keresztül érhet el. Ha bármi kilépett, az valószínűleg a `.env` fájl helytelen konfigurációjához kapcsolódik.
+További naplókat a `docker logs -f <container_name>` segítségével érhet el. Ha bármi kilépett, az valószínűleg a `.env` fájl helytelen konfigurációjához kapcsolódik.
 
-A webes felhasználói felületen a kimenő e-mailek naplóit a `/admin/emails`, a hibanaplókat pedig a `/admin/logs` naplóval tekintheti meg.
+A webes felhasználói felületen megtekintheti a `/admin/emails` és a `/admin/logs` naplókat a kimenő e-mailekhez, illetve a hibanaplókhoz.
 
 ### Miért túllépik az időkorlátot a kimenő e-mailjeim? {#why-are-my-outgoing-emails-timing-out}
 
-Ha az MX szerverhez való csatlakozáskor olyan üzenetet lát, mint a Connection time out..., akkor előfordulhat, hogy ellenőriznie kell, hogy a 25-ös port blokkolva van-e. Gyakori, hogy az internetszolgáltatók vagy a felhőszolgáltatók ezt alapértelmezés szerint blokkolják, ahol előfordulhat, hogy fel kell vennie a kapcsolatot a támogatással / jegyet kell benyújtania a megnyitáshoz.
+Ha olyan üzenetet lát, mint például a „Kapcsolat időtúllépése történt az MX szerverhez való csatlakozáskor...”, akkor ellenőriznie kell, hogy a 25-ös port nincs-e blokkolva. Gyakori, hogy az internetszolgáltatók vagy a felhőszolgáltatók alapértelmezés szerint blokkolják ezt, ilyenkor előfordulhat, hogy fel kell vennie a kapcsolatot az ügyfélszolgálattal / be kell nyújtania egy ticketet a probléma feloldásához.
 
-#### Milyen eszközöket használjak az e-mail konfiguráció legjobb gyakorlatainak és az IP-cím hírnevének teszteléséhez {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
+#### Milyen eszközöket használjak az e-mail konfiguráció legjobb gyakorlatainak és az IP-cím hírnevének teszteléséhez? {#what-tools-should-i-use-to-test-email-configuration-best-practices-and-ip-reputation}
 
 Vessen egy pillantást a [GYIK itt](/faq#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation) oldalunkra.

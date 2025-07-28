@@ -1,4 +1,4 @@
-# Kvanttisuojattu sähköposti: Kuinka käytämme salattuja SQLite-postilaatikoita sähköpostisi turvaamiseksi {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
+# Kvanttisuojattu sähköposti: Kuinka käytämme salattuja SQLite-postilaatikoita sähköpostisi turvaamiseen {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
 <img loading="laiska" src="/img/articles/quantum.webp" alt="" class="rounded-lg" />
 
@@ -25,17 +25,17 @@
 ## Esipuhe {#foreword}
 
 > \[!IMPORTANT]
-> Our email service is [100% open-source](https://github.com/forwardemail) and privacy-focused through secure and encrypted SQLite mailboxes.
+> Sähköpostipalvelumme on [100 % avoimen lähdekoodin](https://github.com/forwardemail) ja yksityisyyteen keskittyvä suojattujen ja salattujen SQLite-postilaatikoiden kautta.
 
 Ennen [IMAP-tuki](/faq#do-you-support-receiving-email-with-imap):n julkaisua käytimme MongoDB:tä pysyvien tietojen tallennustarpeisiimme.
 
 Tämä teknologia on hämmästyttävä ja käytämme sitä edelleen – mutta jotta MongoDB:n salaus olisi levossa, sinun on käytettävä MongoDB Enterprisea tarjoavaa toimittajaa, kuten Digital Oceania tai Mongo Atlasia – tai maksettava yrityslisenssistä (ja sen seurauksena joudut työskentelemään myyntitiimin viiveen kanssa).
 
-[Lähetä sähköpostia eteenpäin](https://forwardemail.net) -tiimimme tarvitsi kehittäjäystävällisen, skaalautuvan, luotettavan ja salatun tallennusratkaisun IMAP-postilaatikoille. Avoimen lähdekoodin kehittäjinä teknologian käyttö, jonka salaustoiminnon saamiseksi vaaditaan lisenssimaksu, oli [periaatteemme](#principles) -periaatteiden vastaista – joten kokeilimme, tutkimme ja kehitimme uuden ratkaisun tyhjästä näiden tarpeiden ratkaisemiseksi.
+[Lähetä sähköpostia eteenpäin](https://forwardemail.net)-tiimimme tarvitsi kehittäjäystävällisen, skaalautuvan, luotettavan ja salatun tallennusratkaisun IMAP-postilaatikoille. Avoimen lähdekoodin kehittäjinä teknologian käyttö, jonka salaustoiminnon saamiseksi vaaditaan lisenssimaksu, oli [periaatteemme](#principles):n vastaista – siksi kokeilimme, tutkimme ja kehitimme uuden ratkaisun tyhjästä näiden tarpeiden ratkaisemiseksi.
 
 Sen sijaan, että käyttäisimme jaettua tietokantaa postilaatikoiden tallentamiseen, tallennamme ja salaamme postilaatikot erikseen salasanallasi (joka on vain sinulla). **Sähköpostipalvelumme on niin turvallinen, että jos unohdat salasanasi, menetät postilaatikkosi** (ja sinun on palautettava se offline-varmuuskopioilla tai aloitettava alusta).
 
-Jatka lukemista, sillä alla syvennymme aiheeseen [sähköpostipalveluntarjoajien vertailu](#email-service-provider-comparison), [miten palvelumme toimii](#how-does-it-work), [teknologiapinomme](#technologies) ja muiden ominaisuuksien avulla.
+Jatka lukemista, sillä alla syvennymme tarkemmin muun muassa [sähköpostipalveluntarjoajien vertailu](#email-service-provider-comparison)-, [miten palvelumme toimii](#how-does-it-work)- ja [teknologiapinomme](#technologies)-tekijöihin.
 
 ## Sähköpostipalveluntarjoajien vertailu {#email-service-provider-comparison}
 
@@ -49,10 +49,10 @@ Olemme ainoa 100 % avoimen lähdekoodin ja yksityisyyteen keskittyvä sähköpos
 
 1. Käyttämällä sähköpostiohjelmaasi, kuten Apple Mailia, Thunderbirdiä, Gmailia tai Outlookia, muodostat yhteyden suojattuihin [IMAP](/faq#do-you-support-receiving-email-with-imap)-palvelimiimme käyttäjätunnuksellasi ja salasanallasi:
 
-* Käyttäjänimesi on verkkotunnuksesi koko aliaksesi, kuten `hello@example.com`.
-* Salasanasi luodaan satunnaisesti ja näkyy sinulle vain 30 sekunnin ajan, kun napsautat <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> -painiketta kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset.
+* Käyttäjätunnuksesi on verkkotunnuksesi koko aliaksesi, kuten `hello@example.com`.
+* Salasanasi luodaan satunnaisesti ja näytetään sinulle vain 30 sekunnin ajan, kun napsautat <strong class="text-success"><i class="fa fa-key"></i>Luo salasana</strong> -painiketta kohdassa <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset.
 
-2. Kun yhteys on muodostettu, sähköpostiohjelmasi lähettää [IMAP-protokollan komennot](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) IMAP-palvelimellemme sähköpostilaatikon synkronoimiseksi. Tämä sisältää luonnosten kirjoittamisen ja tallentamisen sekä muut mahdolliset toiminnot (esim. sähköpostin merkitsemisen tärkeäksi tai roskapostiksi).
+2. Kun yhteys on muodostettu, sähköpostiohjelmasi lähettää [IMAP-protokollan komennot](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol)-viestin IMAP-palvelimellemme sähköpostilaatikon synkronoimiseksi. Tämä sisältää luonnosviestien kirjoittamisen ja tallentamisen sekä muut mahdolliset toiminnot (esim. sähköpostin merkitsemisen tärkeäksi tai roskapostiksi).
 
 3. Sähköpostinvaihtopalvelimet (yleisesti tunnettu nimellä "MX"-palvelimet) vastaanottavat uudet saapuvat sähköpostit ja tallentavat ne postilaatikkoosi. Kun näin tapahtuu, sähköpostiohjelmasi saa ilmoituksen ja synkronoi postilaatikkosi. Sähköpostinvaihtopalvelimemme voivat välittää sähköpostisi yhdelle tai useammalle vastaanottajalle (mukaan lukien [webhookit](/faq#do-you-support-webhooks)), tallentaa sähköpostisi puolestasi salattuun IMAP-tallennustilaan meillä, **tai molemmat**!
 
@@ -110,11 +110,11 @@ Tutkimme muita mahdollisia tietokannan tallennuskerroksia, mutta mikään ei tä
 
 ### Tietoturva {#security}
 
-Käytämme aina postilaatikoissa [salaus levossa](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [salaus siirron aikana](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS HTTPS:n kautta](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") -salausta käyttäen :tangerine: [Mandariini](https://tangeri.ne) ja [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Lisäksi käytämme token-pohjaista kaksivaiheista todennusta (toisin kuin tekstiviestitse tapahtuvaa todennusta, joka on [välikäsihyökkäykset](https://en.wikipedia.org/wiki/Man-in-the-middle_attack):lle altis), kierrätettyjä SSH-avaimia, joissa pääkäyttäjän oikeudet on poistettu käytöstä, yksinoikeudella pääsyä palvelimille rajoitettujen IP-osoitteiden kautta ja paljon muuta.
+Käytämme aina [salaus levossa](https://en.wikipedia.org/wiki/Data_at_rest) ([AES-256](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)), [salaus siirron aikana](https://en.wikipedia.org/wiki/Data_in_transit) ([TLS](https://en.wikipedia.org/wiki/Transport_Layer_Security)), [DNS HTTPS:n kautta](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") -salausta käyttäen :tangerine: [Mandariini](https://tangeri.ne) ja [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Lisäksi käytämme token-pohjaista kaksivaiheista todennusta (toisin kuin tekstiviestitse, joka on [välikäsihyökkäykset](https://en.wikipedia.org/wiki/Man-in-the-middle_attack):lle altis), kierrätettyjä SSH-avaimia, joissa pääkäyttäjän oikeudet on poistettu käytöstä, yksinoikeudella pääsyä palvelimille rajoitettujen IP-osoitteiden kautta ja paljon muuta.
 
-Jos kyseessä on kolmannen osapuolen toimittajan [pahan piian hyökkäys](https://en.wikipedia.org/wiki/Evil_maid_attack) tai luvaton työntekijä, **sähköpostilaatikkosi voidaan edelleen avata vain luomallasi salasanalla**. Voit olla varma, ettemme ole riippuvaisia muista kolmannen osapuolen toimittajista kuin SOC Type 2 -valituspalvelinpalveluntarjoajistamme, kuten Cloudflaresta, DataPacketista, Digital Oceanista ja Vultrista.
+Jos kyseessä on [pahan piian hyökkäys](https://en.wikipedia.org/wiki/Evil_maid_attack)-käyttäjä tai kolmannen osapuolen toimittajan luvaton työntekijä, **postilaatikkosi voidaan edelleen avata vain luomallasi salasanalla**. Voit olla varma, ettemme ole riippuvaisia muista kolmannen osapuolen toimittajista kuin SOC Type 2 -valituspalvelinpalveluntarjoajistamme, kuten Cloudflaresta, DataPacketista, Digital Oceanista ja Vultrista.
 
-Tavoitteenamme on, että [yksittäinen vikapiste](https://en.wikipedia.org/wiki/Single_point_of_failure) -kohteita on mahdollisimman vähän.
+Tavoitteenamme on, että [yksittäinen vikapiste](https://en.wikipedia.org/wiki/Single_point_of_failure)-kohteita on mahdollisimman vähän.
 
 ### Postilaatikot {#mailboxes}
 
@@ -122,11 +122,11 @@ Tavoitteenamme on, että [yksittäinen vikapiste](https://en.wikipedia.org/wiki/
 
 [SQLite on erittäin suosittu](https://www.sqlite.org/mostdeployed.html) upotettu tietokanta – se on tällä hetkellä käynnissä puhelimessasi ja tietokoneessasi – [ja sitä käyttävät lähes kaikki tärkeimmät teknologiat](https://www.sqlite.org/famous.html).
 
-Esimerkiksi salatuilla palvelimillamme on SQLite-tietokantapostilaatikko tiedostoille `linux@example.com`, `info@example.com`, `hello@example.com` ja niin edelleen – yksi kullekin omana `.sqlite` tietokantatiedostonaan. Emme myöskään nimeä tietokantatiedostoja sähköpostiosoitteella – sen sijaan käytämme BSON ObjectID:tä ja luotuja yksilöllisiä UUID-tunnuksia, jotka eivät jaa, kenelle postilaatikko kuuluu tai minkä sähköpostiosoitteen alla se on (esim. `353a03f21e534321f5d6e267.sqlite`).
+Esimerkiksi salatuilla palvelimillamme on SQLite-tietokannan postilaatikko `linux@example.com`:lle, `info@example.com`:lle, `hello@example.com`:lle ja niin edelleen – yksi kullekin `.sqlite`-tietokantatiedostona. Emme myöskään nimeä tietokantatiedostoja sähköpostiosoitteella – sen sijaan käytämme BSON ObjectID:tä ja luotuja yksilöllisiä UUID-tunnuksia, jotka eivät jaa postilaatikon haltijaa tai sähköpostiosoitetta (esim. `353a03f21e534321f5d6e267.sqlite`).
 
 Jokainen näistä tietokannoista on salattu salasanallasi (joka on vain sinulla) käyttäen [sqleet](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/) ([ChaCha20-Poly1305](https://utelle.github.io/SQLite3MultipleCiphers/docs/ciphers/cipher_chacha20/)). Tämä tarkoittaa, että postilaatikosi ovat erikseen salattuja, itsenäisiä ([hiekkalaatikko](https://en.wikipedia.org/wiki/Sandbox_\(computer_security\)) ja siirrettäviä.
 
-Olemme hienosäätäneet SQLiteä seuraavilla [PRAGMA](https://www.sqlite.org/pragma.html)-elementeillä:
+Olemme hienosäätäneet SQLiteä seuraavalla [PRAGMA](https://www.sqlite.org/pragma.html)-muuttujalla:
 
 | `PRAGMA` | Tarkoitus |
 | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -138,15 +138,15 @@ Olemme hienosäätäneet SQLiteä seuraavilla [PRAGMA](https://www.sqlite.org/pr
 | `foreign_keys=ON` | Pakottaa, että viiteavainten viittaukset (esim. relaatio taulukon ja toisen taulukon välillä) pakotetaan. [By default this is not turned on in SQLite](https://www.sqlite.org/foreignkeys.html), mutta validoinnin ja tietojen eheyden vuoksi sen tulisi olla käytössä. |
 | `encoding='UTF-8'` | [Default encoding](https://www.sqlite.org/pragma.html#pragma_encoding) käytettäväksi kehittäjän mielenterveyden varmistamiseksi. |
 
-> Kaikki muut oletusarvot ovat SQLitestä, kuten [virallinen PRAGMA-dokumentaatio](https://www.sqlite.org/pragma.html#pragma_auto_vacuum) -tiedostossa on määritetty.
+> Kaikki muut oletusarvot ovat SQLitestä, kuten [virallinen PRAGMA-dokumentaatio](https://www.sqlite.org/pragma.html#pragma_auto_vacuum):ssa on määritetty.
 
 ### Samanaikaisuus {#concurrency}
 
-> **tldr;** Käytämme `WebSocket` -koodia samanaikaisiin luku- ja kirjoitustehtäviin salattuihin SQLite-postilaatikoihisi.
+> **tldr;** Käytämme `WebSocket`-muistipaikkaa salattujen SQLite-postilaatikoiden samanaikaiseen lukemiseen ja kirjoittamiseen.
 
 #### Lukee {#reads}
 
-Puhelimesi sähköpostiohjelma saattaa selvittää `imap.forwardemail.net` -osoitteen johonkin Digital Ocean IP-osoitteistamme – ja työpöytäsovelluksesi saattaa selvittää erillisen IP-osoitteen kokonaan toisesta [palveluntarjoaja](#providers) -osoitteesta.
+Puhelimesi sähköpostiohjelma saattaa selvittää `imap.forwardemail.net`-osoitteen yhdeksi Digital Oceanin IP-osoitteistamme – ja työpöytäsovelluksesi saattaa selvittää erillisen IP-osoitteen kokonaan toisesta [palveluntarjoaja](#providers)-osoitteesta.
 
 Riippumatta siitä, mihin IMAP-palvelimeen sähköpostiohjelmasi muodostaa yhteyden, haluamme yhteyden lukevan tietokannastasi reaaliajassa 100 %:n tarkkuudella. Tämä tehdään WebSocketsin kautta.
 
@@ -154,28 +154,29 @@ Riippumatta siitä, mihin IMAP-palvelimeen sähköpostiohjelmasi muodostaa yhtey
 
 Tietokantaan kirjoittaminen on hieman erilaista – koska SQLite on upotettu tietokanta ja postilaatikkosi sijaitsee oletusarvoisesti yhdessä tiedostossa.
 
-Olimme tutkineet vaihtoehtoja, kuten `litestream`, `rqlite` ja `dqlite` alla – mutta mikään näistä ei täyttänyt vaatimuksiamme.
+Olimme tutkineet alla olevia vaihtoehtoja, kuten `litestream`, `rqlite` ja `dqlite`, mutta mikään näistä ei täyttänyt vaatimuksiamme.
 
 Jotta kirjoitukset voidaan suorittaa etukäteen kirjoitettavan lokikirjauksen ("[WAL](https://www.sqlite.org/wal.html)") ollessa käytössä, meidän on varmistettava, että vain yksi palvelin ("Primary") on vastuussa siitä. [WAL](https://www.sqlite.org/wal.html) nopeuttaa huomattavasti samanaikaisuutta ja sallii yhden kirjoittajan ja useita lukijoita.
 
-Ensisijainen palvelimia käytetään datapalvelimilla, joiden liitetyillä levyillä sijaitsevat salatut postilaatikot. Jakelun näkökulmasta kaikkia `imap.forwardemail.net` -palvelimen takana olevia yksittäisiä IMAP-palvelimia voidaan pitää toissijaisina palvelimina ("Secondary").
+Ensisijainen palvelimia käytetään datapalvelimilla, joiden liitetyillä levyillä on salatut postilaatikot. Jakelun näkökulmasta kaikkia `imap.forwardemail.net`-palvelimen takana olevia yksittäisiä IMAP-palvelimia voidaan pitää toissijaisina palvelimina ("Secondary").
 
-Toteutamme kaksisuuntaisen viestinnän [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):n avulla:
+Toteutamme kaksisuuntaisen viestinnän [WebSockets](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket):n kanssa:
 
-* Ensisijaiset palvelimet käyttävät [ws](https://github.com/websockets/ws):n `WebSocketServer` -palvelimen instanssia.
-* Toissijaiset palvelimet käyttävät [ws](https://github.com/websockets/ws):n `WebSocket` -asiakasohjelman instanssia, joka on kääritty [websocket-as-promised](https://github.com/vitalets/websocket-as-promised):n ja [websocketin uudelleenkytkeminen](https://github.com/opensumi/reconnecting-websocket):n kanssa. Nämä kaksi käärettä varmistavat, että `WebSocket` muodostaa uudelleen yhteyden ja voi lähettää ja vastaanottaa tietoja tiettyjä tietokannan kirjoituksia varten.
+* Ensisijaiset palvelimet käyttävät [ws](https://github.com/websockets/ws):n `WebSocketServer`-palvelimen instanssia.
+
+* Toissijaiset palvelimet käyttävät [ws](https://github.com/websockets/ws):n `WebSocket`-asiakasohjelman instanssia, joka on kääritty [websocket-as-promised](https://github.com/vitalets/websocket-as-promised):n ja [websocketin uudelleenkytkeminen](https://github.com/opensumi/reconnecting-websocket):n kanssa. Nämä kaksi käärintäohjelmaa varmistavat, että `WebSocket` muodostaa uudelleen yhteyden ja voi lähettää ja vastaanottaa tietoja tiettyjä tietokannan kirjoituksia varten.
 
 ### Varmuuskopiot {#backups}
 
 > **tldr;** Salattujen postilaatikoiden varmuuskopiot otetaan päivittäin. Voit myös pyytää uuden varmuuskopion välittömästi tai ladata uusimman varmuuskopion milloin tahansa kohdasta <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">Oma tili <i class="fa fa-angle-right"></i> Verkkotunnukset</a> <i class="fa fa-angle-right"></i> Aliakset.
 
-Varmuuskopioita varten suoritamme SQLite `VACUUM INTO` -komennon joka päivä IMAP-komennon käsittelyn aikana. Tämä hyödyntää salattua salasanaasi muistissa olevasta IMAP-yhteydestä. Varmuuskopiot tallennetaan, jos olemassa olevaa varmuuskopiota ei havaita tai jos tiedoston [SHA-256](https://en.wikipedia.org/wiki/SHA-2) -hajautusarvo on muuttunut viimeisimpään varmuuskopioon verrattuna.
+Varmuuskopioita varten suoritamme SQLite `VACUUM INTO` -komennon joka päivä IMAP-komennon käsittelyn aikana. Tämä hyödyntää salattua salasanaasi muistissa olevasta IMAP-yhteydestä. Varmuuskopiot tallennetaan, jos olemassa olevaa varmuuskopiota ei havaita tai jos tiedoston [SHA-256](https://en.wikipedia.org/wiki/SHA-2)-hajautusarvo on muuttunut viimeisimpään varmuuskopioon verrattuna.
 
-Huomaa, että käytämme `VACUUM INTO` -komentoa sisäänrakennetun `backup` -komennon sijaan, koska jos sivua muokataan `backup` -komennon aikana, se on aloitettava alusta. `VACUUM INTO` -komento ottaa tilannevedoksen. Katso lisätietoja näistä kommenteista [GitHub](https://github.com/benbjohnson/litestream.io/issues/56) ja [Hakkereiden uutiset](https://news.ycombinator.com/item?id=31387556).
+Huomaa, että käytämme `VACUUM INTO`-komentoa sisäänrakennetun `backup`-komennon sijaan, koska jos sivua muokataan `backup`-komennon aikana, se on aloitettava alusta. `VACUUM INTO`-komento ottaa tilannevedoksen. Katso lisätietoja näistä [GitHub](https://github.com/benbjohnson/litestream.io/issues/56)- ja [Hakkereiden uutiset](https://news.ycombinator.com/item?id=31387556)-komentoja koskevista kommenteista.
 
-Lisäksi käytämme komentoa `VACUUM INTO` komentoa `backup` komentoa vastaavan sijaan, koska komento `backup` jättää tietokannan salaamattomaksi lyhyeksi ajaksi, kunnes komento `rekey` kutsutaan (katso lisätietoja tästä GitHub [kommentti](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927) -linkistä).
+Lisäksi käytämme `VACUUM INTO`-komentoa `backup`-komennon sijaan, koska `backup`-komento jättäisi tietokannan salaamattomaksi lyhyeksi ajaksi, kunnes `rekey`-komentoa kutsutaan (katso lisätietoja tästä GitHubin [kommentti](https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/46#issuecomment-1468018927)-tiedostosta).
 
-Toissijainen yksikkö käskee ensisijaista yksikköä suorittamaan varmuuskopioinnin `WebSocket` -yhteyden kautta – ja ensisijainen yksikkö vastaanottaa sitten komennon tehdä niin ja tekee sen jälkeen seuraavat toimenpiteet:
+Toissijainen yksikkö käskee ensisijaista yksikköä suorittamaan varmuuskopioinnin `WebSocket`-yhteyden kautta – ja ensisijainen yksikkö vastaanottaa sitten komennon tehdä niin ja tekee sen jälkeen seuraavat toimenpiteet:
 
 1. Yhdistä salattuun postilaatikkoosi.
 
@@ -185,13 +186,13 @@ Toissijainen yksikkö käskee ensisijaista yksikköä suorittamaan varmuuskopioi
 
 4. Suorita `VACUUM INTO` SQLite -komento.
 
-5. Varmista, että kopioitu tiedosto voidaan avata salatulla salasanalla (turvasuojaus/valesuojaus).
+5. Varmista, että kopioitu tiedosto voidaan avata salatulla salasanalla (suojaus/valesuojaus).
 
 6. Lataa se Cloudflare R2:een tallennusta varten (tai omaan palveluntarjoajaasi, jos se on määritetty).
 
 <!--
-7. Pakkaa tuloksena oleva varmuuskopiotiedosto koodilla `gzip`.
-8. Lataa se Cloudflare R2:een tallennustilaa varten (tai omaan palveluntarjoajaasi, jos se on määritetty).
+7. Pakkaa tuloksena oleva varmuuskopiotiedosto `gzip`-tiedostolla.
+8. Lataa se Cloudflare R2:een tallennusta varten (tai omaan palveluntarjoajaasi, jos se on määritetty).
 -->
 
 Muista, että postilaatikkosi ovat salattuja – ja vaikka meillä on IP-rajoituksia ja muita todennusmenetelmiä WebSocket-tiedonsiirtoa varten – voit olla varma, että jos WebSocket-hyötykuorma ei tiedä IMAP-salasanaasi, se ei voi avata tietokantaasi, jos se on haitallisen tahon alainen.
@@ -200,11 +201,11 @@ Tällä hetkellä postilaatikkoa kohden tallennetaan vain yksi varmuuskopio, mut
 
 ### Hae {#search}
 
-IMAP-palvelimemme tukevat `SEARCH` -komentoa monimutkaisten kyselyiden, säännöllisten lausekkeiden ja muiden toimintojen kanssa.
+IMAP-palvelimemme tukevat `SEARCH`-komentoa monimutkaisten kyselyiden, säännöllisten lausekkeiden ja muiden toimintojen kanssa.
 
-Nopea hakutoiminto on [FTS5](https://www.sqlite.org/fts5.html) ja [sqlite-regex](https://github.com/asg017/sqlite-regex#sqlite-regex) -ominaisuuksien ansiota.
+Nopea hakutoiminto on [FTS5](https://www.sqlite.org/fts5.html):n ja [sqlite-regex](https://github.com/asg017/sqlite-regex#sqlite-regex):n ansiota.
 
-Tallennamme `Date` -arvot SQLite-postilaatikoihin [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) -merkkijonoina [Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString) -funktion kautta (UTC-aikavyöhykkeellä, jotta yhtäläisyysvertailut toimivat oikein).
+Tallennamme `Date`-arvot SQLite-postilaatikoihin [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601)-merkkijonoina [Date.prototype.toISOString](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toISOString)-metodin kautta (UTC-aikavyöhykkeellä, jotta yhtäläisyysvertailut toimivat oikein).
 
 Indeksit tallennetaan myös kaikille hakukyselyissä oleville ominaisuuksille.
 
@@ -229,7 +230,7 @@ Tässä on taulukko, jossa esitetään lähdekoodissamme ja kehitysprosessissamm
 | [Spam Scanner](https://github.com/spamscanner/spamscanner) | Node.js-roskapostin, sähköpostin suodatuksen ja tietojenkalastelunestotyökalu (vaihtoehtomme [Spam Assassin](https://spamassassin.apache.org/)- ja [rspamd](https://github.com/rspamd/rspamd)-työkaluille). |
 | [Tangerine](https://tangeri.ne) | DNS HTTPS-pyyntöjen kautta Node.js:n avulla ja välimuisti Redisin avulla – mikä varmistaa globaalin yhdenmukaisuuden ja paljon muuta. |
 | [Thunderbird](https://www.thunderbird.net/) | Kehitystiimimme käyttää tätä (ja suosittelee myös) **suositeltuna sähköpostiohjelmana sähköpostin edelleenlähetyksen kanssa**. |
-| [UTM](https://github.com/utmapp/UTM) | Kehitystiimimme käyttää tätä luodakseen virtuaalikoneita iOS:lle ja macOS:lle testatakseen erilaisia sähköpostiohjelmia (rinnakkain) IMAP- ja SMTP-palvelimiemme kanssa. |
+| [UTM](https://github.com/utmapp/UTM) | Kehitystiimimme käyttää tätä virtuaalikoneiden luomiseen iOS:lle ja macOS:lle testatakseen erilaisia sähköpostiohjelmia (rinnakkain) IMAP- ja SMTP-palvelimiemme kanssa. |
 | [Ubuntu](https://ubuntu.com/download/server) | Moderni avoimen lähdekoodin Linux-pohjainen palvelinkäyttöjärjestelmä, joka pyörittää kaikkea infrastruktuuriamme. |
 | [WildDuck](https://github.com/nodemailer/wildduck) | IMAP-palvelinkirjasto – katso sen huomautukset [attachment de-duplication](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/attachment-deduplication.md) ja [IMAP protocol support](https://github.com/nodemailer/wildduck/blob/master/docs/in-depth/protocol-support.md) -kirjastoista. |
 | [better-sqlite3-multiple-ciphers](https://github.com/m4heshd/better-sqlite3-multiple-ciphers) | Nopea ja yksinkertainen API-kirjasto Node.js:n ohjelmalliseen vuorovaikutukseen SQLite3:n kanssa. |
@@ -243,16 +244,16 @@ Tässä on taulukko, jossa esitetään lähdekoodissamme ja kehitysprosessissamm
 | [smtp-server](https://github.com/nodemailer/smtp-server) | SMTP-palvelinkirjasto – käytämme tätä sähköpostinvaihtoon ("MX") ja lähtevän postin SMTP-palvelimillemme. |
 | [ImapTest](https://www.imapwiki.org/ImapTest) | Hyödyllinen työkalu IMAP-palvelimien testaamiseen vertailuarvoja ja RFC-spesifikaation mukaista IMAP-protokollan yhteensopivuutta vasten. Tämän projektin loi [Dovecot](https://en.wikipedia.org/wiki/Dovecot_\(software\)) -tiimi (aktiivinen avoimen lähdekoodin IMAP- ja POP3-palvelin heinäkuusta 2002 lähtien). Testasimme IMAP-palvelintamme laajasti tällä työkalulla. |
 
-> Löydät muita käyttämiämme projekteja osoitteesta [lähdekoodimme GitHubissa](https://github.com/forwardemail).
+> Löydät muita käyttämiämme projekteja [lähdekoodimme GitHubissa](https://github.com/forwardemail)-kohdasta.
 
 ### Palveluntarjoajat {#providers}
 
 | Palveluntarjoaja | Tarkoitus |
 | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | [Cloudflare](https://www.cloudflare.com/) | DNS-palveluntarjoaja, terveystarkastukset, kuormituksen tasaajat ja varmuuskopiointi [Cloudflare R2](https://developers.cloudflare.com/r2) -palvelun avulla. |
-| [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Oma palvelinisännöinti ja hallitut tietokannat. |
-| [Vultr](https://www.vultr.com/?ref=7429848) | Oma palvelin hosting. |
-| [DataPacket](https://www.datapacket.com) | Oma palvelin hosting. |
+| [Digital Ocean](https://m.do.co/c/a7fe489d1b27) | Dedikoitu palvelinhosting ja hallinnoidut tietokannat. |
+| [Vultr](https://www.vultr.com/?ref=7429848) | Dedikoitu palvelinhosting. |
+| [DataPacket](https://www.datapacket.com) | Dedikoitu palvelinhosting. |
 
 ## Ajatuksia {#thoughts}
 
@@ -262,9 +263,9 @@ Sähköpostin edelleenlähetys on suunniteltu seuraavien periaatteiden mukaisest
 
 1. Ole aina kehittäjäystävällinen, tietoturva- ja yksityisyyskeskeinen sekä läpinäkyvä.
 
-2. Noudata seuraavia ohjeita: [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [Unix](https://en.wikipedia.org/wiki/Unix_philosophy), [KISS](https://en.wikipedia.org/wiki/KISS_principle), [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself), [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it), [Kaksitoista tekijää](https://12factor.net/), [Occamin partakone](https://en.wikipedia.org/wiki/Occam%27s_razor) ja [koiranruokailu](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)
+2. Noudata [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)-, [Unix](https://en.wikipedia.org/wiki/Unix_philosophy)-, [KISS](https://en.wikipedia.org/wiki/KISS_principle)-, [DRY](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself)-, [YAGNI](https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it)-, [Kaksitoista tekijää](https://12factor.net/)-, [Occamin partakone](https://en.wikipedia.org/wiki/Occam%27s_razor)- ja [koiranruokailu](https://en.wikipedia.org/wiki/Eating_your_own_dog_food)-ohjeita.
 
-3. Kohdista toimintasi irstaileviin, itseohjautuviin ja [ramen-kannattava](http://www.paulgraham.com/ramenprofitable.html) kehittäjiin
+3. Kohdista toimintasi irstailevaan, itseohjautuvaan ja [ramen-kannattava](http://www.paulgraham.com/ramenprofitable.html)-kehittäjään.
 
 ### Kokeet {#experiments}
 
@@ -274,32 +275,30 @@ Olemme tehneet muutamia kokeiluja ennen kuin päädyimme lopulliseen SQLite-ratk
 
 Yksi näistä oli kokeilla [rclone]():n ja SQLiten käyttöä yhdessä S3-yhteensopivan tallennuskerroksen kanssa.
 
-Tuo kokeilu johti meidät ymmärtämään ja löytämään reunatapauksia, jotka liittyvät rclonen, SQLiten ja [VFS](https://en.wikipedia.org/wiki/Virtual_file_system) käyttöön:
+Tuo kokeilu johti meidät ymmärtämään ja löytämään reunatapauksia, jotka liittyvät rclonen, SQLiten ja [VFS](https://en.wikipedia.org/wiki/Virtual_file_system):n käyttöön:
 
-* Jos otat käyttöön `--vfs-cache-mode writes` -lipun rclonella, lukeminen onnistuu, mutta kirjoitukset tallennetaan välimuistiin.
-* Jos sinulla on useita IMAP-palvelimia maailmanlaajuisesti hajautettuina, välimuisti on pois päältä niiden välillä, ellet käytä yhtä kirjoittajaa ja useita kuuntelijoita (esim. pub/sub-lähestymistapa).
+* Jos otat `--vfs-cache-mode writes`-lipun käyttöön rclonella, lukeminen onnistuu, mutta kirjoitukset tallennetaan välimuistiin.
+* Jos sinulla on useita IMAP-palvelimia maailmanlaajuisesti hajautettuna, välimuisti on pois päältä niiden välillä, ellet käytä yhtä kirjoittajaa ja useita kuuntelijoita (esim. pub/sub-lähestymistapa).
 * Tämä on uskomattoman monimutkaista, ja tämänkaltainen monimutkaisuus johtaa useampiin yksittäisiin vikaantumiskohtiin.
-* S3-yhteensopivat tallennuspalveluntarjoajat eivät tue osittaisia tiedostomuutoksia – mikä tarkoittaa, että kaikki `.sqlite` -tiedoston muutokset johtavat täydelliseen muutokseen ja tietokannan uudelleenlataukseen.
-* Muita ratkaisuja, kuten `rsync`, on olemassa, mutta ne eivät keskity etukäteen kirjoitettavan lokin ("_PROTECTED_LINK_188__") tukeen – joten päädyimme tarkastelemaan Litestreamia. Onneksi käyttämämme salaus salaa jo [WAL](https://www.sqlite.org/wal.html) tiedostot puolestamme, joten meidän ei tarvitse turvautua Litestreamiin tässä. Emme kuitenkaan olleet vielä varmoja Litestreamin toimivuudesta tuotantoympäristössä, ja tässä on muutamia huomioita siitä alla.
-
-* Tämän `--vfs-cache-mode writes` -vaihtoehdon käyttäminen (*ainoa* tapa käyttää SQLiteä `rclone`:n sijaan kirjoituksissa) yrittää kopioida koko tietokannan tyhjästä muistiin – yhden 10 Gt:n postilaatikon käsittely on OK, mutta useiden postilaatikoiden käsittely erittäin suurilla tallennustiedoilla aiheuttaa IMAP-palvelimille muistirajoituksia ja `ENOMEM` -virheitä, segmentointivirheitä ja tietojen vioittumista. * Jos yrität käyttää SQLite [Virtuaalipöydät](https://www.sqlite.org/vtab.html) -metodia (esim. käyttämällä [s3db](https://github.com/jrhy/s3db)) datan tallentamiseen S3-yhteensopivalle tallennustasolle, kohtaat useita muita ongelmia:
-* Lukeminen ja kirjoittaminen on erittäin hidasta, koska S3 API -päätepisteisiin on osuttava HTTP `GET`-, `PUT`-, `HEAD`- ja `POST`-metodeilla.
-* Kehitystestit osoittivat, että yli 500 000–1 000 000 tietueen ylittäminen kuituinternetissä on edelleen rajoitettua S3-yhteensopiviin palveluntarjoajiin kirjoitettaessa ja luettaessa. Esimerkiksi kehittäjämme suorittivat `for` -silmukoita sekä peräkkäisten SQL `INSERT` -lausekkeiden että suurten tietomäärien joukkokirjoittamiseen tarkoitettujen lausekkeiden tekemiseen. Molemmissa tapauksissa suorituskyky oli hämmästyttävän hidas.
-* Virtuaalitaulukoilla **ei voi olla indeksejä**, `ALTER TABLE` -lausekkeita eikä [muu](https://stackoverflow.com/a/12507650) [rajoitukset](https://sqlite.org/lang_createvtab.html) -lausekkeita – mikä johtaa jopa 1–2 minuutin tai pidempiin viiveisiin tietomäärästä riippuen.
+* S3-yhteensopivat tallennuspalveluntarjoajat eivät tue osittaisia tiedostomuutoksia – mikä tarkoittaa, että `.sqlite`-tiedoston muutos johtaa täydelliseen muutokseen ja tietokannan uudelleenlataukseen.
+* Muita ratkaisuja, kuten `rsync`, on olemassa, mutta ne eivät keskity etukäteen kirjoitettavan lokin ("[WAL](https://www.sqlite.org/wal.html)") tukeen – joten päädyimme tarkastelemaan Litestreamia. Onneksi salauskäyttömme salaa jo [WAL](https://www.sqlite.org/wal.html)-tiedostot puolestamme, joten meidän ei tarvitse luottaa Litestreamiin tässä asiassa. Emme kuitenkaan olleet vielä varmoja Litestreamin käytöstä tuotantokäytössä, ja meillä on siitä muutamia huomioita alla.
+* Tämän `--vfs-cache-mode writes`-vaihtoehdon käyttäminen (*ainoa* tapa käyttää SQLiteä `rclone`:n sijaan kirjoituksiin) yrittää kopioida koko tietokannan tyhjästä muistista – yhden 10 Gt:n postilaatikon käsittely on OK, mutta useiden postilaatikoiden käsittely erittäin suurella tallennustilalla aiheuttaa IMAP-palvelimille muistirajoituksia ja `ENOMEM`-virheitä, segmentointivirheitä ja tietojen vioittumista.
+* Jos yrität käyttää SQLite [Virtuaalipöydät](https://www.sqlite.org/vtab.html):aa (esim. käyttämällä [s3db](https://github.com/jrhy/s3db):ää) saadaksesi tiedot S3-yhteensopivalle tallennustasolle, kohtaat useita muita ongelmia:
+* Lukeminen ja kirjoittaminen on erittäin hidasta, koska S3 API -päätepisteisiin on tartuttava HTTP `.sqlite`0-, `.sqlite`1-, `.sqlite`2- ja `.sqlite`3-metodeilla. * Kehitystestit osoittivat, että yli 500 000–1 000 000 tietueen ylittäminen kuituinternetissä on edelleen rajoitettua S3-yhteensopivien palveluntarjoajien kirjoittamisen ja lukemisen suorituskyvyllä. Esimerkiksi kehittäjämme suorittivat `.sqlite`4-silmukoita sekä peräkkäisten SQL `.sqlite`5 -lausekkeiden että suurten tietomäärien joukkokirjoittamiseen tarkoitettujen lausekkeiden tekemiseen. Molemmissa tapauksissa suorituskyky oli hämmästyttävän hidas.
+* Virtuaalitaulukoilla **ei voi olla indeksejä**, `.sqlite`6-lausekkeita eikä `.sqlite`7 `.sqlite`8 -lausekkeita – mikä johtaa jopa 1–2 minuutin tai pidempiin viiveisiin tietomäärästä riippuen.
 * Objektit tallennettiin salaamattomina, eikä natiivia salaustukea ole saatavilla.
-* Tutkimme myös [sqlite-s3vfs](https://github.com/uktrade/sqlite-s3vfs) -lausekkeen käyttöä, joka on käsitteellisesti ja teknisesti samanlainen kuin edellinen luettelokohta (joten siinä on samat ongelmat). Yksi mahdollisuus olisi käyttää mukautettua `sqlite3`-rakennetta, joka on suojattu salauksella, kuten [wxSQLite3](https://github.com/utelle/wxsqlite3) (jota käytämme tällä hetkellä yllä olevassa ratkaisussamme) [asennustiedoston muokkaaminen](https://github.com/rogerbinns/apsw/blob/a870bda57ce28704f028af44c392b9a458e702be/setup.py#L268-L276):n kautta.
-
-* Toinen mahdollinen lähestymistapa olisi käyttää [multipleksilaajennus](https://www.sqlite.org/src/doc/trunk/src/test_multiplex.c):a, mutta tällä on 32 Gt:n rajoitus ja se vaatisi monimutkaisia rakennus- ja kehitysongelmia.
-* `ALTER TABLE`-lausekkeet ovat pakollisia (joten tämä sulkee täysin pois virtuaalitaulukoiden käytön). Tarvitsemme `ALTER TABLE`-lausekkeet, jotta koukkumme `knex-schema-inspector`:lla toimii oikein – mikä varmistaa, että tiedot eivät vioitu ja noudetut rivit voidaan muuntaa kelvollisiksi dokumenteiksi `mongoose`-skeemamääritysten mukaisesti (jotka sisältävät rajoitteen, muuttujatyypin ja mielivaltaisen datan validoinnin).
-* Lähes kaikki avoimen lähdekoodin yhteisön SQLiteen liittyvät S3-yhteensopivat projektit ovat Pythonilla (eikä JavaScriptillä, jota käytämme 100-prosenttisesti pinossamme).
-* Pakkauskirjastot, kuten [sqlite-zstd](https://github.com/phiresky/sqlite-zstd) (katso [kommentit](https://news.ycombinator.com/item?id=32303762)), näyttävät lupaavilta, mutta [ei ehkä ole vielä valmis tuotantokäyttöön](https://github.com/phiresky/sqlite-zstd#usage). Sen sijaan sovelluspuolen pakkaus tietotyypeille, kuten `String`, `Object`, `Map`, `Array`, `Set` ja `Buffer`, on puhtaampi ja helpompi lähestymistapa (ja se on myös helpompi siirtää, koska voisimme tallentaa `Boolean` -lipun tai -sarakkeen – tai jopa käyttää `PRAGMA` `user_version=1` pakkaamiseen tai `user_version=0` ilman pakkaamista tietokannan metatietoina). * Onneksi meillä on jo käytössä liitteiden duplikaatioiden poisto IMAP-palvelimemme tallennustilassa – siksi jokainen saman liitteen sisältävä viesti ei säilytä kopiota liitteestä – sen sijaan useille viesteille ja ketjuille postilaatikossa tallennetaan yksi liite (ja käytetään myöhemmin ulkoista viittausta).
+* Tutkimme myös `.sqlite`9:n käyttöä, joka on käsitteellisesti ja teknisesti samanlainen kuin edellinen luettelokohta (joten siinä on samat ongelmat). Yksi mahdollisuus olisi käyttää mukautettua `rsync`0-rakennetta, joka on kääritty salauksella, kuten `rsync`1 (jota käytämme tällä hetkellä yllä olevassa ratkaisussamme) `rsync`2:n kautta.
+* Toinen mahdollinen lähestymistapa olisi käyttää `rsync`3:a, mutta tällä on 32 Gt:n rajoitus ja se vaatisi monimutkaisia rakennus- ja kehitysongelmia.
+* `rsync`4-lausekkeet ovat pakollisia (joten tämä sulkee täysin pois virtuaalitaulukoiden käytön). Tarvitsemme `rsync`5-lausekkeita, jotta `rsync`6-koukkumme toimisi oikein – mikä varmistaa, että tiedot eivät vioitu ja noudetut rivit voidaan muuntaa kelvollisiksi dokumenteiksi `rsync`7-skeemamääritysten mukaisesti (jotka sisältävät rajoitteen, muuttujatyypin ja mielivaltaisen datan validoinnin).
+* Lähes kaikki avoimen lähdekoodin yhteisön SQLiteen liittyvät S3-yhteensopivat projektit ovat Pythonissa (eikä JavaScriptissä, jota käytämme 100 %:sti pinostamme).
+* Pakkauskirjastot, kuten `rsync`8 (katso `rsync`9), näyttävät lupaavilta, mutta __PROTECTED_LINK_189__0. Sen sijaan sovelluspuolen pakkaus tietotyypeille, kuten __PROTECTED_LINK_189__1, __PROTECTED_LINK_189__2, __PROTECTED_LINK_189__3, __PROTECTED_LINK_189__4, __PROTECTED_LINK_189__5 ja __PROTECTED_LINK_189__6, on puhtaampi ja helpompi lähestymistapa (ja se on myös helpompi siirtää, koska voisimme tallentaa __PROTECTED_LINK_189__7-lipun tai -sarakkeen – tai jopa käyttää __PROTECTED_LINK_189__8 __PROTECTED_LINK_189__9 pakkaamiseen tai __PROTECTED_LINK_190__0 pakkaamattomuuteen tietokannan metatietoina).
+* Onneksi meillä on jo käytössä liitteiden deduplikaatio IMAP-palvelimemme tallennustilassa – siksi jokainen saman liitteen sisältävä viesti ei säilytä kopiota liitteestä – sen sijaan yksi liite tallennetaan useille viesteille ja ketjuille postilaatikossa (ja käytetään myöhemmin ulkoista viittausta).
 * Litestream-projekti, joka on SQLite-replikointi- ja varmuuskopiointiratkaisu, on erittäin lupaava, ja tulemme todennäköisesti käyttämään sitä tulevaisuudessa.
-* En halua vähätellä tekijän/tekijöiden mainetta – koska rakastamme heidän työtään ja panostaan avoimeen lähdekoodiin jo yli vuosikymmenen ajan – mutta käytännön käytöstä näyttää siltä, että [voi olla paljon päänsärkyä](https://github.com/benbjohnson/litestream/issues) ja [mahdollinen tietojen menetys käytön seurauksena](https://github.com/benbjohnson/litestream/issues/218) ovat olemassa.
-* Varmuuskopioiden palauttamisen on oltava kitkatonta ja yksinkertaista. Ratkaisun, kuten MongoDB:n, käyttö `mongodump` ja `mongoexport` kanssa ei ole vain työlästä, vaan myös aikaa vievää ja sen konfigurointi on monimutkaista.
+* En halua vähätellä tekijän/tekijöiden uskottavuutta – koska olemme rakastaneet heidän työtään ja panostaan avoimeen lähdekoodiin jo yli vuosikymmenen ajan – mutta käytännön käytöstä näyttää siltä, että __PROTECTED_LINK_190__1 ja __PROTECTED_LINK_190__2 ovat olemassa.
+* Varmuuskopioiden palauttamisen on oltava kitkatonta ja yksinkertaista. MongoDB:n kaltaisen ratkaisun käyttö __PROTECTED_LINK_190__3:n ja __PROTECTED_LINK_190__4:n kanssa ei ole vain työlästä, vaan myös aikaa vievää ja konfigurointi on monimutkaista.
 * SQLite-tietokannat tekevät siitä yksinkertaista (se on yksi tiedosto).
-* Halusimme suunnitella ratkaisun, jossa käyttäjät voisivat ottaa postilaatikkonsa ja poistua milloin tahansa.
-* Yksinkertaisilla Node.js-komennoilla `fs.unlink('mailbox.sqlite'))` se poistetaan pysyvästi levytilasta.
-* Voimme samalla tavalla käyttää S3-yhteensopivaa API:a HTTP `DELETE`:n kanssa poistaaksemme helposti käyttäjien tilannevedokset ja varmuuskopiot.
+* Halusimme suunnitella ratkaisun, jossa käyttäjät voivat ottaa postilaatikkonsa ja poistua milloin tahansa.
+* Yksinkertaiset Node.js-komennot __PROTECTED_LINK_190__5:lle, ja se poistetaan pysyvästi levytilasta. * Voimme samalla tavalla käyttää S3-yhteensopivaa API:a HTTP __PROTECTED_LINK_190__6:n kanssa poistaaksemme helposti käyttäjien tilannevedokset ja varmuuskopiot.
 * SQLite oli yksinkertaisin, nopein ja kustannustehokkain ratkaisu.
 
 ### Vaihtoehtojen puute {#lack-of-alternatives}

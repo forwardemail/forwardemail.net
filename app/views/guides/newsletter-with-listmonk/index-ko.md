@@ -24,7 +24,7 @@
 
 ## 개요 {#overview}
 
-이 가이드는 개발자에게 강력한 오픈소스 뉴스레터 및 메일링 리스트 관리자인 [리스트몽크](https://listmonk.app/)를 설정하는 단계별 지침을 제공합니다. [이메일 전달](https://forwardemail.net/)를 SMTP 공급자로 사용하도록 설정할 수 있습니다. 이러한 조합을 통해 안전하고 개인 정보 보호되며 안정적인 이메일 전송을 보장하면서 캠페인을 효과적으로 관리할 수 있습니다.
+이 가이드는 개발자에게 강력한 오픈소스 뉴스레터 및 메일링 리스트 관리자인 [리스트몽크](https://listmonk.app/)에서 [이메일 전달](https://forwardemail.net/)을 SMTP 공급자로 사용하도록 설정하는 단계별 지침을 제공합니다. 이러한 조합을 통해 안전하고 개인 정보 보호되며 안정적인 이메일 전송을 보장하면서 캠페인을 효과적으로 관리할 수 있습니다.
 
 * **Listmonk**: 구독자 관리, 목록 구성, 캠페인 생성 및 성과 추적을 처리합니다.
 * **이메일 전달**: 보안 SMTP 서버 역할을 하며, SPF, DKIM, DMARC, TLS 암호화와 같은 내장 보안 기능을 사용하여 실제 이메일 발송을 처리합니다.
@@ -44,7 +44,7 @@
 시작하기 전에 다음 사항이 있는지 확인하세요.
 
 * 최신 Linux 배포판(Ubuntu 20.04 이상 권장)을 실행하고 CPU 1개와 RAM 1GB(2GB 권장) 이상을 갖춘 가상 사설 서버(VPS)가 필요합니다.
-* 서비스 제공업체가 필요하신가요? [추천 VPS 목록](https://github.com/forwardemail/awesome-mail-server-providers)을 확인해 보세요.
+* 제공업체가 필요하신가요? [추천 VPS 목록](https://github.com/forwardemail/awesome-mail-server-providers)을 확인해 보세요.
 * 직접 관리하는 도메인 이름(DNS 접근 권한 필요)
 * [이메일 전달](https://forwardemail.net/) 권한이 있는 활성 계정
 * VPS에 대한 루트 또는 `sudo` 접근 권한
@@ -81,7 +81,7 @@ curl -Lo docker-compose.yml https://raw.githubusercontent.com/knadh/listmonk/mas
 
 이 파일은 Listmonk 애플리케이션 컨테이너와 필요한 PostgreSQL 데이터베이스 컨테이너를 정의합니다.
 
-### 4. 방화벽(UFW) 구성 {#4-configure-firewall-ufw}
+### 4. 방화벽 구성(UFW) {#4-configure-firewall-ufw}
 
 필수 트래픽(SSH, HTTP, HTTPS)이 방화벽을 통과하도록 허용하세요. SSH가 비표준 포트에서 실행되는 경우, 그에 맞게 포트를 조정하세요.
 
@@ -98,11 +98,11 @@ sudo ufw enable
 
 HTTPS를 통해 Listmonk를 실행하는 것은 보안에 매우 중요합니다. 두 가지 주요 옵션이 있습니다.
 
-#### 옵션 A: Cloudflare 프록시 사용(간편성을 위해 권장) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
+#### 옵션 A: Cloudflare Proxy 사용(간편성을 위해 권장) {#option-a-using-cloudflare-proxy-recommended-for-simplicity}
 
 도메인의 DNS가 Cloudflare에서 관리되는 경우, Cloudflare의 프록시 기능을 활용하여 간편한 HTTPS를 사용할 수 있습니다.
 
-1. **지정 DNS**: Cloudflare에 Listmonk 하위 도메인(예: `A`)에 대한 `A` 레코드를 생성하여 VPS IP 주소를 가리키도록 합니다. **프록시 상태**가 **프록시됨**(주황색 구름)으로 설정되어 있는지 확인합니다.
+1. **지정 DNS**: Cloudflare에 Listmonk 하위 도메인(예: `listmonk.yourdomain.com`)에 대한 `A` 레코드를 생성하여 VPS IP 주소를 가리키도록 합니다. **프록시 상태**가 **프록시됨**(주황색 구름)으로 설정되어 있는지 확인합니다.
 2. **Docker Compose 수정**: 다운로드한 `docker-compose.yml` 파일을 편집합니다.
 ```bash
    sed -i 's/9000:9000/80:9000/' docker-compose.yml
@@ -113,13 +113,13 @@ HTTPS를 통해 Listmonk를 실행하는 것은 보안에 매우 중요합니다
 
 또는 VPS에 Nginx나 Caddy와 같은 역방향 프록시를 설정하여 HTTPS 종료 및 Listmonk(기본적으로 포트 9000에서 실행)에 대한 프록시 요청을 처리할 수 있습니다.
 
-* Listmonk가 로컬에서만 접근 가능하도록 기본 `ports: - "127.0.0.1:9000:9000"`을 `docker-compose.yml`로 유지하세요.
-* 선택한 역방향 프록시가 80번 및 443번 포트에서 수신 대기하고, SSL 인증서 획득(예: Let's Encrypt를 통해)을 처리하고, 트래픽을 `http://127.0.0.1:9000`로 전달하도록 구성하세요.
+* Listmonk가 로컬에서만 접근 가능하도록 기본 `ports: - "127.0.0.1:9000:9000"`을 `docker-compose.yml`에 유지합니다.
+* 선택한 역방향 프록시가 80번 및 443번 포트에서 수신 대기하고, SSL 인증서 획득(예: Let's Encrypt를 통해)을 처리하고, 트래픽을 `http://127.0.0.1:9000`로 전달하도록 구성합니다.
 * 자세한 역방향 프록시 설정은 이 가이드의 범위를 벗어나지만, 온라인에서 다양한 튜토리얼을 확인할 수 있습니다.
 
 ### 6. Listmonk 시작 {#6-start-listmonk}
 
-`listmonk` 디렉토리로 다시 이동합니다(아직 해당 디렉토리에 있지 않다면). 그리고 분리 모드로 컨테이너를 시작합니다.
+`listmonk` 디렉토리로 다시 이동합니다(아직 거기에 있지 않다면). 그리고 분리 모드로 컨테이너를 시작합니다.
 
 ```bash
 cd ~/listmonk # Or the directory where you saved docker-compose.yml
@@ -150,7 +150,7 @@ Docker가 필요한 이미지를 다운로드하고 Listmonk 애플리케이션�
 | **TLS** | `SSL/TLS` |
 | **이메일에서** | 원하는 `From` 주소(예: `newsletter@yourdomain.com`). 이 도메인이 전달 이메일에 구성되어 있는지 확인하세요. |
 
-* **중요**: 이메일 전달 시 보안 연결을 위해 항상 `465` 포트와 `SSL/TLS` 포트를 사용하세요. STARTTLS(포트 587)는 사용하지 마세요.
+* **중요**: 이메일 전달 시 보안 연결을 위해 항상 `465` 포트와 `SSL/TLS` 포트를 함께 사용하세요. STARTTLS(포트 587)는 사용하지 마세요.
 
 * **저장**을 클릭하세요.
 3. **테스트 이메일 보내기**: SMTP 설정 페이지에서 "테스트 이메일 보내기" 버튼을 클릭하세요. 접근 가능한 수신자 주소를 입력하고 **보내기**를 클릭하세요. 이메일이 수신자의 받은 편지함에 도착하는지 확인하세요.
@@ -182,10 +182,10 @@ Docker가 필요한 이미지를 다운로드하고 Listmonk 애플리케이션�
 5. **이메일 전달**을 활성화합니다.
 6. 이메일 전달 대시보드에서 복사한 **웹훅 서명 페이로드 확인 키**를 **이메일 전달 키** 필드에 붙여넣습니다.
 7. 페이지 하단의 **저장**을 클릭합니다.
-8. 반송 처리가 설정되었습니다! Listmonk에서 보낸 이메일의 반송을 감지하면 전달 이메일이 웹훅을 통해 Listmonk 인스턴스에 알리고 Listmonk는 해당 구독자를 표시합니다.
+8. 이제 반송 처리가 설정되었습니다! Listmonk에서 보낸 이메일의 반송을 감지하면 전달 이메일이 웹훅을 통해 Listmonk 인스턴스에 알리고 Listmonk는 해당 구독자를 표시합니다.
 9. [테스트](#testing)에서 아래 단계를 완료하여 모든 것이 제대로 작동하는지 확인합니다.
 
-## {#testing} 테스트 중
+## 테스트 중 {#testing}}
 
 Listmonk의 핵심 기능에 대한 간략한 개요는 다음과 같습니다.
 
@@ -205,7 +205,7 @@ Listmonk의 핵심 기능에 대한 간략한 개요는 다음과 같습니다.
 * 목록을 만들거나 가져오는 동안 하나 이상의 목록에 구독자를 할당하세요.
 * **모범 사례**: 이중 옵트인 프로세스를 사용하세요. **설정 -> 옵트인 및 구독**에서 설정하세요.
 
-### 캠페인 만들기 및 전송 {#create-and-send-a-campaign}
+### 캠페인 만들기 및 보내기 {#create-and-send-a-campaign}
 
 * **캠페인** -> **새 캠페인**으로 이동합니다.
 * 캠페인 세부 정보(이름, 제목, 발신 이메일, 보낼 목록)를 입력합니다.
@@ -217,8 +217,8 @@ Listmonk의 핵심 기능에 대한 간략한 개요는 다음과 같습니다.
 ## 확인 {#verification}
 
 * **SMTP 전송**: Listmonk의 SMTP 설정 페이지를 통해 정기적으로 테스트 이메일을 발송하고 캠페인을 테스트하여 이메일이 정상적으로 전송되는지 확인하세요.
-* **반송 처리**: 유효하지 않은 것으로 알려진 이메일 주소(예: 실제 이메일 주소가 없는 경우 `bounce-test@yourdomain.com`)로 테스트 캠페인을 발송하세요. 단, 결과는 다를 수 있습니다.)로 발송하세요. 잠시 후 Listmonk에서 캠페인 통계를 확인하여 반송 메일이 등록되었는지 확인하세요.
-* **이메일 헤더**: [메일 테스터](https://www.mail-tester.com/)과 같은 도구를 사용하거나 이메일 헤더를 직접 검사하여 SPF, DKIM, DMARC가 통과하는지 확인하세요. 이는 전달 이메일을 통해 제대로 설정되었음을 나타냅니다.
+* **반송 처리**: 유효하지 않은 것으로 알려진 이메일 주소(예: 실제 이메일 주소가 없는 경우 `bounce-test@yourdomain.com`)로 테스트 캠페인을 발송합니다. 단, 결과는 다를 수 있습니다.)로 발송 후 잠시 후 Listmonk에서 캠페인 통계를 확인하여 반송 메일이 등록되었는지 확인하세요.
+* **이메일 헤더**: [메일 테스터](https://www.mail-tester.com/)과 같은 도구를 사용하거나 이메일 헤더를 직접 검사하여 SPF, DKIM, DMARC가 통과하는지 확인하세요. 이는 전달 이메일을 통해 설정이 제대로 되었음을 나타냅니다.
 * **전달 이메일 로그**: SMTP 서버에서 전송 문제가 발생한 것으로 의심되는 경우 전달 이메일 대시보드 로그를 확인하세요.
 
 ## 개발자 노트 {#developer-notes}

@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# 자체 호스팅 릴리스 {#self-hosted-releases}
 
-이 섹션에서는 ForwardEmail의 자체 호스팅 솔루션에 대한 CI/CD 워크플로를 문서화하고 Docker 이미지가 어떻게 빌드, 게시, 배포되는지 설명합니다.
+이 섹션에서는 ForwardEmail의 자체 호스팅 솔루션에 대한 CI/CD 워크플로를 문서화하고 Docker 이미지가 어떻게 빌드, 게시 및 배포되는지 설명합니다.
 
-## Table of Contents {#table-of-contents}
+## 목차 {#table-of-contents}
 
 * [개요](#overview)
 * [CI/CD 워크플로](#cicd-workflow)
@@ -11,26 +11,26 @@
 * [배포 프로세스](#deployment-process)
   * [설치](#installation)
   * [Docker Compose 구성](#docker-compose-configuration)
-* [유지 보수 기능](#maintenance-features)
+* [유지 관리 기능](#maintenance-features)
   * [자동 업데이트](#automatic-updates)
   * [백업 및 복원](#backup-and-restore)
   * [인증서 갱신](#certificate-renewal)
 * [버전 관리](#versioning)
-* [이미지 접근](#accessing-images)
+* [이미지 액세스](#accessing-images)
 * [기여하다](#contributing)
 
-## Overview {#overview}
+## 개요 {#overview}
 
-ForwardEmail의 자체 호스팅 솔루션은 GitHub Actions를 사용하여 새 릴리스가 생성될 때마다 Docker 이미지를 자동으로 빌드하고 게시합니다. 이러한 이미지는 제공된 설정 스크립트를 사용하여 사용자가 자신의 서버에 배포할 수 있습니다.
+ForwardEmail의 셀프 호스팅 솔루션은 GitHub Actions를 사용하여 새 릴리스가 생성될 때마다 Docker 이미지를 자동으로 빌드하고 게시합니다. 사용자는 제공된 설치 스크립트를 사용하여 이러한 이미지를 자신의 서버에 배포할 수 있습니다.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> [셀프 호스팅 블로그](https://forwardemail.net/blog/docs/self-hosted-solution)과 [셀프 호스팅 개발자 가이드](https://forwardemail.net/self-hosted)도 있습니다.
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> 더 자세한 단계별 설명은 [우분투](https://forwardemail.net/guides/selfhosted-on-ubuntu) 또는 [데비안](https://forwardemail.net/guides/selfhosted-on-debian) 기반 가이드를 참조하세요.
 
-## CI/CD Workflow {#cicd-workflow}
+## CI/CD 워크플로 {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### GitHub 작업 워크플로 {#github-actions-workflow}
 
 자체 호스팅 Docker 이미지 빌드 및 게시 프로세스는 `.github/workflows/docker-image-build-publish.yml`에 정의되어 있습니다. 이 워크플로는 다음과 같습니다.
 
@@ -41,7 +41,7 @@ ForwardEmail의 자체 호스팅 솔루션은 GitHub Actions를 사용하여 새
 * 다중 플랫폼 빌드를 위한 Docker Buildx를 설정합니다.
 * GitHub 컨테이너 레지스트리(GHCR)에 로그인합니다.
 * 자체 호스팅 배포를 위한 스키마를 업데이트합니다.
-* `self-hosting/Dockerfile-selfhosted`를 사용하여 Docker 이미지를 빌드합니다.
+* `self-hosting/Dockerfile-selfhosted`을 사용하여 Docker 이미지를 빌드합니다.
 * 이미지에 릴리스 버전과 `latest` 태그를 지정합니다.
 * 이미지를 GitHub 컨테이너 레지스트리에 푸시합니다.
 
@@ -82,7 +82,7 @@ Docker 이미지는 `self-hosting/Dockerfile-selfhosted`에 정의된 다단계 
 2. **최종 단계**:
 * 더 가벼운 Node.js 20 이미지 사용
 * 필요한 시스템 종속성만 설치
-* 데이터 저장에 필요한 디렉터리 생성
+* 데이터 저장을 위한 필수 디렉터리 생성
 * 빌더 단계에서 빌드된 애플리케이션 복사
 
 이 접근 방식을 사용하면 최종 이미지의 크기와 보안이 최적화됩니다.
@@ -91,7 +91,7 @@ Docker 이미지는 `self-hosting/Dockerfile-selfhosted`에 정의된 다단계 
 
 ### 설치 {#installation}
 
-사용자는 제공된 설정 스크립트를 사용하여 셀프 호스팅 솔루션을 배포할 수 있습니다.
+사용자는 제공된 설정 스크립트를 사용하여 자체 호스팅 솔루션을 배포할 수 있습니다.
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/refs/heads/master/self-hosting/setup.sh)
@@ -121,11 +121,11 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * **Redis**: 메모리 내 데이터 저장소
 * **SQLite**: 이메일 저장 데이터베이스
 
-각 서비스는 동일한 Docker 이미지를 사용하지만 진입점이 다르므로 모듈식 아키텍처가 가능하고 유지 관리도 간소화됩니다.
+각 서비스는 동일한 Docker 이미지를 사용하지만 진입점이 다르므로 유지관리를 간소화하는 동시에 모듈식 아키텍처가 가능합니다.
 
 ## 유지 관리 기능 {#maintenance-features}
 
-셀프 호스팅 솔루션에는 다음과 같은 여러 유지 관리 기능이 포함되어 있습니다.
+셀프 호스팅 솔루션에는 다음과 같은 여러 가지 유지 관리 기능이 포함되어 있습니다.
 
 ### 자동 업데이트 {#automatic-updates}
 
@@ -142,7 +142,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ### 백업 및 복원 {#backup-and-restore}
 
-설정에는 다음과 같은 옵션이 제공됩니다.
+설정에서는 다음과 같은 옵션을 제공합니다.
 
 * S3 호환 스토리지에 대한 정기 백업 구성
 * MongoDB, Redis, SQLite 데이터 백업
@@ -161,13 +161,13 @@ SSL 인증서는 다음 옵션을 통해 자동으로 관리됩니다.
 각 GitHub 릴리스는 다음 태그가 지정된 새로운 Docker 이미지를 생성합니다.
 
 1. 특정 릴리스 버전(예: `v1.0.0`)
-2. 최신 릴리스에 대한 `latest` 태그
+2. 최신 릴리스의 `latest` 태그
 
 사용자는 안정성을 위해 특정 버전을 사용하거나 `latest` 태그를 사용하여 항상 최신 기능을 사용할 수 있습니다.
 
 ## 이미지 액세스 {#accessing-images}
 
-Docker 이미지는 다음 위치에서 공개적으로 사용 가능합니다.
+Docker 이미지는 다음 위치에서 공개적으로 사용할 수 있습니다.
 
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:latest`
 * `ghcr.io/forwardemail/forwardemail.net-selfhosted:v1.0.0` (예시 버전 태그)
@@ -181,4 +181,4 @@ Docker 이미지는 다음 위치에서 공개적으로 사용 가능합니다.
 1. `self-hosting` 디렉터리의 관련 파일을 변경합니다.
 2. 제공된 `setup.sh` 스크립트를 사용하여 로컬 또는 Ubuntu 기반 VPS에서 테스트합니다.
 3. 풀 리퀘스트를 제출합니다.
-4. 병합되고 새 릴리스가 생성되면 CI 워크플로가 업데이트된 Docker 이미지를 자동으로 빌드하고 게시합니다.
+4. 병합 후 새 릴리스가 생성되면 CI 워크플로가 업데이트된 Docker 이미지를 자동으로 빌드하고 게시합니다.

@@ -1,4 +1,4 @@
-# Présentation des paiements cryptographiques : confidentialité renforcée pour votre service de messagerie {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
+# Présentation des paiements cryptographiques : confidentialité améliorée pour votre service de messagerie électronique {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
 <img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
 
@@ -19,11 +19,11 @@
 
 ## Avant-propos {#foreword}
 
-Chez [Transférer un e-mail](https://forwardemail.net), nous cherchons constamment à améliorer votre [confidentialité](https://en.wikipedia.org/wiki/Privacy) et votre sécurité tout en rendant notre service plus accessible. Nous sommes ravis d'annoncer que nous acceptons désormais les paiements [cryptomonnaie](https://en.wikipedia.org/wiki/Cryptocurrency) via l'intégration des paiements cryptographiques [Stripe](https://stripe.com).
+Chez [Transférer un e-mail](https://forwardemail.net), nous cherchons constamment à améliorer votre [confidentialité](https://en.wikipedia.org/wiki/Privacy) et votre sécurité tout en rendant notre service plus accessible. Nous sommes ravis d'annoncer aujourd'hui que nous acceptons désormais les paiements [cryptomonnaie](https://en.wikipedia.org/wiki/Cryptocurrency) via l'intégration des paiements cryptographiques [Stripe](https://stripe.com).
 
 ## Pourquoi les paiements en cryptomonnaies sont importants {#why-crypto-payments-matter}
 
-[Confidentialité](https://en.wikipedia.org/wiki/Internet_privacy) a toujours été au cœur de notre service. Bien que nous ayons proposé différents modes de paiement par le passé, les paiements en cryptomonnaies offrent un niveau de confidentialité supplémentaire, en parfaite adéquation avec notre mission. En payant en cryptomonnaies, vous pouvez :
+[Confidentialité](https://en.wikipedia.org/wiki/Internet_privacy) a toujours été au cœur de notre service. Bien que nous ayons proposé différents modes de paiement par le passé, les paiements en cryptomonnaies offrent un niveau de confidentialité supplémentaire, parfaitement en phase avec notre mission. En payant en cryptomonnaies, vous pouvez :
 
 * Préservez votre anonymat lors de l'achat de nos services de messagerie
 * Réduisez les informations personnelles liées à votre compte de messagerie
@@ -32,7 +32,7 @@ Chez [Transférer un e-mail](https://forwardemail.net), nous cherchons constamme
 
 ## Comment ça marche {#how-it-works}
 
-Nous avons intégré le système de paiement crypto [Stripe](https://docs.stripe.com/crypto) pour simplifier le processus. Voici comment payer vos services Forward Email en cryptomonnaie :
+Nous avons intégré le système de paiement crypto [Stripe](https://docs.stripe.com/crypto) pour simplifier le processus. Voici comment payer vos services de transfert d'e-mails en cryptomonnaie :
 
 ```mermaid
 flowchart LR
@@ -56,7 +56,7 @@ flowchart LR
 
 4. **Terminez votre paiement** : Confirmez la transaction dans votre portefeuille et le tour est joué ! Le paiement sera traité et votre service de transfert d'e-mails sera immédiatement activé.
 
-Avantages de la confidentialité de ## {#privacy-benefits}
+## Avantages de la confidentialité {#privacy-benefits}
 
 L'utilisation de la crypto-monnaie pour votre abonnement Forward Email améliore votre confidentialité de plusieurs manières :
 
@@ -78,14 +78,14 @@ graph TD
 * **Informations personnelles réduites** : Contrairement aux paiements par carte de crédit, les transactions en cryptomonnaies ne nécessitent pas votre nom, votre adresse de facturation ni d’autres informations personnelles. En savoir plus sur [confidentialité des transactions](https://en.wikipedia.org/wiki/Privacy_coin).
 * **Séparation des services bancaires traditionnels** : Votre paiement ne peut pas être lié à votre compte bancaire ni à votre historique de crédit. En savoir plus sur [confidentialité financière](https://en.wikipedia.org/wiki/Financial_privacy).
 * **Confidentialité de la blockchain** : Bien que les transactions blockchain soient publiques, elles sont pseudonymes et ne sont pas directement liées à votre identité réelle. Voir [techniques de confidentialité de la blockchain](https://en.wikipedia.org/wiki/Privacy_and_blockchain).
-* **Conformément à nos valeurs** : En tant que service de messagerie électronique axé sur la confidentialité, nous pensons qu’il est important que vous ayez le contrôle de vos informations personnelles à chaque étape. Consultez notre [politique de confidentialité](/privacy).
+* **Conformément à nos valeurs** : En tant que service de messagerie électronique axé sur la confidentialité, nous nous engageons à vous donner le contrôle de vos informations personnelles à chaque étape. Consultez notre [politique de confidentialité](/privacy).
 
 ## Détails techniques {#technical-details}
 
 Pour ceux qui s'intéressent aux aspects techniques :
 
-* Nous utilisons l'infrastructure de paiement crypto [Stripe](https://docs.stripe.com/crypto/stablecoin-payments), qui gère toute la complexité des transactions blockchain.
-* Les paiements sont effectués en [USDC](https://www.circle.com/en/usdc) sur plusieurs blockchains, dont [Ethereum](https://ethereum.org), [Solana](https://solana.com) et [Polygone](https://polygon.technology).
+* Nous utilisons l'infrastructure de paiement cryptographique [Stripe](https://docs.stripe.com/crypto/stablecoin-payments), qui gère toute la complexité des transactions blockchain.
+* Les paiements sont effectués dans [USDC](https://www.circle.com/en/usdc) sur plusieurs blockchains, dont [Ethereum](https://ethereum.org), [Solana](https://solana.com) et [Polygone](https://polygon.technology).
 * Lorsque vous payez en cryptomonnaie, nous recevons la valeur équivalente en USD, ce qui nous permet de maintenir des prix stables.
 
 ## Configuration de votre portefeuille cryptographique {#setting-up-your-crypto-wallet}
@@ -100,11 +100,11 @@ flowchart LR
     D --> E[Ready for Payment]
 ```
 
-### MétaMask {#metamask}
+### MétaMasque {#metamask}
 
 [MétaMasque](https://metamask.io) est l'un des portefeuilles Ethereum les plus populaires.
 
-1. Consultez le lien [Page de téléchargement de MetaMask](https://metamask.io/download/)
+1. Accédez à [Page de téléchargement de MetaMask](https://metamask.io/download/)
 2. Installez l'extension de navigateur ou l'application mobile
 3. Suivez les instructions de configuration pour créer un nouveau portefeuille
 4. **Important** : Conservez votre phrase de récupération en toute sécurité
@@ -115,11 +115,11 @@ flowchart LR
 
 [Fantôme](https://phantom.app) est un portefeuille Solana de premier plan.
 
-1. Consultez le lien [Site Web fantôme](https://phantom.app/)
+1. Accédez à [Site Web fantôme](https://phantom.app/)
 2. Téléchargez la version adaptée à votre appareil
 3. Créez un nouveau portefeuille en suivant les instructions à l'écran
-4. Sauvegardez votre phrase de récupération de manière sécurisée
-5. Ajoutez des SOL ou des USDC à votre portefeuille
+4. Sauvegardez votre phrase de récupération en toute sécurité
+5. Ajoutez SOL ou USDC à votre portefeuille
 6. [Guide du portefeuille fantôme](https://help.phantom.app/hc/en-us/articles/4406388623251-How-to-create-a-new-wallet)
 
 ### Portefeuille Coinbase {#coinbase-wallet}
@@ -156,7 +156,7 @@ Pour plus d'informations sur les crypto-monnaies et la technologie blockchain, c
 
 L'ajout des paiements en cryptomonnaies n'est qu'une étape supplémentaire dans notre engagement continu envers [confidentialité](https://en.wikipedia.org/wiki/Privacy), [sécurité](https://en.wikipedia.org/wiki/Computer_security) et le libre choix des utilisateurs. Nous pensons que votre service de messagerie doit respecter votre vie privée à tous les niveaux, des messages que vous envoyez à votre mode de paiement.
 
-Comme toujours, nous apprécions vos commentaires sur cette nouvelle option de paiement. Pour toute question concernant l'utilisation des cryptomonnaies avec Forward Email, veuillez nous contacter via notre [équipe de soutien](/help).
+Comme toujours, nous apprécions vos commentaires sur cette nouvelle option de paiement. Pour toute question concernant l'utilisation des cryptomonnaies avec Forward Email, veuillez contacter notre [équipe de soutien](/help).
 
 ---
 

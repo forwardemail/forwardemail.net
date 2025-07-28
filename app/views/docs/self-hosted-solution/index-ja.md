@@ -6,51 +6,51 @@
 
 * [序文](#foreword)
 * [セルフホスト型メールが重要な理由](#why-self-hosted-email-matters)
-  * [従来の電子メールサービスの問題点](#the-problem-with-traditional-email-services)
-  * [セルフホストの代替](#the-self-hosted-alternative)
-* [セルフホスト実装: 技術概要](#our-self-hosted-implementation-technical-overview)
-  * [シンプルさと移植性を実現する Docker ベースのアーキテクチャ](#docker-based-architecture-for-simplicity-and-portability)
-  * [Bash スクリプトのインストール: アクセシビリティとセキュリティの融合](#bash-script-installation-accessibility-meets-security)
-  * [将来に渡ってプライバシーを保護する耐量子暗号化](#quantum-safe-encryption-for-future-proof-privacy)
+  * [従来のメールサービスの問題点](#the-problem-with-traditional-email-services)
+  * [セルフホストの代替手段](#the-self-hosted-alternative)
+* [セルフホスト実装：技術概要](#our-self-hosted-implementation-technical-overview)
+  * [シンプルさと移植性を実現するDockerベースのアーキテクチャ](#docker-based-architecture-for-simplicity-and-portability)
+  * [Bash スクリプトによるインストール: アクセシビリティとセキュリティの融合](#bash-script-installation-accessibility-meets-security)
+  * [将来に渡ってプライバシーを守る耐量子暗号](#quantum-safe-encryption-for-future-proof-privacy)
   * [自動メンテナンスとアップデート](#automated-maintenance-and-updates)
 * [オープンソースへの取り組み](#the-open-source-commitment)
-* [セルフホストとマネージド: 正しい選択](#self-hosted-vs-managed-making-the-right-choice)
-  * [自己ホスティングメールの現実](#the-reality-of-self-hosting-email)
-  * [当社のマネージドサービスを選択するタイミング](#when-to-choose-our-managed-service)
-* [セルフホスト転送メールの使用を開始する](#getting-started-with-self-hosted-forward-email)
+* [セルフホスト vs. マネージド：正しい選択](#self-hosted-vs-managed-making-the-right-choice)
+  * [セルフホスティングメールの現実](#the-reality-of-self-hosting-email)
+  * [当社のマネージドサービスを選ぶべきタイミング](#when-to-choose-our-managed-service)
+* [セルフホスト転送メールを使い始める](#getting-started-with-self-hosted-forward-email)
   * [システム要件](#system-requirements)
   * [インストール手順](#installation-steps)
 * [セルフホスト型メールの未来](#the-future-of-self-hosted-email)
-* [結論: すべての人にメールの自由を](#conclusion-email-freedom-for-everyone)
+* [結論：誰もがメールの自由を](#conclusion-email-freedom-for-everyone)
 * [参考文献](#references)
 
 ## 序文 {#foreword}
 
-今日のデジタル環境において、電子メールは依然としてオンライン アイデンティティとコミュニケーションの基盤となっています。しかし、プライバシーに関する懸念が高まるにつれ、多くのユーザーは、利便性とプライバシーのどちらを犠牲にするか、それとも利便性とプライバシーのどちらを犠牲にするかという難しい選択に直面しています。Forward Email では、この 2 つのいずれかを選択する必要はないと常に考えてきました。
+今日のデジタル環境において、メールは依然として私たちのオンラインアイデンティティとコミュニケーションの基盤となっています。しかし、プライバシーへの懸念が高まるにつれ、多くのユーザーは難しい選択に直面しています。利便性を犠牲にしてプライバシーを優先するか、利便性を犠牲にしてプライバシーを優先するかです。Forward Emailは、ユーザーがどちらか一方を選ぶ必要はないと常に考えています。
 
-本日、私たちは、私たちの歩みにおける重要な節目となる、セルフホスト型メール ソリューションのリリースを発表できることを嬉しく思います。この機能は、オープンソースの原則、プライバシー重視の設計、およびユーザーのエンパワーメントに対する私たちの深い取り組みを表しています。セルフホスト型オプションにより、メール通信の完全な権限と制御をお客様が直接管理できるようになります。
+本日、私たちの歩みにおける重要な節目となる、セルフホスト型メールソリューションのリリースを発表できることを大変嬉しく思います。この機能は、オープンソースの原則、プライバシー重視の設計、そしてユーザーのエンパワーメントに対する私たちの深いコミットメントを表しています。セルフホスト型オプションにより、メールコミュニケーションの完全な制御をお客様が直接管理できるようになります。
 
 このブログ投稿では、当社のセルフホスト型ソリューションの背後にある哲学、その技術的実装、そしてデジタル通信においてプライバシーと所有権の両方を優先するユーザーにとってそれがなぜ重要なのかについて説明します。
 
 ## セルフホスト型メールが重要な理由 {#why-self-hosted-email-matters}
 
-当社のセルフホスト型メール ソリューションは、真のプライバシーとは制御を意味し、制御はオープン ソースから始まるという当社の信念を最も明確に表現したものです。デジタル通信の完全な所有権を求めるユーザーにとって、セルフホストはもはや異端の考えではなく、不可欠な権利です。当社は、お客様が独自の条件で実行できる完全にオープンで検証可能なプラットフォームでその信念を貫くことを誇りに思っています。
+当社のセルフホスト型メールソリューションは、真のプライバシーとはコントロールであり、そのコントロールはオープンソースから始まるという私たちの信念を最も明確に体現しています。デジタルコミュニケーションの完全な所有権を求めるユーザーにとって、セルフホスティングはもはや異端の考えではなく、不可欠な権利です。私たちは、お客様がご自身の条件で運用できる、完全にオープンで検証可能なプラットフォームを通じて、この信念を貫くことを誇りに思います。
 
 ### 従来のメールサービスの問題点 {#the-problem-with-traditional-email-services}
 
-従来の電子メール サービスでは、プライバシーを重視するユーザーにとっていくつかの根本的な課題があります。
+従来の電子メール サービスは、プライバシーを重視するユーザーにとっていくつかの根本的な課題を提示します。
 
 1. **信頼要件**: プロバイダーがデータにアクセス、分析、共有しないことを信頼する必要があります。
 2. **集中管理**: アクセスはいつでも、いかなる理由でも取り消される可能性があります。
 3. **監視の脆弱性**: 集中管理型サービスは監視の主要な標的となります。
 4. **透明性の限界**: ほとんどのサービスは、独自のクローズドソースソフトウェアを使用しています。
-5. **ベンダーロックイン**: これらのサービスからの移行は困難または不可能になる可能性があります。
+5. **ベンダーロックイン**: これらのサービスからの移行は困難、または不可能になる可能性があります。
 
-「プライバシー重視」のメール プロバイダーでも、フロントエンド アプリケーションのみをオープン ソース化し、バックエンド システムを独自仕様でクローズドにすることで、期待に応えられないことがよくあります。これにより、大きな信頼のギャップが生じます。つまり、プライバシーの約束を検証できないまま信じるよう求められるのです。
+「プライバシー重視」を謳うメールプロバイダーでさえ、フロントエンドアプリケーションのみをオープンソース化し、バックエンドシステムは独自仕様でクローズドなままにしておくことで、期待に応えられないことがよくあります。これは大きな信頼のギャップを生み出します。つまり、プライバシーに関する約束を、それを検証することができないまま信じるように求められるのです。
 
 ### セルフホストの代替手段 {#the-self-hosted-alternative}
 
-メールを自己ホストすると、根本的に異なるアプローチが提供されます。
+電子メールを自己ホストすると、根本的に異なるアプローチが提供されます。
 
 1. **完全なコントロール**: メールインフラ全体を所有・管理できます
 2. **検証可能なプライバシー**: システム全体が透明性と監査性を備えています
@@ -58,15 +58,15 @@
 4. **自由なカスタマイズ**: システムをお客様のニーズに合わせて調整できます
 5. **回復力**: 企業の決定に関わらず、お客様のサービスは継続されます
 
-あるユーザーはこう述べています。「自分のメールを自分でホストすることは、自分で食料を育てることのデジタル版です。手間はかかりますが、その内容を正確に把握できます。」
+あるユーザーはこう述べています。「自分のメールを自分でホストするというのは、自分の食べ物を育てることのデジタル版です。手間はかかりますが、その内容を正確に把握できます。」
 
 ## セルフホスト実装：技術概要 {#our-self-hosted-implementation-technical-overview}
 
-当社のセルフホスト型メール ソリューションは、すべての製品に適用されるプライバシー第一の原則に基づいて構築されています。これを可能にする技術的な実装について見ていきましょう。
+当社のセルフホスト型メールソリューションは、すべての製品に共通するプライバシー第一の原則に基づいて構築されています。これを実現する技術的な実装について見ていきましょう。
 
 ### シンプルさと移植性を実現する Docker ベースのアーキテクチャ {#docker-based-architecture-for-simplicity-and-portability}
 
-当社では、電子メール インフラストラクチャ全体を Docker を使用してパッケージ化しており、事実上あらゆる Linux ベースのシステムに簡単に導入できます。このコンテナ化されたアプローチには、いくつかの重要な利点があります。
+メールインフラ全体をDockerでパッケージ化することで、ほぼあらゆるLinuxベースのシステムに簡単にデプロイできるようになりました。このコンテナ化されたアプローチには、いくつかの重要なメリットがあります。
 
 1. **シンプルなデプロイ**: たった1つのコマンドでインフラストラクチャ全体をセットアップ
 2. **一貫性のある環境**: 「自分のマシンでは動作する」という問題を排除
@@ -86,11 +86,11 @@
 * 安全で暗号化されたメールボックス保存用のSQLite
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> [セルフホスト開発者ガイド](https://forwardemail.net/self-hosted) もぜひご覧ください
 
-### Bash スクリプトによるインストール: アクセシビリティとセキュリティの両立 {#bash-script-installation-accessibility-meets-security}
+### Bashスクリプトのインストール：アクセシビリティとセキュリティの融合 {#bash-script-installation-accessibility-meets-security}
 
-セキュリティのベストプラクティスを維持しながら、インストール プロセスを可能な限りシンプルに設計しました。
+セキュリティのベスト プラクティスを維持しながら、インストール プロセスを可能な限りシンプルに設計しました。
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
@@ -105,13 +105,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 5. Dockerコンテナのデプロイ
 6. 初期セキュリティ強化の実行
 
-スクリプトを bash にパイプすることに不安がある方は (当然です!)、実行前にスクリプトを確認することをお勧めします。スクリプトは完全にオープンソースであり、検査可能です。
+スクリプトをbashにパイプすることに不安がある方は（当然ですが）、実行前にスクリプトを確認することをお勧めします。スクリプトは完全にオープンソースなので、自由に閲覧できます。
 
 ### 将来を見据えたプライバシーのための耐量子暗号化 {#quantum-safe-encryption-for-future-proof-privacy}
 
-弊社のホスト型サービスと同様に、弊社のセルフホスト型ソリューションは、SQLite データベースの暗号として ChaCha20-Poly1305 を使用して、耐量子暗号化を実装しています。このアプローチにより、現在の脅威だけでなく、将来の量子コンピューティング攻撃からもメール データを保護できます。
+ホスティングサービスと同様に、セルフホスティングソリューションでは、SQLiteデータベースの暗号としてChaCha20-Poly1305を用いた耐量子暗号を実装しています。このアプローチにより、お客様のメールデータは、現在の脅威だけでなく、将来の量子コンピューティング攻撃からも保護されます。
 
-各メールボックスは独自の暗号化された SQLite データベース ファイルに保存され、ユーザー間の完全な分離が実現します。これは、従来の共有データベース アプローチに比べてセキュリティ上の大きな利点です。
+各メールボックスは独自の暗号化された SQLite データベース ファイルに保存され、ユーザー間の完全な分離が実現されます。これは、従来の共有データベース アプローチに比べてセキュリティ上の大きな利点です。
 
 ### 自動メンテナンスとアップデート {#automated-maintenance-and-updates}
 
@@ -122,7 +122,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 3. **システムアップデート**: シンプルなコマンドで最新バージョンに更新
 4. **ヘルスモニタリング**: システムの整合性を確保するための組み込みチェック
 
-これらのユーティリティには、シンプルなインタラクティブ メニューからアクセスできます。
+これらのユーティリティには、シンプルな対話型メニューからアクセスできます。
 
 ```bash
 # script prompt
@@ -138,7 +138,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## オープンソースへの取り組み {#the-open-source-commitment}
 
-当社のセルフホスト型メール ソリューションは、当社のすべての製品と同様に、フロントエンドとバックエンドの両方で 100% オープンソースです。これは次のことを意味します。
+当社のセルフホスト型メールソリューションは、他のすべての製品と同様に、フロントエンドとバックエンドの両方で100%オープンソースです。つまり、
 
 1. **完全な透明性**: メールを処理するすべてのコード行が公開されており、誰でも精査できます。
 2. **コミュニティへの貢献**: 誰でも改善や問題の修正に貢献できます。
@@ -149,7 +149,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## セルフホスト vs. マネージド：正しい選択をする {#self-hosted-vs-managed-making-the-right-choice}
 
-当社はセルフホスティングオプションを提供できることを誇りに思っていますが、それがすべての人にとって最適な選択ではないことも認識しています。メールをセルフホスティングするには、実際の責任と課題が伴います。
+セルフホスティングオプションを提供できることを誇りに思っておりますが、すべてのお客様にとって最適な選択肢ではないことを認識しております。メールのセルフホスティングには、次のような責任と課題が伴います。
 
 ### セルフホスティングメールの現実 {#the-reality-of-self-hosting-email}
 
@@ -187,7 +187,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## セルフホスト転送メールの使用開始 {#getting-started-with-self-hosted-forward-email}
 
-電子メール インフラストラクチャを管理する準備はできていますか? 開始方法は次のとおりです。
+メールインフラストラクチャを管理する準備はできていますか？開始方法は次のとおりです。
 
 ### システム要件 {#system-requirements}
 
@@ -196,15 +196,15 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 * 20GB以上のストレージを推奨
 * ご自身で管理できるドメイン名
 * ポート25をサポートするパブリックIPアドレス
-* [逆PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/) を設定できること
+* [逆PTR](https://www.cloudflare.com/learning/dns/dns-records/dns-ptr-record/)を設定できること
 * IPv4およびIPv6をサポート
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> <https://forwardemail.net/blog/docs/best-mail-server-providers> (ソースは <https://github.com/forwardemail/awesome-mail-server-providers>) にある複数のメールサーバープロバイダーを推奨します
 
 ### インストール手順 {#installation-steps}
 
-1. **インストールスクリプトを実行**:
+1. **インストールスクリプトを実行します**:
 ```bash
    bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.net/master/self-hosting/setup.sh)
    ```
@@ -223,7 +223,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 
 ## セルフホスト型メールの未来 {#the-future-of-self-hosted-email}
 
-当社のセルフホスト型ソリューションは、ほんの始まりに過ぎません。当社は、以下の方法でこのソリューションを継続的に改善することに尽力しています。
+当社のセルフホスト型ソリューションは、まだ始まりに過ぎません。私たちは、このソリューションを継続的に改善していくことに尽力しています。
 
 1. **強化された管理ツール**: より強力なWebベースの管理
 2. **追加の認証オプション**: ハードウェアセキュリティキーのサポートを含む
@@ -231,19 +231,19 @@ bash <(curl -fsSL https://raw.githubusercontent.com/forwardemail/forwardemail.ne
 4. **マルチサーバー展開**: 高可用性構成のオプション
 5. **コミュニティ主導の改善**: ユーザーからの貢献を取り入れる
 
-## 結論: すべての人にメールの自由を {#conclusion-email-freedom-for-everyone}
+## 結論: 誰もがメールを自由に使えるようになる {#conclusion-email-freedom-for-everyone}
 
-セルフホスト型メール ソリューションの導入は、プライバシーを重視した透明性の高いメール サービスを提供するという当社の使命において、重要な節目となります。マネージド サービスとセルフホスト型のどちらを選択しても、オープン ソースの原則とプライバシーを第一に考えた設計に対する当社の揺るぎない取り組みの恩恵を受けることができます。
+セルフホスト型メールソリューションのリリースは、プライバシーを重視し透明性の高いメールサービスを提供するという当社の使命において、重要な節目となります。マネージドサービスとセルフホスト型のどちらをお選びいただいても、オープンソースの原則とプライバシーを最優先とした設計への揺るぎないコミットメントの恩恵を受けることができます。
 
-電子メールは、ユーザーのプライバシーよりもデータ収集を優先する閉鎖的な独自システムで制御するには重要すぎるものです。Forward Email のセルフホスト型ソリューションにより、デジタル通信を完全に制御できる真の代替手段を提供できることを誇りに思います。
+メールは、ユーザーのプライバシーよりもデータ収集を優先する閉鎖的な独自システムによって管理されるべきではありません。Forward Emailのセルフホスト型ソリューションは、真の代替手段であり、お客様がデジタルコミュニケーションを完全に制御できるソリューションを提供できることを誇りに思います。
 
-プライバシーは単なる機能ではなく、基本的な権利であると私たちは考えています。そして、当社のセルフホスト型メール オプションにより、その権利がこれまで以上に利用しやすくなります。
+私たちは、プライバシーは単なる機能ではなく、基本的な権利であると信じています。そして、セルフホスト型メールオプションによって、この権利をこれまで以上に容易に享受できるようになります。
 
-メールを管理する準備はできましたか? [今すぐ始めましょう](https://forwardemail.net/self-hosted) にアクセスするか、[GitHub リポジトリ](https://github.com/forwardemail/forwardemail.net) を参照して詳細をご確認ください。
+メールを管理する準備はできましたか? [今すぐ始めましょう](https://forwardemail.net/self-hosted) または [GitHubリポジトリ](https://github.com/forwardemail/forwardemail.net) で詳細をご覧ください。
 
 ## 参照 {#references}
 
-\[1] メール転送 GitHubリポジトリ: <https://github.com/forwardemail/forwardemail.net>
+\[1] メールを転送する GitHubリポジトリ: <https://github.com/forwardemail/forwardemail.net>
 
 \[2] セルフホストドキュメント: <https://forwardemail.net/en/self-hosted>
 

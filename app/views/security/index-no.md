@@ -16,27 +16,27 @@
   * [Dataminimering](#data-minimization)
   * [Sikkerhetskopiering og gjenoppretting](#backup-and-recovery)
 * [Tjenesteleverandører](#service-providers)
-* [Compliance og revisjon](#compliance-and-auditing)
+* [Samsvar og revisjon](#compliance-and-auditing)
   * [Regelmessige sikkerhetsvurderinger](#regular-security-assessments)
-  * [Overholdelse](#compliance)
+  * [Samsvar](#compliance)
 * [Hendelsesrespons](#incident-response)
-* [Sikkerhetsutvikling livssyklus](#security-development-lifecycle)
+* [Sikkerhetsutviklingslivssyklus](#security-development-lifecycle)
 * [Serverherding](#server-hardening)
-* [Service Level Agreement](#service-level-agreement)
-* [Sikkerhet med åpen kildekode](#open-source-security)
-* [Ansattes sikkerhet](#employee-security)
+* [Servicenivåavtale](#service-level-agreement)
+* [Åpen kildekode-sikkerhet](#open-source-security)
+* [Ansattsikkerhet](#employee-security)
 * [Kontinuerlig forbedring](#continuous-improvement)
 * [Ytterligere ressurser](#additional-resources)
 
 ## Forord {#foreword}
 
-Hos Forward Email er sikkerhet vår høyeste prioritet. Vi har implementert omfattende sikkerhetstiltak for å beskytte din e-postkommunikasjon og personlige data. Dette dokumentet beskriver vår sikkerhetspraksis og trinnene vi tar for å sikre konfidensialitet, integritet og tilgjengelighet til e-posten din.
+Hos Forward Email er sikkerhet vår høyeste prioritet. Vi har implementert omfattende sikkerhetstiltak for å beskytte e-postkommunikasjonen og personopplysningene dine. Dette dokumentet beskriver våre sikkerhetsrutiner og trinnene vi tar for å sikre konfidensialiteten, integriteten og tilgjengeligheten til e-posten din.
 
 ## Infrastruktursikkerhet {#infrastructure-security}
 
 ### Sikre datasentre {#secure-data-centers}
 
-Infrastrukturen vår er vert for SOC 2-kompatible datasentre med:
+Infrastrukturen vår driftes i SOC 2-kompatible datasentre med:
 
 * Fysisk sikkerhet og overvåking døgnet rundt
 * Biometriske adgangskontroller
@@ -56,7 +56,7 @@ Vi implementerer flere lag med nettverkssikkerhet:
 * Portskanningsbeskyttelse med automatisk blokkering av mistenkelig aktivitet
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Alle data under overføring krypteres med TLS 1.2+ med moderne krypteringspakker.
 
 ## E-postsikkerhet {#email-security}
 
@@ -65,7 +65,7 @@ Vi implementerer flere lag med nettverkssikkerhet:
 * **Transport Layer Security (TLS)**: All e-posttrafikk krypteres under sending med TLS 1.2 eller høyere.** **End-to-End-kryptering**: Støtte for OpenPGP/MIME- og S/MIME-standarder.** **Lagringskryptering**: Alle lagrede e-poster krypteres i ro med ChaCha20-Poly1305-kryptering i SQLite-filer.** **Full diskkryptering**: LUKS v2-kryptering for hele disken.** **Omfattende beskyttelse**: Vi implementerer kryptering i ro, kryptering i minnet og kryptering under sending.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Vi er verdens første og eneste e-posttjeneste som bruker **[kvantebestandige og individuelt krypterte SQLite-postbokser](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Autentisering og autorisasjon {#authentication-and-authorization}
 
@@ -101,7 +101,7 @@ Vi følger prinsippet om dataminimering:
 
 ## Tjenesteleverandører {#service-providers}
 
-Vi velger nøye våre tjenesteleverandører for å sikre at de oppfyller våre høye sikkerhetsstandarder. Nedenfor er leverandørene vi bruker for internasjonal dataoverføring og deres GDPR-overholdelsesstatus:
+Vi velger nøye ut tjenesteleverandørene våre for å sikre at de oppfyller våre høye sikkerhetsstandarder. Nedenfor er leverandørene vi bruker for internasjonal dataoverføring og deres samsvarsstatus for GDPR:
 
 | Leverandør | Hensikt | DPF-sertifisert | GDPR-samsvarsside |
 | --------------------------------------------- | ------------------------- | ------------- | ----------------------------------------------------------------- |
@@ -112,13 +112,13 @@ Vi velger nøye våre tjenesteleverandører for å sikre at de oppfyller våre h
 | [Stripe](https://stripe.com) | Betalingsbehandling | ✅ Ja | [Stripe Privacy Center](https://stripe.com/legal/privacy-center) |
 | [PayPal](https://www.paypal.com) | Betalingsbehandling | ❌ Nei | [PayPal Privacy](https://www.paypal.com/uk/legalhub/privacy-full) |
 
-Vi bruker disse leverandørene for å sikre pålitelig, sikker tjenestelevering samtidig som vi opprettholder samsvar med internasjonale databeskyttelsesforskrifter. Alle dataoverføringer utføres med passende sikkerhetstiltak for å beskytte din personlige informasjon.
+Vi bruker disse leverandørene for å sikre pålitelig og sikker tjenestelevering, samtidig som vi overholder internasjonale personvernregler. Alle dataoverføringer utføres med nødvendige sikkerhetstiltak på plass for å beskytte dine personopplysninger.
 
 ## Samsvar og revisjon {#compliance-and-auditing}
 
 ### Regelmessige sikkerhetsvurderinger {#regular-security-assessments}
 
-Teamet vårt overvåker, vurderer og vurderer regelmessig kodebasen, serverne, infrastrukturen og praksisen. Vi implementerer et omfattende sikkerhetsprogram som inkluderer:
+Teamet vårt overvåker, gjennomgår og vurderer regelmessig kodebasen, serverne, infrastrukturen og praksisene. Vi implementerer et omfattende sikkerhetsprogram som inkluderer:
 
 * Regelmessig rotasjon av SSH-nøkler
 * Kontinuerlig overvåking av tilgangslogger
@@ -129,13 +129,13 @@ Teamet vårt overvåker, vurderer og vurderer regelmessig kodebasen, serverne, i
 ### Samsvar {#compliance}
 
 * [GDPR](https://forwardemail.net/gdpr)-kompatible datahåndteringspraksiser
-* [Databehandlingsavtale (DPA)](https://forwardemail.net/dpa) tilgjengelig for bedriftskunder
+* [Databehandleravtale (DPA)](https://forwardemail.net/dpa) tilgjengelig for bedriftskunder
 * CCPA-kompatible personvernkontroller
 * SOC 2 Type II-reviderte prosesser
 
 ## Hendelsesrespons {#incident-response}
 
-Vår responsplan for sikkerhetshendelser inkluderer:
+Vår plan for sikkerhetshendelser inkluderer:
 
 1. **Deteksjon**: Automatiserte overvåkings- og varslingssystemer
 2. **Inneslutning**: Umiddelbar isolering av berørte systemer
@@ -145,9 +145,9 @@ Vår responsplan for sikkerhetshendelser inkluderer:
 6. **Analyse etter hendelsen**: Omfattende gjennomgang og forbedring
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Hvis du oppdager et sikkerhetsproblem, må du umiddelbart rapportere det til <security@forwardemail.net>.
 
-## Livssyklus for sikkerhetsutvikling {#security-development-lifecycle}
+## Sikkerhetsutviklingslivssyklus {#security-development-lifecycle}
 
 ```mermaid
 flowchart LR
@@ -175,7 +175,7 @@ All kode gjennomgår:
 
 ## Serverherding {#server-hardening}
 
-Vår [Ansible konfigurasjon](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementerer en rekke serverherdingstiltak:
+Vår [Ansible-konfigurasjon](https://github.com/forwardemail/forwardemail.net/tree/master/ansible) implementerer en rekke serverherdingstiltak:
 
 * **USB-tilgang deaktivert**: Fysiske porter deaktiveres ved å svarteliste usb-storage-kjernemodulen
 * **Brannmurregler**: Strenge iptables-regler som kun tillater nødvendige tilkoblinger
@@ -193,9 +193,9 @@ Vår [Ansible konfigurasjon](https://github.com/forwardemail/forwardemail.net/tr
 * **Bruker Administrasjon**: Prinsippet om minste privilegium med separate distribusjons- og devops-brukere
 * **Grenser for filbeskrivelser**: Økte grenser for bedre ytelse og sikkerhet
 
-## Tjenestenivåavtale {#service-level-agreement}
+## Servicenivåavtale {#service-level-agreement}
 
-Vi opprettholder et høyt nivå av servicetilgjengelighet og pålitelighet. Infrastrukturen vår er designet for redundans og feiltoleranse for å sikre at e-posttjenesten din forblir operativ. Selv om vi ikke publiserer et formelt SLA-dokument, er vi forpliktet til å:
+Vi opprettholder et høyt nivå av tjenestetilgjengelighet og pålitelighet. Infrastrukturen vår er utformet for redundans og feiltoleranse for å sikre at e-posttjenesten din forblir operativ. Selv om vi ikke publiserer et formelt tjenestenivåavtaledokument, er vi forpliktet til å:
 
 * 99,9 %+ oppetid for alle tjenester
 * Rask respons på tjenesteavbrudd
@@ -204,7 +204,7 @@ Vi opprettholder et høyt nivå av servicetilgjengelighet og pålitelighet. Infr
 
 ## Sikkerhet med åpen kildekode {#open-source-security}
 
-Som en [åpen kildekode-tjeneste](https://github.com/forwardemail/forwardemail.net) drar vår sikkerhet nytte av:
+Som en [åpen kildekode-tjeneste](https://github.com/forwardemail/forwardemail.net) drar sikkerheten vår nytte av:
 
 * Gjennomsiktig kode som kan revideres av alle
 * Sikkerhetsforbedringer drevet av fellesskapet
@@ -220,7 +220,7 @@ Som en [åpen kildekode-tjeneste](https://github.com/forwardemail/forwardemail.n
 
 ## Kontinuerlig forbedring {#continuous-improvement}
 
-Vi forbedrer kontinuerlig vår sikkerhetsstilling gjennom:
+Vi forbedrer kontinuerlig vår sikkerhetstilstand gjennom:
 
 * Overvåking av sikkerhetstrender og nye trusler
 * Regelmessig gjennomgang og oppdateringer av sikkerhetspolicyer
@@ -234,9 +234,9 @@ Hvis du vil ha mer informasjon om våre sikkerhetsrutiner eller for å rapporter
 * [Personvernerklæring](https://forwardemail.net/en/privacy)
 * [Vilkår for bruk](https://forwardemail.net/en/terms)
 * [GDPR-samsvar](https://forwardemail.net/gdpr)
-* [Databehandlingsavtale (DPA)](https://forwardemail.net/dpa)
+* [Databehandleravtale (DPA)](https://forwardemail.net/dpa)
 * [Rapporter misbruk](https://forwardemail.net/en/report-abuse)
 * [Sikkerhetspolicy](https://github.com/forwardemail/.github/blob/main/SECURITY.md)
 * [Security.txt](https://forwardemail.net/security.txt)
-* [GitHub Repository](https://github.com/forwardemail/forwardemail.net)
+* [GitHub-arkivet](https://github.com/forwardemail/forwardemail.net)
 * [FAQ](https://forwardemail.net/en/faq)

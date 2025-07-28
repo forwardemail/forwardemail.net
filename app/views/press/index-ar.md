@@ -14,7 +14,7 @@
 
 Forward Email هي خدمة استضافة البريد الإلكتروني الوحيدة مفتوحة المصدر 100%، والتي تُركز على الأمان والخصوصية. تعرّف على المزيد حول تاريخنا على [صفحتنا حول](/about).
 
-تأسست خدمتنا في عام 2017 وهي تدعم البريد الإلكتروني لأكثر من 500000 نطاق - بما في ذلك مستخدمين بارزين مثل [الأكاديمية البحرية الأمريكية](/blog/docs/federal-government-email-service-section-889-compliant)، و [كانونيكال/أوبونتو](/blog/docs/canonical-ubuntu-email-enterprise-case-study)، وألعاب Netflix، و [مؤسسة لينكس](/blog/docs/linux-foundation-email-enterprise-case-study)، و [عدة جامعات](/blog/docs/alumni-email-forwarding-university-case-study) والحكومات، والمزيد.
+تأسست خدمتنا في عام 2017 وهي تدعم البريد الإلكتروني لأكثر من 500000 نطاق - بما في ذلك مستخدمين بارزين مثل [الأكاديمية البحرية الأمريكية](/blog/docs/federal-government-email-service-section-889-compliant) و[كانونيكال/أوبونتو](/blog/docs/canonical-ubuntu-email-enterprise-case-study) وألعاب Netflix و[مؤسسة لينكس](/blog/docs/linux-foundation-email-enterprise-case-study) و[عدة جامعات](/blog/docs/alumni-email-forwarding-university-case-study) والحكومات والمزيد.
 
 هدفنا هو أن نكون منصة البنية التحتية للبريد الإلكتروني والأمان على مستوى المؤسسة - ونحن نلتزم بـ [عدة مبادئ](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
@@ -27,13 +27,13 @@ Forward Email هي خدمة استضافة البريد الإلكتروني ا�
 * **العناوين:** [عسل في سي](https://verycoolstudio.com/typefaces/honey) (غامق؛ وزن 700)
 * **الأيقونات:** [الخط الرائع 5](https://fontawesome.com/)
 
-## الألوان {#colors}
+## ألوان {#colors}
 
-* **أزرق:** `#0066FF` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
-* **سماوي:** `#9DE5F9` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
-* **أخضر:** `#269C32` <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
+* **أزرق:** حامل موضع مؤقت 0 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#0066FF;"></span>
+* **سماوي:** حامل موضع مؤقت 2 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#9DE5F9;"></span>
+* **أخضر:** حامل موضع مؤقت 4 <span style="vertical-align:middle;display:inline-block;padding:10px;background:#269C32;"></span>
 
-## الشعارات {#logos}
+## شعارات {#logos}
 
 "شعار إعادة توجيه البريد الإلكتروني"
 

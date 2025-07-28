@@ -83,9 +83,9 @@ Alle større e-mailudbydere tvinger udviklere til et af to forfærdelige valg:
 Resultatet? Udviklere enten opgiver e-mailintegration helt eller spilder uger på at bygge skrøbelige IMAP-wrappers, der konstant går i stykker.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Den beskidte hemmelighed**: De fleste "e-mail-API'er" er blot afsendelses-API'er. Du kan ikke programmatisk organisere mapper, synkronisere kontakter eller administrere kalendere via en simpel REST-grænseflade. Indtil nu.
 
-## Hvad udviklerne rent faktisk siger {#what-developers-are-actually-saying}
+## Hvad udviklere rent faktisk siger {#what-developers-are-actually-saying}
 
 Frustrationen er reel og dokumenteret overalt:
 
@@ -97,7 +97,7 @@ Frustrationen er reel og dokumenteret overalt:
 >
 > *- [Reddit r/SaaS-diskussion](https://www.reddit.com/r/SaaS/comments/1cm84s7/are_all_email_apis_mediocre/)*
 
-> "Hvorfor skal e-mailudvikling være dårlig?"
+> "Hvorfor skal e-mailudvikling være elendig?"
 >
 > *- [Reddit r/webdev](https://www.reddit.com/r/webdev/comments/15trnp2/why_does_email_development_have_to_suck/), 89 kommentarer om udviklersmerter*
 
@@ -108,11 +108,11 @@ Frustrationen er reel og dokumenteret overalt:
 Beviserne er overalt:
 
 * **WordPress SMTP-problemer**: [631 GitHub-problemer](https://github.com/awesomemotive/WP-Mail-SMTP/issues) om leveringsfejl i e-mails
-* **Zapier-begrænsninger**: [Klager fra lokalsamfundet](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om grænser på 10 e-mails/time og IMAP-detektionsfejl
+* **Zapier-begrænsninger**: [Klager fra lokalsamfundet](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) om grænser for 10 e-mails/time og IMAP-detektionsfejl
 * **IMAP API-projekter**: [Flere](https://github.com/ewildgoose/imap-api) [open source](https://emailengine.app/) [projekter](https://www.npmjs.com/package/imapflow) eksisterer specifikt for at "konvertere IMAP til REST", fordi ingen udbyder tilbyder dette
 * **Gmail API-frustrationer**: [Stakoverløb](https://stackoverflow.com/questions/tagged/gmail-api) har 4.847 spørgsmål tagget "gmail-api" med almindelige klager over hastighedsgrænser og kompleksitet
 
-## Den revolutionerende løsning til videresendelse af e-mail {#forward-emails-revolutionary-solution}
+## Videresend e-mails revolutionerende løsning {#forward-emails-revolutionary-solution}
 
 Vi er den første e-mailtjeneste, der tilbyder komplette CRUD-operationer for alle e-maildata via et samlet REST API.
 
@@ -154,9 +154,9 @@ curl -u "alias@yourdomain.com:password" \
 
 * `GET /v1/folders` - Vis alle mapper med abonnementsstatus
 * `POST /v1/folders` - Opret ny mappe med brugerdefinerede egenskaber
-* `GET /v1/folders/:id` - Hent mappeoplysninger og antal beskeder
+* `GET /v1/folders/:id` - Hent mappeoplysninger og beskedantal
 * `PUT /v1/folders/:id` - Opdater mappeegenskaber og abonnement
-* `DELETE /v1/folders/:id` - Slet mappe og håndter flytning af beskeder
+* `DELETE /v1/folders/:id` - Slet mappe og håndter beskedflytning
 
 ### Kontakter (5 slutpunkter) {#contacts-5-endpoints}
 
@@ -170,7 +170,7 @@ curl -u "alias@yourdomain.com:password" \
 
 * `GET /v1/calendars` - Vis kalenderbegivenheder med datofiltrering
 * `POST /v1/calendars` - Opret kalenderbegivenhed med deltagere og gentagelse
-* `GET /v1/calendars/:id` - Få begivenhedsdetaljer med tidszonehåndtering
+* `GET /v1/calendars/:id` - Hent begivenhedsdetaljer med tidszonehåndtering
 * `PUT /v1/calendars/:id` - Opdater begivenhed med konfliktdetektion
 * `DELETE /v1/calendars/:id` - Slet begivenhed med deltagernotifikationer
 
@@ -180,13 +180,13 @@ curl -u "alias@yourdomain.com:password" \
 
 Mens andre udbydere i bedste fald tilbyder grundlæggende filtrering, har vi bygget den mest avancerede e-mail-søge-API nogensinde. Ingen Gmail API, Outlook API eller nogen anden tjeneste kommer i nærheden af vores søgemuligheder.
 
-### Søge-API-landskabet er ødelagt {#the-search-api-landscape-is-broken}
+### Søge-API-landskabet er i stykker {#the-search-api-landscape-is-broken}
 
 **Søgebegrænsninger i Gmail API:**
 
-* ✅ Kun grundlæggende `q` parameter
+* ✅ Kun den grundlæggende `q`-parameter
 * ❌ Ingen feltspecifik søgning
-* ❌ Ingen filtrering efter datointerval
+* ❌ Ingen filtrering af datointerval
 * ❌ Ingen størrelsesbaseret filtrering
 * ❌ Ingen filtrering af vedhæftede filer
 * ❌ Begrænset til Gmails søgesyntaks
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Fordel for udviklere**: Med Forward Emails søge-API kan du bygge e-mail-applikationer, der kan konkurrere med desktopklienter i funktionalitet, samtidig med at du bevarer enkelheden ved REST API'er.
 
 ## Lynhurtig ydeevnearkitektur {#blazing-fast-performance-architecture}
 
@@ -398,7 +398,7 @@ graph LR
 
 ### Arkitektur med fokus på privatliv {#privacy-first-architecture}
 
-**Zero-Knowledge Design**: Kun du har adgang med din IMAP-adgangskode - vi kan ikke læse dine e-mails. Vores [nul-vidensarkitektur](https://forwardemail.net/en/security) sikrer fuldstændig privatliv og leverer samtidig enestående ydeevne.
+**Zero-Knowledge Design**: Kun du har adgang med din IMAP-adgangskode - vi kan ikke læse dine e-mails. Vores [nul-vidensarkitektur](https://forwardemail.net/en/security) sikrer fuldstændig privatliv og leverer samtidig en fremragende ydeevne.
 
 ## Hvorfor vi er anderledes: Den komplette sammenligning {#why-were-different-the-complete-comparison}
 
@@ -430,14 +430,14 @@ graph LR
 **ProtonMail og Tuta markedsfører sig selv som "open source" og "transparente", men dette er vildledende markedsføring, der overtræder moderne privatlivsprincipper.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Falske påstande om gennemsigtighed**: Både ProtonMail og Tuta reklamerer tydeligt for deres "open source"-legitimationsoplysninger, mens de holder deres mest kritiske serversidekode proprietær og lukket.
 
 **ProtonMails bedrag:**
 
 * **Påstande**: ["Vi er open source"](https://proton.me/blog/open-source) fremtrædende omtalt i markedsføring
 * **Realitet**: [Serverkode er fuldstændig proprietær](https://github.com/ProtonMail) - kun klientapps er open source
 * **Virkning**: Brugere kan ikke verificere serversidekryptering, datahåndtering eller privatlivskrav
-* **Krænkelse af gennemsigtighed**: Ingen mulighed for at revidere de faktiske e-mailbehandlings- og lagringssystemer
+* **Overtrædelse af gennemsigtighed**: Ingen mulighed for at revidere de faktiske e-mailbehandlings- og lagringssystemer
 
 **Tutas vildledende markedsføring:**
 
@@ -460,13 +460,13 @@ I 2025 kræver ægte privatliv **fuldstændig gennemsigtighed**. Når e-mailudby
 * ✅ **[Fuldstændig open source](https://github.com/forwardemail/forwardemail.net)** - server- og klientkode
 * ✅ **[Selvhosting tilgængelig](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - kør din egen instans
 * ✅ **Standardprotokoller** - IMAP-, SMTP-, CardDAV- og CalDAV-kompatibilitet
-* ✅ **Reviderbar sikkerhed** - hver linje kode kan inspiceres
+* ✅ **Sikkerhed, der kan kontrolleres** - hver linje kode kan inspiceres
 * ✅ **Ingen leverandørbinding** - dine data, din kontrol
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Ægte open source betyder, at du kan verificere alle påstande.** Med Videresend Email kan du revidere vores kryptering, gennemgå vores datahåndtering og endda køre din egen instans. Det er ægte gennemsigtighed.
 
-## 30+ eksempler på integration i den virkelige verden {#30-real-world-integration-examples}
+## 30+ eksempler på integration fra den virkelige verden {#30-real-world-integration-examples}
 
 ### 1. Forbedring af WordPress-kontaktformular {#1-wordpress-contact-form-enhancement}
 
@@ -524,7 +524,7 @@ for (const contact of newContacts) {
 }
 ```
 
-### 4. Ordrebehandling via e-handel {#4-e-commerce-order-processing}
+### 4. Behandling af e-handelsordrer {#4-e-commerce-order-processing}
 
 **Problem**: Manuel ordrebehandling via e-mail for [e-handelsplatforme](https://en.wikipedia.org/wiki/E-commerce)
 **Løsning**: Automatiseret ordrehåndteringspipeline
@@ -546,7 +546,7 @@ for (const order of orderEmails) {
 }
 ```
 
-### 5. Support til billetintegration {#5-support-ticket-integration}
+### 5. Support af billetintegration {#5-support-ticket-integration}
 
 **Problem**: E-mailtråde spredt ud over [helpdesk-platforme](https://en.wikipedia.org/wiki/Help_desk_software)
 **Løsning**: Fuld sporing af e-mailtråde
@@ -568,7 +568,7 @@ for (const email of supportEmails) {
 }
 ```
 
-### 6. Nyhedsbrevshåndteringssystem {#6-newsletter-management-system}
+### 6. Nyhedsbrevsstyringssystem {#6-newsletter-management-system}
 
 **Problem**: Begrænsede [nyhedsbrevsplatform](https://en.wikipedia.org/wiki/Email_marketing) integrationer
 **Løsning**: Komplet administration af abonnentens livscyklus
@@ -591,7 +591,7 @@ for (const msg of unsubscribes) {
 
 ### 7. E-mail-baseret opgavestyring {#7-email-based-task-management}
 
-**Problem**: Overbelastning af indbakke og [opgavesporing](https://en.wikipedia.org/wiki/Task_management)
+**Problem**: Overbelastning af indbakken og [opgavesporing](https://en.wikipedia.org/wiki/Task_management)
 **Løsning**: Konverter e-mails til handlingsrettede opgaver
 
 ```javascript
@@ -698,7 +698,7 @@ for (const email of oldEmails) {
 
 ### 11. Integration af e-mail til kalender {#11-email-to-calendar-integration}
 
-**Problem**: Manuel [kalenderbegivenhed](https://tools.ietf.org/html/rfc4791) oprettelse fra e-mails
+**Problem**: Manuel oprettelse af [kalenderbegivenhed](https://tools.ietf.org/html/rfc4791) fra e-mails
 **Løsning**: Automatisk udtrækning og oprettelse af hændelser
 
 ```javascript
@@ -725,7 +725,7 @@ for (const email of meetingEmails) {
 
 ### 12. E-mail-backup og overholdelse af regler {#12-email-backup-and-compliance}
 
-**Problem**: [E-mailopbevaring](https://en.wikipedia.org/wiki/Email_retention_policy) og overholdelse af krav
+**Problem**: [E-mailopbevaring](https://en.wikipedia.org/wiki/Email_retention_policy) og overholdelse af regler
 **Løsning**: Automatiseret sikkerhedskopiering med bevarelse af metadata
 
 ```javascript
@@ -745,7 +745,7 @@ const backup = {
 await saveToComplianceStorage(backup);
 ```
 
-### 13. E-mailbaseret indholdsstyring {#13-email-based-content-management}
+### 13. E-mail-baseret indholdsstyring {#13-email-based-content-management}
 
 **Problem**: Administration af indholdsindsendelser via e-mail for [CMS-platforme](https://en.wikipedia.org/wiki/Content_management_system)
 **Løsning**: E-mail som indholdsstyringssystem
@@ -830,8 +830,8 @@ for (const email of recentEmails) {
 
 ### 17. Indsamling af e-mailbaserede undersøgelser {#17-email-based-survey-collection}
 
-**Problem**: Manuel [svar på undersøgelsen](https://en.wikipedia.org/wiki/Survey_methodology) behandling
-**Løsning**: Automatiseret svarsamling
+**Problem**: Manuel [svar på undersøgelsen](https://en.wikipedia.org/wiki/Survey_methodology)-behandling
+**Løsning**: Automatiseret svaraggregering
 
 ```javascript
 // Collect and process survey responses
@@ -866,8 +866,8 @@ await updateDashboard(deliveryStats);
 
 ### 19. E-mailbaseret kundeemnekvalificering {#19-email-based-lead-qualification}
 
-**Problem**: Manuel [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) mod e-mailinteraktioner
-**Løsning**: Automatiseret pipeline til leadkvalificering
+**Problem**: Manuel [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) fra e-mailinteraktioner
+**Løsning**: Automatiseret pipeline til kvalificering af leads
 
 ```javascript
 // Score leads based on email engagement
@@ -904,7 +904,7 @@ for (const email of projectEmails) {
 }
 ```
 
-### 21. E-mailbaseret lagerstyring {#21-email-based-inventory-management}
+### 21. E-mail-baseret lagerstyring {#21-email-based-inventory-management}
 
 **Problem**: Manuelle lageropdateringer fra leverandør-e-mails
 **Løsning**: Automatiseret lageropfølgning fra e-mailnotifikationer
@@ -962,9 +962,9 @@ for (const email of invoiceEmails) {
 }
 ```
 
-### 23. E-mailbaseret begivenhedstilmelding {#23-email-based-event-registration}
+### 23. E-mailbaseret begivenhedsregistrering {#23-email-based-event-registration}
 
-**Problem**: Manuel [tilmelding til begivenheden](https://en.wikipedia.org/wiki/Event_management) behandling fra e-mailsvar
+**Problem**: Manuel [tilmelding til begivenhed](https://en.wikipedia.org/wiki/Event_management)-behandling fra e-mailsvar
 **Løsning**: Automatiseret deltagerstyring og kalenderintegration
 
 ```javascript
@@ -997,7 +997,7 @@ for (const registration of registrations) {
 }
 ```
 
-### 24. E-mailbaseret arbejdsgang til dokumentgodkendelse {#24-email-based-document-approval-workflow}
+### 24. E-mail-baseret arbejdsgang til dokumentgodkendelse {#24-email-based-document-approval-workflow}
 
 **Problem**: Komplekse [dokumentgodkendelse](https://en.wikipedia.org/wiki/Document_management_system)-kæder via e-mail
 **Løsning**: Automatiseret godkendelsessporing og dokumentversionering
@@ -1030,7 +1030,7 @@ for (const email of approvalEmails) {
 
 ### 25. E-mailbaseret kundefeedbackanalyse {#25-email-based-customer-feedback-analysis}
 
-**Problem**: Manuel [kundefeedback](https://en.wikipedia.org/wiki/Customer_feedback) indsamling og sentimentanalyse
+**Problem**: Manuel [kundefeedback](https://en.wikipedia.org/wiki/Customer_feedback)-indsamling og sentimentanalyse
 **Løsning**: Automatiseret feedbackbehandling og sentimentsporing
 
 ```javascript
@@ -1096,7 +1096,7 @@ for (const application of applications) {
 
 ### 27. E-mailbaseret behandling af udgiftsrapporter {#27-email-based-expense-report-processing}
 
-**Problem**: Manuel [udgiftsrapport](https://en.wikipedia.org/wiki/Expense_report) indsendelse og godkendelse
+**Problem**: Manuel indsendelse og godkendelse af [udgiftsrapport](https://en.wikipedia.org/wiki/Expense_report)
 **Løsning**: Automatiseret arbejdsgang til udtræk og godkendelse af udgifter
 
 ```javascript
@@ -1169,7 +1169,7 @@ for (const report of bugReports) {
 }
 ```
 
-### 29. E-mailbaseret leverandørstyring {#29-email-based-vendor-management}
+### 29. E-mail-baseret leverandørstyring {#29-email-based-vendor-management}
 
 **Problem**: Manuel [leverandørkommunikation](https://en.wikipedia.org/wiki/Vendor_management) og kontraktsporing
 **Løsning**: Automatiseret styring af leverandørrelationer
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. E-mailbaseret overvågning af sociale medier {#30-email-based-social-media-monitoring}
 
-**Problem**: Manuel [sociale medier](https://en.wikipedia.org/wiki/Social_media_monitoring) omtalesporing og svar
+**Problem**: Manuel sporing og svar af [sociale medier](https://en.wikipedia.org/wiki/Social_media_monitoring) omtaler
 **Løsning**: Automatiseret behandling af sociale medier-advarsler og koordinering af svar
 
 ```javascript
@@ -1283,18 +1283,18 @@ curl -u "your-alias@domain.com:password" \
 
 ### 4. Udforsk dokumentationen {#4-explore-the-documentation}
 
-Besøg [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) for komplet API-dokumentation med interaktive eksempler.
+Besøg [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) for at få komplet API-dokumentation med interaktive eksempler.
 
 ## Tekniske ressourcer {#technical-resources}
 
 * **[Komplet API-dokumentation](https://forwardemail.net/en/email-api)** - Interaktiv OpenAPI 3.0-specifikation
 * **[Guide til selvhosting](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Implementer videresendt e-mail på din infrastruktur
 * **[Hvidbog om sikkerhed](https://forwardemail.net/technical-whitepaper.pdf)** - Teknisk arkitektur og sikkerhedsdetaljer
-* **[GitHub Repository](https://github.com/forwardemail/forwardemail.net)** - Open source-kodebase
+* **[GitHub-arkivet](https://github.com/forwardemail/forwardemail.net)** - Open source-kodebase
 * **[Udviklersupport](mailto:api@forwardemail.net)** - Direkte adgang til vores ingeniørteam
 
 ---
 
-**Klar til at revolutionere din e-mailintegration?** [Begynd at bygge med Forward Emails API i dag](https://forwardemail.net/en/email-api) og oplev den første komplette e-mailhåndteringsplatform designet til udviklere.
+**Klar til at revolutionere din e-mailintegration?** [Begynd at bygge med Forward Emails API i dag](https://forwardemail.net/en/email-api) og oplev den første komplette e-mailadministrationsplatform designet til udviklere.
 
 *Videresend e-mail: E-mailtjenesten, der endelig får API'erne til at fungere korrekt.*

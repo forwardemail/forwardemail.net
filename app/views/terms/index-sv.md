@@ -1,4 +1,4 @@
-# Villkor {#terms}
+# Termer {#terms}
 
 <img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
@@ -32,19 +32,19 @@ Materialet på Forward Emails webbplats och relaterade tjänster ("Tjänsten") t
 
 Forward Email lämnar inga garantier, vare sig uttryckliga eller underförstådda, och frånsäger sig härmed alla andra garantier, inklusive men inte begränsat till underförstådda garantier eller villkor för säljbarhet, lämplighet för ett visst ändamål eller icke-intrång i immateriella rättigheter eller andra intrång i rättigheter.
 
-Vidare garanterar eller gör Forward Email inga utfästelser angående riktigheten, sannolika resultat eller tillförlitligheten av användningen av materialet på dess Tjänst eller på annat sätt relaterat till sådant material eller på några webbplatser länkade till denna webbplats.
+Vidare garanterar eller gör Forward Email inga utfästelser gällande riktigheten, sannolika resultat eller tillförlitligheten av användningen av materialet på dess Tjänst eller på annat sätt relaterat till sådant material eller på några webbplatser länkade till denna webbplats.
 
 <u>**Du samtycker uttryckligen till att du inte kommer att använda Tjänsten för något affärsmässigt eller relaterat material till både [Stripes förbjudna verksamheter](https://stripe.com/legal/restricted-businesses) och [PayPals förbjudna aktiviteter](https://www.paypal.com/us/legalhub/acceptableuse-full).**</u>
 
 <u>**Du samtycker uttryckligen till att genom att använda Tjänsten ska Vidarebefordra E-post inte ansvara för, och du kommer inte att skapa, läsa, ändra eller överföra något av följande med Tjänsten:**</u>
 
 * **Du kommer inte att använda vår tjänst för att driva en tjänst som tillåter tredje part (förutom dina egna anställda och entreprenörer) att komma åt, använda eller dra nytta av vår tjänst. Om du behöver att vi gör ett undantag för dig angående detta, vänligen kontakta oss för att diskutera ett företagsavtal. Se vår [LICENSE](https://github.com/forwardemail/forwardemail.net/blob/master/LICENSE.md) för mer information.**
-* Om du använder vår [Utgående SMTP](/faq#do-you-support-sending-email-with-smtp) tjänst godkänner du följande:
-* Du har tillåtelse att använda den för [transaktionell e-post](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) och [e-postmarknadsföring](https://en.wikipedia.org/wiki/Email_marketing).
-* Om du skickar e-postmarknadsföringsmaterial måste du inkludera en `List-Unsubscribe` rubrik och dina prenumeranter måste välja att delta.
+* Om du använder vår [Utgående SMTP](/faq#do-you-support-sending-email-with-smtp)-tjänst godkänner du följande:
+* Du har tillstånd att använda den för [transaktionell e-post](https://wikipedia.org/wiki/Email_marketing#Transactional_emails) och [e-postmarknadsföring](https://en.wikipedia.org/wiki/Email_marketing).
+* Om du skickar e-postmarknadsföringsmaterial måste du inkludera en `List-Unsubscribe`-rubrik och dina prenumeranter måste välja att delta.
 * Vi rekommenderar att du använder en nyhetsbrevshanterare med öppen källkod, till exempel [ListMonk](https://github.com/knadh/listmonk) på <https://github.com/knadh/listmonk>.
 * Observera att vi planerar att släppa vår egen nyhetsbrevshanterare i framtiden.
-* E-postmarknadsföringsmaterial inkluderar reklam, massutskick eller kommersiell e-post till en lista med kontakter med liknande innehåll, ämnesrad och brödtext (t.ex. nyhetsbrev och meddelanden).
+* * E-postmarknadsföringsmaterial inkluderar reklam, massutskick eller kommersiell e-post till en lista med kontakter med liknande innehåll, ämnesrad och brödtext (t.ex. nyhetsbrev och meddelanden).
 
 * Du måste följa [CAN-SPAM-lagen från 2003](https://en.wikipedia.org/wiki/CAN-SPAM_Act_of\_2003).
 
@@ -93,7 +93,7 @@ Ditt konto kommer automatiskt och permanent att stängas av om du inleder en tvi
 
 ## Servicenivåavtal ("SLA") {#service-level-agreement-sla}
 
-### Villkor {#terms-1}
+### Termer {#terms-1}
 
 * "Nedtid" avser en faktor på mer än 5 % användarfel, bestämd av felfrekvensen på serversidan.
 
@@ -103,7 +103,7 @@ Ditt konto kommer automatiskt och permanent att stängas av om du inleder en tvi
 
 Vidarebefordra e-post ska använda alla rimliga kommersiella ansträngningar (inte mindre än acceptabla och rimliga branschstandarder) för att säkerställa att vidarebefordra e-posttjänsten är tillgänglig för betalande kunder 99,99 % av tiden under en kalendermånad. Om den inte är det kan du vara berättigad att få [Krediter](#credits) som beskrivs nedan i enlighet med [Behörighet](#eligibility).
 
-### Medverkande {#credits}
+### Krediter {#credits}
 
 | Månatlig drifttid i procent | Tjänstgöringsdagar* |
 | ------------------------- | ---------------- |
@@ -115,9 +115,9 @@ Vidarebefordra e-post ska använda alla rimliga kommersiella ansträngningar (in
 
 ### Behörighet {#eligibility}
 
-Minsta kreditbelopp måste vara minst 1,00 USD för att vara berättigad. Maximal kredit är begränsad till 30 dagar eller det totala belopp som kunden betalar per den senaste kalendermånaden med avseende på driftstopp (beroende på vilket som är störst). Betalande kunder som drabbas av driftstopp måste begära krediter genom att skicka in en [Hjälpförfrågan](/help) inom 30 dagar från driftstoppsdatumet. Krediter gäller endast för driftstoppsfaktorer som ligger inom Vidarebefordra e-posts primära kontroll.
+Minsta kreditbelopp måste vara minst 1,00 USD för att vara berättigad. Maximal kredit är begränsad till 30 dagar eller det totala belopp som kunden betalar per den senaste kalendermånaden med avseende på driftstopp (beroende på vilket som är störst). Betalande kunder som drabbas av driftstopp måste begära krediter genom att skicka in en [Hjälpförfrågan](/help) inom 30 dagar från driftstoppsdatumet. Krediter gäller endast för driftstoppsfaktorer som ligger inom den primära kontrollen för vidarebefordran av e-post.
 
-## Revisioner och fel {#revisions-and-errata}
+## Revideringar och fel {#revisions-and-errata}
 
 Materialet som visas på Forward Emails webbplats kan innehålla tekniska, typografiska eller fotografiska fel. Forward Email garanterar inte att något av materialet på webbplatsen är korrekt, fullständigt eller aktuellt. Forward Email kan när som helst utan föregående meddelande göra ändringar i materialet på webbplatsen. Forward Email åtar sig dock inte att uppdatera materialet.
 

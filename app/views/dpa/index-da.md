@@ -1,4 +1,4 @@
-# Databehandlingsaftale {#data-processing-agreement}
+# Databehandleraftale {#data-processing-agreement}
 
 <!-- v1.0 fra <https://github.com/CommonPaper/DPA> -->
 
@@ -55,7 +55,7 @@
 | Sikkerhedspolitik | Vis [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
 | **Styrende stat** | Staten Delaware, USA |
 
-## Ændringer til aftalen {#changes-to-the-agreement}
+## Ændringer i aftalen {#changes-to-the-agreement}
 
 Dette dokument er en afledning af [Fælles standardvilkår for databeskyttelsesaftaler (version 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0), og følgende ændringer er foretaget:
 
@@ -63,7 +63,7 @@ Dette dokument er en afledning af [Fælles standardvilkår for databeskyttelsesa
 
 2. [Forholdet mellem tjenesteudbydere](#12-service-provider-relationship) er blevet inkluderet som et afsnit nedenfor.
 
-## 1. Forhold mellem databehandler og underdatabehandler {#1-processor-and-subprocessor-relationships}
+## 1. Forhold mellem processorer og underprocessorer {#1-processor-and-subprocessor-relationships}
 
 ### 1. Udbyder som databehandler {#1-provider-as-processor}
 
@@ -75,7 +75,7 @@ I situationer hvor <strong>Kunden</strong> er databehandler af kundens personopl
 
 ## 2. Behandling af {#2-processing}
 
-### 1. Behandlingsoplysninger {#1-processing-details}
+### 1. Behandlingsdetaljer {#1-processing-details}
 
 Bilag I(B) på forsiden beskriver genstanden, arten, formålet og varigheden af denne behandling samt de <strong>kategorier af personoplysninger</strong>, der indsamles, og de <strong>kategorier af registrerede</strong>.
 
@@ -95,7 +95,7 @@ Hvor Kunden er Databehandler, og Leverandøren er Underdatabehandler, skal Kunde
 
 Kunden har overholdt og vil fortsat overholde alle gældende databeskyttelseslove vedrørende levering af kundens personoplysninger til Leverandøren og/eller Tjenesten, herunder at foretage alle videregivelser, indhente alle samtykker, give tilstrækkelige valgmuligheder og implementere relevante sikkerhedsforanstaltninger, der kræves i henhold til gældende databeskyttelseslove.
 
-### 6. Underdatabehandlere {#6-subprocessors}
+### 6. Underprocessorer {#6-subprocessors}
 
 a. <strong>Udbyderen</strong> vil ikke videregive, overføre eller overdrage Kundens Personoplysninger til en Underdatabehandler, medmindre <strong>Kunden</strong> har godkendt Underdatabehandleren. Den nuværende liste over <strong>Godkendte Underdatabehandlere</strong> inkluderer Underdatabehandlernes identitet, deres land og deres forventede Behandlingsopgaver. <strong>Udbyderen</strong> vil informere <strong>Kunden</strong> mindst 10 hverdage i forvejen og skriftligt om eventuelle planlagte ændringer af de <strong>Godkendte Underdatabehandlere</strong>, uanset om det er ved tilføjelse eller udskiftning af en Underdatabehandler, hvilket giver <strong>Kunden</strong> tilstrækkelig tid til at gøre indsigelse mod ændringerne, før <strong>Udbyderen</strong> begynder at bruge den/de nye Underdatabehandler(e). <strong>Udbyderen</strong> vil give <strong>Kunden</strong> de oplysninger, der er nødvendige for, at <strong>Kunden</strong> kan udøve sin ret til at gøre indsigelse mod ændringen af <strong>Godkendte Underdatabehandlere</strong>. Kunden har 30 dage efter meddelelse om en ændring af de <strong>Godkendte underdatabehandlere</strong> til at gøre indsigelse, ellers anses Kunden for at acceptere ændringerne. Hvis Kunden gør indsigelse mod ændringen inden for 30 dage efter meddelelsen, skal Kunden og Leverandøren samarbejde i god tro for at løse Kundens indsigelse eller bekymring.
 
@@ -177,9 +177,9 @@ Hvis <strong>Udbyderen</strong> modtager en forespørgsel eller anmodning fra an
 
 Hvis det kræves af gældende databeskyttelseslovgivning, vil <strong>Leverandøren</strong> i rimelig grad bistå <strong>Kunden</strong> med at udføre obligatoriske konsekvensanalyser vedrørende databeskyttelse eller konsekvensanalyser vedrørende dataoverførsel og konsultationer med relevante databeskyttelsesmyndigheder under hensyntagen til behandlingens art og kundens personoplysninger.
 
-## 7. Sletning af kundens personoplysninger {#7-deletion-of-customer-personal-data}
+## 7. Sletning af kundens personlige data {#7-deletion-of-customer-personal-data}
 
-### 1. Sletning af kunden {#1-deletion-by-customer}
+### 1. Sletning af kunde {#1-deletion-by-customer}
 
 <strong>Udbyderen</strong> vil give <strong>Kunden</strong> mulighed for at slette Kundens Personoplysninger på en måde, der er i overensstemmelse med Tjenesternes funktionalitet. <strong>Udbyderen</strong> vil overholde denne instruktion så hurtigt som rimeligt praktisk muligt, medmindre yderligere opbevaring af Kundens Personoplysninger er påkrævet i henhold til gældende lov.
 
@@ -191,7 +191,7 @@ b. Hvis <strong>Kunden</strong> og <strong>Udbyderen</strong> har indgået EØS-
 
 ## 8. Ansvarsbegrænsning {#8-limitation-of-liability}
 
-### 1. Ansvarsgrænser og fraskrivelse af erstatning {#1-liability-caps-and-damages-waiver}
+### 1. Ansvarsgrænser og ansvarsfraskrivelse {#1-liability-caps-and-damages-waiver}
 
 **I det maksimale omfang, det er tilladt i henhold til gældende databeskyttelseslovgivning, vil hver parts samlede kumulative ansvar over for den anden part, der opstår som følge af eller i forbindelse med denne databeskyttelsesaftale, være underlagt de fraskrivelser, udelukkelser og ansvarsbegrænsninger, der er angivet i **Aftalen**.**
 
@@ -207,7 +207,7 @@ b. Hvis <strong>Kunden</strong> og <strong>Udbyderen</strong> har indgået EØS-
 
 1. Denne databeskyttelsesaftale er en del af og supplerer aftalen. Hvis der er uoverensstemmelse mellem denne databeskyttelsesaftale, **aftalen** eller nogen af deres dele, vil den del, der er anført tidligere, have forrang over den del, der er anført senere, i tilfælde af den pågældende uoverensstemmelse: (1) EØS-standardkontraktbestemmelserne eller UK-tillægget, (2) denne databeskyttelsesaftale og derefter (3) **aftalen**.
 
-## 10. Aftalevilkår {#10-term-of-agreement}
+## 10. Aftaleperiode {#10-term-of-agreement}
 
 Denne databeskyttelsesaftale træder i kraft, når <strong>Udbyderen</strong> og <strong>Kunden</strong> aftaler en forside til databeskyttelsesaftalen og underskriver eller elektronisk accepterer <strong>Aftalen</strong>, og fortsætter, indtil <strong>Aftalen</strong> udløber eller opsiges. Dog forbliver <strong>Udbyderen</strong> og <strong>Kunden</strong> begge underlagt forpligtelserne i denne databeskyttelsesaftale og gældende databeskyttelseslovgivning, indtil <strong>Kunden</strong> ophører med at overføre kundens personoplysninger til <strong>Udbyderen</strong>, og <strong>Udbyderen</strong> ophører med at behandle kundens personoplysninger.
 
@@ -215,7 +215,7 @@ Denne databeskyttelsesaftale træder i kraft, når <strong>Udbyderen</strong> og
 
 Uanset gældende lov eller lignende klausuler i **Aftalen** skal alle fortolkninger og tvister vedrørende denne databeskyttelsesaftale være underlagt lovgivningen i **Styrelsesstaten** uden hensyn til dens bestemmelser om lovvalg. Derudover, og uanset forumvalg, jurisdiktion eller lignende klausuler i **Aftalen**, accepterer parterne at anlægge enhver retssag, handling eller procedure vedrørende denne databeskyttelsesaftale ved, og hver part underkaster sig uigenkaldeligt den eksklusive jurisdiktion for, domstolene i **Styrelsesstaten**.
 
-## 12. Forhold mellem tjenesteudbydere {#12-service-provider-relationship}
+## 12. Forhold til tjenesteudbyder {#12-service-provider-relationship}
 
 I det omfang California Consumer Privacy Act, Cal. Civ. Code § 1798.100 ff. ("CCPA") finder anvendelse, anerkender og accepterer parterne, at <strong>Udbyderen</strong> er en tjenesteudbyder og modtager personoplysninger fra <strong>Kunden</strong> for at levere tjenesten som aftalt i <strong>Aftalen</strong>, hvilket udgør et forretningsformål. <strong>Udbyderen</strong> vil ikke sælge nogen personoplysninger, der er leveret af <strong>Kunden</strong> i henhold til <strong>Aftalen</strong>. Derudover vil <strong>Udbyderen</strong> ikke opbevare, bruge eller videregive nogen personoplysninger, der er leveret af <strong>Kunden</strong> i henhold til <strong>Aftalen</strong>, undtagen i det omfang det er nødvendigt for at levere tjenesten til <strong>Kunden</strong>, som angivet i <strong>Aftalen</strong>, eller som tilladt i henhold til gældende databeskyttelseslovgivning. <strong>Udbyderen</strong> bekræfter, at den forstår begrænsningerne i dette afsnit.
 

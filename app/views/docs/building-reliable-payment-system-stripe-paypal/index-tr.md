@@ -1,4 +1,4 @@
-# Stripe ve PayPal ile Sağlam Bir Ödeme Sistemi Nasıl Oluşturduk: Üçlü Yaklaşım {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
+# Stripe ve PayPal ile Güçlü Bir Ödeme Sistemi Nasıl Oluşturduk: Üçlü Yaklaşım {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
 <img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
 
@@ -16,27 +16,27 @@
 * [Katman 3: Bree ile Otomatik İşler](#layer-3-automated-jobs-with-bree)
   * [Abonelik Doğruluk Denetleyicisi](#subscription-accuracy-checker)
   * [PayPal Abonelik Senkronizasyonu](#paypal-subscription-synchronization)
-* [Edge Durumlarının Ele Alınması](#handling-edge-cases)
+* [Sınır Durumların Ele Alınması](#handling-edge-cases)
   * [Dolandırıcılık Tespiti ve Önleme](#fraud-detection-and-prevention)
   * [Anlaşmazlıkların Çözümü](#dispute-handling)
 * [Kod Yeniden Kullanımı: KISS ve DRY İlkeleri](#code-reuse-kiss-and-dry-principles)
 * [VISA Abonelik Gereksinimlerinin Uygulanması](#visa-subscription-requirements-implementation)
-  * [Otomatik Ön Yenileme E-posta Bildirimleri](#automated-pre-renewal-email-notifications)
-  * [Edge Durumlarının Ele Alınması](#handling-edge-cases-1)
-  * [Deneme Süreleri ve Abonelik Şartları](#trial-periods-and-subscription-terms)
+  * [Otomatik Yenileme Öncesi E-posta Bildirimleri](#automated-pre-renewal-email-notifications)
+  * [Sınır Durumların Ele Alınması](#handling-edge-cases-1)
+  * [Deneme Süreleri ve Abonelik Koşulları](#trial-periods-and-subscription-terms)
 * [Sonuç: Trifecta Yaklaşımımızın Faydaları](#conclusion-the-benefits-of-our-trifecta-approach)
 
 ## Önsöz {#foreword}
 
-Forward Email'de, her zaman güvenilir, doğru ve kullanıcı dostu sistemler yaratmaya öncelik verdik. Ödeme işleme sistemimizi uygulamaya koymaya gelince, mükemmel veri tutarlılığını korurken birden fazla ödeme işlemcisini idare edebilecek bir çözüme ihtiyacımız olduğunu biliyorduk. Bu blog yazısı, geliştirme ekibimizin tüm sistemimizde 1:1 gerçek zamanlı doğruluk sağlayan bir trifecta yaklaşımı kullanarak hem Stripe'ı hem de PayPal'ı nasıl entegre ettiğini ayrıntılarıyla anlatıyor.
+Forward Email olarak, her zaman güvenilir, doğru ve kullanıcı dostu sistemler oluşturmaya öncelik verdik. Ödeme işleme sistemimizi uygulamaya koyarken, mükemmel veri tutarlılığını korurken birden fazla ödeme işlemcisini idare edebilecek bir çözüme ihtiyacımız olduğunu biliyorduk. Bu blog yazısı, geliştirme ekibimizin tüm sistemimizde 1:1 gerçek zamanlı doğruluk sağlayan üçlü bir yaklaşım kullanarak hem Stripe'ı hem de PayPal'ı nasıl entegre ettiğini ayrıntılarıyla anlatıyor.
 
 ## Zorluk: Birden Fazla Ödeme İşlemcisi, Tek Bir Gerçek Kaynağı {#the-challenge-multiple-payment-processors-one-source-of-truth}
 
-Gizlilik odaklı bir e-posta hizmeti olarak kullanıcılarımıza ödeme seçenekleri sunmak istedik. Bazıları Stripe üzerinden kredi kartı ödemelerinin basitliğini tercih ederken, diğerleri PayPal'ın sağladığı ek ayrım katmanını değerli buluyor. Ancak, birden fazla ödeme işlemcisini desteklemek önemli bir karmaşıklık getiriyor:
+Gizlilik odaklı bir e-posta hizmeti olarak, kullanıcılarımıza ödeme seçenekleri sunmak istedik. Bazıları Stripe üzerinden kredi kartıyla ödeme yapmanın kolaylığını tercih ederken, bazıları PayPal'ın sağladığı ek ayrım katmanını tercih ediyor. Ancak, birden fazla ödeme işlemcisini desteklemek önemli ölçüde karmaşıklığa yol açıyor:
 
 1. Farklı ödeme sistemleri arasında tutarlı verileri nasıl sağlıyoruz?
 2. Anlaşmazlıklar, iadeler veya başarısız ödemeler gibi uç durumları nasıl ele alıyoruz?
-3. Veritabanımızda tek bir gerçek kaynağını nasıl koruyoruz?
+3. Veritabanımızda tek bir bilgi kaynağını nasıl koruyoruz?
 
 Çözümümüz, "üçlü yaklaşım" adını verdiğimiz, ne olursa olsun yedeklilik sağlayan ve veri tutarlılığını garanti eden üç katmanlı bir sistemi uygulamak oldu.
 
@@ -44,9 +44,9 @@ Gizlilik odaklı bir e-posta hizmeti olarak kullanıcılarımıza ödeme seçene
 
 Ödeme sistemimiz, kusursuz veri senkronizasyonunu sağlamak için birlikte çalışan üç kritik bileşenden oluşur:
 
-1. **Ödeme sonrası yönlendirmeler** - Ödeme bilgilerini ödemeden hemen sonra yakalama
-2. **Webhook işleyicileri** - Ödeme işlemcilerinden gelen gerçek zamanlı olayları işleme
-3. **Otomatik işler** - Ödeme verilerini periyodik olarak doğrulama ve uzlaştırma
+1. **Ödeme sonrası yönlendirmeler** - Ödeme bilgilerinin ödemeden hemen sonra alınması
+2. **Webhook işleyicileri** - Ödeme işlemcilerinden gelen gerçek zamanlı olayların işlenmesi
+3. **Otomatik işler** - Ödeme verilerinin periyodik olarak doğrulanması ve uzlaştırılması
 
 Her bir bileşeni daha yakından inceleyelim ve birlikte nasıl çalıştıklarını görelim.
 
@@ -112,11 +112,11 @@ flowchart TD
 
 ## Katman 1: Ödeme Sonrası Yönlendirmeler {#layer-1-post-checkout-redirects}
 
-Üçlü yaklaşımımızın ilk katmanı, bir kullanıcı bir ödemeyi tamamladıktan hemen sonra gerçekleşir. Hem Stripe hem de PayPal, kullanıcıları işlem bilgileriyle sitemize geri yönlendirmek için mekanizmalar sağlar.
+Üçlü yaklaşımımızın ilk aşaması, bir kullanıcı ödemeyi tamamladıktan hemen sonra gerçekleşir. Hem Stripe hem de PayPal, kullanıcıları işlem bilgileriyle sitemize geri yönlendirmek için mekanizmalar sunar.
 
 ### Stripe Ödeme Uygulaması {#stripe-checkout-implementation}
 
-Stripe için, sorunsuz bir ödeme deneyimi yaratmak için Ödeme Oturumları API'sini kullanıyoruz. Bir kullanıcı bir plan seçtiğinde ve kredi kartıyla ödemeyi seçtiğinde, belirli bir başarı ve iptal URL'leriyle bir Ödeme Oturumu oluşturuyoruz:
+Stripe için, sorunsuz bir ödeme deneyimi oluşturmak amacıyla Ödeme Oturumları API'sini kullanıyoruz. Bir kullanıcı bir plan seçip kredi kartıyla ödeme yapmayı seçtiğinde, belirli bir başarıyla bir Ödeme Oturumu oluşturuyoruz ve URL'leri iptal ediyoruz:
 
 ```javascript
 const options = {
@@ -154,7 +154,7 @@ if (ctx.accepts('html')) {
 }
 ```
 
-Buradaki kritik kısım, sorgu parametresi olarak `session_id`'yi içeren `success_url` parametresidir. Stripe, başarılı bir ödemeden sonra kullanıcıyı sitemize geri yönlendirdiğinde, işlemi doğrulamak ve veritabanımızı buna göre güncellemek için bu oturum kimliğini kullanabiliriz.
+Buradaki kritik nokta, `session_id`'i sorgu parametresi olarak içeren `success_url` parametresidir. Stripe, başarılı bir ödemenin ardından kullanıcıyı sitemize yönlendirdiğinde, işlemi doğrulamak ve veritabanımızı buna göre güncellemek için bu oturum kimliğini kullanabiliriz.
 
 ### PayPal Ödeme Akışı {#paypal-payment-flow}
 
@@ -210,7 +210,7 @@ const requestBody = {
 };
 ```
 
-Stripe'a benzer şekilde, ödeme sonrası yönlendirmeleri yönetmek için `return_url` ve `cancel_url` parametrelerini belirtiriz. PayPal kullanıcıyı sitemize geri yönlendirdiğinde, ödeme ayrıntılarını yakalayabilir ve veritabanımızı güncelleyebiliriz.
+Stripe'a benzer şekilde, ödeme sonrası yönlendirmeleri yönetmek için `return_url` ve `cancel_url` parametrelerini belirliyoruz. PayPal kullanıcıyı sitemize yönlendirdiğinde, ödeme ayrıntılarını yakalayıp veritabanımızı güncelleyebiliyoruz.
 
 ```mermaid
 sequenceDiagram
@@ -283,9 +283,9 @@ sequenceDiagram
 
 ## Katman 2: İmza Doğrulamalı Webhook İşleyicileri {#layer-2-webhook-handlers-with-signature-verification}
 
-Ödeme sonrası yönlendirmeler çoğu senaryo için iyi çalışsa da, kusursuz değildir. Kullanıcılar yönlendirilmeden önce tarayıcılarını kapatabilir veya ağ sorunları yönlendirmenin tamamlanmasını engelleyebilir. İşte webhooks'un devreye girdiği yer burasıdır.
+Ödeme sonrası yönlendirmeler çoğu senaryo için iyi çalışsa da, kusursuz değillerdir. Kullanıcılar yönlendirilmeden önce tarayıcılarını kapatabilir veya ağ sorunları yönlendirmenin tamamlanmasını engelleyebilir. İşte webhook'lar tam da bu noktada devreye girer.
 
-Hem Stripe hem de PayPal, ödeme olayları hakkında gerçek zamanlı bildirimler gönderen webhook sistemleri sağlar. Bu bildirimlerin gerçekliğini doğrulayan ve buna göre işleyen sağlam webhook işleyicileri uyguladık.
+Hem Stripe hem de PayPal, ödeme olayları hakkında gerçek zamanlı bildirimler gönderen webhook sistemleri sunmaktadır. Bu bildirimlerin gerçekliğini doğrulayan ve buna göre işleyen güçlü webhook işleyicileri uyguladık.
 
 ### Stripe Webhook Uygulaması {#stripe-webhook-implementation}
 
@@ -334,7 +334,7 @@ async function webhook(ctx) {
 }
 ```
 
-`stripe.webhooks.constructEvent` işlevi imzayı uç nokta sırrımızı kullanarak doğrular. İmza geçerliyse, webhook yanıtını engellememek için olayı eşzamansız olarak işleriz.
+`stripe.webhooks.constructEvent` işlevi, imzayı uç nokta sırrımızı kullanarak doğrular. İmza geçerliyse, webhook yanıtının engellenmesini önlemek için olayı eşzamansız olarak işleriz.
 
 ### PayPal Webhook Uygulaması {#paypal-webhook-implementation}
 
@@ -377,15 +377,15 @@ async function webhook(ctx) {
 }
 ```
 
-Her iki webhook işleyicisi de aynı deseni izler: imzayı doğrula, makbuzu onayla ve olayı eşzamansız olarak işle. Bu, ödeme sonrası yönlendirme başarısız olsa bile hiçbir ödeme olayını kaçırmamamızı sağlar.
+Her iki webhook işleyicisi de aynı modeli izler: imzayı doğrular, alındıyı onaylar ve olayı eşzamansız olarak işler. Bu sayede, ödeme sonrası yönlendirme başarısız olsa bile hiçbir ödeme olayını kaçırmayız.
 
 ## Katman 3: Bree ile Otomatik İşler {#layer-3-automated-jobs-with-bree}
 
-Üçlü yaklaşımımızın son katmanı, ödeme verilerini periyodik olarak doğrulayan ve uzlaştıran bir dizi otomatik iş. Bu işleri düzenli aralıklarla çalıştırmak için Node.js için bir iş zamanlayıcısı olan Bree'yi kullanıyoruz.
+Üçlü yaklaşımımızın son katmanı, ödeme verilerini periyodik olarak doğrulayıp uzlaştıran bir dizi otomatik iş. Bu işleri düzenli aralıklarla çalıştırmak için Node.js için bir iş zamanlayıcısı olan Bree'yi kullanıyoruz.
 
 ### Abonelik Doğruluk Denetleyicisi {#subscription-accuracy-checker}
 
-Ana işlerimizden biri, veritabanımızın Stripe'daki abonelik durumunu doğru bir şekilde yansıtmasını sağlayan abonelik doğruluğu denetleyicisidir:
+Ana işlerimizden biri, veritabanımızın Stripe'taki abonelik durumunu doğru bir şekilde yansıtmasını sağlayan abonelik doğruluğu denetleyicisidir:
 
 ```javascript
 async function mapper(customer) {
@@ -452,11 +452,11 @@ async function mapper(customer) {
 }
 ```
 
-Bu iş, veritabanımız ile Stripe arasındaki uyumsuzlukları, örneğin eşleşmeyen e-posta adreslerini veya birden fazla aktif aboneliği kontrol eder. Herhangi bir sorun bulursa, bunları kaydeder ve yönetici ekibimize uyarılar gönderir.
+Bu görev, veritabanımız ile Stripe arasında uyumsuz e-posta adresleri veya birden fazla aktif abonelik gibi tutarsızlıkları kontrol eder. Herhangi bir sorun tespit ederse, bunları kaydeder ve yönetici ekibimize uyarılar gönderir.
 
 ### PayPal Abonelik Senkronizasyonu {#paypal-subscription-synchronization}
 
-PayPal abonelikleri için de benzer bir işimiz var:
+PayPal abonelikleri için de benzer bir çalışmamız var:
 
 ```javascript
 async function syncPayPalSubscriptionPayments() {
@@ -491,7 +491,7 @@ Bu otomatik işler, veritabanımızın hem Stripe hem de PayPal'daki abonelikler
 
 ## Uç Durumların Ele Alınması {#handling-edge-cases}
 
-Sağlam bir ödeme sistemi uç durumları zarif bir şekilde ele almalıdır. Bazı yaygın senaryoları nasıl ele aldığımıza bakalım.
+Güçlü bir ödeme sistemi, uç durumları zarif bir şekilde ele almalıdır. Bazı yaygın senaryoları nasıl ele aldığımıza bir bakalım.
 
 ### Dolandırıcılık Tespiti ve Önleme {#fraud-detection-and-prevention}
 
@@ -579,19 +579,19 @@ case 'CUSTOMER.DISPUTE.CREATED': {
 }
 ```
 
-Bu yaklaşım, iyi bir müşteri deneyimi sağlamanın yanı sıra anlaşmazlıkların işimiz üzerindeki etkisini en aza indirir.
+Bu yaklaşım, iyi bir müşteri deneyimi sağlarken, anlaşmazlıkların işletmemiz üzerindeki etkisini en aza indirir.
 
 ## Kod Yeniden Kullanımı: KISS ve DRY İlkeleri {#code-reuse-kiss-and-dry-principles}
 
-Ödeme sistemimiz boyunca KISS (Basit Tut, Aptal) ve DRY (Kendini Tekrarlama) prensiplerine bağlı kaldık. İşte bazı örnekler:
+Ödeme sistemimiz boyunca KISS (Basit Tut, Aptal) ve DRY (Kendini Tekrarlama) ilkelerine bağlı kaldık. İşte bazı örnekler:
 
-1. **Paylaşımlı Yardımcı Fonksiyonlar**: Ödemeleri senkronize etme ve e-posta gönderme gibi yaygın görevler için yeniden kullanılabilir yardımcı fonksiyonlar oluşturduk.
+1. **Paylaşılan Yardımcı Fonksiyonlar**: Ödemeleri senkronize etme ve e-posta gönderme gibi yaygın görevler için yeniden kullanılabilir yardımcı fonksiyonlar oluşturduk.
 
-2. **Tutarlı Hata Yönetimi**: Hem Stripe hem de PayPal webhook işleyicileri hata yönetimi ve yönetici bildirimleri için aynı deseni kullanır.
+2. **Tutarlı Hata İşleme**: Hem Stripe hem de PayPal webhook işleyicileri hata işleme ve yönetici bildirimleri için aynı deseni kullanır.
 
 3. **Birleşik Veritabanı Şeması**: Veritabanı şemalarımız, ödeme durumu, tutar ve plan bilgileri için ortak alanlarla hem Stripe hem de PayPal verilerini barındıracak şekilde tasarlanmıştır.
 
-4. **Merkezi Yapılandırma**: Ödemeyle ilgili yapılandırma tek bir dosyada merkezileştirilmiştir; bu sayede fiyatlandırma ve ürün bilgilerinin güncellenmesi kolaylaşır.
+4. **Merkezi Yapılandırma**: Ödemeyle ilgili yapılandırma tek bir dosyada merkezileştirilmiştir, bu sayede fiyatlandırma ve ürün bilgilerini güncellemek kolaydır.
 
 ```mermaid
 graph TD
@@ -689,11 +689,11 @@ graph TD
 
 ## VISA Abonelik Gereksinimleri Uygulaması {#visa-subscription-requirements-implementation}
 
-Üçlü yaklaşımımıza ek olarak, kullanıcı deneyimini iyileştirirken VISA'nın abonelik gereksinimlerine uymak için belirli özellikler uyguladık. VISA'nın temel gereksinimlerinden biri, özellikle deneme aboneliğinden ücretli aboneliğe geçiş yaparken, kullanıcıların abonelik için ücretlendirilmeden önce bilgilendirilmeleri gerektiğidir.
+Üçlü yaklaşımımıza ek olarak, VISA'nın abonelik gerekliliklerini karşılamak ve kullanıcı deneyimini iyileştirmek için belirli özellikler uyguladık. VISA'nın temel gerekliliklerinden biri, özellikle deneme aboneliğinden ücretli aboneliğe geçiş yaparken, kullanıcıların abonelik ücreti alınmadan önce bilgilendirilmeleridir.
 
 ### Otomatik Ön Yenileme E-posta Bildirimleri {#automated-pre-renewal-email-notifications}
 
-Aktif deneme abonelikleri olan kullanıcıları tanımlayan ve ilk ücretlendirmeleri gerçekleşmeden önce onlara bir bildirim e-postası gönderen otomatik bir sistem oluşturduk. Bu, yalnızca VISA gerekliliklerine uymamızı sağlamakla kalmıyor, aynı zamanda geri ödemeleri azaltıyor ve müşteri memnuniyetini artırıyor.
+Aktif deneme aboneliği olan kullanıcıları tespit eden ve ilk ücretlendirmeleri gerçekleşmeden önce onlara bir bildirim e-postası gönderen otomatik bir sistem oluşturduk. Bu sistem, yalnızca VISA gerekliliklerine uymamızı sağlamakla kalmıyor, aynı zamanda geri ödemeleri azaltıyor ve müşteri memnuniyetini artırıyor.
 
 Bu özelliği şu şekilde uyguladık:
 
@@ -776,10 +776,10 @@ for (const user of users) {
 }
 ```
 
-Bu uygulama, kullanıcıların yaklaşan ücretler hakkında her zaman net bilgilerle bilgilendirilmesini sağlar:
+Bu uygulama, kullanıcıların yaklaşan ücretler hakkında her zaman net ayrıntılarla bilgilendirilmesini sağlar:
 
 1. İlk ücretlendirmenin ne zaman gerçekleşeceği
-2. Gelecekteki ücretlerin sıklığı (aylık, yıllık, vb.)
+2. Gelecekteki ücretlerin sıklığı (aylık, yıllık vb.)
 3. Tam olarak ne kadar ücretlendirilecekleri
 4. Aboneliklerinin hangi alan adlarını kapsadığı
 
@@ -787,7 +787,7 @@ Bu süreci otomatikleştirerek, VISA'nın gerekliliklerine (ücretlendirmeden en
 
 ### Uç Durumların Ele Alınması {#handling-edge-cases-1}
 
-Uygulamamız ayrıca sağlam hata işlemeyi de içerir. Bildirim süreci sırasında herhangi bir şey ters giderse, sistemimiz ekibimizi otomatik olarak uyarır:
+Uygulamamız aynı zamanda güçlü bir hata yönetimi de içeriyor. Bildirim sürecinde herhangi bir sorun yaşanması durumunda, sistemimiz ekibimizi otomatik olarak uyarıyor:
 
 ```javascript
 try {
@@ -813,7 +813,7 @@ try {
 }
 ```
 
-Bu sayede bildirim sisteminde bir sorun olsa bile ekibimiz bunu hızla çözebilir ve VISA gerekliliklerine uyumu sağlayabilir.
+Bu sayede bildirim sisteminde bir sorun olsa bile ekibimiz bunu hızlı bir şekilde çözebilir ve VISA gerekliliklerine uyumu sağlayabilir.
 
 VISA abonelik bildirim sistemi, ödeme altyapımızı hem uyumluluğu hem de kullanıcı deneyimini göz önünde bulundurarak nasıl oluşturduğumuzun bir başka örneğidir ve güvenilir, şeffaf ödeme işlemlerini garanti altına almaya yönelik üçlü yaklaşımımızı tamamlar.
 
@@ -840,7 +840,7 @@ Ayrıca, faturalandırma sıklığı ve iptal politikaları da dahil olmak üzer
 
 ## Sonuç: Trifecta Yaklaşımımızın Faydaları {#conclusion-the-benefits-of-our-trifecta-approach}
 
-Ödeme işleme konusundaki üçlü yaklaşımımız birçok önemli fayda sağladı:
+Ödeme işleme konusundaki üçlü yaklaşımımız birçok önemli avantaj sağladı:
 
 1. **Güvenilirlik**: Üç katmanlı ödeme doğrulaması uygulayarak hiçbir ödemenin kaçırılmamasını veya yanlış işlenmemesini sağlıyoruz.
 
@@ -850,8 +850,8 @@ Ayrıca, faturalandırma sıklığı ve iptal politikaları da dahil olmak üzer
 
 4. **Sağlamlık**: Sistemimiz, ağ arızalarından dolandırıcılık faaliyetlerine kadar uç durumları zarif bir şekilde ele alır.
 
-Birden fazla işlemciyi destekleyen bir ödeme sistemi uyguluyorsanız, bu üçlü yaklaşımı şiddetle tavsiye ederiz. Daha fazla ön geliştirme çabası gerektirir, ancak güvenilirlik ve doğruluk açısından uzun vadeli faydalar buna değer.
+Birden fazla işlemciyi destekleyen bir ödeme sistemi uyguluyorsanız, bu üçlü yaklaşımı şiddetle tavsiye ederiz. Başlangıçta daha fazla geliştirme çabası gerektirir, ancak güvenilirlik ve doğruluk açısından uzun vadeli faydaları buna fazlasıyla değer.
 
 Forward Email ve gizlilik odaklı e-posta hizmetlerimiz hakkında daha fazla bilgi edinmek için [web sitesi](https://forwardemail.net) sayfamızı ziyaret edin.
 
-<!-- *Anahtar kelimeler: ödeme işleme, Stripe entegrasyonu, PayPal entegrasyonu, webhook işleme, ödeme senkronizasyonu, abonelik yönetimi, dolandırıcılık önleme, anlaşmazlık işleme, Node.js ödeme sistemi, çok işlemcili ödeme sistemi, ödeme ağ geçidi entegrasyonu, gerçek zamanlı ödeme doğrulaması, ödeme verisi tutarlılığı, abonelik faturalandırması, ödeme güvenliği, ödeme otomasyonu, ödeme webhook'ları, ödeme uzlaştırma, ödeme uç durumları, ödeme hatası işleme, VISA abonelik gereksinimleri, yenileme öncesi bildirimler, abonelik uyumluluğu* -->
+<!-- *Anahtar kelimeler: ödeme işleme, Stripe entegrasyonu, PayPal entegrasyonu, webhook kullanımı, ödeme senkronizasyonu, abonelik yönetimi, dolandırıcılık önleme, anlaşmazlık yönetimi, Node.js ödeme sistemi, çoklu işlemcili ödeme sistemi, ödeme ağ geçidi entegrasyonu, gerçek zamanlı ödeme doğrulaması, ödeme verisi tutarlılığı, abonelik faturalandırması, ödeme güvenliği, ödeme otomasyonu, ödeme webhook'ları, ödeme uzlaştırma, ödeme uç durumları, ödeme hatası yönetimi, VISA abonelik gereksinimleri, yenileme öncesi bildirimler, abonelik uyumluluğu* -->

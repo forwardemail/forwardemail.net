@@ -49,7 +49,7 @@
   * [Elenca i domini](#list-domains)
   * [Crea dominio](#create-domain)
   * [Recupera dominio](#retrieve-domain)
-  * [Verificare i record di dominio](#verify-domain-records)
+  * [Verificare i record del dominio](#verify-domain-records)
   * [Verifica i record SMTP del dominio](#verify-domain-smtp-records)
   * [Elenca le password catch-all per l'intero dominio](#list-domain-wide-catch-all-passwords)
   * [Crea una password catch-all per l'intero dominio](#create-domain-wide-catch-all-password)
@@ -73,9 +73,9 @@
 * [Crittografare](#encrypt)
   * [Crittografa record TXT](#encrypt-txt-record)
 
-## Biblioteche {#libraries}
+## Librerie {#libraries}
 
-Al momento non abbiamo ancora rilasciato alcun wrapper API, ma prevediamo di farlo a breve. Invia un'email a <api@forwardemail.net> se desideri essere avvisato quando verrà rilasciato il wrapper API di un particolare linguaggio di programmazione. Nel frattempo, puoi utilizzare queste librerie di richiesta HTTP consigliate nella tua applicazione, oppure semplicemente utilizzare [arricciare](https://stackoverflow.com/a/27442239/3586413) come negli esempi seguenti.
+Al momento non abbiamo ancora rilasciato alcun wrapper API, ma prevediamo di farlo a breve. Invia un'email a <api@forwardemail.net> se desideri essere avvisato quando verrà rilasciato il wrapper API di un particolare linguaggio di programmazione. Nel frattempo, puoi utilizzare queste librerie di richiesta HTTP consigliate nella tua applicazione o semplicemente utilizzare [arricciare](https://stackoverflow.com/a/27442239/3586413) come negli esempi seguenti.
 
 | Lingua | Biblioteca |
 | ---------- | ---------------------------------------------------------------------- |
@@ -98,7 +98,7 @@ Tutti gli endpoint richiedono che [chiave API](https://forwardemail.net/my-accou
 
 Non preoccuparti: se non sei sicuro di cosa si tratta, di seguito sono riportati degli esempi.
 
-Errori ## {#errors}
+## Errori {#errors}
 
 Se si verificano errori, il corpo della risposta della richiesta API conterrà un messaggio di errore dettagliato.
 
@@ -117,16 +117,16 @@ Se si verificano errori, il corpo della risposta della richiesta API conterrà u
 | 504 | Timeout del gateway |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Se ricevi un codice di stato 5xx (cosa che non dovrebbe accadere), contattaci all'indirizzo <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> e ti aiuteremo a risolvere immediatamente il problema.
 
 ## Localizzazione {#localization}
 
-Il nostro servizio è tradotto in oltre 25 lingue diverse. Tutti i messaggi di risposta API vengono tradotti nell'ultima lingua rilevata dall'utente che effettua la richiesta API. È possibile ignorare questa impostazione passando un'intestazione personalizzata `Accept-Language`. Sentiti libero di provarla utilizzando il menu a tendina delle lingue in fondo a questa pagina.
+Il nostro servizio è tradotto in oltre 25 lingue diverse. Tutti i messaggi di risposta API vengono tradotti nell'ultima lingua rilevata dall'utente che effettua la richiesta API. È possibile ignorare questa impostazione passando un'intestazione `Accept-Language` personalizzata. Sentitevi liberi di provarla utilizzando il menu a tendina delle lingue in fondo a questa pagina.
 
 ## Paginazione {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> Dal 1° novembre 2024, gli endpoint API per [Elenca i domini](#list-domains) e [Elenca gli alias di dominio](#list-domain-aliases) utilizzeranno per impostazione predefinita il numero massimo di risultati per pagina `1000`. Se desideri attivare questa funzionalità in anticipo, puoi passare `?paginate=true` come parametro querystring aggiuntivo all'URL per la query dell'endpoint.
 
 La paginazione è supportata da tutti gli endpoint API che elencano i risultati.
 
@@ -156,15 +156,15 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
   -u API_TOKEN:
 ```
 
-## Registri {#logs}
+## Registra {#logs}
 
 ### Recupera i log {#retrieve-logs}
 
-La nostra API ti consente di scaricare i log del tuo account in modo programmatico. Inviando una richiesta a questo endpoint, tutti i log del tuo account verranno elaborati e, una volta completata l'operazione, te li invieremo via email come allegato (file di foglio di calcolo compresso [Zippaggio](https://en.wikipedia.org/wiki/Gzip)).
+La nostra API ti consente di scaricare i log del tuo account in modo programmatico. Inviando una richiesta a questo endpoint, tutti i log del tuo account verranno elaborati e, una volta completata la richiesta, te li invieremo via email come allegato (file di foglio di calcolo compresso [Gzip](https://en.wikipedia.org/wiki/Gzip) o [CSV](https://en.wikipedia.org/wiki/Comma-separated_values)).
 
-Questo ti consente di creare processi in background con un [Cron job](https://en.wikipedia.org/wiki/Cron) o utilizzando il nostro [Software di pianificazione dei lavori Node.js Bree](https://github.com/breejs/bree) per ricevere i log ogni volta che lo desideri. Tieni presente che questo endpoint è limitato a `10` richieste al giorno.
+Questo ti consente di creare processi in background con un [Cron job](https://en.wikipedia.org/wiki/Cron) o di utilizzare il nostro [Software di pianificazione dei lavori Node.js Bree](https://github.com/breejs/bree) per ricevere i log ogni volta che lo desideri. Tieni presente che questo endpoint è limitato a richieste `10` al giorno.
 
-L'allegato è la versione minuscola di `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` e l'email stessa contiene un breve riepilogo dei log recuperati. Puoi anche scaricare i log in qualsiasi momento da [Il mio account → Registri](/my-account/logs)
+L'allegato è la versione minuscola di `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` e l'email stessa contiene un breve riepilogo dei log recuperati. Puoi anche scaricare i log in qualsiasi momento da [Il mio account → Registri](/my-account/logs).
 
 > `GET /v1/logs/download`
 
@@ -204,7 +204,7 @@ Per Linux e Ubuntu:
 0 0 * * * /usr/bin/curl BASE_URI/v1/logs/download?q=`date --date "-1 days" -u "+%-m/%-d/%y"` -u API_TOKEN: &>/dev/null
 ```
 
-## Account {#account}
+## Conto {#account}
 
 ### Crea account {#create-account}
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Contatti alias (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> A differenza di altri endpoint API, questi richiedono [Autenticazione](#authentication) "username" uguale al nome utente dell'alias e "password" uguale alla password generata dall'alias come intestazioni di autorizzazione di base.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Questa sezione dell'endpoint è in fase di sviluppo e verrà rilasciata (si spera) nel 2024. Nel frattempo, si prega di utilizzare un client IMAP dal menu a tendina "App" nel menu di navigazione del nostro sito web.
 
 ### Elenca i contatti {#list-contacts}
 
@@ -273,7 +273,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Prossimamente**
 
-### Recupera contatto {#retrieve-contact}
+### Recupera il contatto {#retrieve-contact}
 
 > `GET /v1/contacts/:id`
 
@@ -291,13 +291,13 @@ curl -X PUT BASE_URI/v1/account \
 
 **Prossimamente**
 
-## Calendari Alias (CalDAV) {#alias-calendars-caldav}
+## Calendari alias (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> A differenza di altri endpoint API, questi richiedono [Autenticazione](#authentication) "username" uguale al nome utente dell'alias e "password" uguale alla password generata dall'alias come intestazioni di autorizzazione di base.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Questa sezione dell'endpoint è in fase di sviluppo e verrà rilasciata (si spera) nel 2024. Nel frattempo, si prega di utilizzare un client IMAP dal menu a tendina "App" nel menu di navigazione del nostro sito web.
 
 ### Elenca calendari {#list-calendars}
 
@@ -311,7 +311,7 @@ curl -X PUT BASE_URI/v1/account \
 
 **Prossimamente**
 
-### Recupera calendario {#retrieve-calendar}
+### Recupera il calendario {#retrieve-calendar}
 
 > `GET /v1/calendars/:id`
 
@@ -332,10 +332,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Messaggi alias (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> A differenza di altri endpoint API, questi richiedono [Autenticazione](#authentication) "username" uguale al nome utente dell'alias e "password" uguale alla password generata dall'alias come intestazioni di autorizzazione di base.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Questa sezione dell'endpoint è in fase di sviluppo e verrà rilasciata (si spera) nel 2024. Nel frattempo, si prega di utilizzare un client IMAP dal menu a tendina "App" nel menu di navigazione del nostro sito web.
 
 Assicurati di aver seguito le istruzioni di configurazione per il tuo dominio.
 
@@ -350,7 +350,7 @@ Queste istruzioni si trovano nella nostra sezione FAQ [Supportate la ricezione d
 ### Crea messaggio {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Questo **NON** invierà un'email, ma aggiungerà semplicemente il messaggio alla cartella della tua casella di posta (ad esempio, è simile al comando IMAP `APPEND`). Se desideri inviare un'email, consulta [Crea email SMTP in uscita](#create-outbound-smtp-email) di seguito. Dopo aver creato l'email SMTP in uscita, puoi aggiungerne una copia utilizzando questo endpoint alla casella di posta del tuo alias per scopi di archiviazione.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Queste istruzioni si trovano nella nostra sezione FAQ [Supportate la ricezione d
 ## Cartelle alias (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Gli endpoint delle cartelle con il percorso <code>/v1/folders/:path</code> come endpoint sono intercambiabili con l'ID <code>:id</code> di una cartella. Ciò significa che è possibile fare riferimento alla cartella tramite il suo valore <code>path</code> o <code>id</code>.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Questa sezione dell'endpoint è in fase di sviluppo e verrà rilasciata (si spera) nel 2024. Nel frattempo, si prega di utilizzare un client IMAP dal menu a tendina "App" nel menu di navigazione del nostro sito web.
 
 ### Elenca cartelle {#list-folders}
 
@@ -406,7 +406,7 @@ Queste istruzioni si trovano nella nostra sezione FAQ [Supportate la ricezione d
 
 **Prossimamente**
 
-### Elimina cartella {#delete-folder}
+### Elimina la cartella {#delete-folder}
 
 > `DELETE /v1/folders/:id`
 
@@ -422,7 +422,7 @@ Queste istruzioni si trovano nella nostra sezione FAQ [Supportate la ricezione d
 
 Assicurati di aver seguito le istruzioni di configurazione per il tuo dominio.
 
-Queste istruzioni sono disponibili all'indirizzo [Il mio account → Domini → Impostazioni → Configurazione SMTP in uscita](/my-account/domains). È necessario assicurarsi di aver configurato DKIM, Return-Path e DMARC per l'invio di messaggi SMTP in uscita con il proprio dominio.
+Queste istruzioni sono disponibili in [Il mio account → Domini → Impostazioni → Configurazione SMTP in uscita](/my-account/domains). È necessario assicurarsi di aver configurato DKIM, Return-Path e DMARC per l'invio di messaggi SMTP in uscita con il proprio dominio.
 
 ### Ottieni il limite di posta elettronica SMTP in uscita {#get-outbound-smtp-email-limit}
 
@@ -439,7 +439,7 @@ curl BASE_URI/v1/emails/limit \
 
 ### Elenca le email SMTP in uscita {#list-outbound-smtp-emails}
 
-Si noti che questo endpoint non restituisce valori di proprietà per `message`, `headers` né `rejectedErrors` di un'e-mail.
+Si noti che questo endpoint non restituisce valori di proprietà per `message`, `headers` o `rejectedErrors` di un'e-mail.
 
 Per restituire tali proprietà e i relativi valori, utilizzare l'endpoint [Recupera email](#retrieve-email) con un ID e-mail.
 
@@ -462,13 +462,13 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Crea email SMTP in uscita {#create-outbound-smtp-email}
 
-La nostra API per la creazione di email si ispira e sfrutta la configurazione delle opzioni di messaggio di Nodemailer. Per tutti i parametri del corpo dell'email, fare riferimento al link [Configurazione dei messaggi di Nodemailer](https://nodemailer.com/message/) qui sotto.
+La nostra API per la creazione di email si ispira e sfrutta la configurazione delle opzioni di messaggio di Nodemailer. Per tutti i parametri del corpo dell'email, fare riferimento a [Configurazione dei messaggi di Nodemailer](https://nodemailer.com/message/).
 
-Si noti che, ad eccezione di `envelope` e `dkim` (poiché li impostiamo automaticamente), supportiamo tutte le opzioni di Nodemailer. Impostiamo automaticamente le opzioni `disableFileAccess` e `disableUrlAccess` su `true` per motivi di sicurezza.
+Si noti che, ad eccezione di `envelope` e `dkim` (poiché le impostiamo automaticamente), supportiamo tutte le opzioni di Nodemailer. Per motivi di sicurezza, le opzioni `disableFileAccess` e `disableUrlAccess` vengono impostate automaticamente su `true`.
 
 Dovresti passare l'unica opzione `raw` con la tua email completa, incluse le intestazioni, **oppure** passare le singole opzioni dei parametri del corpo sottostanti.
 
-Questo endpoint API codificherà automaticamente gli emoji se presenti nelle intestazioni (ad esempio, un oggetto con `Subject: 🤓 Hello` verrà convertito automaticamente in `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Il nostro obiettivo era creare un'API email estremamente intuitiva e a prova di errore per gli sviluppatori.
+Questo endpoint API codificherà automaticamente gli emoji se presenti nelle intestazioni (ad esempio, un oggetto `Subject: 🤓 Hello` verrà convertito automaticamente in `Subject: =?UTF-8?Q?=F0=9F=A4=93?= Hello`). Il nostro obiettivo era creare un'API email estremamente intuitiva per gli sviluppatori e a prova di errore.
 
 > `POST /v1/emails`
 
@@ -492,7 +492,7 @@ Questo endpoint API codificherà automaticamente gli emoji se presenti nelle int
 | `icalEvent` | NO | Oggetto | Un evento iCalendar da utilizzare come contenuto alternativo del messaggio (vedere [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
 | `alternatives` | NO | Vettore | Un array di contenuti di messaggi alternativi (vedere [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
 | `encoding` | NO | Corda | Codifica per il testo e le stringhe HTML (il valore predefinito è `"utf-8"`, ma supporta anche i valori di codifica `"hex"` e `"base64"`). |
-| `raw` | NO | Stringa o buffer | Un messaggio formattato RFC822 generato in modo personalizzato da utilizzare (invece di uno generato da Nodemailer, vedere [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
+| `raw` | NO | Stringa o buffer | Un messaggio formattato RFC822 generato su misura da utilizzare (invece di uno generato da Nodemailer, vedere [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
 | `textEncoding` | NO | Corda | Codifica che viene forzata per i valori di testo (`"quoted-printable"` o `"base64"`). Il valore predefinito è il valore più vicino rilevato (per ASCII utilizzare `"quoted-printable"`). |
 | `priority` | NO | Corda | Livello di priorità per l'email (può essere `"high"`, `"normal"` (predefinito) o `"low"`). Si noti che il valore `"normal"` non imposta un'intestazione di priorità (questo è il comportamento predefinito). Se si imposta il valore `"high"` o `"low"`, le intestazioni `X-Priority`, `X-MSMail-Priority` e `Importance` saranno [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers` | NO | Oggetto o array | Un oggetto o una matrice di campi di intestazione aggiuntivi da impostare (vedere [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)). |
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Domini {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Gli endpoint di dominio con il nome di dominio <code>/v1/domains/:domain_name</code> come endpoint sono intercambiabili con l'ID di dominio <code>:domain_id</code>. Ciò significa che è possibile fare riferimento al dominio tramite il suo valore <code>name</code> o <code>id</code>.
 
 ### Elenca i domini {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Dal 1° novembre 2024, gli endpoint API per [Elenca i domini](#list-domains) e [Elenca gli alias di dominio](#list-domain-aliases) saranno impostati per impostazione predefinita su `1000`, il numero massimo di risultati per pagina. Se desideri attivare questo comportamento in anticipo, puoi passare `?paginate=true` come parametro querystring aggiuntivo all'URL per la query dell'endpoint. Consulta [Paginazione](#pagination) per ulteriori informazioni.
 
 > `GET /v1/domains`
 
@@ -586,7 +586,7 @@ curl BASE_URI/v1/domains \
 | `has_virus_protection` | NO | Booleano | Se abilitare la protezione antivirus Spam Scanner su questo dominio |
 | `has_recipient_verification` | NO | Booleano | Impostazione predefinita del dominio globale per richiedere ai destinatari alias di fare clic su un collegamento di verifica e-mail per il flusso di e-mail |
 | `ignore_mx_check` | NO | Booleano | Se ignorare il controllo del record MX sul dominio per la verifica. Questa opzione è rivolta principalmente agli utenti che hanno regole di configurazione MX Exchange avanzate e devono mantenere il proprio MX Exchange esistente e inoltrarlo al nostro. |
-| `retention_days` | NO | Numero | Numero intero compreso tra `0` e `30` che corrisponde al numero di giorni di conservazione per le email SMTP in uscita una volta recapitate correttamente o in caso di errore permanente. Il valore predefinito è `0`, il che significa che le email SMTP in uscita vengono eliminate e redatte immediatamente per la tua sicurezza. |
+| `retention_days` | NO | Numero | Numero intero compreso tra `0` e `30` che corrisponde al numero di giorni di conservazione per le email SMTP in uscita una volta consegnate correttamente o in caso di errore permanente. Il valore predefinito è `0`, il che significa che le email SMTP in uscita vengono eliminate e redatte immediatamente per la tua sicurezza. |
 | `bounce_webhook` | NO | Stringa (URL) o Booleano (falso) | L'URL del webhook `http://` o `https://` di tua scelta a cui inviare i webhook di bounce. Invieremo una richiesta `POST` a questo URL con informazioni sugli errori SMTP in uscita (ad esempio, errori soft o hard, in modo che tu possa gestire i tuoi iscritti e gestire programmaticamente le email in uscita). |
 | `max_quota_per_alias` | NO | Corda | Quota massima di archiviazione per gli alias su questo nome di dominio. Inserisci un valore come "1 GB" che verrà analizzato da [bytes](https://github.com/visionmedia/bytes.js). |
 
@@ -649,7 +649,7 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/catch-all-passwords \
 
 | Parametro corporeo | Necessario | Tipo | Descrizione |
 | -------------- | -------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `new_password` | NO | Corda | La tua nuova password personalizzata da utilizzare come password generale per l'intero dominio. Nota che puoi lasciare questo campo vuoto o addirittura omesso dal corpo della richiesta API se desideri ottenere una password generata casualmente e complessa. |
+| `new_password` | NO | Corda | La tua nuova password personalizzata da utilizzare come password generale per l'intero dominio. Nota che puoi lasciare questo campo vuoto o addirittura ometterlo del tutto dal corpo della richiesta API se desideri ottenere una password generata casualmente e complessa. |
 | `description` | NO | Corda | Descrizione solo a scopo organizzativo. |
 
 > Esempio di richiesta:
@@ -683,7 +683,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/catch-all-passwords/:token_id \
 | `has_virus_protection` | NO | Booleano | Se abilitare la protezione antivirus Spam Scanner su questo dominio |
 | `has_recipient_verification` | NO | Booleano | Impostazione predefinita del dominio globale per richiedere ai destinatari alias di fare clic su un collegamento di verifica e-mail per il flusso di e-mail |
 | `ignore_mx_check` | NO | Booleano | Se ignorare il controllo del record MX sul dominio per la verifica. Questa opzione è rivolta principalmente agli utenti che hanno regole di configurazione MX Exchange avanzate e devono mantenere il proprio MX Exchange esistente e inoltrarlo al nostro. |
-| `retention_days` | NO | Numero | Numero intero compreso tra `0` e `30` che corrisponde al numero di giorni di conservazione per le email SMTP in uscita una volta recapitate correttamente o in caso di errore permanente. Il valore predefinito è `0`, il che significa che le email SMTP in uscita vengono eliminate e redatte immediatamente per la tua sicurezza. |
+| `retention_days` | NO | Numero | Numero intero compreso tra `0` e `30` che corrisponde al numero di giorni di conservazione per le email SMTP in uscita una volta consegnate correttamente o in caso di errore permanente. Il valore predefinito è `0`, il che significa che le email SMTP in uscita vengono eliminate e redatte immediatamente per la tua sicurezza. |
 | `bounce_webhook` | NO | Stringa (URL) o Booleano (falso) | L'URL del webhook `http://` o `https://` di tua scelta a cui inviare i webhook di bounce. Invieremo una richiesta `POST` a questo URL con informazioni sugli errori SMTP in uscita (ad esempio, errori soft o hard, in modo che tu possa gestire i tuoi iscritti e gestire programmaticamente le email in uscita). |
 | `max_quota_per_alias` | NO | Corda | Quota massima di archiviazione per gli alias su questo nome di dominio. Inserisci un valore come "1 GB" che verrà analizzato da [bytes](https://github.com/visionmedia/bytes.js). |
 
@@ -694,7 +694,7 @@ curl -X PUT BASE_URI/v1/domains/DOMAIN_NAME \
   -u API_TOKEN:
 ```
 
-### Elimina dominio {#delete-domain}
+### Elimina il dominio {#delete-domain}
 
 > `DELETE /v1/domains/:domain_name`
 
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Se l'utente invitato è già un membro accettato di uno qualsiasi degli altri domini di cui l'amministratore che lo invita è membro, l'invito verrà accettato automaticamente e non verrà inviata alcuna email.
 
 ### Rimuovi invito al dominio {#remove-domain-invite}
 
@@ -807,7 +807,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 ### Elenca gli alias di dominio {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Dal 1° novembre 2024, gli endpoint API per [Elenca i domini](#list-domains) e [Elenca gli alias di dominio](#list-domain-aliases) saranno impostati per impostazione predefinita su `1000`, il numero massimo di risultati per pagina. Se desideri attivare questo comportamento in anticipo, puoi passare `?paginate=true` come parametro querystring aggiuntivo all'URL per la query dell'endpoint. Consulta [Paginazione](#pagination) per ulteriori informazioni.
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -844,10 +844,10 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?pagination=true \
 | `has_pgp` | NO | Booleano | Se abilitare o disabilitare [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) per [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) utilizzando l'alias `public_key`. |
 | `public_key` | NO | Corda | Chiave pubblica OpenPGP in formato ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); ad esempio chiave GPG per `support@forwardemail.net`). Questo si applica solo se `has_pgp` è impostato su `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | NO | Corda | Quota massima di archiviazione per questo alias. Lasciare vuoto per reimpostare la quota massima corrente del dominio oppure inserire un valore come "1 GB" che verrà analizzato da [bytes](https://github.com/visionmedia/bytes.js). Questo valore può essere modificato solo dagli amministratori del dominio. |
-| `vacation_responder_is_enabled` | NO | Booleano | Se abilitare o disabilitare il risponditore automatico. |
+| `vacation_responder_is_enabled` | NO | Booleano | Se abilitare o disabilitare un risponditore automatico. |
 | `vacation_responder_start_date` | NO | Corda | Data di inizio per il risponditore automatico (se abilitato e non è impostata una data di inizio, si presume che sia già iniziato). Supportiamo formati di data come `MM/DD/YYYY`, `YYYY-MM-DD` e altri formati di data tramite analisi intelligente con `dayjs`. |
 | `vacation_responder_end_date` | NO | Corda | Data di fine per il risponditore automatico (se abilitato e non impostato qui, si presume che non termini mai e risponda per sempre). Supportiamo formati di data come `MM/DD/YYYY`, `YYYY-MM-DD` e altri formati di data tramite analisi intelligente con `dayjs`. |
-| `vacation_responder_subject` | NO | Corda | Oggetto in chiaro per il risponditore automatico, ad esempio "Fuori sede". Utilizziamo `striptags` per rimuovere tutto il codice HTML. |
+| `vacation_responder_subject` | NO | Corda | Oggetto in testo normale per il risponditore automatico, ad esempio "Fuori sede". Utilizziamo `striptags` per rimuovere tutto il codice HTML. |
 | `vacation_responder_message` | NO | Corda | Messaggio in chiaro per il risponditore automatico, ad esempio "Sarò fuori ufficio fino a febbraio". Utilizziamo `striptags` per rimuovere tutto l'HTML qui. |
 
 > Esempio di richiesta:
@@ -896,10 +896,10 @@ curl BASE_URI/v1/domains/:domain_name/aliases/:alias_name \
 | `has_pgp` | NO | Booleano | Se abilitare o disabilitare [OpenPGP encryption](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd) per [IMAP/POP3/CalDAV/CardDAV encrypted email storage](/blog/docs/best-quantum-safe-encrypted-email-service) utilizzando l'alias `public_key`. |
 | `public_key` | NO | Corda | Chiave pubblica OpenPGP in formato ASCII Armor ([click here to view an example](/.well-known/openpgpkey/hu/mxqp8ogw4jfq83a58pn1wy1ccc1cx3f5.txt); ad esempio chiave GPG per `support@forwardemail.net`). Questo si applica solo se `has_pgp` è impostato su `true`. [Learn more about end-to-end encryption in our FAQ](/faq#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd). |
 | `max_quota` | NO | Corda | Quota massima di archiviazione per questo alias. Lasciare vuoto per reimpostare la quota massima corrente del dominio oppure inserire un valore come "1 GB" che verrà analizzato da [bytes](https://github.com/visionmedia/bytes.js). Questo valore può essere modificato solo dagli amministratori del dominio. |
-| `vacation_responder_is_enabled` | NO | Booleano | Se abilitare o disabilitare il risponditore automatico. |
+| `vacation_responder_is_enabled` | NO | Booleano | Se abilitare o disabilitare un risponditore automatico. |
 | `vacation_responder_start_date` | NO | Corda | Data di inizio per il risponditore automatico (se abilitato e non è impostata una data di inizio, si presume che sia già iniziato). Supportiamo formati di data come `MM/DD/YYYY`, `YYYY-MM-DD` e altri formati di data tramite analisi intelligente con `dayjs`. |
 | `vacation_responder_end_date` | NO | Corda | Data di fine per il risponditore automatico (se abilitato e non impostato qui, si presume che non termini mai e risponda per sempre). Supportiamo formati di data come `MM/DD/YYYY`, `YYYY-MM-DD` e altri formati di data tramite analisi intelligente con `dayjs`. |
-| `vacation_responder_subject` | NO | Corda | Oggetto in chiaro per il risponditore automatico, ad esempio "Fuori sede". Utilizziamo `striptags` per rimuovere tutto il codice HTML. |
+| `vacation_responder_subject` | NO | Corda | Oggetto in testo normale per il risponditore automatico, ad esempio "Fuori sede". Utilizziamo `striptags` per rimuovere tutto il codice HTML. |
 | `vacation_responder_message` | NO | Corda | Messaggio in chiaro per il risponditore automatico, ad esempio "Sarò fuori ufficio fino a febbraio". Utilizziamo `striptags` per rimuovere tutto l'HTML qui. |
 
 > Esempio di richiesta:
@@ -922,9 +922,9 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Crittografa {#encrypt}
 
-Ti consentiamo di crittografare i record anche con il piano gratuito, senza alcun costo. La privacy non dovrebbe essere una funzionalità, ma dovrebbe essere integrata in tutti gli aspetti di un prodotto. Come richiesto a gran voce in un [Discussione sulle guide sulla privacy](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) e in [i nostri problemi su GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), abbiamo aggiunto questa funzionalità.
+Ti consentiamo di crittografare i record anche con il piano gratuito, senza alcun costo. La privacy non dovrebbe essere una funzionalità, ma dovrebbe essere integrata in tutti gli aspetti di un prodotto. Come richiesto a gran voce in [Discussione sulle guide sulla privacy](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) e in [i nostri problemi su GitHub](https://github.com/forwardemail/forwardemail.net/issues/254), abbiamo aggiunto questa funzionalità.
 
-### Crittografa record TXT {#encrypt-txt-record}
+### Crittografa il record TXT {#encrypt-txt-record}
 
 > `POST /v1/encrypt`
 

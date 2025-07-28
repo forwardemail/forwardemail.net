@@ -34,7 +34,7 @@
 * [تكوين البريد الإلكتروني](#email-configuration)
   * [كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني](#how-do-i-get-started-and-set-up-email-forwarding)
   * [هل يمكنني استخدام عدة بورصات وخوادم MX لإعادة التوجيه المتقدم؟](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [كيف أقوم بإعداد المجيب التلقائي أثناء الإجازة (الرد التلقائي خارج المكتب)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [كيف أقوم بإعداد الرد التلقائي أثناء الإجازة (الرد التلقائي خارج المكتب)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [كيف أقوم بإعداد SPF لإعادة توجيه البريد الإلكتروني؟](#how-do-i-set-up-spf-for-forward-email)
   * [كيف أقوم بإعداد DKIM لإعادة توجيه البريد الإلكتروني](#how-do-i-set-up-dkim-for-forward-email)
   * [كيف أقوم بإعداد DMARC لإعادة توجيه البريد الإلكتروني](#how-do-i-set-up-dmarc-for-forward-email)
@@ -88,7 +88,7 @@
   * [كيفية معالجة البريد الإلكتروني لإعادة التوجيه](#how-do-you-process-an-email-for-forwarding)
   * [كيف تتعامل مع مشكلات تسليم البريد الإلكتروني](#how-do-you-handle-email-delivery-issues)
   * [كيف تتعامل مع حظر عناوين IP الخاصة بك؟](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [ما هي عناوين مدير البريد؟](#what-are-postmaster-addresses)
+  * [ما هي عناوين مدير البريد](#what-are-postmaster-addresses)
   * [ما هي عناوين عدم الرد](#what-are-no-reply-addresses)
   * [ما هي عناوين IP الخاصة بخادمك؟](#what-are-your-servers-ip-addresses)
   * [هل لديك قائمة مسموح بها؟](#do-you-have-an-allowlist)
@@ -129,7 +129,7 @@
   * [هل يمكنني "إرسال البريد باسم" في Outlook باستخدام هذا؟](#can-i-send-mail-as-in-outlook-with-this)
   * [هل يمكنني "إرسال البريد باسم" في Apple Mail و iCloud Mail باستخدام هذا؟](#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this)
   * [هل يمكنني إعادة توجيه عدد غير محدود من رسائل البريد الإلكتروني باستخدام هذا؟](#can-i-forward-unlimited-emails-with-this)
-  * [هل تقدمون نطاقات غير محدودة بسعر واحد؟](#do-you-offer-unlimited-domains-for-one-price)
+  * [هل تقدمون عدد غير محدود من النطاقات بسعر واحد؟](#do-you-offer-unlimited-domains-for-one-price)
   * [ما هي طرق الدفع التي تقبلونها؟](#which-payment-methods-do-you-accept)
 * [موارد إضافية](#additional-resources)
 
@@ -139,24 +139,21 @@
 
 1. **إنشاء حساب** على [forwardemail.net/register](https://forwardemail.net/register)
 
-2. **أضف نطاقك وتحقق منه** تحت [حسابي → النطاقات](/my-account/domains)
+2. **أضف نطاقك وتحقق منه** ضمن [حسابي → النطاقات](/my-account/domains)
 
 3. **إضافة وتكوين أسماء مستعارة/صناديق بريد إلكتروني** ضمن [حسابي → النطاقات](/my-account/domains) → أسماء مستعارة
 
 4. **اختبر إعداداتك** عن طريق إرسال بريد إلكتروني إلى أحد الأسماء المستعارة الجديدة لديك
 
-> \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+قد تستغرق تغييرات DNS ما يصل إلى 24-48 ساعة لتنتشر عالميًا، على الرغم من أنها غالبًا ما تُفعّل قبل ذلك بكثير.
 
-> \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+لتحسين قابلية التسليم، نوصي بإعداد سجلات [SPF](#how-do-i-set-up-spf-for-forward-email) و[DKIM](#how-do-i-set-up-dkim-for-forward-email) و[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
 ## مقدمة {#introduction}
 
 ### ما هو البريد الإلكتروني المعاد توجيهه {#what-is-forward-email}
 
-> \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+خدمة "إعادة توجيه البريد الإلكتروني" مثالية للأفراد والشركات الصغيرة والمطورين الذين يرغبون في عناوين بريد إلكتروني احترافية دون تكلفة وصيانة حلول استضافة البريد الإلكتروني الشاملة.
 
 Forward Email هو **موفر خدمة بريد إلكتروني متكامل الميزات** و**موفر استضافة البريد الإلكتروني لأسماء النطاق المخصصة**.
 
@@ -170,14 +167,14 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 * **المستوى المجاني**: إعادة توجيه أساسية للبريد الإلكتروني مجانًا.
 * **خصوصية مُحسّنة**: لا نقرأ رسائلك الإلكترونية ولا نبيع بياناتك.
 * **مفتوح المصدر**: قاعدة بياناتنا البرمجية كاملةً متاحة على GitHub.
-* **دعم SMTP وIMAP وPOP3**: إمكانيات إرسال واستقبال بريد إلكتروني كاملة.
+* **دعم SMTP و IMAP و POP3**: إمكانيات إرسال واستقبال بريد إلكتروني كاملة.
 * **التشفير الشامل**: دعم OpenPGP/MIME.
 * **أسماء مستعارة مخصصة**: أنشئ أسماء مستعارة غير محدودة للبريد الإلكتروني.
 
 يمكنك مقارنتنا بأكثر من 56 مزود خدمة بريد إلكتروني آخر على [صفحة مقارنة البريد الإلكتروني لدينا](/blog/best-email-service).
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> تعرّف على المزيد حول إعادة توجيه البريد الإلكتروني من خلال قراءة دليلنا المجاني [الورقة البيضاء الفنية](/technical-whitepaper.pdf)
 
 ### من يستخدم إعادة توجيه البريد الإلكتروني {#who-uses-forward-email}
 
@@ -193,7 +190,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 | إذاعة فوكس نيوز |  |
 | مبيعات إعلانات ديزني |  |
 | جيكويري | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
-| LineageOS |  |
+| نظام LineageOS |  |
 | أوبونتو | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | حر | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | لوبنتو | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
@@ -209,14 +206,13 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 | إسحاق ز. شلويتر (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | ديفيد هاينماير هانسون (روبي أون ريلز) |  |
 
-### ما هو تاريخ إعادة توجيه البريد الإلكتروني {#what-is-forward-emails-history}
+### ما هو سجل إعادة توجيه البريد الإلكتروني؟ {#what-is-forward-emails-history}
 
 يمكنك معرفة المزيد عن إعادة توجيه البريد الإلكتروني على [صفحتنا حول](/about).
 
 ### ما مدى سرعة هذه الخدمة؟ {#how-fast-is-this-service}
 
-> \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+تم تصميم نظامنا لضمان السرعة والموثوقية، مع خوادم احتياطية متعددة لضمان وصول رسائل البريد الإلكتروني الخاصة بك في أسرع وقت.
 
 توفر خدمة Forward Email إمكانية تسليم الرسائل بأقل قدر من التأخير، عادةً في غضون ثوانٍ من استلامها.
 
@@ -224,18 +220,18 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 * **متوسط وقت التسليم**: أقل من ٥-١٠ ثوانٍ من الاستلام إلى إعادة التوجيه ([راجع صفحة مراقبة وقت الوصول إلى البريد الوارد "TTI"](/tti))
 * **مدة التشغيل**: توافر الخدمة بنسبة تزيد عن ٩٩.٩٪
-* **البنية التحتية العالمية**: خوادم موزعة بشكل استراتيجي لضمان التوجيه الأمثل
-* **التوسع التلقائي**: نظامنا يتوسع خلال فترات ذروة استخدام البريد الإلكتروني
+* **بنية تحتية عالمية**: خوادم موزعة بشكل استراتيجي لضمان التوجيه الأمثل
+* **التوسع التلقائي**: نظامنا يتوسع خلال فترات الذروة في البريد الإلكتروني
 
 نحن نعمل في الوقت الحقيقي، على عكس مقدمي الخدمات الآخرين الذين يعتمدون على طوابير الانتظار المتأخرة.
 
-نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و [SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
+نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و[SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
 
 يتم تنفيذ كل شيء في الذاكرة و[كود المصدر الخاص بنا موجود على GitHub](https://github.com/forwardemail).
 
 ## عملاء البريد الإلكتروني {#email-clients}
 
-### ثندربيرد {#thunderbird}
+حامل مكان مؤقت 0 ثندربيرد {حامل مكان مؤقت 1}
 
 ١. أنشئ اسمًا مستعارًا جديدًا وأنشئ كلمة مرور في لوحة تحكم إعادة توجيه البريد الإلكتروني.
 ٢. افتح Thunderbird وانتقل إلى **تعديل ← إعدادات الحساب ← إجراءات الحساب ← إضافة حساب بريد إلكتروني**.
@@ -246,7 +242,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 * البريد الصادر: SMTP، `smtp.forwardemail.net`، المنفذ ٥٨٧، STARTTLS.
 ٥. انقر على **تم**.
 
-### مايكروسوفت أوتلوك {#microsoft-outlook}
+حامل مكان مؤقت 0 مايكروسوفت أوتلوك {حامل مكان مؤقت 1}
 
 ١. أنشئ اسمًا مستعارًا جديدًا وأنشئ كلمة مرور في لوحة معلومات إعادة توجيه البريد الإلكتروني.
 ٢. انتقل إلى **ملف ← إضافة حساب**.
@@ -257,14 +253,14 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 * البريد الوارد: `imap.forwardemail.net`، المنفذ ٩٩٣، SSL.
 * البريد الصادر: `smtp.forwardemail.net`، المنفذ ٥٨٧، TLS.
 * اسم المستخدم: عنوان بريدك الإلكتروني الكامل.
-* كلمة المرور: كلمة المرور المُنشأة.
+* كلمة المرور: كلمة المرور التي أنشأتها.
 ٦. انقر على **اتصال**.
 
 ### بريد Apple {#apple-mail}
 
 ١. أنشئ اسمًا مستعارًا جديدًا وأنشئ كلمة مرور في لوحة معلومات إعادة توجيه البريد الإلكتروني.
 ٢. انتقل إلى **البريد الإلكتروني ← التفضيلات ← الحسابات ← +**
-٣. اختر **حساب بريد آخر**
+٣. حدد **حساب بريد آخر**
 ٤. أدخل اسمك، وعنوان إعادة توجيه البريد الإلكتروني، وكلمة المرور.
 ٥. لإعدادات الخادم، أدخل:
 
@@ -299,6 +295,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 <div class="alert mb-3 alert-success">
 <i class="fa fa-bullhorn font-weight-bold"></i>
 <strong class="font-weight-bold">
+
 البدء:
 </strong>
 <span>
@@ -330,7 +327,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 1. انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد
 
-2. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code><hello@example.com></code>)
+2. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (على سبيل المثال <code><hello@example.com></code>)
 
 ٣. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
 
@@ -376,7 +373,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ### ما هو الدليل المجاني القديم لإرسال البريد باسم باستخدام Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">هام:</strong> هذا الدليل المجاني القديم غير صالح للاستخدام اعتبارًا من مايو ٢٠٢٣، حيث يدعم <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we الآن بروتوكول SMTP الصادر</a>. إذا استخدمت الدليل أدناه، فسيؤدي استخدام <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this إلى ظهور رسالة بريدك الإلكتروني الصادرة</a> "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" في Gmail.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">هام:</strong> هذا الدليل المجاني القديم غير مُستخدم اعتبارًا من مايو ٢٠٢٣، لأن <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we يدعم الآن بروتوكول SMTP الصادر</a>. إذا استخدمت الدليل أدناه، فسيؤدي استخدام <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this إلى ظهور رسالة بريدك الإلكتروني الصادرة</a> "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" في Gmail.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -387,6 +384,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 <div class="alert mb-3 alert-success">
 <i class="fa fa-bullhorn font-weight-bold"></i>
 <strong class="font-weight-bold">
+
 البدء:
 </strong>
 <span>
@@ -466,7 +464,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 إذا كنت تريد إعداد التوجيه المتقدم في Gmail بحيث يتم إعادة توجيه الأسماء المستعارة التي لا تتطابق مع صندوق البريد إلى تبادلات البريد الإلكتروني في Forward Email، فاتبع الخطوات التالية:
 
-١. سجّل الدخول إلى وحدة تحكم مشرف جوجل على الرابط [admin.google.com](https://admin.google.com)
+١. سجّل الدخول إلى وحدة تحكم مشرف جوجل على [admin.google.com](https://admin.google.com)
 ٢. انتقل إلى **التطبيقات ← Google Workspace ← Gmail ← التوجيه**
 ٣. انقر على **إضافة مسار** واضبط الإعدادات التالية:
 
@@ -477,13 +475,13 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 **أنماط مستلمي المظاريف:**
 
-* أضف نمطًا يتطابق مع جميع صناديق البريد غير الموجودة (على سبيل المثال، `.*@yourdomain.com`)
+* إضافة نمط يتطابق مع جميع صناديق البريد غير الموجودة (على سبيل المثال، `.*@yourdomain.com`)
 
 **إعدادات خادم البريد الإلكتروني:**
 
 * حدد "توجيه إلى المضيف" وأدخل `mx1.forwardemail.net` كخادم أساسي.
 * أضف `mx2.forwardemail.net` كخادم احتياطي.
-* اضبط المنفذ على 25.
+* اضبط المنفذ على ٢٥.
 * حدد "يتطلب TLS" للأمان.
 
 4. انقر فوق **حفظ** لإنشاء المسار
@@ -498,7 +496,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </span>
 </div>
 
-### تكوين توجيه Outlook المتقدم {#advanced-outlook-routing-configuration}
+### تكوين التوجيه المتقدم لبرنامج Outlook {#advanced-outlook-routing-configuration}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -508,13 +506,13 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 بالنسبة لمستخدمي Microsoft 365 (المعروف سابقًا باسم Office 365) الذين يرغبون في إعداد التوجيه المتقدم بحيث يتم إعادة توجيه الأسماء المستعارة التي لا تتطابق مع صندوق البريد إلى تبادلات البريد الإلكتروني الخاصة بـ Forward Email:
 
-١. سجّل الدخول إلى مركز إدارة Microsoft 365 على الرابط [admin.microsoft.com](https://admin.microsoft.com)
+١. سجّل الدخول إلى مركز إدارة Microsoft 365 على [admin.microsoft.com](https://admin.microsoft.com)
 ٢. انتقل إلى **Exchange ← تدفق البريد ← القواعد**
 ٣. انقر على **إضافة قاعدة** وحدد **إنشاء قاعدة جديدة**
-٤. سمِّ القاعدة (مثلًا، "إعادة توجيه صناديق البريد غير الموجودة إلى إعادة توجيه البريد الإلكتروني")
+٤. سمِّ القاعدة (مثلاً، "إعادة توجيه صناديق البريد غير الموجودة إلى إعادة توجيه البريد الإلكتروني")
 ٥. ضمن **تطبيق هذه القاعدة إذا**، حدد:
 * "عنوان المستلم يطابق..."
-* أدخل نمطًا يطابق جميع العناوين في نطاقك (مثلًا، `*@yourdomain.com`)
+* أدخل نمطًا يطابق جميع العناوين في نطاقك (مثلاً، `*@yourdomain.com`)
 ٦. ضمن **قم بما يلي**، حدد:
 * "إعادة توجيه الرسالة إلى..."
 * اختر "خادم البريد التالي"
@@ -522,15 +520,13 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 * أضف `mx2.forwardemail.net` كخادم احتياطي
 ٧. ضمن **إلا إذا**، حدد:
 * "المستلم هو..."
-* أضف جميع صناديق البريد الحالية التي لا ينبغي إعادة توجيهها
-
+* أضف جميع صناديق البريد الموجودة التي لا يجب أن تكون مُعاد توجيهه
 8. عيّن أولوية القاعدة لضمان تشغيلها بعد قواعد تدفق البريد الأخرى
-
 9. انقر على **حفظ** لتفعيل القاعدة
 
-## استكشاف الأخطاء وإصلاحها {#troubleshooting}
+استكشاف أخطاء ## وإصلاحها {#troubleshooting}
 
-### لماذا لا أتلقى رسائل البريد الإلكتروني الاختبارية الخاصة بي {#why-am-i-not-receiving-my-test-emails}
+### لماذا لا أتلقى رسائل البريد الإلكتروني الاختبارية الخاصة بي؟ {#why-am-i-not-receiving-my-test-emails}
 
 إذا كنت ترسل رسالة بريد إلكتروني اختبارية إلى نفسك، فقد لا تظهر في صندوق الوارد لديك لأنها تحتوي على نفس عنوان "معرف الرسالة".
 
@@ -575,15 +571,15 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 | IMAP | `imap.forwardemail.net` | SSL/TLS **المفضل** | `993` و `2993` |
 | SMTP | `smtp.forwardemail.net` | SSL/TLS **المفضل** أو TLS (STARTTLS) | `465` و`2465` لـ SSL/TLS (أو) `587` و`2587` و`2525` و`25` لـ TLS (STARTTLS) |
 
-### لماذا تصل رسائل البريد الإلكتروني الخاصة بي إلى البريد العشوائي والغير مرغوب فيه وكيف يمكنني التحقق من سمعة نطاقي {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
+### لماذا تصل رسائل البريد الإلكتروني الخاصة بي إلى مجلد البريد العشوائي وغير المرغوب فيه وكيف يمكنني التحقق من سمعة نطاقي؟ {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
 يرشدك هذا القسم إلى ما إذا كان بريدك الصادر يستخدم خوادم SMTP الخاصة بنا (على سبيل المثال `smtp.forwardemail.net`) (أو يتم إعادة توجيهه عبر `mx1.forwardemail.net` أو `mx2.forwardemail.net`) ويتم تسليمه إلى مجلد البريد العشوائي أو غير المرغوب فيه لدى المستلمين.
 
-نحن نقوم بشكل روتيني بمراقبة [عناوين IP](#what-are-your-servers-ip-addresses) مقابل [جميع قوائم الرفض الخاصة بـ DNS ذات السمعة الطيبة](#how-do-you-handle-your-ip-addresses-becoming-blocked)، **لذلك فمن المرجح أن تكون المشكلة متعلقة بسمعة المجال**.
+نحن نقوم بشكل روتيني بمراقبة [عناوين IP](#what-are-your-servers-ip-addresses) مقابل [جميع قوائم الرفض الخاصة بـ DNS ذات السمعة الطيبة](#how-do-you-handle-your-ip-addresses-becoming-blocked)، **لذلك فمن المرجح أن تكون هذه مشكلة خاصة بسمعة المجال**.
 
 يمكن أن تصل رسائل البريد الإلكتروني إلى مجلدات البريد العشوائي لعدة أسباب:
 
-1. **المصادقة المفقودة**: قم بإعداد سجلات [SPF](#how-do-i-set-up-spf-for-forward-email)، و[DKIM](#how-do-i-set-up-dkim-for-forward-email)، و[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
+1. **المصادقة المفقودة**: إعداد السجلات [SPF](#how-do-i-set-up-spf-for-forward-email)، و[DKIM](#how-do-i-set-up-dkim-for-forward-email)، و[DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
 2. **سمعة المجال**: غالبًا ما تتمتع المجالات الجديدة بسمعة محايدة حتى يتم إنشاء سجل إرسال.
 
@@ -604,28 +600,25 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 | مركز مرسل ياهو | <https://senders.yahooinc.com/> | سمعة |
 | التحقق من القائمة السوداء لـ MultiRBL.valli.org | <https://multirbl.valli.org/lookup/> | DNSBL |
 | درجة المرسل | <https://senderscore.org/act/blocklist-remover/> | سمعة |
-| عدم التقييم | <https://www.invaluement.com/lookup/> | DNSBL |
+| عدم القيمة | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
-| إزالة IP الخاص بـ Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | إزالة |
+| إزالة IP من Apple/Proofpoint | <https://ipcheck.proofpoint.com/> | إزالة |
 | إزالة IP الخاص بـ Cloudmark | <https://csi.cloudmark.com/ar/reset/> | إزالة |
-| SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| إزالة IP الخاص بـ Microsoft Outlook وOffice 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | إزالة |
-| مستويات 1 و2 و3 من UCEPROTECT | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
-| موقع backscatterer.org التابع لـ UCEPROTECT | <https://www.backscatterer.org/> | حماية التشتت الخلفي |
+| سبام كوب | <https://www.spamcop.net/bl.shtml> | DNSBL |
+| إزالة IP من Microsoft Outlook وOffice 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | إزالة |
+| مستويات UCEPROTECT 1 و2 و3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
+| backscatterer.org التابع لـ UCEPROTECT | <https://www.backscatterer.org/> | حماية التشتت الخلفي |
 | موقع UCEPROTECT's whitelisted.org | <https://www.whitelisted.org/> (يتطلب رسومًا) | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | إزالة |
 | AOL/Verizon (على سبيل المثال `[IPTS04]`) | <https://senders.yahooinc.com/> | إزالة |
 | شركة كوكس للاتصالات | `unblock.request@cox.net` | إزالة |
 | t-online.de (الألمانية/T-Mobile) | `tobr@rx.t-online.de` | إزالة |
 
-> \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+ابدأ بإرسال عدد قليل من رسائل البريد الإلكتروني عالية الجودة لبناء سمعة إيجابية قبل إرسال عدد أكبر من الرسائل.
 
-> \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+إذا كان نطاقك مدرجًا في القائمة السوداء، فلكل قائمة سوداء إجراءات إزالة خاصة بها. راجع مواقعها الإلكترونية للاطلاع على التعليمات.
 
-> \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+إذا كنت بحاجة إلى مساعدة إضافية أو وجدت أن بريدنا مدرج كبريد عشوائي من قِبل مزود خدمة بريد إلكتروني معين، يُرجى <a href="/help">التواصل معنا</a>.
 
 ### ماذا يجب أن أفعل إذا تلقيت رسائل بريد إلكتروني غير مرغوب فيها؟ {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -635,7 +628,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 **عنوان البريد الإلكتروني لإعادة توجيه البريد العشوائي إليه هو:** <abuse@forwardemail.net>
 
-### لماذا تظهر رسائل البريد الإلكتروني الاختبارية المرسلة إلى نفسي في Gmail على أنها "مشبوهة" {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
+### لماذا تظهر رسائل البريد الإلكتروني الاختبارية المرسلة إلى نفسي في Gmail على أنها "مشبوهة"؟ {#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious}
 
 إذا رأيت رسالة الخطأ هذه في Gmail عندما ترسل اختبارًا إلى نفسك، أو عندما يرى الشخص الذي تراسله عبر البريد الإلكتروني باستخدام اسمك المستعار رسالة بريد إلكتروني منك لأول مرة، فلا داعي للقلق، فهذه ميزة أمان مدمجة في Gmail.
 
@@ -657,8 +650,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ### أين تقع خوادمك؟ {#where-are-your-servers-located}
 
-> \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+قد نعلن قريبًا عن موقع مركز بياناتنا في الاتحاد الأوروبي المُستضاف تحت [forwardemail.eu](https://forwardemail.eu). اشترك في النقاش على <https://github.com/orgs/forwardemail/discussions/336> للاطلاع على التحديثات.
 
 تتواجد خوادمنا بشكل أساسي في دنفر، كولورادو - راجع <https://forwardemail.net/ips> للحصول على القائمة الكاملة لعناوين IP.
 
@@ -731,7 +723,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 نصيحة:
 </strong>
 <span>
-إذا كنتَ محتارًا بشأن كيفية الاستيراد إلى Thunderbird، يمكنكَ الرجوع إلى التعليمات الرسمية على <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> و<a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
+إذا كنتَ محتارًا بشأن كيفية الاستيراد إلى Thunderbird، يمكنكَ الرجوع إلى التعليمات الرسمية في <a class="alert-link" href="https://kb.mozillazine.org/Importing_folders">https://kb.mozillazine.org/Importing_folders</a> و<a class="alert-link" href="https://github.com/thunderbird/import-export-tools-ng/wiki">https://github.com/thunderbird/import-export-tools-ng/wiki</a>.
 </span>
 </div>
 
@@ -759,11 +751,11 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ### هل تدعم الاستضافة الذاتية؟ {#do-you-support-self-hosting}
 
-نعم، اعتبارًا من مارس ٢٠٢٥، ندعم خيار الاستضافة الذاتية. اقرأ المدونة [هنا](https://forwardemail.net/blog/docs/self-hosted-solution). اطلع على [دليل مستضاف ذاتيًا](https://forwardemail.net/self-hosted) للبدء. ولمن يرغب في الحصول على نسخة أكثر تفصيلًا خطوة بخطوة، يُرجى الاطلاع على أدلتنا المستندة إلى [أوبونتو](https://forwardemail.net/guides/selfhosted-on-ubuntu) أو [ديبيان](https://forwardemail.net/guides/selfhosted-on-debian).
+نعم، اعتبارًا من مارس ٢٠٢٥، ندعم خيار الاستضافة الذاتية. اقرأ مدونة [هنا](https://forwardemail.net/blog/docs/self-hosted-solution). اطلع على [دليل مستضاف ذاتيًا](https://forwardemail.net/self-hosted) للبدء. ولمن يرغب في الحصول على نسخة أكثر تفصيلًا خطوة بخطوة، يُرجى الاطلاع على أدلتنا المستندة إلى [أوبونتو](https://forwardemail.net/guides/selfhosted-on-ubuntu) أو [ديبيان](https://forwardemail.net/guides/selfhosted-on-debian).
 
 ## تكوين البريد الإلكتروني {#email-configuration}
 
-### كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني {#how-do-i-get-started-and-set-up-email-forwarding}
+### كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني؟ {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -821,9 +813,9 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>للإصدارات القديمة: تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> (انقر على الرمز ▼ بجوار الإدارة) <i class="fa fa-angle-right"></i> DNS
+<td>FOR ROCK: تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> (انقر على أيقونة ▼ بجوار الإدارة) <i class="fa fa-angle-right"></i> DNS
 <br />
-للإصدارات القديمة: تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> محرر المناطق <i class="fa fa-angle-right"></i> (اختر نطاقك)</td>
+للإصدار القديم: تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> محرر المناطق <i class="fa fa-angle-right"></i> (اختر نطاقك)</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
@@ -839,103 +831,103 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i>الشبكات <i class="fa fa-angle-right"></i>النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i>المزيد <i class="fa fa-angle-right"></i>إدارة النطاق</td>
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i> الشبكات <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> المزيد <i class="fa fa-angle-right"></i> إدارة النطاق</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> في عرض البطاقة، انقر على "إدارة" نطاقك <i class="fa fa-angle-right"></i> في عرض القائمة، انقر على رمز الترس <i class="fa fa-angle-right"></i> سجلات DNS وخوادم الأسماء <i class="fa fa-angle-right"></i> DNS</td>
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i> في عرض البطاقة، انقر على "إدارة" نطاقك <i class="fa fa-angle-right"></i> في عرض القائمة، انقر على رمز الترس <i class="fa fa-angle-right"></i> نظام أسماء النطاقات وخوادم الأسماء <i class="fa fa-angle-right"></i> سجلات نظام أسماء النطاقات</td>
 </tr>
 <tr>
 <td>
 <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> مشاهدة</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> مشاهدة</a>
 </td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> (انقر على رمز الترس) <i class="fa fa-angle-right"></i> انقر على DNS وخوادم الأسماء في القائمة اليسرى</td>
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> (انقر على رمز الترس) <i class="fa fa-angle-right"></i> انقر على "DNS & Nameservers" في القائمة اليسرى</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1"
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> لوحة التحكم <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> إدارة النطاقات <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2"
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> نظرة عامة <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> محرر بسيط <i class="fa fa-angle-right"></i> السجلات</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> الإدارة <i class="fa fa-angle-right"></i> تعديل المنطقة</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3"
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i>الإدارة <i class="fa fa-angle-right"></i>تعديل النطاق</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4"
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> مشاهدة</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5" class="fa fa-play-circle"></i>مشاهدة</a>
 </td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> إدارة نطاقاتي <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة DNS</td>
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i>إدارة نطاقاتي <i class="fa" fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google نطاقات</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 نطاقات</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> مشاهدة</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> مشاهدة</a>
 </td>
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> تهيئة DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8"
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> مشاهدة</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9" class="fa fa-play-circle"></i> مشاهدة</a>
 </td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> قائمة النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> DNS متقدم</td>
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i> قائمة النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> نظام أسماء النطاقات المتقدم</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إعداد Netlify DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0"
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إعداد DNS لـ Netlify</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network الحلول</a></td>
-<td>تسجيل الدخول <i class="fa fa-angle-right"></i> مدير الحساب <i class="fa fa-angle-right"></i> أسماء نطاقاتي <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> تغيير مواقع النطاق <i class="fa fa-angle-right"></i> نظام أسماء النطاقات المتقدم</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Solutions</a></td>
+<td>تسجيل الدخول <i class="fa fa-angle-right"></i> مدير الحساب <i class="fa fa-angle-right"></i> أسماء نطاقاتي <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إدارة <i class="fa fa-angle-right"></i> تغيير مواقع النطاقات <i class="fa fa-angle-right"></i> DNS متقدم</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2"
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> مشاهدة</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> مشاهدة</a>
 </td>
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات المُدارة <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> إعدادات DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4"
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> القائمة الرئيسية <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i>
 الإعدادات المتقدمة <i class="fa fa-angle-right"></i> السجلات المخصصة</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's الآن</a></td>
-<td>استخدام "now" سطر الأوامر <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Now</a></td>
+<td>باستخدام سطر الأوامر "now" <i class="fa fa-angle-right"></i> <code>now dns add [domain] '@' MX [record-value] [priority]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> صفحة النطاقات <i class="fa fa-angle-right"></i> (اختر نطاقك) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> صفحة النطاقات <i class="fa fa-angle-right"></i> (انقر على أيقونة <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> حدد إدارة سجلات DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>تسجيل الدخول <i class="fa fa-angle-right"></i> النطاقات <i class="fa fa-angle-right"></i> نطاقاتي</td>
 </tr>
 <tr>
 <td>أخرى</td>
 <td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">هام:</strong> ألا ترى اسم مسجل النطاقات الخاص بك مدرجًا هنا؟ ابحث ببساطة على الإنترنت عن "كيفية تغيير سجلات DNS على $REGISTRAR" (استبدل $REGISTRAR باسم مسجل النطاقات الخاص بك - على سبيل المثال "كيفية تغيير سجلات DNS على GoDaddy" إذا كنت تستخدم GoDaddy).</div>
+<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">هام:</strong> ألا ترى اسم جهة التسجيل الخاصة بك مدرجًا هنا؟ ابحث على الإنترنت عن "كيفية تغيير سجلات DNS على $REGISTRAR" (استبدل $REGISTRAR باسم جهة التسجيل الخاصة بك - على سبيل المثال "كيفية تغيير سجلات DNS على GoDaddy" إذا كنت تستخدم GoDaddy).</div>
 </td>
 </tr>
 </tbody>
 </table>
 </li>
-<li class="mb-2 mb-md-3 mb-lg-5">باستخدام صفحة إدارة DNS الخاصة بمسجل النطاقات الخاص بك (علامة التبويب الأخرى التي فتحتها)، اضبط سجلات "MX" التالية:
+<li class="mb-2 mb-md-3 mb-lg-5">باستخدام صفحة إدارة DNS الخاصة بمسجل النطاقات (علامة التبويب الأخرى التي فتحتها)، اضبط سجلات "MX" التالية:
 
 <div class="alert my-3 alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -1029,7 +1021,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 نصيحة:
 </strong>
 <span>
-تأكد من استبدال القيم أعلاه في عمود "القيمة" بعنوان بريدك الإلكتروني. ليس بالضرورة أن تكون قيمة "TTL" 3600، بل يمكن أن تكون قيمة أقل أو أعلى عند الحاجة. سيضمن انخفاض قيمة "TTL" نشر أي تغييرات مستقبلية تُجرى على سجلات DNS عبر الإنترنت بشكل أسرع - تخيل هذا كمدة تخزينها مؤقتًا في الذاكرة (بالثواني). يمكنك معرفة المزيد حول <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL على ويكيبيديا</a>.
+تأكد من استبدال القيم أعلاه في عمود "القيمة" بعنوان بريدك الإلكتروني. ليس بالضرورة أن تكون قيمة "TTL" 3600، بل يمكن أن تكون قيمة أقل أو أعلى عند الحاجة. قيمة "TTL" الأقل تضمن نشر أي تغييرات مستقبلية تُجرى على سجلات DNS الخاصة بك عبر الإنترنت بشكل أسرع - تخيل هذا كم من الوقت سيُخزن في الذاكرة مؤقتًا (بالثواني). يمكنك معرفة المزيد حول <a href="https://en.wikipedia.org/wiki/Time_to_live#DNS_records" rel="noopener noreferrer" target="_blank" class="alert-link">TTL على ويكيبيديا</a>.
 </span>
 </div>
 
@@ -1220,7 +1212,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </thead>
 <tbody>
 <tr>
-<td><em>"@", ".", أو فارغ</em></td>
+<td><em>"@" أو "." أو فارغ</em></td>
 <td class="text-center">3600</td>
 <td class="notranslate">TXT</td>
 <td>
@@ -1249,7 +1241,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال بسيط:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني المرسلة إلى `linus@example.com` أو `torvalds@example.com` إلى `user@gmail.com`:
+<strong>مثال بسيط:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى `linus@example.com` أو `torvalds@example.com` إلى `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -1279,7 +1271,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 هام:
 </strong>
 <span>
-يمكن وصف قواعد إعادة التوجيه الشاملة أيضًا بأنها "غير قابلة للتكرار". هذا يعني أنه سيتم استخدام رسائل البريد الإلكتروني الواردة التي تتوافق مع قاعدة إعادة توجيه واحدة على الأقل بدلاً من قواعد إعادة التوجيه الشاملة.
+يمكن وصف قواعد إعادة التوجيه الشاملة أيضًا بأنها "غير مكتملة". هذا يعني أنه سيتم استخدام رسائل البريد الإلكتروني الواردة التي تتوافق مع قاعدة إعادة توجيه واحدة على الأقل بدلاً من قواعد إعادة التوجيه الشاملة.
 تشمل القواعد المحددة عناوين البريد الإلكتروني والتعبيرات العادية.
 <br /><br />
 على سبيل المثال:
@@ -1355,7 +1347,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 إذا لم تستلم رسائل بريد إلكتروني تجريبية، أو تلقيت رسالة بريد إلكتروني تجريبية تقول "انتبه لهذه الرسالة"، فراجع إجابات <a href="#why-am-i-not-receiving-my-test-emails" class="alert-link">لماذا لا أستلم رسائل البريد الإلكتروني التجريبية</a> و<a href="#why-are-my-test-emails-sent-to-myself-in-gmail-showing-as-suspicious" class="alert-link">لماذا تظهر رسائل البريد الإلكتروني التجريبية المرسلة إليّ في Gmail على أنها "مشبوهة"</a> على التوالي.
 </div>
 
-</li><li class="mb-2 mb-md-3 mb-lg-5">إذا كنت ترغب في "إرسال البريد باسم" من Gmail، فستحتاج إلى <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">مشاهدة هذا الفيديو</a></strong>، أو اتباع الخطوات الموجودة تحت <a href="#how-to-send-mail-as-using-gmail">How لإرسال البريد باسم باستخدام Gmail</a> أدناه.
+</li><li class="mb-2 mb-md-3 mb-lg-5">إذا كنت ترغب في "إرسال البريد باسم" من Gmail، فستحتاج إلى <strong><a href="https://www.youtube.com/watch?v=MEheS8gM4Xs" target="_blank" rel="noopener noreferrer">مشاهدة هذا الفيديو</a></strong>، أو اتباع الخطوات الموجودة ضمن <a href="#how-to-send-mail-as-using-gmail">How لإرسال البريد باسم باستخدام Gmail</a> أدناه.
 
 </li></ol>
 
@@ -1385,10 +1377,11 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
+
 إضافة اختيارية:
 </strong>
 <span>
-إذا كنت تستخدم ميزة <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How لإرسال بريد كـ باستخدام Gmail</a>، فقد ترغب في إضافة نفسك إلى قائمة المسموح لهم. راجع <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">هذه التعليمات من Gmail</a> حول هذا الموضوع.
+إذا كنت تستخدم ميزة <a class="alert-link" href="#how-to-send-mail-as-using-gmail">How لإرسال بريد باسم باستخدام Gmail</a>، فقد ترغب في إضافة نفسك إلى قائمة المسموح لهم. راجع <a class="alert-link" href="https://support.google.com/a/answer/60752?hl=en" target="_blank" rel="noopener noreferrer">هذه التعليمات من Gmail</a> حول هذا الموضوع.
 </span>
 </div>
 
@@ -1410,44 +1403,41 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 لديك القدرة على تكوين تاريخ البدء وتاريخ الانتهاء والموضوع والرسالة، وتمكينها أو تعطيلها في أي وقت:
 
-* يدعم حاليًا النص العادي (نستخدم حزمة `striptags` داخليًا لإزالة أي HTML).
+* يدعم حاليًا موضوع ورسالة النص العادي (نستخدم حزمة `striptags` داخليًا لإزالة أي HTML).
 * يقتصر طول الموضوع على 100 حرف.
 * تقتصر الرسالة على 1000 حرف.
 * يتطلب الإعداد تهيئة SMTP الصادر (على سبيل المثال، ستحتاج إلى إعداد سجلات DKIM وDMARC وDNS لمسار الإرجاع).
 * انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تهيئة SMTP الصادر واتبع تعليمات الإعداد.
-* لا يمكن تفعيل مُجيب العطل على أسماء النطاقات العالمية (على سبيل المثال، لا يدعم [عناوين يمكن التخلص منها](/disposable-addresses)).
+* لا يمكن تفعيل المجيب التلقائي على أسماء النطاقات العالمية (على سبيل المثال، لا يدعم [عناوين يمكن التخلص منها](/disposable-addresses)). * لا يمكن تفعيل المجيب التلقائي للأسماء المستعارة التي تحتوي على أحرف بديلة/جمل شاملة (`*`) أو تعبيرات عادية.
 
-* لا يمكن تفعيل مُجيب العطل للأسماء المستعارة التي تحتوي على أحرف بديلة/جملة شاملة (`*`) أو التعبيرات العادية.
-
-على عكس أنظمة البريد مثل `postfix` (على سبيل المثال، التي تستخدم ملحق مرشح الإجازة `sieve`) – يضيف Forward Email توقيع DKIM الخاص بك تلقائيًا، ويمنع مشكلات الاتصال الوهمية عند إرسال استجابات الإجازة (على سبيل المثال، بسبب مشكلات اتصال SSL/TLS الشائعة والخوادم القديمة)، ويدعم أيضًا تشفير Open WKD وPGP لاستجابات الإجازة.
+على عكس أنظمة البريد مثل `postfix` (على سبيل المثال، التي تستخدم ملحق مرشح الإجازة `sieve`) - يضيف Forward Email توقيع DKIM الخاص بك تلقائيًا، ويمنع مشكلات الاتصال الوهمية عند إرسال استجابات الإجازة (على سبيل المثال، بسبب مشكلات اتصال SSL/TLS الشائعة والخوادم القديمة)، ويدعم حتى تشفير Open WKD وPGP لاستجابات الإجازة.
 
 <!--
 * لمنع إساءة الاستخدام، سيتم خصم رصيد SMTP صادر واحد لكل رسالة رد تلقائي مُرسلة.
 * تتضمن جميع الحسابات المدفوعة 300 رصيد يوميًا افتراضيًا. إذا كنت بحاجة إلى مبلغ أكبر، يُرجى التواصل معنا.
 -->
 
-1. نرسل رسالة واحدة فقط لكل مرسل [مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) كل 4 أيام (وهو ما يشبه سلوك Gmail).
+1. نرسل مرة واحدة فقط لكل مرسل [مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) كل 4 أيام (وهو ما يشبه سلوك Gmail).
 
-* تستخدم ذاكرة التخزين المؤقت Redis الخاصة بنا بصمةً مكونةً من `alias_id` و`sender`، بينما `alias_id` هو معرف MongoDB البديل، و`sender` هو عنوان المرسل (إذا كان مُدرجًا في القائمة المسموح بها) أو نطاق الجذر في عنوان المرسل (إذا لم يكن مُدرجًا في القائمة المسموح بها). للتبسيط، تم ضبط مدة صلاحية هذه البصمة في ذاكرة التخزين المؤقت على 4 أيام.
+* تستخدم ذاكرة التخزين المؤقت Redis بصمة `alias_id` و`sender`، بينما `alias_id` هو اسم مستعار لمعرف MongoDB، و`sender` هو عنوان المرسل (إذا كان مُدرجًا في القائمة المسموح بها) أو نطاق الجذر في عنوان المرسل (إذا لم يكن مُدرجًا في القائمة المسموح بها). للتبسيط، تم ضبط مدة صلاحية هذه البصمة في ذاكرة التخزين المؤقت على 4 أيام.
 
 * إن نهجنا المتمثل في استخدام المجال الجذر الذي تم تحليله في عنوان المرسل للمرسلين غير المدرجين في القائمة المسموح بها يمنع إساءة الاستخدام من قبل المرسلين غير المعروفين نسبيًا (مثل الجهات الخبيثة) من إغراق رسائل المستجيب التلقائي.
 
-2. نرسل فقط عندما لا يكون حقل "البريد من" و/أو "من" فارغًا ولا يحتوي على (غير حساس لحالة الأحرف) [اسم المستخدم مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني).
+2. نرسل فقط عندما لا يكون حقل MAIL FROM و/أو From فارغًا ولا يحتوي على (غير حساس لحالة الأحرف) [اسم مستخدم مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني).
 
 3. لا نرسل الرسالة إذا كانت الرسالة الأصلية تحتوي على أي من العناوين التالية (غير حساسة لحالة الأحرف):
 
-* رأس `auto-submitted` بقيمة لا تساوي `no`.
-* رأس `x-auto-response-suppress` بقيمة `dr`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `all`
-* رأس `list-id`، أو `list-subscribe`، أو `list-unsubscribe`، أو `list-help`، أو `list-post`، أو `list-owner` `list-archive`، أو `x-autoreply`، أو `x-autorespond`، أو `x-auto-respond` (بغض النظر عن القيمة).
-* رأس `precedence` بقيمة `bulk`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `list`.
+* رأس `auto-submitted` بقيمة لا تساوي `no`. * رأس `x-auto-response-suppress` بقيمة `dr`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `all`
+* رأس `list-id`، أو `list-subscribe`، أو `no`0، أو `no`1، أو `no`2، أو `no`3، أو `no`4، أو `no`5، أو `no`6، أو `no`7 (بغض النظر عن القيمة).
+* رأس `no`8 بقيمة `no`9، أو `x-auto-response-suppress`0، أو `x-auto-response-suppress`1، أو `x-auto-response-suppress`2، أو `x-auto-response-suppress`3.
 
-4. لن نرسل إذا كان عنوان البريد الإلكتروني المرسل أو المرسل ينتهي بـ `+donotreply`، أو `-donotreply`، أو `+noreply`، أو `-noreply`.
+4. لا نقوم بالإرسال إذا كان عنوان البريد الإلكتروني المرسل أو المرسل ينتهي بـ `+donotreply`، أو `-donotreply`، أو `+noreply`، أو `-noreply`.
 
-5. لا نرسل إذا كان جزء اسم المستخدم الخاص بعنوان البريد الإلكتروني المرسل هو `mdaemon` وكان به رأس غير حساس لحالة الأحرف `X-MDDSN-Message`.
+5. لا نرسل إذا كان جزء اسم المستخدم في عنوان البريد الإلكتروني المرسل هو `mdaemon` وكان به رأس غير حساس لحالة الأحرف `X-MDDSN-Message`.
 
-6. لا نرسل إذا كان هناك رأس `content-type` غير حساس لحالة الأحرف لـ `multipart/report`.
+6. لا نرسل إذا كان هناك رأس `content-type` غير حساس لحالة الأحرف في `multipart/report`.
 
-### كيف أقوم بإعداد SPF لإعادة توجيه البريد الإلكتروني {#how-do-i-set-up-spf-for-forward-email}
+### كيف أقوم بإعداد SPF لإعادة توجيه البريد الإلكتروني؟ {#how-do-i-set-up-spf-for-forward-email}
 
 باستخدام صفحة إدارة DNS الخاصة بمسجل النطاق الخاص بك، قم بتعيين سجل <strong class="notranslate">TXT</strong> التالي:
 
@@ -1510,7 +1500,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </span>
 </div>
 
-### كيف أقوم بإعداد DKIM لإعادة توجيه البريد الإلكتروني {#how-do-i-set-up-dkim-for-forward-email}
+### كيف أقوم بإعداد DKIM لإعادة توجيه البريد الإلكتروني؟ {#how-do-i-set-up-dkim-for-forward-email}
 
 انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد.
 
@@ -1518,9 +1508,9 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد.
 
-### كيف يمكنني الاتصال بجهات الاتصال الخاصة بي وتكوينها؟ {#how-do-i-connect-and-configure-my-contacts}
+### كيف أقوم بتوصيل جهات الاتصال الخاصة بي وتكوينها؟ {#how-do-i-connect-and-configure-my-contacts}
 
-**لتكوين جهات الاتصال الخاصة بك، استخدم عنوان URL لـ CardDAV:** `https://carddav.forwardemail.net` (أو ببساطة `carddav.forwardemail.net` إذا سمح العميل بذلك)
+**لتكوين جهات الاتصال الخاصة بك، استخدم عنوان URL الخاص بـ CardDAV:** `https://carddav.forwardemail.net` (أو ببساطة `carddav.forwardemail.net` إذا سمح العميل بذلك)
 
 ### كيف أقوم بتوصيل تقويماتي وتكوينها؟ {#how-do-i-connect-and-configure-my-calendars}
 
@@ -1528,9 +1518,9 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="مثال إعداد تقويم CalDAV Thunderbird لإعادة توجيه البريد الإلكتروني" />
 
-### كيف يمكنني إضافة المزيد من التقويمات وإدارة التقويمات الموجودة {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### كيف يمكنني إضافة المزيد من التقويمات وإدارة التقويمات الموجودة؟ {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-إذا كنت ترغب في إضافة تقويمات إضافية، فما عليك سوى إضافة عنوان URL جديد للتقويم: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**تأكد من استبدال `calendar-name` باسم التقويم المطلوب**)
+إذا كنت ترغب في إضافة تقويمات إضافية، فما عليك سوى إضافة عنوان URL للتقويم الجديد: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**تأكد من استبدال `calendar-name` باسم التقويم المطلوب**)
 
 بإمكانك تغيير اسم التقويم ولونه بعد إنشائه - ما عليك سوى استخدام تطبيق التقويم المفضل لديك (على سبيل المثال Apple Mail أو [طائر الرعد](https://thunderbird.net)).
 
@@ -1538,7 +1528,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 نقوم تلقائيًا بتكوين [مخطط إعادة كتابة المرسل](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") - لا تحتاج إلى القيام بذلك بنفسك.
 
-### كيف أقوم بإعداد MTA-STS لإعادة توجيه البريد الإلكتروني {#how-do-i-set-up-mta-sts-for-forward-email}
+### كيف أقوم بإعداد MTA-STS لإعادة توجيه البريد الإلكتروني؟ {#how-do-i-set-up-mta-sts-for-forward-email}
 
 يرجى الرجوع إلى [قسمنا حول MTA-STS](#do-you-support-mta-sts) لمزيد من المعلومات.
 
@@ -1561,7 +1551,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 ١٣. سيستغرق تطبيق التغييرات من ساعة إلى ساعتين تقريبًا، ولكن قد تكون سريعة جدًا في بعض الأحيان.
 ١٤. أرسل بريدًا إلكترونيًا تجريبيًا، وستظهر صورة الملف الشخصي.
 
-## الميزات المتقدمة {#advanced-features}
+## الميزات المتقدمة لـ {#advanced-features}
 
 ### هل تدعم النشرات الإخبارية أو قوائم البريد الإلكتروني للتسويق؟ {#do-you-support-newsletters-or-mailing-lists-for-marketing-related-email}
 
@@ -1585,7 +1575,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 يرجى الاطلاع على قسمنا حول [رسائل البريد الإلكتروني](/email-api#outbound-emails) في وثائق واجهة برمجة التطبيقات الخاصة بنا للحصول على الخيارات والأمثلة والمزيد من المعلومات.
 
-لإرسال بريد إلكتروني صادر باستخدام واجهة برمجة التطبيقات (API) الخاصة بنا، يجب عليك استخدام رمز واجهة برمجة التطبيقات (API) المتوفر ضمن [أمني](/my-account/security).
+لإرسال بريد إلكتروني صادر باستخدام واجهة برمجة التطبيقات (API) الخاصة بنا، يجب عليك استخدام رمز واجهة برمجة التطبيقات (API) المتاح تحت [أمني](/my-account/security).
 
 ### هل تدعم تلقي البريد الإلكتروني باستخدام IMAP {#do-you-support-receiving-email-with-imap}
 
@@ -1607,7 +1597,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ٢. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
 
-٣. باستخدام تطبيق البريد الإلكتروني المفضل لديك، أضف أو أنشئ حسابًا باسمك المستعار الجديد (مثل <code><hello@example.com></code>).
+٣. باستخدام تطبيق البريد الإلكتروني المفضل لديك، أضف أو هيئ حسابًا باسمك المستعار الجديد (مثل <code><hello@example.com></code>).
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1665,7 +1655,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ٢. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
 
-٣. باستخدام تطبيق البريد الإلكتروني المفضل لديك، أضف أو أنشئ حسابًا باسمك المستعار الجديد (مثل <code><hello@example.com></code>).
+٣. باستخدام تطبيق البريد الإلكتروني المفضل لديك، أضف أو هيئ حسابًا باسمك المستعار الجديد (مثل <code><hello@example.com></code>).
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1705,7 +1695,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ### هل تدعم التقويمات (CalDAV) {#do-you-support-calendars-caldav}
 
-نعم، أضفنا هذه الميزة اعتبارًا من 5 فبراير 2024. خادمنا محمي بـ `caldav.forwardemail.net`، وهو مُراقَب أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a>.
+نعم، أضفنا هذه الميزة اعتبارًا من 5 فبراير 2024. خادمنا هو `caldav.forwardemail.net`، وهو مُراقَب أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a>.
 
 إنه يدعم كل من IPv4 و IPv6 ومتاح عبر المنفذ `443` (HTTPS).
 
@@ -1718,7 +1708,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ### هل تدعم جهات الاتصال (CardDAV) {#do-you-support-contacts-carddav}
 
-نعم، أضفنا هذه الميزة اعتبارًا من ١٢ يونيو ٢٠٢٥. خادمنا محمي بـ `carddav.forwardemail.net`، وهو مُراقَب أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a>.
+نعم، أضفنا هذه الميزة اعتبارًا من ١٢ يونيو ٢٠٢٥. خادمنا هو `carddav.forwardemail.net`، وهو مُراقَب أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a>.
 
 إنه يدعم كل من IPv4 و IPv6 ومتاح عبر المنفذ `443` (HTTPS).
 
@@ -1757,7 +1747,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 1. انتقل إلى <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الإعدادات <i class="fa fa-angle-right"></i> تكوين SMTP الصادر واتبع تعليمات الإعداد
 
-2. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (مثل <code><hello@example.com></code>)
+2. أنشئ اسمًا مستعارًا جديدًا لنطاقك ضمن <a href="/my-account/domains" target="_blank" rel="noopener noreferrer" class="alert-link">حسابي <i class="fa fa-angle-right"></i> النطاقات</a> <i class="fa fa-angle-right"></i> الأسماء المستعارة (على سبيل المثال <code><hello@example.com></code>)
 
 ٣. انقر على <strong class="text-success"><i class="fa fa-key"></i>إنشاء كلمة مرور</strong> بجوار الاسم المستعار الذي تم إنشاؤه حديثًا. انسخ كلمة المرور المُنشأة إلى الحافظة، ثم احفظها بأمان.
 
@@ -1809,22 +1799,23 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 </div>
 
-### هل تدعم OpenPGP/MIME، والتشفير من البداية إلى النهاية ("E2EE")، ودليل مفتاح الويب ("WKD") {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
+### هل تدعم OpenPGP/MIME، والتشفير من البداية إلى النهاية ("E2EE")، ودليل مفتاح الويب ("WKD")؟ {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-نعم، ندعم [برنامج OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP) و[التشفير من البداية إلى النهاية ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption) واكتشاف المفاتيح العامة باستخدام [دليل مفتاح الويب ("WKD")](https://wiki.gnupg.org/WKD). يمكنك تهيئة OpenPGP باستخدام [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) أو [استضافة مفاتيحك بنفسك](https://wiki.gnupg.org/WKDHosting) (راجع [هذا هو ملخص لإعداد خادم WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+نعم، ندعم [أوبن بي جي بي](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP) و[التشفير من البداية إلى النهاية ("E2EE")](https://en.wikipedia.org/wiki/End-to-end_encryption)، واكتشاف المفاتيح العامة باستخدام [دليل مفتاح الويب ("WKD")](https://wiki.gnupg.org/WKD). يمكنك تكوين OpenPGP باستخدام [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) أو [استضافة مفاتيحك بنفسك](https://wiki.gnupg.org/WKDHosting) (راجع [هذا هو ملخص لإعداد خادم WKD](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* يتم تخزين عمليات بحث WKD مؤقتًا لمدة ساعة واحدة لضمان تسليم البريد الإلكتروني في الوقت المناسب → لذلك، إذا أضفت أو غيّرت أو أزلت مفتاح WKD الخاص بك، يُرجى مراسلتنا عبر البريد الإلكتروني على `support@forwardemail.net` مع عنوان بريدك الإلكتروني لنقوم بمسح ذاكرة التخزين المؤقت يدويًا.
+* يتم تخزين عمليات بحث WKD مؤقتًا لمدة ساعة واحدة لضمان تسليم البريد الإلكتروني في الوقت المناسب → لذلك، إذا أضفت أو غيّرت أو حذفت مفتاح WKD الخاص بك، يُرجى مراسلتنا عبر البريد الإلكتروني على `support@forwardemail.net` مع عنوان بريدك الإلكتروني لنقوم بمسح ذاكرة التخزين المؤقت يدويًا.
 * ندعم تشفير PGP للرسائل التي يتم إعادة توجيهها عبر بحث WKD أو باستخدام مفتاح PGP مُحمّل على واجهتنا.
-* تُعتد بالمفاتيح المُحمّلة طالما تم تفعيل/تحديد مربع اختيار PGP.
+* تُعتبر المفاتيح المُحمّلة هي السائدة طالما تم تفعيل/تحديد مربع اختيار PGP.
 * الرسائل المُرسلة إلى خطافات الويب غير مُشفّرة حاليًا باستخدام PGP.
-* إذا كان لديك عدة أسماء مستعارة تُطابق عنوان إعادة توجيه مُعيّن (مثل regex/wildcard/exact combo)، وإذا كان أكثر من واحد منها يحتوي على مفتاح PGP مُحمّل ومُفعّل عليه PGP →، فسنرسل إليك بريدًا إلكترونيًا لتنبيهك بالخطأ ولن نُشفّر الرسالة باستخدام مفتاح PGP المُحمّل. هذا نادر جدًا، وعادةً ما ينطبق فقط على المستخدمين المتقدمين الذين لديهم قواعد معقدة للأسماء المستعارة.
-* **لن يُطبّق تشفير PGP على إعادة توجيه البريد الإلكتروني عبر خوادم MX الخاصة بنا إذا كان لدى المُرسِل سياسة رفض DMARC. إذا كنتَ بحاجة إلى تشفير PGP على *جميع* رسائل البريد الإلكتروني، فننصحك باستخدام خدمة IMAP الخاصة بنا وتكوين مفتاح PGP الخاص بك للاسم المستعار للبريد الوارد.**
+* إذا كان لديك عدة أسماء مستعارة تُطابق عنوان إعادة توجيه مُعيّن (مثل: regex/wildcard/exact combo)، وإذا كان أكثر من واحد منها يحتوي على مفتاح PGP مُحمّل ومُفعّل عليه PGP →، فسنرسل إليك بريدًا إلكترونيًا لتنبيهك بالخطأ ولن نُشفّر الرسالة باستخدام مفتاح PGP المُحمّل. هذا نادر جدًا، وعادةً ما ينطبق فقط على المستخدمين المُتقدّمين الذين لديهم قواعد أسماء مستعارة مُعقّدة.
+* **لن يُطبَّق تشفير PGP على إعادة توجيه البريد الإلكتروني عبر خوادم MX لدينا إذا كان المُرسِل يتبع سياسة رفض DMARC. إذا كنتَ بحاجة إلى تشفير PGP على *جميع* رسائل البريد، فننصحك باستخدام خدمة IMAP لدينا وتكوين مفتاح PGP الخاص بك لاسمك المستعار للبريد الوارد.**
 
 **يمكنك التحقق من صحة إعداد دليل مفتاح الويب الخاص بك في <https://wkd.chimbosonic.com/> (مفتوح المصدر) أو <https://www.webkeydirectory.com/> (خاص).**
 
 <div class="alert my-3 alert-success">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
+
 التشفير التلقائي:
 </strong>
 <span>إذا كنت تستخدم <a href="#do-you-support-sending-email-with-smtp" class="alert-link">خدمة SMTP الصادرة</a> وترسل رسائل غير مشفرة، فسنحاول تلقائيًا تشفير الرسائل لكل مستلم باستخدام <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Key Directory ("WKD")</a>.</span>
@@ -1851,7 +1842,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 | بريد آبل | اي او اس | [PGPro](https://github.com/opensourceios/PGPro/) أو [FlowCrypt](https://apps.apple.com/us/app/flowcrypt-encrypted-email/id1591754995) (ترخيص خاص) | لا يدعم Apple Mail OpenPGP، ولكن يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [PGPro](https://github.com/opensourceios/PGPro/) أو [FlowCrypt](https://flowcrypt.com/download). |
 | التوقعات | ويندوز | [gpg4win](https://www.gpg4win.de/index.html) | لا يدعم عميل البريد الإلكتروني لسطح المكتب الخاص بـ Outlook OpenPGP، ولكن يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [gpg4win](https://www.gpg4win.de/index.html). |
 | التوقعات | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | لا يدعم عميل البريد الإلكتروني المستند إلى الويب الخاص بـ Outlook OpenPGP، ومع ذلك يمكنك تنزيل البرنامج الإضافي مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
-| أندرويد | متحرك | [OpenKeychain](https://www.openkeychain.org/) أو [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | تدعم كلٌّ من [Android mail clients](/blog/open-source/android-email-clients)، مثل [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) و[FairEmail](https://github.com/M66B/FairEmail)، المكون الإضافي مفتوح المصدر [OpenKeychain](https://www.openkeychain.org/). يمكنك أيضًا استخدام المكون الإضافي مفتوح المصدر (المرخص ملكيةً) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
+| أندرويد | متحرك | [OpenKeychain](https://www.openkeychain.org/) أو [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email) | تدعم كلٌّ من [Android mail clients](/blog/open-source/android-email-clients)، مثل [Thunderbird Mobile](https://www.thunderbird.net/en-US/mobile/) و[FairEmail](https://github.com/M66B/FairEmail)، المكون الإضافي مفتوح المصدر [OpenKeychain](https://www.openkeychain.org/). يمكنك أيضًا استخدام المكون الإضافي مفتوح المصدر (بترخيص خاص) [FlowCrypt](https://play.google.com/store/apps/details?id=com.flowcrypt.email). |
 | جوجل كروم | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | يمكنك تنزيل ملحق المتصفح مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
 | موزيلا فايرفوكس | المتصفح | [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download) (ترخيص خاص) | يمكنك تنزيل ملحق المتصفح مفتوح المصدر [Mailvelope](https://mailvelope.com/) أو [FlowCrypt](https://flowcrypt.com/download). |
 | مايكروسوفت إيدج | المتصفح | [Mailvelope](https://mailvelope.com/) | يمكنك تنزيل ملحق المتصفح مفتوح المصدر [Mailvelope](https://mailvelope.com/). |
@@ -1870,7 +1861,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 <strong class="font-weight-bold">
 نصيحة:
 </strong>
-<span>يمكنك زيارة <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> لإدارة مفتاحك في المستقبل.</span>
+<span>يمكنك زيارة <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a>" لإدارة مفتاحك في المستقبل.</span>
 </div>
 
 <div class="alert my-3 alert-secondary">
@@ -1883,7 +1874,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </span>
 </div>
 
-4. أضف سجلًا جديدًا `CNAME` إلى اسم المجال الخاص بك (على سبيل المثال `example.com`):
+4. أضف سجل `CNAME` جديدًا إلى اسم المجال الخاص بك (على سبيل المثال `example.com`):
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -1928,7 +1919,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 نعم، اعتبارًا من 2 مارس 2023، ندعم [MTA-STS](https://www.hardenize.com/blog/mta-sts). يمكنك استخدام [هذا القالب](https://github.com/jpawlowski/mta-sts.template) إذا كنت ترغب في تفعيله على نطاقك.
 
-يمكن العثور على تكويننا علنًا على GitHub على <https://github.com/forwardemail/mta-sts.forwardemail.net>.
+يمكن العثور على تكويننا علنًا على GitHub في <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
 ### هل تدعم مفاتيح المرور وWebAuthn؟ {#do-you-support-passkeys-and-webauthn}
 
@@ -1942,9 +1933,9 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 تعرف على المزيد حول مفاتيح المرور من خلال الروابط التالية:
 
-* [تسجيل الدخول إلى تطبيقاتك ومواقع الويب باستخدام مفاتيح المرور](https://support.google.com/android/answer/14124480?hl=en) (جوجل)
-* [استخدم مفاتيح المرور لتسجيل الدخول إلى التطبيقات ومواقع الويب على iPhone](https://support.apple.com/guide/iphone/use-passkeys-to-sign-in-to-apps-and-websites-iphf538ea8d0/ios) (آبل)
-* [مقالة ويكيبيديا عن مفاتيح المرور](https://en.wikipedia.org/wiki/Passkey_\(credential\))
+* حامل مكان مؤقت ٠ (جوجل)
+* حامل مكان مؤقت ١ (آبل)
+* حامل مكان مؤقت ٢)
 
 ### هل تدعم أفضل ممارسات البريد الإلكتروني؟ {#do-you-support-email-best-practices}
 
@@ -1962,29 +1953,30 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </span>
 </div>
 
-نعم، اعتبارًا من 14 أغسطس 2024، أضفنا هذه الميزة. يمكنك الآن الانتقال إلى حسابي ← النطاقات ← الإعدادات ← رابط خطاف الويب المرتد وتكوين رابط `http://` أو `https://` الذي سنرسل إليه طلب `POST` عند ارتداد رسائل SMTP الصادرة.
+نعم، أضفنا هذه الميزة اعتبارًا من ١٤ أغسطس ٢٠٢٤. يمكنك الآن الانتقال إلى حسابي ← النطاقات ← الإعدادات ← عنوان URL لخطاف الويب المرتد وتكوين عنوان URL `http://` أو `https://` الذي سنرسل إليه طلب `POST` عند ارتداد رسائل البريد الإلكتروني الصادرة عبر SMTP.
 
 يعد هذا مفيدًا لك لإدارة ومراقبة SMTP الصادر الخاص بك - ويمكن استخدامه للحفاظ على المشتركين، وإلغاء الاشتراك، واكتشاف متى تحدث الارتدادات.
 
 يتم إرسال حمولات Bounce Webhook بتنسيق JSON مع الخصائص التالية:
 
-* `email_id` (سلسلة نصية) - مُعرّف البريد الإلكتروني المُطابق لرسالة بريد إلكتروني في "حسابي" ← رسائل البريد الإلكتروني (SMTP صادر).
-* `list_id` (سلسلة نصية) - قيمة رأس `List-ID` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
-* `list_unsubscribe` (سلسلة نصية) - قيمة رأس `List-Unsubscribe` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
-* `feedback_id` (سلسلة نصية) - قيمة رأس `Feedback-ID` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
-* `recipient` (سلسلة أحرف) - عنوان البريد الإلكتروني للمستلم الذي ارتد أو حدث خطأ.
-* `message` (سلسلة أحرف) - رسالة خطأ مفصلة للارتداد.
-* `response` (سلسلة أحرف) - رسالة استجابة SMTP.
-* `response_code` (رقم) - رمز استجابة SMTP المُحلل.
-* `truth_source` (سلسلة أحرف) - إذا كان رمز الاستجابة من مصدر موثوق، فسيتم ملء هذه القيمة باسم نطاق الجذر (مثلًا `google.com` أو `yahoo.com`)
-* `bounce` (كائن) - كائن يحتوي على الخصائص التالية التي تُفصّل حالة الارتداد والرفض: * `action` (سلسلة نصية) - إجراء الارتداد (مثال: `"reject"`)
-* `message` (سلسلة نصية) - سبب الارتداد (مثال: `"Message Sender Blocked By Receiving Server"`)
-* `category` (سلسلة نصية) - فئة الارتداد (مثال: `"block"`)
-* `code` (رقم) - رمز حالة الارتداد (مثال: `554`)
-* `status` (سلسلة نصية) - رمز الارتداد من رسالة الرد (مثال: `5.7.1`)
-* `line` (رقم) - رقم السطر المُحلَّل، إن وُجد، [من قائمة تحليل الارتداد الخاصة بـ Zone-MTA](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (مثال: `526`)
-* `headers` (كائن) - زوج من رؤوس البريد الإلكتروني الصادر ذي القيمة الرئيسية
-* `bounced_at` (سلسلة نصية) - تاريخ حدوث خطأ الارتداد بتنسيق [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601)
+* `email_id` (سلسلة) - مُعرّف البريد الإلكتروني المُطابق لرسالة بريد إلكتروني في "حسابي" ← رسائل البريد الإلكتروني (SMTP صادر).
+* `list_id` (سلسلة) - قيمة رأس `List-ID` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
+* `list_unsubscribe` (سلسلة) - قيمة رأس `List-Unsubscribe` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
+* `feedback_id` (سلسلة) - قيمة رأس `Feedback-ID` (غير حساسة لحالة الأحرف)، إن وجدت، من البريد الإلكتروني الصادر الأصلي.
+* `recipient` (سلسلة) - عنوان البريد الإلكتروني للمستلم الذي ارتد أو احتوى على خطأ.
+* `message` (سلسلة) - رسالة خطأ مُفصلة لـ ارتداد
+* `response` (سلسلة نصية) - رسالة استجابة SMTP
+* `list_id`0 (رقم) - رمز استجابة SMTP المُحلل
+* `list_id`1 (سلسلة نصية) - إذا كان رمز الاستجابة من مصدر موثوق، فسيتم ملء هذه القيمة باسم نطاق الجذر (مثل `list_id`2 أو `list_id`3)
+* `list_id`4 (كائن) - كائن يحتوي على الخصائص التالية التي تُفصّل حالة الارتداد والرفض
+* `list_id`5 (سلسلة نصية) - إجراء الارتداد (مثل `list_id`6)
+* `list_id`7 (سلسلة نصية) - سبب الارتداد (مثل `list_id`8)
+* `list_id`9 (سلسلة نصية) - فئة الارتداد (مثل: `List-ID`0)
+* `List-ID`1 (رقم) - رمز حالة الارتداد (مثل: `List-ID`2)
+* `List-ID`3 (سلسلة نصية) - رمز الارتداد من رسالة الرد (مثل: `List-ID`4)
+* `List-ID`5 (رقم) - رقم السطر المُحلل، إن وجد، `List-ID`6 (مثل: `List-ID`7)
+* `List-ID`8 (كائن) - زوج رؤوس قيمة المفتاح للبريد الإلكتروني الصادر
+* `List-ID`9 (سلسلة نصية) - تاريخ مُنسّق `list_unsubscribe`0 لوقت حدوث خطأ الارتداد
 
 على سبيل المثال:
 
@@ -2011,26 +2003,25 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 فيما يلي بعض الملاحظات الإضافية المتعلقة بخطافات الويب المرتدة:
 
-* إذا كانت حمولة خطاف الويب تحتوي على قيمة `list_id`، أو `list_unsubscribe`، أو `feedback_id`، فعليك اتخاذ الإجراء المناسب لإزالة `recipient` من القائمة إذا لزم الأمر.
-
-* إذا كانت قيمة `bounce.category` إحدى القيم التالية `"block"`، أو `"recipient"`، أو `"spam"`، أو `"virus"`، فعليك بالتأكيد إزالة المستخدم من القائمة.
-* إذا كنت بحاجة إلى التحقق من حمولات خطاف الويب (للتأكد من أنها قادمة بالفعل من خادمنا)، فيمكنك [حل عنوان IP للعميل البعيد واسم مضيف العميل باستخدام البحث العكسي](https://nodejs.org/api/dns.html#dnspromisesreverseip) - يجب أن يكون `smtp.forwardemail.net`.
-* يمكنك أيضًا التحقق من عنوان IP مقابل [عناوين IP المنشورة لدينا](#what-are-your-servers-ip-addresses).
+* إذا كانت حمولة خطاف الويب تحتوي على قيمة `list_id` أو `list_unsubscribe` أو `feedback_id`، فعليك اتخاذ الإجراء المناسب لإزالة `recipient` من القائمة إذا لزم الأمر.
+* إذا كانت قيمة `bounce.category` هي `"block"` أو `"recipient"` أو `"spam"` أو `"virus"`، فعليك بالتأكيد إزالة المستخدم من القائمة.
+* إذا كنت بحاجة إلى التحقق من حمولات خطاف الويب (للتأكد من أنها قادمة بالفعل من خادمنا)، فيمكنك استخدام [حل عنوان IP للعميل البعيد واسم مضيف العميل باستخدام البحث العكسي](https://nodejs.org/api/dns.html#dnspromisesreverseip) - يجب أن يكون `list_unsubscribe`0.
+* يمكنك أيضًا التحقق من عنوان IP باستخدام `list_unsubscribe`1.
 * انتقل إلى حسابي ← النطاقات ← الإعدادات ← مفتاح التحقق من حمولة توقيع خطاف الويب للحصول على مفتاح خطاف الويب الخاص بك.
 * يمكنك تغيير هذا المفتاح في أي وقت لأسباب أمنية.
-* احسب وقارن قيمة `X-Webhook-Signature` من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح. يتوفر مثال على كيفية القيام بذلك على [هذه التدوينة من Stack Overflow](https://stackoverflow.com/a/68885281).
-* راجع المناقشة على <https://github.com/forwardemail/free-email-forwarding/issues/235> لمزيد من المعلومات.
-* سننتظر حتى `5` ثانية حتى تستجيب نقطة نهاية خطاف الويب لديك برمز حالة `200`، وسنعيد المحاولة حتى `1` مرة.
+* احسب وقارن قيمة `list_unsubscribe`2 من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح. يتوفر مثال على كيفية القيام بذلك في `list_unsubscribe`3.
+* راجع المناقشة في <`list_unsubscribe`4 لمزيد من المعلومات.
+* سننتظر حتى `list_unsubscribe`5 ثانية حتى تستجيب نقطة نهاية خطاف الويب الخاصة بك برمز الحالة `list_unsubscribe`6، وسنعيد المحاولة حتى `list_unsubscribe`7 مرة.
 * إذا اكتشفنا وجود خطأ في عنوان URL لخطاف الويب المرتد أثناء محاولتنا إرسال طلب إليه، فسنرسل إليك بريدًا إلكترونيًا مجانيًا مرة واحدة أسبوعيًا.
 
-### هل تدعم خطافات الويب {#do-you-support-webhooks}
+### هل تدعم خطافات الويب؟ {#do-you-support-webhooks}
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
 نصيحة:
 </strong>
-هل تبحث عن وثائق حول خطافات الويب المرتدة؟ راجع <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">هل تدعمون خطافات الويب المرتدة؟</a> لمزيد من المعلومات.
+هل تبحث عن وثائق حول خطافات الويب المرتدة؟ راجع <a href="/faq#do-you-support-bounce-webhooks" class="alert-link">هل تدعم خطافات الويب المرتدة؟</a> لمزيد من المعلومات.
 <span>
 </span>
 </div>
@@ -2050,7 +2041,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 إذا كنت تستخدم الخطة المجانية، فما عليك سوى إضافة سجل DNS جديد <strong class="notranslate">TXT</strong> كما هو موضح أدناه:
 
-على سبيل المثال، إذا كنت أريد إعادة توجيه جميع رسائل البريد الإلكتروني التي تذهب إلى `alias@example.com` إلى نقطة نهاية اختبار جديدة [صندوق الطلبات](https://requestbin.com/r/en8pfhdgcculn?inspect):
+على سبيل المثال، إذا كنت أريد إعادة توجيه جميع رسائل البريد الإلكتروني التي تنتقل إلى `alias@example.com` إلى نقطة نهاية اختبار جديدة [صندوق الطلبات](https://requestbin.com/r/en8pfhdgcculn?inspect):
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -2094,24 +2085,24 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 **فيما يلي ملاحظات إضافية بخصوص خطافات الويب:**
 
-* إذا كنت بحاجة إلى التحقق من حمولات خطاف الويب (للتأكد من أنها قادمة بالفعل من خادمنا)، فيمكنك [حل عنوان IP للعميل البعيد واسم مضيف العميل باستخدام البحث العكسي](https://nodejs.org/api/dns.html#dnspromisesreverseip) - يجب أن يكون إما `mx1.forwardemail.net` أو `mx2.forwardemail.net`.
-* يمكنك أيضًا التحقق من عنوان IP مقابل [عناوين IP المنشورة لدينا](#what-are-your-servers-ip-addresses).
+* إذا كنت بحاجة إلى التحقق من حمولات خطاف الويب (للتأكد من أنها قادمة بالفعل من خادمنا)، فيمكنك استخدام [حل عنوان IP للعميل البعيد واسم مضيف العميل باستخدام البحث العكسي](https://nodejs.org/api/dns.html#dnspromisesreverseip) - يجب أن يكون إما `mx1.forwardemail.net` أو `mx2.forwardemail.net`.
+* يمكنك أيضًا التحقق من عنوان IP باستخدام [عناوين IP المنشورة لدينا](#what-are-your-servers-ip-addresses).
 * إذا كنت مشتركًا في باقة مدفوعة، فانتقل إلى حسابي ← النطاقات ← الإعدادات ← مفتاح التحقق من حمولة توقيع خطاف الويب للحصول على مفتاح خطاف الويب الخاص بك.
 * يمكنك تغيير هذا المفتاح في أي وقت لأسباب أمنية.
-* احسب وقارن قيمة `X-Webhook-Signature` من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح. يتوفر مثال على كيفية القيام بذلك على [هذه التدوينة من Stack Overflow](https://stackoverflow.com/a/68885281).
-* راجع المناقشة على <https://github.com/forwardemail/free-email-forwarding/issues/235> لمزيد من المعلومات.
+* احسب وقارن قيمة `X-Webhook-Signature` من طلب خطاف الويب الخاص بنا مع قيمة النص المحسوبة باستخدام هذا المفتاح. يتوفر مثال على كيفية القيام بذلك في [هذه التدوينة من Stack Overflow](https://stackoverflow.com/a/68885281).
+* راجع المناقشة في <https://github.com/forwardemail/free-email-forwarding/issues/235> لمزيد من المعلومات.
 * إذا لم يستجب خطاف الويب برمز الحالة `200`، فسنخزن استجابته في [تم إنشاء سجل الأخطاء](#do-you-store-error-logs) - وهو أمر مفيد لتصحيح الأخطاء.
-* ستُعاد محاولة طلبات HTTP لخطاف الويب حتى 3 مرات في كل محاولة اتصال SMTP، مع مهلة زمنية قصوى تبلغ 60 ثانية لكل طلب POST لنقطة النهاية. **ملاحظة: هذا لا يعني إعادة المحاولة 3 مرات فقط**، بل سيُعاد المحاولة باستمرار بمرور الوقت عن طريق إرسال رمز SMTP 421 (الذي يُشير إلى إعادة المحاولة لاحقًا) بعد محاولة طلب HTTP POST الفاشلة الثالثة. هذا يعني أن البريد الإلكتروني سيُعاد المحاولة باستمرار لعدة أيام حتى يتم الوصول إلى رمز الحالة 200.
-* سنعيد المحاولة تلقائيًا بناءً على الحالة الافتراضية ورموز الخطأ المستخدمة في [طريقة إعادة المحاولة للوكيل الفائق](https://ladjs.github.io/superagent/#retrying-requests) (نحن المشرفون).
-* نقوم بتجميع طلبات HTTP لخطاف الويب إلى نفس نقطة النهاية في طلب واحد بدلاً من عدة طلبات لتوفير الموارد وتسريع وقت الاستجابة. على سبيل المثال، إذا أرسلت بريدًا إلكترونيًا إلى <webhook1@example.com> و<webhook2@example.com> و<webhook3@example.com>، وكانت جميعها مُهيأة للوصول إلى نفس عنوان URL لنقطة النهاية *الدقيقة*، فسيتم إرسال طلب واحد فقط. نقوم بالتجميع بناءً على مطابقة نقطة النهاية الدقيقة مع مراعاة المساواة التامة.
-* لاحظ أننا نستخدم دالة "simpleParser" في مكتبة [محلل البريد](https://nodemailer.com/extras/mailparser/) لتحليل الرسالة إلى كائن متوافق مع JSON.
-* قيمة البريد الإلكتروني الخام كسلسلة نصية تُعطى كخاصية "raw".
-* تُعرَض نتائج المصادقة بالخصائص "dkim" و"spf" و"arc" و"dmarc" و"bimi".
-* تُعرَض رؤوس البريد الإلكتروني المُحلَّلة بالخاصية "headers"، ولكن يُرجى أيضًا ملاحظة أنه يُمكن استخدام "headerLines" لتسهيل التكرار والتحليل.
-* تُجمَّع مُستلِمو هذا الخطاف الشبكي معًا وتُعرَض بالخاصية "recipients".
-* تُعرَض معلومات جلسة SMTP بالخاصية "session". تحتوي هذه الخاصية على معلومات حول مُرسِل الرسالة، ووقت وصولها، وHELO، واسم مُضيف العميل. قيمة اسم مُضيف العميل، وهي `session.clientHostname`، إما أن تكون اسم المجال المؤهل بالكامل (FQDN) (من بحث PTR عكسي) أو `session.remoteAddress` مُحاطة بأقواس (مثل `"[127.0.0.1]"`).
-* إذا كنت بحاجة إلى طريقة سريعة للحصول على قيمة `X-Original-To`، فيمكنك استخدام قيمة `session.recipient` (انظر المثال أدناه). رأس الرسالة `X-Original-To` هو رأس نضيفه إلى الرسائل لتصحيح الأخطاء مع المستلم الأصلي (قبل إعادة التوجيه المقنع). * إذا كنت بحاجة إلى إزالة الخاصيتين `attachments` و/أو `raw` من نص الحمولة، فما عليك سوى إضافة `?attachments=false` أو `?raw=false` أو `?attachments=false&raw=false` إلى نقطة نهاية خطاف الويب كمعامل سلسلة استعلام (مثل `https://example.com/webhook?attachments=false&raw=false`).
-* إذا كانت هناك مرفقات، فسيتم إضافتها إلى مصفوفة `attachments` مع قيم المخزن المؤقت. يمكنك تحليلها وتحويلها إلى محتوى باستخدام طريقة في جافا سكريبت مثل:
+* ستُعاد محاولة طلبات خطاف الويب HTTP حتى 3 مرات لكل محاولة اتصال SMTP، مع مهلة زمنية أقصاها 60 ثانية لكل طلب POST لنقطة النهاية. **ملاحظة: هذا لا يعني إعادة المحاولة 3 مرات فقط**، بل سيُعاد المحاولة باستمرار بمرور الوقت عن طريق إرسال رمز SMTP 421 (الذي يُشير إلى المُرسِل بإعادة المحاولة لاحقًا) بعد محاولة طلب HTTP POST الفاشلة الثالثة. هذا يعني أن البريد الإلكتروني سيُعاد المحاولة باستمرار لأيام حتى يتم الوصول إلى رمز الحالة 200.
+* سنُعيد المحاولة تلقائيًا بناءً على الحالة الافتراضية ورموز الخطأ المستخدمة في [طريقة إعادة المحاولة للوكيل الفائق](https://ladjs.github.io/superagent/#retrying-requests) (نحن المسؤولون عن الصيانة).
+* نقوم بتجميع طلبات خطاف الويب HTTP إلى نفس نقطة النهاية في طلب واحد بدلاً من طلبات متعددة لتوفير الموارد وتسريع وقت الاستجابة. على سبيل المثال، إذا أرسلتَ بريدًا إلكترونيًا إلى <webhook1@example.com> و<webhook2@example.com> و<webhook3@example.com>، وكانت جميعها مُهيأة للوصول إلى عنوان URL لنقطة النهاية *الدقيقة* نفسها، فسيتم إرسال طلب واحد فقط. نُجمّع الرسائل معًا حسب مطابقة نقطة النهاية الدقيقة مع مساواة تامة.
+* لاحظ أننا نستخدم دالة "simpleParser" من مكتبة `mx1.forwardemail.net`0 لتحليل الرسالة إلى كائن متوافق مع JSON.
+* تُعطى قيمة البريد الإلكتروني الخام كسلسلة نصية كخاصية "raw".
+* تُعطى نتائج المصادقة كخصائص "dkim" و"spf" و"arc" و"dmarc" و"bimi".
+* تُعطى رؤوس البريد الإلكتروني المُحللة كخاصية "headers" - ولكن لاحظ أيضًا أنه يمكنك استخدام "headerLines" لتسهيل التكرار والتحليل.
+* يتم تجميع المستلمين المُجمّعين لهذا الخطاف الشبكي معًا، ويُعرَضون كخاصية "المستلمين".
+* تُعرَض معلومات جلسة SMTP كخاصية "الجلسة". تحتوي هذه الخاصية على معلومات حول مُرسِل الرسالة، ووقت وصولها، وHELO، واسم مضيف العميل. قيمة اسم مضيف العميل، `mx1.forwardemail.net`1، إما هي اسم المجال المؤهل بالكامل (من بحث PTR عكسي) أو `mx1.forwardemail.net`2 بين قوسين (مثل `mx1.forwardemail.net`3).
+* إذا كنت بحاجة إلى طريقة سريعة للحصول على قيمة `mx1.forwardemail.net`4، فيمكنك استخدام قيمة `mx1.forwardemail.net`5 (انظر المثال أدناه). رأس الصفحة `mx1.forwardemail.net`6 هو رأس نضيفه إلى الرسائل لتصحيح الأخطاء مع المستلم الأصلي (قبل إعادة التوجيه المُقنّع) للرسالة. * إذا كنت بحاجة إلى إزالة خصائص `mx1.forwardemail.net`7 و/أو `mx1.forwardemail.net`8 من نص الحمولة، فما عليك سوى إضافة `mx1.forwardemail.net`9 أو `mx2.forwardemail.net`0 أو `mx2.forwardemail.net`1 إلى نقطة نهاية خطاف الويب كمعامل سلسلة استعلام (مثل `mx2.forwardemail.net`2).
+* إذا كانت هناك مرفقات، فسيتم إضافتها إلى مصفوفة `mx2.forwardemail.net`3 مع قيم المخزن المؤقت. يمكنك تحليلها وتحويلها إلى محتوى باستخدام طريقة في JavaScript مثل:
 
   ```js
   const data = [
@@ -2330,9 +2321,9 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 نعم، أضفنا هذه الميزة اعتبارًا من ٢٧ سبتمبر ٢٠٢١. يمكنك ببساطة كتابة تعبيرات عادية ("regex") لمطابقة الأسماء المستعارة وإجراء عمليات الاستبدال.
 
-الأسماء المستعارة المدعومة بالتعابير العادية هي تلك التي تبدأ بـ `/` وتنتهي بـ `/`، ومستلموها هم عناوين البريد الإلكتروني أو خطافات الويب. يمكن للمستلمين أيضًا تضمين دعم استبدال التعابير العادية (مثل `$1` و `$2`).
+الأسماء المستعارة المدعومة بالتعابير العادية هي تلك التي تبدأ بـ `/` وتنتهي بـ `/`، ومستلموها هم عناوين البريد الإلكتروني أو خطافات الويب. يمكن للمستلمين أيضًا تضمين دعم استبدال التعابير العادية (مثل `$1` و`$2`).
 
-ندعم علامتي تعبير عادي، وهما `i` و`g`. علم عدم حساسية الأحرف `i` هو علم افتراضي دائم، ويتم تطبيقه دائمًا. يمكنك إضافة العلم العالمي `g` بإضافة النهاية `/` إلى `/g`.
+ندعم علامتي تعبير عادي، هما `i` و`g`. علم `i` الذي لا يراعي حالة الأحرف هو علم افتراضي دائم، ويتم تطبيقه دائمًا. يمكنك إضافة العلم العالمي `g` عن طريق إضافة `/` إلى `/g`.
 
 لاحظ أننا ندعم أيضًا <a href="#can-i-disable-specific-aliases">disabled alias feature</a> لجزء المستلم من خلال دعمنا لـ regex.
 
@@ -2353,7 +2344,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال بسيط:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني المرسلة إلى `linus@example.com` أو `torvalds@example.com` إلى `user@gmail.com`:
+<strong>مثال بسيط:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى `linus@example.com` أو `torvalds@example.com` إلى `user@gmail.com`:
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2377,7 +2368,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على استبدال الاسم الأول واسم العائلة:</strong> تخيل أن جميع عناوين البريد الإلكتروني لشركتك تتبع النمط `firstname.lastname@example.com`. إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تتبع النمط `firstname.lastname@example.com` إلى `firstname.lastname@company.com` مع دعم الاستبدال (<a href="https://regexr.com/66hnu" class="alert-link">عرض الاختبار على RegExr</a>):
+<strong>مثال على استبدال الاسم الأول واسم العائلة:</strong> تخيل أن جميع عناوين البريد الإلكتروني لشركتك من النمط `firstname.lastname@example.com`. إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى النمط `firstname.lastname@example.com` إلى النمط `firstname.lastname@company.com` مع دعم الاستبدال (<a href="https://regexr.com/66hnu" class="alert-link">عرض الاختبار على RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2401,7 +2392,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على استبدال فلترة رمز الزائد:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني المرسلة إلى `info@example.com` أو `support@example.com` إلى `user+info@gmail.com` أو `user+support@gmail.com` على التوالي (مع دعم الاستبدال) (<a href="https://regexr.com/66ho7" class="alert-link">عرض الاختبار على RegExr</a>):
+<strong>مثال على استبدال تصفية رمز الزائد:</strong> إذا أردتُ إعادة توجيه جميع رسائل البريد الإلكتروني التي تصل إلى `info@example.com` أو `support@example.com` إلى `user+info@gmail.com` أو `user+support@gmail.com` على التوالي (مع دعم الاستبدال) (<a href="https://regexr.com/66ho7" class="alert-link">عرض الاختبار على RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2425,7 +2416,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على استبدال سلسلة استعلام خطاف الويب:</strong> ربما ترغب في أن تنتقل جميع رسائل البريد الإلكتروني التي تصل إلى `example.com` إلى <a href="#do-you-support-webhooks" class="alert-link">خطاف ويب</a> وأن يكون مفتاح سلسلة استعلام ديناميكي "to" بقيمة اسم المستخدم في عنوان البريد الإلكتروني (<a href="https://regexr.com/66ho4" class="alert-link">عرض الاختبار على RegExr</a>):
+<strong>مثال على استبدال سلسلة استعلام خطاف الويب:</strong> ربما تريد أن تنتقل جميع رسائل البريد الإلكتروني التي تصل إلى `example.com` إلى <a href="#do-you-support-webhooks" class="alert-link">خطاف الويب</a> وأن يكون مفتاح سلسلة استعلام ديناميكي "to" بقيمة اسم المستخدم في عنوان البريد الإلكتروني (<a href="https://regexr.com/66ho4" class="alert-link">عرض الاختبار على RegExr</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2449,7 +2440,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على الرفض الهادئ:</strong> إذا كنت ترغب في تعطيل جميع رسائل البريد الإلكتروني التي تتوافق مع نمط معين ورفضها بهدوء (تبدو للمرسل كما لو أن الرسالة أُرسلت بنجاح، لكنها في الواقع لا تصل إلى أي مكان) مع رمز الحالة `250` (انظر <a href="#can-i-disable-specific-aliases" class="alert-link">هل يمكنني تعطيل أسماء مستعارة معينة</a>)، فاستخدم ببساطة نفس الأسلوب مع علامة تعجب واحدة "!". هذا يُشير إلى المرسل أن الرسالة قد وصلت بنجاح، لكنها في الواقع لا تصل إلى أي مكان (مثل blackhole أو `/dev/null`).
+<strong>مثال على الرفض الهادئ:</strong> إذا كنت ترغب في تعطيل جميع رسائل البريد الإلكتروني التي تتوافق مع نمط معين ورفضها بهدوء (تبدو للمرسل كما لو أن الرسالة قد أُرسلت بنجاح، لكنها في الواقع لا تصل إلى أي مكان) برمز الحالة `250` (انظر <a href="#can-i-disable-specific-aliases" class="alert-link">هل يمكنني تعطيل أسماء مستعارة معينة</a>)، فما عليك سوى استخدام نفس الأسلوب مع علامة تعجب واحدة "!". هذا يُشير للمرسل إلى أن الرسالة قد وصلت بنجاح، لكنها في الواقع لا تصل إلى أي مكان (مثل blackhole أو `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2473,7 +2464,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>مثال على الرفض المؤقت:</strong> إذا كنت ترغب في تعطيل جميع رسائل البريد الإلكتروني التي تُطابق نمطًا مُعينًا، ورفضها مؤقتًا برمز الحالة `421` (انظر <a href="#can-i-disable-specific-aliases" class="alert-link">هل يُمكنني تعطيل أسماء مستعارة مُحددة</a>)، فما عليك سوى استخدام نفس الأسلوب مع علامة تعجب مزدوجة "!!". يُشير هذا إلى مُرسِل الرسالة لإعادة محاولة إرسال بريده الإلكتروني، وسيتم إعادة محاولة إرسال الرسائل المُرسَلة إلى هذا الاسم المستعار لمدة 5 أيام تقريبًا، ثم سيتم رفضها نهائيًا.
+<strong>مثال على الرفض المؤقت:</strong> إذا كنت ترغب في تعطيل جميع رسائل البريد الإلكتروني التي تُطابق نمطًا مُعينًا، ثم رفضها مؤقتًا برمز الحالة `421` (انظر <a href="#can-i-disable-specific-aliases" class="alert-link">هل يُمكنني تعطيل أسماء مستعارة مُحددة</a>)، فما عليك سوى استخدام نفس الأسلوب مع علامة تعجب مزدوجة "!!". يُشير هذا إلى مُرسِل الرسالة لإعادة محاولة إرسال بريده الإلكتروني، وسيتم إعادة محاولة إرسال الرسائل المُرسَلة إلى هذا الاسم المستعار لمدة 5 أيام تقريبًا، ثم سيتم رفضها نهائيًا.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2531,13 +2522,13 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 ### ما هي حدود SMTP الصادرة لديك؟ {#what-are-your-outbound-smtp-limits}
 
-نحدد للمستخدمين والنطاقات الحد الأقصى المسموح به لرسائل SMTP الصادرة يوميًا بـ 300 رسالة. هذا يعني في المتوسط أكثر من 9000 رسالة بريد إلكتروني شهريًا. إذا كنت بحاجة إلى تجاوز هذا العدد أو لديك رسائل بريد إلكتروني كبيرة باستمرار، فيُرجى [اتصل بنا](https://forwardemail.net/help).
+نحدد للمستخدمين والنطاقات الحد الأقصى المسموح به لرسائل SMTP الصادرة يوميًا بـ 300 رسالة. هذا يعني متوسط 9000 رسالة بريد إلكتروني شهريًا. إذا كنت بحاجة إلى تجاوز هذا العدد أو لديك عدد كبير من رسائل البريد الإلكتروني باستمرار، يُرجى استخدام [اتصل بنا](https://forwardemail.net/help).
 
 ### هل أحتاج إلى موافقة لتمكين SMTP {#do-i-need-approval-to-enable-smtp}
 
-نعم، يُرجى العلم أنه للحفاظ على سمعة IP وضمان سهولة التسليم، تُجري Forward Email عملية مراجعة يدوية لكل نطاق لموافقة SMTP الصادرة. راسل <support@forwardemail.net> أو افتح [طلب المساعدة](https://forwardemail.net/help) للموافقة. عادةً ما يستغرق هذا أقل من 24 ساعة، ويتم الرد على معظم الطلبات خلال ساعة إلى ساعتين. نهدف قريبًا إلى جعل هذه العملية فورية من خلال ضوابط إضافية للرسائل غير المرغوب فيها والتنبيهات. تضمن هذه العملية وصول رسائلك إلى صندوق الوارد وعدم تصنيفها كرسائل غير مرغوب فيها.
+نعم، يُرجى العلم أنه للحفاظ على سمعة IP وضمان إمكانية التسليم، تُجري Forward Email عملية مراجعة يدوية لكل نطاق لموافقة SMTP الصادرة. راسل <support@forwardemail.net> أو افتح [طلب المساعدة](https://forwardemail.net/help) للموافقة. عادةً ما يستغرق هذا أقل من 24 ساعة، ويتم الرد على معظم الطلبات خلال ساعة إلى ساعتين. نهدف قريبًا إلى جعل هذه العملية فورية من خلال ضوابط إضافية للرسائل غير المرغوب فيها والتنبيهات. تضمن هذه العملية وصول رسائلك إلى صندوق الوارد وعدم تصنيفها كرسائل غير مرغوب فيها.
 
-### ما هي إعدادات تكوين خادم SMTP الخاص بك {#what-are-your-smtp-server-configuration-settings}
+### ما هي إعدادات تكوين خادم SMTP الخاص بك؟ {#what-are-your-smtp-server-configuration-settings}
 
 خادمنا هو `smtp.forwardemail.net` ويتم مراقبته أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a> الخاصة بنا.
 
@@ -2557,7 +2548,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 يرجى الرجوع إلى [هل تدعم إرسال البريد الإلكتروني باستخدام SMTP؟](#do-you-support-sending-email-with-smtp) للحصول على تعليمات خطوة بخطوة.
 
-### ما هي إعدادات تكوين خادم IMAP الخاص بك {#what-are-your-imap-server-configuration-settings}
+### ما هي إعدادات تكوين خادم IMAP الخاص بك؟ {#what-are-your-imap-server-configuration-settings}
 
 خادمنا هو `imap.forwardemail.net` ويتم مراقبته أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a> الخاصة بنا.
 
@@ -2576,7 +2567,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 يرجى الرجوع إلى [هل تدعم تلقي البريد الإلكتروني باستخدام IMAP؟](#do-you-support-receiving-email-with-imap) للحصول على تعليمات خطوة بخطوة.
 
-### ما هي إعدادات تكوين خادم POP3 الخاص بك {#what-are-your-pop3-server-configuration-settings}
+### ما هي إعدادات تكوين خادم POP3 الخاص بك؟ {#what-are-your-pop3-server-configuration-settings}
 
 خادمنا هو `pop3.forwardemail.net` ويتم مراقبته أيضًا على <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">صفحة الحالة</a> الخاصة بنا.
 
@@ -2595,7 +2586,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 
 يرجى الرجوع إلى [هل تدعم POP3](#do-you-support-pop3) للحصول على تعليمات خطوة بخطوة.
 
-### تكوين Postfix SMTP Relay {#postfix-smtp-relay-configuration}
+### تكوين مرحل SMTP Postfix {#postfix-smtp-relay-configuration}
 
 يمكنك تهيئة Postfix لإعادة توجيه رسائل البريد الإلكتروني عبر خوادم SMTP التابعة لـ Forward Email. هذا مفيد لتطبيقات الخادم التي تحتاج إلى إرسال رسائل بريد إلكتروني.
 
@@ -2615,7 +2606,7 @@ Forward Email هو **موفر خدمة بريد إلكتروني متكامل ا
 </span>
 </div>
 
-#### التثبيت {#installation}
+#### تثبيت {#installation}
 
 1. قم بتثبيت Postfix على الخادم الخاص بك:
 
@@ -2632,7 +2623,7 @@ brew install postfix
 
 2. أثناء التثبيت، حدد "موقع الإنترنت" عند مطالبتك بنوع التكوين.
 
-#### التكوين {#configuration}
+#### تكوين {#configuration}
 
 1. قم بتعديل ملف تكوين Postfix الرئيسي:
 
@@ -2690,7 +2681,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### تقنيات تقوية الخادم المتقدمة {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> تعرّف على المزيد حول بنيتنا التحتية الأمنية على [صفحتنا الأمنية](/security).
 
 تطبق Forward Email العديد من تقنيات تقوية الخادم لضمان أمان البنية التحتية لدينا وبياناتك:
 
@@ -2711,7 +2702,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * رؤوس سياسة أمان المحتوى (CSP)
 * أمان النقل الصارم لـ HTTPS (HSTS)
 * رؤوس حماية XSS
-* رؤوس خيارات الإطار ورؤوس سياسة المُحيل
+* خيارات الإطار ورؤوس سياسة المُحيل
 * عمليات تدقيق دورية للتبعيات
 
 ٤. **حماية البيانات**:
@@ -2726,24 +2717,22 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * تسجيل وتحليل مركزي
 * إجراءات الاستجابة للحوادث
 
-> \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+يتم تحديث ممارساتنا الأمنية باستمرار لمعالجة التهديدات والثغرات الأمنية الناشئة.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> لضمان أقصى درجات الأمان، نوصي باستخدام خدمتنا مع التشفير الشامل عبر OpenPGP.
 
 ### هل لديك شهادات SOC 2 أو ISO 27001 {#do-you-have-soc-2-or-iso-27001-certifications}
 
-> \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+يعمل البريد الإلكتروني المُعاد توجيهه على بنية تحتية توفرها معالجات فرعية معتمدة لضمان الامتثال لمعايير الصناعة.
 
 لا تحمل خدمة "إعادة توجيه البريد الإلكتروني" شهادات SOC 2 Type II أو ISO 27001 مباشرةً. مع ذلك، تعمل الخدمة على بنية تحتية توفرها معالجات فرعية معتمدة:
 
-* **DigitalOcean**: حاصل على شهادة SOC 2 Type II وSOC 3 Type II (خضعت للتدقيق من قِبل Schellman & Company LLC)، وشهادة ISO 27001 في العديد من مراكز البيانات. التفاصيل: <https://www.digitalocean.com/trust/certification-reports>
+* **ديجيتال أوشن**: حاصل على شهادة SOC 2 النوع الثاني وSOC 3 النوع الثاني (خضعت للتدقيق من قِبل شركة شيلمان وشركاه ذ.م.م)، وشهادة ISO 27001 في مراكز بيانات متعددة. التفاصيل: <https://www.digitalocean.com/trust/certification-reports>
 
 * **Vultr**: حاصل على شهادة SOC 2+ (HIPAA)، وشهادات ISO/IEC: 20000-1:2018، 27001:2022، 27017:2015، 27018:2019. التفاصيل: <https://www.vultr.com/legal/compliance/>
 
-* **DataPacket**: متوافق مع معيار SOC 2 (تواصل مع DataPacket مباشرةً للحصول على الشهادة)، مزود بنية تحتية على مستوى المؤسسات (موقع دنفر). التفاصيل: <https://www.datapacket.com/datacenters/denver>
+* **DataPacket**: متوافق مع معيار SOC 2 (تواصل مع DataPacket مباشرةً للحصول على الشهادة)، مزود بنية تحتية على مستوى المؤسسات (موقعه في دنفر). التفاصيل: <https://www.datapacket.com/datacenters/denver>
 
 تتبع Forward Email أفضل ممارسات الصناعة في عمليات تدقيق الأمان، وتتعاون بانتظام مع باحثين أمنيين مستقلين. المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
@@ -2778,12 +2767,12 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-التحقق: أظهر اختبار بريد Internet.nl درجة 100/100 خاصة بتطبيقات "SPF وDKIM وDMARC". يؤكد تقييم Hardenize حصوله على تقييم "جيد" لتطبيقات SPF وDMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+التحقق: أظهر اختبار بريد Internet.nl درجة 100/100 خاصة بتطبيقات "SPF وDKIM وDMARC". يؤكد تقييم Hardenize على التقييم "الجيد" لتطبيقات SPF وDMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
 ### هل تحافظ على عناوين البريد الإلكتروني الأصلية وتمنع التزييف؟ {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> تُطبّق ميزة "إعادة توجيه البريد الإلكتروني" حمايةً متطورةً ضدّ انتحال البريد الإلكتروني لمنع إساءة استخدام البريد الإلكتروني.
 
 يحافظ Forward Email على عناوين البريد الإلكتروني الأصلية مع تنفيذ حماية شاملة ضد التزييف من خلال قاعدة بيانات MX:
 
@@ -2820,8 +2809,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ### هل تقوم بتخزين محتوى البريد الإلكتروني على القرص {#do-you-store-email-content-on-disk}
 
-> \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+يستخدم إعادة توجيه البريد الإلكتروني بنية المعرفة الصفرية التي تمنع كتابة محتوى البريد الإلكتروني على القرص.
 
 * **بنية المعرفة الصفرية**: صناديق بريد SQLite المشفرة بشكل فردي تعني أن خدمة إعادة توجيه البريد الإلكتروني لا يمكنها الوصول إلى محتوى البريد الإلكتروني.
 * **المعالجة في الذاكرة**: تتم معالجة البريد الإلكتروني بالكامل في الذاكرة، مما يتجنب تخزين البيانات على القرص.
@@ -2847,7 +2835,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * **الأمان المادي**: تمنع أقراص LUKS v2 المشفرة الوصول المادي إلى البيانات.
 * **تعطيل تخزين USB**: يمنع استخراج البيانات غير المصرح به.
 
-**معالجة الأخطاء الخاصة بمشكلات النظام**: يستخدم Forward Email وظائف المساعدة `isCodeBug` و `isTimeoutError` لضمان أنه في حالة حدوث أي مشكلات في اتصال قاعدة البيانات أو مشكلات في شبكة DNS/قائمة الحظر أو مشكلات في الاتصال الصاعد، يقوم النظام بإرجاع رموز حالة SMTP 421 لضمان إعادة محاولة إرسال رسائل البريد الإلكتروني لاحقًا بدلاً من فقدها أو عرضها.
+**معالجة الأخطاء الخاصة بمشكلات النظام**: يستخدم إعادة توجيه البريد الإلكتروني وظائف المساعدة `isCodeBug` و`isTimeoutError` للتأكد من أنه في حالة حدوث أي مشكلات في اتصال قاعدة البيانات أو مشكلات في شبكة DNS/قائمة الحظر أو مشكلات في الاتصال العلوي، يقوم النظام بإرجاع رموز حالة SMTP 421 لضمان إعادة محاولة إرسال رسائل البريد الإلكتروني لاحقًا بدلاً من فقدها أو عرضها.
 
 تفاصيل التنفيذ:
 
@@ -2856,7 +2844,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 المصدر: <https://forwardemail.net/technical-whitepaper.pdf#page=15>
 
-### من لديه حق الوصول إلى البنية التحتية لبريدك الإلكتروني {#who-has-access-to-your-email-infrastructure}
+### من لديه حق الوصول إلى البنية التحتية لبريدك الإلكتروني؟ {#who-has-access-to-your-email-infrastructure}
 
 تطبق Forward Email ضوابط وصول شاملة لفريق الهندسة الذي يتكون من 2-3 أشخاص مع متطلبات 2FA صارمة:
 
@@ -2865,7 +2853,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * **فصل المهام**: بين الأدوار التشغيلية
 * **إدارة المستخدمين**: فصل مستخدمي النشر ومستخدمي التطوير بصلاحيات مختلفة
 * **تعطيل تسجيل الدخول الجذري**: فرض الوصول من خلال حسابات مُصادق عليها بشكل صحيح
-* **التحقق الثنائي الصارم**: لا يوجد مصادقة ثنائية عبر الرسائل النصية القصيرة بسبب خطر هجمات MITM - فقط رموز التطبيقات أو الأجهزة
+* **المصادقة الثنائية الصارمة**: لا توجد مصادقة ثنائية عبر الرسائل النصية القصيرة بسبب خطر هجمات MITM - فقط رموز التطبيقات أو الأجهزة
 * **تسجيل التدقيق الشامل**: مع حذف البيانات الحساسة
 * **الكشف التلقائي عن الشذوذ**: لأنماط الوصول غير المعتادة
 * **مراجعات أمنية دورية**: لسجلات الوصول
@@ -2873,14 +2861,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 مصادر:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (ضوابط التفويض)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=30> (عناصر التحكم في التفويض)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (أمان الشبكة)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=15> (منع هجوم الخادمة الشريرة)
 
 ### ما هي مزودي البنية التحتية التي تستخدمها؟ {#what-infrastructure-providers-do-you-use}
 
-> \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+يستخدم تطبيق "إعادة توجيه البريد الإلكتروني" معالجات فرعية متعددة للبنية التحتية مع شهادات امتثال شاملة.
 
 التفاصيل الكاملة متاحة على صفحة الامتثال لـ GDPR الخاصة بنا: <https://forwardemail.net/gdpr>
 
@@ -2897,7 +2884,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 **المحيط الرقمي**
 
-* SOC 2 النوع الثاني وSOC 3 النوع الثاني (تم تدقيقهما من قِبل شركة Schellman & Company LLC)
+* SOC 2 النوع الثاني وSOC 3 النوع الثاني (مُدقّق من قِبل شركة Schellman & Company LLC)
 * حاصل على شهادة ISO 27001 في مراكز بيانات متعددة
 * متوافق مع PCI-DSS
 * حاصل على شهادة CSA STAR المستوى 1
@@ -2928,7 +2915,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ### هل تقدم اتفاقية معالجة البيانات (DPA) {#do-you-offer-a-data-processing-agreement-dpa}
 
-نعم، تقدم Forward Email اتفاقية شاملة لمعالجة البيانات (DPA) يمكن توقيعها مع اتفاقية مؤسستنا. تتوفر نسخة من اتفاقية معالجة البيانات (DPA) على الرابط التالي: <https://forwardemail.net/dpa>
+نعم، تُقدّم Forward Email اتفاقية شاملة لمعالجة البيانات (DPA) يُمكن توقيعها مع اتفاقية مؤسستنا. تتوفر نسخة من اتفاقية معالجة البيانات (DPA) على الرابط التالي: <https://forwardemail.net/dpa>
 
 **تفاصيل وكالة حماية البيانات:**
 
@@ -2938,14 +2925,14 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * تتوفر ترتيبات معالجة بيانات مخصصة من خلال ترخيص المؤسسة.
 
 **إطار الامتثال للائحة العامة لحماية البيانات:**
-يُفصّل اتفاق معالجة البيانات لدينا الامتثال للائحة العامة لحماية البيانات، بالإضافة إلى متطلبات نقل البيانات الدولية. تتوفر المعلومات الكاملة على الرابط التالي: <https://forwardemail.net/gdpr>
+يُفصّل اتفاق معالجة البيانات لدينا الامتثال للائحة العامة لحماية البيانات، بالإضافة إلى متطلبات نقل البيانات الدولية. تتوفر المعلومات الكاملة على الرابط: <https://forwardemail.net/gdpr>
 
 بالنسبة لعملاء المؤسسات الذين يحتاجون إلى شروط DPA مخصصة أو ترتيبات تعاقدية محددة، فيمكن معالجة هذه الأمور من خلال برنامج **ترخيص المؤسسة (250 دولارًا أمريكيًا/الشهر)** الخاص بنا.
 
-### كيف تتعامل مع إشعارات خرق البيانات {#how-do-you-handle-data-breach-notifications}
+### كيف تتعامل مع إشعارات خرق البيانات؟ {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> تعمل بنية "عدم المعرفة" في خدمة "Forward Email" على الحد بشكل كبير من تأثير الاختراق.
 
 * **تعرض محدود للبيانات**: لا يمكن الوصول إلى محتوى البريد الإلكتروني المشفر بسبب بنية المعرفة الصفرية.
 * **جمع بيانات محدود**: معلومات أساسية فقط للمشتركين وسجلات IP محدودة لأغراض الأمان.
@@ -2999,19 +2986,19 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 **القيود:**
 
-* لا يتم توثيق خطافات الويب الموجهة للعملاء أو إشعارات حالة التسليم المستندة إلى واجهة برمجة التطبيقات بشكل صريح
+* لا يتم توثيق خطافات الويب التي تواجه العملاء أو إشعارات حالة التسليم المستندة إلى واجهة برمجة التطبيقات بشكل صريح
 
-بالنسبة لعملاء المؤسسات الذين يحتاجون إلى خطافات ويب لحالة التسليم التفصيلية أو تكاملات مراقبة مخصصة، قد تكون هذه الإمكانات متاحة من خلال ترتيبات **ترخيص المؤسسة**.
+بالنسبة لعملاء المؤسسات الذين يحتاجون إلى خطافات ويب لحالة التسليم التفصيلية أو تكاملات مراقبة مخصصة، فقد تكون هذه الإمكانات متاحة من خلال ترتيبات **ترخيص المؤسسة**.
 
 مصادر:
 
 * <https://forwardemail.net> (عرض مراقبة آنية)
 * <https://github.com/forwardemail/forwardemail.net> (تنفيذ المراقبة)
 
-### كيف يمكنك ضمان التوفر العالي {#how-do-you-ensure-high-availability}
+### كيف تضمن توفرًا عاليًا؟ {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> يُنفِّذ "إعادة توجيه البريد الإلكتروني" التكرار الشامل عبر العديد من موفري البنية التحتية.
 
 * **البنية التحتية الموزعة**: مزودو خدمات متعددون (DigitalOcean، Vultr، DataPacket) عبر مناطق جغرافية مختلفة.
 * **موازنة الأحمال الجغرافية**: موازنة أحمال جغرافية قائمة على Cloudflare مع إمكانية التعافي التلقائي من الأعطال.
@@ -3021,7 +3008,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 * **تكرار قاعدة البيانات**: مزامنة البيانات في الوقت الفعلي عبر مواقع متعددة.
 * **المراقبة والتنبيه**: مراقبة على مدار الساعة طوال أيام الأسبوع مع استجابة تلقائية للحوادث.
 
-**الالتزام بالوقت الفعلي**: توافر خدمة بنسبة 99.9%+ مع مراقبة شفافة متاحة على <https://forwardemail.net>
+**الالتزام بالوقت الفعلي**: توفر خدمة بنسبة 99.9%+ مع توفر مراقبة شفافة في <https://forwardemail.net>
 
 مصادر:
 
@@ -3031,7 +3018,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ### هل أنت متوافق مع المادة 889 من قانون تفويض الدفاع الوطني (NDAA)؟ {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> تتوافق خدمة إعادة توجيه البريد الإلكتروني تمامًا مع المادة 889 من خلال اختيار شركاء البنية التحتية بعناية.
 
 نعم، خدمة إعادة توجيه البريد الإلكتروني **متوافقة مع المادة 889**. تحظر المادة 889 من قانون تفويض الدفاع الوطني (NDAA) على الهيئات الحكومية استخدام أو التعاقد مع جهات تستخدم معدات اتصالات ومراقبة بالفيديو من شركات محددة (هواوي، وZTE، وهيكفيجن، وداهوا، وهيتيرا).
 
@@ -3053,23 +3040,23 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ### هل تقوم بتخزين رسائل البريد الإلكتروني ومحتوياتها؟ {#do-you-store-emails-and-their-contents}
 
-لا، نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و [SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
+لا، نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و[SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
 
 يتم تنفيذ كل شيء في الذاكرة و[كود المصدر الخاص بنا موجود على GitHub](https://github.com/forwardemail).
 
 ### كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك؟ {#how-does-your-email-forwarding-system-work}
 
-يعتمد البريد الإلكتروني على بروتوكول [بروتوكول SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). يتكون هذا البروتوكول من أوامر تُرسل إلى خادم (يعمل عادةً على المنفذ 25). يبدأ الاتصال، ثم يُحدد المُرسِل مصدر البريد ("MAIL FROM")، ثم يُحدد وجهة البريد ("RCPT TO")، وأخيرًا عناوين البريد الإلكتروني ونصه ("DATA"). فيما يلي وصف لسير نظام إعادة توجيه البريد الإلكتروني لدينا بالنسبة لكل أمر من أوامر بروتوكول SMTP:
+يعتمد البريد الإلكتروني على [بروتوكول SMTP](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). يتكون هذا البروتوكول من أوامر تُرسل إلى خادم (يعمل عادةً على المنفذ 25). يتم إجراء اتصال أولي، ثم يُحدد المُرسِل مصدر البريد ("MAIL FROM")، متبوعًا بالجهة المُرسلة ("RCPT TO")، وأخيرًا عناوين البريد الإلكتروني ونصه ("DATA"). فيما يلي وصف لسير نظام إعادة توجيه البريد الإلكتروني لدينا بالنسبة لكل أمر من أوامر بروتوكول SMTP:
 
-* الاتصال الأولي (بدون اسم أمر، مثلًا `telnet example.com 25`) - هذا هو الاتصال الأولي. نتحقق من المرسلين غير الموجودين في [القائمة المسموح بها](#do-you-have-an-allowlist) لدينا مقابل [قائمة الرفض](#do-you-have-a-denylist) لدينا. وأخيرًا، إذا لم يكن المرسل مدرجًا في قائمة المسموح بها لدينا، فنتحقق مما إذا كان قد تم [مُدرج في القائمة الرمادية](#do-you-have-a-greylist).
+* الاتصال الأولي (بدون اسم أمر، مثل `telnet example.com 25`) - هذا هو الاتصال الأولي. نتحقق من المرسلين غير الموجودين في [القائمة المسموح بها](#do-you-have-an-allowlist) لدينا مقابل [قائمة الرفض](#do-you-have-a-denylist) لدينا. أخيرًا، إذا لم يكن المرسل مدرجًا في قائمة المسموح بها لدينا، فسنتحقق مما إذا كان [مُدرج في القائمة الرمادية](#do-you-have-a-greylist).
 
 * `HELO` - يشير هذا إلى تحية لتحديد اسم النطاق المؤهل بالكامل (FQDN) للمُرسِل، أو عنوان IP، أو اسم مُعالج البريد. يمكن تزييف هذه القيمة، لذا لا نعتمد على هذه البيانات، بل نستخدم البحث العكسي عن اسم المضيف لعنوان IP الخاص بالاتصال.
 
-* `MAIL FROM` - يشير هذا إلى عنوان البريد المرسل من الظرف. في حال إدخال قيمة، يجب أن يكون عنوان بريد إلكتروني صالحًا وفقًا لمعيار RFC 5322. القيم الفارغة مسموح بها. نقوم هنا بـ [التحقق من التشتت الخلفي](#how-do-you-protect-against-backscatter)، ونتحقق أيضًا من عنوان البريد المرسل مقابل [قائمة الرفض](#do-you-have-a-denylist). أخيرًا، نتحقق من المُرسِلين غير المُدرجين في قائمة المسموح لهم لتحديد معدل الإرسال (للمزيد من المعلومات، راجع قسمي [تحديد المعدل](#do-you-have-rate-limiting) و [القائمة المسموح بها](#do-you-have-an-allowlist)).
+* `MAIL FROM` - يشير هذا إلى عنوان البريد المرسل من الظرف. في حال إدخال قيمة، يجب أن يكون عنوان بريد إلكتروني صالحًا وفقًا لمعيار RFC 5322. القيم الفارغة مسموح بها. نستخدم [التحقق من التشتت الخلفي](#how-do-you-protect-against-backscatter) هنا، ونتحقق أيضًا من عنوان البريد المرسل مقابل [قائمة الرفض](#do-you-have-a-denylist). أخيرًا، نتحقق من المرسلين غير المدرجين في قائمة المسموح لهم لتحديد معدل الإرسال (للمزيد من المعلومات، راجع قسم [تحديد المعدل](#do-you-have-rate-limiting) و[القائمة المسموح بها](#do-you-have-an-allowlist)).
 
-* `RCPT TO` - يشير هذا إلى مُستلِم/مُستلِمي البريد الإلكتروني. يجب أن تكون هذه عناوين بريد إلكتروني صالحة وفقًا لمعيار RFC 5322. لا نسمح إلا بـ 50 مُستلِمًا لكل رسالة (هذا يختلف عن عنوان "إلى" في البريد الإلكتروني). نتحقق أيضًا من وجود عنوان [مخطط إعادة كتابة المرسل](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") صالح هنا للحماية من انتحال اسم نطاق SRS الخاص بنا.
+* `RCPT TO` - يشير هذا إلى مُستلِم/مُستلِمي البريد الإلكتروني. يجب أن تكون هذه العناوين صالحة وفقًا لمعيار RFC 5322. لا نسمح إلا بـ 50 مُستلِمًا لكل رسالة (هذا يختلف عن عنوان "إلى" في البريد الإلكتروني). نتحقق أيضًا من وجود عنوان [مخطط إعادة كتابة المرسل](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) ("SRS") صالح هنا للحماية من انتحال اسم نطاق SRS الخاص بنا.
 
-* `DATA` - هذا هو الجزء الأساسي من خدمتنا الذي يُعالج رسائل البريد الإلكتروني. راجع القسم [كيفية معالجة البريد الإلكتروني لإعادة التوجيه](#how-do-you-process-an-email-for-forwarding) أدناه لمزيد من المعلومات.
+* `DATA` - هذا هو الجزء الأساسي من خدمتنا الذي يُعالج رسائل البريد الإلكتروني. راجع قسم [كيفية معالجة البريد الإلكتروني لإعادة التوجيه](#how-do-you-process-an-email-for-forwarding) أدناه لمزيد من المعلومات.
 
 ### كيف تقوم بمعالجة البريد الإلكتروني لإعادة التوجيه {#how-do-you-process-an-email-for-forwarding}
 
@@ -3089,40 +3076,44 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 7. سنضيف العناوين التالية إلى الرسالة لأغراض تصحيح الأخطاء ومنع إساءة الاستخدام:
 
-* `Received` - نضيف رأس "استلام" القياسي هذا مع عنوان IP الأصلي والمضيف، ونوع الإرسال، ومعلومات اتصال TLS، والتاريخ/الوقت، والمستلم.
+* `Received` - نضيف رأس الاستلام القياسي هذا مع عنوان IP الأصلي والمضيف، ونوع الإرسال، ومعلومات اتصال TLS، والتاريخ/الوقت، والمستلم.
 * `X-Original-To` - المستلم الأصلي للرسالة:
-* هذا مفيد لتحديد مكان تسليم البريد الإلكتروني الأصلي (بالإضافة إلى رأس "استلام").
+* هذا مفيد لتحديد مكان تسليم البريد الإلكتروني في الأصل (بالإضافة إلى رأس "الاستلام").
 * يُضاف هذا لكل مستلم عند استخدام IMAP و/أو إعادة التوجيه المقنع (لحماية الخصوصية).
 * `X-Forward-Email-Website` - يحتوي على رابط لموقعنا الإلكتروني <https://forwardemail.net>
-* `X-Forward-Email-Version` - الإصدار الحالي [سيمفر](https://semver.org/) من `package.json` لقاعدة بياناتنا البرمجية.
-* `X-Forward-Email-Session-ID` - قيمة معرف جلسة تُستخدم لأغراض التصحيح (تنطبق فقط على البيئات غير الإنتاجية).
-* `X-Forward-Email-Sender` - قائمة مفصولة بفواصل تحتوي على عنوان البريد الأصلي (MAIL FROM) (إذا لم يكن فارغًا)، واسم المجال الكامل المؤهل لعميل PTR العكسي (إن وجد)، وعنوان IP للمرسل.
-* `X-Forward-Email-ID` - ينطبق هذا فقط على رسائل SMTP الصادرة، ويرتبط بمعرف البريد الإلكتروني المُخزّن في حسابي ← رسائل البريد الإلكتروني.
-* `X-Report-Abuse` - بقيمة `abuse@forwardemail.net`.
-* `X-Report-Abuse-To` - بقيمة `abuse@forwardemail.net`.
-* `X-Complaints-To` - بقيمة `abuse@forwardemail.net`.
+* `X-Forward-Email-Version` - الإصدار الحالي من [سيمفر](https://semver.org/) من `package.json` لقاعدة بياناتنا.
+* `X-Forward-Email-Session-ID` - قيمة معرف جلسة تُستخدم لأغراض التصحيح (تنطبق فقط في البيئات غير الإنتاجية).
+* `X-Forward-Email-Sender` - قائمة مفصولة بفواصل تحتوي على عنوان البريد الأصلي (إن لم يكن فارغًا)، واسم المجال الكامل المؤهل لعميل PTR العكسي (إن وُجد)، وعنوان IP للمُرسِل.
+* `X-Forward-Email-ID` - ينطبق هذا فقط على بروتوكول SMTP الصادر، ويرتبط بمعرف البريد الإلكتروني المُخزّن في "حسابي ← رسائل البريد الإلكتروني".
+* `X-Original-To`0 - بقيمة `X-Original-To`1.
+* `X-Original-To`2 - بقيمة `X-Original-To`3.
+* `X-Original-To`4 - بقيمة `X-Original-To`5.
 
 8. نقوم بعد ذلك بالتحقق من الرسالة الخاصة بـ [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail)، و[SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework)، و[ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain)، و[DMARC](https://en.wikipedia.org/wiki/DMARC).
 
-* إذا فشلت الرسالة في اجتياز اختبار DMARC وكان النطاق يتبع سياسة رفض (مثل: `p=reject` [كان في سياسة DMARC](https://wikipedia.org/wiki/DMARC))، فسيتم رفضها برمز الخطأ 550. عادةً، يمكن العثور على سياسة DMARC للنطاق في سجل <strong class="notranslate">TXT</strong> للنطاق الفرعي `_dmarc` (مثل: `dig _dmarc.example.com txt`).
-* إذا فشلت الرسالة في اختبار SPF وكان النطاق يتبع سياسة فشل تام (مثل: `-all` كانت ضمن سياسة SPF، وليس `~all` أو لا توجد أي سياسة على الإطلاق)، فسيتم رفضها برمز الخطأ 550. عادةً ما يمكن العثور على سياسة SPF لنطاق ما في سجل <strong class="notranslate">TXT</strong> للنطاق الجذر (مثل `dig example.com txt`). راجع هذا القسم لمزيد من المعلومات حول [إرسال البريد كما هو الحال مع Gmail](#can-i-send-mail-as-in-gmail-with-this) بخصوص SPF.
+* إذا فشلت الرسالة في اجتياز DMARC وكان النطاق يتبع سياسة رفض (مثل `p=reject` [كان في سياسة DMARC](https://wikipedia.org/wiki/DMARC))، فسيتم رفضها برمز خطأ 550. عادةً، يمكن العثور على سياسة DMARC للنطاق في سجل <strong class="notranslate">TXT</strong> للنطاق الفرعي `_dmarc`، (مثل `dig _dmarc.example.com txt`).
 
-٩. الآن، نقوم بمعالجة مُستلِمي الرسالة كما جُمِعوا من أمر `RCPT TO` في القسم [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work) أعلاه. لكل مُستلِم، نُجري العمليات التالية:
+* إذا فشلت الرسالة في اجتياز SPF وكان النطاق يتبع سياسة فشل تام (مثل `-all` في سياسة SPF بدلاً من `~all` أو لا توجد سياسة على الإطلاق)، فسيتم رفضها برمز خطأ 550. عادةً، يمكن العثور على سياسة SPF للنطاق في سجل <strong class="notranslate">TXT</strong> للنطاق الجذر (مثل `dig example.com txt`). راجع هذا القسم للحصول على مزيد من المعلومات حول [إرسال البريد كما هو الحال مع Gmail](#can-i-send-mail-as-in-gmail-with-this) فيما يتعلق بـ SPF.
 
-* نبحث في سجلات <strong class="notranslate">TXT</strong> لاسم النطاق (الجزء الذي يلي رمز `@`، على سبيل المثال `example.com` إذا كان عنوان البريد الإلكتروني `test@example.com`). على سبيل المثال، إذا كان اسم النطاق هو `example.com`، فإننا نجري بحث DNS مثل `dig example.com txt`.
-* نحلل جميع سجلات <strong class="notranslate">TXT</strong> التي تبدأ إما بـ `forward-email=` (الخطط المجانية) أو `forward-email-site-verification=` (الخطط المدفوعة). لاحظ أننا نُحلل كلا النظامين لمعالجة رسائل البريد الإلكتروني أثناء ترقية المستخدم لخططه أو تخفيضها.
-* من سجلات <strong class="notranslate">TXT</strong> المُحللة، نُكرر العملية لاستخراج إعدادات إعادة التوجيه (كما هو موضح في القسم [كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني](#how-do-i-get-started-and-set-up-email-forwarding) أعلاه). يُرجى العلم أننا ندعم قيمة واحدة فقط من `forward-email-site-verification=`، وإذا تم إدخال أكثر من قيمة، فسيحدث خطأ 550 وسيتلقى المُرسِل رسالة مرتدة لهذا المُستلِم.
-* نُكرر العملية بشكل متكرر لاستخراج إعدادات إعادة التوجيه لتحديد إعادة التوجيه الشاملة، وإعادة التوجيه القائمة على التعابير العادية، وجميع إعدادات إعادة التوجيه الأخرى المدعومة - والتي تُعرف الآن باسم "عناوين إعادة التوجيه".
-* لكل عنوان إعادة توجيه، ندعم بحثًا متكررًا واحدًا (سيبدأ سلسلة العمليات هذه على العنوان المُعطى). إذا تم العثور على تطابق متكرر، فسيتم حذف النتيجة الأصلية من عناوين إعادة التوجيه، وستتم إضافة العناوين الفرعية.
-* يتم تحليل عناوين إعادة التوجيه للتأكد من تفردها (لأننا لا نريد إرسال عناوين مكررة إلى عنوان واحد أو توليد اتصالات إضافية غير ضرورية عبر عميل SMTP).
-* لكل عنوان إعادة توجيه، نبحث عن اسم نطاقه في نقطة نهاية واجهة برمجة التطبيقات الخاصة بنا `/v1/max-forwarded-addresses` (لتحديد عدد العناوين المسموح للنطاق بإعادة توجيه البريد الإلكتروني إليها لكل اسم مستعار، على سبيل المثال، 10 عناوين افتراضيًا - راجع قسم [الحد الأقصى لإعادة التوجيه لكل اسم مستعار](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). في حال تجاوز هذا الحد، سيحدث خطأ 550 وسيتلقى المرسل إشعارًا بارتداد البريد لهذا المستلم.
-* نبحث عن إعدادات المستلم الأصلي في نقطة نهاية واجهة برمجة التطبيقات الخاصة بنا `/v1/settings`، والتي تدعم البحث عن المستخدمين المدفوعين (مع خيار بديل للمستخدمين المجانيين). يُرجع هذا كائن تكوين للإعدادات المتقدمة لـ `port` (رقم، مثلًا `25`)، و`has_adult_content_protection` (منطقي)، و`has_phishing_protection` (منطقي)، و`has_executable_protection` (منطقي)، و`has_virus_protection` (منطقي).
-* بناءً على هذه الإعدادات، نتحقق من نتائج فحص البريد العشوائي، وفي حال حدوث أي أخطاء، تُرفض الرسالة برمز خطأ 554 (مثلًا، إذا تم تفعيل `has_virus_protection`، فسنتحقق من نتائج فحص البريد العشوائي بحثًا عن الفيروسات). يرجى ملاحظة أن جميع مستخدمي الخطة المجانية سيشتركون في عمليات التحقق من المحتوى غير اللائق، والتصيد الاحتيالي، والملفات التنفيذية، والفيروسات. بشكل افتراضي، جميع مستخدمي الخطة المدفوعة مشتركون أيضًا، ولكن يمكن تعديل هذا الإعداد من صفحة الإعدادات الخاصة بالنطاق في لوحة معلومات إعادة توجيه البريد الإلكتروني.
+٩. الآن، نقوم بمعالجة مستلمي الرسالة كما جُمعت من أمر `RCPT TO` في القسم [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work) أعلاه. لكل مستلم، نُجري العمليات التالية:
+
+* نبحث في سجلات <strong class="notranslate">TXT</strong> لاسم النطاق (الجزء الذي يلي رمز `@`، على سبيل المثال `example.com` إذا كان عنوان البريد الإلكتروني `test@example.com`). على سبيل المثال، إذا كان النطاق `example.com`، فإننا نجري بحث DNS مثل `dig example.com txt`.
+* نحلل جميع سجلات <strong class="notranslate">TXT</strong> التي تبدأ إما بـ `forward-email=` (الخطط المجانية) أو `forward-email-site-verification=` (الخطط المدفوعة). يُرجى العلم أننا نحلل كليهما لمعالجة رسائل البريد الإلكتروني أثناء ترقية المستخدم أو تخفيض باقاته.
+* من سجلات <strong class="notranslate">TXT</strong> المُحللة، نُكرر العملية لاستخراج تكوين إعادة التوجيه (كما هو موضح في قسم [كيف أبدأ وأقوم بإعداد إعادة توجيه البريد الإلكتروني](#how-do-i-get-started-and-set-up-email-forwarding) أعلاه). يُرجى العلم أننا ندعم قيمة `forward-email-site-verification=` واحدة فقط، وإذا تم إدخال أكثر من قيمة، فسيحدث خطأ 550 وسيتلقى المُرسِل رسالة ارتداد لهذا المُستلِم.
+
+* نُكرر العملية بشكل متكرر لتكوين إعادة التوجيه المُستخرج لتحديد إعادة التوجيه الشاملة، وإعادة التوجيه القائمة على التعابير العادية، وجميع تكوينات إعادة التوجيه الأخرى المدعومة - والتي تُعرف الآن باسم "عناوين إعادة التوجيه".
+
+* لكل عنوان إعادة توجيه، ندعم بحثًا تكراريًا واحدًا (يبدأ سلسلة العمليات هذه على العنوان المُعطى). إذا تم العثور على تطابق تكراري، فسيتم إزالة النتيجة الأصلية من عناوين إعادة التوجيه، وإضافة النتائج الفرعية.
+
+* يتم تحليل عناوين إعادة التوجيه لضمان تفردها (لأننا لا نريد إرسال رسائل مكررة إلى عنوان واحد أو توليد اتصالات إضافية غير ضرورية عبر عميل SMTP).
+* لكل عنوان إعادة توجيه، نبحث عن اسم نطاقه في نقطة نهاية واجهة برمجة التطبيقات `/v1/max-forwarded-addresses` (لتحديد عدد العناوين المسموح للنطاق بإعادة توجيه البريد الإلكتروني إليها لكل اسم مستعار، على سبيل المثال، 10 عناوين افتراضيًا - راجع قسم `example.com`0). في حال تجاوز هذا الحد، سيحدث خطأ 550 وسيتلقى المرسل إشعارًا برفض البريد لهذا المستلم.
+* نبحث عن إعدادات المستلم الأصلي في نقطة نهاية واجهة برمجة التطبيقات `example.com`1، والتي تدعم البحث عن المستخدمين المدفوعين (مع إمكانية البحث عن المستخدمين المجانيين). يُرجع هذا كائن تكوين للإعدادات المتقدمة لـ `example.com`2 (رقم، مثل `example.com`3)، و`example.com`4 (منطقي)، و`example.com`5 (منطقي)، و`example.com`6 (منطقي)، و`example.com`7 (منطقي).
+* بناءً على هذه الإعدادات، نتحقق بعد ذلك من نتائج فحص البريد العشوائي، وفي حال حدوث أي أخطاء، تُرفض الرسالة برمز خطأ 554 (على سبيل المثال، إذا تم تفعيل `example.com`8، فسنتحقق من نتائج فحص البريد العشوائي بحثًا عن الفيروسات). يُرجى العلم أن جميع مستخدمي الخطة المجانية سيشتركون في عمليات فحص المحتوى للبالغين، والتصيد الاحتيالي، والملفات القابلة للتنفيذ، والفيروسات. بشكل افتراضي، يتم اختيار جميع مستخدمي الخطة المدفوعة أيضًا، ولكن يمكن تغيير هذا التكوين ضمن صفحة الإعدادات للنطاق في لوحة معلومات إعادة توجيه البريد الإلكتروني.
 
 10. بالنسبة لكل عنوان إعادة توجيه للمستلم الذي تمت معالجته، نقوم بعد ذلك بإجراء العمليات التالية:
 
-* يتم التحقق من العنوان وفقًا لـ [قائمة الرفض](#do-you-have-a-denylist)، وإذا كان مُدرجًا، فسيظهر رمز خطأ 421 (يُشير إلى المُرسِل لإعادة المحاولة لاحقًا).
-* إذا كان العنوان خطاف ويب، فسنُعيّن قيمة منطقية للعمليات المستقبلية (انظر أدناه - نُجمّع خطافات الويب المتشابهة معًا لإنشاء طلب POST واحد بدلًا من طلبات متعددة للتسليم).
+* يتم التحقق من العنوان مقابل [قائمة الرفض](#do-you-have-a-denylist)، وإذا كان مدرجًا، فسيظهر رمز خطأ 421 (يُشير إلى المُرسِل لإعادة المحاولة لاحقًا).
+* إذا كان العنوان خطافًا ويب، فسنُعيّن قيمة منطقية للعمليات المستقبلية (انظر أدناه - نُجمّع خطافات الويب المتشابهة معًا لإنشاء طلب POST واحد بدلًا من طلبات متعددة للتسليم).
 * إذا كان العنوان عنوان بريد إلكتروني، فسنُحلل المُضيف للعمليات المستقبلية (انظر أدناه - نُجمّع المُضيفات المتشابهة معًا لإنشاء اتصال واحد بدلًا من اتصالات فردية متعددة للتسليم).
 
 11. إذا لم يكن هناك مستلمون ولا ارتدادات، فسنرد بخطأ 550 "مستلمون غير صالحين".
@@ -3130,12 +3121,9 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ١٢. إذا كان هناك مستلمون، فسنكرر العملية عليهم (مُجمّعين معًا بواسطة نفس المُضيف) ونُسلّم رسائل البريد الإلكتروني. راجع قسم [كيف تتعامل مع مشكلات تسليم البريد الإلكتروني](#how-do-you-handle-email-delivery-issues) أدناه لمزيد من المعلومات.
 
 * في حال حدوث أي أخطاء أثناء إرسال رسائل البريد الإلكتروني، سنخزنها في الذاكرة لمعالجتها لاحقًا.
-
 * سنأخذ رمز الخطأ الأقل (إن وُجد) من إرسال رسائل البريد الإلكتروني، ونستخدمه كرمز استجابة لأمر `DATA`. هذا يعني أن رسائل البريد الإلكتروني التي لم تُسلّم ستُعاد عادةً من قِبل المُرسِل الأصلي، بينما لن تُعاد إرسال رسائل البريد الإلكتروني التي تم تسليمها بالفعل في المرة التالية التي تُرسَل فيها الرسالة (لأننا نستخدم [بصمات الأصابع](#how-do-you-determine-an-email-fingerprint)).
-
 * في حال عدم حدوث أي أخطاء، سنرسل رمز حالة استجابة SMTP ناجحًا بقيمة 250.
-
-* يُعَدّ الارتداد هو أي محاولة تسليم ينتج عنها رمز حالة >= 500 (أعطال دائمة).
+* يُعَدّ الارتداد أي محاولة تسليم ينتج عنها رمز حالة أكبر من أو يساوي 500 (أعطال دائمة).
 
 13. إذا لم تحدث أي ارتدادات (فشل دائم)، فسوف نقوم بإرجاع رمز حالة استجابة SMTP لأدنى رمز خطأ من الفشل غير الدائم (أو رمز حالة ناجح 250 إذا لم يكن هناك أي فشل).
 
@@ -3143,7 +3131,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ### كيف تتعامل مع مشكلات تسليم البريد الإلكتروني؟ {#how-do-you-handle-email-delivery-issues}
 
-لاحظ أننا سنقوم بإعادة كتابة "من الصديق" على رسائل البريد الإلكتروني فقط إذا لم يتم تمرير سياسة DMARC الخاصة بالمرسل ولم يتم محاذاة توقيعات DKIM مع رأس "من". وهذا يعني أننا سنغير رأس "من" في الرسالة، ونحدد "X-Original-From"، ونحدد أيضًا "Reply-To" إذا لم يكن محددًا بالفعل. وسنعيد أيضًا ختم ختم ARC على الرسالة بعد تغيير هذه الرؤوس.
+يرجى ملاحظة أننا سنُعيد كتابة "من المُرسِل" على رسائل البريد الإلكتروني فقط في حال عدم اجتياز سياسة DMARC الخاصة بالمُرسِل، وعدم توافق توقيعات DKIM مع رأس "من". هذا يعني أننا سنُغيّر رأس "من" في الرسالة، ونُعيّن "من-X الأصلي"، ونُعيّن أيضًا "ردًا إلى" إذا لم يكن مُعيّنًا مسبقًا. سنُعيد أيضًا ختم ختم ARC على الرسالة بعد تعديل هذه الرؤوس.
 
 نحن نستخدم أيضًا التحليل الذكي لرسائل الخطأ في كل مستوى من مستويات المكدس لدينا - في الكود الخاص بنا، طلبات DNS، وداخليات Node.js، وطلبات HTTP (على سبيل المثال، يتم تعيين 408 و413 و429 إلى رمز استجابة SMTP 421 إذا كان المستلم عبارة عن خطاف ويب)، واستجابات خادم البريد (على سبيل المثال، سيتم إعادة محاولة الاستجابات التي تحتوي على "تأجيل" أو "إبطاء" كأخطاء 421).
 
@@ -3153,7 +3141,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 إذا كان المستلم عنوان بريد إلكتروني، فسنحاول إرسال البريد الإلكتروني باستخدام بروتوكول TLS (نحاول استخدام STARTTLS إذا كان متوفرًا على خادم بريد المستلم). في حال حدوث خطأ في SSL/TLS أثناء محاولة إرسال البريد الإلكتروني، فسنحاول إرساله بدون بروتوكول TLS (بدون استخدام STARTTLS).
 
-إذا حدثت أي أخطاء DNS أو أخطاء اتصال، فسوف نعود إلى الأمر `DATA` برمز استجابة SMTP 421، وإلا إذا كان هناك أخطاء بمستوى >= 500، فسيتم إرسال الارتدادات.
+إذا حدثت أي أخطاء DNS أو أخطاء اتصال، فسوف نعيد إلى الأمر `DATA` رمز استجابة SMTP 421، وإلا إذا كان هناك أخطاء بمستوى >= 500، فسيتم إرسال الارتدادات.
 
 إذا اكتشفنا أن خادم البريد الإلكتروني الذي نحاول تسليم البريد إليه لديه عنوان IP واحد أو أكثر من عناوين تبادل البريد الإلكتروني لدينا محظور (على سبيل المثال، بواسطة أي تقنية يستخدمونها لتأجيل مرسلي البريد العشوائي)، فسنرسل رمز استجابة SMTP 421 للمرسل لإعادة محاولة إرسال رسالته لاحقًا (ونحن ننبه إلى المشكلة حتى نتمكن من حلها قبل المحاولة التالية).
 
@@ -3165,9 +3153,9 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 عناوين IP الخاصة بنا متاحة للعامة، [انظر هذا القسم أدناه لمزيد من المعلومات](#what-are-your-servers-ip-addresses).
 
-### ما هي عناوين مدير البريد {#what-are-postmaster-addresses}
+### ما هي عناوين مدير مكتب البريد؟ {#what-are-postmaster-addresses}
 
-من أجل منع عمليات الارتداد الموجهة بشكل خاطئ وإرسال رسائل الرد التلقائي إلى صناديق بريد غير مراقبة أو غير موجودة، فإننا نحتفظ بقائمة من أسماء المستخدمين مثل برنامج Mailer-daemon:
+من أجل منع عمليات الارتداد الخاطئة وإرسال رسائل الرد التلقائي إلى صناديق بريد غير مراقبة أو غير موجودة، فإننا نحتفظ بقائمة من أسماء المستخدمين مثل برنامج البريد الإلكتروني:
 
 * `automailer`
 * `autoresponder`
@@ -3215,7 +3203,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 يتم صيانة هذه القائمة [كمشروع مفتوح المصدر على GitHub](https://github.com/forwardemail/reserved-email-addresses-list).
 
-### ما هي عناوين IP الخاصة بخادمك {#what-are-your-servers-ip-addresses}
+### ما هي عناوين IP الخاصة بخادمك؟ {#what-are-your-servers-ip-addresses}
 
 نقوم بنشر عناوين IP الخاصة بنا على <https://forwardemail.net/ips>.
 
@@ -3225,7 +3213,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 سيتم إضافة جميع رسائل البريد الإلكتروني والمجالات والمستلمين من العملاء المشتركين في الخطط المدفوعة تلقائيًا إلى القائمة المسموح بها لدينا.
 
-### ما هي امتدادات أسماء النطاق المسموح بها افتراضيًا {#what-domain-name-extensions-are-allowlisted-by-default}
+### ما هي امتدادات أسماء النطاق المسموح بها افتراضيًا؟ {#what-domain-name-extensions-are-allowlisted-by-default}
 
 تعتبر امتدادات أسماء النطاقات التالية مدرجة في القائمة المسموح بها بشكل افتراضي (بغض النظر عما إذا كانت مدرجة في قائمة الشعبية الشاملة أم لا):
 
@@ -3439,7 +3427,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <li class="list-inline-item"><code class="notranslate">ukaea.uk</code></li>
 </ul>
 
-بالإضافة إلى ذلك، يتم إدراج [نطاقات المستوى الأعلى للعلامات التجارية والشركات](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) في القائمة المسموح بها بشكل افتراضي (على سبيل المثال `apple` لـ `applecard.apple` لكشوف حسابات بنك Apple Card):
+بالإضافة إلى ذلك، يتم إدراج [نطاقات المستوى الأعلى للعلامات التجارية والشركات](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains#Brand_and_corporate_top-level_domains) هذه في القائمة المسموح بها بشكل افتراضي (على سبيل المثال، `apple` لـ `applecard.apple` لكشوف حسابات بنك Apple Card):
 
 <ul class="list-inline">
 <li class="list-inline-item"><code class="notranslate">aaa</code></li>
@@ -3906,18 +3894,17 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-لم نقم على وجه التحديد بتضمين `cz`، و`ru`، و`ua` بسبب نشاط البريد العشوائي المرتفع.
+لم نقم على وجه التحديد بتضمين `cz` و`ru` و`ua` بسبب نشاط البريد العشوائي المرتفع.
 
 ### ما هي معايير القائمة المسموح بها لديك؟ {#what-is-your-allowlist-criteria}
 
-لدينا قائمة ثابتة من [امتدادات اسم النطاق المسموح بها افتراضيًا](#what-domain-name-extensions-are-allowlisted-by-default) - ونقوم أيضًا بالحفاظ على قائمة مسموح بها ديناميكية ومخزنة مؤقتًا ومتجددة استنادًا إلى المعايير الصارمة التالية:
+لدينا قائمة ثابتة من [امتدادات اسم النطاق المسموح بها افتراضيًا](#what-domain-name-extensions-are-allowlisted-by-default) - ونحافظ أيضًا على قائمة مسموح بها ديناميكية ومخزنة ومتجددة استنادًا إلى المعايير الصارمة التالية:
 
-* يجب أن يكون نطاق جذر المُرسِل من نوع [امتداد اسم النطاق الذي يتطابق مع القائمة التي نقدمها في خطتنا المجانية](#what-domain-name-extensions-can-be-used-for-free) (مع إضافة `biz` و `info`). كما نُضمِّن التطابقات الجزئية `edu` و `gov` و `mil`، مثل `xyz.gov.au` و `xyz.edu.au`.
+* يجب أن يكون نطاق جذر المُرسِل من فئة [امتداد اسم النطاق الذي يتطابق مع القائمة التي نقدمها في خطتنا المجانية](#what-domain-name-extensions-can-be-used-for-free) (مع إضافة `biz` و`info`). كما نُضمِّن تطابقات جزئية لـ `edu` و`gov` و`mil`، مثل `xyz.gov.au` و`xyz.edu.au`.
 * يجب أن يكون نطاق جذر المُرسِل ضمن أفضل 100,000 نتيجة تحليل فريدة لنطاق جذر من [قائمة شعبية المظلة](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") ("UPL").
-* يجب أن يكون نطاق جذر المُرسِل ضمن أفضل 50,000 نتيجة من نطاقات جذر فريدة تظهر في 4 أيام على الأقل من أصل 7 أيام من قوائم UPL (أكثر من 50%).
-* يجب ألا يكون نطاق جذر المُرسِل [مصنفة](https://radar.cloudflare.com/categorization-feedback/) محتوى للبالغين أو برامج ضارة من قِبل Cloudflare.
-* يجب أن يحتوي نطاق جذر المُرسِل على سجلات A أو MX مُعيَّنة.
-* يجب أن يحتوي نطاق جذر المُرسِل على سجل (سجلات) A، أو سجل (سجلات) MX، أو سجل DMARC مع `p=reject` أو `p=quarantine`، أو سجل SPF مع المؤهل `-all` أو `~all`.
+* يجب أن يكون نطاق جذر المُرسِل ضمن أفضل 50,000 نتيجة من نطاقات جذر فريدة تظهر في 4 أيام على الأقل من أصل 7 أيام من UPL (أكثر من 50%).
+* يجب ألا يكون نطاق جذر المُرسِل من فئة [مصنفة](https://radar.cloudflare.com/categorization-feedback/) كمحتوى للبالغين أو برامج ضارة من Cloudflare. * يجب أن يحتوي نطاق جذر المُرسِل على سجلات A أو MX.
+* يجب أن يحتوي نطاق جذر المُرسِل على سجلات A، أو سجلات MX، أو سجل DMARC مع `biz`0 أو `biz`1، أو سجل SPF مع المؤهل `biz`2 أو `biz`3.
 
 في حال استيفاء هذا المعيار، سيتم تخزين نطاق جذر المُرسِل مؤقتًا لمدة 7 أيام. يُرجى العلم بأن مهمتنا الآلية تعمل يوميًا، وبالتالي فهي عبارة عن ذاكرة تخزين مؤقتة لقائمة السماح المتجددة تُحدَّث يوميًا.
 
@@ -3925,11 +3912,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 تتضمن هذه القائمة بالطبع المجالات الشهيرة في وقت كتابة هذه السطور، مثل Google وYahoo وMicrosoft وAmazon وMeta وTwitter وNetflix وSpotify والمزيد.
 
-إذا كنتَ مُرسِلًا غير مُدرج في قائمتنا المسموح بها، ففي أول مرة يُرسِل فيها نطاق جذر اسم النطاق الكامل المؤهل (FQDN) أو عنوان IP الخاص بك بريدًا إلكترونيًا، ستكون [معدل محدود](#do-you-have-rate-limiting) و[مُدرج في القائمة الرمادية](#do-you-have-a-greylist). يُرجى العلم أن هذه ممارسة مُتّبعة كمعيار للبريد الإلكتروني. ستُحاول مُعظم برامج خادم البريد الإلكتروني إعادة المحاولة إذا تلقّت خطأً في حدّ السرعة أو في القائمة الرمادية (مثل رمز حالة خطأ بمستوى 421 أو 4xx).
+إذا كنتَ مُرسِلًا غير مُدرج في قائمتنا المسموح بها، ففي أول مرة يُرسِل فيها نطاق جذر اسم النطاق الكامل المؤهل (FQDN) أو عنوان IP الخاص بك بريدًا إلكترونيًا، سيكون اسمك [معدل محدود](#do-you-have-rate-limiting) و[مُدرج في القائمة الرمادية](#do-you-have-a-greylist). يُرجى العلم أن هذه ممارسة مُتّبعة كمعيار للبريد الإلكتروني. ستُحاول مُعظم برامج خادم البريد الإلكتروني إعادة المحاولة إذا تلقّت خطأً في حدّ السرعة أو في القائمة الرمادية (مثل رمز حالة خطأ بمستوى 421 أو 4xx).
 
-**لاحظ أن المرسلين المحددين مثل `a@gmail.com` و `b@xyz.edu` و `c@gov.au` لا يزالون قادرين على [تم رفضه](#do-you-have-a-denylist)** (على سبيل المثال، إذا اكتشفنا تلقائيًا رسائل البريد العشوائي أو التصيد الاحتيالي أو البرامج الضارة من هؤلاء المرسلين).
+**لاحظ أن المرسلين المحددين مثل `a@gmail.com` و`b@xyz.edu` و`c@gov.au` لا يزالون قادرين على أن يكونوا [تم رفضه](#do-you-have-a-denylist)** (على سبيل المثال، إذا اكتشفنا تلقائيًا البريد العشوائي أو التصيد الاحتيالي أو البرامج الضارة من هؤلاء المرسلين).
 
-### ما هي امتدادات أسماء النطاقات التي يمكن استخدامها مجانًا {#what-domain-name-extensions-can-be-used-for-free}
+### ما هي امتدادات اسم النطاق التي يمكن استخدامها مجانًا {#what-domain-name-extensions-can-be-used-for-free}
 
 اعتبارًا من 31 مارس 2023، قمنا بتطبيق قاعدة عامة جديدة بشأن البريد العشوائي لحماية مستخدمينا وخدماتنا.
 
@@ -4031,40 +4018,42 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 نعم، لدينا سياسة متساهلة جدًا ([القائمة الرمادية للبريد الإلكتروني](https://en.wikipedia.org/wiki/Greylisting_\(email\)). يُطبق الإدراج في القائمة الرمادية فقط على المُرسِلين غير المُدرجين في قائمتنا المسموح بها، ويستمر في ذاكرة التخزين المؤقت لدينا لمدة 30 يومًا.
 
-لأي مُرسِل جديد، نُخزّن مفتاحًا في قاعدة بيانات Redis لمدة 30 يومًا بقيمة مُعيّنة لوقت الوصول الأولي لطلبه الأول. ثم نرفض رسالته الإلكترونية برمز إعادة المحاولة 450، ولا نسمح بمرورها إلا بعد مرور 5 دقائق.
+لأي مُرسِل جديد، نُخزّن مفتاحًا في قاعدة بيانات Redis لمدة 30 يومًا بقيمة مُعيّنة لوقت الوصول الأولي لطلبه الأول. ثم نرفض رسالته الإلكترونية برمز حالة إعادة المحاولة 450، ولا نسمح بمرورها إلا بعد مرور 5 دقائق.
 
 إذا نجحوا في الانتظار لمدة 5 دقائق من وقت الوصول الأولي هذا، فسيتم قبول رسائل البريد الإلكتروني الخاصة بهم ولن يتلقوا رمز الحالة 450 هذا.
 
 يتكون المفتاح إما من نطاق جذر اسم المجال المؤهل بالكامل (FQDN) أو عنوان IP للمُرسِل. هذا يعني أن أي نطاق فرعي يتجاوز القائمة الرمادية سيُصبح أيضًا نطاقًا جذرًا، والعكس صحيح (هذا ما نعنيه بسياسة "متساهلة للغاية").
 
-على سبيل المثال، إذا ورد بريد إلكتروني من `test.example.com` قبل أن نتلقى بريدًا إلكترونيًا من `example.com`، فإن أي بريد إلكتروني من `test.example.com` و/أو `example.com` سينتظر 5 دقائق من وقت الوصول الأولي للاتصال. لا نجعل كلًا من `test.example.com` و `example.com` ينتظران 5 دقائق خاصة بهما (تنطبق سياسة القائمة الرمادية لدينا على مستوى نطاق الجذر).
+على سبيل المثال، إذا وردت رسالة بريد إلكتروني من `test.example.com` قبل أن نستقبل رسالة من `example.com`، فإن أي رسالة بريد إلكتروني من `test.example.com` و/أو `example.com` ستنتظر 5 دقائق من وقت وصول الاتصال الأولي. لا نطلب من `test.example.com` و`example.com` الانتظار لمدة 5 دقائق (تنطبق سياسة القائمة الرمادية لدينا على مستوى النطاق الجذر).
 
-يرجى ملاحظة أن القائمة الرمادية لا تنطبق على أي مرسل على [القائمة المسموح بها](#do-you-have-an-allowlist) (على سبيل المثال Meta وAmazon وNetflix وGoogle وMicrosoft في وقت كتابة هذه السطور).
+يرجى ملاحظة أن القائمة الرمادية لا تنطبق على أي مرسل على [القائمة المسموح بها](#do-you-have-an-allowlist) الخاص بنا (على سبيل المثال Meta وAmazon وNetflix وGoogle وMicrosoft في وقت كتابة هذه السطور).
 
-### هل لديك قائمة حظر {#do-you-have-a-denylist}
+### هل لديك قائمة رفض {#do-you-have-a-denylist}
 
 نعم، نحن ندير قائمة الحظر الخاصة بنا ونقوم بتحديثها تلقائيًا في الوقت الفعلي ويدويًا بناءً على البريد العشوائي والأنشطة الضارة التي تم اكتشافها.
 
-نقوم أيضًا بسحب جميع عناوين IP من قائمة الحظر UCEPROTECT Level 1 في <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> كل ساعة وإدخالها في قائمة الحظر الخاصة بنا مع انتهاء الصلاحية بعد 7 أيام.
+نقوم أيضًا بسحب جميع عناوين IP من قائمة الرفض UCEPROTECT Level 1 في <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> كل ساعة وإدخالها في قائمة الرفض الخاصة بنا مع انتهاء الصلاحية لمدة 7 أيام.
 
-سيتلقى المرسلون الموجودون في قائمة الرفض رمز الخطأ 421 (يشير إلى المرسل لإعادة المحاولة لاحقًا) إذا قاموا [غير مسموح بها](#do-you-have-an-allowlist).
+سيتلقى المرسلون الموجودون في قائمة الرفض رمز الخطأ 421 (يشير إلى المرسل لإعادة المحاولة لاحقًا) إذا قاموا بـ [غير مسموح بها](#do-you-have-an-allowlist).
 
 من خلال استخدام رمز الحالة 421 بدلاً من رمز الحالة 554، يمكن التخفيف من احتمالية حدوث نتائج إيجابية خاطئة في الوقت الفعلي ومن ثم يمكن تسليم الرسالة بنجاح في المحاولة التالية.
 
-**صُمم هذا بخلاف خدمات البريد الأخرى**، حيث يؤدي وضعك في قائمة الحظر إلى عطل دائم وصعب. غالبًا ما يكون من الصعب مطالبة المُرسِلين بإعادة إرسال الرسائل (خاصةً من المؤسسات الكبيرة)، ولذلك يمنح هذا النهج المُرسِل أو المُستلِم أو نحن حوالي 5 أيام من تاريخ المحاولة الأولى للتدخل وحل المشكلة (عن طريق طلب إزالة قائمة الحظر).
+**صُمم هذا بخلاف خدمات البريد الأخرى**، حيث يحدث عطل دائم وصعب في حال إدراجك في قائمة الحظر. غالبًا ما يكون من الصعب مطالبة المُرسِلين بإعادة إرسال الرسائل (خاصةً من المؤسسات الكبيرة)، ولذلك يمنح هذا النهج المُرسِل أو المُستلِم أو نحن حوالي 5 أيام من تاريخ المحاولة الأولى للتدخل وحل المشكلة (عن طريق طلب إزالة قائمة الحظر).
 
 يتم مراقبة جميع طلبات إزالة القائمة المرفوضة في الوقت الفعلي بواسطة المسؤولين (على سبيل المثال، حتى يتمكن المسؤولون من إدراج الإيجابيات الخاطئة المتكررة في القائمة المرفوضة بشكل دائم).
 
-يمكن تقديم طلبات إزالة القائمة المحظورة على <https://forwardemail.net/denylist>. تتم معالجة طلبات إزالة القائمة المحظورة للمستخدمين المدفوعين على الفور، بينما يتعين على المستخدمين غير المدفوعين انتظار المسؤولين لمعالجة طلباتهم.
+يمكن تقديم طلبات إزالة القائمة المحظورة على <https://forwardemail.net/denylist>.. تتم معالجة طلبات إزالة القائمة المحظورة للمستخدمين المدفوعين على الفور، بينما يتعين على المستخدمين غير المدفوعين انتظار المسؤولين لمعالجة طلباتهم.
 
 سيتم إضافة المرسلين الذين يتم اكتشاف إرسالهم لمحتوى غير مرغوب فيه أو فيروسي إلى قائمة الرفض بالطريقة التالية:
 
-١. يُدرج [بصمة الرسالة الأولية](#how-do-you-determine-an-email-fingerprint) في القائمة الرمادية عند اكتشاف رسائل غير مرغوب فيها أو رسائل محظورة من مُرسِل "موثوق" (مثل `gmail.com`، `microsoft.com`، `apple.com`).
+١. يُدرج [بصمة الرسالة الأولية](#how-do-you-determine-an-email-fingerprint) في القائمة الرمادية عند اكتشاف بريد عشوائي أو حظر من مُرسِل "موثوق" (مثل `gmail.com`، `microsoft.com`، `apple.com`).
 * إذا كان المُرسِل مُدرجًا في القائمة المسموح بها، تُدرج الرسالة في القائمة الرمادية لمدة ساعة واحدة.
 * إذا لم يكن المُرسِل مُدرجًا في القائمة المسموح بها، تُدرج الرسالة في القائمة الرمادية لمدة 6 ساعات.
-٢. نُحلل مفاتيح القائمة المحظورة من معلومات المُرسِل والرسالة، ولكلٍّ من هذه المفاتيح، نُنشئ عدادًا (إن لم يكن موجودًا بالفعل)، ونزيده بمقدار ١، ونُخزّنه مؤقتًا لمدة ٢٤ ساعة.
+
+٢. نُحلل مفاتيح القائمة المحظورة من معلومات المُرسِل والرسالة، ولكلٍّ من هذه المفاتيح، نُنشئ عدادًا (إن لم يكن موجودًا بالفعل)، ونزيد قيمته بمقدار ١، ونُخزّنه مؤقتًا لمدة ٢٤ ساعة.
+
 * للمُرسِلين المُدرَجين في القائمة المسموح بها:
-* أضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "MAIL FROM" إذا كان لديه SPF مُفعَّل أو بدون SPF، ولم يكن [اسم مستخدم مدير مكتب البريد](#what-are-postmaster-addresses) أو [اسم المستخدم بدون رد](#what-are-no-reply-addresses).
+* أضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "MAIL FROM" إذا كان لديه SPF مُفعَّل أو بدون SPF، ولم يكن [اسم مستخدم مدير مكتب البريد](#what-are-postmaster-addresses) أو [اسم مستخدم بدون رد](#what-are-no-reply-addresses).
 * إذا كان رأس "From" مُدرَجًا في القائمة المسموح بها، فأضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "From" إذا كان لديه SPF مُفعَّل أو DKIM مُفعَّل ومُحاذي.
 * إذا لم يكن رأس "From" مُدرَجًا في القائمة المسموح بها، فأضف مفتاحًا لعنوان البريد الإلكتروني للمغلف "From" واسم نطاقه الجذري المُحلَّل.
 * للمُرسِلين غير المُدرَجين في القائمة المسموح بها:
@@ -4080,25 +4069,21 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 > **ملاحظة:** سنُطلق قريبًا ميزة مراقبة السمعة. ستحسب هذه الميزة متى يجب حظر مُرسِل بناءً على نسبة مئوية (بدلاً من عدّاد بدائي كما ذُكر سابقًا).
 
-### هل لديك حد للسرعة؟ {#do-you-have-rate-limiting}
+### هل لديك حد للسعر {#do-you-have-rate-limiting}
 
-يتم تحديد معدل الإرسال إما عن طريق تحليل نطاق الجذر من خلال بحث عكسي عن PTR على عنوان IP الخاص بالمرسل، أو إذا لم يُسفر ذلك عن نتيجة، فسيتم ببساطة استخدام عنوان IP الخاص بالمرسل. يُرجى ملاحظة أننا نشير إلى هذا باسم `Sender` أدناه.
+يتم تحديد معدل الإرسال إما عن طريق تحليل نطاق الجذر من خلال بحث عكسي عن PTR على عنوان IP الخاص بالمرسل، أو إذا لم يُسفر ذلك عن نتيجة، فسيتم ببساطة استخدام عنوان IP الخاص بالمرسل. يُرجى ملاحظة أننا نشير إلى هذا بـ `Sender` أدناه.
 
-لدى خوادم MX الخاصة بنا حدود يومية للبريد الوارد المستلم لـ [تخزين IMAP المشفر](/blog/docs/best-quantum-safe-encrypted-email-service):
+تحتوي خوادم MX الخاصة بنا على حدود يومية للبريد الوارد المستلم لـ [تخزين IMAP المشفر](/blog/docs/best-quantum-safe-encrypted-email-service):
 
-* بدلاً من تحديد معدل الرسائل الواردة بناءً على اسم مستعار فردي (مثل `you@yourdomain.com`)، نقوم بتحديد المعدل بناءً على اسم نطاق الاسم المستعار نفسه (مثل `yourdomain.com`). هذا يمنع `Senders` من إغراق صناديق الوارد بجميع الأسماء المستعارة في نطاقك دفعة واحدة. * لدينا حدود عامة تُطبق على جميع رسائل `Senders` عبر خدمتنا، بغض النظر عن المُستلِم:
-
-* رسائل `Senders` التي نعتبرها "موثوقة" كمصدر موثوق (مثل `gmail.com`، `microsoft.com`، `apple.com`) محدودة بإرسال 100 جيجابايت يوميًا.
-
-* رسائل `Senders` التي تحمل [مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) محدودة بإرسال 10 جيجابايت يوميًا.
-
-* جميع رسائل `Senders` الأخرى محدودة بإرسال 1 جيجابايت و/أو 1000 رسالة يوميًا.
-
-* لدينا حد محدد لكل `Sender` و `yourdomain.com` وهو 1 جيجابايت و/أو 1000 رسالة يوميًا.
+* بدلاً من تحديد معدل إرسال البريد الوارد بناءً على اسم مستعار فردي (مثل `you@yourdomain.com`)، نحدد المعدل بناءً على اسم نطاق الاسم المستعار نفسه (مثل `yourdomain.com`). هذا يمنع `Senders` من إغراق صناديق الوارد بجميع الأسماء المستعارة في نطاقك دفعة واحدة.
+* لدينا حدود عامة تُطبق على جميع عناوين `Senders` في خدمتنا بغض النظر عن المستلم:
+* عناوين `Senders` التي نعتبرها "موثوقة" كمصدر موثوق (مثل `gmail.com`، `microsoft.com`، `apple.com`) محدودة بإرسال 100 جيجابايت يوميًا.
+* عناوين `Senders` التي تحمل اسم [مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) محدودة بإرسال 10 جيجابايت يوميًا. * جميع `yourdomain.com`0 الأخرى محدودة بإرسال 1 غيغابايت و/أو 1000 رسالة يوميًا.
+* لدينا حدّ أقصى محدد لكل `yourdomain.com`1 و`yourdomain.com`2 وهو 1 غيغابايت و/أو 1000 رسالة يوميًا.
 
 تقوم خوادم MX أيضًا بالحد من الرسائل التي يتم إعادة توجيهها إلى مستلم واحد أو أكثر من خلال تحديد المعدل - ولكن هذا ينطبق فقط على `Senders` وليس على [القائمة المسموح بها](#do-you-have-an-allowlist):
 
-* نسمح فقط بما يصل إلى ١٠٠ اتصال في الساعة، لكل نطاق جذر FQDN مُحلَّل (أو) عنوان IP بعيد (في حال عدم توفر PTR عكسي)، ولكل مستلم مظروف. نخزن المفتاح لتحديد السرعة كتجزئة تشفيرية في قاعدة بيانات Redis الخاصة بنا.
+* نسمح فقط بما يصل إلى ١٠٠ اتصال في الساعة، لكل نطاق جذر FQDN مُحلَّل `Sender` (أو) عنوان IP بعيد `Sender` (في حال عدم توفر PTR عكسي)، ولكل مستلم مغلف. نخزن المفتاح لتحديد السرعة كتجزئة تشفيرية في قاعدة بيانات Redis الخاصة بنا.
 
 * إذا كنت ترسل بريدًا إلكترونيًا عبر نظامنا، فيرجى التأكد من إعداد PTR عكسي لجميع عناوين IP الخاصة بك (وإلا فسيتم تقييد معدل كل نطاق جذر FQDN فريد أو عنوان IP ترسل منه).
 
@@ -4106,25 +4091,25 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 * إذا كنت ترسل من نطاق مثل `test.abc.123.example.com`، فسيتم فرض حد السرعة على `example.com`. يستخدم العديد من مرسلي البريد العشوائي مئات النطاقات الفرعية للالتفاف على مرشحات البريد العشوائي الشائعة التي تفرض حدًا أقصى على أسماء المضيفين الفريدة فقط، بدلاً من نطاقات الجذر المؤهلة بالكامل (FQDN) الفريدة.
 
-* `Senders` التي تتجاوز حد المعدل سيتم رفضها مع الخطأ 421.
+* سيتم رفض `Senders` التي تتجاوز حد المعدل مع ظهور خطأ 421.
 
-تحد خوادم IMAP وSMTP الخاصة بنا من حصول الأسماء المستعارة الخاصة بك على أكثر من `60` اتصالات متزامنة في وقت واحد.
+تحد خوادم IMAP وSMTP الخاصة بنا من حصول الأسماء المستعارة لديك على أكثر من `60` من الاتصالات المتزامنة في وقت واحد.
 
-تقوم خوادم MX الخاصة بنا بتقييد المرسلين [غير مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) من إنشاء أكثر من 10 اتصالات متزامنة (مع انتهاء صلاحية ذاكرة التخزين المؤقت لمدة 3 دقائق للعداد، وهو ما يعكس مهلة المقبس الخاصة بنا لمدة 3 دقائق).
+تقوم خوادم MX الخاصة بنا بتقييد مرسلي [غير مدرج في القائمة المسموح بها](#do-you-have-an-allowlist) من إنشاء أكثر من 10 اتصالات متزامنة (مع انتهاء صلاحية ذاكرة التخزين المؤقت لمدة 3 دقائق للعداد، وهو ما يعكس مهلة المقبس الخاصة بنا لمدة 3 دقائق).
 
 ### كيف تحمي نفسك من التشتت الخلفي؟ {#how-do-you-protect-against-backscatter}
 
-يمكن أن تتسبب الارتدادات الموجهة بشكل خاطئ أو رسائل البريد العشوائي المرتد (المعروفة باسم "[التشتت الخلفي](https://en.wikipedia.org/wiki/Backscatter_\(email\))") في سمعة سلبية لعناوين IP الخاصة بالمرسل.
+يمكن أن تتسبب الارتدادات الموجهة بشكل خاطئ أو رسائل البريد العشوائي المرتدة (المعروفة باسم "[التشتت الخلفي](https://en.wikipedia.org/wiki/Backscatter_\(email\))") في سمعة سلبية لعناوين IP الخاصة بالمرسل.
 
-نحن نتخذ خطوتين للحماية من التشتت الخلفي، والتي تم تفصيلها في الأقسام التالية [منع ارتدادات البريد من مرسلي البريد العشوائي المعروفين](#prevent-bounces-from-known-mail-from-spammers) و [منع الارتدادات غير الضرورية للحماية من التشتت الخلفي](#prevent-unnecessary-bounces-to-protect-against-backscatter) أدناه.
+نحن نتخذ خطوتين للحماية من التشتت الخلفي، والتي تم تفصيلها في الأقسام التالية [منع ارتدادات البريد من مرسلي البريد العشوائي المعروفين](#prevent-bounces-from-known-mail-from-spammers) و[منع الارتدادات غير الضرورية للحماية من التشتت الخلفي](#prevent-unnecessary-bounces-to-protect-against-backscatter) أدناه.
 
 ### منع ارتدادات البريد من مرسلي البريد العشوائي المعروفين {#prevent-bounces-from-known-mail-from-spammers}
 
 نقوم بسحب القائمة من [Backscatter.org](https://www.backscatterer.org/) (مدعومة بواسطة [UCEPROTECT](https://www.uceprotect.net/)) في <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> كل ساعة ونقوم بإدخالها في قاعدة بيانات Redis الخاصة بنا (نقوم أيضًا بمقارنة الفرق مسبقًا؛ في حالة إزالة أي عناوين IP تحتاج إلى الالتزام).
 
-إذا كان MAIL FROM فارغًا أو مساويًا (غير حساس لحالة الأحرف) لأي من [عناوين مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني)، فإننا نتحقق لمعرفة ما إذا كان عنوان IP الخاص بالمرسل يتطابق مع أحد العناوين من هذه القائمة.
+إذا كان MAIL FROM فارغًا أو مساويًا (غير حساس لحالة الأحرف) لأي من [عناوين مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني)، فسنتحقق لمعرفة ما إذا كان عنوان IP الخاص بالمرسل يتطابق مع أحد هذه القائمة.
 
-إذا كان عنوان IP للمُرسِل مُدرجًا (وليس مُدرجًا في [القائمة المسموح بها](#do-you-have-an-allowlist))، فسنُرسل خطأ 554 مع الرسالة `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. سيتم تنبيهنا إذا كان المُرسِل مُدرجًا في قائمتي المُشتت الخلفي والقائمة المسموح بها، حتى نتمكن من حل المشكلة عند الحاجة.
+إذا كان عنوان IP للمُرسِل مُدرجًا (وليس في [القائمة المسموح بها](#do-you-have-an-allowlist))، فسنُرسل خطأ 554 مع الرسالة `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. سيتم تنبيهنا إذا كان المُرسِل مُدرجًا في قائمتي Backscatterer وSmartlist، حتى نتمكن من حل المشكلة عند الحاجة.
 
 تلتزم التقنيات الموضحة في هذا القسم بتوصية "الوضع الآمن" في <https://www.backscatterer.org/?target=usage> - حيث نتحقق فقط من عنوان IP الخاص بالمرسل إذا تم استيفاء شروط معينة بالفعل.
 
@@ -4138,20 +4123,19 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ٢. نرسل مرة واحدة فقط (نستخدم مفتاح بصمة ارتداد محسوبًا ونخزنه في ذاكرة التخزين المؤقت لمنع إرسال رسائل مكررة). بصمة الارتداد هي مفتاح بصمة الرسالة، مضافًا إليه تجزئة عنوان الارتداد ورمز الخطأ الخاص به. راجع قسم [بصمات الأصابع](#how-do-you-determine-an-email-fingerprint) لمزيد من المعلومات حول كيفية حساب بصمة الرسالة. تنتهي صلاحية بصمات الارتداد المرسلة بنجاح بعد ٧ أيام في ذاكرة التخزين المؤقت Redis.
 
-3. نرسل فقط عندما لا يكون حقل "البريد من" و/أو "من" فارغًا ولا يحتوي على (غير حساس لحالة الأحرف) [اسم المستخدم مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني).
+3. نقوم بالإرسال فقط عندما لا يكون حقل MAIL FROM و/أو From فارغًا ولا يحتوي على (غير حساس لحالة الأحرف) [اسم مستخدم مدير مكتب البريد](#what-are-postmaster-addresses) (الجزء قبل @ في البريد الإلكتروني).
 
 4. لا نرسل الرسالة إذا كانت الرسالة الأصلية تحتوي على أي من العناوين التالية (غير حساسة لحالة الأحرف):
 
-* رأس `auto-submitted` بقيمة لا تساوي `no`.
-* رأس `x-auto-response-suppress` بقيمة `dr`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `all`
-* رأس `list-id`، أو `list-subscribe`، أو `list-unsubscribe`، أو `list-help`، أو `list-post`، أو `list-owner`، `list-archive`، أو `x-autoreply`، أو `x-autorespond`، أو `x-auto-respond` (بغض النظر عن القيمة).
-* رأس `precedence` بقيمة `bulk`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `list`.
+* رأس `auto-submitted` بقيمة لا تساوي `no`. * رأس `x-auto-response-suppress` بقيمة `dr`، أو `autoreply`، أو `auto-reply`، أو `auto_reply`، أو `all`
+* رأس `list-id`، أو `list-subscribe`، أو `no`0، أو `no`1، أو `no`2، أو `no`3، أو `no`4، أو `no`5، أو `no`6، أو `no`7 (بغض النظر عن القيمة).
+* رأس `no`8 بقيمة `no`9، أو `x-auto-response-suppress`0، أو `x-auto-response-suppress`1، أو `x-auto-response-suppress`2، أو `x-auto-response-suppress`3.
 
 5. لا نقوم بالإرسال إذا كان عنوان البريد الإلكتروني المرسل أو المرسل ينتهي بـ `+donotreply`، أو `-donotreply`، أو `+noreply`، أو `-noreply`.
 
-6. لا نرسل إذا كان جزء اسم المستخدم في عنوان البريد الإلكتروني المرسل هو `mdaemon` وكان به رأس غير حساس لحالة الأحرف `X-MDDSN-Message`.
+6. لا نرسل إذا كان جزء اسم المستخدم في عنوان البريد الإلكتروني المرسل هو `mdaemon` وكان به رأس غير حساس لحالة الأحرف وهو `X-MDDSN-Message`.
 
-7. لا نرسل إذا كان هناك رأس `content-type` غير حساس لحالة الأحرف لـ `multipart/report`.
+7. لا نرسل إذا كان هناك رأس `content-type` غير حساس لحالة الأحرف في `multipart/report`.
 
 ### كيف يمكنك تحديد بصمة البريد الإلكتروني {#how-do-you-determine-an-email-fingerprint}
 
@@ -4185,7 +4169,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 إذا كنت تستخدم الخطة المجانية، فما عليك سوى إضافة سجل DNS جديد <strong class="notranslate">TXT</strong> كما هو موضح أدناه، ولكن قم بتغيير المنفذ من 25 إلى المنفذ الذي تختاره.
 
-على سبيل المثال، إذا كنت أريد إعادة توجيه جميع رسائل البريد الإلكتروني التي تذهب إلى `example.com` إلى منفذ SMTP الخاص بمستلمي الأسماء المستعارة وهو 1337 بدلاً من 25:
+على سبيل المثال، إذا كنت أريد إعادة توجيه جميع رسائل البريد الإلكتروني التي تذهب إلى `example.com` إلى منفذ SMTP الخاص بالمستلمين المستعارين وهو 1337 بدلاً من 25:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4240,21 +4224,21 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 نعم بالتأكيد.
 
-### هل يدعم النطاقات الفرعية {#does-it-support-sub-domains}
+### هل يدعم المجالات الفرعية؟ {#does-it-support-sub-domains}
 
 نعم، بالتأكيد. بدلاً من استخدام "@" أو "." أو فراغ كاسم/مضيف/اسم مستعار، استخدم اسم النطاق الفرعي كقيمة.
 
-إذا كنت تريد أن يقوم `foo.example.com` بإعادة توجيه رسائل البريد الإلكتروني، فأدخل `foo` كقيمة الاسم/المضيف/الاسم المستعار في إعدادات DNS (لسجلات MX و<strong class="notranslate">TXT</strong>).
+إذا كنت تريد أن يقوم `foo.example.com` بإعادة توجيه رسائل البريد الإلكتروني، فأدخل `foo` كقيمة اسم/مضيف/اسم مستعار في إعدادات DNS (لكل من سجلات MX و<strong class="notranslate">TXT</strong>).
 
-### هل يؤدي هذا إلى إعادة توجيه عناوين بريدي الإلكتروني {#does-this-forward-my-emails-headers}
+### هل يؤدي هذا إلى إعادة توجيه رؤوس رسائل البريد الإلكتروني الخاصة بي؟ {#does-this-forward-my-emails-headers}
 
 نعم بالتأكيد.
 
 ### هل تم اختبار هذا جيدًا؟ {#is-this-well-tested}
 
-نعم، يحتوي على اختبارات مكتوبة باستخدام [افا](https://github.com/avajs/ava) ويحتوي أيضًا على تغطية للكود.
+نعم، فهو يحتوي على اختبارات مكتوبة باستخدام [افا](https://github.com/avajs/ava) ويحتوي أيضًا على تغطية للكود.
 
-### هل تقوم بتمرير رسائل ورموز استجابة SMTP {#do-you-pass-along-smtp-response-messages-and-codes}
+### هل تقوم بتمرير رسائل ورموز استجابة SMTP؟ {#do-you-pass-along-smtp-response-messages-and-codes}
 
 نعم، بالتأكيد. على سبيل المثال، إذا كنت ترسل بريدًا إلكترونيًا إلى `hello@example.com` وكان مُسجَّلاً لإعادة التوجيه إلى `user@gmail.com`، فسيتم إرجاع رسالة استجابة SMTP والرمز من خادم SMTP الخاص بـ "gmail.com" بدلاً من خادم الوكيل على "mx1.forwardemail.net" أو "mx2.forwardemail.net".
 
@@ -4262,11 +4246,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 راجع أقسامنا حول [كيف يعمل نظام إعادة توجيه البريد الإلكتروني الخاص بك](#how-does-your-email-forwarding-system-work)، و[كيف تتعامل مع مشكلات تسليم البريد الإلكتروني](#how-do-you-handle-email-delivery-issues)، و[كيف تتعامل مع حظر عناوين IP الخاصة بك؟](#how-do-you-handle-your-ip-addresses-becoming-blocked) أعلاه.
 
-### كيف يمكنك إجراء عمليات بحث DNS على أسماء النطاقات {#how-do-you-perform-dns-lookups-on-domain-names}
+### كيف تقوم بإجراء عمليات بحث DNS على أسماء النطاقات {#how-do-you-perform-dns-lookups-on-domain-names}
 
-أنشأنا مشروع برمجي مفتوح المصدر :tangerine: [اليوسفي](https://github.com/forwardemail/tangerine) ونستخدمه لعمليات بحث DNS. خوادم DNS الافتراضية المستخدمة هي `1.1.1.1` و `1.0.0.1`، ويتم إجراء استعلامات DNS من خلال [DNS عبر HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") في طبقة التطبيقات.
+أنشأنا مشروع برمجي مفتوح المصدر: tangerine: [اليوسفي](https://github.com/forwardemail/tangerine)، ونستخدمه لعمليات بحث DNS. خوادم DNS الافتراضية المستخدمة هي `1.1.1.1` و`1.0.0.1`، ويتم تنفيذ استعلامات DNS عبر [DNS عبر HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) ("DoH") في طبقة التطبيقات.
 
-:tangerine: [اليوسفي](https://github.com/tangerine) يستخدم [خدمة DNS للمستهلك التي تضع الخصوصية أولاً في المقام الأول من CloudFlare بشكل افتراضي][cloudflare-dns].
+:tangerine: يستخدم [اليوسفي](https://github.com/tangerine) [خدمة DNS للمستهلك التي تضع الخصوصية أولاً في المقام الأول من CloudFlare بشكل افتراضي][cloudflare-dns].
 
 ## الحساب والفواتير {#account-and-billing}
 
@@ -4274,9 +4258,9 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 نعم! يتم استرداد المبالغ المدفوعة تلقائيًا عند ترقية حسابك أو تخفيضه أو إلغائه خلال 30 يومًا من تاريخ بدء اشتراكك. ينطبق هذا فقط على العملاء الجدد.
 
-### إذا قمت بتبديل الخطط، فهل تقومون بتوزيع التكلفة واسترداد الفرق؟ {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
+### إذا قمت بتبديل الخطط، فهل تقومون بتوزيع المبلغ واسترداد الفرق؟ {#if-i-switch-plans-do-you-pro-rate-and-refund-the-difference}
 
-لا نقوم بتوزيع الاشتراكات أو برد الفرق عند تغيير باقتك. بدلاً من ذلك، نقوم بتحويل المدة المتبقية من تاريخ انتهاء صلاحية باقتك الحالية إلى أقرب مدة نسبية لباقتك الجديدة (مقربًا بالشهر).
+لا نقوم بتوزيع الاشتراكات أو برد الفرق عند تغيير باقتك. بدلاً من ذلك، نقوم بتحويل المدة المتبقية من تاريخ انتهاء صلاحية باقتك الحالية إلى أقرب مدة نسبية لباقتك الجديدة (مقربًا حسب الشهر).
 
 يرجى ملاحظة أنه إذا قمت بالترقية أو التخفيض بين الخطط المدفوعة خلال فترة 30 يومًا منذ بدء خطة مدفوعة لأول مرة، فسوف نقوم تلقائيًا برد المبلغ بالكامل من خطتك الحالية.
 
@@ -4284,7 +4268,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 لا، لا يُنصح بذلك، إذ لا يمكنك استخدام سوى خادم تبادل بريد إلكتروني واحد في كل مرة. عادةً لا تُعاد محاولة استخدام البدائل بسبب أخطاء في إعدادات الأولوية وعدم التزام خوادم البريد الإلكتروني بفحص أولوية تبادل البريد الإلكتروني.
 
-### هل يمكنني تعطيل أسماء مستعارة معينة {#can-i-disable-specific-aliases}
+### هل يمكنني تعطيل أسماء مستعارة معينة؟ {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -4304,7 +4288,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 **بالنسبة للرفض الناعم (رمز الحالة `421`):** إذا قمت بإضافة بادئة "!!" (علامة تعجب مزدوجة) إلى اسم مستعار، فسوف يتم إرجاع رمز حالة خطأ ناعم `421` إلى المرسلين الذين يحاولون الإرسال إلى هذا العنوان، وغالبًا ما تتم إعادة محاولة إرسال رسائل البريد الإلكتروني لمدة تصل إلى 5 أيام قبل الرفض والارتداد.
 
-**بالنسبة للرفض النهائي (رمز الحالة `550`):** إذا قمت بإضافة البادئة "!!!" (علامة تعجب ثلاثية) إلى اسم مستعار، فسوف يتم إرجاع رمز حالة خطأ دائم `550` إلى المرسلين الذين يحاولون الإرسال إلى هذا العنوان وسيتم رفض رسائل البريد الإلكتروني وترتد.
+**للرفض النهائي (رمز الحالة `550`):** إذا قمت بإضافة البادئة "!!!" (علامة تعجب ثلاثية) إلى اسم مستعار، فسوف يتم إرجاع رمز حالة خطأ دائم `550` إلى المرسلين الذين يحاولون الإرسال إلى هذا العنوان وسيتم رفض رسائل البريد الإلكتروني وترتد.
 
 على سبيل المثال، إذا كنت أريد أن تتوقف جميع رسائل البريد الإلكتروني التي تذهب إلى `alias@example.com` عن التدفق إلى `user@gmail.com` ويتم رفضها وترتد (على سبيل المثال، استخدم ثلاث علامات تعجب):
 
@@ -4341,14 +4325,14 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 <thead class="thead-dark">
 <tr>
 <th>الاسم/المضيف/الاسم المستعار</th>
-<th class="text-center">مدة البقاء</th>
+<th class="text-center">مدة الإرسال</th>
 <th>النوع</th>
 <th>الإجابة/القيمة</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><em>"@", ".", أو فارغ</em></td>
+<td><em>"@" أو "." أو فارغ</em></td>
 <td class="text-center">3600</td>
 <td class="notranslate">TXT</td>
 <td><code>forward-email=!!!alias:nobody@forwardemail.net</code></td>
@@ -4423,13 +4407,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </thead>
 <tbody>
 <tr>
-<td><em>"@", ".", أو فراغ</em></td>
+<td><em>"@", ".", أو فارغ</em></td>
 <td class="text-center">3600</td>
 <td class="notranslate">TXT</td>
 <td><code>forward-email=hello:user+a@gmail.com</code></td>
 </tr>
 <tr>
-<td><em>"@", ".", أو فراغ</em></td>
+<td><em>"@", ".", أو فارغ</em></td>
 <td class="text-center">3600</td>
 <td class="notranslate">TXT</td>
 <td><code>forward-email=hello:user+b@gmail.com</code></td>
@@ -4439,11 +4423,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 الأمر متروك لك!
 
-### هل يمكنني الحصول على عدة مستلمين عالميين شاملين؟ {#can-i-have-multiple-global-catch-all-recipients}
+### هل يمكنني الحصول على عدة مستلمين عالميين شاملين {#can-i-have-multiple-global-catch-all-recipients}
 
 نعم، يمكنك ذلك. ما عليك سوى تحديد عدة مستلمين عالميين في سجلات <strong class="notranslate">TXT</strong>.
 
-على سبيل المثال، إذا كنت أريد إعادة توجيه كل بريد إلكتروني يذهب إلى `*@example.com` (النجمة تعني أنه حرف بدل أو ما شابه ذلك) إلى `user+a@gmail.com` و `user+b@gmail.com`، فإن سجل <strong class="notranslate">TXT</strong> الخاص بي سيبدو كما يلي:
+على سبيل المثال، إذا كنت أريد إعادة توجيه كل بريد إلكتروني يذهب إلى `*@example.com` (العلامة النجمية تعني أنه حرف بدل أو ما شابه ذلك) إلى `user+a@gmail.com` و`user+b@gmail.com`، فإن سجل <strong class="notranslate">TXT</strong> الخاص بي سيبدو كما يلي:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -4456,7 +4440,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </thead>
 <tbody>
 <tr>
-<td><em>"@" أو "." أو فارغ</em></td>
+<td><em>"@", ".", أو فارغ</em></td>
 <td class="text-center">3600</td>
 <td class="notranslate">TXT</td>
 <td><code>forward-email=user+a@gmail.com,user+b@gmail.com</code></td>
@@ -4495,7 +4479,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ### هل يوجد حد أقصى لعدد عناوين البريد الإلكتروني التي يمكنني إعادة توجيهها لكل اسم مستعار {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
-نعم، الحد الأقصى الافتراضي هو 10. هذا لا يعني أنه يمكنك استخدام 10 أسماء مستعارة فقط على اسم نطاقك. يمكنك استخدام أي عدد تريده من الأسماء المستعارة (عدد غير محدود). هذا يعني أنه يمكنك إعادة توجيه اسم مستعار واحد فقط إلى 10 عناوين بريد إلكتروني فريدة. يمكنك استخدام `hello:user+1@gmail.com`، `hello:user+2@gmail.com`، `hello:user+3@gmail.com`، ... (من 1 إلى 10) - وأي رسائل بريد إلكتروني إلى `hello@example.com` ستُعاد توجيهها إلى `user+1@gmail.com`، `user+2@gmail.com`، `user+3@gmail.com`، ... (من 1 إلى 10).
+نعم، الحد الأقصى الافتراضي هو ١٠. هذا لا يعني أنه يمكنك استخدام ١٠ أسماء مستعارة فقط على اسم نطاقك. يمكنك استخدام أي عدد تريده من الأسماء المستعارة (عدد غير محدود). هذا يعني أنه يمكنك إعادة توجيه اسم مستعار واحد فقط إلى ١٠ عناوين بريد إلكتروني فريدة. يمكنك استخدام `hello:user+1@gmail.com`، `hello:user+2@gmail.com`، `hello:user+3@gmail.com`، ... (من ١ إلى ١٠) - وأي رسائل بريد إلكتروني إلى `hello@example.com` ستُعاد توجيهها إلى `user+1@gmail.com`، `user+2@gmail.com`، `user+3@gmail.com`، ... (من ١ إلى ١٠).
 
 <div class="alert my-3 alert-primary">
 <i class="fa fa-info-circle font-weight-bold"></i>
@@ -4507,11 +4491,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </span>
 </div>
 
-### هل يمكنني إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر {#can-i-recursively-forward-emails}
+### هل يمكنني إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر؟ {#can-i-recursively-forward-emails}
 
-نعم، يمكنك ذلك، ولكن يجب عليك الالتزام بالحد الأقصى. إذا كان لديك `hello:linus@example.com` و`linus:user@gmail.com`، فسيتم إعادة توجيه رسائل البريد الإلكتروني المرسلة إلى `hello@example.com` إلى `linus@example.com` و`user@gmail.com`. يُرجى ملاحظة أنه سيتم عرض خطأ إذا حاولت إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر بعد تجاوز الحد الأقصى.
+نعم، يمكنك ذلك، ولكن يجب عليك الالتزام بالحد الأقصى. إذا كان لديك `hello:linus@example.com` و`linus:user@gmail.com`، فسيتم إعادة توجيه رسائل البريد الإلكتروني المرسلة إلى `hello@example.com` إلى `linus@example.com` و`user@gmail.com`. يُرجى العلم أنه سيتم عرض خطأ إذا حاولت إعادة توجيه رسائل البريد الإلكتروني بشكل متكرر بعد تجاوز الحد الأقصى.
 
-### هل يمكن للأشخاص إلغاء التسجيل أو تسجيل إعادة توجيه بريدي الإلكتروني دون إذني {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### هل يمكن للأشخاص إلغاء التسجيل أو تسجيل إعادة توجيه بريدي الإلكتروني دون إذني؟ {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 نستخدم التحقق من سجلات MX و<strong class="notranslate">TXT</strong>، لذا إذا أضفتَ سجلات MX و<strong class="notranslate">TXT</strong> الخاصة بهذه الخدمة، فأنتَ مُسجَّل. إذا أزلتَها، فأنتَ غير مُسجَّل. أنت تملك نطاقك وإدارة DNS، لذا إذا كان بإمكان أي شخص الوصول إليها، فهذه مشكلة.
 
@@ -4529,13 +4513,11 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 4. **حدود الاستخدام المعقولة**: تتمتع الطبقة المجانية بسياسات الاستخدام العادل لمنع إساءة الاستخدام.
 
-> \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+نحن ملتزمون بتوفير خدمة إعادة توجيه البريد الإلكتروني الأساسية مجانًا، مع توفير ميزات مميزة للمستخدمين ذوي الاحتياجات المتقدمة.
 
-> \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+إذا وجدت خدمتنا قيّمة، ففكّر في الترقية إلى خطة مدفوعة لدعم التطوير والصيانة المستمرة.
 
-### ما هو الحد الأقصى لحجم البريد الإلكتروني {#what-is-the-max-email-size-limit}
+### ما هو الحد الأقصى لحجم البريد الإلكتروني؟ {#what-is-the-max-email-size-limit}
 
 الحد الأقصى للحجم الافتراضي هو 50 ميغابايت، ويشمل المحتوى والرؤوس والمرفقات. يُرجى العلم أن خدمات مثل Gmail وOutlook تسمح فقط بـ 25 ميغابايت، وفي حال تجاوز الحد عند الإرسال إلى عناوين لدى هذه الخدمات، ستتلقى رسالة خطأ.
 
@@ -4543,7 +4525,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ### هل تقوم بتخزين سجلات رسائل البريد الإلكتروني {#do-you-store-logs-of-emails}
 
-لا، نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و [SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
+لا، نحن لا نكتب على القرص أو نخزن السجلات - باستخدام [استثناء الأخطاء](#do-you-store-error-logs) و[SMTP الصادر](#do-you-support-sending-email-with-smtp) (راجع [سياسة الخصوصية](/privacy)).
 
 يتم تنفيذ كل شيء في الذاكرة و[كود المصدر الخاص بنا موجود على GitHub](https://github.com/forwardemail).
 
@@ -4551,13 +4533,13 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 **نعم. يمكنك الوصول إلى سجلات الأخطاء ضمن [حسابي → السجلات](/my-account/logs) أو [حسابي → النطاقات](/my-account/domains).**
 
-اعتبارًا من فبراير 2023، نقوم بتخزين سجلات الأخطاء لرموز استجابة SMTP `4xx` و `5xx` لمدة 7 أيام - والتي تحتوي على خطأ SMTP والمغلف ورؤوس البريد الإلكتروني (نحن **لا** نخزن نص البريد الإلكتروني أو المرفقات).
+اعتبارًا من فبراير 2023، نقوم بتخزين سجلات الأخطاء لرموز استجابة SMTP `4xx` و`5xx` لمدة 7 أيام - والتي تحتوي على خطأ SMTP والمغلف ورؤوس البريد الإلكتروني (نحن **لا** نخزن نص البريد الإلكتروني أو المرفقات).
 
-تتيح لك سجلات الأخطاء التحقق من رسائل البريد الإلكتروني المهمة المفقودة والحد من ظهور نتائج إيجابية خاطئة للرسائل غير المرغوب فيها فيما يتعلق بـ [نطاقاتك](/my-account/domains). كما أنها مصدر ممتاز لاستكشاف أخطاء [خطافات البريد الإلكتروني](#do-you-support-webhooks) وإصلاحها (لأن سجلات الأخطاء تحتوي على استجابة نقطة نهاية خطاف الويب).
+تتيح لك سجلات الأخطاء التحقق من رسائل البريد الإلكتروني المهمة المفقودة والحد من ظهور نتائج إيجابية خاطئة للرسائل غير المرغوب فيها لـ [نطاقاتك](/my-account/domains). كما أنها مصدر ممتاز لتصحيح أخطاء [خطافات البريد الإلكتروني](#do-you-support-webhooks) (لأن سجلات الأخطاء تحتوي على استجابة نقطة نهاية خطاف الويب).
 
-لا يمكن الوصول إلى سجلات الأخطاء الخاصة بـ [تحديد المعدل](#do-you-have-rate-limiting) و [القائمة الرمادية](#do-you-have-a-greylist) نظرًا لأن الاتصال ينتهي مبكرًا (على سبيل المثال، قبل أن يتم إرسال الأوامر `RCPT TO` و `MAIL FROM`).
+لا يمكن الوصول إلى سجلات الأخطاء الخاصة بـ [تحديد المعدل](#do-you-have-rate-limiting) و[القائمة الرمادية](#do-you-have-a-greylist) لأن الاتصال ينتهي مبكرًا (على سبيل المثال، قبل أن يتم إرسال أوامر `RCPT TO` و`MAIL FROM`).
 
-راجع [سياسة الخصوصية](/privacy) لمزيد من المعلومات.
+راجع [سياسة الخصوصية](/privacy) للحصول على مزيد من المعلومات.
 
 ### هل تقرأ رسائل البريد الإلكتروني الخاصة بي؟ {#do-you-read-my-emails}
 
@@ -4565,7 +4547,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 تخزن العديد من خدمات إعادة توجيه البريد الإلكتروني الأخرى رسائلك الإلكترونية، وقد تقرأها. لا داعي لتخزين رسائل البريد الإلكتروني المُعاد توجيهها على القرص الصلب، ولذلك صممنا أول حل مفتوح المصدر يُجري كل ذلك في الذاكرة.
 
-نؤمن بحقك في الخصوصية، ونحترمه تمامًا. الكود المُستخدم على الخادم مُحمي بـ [برمجيات مفتوحة المصدر على GitHub](https://github.com/forwardemail) لضمان الشفافية وبناء الثقة.
+نؤمن بحقك في الخصوصية، ونحترمه تمامًا. الكود المُستخدم على الخادم هو [برمجيات مفتوحة المصدر على GitHub](https://github.com/forwardemail) لضمان الشفافية وبناء الثقة.
 
 ### هل يمكنني "إرسال البريد باسم" في Gmail باستخدام هذا {#can-i-send-mail-as-in-gmail-with-this}
 
@@ -4606,7 +4588,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 </span>
 </div>
 
-### هل يمكنني "إرسال البريد باسم" في Apple Mail و iCloud Mail باستخدام هذا {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
+### هل يمكنني "إرسال البريد باسم" في Apple Mail وiCloud Mail باستخدام هذا {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this}
 
 إذا كنت مشتركًا في iCloud+، فيمكنك استخدام نطاق مخصص. [خدمتنا متوافقة أيضًا مع Apple Mail](#apple-mail).
 
@@ -4614,7 +4596,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ### هل يمكنني إعادة توجيه عدد غير محدود من رسائل البريد الإلكتروني باستخدام هذا {#can-i-forward-unlimited-emails-with-this}
 
-نعم، ولكن بالنسبة للمرسلين "غير المعروفين نسبيًا"، يقتصر معدل الاتصال على 100 اتصال في الساعة لكل اسم مضيف أو عنوان IP. راجع قسمي [تحديد المعدل](#do-you-have-rate-limiting) و[القائمة الرمادية](#do-you-have-a-greylist) أعلاه.
+نعم، ولكن بالنسبة للمرسلين "غير المعروفين نسبيًا"، يقتصر معدل الإرسال على 100 اتصال في الساعة لكل اسم مضيف أو عنوان IP. راجع قسم [تحديد المعدل](#do-you-have-rate-limiting) و[القائمة الرمادية](#do-you-have-a-greylist) أعلاه.
 
 بـ "غير معروف نسبيًا"، فإننا نعني المرسلين الذين لا يظهرون في [القائمة المسموح بها](#do-you-have-an-allowlist).
 
@@ -4624,7 +4606,7 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 نعم. بغض النظر عن الباقة التي تختارها، ستدفع رسمًا شهريًا واحدًا فقط، يغطي جميع نطاقاتك.
 
-### ما هي طرق الدفع التي تقبلونها؟ {#which-payment-methods-do-you-accept}
+### ما هي طرق الدفع التي تقبلها؟ {#which-payment-methods-do-you-accept}
 
 تقبل خدمة Forward Email طرق الدفع التالية لمرة واحدة أو شهرية/ربع سنوية/سنوية:
 
@@ -4633,17 +4615,17 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 ٣. **العملات المشفرة**: نقبل الدفع عبر عملة سترايب المستقرة على شبكات إيثريوم، بوليجون، وسولانا.
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> نخزن معلومات دفع محدودة على خوادمنا، والتي تتضمن فقط معرفات الدفع ومراجع معاملات [شريط](https://stripe.com/global) و[باي بال](https://www.paypal.com)، ومعرفات العميل والاشتراك والدفع.
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> للحصول على أقصى قدر من الخصوصية، فكّر في استخدام مدفوعات العملات المشفرة.
 
 تتم معالجة جميع المدفوعات بأمان عبر Stripe أو PayPal. لا يتم تخزين بيانات دفعك على خوادمنا.
 
 ## موارد إضافية {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> يتم تحديث مقالاتنا أدناه بانتظام بأدلة ونصائح ومعلومات تقنية جديدة. تابعونا باستمرار للاطلاع على أحدث المحتوى.
 
 * [دراسات الحالة ووثائق المطورين](/blog/docs)
 * [موارد](/resources)

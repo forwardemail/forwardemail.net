@@ -13,7 +13,7 @@ Vous devrez installer les dépendances npm `@react-email/render` et `nodemailer`
 npm install @react-email/render nodemailer
 ```
 
-## Code source et exemple {#source-code-and-example}
+## Code source et exemple de {#source-code-and-example}
 
 Créez votre modèle d'e-mail avec un fichier `.jsx` ou `.js` :
 

@@ -15,9 +15,9 @@ npm install nodemailer
 
 ## Kode Sumber dan Contoh {#source-code-and-example}
 
-Contoh ini menggunakan pustaka **[Nodemailer](https://github.com/nodemailer/nodemailer)** dan sponsor resminya **[Teruskan Email](https://forwardemail.net)** untuk mengirim dan melihat pratinjau surat keluar.
+Contoh ini menggunakan pustaka **[Nodemailer](https://github.com/nodemailer/nodemailer)** dan sponsor resminya **[Teruskan Email](https://forwardemail.net)** untuk mengirim dan melihat pratinjau email keluar.
 
-Anda perlu <strong class="text-success"><i class="fa fa-key"></i> Membuat Kata Sandi</strong> untuk mengirim email keluar – silakan ikuti **[Panduan Mengirim Email dengan Domain Kustom SMTP](/guides/send-email-with-custom-domain-smtp)** kami.
+Anda perlu <strong class="text-success"><i class="fa fa-key"></i> Membuat Kata Sandi</strong> untuk mengirim email keluar – harap ikuti **[Panduan Mengirim Email dengan Domain Kustom SMTP](/guides/send-email-with-custom-domain-smtp)** kami.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 

@@ -56,7 +56,7 @@ Implementamos múltiples capas de seguridad de red:
 * Protección mediante escaneo de puertos con bloqueo automático de actividades sospechosas
 
 > \[!IMPORTANT]
-> All data in transit is encrypted using TLS 1.2+ with modern cipher suites.
+> Todos los datos en tránsito están cifrados mediante TLS 1.2+ con conjuntos de cifrado modernos.
 
 ## Seguridad del correo electrónico {#email-security}
 
@@ -69,7 +69,7 @@ Implementamos múltiples capas de seguridad de red:
 * **Protección integral**: Implementamos cifrado en reposo, cifrado en memoria y cifrado en tránsito.
 
 > \[!NOTE]
-> We're the world's first and only email service to use **[quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
+> Somos el primer y único servicio de correo electrónico del mundo que utiliza **[Buzones SQLite resistentes a los ataques cuánticos y cifrados individualmente](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)**.
 
 ### Autenticación y autorización {#authentication-and-authorization}
 
@@ -86,7 +86,7 @@ Implementamos múltiples capas de seguridad de red:
 * **Reputación de IP**: Monitoreo de la reputación de IP de envío
 * **Filtrado de contenido**: Detección de URL maliciosas e intentos de phishing
 
-## Protección de Datos {#data-protection}
+## Protección de datos {#data-protection}
 
 ### Minimización de datos {#data-minimization}
 
@@ -132,9 +132,9 @@ Nuestro equipo supervisa, revisa y evalúa periódicamente el código base, los 
 
 ### Cumplimiento {#compliance}
 
-* Prácticas de manejo de datos que cumplen con la normativa [GDPR](https://forwardemail.net/gdpr)
+* Prácticas de manejo de datos que cumplen con [GDPR](https://forwardemail.net/gdpr)
 * [Acuerdo de procesamiento de datos (APD)](https://forwardemail.net/dpa) disponible para clientes comerciales
-* Controles de privacidad que cumplen con la normativa CCPA
+* Controles de privacidad que cumplen con la CCPA
 * Procesos auditados SOC 2 Tipo II
 
 ## Respuesta a incidentes {#incident-response}
@@ -149,7 +149,7 @@ Nuestro plan de respuesta a incidentes de seguridad incluye:
 6. **Análisis post-incidente**: Revisión y mejora integrales
 
 > \[!WARNING]
-> If you discover a security vulnerability, please report it immediately to <security@forwardemail.net>.
+> Si descubre una vulnerabilidad de seguridad, infórmelo inmediatamente a <security@forwardemail.net>.
 
 ## Ciclo de vida del desarrollo de seguridad {#security-development-lifecycle}
 
@@ -194,10 +194,10 @@ Nuestro [Configuración de Ansible](https://github.com/forwardemail/forwardemail
 * **Protección de escaneo de puertos**: Detección y bloqueo automáticos de intentos de escaneo de puertos.
 * **Páginas enormes transparentes deshabilitadas**: THP. Deshabilitado para mejorar el rendimiento y la seguridad.
 * **Fortalecimiento de servicios del sistema**: Servicios no esenciales como Apport deshabilitados.
-* **Administración de usuarios**: Principio de mínimos privilegios con usuarios separados para implementación y desarrollo.
+* **Administración de usuarios**: Principio de mínimos privilegios con usuarios de implementación y DevOps separados.
 * **Límites de descriptores de archivos**: Límites aumentados para mejorar el rendimiento y la seguridad.
 
-## Acuerdo de Nivel de Servicio {#service-level-agreement}
+## Acuerdo de nivel de servicio {#service-level-agreement}
 
 Mantenemos un alto nivel de disponibilidad y fiabilidad del servicio. Nuestra infraestructura está diseñada para ofrecer redundancia y tolerancia a fallos, garantizando así la operatividad de su servicio de correo electrónico. Si bien no publicamos un documento formal de Acuerdo de Nivel de Servicio (SLA), nos comprometemos a:
 
@@ -215,14 +215,14 @@ Como [servicio de código abierto](https://github.com/forwardemail/forwardemail.
 * Identificación y corrección rápidas de vulnerabilidades
 * Sin seguridad por oscuridad
 
-## Seguridad de los empleados {#employee-security}
+## Seguridad del empleado {#employee-security}
 
 * Verificación de antecedentes de todos los empleados
 * Capacitación en seguridad
 * Principio de acceso con privilegios mínimos
 * Capacitación regular en seguridad
 
-## Mejora Continua {#continuous-improvement}
+## Mejora continua {#continuous-improvement}
 
 Mejoramos continuamente nuestra postura de seguridad a través de:
 

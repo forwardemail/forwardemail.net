@@ -1,14 +1,14 @@
-# مقبرة شركات البريد الإلكتروني الناشئة: لماذا تفشل معظم شركات البريد الإلكتروني {#the-email-startup-graveyard-why-most-email-companies-fail}
+# مقبرة شركات البريد الإلكتروني الناشئة: لماذا تفشل معظم شركات البريد الإلكتروني؟ {#the-email-startup-graveyard-why-most-email-companies-fail}
 
 <img تحميل="كسول" src="/img/articles/email-startup-graveyard.webp" alt="" class="rounded-lg" />
 
-<p class="lead mt-3">في حين استثمرت العديد من الشركات الناشئة في مجال البريد الإلكتروني ملايين الدولارات في حل المشكلات المتصورة، فقد ركزنا في <a href="https://forwardemail.net">Forward Email</a> على بناء بنية تحتية موثوقة للبريد الإلكتروني من الصفر منذ عام 2017. يستكشف هذا التحليل الأنماط الكامنة وراء نتائج الشركات الناشئة في مجال البريد الإلكتروني والتحديات الأساسية التي تواجه البنية التحتية للبريد الإلكتروني.</p>
+<p class="lead mt-3">في حين استثمرت العديد من شركات البريد الإلكتروني الناشئة ملايين الدولارات في حل المشكلات المتصورة، فقد ركزنا في <a href="https://forwardemail.net">Forward Email</a> على بناء بنية تحتية موثوقة للبريد الإلكتروني من الصفر منذ عام 2017. يستكشف هذا التحليل الأنماط الكامنة وراء نتائج شركات البريد الإلكتروني الناشئة والتحديات الأساسية للبنية التحتية للبريد الإلكتروني.</p>
 
 > \[!NOTE]
-> **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
+> **نظرة رئيسية**: معظم شركات البريد الإلكتروني الناشئة لا تبني بنية تحتية فعلية للبريد الإلكتروني من الصفر. يعتمد العديد منها على حلول موجودة مثل Amazon SES أو أنظمة مفتوحة المصدر مثل Postfix. تعمل البروتوكولات الأساسية بكفاءة، لكن التحدي يكمن في التنفيذ.
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **نظرة تقنية متعمقة**: للاطلاع على تفاصيل شاملة حول نهجنا وبنيتنا وتطبيقنا الأمني، يُرجى الاطلاع على [ورقة بيضاء فنية حول إعادة توجيه البريد الإلكتروني](https://forwardemail.net/technical-whitepaper.pdf) و[حول الصفحة](https://forwardemail.net/en/about) اللذين يوثقان الجدول الزمني الكامل لتطويرنا منذ عام ٢٠١٧.
 
 ## جدول المحتويات {#table-of-contents}
 
@@ -99,7 +99,7 @@
 ## مصفوفة فشل بدء تشغيل البريد الإلكتروني {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Failure Rate Alert**: [Techstars alone has 28 email-related companies](https://www.techstars.com/portfolio) with only 5 exits - an exceedingly high failure rate (sometimes calculated to be 80%+).
+> **تنبيه معدل الفشل**: [لدى شركة Techstars وحدها 28 شركة مرتبطة بالبريد الإلكتروني](https://www.techstars.com/portfolio) مع 5 مخارج فقط - معدل فشل مرتفع للغاية (يُحسب أحيانًا بأكثر من 80%).
 
 فيما يلي كل فشل رئيسي في مجال بدء تشغيل البريد الإلكتروني الذي يمكننا العثور عليه، مرتبة حسب المعجل والتمويل والنتيجة:
 
@@ -120,7 +120,7 @@
 ## التحقق من واقع البنية التحتية {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **The Hidden Truth**: Every single "email startup" is just building UI on top of existing infrastructure. They're not building actual email servers - they're building apps that connect to real email infrastructure.
+> **الحقيقة الخفية**: كل شركة بريد إلكتروني ناشئة تبني واجهة مستخدم بناءً على البنية التحتية الحالية. إنها لا تبني خوادم بريد إلكتروني فعلية، بل تطبيقات تتصل ببنية بريد إلكتروني حقيقية.
 
 ### ما الذي يقوم بتشغيل البريد الإلكتروني فعليًا؟ {#what-actually-runs-email}
 
@@ -139,7 +139,7 @@ graph TD
     F --> K[Authentication that works]
 ```
 
-### ما الذي تبنيه "شركات البريد الإلكتروني الناشئة" في الواقع {#what-email-startups-actually-build}
+### ما الذي تبنيه "شركات البريد الإلكتروني الناشئة" فعليًا {#what-email-startups-actually-build}
 
 ```mermaid
 graph LR
@@ -157,24 +157,24 @@ graph LR
 ```
 
 > \[!TIP]
-> **Key Pattern for Email Success**: The companies that actually succeed in email don't try to reinvent the wheel. Instead, they build **infrastructure and tools that enhance** existing email workflows. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), and [Postmark](https://postmarkapp.com/) became billion-dollar companies by providing reliable SMTP APIs and delivery services - they work **with** email protocols, not against them. This is the same approach we take at Forward Email.
+> **النمط الرئيسي لنجاح البريد الإلكتروني**: الشركات الناجحة في مجال البريد الإلكتروني لا تحاول إعادة اختراع العجلة، بل تبني **بنية تحتية وأدوات تُحسّن** سير عمل البريد الإلكتروني الحالي. أصبحت الشركات [شبكة الإرسال](https://sendgrid.com/) و[بندقية البريد](https://www.mailgun.com/) و[ختم البريد](https://postmarkapp.com/) شركاتٍ بمليارات الدولارات من خلال توفير واجهات برمجة تطبيقات SMTP وخدمات توصيل موثوقة - فهي تعمل **مع** بروتوكولات البريد الإلكتروني، وليس ضدها. وهذا هو النهج نفسه الذي نتبعه في Forward Email.
 
 ## لماذا تفشل معظم شركات البريد الإلكتروني الناشئة؟ {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **The Fundamental Pattern**: Email *client* startups typically fail because they try to replace working protocols, while email *infrastructure* companies can succeed by enhancing existing workflows. The key is understanding what users actually need versus what entrepreneurs think they need.
+> **النمط الأساسي**: عادةً ما تفشل شركات البريد الإلكتروني الناشئة *العميل* لمحاولتها استبدال بروتوكولات العمل، بينما يمكن لشركات *البنية التحتية* للبريد الإلكتروني النجاح من خلال تحسين سير العمل الحالي. يكمن السر في فهم احتياجات المستخدمين الفعلية مقارنةً بما يعتقد رواد الأعمال أنهم بحاجة إليه.
 
 ### 1. تعمل بروتوكولات البريد الإلكتروني، ولكن التنفيذ غالبًا لا يعمل {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Email Statistics**: [347.3 billion emails sent daily](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) without major issues, serving [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023.
+> **إحصائيات البريد الإلكتروني**: [347.3 مليار رسالة بريد إلكتروني يتم إرسالها يوميًا](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) دون مشاكل كبيرة، ويخدم [4.37 مليار مستخدم للبريد الإلكتروني في جميع أنحاء العالم](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) اعتبارًا من عام ٢٠٢٣.
 
 بروتوكولات البريد الإلكتروني الأساسية قوية، لكن جودة التنفيذ تختلف على نطاق واسع:
 
-* **توافق عالمي**: يدعم جميع الأجهزة والمنصات بروتوكولات [SMTP](https://tools.ietf.org/html/rfc5321) و[IMAP](https://tools.ietf.org/html/rfc3501) و[POP3](https://tools.ietf.org/html/rfc1939)
-* **لامركزي**: لا توجد نقطة فشل واحدة في جميع بروتوكولات [مليارات خوادم البريد الإلكتروني في جميع أنحاء العالم](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/)
+* **توافق عالمي**: يدعم جميع الأجهزة والمنصات [SMTP](https://tools.ietf.org/html/rfc5321) و[IMAP](https://tools.ietf.org/html/rfc3501) و[POP3](https://tools.ietf.org/html/rfc1939).
+* **لامركزي**: لا توجد نقطة فشل واحدة في [مليارات خوادم البريد الإلكتروني في جميع أنحاء العالم](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/).
 * **موحد**: بروتوكولات SMTP وIMAP وPOP3 مجربة وفعّالة من ثمانينيات وتسعينيات القرن الماضي.
-* **موثوقة**: [347.3 مليار رسالة بريد إلكتروني يتم إرسالها يوميًا](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) دون مشاكل كبيرة.
+* **موثوق**: [347.3 مليار رسالة بريد إلكتروني يتم إرسالها يوميًا](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) بدون مشاكل كبيرة.
 
 **الفرصة الحقيقية**: تحسين تنفيذ البروتوكولات الحالية، وليس استبدال البروتوكول.
 
@@ -182,7 +182,7 @@ graph LR
 
 إن تأثير شبكة البريد الإلكتروني مطلق:
 
-* **الجميع لديه بريد إلكتروني**: [4.37 مليار مستخدم للبريد الإلكتروني في جميع أنحاء العالم](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) اعتبارًا من عام 2023
+* **لدى الجميع بريد إلكتروني**: [4.37 مليار مستخدم للبريد الإلكتروني في جميع أنحاء العالم](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) اعتبارًا من عام ٢٠٢٣
 * **متعدد المنصات**: يعمل بسلاسة بين جميع مقدمي الخدمة
 * **مهم للأعمال**: [99% من الشركات تستخدم البريد الإلكتروني يوميًا](https://blog.hubspot.com/marketing/email-marketing-stats) للعمليات
 * **تكلفة التبديل**: يؤدي تغيير عناوين البريد الإلكتروني إلى تعطيل كل ما يتعلق بها
@@ -192,9 +192,9 @@ graph LR
 تُركز العديد من الشركات الناشئة في مجال البريد الإلكتروني على المشكلات الملموسة بدلاً من نقاط الألم الحقيقية:
 
 * **"البريد الإلكتروني معقد للغاية"**: سير العمل الأساسي بسيط - [إرسال، استقبال، تنظيم منذ عام 1971](https://en.wikipedia.org/wiki/History_of_email)
-* **"البريد الإلكتروني يحتاج إلى الذكاء الاصطناعي"**: [يحتوي Gmail بالفعل على ميزات ذكية فعالة](https://support.google.com/mail/answer/9116836) مثل الرد الذكي وصندوق البريد ذي الأولوية
-* **"البريد الإلكتروني يحتاج إلى أمان أفضل"**: [DKIM](https://tools.ietf.org/html/rfc6376) و [SPF](https://tools.ietf.org/html/rfc7208) و [DMARC](https://tools.ietf.org/html/rfc7489) توفر مصادقة قوية
-* **"البريد الإلكتروني يحتاج إلى واجهة جديدة"**: تم تحسين واجهات [التوقعات](https://outlook.com/) و [جيميل](https://gmail.com/) بعد عقود من أبحاث المستخدمين
+* **"البريد الإلكتروني يحتاج إلى ذكاء اصطناعي"**: [يحتوي Gmail بالفعل على ميزات ذكية فعالة](https://support.google.com/mail/answer/9116836) يُفضل الرد الذكي والبريد الوارد ذي الأولوية
+* **"البريد الإلكتروني يحتاج إلى أمان أفضل"**: توفر [DKIM](https://tools.ietf.org/html/rfc6376) و[SPF](https://tools.ietf.org/html/rfc7208) و[DMARC](https://tools.ietf.org/html/rfc7489) مصادقة قوية.
+* **"البريد الإلكتروني يحتاج إلى واجهة جديدة"**: تم تحسين واجهات [التوقعات](https://outlook.com/) و[جيميل](https://gmail.com/) على مدار عقود من أبحاث المستخدمين.
 
 **المشاكل الحقيقية التي تستحق الحل**: موثوقية البنية التحتية، وإمكانية التسليم، وتصفية البريد العشوائي، وأدوات المطورين.
 
@@ -202,11 +202,11 @@ graph LR
 
 يتطلب إنشاء البنية التحتية الحقيقية للبريد الإلكتروني ما يلي:
 
-* **خوادم SMTP**: تسليم مُعقّد و [إدارة السمعة](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
-* **تصفية البريد العشوائي**: تطور مستمر [مشهد التهديد](https://www.spamhaus.org/)
-* **أنظمة التخزين**: تنفيذ موثوق [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
-* **المصادقة**: الامتثال [DKIM](https://tools.ietf.org/html/rfc6376)، [SPF](https://tools.ietf.org/html/rfc7208)، [DMARC](https://tools.ietf.org/html/rfc7489)، [ARC](https://tools.ietf.org/html/rfc8617)
-* **إمكانية التسليم**: علاقات مزودي خدمة الإنترنت و [إدارة السمعة](https://sendgrid.com/blog/what-is-email-deliverability/)
+* **خوادم SMTP**: تسليم مُعقّد و[إدارة السمعة](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
+* **تصفية البريد العشوائي**: [مشهد التهديد](https://www.spamhaus.org/) في تطور مستمر
+* **أنظمة التخزين**: تطبيق موثوق لـ [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
+* **المصادقة**: التوافق مع [DKIM](https://tools.ietf.org/html/rfc6376)، [SPF](https://tools.ietf.org/html/rfc7208)، [DMARC](https://tools.ietf.org/html/rfc7489)، [ARC](https://tools.ietf.org/html/rfc8617)
+* **إمكانية التسليم**: علاقات مزودي خدمة الإنترنت و[إدارة السمعة](https://sendgrid.com/blog/what-is-email-deliverability/)
 
 ### 5. البنية التحتية موجودة بالفعل {#5-the-infrastructure-already-exists}
 
@@ -216,11 +216,11 @@ graph LR
 * **[بوستفيكس](http://www.postfix.org/)**: خادم SMTP مُختبر جيدًا
 * **[برج الحمام](https://www.dovecot.org/)**: خادم IMAP/POP3 موثوق
 * **[سباماسين](https://spamassassin.apache.org/)**: تصفية فعالة للرسائل غير المرغوب فيها
-* **المزودون الحاليون**: [جيميل](https://gmail.com/)، [التوقعات](https://outlook.com/)، [البريد السريع](https://www.fastmail.com/) تعمل بشكل جيد
+* **المزودون الحاليون**: يعمل [جيميل](https://gmail.com/) و[التوقعات](https://outlook.com/) و[البريد السريع](https://www.fastmail.com/) بشكل جيد
 
-## دراسات الحالة: عندما تفشل شركات البريد الإلكتروني الناشئة {#case-studies-when-email-startups-fail}
+دراسات حالة ##: عندما تفشل شركات البريد الإلكتروني الناشئة {#case-studies-when-email-startups-fail}
 
-### دراسة حالة: كارثة الزورق {#case-study-the-skiff-disaster}
+دراسة حالة ###: كارثة الزورق {#case-study-the-skiff-disaster}
 
 يُعد Skiff مثالًا مثاليًا لكل ما هو خاطئ في الشركات الناشئة التي تعمل في مجال البريد الإلكتروني.
 
@@ -232,19 +232,19 @@ graph LR
 
 #### الاستحواذ {#the-acquisition}
 
-[استحوذت شركة Notion على Skiff في فبراير 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) مع وعود الاستحواذ النموذجية بشأن التكامل والتطوير المستمر.
+[استحوذت شركة Notion على Skiff في فبراير 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) مع وعود الاستحواذ النموذجية حول التكامل والتطوير المستمر.
 
 #### الواقع {#the-reality}
 
 * **إيقاف فوري**: [تم إغلاق سكيف في غضون أشهر](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
-* **هجرة المؤسسين**: [غادر مؤسسو Skiff شركة Notion وانضموا إلى Cursor](https://x.com/skeptrune/status/1939763513695903946)
+* **هجرة المؤسس**: [غادر مؤسسو Skiff شركة Notion وانضموا إلى Cursor](https://x.com/skeptrune/status/1939763513695903946)
 * **هجر المستخدمين**: آلاف المستخدمين مُجبرون على الانتقال
 
 ### تحليل المسرع {#the-accelerator-analysis}
 
 #### Y Combinator: مصنع تطبيقات البريد الإلكتروني {#y-combinator-the-email-app-factory}
 
-موّلت [مُجمِّع Y](https://www.ycombinator.com/) عشرات الشركات الناشئة في مجال البريد الإلكتروني. إليكم النموذج:
+موّل [مُجمِّع Y](https://www.ycombinator.com/) عشرات الشركات الناشئة في مجال البريد الإلكتروني. إليكم النموذج:
 
 * **[بريد إلكتروني](https://www.ycdb.co/company/emailio)** (2014): عميل بريد إلكتروني للجوال → تم الانتقال إلى "الرفاهية"
 * **[وقت البريد](https://www.ycdb.co/company/mailtime)** (2016): بريد إلكتروني بنمط الدردشة → تم الانتقال إلى التحليلات
@@ -255,7 +255,7 @@ graph LR
 
 #### Techstars: مقبرة البريد الإلكتروني {#techstars-the-email-graveyard}
 
-[تيكستارز](https://www.techstars.com/) له سجل أسوأ:
+[تيكستارز](https://www.techstars.com/) لديه سجل أسوأ:
 
 * **[مساعد البريد الإلكتروني](https://www.validity.com/everest/returnpath/)** (2012): تم الاستحواذ ← إيقاف التشغيل
 * **[الردإرسال](https://www.crunchbase.com/organization/replysend)** (2012): فشل تمامًا
@@ -268,7 +268,7 @@ graph LR
 ### فخ رأس المال الاستثماري {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
+> **مفارقة تمويل رأس المال المُغامر**: يُحبّذ أصحاب رأس المال المُغامر شركات البريد الإلكتروني الناشئة لأنها تبدو بسيطة، لكنها في الواقع مُستحيلة. الافتراضات الأساسية التي تجذب الاستثمار هي بالضبط ما يضمن الفشل.
 
 يحب أصحاب رؤوس الأموال المخاطرة الشركات الناشئة التي تعمل في مجال البريد الإلكتروني لأنها تبدو بسيطة ولكنها في الواقع مستحيلة:
 
@@ -314,13 +314,13 @@ graph LR
 **تضخم الذاكرة**: معظم تطبيقات البريد الإلكتروني عبارة عن تطبيقات ويب تعتمد على Electron وتستهلك كميات هائلة من ذاكرة الوصول العشوائي (RAM):
 
 * **[ميل سبرينغ](https://getmailspring.com/)**: [500 ميجابايت+ للبريد الإلكتروني الأساسي](https://github.com/Foundry376/Mailspring/issues/1758)
-* **Nylas Mail**: [استخدام ذاكرة 1 جيجابايت+](https://github.com/nylas/nylas-mail/issues/3501) قبل الإغلاق
+* **Nylas Mail**: [استخدام ذاكرة 1 جيجابايت+](https://github.com/nylas/nylas-mail/issues/3501) قبل إيقاف التشغيل
 * **[صندوق البريد](https://www.postbox-inc.com/)**: [ذاكرة خاملة تزيد عن 300 ميجابايت](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[بريد الكناري](https://canarymail.io/)**: [الأعطال المتكررة بسبب مشاكل الذاكرة](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
 * **[طائر الرعد](https://www.thunderbird.net/)**: [استخدام ذاكرة الوصول العشوائي (RAM) بشكل مرتفع يصل إلى 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) من ذاكرة النظام
 
 > \[!WARNING]
-> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
+> **أزمة أداء Electron**: تعاني برامج البريد الإلكتروني الحديثة المُصممة باستخدام Electron وReact Native من تضخم كبير في الذاكرة ومشاكل في الأداء. هذه الأطر متعددة المنصات، على الرغم من أنها مناسبة للمطورين، تُنشئ تطبيقات كثيفة الموارد تستهلك مئات الميغابايتات إلى غيغابايت من ذاكرة الوصول العشوائي (RAM) لوظائف البريد الإلكتروني الأساسية.
 
 **استنزاف البطارية**: المزامنة المستمرة والرمز غير الفعال:
 
@@ -370,9 +370,9 @@ flowchart TD
 **فشل تطبيق العميل**:
 
 * **صندوق البريد ← دروبوكس ← إيقاف التشغيل** (2013-2015)
-* **[عصفور → جوجل → إيقاف التشغيل](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
-* **[إعادة البريد → جوجل → إيقاف التشغيل](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
-* **[Skiff → Notion → إيقاف التشغيل](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
+* **حامل_مكان_مؤقت_0** (2012-2013)
+* **حامل_مكان_مؤقت_1** (2010-2011)
+* **حامل_مكان_مؤقت_2** (2024)
 
 **استثناء ملحوظ**:
 
@@ -418,22 +418,22 @@ flowchart TD
 
 **المجتمع على حق**. تظهر هذه التعليقات عند كل إطلاق مشروع ناشئ عبر البريد الإلكتروني، لأن المشاكل الأساسية واحدة دائمًا.
 
-## عملية احتيال البريد الإلكتروني الحديثة باستخدام الذكاء الاصطناعي {#the-modern-ai-email-grift}
+## احتيال البريد الإلكتروني بالذكاء الاصطناعي الحديث {#the-modern-ai-email-grift}
 
 ### الموجة الأخيرة {#the-latest-wave}
 
 شهد عام 2024 موجة جديدة من الشركات الناشئة التي تعمل بنظام "البريد الإلكتروني المدعوم بالذكاء الاصطناعي"، مع حدوث أول خروج ناجح كبير بالفعل:
 
-* **[خارق للطبيعة](https://superhuman.com/)**: [تم جمع 33 مليون دولار](https://superhuman.com/)، [تم الاستحواذ عليها بنجاح بواسطة Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - إصدار ناجح نادر لتطبيق العميل
-* **[الموجات القصيرة](https://www.shortwave.com/)**: غلاف Gmail مع ملخصات الذكاء الاصطناعي
-* **[سانبوكس](https://www.sanebox.com/)**: تصفية البريد الإلكتروني بالذكاء الاصطناعي (تعمل بالفعل، ولكنها ليست ثورية)
+* **[خارق للطبيعة](https://superhuman.com/)**: [تم جمع 33 مليون دولار](https://superhuman.com/)، [تم الاستحواذ عليها بنجاح بواسطة Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025) - نجاح نادر لتطبيق العميل.
+* **[الموجات القصيرة](https://www.shortwave.com/)**: غلاف Gmail مع ملخصات الذكاء الاصطناعي.
+* **[سانبوكس](https://www.sanebox.com/)**: تصفية البريد الإلكتروني بالذكاء الاصطناعي (تعمل بالفعل، ولكنها ليست ثورية).
 
 ### نفس المشاكل القديمة {#the-same-old-problems}
 
 إن إضافة "الذكاء الاصطناعي" لا يحل التحديات الأساسية:
 
 * **ملخصات الذكاء الاصطناعي**: معظم رسائل البريد الإلكتروني موجزة بالفعل.
-* **ردود ذكية**: [لقد كان لدى Gmail هذه الخدمة لسنوات](https://support.google.com/mail/answer/9116836) وتعمل بكفاءة.
+* **الردود الذكية**: [لقد كان لدى Gmail هذه الخدمة لسنوات](https://support.google.com/mail/answer/9116836) وتعمل بشكل جيد.
 * **جدولة البريد الإلكتروني**: [يقوم Outlook بذلك بشكل أصلي](https://support.microsoft.com/en-us/office/delay-or-schedule-sending-email-messages-026af69f-c287-490a-a72f-6c65793744ba).
 * **الكشف عن الأولوية**: برامج البريد الإلكتروني الحالية لديها أنظمة تصفية فعالة.
 
@@ -452,22 +452,22 @@ flowchart TD
 
 ### موفرو البريد الإلكتروني (الناجون) {#email-providers-the-survivors}
 
-* **[البريد السريع](https://www.fastmail.com/)**: [25+ سنة](https://www.fastmail.com/about/)، مربحة، مستقلة
+* **[البريد السريع](https://www.fastmail.com/)**: [25+ سنة](https://www.fastmail.com/about/)، مربح، مستقل
 * **[بروتون ميل](https://proton.me/)**: نمو مستدام يركز على الخصوصية
 * **[بريد زوهو](https://www.zoho.com/mail/)**: جزء من مجموعة أعمال أكبر
 * **نحن**: أكثر من 7 سنوات، مربحة، متنامية
 
 > \[!WARNING]
-> **The JMAP Investment Question**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with limited adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that many users request. This represents a strategic choice to prioritize protocol innovation over user-requested features. Whether JMAP will gain broader adoption remains to be seen, but the current email client ecosystem continues to rely primarily on IMAP/SMTP.
+> **سؤال استثمار JMAP**: بينما يستثمر Fastmail موارده في [JMAP](https://jmap.io/)، وهو بروتوكول [10+ سنوات مع تبني محدود](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790)، فإنه في الوقت نفسه يستخدم [رفض تنفيذ تشفير PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) الذي يطلبه العديد من المستخدمين. يمثل هذا خيارًا استراتيجيًا لإعطاء الأولوية لابتكار البروتوكول على الميزات التي يطلبها المستخدمون. يبقى أن نرى ما إذا كان JMAP سيحظى بانتشار أوسع، ولكن نظام عملاء البريد الإلكتروني الحالي لا يزال يعتمد بشكل أساسي على IMAP/SMTP.
 
 > \[!TIP]
-> **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
+> **نجاح المؤسسة**: يدعم البريد الإلكتروني المُعاد توجيهه [حلول البريد الإلكتروني لخريجي الجامعات المرموقة](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study)، بما في ذلك جامعة كامبريدج التي تضم 30,000 عنوان لخريجيها، مما يُحقق وفورات سنوية في التكاليف بقيمة 87,000 دولار أمريكي مقارنةً بالحلول التقليدية.
 
 **النمط**: تعزيز البريد الإلكتروني، وليس استبداله.
 
 ### الاستثناء: قصة نجاح Xobni {#the-exception-xobnis-success-story}
 
-تبرز [هوبني](https://en.wikipedia.org/wiki/Xobni) كواحدة من الشركات الناشئة القليلة ذات الصلة بالبريد الإلكتروني والتي نجحت بالفعل من خلال اتباع النهج الصحيح.
+تبرز [هوبني](https://en.wikipedia.org/wiki/Xobni) باعتبارها واحدة من الشركات الناشئة القليلة ذات الصلة بالبريد الإلكتروني والتي نجحت بالفعل من خلال اتباع النهج الصحيح.
 
 **ما فعله زوبني بشكل صحيح**:
 
@@ -478,18 +478,18 @@ flowchart TD
 
 **النجاح**: [استحوذت شركة ياهو على شركة Xobni مقابل 60 مليون دولار في عام 2013](https://en.wikipedia.org/wiki/Xobni)، مما يوفر عائدًا قويًا للمستثمرين وخروجًا ناجحًا للمؤسسين.
 
-#### لماذا نجح Xobni بينما فشل الآخرون {#why-xobni-succeeded-where-others-failed}
+#### لماذا نجح Xobni حيث فشل الآخرون {#why-xobni-succeeded-where-others-failed}
 
 ١. **مبني على بنية تحتية مثبتة**: استخدام نظام إدارة البريد الإلكتروني الحالي في Outlook.
 ٢. **حل مشاكل حقيقية**: كانت إدارة جهات الاتصال معطلة تمامًا.
 ٣. **سوق المؤسسات**: تدفع الشركات ثمن أدوات الإنتاجية.
 ٤. **نهج التكامل**: تحسين سير العمل الحالي بدلاً من استبداله.
 
-#### نجاح المؤسسين المستمر {#the-founders-continued-success}
+#### استمرار نجاح المؤسسين {#the-founders-continued-success}
 
-لم يتوقف [مات بريزينا](https://www.linkedin.com/in/mattbrezina/) و [آدم سميث](https://www.linkedin.com/in/adamjsmith/) بعد Xobni:
+لم يتوقف [مات بريزينا](https://www.linkedin.com/in/mattbrezina/) و[آدم سميث](https://www.linkedin.com/in/adamjsmith/) بعد Xobni:
 
-* **مات بريزينا**: أصبح عضوًا نشطًا في [مستثمر ملاك](https://mercury.com/investor-database/matt-brezina) باستثمارات في دروبوكس وميل بوكس وغيرهما.
+* **مات بريزينا**: أصبح عضوًا نشطًا في [مستثمر ملاك](https://mercury.com/investor-database/matt-brezina) باستثمارات في Dropbox وMailbox وغيرها.
 * **آدم سميث**: واصل بناء شركات ناجحة في مجال الإنتاجية.
 * **كلا المؤسسين**: أثبتا أن نجاح البريد الإلكتروني يأتي من التحسين، وليس الاستبدال.
 
@@ -519,20 +519,17 @@ flowchart TD
 
 ### أدوات جديدة تُكمّل البريد الإلكتروني (ولكن لا تحل محله) {#new-tools-complement-email-but-dont-replace-it}
 
-* **[سلاك](https://slack.com/)**: ممتاز للدردشة الجماعية، ولكنه لا يزال يرسل إشعارات عبر البريد الإلكتروني.
-* **[ديسكورد](https://discord.com/)**: ممتاز للمجتمعات، ولكنه يستخدم البريد الإلكتروني لإدارة الحسابات.
-* **[واتساب](https://www.whatsapp.com/)**: مثالي للمراسلة، ولكن لا تزال الشركات تستخدم البريد الإلكتروني.
-* **[تكبير](https://zoom.us/)**: أساسي لمكالمات الفيديو، ولكن دعوات الاجتماعات تصل عبر البريد الإلكتروني.
+* **[سلاك](https://slack.com/)**: ممتاز للدردشة الجماعية، ولكنه لا يزال يرسل إشعارات عبر البريد الإلكتروني.* **[ديسكورد](https://discord.com/)**: ممتاز للمجموعات، ولكنه يستخدم البريد الإلكتروني لإدارة الحسابات.* **[واتساب](https://www.whatsapp.com/)**: مثالي للمراسلة، ولكن لا تزال الشركات تستخدم البريد الإلكتروني.* **[تكبير](https://zoom.us/)**: أساسي لمكالمات الفيديو، ولكن دعوات الاجتماعات تصل عبر البريد الإلكتروني.
 
 ### تجربة HEY {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Real-World Validation**: HEY's founder [DHH](https://dhh.dk/) actually uses our service at Forward Email for his personal domain `dhh.dk` and has for several years, demonstrating that even email innovators rely on proven infrastructure.
+> **التحقق من الواقع**: يستخدم مؤسس HEY، [DHH](https://dhh.dk/)، خدمتنا في Forward Email لنطاقه الشخصي `dhh.dk` منذ عدة سنوات، مما يُثبت أن حتى مُبتكري البريد الإلكتروني يعتمدون على بنية تحتية مُثبتة.
 
 يمثل [HEY](https://hey.com/) بواسطة [المعسكر الأساسي](https://basecamp.com/) المحاولة الأكثر جدية الأخيرة "لإعادة اختراع" البريد الإلكتروني:
 
 * **تم إطلاق**: [2020 مع ضجة كبيرة](https://world.hey.com/jason/hey-is-live-and-you-can-get-it-now-3aca3d9a)
-* **النهج**: نموذج بريد إلكتروني جديد كليًا يتضمن الفحص والتجميع وسير العمل.
+* **النهج**: نموذج بريد إلكتروني جديد كليًا يتضمن الفرز والتجميع وسير العمل.
 * **الاستقبال**: متباين - البعض يفضله، بينما يلتزم معظمهم بالبريد الإلكتروني الحالي.
 * **الواقع**: لا يزال البريد الإلكتروني (SMTP/IMAP) بواجهة مختلفة.
 
@@ -541,7 +538,7 @@ flowchart TD
 كانت الابتكارات الأكثر نجاحا في مجال البريد الإلكتروني هي:
 
 ١. **بنية تحتية أفضل**: خوادم أسرع، تصفية أفضل للرسائل غير المرغوب فيها، وإمكانية توصيل مُحسّنة.
-٢. **واجهات مُحسّنة**: [عرض المحادثة في Gmail](https://support.google.com/mail/answer/5900)، [تكامل تقويم Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5)
+٢. **واجهات مُحسّنة**: [عرض المحادثة في Gmail](https://support.google.com/mail/answer/5900)، [تكامل تقويم Outlook](https://support.microsoft.com/en-us/office/calendar-in-outlook-73b69a86-0a8e-4b14-9cb7-d2723397c9c5).
 ٣. **أدوات المطور**: واجهات برمجة تطبيقات لإرسال البريد الإلكتروني، وخطافات ويب للتتبع.
 ٤. **سير عمل مُتخصص**: تكامل إدارة علاقات العملاء، وأتمتة التسويق، والبريد الإلكتروني التفاعلي.
 
@@ -566,7 +563,7 @@ graph TD
     D --> G[Always fails: Trying to replace SMTP, IMAP, or POP3]
 ```
 
-### لماذا نركز على البنية التحتية {#why-we-focus-on-infrastructure}
+### لماذا نركز على البنية التحتية؟ {#why-we-focus-on-infrastructure}
 
 لقد اخترنا إنشاء البنية التحتية الحديثة للبريد الإلكتروني للأسباب التالية:
 
@@ -575,7 +572,7 @@ graph TD
 * **يريد المستخدمون الموثوقية**: لا ميزات جديدة تُعيق سير العمل الحالي.
 * **يحتاج المطورون إلى أدوات**: واجهات برمجة تطبيقات وواجهات إدارة أفضل.
 
-### ما الذي يعمل بالفعل في البريد الإلكتروني {#what-actually-works-in-email}
+### ما الذي يعمل فعليًا في البريد الإلكتروني {#what-actually-works-in-email}
 
 النمط الناجح بسيط: **تحسين سير عمل البريد الإلكتروني الحالي بدلاً من استبداله**. هذا يعني:
 
@@ -589,7 +586,7 @@ graph TD
 ### ما نقوم به {#what-we-do}
 
 * **بناء بنية تحتية فعلية**: خوادم SMTP/IMAP مخصصة من الصفر
-* **التركيز على الموثوقية**: [99.99% من وقت التشغيل](https://status.forwardemail.net)، ومعالجة الأخطاء بشكل صحيح
+* **التركيز على الموثوقية**: [99.99% من وقت التشغيل](https://status.forwardemail.net)، معالجة الأخطاء بشكل صحيح
 * **تحسين سير العمل الحالي**: العمل مع جميع عملاء البريد الإلكتروني
 * **خدمة المطورين**: واجهات برمجة تطبيقات وأدوات فعالة
 * **الحفاظ على التوافق**: التوافق الكامل مع [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
@@ -601,7 +598,7 @@ graph TD
 * إضافة ميزات ذكاء اصطناعي غير ضرورية
 * الوعد بـ"إصلاح" البريد الإلكتروني
 
-## كيف نبني البنية التحتية للبريد الإلكتروني التي تعمل بالفعل {#how-we-build-email-infrastructure-that-actually-works}
+## كيف نبني بنية تحتية للبريد الإلكتروني تعمل بالفعل {#how-we-build-email-infrastructure-that-actually-works}
 
 ### نهجنا المضاد للشركات الناشئة {#our-anti-startup-approach}
 
@@ -609,13 +606,13 @@ graph TD
 
 * **لا تغييرات جذرية**: لقد بنينا بنية تحتية للبريد الإلكتروني لأكثر من 7 سنوات.* **لا استراتيجية استحواذ**: نحن نبني على المدى الطويل.* **لا ادعاءات "ثورية"**: نحن فقط نجعل البريد الإلكتروني يعمل بشكل أفضل.
 
-### ما الذي يجعلنا مختلفين {#what-makes-us-different}
+### ما الذي يجعلنا مختلفين؟ {#what-makes-us-different}
 
-> \[!TIP]
-> **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
+حامل مكان مؤقت 0
+> **الامتثال الحكومي**: عنوان البريد الإلكتروني المُعاد توجيهه هو [متوافق مع المادة 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant)، وهو مُخصص لمؤسسات مثل الأكاديمية البحرية الأمريكية، مما يُظهر التزامنا بتلبية متطلبات الأمن الفيدرالية الصارمة.
 
 > \[!NOTE]
-> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+> **تطبيق OpenPGP وOpenWKD**: بخلاف Fastmail، الذي يُشير [يرفض تنفيذ PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) إلى مخاوف تتعلق بالتعقيد، يوفر Forward Email دعمًا كاملاً لـ OpenPGP مع التوافق مع OpenWKD (دليل مفاتيح الويب)، مما يمنح المستخدمين التشفير الذي يريدونه دون إجبارهم على استخدام بروتوكولات تجريبية مثل JMAP.
 
 **مقارنة المجموعة الفنية**:
 
@@ -644,15 +641,15 @@ graph TD
 
 * **لغة حديثة**: جافا سكريبت في جميع أنحاء المجموعة مقابل شيفرة C من ثمانينيات القرن الماضي.* **شيفرة بدون لصق**: لغة واحدة تُزيل تعقيد التكامل.* **أصلية للويب**: مصممة لتطوير الويب الحديث من البداية.* **قابلة للصيانة**: يمكن لأي مطور ويب فهمها والمساهمة فيها.* **لا ديون موروثة**: قاعدة شيفرة نظيفة وحديثة بدون عقود من التحديثات.
 
-> \[!NOTE]
-> **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
+حامل مكان مؤقت 0
+> **الخصوصية من خلال التصميم**: يضمن حامل مكان مؤقت 1 عدم تخزين رسائل البريد الإلكتروني المُعاد توجيهها على وحدة تخزين القرص أو قواعد البيانات، وعدم تخزين بيانات التعريف الخاصة برسائل البريد الإلكتروني، وعدم تخزين السجلات أو عناوين IP - حيث يعمل في الذاكرة فقط لخدمات إعادة توجيه البريد الإلكتروني.
 
 **الوثائق الفنية**: للحصول على تفاصيل شاملة حول نهجنا وهندستنا وتنفيذ الأمان، راجع [ورقة بيضاء فنية](https://forwardemail.net/technical-whitepaper.pdf) والوثائق الفنية الموسعة.
 
-### مقارنة مزودي خدمات البريد الإلكتروني: النمو من خلال البروتوكولات المثبتة {#email-service-provider-comparison-growth-through-proven-protocols}
+### مقارنة بين مزودي خدمات البريد الإلكتروني: النمو من خلال البروتوكولات المثبتة {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+> **أرقام النمو الحقيقية**: بينما يسعى مزودو خدمات البريد الإلكتروني الآخرون إلى بروتوكولات تجريبية، تُركز خدمة Forward Email على ما يريده المستخدمون بالفعل - بروتوكولات IMAP وPOP3 وSMTP وCalDAV وCardDAV موثوقة تعمل على جميع الأجهزة. يُظهر نمونا قيمة هذا النهج.
 
 | مزود | أسماء النطاقات (2024 عبر [SecurityTrails](https://securitytrails.com/)) | أسماء النطاقات (2025 عبر [ViewDNS](https://viewdns.info/reversemx/)) | النسبة المئوية للتغيير | سجل MX |
 | ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
@@ -661,19 +658,19 @@ graph TD
 | **البريد السريع** | 168,433 | 192,075 | **+14%** | `in1-smtp.messagingengine.com` |
 | **صندوق البريد** | 38,659 | 43,337 | **+12.1%** | `mxext1.mailbox.org` |
 | **المجموع** | 18,781 | 21,720 | **+15.6%** | `mail.tutanota.de` |
-| **سكيف (غير صالح للاستخدام)** | 7,504 | 3,361 | **-55.2%** | `inbound-smtp.skiff.com` |
+| **سكيف (غير موجود)** | 7,504 | 3,361 | **-55.2%** | `inbound-smtp.skiff.com` |
 
 **الرؤى الرئيسية**:
 
 * **إعادة توجيه البريد الإلكتروني** يُظهر نموًا قويًا (+21.1%) مع أكثر من 500 ألف نطاق يستخدم سجلات MX الخاصة بنا.
-* **نجاحات البنية التحتية المُثبتة**: تُظهر الخدمات التي تستخدم بروتوكولات IMAP/SMTP موثوقة تبنيًا ثابتًا للنطاقات.
+* **نجاحات البنية التحتية المُثبتة**: تُظهر الخدمات التي تستخدم بروتوكولات IMAP/SMTP موثوقة اعتمادًا ثابتًا للنطاقات.
 * **عدم أهمية JMAP**: يُظهر استثمار Fastmail في JMAP نموًا أبطأ (+14%) مقارنةً بمُقدمي الخدمات الذين يُركزون على البروتوكولات القياسية.
 * **انهيار Skiff**: خسرت الشركة الناشئة المُنهارة 55.2% من النطاقات، مما يُظهر فشل أساليب البريد الإلكتروني "الثورية".
-* **التحقق من صحة السوق**: يعكس نمو عدد النطاقات تبني المستخدمين الفعلي، وليس مقاييس التسويق.
+* **التحقق من صحة السوق**: يعكس نمو عدد النطاقات اعتماد المستخدمين الفعلي، وليس مقاييس التسويق.
 
 ### الجدول الزمني الفني {#the-technical-timeline}
 
-استنادًا إلى [الجدول الزمني الرسمي للشركة](https://forwardemail.net/en/about)، إليك كيفية إنشاء البنية الأساسية للبريد الإلكتروني التي تعمل بالفعل:
+استنادًا إلى [الجدول الزمني الرسمي للشركة](https://forwardemail.net/en/about) الخاص بنا، إليك كيفية إنشاء البنية الأساسية للبريد الإلكتروني التي تعمل بالفعل:
 
 ```mermaid
 timeline
@@ -713,7 +710,7 @@ graph TD
 ## تحديات أمنية في البنية التحتية للبريد الإلكتروني {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Quantum-Safe Email Security**: Forward Email is the [world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), providing unprecedented security against future quantum computing threats.
+> **أمان البريد الإلكتروني الكمي**: إعادة توجيه البريد الإلكتروني هو [أول خدمة بريد إلكتروني في العالم تستخدم صناديق بريد SQLite المقاومة للكميات والمشفرة بشكل فردي](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service)، مما يوفر أمانًا غير مسبوق ضد تهديدات الحوسبة الكمومية المستقبلية.
 
 يُعدّ أمن البريد الإلكتروني تحديًا معقدًا يؤثر على جميع مزودي خدمات البريد الإلكتروني في هذا المجال. بدلًا من تسليط الضوء على الحوادث الفردية، من الأهم فهم الاعتبارات الأمنية الشائعة التي يجب على جميع مزودي خدمات البريد الإلكتروني مراعاتها.
 
@@ -724,10 +721,10 @@ graph TD
 * **حماية البيانات**: تأمين بيانات المستخدم واتصالاته
 * **التحكم في الوصول**: إدارة المصادقة والتفويض
 * **أمن البنية التحتية**: حماية الخوادم وقواعد البيانات
-* **الامتثال**: استيفاء المتطلبات التنظيمية المختلفة مثل [GDPR](https://gdpr.eu/) و[CCPA](https://oag.ca.gov/privacy/ccpa)
+* **الامتثال**: استيفاء المتطلبات التنظيمية المختلفة، مثل [GDPR](https://gdpr.eu/) و[CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Advanced Encryption**: Our [security practices](https://forwardemail.net/en/security) include ChaCha20-Poly1305 encryption for mailboxes, full disk encryption with LUKS v2, and comprehensive protection with encryption-at-rest, encryption-in-memory, and encryption-in-transit.
+> **التشفير المتقدم**: يتضمن [ممارسات الأمن](https://forwardemail.net/en/security) تشفير ChaCha20-Poly1305 لصناديق البريد، وتشفيرًا كاملاً للقرص باستخدام LUKS v2، وحماية شاملة مع التشفير في حالة السكون، والتشفير في الذاكرة، والتشفير أثناء النقل.
 
 ### قيمة الشفافية {#the-value-of-transparency}
 
@@ -745,20 +742,20 @@ graph TD
 تستمر صناعة البريد الإلكتروني في تطوير ممارساتها الأمنية:
 
 * **معايير التشفير**: تطبيق أساليب تشفير أفضل مثل [TLS 1.3](https://tools.ietf.org/html/rfc8446)
-* **بروتوكولات المصادقة**: تحسين [DKIM](https://tools.ietf.org/html/rfc6376) و [SPF](https://tools.ietf.org/html/rfc7208) و [DMARC](https://tools.ietf.org/html/rfc7489)
-* **كشف التهديدات**: تطوير فلاتر أفضل للرسائل غير المرغوب فيها والتصيد الاحتيالي
+* **بروتوكولات المصادقة**: تحسين [DKIM](https://tools.ietf.org/html/rfc6376) و[SPF](https://tools.ietf.org/html/rfc7208) و[DMARC](https://tools.ietf.org/html/rfc7489)
+* **اكتشاف التهديدات**: تطوير فلاتر أفضل للرسائل غير المرغوب فيها والتصيد الاحتيالي
 * **تعزيز البنية التحتية**: تأمين الخوادم وقواعد البيانات
-* **إدارة سمعة النطاق**: التعامل مع [رسائل غير مسبوقة من نطاق onmicrosoft.com التابع لشركة Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) التي تتطلب [قواعد الحظر التعسفية](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) و [مناقشات MSP الإضافية](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
+* **إدارة سمعة النطاق**: التعامل مع [رسائل غير مسبوقة من نطاق onmicrosoft.com التابع لشركة Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) يتطلب [قواعد الحظر التعسفية](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) و[مناقشات MSP الإضافية](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/)
 
 وتتطلب هذه التحديات استثمارًا مستمرًا وخبرة من جميع مقدمي الخدمات في هذا المجال.
 
-## الخلاصة: التركيز على البنية التحتية، وليس التطبيقات {#conclusion-focus-on-infrastructure-not-apps}
+## الاستنتاج: التركيز على البنية التحتية، وليس التطبيقات {#conclusion-focus-on-infrastructure-not-apps}
 
 ### الدليل واضح {#the-evidence-is-clear}
 
 بعد تحليل مئات من الشركات الناشئة في مجال البريد الإلكتروني:
 
-* **[معدل الفشل 80٪+](https://www.techstars.com/portfolio)**: تفشل معظم شركات البريد الإلكتروني الناشئة تمامًا (من المرجح أن يكون هذا الرقم أعلى بكثير من 80%؛ ونحن نتصرف بلطف).
+* **[معدل الفشل 80٪+](https://www.techstars.com/portfolio)**: تفشل معظم شركات البريد الإلكتروني الناشئة تمامًا (من المرجح أن يكون هذا الرقم أعلى بكثير من 80%؛ نحن نتصرف بلطف).
 * **عادةً ما تفشل تطبيقات العملاء**: الاستحواذ يعني عادةً موت عملاء البريد الإلكتروني.
 * **البنية التحتية قابلة للنجاح**: غالبًا ما تزدهر الشركات التي تبني خدمات SMTP/API.
 * **تمويل رأس المال الاستثماري يخلق ضغوطًا**: رأس المال الاستثماري يخلق توقعات نمو غير واقعية.
@@ -781,19 +778,19 @@ graph TD
 
 الدرس ليس استحالة تحسين البريد الإلكتروني، بل اختيار النهج الصحيح.
 
-١. **بروتوكولات البريد الإلكتروني فعّالة**: [SMTP](https://tools.ietf.org/html/rfc5321)، [IMAP](https://tools.ietf.org/html/rfc3501)، [POP3](https://tools.ietf.org/html/rfc1939) مُجرّبة.
+١. **بروتوكولات البريد الإلكتروني فعّالة**: [SMTP](https://tools.ietf.org/html/rfc5321) و[IMAP](https://tools.ietf.org/html/rfc3501) و[POP3](https://tools.ietf.org/html/rfc1939) مجرّبة.
 ٢. **البنية التحتية مهمة**: الموثوقية والأداء أفضل من الميزات المبهرة.
-٣. **التحسين أفضل من الاستبدال**: تعامل مع البريد الإلكتروني، لا تُقاومه.
+٣. **التحسين أفضل من الاستبدال**: اعمل مع البريد الإلكتروني، لا تُقاومه.
 ٤. **الاستدامة أفضل من النمو**: الشركات المربحة تدوم أكثر من الشركات الممولة برأس المال الاستثماري.
 ٥. **خدمة المطورين**: الأدوات وواجهات برمجة التطبيقات تُنتج قيمة أكبر من تطبيقات المستخدم النهائي.
 
 **الفرصة**: تنفيذ أفضل للبروتوكولات المجربة، وليس استبدال البروتوكول.
 
 > \[!TIP]
-> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
+> **تحليل شامل لخدمات البريد الإلكتروني**: لمقارنة شاملة لـ 79 خدمة بريد إلكتروني في عام 2025، بما في ذلك المراجعات المفصلة ولقطات الشاشة والتحليل الفني، يُرجى الاطلاع على دليلنا الشامل: [79 أفضل خدمات البريد الإلكتروني](https://forwardemail.net/en/blog/best-email-service). يوضح هذا التحليل لماذا تُصنّف Forward Email باستمرار كخيار مُوصى به من حيث الموثوقية والأمان والامتثال للمعايير.
 
 > \[!NOTE]
-> **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
+> **التحقق العملي**: نهجنا فعال مع المؤسسات من [الوكالات الحكومية التي تتطلب الامتثال للقسم 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) إلى [الجامعات الكبرى التي تدير عشرات الآلاف من عناوين الخريجين](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study)، مما يثبت أن بناء بنية تحتية موثوقة هو الطريق الأمثل لنجاح البريد الإلكتروني.
 
 إذا كنت تفكر في إنشاء شركة ناشئة للبريد الإلكتروني، فكّر في بناء بنية تحتية للبريد الإلكتروني. العالم بحاجة إلى خوادم بريد إلكتروني أفضل، لا إلى المزيد من تطبيقات البريد الإلكتروني.
 
@@ -803,16 +800,13 @@ graph TD
 
 على الرغم من امتلاك Google لـ [جيميل](https://gmail.com/)، إلا أنها أوقفت العديد من مشاريع البريد الإلكتروني:
 
-* **[جوجل ويف](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "قاتل البريد الإلكتروني" الذي لم يفهمه أحد
-* **[جوجل باز](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): كارثة في دمج البريد الإلكتروني الاجتماعي
-* **[البريد الوارد بواسطة Gmail](https://killedbygoogle.com/)** (2014-2019): تم التخلي عن خليفة Gmail "الذكي"
-* **[جوجل+](https://killedbygoogle.com/)** ميزات البريد الإلكتروني (2011-2019): دمج البريد الإلكتروني الاجتماعي
+* **[جوجل ويف](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "قاتل البريد الإلكتروني" الذي لم يفهمه أحد. * **[جوجل باز](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): كارثة في دمج البريد الإلكتروني الاجتماعي. * **[البريد الوارد بواسطة Gmail](https://killedbygoogle.com/)** (2014-2019): خليفة Gmail "الذكي"، تم التخلي عنه. * **[جوجل+](https://killedbygoogle.com/)** ميزات البريد الإلكتروني (2011-2019): دمج البريد الإلكتروني الاجتماعي.
 
 **النمط**: حتى جوجل لا تستطيع إعادة اختراع البريد الإلكتروني بنجاح.
 
-### الفشل التسلسلي: الوفيات الثلاث في نيوتن ميل {#the-serial-failure-newton-mails-three-deaths}
+### الفشل التسلسلي: الوفيات الثلاث في شركة نيوتن ميل {#the-serial-failure-newton-mails-three-deaths}
 
-[نيوتن ميل](https://en.wikipedia.org/wiki/CloudMagic) مات **ثلاث مرات**:
+مات [نيوتن ميل](https://en.wikipedia.org/wiki/CloudMagic) **ثلاث مرات**:
 
 ١. **[كلاود ماجيك](https://en.wikipedia.org/wiki/CloudMagic)** (٢٠١٣-٢٠١٦): استحوذت نيوتن على عميل البريد الإلكتروني.
 ٢. **Newton Mail** (٢٠١٦-٢٠١٨): أُعيدت تسميته، وفشل نموذج الاشتراك.
@@ -824,9 +818,9 @@ graph TD
 
 لقد ماتت العديد من الشركات الناشئة في مجال البريد الإلكتروني قبل إطلاقها:
 
-* **تيمبو** (٢٠١٤): تكامل التقويم مع البريد الإلكتروني، تم إيقافه قبل الإطلاق
-* **[تدفق البريد](https://mailstrom.co/)** (٢٠١١): أداة إدارة بريد إلكتروني، تم شراؤها قبل الإصدار
-* **فلوينت** (٢٠١٣): عميل بريد إلكتروني، توقف تطويره
+* **تيمبو** (٢٠١٤): تكامل التقويم مع البريد الإلكتروني، تم إيقافه قبل الإطلاق.
+* **[تدفق البريد](https://mailstrom.co/)** (٢٠١١): أداة إدارة بريد إلكتروني، تم شراؤها قبل الإصدار.
+* **فلوينت** (٢٠١٣): عميل بريد إلكتروني، توقف تطويره.
 
 ### نمط الاستحواذ إلى الإغلاق {#the-acquisition-to-shutdown-pattern}
 
@@ -836,19 +830,19 @@ graph TD
 * **[إنجاز → مايكروسوفت → إيقاف التشغيل](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (أصبح Outlook Mobile)
 * **[أكومبلي → مايكروسوفت → متكامل](https://en.wikipedia.org/wiki/Microsoft_Outlook#Mobile_versions)** (نجاح نادر)
 
-### دمج البنية التحتية للبريد الإلكتروني {#email-infrastructure-consolidation}
+### توحيد البنية التحتية للبريد الإلكتروني {#email-infrastructure-consolidation}
 
 * **[صندوق البريد → عميل eM](https://www.postbox-inc.com/)** (2024): تم إغلاق صندوق البريد فورًا بعد الاستحواذ.
 * **عمليات استحواذ متعددة**: تم الاستحواذ على [إمبروف إم إكس](https://improvmx.com/) عدة مرات، مع [أثارت مخاوف بشأن الخصوصية](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) و[إعلانات الاستحواذ](https://improvmx.com/blog/improvmx-has-been-acquired) و[قوائم الأعمال](https://quietlight.com/listings/15877422).
-* **تدهور الخدمة**: تتدهور العديد من الخدمات بعد الاستحواذ.
+* **تدهور الخدمة**: تتدهور حالة العديد من الخدمات بعد الاستحواذ.
 
-## مقبرة البريد الإلكتروني مفتوحة المصدر: عندما لا يكون "المجاني" مستدامًا {#the-open-source-email-graveyard-when-free-isnt-sustainable}
+## مقبرة البريد الإلكتروني مفتوح المصدر: عندما لا يكون "المجاني" مستدامًا {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
 ### Nylas Mail → Mailspring: الشوكة التي لم تستطع {#nylas-mail--mailspring-the-fork-that-couldnt}
 
-* **[نيلاس ميل](https://github.com/nylas/nylas-mail)**: عميل بريد إلكتروني مفتوح المصدر، [تم إيقافه في عام 2017](https://github.com/nylas/nylas-mail)، وكان لديه [مشاكل كبيرة في استخدام الذاكرة](https://github.com/nylas/nylas-mail/issues/3501)
-* **[ميل سبرينغ](https://getmailspring.com/)**: نسخة من المجتمع، تعاني من مشاكل في الصيانة و[مشاكل استخدام ذاكرة الوصول العشوائي (RAM) العالية](https://github.com/Foundry376/Mailspring/issues/1758)
-* **الواقع**: لا تستطيع عملاء البريد الإلكتروني مفتوح المصدر منافسة التطبيقات الأصلية
+* **[نيلاس ميل](https://github.com/nylas/nylas-mail)**: عميل بريد إلكتروني مفتوح المصدر، [تم إيقافه في عام 2017](https://github.com/nylas/nylas-mail)، وكان لديه [مشاكل كبيرة في استخدام الذاكرة](https://github.com/nylas/nylas-mail/issues/3501).
+* **[ميل سبرينغ](https://getmailspring.com/)**: فرع مجتمعي، يعاني من مشاكل في الصيانة و[مشاكل استخدام ذاكرة الوصول العشوائي (RAM) العالية](https://github.com/Foundry376/Mailspring/issues/1758).
+* **الواقع**: لا تستطيع عملاء البريد الإلكتروني مفتوح المصدر منافسة التطبيقات الأصلية.
 
 ### Eudora: مسيرة الموت التي استمرت 18 عامًا {#eudora-the-18-year-death-march}
 
@@ -861,7 +855,7 @@ graph TD
 ### FairEmail: تم إيقافه بسبب سياسات Google Play {#fairemail-killed-by-google-play-politics}
 
 * **[البريد الإلكتروني العادل](https://email.faircode.eu/)**: عميل بريد إلكتروني أندرويد مُركّز على الخصوصية
-* **جوجل بلاي**: [تم حظره بسبب "انتهاك السياسات"](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
+* **Google Play**: [تم حظره بسبب "انتهاك السياسات"](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
 * **الواقع**: سياسات المنصة قد تُنهي تطبيقات البريد الإلكتروني فورًا
 
 ### مشكلة الصيانة {#the-maintenance-problem}
@@ -880,9 +874,9 @@ graph TD
 شركات البريد الإلكتروني الناشئة في مجال الذكاء الاصطناعي لعام 2024:
 
 * **[خارق للطبيعة](https://superhuman.com/)**: [تم جمع 33 مليون دولار](https://superhuman.com/)، [تم الاستحواذ عليها بواسطة Grammarly](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) (2025)
-* **[الموجات القصيرة](https://www.shortwave.com/)**: Y Combinator، Gmail + الذكاء الاصطناعي
+* **[الموجات القصيرة](https://www.shortwave.com/)**: Y Combinator، Gmail + AI
 * **[سانبوكس](https://www.sanebox.com/)**: تصفية البريد الإلكتروني بالذكاء الاصطناعي (مربحة بالفعل)
-* **[بوميرانج](https://www.boomeranggmail.com/)**: جدولة واستجابات الذكاء الاصطناعي
+* **[بوميرانج](https://www.boomeranggmail.com/)**: جدولة واستجابات بالذكاء الاصطناعي
 * **[البريد-0/صفر](https://github.com/Mail-0/Zero)**: شركة ناشئة لعميل بريد إلكتروني مدعوم بالذكاء الاصطناعي تُنشئ واجهة بريد إلكتروني جديدة
 * **[صندوق الوارد صفر](https://github.com/elie222/inbox-zero)**: مساعد بريد إلكتروني مفتوح المصدر يعمل بالذكاء الاصطناعي ويحاول أتمتة إدارة البريد الإلكتروني
 
@@ -890,14 +884,14 @@ graph TD
 
 شركات رأس المال الاستثماري تستثمر أموالها في "الذكاء الاصطناعي + البريد الإلكتروني":
 
-* **[تم استثمار أكثر من 100 مليون دولار](https://pitchbook.com/)** في شركات البريد الإلكتروني الناشئة القائمة على الذكاء الاصطناعي في عام 2024
+* **[تم استثمار أكثر من 100 مليون دولار](https://pitchbook.com/)** في شركات البريد الإلكتروني الناشئة في مجال الذكاء الاصطناعي عام ٢٠٢٤
 * **الوعود نفسها**: "تجربة بريد إلكتروني ثورية"
 * **المشاكل نفسها**: البناء على البنية التحتية القائمة
-* **النتيجة نفسها**: سيفشل معظمها خلال 3 سنوات
+* **النتيجة نفسها**: سيفشل معظمها خلال ٣ سنوات
 
 ### لماذا سيفشلون جميعًا (مرة أخرى) {#why-theyll-all-fail-again}
 
-١. **الذكاء الاصطناعي لا يحل مشاكل البريد الإلكتروني غير الأساسية**: البريد الإلكتروني يعمل بشكل جيد.
+١. **الذكاء الاصطناعي لا يحل مشاكل البريد الإلكتروني غير المهمة**: البريد الإلكتروني يعمل بشكل جيد.
 ٢. **[Gmail لديه بالفعل الذكاء الاصطناعي](https://support.google.com/mail/answer/9116836)**: ردود ذكية، صندوق بريد ذي أولوية، تصفية البريد العشوائي.
 ٣. **مخاوف الخصوصية**: يتطلب الذكاء الاصطناعي قراءة جميع رسائل بريدك الإلكتروني.
 ٤. **هيكل التكلفة**: معالجة الذكاء الاصطناعي مكلفة، والبريد الإلكتروني سلعة.
@@ -906,7 +900,7 @@ graph TD
 ### النتيجة الحتمية {#the-inevitable-outcome}
 
 * **٢٠٢٥**: [استحوذت Grammarly على Superhuman بنجاح](https://www.reuters.com/business/grammarly-acquires-email-startup-superhuman-ai-platform-push-2025-07-01/) - خروج ناجح نادر لعميل بريد إلكتروني
-* **٢٠٢٥-٢٠٢٦**: ستُغلق معظم شركات البريد الإلكتروني القائمة على الذكاء الاصطناعي أو تُغير مسارها.
+* **٢٠٢٥-٢٠٢٦**: ستُغلق معظم شركات البريد الإلكتروني الناشئة في مجال الذكاء الاصطناعي أو تُغير مسارها.
 * **٢٠٢٧**: سيتم الاستحواذ على الشركات الناجية، بنتائج متباينة.
 * **٢٠٢٨**: "بريد بلوكتشين الإلكتروني" أو التوجه التالي سيظهر.
 
@@ -919,13 +913,13 @@ graph TD
 * **[استحوذت ActiveCampaign على Postmark](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
 * **[استحوذت شركة Sinch على شركة Mailgun](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
 * **[استحوذت شركة Twilio على شركة SendGrid](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **عمليات استحواذ متعددة على [إمبروف إم إكس](https://improvmx.com/)** (جارية) مع [مخاوف تتعلق بالخصوصية](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) و [إعلانات الاستحواذ](https://improvmx.com/blog/improvmx-has-been-acquired) و [قوائم الأعمال](https://quietlight.com/listings/15877422)
+* **عمليات استحواذ متعددة على [إمبروف إم إكس](https://improvmx.com/)** (جارية) مع [مخاوف تتعلق بالخصوصية](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) و[إعلانات الاستحواذ](https://improvmx.com/blog/improvmx-has-been-acquired) و[قوائم الأعمال](https://quietlight.com/listings/15877422)
 
-### Outlook: "الناجي" الذي لا يتوقف عن الانهيار {#outlook-the-survivor-that-cant-stop-breaking}
+### Outlook: "الناجي" الذي لا يستطيع التوقف عن الانهيار {#outlook-the-survivor-that-cant-stop-breaking}
 
 [مايكروسوفت أوتلوك](https://outlook.com/)، على الرغم من كونه "ناجيًا"، إلا أنه يعاني من مشكلات مستمرة:
 
-* **تسريبات الذاكرة**: [يستهلك Outlook غيغابايت من ذاكرة الوصول العشوائي (RAM)](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) و [يتطلب إعادة تشغيل متكررة](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
+* **تسريبات الذاكرة**: [يستهلك Outlook غيغابايت من ذاكرة الوصول العشوائي (RAM)](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) و[يتطلب إعادة تشغيل متكررة](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
 * **مشاكل المزامنة**: تختفي رسائل البريد الإلكتروني وتظهر مرة أخرى بشكل عشوائي
 * **مشاكل الأداء**: بطء في بدء التشغيل، أعطال متكررة
 * **مشاكل التوافق**: انقطاع الاتصال مع موفري البريد الإلكتروني الخارجيين
@@ -937,27 +931,27 @@ graph TD
 بعد [استحواذ ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
 
 * **فشل شهادة SSL**: [انقطاع التيار الكهربائي لمدة تقارب 10 ساعات في سبتمبر 2024](https://postmarkapp.com/blog/outbound-smtp-outage-on-september-15-2024) بسبب انتهاء صلاحية شهادات SSL
-* **رفض المستخدمين**: [مارك كولبروج يتعرض للرفض](https://x.com/marckohlbrugge/status/1935041134729769379) رغم الاستخدام الشرعي
+* **رفض المستخدم**: [مارك كولبروج يتعرض للرفض](https://x.com/marckohlbrugge/status/1935041134729769379) رغم الاستخدام الشرعي
 * **هجرة المطورين**: [@levelsio يذكر أن "Amazon SES هو أملنا الأخير"](https://x.com/levelsio/status/1934197733989999084)
 * **مشاكل MailGun**: [وأفاد سكوت](https://x.com/\_SMBaxter/status/1934175626375704675): "أسوأ خدمة من @Mail_Gun... لم نتمكن من إرسال رسائل بريد إلكتروني لمدة أسبوعين"
 
 ### خسائر عملاء البريد الإلكتروني الأخيرة (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-**[صندوق البريد → عميل eM](https://www.postbox-inc.com/) الاستحواذ**: في عام 2024، استحوذت شركة eM Client على Postbox و[اغلاقه على الفور](https://www.postbox-inc.com/)، مما أجبر آلاف المستخدمين على الهجرة.
+**استحواذ [صندوق البريد → عميل eM](https://www.postbox-inc.com/)**: في عام 2024، استحوذت eM Client على Postbox و[اغلاقه على الفور](https://www.postbox-inc.com/)، مما أجبر الآلاف من المستخدمين على الهجرة.
 
-**[بريد الكناري](https://canarymail.io/) المشكلات**: على الرغم من [دعم السيكويا](https://www.sequoiacap.com/)، يبلغ المستخدمون عن ميزات لا تعمل ودعم عملاء ضعيف.
+**مشاكل [بريد الكناري](https://canarymail.io/)**: على الرغم من [دعم السيكويا](https://www.sequoiacap.com/)، أبلغ المستخدمون عن ميزات لا تعمل ودعم عملاء ضعيف.
 
 **[شرارة بواسطة Readdle](https://sparkmailapp.com/)**: يبلغ المستخدمون بشكل متزايد عن تجربة سيئة مع عميل البريد الإلكتروني.
 
-**[طائر البريد](https://www.getmailbird.com/) مشاكل الترخيص**: يواجه مستخدمو Windows مشاكل في الترخيص والارتباك بشأن الاشتراك.
+**مشاكل ترخيص [طائر البريد](https://www.getmailbird.com/)**: يواجه مستخدمو Windows مشكلات في الترخيص والارتباك بشأن الاشتراك.
 
-**رفض[البريد الجوي](https://airmailapp.com/)**: يواصل عميل البريد الإلكتروني لنظام التشغيل Mac/iOS، الذي يعتمد على قاعدة بيانات Sparrow الفاشلة، تلقي [مراجعات سيئة](https://airmailapp.com/) بسبب مشكلات الموثوقية.
+**رفض [البريد الجوي](https://airmailapp.com/)**: يواصل عميل البريد الإلكتروني لنظام التشغيل Mac/iOS، الذي يعتمد على قاعدة بيانات Sparrow الفاشلة، تلقي [مراجعات سيئة](https://airmailapp.com/) بسبب مشكلات الموثوقية.
 
 ### تمديد البريد الإلكتروني وعمليات الاستحواذ على الخدمة {#email-extension-and-service-acquisitions}
 
-**[مساعد HubSpot](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → تم إيقافه**: تم [تم إيقافه في عام 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) استبدال ملحق تتبع البريد الإلكتروني الخاص بـ HubSpot بـ "HubSpot Sales".
+**[مساعد HubSpot](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → تم إيقافه**: كان ملحق تتبع البريد الإلكتروني الخاص بـ HubSpot هو [تم إيقافه في عام 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) وتم استبداله بـ "HubSpot Sales".
 
-**[الاشتراك في Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → متقاعد**: تم إيقاف ملحق Gmail الخاص بـ Salesforce، مما أجبر المستخدمين على الانتقال إلى حلول أخرى.
+**[الاشتراك في Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → متقاعد**: كان ملحق Gmail الخاص بـ Salesforce هو [تقاعد في يونيو 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1)، مما أجبر المستخدمين على الانتقال إلى حلول أخرى.
 
 ### الناجون: شركات البريد الإلكتروني التي تعمل بالفعل {#the-survivors-email-companies-that-actually-work}
 
@@ -965,21 +959,21 @@ graph TD
 
 **[ميلمودو](https://www.mailmodo.com/)**: [قصة نجاح Y Combinator](https://www.ycombinator.com/companies/mailmodo)، [2 مليون دولار من سيكويا سيرج](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) من خلال التركيز على الحملات التفاعلية عبر البريد الإلكتروني.
 
-**[ميكس ماكس](https://mixmax.com/)**: تم جمع [إجمالي التمويل 13.3 مليون دولار](https://www.mixmax.com/about) ويستمر العمل كمنصة ناجحة لتفاعل المبيعات.
+**[ميكس ماكس](https://mixmax.com/)**: تم رفع [إجمالي التمويل 13.3 مليون دولار](https://www.mixmax.com/about) ويستمر في العمل كمنصة ناجحة لتفاعل المبيعات.
 
 **[Outreach.io](https://www.outreach.io/)**: تم الوصول إلى [تقييم بقيمة 4.4 مليار دولار أمريكي+](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) وهو يستعد للاكتتاب العام الأولي المحتمل كمنصة لتفاعل المبيعات.
 
-**[Apollo.io](https://www.apollo.io/)**: حققوا [تقييم بقيمة 1.6 مليار دولار](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) بمبلغ 100 مليون دولار أمريكي من سلسلة D في عام 2023 لمنصة استخبارات المبيعات الخاصة بهم.
+**[Apollo.io](https://www.apollo.io/)**: تم تحقيق [تقييم بقيمة 1.6 مليار دولار](https://techcrunch.com/2023/08/29/apollo-io-a-full-stack-sales-tech-platform-bags-100m-at-a-1-6b-valuation/) مع 100 مليون دولار أمريكي من السلسلة D في عام 2023 لمنصة استخبارات المبيعات الخاصة بهم.
 
-**[جامعة ماساشوستس](https://www.gmass.co/)**: قصة نجاح Bootstrap في إنشاء [140 ألف دولار شهريًا](https://www.indiehackers.com/product/gmass) كملحق Gmail للتسويق عبر البريد الإلكتروني.
+**[جامعة ماساشوستس](https://www.gmass.co/)**: قصة نجاح Bootstrap في توليد [140 ألف دولار شهريًا](https://www.indiehackers.com/product/gmass) كملحق Gmail للتسويق عبر البريد الإلكتروني.
 
-**[ستريك CRM](https://www.streak.com/)**: نظام إدارة علاقات العملاء الناجح المستند إلى Gmail والذي يعمل [منذ عام 2012](https://www.streak.com/about) دون حدوث مشكلات كبيرة.
+**[ستريك CRM](https://www.streak.com/)**: نظام CRM ناجح يعتمد على Gmail ويعمل بنظام [منذ عام 2012](https://www.streak.com/about) دون حدوث مشكلات كبيرة.
 
-**[توت آب](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: تم بنجاح [استحوذت عليها شركة Marketo في عام 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) بعد جمع أكثر من 15 مليون دولار أمريكي في التمويل.
+**[توت آب](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: تم الحصول على [استحوذت عليها شركة Marketo في عام 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) بنجاح بعد جمع أكثر من 15 مليون دولار أمريكي في التمويل.
 
-**[باناناتاج](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [تم الاستحواذ عليها من قبل Staffbase في عام 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) ويستمر في العمل كـ "بريد إلكتروني لـ Staffbase".
+**[باناناتاج](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [تم الاستحواذ عليها من قبل Staffbase في عام 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) ويستمر في العمل كـ "بريد إلكتروني لقاعدة الموظفين".
 
 **النمط الرئيسي**: تنجح هذه الشركات لأنها **تُحسّن سير عمل البريد الإلكتروني الحالي** بدلاً من محاولة استبداله كلياً. فهي تُطوّر أدوات تعمل **مع** البنية التحتية للبريد الإلكتروني، لا تُعارضها.
 
 > \[!TIP]
-> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight.
+> **ألم تجد مزوّد خدمة تعرفه مذكورًا هنا؟** (مثل Posteo، Mailbox.org، Migadu، إلخ.) راجع [صفحة مقارنة شاملة لخدمات البريد الإلكتروني](https://forwardemail.net/en/blog/best-email-service) لمزيد من المعلومات.

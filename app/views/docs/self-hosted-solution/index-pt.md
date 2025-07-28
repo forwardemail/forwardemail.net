@@ -10,14 +10,14 @@
   * [A alternativa auto-hospedada](#the-self-hosted-alternative)
 * [Nossa implementação auto-hospedada: Visão geral técnica](#our-self-hosted-implementation-technical-overview)
   * [Arquitetura baseada em Docker para simplicidade e portabilidade](#docker-based-architecture-for-simplicity-and-portability)
-  * [Instalação do Bash Script: Acessibilidade encontra a segurança](#bash-script-installation-accessibility-meets-security)
+  * [Instalação do Bash Script: Acessibilidade e Segurança](#bash-script-installation-accessibility-meets-security)
   * [Criptografia Quantum-Safe para privacidade à prova do futuro](#quantum-safe-encryption-for-future-proof-privacy)
   * [Manutenção e atualizações automatizadas](#automated-maintenance-and-updates)
-* [O Compromisso de Código Aberto](#the-open-source-commitment)
+* [O Compromisso com o Código Aberto](#the-open-source-commitment)
 * [Auto-hospedado vs. gerenciado: fazendo a escolha certa](#self-hosted-vs-managed-making-the-right-choice)
   * [A realidade da auto-hospedagem de e-mail](#the-reality-of-self-hosting-email)
   * [Quando escolher nosso serviço gerenciado](#when-to-choose-our-managed-service)
-* [Introdução ao Forward Email auto-hospedado](#getting-started-with-self-hosted-forward-email)
+* [Introdução ao encaminhamento de e-mail auto-hospedado](#getting-started-with-self-hosted-forward-email)
   * [Requisitos do sistema](#system-requirements)
   * [Etapas de instalação](#installation-steps)
 * [O futuro do e-mail auto-hospedado](#the-future-of-self-hosted-email)
@@ -26,15 +26,15 @@
 
 ## Prefácio {#foreword}
 
-No cenário digital de hoje, o e-mail continua sendo a espinha dorsal da nossa identidade e comunicação online. No entanto, à medida que as preocupações com privacidade aumentam, muitos usuários enfrentam uma escolha difícil: conveniência ao custo da privacidade ou privacidade ao custo da conveniência. Na Forward Email, sempre acreditamos que você não deveria ter que escolher entre os dois.
+No cenário digital atual, o e-mail continua sendo a espinha dorsal da nossa identidade e comunicação online. No entanto, à medida que as preocupações com a privacidade aumentam, muitos usuários se deparam com uma escolha difícil: conveniência em detrimento da privacidade ou privacidade em detrimento da conveniência. Na Forward Email, sempre acreditamos que você não precisa escolher entre as duas.
 
-Hoje, estamos animados em anunciar um marco significativo em nossa jornada: o lançamento de nossa solução de e-mail auto-hospedada. Esse recurso representa nosso mais profundo comprometimento com os princípios de código aberto, design focado em privacidade e empoderamento do usuário. Com nossa opção auto-hospedada, estamos colocando todo o poder e controle de sua comunicação por e-mail diretamente em suas mãos.
+Hoje, temos o prazer de anunciar um marco significativo em nossa jornada: o lançamento da nossa solução de e-mail auto-hospedada. Este recurso representa nosso mais profundo compromisso com os princípios de código aberto, design focado na privacidade e empoderamento do usuário. Com nossa opção auto-hospedada, colocamos todo o poder e controle da sua comunicação por e-mail diretamente em suas mãos.
 
 Esta postagem do blog explora a filosofia por trás da nossa solução auto-hospedada, sua implementação técnica e por que ela é importante para usuários que priorizam privacidade e propriedade em suas comunicações digitais.
 
 ## Por que o e-mail auto-hospedado é importante {#why-self-hosted-email-matters}
 
-Nossa solução de e-mail auto-hospedada é a expressão mais clara da nossa crença de que privacidade verdadeira significa controle, e o controle começa com código aberto. Para usuários que exigem propriedade total sobre suas comunicações digitais, a auto-hospedagem não é mais uma ideia marginal — é um direito essencial. Temos orgulho de apoiar essa crença com uma plataforma totalmente aberta e verificável que você pode executar em seus próprios termos.
+Nossa solução de e-mail auto-hospedada é a expressão mais clara da nossa crença de que privacidade verdadeira significa controle, e o controle começa com código aberto. Para usuários que exigem propriedade total sobre suas comunicações digitais, a auto-hospedagem não é mais uma ideia marginal — é um direito essencial. Temos orgulho de apoiar essa crença com uma plataforma totalmente aberta e verificável, que você pode executar nos seus próprios termos.
 
 ### O problema com os serviços de e-mail tradicionais {#the-problem-with-traditional-email-services}
 
@@ -46,7 +46,7 @@ Os serviços de e-mail tradicionais apresentam vários desafios fundamentais par
 4. **Transparência Limitada**: A maioria dos serviços utiliza software proprietário e de código fechado
 5. **Dependência do Fornecedor**: Migrar desses serviços pode ser difícil ou impossível
 
-Mesmo provedores de e-mail "focados em privacidade" frequentemente falham ao tornarem apenas open-source seus aplicativos frontend, enquanto mantêm seus sistemas backend proprietários e fechados. Isso cria uma lacuna de confiança significativa — você é solicitado a acreditar em suas promessas de privacidade sem a capacidade de verificá-las.
+Mesmo provedores de e-mail "focados em privacidade" frequentemente falham ao tornarem seus aplicativos front-end de código aberto, enquanto mantêm seus sistemas back-end proprietários e fechados. Isso cria uma lacuna de confiança significativa — você é solicitado a acreditar nas promessas de privacidade deles sem a possibilidade de verificá-las.
 
 ### A alternativa auto-hospedada {#the-self-hosted-alternative}
 
@@ -58,15 +58,15 @@ A auto-hospedagem do seu e-mail oferece uma abordagem fundamentalmente diferente
 4. **Liberdade de Personalização**: Adapte o sistema às suas necessidades específicas
 5. **Resiliência**: Seu serviço continua independentemente das decisões da empresa
 
-Como disse um usuário: "Hospedar meu próprio e-mail é o equivalente digital de cultivar minha própria comida. Dá mais trabalho, mas sei exatamente o que tem lá dentro."
+Como disse um usuário: "Hospedar meu próprio e-mail é o equivalente digital de cultivar minha própria comida. Dá mais trabalho, mas eu sei exatamente o que tem nele."
 
 ## Nossa implementação auto-hospedada: Visão geral técnica {#our-self-hosted-implementation-technical-overview}
 
-Nossa solução de e-mail auto-hospedada é construída sobre os mesmos princípios de privacidade em primeiro lugar que orientam todos os nossos produtos. Vamos explorar a implementação técnica que torna isso possível.
+Nossa solução de e-mail auto-hospedada é construída com base nos mesmos princípios de privacidade que norteiam todos os nossos produtos. Vamos explorar a implementação técnica que torna isso possível.
 
 ### Arquitetura baseada em Docker para simplicidade e portabilidade {#docker-based-architecture-for-simplicity-and-portability}
 
-Nós empacotamos toda a nossa infraestrutura de e-mail usando o Docker, facilitando a implantação em praticamente qualquer sistema baseado em Linux. Essa abordagem em contêineres fornece vários benefícios importantes:
+Empacotamos toda a nossa infraestrutura de e-mail usando o Docker, facilitando a implantação em praticamente qualquer sistema Linux. Essa abordagem em contêineres oferece vários benefícios importantes:
 
 1. **Implantação simplificada**: Um único comando configura toda a infraestrutura
 2. **Ambiente consistente**: Elimina problemas de "funciona na minha máquina"
@@ -86,9 +86,9 @@ A arquitetura inclui contêineres para:
 * SQLite para armazenamento seguro e criptografado de caixas de correio
 
 > \[!NOTE]
-> Be sure to check out our [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> Não deixe de conferir nosso [guia do desenvolvedor auto-hospedado](https://forwardemail.net/self-hosted)
 
-Instalação do script Bash ###: acessibilidade e segurança {#bash-script-installation-accessibility-meets-security}
+Instalação do script Bash ###: Acessibilidade e segurança em conjunto {#bash-script-installation-accessibility-meets-security}
 
 Projetamos o processo de instalação para ser o mais simples possível, mantendo as melhores práticas de segurança:
 
@@ -105,11 +105,11 @@ Este único comando:
 5. Implanta os contêineres Docker
 6. Executa o reforço inicial de segurança
 
-Para aqueles preocupados com o pipe de scripts para o bash (como vocês deveriam estar!), nós encorajamos a revisão do script antes da execução. Ele é totalmente de código aberto e está disponível para inspeção.
+Para aqueles preocupados em enviar scripts para o bash (como deveriam estar!), recomendamos revisar o script antes da execução. Ele é totalmente de código aberto e está disponível para inspeção.
 
-### Criptografia Quantum-Safe para privacidade à prova de futuro {#quantum-safe-encryption-for-future-proof-privacy}
+### Criptografia Quantum-Safe para Privacidade à Prova do Futuro {#quantum-safe-encryption-for-future-proof-privacy}
 
-Assim como nosso serviço hospedado, nossa solução auto-hospedada implementa criptografia resistente a quantum usando ChaCha20-Poly1305 como a cifra para bancos de dados SQLite. Essa abordagem protege seus dados de e-mail não apenas contra ameaças atuais, mas também contra futuros ataques de computação quântica.
+Assim como nosso serviço hospedado, nossa solução auto-hospedada implementa criptografia resistente a ataques quânticos usando ChaCha20-Poly1305 como cifra para bancos de dados SQLite. Essa abordagem protege seus dados de e-mail não apenas contra ameaças atuais, mas também contra futuros ataques de computação quântica.
 
 Cada caixa de correio é armazenada em seu próprio arquivo de banco de dados SQLite criptografado, proporcionando isolamento completo entre usuários — uma vantagem de segurança significativa em relação às abordagens tradicionais de banco de dados compartilhado.
 
@@ -138,7 +138,7 @@ Esses utilitários são acessíveis por meio de um menu interativo simples:
 
 ## O Compromisso de Código Aberto {#the-open-source-commitment}
 
-Nossa solução de e-mail auto-hospedada, como todos os nossos produtos, é 100% open-source — tanto frontend quanto backend. Isso significa:
+Nossa solução de e-mail auto-hospedada, assim como todos os nossos produtos, é 100% de código aberto, tanto no front-end quanto no back-end. Isso significa:
 
 1. **Transparência total**: Cada linha de código que processa seus e-mails está disponível para análise pública.
 2. **Contribuições da comunidade**: Qualquer pessoa pode contribuir com melhorias ou corrigir problemas.
@@ -147,9 +147,9 @@ Nossa solução de e-mail auto-hospedada, como todos os nossos produtos, é 100%
 
 A base de código completa está disponível no GitHub em <https://github.com/forwardemail/forwardemail.net>.
 
-## Auto-hospedado vs. Gerenciado: Fazendo a escolha certa {#self-hosted-vs-managed-making-the-right-choice}
+## Auto-hospedado vs. gerenciado: fazendo a escolha certa {#self-hosted-vs-managed-making-the-right-choice}
 
-Embora tenhamos orgulho de oferecer uma opção auto-hospedada, reconhecemos que não é a escolha certa para todos. O e-mail auto-hospedado traz responsabilidades e desafios reais:
+Embora tenhamos orgulho de oferecer uma opção de auto-hospedagem, reconhecemos que ela não é a escolha certa para todos. A auto-hospedagem de e-mails traz consigo responsabilidades e desafios reais:
 
 ### A realidade da auto-hospedagem de e-mail {#the-reality-of-self-hosting-email}
 
@@ -200,9 +200,9 @@ Pronto para assumir o controle da sua infraestrutura de e-mail? Veja como começ
 * Suporte a IPv4 e IPv6
 
 > \[!TIP]
-> We recommend several mail server providers at <https://forwardemail.net/blog/docs/best-mail-server-providers> (source at <https://github.com/forwardemail/awesome-mail-server-providers>)
+> Recomendamos vários provedores de servidores de e-mail em <https://forwardemail.net/blog/docs/best-mail-server-providers> (fonte em <https://github.com/forwardemail/awesome-mail-server-providers>)
 
-### Etapas de instalação {#installation-steps}
+### Etapas de instalação do {#installation-steps}
 
 1. **Execute o script de instalação**:
 ```bash
@@ -223,7 +223,7 @@ Após a conclusão da instalação, você pode verificar se tudo está funcionan
 
 ## O futuro do e-mail auto-hospedado {#the-future-of-self-hosted-email}
 
-Nossa solução auto-hospedada é apenas o começo. Estamos comprometidos em melhorar continuamente esta oferta com:
+Nossa solução auto-hospedada é apenas o começo. Estamos comprometidos em aprimorar continuamente esta oferta com:
 
 1. **Ferramentas de Administração Aprimoradas**: Gerenciamento web mais poderoso
 2. **Opções Adicionais de Autenticação**: Incluindo suporte a chaves de segurança de hardware
@@ -233,11 +233,11 @@ Nossa solução auto-hospedada é apenas o começo. Estamos comprometidos em mel
 
 ## Conclusão: Liberdade de e-mail para todos {#conclusion-email-freedom-for-everyone}
 
-O lançamento da nossa solução de e-mail auto-hospedada representa um marco significativo em nossa missão de fornecer serviços de e-mail transparentes e focados em privacidade. Não importa se você escolhe nosso serviço gerenciado ou a opção auto-hospedada, você se beneficia do nosso compromisso inabalável com os princípios de código aberto e design que prioriza a privacidade.
+O lançamento da nossa solução de e-mail auto-hospedada representa um marco significativo em nossa missão de fornecer serviços de e-mail transparentes e focados em privacidade. Seja qual for a sua escolha, seja o nosso serviço gerenciado ou a opção auto-hospedada, você se beneficiará do nosso compromisso inabalável com os princípios de código aberto e o design que prioriza a privacidade.
 
-O e-mail é importante demais para ser controlado por sistemas fechados e proprietários que priorizam a coleta de dados em detrimento da privacidade do usuário. Com a solução auto-hospedada da Forward Email, temos orgulho de oferecer uma alternativa genuína — uma que coloca você no controle total de suas comunicações digitais.
+O e-mail é importante demais para ser controlado por sistemas proprietários e fechados que priorizam a coleta de dados em detrimento da privacidade do usuário. Com a solução auto-hospedada da Forward Email, temos orgulho de oferecer uma alternativa genuína — que lhe dá controle total sobre suas comunicações digitais.
 
-Acreditamos que a privacidade não é apenas um recurso; é um direito fundamental. E com nossa opção de e-mail auto-hospedado, estamos tornando esse direito mais acessível do que nunca.
+Acreditamos que a privacidade não é apenas um recurso; é um direito fundamental. E com a nossa opção de e-mail auto-hospedado, estamos tornando esse direito mais acessível do que nunca.
 
 Pronto para assumir o controle do seu e-mail? [Comece hoje mesmo](https://forwardemail.net/self-hosted) ou explore nosso [Repositório GitHub](https://github.com/forwardemail/forwardemail.net) para saber mais.
 

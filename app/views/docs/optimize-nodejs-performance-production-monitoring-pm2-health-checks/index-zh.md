@@ -69,13 +69,13 @@
 当我们从 Intel 处理器迁移到 AMD Ryzen 处理器后，我们的 Node.js 应用程序的性能提升了 573%。这不仅仅是一个小小的优化，它从根本上改变了我们的 Node.js 应用程序在生产环境中的表现，并证明了单核性能优化对于任何 Node.js 应用程序的重要性。
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> 对于 Node.js 生产部署的最佳实践，硬件选择至关重要。我们特意选择了 DataPacket 托管服务，因为他们支持 AMD Ryzen 处理器，因为 JavaScript 执行是单线程的，所以单核性能对于 Node.js 应用程序至关重要。
 
-### 为什么单核性能优化对 Node.js 很重要 {#why-single-core-performance-optimization-matters-for-nodejs}
+### 为什么单核性能优化对 Node.js 如此重要 {#why-single-core-performance-optimization-matters-for-nodejs}
 
 我们从 Intel 迁移到 AMD Ryzen 的结果是：
 
-* 请求处理性能提升 573%**（详见 [我们状态页面的 GitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* 请求处理性能提升 573%**（详情请参阅 [我们状态页面的 GitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
 * **消除处理延迟**，实现近乎即时的响应（在 [GitHub Issue #298](https://github.com/forwardemail/forwardemail.net/issues/298)) 中提及）
 * **为 Node.js 生产环境提供更佳的性价比**
 * **缩短了所有应用程序端点的响应时间**
@@ -87,13 +87,13 @@
 有关我们基础设施选择的更多详情，请查看：
 
 * [最佳电子邮件转发服务]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - 性能对比
-* [自托管解决方案](https://forwardemail.net/blog/docs/self-hosted-solution) - 硬件建议
+* [自托管解决方案](https://forwardemail.net/blog/docs/self-hosted-solution) - 硬件推荐
 
 ## Node.js 生产环境设置：我们的技术栈 {#nodejs-production-environment-setup-our-technology-stack}
 
 我们的 Node.js 生产部署最佳实践包含基于多年生产经验的精心技术选择。以下是我们使用的技术以及这些选择适用于任何 Node.js 应用程序的原因：
 
-### 包管理器：用于提高生产效率的 pnpm {#package-manager-pnpm-for-production-efficiency}
+### 软件包管理器：用于提高生产效率的 pnpm {#package-manager-pnpm-for-production-efficiency}
 
 **我们使用的内容：** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)（固定版本）
 
@@ -105,7 +105,7 @@
 * 生产部署中的 **性能更佳**
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> 作为 Node.js 生产部署最佳实践的一部分，我们固定了 pnpm 等关键工具的精确版本，以确保所有环境和团队成员机器上的行为一致。
 
 **实施细节：**
 
@@ -132,7 +132,7 @@
 
 ### 后台作业处理：Bree 用于生产可靠性 {#background-job-processing-bree-for-production-reliability}
 
-**我们使用：** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) 调度程序
+**我们使用：**[`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) 调度程序
 
 我们创建并维护 Bree 是因为现有的作业调度程序无法满足我们在 Node.js 生产环境中对工作线程支持和现代 JavaScript 特性的需求。这适用于任何需要后台处理、计划任务或工作线程的 Node.js 应用程序。
 
@@ -154,7 +154,7 @@
 * [错误分类助手](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 * [记录器实现](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-## 如何在生产中监控 Node.js 应用程序 {#how-to-monitor-nodejs-applications-in-production}
+## 如何在生产环境中监控 Node.js 应用程序 {#how-to-monitor-nodejs-applications-in-production}
 
 我们在生产环境中监控 Node.js 应用程序的方法，是经过多年大规模运行应用程序的经验积累而不断演变的。我们实施多层监控，以确保任何类型的 Node.js 应用程序的可靠性和性能。
 
@@ -172,13 +172,13 @@
 * **75% 磁盘使用率** 警告阈值
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> 这些阈值适用于我们特定的硬件配置。在实施 Node.js 生产监控时，请查看我们的 Monitor-server.js 实现，以了解确切的逻辑并根据您的设置调整值。
 
-### Node.js 生产的应用程序级监控 {#application-level-monitoring-for-nodejs-production}
+### Node.js 生产环境的应用级监控 {#application-level-monitoring-for-nodejs-production}
 
 **我们的错误分类：** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
-此助手区分：
+此帮助程序区分：
 
 * 需要立即关注的**实际代码错误**
 * 预期行为的**用户错误**
@@ -217,7 +217,7 @@
 * **通过智能健康检查防止循环重启**
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> 根据 Node.js 生产部署的最佳实践，我们需要进程正常运行时间超过 15 分钟，才能将其视为健康进程，以避免出现重启循环。这可以防止进程在遇到内存或其他问题时发生级联故障。
 
 ### 我们的 PM2 生产配置 {#our-pm2-production-configuration}
 
@@ -240,7 +240,7 @@
 
 我们最有价值的 Node.js 生产部署最佳实践之一是适用于任何 Node.js 应用程序的智能错误分类：
 
-### 我们用于生产的 isCodeBug 实现 {#our-iscodebug-implementation-for-production}
+### 我们的 isCodeBug 生产实现 {#our-iscodebug-implementation-for-production}
 
 **来源：**[`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
@@ -278,7 +278,7 @@
 * [`cpupro`](https://github.com/discoveryjs/cpupro) - 用于分析 CPU 配置文件和堆快照
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> 我们结合使用 v8-profiler-next 和 cpupro，为 Node.js 应用程序创建了一套完整的性能调试工作流程。这种组合有助于我们识别内存泄漏、性能瓶颈，并优化生产代码。
 
 ### 我们如何实现堆快照分析 {#how-we-implement-heap-snapshot-analysis}
 
@@ -299,9 +299,9 @@
 
 * [监控服务器实施](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - 堆监控和快照生成
 * [清理工作](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - 快照保留和清理
-* [记录器集成](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - 性能日志记录
+* [记录器集成](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - 性能日志
 
-### 推荐用于 Node.js 应用程序的实现 {#recommended-implementation-for-your-nodejs-application}
+### 推荐用于您的 Node.js 应用程序的实现 {#recommended-implementation-for-your-nodejs-application}
 
 **对于堆快照分析：**
 
@@ -319,7 +319,7 @@
 4. 监控性能改进前后的变化
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> 生成堆快照和 CPU 配置文件可能会影响性能。我们建议实施限制，并且仅在调查特定问题或维护期间启用配置文件。
 
 ### 与我们的生产监控集成 {#integration-with-our-production-monitoring}
 
@@ -348,7 +348,7 @@
 * **调整内核参数**，兼顾安全性和性能
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> 在实施 Node.js 生产部署最佳实践时，如果您的应用程序超出可用内存，禁用交换空间可能会导致内存不足导致应用程序终止。我们会仔细监控内存使用情况，并适当调整服务器大小。
 
 ### Node.js 应用程序的应用程序安全性 {#application-security-for-nodejs-applications}
 
@@ -395,7 +395,7 @@
 
 此模式适用于 SaaS 应用程序、多租户系统或任何需要数据隔离的 Node.js 应用程序。
 
-### Node.js 生产的 MongoDB 实现 {#mongodb-implementation-for-nodejs-production}
+### 用于 Node.js 生产的 MongoDB 实现 {#mongodb-implementation-for-nodejs-production}
 
 **我们使用的内容：**
 
@@ -415,7 +415,7 @@
 * **丰富的查询语言**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> 我们的混合方法针对特定用例进行了优化。请研究代码库中实际的数据库使用模式，以了解此方法是否适合您的 Node.js 应用程序需求。
 
 ## Node.js 生产后台作业处理 {#nodejs-production-background-job-processing}
 
@@ -468,7 +468,7 @@
 
 这些模式适用于生成临时文件、日志或缓存数据的任何 Node.js 应用程序。
 
-### Node.js 生产的磁盘空间管理 {#disk-space-management-for-nodejs-production}
+### Node.js 生产环境的磁盘空间管理 {#disk-space-management-for-nodejs-production}
 
 **我们的监控阈值：** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
@@ -505,7 +505,7 @@
 * [JavaScript 联系表单](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 * [React 电子邮件集成](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
-### Node.js 生产的基础设施自动化 {#infrastructure-automation-for-nodejs-production}
+### Node.js 生产基础设施自动化 {#infrastructure-automation-for-nodejs-production}
 
 **我们用于 Node.js 生产部署的 Ansible 剧本：**
 

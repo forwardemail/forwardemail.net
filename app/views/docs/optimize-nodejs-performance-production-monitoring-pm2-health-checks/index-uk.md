@@ -23,7 +23,7 @@
   * [Автоматизоване розгортання PM2](#automated-pm2-deployment)
 * [Система обробки та класифікації виробничих помилок](#production-error-handling-and-classification-system)
   * [Наша реалізація isCodeBug для продакшену](#our-iscodebug-implementation-for-production)
-  * [Інтеграція з нашими виробничими журналами](#integration-with-our-production-logging)
+  * [Інтеграція з нашим виробничим журналюванням](#integration-with-our-production-logging)
   * [Пов'язаний контент](#related-content-1)
 * [Розширене налагодження продуктивності за допомогою v8-profiler-next та cpupro](#advanced-performance-debugging-with-v8-profiler-next-and-cpupro)
   * [Наш підхід до профілювання для Node.js Production](#our-profiling-approach-for-nodejs-production)
@@ -69,14 +69,14 @@
 Коли ми перейшли з процесорів Intel на AMD Ryzen, ми досягли **покращення продуктивності на 573%** у наших Node.js-додатках. Це була не просто незначна оптимізація — вона фундаментально змінила роботу наших Node.js-додатків у продакшені та демонструє важливість оптимізації продуктивності одного ядра для будь-якого Node.js-додатку.
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Для найкращих практик розгортання Node.js у продакшені вибір обладнання є критично важливим. Ми спеціально обрали хостинг DataPacket через їхню доступність AMD Ryzen, оскільки одноядерна продуктивність є критично важливою для Node.js-застосунків, оскільки виконання JavaScript є однопотоковим.
 
 ### Чому оптимізація продуктивності одного ядра важлива для Node.js {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Результат нашої міграції з Intel на AMD Ryzen:
 
 * **Покращення продуктивності на 573%** під час обробки запитів (задокументовано в [Проблема GitHub на нашій сторінці стану #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **Усунуто затримки обробки** до майже миттєвих відповідей (згадано в [Проблемі GitHub #298](https://github.com/forwardemail/forwardemail.net/issues/298))
+* **Усунуто затримки обробки** до майже миттєвих відповідей (згадано в [проблемі GitHub #298](https://github.com/forwardemail/forwardemail.net/issues/298))
 * **Краще співвідношення ціни та продуктивності** для виробничих середовищ Node.js
 * **Покращений час відгуку** на всіх кінцевих точках наших додатків
 
@@ -105,14 +105,14 @@
 * **Краща продуктивність** у виробничих розгортаннях
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Як частина наших найкращих практик розгортання Node.js у продакшені, ми закріплюємо точні версії критично важливих інструментів, таких як pnpm, щоб забезпечити узгоджену роботу в усіх середовищах та на всіх машинах членів команди.
 
 **Деталі впровадження:**
 
 * [Наша конфігурація package.json](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 * [Наша публікація в блозі про екосистему NPM](https://forwardemail.net/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem)
 
-### Веб-фреймворк: Koa для сучасного Node.js-продукції {#web-framework-koa-for-modern-nodejs-production}
+### Веб-фреймворк: Koa для сучасного Node.js Production {#web-framework-koa-for-modern-nodejs-production}
 
 **Що ми використовуємо:**
 
@@ -132,7 +132,7 @@
 
 ### Обробка фонового завдання: Bree для надійності виробництва {#background-job-processing-bree-for-production-reliability}
 
-**Що ми використовуємо:** [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) планувальник
+**Що ми використовуємо:** планувальник [`bree`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 Ми створили та підтримуємо Bree, оскільки існуючі планувальники завдань не задовольняли наші потреби в підтримці робочих потоків та сучасних функціях JavaScript у виробничих середовищах Node.js. Це стосується будь-якої програми Node.js, яка потребує фонової обробки, запланованих завдань або робочих потоків.
 
@@ -158,7 +158,7 @@
 
 Наш підхід до моніторингу Node.js-застосунків у продакшені розвивався протягом років роботи над ними у великих масштабах. Ми впроваджуємо моніторинг на кількох рівнях, щоб забезпечити надійність та продуктивність будь-якого типу Node.js-застосунку.
 
-### Системний моніторинг продакшену Node.js {#system-level-nodejs-production-monitoring}
+### Моніторинг продакшену Node.js на системному рівні {#system-level-nodejs-production-monitoring}
 
 **Наша основна реалізація:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
@@ -172,9 +172,9 @@
 * Поріг попередження **Використання диска 75%**
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> Ці порогові значення працюють для нашої конкретної конфігурації обладнання. Під час впровадження моніторингу продакшену Node.js перегляньте нашу реалізацію monitor-server.js, щоб зрозуміти точну логіку та адаптувати значення для вашої конфігурації.
 
-### Моніторинг на рівні застосунків для Node.js Production {#application-level-monitoring-for-nodejs-production}
+### Моніторинг на рівні застосунку для Node.js Production {#application-level-monitoring-for-nodejs-production}
 
 **Наша класифікація помилок:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
@@ -190,7 +190,7 @@
 
 Ми впроваджуємо комплексне редагування полів для захисту конфіденційної інформації, зберігаючи при цьому корисні можливості налагодження в нашому робочому середовищі Node.js.
 
-### Моніторинг специфічних для програми {#application-specific-monitoring}
+### Моніторинг, специфічний для програми {#application-specific-monitoring}
 
 **Наші серверні реалізації:**
 
@@ -217,9 +217,9 @@
 * **Запобігає циклам перезапуску** завдяки інтелектуальній перевірці справності
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Згідно з найкращими практиками розгортання Node.js у продакшені, ми вимагаємо понад 15 хвилин безвідмовної роботи, перш ніж процес вважається справним, щоб уникнути циклів перезапуску. Це запобігає каскадним збоям, коли процеси мають проблеми з пам'яттю або інші проблеми.
 
-### Наша виробнича конфігурація PM2 {#our-pm2-production-configuration}
+### Наша конфігурація виробництва PM2 {#our-pm2-production-configuration}
 
 **Налаштування нашої екосистеми:** Вивчіть файли запуску нашого сервера для налаштування виробничого середовища Node.js:
 
@@ -253,18 +253,18 @@
 
 Цей шаблон працює для будь-якої програми Node.js — незалежно від того, чи створюєте ви сайти електронної комерції, SaaS-платформи, API чи мікросервіси.
 
-### Інтеграція з нашими системами ведення журналу виробництва {#integration-with-our-production-logging}
+### Інтеграція з нашим виробничим журналом {#integration-with-our-production-logging}
 
 **Інтеграція нашого логера:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-Наш логер використовує `isCodeBug` для визначення рівнів сповіщень та редагування полів, що гарантує отримання сповіщень про реальні проблеми та фільтрує шум у нашому робочому середовищі Node.js.
+Наш логер використовує `isCodeBug` для визначення рівнів сповіщень та редагування полів, що гарантує отримання сповіщень про реальні проблеми та фільтрацію шуму в нашому робочому середовищі Node.js.
 
-### Пов’язаний контент {#related-content-1}
+### Пов’язаний вміст {#related-content-1}
 
 Дізнайтеся більше про наші шаблони обробки помилок:
 
-* [Створення надійної платіжної системи](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - Шаблони обробки помилок
-* [Захист конфіденційності електронної пошти](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - Обробка помилок безпеки
+* [Створення надійної платіжної системи](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) – Шаблони обробки помилок
+* [Захист конфіденційності електронної пошти](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) – Обробка помилок безпеки
 
 ## Розширене налагодження продуктивності за допомогою v8-profiler-next та cpupro {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
@@ -274,11 +274,11 @@
 
 **Інструменти, які ми рекомендуємо:**
 
-* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) - Для створення знімків купи та профілів процесора
-* [`cpupro`](https://github.com/discoveryjs/cpupro) - Для аналізу профілів процесора та знімків купи
+* [`v8-profiler-next`](https://www.npmjs.com/package/v8-profiler-next) – Для створення знімків купи та профілів процесора
+* [`cpupro`](https://github.com/discoveryjs/cpupro) – Для аналізу профілів процесора та знімків купи
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> Ми використовуємо v8-profiler-next та cpupro разом для створення повного робочого процесу налагодження продуктивності для наших Node.js-застосунків. Це поєднання допомагає нам виявляти витоки пам'яті, вузькі місця в продуктивності та оптимізувати наш продакшн-код.
 
 ### Як ми реалізуємо аналіз знімків купи {#how-we-implement-heap-snapshot-analysis}
 
@@ -297,9 +297,9 @@
 
 **Вивчіть нашу фактичну реалізацію:**
 
-* [Моніторинг реалізації сервера](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) - Моніторинг купи та створення знімків
-* [Робота з прибирання](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - Збереження та очищення знімків
-* [Інтеграція логгера](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - Журнал продуктивності
+* [Реалізація моніторингу сервера](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js) – Моніторинг купи та створення знімків
+* [Робота з прибирання](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) – Збереження та очищення знімків
+* [Інтеграція логгера](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) – Журнал продуктивності
 
 ### Рекомендована реалізація для вашої програми Node.js {#recommended-implementation-for-your-nodejs-application}
 
@@ -319,7 +319,7 @@
 4. **Моніторинг покращень продуктивності до/після**
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> Створення знімків купи та профілів процесора може вплинути на продуктивність. Ми рекомендуємо впроваджувати регулювання та вмикати профілювання лише під час дослідження певних проблем або під час періодів обслуговування.
 
 ### Інтеграція з нашим моніторингом виробництва {#integration-with-our-production-monitoring}
 
@@ -348,9 +348,9 @@
 * **Налаштування параметрів ядра** для безпеки та продуктивності
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Під час впровадження найкращих практик розгортання Node.js у продакшені, вимкнення swap може призвести до завершення роботи через нестачу пам'яті, якщо ваш застосунок перевищує обсяг доступної оперативної пам'яті. Ми ретельно контролюємо використання пам'яті та відповідно підбираємо розмір наших серверів.
 
-### Безпека застосунків Node.js {#application-security-for-nodejs-applications}
+### Безпека застосунків для Node.js {#application-security-for-nodejs-applications}
 
 **Редагування поля нашого журналу:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
@@ -373,7 +373,7 @@
 * [Квантова безпечна зашифрована електронна пошта](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
 * [Чому безпека електронної пошти з відкритим кодом?](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
 
-## Архітектура бази даних для Node.js-застосунків {#database-architecture-for-nodejs-applications}
+## Архітектура бази даних для застосунків Node.js {#database-architecture-for-nodejs-applications}
 
 Ми використовуємо гібридний підхід до баз даних, оптимізований для наших Node.js-додатків. Ці шаблони можна адаптувати для будь-якого Node.js-додатку:
 
@@ -415,7 +415,7 @@
 * **Багата мова запитів**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> Наш гібридний підхід оптимізовано для нашого конкретного випадку використання. Вивчіть наші фактичні моделі використання бази даних у кодовій базі, щоб зрозуміти, чи відповідає цей підхід потребам вашої програми Node.js.
 
 ## Обробка фонового завдання Node.js Production {#nodejs-production-background-job-processing}
 
@@ -427,9 +427,9 @@
 
 **Наше розгортання Ansible:** [`ansible/playbooks/bree.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/bree.yml)
 
-### Приклади вакансій у виробництві {#production-job-examples}
+### Приклади виробничих вакансій {#production-job-examples}
 
-**Моніторинг стану здоров'я:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+**Моніторинг стану:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 **Автоматизація очищення:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
@@ -450,7 +450,7 @@
 * Наша логіка обробки помилок та повторних спроб
 * Як ми використовуємо робочі потоки для завдань, що ресурсомісткі для процесора
 
-## Автоматизоване обслуговування для виробничих Node.js-застосунків {#automated-maintenance-for-production-nodejs-applications}
+## Автоматизоване обслуговування для виробничих застосунків Node.js {#automated-maintenance-for-production-nodejs-applications}
 
 Ми впроваджуємо проактивне обслуговування, щоб запобігти поширеним проблемам у продакшені Node.js. Ці шаблони застосовуються до будь-якої програми Node.js:
 
@@ -517,7 +517,7 @@
 
 **Наші впровадження на підприємствах:**
 
-* [Тематичне дослідження Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
+* [Тематичне дослідження фундаменту Linux](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
 * [Канонічний приклад Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)
 * [Пересилання електронної пошти випускників](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)
 
@@ -547,7 +547,7 @@
 * [Перевірки стану PM2](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 * [Автоматизоване очищення](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
-### Наші серверні реалізації {#our-server-implementations}
+### Реалізації нашого сервера {#our-server-implementations}
 
 * [Веб-сервер](https://github.com/forwardemail/forwardemail.net/blob/master/web.js)
 * [API-сервер](https://github.com/forwardemail/forwardemail.net/blob/master/api.js)
@@ -572,7 +572,7 @@
 * [Інтеграція електронної пошти React](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 * [Посібник із самостійно розміщених рішень](https://forwardemail.net/blog/docs/self-hosted-solution)
 
-### Наші приклади розвитку підприємства {#our-enterprise-case-studies}
+### Наші приклади корпоративного розвитку {#our-enterprise-case-studies}
 
 * [Впровадження Linux Foundation](https://forwardemail.net/blog/docs/linux-foundation-email-enterprise-case-study)
 * [Канонічний приклад Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)

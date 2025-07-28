@@ -1,4 +1,4 @@
-# Databehandlingsavtale {#data-processing-agreement}
+# Databehandleravtale {#data-processing-agreement}
 
 <!-- v1.0 fra <https://github.com/CommonPaper/DPA> -->
 
@@ -49,7 +49,7 @@
 
 | Periode | Verdi |
 | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Avtale** | Denne databehandleravtalen utfyller [Terms of Service](/terms) |
+| **Avtale** | Denne databehandleravtalen (DPA) supplerer [Terms of Service](/terms) |
 | Godkjente underdatabehandlere | [Cloudflare](https://cloudflare.com) (USA; DNS-, nettverks- og sikkerhetsleverandør), [DataPacket](https://www.datapacket.com/) (USA/Storbritannia; hostingleverandør), [Digital Ocean](https://digitalocean.com) (USA; hostingleverandør), [Vultr](https://www.vultr.com) (USA; hostingleverandør), [Stripe](https://stripe.com) (USA; betalingsbehandler), [PayPal](https://paypal.com) (USA; betalingsbehandler) |
 | <strong>Kontaktperson for leverandørsikkerhet</strong> | <a href="mailto:security@forwardemail.net"><security@forwardemail.net></a> |
 | **Sikkerhetspolicy** | Vis [our Security Policy on GitHub](https://github.com/forwardemail/forwardemail.net/security/policy) |
@@ -59,21 +59,21 @@
 
 Dette dokumentet er en avledning av [Vanlige standardvilkår for DPA-dokumenter (versjon 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0), og følgende endringer er gjort:
 
-1. [Gjeldende lov og valgte domstoler](#11-governing-law-and-chosen-courts) er inkludert som en seksjon nedenfor med `Governing State` identifisert ovenfor.
+1. [Gjeldende lov og valgte domstoler](#11-governing-law-and-chosen-courts) er inkludert som en seksjon nedenfor, med `Governing State` identifisert ovenfor.
 
 2. [Forholdet mellom tjenesteleverandører](#12-service-provider-relationship) er inkludert som en seksjon nedenfor.
 
-## 1. Forhold mellom databehandler og underdatabehandler {#1-processor-and-subprocessor-relationships}
+## 1. Forhold mellom prosessor og underprosessor {#1-processor-and-subprocessor-relationships}
 
 ### 1. Leverandør som databehandler {#1-provider-as-processor}
 
 I situasjoner der <strong>Kunden</strong> er behandlingsansvarlig for kundens personopplysninger, vil <strong>Leverandøren</strong> bli ansett som databehandler som behandler personopplysninger på vegne av <strong>Kunden</strong>.
 
-### 2. Leverandør som underdatabehandler {#2-provider-as-subprocessor}
+### 2. Leverandør som underbehandler {#2-provider-as-subprocessor}
 
 I situasjoner der <strong>Kunden</strong> er databehandler av kundens personopplysninger, vil <strong>Leverandøren</strong> bli ansett som underdatabehandler av kundens personopplysninger.
 
-## 2. Behandling av {#2-processing}
+## 2. Behandler {#2-processing}
 
 ### 1. Behandlingsdetaljer {#1-processing-details}
 
@@ -95,7 +95,7 @@ Der Kunden er en databehandler og Leverandøren er en underdatabehandler, skal K
 
 Kunden har overholdt og vil fortsette å overholde alle gjeldende personvernlover angående levering av kundens personopplysninger til Leverandøren og/eller Tjenesten, inkludert å foreta alle opplysninger, innhente alle samtykker, gi tilstrekkelig valgfrihet og implementere relevante sikkerhetstiltak som kreves i henhold til gjeldende personvernlover.
 
-### 6. Underdatabehandlere {#6-subprocessors}
+### 6. Underprosessorer {#6-subprocessors}
 
 a. <strong>Leverandøren</strong> vil ikke gi, overføre eller utlevere noen kundepersonopplysninger til en underdatabehandler med mindre <strong>Kunden</strong> har godkjent underdatabehandleren. Den nåværende listen over <strong>Godkjente underdatabehandlere</strong> inkluderer identiteten til underdatabehandlerne, deres land og deres forventede behandlingsoppgaver. <strong>Leverandøren</strong> vil informere <strong>Kunden</strong> minst 10 virkedager i forveien og skriftlig om eventuelle planlagte endringer av de <strong>Godkjente underdatabehandlerne</strong>, enten ved tillegg eller erstatning av en underdatabehandler, noe som gir <strong>Kunden</strong> nok tid til å protestere mot endringene før <strong>Leverandøren</strong> begynner å bruke den/de nye underdatabehandleren(e). <strong>Leverandøren</strong> vil gi <strong>Kunden</strong> den informasjonen som er nødvendig for at <strong>Kunden</strong> skal kunne utøve sin rett til å protestere mot endringen av <strong>Godkjente underdatabehandlere</strong>. Kunden har 30 dager etter varsel om en endring av de godkjente underdatabehandlerne til å protestere. Ellers anses kunden å ha akseptert endringene. Hvis kunden protesterer mot endringen innen 30 dager etter varsel, skal kunden og leverandøren samarbeide i god tro for å løse kundens innsigelse eller bekymring.
 
@@ -149,7 +149,7 @@ c. Forsiden inneholder informasjonen som kreves i vedlegg 1A, vedlegg 1B, vedleg
 
 For overføringer av personopplysninger der sveitsisk lov (og ikke loven i noen EØS-medlemsstat eller Storbritannia) gjelder for overføringens internasjonale karakter, endres henvisninger til GDPR i punkt 4 i EØS-standardkontraktene, i den grad det er lovpålagt, til å referere til den sveitsiske føderale databeskyttelsesloven eller dens etterfølger i stedet, og konseptet tilsynsmyndighet vil omfatte den sveitsiske føderale databeskyttelses- og informasjonskommissæren.
 
-## 4. Respons på sikkerhetshendelser {#4-security-incident-response}
+## 4. Respons på sikkerhetshendelse {#4-security-incident-response}
 
 1. Når Leverandøren blir oppmerksom på en sikkerhetshendelse, skal vedkommende: (a) varsle Kunden uten unødig forsinkelse når det er mulig, men senest 72 timer etter at vedkommende ble oppmerksom på sikkerhetshendelsen; (b) gi rettidig informasjon om sikkerhetshendelsen etter hvert som den blir kjent eller som Kunden med rimelighet ber om; og (c) omgående iverksette rimelige tiltak for å begrense og undersøke sikkerhetshendelsen. Leverandørens varsling om eller svar på en sikkerhetshendelse som kreves av denne databehandleravtalen skal ikke tolkes som en bekreftelse fra Leverandøren av noen feil eller ansvar for sikkerhetshendelsen.
 
@@ -163,13 +163,13 @@ Leverandøren skal gi Kunden all informasjon som er rimelig nødvendig for å de
 
 Kunden erkjenner at Leverandøren regelmessig revideres av uavhengige tredjepartsrevisorer i henhold til standardene som er definert i sikkerhetspolicyen. Leverandøren skal på skriftlig forespørsel gi Kunden, konfidensielt, et sammendrag av sin gjeldende rapport, slik at Kunden kan bekrefte Leverandørens overholdelse av standardene som er definert i sikkerhetspolicyen.
 
-### 3. Sikkerhetsvurdering {#3-security-due-diligence}
+### 3. Sikkerhetsaktsomhet {#3-security-due-diligence}
 
 I tillegg til rapporten vil Leverandøren svare på rimelige forespørsler om informasjon fra Kunden for å bekrefte Leverandørens overholdelse av denne datatilsynsavtalen, inkludert svar på spørreskjemaer for informasjonssikkerhet, due diligence og revisjon, eller ved å gi ytterligere informasjon om sitt informasjonssikkerhetsprogram. Alle slike forespørsler må være skriftlige og rettes til Leverandørens sikkerhetskontakt, og kan kun gjøres én gang i året.
 
 ## 6. Koordinering og samarbeid {#6-coordination--cooperation}
 
-### 1. Svar på henvendelser {#1-response-to-inquiries}
+### 1. Svar på forespørsler {#1-response-to-inquiries}
 
 Hvis Leverandøren mottar en forespørsel eller henvendelse fra noen andre om behandling av kundens personopplysninger, vil Leverandøren varsle Kunden om forespørselen, og Leverandøren vil ikke svare på forespørselen uten Kundens forhåndssamtykke. Eksempler på slike forespørsler og henvendelser inkluderer en rettslig, administrativ eller regulatorisk ordre om Kundens personopplysninger der det ikke er forbudt å varsle Kunden i henhold til gjeldende lov, eller en forespørsel fra en registrert. Hvis det er tillatt i henhold til gjeldende lov, vil Leverandøren følge Kundens rimelige instruksjoner om disse forespørslene, inkludert å gi statusoppdateringer og annen informasjon som Kunden med rimelighet ber om. Dersom en registrert person fremsetter en gyldig forespørsel i henhold til gjeldende personvernlovgivning om å slette eller reservere seg mot at <strong>kunden</strong> gir kundens personopplysninger til <strong>leverandøren</strong>, skal <strong>leverandøren</strong> bistå <strong>kunden</strong> med å oppfylle forespørselen i henhold til gjeldende personvernlovgivning. <strong>leverandøren</strong> skal samarbeide med og gi rimelig bistand til <strong>kunden</strong>, på <strong>kundens</strong> regning, i ethvert juridisk svar eller andre prosedyremessige tiltak som <strong>kunden</strong> iverksetter som svar på en tredjepartsforespørsel om <strong>leverandørens</strong> behandling av kundens personopplysninger i henhold til denne databehandleravtalen.
 
@@ -263,4 +263,4 @@ I den grad California Consumer Privacy Act, Cal. Civ. Code § 1798.100 et seq ("
 
 ## Krediteringer {#credits}
 
-Dette dokumentet er et avledet produkt av [Vanlige standardvilkår for DPA-dokumenter (versjon 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) og er lisensiert under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Dette dokumentet er et derivat av [Vanlige standardvilkår for DPA-dokumenter (versjon 1.0)](https://commonpaper.com/standards/data-processing-agreement/1.0) og er lisensiert under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).

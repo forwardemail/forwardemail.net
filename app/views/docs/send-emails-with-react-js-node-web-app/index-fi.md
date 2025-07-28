@@ -7,7 +7,7 @@
 
 ## Asennus ja vaatimukset {#install-and-requirements}
 
-Sinun on asennettava `@react-email/render` ja `nodemailer` npm-riippuvuudet:
+Sinun on asennettava `@react-email/render`- ja `nodemailer`-riippuvuudet:
 
 ```sh
 npm install @react-email/render nodemailer
@@ -15,7 +15,7 @@ npm install @react-email/render nodemailer
 
 ## Lähdekoodi ja esimerkki {#source-code-and-example}
 
-Luo sähköpostipohja tiedostolla `.jsx` tai `.js`:
+Luo sähköpostimallipohja `.jsx`- tai `.js`-tiedostolla:
 
 ```jsx
 // email.jsx
@@ -36,7 +36,7 @@ export function Email(props) {
 
 Tässä esimerkissä käytämme **[Nodemailer](https://github.com/nodemailer/nodemailer)**-kirjastoa ja sen virallista sponsoria **[Lähetä sähköpostia eteenpäin](https://forwardemail.net)** lähtevän postin lähettämiseen ja esikatseluun.
 
-Sinun on <strong class="text-success"><i class="fa fa-key"></i>luotava salasana</strong> lähettääksesi lähtevää postia – noudata **[Lähetä sähköpostia mukautetulla verkkotunnuksella SMTP-opas](/guides/send-email-with-custom-domain-smtp)**-ohjeitamme.
+Sinun on <strong class="text-success"><i class="fa fa-key"></i>luotava salasana</strong> lähettääksesi lähtevää postia – noudata **[Lähetä sähköpostia mukautetulla verkkotunnuksella SMTP-opas](/guides/send-email-with-custom-domain-smtp)**-käytäntöämme.
 
 <!-- https://github.com/nodemailer/nodemailer-web/pull/22 -->
 
@@ -76,6 +76,6 @@ Suorita sovellus lähettääksesi sähköpostin:
 node app
 ```
 
-Nyt voit siirtyä osoitteeseen **[Oma tili → Sähköpostit](/my-account/emails)** nähdäksesi reaaliaikaisen sähköpostien toimitustilan, sähköpostien toimituslokit ja HTML-/selkotekstisten/liitteiden esikatselut.
+Nyt voit siirtyä kohtaan **[Oma tili → Sähköpostit](/my-account/emails)** nähdäksesi reaaliaikaisen sähköpostien toimitustilan, sähköpostien toimituslokit ja HTML-/selkotekstisten/liitteiden esikatselut.
 
-> P.S. :tada: Voit myös **[esikatsele sähköposteja selaimissa ja iOS-simulaattorissa](/docs/test-preview-email-rendering-browsers-ios-simulator)** ja **[luo sähköpostipohjia Node.js:llä](/docs/send-emails-with-node-js-javascript)**.
+> P.S. :tada: Voit myös käyttää **[esikatsele sähköposteja selaimissa ja iOS-simulaattorissa](/docs/test-preview-email-rendering-browsers-ios-simulator)**- ja **[luo sähköpostipohjia Node.js:llä](/docs/send-emails-with-node-js-javascript)**-merkkejä.

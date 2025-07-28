@@ -26,7 +26,7 @@ Ao concordar com nosso [Termos de Serviço](/terms), você estará automaticamen
 
 Como processamos, armazenamos e transferimos dados internacionalmente (por exemplo, um e-mail enviado de um país para outro), é importante que respeitemos as leis de privacidade locais aplicáveis.
 
-Abaixo estão listados os provedores que usamos para transferir dados internacionalmente e links para suas páginas dedicadas em relação à conformidade com o GDPR.
+Abaixo estão listados nossos provedores que usamos para transferir dados internacionalmente e links para suas páginas dedicadas em relação à conformidade com o GDPR.
 
 | Provedor | Certificado [Data Privacy Framework Program](https://www.dataprivacyframework.gov/) ("DPF") | Página de conformidade com o GDPR |
 | ----------------------------------------- | :---------------------------------------------------------------------------------------: | ------------------------------------------------- |

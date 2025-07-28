@@ -3,26 +3,26 @@
 ## 目次 {#table-of-contents}
 
 * [序文](#foreword)
-* [転送メールの SMTP 処理の仕組み](#how-forward-emails-smtp-processing-works)
+* [Forward EmailのSMTP処理の仕組み](#how-forward-emails-smtp-processing-works)
   * [メールキューと再試行システム](#email-queue-and-retry-system)
   * [信頼性のためにダミー対策済み](#dummy-proofed-for-reliability)
 * [Node.js 統合](#nodejs-integration)
   * [Nodemailerの使用](#using-nodemailer)
-  * [Express.js の使用](#using-expressjs)
-* [Python 統合](#python-integration)
+  * [Express.jsの使用](#using-expressjs)
+* [Python統合](#python-integration)
   * [smtplibの使用](#using-smtplib)
-  * [Django の使用](#using-django)
+  * [Djangoの使用](#using-django)
 * [PHP統合](#php-integration)
   * [PHPMailerの使用](#using-phpmailer)
   * [Laravelの使用](#using-laravel)
-* [Ruby 統合](#ruby-integration)
+* [Ruby統合](#ruby-integration)
   * [Ruby Mail Gemの使用](#using-ruby-mail-gem)
-* [Java 統合](#java-integration)
+* [Java統合](#java-integration)
   * [Java メール API の使用](#using-javamail-api)
 * [電子メールクライアントの設定](#email-client-configuration)
   * [サンダーバード](#thunderbird)
   * [アップルメール](#apple-mail)
-  * [Gmail (送信者名)](#gmail-send-mail-as)
+  * [Gmail（送信者名）](#gmail-send-mail-as)
 * [トラブルシューティング](#troubleshooting)
   * [よくある問題と解決策](#common-issues-and-solutions)
   * [ヘルプの取得](#getting-help)
@@ -31,7 +31,7 @@
 
 ## 序文 {#foreword}
 
-このガイドでは、さまざまなプログラミング言語、フレームワーク、および電子メール クライアントを使用して Forward Email の SMTP サービスと統合する方法の詳細な例を示します。当社の SMTP サービスは、信頼性が高く、安全で、既存のアプリケーションと簡単に統合できるように設計されています。
+このガイドでは、様々なプログラミング言語、フレームワーク、メールクライアントを用いてForward EmailのSMTPサービスと統合する方法を、詳細な例を用いて解説します。Forward EmailのSMTPサービスは、信頼性とセキュリティに優れ、既存のアプリケーションとの統合が容易なように設計されています。
 
 ## 転送メールのSMTP処理の仕組み {#how-forward-emails-smtp-processing-works}
 
@@ -43,20 +43,20 @@ SMTP 経由で当社のサーバーに電子メールを送信すると、次の
 
 1. **初期処理**: メールは検証され、マルウェアスキャンとスパムフィルターによるチェックが行われます。
 2. **スマートキューイング**: メールは配信のために高度なキューシステムに配置されます。
-3. **インテリジェントな再試行メカニズム**: 一時的に配信に失敗した場合、システムは以下を実行します。
-* `getBounceInfo` 関数を使用してエラー応答を分析します。
-* 問題が一時的なものか（例: 「後でもう一度お試しください」、「一時的に延期」）、永続的なものか（例: 「ユーザー不明」）を判断します。
+3. **インテリジェントな再試行メカニズム**: 配信が一時的に失敗した場合、システムは以下の処理を行います。
+* `getBounceInfo`関数を使用してエラー応答を分析します。
+* 問題が一時的なものか（例: 「後でもう一度お試しください」、「一時的に延期」）永続的なものか（例: 「ユーザー不明」）を判断します。
 * 一時的な問題の場合は、メールを再試行対象としてマークします。
 * 永続的な問題の場合は、バウンス通知を生成します。
 4. **5日間の再試行期間**: 一時的な問題が解決するまで、最大5日間（Postfixなどの業界標準に類似）配信を再試行します。
 5. **配信状況通知**: 送信者はメールのステータス（配信済み、遅延、バウンス）に関する通知を受け取ります。
 
 > \[!NOTE]
-> After successful delivery, outbound SMTP email content is redacted after a configurable retention period (default 30 days) for security and privacy. Only a placeholder message remains indicating successful delivery.
+> 配信に成功した後、送信SMTPメールの内容は、セキュリティとプライバシー保護のため、設定可能な保存期間（デフォルトは30日間）後に編集されます。配信に成功したことを示すプレースホルダメッセージのみが残ります。
 
 ### 信頼性のためにダミー対策済み {#dummy-proofed-for-reliability}
 
-当社のシステムは、さまざまなエッジケースに対応できるように設計されています。
+当社のシステムは、さまざまなエッジケースを処理できるように設計されています。
 
 * ブロックリストが検出された場合、メールは自動的に再試行されます
 * ネットワークに問題が発生した場合、配信が再試行されます
@@ -159,7 +159,7 @@ app.listen(port, () => {
 });
 ```
 
-## Python 統合 {#python-integration}
+## Python統合 {#python-integration}
 
 ### smtplib の使用 {#using-smtplib}
 
@@ -217,7 +217,7 @@ EMAIL_HOST_PASSWORD = 'your-password'
 DEFAULT_FROM_EMAIL = 'your-username@your-domain.com'
 ```
 
-次に、ビューでメールを送信します。
+次に、ビュー内でメールを送信します。
 
 ```python
 from django.core.mail import send_mail
@@ -234,7 +234,7 @@ def send_email_view(request):
     return HttpResponse('Email sent!')
 ```
 
-## PHP 統合 {#php-integration}
+## PHP統合 {#php-integration}
 
 ### PHPMailer の使用 {#using-phpmailer}
 
@@ -312,9 +312,9 @@ class EmailController extends Controller
 }
 ```
 
-## Ruby 統合 {#ruby-integration}
+## Ruby統合 {#ruby-integration}
 
-### Ruby Mail Gem の使用 {#using-ruby-mail-gem}
+### Ruby Mail Gem を使用 {#using-ruby-mail-gem}
 
 ```ruby
 require 'mail'
@@ -351,9 +351,9 @@ mail.deliver!
 puts "Email sent successfully!"
 ```
 
-## Java 統合 {#java-integration}
+## Java統合 {#java-integration}
 
-### JavaMail API の使用 {#using-javamail-api}
+### JavaMail APIの使用 {#using-javamail-api}
 
 ```java
 import java.util.Properties;
@@ -420,7 +420,7 @@ public class SendEmail {
 }
 ```
 
-## メールクライアントの設定 {#email-client-configuration}
+## メールクライアント構成 {#email-client-configuration}
 
 ### サンダーバード {#thunderbird}
 
@@ -452,7 +452,7 @@ flowchart TD
 * ユーザー名：メールアドレス全体
 5. 「テスト」をクリックし、「完了」をクリックします。
 
-### Apple メール {#apple-mail}
+### Appleメール {#apple-mail}
 
 1. メールアプリを開き、「メール」>「環境設定」>「アカウント」に移動します。
 2. 「+」ボタンをクリックして新しいアカウントを追加します。
@@ -513,12 +513,12 @@ flowchart TD
 ## 追加リソース {#additional-resources}
 
 * [メール転送ドキュメント](/docs)
-* [SMTP サーバーの制限と構成](/faq#what-are-your-outbound-smtp-limits)
+* [SMTPサーバーの制限と構成](/faq#what-are-your-outbound-smtp-limits)
 * [メールのベストプラクティスガイド](/blog/docs/best-email-forwarding-service)
-* [セキュリティ対策](/security)
+* [セキュリティプラクティス](/security)
 
 ## 結論 {#conclusion}
 
-Forward Email の SMTP サービスは、アプリケーションやメール クライアントからメールを送信するための信頼性が高く、安全で、プライバシーを重視した方法を提供します。インテリジェントなキュー システム、5 日間の再試行メカニズム、包括的な配信ステータス通知により、メールが宛先に確実に届くようになります。
+Forward EmailのSMTPサービスは、アプリケーションやメールクライアントから、信頼性、セキュリティ、プライバシーを重視した方法でメールを送信できます。インテリジェントなキューシステム、5日間の再試行メカニズム、そして包括的な配信状況通知により、メールが確実に宛先に届くことを確信できます。
 
 より高度な使用例やカスタム統合については、サポート チームにお問い合わせください。

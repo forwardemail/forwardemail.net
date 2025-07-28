@@ -34,7 +34,7 @@
 * [E-Mail-Konfiguration](#email-configuration)
   * [Wie fange ich an und richte die E-Mail-Weiterleitung ein?](#how-do-i-get-started-and-set-up-email-forwarding)
   * [Kann ich mehrere MX-Börsen und Server für erweiterte Weiterleitungen verwenden?](#can-i-use-multiple-mx-exchanges-and-servers-for-advanced-forwarding)
-  * [Wie richte ich eine Abwesenheitsnotiz ein (Auto-Responder bei Abwesenheit)](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
+  * [Wie richte ich eine Abwesenheitsnotiz (Abwesenheitsnotiz) ein?](#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder)
   * [Wie richte ich SPF für die E-Mail-Weiterleitung ein?](#how-do-i-set-up-spf-for-forward-email)
   * [Wie richte ich DKIM für die E-Mail-Weiterleitung ein?](#how-do-i-set-up-dkim-for-forward-email)
   * [Wie richte ich DMARC für die E-Mail-Weiterleitung ein?](#how-do-i-set-up-dmarc-for-forward-email)
@@ -88,7 +88,7 @@
   * [Wie verarbeiten Sie eine E-Mail zur Weiterleitung?](#how-do-you-process-an-email-for-forwarding)
   * [Wie gehen Sie mit Problemen bei der E-Mail-Zustellung um?](#how-do-you-handle-email-delivery-issues)
   * [Wie gehen Sie mit der Sperrung Ihrer IP-Adressen um?](#how-do-you-handle-your-ip-addresses-becoming-blocked)
-  * [Was sind Postmasteradressen?](#what-are-postmaster-addresses)
+  * [Was sind Postmasteradressen](#what-are-postmaster-addresses)
   * [Was sind No-Reply-Adressen](#what-are-no-reply-addresses)
   * [Wie lauten die IP-Adressen Ihres Servers?](#what-are-your-servers-ip-addresses)
   * [Haben Sie eine Zulassungsliste?](#do-you-have-an-allowlist)
@@ -98,7 +98,7 @@
   * [Haben Sie eine Greylist?](#do-you-have-a-greylist)
   * [Haben Sie eine Deny-Liste](#do-you-have-a-denylist)
   * [Haben Sie eine Ratenbegrenzung?](#do-you-have-rate-limiting)
-  * [Wie schützt man sich vor Backscatter](#how-do-you-protect-against-backscatter)
+  * [Wie schützt man sich vor Rückstreuung](#how-do-you-protect-against-backscatter)
   * [Verhindern Sie Bounces von bekannten MAIL FROM-Spammern](#prevent-bounces-from-known-mail-from-spammers)
   * [Verhindern Sie unnötige Rücksprünge, um vor Rückstreuung zu schützen](#prevent-unnecessary-bounces-to-protect-against-backscatter)
   * [Wie ermittelt man einen E-Mail-Fingerabdruck](#how-do-you-determine-an-email-fingerprint)
@@ -137,7 +137,7 @@
 
 So beginnen Sie mit der E-Mail-Weiterleitung:
 
-1. **Erstellen Sie ein Konto** unter [forwardemail.net/register](https://forwardemail.net/register)
+1. **Erstellen Sie ein Konto** bei [forwardemail.net/register](https://forwardemail.net/register)
 
 2. **Fügen Sie Ihre Domain hinzu und bestätigen Sie sie** unter [Mein Konto → Domänen](/my-account/domains)
 
@@ -146,17 +146,17 @@ So beginnen Sie mit der E-Mail-Weiterleitung:
 4. **Testen Sie Ihr Setup**, indem Sie eine E-Mail an einen Ihrer neuen Aliase senden
 
 > \[!TIP]
-> DNS changes can take up to 24-48 hours to propagate globally, though they often take effect much sooner.
+> Es kann bis zu 24–48 Stunden dauern, bis DNS-Änderungen global wirksam werden. Oftmals werden sie jedoch deutlich früher wirksam.
 
 > \[!IMPORTANT]
-> For enhanced deliverability, we recommend setting up [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email), and [DMARC](#how-do-i-set-up-dmarc-for-forward-email) records.
+> Für eine bessere Zustellbarkeit empfehlen wir die Einrichtung der Datensätze [SPF](#how-do-i-set-up-spf-for-forward-email), [DKIM](#how-do-i-set-up-dkim-for-forward-email) und [DMARC](#how-do-i-set-up-dmarc-for-forward-email).
 
 ## Einführung {#introduction}
 
 ### Was ist die E-Mail-Weiterleitung? {#what-is-forward-email}
 
 > \[!NOTE]
-> Forward Email is perfect for individuals, small businesses, and developers who want professional email addresses without the cost and maintenance of a full email hosting solution.
+> Forward Email ist ideal für Einzelpersonen, kleine Unternehmen und Entwickler, die professionelle E-Mail-Adressen ohne die Kosten und den Wartungsaufwand einer vollständigen E-Mail-Hosting-Lösung wünschen.
 
 Forward Email ist ein **voll ausgestatteter E-Mail-Dienstanbieter** und **E-Mail-Hosting-Anbieter für benutzerdefinierte Domänennamen**.
 
@@ -177,7 +177,7 @@ Hauptfunktionen von „E-Mail weiterleiten“:
 Sie können uns auf [unsere E-Mail-Vergleichsseite](/blog/best-email-service) mit über 56 anderen E-Mail-Dienstanbietern vergleichen.
 
 > \[!TIP]
-> Learn more about Forward Email by reading our free [Technical Whitepaper](/technical-whitepaper.pdf)
+> Erfahren Sie mehr über die E-Mail-Weiterleitung in unserem kostenlosen [Technisches Whitepaper](/technical-whitepaper.pdf)
 
 ### Wer verwendet die E-Mail-Weiterleitung? {#who-uses-forward-email}
 
@@ -195,7 +195,7 @@ Wir bieten E-Mail-Hosting und E-Mail-Weiterleitungsdienste für über 500.000 Do
 | jQuery | [:page_facing_up: Case Study](/blog/docs/linux-foundation-email-enterprise-case-study) |
 | LineageOS |  |
 | Ubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
-| In der Menschheit | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
+| Frei | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Lubuntu | [:page_facing_up: Case Study](/blog/docs/canonical-ubuntu-email-enterprise-case-study) |
 | Die Universität von Cambridge | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Die Universität von Maryland | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
@@ -204,7 +204,7 @@ Wir bieten E-Mail-Hosting und E-Mail-Weiterleitungsdienste für über 500.000 Do
 | Swarthmore College | [:page_facing_up: Case Study](/blog/docs/alumni-email-forwarding-university-case-study) |
 | Regierung von Südaustralien |  |
 | Regierung der Dominikanischen Republik |  |
-| Fliegen Sie<span>.</span>io |  |
+| Fly<span>.</span>io |  |
 | RCD Hotels |  |
 | Isaac Z. Schlueter (npm) | [:page_facing_up: Case Study](/blog/docs/how-npm-packages-billion-downloads-shaped-javascript-ecosystem) |
 | David Heinemeier Hansson (Ruby on Rails) |  |
@@ -213,10 +213,10 @@ Wir bieten E-Mail-Hosting und E-Mail-Weiterleitungsdienste für über 500.000 Do
 
 Weitere Informationen zum Weiterleiten von E-Mails finden Sie unter [unsere Info-Seite](/about).
 
-### Wie schnell ist dieser Dienst {#how-fast-is-this-service}
+### Wie schnell ist dieser Service? {#how-fast-is-this-service}
 
 > \[!NOTE]
-> Our system is designed for speed and reliability, with multiple redundant servers to ensure your emails are delivered promptly.
+> Unser System ist auf Geschwindigkeit und Zuverlässigkeit ausgelegt. Mehrere redundante Server gewährleisten die schnelle Zustellung Ihrer E-Mails.
 
 Durch die Weiterleitung von E-Mails werden Nachrichten mit minimaler Verzögerung zugestellt, normalerweise innerhalb weniger Sekunden nach Erhalt.
 
@@ -229,9 +229,9 @@ Leistungskennzahlen:
 
 Wir arbeiten in Echtzeit, im Gegensatz zu anderen Anbietern, die auf verzögerte Warteschlangen angewiesen sind.
 
-Wir schreiben nicht auf die Festplatte und speichern keine Protokolle – mit [Ausnahme von Fehlern](#do-you-store-error-logs) und [ausgehendes SMTP](#do-you-support-sending-email-with-smtp) (siehe unser [Datenschutzrichtlinie](/privacy)).
+Wir schreiben nicht auf die Festplatte und speichern keine Protokolle – mit [Ausnahme von Fehlern](#do-you-store-error-logs) und [ausgehendes SMTP](#do-you-support-sending-email-with-smtp) (siehe unseren [Datenschutzrichtlinie](/privacy)).
 
-Alles wird im Speicher erledigt und [Unser Quellcode ist auf GitHub](https://github.com/forwardemail).
+Alles wird im Speicher und [Unser Quellcode ist auf GitHub](https://github.com/forwardemail) erledigt.
 
 ## E-Mail-Clients {#email-clients}
 
@@ -256,7 +256,7 @@ Alles wird im Speicher erledigt und [Unser Quellcode ist auf GitHub](https://git
 * Ausgehend: `smtp.forwardemail.net`, Port 587, TLS
 * Benutzername: Ihre vollständige E-Mail-Adresse
 * Passwort: Ihr generiertes Passwort
-6. Klicken Sie auf **Verbinden**
+6. Klicken Sie auf **Verbinden**.
 
 ### Apple Mail {#apple-mail}
 
@@ -371,9 +371,9 @@ Sie haben alle Schritte erfolgreich abgeschlossen.
 
 </div>
 
-### Was ist die alte kostenlose Anleitung zum Senden von E-Mails mit Gmail? {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
+### Was ist der alte kostenlose Leitfaden zum Senden von E-Mails mit Gmail {#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail}
 
-<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Wichtig:</strong> Diese kostenlose Anleitung ist seit Mai 2023 veraltet, da <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we jetzt ausgehendes SMTP unterstützt</a>. Wenn Sie die folgende Anleitung verwenden, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this führt dies dazu, dass Ihre ausgehenden E-Mails</a> in Gmail die Meldung "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" erhalten.</a></div>
+<div class="alert my-3 alert-danger"><i class="fa fa-stop-circle font-weight-bold"></i> <strong class="font-weight-bold">Wichtig:</strong> Diese kostenlose Anleitung ist seit Mai 2023 veraltet, da <a class="alert-link" href="/faq#do-you-support-sending-email-with-smtp">we jetzt ausgehendes SMTP unterstützt</a>. Wenn Sie die folgende Anleitung verwenden, <a class="alert-link" href="/faq#can-i-remove-the-via-forwardemail-dot-net-in-gmail">this wird in Ihren ausgehenden E-Mails</a> in Gmail die Meldung "<span class="notranslate text-danger font-weight-bold">via forwardemail dot net</span>" angezeigt.</a></div>
 
 <div class="alert mb-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -395,7 +395,7 @@ Wenn Sie die Anweisungen unter <a href="#how-do-i-get-started-and-set-up-email-f
 
 <div id="legacy-free-guide">
 
-1. Damit dies funktioniert, muss die [Zwei-Faktor-Authentifizierung von Gmail][gmail-2fa] aktiviert sein. Falls diese Funktion nicht aktiviert ist, besuchen Sie <https://www.google.com/landing/2step/>.
+1. Damit dies funktioniert, muss die [Zwei-Faktor-Authentifizierung von Gmail][gmail-2fa] aktiviert sein. Falls diese Option nicht aktiviert ist, besuchen Sie <https://www.google.com/landing/2step/>.
 
 2. Sobald die Zwei-Faktor-Authentifizierung aktiviert ist (oder wenn Sie sie bereits aktiviert hatten), besuchen Sie <https://myaccount.google.com/apppasswords>.
 
@@ -473,7 +473,7 @@ Wenn Sie in Gmail eine erweiterte Weiterleitung einrichten möchten, sodass Alia
 
 **Umschlagempfängermuster:**
 
-* Fügen Sie ein Muster hinzu, das mit allen nicht vorhandenen Postfächern übereinstimmt (z. B. `.*@yourdomain.com`)
+* Fügen Sie ein Muster hinzu, das mit allen nicht vorhandenen Postfächern übereinstimmt (z. B. `.*@yourdomain.com`).
 
 **E-Mail-Servereinstellungen:**
 
@@ -518,8 +518,8 @@ Für Benutzer von Microsoft 365 (früher Office 365), die eine erweiterte Weiter
 * Fügen Sie `mx2.forwardemail.net` als Backup-Server hinzu.
 7. Wählen Sie unter **Außer wenn** Folgendes aus:
 * „Der Empfänger ist…“
-* Fügen Sie alle Ihre Vorhandene Postfächer, die nicht weitergeleitet werden sollen.
-8. Legen Sie die Regelpriorität fest, um sicherzustellen, dass sie nach anderen E-Mail-Flussregeln ausgeführt wird.
+* Fügen Sie alle vorhandenen Postfächer hinzu, die nicht weitergeleitet werden sollen.
+8. Legen Sie die Regel fest. Priorität, um sicherzustellen, dass die Regel nach anderen E-Mail-Flussregeln ausgeführt wird.
 9. Klicken Sie auf **Speichern**, um die Regel zu aktivieren.
 
 ## Fehlerbehebung {#troubleshooting}
@@ -570,9 +570,9 @@ Tipp:
 
 ### Warum landen meine E-Mails im Spam- und Junk-Ordner und wie kann ich die Reputation meiner Domain überprüfen? {#why-are-my-emails-landing-in-spam-and-junk-and-how-can-i-check-my-domain-reputation}
 
-Dieser Abschnitt enthält Anleitungen, wenn Ihre ausgehenden E-Mails unsere SMTP-Server verwenden (z. B. `smtp.forwardemail.net`) (oder über `mx1.forwardemail.net` oder `mx2.forwardemail.net` weitergeleitet werden) und im Spam- oder Junk-Ordner der Empfänger landen.
+Dieser Abschnitt erläutert Ihnen, ob Ihre ausgehenden E-Mails unsere SMTP-Server (z. B. `smtp.forwardemail.net`) verwenden (oder über `mx1.forwardemail.net` oder `mx2.forwardemail.net` weitergeleitet werden) und im Spam- oder Junk-Ordner der Empfänger landen.
 
-Wir überwachen unseren [IP-Adressen](#what-are-your-servers-ip-addresses) routinemäßig im Vergleich zu [alle seriösen DNS-Denylisten](#how-do-you-handle-your-ip-addresses-becoming-blocked), **deshalb handelt es sich höchstwahrscheinlich um ein spezifisches Problem der Domänenreputation**.
+Wir überwachen unseren [IP-Adressen](#what-are-your-servers-ip-addresses) routinemäßig im Vergleich zu [alle seriösen DNS-Denylisten](#how-do-you-handle-your-ip-addresses-becoming-blocked), **daher handelt es sich höchstwahrscheinlich um ein domänenreputationsspezifisches Problem**.
 
 E-Mails können aus mehreren Gründen im Spam-Ordner landen:
 
@@ -600,25 +600,25 @@ Sie können versuchen, eines oder mehrere dieser Tools zu verwenden, um die Repu
 | Aufwertung | <https://www.invaluement.com/lookup/> | DNSBL |
 | SURBL | <https://www.surbl.org/> | DNSBL |
 | Apple/Proofpoint IP-Entfernung | <https://ipcheck.proofpoint.com/> | Entfernung |
-| Cloudmark IP-Entfernung | <https://csi.cloudmark.com/en/reset/> | Entfernung |
+| Cloudmark-IP-Entfernung | <https://csi.cloudmark.com/en/reset/> | Entfernung |
 | SpamCop | <https://www.spamcop.net/bl.shtml> | DNSBL |
-| IP-Entfernung für Microsoft Outlook und Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Entfernung |
+| IP-Entfernung von Microsoft Outlook und Office 365 | <https://sendersupport.olc.protection.outlook.com/pm/Postmaster> | Entfernung |
 | UCEPROTECT Level 1, 2 und 3 | <https://www.uceprotect.net/en/rblcheck.php> | DNSBL |
 | UCEPROTECTs backscatterer.org | <https://www.backscatterer.org/> | Rückstreuschutz |
-| Whitelisted.org von UCEPROTECT | <https://www.whitelisted.org/> (kostenpflichtig) | DNSWL |
+| UCEPROTECTs whitelisted.org | <https://www.whitelisted.org/> (kostenpflichtig) | DNSWL |
 | AT&T | `abuse_rbl@abuse-att.net` | Entfernung |
 | AOL/Verizon (z. B. `[IPTS04]`) | <https://senders.yahooinc.com/> | Entfernung |
 | Cox Communications | `unblock.request@cox.net` | Entfernung |
 | t-online.de (Deutsch/T-Mobile) | `tobr@rx.t-online.de` | Entfernung |
 
 > \[!TIP]
-> Start with a low volume of high-quality emails to build a positive reputation before sending in larger volumes.
+> Beginnen Sie mit einer kleinen Menge hochwertiger E-Mails, um einen positiven Ruf aufzubauen, bevor Sie größere Mengen versenden.
 
 > \[!IMPORTANT]
-> If your domain is on a blacklist, each blacklist has its own removal process. Check their websites for instructions.
+> Wenn Ihre Domain auf einer Blacklist steht, gibt es für jede Blacklist ein eigenes Verfahren zum Entfernen. Anweisungen finden Sie auf den jeweiligen Websites.
 
 > \[!TIP]
-> If you need additional help or find that we are false-positive listed as spam by a certain email service provider, then please <a href="/help">contact us</a>.
+> Wenn Sie weitere Hilfe benötigen oder feststellen, dass wir von einem bestimmten E-Mail-Dienstanbieter fälschlicherweise als Spam eingestuft werden, <a href="/help">kontaktieren Sie uns bitte</a>.
 
 ### Was soll ich tun, wenn ich Spam-E-Mails erhalte? {#what-should-i-do-if-i-receive-spam-emails}
 
@@ -651,15 +651,15 @@ Konfigurationsanweisungen finden Sie im Abschnitt zu [Unterstützen Sie das Send
 ### Wo befinden sich Ihre Server? {#where-are-your-servers-located}
 
 > \[!TIP]
-> We may soon announce our EU datacenter location hosted under [forwardemail.eu](https://forwardemail.eu).  Subscribe to the discussion at <https://github.com/orgs/forwardemail/discussions/336> for updates.
+> Wir geben möglicherweise bald unseren EU-Rechenzentrumsstandort bekannt, der unter [forwardemail.eu](https://forwardemail.eu) gehostet wird. Abonnieren Sie die Diskussion unter <https://github.com/orgs/forwardemail/discussions/336>, um Updates zu erhalten.
 
 Unsere Server befinden sich hauptsächlich in Denver, Colorado – unsere vollständige Liste der IP-Adressen finden Sie unter <https://forwardemail.net/ips>.
 
 Auf unseren Seiten [GDPR](/gdpr), [DPA](/dpa) und [Datenschutz](/privacy) können Sie mehr über unsere Unterauftragsverarbeiter erfahren.
 
-### Wie exportiere und sichere ich mein Postfach {#how-do-i-export-and-backup-my-mailbox}
+### Wie exportiere und sichere ich mein Postfach? {#how-do-i-export-and-backup-my-mailbox}
 
-Sie können Ihre Postfächer jederzeit im Format [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) oder verschlüsselt im Format [SQLite](https://en.wikipedia.org/wiki/SQLite) exportieren.
+Sie können Ihre Postfächer jederzeit in den Formaten [EML](https://en.wikipedia.org/wiki/Email#Filename_extensions), [Mbox](https://en.wikipedia.org/wiki/Mbox) oder verschlüsselt [SQLite](https://en.wikipedia.org/wiki/SQLite) exportieren.
 
 Gehen Sie zu <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mein Konto <i class="fa fa-angle-right"></i> Domänen</a> <i class="fa fa-angle-right"></i> Aliase <i class="fa fa-angle-right"></i> Backup herunterladen und wählen Sie Ihren bevorzugten Exportformattyp aus.
 
@@ -677,11 +677,11 @@ Wenn Sie Ihre exportierten EML- oder Mbox-Formate überprüfen müssen, können 
 | E-Mail-Viewer | EML | VSCode | <https://github.com/joelharkes/vscode_email_viewer> |
 | EML-Reader | EML | Alle Plattformen | <https://github.com/s0ph1e/eml-reader> |
 
-Wenn Sie zusätzlich eine Mbox-Datei in eine EML-Datei konvertieren müssen, können Sie <https://github.com/noelmartinon/mboxzilla>. verwenden
+Wenn Sie zusätzlich eine Mbox-Datei in eine EML-Datei konvertieren müssen, können Sie <https://github.com/noelmartinon/mboxzilla>.
 
 ### Wie importiere und migriere ich mein vorhandenes Postfach {#how-do-i-import-and-migrate-my-existing-mailbox}
 
-Mit den folgenden Anweisungen können Sie Ihre E-Mails ganz einfach in Forward Email importieren (z. B. mit [Thunderbird](https://www.thunderbird.net)):
+Mit den folgenden Anweisungen können Sie Ihre E-Mails ganz einfach in Forward Email importieren (z. B. mithilfe von [Thunderbird](https://www.thunderbird.net)):
 
 <div class="alert alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -751,11 +751,11 @@ Sie haben alle Schritte erfolgreich abgeschlossen.
 
 ### Unterstützen Sie Self-Hosting? {#do-you-support-self-hosting}
 
-Ja, ab März 2025 unterstützen wir eine selbst gehostete Option. Lesen Sie den Blog [Hier](https://forwardemail.net/blog/docs/self-hosted-solution). Schauen Sie sich den [selbst gehosteter Leitfaden](https://forwardemail.net/self-hosted) an, um loszulegen. Wer eine detailliertere Schritt-für-Schritt-Anleitung sucht, findet unsere Anleitungen auf [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) oder [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
+Ja, ab März 2025 unterstützen wir eine selbst gehostete Option. Lesen Sie den Blogbeitrag [Hier](https://forwardemail.net/blog/docs/self-hosted-solution). Nutzen Sie [selbst gehosteter Leitfaden](https://forwardemail.net/self-hosted), um loszulegen. Wer eine detailliertere Schritt-für-Schritt-Anleitung sucht, findet unsere Anleitungen [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) oder [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
 ## E-Mail-Konfiguration {#email-configuration}
 
-### Wie fange ich an und richte die E-Mail-Weiterleitung ein? {#how-do-i-get-started-and-set-up-email-forwarding}
+### Wie beginne ich und richte die E-Mail-Weiterleitung ein? {#how-do-i-get-started-and-set-up-email-forwarding}
 
 <div class="alert my-3 bg-dark border-themed text-white d-inline-block">
 <i class="fa fa-stopwatch font-weight-bold"></i>
@@ -784,8 +784,8 @@ Wissen Sie noch, wo Sie Ihre Domain registriert haben? Folgen Sie anschließend 
 Wichtig:
 </strong>
 <span>
-Sie müssen einen neuen Tab öffnen und sich bei Ihrem Domain-Registrar anmelden. Klicken Sie einfach unten auf „Registrar“, um die Anmeldung automatisch durchzuführen. Navigieren Sie in diesem neuen Tab zur DNS-Verwaltung Ihres Registrars. Die Schritt-für-Schritt-Anleitung finden Sie unten in der Spalte „Konfigurationsschritte“. Sobald Sie diese Seite im neuen Tab aufgerufen haben, können Sie dorthin zurückkehren und mit Schritt 3 fortfahren.
-<strong class="font-weight-bold">Schließen Sie den geöffneten Tab noch nicht. Sie benötigen ihn für weitere Schritte!</strong>
+Sie müssen einen neuen Tab öffnen und sich bei Ihrem Domain-Registrar anmelden. Klicken Sie einfach unten auf „Registrar“, um dies automatisch zu tun. Navigieren Sie in diesem neuen Tab zur DNS-Verwaltungsseite Ihres Registrars. Die Schritt-für-Schritt-Anleitung finden Sie unten in der Spalte „Konfigurationsschritte“. Sobald Sie im neuen Tab auf dieser Seite sind, können Sie dorthin zurückkehren und mit Schritt 3 fortfahren.
+<strong class="font-weight-bold">Schließen Sie den geöffneten Tab noch nicht; Sie benötigen ihn für weitere Schritte!</strong>
 </span>
 </div>
 
@@ -811,9 +811,9 @@ Sie müssen einen neuen Tab öffnen und sich bei Ihrem Domain-Registrar anmelden
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.bluehost.com/help/article/dns-management-add-edit-or-delete-dns-entries">Bluehost</a></td>
-<td>FOR ROCK: Anmelden <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Klicken Sie auf das ▼-Symbol neben „Verwalten“) <i class="fa fa-angle-right"></i> DNS
+<td>FOR ROCK: Anmelden <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Klicken Sie auf das ▼-Symbol Weiter zum Verwalten) <i class="fa fa-angle-right"></i> DNS
 <br />
-FÜR VERALTETE SYSTEME: Anmelden <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zonen-Editor <i class="fa fa-angle-right"></i> (Wählen Sie Ihre Domain aus)</td>
+FÜR VERALTETE: Anmelden <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Zonen-Editor <i class="fa fa-angle-right"></i> (Domain auswählen)</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://dash.cloudflare.com/login">Cloudflare</a></td>
@@ -829,97 +829,97 @@ FÜR VERALTETE SYSTEME: Anmelden <i class="fa fa-angle-right"></i> Domains <i cl
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://cloud.digitalocean.com/login">Digital Ocean</a></td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Netzwerk <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Wählen Sie Ihre Domain aus) <i class="fa fa-angle-right"></i> Mehr <i class="fa fa-angle-right"></i> Domain verwalten</td>
+<td>Anmelden <i class="fa fa-angle-right"></i> Netzwerk <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> Mehr <i class="fa fa-angle-right"></i> Domain verwalten</td>
 </tr>
 <tr>
 <td><a rel="noopener noreferrer" target="_blank" href="https://www.domain.com/help/article/dns-management-how-to-update-dns-records">Domain.com</a></td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Klicken Sie in der Kartenansicht auf „Domain verwalten“. <i class="fa fa-angle-right"></i> Klicken Sie in der Listenansicht auf das Zahnradsymbol. <i class="fa fa-angle-right"></i> DNS & Nameserver <i class="fa fa-angle-right"></i> DNS-Einträge</td>
+<td>Anmelden <i class="fa fa-angle-right"></i> Klicken Sie in der Kartenansicht auf „Verwalten“ Ihrer Domain. <i class="fa fa-angle-right"></i> Klicken Sie in der Listenansicht auf das Zahnradsymbol. <i class="fa fa-angle-right"></i> DNS & Nameserver <i class="fa fa-angle-right"></i> DNS-Einträge</td>
 </tr>
 <tr>
 <td>
 <a rel="noopener noreferrer" target="_blank" href="https://www.domains.com/">Domains.com</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=WnU0Gp-Y-es"><i class="fa fa-play-circle"></i> Ansehen</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon0 class="fa fa-play-circle"></i> Ansehen</a>
 </td>
 <td>Anmelden <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> Verwalten <i class="fa fa-angle-right"></i> (Zahnradsymbol anklicken) <i class="fa fa-angle-right"></i> Im linken Menü auf „DNS & Nameserver“ klicken</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://panel.dreamhost.com/">DreamHost</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon1
 <td>Anmelden <i class="fa fa-angle-right"></i> Bereich <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Domains verwalten <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://portal.dynect.net/login/">Dyn</a></td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Übersicht <i class="fa fa-angle-right"></i> <i class="fa fa-angle-right"></i> verwalten <i class="fa fa-angle-right"></i> Einfacher Editor <i class="fa fa-angle-right"></i> Einträge</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon2
+<td>Anmelden <i class="fa fa-angle-right"></i> Übersicht <i class="fa fa-angle-right"></i> Verwalten <i class="fa fa-angle-right"></i> Einfacher Editor <i class="fa fa-angle-right"></i> Einträge</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://id.gandi.net/en/login">Gandi</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon3
 <td>Anmelden <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> Verwaltung <i class="fa fa-angle-right"></i> Zone bearbeiten</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://sso.godaddy.com">GoDaddy</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon4
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G7g8FiZL5D8"><i class="fa fa-play-circle"></i> Ansehen</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon5 class="fa fa-play-circle"></i> Ansehen</a>
 </td>
 <td>Anmelden <i class="fa fa-angle-right"></i> Meine Domains verwalten <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> DNS verwalten</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://domains.google.com/registrar">Google Domains</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon6 Domains</a>
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=01iHjbIN5CQ"><i class="fa fa-play-circle"></i> Ansehen</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon7 class="fa fa-play-circle"></i> Ansehen</a>
 </td>
 <td>Anmelden <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> DNS konfigurieren</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://www.namecheap.com/myaccount/login/">Namecheap</a>
+<a rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon8
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=no62GCzMn7E"><i class="fa fa-play-circle"></i> Ansehen</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://console.aws.amazon.com/route53/">Amazon9 class="fa fa-play-circle"></i> Ansehen</a>
 </td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Domainliste <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> Erweitertes DNS verwalten <i class="fa fa-angle-right"></i></td>
+<td>Anmelden <i class="fa fa-angle-right"></i> Domänenliste <i class="fa fa-angle-right"></i> (Wählen Sie Ihre Domain) <i class="fa fa-angle-right"></i> Verwalten <i class="fa fa-angle-right"></i> Erweitertes DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://app.netlify.com/">Netlify</a></td>
-<td>Anmelden <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> Netlify DNS einrichten</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>0
+<td>Anmelden <i class="fa fa-angle-right"></i> (Wählen Sie Ihre Domain) <i class="fa fa-angle-right"></i> Netlify DNS einrichten</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.networksolutions.com/manage-it/index.jsp">Network Lösungen</a></td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Account-Manager <i class="fa fa-angle-right"></i> Meine Domains <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> Verwalten <i class="fa fa-angle-right"></i> Domain-Verweis ändern <i class="fa fa-angle-right"></i> Erweitertes DNS</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>1 Lösungen</a></td>
+<td>Anmelden <i class="fa fa-angle-right"></i> Account Manager <i class="fa fa-angle-right"></i> Meine Domainnamen <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> Verwalten <i class="fa fa-angle-right"></i> Domain-Verweis ändern <i class="fa fa-angle-right"></i> Erweitertes DNS</td>
 </tr>
 <tr>
 <td>
-<a rel="noopener noreferrer" target="_blank" href="https://accounts.shopify.com/store-login">Shopify</a>
+<a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>2
 <br />
-<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.youtube.com/watch?v=G1NR8CIdv2M"><i class="fa fa-play-circle"></i> Ansehen</a>
+<a class="btn btn-dark" rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>3 class="fa fa-play-circle"></i> Ansehen</a>
 </td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Verwaltete Domains <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> DNS-Einstellungen</td>
+<td>Anmelden <i class="fa fa-angle-right"></i> Verwaltete Domains <i class="fa fa-angle-right"></i> (Wählen Sie Ihre Domain) <i class="fa fa-angle-right"></i> DNS-Einstellungen</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.squarespace.com/hc/en-us/articles/214767107">Squarespace</a></td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Startseite <i class="fa fa-angle-right"></i> Einstellungen <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>4
+<td>Anmelden <i class="fa fa-angle-right"></i> Startseite <i class="fa fa-angle-right"></i> Einstellungen <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> (Wählen Sie Ihre Domain) <i class="fa fa-angle-right"></i>
 Erweiterte Einstellungen <i class="fa fa-angle-right"></i> Benutzerdefinierte Einträge</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://vercel.com/docs/now-cli?utm_source=zeit-dashboard&utm_medium=web&utm_campaign=configure-dns#commands/dns">Vercel's Now</a></td>
-<td>Mithilfe der "now"-CLI <i class="fa fa-angle-right"></i> <code>now dns add [Domain] '@' MX [Record-Value] [Priorität]</code></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>5 Jetzt</a></td>
+<td>Verwenden "now" CLI <i class="fa fa-angle-right"></i> <code>now dns add [Domain] '@' MX [Record-Wert] [Priorität]</code></td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.weebly.com/app/help/us/en/topics/manage-dns-records">Weebly</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>6
 <td>Anmelden <i class="fa fa-angle-right"></i> Domains-Seite <i class="fa fa-angle-right"></i> (Domain auswählen) <i class="fa fa-angle-right"></i> DNS</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://support.wix.com/en/article/adding-dns-records-in-your-wix-account">Wix</a></td>
-<td>Anmelden <i class="fa fa-angle-right"></i> Domains-Seite <i class="fa fa-angle-right"></i> (Klicken Sie auf das Symbol <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> DNS-Einträge verwalten auswählen</td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>7
+<td>Anmelden <i class="fa fa-angle-right"></i> Domains-Seite <i class="fa fa-angle-right"></i> (Klicken Sie auf das Symbol <i class="fa fa-ellipsis-h"></i>) <i class="fa fa-angle-right"></i> Wählen Sie „DNS-Einträge verwalten“ aus.</td>
 </tr>
 <tr>
-<td><a rel="noopener noreferrer" target="_blank" href="https://www.enom.com/login.aspx?page=%2fmyaccount%2fdefault.aspx&amp;">eNom</a></td>
+<td><a rel="noopener noreferrer" target="_blank" href="https://www.aplus.net/">Aplus.net</a></td>8
 <td>Anmelden <i class="fa fa-angle-right"></i> Domains <i class="fa fa-angle-right"></i> Meine Domains</td>
 </tr>
 <tr>
 <td>Sonstige</td>
 <td>
-<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Wichtig:</strong> Ist Ihr Registrarname hier nicht aufgeführt? Suchen Sie einfach im Internet nach „So ändern Sie DNS-Einträge auf $REGISTRAR“ (ersetzen Sie $REGISTRAR durch den Namen Ihres Registrars – z. B. „So ändern Sie DNS-Einträge bei GoDaddy“, wenn Sie GoDaddy verwenden).</div>
+<div class="alert mb-0 alert-warning"><i class="fa fa-exclamation-circle font-weight-bold"></i> <strong class="font-weight-bold">Wichtig:</strong> Ist Ihr Registrarname hier nicht aufgeführt? Suchen Sie einfach im Internet nach „So ändern Sie DNS-Einträge auf $REGISTRAR“. (Ersetzen Sie $REGISTRAR durch den Namen Ihres Registrars – z. B. „So ändern Sie DNS-Einträge bei GoDaddy“, wenn Sie GoDaddy verwenden.)</div>
 </td>
 </tr>
 </tbody>
@@ -1233,12 +1233,12 @@ Sie können sogar reguläre Ausdrücke („regex“) verwenden, um Aliase abzugl
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Benötigen Sie erweiterte Regex-Funktionen mit Ersetzung?</strong> Siehe die Beispiele und den vollständigen Abschnitt zu Regex mit dem Titel <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Unterstützen Sie reguläre Ausdrücke oder Regex?</a> weiter unten.
+<strong>Benötigen Sie erweiterte reguläre Ausdrücke mit Ersetzung?</strong> Siehe die Beispiele und den vollständigen Abschnitt zu regulären Ausdrücken mit dem Titel <a href="#do-you-support-regular-expressions-or-regex" class="alert-link">Unterstützen Sie reguläre Ausdrücke oder reguläre Ausdrücke?</a> weiter unten.
 </div>
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Einfaches Beispiel:</strong> Wenn ich alle E-Mails, die an `linus@example.com` oder `torvalds@example.com` gehen, an `user@gmail.com` weiterleiten möchte:
+<strong>Einfaches Beispiel</strong>: Wenn alle E-Mails, die an `linus@example.com` oder `torvalds@example.com` gehen, an `user@gmail.com` weitergeleitet werden sollen,
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -1387,11 +1387,11 @@ Ja, aber **in Ihren DNS-Einträgen sollte nur ein MX-Austausch aufgeführt sein*
 
 Versuchen Sie nicht, „Priorität“ zum Konfigurieren mehrerer MX-Austausche zu verwenden.
 
-Stattdessen müssen Sie Ihren vorhandenen MX-Austausch so konfigurieren, dass E-Mails für alle nicht übereinstimmenden Aliase an die Austausche unseres Dienstes weitergeleitet werden (`mx1.forwardemail.net` und/oder `mx2.forwardemail.net`).
+Stattdessen müssen Sie Ihren vorhandenen MX-Austausch so konfigurieren, dass E-Mails für alle nicht übereinstimmenden Aliase an die Austausche unseres Dienstes (`mx1.forwardemail.net` und/oder `mx2.forwardemail.net`) weitergeleitet werden.
 
 Wenn Sie Google Workspace verwenden und alle nicht übereinstimmenden Aliase an unseren Dienst weiterleiten möchten, lesen Sie <https://support.google.com/a/answer/6297084>.
 
-Wenn Sie Microsoft 365 (Outlook) verwenden und alle nicht übereinstimmenden Aliase an unseren Dienst weiterleiten möchten, lesen Sie <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> und <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
+Wenn Sie Microsoft 365 (Outlook) verwenden und alle nicht übereinstimmenden Aliase an unseren Dienst weiterleiten möchten, siehe <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-connectors-to-configure-mail-flow/set-up-connectors-to-route-mail> und <https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/manage-mail-flow-for-multiple-locations>.
 
 ### Wie richte ich eine Abwesenheitsnotiz (Auto-Responder) ein? {#how-do-i-set-up-a-vacation-responder-out-of-office-auto-responder}
 
@@ -1404,10 +1404,10 @@ Sie haben die Möglichkeit, ein Startdatum, ein Enddatum, einen Betreff und eine
 * Die Nachricht ist auf 1000 Zeichen begrenzt.
 * Für die Einrichtung ist eine Konfiguration für ausgehenden SMTP-Verkehr erforderlich (z. B. müssen Sie DKIM-, DMARC- und Return-Path-DNS-Einträge einrichten).
 * Gehen Sie zu <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mein Konto <i class="fa fa-angle-right"></i> Domänen</a> <i class="fa fa-angle-right"></i> Einstellungen <i class="fa fa-angle-right"></i> Konfiguration für ausgehenden SMTP-Verkehr und folgen Sie den Einrichtungsanweisungen.
-* Die Abwesenheitsnotiz kann für globale Vanity-Domänennamen nicht aktiviert werden (z. B. werden [Wegwerfadressen](/disposable-addresses) nicht unterstützt).
+* Die Abwesenheitsnotiz kann für globale Vanity-Domänennamen nicht aktiviert werden (z. B. werden [Wegwerfadressen](/disposable-addresses)-Domänen nicht unterstützt).
 * Die Abwesenheitsnotiz kann weder für Aliase mit Platzhaltern/Catch-All (`*`) noch für reguläre Ausdrücke aktiviert werden.
 
-Im Gegensatz zu Mailsystemen wie `postfix` (die beispielsweise die Urlaubsfiltererweiterung `sieve` verwenden) fügt Forward Email automatisch Ihre DKIM-Signatur hinzu, schließt Verbindungsprobleme beim Senden von Urlaubsantworten ab (z. B. aufgrund häufiger SSL/TLS-Verbindungsprobleme und veralteter Server) und unterstützt sogar Open WKD- und PGP-Verschlüsselung für Urlaubsantworten.
+Im Gegensatz zu E-Mail-Systemen wie `postfix` (die beispielsweise die Urlaubsfiltererweiterung `sieve` verwenden) fügt Forward Email automatisch Ihre DKIM-Signatur hinzu, schließt Verbindungsprobleme beim Senden von Urlaubsantworten ab (z. B. aufgrund häufiger SSL/TLS-Verbindungsprobleme und veralteter Server) und unterstützt sogar Open WKD- und PGP-Verschlüsselung für Urlaubsantworten.
 
 <!--
 * Um Missbrauch zu verhindern, wird für jede gesendete Abwesenheitsnachricht ein SMTP-Guthaben für ausgehende Nachrichten abgezogen.
@@ -1416,7 +1416,7 @@ Im Gegensatz zu Mailsystemen wie `postfix` (die beispielsweise die Urlaubsfilter
 
 1. Wir senden nur einmal alle 4 Tage pro [auf die Positivliste gesetzt](#do-you-have-an-allowlist)-Absender (was dem Verhalten von Gmail ähnelt).
 
-* Unser Redis-Cache verwendet einen Fingerabdruck von `alias_id` und `sender`, wobei `alias_id` die Alias-MongoDB-ID und `sender` entweder die Absenderadresse (falls auf der Whitelist) oder die Stammdomäne in der Absenderadresse (falls nicht auf der Whitelist) ist. Der Einfachheit halber ist die Gültigkeitsdauer dieses Fingerabdrucks im Cache auf 4 Tage festgelegt.
+* Unser Redis-Cache verwendet einen Fingerabdruck von `alias_id` und `sender`, wobei `alias_id` die MongoDB-Alias-ID und `sender` entweder die Absenderadresse (falls auf der Whitelist) oder die Stammdomäne in der Absenderadresse (falls nicht auf der Whitelist) ist. Der Einfachheit halber ist die Gültigkeitsdauer dieses Fingerabdrucks im Cache auf 4 Tage festgelegt.
 
 * Unser Ansatz, die in der Absenderadresse analysierte Stammdomäne für nicht auf der Whitelist stehende Absender zu verwenden, verhindert Missbrauch durch relativ unbekannte Absender (z. B. böswillige Akteure), die Abwesenheitsnotizen mit Nachrichten überfluten.
 
@@ -1425,15 +1425,15 @@ Im Gegensatz zu Mailsystemen wie `postfix` (die beispielsweise die Urlaubsfilter
 3. Wir senden nicht, wenn die ursprüngliche Nachricht einen der folgenden Header hatte (ohne Berücksichtigung der Groß- und Kleinschreibung):
 
 * Header von `auto-submitted` mit einem Wert ungleich `no`.
-* Header von `x-auto-response-suppress` mit einem Wert von `dr`, `autoreply`, `auto-reply`, `auto_reply` oder `all`
-* Header von `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` oder `x-auto-respond` (unabhängig vom Wert).
-* Header von `precedence` mit einem Wert von `bulk`, `autoreply`, `auto-reply`, `auto_reply` oder `list`.
+* Header von `x-auto-response-suppress` mit einem Wert von `dr`, `autoreply`, `auto-reply`, `auto_reply` oder `all`.
+* Header von `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 oder `no`7 (unabhängig vom Wert).
+* Header von `no`8 mit einem Wert von `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 oder `x-auto-response-suppress`3.
 
 4. Wir senden nicht, wenn die E-Mail-Adresse „MAIL FROM“ oder „From“ mit `+donotreply`, `-donotreply`, `+noreply` oder `-noreply` endet.
 
 5. Wir senden nicht, wenn der Benutzernamenteil der Absender-E-Mail-Adresse `mdaemon` lautete und einen Header ohne Berücksichtigung der Groß-/Kleinschreibung von `X-MDDSN-Message` hatte.
 
-6. Wir senden nicht, wenn es einen Groß-/Kleinschreibung nicht berücksichtigenden `content-type`-Header von `multipart/report` gab.
+6. Wir senden nicht, wenn es einen `content-type`-Header von `multipart/report` gab, der nicht zwischen Groß- und Kleinschreibung unterscheidet.
 
 ### Wie richte ich SPF für die E-Mail-Weiterleitung ein? {#how-do-i-set-up-spf-for-forward-email}
 
@@ -1506,27 +1506,27 @@ Gehen Sie zu <a href="/my-account/domains" class="alert-link" target="_blank" re
 
 Gehen Sie zu <a href="/my-account/domains" class="alert-link" target="_blank" rel="noopener noreferrer">Mein Konto <i class="fa fa-angle-right"></i> Domänen</a> <i class="fa fa-angle-right"></i> Einstellungen <i class="fa fa-angle-right"></i> Outbound SMTP-Konfiguration und folgen Sie den Einrichtungsanweisungen.
 
-### Wie verbinde und konfiguriere ich meine Kontakte {#how-do-i-connect-and-configure-my-contacts}
+### Wie verbinde und konfiguriere ich meine Kontakte? {#how-do-i-connect-and-configure-my-contacts}
 
 **Um Ihre Kontakte zu konfigurieren, verwenden Sie die CardDAV-URL von:** `https://carddav.forwardemail.net` (oder einfach `carddav.forwardemail.net`, wenn Ihr Client dies zulässt)
 
-### Wie verbinde und konfiguriere ich meine Kalender {#how-do-i-connect-and-configure-my-calendars}
+### Wie verbinde und konfiguriere ich meine Kalender? {#how-do-i-connect-and-configure-my-calendars}
 
 **Um Ihren Kalender zu konfigurieren, verwenden Sie die CalDAV-URL von:** `https://caldav.forwardemail.net` (oder einfach `caldav.forwardemail.net`, wenn Ihr Client dies zulässt)
 
 <img width="612" height="520" src="/img/faq/calendar-setup.png" alt="E-Mail-Kalender weiterleiten, CalDAV, Thunderbird, Beispiel-Setup" />
 
-### Wie füge ich weitere Kalender hinzu und verwalte vorhandene Kalender {#how-do-i-add-more-calendars-and-manage-existing-calendars}
+### Wie füge ich weitere Kalender hinzu und verwalte vorhandene Kalender? {#how-do-i-add-more-calendars-and-manage-existing-calendars}
 
-Wenn Sie weitere Kalender hinzufügen möchten, fügen Sie einfach die neue Kalender-URL hinzu: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**ersetzen Sie unbedingt `calendar-name` durch den gewünschten Kalendernamen**)
+Wenn Sie weitere Kalender hinzufügen möchten, fügen Sie einfach die neue Kalender-URL hinzu: `https://caldav.forwardemail.net/dav/principals/calendar-name` (**ersetzen Sie `calendar-name` unbedingt durch den gewünschten Kalendernamen**)
 
-Sie können den Namen und die Farbe eines Kalenders nach der Erstellung ändern – verwenden Sie dazu einfach Ihre bevorzugte Kalenderanwendung (z. B. Apple Mail oder [Thunderbird](https://thunderbird.net)).
+Sie können den Namen und die Farbe eines Kalenders nach der Erstellung ändern – verwenden Sie einfach Ihre bevorzugte Kalenderanwendung (z. B. Apple Mail oder [Thunderbird](https://thunderbird.net)).
 
 ### Wie richte ich SRS für die E-Mail-Weiterleitung ein? {#how-do-i-set-up-srs-for-forward-email}
 
 Wir konfigurieren [Sender-Rewriting-Schema](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) („SRS“) automatisch – Sie müssen dies nicht selbst tun.
 
-### Wie richte ich MTA-STS für die Weiterleitung von E-Mails ein? {#how-do-i-set-up-mta-sts-for-forward-email}
+### Wie richte ich MTA-STS für die E-Mail-Weiterleitung ein? {#how-do-i-set-up-mta-sts-for-forward-email}
 
 Weitere Informationen finden Sie unter [unser Abschnitt über MTA-STS](#do-you-support-mta-sts).
 
@@ -1545,7 +1545,7 @@ Wenn Sie Gmail verwenden, führen Sie die folgenden Schritte aus:
 9. Vervollständigen Sie die Profilinformationen für Ihr neues Google-Konto.
 10. Stimmen Sie allen Datenschutz- und Nutzungsbedingungen zu.
 11. Gehen Sie zu <https://google.com>, klicken Sie oben rechts auf Ihr Profilsymbol und anschließend auf „Ändern“.
-12. Laden Sie ein neues Foto oder einen Avatar für Ihr Konto hoch.
+12. Laden Sie ein neues Foto oder einen neuen Avatar für Ihr Konto hoch.
 13. Die Änderungen werden nach etwa 1–2 Stunden wirksam, können aber manchmal auch sehr schnell erfolgen.
 14. Senden Sie eine Test-E-Mail. Das Profilfoto sollte dann angezeigt werden.
 
@@ -1557,7 +1557,7 @@ Ja, Sie können mehr unter <https://forwardemail.net/guides/newsletter-with-list
 
 Bitte beachten Sie, dass Forward Email zur Wahrung der IP-Reputation und Gewährleistung der Zustellbarkeit einen manuellen Prüfprozess pro Domain für die **Newsletter-Freigabe** durchführt. Senden Sie eine E-Mail an <support@forwardemail.net> oder öffnen Sie ein [Hilfeanfrage](https://forwardemail.net/help) zur Freigabe. Dies dauert in der Regel weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1-2 Stunden bearbeitet werden. In naher Zukunft planen wir, diesen Prozess mit zusätzlichen Spam-Kontrollen und Warnmeldungen sofort zu ermöglichen. Dieser Prozess stellt sicher, dass Ihre E-Mails den Posteingang erreichen und nicht als Spam markiert werden.
 
-### Unterstützen Sie das Senden von E-Mails mit der API {#do-you-support-sending-email-with-api}
+### Unterstützen Sie das Senden von E-Mails mit API {#do-you-support-sending-email-with-api}
 
 Ja, ab Mai 2023 unterstützen wir das Senden von E-Mails mit API als Add-on für alle zahlenden Benutzer.
 
@@ -1567,7 +1567,7 @@ Ja, ab Mai 2023 unterstützen wir das Senden von E-Mails mit API als Add-on für
 Wichtig:
 </strong>
 <span>
-Bitte lesen Sie unsere <a href="/terms" class="alert-link" target="_blank">Nutzungsbedingungen</a>, <a href="/privacy" class="alert-link" target="_blank">Datenschutzrichtlinie</a> und <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">SMTP-Limits für ausgehenden Datenverkehr</a>. Ihre Nutzung gilt als Kenntnisnahme und Zustimmung.
+Bitte lesen Sie unsere <a href="/terms" class="alert-link" target="_blank">Nutzungsbedingungen</a>, <a href="/privacy" class="alert-link" target="_blank">Datenschutzrichtlinie</a> und <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">SMTP-Limits für ausgehenden Datenverkehr</a>. Ihre Nutzung gilt als Zustimmung.
 </span>
 </div>
 
@@ -1575,9 +1575,9 @@ Optionen, Beispiele und weitere Informationen finden Sie in unserem Abschnitt zu
 
 Um ausgehende E-Mails mit unserer API zu senden, müssen Sie Ihr unter [Meine Sicherheit](/my-account/security) verfügbares API-Token verwenden.
 
-### Unterstützen Sie den Empfang von E-Mails mit IMAP {#do-you-support-receiving-email-with-imap}
+### Unterstützen Sie den Empfang von E-Mails mit IMAP? {#do-you-support-receiving-email-with-imap}
 
-Ja, ab dem 16. Oktober 2023 unterstützen wir den E-Mail-Empfang über IMAP als Add-on für alle zahlenden Nutzer. **Bitte lesen Sie unseren ausführlichen Artikel** auf [So funktioniert unsere Funktion zum verschlüsselten SQLite-Postfachspeicher](/blog/docs/best-quantum-safe-encrypted-email-service).
+Ja, ab dem 16. Oktober 2023 unterstützen wir den E-Mail-Empfang über IMAP als Add-on für alle zahlenden Nutzer. **Lesen Sie unseren ausführlichen Artikel** zu [So funktioniert unsere Funktion zum verschlüsselten SQLite-Postfachspeicher](/blog/docs/best-quantum-safe-encrypted-email-service).
 
 <div id="imap-instructions">
 
@@ -1604,9 +1604,10 @@ Tipp:
 <span>Wir empfehlen die Verwendung von <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> oder <a href="/blog/open-source" class="alert-link" target="_blank">eine Open-Source-Alternative mit Fokus auf Datenschutz</a>.</span>
 </div>
 
-4. Wenn Sie nach dem IMAP-Servernamen gefragt werden, geben Sie `imap.forwardemail.net` ein.
+4. Wenn Sie nach dem IMAP-Servernamen gefragt werden, geben Sie `imap.forwardemail.net` ein
 
 5. Wenn Sie nach dem IMAP-Serverport gefragt werden, geben Sie `993` (SSL/TLS) ein – siehe ggf. [alternative IMAP-Ports](/faq#what-are-your-imap-server-configuration-settings).
+
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1662,9 +1663,10 @@ Tipp:
 <span>Wir empfehlen die Verwendung von <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> oder <a href="/blog/open-source" class="alert-link" target="_blank">eine Open-Source-Alternative mit Fokus auf Datenschutz</a>.</span>
 </div>
 
-4. Wenn Sie nach dem POP3-Servernamen gefragt werden, geben Sie `pop3.forwardemail.net` ein.
+4. Wenn Sie nach dem POP3-Servernamen gefragt werden, geben Sie `pop3.forwardemail.net` ein
 
-5. Wenn Sie nach dem POP3-Serverport gefragt werden, geben Sie `995` (SSL/TLS) ein – siehe ggf. [alternative POP3-Ports](/faq#what-are-your-pop3-server-configuration-settings).
+5. Wenn Sie nach dem POP3-Server-Port gefragt werden, geben Sie `995` (SSL/TLS) ein – siehe ggf. [alternative POP3-Ports](/faq#what-are-your-pop3-server-configuration-settings).
+
 <div class="alert my-3 alert-warning">
 <i class="fa fa-info-circle font-weight-bold"></i>
 <strong class="font-weight-bold">
@@ -1704,7 +1706,7 @@ Es unterstützt sowohl IPv4 als auch IPv6 und ist über den Port `443` (HTTPS) v
 
 Um die Kalenderunterstützung zu nutzen, muss der **Benutzer** die E-Mail-Adresse eines Alias sein, der für die Domäne unter <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mein Konto <i class="fa fa-angle-right"></i> Domänen</a> existiert – und das **Passwort** muss ein aliasspezifisches generiertes Passwort sein.
 
-### Unterstützen Sie Kontakte (CardDAV) {#do-you-support-contacts-carddav}
+### Unterstützen Sie Kontakte (CardDAV)? {#do-you-support-contacts-carddav}
 
 Ja, seit dem 12. Juni 2025 haben wir diese Funktion hinzugefügt. Unser Server ist `carddav.forwardemail.net` und wird auch auf unserer <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Statusseite</a> überwacht.
 
@@ -1717,7 +1719,7 @@ Es unterstützt sowohl IPv4 als auch IPv6 und ist über den Port `443` (HTTPS) v
 
 Um die Kontaktunterstützung zu nutzen, muss der **Benutzer** die E-Mail-Adresse eines Alias sein, der für die Domäne unter <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">Mein Konto <i class="fa fa-angle-right"></i> Domänen</a> existiert – und das **Passwort** muss ein aliasspezifisches generiertes Passwort sein.
 
-### Unterstützen Sie das Senden von E-Mails mit SMTP {#do-you-support-sending-email-with-smtp}
+### Unterstützen Sie das Senden von E-Mails mit SMTP? {#do-you-support-sending-email-with-smtp}
 
 Ja, ab Mai 2023 unterstützen wir das Senden von E-Mails mit SMTP als Add-on für alle zahlenden Benutzer.
 
@@ -1729,7 +1731,7 @@ Ja, ab Mai 2023 unterstützen wir das Senden von E-Mails mit SMTP als Add-on fü
 Wichtig:
 </strong>
 <span>
-Bitte lesen Sie unsere <a href="/terms" class="alert-link" target="_blank">Nutzungsbedingungen</a>, <a href="/privacy" class="alert-link" target="_blank">Datenschutzrichtlinie</a> und <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">SMTP-Limits für ausgehenden Datenverkehr</a>. Ihre Nutzung gilt als Zustimmung.
+Bitte lesen Sie unsere <a href="/terms" class="alert-link" target="_blank">Nutzungsbedingungen</a>, <a href="/privacy" class="alert-link" target="_blank">Datenschutzrichtlinie</a> und <a href="/faq#what-are-your-outbound-smtp-limits" class="alert-link" target="_blank">SMTP-Limits für ausgehenden Datenverkehr</a>. Ihre Nutzung gilt als Kenntnisnahme und Zustimmung.
 </span>
 </div>
 
@@ -1758,7 +1760,7 @@ Tipp:
 <span>Wir empfehlen die Verwendung von <a class="alert-link" href="https://www.thunderbird.net/" target="_blank" rel="noopener noreferrer">Thunderbird</a>, <a class="alert-link" href="https://www.thunderbird.net/en-US/mobile/" target="_blank" rel="noopener noreferrer">Thunderbird Mobile</a>, <a class="alert-link" href="https://apps.apple.com/us/app/mail/id1108187098" target="_blank" rel="noopener noreferrer">Apple Mail</a> oder <a href="/blog/open-source" class="alert-link" target="_blank">eine Open-Source-Alternative mit Fokus auf Datenschutz</a>.</span>
 </div>
 
-5. Wenn Sie nach dem SMTP-Servernamen gefragt werden, geben Sie `smtp.forwardemail.net` ein.
+5. Wenn Sie nach dem SMTP-Servernamen gefragt werden, geben Sie `smtp.forwardemail.net` ein
 
 6. Wenn Sie nach dem SMTP-Serverport gefragt werden, geben Sie `465` (SSL/TLS) ein – siehe ggf. [alternative SMTP-Ports](/faq#what-are-your-smtp-server-configuration-settings).
 
@@ -1780,7 +1782,7 @@ Tipp:
 Wichtig:
 </strong>
 <span>
-Bitte beachten Sie: Um die IP-Reputation zu wahren und die Zustellbarkeit zu gewährleisten, führen wir für ausgehende SMTP-Nachrichten einen manuellen Überprüfungsprozess pro Domain durch. Dieser dauert in der Regel weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1–2 Stunden bearbeitet werden. In naher Zukunft möchten wir diesen Prozess mit zusätzlichen Spam-Kontrollen und Warnmeldungen sofort abwickeln. So stellen wir sicher, dass Ihre E-Mails Ihren Posteingang erreichen und nicht als Spam markiert werden.
+Bitte beachten Sie: Um die IP-Reputation zu wahren und die Zustellbarkeit zu gewährleisten, führen wir für ausgehende SMTP-Nachrichten einen manuellen Überprüfungsprozess pro Domain durch. Dieser dauert in der Regel weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1–2 Stunden bearbeitet werden. In naher Zukunft möchten wir diesen Prozess mit zusätzlichen Spam-Kontrollen und Warnmeldungen sofort abwickeln. Dieser Prozess stellt sicher, dass Ihre E-Mails Ihren Posteingang erreichen und nicht als Spam markiert werden.
 </span>
 </div>
 
@@ -1800,14 +1802,14 @@ Sie haben alle Schritte erfolgreich abgeschlossen.
 
 ### Unterstützen Sie OpenPGP/MIME, End-to-End-Verschlüsselung („E2EE“) und Web Key Directory („WKD“)? {#do-you-support-openpgpmime-end-to-end-encryption-e2ee-and-web-key-directory-wkd}
 
-Ja, wir unterstützen [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [Ende-zu-Ende-Verschlüsselung („E2EE“)](https://en.wikipedia.org/wiki/End-to-end_encryption) und die Ermittlung öffentlicher Schlüssel mit [Webschlüsselverzeichnis („WKD“)](https://wiki.gnupg.org/WKD). Sie können OpenPGP mit [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) oder [Hosten Sie Ihre eigenen Schlüssel selbst](https://wiki.gnupg.org/WKDHosting) konfigurieren (siehe [dieser Kern für die Einrichtung des WKD-Servers](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
+Ja, wir unterstützen [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privacy#OpenPGP), [Ende-zu-Ende-Verschlüsselung („E2EE“)](https://en.wikipedia.org/wiki/End-to-end_encryption) und die Erkennung öffentlicher Schlüssel mit [Webschlüsselverzeichnis („WKD“)](https://wiki.gnupg.org/WKD). Sie können OpenPGP mit [keys.openpgp.org](https://keys.openpgp.org/about/usage#wkd-as-a-service) oder [Hosten Sie Ihre eigenen Schlüssel selbst](https://wiki.gnupg.org/WKDHosting) konfigurieren (siehe [dieser Kern für die Einrichtung des WKD-Servers](https://gist.github.com/kafene/0a6e259996862d35845784e6e5dbfc79)).
 
-* WKD-Lookups werden 1 Stunde lang zwischengespeichert, um eine pünktliche E-Mail-Zustellung zu gewährleisten. → Wenn Sie Ihren WKD-Schlüssel hinzufügen, ändern oder entfernen, senden Sie uns bitte eine E-Mail mit Ihrer E-Mail-Adresse an `support@forwardemail.net`, damit wir den Cache manuell leeren können.
-* Wir unterstützen PGP-Verschlüsselung für Nachrichten, die per WKD-Lookup oder mit einem hochgeladenen PGP-Schlüssel über unsere Schnittstelle weitergeleitet werden.
+* WKD-Suchen werden 1 Stunde lang zwischengespeichert, um eine pünktliche E-Mail-Zustellung zu gewährleisten. → Wenn Sie Ihren WKD-Schlüssel hinzufügen, ändern oder entfernen, senden Sie uns bitte eine E-Mail mit Ihrer E-Mail-Adresse an `support@forwardemail.net`, damit wir den Cache manuell leeren können.
+* Wir unterstützen PGP-Verschlüsselung für Nachrichten, die per WKD-Suche oder mit einem hochgeladenen PGP-Schlüssel über unsere Schnittstelle weitergeleitet werden.
 * Hochgeladene Schlüssel haben Vorrang, solange das PGP-Kontrollkästchen aktiviert ist.
 * An Webhooks gesendete Nachrichten werden derzeit nicht mit PGP verschlüsselt.
-* Wenn Sie mehrere Aliase haben, die zu einer bestimmten Weiterleitungsadresse passen (z. B. Regex/Wildcard/genaue Kombination) und mehr als einer davon einen hochgeladenen PGP-Schlüssel enthält und PGP aktiviert ist, → senden wir Ihnen eine Fehlermeldung per E-Mail und verschlüsseln die Nachricht nicht mit Ihrem hochgeladenen PGP-Schlüssel. Dies kommt sehr selten vor und betrifft in der Regel nur fortgeschrittene Benutzer mit komplexen Alias-Regeln.
-* **PGP-Verschlüsselung wird nicht auf E-Mail-Weiterleitungen über unsere MX-Server angewendet, wenn der Absender eine DMARC-Ablehnungsrichtlinie hatte. Wenn Sie PGP-Verschlüsselung für *alle* E-Mails benötigen, empfehlen wir Ihnen, unseren IMAP-Dienst zu nutzen und Ihren PGP-Schlüssel für Ihren Alias für eingehende E-Mails zu konfigurieren.**
+* Wenn Sie mehrere Aliase haben, die zu einer bestimmten Weiterleitungsadresse passen (z. B. Regex/Wildcard/Exakte Kombination) und mehr als einer davon einen hochgeladenen PGP-Schlüssel enthält und PGP aktiviert ist, → senden wir Ihnen eine Fehlermeldung per E-Mail und verschlüsseln die Nachricht nicht mit Ihrem hochgeladenen PGP-Schlüssel. Dies kommt sehr selten vor und betrifft in der Regel nur fortgeschrittene Nutzer mit komplexen Alias-Regeln.
+* **PGP-Verschlüsselung wird nicht auf E-Mail-Weiterleitungen über unsere MX-Server angewendet, wenn der Absender eine DMARC-Ablehnungsrichtlinie hatte. Wenn Sie PGP-Verschlüsselung für *alle* E-Mails benötigen, empfehlen wir Ihnen, unseren IMAP-Dienst zu nutzen und Ihren PGP-Schlüssel als Alias für eingehende E-Mails zu konfigurieren.**
 
 **Sie können Ihr Web Key Directory-Setup unter <https://wkd.chimbosonic.com/> (Open Source) oder <https://www.webkeydirectory.com/> (proprietär) validieren.**
 
@@ -1816,7 +1818,7 @@ Ja, wir unterstützen [OpenPGP](https://en.wikipedia.org/wiki/Pretty_Good_Privac
 <strong class="font-weight-bold">
 Automatische Verschlüsselung:
 </strong>
-<span>Wenn Sie unseren <a href="#do-you-support-sending-email-with-smtp" class="alert-link">SMTP-Dienst für ausgehende Nachrichten</a> nutzen und unverschlüsselte Nachrichten senden, versuchen wir automatisch, die Nachrichten pro Empfänger mit dem <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Schlüsselverzeichnis ("WKD")</a> zu verschlüsseln.</span>
+<span>Wenn Sie unseren <a href="#do-you-support-sending-email-with-smtp" class="alert-link">SMTP-Dienst für ausgehende Nachrichten</a> nutzen und unverschlüsselte Nachrichten senden, versuchen wir automatisch, die Nachrichten empfängerweise mit dem <a class="alert-link" href="https://wiki.gnupg.org/WKD">Web Schlüsselverzeichnis ("WKD")</a> zu verschlüsseln.</span>
 </div>
 
 <div class="alert alert-warning">
@@ -1858,7 +1860,7 @@ Um OpenPGP für Ihren benutzerdefinierten Domänennamen zu aktivieren, müssen S
 <strong class="font-weight-bold">
 Tipp:
 </strong>
-<span>Sie können Ihren Schlüssel zukünftig unter <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a> verwalten.</span>
+<span>Sie können Ihren Schlüssel zukünftig unter <a class="alert-link" href="https://keys.openpgp.org/manage">https://keys.openpgp.org/manage</a>" verwalten.</span>
 </div>
 
 <div class="alert my-3 alert-secondary">
@@ -1916,7 +1918,7 @@ Sie haben alle Schritte erfolgreich abgeschlossen.
 
 Ja, seit dem 2. März 2023 unterstützen wir [MTA-STS](https://www.hardenize.com/blog/mta-sts). Sie können [diese Vorlage](https://github.com/jpawlowski/mta-sts.template) verwenden, wenn Sie es in Ihrer Domain aktivieren möchten.
 
-Unsere Konfiguration ist öffentlich auf GitHub unter <https://github.com/forwardemail/mta-sts.forwardemail.net>. zu finden.
+Unsere Konfiguration finden Sie öffentlich auf GitHub unter <https://github.com/forwardemail/mta-sts.forwardemail.net>.
 
 ### Unterstützen Sie Passkeys und WebAuthn? {#do-you-support-passkeys-and-webauthn}
 
@@ -1950,30 +1952,30 @@ Suchen Sie Dokumentation zu E-Mail-Webhooks? Weitere Informationen finden Sie un
 </span>
 </div>
 
-Ja, seit dem 14. August 2024 ist diese Funktion verfügbar. Gehen Sie nun zu „Mein Konto“ → „Domains“ → „Einstellungen“ → „Bounce-Webhook-URL“ und konfigurieren Sie eine `http://`- oder `https://`-URL, an die wir eine `POST`-Anfrage senden, wenn ausgehende SMTP-E-Mails zurückgewiesen werden.
+Ja, seit dem 14. August 2024 ist diese Funktion verfügbar. Gehen Sie jetzt zu „Mein Konto“ → „Domains“ → „Einstellungen“ → „Webhook-URL für Bounces“ und konfigurieren Sie eine `http://`- oder `https://`-URL, an die wir eine `POST`-Anfrage senden, wenn ausgehende SMTP-E-Mails zurückgewiesen werden.
 
 Dies ist für Sie nützlich, um Ihr ausgehendes SMTP zu verwalten und zu überwachen – und kann verwendet werden, um Abonnenten zu verwalten, sich abzumelden und zu erkennen, wann Bounces auftreten.
 
 Bounce-Webhook-Nutzdaten werden als JSON mit diesen Eigenschaften gesendet:
 
-* `email_id` (String) – E-Mail-ID einer E-Mail unter „Mein Konto“ → „E-Mails (ausgehendes SMTP)“
-* `list_id` (String) – der Header-Wert `List-ID` (ohne Berücksichtigung der Groß- und Kleinschreibung), falls vorhanden, aus der ursprünglichen ausgehenden E-Mail
-* `list_unsubscribe` (String) – der Header-Wert `List-Unsubscribe` (ohne Berücksichtigung der Groß- und Kleinschreibung), falls vorhanden, aus der ursprünglichen ausgehenden E-Mail
-* `feedback_id` (String) – der Header-Wert `Feedback-ID` (ohne Berücksichtigung der Groß- und Kleinschreibung), falls vorhanden, aus der ursprünglichen ausgehenden E-Mail
-* `recipient` (String) – die E-Mail-Adresse des Empfängers, der die Nachricht zurückgewiesen hat oder Fehlerhaft
-* `message` (String) – eine detaillierte Fehlermeldung zum Bounce
+* `email_id` (String) – E-Mail-ID, die einer E-Mail in „Mein Konto“ → „E-Mails (ausgehendes SMTP)“ entspricht.
+* `list_id` (String) – der Headerwert `List-ID` (ohne Berücksichtigung der Groß-/Kleinschreibung), falls vorhanden, aus der ursprünglichen ausgehenden E-Mail.
+* `list_unsubscribe` (String) – der Headerwert `List-Unsubscribe` (ohne Berücksichtigung der Groß-/Kleinschreibung), falls vorhanden, aus der ursprünglichen ausgehenden E-Mail.
+* `feedback_id` (String) – der Headerwert `Feedback-ID` (ohne Berücksichtigung der Groß-/Kleinschreibung), falls vorhanden, aus der ursprünglichen ausgehenden E-Mail.
+* `recipient` (String) – die E-Mail-Adresse des Empfängers, der zurückgewiesen wurde oder einen Fehler verursacht hat.
+* `message` (String) – eine detaillierte Fehlermeldung zum zurückgewiesenen Fehler.
 * `response` (String) – die SMTP-Antwortnachricht
-* `response_code` (Zahl) – der analysierte SMTP-Antwortcode
-* `truth_source` (String) – Stammt der Antwortcode aus einer vertrauenswürdigen Quelle, wird dieser Wert mit dem Stammdomänennamen gefüllt (z. B. `google.com` oder `yahoo.com`)
-* `bounce` (Objekt) – ein Objekt mit den folgenden Eigenschaften, die den Bounce- und Ablehnungsstatus detailliert beschreiben:
-* `action` (String) – Bounce-Aktion (z. B. `"reject"`)
-* `message` (String) – Bounce-Grund (z. B. `"Message Sender Blocked By Receiving Server"`)
-* `category` (String) – Bounce-Kategorie (z. B. `"block"`)
-* `code` (Nummer) – Bounce-Statuscode (z. B. `554`)
-* `status` (String) – Bounce-Code aus der Antwortnachricht (z. B. `5.7.1`)
-* `line` (Nummer) – Geparste Zeilennummer, falls vorhanden [aus der Zone-MTA-Bounce-Analyseliste](https://github.com/zone-eu/zone-mta/blob/master/config/bounces.txt) (z. B. `526`)
-* `headers` (Objekt) – Schlüssel-Wert-Paar der Header der ausgehenden E-Mail
-* `bounced_at` (String) – [ISO 8601](https://en.wikipedia.org/wiki/ISO\_8601) formatiertes Datum, an dem der Bounce-Fehler aufgetreten ist
+* `list_id`0 (Zahl) – der analysierte SMTP-Antwortcode
+* `list_id`1 (Zeichenfolge) – Stammt der Antwortcode aus einer vertrauenswürdigen Quelle, wird dieser Wert mit dem Stammdomänennamen gefüllt (z. B. `list_id`2 oder `list_id`3).
+* `list_id`4 (Objekt) – ein Objekt mit den folgenden Eigenschaften, die den Bounce- und Ablehnungsstatus detailliert beschreiben:
+* `list_id`5 (Zeichenfolge) – Bounce-Aktion (z. B. `list_id`6)
+* `list_id`7 (Zeichenfolge) – Bounce-Grund (z. B. `list_id`8)
+* `list_id`9 (Zeichenfolge) – Bounce-Kategorie (z. B. `List-ID`0)
+* `List-ID`1 (Zahl) – Bounce-Statuscode (z. B. `List-ID`2)
+* `List-ID`3 (Zeichenfolge) – Bounce-Code aus der Antwortnachricht (z. B. `List-ID`4)
+* `List-ID`5 (Zahl) – Geparste Zeilennummer, falls vorhanden, `List-ID`6 (z. B. `List-ID`7)
+* `List-ID`8 (Objekt) – Schlüssel-Wert-Paar der Header der ausgehenden E-Mail
+* `List-ID`9 (Zeichenfolge) – `list_unsubscribe`0 – formatiertes Datum, an dem der Bounce-Fehler aufgetreten ist
 
 Zum Beispiel:
 
@@ -2000,15 +2002,15 @@ Zum Beispiel:
 
 Hier sind einige zusätzliche Hinweise zu Bounce-Webhooks:
 
-* Enthält die Webhook-Nutzlast einen Wert vom Typ `list_id`, `list_unsubscribe` oder `feedback_id`, sollten Sie gegebenenfalls geeignete Maßnahmen ergreifen, um den Wert `recipient` aus der Liste zu entfernen.
-* Entsprach der Wert `bounce.category` einem Wert vom Typ `"block"`, `"recipient"`, `"spam"` oder `"virus"`, sollten Sie den Benutzer unbedingt aus der Liste entfernen.
-* Wenn Sie Webhook-Nutzdaten überprüfen müssen (um sicherzustellen, dass sie tatsächlich von unserem Server stammen), können Sie [Lösen Sie die Remote-Client-IP-Adresse Client-Hostname mithilfe einer umgekehrten Suche](https://nodejs.org/api/dns.html#dnspromisesreverseip) verwenden – es sollte `smtp.forwardemail.net` lauten.
-* Sie können die IP-Adresse auch mit [unsere veröffentlichten IP-Adressen](#what-are-your-servers-ip-addresses) vergleichen.
-* Gehen Sie zu „Mein Konto“ → „Domains“ → „Einstellungen“ → „Webhook-Signatur-Nutzdaten-Verifizierungsschlüssel“, um Ihren Webhook-Schlüssel abzurufen.
+* Wenn die Webhook-Nutzlast einen `list_id`-, `list_unsubscribe`- oder `feedback_id`-Wert enthält, sollten Sie gegebenenfalls den `recipient` aus der Liste entfernen.
+* Wenn der `bounce.category`-Wert `"block"`, `"recipient"`, `"spam"` oder `"virus"` war, sollten Sie den Benutzer unbedingt aus der Liste entfernen.
+* Wenn Sie Webhook-Nutzlasten überprüfen müssen (um sicherzustellen, dass sie tatsächlich von unserem Server stammen), können Sie [Lösen Sie die Remote-Client-IP-Adresse Client-Hostname mithilfe einer umgekehrten Suche](https://nodejs.org/api/dns.html#dnspromisesreverseip) verwenden – es sollte `list_unsubscribe`0 sein.
+* Sie können die IP auch mit `list_unsubscribe`1 vergleichen.
+* Gehen Sie zu „Mein Konto“ → „Domains“ → „Einstellungen“ → „Webhook-Signatur-Payload-Verifizierungsschlüssel“, um Ihren Webhook-Schlüssel abzurufen.
 * Sie können diesen Schlüssel aus Sicherheitsgründen jederzeit rotieren.
-* Berechnen und vergleichen Sie den `X-Webhook-Signature`-Wert aus unserer Webhook-Anfrage mit dem berechneten Body-Wert mithilfe dieses Schlüssels. Ein Beispiel hierfür finden Sie unter [dieser Stack Overflow-Beitrag](https://stackoverflow.com/a/68885281).
-* Weitere Informationen finden Sie in der Diskussion unter <https://github.com/forwardemail/free-email-forwarding/issues/235>.
-* Wir warten bis zu `5` Sekunden, bis Ihr Webhook-Endpunkt mit dem Statuscode `200` antwortet, und versuchen es bis zu `1` Mal erneut.
+* Berechnen und vergleichen Sie den `list_unsubscribe`2-Wert aus unserer Webhook-Anfrage mit dem berechneten Body-Wert mithilfe dieses Schlüssels. Ein Beispiel hierfür finden Sie unter `list_unsubscribe`3.
+* Weitere Informationen finden Sie in der Diskussion unter <`list_unsubscribe`4.
+* Wir warten bis zu `list_unsubscribe`5 Sekunden, bis Ihr Webhook-Endpunkt mit dem Statuscode `list_unsubscribe`6 antwortet, und versuchen es bis zu `list_unsubscribe`7 Sekunden erneut.
 * Sollten wir beim Senden einer Anfrage einen Fehler in Ihrer Bounce-Webhook-URL feststellen, senden wir Ihnen einmal pro Woche eine kostenlose E-Mail.
 
 ### Unterstützen Sie Webhooks? {#do-you-support-webhooks}
@@ -2037,7 +2039,7 @@ Wenn Sie einen kostenpflichtigen Tarif (mit erweitertem Datenschutz) nutzen, geh
 
 Wenn Sie den kostenlosen Tarif nutzen, fügen Sie einfach einen neuen DNS-<strong class="notranslate">TXT</strong>-Eintrag hinzu, wie unten gezeigt:
 
-Wenn ich beispielsweise möchte, dass alle E-Mails, die an `alias@example.com` gehen, an einen neuen Testendpunkt [Anfragebehälter](https://requestbin.com/r/en8pfhdgcculn?inspect) weitergeleitet werden:
+Wenn ich beispielsweise möchte, dass alle E-Mails, die an `alias@example.com` gehen, an einen neuen Testendpunkt [Anforderungsbehälter](https://requestbin.com/r/en8pfhdgcculn?inspect) weitergeleitet werden:
 
 <table class="table table-striped table-hover my-3">
 <thead class="thead-dark">
@@ -2087,19 +2089,19 @@ Oder Sie möchten vielleicht, dass alle E-Mails, die an `example.com` gehen, an 
 * Sie können diesen Schlüssel aus Sicherheitsgründen jederzeit rotieren.
 * Berechnen und vergleichen Sie den `X-Webhook-Signature`-Wert aus unserer Webhook-Anfrage mit dem berechneten Body-Wert mithilfe dieses Schlüssels. Ein Beispiel hierfür finden Sie unter [dieser Stack Overflow-Beitrag](https://stackoverflow.com/a/68885281).
 * Weitere Informationen finden Sie in der Diskussion unter <https://github.com/forwardemail/free-email-forwarding/issues/235>.
-* Wenn ein Webhook nicht mit dem Statuscode `200` antwortet, speichern wir seine Antwort im Statuscode [Fehlerprotokoll erstellt](#do-you-store-error-logs) – hilfreich für die Fehlersuche.
-* HTTP-Anfragen des Webhooks werden bei jedem SMTP-Verbindungsversuch bis zu dreimal wiederholt, mit einem maximalen Timeout von 60 Sekunden pro Endpunkt-POST-Anfrage. **Das bedeutet nicht, dass nur dreimal wiederholt wird**, sondern dass der Versuch kontinuierlich fortgesetzt wird, indem nach dem dritten fehlgeschlagenen HTTP-POST-Anfrageversuch der SMTP-Code 421 gesendet wird (der dem Absender anzeigt, dass er es später erneut versuchen soll). Das bedeutet, dass die E-Mail tagelang wiederholt wird, bis der Statuscode 200 erreicht wird.
-* Wir wiederholen den Versuch automatisch basierend auf den in [Wiederholungsmethode des Superagenten](https://ladjs.github.io/superagent/#retrying-requests) verwendeten Standardstatus- und Fehlercodes (wir sind für die Wartung zuständig).
-* Wir fassen Webhook-HTTP-Anfragen an denselben Endpunkt in einer einzigen Anfrage zusammen (anstatt mehrere), um Ressourcen zu sparen und die Antwortzeit zu verkürzen. Wenn Sie beispielsweise eine E-Mail an <webhook1@example.com>, <webhook2@example.com> und <webhook3@example.com> senden und alle diese so konfiguriert sind, dass sie dieselbe *exakte* Endpunkt-URL ansprechen, wird nur eine Anfrage gestellt. Wir gruppieren nach exakter Endpunktübereinstimmung unter strikter Gleichheit.
-* Beachten Sie, dass wir die Methode „simpleParser“ der Bibliothek [Mailparser](https://nodemailer.com/extras/mailparser/) verwenden, um die Nachricht in ein JSON-fähiges Objekt zu analysieren.
+* Wenn ein Webhook nicht mit dem Statuscode `200` antwortet, speichern wir seine Antwort in [Fehlerprotokoll erstellt](#do-you-store-error-logs) – nützlich für die Fehlerbehebung.
+* Webhook-HTTP-Anfragen werden bei jedem SMTP-Verbindungsversuch bis zu dreimal wiederholt, mit einem maximalen Timeout von 60 Sekunden pro Endpunkt-POST-Anfrage. **Das bedeutet nicht, dass nur dreimal wiederholt wird**, sondern dass die Versuche kontinuierlich fortgesetzt werden, indem nach dem dritten fehlgeschlagenen HTTP-POST-Anfrageversuch der SMTP-Code 421 gesendet wird (der dem Absender anzeigt, dass er es später erneut versuchen soll). Das bedeutet, dass die E-Mail tagelang wiederholt wird, bis der Statuscode 200 erreicht wird.
+* Wir wiederholen die Versuche automatisch basierend auf den in [Wiederholungsmethode des Superagenten](https://ladjs.github.io/superagent/#retrying-requests) verwendeten Standardstatus- und Fehlercodes (wir sind für die Betreuer zuständig).
+* Wir fassen Webhook-HTTP-Anfragen an denselben Endpunkt in einer (anstatt mehreren) Anfrage zusammen, um Ressourcen zu sparen und die Antwortzeit zu verkürzen. Wenn Sie beispielsweise eine E-Mail an <webhook1@example.com>, <webhook2@example.com> und <webhook3@example.com> senden und diese alle so konfiguriert sind, dass sie dieselbe *exakte* Endpunkt-URL ansprechen, wird nur eine Anfrage gestellt. Wir gruppieren nach exakter Endpunktübereinstimmung unter strikter Gleichheit.
+* Beachten Sie, dass wir die Methode „simpleParser“ der Bibliothek `mx1.forwardemail.net`0 verwenden, um die Nachricht in ein JSON-fähiges Objekt zu parsen.
 * Der Rohwert der E-Mail als String wird als Eigenschaft „raw“ angegeben.
 * Authentifizierungsergebnisse werden als Eigenschaften „dkim“, „spf“, „arc“, „dmarc“ und „bimi“ angegeben.
-* Die analysierten E-Mail-Header werden als Eigenschaft „headers“ angegeben. Beachten Sie jedoch, dass Sie „headerLines“ für eine einfachere Iteration und Analyse verwenden können.
-* Die gruppierten Empfänger für diesen Webhook werden gruppiert und als Eigenschaft „recipients“ angegeben.
-* Die SMTP-Sitzungsinformationen werden als Eigenschaft „session“ angegeben. Diese enthalten Informationen über den Absender der Nachricht, deren Ankunftszeit, HELO und den Client-Hostnamen. Der Client-Hostname als `session.clientHostname` ist entweder der FQDN (aus einer umgekehrten PTR-Suche) oder `session.remoteAddress` in Klammern (z. B. `"[127.0.0.1]"`).
-* Wenn Sie den Wert von `X-Original-To` schnell ermitteln möchten, können Sie den Wert von `session.recipient` verwenden (siehe Beispiel unten). Der Header `X-Original-To` wird Nachrichten zur Fehlerbehebung mit dem ursprünglichen Empfänger (vor der maskierten Weiterleitung) hinzugefügt.
-* Wenn Sie die Eigenschaften `attachments` und/oder `raw` aus dem Payload-Text entfernen möchten, fügen Sie Ihrem Webhook-Endpunkt einfach `?attachments=false`, `?raw=false` oder `?attachments=false&raw=false` als Querystring-Parameter hinzu (z. B. `https://example.com/webhook?attachments=false&raw=false`).
-* Falls Anhänge vorhanden sind, werden diese mit Pufferwerten an das Array `attachments` angehängt. Sie können sie mithilfe eines JavaScript-Ansatzes wie dem folgenden wieder in Inhalte zerlegen:
+* Die geparsten E-Mail-Header werden als Eigenschaft „headers“ angegeben. Beachten Sie jedoch auch, dass Sie „headerLines“ für eine einfachere Iteration und Analyse verwenden können.
+* Die gruppierten Empfänger für diesen Webhook werden gruppiert und als Eigenschaft „recipients“ angegeben. Die SMTP-Sitzungsinformationen werden als Eigenschaft „session“ angegeben. Diese enthält Informationen zum Absender der Nachricht, deren Ankunftszeit, HELO und den Client-Hostnamen. Der Client-Hostname als `mx1.forwardemail.net`1 ist entweder der FQDN (aus einer umgekehrten PTR-Suche) oder `mx1.forwardemail.net`2 in Klammern (z. B. `mx1.forwardemail.net`3).
+
+Um den Wert von `mx1.forwardemail.net`4 schnell abzurufen, können Sie den Wert von `mx1.forwardemail.net`5 verwenden (siehe Beispiel unten). Der Header `mx1.forwardemail.net`6 wird Nachrichten zur Fehlerbehebung mit dem ursprünglichen Empfänger (vor der maskierten Weiterleitung) hinzugefügt.
+* Wenn Sie die Eigenschaften `mx1.forwardemail.net`7 und/oder `mx1.forwardemail.net`8 aus dem Payload-Body entfernen müssen, fügen Sie einfach `mx1.forwardemail.net`9, `mx2.forwardemail.net`0 oder `mx2.forwardemail.net`1 als Abfrageparameter (z. B. `mx2.forwardemail.net`2) zu Ihrem Webhook-Endpunkt hinzu.
+* Falls Anhänge vorhanden sind, werden diese mit Pufferwerten an das Array `mx2.forwardemail.net`3 angehängt. Sie können sie mithilfe eines JavaScript-Ansatzes wie dem folgenden wieder in Inhalte zerlegen:
 
   ```js
   const data = [
@@ -2340,7 +2342,7 @@ Wenn Sie den kostenlosen Tarif nutzen, fügen Sie einfach einen neuen DNS-<stron
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Einfaches Beispiel:</strong> Wenn ich alle E-Mails, die an `linus@example.com` oder `torvalds@example.com` gehen, an `user@gmail.com` weiterleiten möchte:
+<strong>Einfaches Beispiel</strong>: Wenn alle E-Mails, die an `linus@example.com` oder `torvalds@example.com` gehen, an `user@gmail.com` weitergeleitet werden sollen,
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2364,7 +2366,7 @@ Wenn Sie den kostenlosen Tarif nutzen, fügen Sie einfach einen neuen DNS-<stron
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Beispiel für die Ersetzung von Vorname und Nachname:</strong> Stellen Sie sich vor, alle Ihre Firmen-E-Mail-Adressen haben das Muster `firstname.lastname@example.com`. Wenn ich möchte, dass alle E-Mails mit dem Muster `firstname.lastname@example.com` mit Ersetzungsunterstützung an `firstname.lastname@company.com` weitergeleitet werden (<a href="https://regexr.com/66hnu" class="alert-link">Test auf RegExr ansehen</a>):
+<strong>Beispiel für die Ersetzung von Vorname und Nachname:</strong> Stellen Sie sich vor, alle Ihre Firmen-E-Mail-Adressen entsprechen dem Muster `firstname.lastname@example.com`. Wenn ich möchte, dass alle E-Mails, die an `firstname.lastname@example.com` gehen, mit Ersetzungsunterstützung an `firstname.lastname@company.com` weitergeleitet werden (<a href="https://regexr.com/66hnu" class="alert-link">Test auf RegExr ansehen</a>):
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2436,7 +2438,7 @@ Wenn Sie den kostenlosen Tarif nutzen, fügen Sie einfach einen neuen DNS-<stron
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Beispiel für stille Ablehnung:</strong> Wenn Sie alle E-Mails, die einem bestimmten Muster entsprechen, deaktivieren und stillschweigend ablehnen möchten (für den Absender sieht es so aus, als wäre die Nachricht erfolgreich gesendet worden, geht aber in Wirklichkeit nirgendwo hin) und den Statuscode `250` verwenden möchten (siehe <a href="#can-i-disable-specific-aliases" class="alert-link">Kann ich bestimmte Aliase deaktivieren?</a>), verwenden Sie einfach denselben Ansatz mit einem einzelnen Ausrufezeichen „!“. Dies zeigt dem Absender an, dass die Nachricht erfolgreich zugestellt wurde, aber in Wirklichkeit nirgendwohin gelangt ist (z. B. Blackhole oder `/dev/null`).
+<strong>Beispiel für stille Ablehnung:</strong> Wenn Sie alle E-Mails, die einem bestimmten Muster entsprechen, deaktivieren und stillschweigend ablehnen möchten (für den Absender sieht es so aus, als wäre die Nachricht erfolgreich gesendet worden, aber sie wird nicht gesendet) und den Statuscode `250` verwenden möchten (siehe <a href="#can-i-disable-specific-aliases" class="alert-link">Kann ich bestimmte Aliase deaktivieren?</a>), verwenden Sie einfach denselben Ansatz mit einem einzelnen Ausrufezeichen „!“. Dies zeigt dem Absender an, dass die Nachricht erfolgreich zugestellt wurde, aber nicht gesendet wurde (z. B. Blackhole oder `/dev/null`).
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2460,7 +2462,7 @@ Wenn Sie den kostenlosen Tarif nutzen, fügen Sie einfach einen neuen DNS-<stron
 
 <div class="alert my-3 alert-secondary">
 <i class="fa fa-info-circle font-weight-bold"></i>
-<strong>Beispiel für eine Soft-Reject-Funktion:</strong> Wenn Sie alle E-Mails, die einem bestimmten Muster entsprechen, deaktivieren und mit dem Statuscode `421` (siehe <a href="#can-i-disable-specific-aliases" class="alert-link">Kann ich bestimmte Aliase deaktivieren?</a>) soft ablehnen möchten, verwenden Sie einfach denselben Ansatz mit einem doppelten Ausrufezeichen „!!“. Dies weist den Absender an, seine E-Mail erneut zu senden. E-Mails an diesen Alias werden etwa fünf Tage lang erneut versucht und dann dauerhaft abgelehnt.
+<strong>Beispiel für Soft Reject:</strong> Wenn Sie alle E-Mails, die einem bestimmten Muster entsprechen, deaktivieren und mit dem Statuscode `421` soft ablehnen möchten (siehe <a href="#can-i-disable-specific-aliases" class="alert-link">Kann ich bestimmte Aliase deaktivieren?</a>), verwenden Sie einfach denselben Ansatz mit einem doppelten Ausrufezeichen „!!“. Dies weist den Absender an, den E-Mail-Versand erneut zu versuchen. E-Mails an diesen Alias werden etwa fünf Tage lang erneut versucht und anschließend dauerhaft abgelehnt.
 </div>
 
 <table class="table table-striped table-hover my-3">
@@ -2518,13 +2520,13 @@ Wissen Sie, wie man einen regulären Ausdruck schreibt, oder möchten Sie Ihren 
 
 ### Was sind Ihre ausgehenden SMTP-Limits? {#what-are-your-outbound-smtp-limits}
 
-Wir begrenzen die Anzahl ausgehender SMTP-Nachrichten pro Tag auf 300 Benutzer und Domänen. Das entspricht durchschnittlich über 9000 E-Mails pro Kalendermonat. Sollten Sie diese Anzahl überschreiten oder dauerhaft große E-Mails versenden, kontaktieren Sie uns bitte unter [Kontaktieren Sie uns](https://forwardemail.net/help).
+Wir begrenzen die Anzahl der ausgehenden SMTP-Nachrichten pro Tag auf 300 Benutzer und Domänen. Das entspricht durchschnittlich über 9.000 E-Mails pro Kalendermonat. Wenn Sie diese Anzahl überschreiten müssen oder dauerhaft große E-Mails versenden, verwenden Sie bitte [Kontaktieren Sie uns](https://forwardemail.net/help).
 
 ### Benötige ich eine Genehmigung, um SMTP zu aktivieren? {#do-i-need-approval-to-enable-smtp}
 
-Ja, bitte beachten Sie: Um die IP-Reputation zu wahren und die Zustellbarkeit zu gewährleisten, führt Forward Email einen manuellen Überprüfungsprozess pro Domain für die Freigabe ausgehender SMTP-Nachrichten durch. Senden Sie eine E-Mail an <support@forwardemail.net> oder öffnen Sie ein [Hilfeanfrage](https://forwardemail.net/help) zur Genehmigung. Dies dauert in der Regel weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1-2 Stunden bearbeitet werden. In naher Zukunft planen wir, diesen Prozess mit zusätzlichen Spam-Kontrollen und Warnmeldungen sofort zu ermöglichen. Dieser Prozess stellt sicher, dass Ihre E-Mails den Posteingang erreichen und nicht als Spam markiert werden.
+Ja. Bitte beachten Sie, dass Forward Email zur Wahrung der IP-Reputation und Gewährleistung der Zustellbarkeit einen manuellen Überprüfungsprozess pro Domain für die Freigabe ausgehender SMTP-Nachrichten durchführt. Senden Sie eine E-Mail an <support@forwardemail.net> oder öffnen Sie ein [Hilfeanfrage](https://forwardemail.net/help) zur Genehmigung. Dies dauert in der Regel weniger als 24 Stunden, wobei die meisten Anfragen innerhalb von 1-2 Stunden bearbeitet werden. In naher Zukunft planen wir, diesen Prozess mit zusätzlichen Spam-Kontrollen und Warnmeldungen sofort zu ermöglichen. Dieser Prozess stellt sicher, dass Ihre E-Mails den Posteingang erreichen und nicht als Spam markiert werden.
 
-### Wie lauten Ihre SMTP-Server-Konfigurationseinstellungen {#what-are-your-smtp-server-configuration-settings}
+### Was sind Ihre SMTP-Server-Konfigurationseinstellungen {#what-are-your-smtp-server-configuration-settings}
 
 Unser Server ist `smtp.forwardemail.net` und wird auch auf unserer <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Statusseite</a> überwacht.
 
@@ -2544,7 +2546,7 @@ Um ausgehende E-Mails mit SMTP zu senden, muss der **SMTP-Benutzer** die E-Mail-
 
 Eine Schritt-für-Schritt-Anleitung finden Sie unter [Unterstützen Sie das Senden von E-Mails mit SMTP](#do-you-support-sending-email-with-smtp).
 
-### Wie lauten Ihre IMAP-Serverkonfigurationseinstellungen? {#what-are-your-imap-server-configuration-settings}
+### Was sind Ihre IMAP-Server-Konfigurationseinstellungen {#what-are-your-imap-server-configuration-settings}
 
 Unser Server ist `imap.forwardemail.net` und wird auch auf unserer <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Statusseite</a> überwacht.
 
@@ -2563,7 +2565,7 @@ Um eine Verbindung mit IMAP herzustellen, muss der **IMAP-Benutzer** die E-Mail-
 
 Eine Schritt-für-Schritt-Anleitung finden Sie unter [Unterstützen Sie den Empfang von E-Mails mit IMAP?](#do-you-support-receiving-email-with-imap).
 
-### Wie lauten Ihre POP3-Serverkonfigurationseinstellungen? {#what-are-your-pop3-server-configuration-settings}
+### Was sind Ihre POP3-Server-Konfigurationseinstellungen {#what-are-your-pop3-server-configuration-settings}
 
 Unser Server ist `pop3.forwardemail.net` und wird auch auf unserer <a href="https://status.forwardemail.net" target="_blank" rel="noopener noreferrer">Statusseite</a> überwacht.
 
@@ -2674,10 +2676,10 @@ echo "Test email body" | mail -s "Test Subject" recipient@example.com
 
 ## Sicherheit {#security}
 
-### Erweiterte Techniken zur Serverhärtung {#advanced-server-hardening-techniques}
+### Erweiterte Server-Härtungstechniken {#advanced-server-hardening-techniques}
 
 > \[!TIP]
-> Learn more about our security infrastructure on [our Security page](/security).
+> Erfahren Sie mehr über unsere Sicherheitsinfrastruktur auf [unsere Sicherheitsseite](/security).
 
 Forward Email implementiert zahlreiche Serverhärtungstechniken, um die Sicherheit unserer Infrastruktur und Ihrer Daten zu gewährleisten:
 
@@ -2714,15 +2716,15 @@ Forward Email implementiert zahlreiche Serverhärtungstechniken, um die Sicherhe
 * Verfahren zur Reaktion auf Vorfälle
 
 > \[!IMPORTANT]
-> Our security practices are continuously updated to address emerging threats and vulnerabilities.
+> Unsere Sicherheitsmaßnahmen werden kontinuierlich aktualisiert, um auf neu auftretende Bedrohungen und Schwachstellen zu reagieren.
 
 > \[!TIP]
-> For maximum security, we recommend using our service with end-to-end encryption via OpenPGP.
+> Für maximale Sicherheit empfehlen wir die Nutzung unseres Dienstes mit Ende-zu-Ende-Verschlüsselung über OpenPGP.
 
-### Verfügen Sie über SOC 2- oder ISO 27001-Zertifizierungen? {#do-you-have-soc-2-or-iso-27001-certifications}
+### Besitzen Sie SOC 2- oder ISO 27001-Zertifizierungen? {#do-you-have-soc-2-or-iso-27001-certifications}
 
 > \[!NOTE]
-> Forward Email operates on infrastructure provided by certified subprocessors to ensure compliance with industry standards.
+> Forward Email nutzt die Infrastruktur zertifizierter Unterauftragsverarbeiter, um die Einhaltung der Branchenstandards zu gewährleisten.
 
 Forward Email verfügt nicht direkt über SOC 2 Typ II- oder ISO 27001-Zertifizierungen. Der Dienst basiert jedoch auf der Infrastruktur zertifizierter Unterauftragnehmer:
 
@@ -2732,7 +2734,7 @@ Forward Email verfügt nicht direkt über SOC 2 Typ II- oder ISO 27001-Zertifizi
 
 * **DataPacket**: SOC 2-konform (wenden Sie sich direkt an DataPacket, um eine Zertifizierung zu erhalten), Anbieter von Enterprise-Infrastruktur (Standort Denver). Details: <https://www.datapacket.com/datacenters/denver>
 
-Forward Email befolgt branchenübliche Best Practices für Sicherheitsprüfungen und arbeitet regelmäßig mit unabhängigen Sicherheitsforschern zusammen. Quelle: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
+Forward Email befolgt branchenübliche Best Practices für Sicherheitsüberprüfungen und arbeitet regelmäßig mit unabhängigen Sicherheitsforschern zusammen. Quelle: <https://forwardemail.net/technical-whitepaper.pdf#page=36>
 
 ### Verwenden Sie TLS-Verschlüsselung für die E-Mail-Weiterleitung? {#do-you-use-tls-encryption-for-email-forwarding}
 
@@ -2765,12 +2767,12 @@ Ja. Forward Email implementiert und bewahrt E-Mail-Authentifizierungsheader umfa
 
 Quelle: <https://forwardemail.net/technical-whitepaper.pdf#page=31>
 
-Validierung: Der Internet.nl Mail-Test zeigt eine 100/100-Bewertung speziell für die Implementierung von SPF, DKIM und DMARC. Die Hardenize-Bewertung bestätigt die Bewertung „Gut“ für SPF und DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
+Validierung: Der Internet.nl Mail-Test zeigt eine 100/100-Bewertung speziell für die Implementierung von „SPF, DKIM und DMARC“. Die Hardenize-Bewertung bestätigt die „Gut“-Bewertung für SPF und DMARC: <https://www.hardenize.com/report/forwardemail.net/1750312779>
 
 ### Bewahren Sie die ursprünglichen E-Mail-Header auf und verhindern Sie Spoofing? {#do-you-preserve-original-email-headers-and-prevent-spoofing}
 
 > \[!TIP]
-> Forward Email implements sophisticated anti-spoofing protection to prevent email abuse.
+> Forward Email implementiert einen hochentwickelten Anti-Spoofing-Schutz, um E-Mail-Missbrauch zu verhindern.
 
 Forward Email bewahrt die ursprünglichen E-Mail-Header und implementiert gleichzeitig einen umfassenden Anti-Spoofing-Schutz durch die MX-Codebasis:
 
@@ -2788,7 +2790,7 @@ Der `isArbitrary`-Helfer implementiert ausgefeilte Anti-Spoofing-Regeln, einschl
 
 Quelle: <https://forwardemail.net/technical-whitepaper.pdf#page=32>
 
-### Wie schützen Sie sich vor Spam und Missbrauch {#how-do-you-protect-against-spam-and-abuse}
+### Wie schützen Sie sich vor Spam und Missbrauch? {#how-do-you-protect-against-spam-and-abuse}
 
 Forward Email implementiert umfassenden mehrschichtigen Schutz:
 
@@ -2808,7 +2810,7 @@ Quellen:
 ### Speichern Sie E-Mail-Inhalte auf der Festplatte? {#do-you-store-email-content-on-disk}
 
 > \[!IMPORTANT]
-> Forward Email uses a zero-knowledge architecture that prevents email content from being written to disk.
+> Forward Email verwendet eine Zero-Knowledge-Architektur, die verhindert, dass E-Mail-Inhalte auf die Festplatte geschrieben werden.
 
 * **Zero-Knowledge-Architektur**: Individuell verschlüsselte SQLite-Postfächer verhindern, dass Forward Email auf E-Mail-Inhalte zugreifen kann.
 * **In-Memory-Verarbeitung**: Die E-Mail-Verarbeitung erfolgt vollständig im Arbeitsspeicher, sodass keine Daten auf der Festplatte gespeichert werden.
@@ -2819,7 +2821,7 @@ Quellen:
 
 Quellen:
 
-* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Zusammenfassung)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=10> (Abstrakt)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=59> (Zero-Knowledge-Details)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=21> (Sandbox-Verschlüsselung)
 
@@ -2862,12 +2864,12 @@ Quellen:
 
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Autorisierungskontrollen)
 * <https://forwardemail.net/technical-whitepaper.pdf#page=30> (Netzwerksicherheit)
-* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Schutz vor Angriffen durch bösartige Dienstmädchen)
+* <https://forwardemail.net/technical-whitepaper.pdf#page=15> (Schutz vor Angriffen durch bösartige Maids)
 
-### Welche Infrastrukturanbieter nutzen Sie {#what-infrastructure-providers-do-you-use}
+### Welche Infrastrukturanbieter verwenden Sie? {#what-infrastructure-providers-do-you-use}
 
 > \[!IMPORTANT]
-> Forward Email uses multiple infrastructure subprocessors with comprehensive compliance certifications.
+> Forward Email nutzt mehrere Infrastruktur-Subprozessoren mit umfassenden Compliance-Zertifizierungen.
 
 Ausführliche Informationen finden Sie auf unserer Seite zur DSGVO-Konformität: <https://forwardemail.net/gdpr>
 
@@ -2915,7 +2917,7 @@ Ausführliche Informationen finden Sie auf unserer Seite zur DSGVO-Konformität:
 
 ### Bieten Sie eine Datenverarbeitungsvereinbarung (DPA) an? {#do-you-offer-a-data-processing-agreement-dpa}
 
-Ja, Forward Email bietet eine umfassende Datenverarbeitungsvereinbarung (DPA) an, die mit unserem Unternehmensvertrag abgeschlossen werden kann. Eine Kopie unserer DPA finden Sie unter: <https://forwardemail.net/dpa>
+Ja, Forward Email bietet eine umfassende Datenverarbeitungsvereinbarung (DPA) an, die mit unserem Unternehmensvertrag unterzeichnet werden kann. Eine Kopie unserer DPA finden Sie unter: <https://forwardemail.net/dpa>
 
 **DPA Details:**
 
@@ -2925,14 +2927,14 @@ Ja, Forward Email bietet eine umfassende Datenverarbeitungsvereinbarung (DPA) an
 * Individuelle Datenschutzvereinbarungen sind über die Enterprise-Lizenz verfügbar.
 
 **Rahmenwerk zur Einhaltung der DSGVO:**
-Unsere Datenschutzvereinbarung (DPA) beschreibt die Einhaltung der DSGVO sowie die Anforderungen für den internationalen Datentransfer. Vollständige Informationen finden Sie unter: <https://forwardemail.net/gdpr>
+Unsere Datenschutzvereinbarung (DPA) beschreibt die Einhaltung der DSGVO sowie die Anforderungen für den internationalen Datentransfer. Ausführliche Informationen finden Sie unter: <https://forwardemail.net/gdpr>
 
 Unternehmenskunden, die individuelle DPA-Bedingungen oder besondere vertragliche Vereinbarungen benötigen, können diese über unser Programm **Unternehmenslizenz (250 $/Monat)** erfüllen.
 
-### Wie gehen Sie mit Benachrichtigungen über Datenschutzverletzungen um? {#how-do-you-handle-data-breach-notifications}
+### Wie gehen Sie mit Benachrichtigungen zu Datenschutzverletzungen um? {#how-do-you-handle-data-breach-notifications}
 
 > \[!NOTE]
-> Forward Email's zero-knowledge architecture significantly limits breach impact.
+> Die Zero-Knowledge-Architektur von Forward Email begrenzt die Auswirkungen von Sicherheitsverletzungen erheblich.
 
 * **Begrenzte Datenexposition**: Kein Zugriff auf verschlüsselte E-Mail-Inhalte aufgrund der Zero-Knowledge-Architektur.
 * **Minimale Datenerfassung**: Aus Sicherheitsgründen werden nur grundlegende Abonnenteninformationen und eingeschränkte IP-Protokolle erfasst.
@@ -2973,13 +2975,13 @@ Für Unternehmenskunden, die formelle Sandbox-Funktionen benötigen, sollte dies
 
 Quelle: <https://github.com/forwardemail/forwardemail.net> (Details zur Entwicklungsumgebung)
 
-### Stellen Sie Überwachungs- und Warntools zur Verfügung? {#do-you-provide-monitoring-and-alerting-tools}
+### Stellen Sie Überwachungs- und Warntools bereit? {#do-you-provide-monitoring-and-alerting-tools}
 
 Forward Email bietet Echtzeitüberwachung mit einigen Einschränkungen:
 
 **Verfügbar:**
 
-* **Echtzeit-Zustellungsüberwachung**: Öffentlich sichtbare Leistungskennzahlen für wichtige E-Mail-Anbieter
+* **Echtzeit-Zustellungsüberwachung**: Öffentlich sichtbare Leistungskennzahlen für große E-Mail-Anbieter
 * **Automatische Benachrichtigung**: Das Entwicklungsteam wird benachrichtigt, wenn die Zustellzeit 10 Sekunden überschreitet
 * **Transparente Überwachung**: 100 % Open-Source-Überwachungssysteme
 * **Infrastrukturüberwachung**: Automatische Anomalieerkennung und umfassende Audit-Protokollierung
@@ -2998,7 +3000,7 @@ Quellen:
 ### Wie stellen Sie eine hohe Verfügbarkeit sicher? {#how-do-you-ensure-high-availability}
 
 > \[!IMPORTANT]
-> Forward Email implements comprehensive redundancy across multiple infrastructure providers.
+> Forward Email implementiert umfassende Redundanz über mehrere Infrastrukturanbieter hinweg.
 
 * **Verteilte Infrastruktur**: Mehrere Anbieter (DigitalOcean, Vultr, DataPacket) in verschiedenen geografischen Regionen
 * **Geografischer Lastausgleich**: Cloudflare-basierter, geolokalisierter Lastausgleich mit automatischem Failover
@@ -3006,9 +3008,9 @@ Quellen:
 * **Mehrschichtiger DDoS-Schutz**: Durch DataPackets Shield-System und Cloudflare
 * **Serverredundanz**: Mehrere Server pro Region mit automatischem Failover
 * **Datenbankreplikation**: Echtzeit-Datensynchronisierung über mehrere Standorte hinweg
-* **Überwachung und Warnmeldungen**: Rund-um-die-Uhr-Überwachung mit automatischer Reaktion auf Vorfälle
+* **Überwachung und Warnmeldungen**: 24/7-Überwachung mit automatischer Reaktion auf Vorfälle
 
-**Verfügbarkeitsgarantie**: Serviceverfügbarkeit von über 99,9 % mit transparenter Überwachung verfügbar unter <https://forwardemail.net>
+**Verpflichtung zur Verfügbarkeit**: Serviceverfügbarkeit von über 99,9 % mit transparenter Überwachung verfügbar unter <https://forwardemail.net>
 
 Quellen:
 
@@ -3018,7 +3020,7 @@ Quellen:
 ### Erfüllen Sie Abschnitt 889 des National Defense Authorization Act (NDAA)? {#are-you-compliant-with-section-889-of-the-national-defense-authorization-act-ndaa}
 
 > \[!IMPORTANT]
-> Forward Email is fully compliant with Section 889 through careful selection of infrastructure partners.
+> Forward Email erfüllt durch die sorgfältige Auswahl der Infrastrukturpartner vollständig die Anforderungen von Abschnitt 889.
 
 Ja, Forward Email entspricht **Abschnitt 889**. Abschnitt 889 des National Defense Authorization Act (NDAA) verbietet Regierungsbehörden die Nutzung oder den Abschluss von Verträgen mit Unternehmen, die Telekommunikations- und Videoüberwachungsgeräte bestimmter Unternehmen (Huawei, ZTE, Hikvision, Dahua und Hytera) verwenden.
 
@@ -3034,31 +3036,31 @@ Forward Email verlässt sich ausschließlich auf zwei wichtige Infrastrukturanbi
 
 **Anwendungsfall für die Regierung**: Unsere Konformität mit Abschnitt 889 wurde bestätigt, als die **US Naval Academy** Forward Email für ihre Anforderungen an die sichere E-Mail-Weiterleitung auswählte und dafür eine Dokumentation unserer bundesstaatlichen Compliance-Standards verlangte.
 
-Vollständige Informationen zu unserem Rahmenwerk zur Einhaltung gesetzlicher Vorschriften, einschließlich umfassenderer Bundesvorschriften, finden Sie in unserer umfassenden Fallstudie: [E-Mail-Dienst der Bundesregierung gemäß Abschnitt 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
+Ausführliche Informationen zu unserem Rahmenwerk zur Einhaltung gesetzlicher Vorschriften, einschließlich umfassenderer Bundesvorschriften, finden Sie in unserer umfassenden Fallstudie: [E-Mail-Dienst der Bundesregierung gemäß Abschnitt 889](https://forwardemail.net/blog/docs/federal-government-email-service-section-889-compliant)
 
 ## System- und technische Details {#system-and-technical-details}
 
 ### Speichern Sie E-Mails und deren Inhalte? {#do-you-store-emails-and-their-contents}
 
-Nein, wir schreiben nicht auf die Festplatte und speichern keine Protokolle – mit [Ausnahme von Fehlern](#do-you-store-error-logs) und [ausgehendes SMTP](#do-you-support-sending-email-with-smtp) (siehe unser [Datenschutzrichtlinie](/privacy)).
+Nein, wir schreiben nicht auf die Festplatte und speichern keine Protokolle – mit [Ausnahme von Fehlern](#do-you-store-error-logs) und [ausgehendes SMTP](#do-you-support-sending-email-with-smtp) (siehe unseren [Datenschutzrichtlinie](/privacy)).
 
-Alles wird im Speicher erledigt und [Unser Quellcode ist auf GitHub](https://github.com/forwardemail).
+Alles wird im Speicher und [Unser Quellcode ist auf GitHub](https://github.com/forwardemail) erledigt.
 
-### Wie funktioniert Ihr E-Mail-Weiterleitungssystem {#how-does-your-email-forwarding-system-work}
+### Wie funktioniert Ihr E-Mail-Weiterleitungssystem? {#how-does-your-email-forwarding-system-work}
 
-E-Mail basiert auf dem [SMTP-Protokoll](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol)-Protokoll. Dieses Protokoll besteht aus Befehlen, die an einen Server gesendet werden (meistens auf Port 25). Zunächst wird eine Verbindung hergestellt, anschließend gibt der Absender an, von wem die E-Mail stammt („MAIL FROM“), wohin sie gesendet wird („RCPT TO“) und schließlich die Header und der Text der E-Mail selbst („DATA“). Der Ablauf unseres E-Mail-Weiterleitungssystems wird unten für jeden SMTP-Protokollbefehl beschrieben:
+E-Mail basiert auf dem [SMTP-Protokoll](https://en.wikipedia.org/wiki/Simple_Mail_Transfer_Protocol). Dieses Protokoll besteht aus Befehlen, die an einen Server gesendet werden (meistens auf Port 25). Es wird eine erste Verbindung hergestellt, dann gibt der Absender an, von wem die E-Mail stammt („MAIL FROM“), wohin sie gesendet wird („RCPT TO“) und schließlich die Header und den Text der E-Mail selbst („DATA“). Der Ablauf unseres E-Mail-Weiterleitungssystems wird unten für jeden SMTP-Protokollbefehl beschrieben:
 
-* Initiale Verbindung (kein Befehlsname, z. B. `telnet example.com 25`) – Dies ist die initiale Verbindung. Absender, die nicht in unserem [Zulassungsliste](#do-you-have-an-allowlist) stehen, werden mit unserem [Denylist](#do-you-have-a-denylist) abgeglichen. Steht ein Absender nicht auf unserer Whitelist, prüfen wir, ob er bereits [graue Liste](#do-you-have-a-greylist) war.
+* Initiale Verbindung (kein Befehlsname, z. B. `telnet example.com 25`) – Dies ist die initiale Verbindung. Wir vergleichen Absender, die nicht in unserem [Zulassungsliste](#do-you-have-an-allowlist) stehen, mit unserem [Denylist](#do-you-have-a-denylist). Steht ein Absender nicht auf unserer Whitelist, prüfen wir, ob er bereits in [graue Liste](#do-you-have-a-greylist) steht.
 
 * `HELO` – Dies kennzeichnet eine Begrüßung zur Identifizierung des FQDN, der IP-Adresse oder des Mail-Handler-Namens des Absenders. Dieser Wert kann gefälscht werden, daher verlassen wir uns nicht auf diese Daten und verwenden stattdessen die umgekehrte Hostnamensuche der IP-Adresse der Verbindung.
 
-* `MAIL FROM` – Dies gibt die Absenderadresse der E-Mail an. Wenn ein Wert eingegeben wird, muss es sich um eine gültige RFC 5322-E-Mail-Adresse handeln. Leere Werte sind zulässig. Wir verwenden hier [auf Rückstreuung prüfen](#how-do-you-protect-against-backscatter) und gleichen die MAIL FROM-Adresse mit unserem [Denylist](#do-you-have-a-denylist) ab. Abschließend prüfen wir Absender, die nicht auf der Whitelist stehen, auf Ratenbegrenzung (weitere Informationen finden Sie im Abschnitt zu [Ratenbegrenzung](#do-you-have-rate-limiting) und [Zulassungsliste](#do-you-have-an-allowlist)).
+* `MAIL FROM` – Gibt die Absenderadresse der E-Mail an. Wenn ein Wert eingegeben wird, muss es sich um eine gültige RFC 5322-E-Mail-Adresse handeln. Leere Werte sind zulässig. Wir verwenden hier [auf Rückstreuung prüfen](#how-do-you-protect-against-backscatter) und vergleichen MAIL FROM mit unserem [Denylist](#do-you-have-a-denylist). Abschließend prüfen wir Absender, die nicht auf der Whitelist stehen, auf Ratenbegrenzung (weitere Informationen finden Sie im Abschnitt zu [Ratenbegrenzung](#do-you-have-rate-limiting) und [Zulassungsliste](#do-you-have-an-allowlist)).
 
-* `RCPT TO` – Gibt den/die Empfänger der E-Mail an. Es müssen gültige RFC 5322-E-Mail-Adressen sein. Wir erlauben maximal 50 Envelope-Empfänger pro Nachricht (dies unterscheidet sich vom „An“-Header einer E-Mail). Wir prüfen hier außerdem, ob eine gültige [Sender-Rewriting-Schema](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme) („SRS“)-Adresse vorhanden ist, um Spoofing mit unserem SRS-Domänennamen zu verhindern.
+* `RCPT TO` – Gibt den/die Empfänger der E-Mail an. Es müssen gültige RFC 5322-E-Mail-Adressen sein. Wir erlauben maximal 50 Envelope-Empfänger pro Nachricht (dies unterscheidet sich vom „An“-Header einer E-Mail). Wir prüfen hier auch auf eine gültige [Sender-Rewriting-Schema](https://en.wikipedia.org/wiki/Sender_Rewriting_Scheme)-Adresse („SRS“), um Spoofing mit unserem SRS-Domänennamen zu verhindern.
 
 * `DATA` – Dies ist der Kern unseres Dienstes, der eine E-Mail verarbeitet. Weitere Informationen finden Sie im Abschnitt [Wie verarbeiten Sie eine E-Mail zur Weiterleitung?](#how-do-you-process-an-email-for-forwarding) weiter unten.
 
-### Wie verarbeiten Sie eine E-Mail zur Weiterleitung {#how-do-you-process-an-email-for-forwarding}
+### Wie verarbeiten Sie eine E-Mail zur Weiterleitung? {#how-do-you-process-an-email-for-forwarding}
 
 In diesem Abschnitt wird unser Prozess im Zusammenhang mit dem SMTP-Protokollbefehl `DATA` im Abschnitt [Wie funktioniert Ihr E-Mail-Weiterleitungssystem](#how-does-your-email-forwarding-system-work) oben beschrieben. So verarbeiten wir die Kopfzeilen, den Text und die Sicherheit einer E-Mail, bestimmen, wohin sie zugestellt werden muss, und handhaben Verbindungen.
 
@@ -3076,35 +3078,35 @@ In diesem Abschnitt wird unser Prozess im Zusammenhang mit dem SMTP-Protokollbef
 
 7. Wir werden der Nachricht zur Fehlerbehebung und Missbrauchsprävention die folgenden Header hinzufügen:
 
-* `Received` – Wir fügen diesen standardmäßigen „Received“-Header mit Ursprungs-IP und -Host, Übertragungstyp, TLS-Verbindungsinformationen, Datum/Uhrzeit und Empfänger hinzu.
-* `X-Original-To` – der ursprüngliche Empfänger der Nachricht:
+* `Received` – Wir fügen diesen Standard-Received-Header mit Ursprungs-IP und -Host, Übertragungstyp, TLS-Verbindungsinformationen, Datum/Uhrzeit und Empfänger hinzu.
+* `X-Original-To` – Der ursprüngliche Empfänger der Nachricht:
 * Dies ist nützlich, um festzustellen, wohin eine E-Mail ursprünglich zugestellt wurde (zusätzlich zum „Received“-Header).
 * Dies wird pro Empfänger bei IMAP- und/oder maskierter Weiterleitung hinzugefügt (zum Schutz der Privatsphäre).
-* `X-Forward-Email-Website` – enthält einen Link zu unserer Website unter <https://forwardemail.net>
-* `X-Forward-Email-Version` – die aktuelle [SemVer](https://semver.org/)-Version von `package.json` unserer Codebasis.
-* `X-Forward-Email-Session-ID` – ein Sitzungs-ID-Wert für Debugging-Zwecke (gilt nur in Nicht-Produktionsumgebungen).
-* `X-Forward-Email-Sender` – eine durch Kommas getrennte Liste mit der ursprünglichen MAIL FROM-Adresse des Envelopes (sofern nicht leer), dem Reverse-PTR-Client-FQDN (sofern vorhanden) und der IP-Adresse des Absenders.
+* `X-Forward-Email-Website` – Enthält einen Link zu unserer Website von <https://forwardemail.net>
+* `X-Forward-Email-Version` – Die aktuelle Version von [SemVer](https://semver.org/) aus `package.json` unserer Codebasis.
+* `X-Forward-Email-Session-ID` – Ein Sitzungs-ID-Wert für Debug-Zwecke (gilt nur in Nicht-Produktionsumgebungen).
+* `X-Forward-Email-Sender` – eine durch Kommas getrennte Liste mit der ursprünglichen MAIL FROM-Adresse des Envelopes (sofern nicht leer), dem FQDN des Reverse-PTR-Clients (sofern vorhanden) und der IP-Adresse des Absenders.
 * `X-Forward-Email-ID` – gilt nur für ausgehendes SMTP und entspricht der unter „Mein Konto“ → „E-Mails“ gespeicherten E-Mail-ID.
-* `X-Report-Abuse` – mit dem Wert `abuse@forwardemail.net`.
-* `X-Report-Abuse-To` – mit dem Wert `abuse@forwardemail.net`.
-* `X-Complaints-To` – mit einem Wert von `abuse@forwardemail.net`.
+* `X-Original-To`0 – mit dem Wert `X-Original-To`1.
+* `X-Original-To`2 – mit dem Wert `X-Original-To`3.
+* `X-Original-To`4 – mit dem Wert `X-Original-To`5.
 
 8. Anschließend überprüfen wir die Nachricht auf [DKIM](https://en.wikipedia.org/wiki/DomainKeys_Identified_Mail), [SPF](https://en.wikipedia.org/wiki/Sender_Policy_Framework), [ARC](https://en.wikipedia.org/wiki/Authenticated_Received_Chain) und [DMARC](https://en.wikipedia.org/wiki/DMARC).
 
 * Wenn die Nachricht den DMARC-Test nicht bestanden hat und für die Domäne eine Ablehnungsrichtlinie galt (z. B. `p=reject` [war in der DMARC-Richtlinie](https://wikipedia.org/wiki/DMARC)), wird sie mit dem Fehlercode 550 abgelehnt. Normalerweise befindet sich eine DMARC-Richtlinie für eine Domäne im <strong class="notranslate">TXT</strong>-Eintrag der Subdomäne `_dmarc` (z. B. `dig _dmarc.example.com txt`).
-* Wenn die Nachricht den SPF-Test nicht bestanden hat und für die Domäne eine Hard-Fail-Richtlinie galt (z. B. war `-all` in der SPF-Richtlinie enthalten, im Gegensatz zu `~all` oder es gab überhaupt keine Richtlinie), wird sie mit dem Fehlercode 550 abgelehnt. Typischerweise findet sich eine SPF-Richtlinie für eine Domain im <strong class="notranslate">TXT</strong>-Eintrag der Stammdomain (z. B. `dig example.com txt`). Weitere Informationen zu [E-Mail-Versand wie mit Gmail](#can-i-send-mail-as-in-gmail-with-this) und SPF finden Sie in diesem Abschnitt.
+* Wenn die Nachricht den SPF-Test nicht bestanden hat und für die Domäne eine Hard-Fail-Richtlinie galt (z. B. war `-all` in der SPF-Richtlinie enthalten, im Gegensatz zu `~all`, oder es gab überhaupt keine Richtlinie), wird sie mit dem Fehlercode 550 abgelehnt. Normalerweise befindet sich eine SPF-Richtlinie für eine Domäne im <strong class="notranslate">TXT</strong>-Eintrag der Stammdomäne (z. B. `dig example.com txt`). Weitere Informationen zu [E-Mail-Versand wie mit Gmail](#can-i-send-mail-as-in-gmail-with-this) in Bezug auf SPF finden Sie in diesem Abschnitt.
 
 9. Nun verarbeiten wir die Empfänger der Nachricht, die wir mit dem Befehl `RCPT TO` im Abschnitt [Wie funktioniert Ihr E-Mail-Weiterleitungssystem](#how-does-your-email-forwarding-system-work) oben ermittelt haben. Für jeden Empfänger führen wir die folgenden Operationen durch:
 
-* Wir suchen die <strong class="notranslate">TXT</strong>-Einträge des Domänennamens (den Teil nach dem Symbol `@`, z. B. `example.com`, wenn die E-Mail-Adresse `test@example.com` lautete). Wenn die Domäne beispielsweise `example.com` lautet, führen wir einen DNS-Lookup wie `dig example.com txt` durch.
-* Wir analysieren alle <strong class="notranslate">TXT</strong>-Einträge, die entweder mit `forward-email=` (kostenlose Tarife) oder `forward-email-site-verification=` (kostenpflichtige Tarife) beginnen. Beachten Sie, dass wir beide analysieren, um E-Mails zu verarbeiten, während ein Nutzer sein Tarif-Upgrade oder -Downgrade durchführt.
-* Aus diesen analysierten <strong class="notranslate">TXT</strong>-Datensätzen iterieren wir, um die Weiterleitungskonfiguration zu extrahieren (wie im Abschnitt [Wie fange ich an und richte die E-Mail-Weiterleitung ein?](#how-do-i-get-started-and-set-up-email-forwarding) oben beschrieben). Beachten Sie, dass wir nur einen `forward-email-site-verification=`-Wert unterstützen. Bei Angabe mehrerer Werte tritt ein 550-Fehler auf, und der Absender erhält einen Bounce für diesen Empfänger.
-* Rekursiv iterieren wir über die extrahierte Weiterleitungskonfiguration, um globale Weiterleitungen, Regex-basierte Weiterleitungen und alle anderen unterstützten Weiterleitungskonfigurationen zu ermitteln – diese werden nun als unsere „Weiterleitungsadressen“ bezeichnet.
+* Wir suchen die <strong class="notranslate">TXT</strong>-Einträge des Domänennamens (den Teil nach dem Symbol `@`, z. B. `example.com`, wenn die E-Mail-Adresse `test@example.com` war). Wenn die Domäne beispielsweise `example.com` ist, führen wir einen DNS-Lookup wie `dig example.com txt` durch.
+* Wir analysieren alle <strong class="notranslate">TXT</strong>-Einträge, die entweder mit `forward-email=` (kostenlose Tarife) oder `forward-email-site-verification=` (kostenpflichtige Tarife) beginnen. Beachten Sie, dass wir beide analysieren, um E-Mails zu verarbeiten, während ein Nutzer sein Tarif-Upgrade oder Downgrade durchführt.
+* Aus diesen analysierten <strong class="notranslate">TXT</strong>-Einträgen iterieren wir, um die Weiterleitungskonfiguration zu extrahieren (wie im Abschnitt [Wie fange ich an und richte die E-Mail-Weiterleitung ein?](#how-do-i-get-started-and-set-up-email-forwarding) oben beschrieben). Beachten Sie, dass wir nur einen `forward-email-site-verification=`-Wert unterstützen. Bei Angabe mehrerer Werte tritt ein 550-Fehler auf, und der Absender erhält einen Bounce für diesen Empfänger.
+* Wir iterieren rekursiv über die extrahierte Weiterleitungskonfiguration, um die globale Weiterleitung, die Regex-basierte Weiterleitung und alle anderen unterstützten Weiterleitungskonfigurationen zu ermitteln – diese werden nun als unsere „Weiterleitungsadressen“ bezeichnet.
 * Für jede Weiterleitungsadresse unterstützen wir eine rekursive Suche (die diese Reihe von Operationen für die angegebene Adresse erneut startet). Wird eine rekursive Übereinstimmung gefunden, wird das übergeordnete Ergebnis aus den Weiterleitungsadressen entfernt und die untergeordneten Elemente hinzugefügt.
-* Weiterleitungsadressen werden auf Eindeutigkeit geprüft (da wir keine Duplikate an eine Adresse senden oder zusätzliche, unnötige SMTP-Client-Verbindungen erzeugen möchten).
-* Für jede Weiterleitungsadresse wird der Domänenname anhand unseres API-Endpunkts `/v1/max-forwarded-addresses` abgeglichen (um zu ermitteln, an wie viele Adressen die Domäne pro Alias E-Mails weiterleiten darf, z. B. standardmäßig 10 – siehe Abschnitt zu [maximales Weiterleitungslimit pro Alias](#is-there-a-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias)). Wird dieses Limit überschritten, tritt ein 550-Fehler auf, und der Absender erhält einen Bounce für diesen Empfänger.
-* Die Einstellungen des ursprünglichen Empfängers werden anhand unseres API-Endpunkts `/v1/settings` abgeglichen, der eine Abfrage für kostenpflichtige Nutzer unterstützt (mit einem Fallback für kostenlose Nutzer). Dies gibt ein Konfigurationsobjekt für erweiterte Einstellungen für `port` (Zahl, z. B. `25`), `has_adult_content_protection` (Boolesch), `has_phishing_protection` (Boolesch), `has_executable_protection` (Boolesch) und `has_virus_protection` (Boolesch) zurück.
-* Basierend auf diesen Einstellungen prüfen wir dann die Ergebnisse des Spam-Scanners. Bei Fehlern wird die Nachricht mit dem Fehlercode 554 abgelehnt (z. B. wenn `has_virus_protection` aktiviert ist, prüfen wir die Ergebnisse des Spam-Scanners auf Viren). Beachten Sie, dass alle Nutzer des kostenlosen Plans Prüfungen auf Inhalte für Erwachsene, Phishing, ausführbare Dateien und Viren abonnieren. Standardmäßig sind auch alle Benutzer des kostenpflichtigen Plans angemeldet, diese Konfiguration kann jedoch auf der Seite „Einstellungen“ für eine Domäne im Dashboard „E-Mail weiterleiten“ geändert werden.
+* Weiterleitungsadressen werden auf Eindeutigkeit geprüft (da wir keine Duplikate an eine Adresse senden oder zusätzliche unnötige SMTP-Clientverbindungen erzeugen möchten).
+* Für jede Weiterleitungsadresse ermitteln wir den Domänennamen anhand unseres API-Endpunkts `/v1/max-forwarded-addresses` (um zu ermitteln, an wie viele Adressen die Domäne pro Alias E-Mails weiterleiten darf, z. B. standardmäßig 10 – siehe Abschnitt zu `example.com`0). Wird dieses Limit überschritten, tritt ein 550-Fehler auf, und der Absender erhält einen Bounce für diesen Empfänger.
+* Wir ermitteln die Einstellungen des ursprünglichen Empfängers anhand unseres API-Endpunkts `example.com`1, der eine Suche für kostenpflichtige Nutzer unterstützt (mit einem Fallback für kostenlose Nutzer). Dies gibt ein Konfigurationsobjekt für erweiterte Einstellungen für `example.com`2 (Zahl, z. B. `example.com`3), `example.com`4 (Boolean), `example.com`5 (Boolean), `example.com`6 (Boolean) und `example.com`7 (Boolean) zurück.
+* Basierend auf diesen Einstellungen prüfen wir anschließend die Ergebnisse des Spam-Scanners. Bei Fehlern wird die Nachricht mit dem Fehlercode 554 abgelehnt (z. B. wenn `example.com`8 aktiviert ist, werden die Ergebnisse des Spam-Scanners auf Viren geprüft). Beachten Sie, dass alle Nutzer des kostenlosen Tarifs für die Prüfung auf Inhalte für Erwachsene, Phishing, ausführbare Dateien und Viren aktiviert sind. Standardmäßig sind auch alle Nutzer des kostenpflichtigen Tarifs aktiviert. Diese Konfiguration kann jedoch auf der Seite „Einstellungen“ für eine Domain im Dashboard „E-Mail weiterleiten“ geändert werden.
 
 10. Für jede verarbeitete Weiterleitungsadresse des Empfängers führen wir dann die folgenden Vorgänge durch:
 
@@ -3114,42 +3116,42 @@ In diesem Abschnitt wird unser Prozess im Zusammenhang mit dem SMTP-Protokollbef
 
 11. Wenn keine Empfänger vorhanden sind und es keine Bounces gibt, antworten wir mit einem 550-Fehler „Ungültige Empfänger“.
 
-12. Wenn Empfänger vorhanden sind, durchlaufen wir diese (gruppiert vom selben Host) und stellen die E-Mails zu. Weitere Informationen finden Sie im Abschnitt [Wie gehen Sie mit Problemen bei der E-Mail-Zustellung um?](#how-do-you-handle-email-delivery-issues) weiter unten.
+12. Wenn Empfänger vorhanden sind, iterieren wir über diese (gruppiert vom selben Host) und stellen die E-Mails zu. Weitere Informationen finden Sie im Abschnitt [Wie gehen Sie mit Problemen bei der E-Mail-Zustellung um?](#how-do-you-handle-email-delivery-issues) weiter unten.
 
-* Sollten beim Senden von E-Mails Fehler auftreten, werden diese zur späteren Bearbeitung gespeichert.
-* Wir verwenden den niedrigsten Fehlercode (sofern vorhanden) aus dem E-Mail-Versand als Antwortcode für den Befehl `DATA`. Das bedeutet, dass nicht zugestellte E-Mails in der Regel vom ursprünglichen Absender erneut gesendet werden. Bereits zugestellte E-Mails werden jedoch beim nächsten Senden nicht erneut gesendet (da wir [Fingerabdrücke](#how-do-you-determine-an-email-fingerprint) verwenden).
-* Wenn keine Fehler aufgetreten sind, senden wir den SMTP-Statuscode „250 erfolgreich“.
+* Sollten beim Senden von E-Mails Fehler auftreten, werden diese zur späteren Verarbeitung gespeichert.
+* Wir verwenden den niedrigsten Fehlercode (falls vorhanden) aus dem E-Mail-Versand als Antwortcode für den Befehl `DATA`. Das bedeutet, dass nicht zugestellte E-Mails in der Regel vom ursprünglichen Absender erneut gesendet werden. Bereits zugestellte E-Mails werden jedoch beim nächsten Senden nicht erneut gesendet (da wir [Fingerabdrücke](#how-do-you-determine-an-email-fingerprint) verwenden).
+* Treten keine Fehler auf, senden wir den SMTP-Statuscode „250 erfolgreich“.
 * Als Bounce gilt jeder Zustellversuch mit einem Statuscode >= 500 (dauerhafte Fehler).
 
 13. Wenn keine Bounces aufgetreten sind (dauerhafte Fehler), geben wir einen SMTP-Antwortstatuscode mit dem niedrigsten Fehlercode aus nicht dauerhaften Fehlern zurück (oder einen erfolgreichen Statuscode 250, wenn keine aufgetreten sind).
 
-14. Sollten Bounces auftreten, versenden wir im Hintergrund Bounce-E-Mails, nachdem wir den niedrigsten aller Fehlercodes an den Absender zurückgesendet haben. Ist der niedrigste Fehlercode jedoch >= 500, versenden wir keine Bounce-E-Mails. Andernfalls würden die Absender eine doppelte Bounce-E-Mail erhalten (z. B. eine von ihrem Outbound-MTA, z. B. Gmail, und eine von uns). Weitere Informationen finden Sie im Abschnitt zu [Wie schützt man sich vor Backscatter](#how-do-you-protect-against-backscatter) weiter unten.
+14. Sollten Bounces auftreten, versenden wir im Hintergrund Bounce-E-Mails, nachdem wir den niedrigsten aller Fehlercodes an den Absender zurückgesendet haben. Ist der niedrigste Fehlercode jedoch >= 500, versenden wir keine Bounce-E-Mails. Andernfalls würden die Absender eine doppelte Bounce-E-Mail erhalten (z. B. eine von ihrem Outbound-MTA, z. B. Gmail, und eine von uns). Weitere Informationen finden Sie im Abschnitt zu [Wie schützt man sich vor Rückstreuung](#how-do-you-protect-against-backscatter) weiter unten.
 
 ### Wie gehen Sie mit Problemen bei der E-Mail-Zustellung um? {#how-do-you-handle-email-delivery-issues}
 
-Beachten Sie, dass wir die E-Mails genau dann neu „Friendly-From“ schreiben, wenn die DMARC-Richtlinie des Absenders nicht bestanden wurde UND keine DKIM-Signaturen mit dem „From“-Header übereinstimmen. Das bedeutet, dass wir den „From“-Header der Nachricht ändern, „X-Original-From“ festlegen und auch eine „Reply-To“-Adresse einrichten, falls diese noch nicht eingerichtet wurde. Nach der Änderung dieser Header werden wir außerdem das ARC-Siegel der Nachricht erneut versiegeln.
+Beachten Sie, dass wir die E-Mails nur dann in den „Friendly From“-Header umschreiben, wenn die DMARC-Richtlinie des Absenders nicht erfüllt wurde und keine DKIM-Signaturen mit dem „From“-Header verknüpft waren. Das bedeutet, dass wir den „From“-Header der Nachricht ändern, „X-Original-From“ setzen und, falls noch nicht geschehen, eine „Reply-To“-Funktion einrichten. Nach der Änderung dieser Header wird das ARC-Siegel der Nachricht erneut versiegelt.
 
 Wir verwenden außerdem auf jeder Ebene unseres Stacks eine intelligente Analyse von Fehlermeldungen – in unserem Code DNS-Anfragen, interne Node.js-Daten, HTTP-Anfragen (z. B. werden 408, 413 und 429 dem SMTP-Antwortcode 421 zugeordnet, wenn der Empfänger ein Webhook ist) und Antworten des Mailservers (z. B. würden Antworten mit „defer“ oder „slowdown“ als 421-Fehler erneut versucht).
 
 Unsere Logik ist fehlersicher und führt auch bei SSL/TLS-Fehlern, Verbindungsproblemen usw. einen erneuten Versuch durch. Ziel der Fehlersicherheit ist die Maximierung der Zustellbarkeit an alle Empfänger einer Weiterleitungskonfiguration.
 
-Handelt es sich beim Empfänger um einen Webhook, gewähren wir ein Timeout von 60 Sekunden für die Ausführung der Anfrage mit bis zu drei Wiederholungsversuchen (also insgesamt vier Anfragen vor einem Fehler). Beachten Sie, dass wir die Fehlercodes 408, 413 und 429 korrekt analysieren und sie dem SMTP-Antwortcode 421 zuordnen.
+Handelt es sich beim Empfänger um einen Webhook, gewähren wir für die Anfrage ein Timeout von 60 Sekunden mit bis zu drei Wiederholungsversuchen (also insgesamt vier Anfragen vor einem Fehler). Beachten Sie, dass wir die Fehlercodes 408, 413 und 429 korrekt analysieren und sie dem SMTP-Antwortcode 421 zuordnen.
 
 Andernfalls, wenn der Empfänger eine E-Mail-Adresse ist, versuchen wir, die E-Mail mit opportunistischem TLS zu versenden (wir versuchen, STARTTLS zu verwenden, sofern es auf dem Mailserver des Empfängers verfügbar ist). Tritt beim Senden der E-Mail ein SSL/TLS-Fehler auf, versuchen wir, die E-Mail ohne TLS (ohne Verwendung von STARTTLS) zu versenden.
 
-Wenn DNS- oder Verbindungsfehler auftreten, geben wir an den Befehl `DATA` einen SMTP-Antwortcode von 421 zurück. Andernfalls werden Bounces gesendet, wenn Fehler der Stufe >= 500 auftreten.
+Wenn DNS- oder Verbindungsfehler auftreten, geben wir dem Befehl `DATA` einen SMTP-Antwortcode von 421 zurück. Andernfalls werden Bounces gesendet, wenn Fehler der Stufe >= 500 auftreten.
 
 Wenn wir feststellen, dass ein E-Mail-Server, an den wir eine Zustellung vornehmen möchten, eine oder mehrere unserer Mail-Exchange-IP-Adressen blockiert hat (z. B. durch die Technologie, die dieser Server zum Abweisen von Spammern verwendet), senden wir dem Absender einen SMTP-Antwortcode von 421, damit er seine Nachricht später erneut senden kann (und wir werden über das Problem informiert, sodass wir es hoffentlich vor dem nächsten Versuch beheben können).
 
 ### Wie gehen Sie mit der Sperrung Ihrer IP-Adressen um? {#how-do-you-handle-your-ip-addresses-becoming-blocked}
 
-Wir überwachen routinemäßig alle wichtigen DNS-Sperrlisten. Wenn eine unserer Mail Exchange-IP-Adressen („MX“) in einer wichtigen Sperrliste aufgeführt ist, entfernen wir sie nach Möglichkeit im Round-Robin-Verfahren aus dem entsprechenden DNS-A-Eintrag, bis das Problem behoben ist.
+Wir überwachen routinemäßig alle wichtigen DNS-Sperrlisten. Wenn eine unserer Mail Exchange-IP-Adressen („MX“) auf einer wichtigen Sperrliste steht, entfernen wir sie nach Möglichkeit im Round-Robin-Verfahren aus dem entsprechenden DNS-A-Eintrag, bis das Problem gelöst ist.
 
-Zum Zeitpunkt der Erstellung dieses Artikels sind wir auch in mehreren DNS-Whitelists gelistet und nehmen die Überwachung von Denylists sehr ernst. Sollten Sie Probleme feststellen, bevor wir diese beheben können, benachrichtigen Sie uns bitte schriftlich unter <support@forwardemail.net>.
+Zum Zeitpunkt der Erstellung dieses Artikels sind wir auch in mehreren DNS-Allowlists gelistet und nehmen die Überwachung von Denylists sehr ernst. Sollten Sie Probleme feststellen, bevor wir diese beheben können, benachrichtigen Sie uns bitte schriftlich unter <support@forwardemail.net>.
 
 Unsere IP-Adressen sind öffentlich verfügbar, [Weitere Informationen finden Sie im folgenden Abschnitt.](#what-are-your-servers-ip-addresses).
 
-### Was sind Postmaster-Adressen {#what-are-postmaster-addresses}
+### Was sind Postmasteradressen {#what-are-postmaster-addresses}
 
 Um fehlgeleitete Bounces und das Senden von Abwesenheitsnachrichten an nicht überwachte oder nicht vorhandene Postfächer zu verhindern, pflegen wir eine Liste mit Mailer-Daemon-ähnlichen Benutzernamen:
 
@@ -3174,7 +3176,7 @@ Um fehlgeleitete Bounces und das Senden von Abwesenheitsnachrichten an nicht üb
 
 Weitere Informationen dazu, wie Listen wie diese zum Erstellen effizienter E-Mail-Systeme verwendet werden, finden Sie unter [RFC 5320 Abschnitt 4.6](https://datatracker.ietf.org/doc/html/rfc5230#section-4.6).
 
-### Was sind No-Reply-Adressen {#what-are-no-reply-addresses}
+### Was sind No-Reply-Adressen? {#what-are-no-reply-addresses}
 
 E-Mail-Benutzernamen, die einem der folgenden Werte entsprechen (ohne Berücksichtigung der Groß- und Kleinschreibung), werden als No-Reply-Adressen betrachtet:
 
@@ -3197,19 +3199,19 @@ E-Mail-Benutzernamen, die einem der folgenden Werte entsprechen (ohne Berücksic
 * `noreply`
 * `noreplys`
 
-Diese Liste wird [als Open-Source-Projekt auf GitHub](https://github.com/forwardemail/reserved-email-addresses-list) gepflegt.
+Diese Liste wird [als Open-Source-Projekt auf GitHub](https://github.com/forwardemail/reserved-email-addresses-list) verwaltet.
 
-### Wie lauten die IP-Adressen Ihres Servers? {#what-are-your-servers-ip-addresses}
+### Was sind die IP-Adressen Ihres Servers? {#what-are-your-servers-ip-addresses}
 
 Wir veröffentlichen unsere IP-Adressen unter <https://forwardemail.net/ips>.
 
-### Haben Sie eine Zulassungsliste {#do-you-have-an-allowlist}
+### Haben Sie eine Zulassungsliste? {#do-you-have-an-allowlist}
 
 Ja, wir haben einen [Liste der Domänennamenerweiterungen](#what-domain-name-extensions-are-allowlisted-by-default), der standardmäßig auf der Whitelist steht, und eine dynamische, zwischengespeicherte und rollierende Whitelist, die auf [strenge Kriterien](#what-is-your-allowlist-criteria) basiert.
 
 Alle E-Mails, Domänen und Empfänger von Kunden mit kostenpflichtigen Tarifen werden automatisch zu unserer Whitelist hinzugefügt.
 
-### Welche Domänennamenerweiterungen werden standardmäßig auf die Whitelist gesetzt? {#what-domain-name-extensions-are-allowlisted-by-default}
+### Welche Domänennamenerweiterungen werden standardmäßig auf die Zulassungsliste gesetzt? {#what-domain-name-extensions-are-allowlisted-by-default}
 
 Die folgenden Domänennamenerweiterungen gelten standardmäßig als zugelassene Erweiterungen (unabhängig davon, ob sie auf der Umbrella Popularity List stehen oder nicht):
 
@@ -3909,12 +3911,12 @@ Aufgrund hoher Spam-Aktivität haben wir `cz`, `ru` und `ua` ausdrücklich nicht
 
 Wir verfügen über eine statische Liste mit [Domänennamenerweiterungen standardmäßig auf der Zulassungsliste](#what-domain-name-extensions-are-allowlisted-by-default) und pflegen außerdem eine dynamische, zwischengespeicherte, rollierende Zulassungsliste, die auf den folgenden strengen Kriterien basiert:
 
-* Die Absender-Root-Domain muss [Domänennamenerweiterung, die mit der Liste übereinstimmt, die wir in unserem kostenlosen Plan anbieten](#what-domain-name-extensions-can-be-used-for-free) sein (zusätzlich zu `biz` und `info`). Teilübereinstimmungen mit `edu`, `gov` und `mil` werden ebenfalls berücksichtigt, z. B. `xyz.gov.au` und `xyz.edu.au`.
+* Die Absender-Root-Domain muss [Domänennamenerweiterung, die mit der Liste übereinstimmt, die wir in unserem kostenlosen Plan anbieten](#what-domain-name-extensions-can-be-used-for-free) sein (zusätzlich zu `biz` und `info`). Teilübereinstimmungen mit `edu`, `gov` und `mil`, wie z. B. `xyz.gov.au` und `xyz.edu.au`, werden ebenfalls berücksichtigt.
 * Die Absender-Root-Domain muss zu den 100.000 besten Ergebnissen eindeutiger Root-Domains aus [Regenschirm-Popularitätsliste](http://s3-us-west-1.amazonaws.com/umbrella-static/index.html "Umbrella Popularity List") („UPL“) gehören.
 * Die Absender-Root-Domain muss zu den 50.000 besten Ergebnissen eindeutiger Root-Domains gehören, die in mindestens 4 der letzten 7 Tage in UPLs aufgetaucht sind (> 50 %).
-* Die Absender-Stammdomäne darf von Cloudflare nicht als jugendgefährdender Inhalt oder Malware [kategorisiert](https://radar.cloudflare.com/categorization-feedback/) eingestuft werden.
-* Für die Absender-Stammdomäne müssen entweder A- oder MX-Einträge festgelegt sein.
-* Die Absender-Stammdomäne muss entweder A-Einträge, MX-Einträge, einen DMARC-Eintrag mit `p=reject` oder `p=quarantine` oder einen SPF-Eintrag mit dem Qualifizierer `-all` oder `~all` enthalten.
+* Die Absender-Root-Domain darf nicht [kategorisiert](https://radar.cloudflare.com/categorization-feedback/) sein, da Cloudflare sie als nicht jugendfreie Inhalte oder Malware einstuft.
+* Für die Absender-Root-Domain müssen entweder A- oder MX-Records gesetzt sein.
+* Die Stammdomäne des Absenders muss entweder A-Einträge, MX-Einträge, DMARC-Einträge mit `biz`0 oder `biz`1 oder einen SPF-Eintrag mit dem Qualifizierer `biz`2 oder `biz`3 haben.
 
 Wenn dieses Kriterium erfüllt ist, wird die Absender-Stammdomäne sieben Tage lang zwischengespeichert. Beachten Sie, dass unser automatisierter Job täglich ausgeführt wird. Es handelt sich daher um einen rollierenden Whitelist-Cache, der täglich aktualisiert wird.
 
@@ -3922,11 +3924,11 @@ Unser automatisierter Job lädt die UPLs der letzten 7 Tage aus dem Speicher her
 
 Zum Zeitpunkt des Schreibens dieses Artikels beliebte Domänen wie Google, Yahoo, Microsoft, Amazon, Meta, Twitter, Netflix, Spotify und mehr sind natürlich enthalten.
 
-Wenn Sie ein Absender sind, der nicht auf unserer Positivliste steht, werden Sie beim ersten Senden einer E-Mail mit Ihrer FQDN-Stammdomäne oder IP-Adresse als [ratenbegrenzt](#do-you-have-rate-limiting) und [graue Liste](#do-you-have-a-greylist) gekennzeichnet. Beachten Sie, dass dies ein gängiges Verfahren ist und als E-Mail-Standard übernommen wurde. Die meisten E-Mail-Server-Clients versuchen einen erneuten Versuch, wenn sie einen Ratenlimit- oder Greylist-Fehler (z. B. einen Fehlerstatuscode der Stufe 421 oder 4xx) erhalten.
+Wenn Sie ein Absender sind, der nicht auf unserer Positivliste steht, erhalten Sie beim ersten Senden einer E-Mail mit Ihrer FQDN-Stammdomäne oder IP-Adresse die [ratenbegrenzt](#do-you-have-rate-limiting)- und [graue Liste](#do-you-have-a-greylist)-Berechtigungen. Beachten Sie, dass dies als Standard für E-Mails übernommen wurde. Die meisten E-Mail-Server-Clients versuchen einen erneuten Versuch, wenn sie einen Ratenlimit- oder Greylist-Fehler (z. B. einen Fehlerstatuscode der Stufe 421 oder 4xx) erhalten.
 
-**Beachten Sie, dass bestimmte Absender wie `a@gmail.com`, `b@xyz.edu` und `c@gov.au` weiterhin [auf der Sperrliste](#do-you-have-a-denylist)** sein können (z. B. wenn wir Spam, Phishing oder Malware von diesen Absendern automatisch erkennen).
+**Beachten Sie, dass bestimmte Absender wie `a@gmail.com`, `b@xyz.edu` und `c@gov.au` immer noch [auf der Sperrliste](#do-you-have-a-denylist) sein können** (z. B. wenn wir automatisch Spam, Phishing oder Malware von diesen Absendern erkennen).
 
-### Welche Domain-Namenserweiterungen können kostenlos verwendet werden {#what-domain-name-extensions-can-be-used-for-free}
+### Welche Domänennamenerweiterungen können kostenlos verwendet werden? {#what-domain-name-extensions-can-be-used-for-free}
 
 Seit dem 31. März 2023 haben wir zum Schutz unserer Benutzer und Dienste eine neue allgemeine Spam-Regel in Kraft gesetzt.
 
@@ -4024,7 +4026,7 @@ Diese neue Regel erlaubt in unserem kostenlosen Plan nur die Verwendung der folg
 <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
 
-### Haben Sie eine Greylist {#do-you-have-a-greylist}
+### Haben Sie eine Greylist? {#do-you-have-a-greylist}
 
 Ja, wir verwenden eine sehr laxe [E-Mail-Greylisting](https://en.wikipedia.org/wiki/Greylisting_\(email\))-Richtlinie. Greylisting gilt nur für Absender, die nicht auf unserer Whitelist stehen, und bleibt 30 Tage lang in unserem Cache.
 
@@ -4034,17 +4036,17 @@ Wenn sie ab dieser ersten Ankunftszeit erfolgreich 5 Minuten gewartet haben, wer
 
 Der Schlüssel besteht entweder aus der FQDN-Stammdomäne oder der IP-Adresse des Absenders. Das bedeutet, dass jede Subdomäne, die die Greylist passiert, auch als Stammdomäne gilt und umgekehrt (das meinen wir mit einer „sehr laxen“ Richtlinie).
 
-Wenn beispielsweise eine E-Mail von `test.example.com` eingeht, bevor wir eine E-Mail von `example.com` sehen, muss jede E-Mail von `test.example.com` und/oder `example.com` 5 Minuten ab dem Zeitpunkt der ersten Verbindung warten. Wir lassen nicht sowohl `test.example.com` als auch `example.com` jeweils 5 Minuten warten (unsere Greylisting-Richtlinie gilt auf der Ebene der Stammdomäne).
+Wenn beispielsweise eine E-Mail von `test.example.com` eingeht, bevor wir eine E-Mail von `example.com` sehen, muss jede E-Mail von `test.example.com` und/oder `example.com` 5 Minuten ab der ursprünglichen Ankunftszeit der Verbindung warten. Wir lassen `test.example.com` und `example.com` nicht jeweils ihre eigene 5-Minuten-Wartezeit haben (unsere Greylisting-Richtlinie gilt auf der Ebene der Stammdomäne).
 
-Beachten Sie, dass Greylisting für keinen Absender auf unserer [Zulassungsliste](#do-you-have-an-allowlist) gilt (zum Zeitpunkt der Erstellung dieses Artikels beispielsweise Meta, Amazon, Netflix, Google, Microsoft).
+Beachten Sie, dass Greylisting für keinen Absender auf unserem [Zulassungsliste](#do-you-have-an-allowlist) gilt (zum Zeitpunkt des Schreibens dieses Artikels beispielsweise Meta, Amazon, Netflix, Google, Microsoft).
 
 ### Haben Sie eine Sperrliste? {#do-you-have-a-denylist}
 
-Ja, wir betreiben unsere eigene Blockierungsliste und aktualisieren sie automatisch in Echtzeit und manuell auf Grundlage von erkanntem Spam und bösartigen Aktivitäten.
+Ja, wir betreiben unsere eigene Blockierungsliste und aktualisieren sie automatisch in Echtzeit und manuell auf Grundlage erkannter Spam- und böswilliger Aktivitäten.
 
-Wir ziehen außerdem stündlich alle IP-Adressen aus der UCEPROTECT Level 1-Sperrliste unter <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> und speisen sie mit einer Ablauffrist von 7 Tagen in unsere Sperrliste ein.
+Wir ziehen außerdem stündlich alle IP-Adressen aus der UCEPROTECT Level 1-Sperrliste unter <http://wget-mirrors.uceprotect.net/rbldnsd-all/dnsbl-1.uceprotect.net.gz> und speisen sie mit einer Ablaufdauer von 7 Tagen in unsere Sperrliste ein.
 
-Absender, die sich in der Blockierungsliste befinden, erhalten einen Fehlercode 421 (weist den Absender an, es später noch einmal zu versuchen), wenn sie [sind nicht auf der Zulassungsliste](#do-you-have-an-allowlist).
+Absender, die sich in der Blockierungsliste befinden, erhalten den Fehlercode 421 (weist den Absender an, es später noch einmal zu versuchen), wenn sie [sind nicht auf der Zulassungsliste](#do-you-have-an-allowlist) sind.
 
 Durch die Verwendung eines 421-Statuscodes anstelle eines 554-Statuscodes können potenzielle Fehlalarme in Echtzeit verringert werden und die Nachricht kann beim nächsten Versuch erfolgreich zugestellt werden.
 
@@ -4052,46 +4054,46 @@ Durch die Verwendung eines 421-Statuscodes anstelle eines 554-Statuscodes könne
 
 Alle Anfragen zur Entfernung von Denylisten werden von Administratoren in Echtzeit überwacht (z. B. damit wiederkehrende Fehlalarme von Administratoren dauerhaft auf die Whitelist gesetzt werden können).
 
-Anfragen zur Entfernung von Denylisten können unter <https://forwardemail.net/denylist>. gestellt werden. Bei zahlenden Benutzern wird die Entfernung von Denylisten sofort bearbeitet, während bei nicht zahlenden Benutzern die Bearbeitung der Anfrage durch den Administrator warten muss.
+Anfragen zur Entfernung von Denylisten können unter <https://forwardemail.net/denylist>. angefordert werden. Bei zahlenden Benutzern wird die Entfernung von Denylisten sofort bearbeitet, während bei nicht zahlenden Benutzern die Bearbeitung der Anfrage durch den Administrator erforderlich ist.
 
 Absender, bei denen Spam oder Viren erkannt werden, werden wie folgt zur Blockierungsliste hinzugefügt:
 
-1. Der [anfänglicher Nachrichtenfingerabdruck](#how-do-you-determine-an-email-fingerprint) wird auf die graue Liste gesetzt, wenn Spam oder eine Blockliste eines vertrauenswürdigen Absenders erkannt wird (z. B. `gmail.com`, `microsoft.com`, `apple.com`).
-* Wenn der Absender auf der Whitelist stand, bleibt die Nachricht 1 Stunde lang auf der grauen Liste.
-* Wenn der Absender nicht auf der Whitelist stand, bleibt die Nachricht 6 Stunden lang auf der grauen Liste.
-2. Wir analysieren die Blocklistenschlüssel anhand der Informationen von Absender und Nachricht. Für jeden dieser Schlüssel erstellen wir (sofern noch keiner vorhanden ist) einen Zähler, erhöhen ihn um 1 und speichern ihn 24 Stunden lang im Cache.
-* Für Absender auf der Whitelist:
-* Fügen Sie einen Schlüssel für die E-Mail-Adresse „MAIL FROM“ im Envelope hinzu, sofern diese SPF bestanden hat oder nicht und nicht [ein Postmaster-Benutzername](#what-are-postmaster-addresses) oder [ein No-Reply-Benutzername](#what-are-no-reply-addresses) war.
-* Wenn der „From“-Header auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse im „From“-Header hinzu, sofern diese SPF bestanden oder DKIM bestanden und angepasst wurde.
-* Wenn der „From“-Header nicht auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse im „From“-Header und deren analysierten Stammdomänennamen hinzu.
-* Für Absender ohne Whitelist:
-* Fügen Sie einen Schlüssel für die E-Mail-Adresse „MAIL FROM“ im Envelope hinzu, sofern diese SPF bestanden hat.
-* Wenn der „From“-Header auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse im „From“-Header hinzu, sofern diese SPF bestanden oder DKIM bestanden und angepasst wurde.
-* Falls der „Von“-Header nicht auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse des „Von“-Headers und deren analysierten Domänennamen hinzu.
+1. Der [anfänglicher Nachrichtenfingerabdruck](#how-do-you-determine-an-email-fingerprint) wird bei Erkennung von Spam oder Blocklist-Einträgen von vertrauenswürdigen Absendern (z. B. `gmail.com`, `microsoft.com`, `apple.com`) auf die graue Liste gesetzt.
+* Wenn der Absender auf der Whitelist stand, wird die Nachricht für eine Stunde auf der grauen Liste gesetzt.
+* Wenn der Absender nicht auf der Whitelist stand, wird die Nachricht für sechs Stunden auf der grauen Liste gesetzt.
+2. Wir analysieren die Blocklistenschlüssel anhand der Informationen von Absender und Nachricht. Für jeden dieser Schlüssel erstellen wir (falls noch keiner vorhanden ist) einen Zähler, erhöhen ihn um 1 und speichern ihn 24 Stunden lang im Cache.
+* Für Whitelist-Absender:
+* Fügen Sie einen Schlüssel für die E-Mail-Adresse „MAIL FROM“ hinzu, sofern diese einen ausreichenden oder keinen SPF-Wert hatte und nicht [einen Postmaster-Benutzernamen](#what-are-postmaster-addresses) oder [ein No-Reply-Benutzername](#what-are-no-reply-addresses) war.
+* Wenn der „From“-Header auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse im „From“-Header hinzu, sofern diese SPF bestanden oder DKIM bestanden und ausgerichtet war.
+* Wenn der „From“-Header nicht auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse im „From“-Header und deren analysierten Domänennamen hinzu.
+* Für nicht auf der Whitelist stehende Absender:
+* Fügen Sie einen Schlüssel für die Envelope-E-Mail-Adresse „MAIL FROM“ hinzu, sofern diese SPF bestanden hat.
+* Wenn der „From“-Header auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse im „From“-Header hinzu, sofern diese SPF bestanden oder DKIM bestanden und ausgerichtet war.
+* Wenn der „From“-Header nicht auf der Whitelist stand, fügen Sie einen Schlüssel für die E-Mail-Adresse im „From“-Header und deren analysierten Domänennamen hinzu.
 * Fügen Sie einen Schlüssel für die Remote-IP-Adresse des Absenders hinzu.
-* Fügen Sie einen Schlüssel für den vom Client aufgelösten Hostnamen durch Reverse-Lookup von der IP-Adresse des Absenders hinzu (falls vorhanden).
-* Fügen Sie einen Schlüssel für die Stammdomäne des vom Client aufgelösten Hostnamens hinzu (falls vorhanden und falls dieser vom vom Client aufgelösten Hostnamen abweicht).
-3. Erreicht der Zähler für einen nicht auf der Whitelist stehenden Absender und Schlüssel 5, wird der Schlüssel für 30 Tage auf die Blacklist gesetzt und eine E-Mail an unser Missbrauchsteam gesendet. Diese Zahlen können sich ändern und Aktualisierungen werden hier im Rahmen unserer Missbrauchsüberwachung angezeigt.
-4. Erreicht der Zähler für einen auf der Whitelist stehenden Absender und Schlüssel 10, wird der Schlüssel für 7 Tage auf die Blacklist gesetzt und eine E-Mail an unser Missbrauchsteam gesendet. Diese Zahlen können sich ändern und Aktualisierungen werden hier im Rahmen unserer Missbrauchsüberwachung angezeigt.
+* Fügen Sie einen Schlüssel für den vom Client per Reverse-Lookup aufgelösten Hostnamen aus der IP-Adresse des Absenders hinzu (falls vorhanden).
+* Fügen Sie einen Schlüssel für die Stammdomäne des vom Client aufgelösten Hostnamens hinzu (sofern vorhanden und falls dieser vom vom Client aufgelösten Hostnamen abweicht).
+3. Erreicht der Zähler für einen nicht auf der Whitelist stehenden Absender und Schlüssel 5, wird der Schlüssel für 30 Tage auf die Sperrliste gesetzt und eine E-Mail an unser Missbrauchsteam gesendet. Diese Zahlen können sich ändern. Aktualisierungen werden hier angezeigt, sobald wir den Missbrauch überwachen.
+4. Erreicht der Zähler für einen nicht auf der Whitelist stehenden Absender und Schlüssel 10, wird der Schlüssel für 7 Tage auf die Sperrliste gesetzt und eine E-Mail an unser Missbrauchsteam gesendet. Diese Zahlen können sich ändern. Aktualisierungen werden hier angezeigt, sobald wir den Missbrauch überwachen.
 
 > **HINWEIS:** In Kürze führen wir ein Reputationsmonitoring ein. Das Reputationsmonitoring berechnet stattdessen anhand eines prozentualen Schwellenwerts (im Gegensatz zu einem rudimentären Zähler, wie oben erwähnt) den Zeitpunkt, an dem ein Absender von der Sperrliste genommen wird.
 
 ### Haben Sie eine Ratenbegrenzung {#do-you-have-rate-limiting}
 
-Die Senderratenbegrenzung erfolgt entweder durch die Stammdomäne, die aus einer umgekehrten PTR-Suche nach der IP-Adresse des Absenders analysiert wird – oder, falls dies kein Ergebnis liefert, wird einfach die IP-Adresse des Absenders verwendet. Beachten Sie, dass wir dies im Folgenden als `Sender` bezeichnen.
+Die Senderratenbegrenzung erfolgt entweder über die Stammdomäne, die aus einer umgekehrten PTR-Suche nach der IP-Adresse des Absenders analysiert wird – oder, falls dies kein Ergebnis liefert, wird einfach die IP-Adresse des Absenders verwendet. Beachten Sie, dass wir dies im Folgenden als `Sender` bezeichnen.
 
-Unsere MX-Server haben tägliche Limits für eingehende E-Mails für [verschlüsselter IMAP-Speicher](/blog/docs/best-quantum-safe-encrypted-email-service):
+Unsere MX-Server haben tägliche Limits für eingehende E-Mails, die für [verschlüsselter IMAP-Speicher](/blog/docs/best-quantum-safe-encrypted-email-service) empfangen werden:
 
 * Anstatt eingehende E-Mails für einzelne Aliase (z. B. `you@yourdomain.com`) zu begrenzen, beschränken wir die Rate anhand des Domänennamens des Alias (z. B. `yourdomain.com`). Dadurch wird verhindert, dass `Senders` die Posteingänge aller Aliase Ihrer Domain gleichzeitig überflutet.
 * Wir haben allgemeine Limits, die für alle `Senders` in unserem Service gelten, unabhängig vom Empfänger:
 * `Senders`, die wir als vertrauenswürdige Quelle betrachten (z. B. `gmail.com`, `microsoft.com`, `apple.com`), dürfen maximal 100 GB pro Tag senden.
-* `Senders` mit [auf die Positivliste gesetzt](#do-you-have-an-allowlist) sind auf das Senden von 10 GB pro Tag beschränkt.
-* Alle anderen `Senders` sind auf das Senden von 1 GB und/oder 1000 Nachrichten pro Tag beschränkt.
-* Wir haben ein spezifisches Limit pro `Sender` und `yourdomain.com` von 1 GB und/oder 1000 Nachrichten täglich.
+* `Senders`, die [auf die Positivliste gesetzt](#do-you-have-an-allowlist) sind, dürfen maximal 10 GB pro Tag senden.
+* Alle anderen `yourdomain.com`0 sind auf das Senden von 1 GB und/oder 1.000 Nachrichten pro Tag beschränkt.
+* Wir haben ein spezifisches Limit pro `yourdomain.com`1 und `yourdomain.com`2 von 1 GB und/oder 1.000 Nachrichten täglich.
 
 Die MX-Server begrenzen außerdem die Weiterleitung von Nachrichten an einen oder mehrere Empfänger durch Ratenbegrenzung – dies gilt jedoch nur für `Senders`, nicht für [Zulassungsliste](#do-you-have-an-allowlist):
 
-* Wir erlauben maximal 100 Verbindungen pro Stunde, pro `Sender` aufgelöster FQDN-Stammdomäne (oder) `Sender` Remote-IP-Adresse (falls kein Reverse-PTR verfügbar ist) und pro Umschlagempfänger. Wir speichern den Schlüssel zur Ratenbegrenzung als kryptografischen Hash in unserer Redis-Datenbank.
+* Wir erlauben maximal 100 Verbindungen pro Stunde, pro aufgelöster FQDN-Root-Domäne (`Sender`) (oder) Remote-IP-Adresse (`Sender`) (falls kein Reverse-PTR verfügbar ist) und pro Umschlagempfänger. Wir speichern den Schlüssel zur Ratenbegrenzung als kryptografischen Hash in unserer Redis-Datenbank.
 
 * Wenn Sie E-Mails über unser System senden, stellen Sie bitte sicher, dass Sie für alle Ihre IP-Adressen einen Reverse-PTR eingerichtet haben (andernfalls wird für jede eindeutige FQDN-Stammdomäne oder IP-Adresse, von der Sie senden, eine Geschwindigkeitsbeschränkung gelten).
 
@@ -4105,21 +4107,21 @@ Unsere IMAP- und SMTP-Server begrenzen die Anzahl Ihrer Aliase auf maximal `60` 
 
 Unsere MX-Server beschränken [nicht auf der Whitelist](#do-you-have-an-allowlist)-Absender darauf, mehr als 10 gleichzeitige Verbindungen herzustellen (mit einem Cache-Ablauf von 3 Minuten für den Zähler, der unserem Socket-Timeout von 3 Minuten entspricht).
 
-### Wie schützen Sie sich vor Backscatter {#how-do-you-protect-against-backscatter}
+### Wie schützen Sie sich vor Backscatter? {#how-do-you-protect-against-backscatter}
 
-Fehlgeleitete Bounces oder Bounce-Spam (bekannt als „[Rückstreuung](https://en.wikipedia.org/wiki/Backscatter_\(email\))“) können zu einem negativen Ruf der Absender-IP-Adresse führen.
+Fehlgeleitete Bounces oder Bounce-Spam (bekannt als „[Rückstreuung](https://en.wikipedia.org/wiki/Backscatter_\(email\)“) können zu einer negativen Reputation der Absender-IP-Adressen führen.
 
-Wir ergreifen zwei Maßnahmen zum Schutz vor Rückstreuung. Diese werden in den folgenden Abschnitten [Verhindern Sie Bounces von bekannten MAIL FROM-Spammern](#prevent-bounces-from-known-mail-from-spammers) und [Verhindern Sie unnötige Rücksprünge, um vor Rückstreuung zu schützen](#prevent-unnecessary-bounces-to-protect-against-backscatter) ausführlich beschrieben.
+Wir ergreifen zwei Maßnahmen zum Schutz vor Rückstreuung, die in den folgenden Abschnitten [Verhindern Sie Bounces von bekannten MAIL FROM-Spammern](#prevent-bounces-from-known-mail-from-spammers) und [Verhindern Sie unnötige Rücksprünge, um vor Rückstreuung zu schützen](#prevent-unnecessary-bounces-to-protect-against-backscatter) ausführlich beschrieben werden.
 
-### Bounces von bekannten MAIL FROM-Spammern verhindern {#prevent-bounces-from-known-mail-from-spammers}
+### Verhindern Sie Bounces von bekannten MAIL FROM-Spammern {#prevent-bounces-from-known-mail-from-spammers}
 
-Wir ziehen die Liste stündlich von [Backscatter.org](https://www.backscatterer.org/) (powered by [UCEPROTECT](https://www.uceprotect.net/)) unter <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> und speisen sie in unsere Redis-Datenbank ein (wir vergleichen die Unterschiede auch im Voraus, falls IPs entfernt wurden, die berücksichtigt werden müssen).
+Wir ziehen die Liste stündlich von [Backscatter.org](https://www.backscatterer.org/) (unterstützt von [UCEPROTECT](https://www.uceprotect.net/)) bei <http://wget-mirrors.uceprotect.net/rbldnsd-all/ips.backscatterer.org.gz> und speisen sie in unsere Redis-Datenbank ein (wir vergleichen die Unterschiede auch im Voraus, falls IPs entfernt wurden, die berücksichtigt werden müssen).
 
-Wenn das Feld „MAIL FROM“ leer ist ODER (ohne Berücksichtigung der Groß-/Kleinschreibung) einem der [Postmaster-Adressen](#what-are-postmaster-addresses) (dem Teil vor dem @ in einer E-Mail) entspricht, prüfen wir, ob die IP des Absenders mit einer aus dieser Liste übereinstimmt.
+Wenn das Feld „MAIL FROM“ leer ist ODER (ohne Berücksichtigung der Groß-/Kleinschreibung) einem der [Postmasteradressen](#what-are-postmaster-addresses) (dem Teil vor dem @ in einer E-Mail) entspricht, prüfen wir, ob die Absender-IP mit einer aus dieser Liste übereinstimmt.
 
 Wenn die IP-Adresse des Absenders aufgeführt ist (und nicht in unserem [Zulassungsliste](#do-you-have-an-allowlist)), senden wir einen 554-Fehler mit der Meldung `The IP ${session.remoteAddress} is blocked by https://www.backscatterer.org/index.php?target=test&ip=${session.remoteAddress}`. Wir werden benachrichtigt, wenn ein Absender sowohl auf der Backscatterer-Liste als auch auf unserer Whitelist steht, damit wir das Problem gegebenenfalls beheben können.
 
-Die in diesem Abschnitt beschriebenen Techniken entsprechen der Empfehlung „SAFE MODE“ unter <https://www.backscatterer.org/?target=usage> – hier überprüfen wir die Absender-IP nur, wenn bestimmte Bedingungen bereits erfüllt sind.
+Die in diesem Abschnitt beschriebenen Techniken entsprechen der Empfehlung „SAFE MODE“ bei <https://www.backscatterer.org/?target=usage> – wo wir die Absender-IP nur überprüfen, wenn bestimmte Bedingungen bereits erfüllt sind.
 
 ### Verhindern Sie unnötige Bounces, um vor Backscatter zu schützen {#prevent-unnecessary-bounces-to-protect-against-backscatter}
 
@@ -4127,28 +4129,28 @@ Bounces sind E-Mails, die darauf hinweisen, dass die E-Mail-Weiterleitung an den
 
 Ein häufiger Grund für die Aufnahme in die Backscatterer-Liste sind fehlgeleitete Bounces oder Bounce-Spam. Daher müssen wir uns auf verschiedene Weise davor schützen:
 
-1. Wir senden nur, wenn Statuscodefehler >= 500 auftreten (wenn der Versuch, E-Mails weiterzuleiten, fehlgeschlagen ist, z. B. antwortet Gmail mit einem Fehler der Stufe 500).
+1. Wir senden nur, wenn Statuscodefehler >= 500 auftreten (wenn der Versuch, E-Mails weiterzuleiten, fehlgeschlagen ist, z. B. Gmail antwortet mit einem Fehler der Stufe 500).
 
-2. Wir versenden nur einmal (wir verwenden einen berechneten Bounce-Fingerprint-Schlüssel und speichern ihn im Cache, um Duplikate zu vermeiden). Der Bounce-Fingerprint ist ein Schlüssel, der den Nachrichtenfingerabdruck kombiniert mit einem Hash der Bounce-Adresse und ihrem Fehlercode darstellt. Weitere Informationen zur Berechnung des Nachrichtenfingerabdrucks finden Sie im Abschnitt [Fingerabdrücke](#how-do-you-determine-an-email-fingerprint). Erfolgreich gesendete Bounce-Fingerprints verfallen nach 7 Tagen in unserem Redis-Cache.
+2. Wir versenden nur einmal (wir verwenden einen berechneten Bounce-Fingerprint-Schlüssel und speichern ihn im Cache, um Duplikate zu vermeiden). Der Bounce-Fingerprint ist ein Schlüssel, der den Nachrichtenfingerprint kombiniert mit einem Hash der Bounce-Adresse und ihrem Fehlercode darstellt. Weitere Informationen zur Berechnung des Nachrichtenfingerprints finden Sie im Abschnitt zu [Fingerabdrücke](#how-do-you-determine-an-email-fingerprint). Erfolgreich gesendete Bounce-Fingerprints verfallen nach 7 Tagen in unserem Redis-Cache.
 
 3. Wir senden nur, wenn MAIL FROM und/oder From nicht leer sind und kein [Postmaster-Benutzername](#what-are-postmaster-addresses) (den Teil vor dem @ in einer E-Mail) enthalten (ohne Berücksichtigung der Groß-/Kleinschreibung).
 
 4. Wir senden nicht, wenn die ursprüngliche Nachricht einen der folgenden Header hatte (ohne Berücksichtigung der Groß- und Kleinschreibung):
 
 * Header von `auto-submitted` mit einem Wert ungleich `no`.
-* Header von `x-auto-response-suppress` mit einem Wert von `dr`, `autoreply`, `auto-reply`, `auto_reply` oder `all`
-* Header von `list-id`, `list-subscribe`, `list-unsubscribe`, `list-help`, `list-post`, `list-owner`, `list-archive`, `x-autoreply`, `x-autorespond` oder `x-auto-respond` (unabhängig vom Wert).
-* Header von `precedence` mit einem Wert von `bulk`, `autoreply`, `auto-reply`, `auto_reply` oder `list`.
+* Header von `x-auto-response-suppress` mit einem Wert von `dr`, `autoreply`, `auto-reply`, `auto_reply` oder `all`.
+* Header von `list-id`, `list-subscribe`, `no`0, `no`1, `no`2, `no`3, `no`4, `no`5, `no`6 oder `no`7 (unabhängig vom Wert).
+* Header von `no`8 mit einem Wert von `no`9, `x-auto-response-suppress`0, `x-auto-response-suppress`1, `x-auto-response-suppress`2 oder `x-auto-response-suppress`3.
 
 5. Wir senden nicht, wenn die E-Mail-Adresse „MAIL FROM“ oder „From“ mit `+donotreply`, `-donotreply`, `+noreply` oder `-noreply` endet.
 
 6. Wir senden nicht, wenn der Benutzernamenteil der Absender-E-Mail-Adresse `mdaemon` lautete und einen Header ohne Berücksichtigung der Groß-/Kleinschreibung von `X-MDDSN-Message` hatte.
 
-7. Wir senden nicht, wenn es einen Groß-/Kleinschreibung nicht berücksichtigenden Header `content-type` oder `multipart/report` gab.
+7. Wir senden nicht, wenn es einen `content-type`-Header von `multipart/report` gab, der nicht zwischen Groß- und Kleinschreibung unterscheidet.
 
-### Wie ermittelt man einen E-Mail-Fingerabdruck {#how-do-you-determine-an-email-fingerprint}
+### Wie ermittelt man einen E-Mail-Fingerabdruck? {#how-do-you-determine-an-email-fingerprint}
 
-Der Fingerabdruck einer E-Mail wird verwendet, um die Einzigartigkeit einer E-Mail zu bestimmen und die Zustellung doppelter Nachrichten sowie den Versand von [doppelte Bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) zu verhindern.
+Der Fingerabdruck einer E-Mail wird verwendet, um die Einzigartigkeit einer E-Mail zu bestimmen und die Zustellung doppelter Nachrichten sowie das Senden von [doppelte Bounces](#prevent-unnecessary-bounces-to-protect-against-backscatter) zu verhindern.
 
 Der Fingerabdruck wird aus der folgenden Liste berechnet:
 
@@ -4227,11 +4229,11 @@ Das häufigste Szenario für die Einrichtung einer benutzerdefinierten Portweite
 </tbody>
 </table>
 
-### Unterstützt es das Pluszeichen + für Gmail-Aliase {#does-it-support-the-plus--symbol-for-gmail-aliases}
+### Unterstützt es das Pluszeichen + für Gmail-Aliase? {#does-it-support-the-plus--symbol-for-gmail-aliases}
 
 Ja, absolut.
 
-### Unterstützt es Subdomains {#does-it-support-sub-domains}
+### Unterstützt es Subdomains? {#does-it-support-sub-domains}
 
 Ja, absolut. Anstatt "@", "." oder ein Leerzeichen als Name/Host/Alias zu verwenden, verwenden Sie einfach den Subdomänennamen als Wert.
 
@@ -4241,21 +4243,21 @@ Wenn Sie möchten, dass `foo.example.com` E-Mails weiterleitet, geben Sie `foo` 
 
 Ja, absolut.
 
-### Ist dies gut getestet {#is-this-well-tested}
+### Ist das gut getestet {#is-this-well-tested}
 
-Ja, es verfügt über Tests, die mit [ava](https://github.com/avajs/ava) geschrieben wurden, und bietet auch Codeabdeckung.
+Ja, es verfügt über Tests, die mit [ava](https://github.com/avajs/ava) geschrieben wurden, und bietet auch eine Codeabdeckung.
 
 ### Leiten Sie SMTP-Antwortnachrichten und Codes weiter? {#do-you-pass-along-smtp-response-messages-and-codes}
 
 Ja, absolut. Wenn Sie beispielsweise eine E-Mail an `hello@example.com` senden und diese für die Weiterleitung an `user@gmail.com` registriert ist, werden die SMTP-Antwortnachricht und der Code vom SMTP-Server „gmail.com“ zurückgegeben, anstatt vom Proxyserver unter „mx1.forwardemail.net“ oder „mx2.forwardemail.net“.
 
-### Wie verhindern Sie Spammer und gewährleisten einen guten Ruf bei der E-Mail-Weiterleitung? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
+### Wie verhindern Sie Spammer und gewährleisten eine gute Reputation bei der E-Mail-Weiterleitung? {#how-do-you-prevent-spammers-and-ensure-good-email-forwarding-reputation}
 
 Siehe unsere Abschnitte zu [Wie funktioniert Ihr E-Mail-Weiterleitungssystem](#how-does-your-email-forwarding-system-work), [Wie gehen Sie mit Problemen bei der E-Mail-Zustellung um?](#how-do-you-handle-email-delivery-issues) und [Wie gehen Sie mit der Sperrung Ihrer IP-Adressen um?](#how-do-you-handle-your-ip-addresses-becoming-blocked) oben.
 
 ### Wie führen Sie DNS-Lookups für Domänennamen durch? {#how-do-you-perform-dns-lookups-on-domain-names}
 
-Wir haben ein Open-Source-Softwareprojekt :tangerine: [Mandarine](https://github.com/forwardemail/tangerine) erstellt und nutzen es für DNS-Suchen. Die verwendeten Standard-DNS-Server sind `1.1.1.1` und `1.0.0.1`. DNS-Abfragen erfolgen über [DNS über HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) („DoH“) auf Anwendungsebene.
+Wir haben das Open-Source-Softwareprojekt :tangerine: [Mandarine](https://github.com/forwardemail/tangerine) erstellt und nutzen es für DNS-Suchen. Die standardmäßig verwendeten DNS-Server sind `1.1.1.1` und `1.0.0.1`. DNS-Abfragen erfolgen über [DNS über HTTPS](https://en.wikipedia.org/wiki/DNS_over_HTTPS) („DoH“) auf Anwendungsebene.
 
 :tangerine: [Mandarine](https://github.com/tangerine) verwendet [standardmäßig den datenschutzorientierten DNS-Dienst von CloudFlare für Verbraucher][cloudflare-dns].
 
@@ -4275,7 +4277,7 @@ Beachten Sie: Wenn Sie innerhalb eines Zeitraums von 30 Tagen seit dem ersten St
 
 Nein, es wird nicht empfohlen, da Sie immer nur einen Mail-Exchange-Server gleichzeitig verwenden können. Fallbacks werden aufgrund von Prioritätsfehlkonfigurationen und der Nichtbeachtung der MX-Exchange-Prioritätsprüfung durch Mailserver in der Regel nie wiederholt.
 
-### Kann ich bestimmte Aliase deaktivieren {#can-i-disable-specific-aliases}
+### Kann ich bestimmte Aliase deaktivieren? {#can-i-disable-specific-aliases}
 
 <div class="alert my-3 alert-warning">
 <i class="fa fa-exclamation-circle font-weight-bold"></i>
@@ -4291,11 +4293,11 @@ Ja, bearbeiten Sie einfach Ihren DNS-<strong class="notranslate">TXT</strong>-Ei
 
 Beachten Sie, dass Sie die Zuordnung „:“ beibehalten *sollten*, da diese erforderlich ist, falls Sie sich jemals dazu entscheiden, sie auszuschalten (und sie wird auch für den Import verwendet, wenn Sie auf einen unserer kostenpflichtigen Pläne upgraden).
 
-**Für stille Ablehnung (für den Absender erscheint es so, als ob die Nachricht erfolgreich gesendet wurde, geht aber tatsächlich nirgendwo hin) (Statuscode `250`):** Wenn Sie einem Alias ein "!" (einzelnes Ausrufezeichen) voranstellen, wird an Absender, die versuchen, an diese Adresse zu senden, ein erfolgreicher Statuscode von `250` zurückgegeben, aber die E-Mails selbst gehen nirgendwo hin (z. B. ein Blackhole oder `/dev/null`).
+**Für stille Ablehnung (für den Absender sieht es so aus, als wäre die Nachricht erfolgreich gesendet worden, geht aber tatsächlich nirgendwo hin) (Statuscode `250`):** Wenn Sie einem Alias ein „!“ (einzelnes Ausrufezeichen) voranstellen, wird an Absender, die versuchen, an diese Adresse zu senden, der erfolgreiche Statuscode `250` zurückgegeben, die E-Mails selbst gehen jedoch nirgendwo hin (z. B. ein Blackhole oder `/dev/null`).
 
-**Für Soft Reject (Statuscode `421`):** Wenn Sie einem Alias ein „!!“ (doppeltes Ausrufezeichen) voranstellen, wird an Absender, die versuchen, an diese Adresse zu senden, der Soft-Error-Statuscode `421` zurückgegeben. Die E-Mails werden oft bis zu 5 Tage lang erneut versendet, bevor sie abgelehnt und zurückgewiesen werden.
+**Für Soft Reject (Statuscode `421`):** Wenn Sie einem Alias ein „!!“ (doppeltes Ausrufezeichen) voranstellen, wird an Absender, die versuchen, an diese Adresse zu senden, der Soft Error-Statuscode `421` zurückgegeben. Außerdem werden die E-Mails häufig bis zu 5 Tage lang erneut versendet, bevor sie abgelehnt und zurückgewiesen werden.
 
-**Bei endgültiger Ablehnung (Statuscode `550`):** Wenn Sie einem Alias ein „!!!“ (dreifaches Ausrufezeichen) voranstellen, wird an Absender, die versuchen, an diese Adresse zu senden, ein permanenter Fehlerstatuscode von `550` zurückgegeben und die E-Mails werden abgelehnt und zurückgeschickt.
+**Für harte Ablehnung (Statuscode `550`):** Wenn Sie einem Alias ein „!!!“ (dreifaches Ausrufezeichen) voranstellen, wird an Absender, die versuchen, an diese Adresse zu senden, ein permanenter Fehlerstatuscode von `550` zurückgegeben und die E-Mails werden abgelehnt und zurückgeschickt.
 
 Wenn ich beispielsweise möchte, dass alle E-Mails, die an `alias@example.com` gehen, nicht mehr an `user@gmail.com` weitergeleitet werden, sondern abgelehnt und zurückgesendet werden (verwenden Sie beispielsweise drei Ausrufezeichen):
 
@@ -4484,7 +4486,7 @@ Oder Sie können sie in zwei separaten Zeilen angeben, etwa so:
 
 Es liegt an Ihnen!
 
-### Gibt es eine maximale Anzahl von E-Mail-Adressen, an die ich pro Alias weiterleiten kann? {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
+### Gibt es eine maximale Anzahl an E-Mail-Adressen, an die ich pro Alias weiterleiten kann? {#is-there-a-maximum-limit-on-the-number-of-email-addresses-i-can-forward-to-per-alias}
 
 Ja, das Standardlimit liegt bei 10. Das bedeutet NICHT, dass Sie nur 10 Aliase für Ihren Domainnamen haben können. Sie können so viele Aliase haben, wie Sie möchten (unbegrenzt). Das bedeutet, dass Sie nur einen Alias an 10 eindeutige E-Mail-Adressen weiterleiten können. Sie könnten `hello:user+1@gmail.com`, `hello:user+2@gmail.com`, `hello:user+3@gmail.com`, … (von 1-10) haben – und alle E-Mails an `hello@example.com` werden an `user+1@gmail.com`, `user+2@gmail.com`, `user+3@gmail.com`, … (von 1-10) weitergeleitet.
 
@@ -4498,11 +4500,11 @@ Benötigen Sie mehr als 10 Empfänger pro Alias? Senden Sie uns eine E-Mail und 
 </span>
 </div>
 
-### Kann ich E-Mails rekursiv weiterleiten {#can-i-recursively-forward-emails}
+### Kann ich E-Mails rekursiv weiterleiten? {#can-i-recursively-forward-emails}
 
 Ja, das ist möglich. Sie müssen jedoch die maximale Anzahl einhalten. Wenn Sie `hello:linus@example.com` und `linus:user@gmail.com` haben, werden E-Mails an `hello@example.com` an `linus@example.com` und `user@gmail.com` weitergeleitet. Beachten Sie, dass ein Fehler auftritt, wenn Sie versuchen, E-Mails über die maximale Anzahl hinaus rekursiv weiterzuleiten.
 
-### Können Leute meine E-Mail-Weiterleitung ohne meine Erlaubnis ab- oder anmelden? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
+### Können Personen meine E-Mail-Weiterleitung ohne meine Zustimmung ab- oder anmelden? {#can-people-unregister-or-register-my-email-forwarding-without-my-permission}
 
 Wir verwenden die MX- und <strong class="notranslate">TXT</strong>-Eintragsprüfung. Wenn Sie die entsprechenden MX- und <strong class="notranslate">TXT</strong>-Einträge dieses Dienstes hinzufügen, sind Sie registriert. Wenn Sie sie entfernen, ist Ihre Registrierung beendet. Sie sind Eigentümer Ihrer Domain und verwalten Ihr DNS. Wenn also jemand Zugriff darauf hat, ist das ein Problem.
 
@@ -4521,10 +4523,10 @@ Unser kostenloses Kontingent wird unterstützt von:
 4. **Angemessene Nutzungsbeschränkungen**: Die kostenlose Stufe verfügt über Richtlinien zur fairen Nutzung, um Missbrauch zu verhindern.
 
 > \[!NOTE]
-> We're committed to keeping basic email forwarding free while offering premium features for users with more advanced needs.
+> Wir möchten die grundlegende E-Mail-Weiterleitung kostenlos anbieten und gleichzeitig Premiumfunktionen für Nutzer mit höheren Ansprüchen bereitstellen.
 
 > \[!TIP]
-> If you find our service valuable, consider upgrading to a paid plan to support ongoing development and maintenance.
+> Wenn Sie unseren Service wertvoll finden, ziehen Sie ein Upgrade auf einen kostenpflichtigen Tarif in Betracht, um die kontinuierliche Entwicklung und Wartung zu unterstützen.
 
 ### Was ist die maximale E-Mail-Größenbeschränkung? {#what-is-the-max-email-size-limit}
 
@@ -4534,15 +4536,15 @@ Wenn die Dateigrößenbeschränkung überschritten wird, wird ein Fehler mit dem
 
 ### Speichern Sie E-Mail-Protokolle? {#do-you-store-logs-of-emails}
 
-Nein, wir schreiben nicht auf die Festplatte und speichern keine Protokolle – mit [Ausnahme von Fehlern](#do-you-store-error-logs) und [ausgehendes SMTP](#do-you-support-sending-email-with-smtp) (siehe unser [Datenschutzrichtlinie](/privacy)).
+Nein, wir schreiben nicht auf die Festplatte und speichern keine Protokolle – mit [Ausnahme von Fehlern](#do-you-store-error-logs) und [ausgehendes SMTP](#do-you-support-sending-email-with-smtp) (siehe unseren [Datenschutzrichtlinie](/privacy)).
 
-Alles wird im Speicher erledigt und [Unser Quellcode ist auf GitHub](https://github.com/forwardemail).
+Alles wird im Speicher und [Unser Quellcode ist auf GitHub](https://github.com/forwardemail) erledigt.
 
 ### Speichern Sie Fehlerprotokolle? {#do-you-store-error-logs}
 
 **Ja. Sie können auf die Fehlerprotokolle unter [Mein Konto → Protokolle](/my-account/logs) oder [Mein Konto → Domänen](/my-account/domains) zugreifen.**
 
-Ab Februar 2023 speichern wir Fehlerprotokolle für die SMTP-Antwortcodes `4xx` und `5xx` für einen Zeitraum von 7 Tagen – diese enthalten den SMTP-Fehler, den Umschlag und die E-Mail-Header (wir speichern weder den E-Mail-Text noch Anhänge).
+Ab Februar 2023 speichern wir Fehlerprotokolle für die SMTP-Antwortcodes `4xx` und `5xx` für einen Zeitraum von 7 Tagen – diese enthalten den SMTP-Fehler, den Umschlag und die E-Mail-Header (den E-Mail-Text oder Anhänge speichern wir **nicht**).
 
 Mithilfe von Fehlerprotokollen können Sie wichtige E-Mails auf fehlende E-Mails prüfen und Spam-Falschmeldungen für [Ihre Domänen](/my-account/domains) minimieren. Sie eignen sich außerdem hervorragend zum Debuggen von Problemen mit [E-Mail-Webhooks](#do-you-support-webhooks) (da die Fehlerprotokolle die Antwort des Webhook-Endpunkts enthalten).
 
@@ -4556,9 +4558,9 @@ Nein, absolut nicht. Siehe unseren [Datenschutzrichtlinie](/privacy).
 
 Viele andere E-Mail-Weiterleitungsdienste speichern Ihre E-Mails und könnten diese möglicherweise lesen. Es gibt keinen Grund, weitergeleitete E-Mails auf der Festplatte zu speichern – deshalb haben wir die erste Open-Source-Lösung entwickelt, die dies vollständig im Arbeitsspeicher erledigt.
 
-Wir sind der Meinung, dass Sie ein Recht auf Privatsphäre haben sollten und respektieren dieses strikt. Der auf dem Server bereitgestellte Code trägt den Namen [Open-Source-Software auf GitHub](https://github.com/forwardemail), um Transparenz und Vertrauen zu schaffen.
+Wir sind der Meinung, dass Sie ein Recht auf Privatsphäre haben sollten und respektieren dieses strikt. Der auf dem Server bereitgestellte Code [Open-Source-Software auf GitHub](https://github.com/forwardemail) dient der Transparenz und Vertrauensbildung.
 
-### Kann ich mit dieser {#can-i-send-mail-as-in-gmail-with-this} in Gmail „E-Mails senden als“?
+### Kann ich mit diesem {#can-i-send-mail-as-in-gmail-with-this} in Gmail „E-Mails senden als“
 
 Ja! Seit dem 2. Oktober 2018 ist diese Funktion verfügbar. Siehe [So senden Sie E-Mails mit Gmail](#how-to-send-mail-as-using-gmail) oben!
 
@@ -4576,7 +4578,7 @@ Wenn Sie Gmail (z. B. „Send Mail As“) oder G Suite verwenden, müssen Sie <c
 </span>
 </div>
 
-### Kann ich mit dieser {#can-i-send-mail-as-in-outlook-with-this} E-Mails in Outlook senden als
+### Kann ich mit diesem {#can-i-send-mail-as-in-outlook-with-this}} in Outlook E-Mails senden als
 
 Ja! Seit dem 2. Oktober 2018 ist diese Funktion verfügbar. Sehen Sie sich einfach die beiden folgenden Links von Microsoft an:
 
@@ -4597,7 +4599,7 @@ Wenn Sie Microsoft Outlook oder Live.com verwenden, müssen Sie <code>include:sp
 </span>
 </div>
 
-### Kann ich mit dieser {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} E-Mails in Apple Mail und iCloud Mail senden als
+### Kann ich mit diesem {#can-i-send-mail-as-in-apple-mail-and-icloud-mail-with-this} E-Mails in Apple Mail und iCloud Mail senden als
 
 Wenn Sie iCloud+-Abonnent sind, können Sie eine benutzerdefinierte Domäne verwenden. [Unser Service ist auch mit Apple Mail kompatibel](#apple-mail).
 
@@ -4605,13 +4607,13 @@ Weitere Informationen finden Sie unter <https://support.apple.com/en-us/102540>.
 
 ### Kann ich mit diesem {#can-i-forward-unlimited-emails-with-this} unbegrenzt E-Mails weiterleiten?
 
-Ja, allerdings ist die Verbindungsrate für „relativ unbekannte“ Absender auf 100 Verbindungen pro Stunde pro Hostname oder IP begrenzt. Siehe den Abschnitt zu [Ratenbegrenzung](#do-you-have-rate-limiting) und [Greylisting](#do-you-have-a-greylist) oben.
+Ja, allerdings ist die Verbindungsrate für „relativ unbekannte“ Absender auf 100 Verbindungen pro Stunde und Hostname oder IP begrenzt. Siehe den Abschnitt zu [Ratenbegrenzung](#do-you-have-rate-limiting) und [Graue Liste](#do-you-have-a-greylist) oben.
 
 Mit „relativ unbekannt“ meinen wir Absender, die nicht im [Zulassungsliste](#do-you-have-an-allowlist) erscheinen.
 
 Wenn dieses Limit überschritten wird, senden wir einen 421-Antwortcode, der den Mailserver des Absenders anweist, es später noch einmal zu versuchen.
 
-### Bieten Sie unbegrenzte Domains zu einem Preis an? {#do-you-offer-unlimited-domains-for-one-price}
+### Bieten Sie unbegrenzt viele Domains zu einem Preis an? {#do-you-offer-unlimited-domains-for-one-price}
 
 Ja. Unabhängig von Ihrem Tarif zahlen Sie nur eine monatliche Gebühr – für alle Ihre Domains.
 
@@ -4624,17 +4626,17 @@ Forward Email akzeptiert die folgenden einmaligen oder monatlichen/vierteljährl
 3. **Kryptowährung**: Wir akzeptieren Zahlungen über Stripes Stablecoin-Zahlungen in den Netzwerken Ethereum, Polygon und Solana.
 
 > \[!NOTE]
-> We store limited payment information on our servers, which only includes payment identifiers and references to [Stripe](https://stripe.com/global) and [PayPal](https://www.paypal.com) transaction, customer, subscription, and payment ID's.
+> Wir speichern begrenzte Zahlungsinformationen auf unseren Servern. Dazu gehören lediglich Zahlungskennungen und Verweise auf die Transaktions-, Kunden-, Abonnement- und Zahlungs-IDs [Streifen](https://stripe.com/global) und [PayPal](https://www.paypal.com).
 
 > \[!TIP]
-> For maximum privacy, consider using cryptocurrency payments.
+> Für maximale Privatsphäre sollten Sie Zahlungen mit Kryptowährungen in Erwägung ziehen.
 
 Alle Zahlungen werden sicher über Stripe oder PayPal abgewickelt. Ihre Zahlungsdaten werden niemals auf unseren Servern gespeichert.
 
 ## Zusätzliche Ressourcen {#additional-resources}
 
 > \[!TIP]
-> Our articles below are regularly updated with new guides, tips, and technical information. Check back often for the latest content.
+> Unsere unten stehenden Artikel werden regelmäßig mit neuen Anleitungen, Tipps und technischen Informationen aktualisiert. Schauen Sie regelmäßig vorbei, um die neuesten Inhalte zu erhalten.
 
 * [Fallstudien und Entwicklerdokumentation](/blog/docs)
 * [Ressourcen](/resources)
@@ -4642,4 +4644,4 @@ Alle Zahlungen werden sicher über Stripe oder PayPal abgewickelt. Ihre Zahlungs
 
 [gmail-2fa]: https://myaccount.google.com/signinoptions/two-step-verification
 
-[cloudflare-dns]: __GESCHÜTZTE_URL_869__
+[cloudflare-dns]: https://blog.cloudflare.com/announcing-1111/

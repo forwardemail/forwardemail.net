@@ -1,4 +1,4 @@
-# Node.js の本番環境インフラストラクチャを最適化する方法: ベストプラクティス {#how-to-optimize-nodejs-production-infrastructure-best-practices}
+# Node.jsの本番環境インフラストラクチャを最適化する方法：ベストプラクティス {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
 <img 読み込み="遅延" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
 
@@ -69,14 +69,14 @@ Forward Emailでは、Node.jsの本番環境構築に長年を費やし、完璧
 Intel プロセッサから AMD Ryzen プロセッサに移行した結果、Node.js アプリケーションで **573% のパフォーマンス向上** を達成しました。これは単なる小さな最適化ではなく、Node.js アプリケーションの運用環境におけるパフォーマンスを根本的に変えるものであり、あらゆる Node.js アプリケーションにおいてシングルコアパフォーマンスの最適化がいかに重要であるかを実証しています。
 
 > \[!TIP]
-> For Node.js production deployment best practices, hardware choice is critical. We specifically chose DataPacket hosting for their AMD Ryzen availability because single-core performance is crucial for Node.js applications since JavaScript execution is single-threaded.
+> Node.jsの本番環境導入のベストプラクティスでは、ハードウェアの選択が非常に重要です。JavaScriptの実行はシングルスレッドであるため、Node.jsアプリケーションではシングルコアのパフォーマンスが不可欠であり、AMD Ryzenを利用できるという理由から、DataPacketホスティングを選択しました。
 
 ### Node.js においてシングルコアパフォーマンスの最適化が重要な理由 {#why-single-core-performance-optimization-matters-for-nodejs}
 
 Intel から AMD Ryzen への移行の結果、次のようになりました。
 
-* リクエスト処理における**パフォーマンスが573%向上**（[ステータスページのGitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
-* **処理遅延を解消**し、ほぼ瞬時の応答を実現（[GitHub Issue #298](https://github.com/forwardemail/forwardemail.net/issues/298)))
+* リクエスト処理における**パフォーマンスが573%向上** ([ステータスページのGitHub Issue #1519](https://github.com/forwardemail/status.forwardemail.net/issues/1519#issuecomment-2652177671))
+* **処理遅延を解消**し、ほぼ瞬時の応答を実現([GitHub Issue #298](https://github.com/forwardemail/forwardemail.net/issues/298))
 * Node.jsの本番環境における**価格性能比の向上**
 * すべてのアプリケーションエンドポイントにおける**応答時間の改善**
 
@@ -86,26 +86,26 @@ Intel から AMD Ryzen への移行の結果、次のようになりました。
 
 当社のインフラストラクチャの選択に関する詳細は、以下をご覧ください。
 
-* [最高のメール転送サービス]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - パフォーマンス比較に記載）
+* [最高のメール転送サービス]](https://forwardemail.net/blog/docs/best-email-forwarding-service) - パフォーマンス比較に記載)
 * [セルフホストソリューション](https://forwardemail.net/blog/docs/self-hosted-solution) - ハードウェア推奨事項
 
-## Node.js 実稼働環境のセットアップ: 当社のテクノロジースタック {#nodejs-production-environment-setup-our-technology-stack}
+## Node.js本番環境のセットアップ: 当社のテクノロジースタック {#nodejs-production-environment-setup-our-technology-stack}
 
 Node.jsの本番環境へのデプロイにおけるベストプラクティスには、長年の運用経験に基づいた慎重なテクノロジー選択が含まれています。以下では、私たちが使用しているテクノロジーと、これらの選択があらゆるNode.jsアプリケーションに適用される理由についてご説明します。
 
-### パッケージマネージャー: 生産効率を高める pnpm {#package-manager-pnpm-for-production-efficiency}
+### パッケージマネージャー: 生産効率のためのpnpm {#package-manager-pnpm-for-production-efficiency}
 
 **使用方法:** [`pnpm`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json) (固定バージョン)
 
 私たちが Node.js の実稼働環境のセットアップに npm と yarn ではなく pnpm を選択したのは、次の理由からです。
 
 * CI/CDパイプラインでの**インストール時間の短縮**
-* ハードリンクによる**ディスク容量効率**
+* ハードリンクによる**ディスク容量の効率化**
 * ファントム依存関係を防ぐ**厳密な依存関係解決**
 * 本番環境デプロイメントでの**パフォーマンス向上**
 
 > \[!NOTE]
-> As part of our Node.js production deployment best practices, we pin exact versions of critical tools like pnpm to ensure consistent behavior across all environments and team members' machines.
+> Node.jsの本番環境デプロイメントのベストプラクティスの一環として、pnpmなどの重要なツールの正確なバージョンを固定することで、すべての環境とチームメンバーのマシン間で一貫した動作を確保しています。
 
 **実装の詳細:**
 
@@ -145,7 +145,7 @@ Bree を開発・保守しているのは、既存のジョブスケジューラ
 
 ### エラー処理: 実稼働環境の信頼性のための @hapi/boom {#error-handling-hapiboom-for-production-reliability}
 
-**私たちが使用するもの:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**使用するもの:** [`@hapi/boom`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 私たちのNode.js製品版アプリケーションでは、構造化されたエラーレスポンスのために@hapi/boomを使用しています。このパターンは、一貫したエラー処理が必要なあらゆるNode.jsアプリケーションで有効です。
 
@@ -154,7 +154,7 @@ Bree を開発・保守しているのは、既存のジョブスケジューラ
 * [エラー分類ヘルパー](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 * [ロガー実装](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
-## 本番環境での Node.js アプリケーションの監視方法 {#how-to-monitor-nodejs-applications-in-production}
+## 本番環境でのNode.jsアプリケーションの監視方法 {#how-to-monitor-nodejs-applications-in-production}
 
 本番環境におけるNode.jsアプリケーションの監視に対する当社のアプローチは、長年にわたる大規模アプリケーション運用を通じて進化してきました。あらゆる種類のNode.jsアプリケーションの信頼性とパフォーマンスを確保するために、複数のレイヤーで監視を実装しています。
 
@@ -162,7 +162,7 @@ Bree を開発・保守しているのは、既存のジョブスケジューラ
 
 **コア実装:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
-**私たちが使用するもの:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
+**使用するもの:** [`node-os-utils`](https://github.com/forwardemail/forwardemail.net/blob/master/package.json)
 
 当社の本番環境監視しきい値（実際の本番環境コードより）:
 
@@ -172,9 +172,9 @@ Bree を開発・保守しているのは、既存のジョブスケジューラ
 * **ディスク使用量75%**（警告しきい値）
 
 > \[!WARNING]
-> These thresholds work for our specific hardware configuration. When implementing Node.js production monitoring, review our monitor-server.js implementation to understand the exact logic and adapt the values for your setup.
+> これらのしきい値は、弊社の特定のハードウェア構成で機能します。Node.jsの本番環境監視を実装する際は、monitor-server.jsの実装を確認して正確なロジックを理解し、設定に合わせて値を調整してください。
 
-### Node.js 本番環境向けアプリケーションレベル監視 {#application-level-monitoring-for-nodejs-production}
+### Node.js本番環境向けアプリケーションレベル監視 {#application-level-monitoring-for-nodejs-production}
 
 **エラー分類:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
@@ -200,13 +200,13 @@ Bree を開発・保守しているのは、既存のジョブスケジューラ
 
 **キュー監視：** リソース枯渇を防ぐため、リクエスト処理には5GBのキュー制限と180秒のタイムアウトを実装しています。これらのパターンは、キューまたはバックグラウンド処理を使用するすべてのNode.jsアプリケーションに適用されます。
 
-## PM2 ヘルスチェックによる Node.js の本番環境監視 {#nodejs-production-monitoring-with-pm2-health-checks}
+## PM2ヘルスチェックによるNode.js本番環境監視 {#nodejs-production-monitoring-with-pm2-health-checks}
 
 長年の運用経験に基づき、PM2を活用したNode.js本番環境のセットアップを改良してきました。PM2ヘルスチェックは、あらゆるNode.jsアプリケーションの信頼性維持に不可欠です。
 
 ### PM2ヘルスチェックシステム {#our-pm2-health-check-system}
 
-**当社のコア実装:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+**コア実装:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 PM2 ヘルスチェックによる Node.js の本番環境監視には次のものが含まれます。
 
@@ -217,7 +217,7 @@ PM2 ヘルスチェックによる Node.js の本番環境監視には次のも�
 * **インテリジェントなヘルスチェックにより、再起動ループを防止**
 
 > \[!CAUTION]
-> For Node.js production deployment best practices, we require 15+ minutes uptime before considering a process healthy to avoid restart loops. This prevents cascading failures when processes are struggling with memory or other issues.
+> Node.jsの本番環境デプロイのベストプラクティスでは、再起動ループを回避するため、プロセスが正常であると判断するまでに15分以上の稼働時間が必要です。これにより、プロセスがメモリ不足などの問題を抱えている場合に、連鎖的な障害が発生するのを防ぎます。
 
 ### PM2プロダクション構成 {#our-pm2-production-configuration}
 
@@ -232,7 +232,7 @@ PM2 ヘルスチェックによる Node.js の本番環境監視には次のも�
 
 ### 自動 PM2 展開 {#automated-pm2-deployment}
 
-**PM2 展開:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
+**PM2 デプロイメント:** [`ansible/playbooks/node.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/node.yml)
 
 当社では、すべてのサーバーにわたって一貫した Node.js の本番環境の展開を確保するために、Ansible を通じて PM2 のセットアップ全体を自動化しています。
 
@@ -242,7 +242,7 @@ Node.js の本番環境展開における最も重要なベスト プラクテ�
 
 ### 本番環境向けisCodeBug実装 {#our-iscodebug-implementation-for-production}
 
-**出典:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
+**ソース:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 
 このヘルパーは、運用中の Node.js アプリケーションに対してインテリジェントなエラー分類を提供し、次のことを実現します。
 
@@ -266,7 +266,7 @@ Node.js の本番環境展開における最も重要なベスト プラクテ�
 * [信頼できる決済システムの構築](https://forwardemail.net/blog/docs/building-reliable-payment-system-stripe-paypal) - エラー処理パターン
 * [メールのプライバシー保護](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) - セキュリティエラー処理
 
-## v8-profiler-next と cpupro を使用した高度なパフォーマンスデバッグ {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
+## v8-profiler-nextとcpuproを使用した高度なパフォーマンスデバッグ {#advanced-performance-debugging-with-v8-profiler-next-and-cpupro}
 
 当社では、高度なプロファイリングツールを使用してヒープスナップショットを分析し、OOM（Out of Memory）問題、パフォーマンスボトルネック、そして本番環境におけるNode.jsのメモリ問題をデバッグしています。これらのツールは、メモリリークやパフォーマンス問題が発生しているNode.jsアプリケーションにとって不可欠です。
 
@@ -278,7 +278,7 @@ Node.js の本番環境展開における最も重要なベスト プラクテ�
 * [`cpupro`](https://github.com/discoveryjs/cpupro) - CPUプロファイルとヒープスナップショットの分析用
 
 > \[!TIP]
-> We use v8-profiler-next and cpupro together to create a complete performance debugging workflow for our Node.js applications. This combination helps us identify memory leaks, performance bottlenecks, and optimize our production code.
+> v8-profiler-next と cpupro を組み合わせて使用することで、Node.js アプリケーションの包括的なパフォーマンスデバッグワークフローを構築しています。この組み合わせにより、メモリリークやパフォーマンスのボトルネックを特定し、本番環境のコードを最適化できます。
 
 ### ヒープスナップショット分析の実装方法 {#how-we-implement-heap-snapshot-analysis}
 
@@ -301,7 +301,7 @@ Node.js の本番環境展開における最も重要なベスト プラクテ�
 * [クリーンアップジョブ](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js) - スナップショットの保持とクリーンアップ
 * [ロガー統合](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js) - パフォーマンスログ
 
-### Node.js アプリケーションに推奨される実装 {#recommended-implementation-for-your-nodejs-application}
+### Node.jsアプリケーションに推奨される実装 {#recommended-implementation-for-your-nodejs-application}
 
 **ヒープスナップショット分析の場合:**
 
@@ -319,7 +319,7 @@ Node.js の本番環境展開における最も重要なベスト プラクテ�
 4. **パフォーマンス改善前後をモニタリング**する
 
 > \[!WARNING]
-> Generating heap snapshots and CPU profiles can impact performance. We recommend implementing throttling and only enabling profiling when investigating specific issues or during maintenance windows.
+> ヒープスナップショットとCPUプロファイルの生成はパフォーマンスに影響を与える可能性があります。スロットリングを実装し、特定の問題を調査する場合やメンテナンス期間中のみプロファイリングを有効にすることを推奨します。
 
 ### 生産監視との統合 {#integration-with-our-production-monitoring}
 
@@ -327,7 +327,7 @@ Node.js の本番環境展開における最も重要なベスト プラクテ�
 
 * メモリ/CPUしきい値に基づく**自動トリガー**
 * パフォーマンス問題検出時の**アラート統合**
-* パフォーマンス傾向を時系列で追跡するための**履歴分析**
+* パフォーマンス傾向の経時的な追跡のための**履歴分析**
 * 包括的なデバッグのための**アプリケーションメトリクスとの相関分析**
 
 このアプローチは、メモリ リークを特定して解決し、ホット コード パスを最適化し、Node.js 実稼働環境で安定したパフォーマンスを維持するのに役立ちました。
@@ -336,9 +336,9 @@ Node.js の本番環境展開における最も重要なベスト プラクテ�
 
 Ansibleの自動化により、Node.jsの本番環境インフラストラクチャに包括的なセキュリティを実装しています。これらのプラクティスは、あらゆるNode.jsアプリケーションに適用されます。
 
-### Node.js 本番環境向けシステムレベルセキュリティ {#system-level-security-for-nodejs-production}
+### Node.js本番環境向けシステムレベルセキュリティ {#system-level-security-for-nodejs-production}
 
-**当社のAnsible実装:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
+**Ansible 実装:** [`ansible/playbooks/security.yml`](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)
 
 Node.js 実稼働環境における主要なセキュリティ対策:
 
@@ -348,9 +348,9 @@ Node.js 実稼働環境における主要なセキュリティ対策:
 * **カーネルパラメータのチューニング** し、セキュリティとパフォーマンスの両方を実現
 
 > \[!WARNING]
-> When implementing Node.js production deployment best practices, disabling swap can cause out-of-memory kills if your application exceeds available RAM. We monitor memory usage carefully and size our servers appropriately.
+> Node.jsの本番環境デプロイのベストプラクティスを実装する際に、スワップを無効にすると、アプリケーションが利用可能なRAM容量を超えた場合にメモリ不足による強制終了が発生する可能性があります。私たちはメモリ使用量を注意深く監視し、サーバーのサイズを適切に調整しています。
 
-### Node.js アプリケーションのアプリケーションセキュリティ {#application-security-for-nodejs-applications}
+### Node.jsアプリケーションのアプリケーションセキュリティ {#application-security-for-nodejs-applications}
 
 **ログフィールドの編集:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
 
@@ -365,7 +365,7 @@ Node.js 実稼働環境における主要なセキュリティ対策:
 * [証明書管理](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/certificates.yml)
 * [DKIMの設定](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/dkim.yml)
 
-### 当社のセキュリティコンテンツ {#our-security-content}
+### セキュリティコンテンツ {#our-security-content}
 
 当社のセキュリティアプローチの詳細については、以下をご覧ください。
 
@@ -373,11 +373,11 @@ Node.js 実稼働環境における主要なセキュリティ対策:
 * [量子耐性暗号化メール](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)
 * [オープンソースのメールセキュリティの理由](https://forwardemail.net/blog/docs/why-open-source-email-security-privacy)
 
-## Node.js アプリケーション向けデータベースアーキテクチャ {#database-architecture-for-nodejs-applications}
+## Node.jsアプリケーション向けデータベースアーキテクチャ {#database-architecture-for-nodejs-applications}
 
 私たちは、Node.jsアプリケーション向けに最適化されたハイブリッドデータベースアプローチを採用しています。これらのパターンは、あらゆるNode.jsアプリケーションに適用できます。
 
-### Node.js 本番環境向け SQLite 実装 {#sqlite-implementation-for-nodejs-production}
+### Node.jsプロダクション向けSQLite実装 {#sqlite-implementation-for-nodejs-production}
 
 **私たちが使用するもの:**
 
@@ -395,7 +395,7 @@ Node.js アプリケーションでは、ユーザー固有のデータに SQLit
 
 このパターンは、SaaS アプリケーション、マルチテナント システム、またはデータ分離が必要な Node.js アプリケーションに適しています。
 
-### Node.js 本番環境向け MongoDB 実装 {#mongodb-implementation-for-nodejs-production}
+### Node.jsプロダクション向けMongoDB実装 {#mongodb-implementation-for-nodejs-production}
 
 **私たちが使用するもの:**
 
@@ -415,13 +415,13 @@ Node.js 実稼働環境でのアプリケーション データに MongoDB を�
 * **豊富なクエリ言語**
 
 > \[!NOTE]
-> Our hybrid approach optimizes for our specific use case. Study our actual database usage patterns in the codebase to understand if this approach fits your Node.js application needs.
+> 当社のハイブリッドアプローチは、特定のユースケースに合わせて最適化されています。コードベースにおける実際のデータベース使用パターンを調査し、このアプローチがお客様のNode.jsアプリケーションのニーズに適合するかどうかをご確認ください。
 
 ## Node.js 本番環境バックグラウンドジョブ処理 {#nodejs-production-background-job-processing}
 
 Breeをベースにバックグラウンドジョブアーキテクチャを構築することで、信頼性の高いNode.jsの本番環境へのデプロイを実現しました。これは、バックグラウンド処理を必要とするあらゆるNode.jsアプリケーションに当てはまります。
 
-### 本番環境向け Bree サーバー設定 {#our-bree-server-setup-for-production}
+### 本番環境向け Bree サーバーのセットアップ {#our-bree-server-setup-for-production}
 
 **主な実装:** [`bree.js`](https://github.com/forwardemail/forwardemail.net/blob/master/bree.js)
 
@@ -442,7 +442,7 @@ Breeをベースにバックグラウンドジョブアーキテクチャを構�
 * ヘルスモニタリングとメンテナンス
 * CPU負荷の高いタスクにおけるワーカースレッドの利用
 
-### Node.js プロダクション向けのジョブ スケジューリング パターン {#our-job-scheduling-patterns-for-nodejs-production}
+### Node.jsプロダクション向けのジョブスケジューリングパターン {#our-job-scheduling-patterns-for-nodejs-production}
 
 次の点を理解するために、ジョブ ディレクトリで実際のジョブ スケジューリング パターンを調べてください。
 
@@ -456,21 +456,21 @@ Node.jsの本番環境でよくある問題を防ぐため、プロアクティ�
 
 ### クリーンアップ実装 {#our-cleanup-implementation}
 
-**出典:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
+**ソース:** [`jobs/cleanup-tmp.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/cleanup-tmp.js)
 
 Node.js の本番アプリケーションに対する自動メンテナンスのターゲット:
 
 * **一時ファイル** 24時間以上経過
 * **ログファイル** 保存期間の制限を超えたもの
 * **キャッシュファイル** と一時データ
-* **アップロード済みで不要になったファイル**
+* **アップロード済みファイル** のうち不要になったもの
 * **パフォーマンスデバッグからのヒープスナップショット**
 
 これらのパターンは、一時ファイル、ログ、またはキャッシュされたデータを生成するすべての Node.js アプリケーションに適用されます。
 
-### Node.js 本番環境のディスクスペース管理 {#disk-space-management-for-nodejs-production}
+### Node.jsプロダクションのディスクスペース管理 {#disk-space-management-for-nodejs-production}
 
-**監視のしきい値:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
+**監視しきい値:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 
 * バックグラウンド処理の**キュー制限**
 * **ディスク使用率75%の警告しきい値**
@@ -483,7 +483,7 @@ Node.js の本番アプリケーションに対する自動メンテナンスの
 * [環境の展開](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/env.yml)
 * [デプロイメントキーの管理](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/deployment-keys.yml)
 
-## Node.js 本番環境デプロイメント実装ガイド {#nodejs-production-deployment-implementation-guide}
+## Node.js 本番環境導入実装ガイド {#nodejs-production-deployment-implementation-guide}
 
 ### 実際のコードで本番環境のベストプラクティスを学ぶ {#study-our-actual-code-for-production-best-practices}
 
@@ -493,7 +493,7 @@ Node.js の本番アプリケーションに対する自動メンテナンスの
 2. **監視:** [`helpers/monitor-server.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/monitor-server.js)
 3. **エラー処理:** [`helpers/is-code-bug.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/is-code-bug.js)
 4. **ログ記録:** [`helpers/logger.js`](https://github.com/forwardemail/forwardemail.net/blob/master/helpers/logger.js)
-5. **プロセスの健全性:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
+5. **プロセス状態:** [`jobs/check-pm2.js`](https://github.com/forwardemail/forwardemail.net/blob/master/jobs/check-pm2.js)
 
 ### ブログ投稿から学ぶ {#learn-from-our-blog-posts}
 
@@ -505,7 +505,7 @@ Node.js の本番アプリケーションに対する自動メンテナンスの
 * [JavaScript お問い合わせフォーム](https://forwardemail.net/blog/docs/how-to-javascript-contact-forms-node-js)
 * [Reactメール統合](https://forwardemail.net/blog/docs/send-emails-with-react-js-node-web-app)
 
-### Node.js の本番環境向けインフラストラクチャ自動化 {#infrastructure-automation-for-nodejs-production}
+### Node.js本番環境向けインフラストラクチャ自動化 {#infrastructure-automation-for-nodejs-production}
 
 **Node.js の本番環境への展開を学習するための Ansible プレイブック:**
 
@@ -530,12 +530,12 @@ Node.js の本番アプリケーションに対する自動メンテナンスの
 * **スマートなエラー分類** (本番環境におけるインシデント対応を向上)
 * **v8-profiler-nextとcpuproによる高度なパフォーマンスデバッグ** (OOM防止)
 * **Ansible自動化による包括的なセキュリティ強化** (Ansible自動化による)
-* **アプリケーションニーズに合わせて最適化されたハイブリッドデータベースアーキテクチャ** (AMD Ryzen)
+* **ハイブリッドデータベースアーキテクチャ** (アプリケーションのニーズに合わせて最適化)
 * **自動メンテナンス** (Node.js本番環境でよくある問題を防ぐ)
 
 **重要なポイント:** 一般的なベストプラクティスに従うのではなく、実際の実装ファイルとブログ記事を研究してください。私たちのコードベースは、Node.jsの本番環境へのデプロイメントに実用的なパターンを提供しており、Webアプリ、API、マイクロサービス、バックグラウンドサービスなど、あらゆるNode.jsアプリケーションに適用できます。
 
-## Node.js プロダクションの完全なリソースリスト {#complete-resource-list-for-nodejs-production}
+## Node.jsプロダクション用の完全なリソースリスト {#complete-resource-list-for-nodejs-production}
 
 ### コア実装ファイル {#our-core-implementation-files}
 
@@ -556,7 +556,7 @@ Node.js の本番アプリケーションに対する自動メンテナンスの
 * [IMAPサーバー](https://github.com/forwardemail/forwardemail.net/blob/master/imap.js)
 * [POP3サーバー](https://github.com/forwardemail/forwardemail.net/blob/master/pop3.js)
 
-### 当社のインフラストラクチャ自動化 {#our-infrastructure-automation}
+### インフラストラクチャ自動化 {#our-infrastructure-automation}
 
 * [すべてのAnsibleプレイブック](https://github.com/forwardemail/forwardemail.net/tree/master/ansible/playbooks)
 * [セキュリティ強化](https://github.com/forwardemail/forwardemail.net/blob/master/ansible/playbooks/security.yml)

@@ -83,7 +83,7 @@ Elke grote e-mailprovider dwingt ontwikkelaars tot een van de twee verschrikkeli
 Het resultaat? Ontwikkelaars laten e-mailintegratie volledig links liggen of verspillen weken aan het bouwen van kwetsbare IMAP-wrappers die voortdurend vastlopen.
 
 > \[!WARNING]
-> **The Dirty Secret**: Most "email APIs" are just sending APIs. You can't programmatically organize folders, sync contacts, or manage calendars through a simple REST interface. Until now.
+> **Het vuile geheim**: De meeste "e-mail-API's" zijn gewoon verzend-API's. Je kunt mappen niet programmatisch ordenen, contacten synchroniseren of agenda's beheren via een eenvoudige REST-interface. Tot nu toe.
 
 ## Wat ontwikkelaars eigenlijk zeggen {#what-developers-are-actually-saying}
 
@@ -110,7 +110,7 @@ Het bewijs is overal:
 * **WordPress SMTP-problemen**: [631 GitHub-problemen](https://github.com/awesomemotive/WP-Mail-SMTP/issues) over mislukte e-mailbezorging
 * **Zapier-beperkingen**: [Klachten van de gemeenschap](https://community.zapier.com/featured-articles-65/email-parser-by-zapier-limitations-and-alternatives-16958) over limieten van 10 e-mails/uur en mislukte IMAP-detectie
 * **IMAP API-projecten**: [Meervoudig](https://github.com/ewildgoose/imap-api) [open source](https://emailengine.app/) [projecten](https://www.npmjs.com/package/imapflow) bestaan specifiek om "IMAP naar REST te converteren", omdat geen enkele provider dit aanbiedt
-* **Gmail API-frustraties**: [Stapeloverloop](https://stackoverflow.com/questions/tagged/gmail-api) heeft 4847 vragen met de tag "gmail-api" met veelvoorkomende klachten over snelheidslimieten en complexiteit
+* **Frustraties met de Gmail API**: [Stapeloverloop](https://stackoverflow.com/questions/tagged/gmail-api) heeft 4847 vragen met de tag "gmail-api" met veelvoorkomende klachten over snelheidslimieten en complexiteit
 
 ## De revolutionaire oplossing van Forward Email {#forward-emails-revolutionary-solution}
 
@@ -123,7 +123,7 @@ Dit is niet zomaar een verzendende API. Dit is volledige programmatische control
 * **Contacten**: [KaartDAV](https://tools.ietf.org/html/rfc6352) contactopslag en -synchronisatie
 * **Agenda's**: [CalDAV](https://tools.ietf.org/html/rfc4791) agenda-afspraken en planning
 
-### Waarom we dit {#why-we-built-this} hebben gebouwd
+### Waarom we deze {#why-we-built-this} hebben gebouwd
 
 **Het probleem**: Elke e-mailprovider behandelt e-mail als een black box. Je kunt e-mails versturen en misschien lezen met complexe OAuth, maar je kunt je e-mailgegevens niet echt programmatisch *beheren*.
 
@@ -170,11 +170,11 @@ curl -u "alias@yourdomain.com:password" \
 
 * `GET /v1/calendars` - Agenda-evenementen weergeven met datumfiltering
 * `POST /v1/calendars` - Agenda-evenement aanmaken met deelnemers en herhaling
-* `GET /v1/calendars/:id` - Gebeurtenisdetails ophalen met tijdzonebeheer
-* `PUT /v1/calendars/:id` - Gebeurtenis bijwerken met conflictdetectie
-* `DELETE /v1/calendars/:id` - Gebeurtenis verwijderen met deelnemersmeldingen
+* `GET /v1/calendars/:id` - Evenementdetails ophalen met tijdzonebeheer
+* `PUT /v1/calendars/:id` - Evenement bijwerken met conflictdetectie
+* `DELETE /v1/calendars/:id` - Evenement verwijderen met deelnemersmeldingen
 
-## Geavanceerd zoeken: Geen enkele andere service is vergelijkbaar met {#advanced-search-no-other-service-compares}
+## Geavanceerd zoeken: Geen andere service is vergelijkbaar met {#advanced-search-no-other-service-compares}
 
 **Forward Email is de enige e-mailservice die via een REST API een uitgebreide, programmatische zoekopdracht in alle berichtvelden biedt.**
 
@@ -209,7 +209,7 @@ Terwijl andere providers hooguit basisfiltering bieden, hebben wij de meest geav
 * ❌ Geen openbare API's
 * ❌ Geen programmatische zoekmogelijkheden
 
-### De revolutionaire zoek-API van Forward Email {#forward-emails-revolutionary-search-api}
+### Revolutionaire zoek-API van Forward Email {#forward-emails-revolutionary-search-api}
 
 **Wij bieden meer dan 15 zoekparameters die geen enkele andere service biedt:**
 
@@ -221,12 +221,12 @@ Terwijl andere providers hooguit basisfiltering bieden, hebben wij de meest geav
 | **Filtering op basis van grootte** | ✅ `?min_size=` & `?max_size=` | ❌ | ❌ | ❌ |
 | **Bijlagefiltering** | ✅ `?has_attachments=true/false` | ❌ | ❌ | ❌ |
 | **Koptekst zoeken** | ✅ `?headers=X-Priority` | ❌ | ❌ | ❌ |
-| **Zoeken op bericht-ID** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
+| **Bericht-ID zoeken** | ✅ `?message_id=abc123` | ❌ | ❌ | ❌ |
 | **Gecombineerde filters** | ✅ Meerdere parameters met EN-logica | ❌ | ❌ | ❌ |
 | **Hoofdlettergevoelig** | ✅ Alle zoekopdrachten | ✅ | ✅ | ❌ |
 | **Ondersteuning voor pagina-indeling** | ✅ Werkt met alle zoekparameters | ✅ | ✅ | ❌ |
 
-### Voorbeelden van zoekopdrachten in de praktijk {#real-world-search-examples}
+### Voorbeelden van zoekopdrachten in de echte wereld {#real-world-search-examples}
 
 **Vind alle facturen van het afgelopen kwartaal:**
 
@@ -362,7 +362,7 @@ if (searchConditions.length > 0) {
 ```
 
 > \[!TIP]
-> **Developer Advantage**: With Forward Email's search API, you can build email applications that rival desktop clients in functionality while maintaining the simplicity of REST APIs.
+> **Ontwikkelaarsvoordeel**: Met de zoek-API van Forward Email kunt u e-mailapplicaties bouwen die qua functionaliteit concurreren met desktopclients, terwijl u de eenvoud van REST API's behoudt.
 
 ## Razendsnelle prestatie-architectuur {#blazing-fast-performance-architecture}
 
@@ -398,11 +398,11 @@ graph LR
 
 ### Privacy-eerste architectuur {#privacy-first-architecture}
 
-**Zero-Knowledge Design**: Alleen u hebt toegang met uw IMAP-wachtwoord - wij kunnen uw e-mails niet lezen. Onze [zero-knowledge architectuur](https://forwardemail.net/en/security) garandeert volledige privacy en levert tegelijkertijd razendsnelle prestaties.
+**Zero-Knowledge Design**: Alleen jij hebt toegang met je IMAP-wachtwoord - wij kunnen je e-mails niet lezen. Onze [zero-knowledge architectuur](https://forwardemail.net/en/security) garandeert volledige privacy en levert tegelijkertijd razendsnelle prestaties.
 
 ## Waarom wij anders zijn: de volledige vergelijking {#why-were-different-the-complete-comparison}
 
-### Belangrijkste beperkingen van providers {#major-provider-limitations}
+### Belangrijke beperkingen voor aanbieders {#major-provider-limitations}
 
 | Aanbieder | Kernproblemen | Specifieke beperkingen |
 | ---------------- | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -413,12 +413,12 @@ graph LR
 | **Totaal** | Geen API, misleidende transparantie | • [No REST API for email management](https://tuta.com/support#technical)<br>• [Claims "open source"](https://tuta.com/blog/posts/open-source-email) maar [backend is closed](https://github.com/tutao/tutanota)<br>• [IMAP/SMTP not supported](https://tuta.com/support#imap)<br>• [Proprietary encryption](https://tuta.com/encryption) voorkomt standaardintegraties |
 | **Zapier-e-mail** | Ernstige tarieflimieten | • [10 emails per hour limit](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [No IMAP folder access](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives)<br>• [Limited parsing capabilities](https://help.zapier.com/hc/en-us/articles/8496181555597-Email-Parser-by-Zapier-limitations-and-alternatives) |
 
-### Voordelen van het doorsturen van e-mail {#forward-email-advantages}
+### Voordelen van doorsturen van e-mail {#forward-email-advantages}
 
 | Functie | E-mail doorsturen | Concurrentie |
 | ------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | **Volledige CRUD** | ✅ Volledig aanmaken, lezen, bijwerken en verwijderen voor alle gegevens | ❌ Alleen-lezen of beperkte bewerkingen |
-| **Unified API** | ✅ Berichten, mappen, contacten, agenda's in één API | ❌ Afzonderlijke API's of ontbrekende functies |
+| **Geünificeerde API** | ✅ Berichten, mappen, contacten, agenda's in één API | ❌ Afzonderlijke API's of ontbrekende functies |
 | **Eenvoudige autorisatie** | ✅ Basisverificatie met alias-inloggegevens | ❌ Complexe OAuth met meerdere scopes |
 | **Geen tarieflimieten** | ✅ Ruime limieten ontworpen voor echte toepassingen | ❌ Beperkende quota's die workflows verstoren |
 | **Zelfhosting** | ✅ [Complete self-hosting option](https://forwardemail.net/en/blog/docs/self-hosted-solution) | ❌ Alleen leveranciersbinding |
@@ -430,7 +430,7 @@ graph LR
 **ProtonMail en Tuta profileren zichzelf als "open source" en "transparant", maar dit is misleidende marketing die in strijd is met de moderne privacybeginselen.**
 
 > \[!WARNING]
-> **False Transparency Claims**: Both ProtonMail and Tuta prominently advertise their "open source" credentials while keeping their most critical server-side code proprietary and closed.
+> **Onjuiste transparantieclaims**: Zowel ProtonMail als Tuta adverteren prominent met hun "open source"-referenties, terwijl hun belangrijkste server-side code eigendom en gesloten blijft.
 
 **ProtonMail's Bedrog:**
 
@@ -464,9 +464,9 @@ In 2025 vereist echte privacy **volledige transparantie**. Wanneer e-mailprovide
 * ✅ **Geen vendor lock-in** - uw gegevens, uw controle
 
 > \[!TIP]
-> **Real open source means you can verify every claim.** With Forward Email, you can audit our encryption, review our data handling, and even run your own instance. That's true transparency.
+> **Echte open source betekent dat u elke claim kunt verifiëren.** Met Forward Email kunt u onze encryptie controleren, onze gegevensverwerking bekijken en zelfs uw eigen instance uitvoeren. Dat is échte transparantie.
 
-## 30+ voorbeelden van integratie uit de praktijk {#30-real-world-integration-examples}
+## 30+ Real-world integratievoorbeelden {#30-real-world-integration-examples}
 
 ### 1. Verbetering van WordPress-contactformulier {#1-wordpress-contact-form-enhancement}
 
@@ -526,7 +526,7 @@ for (const contact of newContacts) {
 
 ### 4. E-commerce orderverwerking {#4-e-commerce-order-processing}
 
-**Probleem**: Handmatige verwerking van order-e-mails voor [e-commerceplatforms](https://en.wikipedia.org/wiki/E-commerce)
+**Probleem**: Handmatige orderverwerking via e-mail voor [e-commerceplatforms](https://en.wikipedia.org/wiki/E-commerce)
 **Oplossing**: Geautomatiseerde orderbeheerpijplijn
 
 ```javascript
@@ -591,7 +591,7 @@ for (const msg of unsubscribes) {
 
 ### 7. E-mailgebaseerd takenbeheer {#7-email-based-task-management}
 
-**Probleem**: Overbelaste inbox en [taakregistratie](https://en.wikipedia.org/wiki/Task_management)
+**Probleem**: Overvolle inbox en [taakregistratie](https://en.wikipedia.org/wiki/Task_management)
 **Oplossing**: E-mails omzetten in uitvoerbare taken
 
 ```javascript
@@ -609,7 +609,7 @@ for (const email of messages) {
 
 ### 8. E-mailaggregatie voor meerdere accounts {#8-multi-account-email-aggregation}
 
-**Probleem**: Beheer van [meerdere e-mailaccounts](https://en.wikipedia.org/wiki/Email_client) tussen providers
+**Probleem**: [meerdere e-mailaccounts](https://en.wikipedia.org/wiki/Email_client) beheren voor meerdere providers
 **Oplossing**: Geïntegreerde inboxinterface
 
 ```javascript
@@ -677,7 +677,7 @@ analytics.complianceReview = complianceEmails.length;
 
 ### 10. Slimme e-mailarchivering {#10-smart-email-archiving}
 
-**Probleem**: Handleiding [e-mailorganisatie](https://en.wikipedia.org/wiki/Email_management)
+**Probleem**: Handmatige [e-mailorganisatie](https://en.wikipedia.org/wiki/Email_management)
 **Oplossing**: Intelligente e-mailcategorisering
 
 ```javascript
@@ -698,7 +698,7 @@ for (const email of oldEmails) {
 
 ### 11. Integratie van e-mail naar agenda {#11-email-to-calendar-integration}
 
-**Probleem**: Handmatige [kalendergebeurtenis](https://tools.ietf.org/html/rfc4791) aanmaak vanuit e-mails
+**Probleem**: Handmatige aanmaak van [kalendergebeurtenis](https://tools.ietf.org/html/rfc4791) vanuit e-mails
 **Oplossing**: Automatische extractie en aanmaak van gebeurtenissen
 
 ```javascript
@@ -788,7 +788,7 @@ await fetch('/v1/messages', {
 
 ### 15. E-mailgebaseerde workflowautomatisering {#15-email-based-workflow-automation}
 
-**Probleem**: Handleiding [goedkeuringsprocessen](https://en.wikipedia.org/wiki/Workflow) via e-mail
+**Probleem**: Handmatige [goedkeuringsprocessen](https://en.wikipedia.org/wiki/Workflow) via e-mail
 **Oplossing**: Geautomatiseerde workflowtriggers
 
 ```javascript
@@ -811,7 +811,7 @@ for (const approval of approvals) {
 ### 16. E-mailbeveiligingsbewaking {#16-email-security-monitoring}
 
 **Probleem**: Handmatige [detectie van beveiligingsbedreigingen](https://en.wikipedia.org/wiki/Email_security)
-**Oplossing**: Geautomatiseerde dreigingsanalyse
+**Oplossing**: Geautomatiseerde bedreigingsanalyse
 
 ```javascript
 // Monitor for suspicious emails
@@ -830,7 +830,7 @@ for (const email of recentEmails) {
 
 ### 17. E-mailgebaseerde enquêteverzameling {#17-email-based-survey-collection}
 
-**Probleem**: Handmatige [enquêterespons](https://en.wikipedia.org/wiki/Survey_methodology) verwerking
+**Probleem**: Handmatige verwerking van [enquêterespons](https://en.wikipedia.org/wiki/Survey_methodology)
 **Oplossing**: Geautomatiseerde responsaggregatie
 
 ```javascript
@@ -866,7 +866,7 @@ await updateDashboard(deliveryStats);
 
 ### 19. E-mailgebaseerde leadkwalificatie {#19-email-based-lead-qualification}
 
-**Probleem**: Handmatige [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) van e-mailinteracties
+**Probleem**: Handmatige [lead scoring](https://en.wikipedia.org/wiki/Lead_scoring) vanuit e-mailinteracties
 **Oplossing**: Geautomatiseerde leadkwalificatiepijplijn
 
 ```javascript
@@ -882,7 +882,7 @@ for (const prospect of prospects) {
 }
 ```
 
-### 20. E-mailgebaseerd projectmanagement {#20-email-based-project-management}
+### 20. E-mailgebaseerd projectbeheer {#20-email-based-project-management}
 
 **Probleem**: [Projectupdates](https://en.wikipedia.org/wiki/Project_management) verspreid over e-mailthreads
 **Oplossing**: Gecentraliseerde projectcommunicatiehub
@@ -933,10 +933,10 @@ for (const email of inventoryEmails) {
 }
 ```
 
-### 22. Factuurverwerking op basis van e-mail {#22-email-based-invoice-processing}
+### 22. E-mailgebaseerde factuurverwerking {#22-email-based-invoice-processing}
 
-**Probleem**: Handmatige [factuurverwerking](https://en.wikipedia.org/wiki/Invoice_processing) en boekhoudkundige integratie
-**Oplossing**: Geautomatiseerde factuurextractie en synchronisatie met het boekhoudsysteem
+**Probleem**: Handmatige integratie van [factuurverwerking](https://en.wikipedia.org/wiki/Invoice_processing) en boekhoudsysteem
+**Oplossing**: Geautomatiseerde factuurextractie en synchronisatie met boekhoudsystemen
 
 ```javascript
 // Extract invoice data from email attachments
@@ -964,7 +964,7 @@ for (const email of invoiceEmails) {
 
 ### 23. E-mailgebaseerde evenementregistratie {#23-email-based-event-registration}
 
-**Probleem**: Handmatige [evenementregistratie](https://en.wikipedia.org/wiki/Event_management) verwerking van e-mailreacties
+**Probleem**: Handmatige verwerking van [evenementregistratie](https://en.wikipedia.org/wiki/Event_management) vanuit e-mailreacties
 **Oplossing**: Geautomatiseerd deelnemersbeheer en agenda-integratie
 
 ```javascript
@@ -999,7 +999,7 @@ for (const registration of registrations) {
 
 ### 24. E-mailgebaseerde workflow voor documentgoedkeuring {#24-email-based-document-approval-workflow}
 
-**Probleem**: Complexe [documentgoedkeuring](https://en.wikipedia.org/wiki/Document_management_system) ketens via e-mail
+**Probleem**: Complexe [documentgoedkeuring](https://en.wikipedia.org/wiki/Document_management_system)-ketens via e-mail
 **Oplossing**: Geautomatiseerde goedkeuringsregistratie en documentversiebeheer
 
 ```javascript
@@ -1028,9 +1028,9 @@ for (const email of approvalEmails) {
 }
 ```
 
-### 25. E-mailgebaseerde analyse van klantfeedback {#25-email-based-customer-feedback-analysis}
+### 25. E-mailgebaseerde klantfeedbackanalyse {#25-email-based-customer-feedback-analysis}
 
-**Probleem**: Handmatige [feedback van klanten](https://en.wikipedia.org/wiki/Customer_feedback) verzameling en sentimentanalyse
+**Probleem**: Handmatige verzameling van [feedback van klanten](https://en.wikipedia.org/wiki/Customer_feedback) en sentimentanalyse
 **Oplossing**: Geautomatiseerde feedbackverwerking en sentimenttracking
 
 ```javascript
@@ -1096,7 +1096,7 @@ for (const application of applications) {
 
 ### 27. E-mailgebaseerde verwerking van onkostennota's {#27-email-based-expense-report-processing}
 
-**Probleem**: Handmatige [onkostennota](https://en.wikipedia.org/wiki/Expense_report) indiening en goedkeuring
+**Probleem**: Handmatige indiening en goedkeuring van [onkostennota](https://en.wikipedia.org/wiki/Expense_report)
 **Oplossing**: Geautomatiseerde workflow voor het extraheren en goedkeuren van onkosten
 
 ```javascript
@@ -1131,8 +1131,8 @@ for (const email of expenseEmails) {
 
 ### 28. E-mailgebaseerde kwaliteitsborgingsrapportage {#28-email-based-quality-assurance-reporting}
 
-**Probleem**: Handmatige [kwaliteitsborging](https://en.wikipedia.org/wiki/Quality_assurance) probleemregistratie
-**Oplossing**: Geautomatiseerd QA-probleembeheer en bugregistratie
+**Probleem**: Handmatige [kwaliteitsborging](https://en.wikipedia.org/wiki/Quality_assurance) issue tracking
+**Oplossing**: Geautomatiseerd QA issue management en bug tracking
 
 ```javascript
 // Process QA bug reports from email
@@ -1213,7 +1213,7 @@ for (const email of vendorEmails) {
 
 ### 30. E-mailgebaseerde monitoring van sociale media {#30-email-based-social-media-monitoring}
 
-**Probleem**: Handmatige [sociale media](https://en.wikipedia.org/wiki/Social_media_monitoring) vermeldingsregistratie en -respons
+**Probleem**: Handmatige tracking en reactie van [sociale media](https://en.wikipedia.org/wiki/Social_media_monitoring)-vermeldingen
 **Oplossing**: Geautomatiseerde verwerking van social media-meldingen en coördinatie van reacties
 
 ```javascript
@@ -1258,7 +1258,7 @@ for (const alert of socialAlerts) {
 
 ## Aan de slag {#getting-started}
 
-### 1. Maak uw doorstuur-e-mailaccount aan {#1-create-your-forward-email-account}
+### 1. Maak uw doorstuur-e-mailaccount {#1-create-your-forward-email-account}
 
 Meld u aan op [forwardemail.net](https://forwardemail.net) en verifieer uw domein.
 
@@ -1289,7 +1289,7 @@ Bezoek [forwardemail.net/en/email-api](https://forwardemail.net/en/email-api) vo
 
 * **[Volledige API-documentatie](https://forwardemail.net/en/email-api)** - Interactieve OpenAPI 3.0-specificatie
 * **[Zelfhostinggids](https://forwardemail.net/en/blog/docs/self-hosted-solution)** - Implementeer Forward Email op uw infrastructuur
-* **[Beveiligingswhitepaper](https://forwardemail.net/technical-whitepaper.pdf)** - Technische architectuur- en beveiligingsdetails
+* **[Beveiligingswhitepaper](https://forwardemail.net/technical-whitepaper.pdf)** - Technische architectuur en beveiligingsdetails
 * **[GitHub-repository](https://github.com/forwardemail/forwardemail.net)** - Open-source codebase
 * **[Ontwikkelaarsondersteuning](mailto:api@forwardemail.net)** - Directe toegang tot ons engineeringteam
 

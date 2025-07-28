@@ -12,11 +12,11 @@
 
 ## Om videresending av e-post {#about-forward-email}
 
-Forward Email er den eneste e-posthostingstjenesten med 100 % åpen kildekode og fokus på sikkerhet og personvern. Lær mer om historien vår på [vår Om-side](/about).
+Forward Email er den eneste e-posttjenesten med 100 % åpen kildekode og fokus på sikkerhet og personvern. Lær mer om historien vår på [vår Om-side](/about).
 
-Tjenesten vår ble grunnlagt i 2017 og driver e-post for over 500 000 domener – inkludert kjente brukere som [Det amerikanske marineakademiet](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux-stiftelsen](/blog/docs/linux-foundation-email-enterprise-case-study), [flere universiteter](/blog/docs/alumni-email-forwarding-university-case-study) og myndigheter, med flere.
+Tjenesten vår ble grunnlagt i 2017 og driver e-post for over 500 000 domener – inkludert kjente brukere som [Det amerikanske marineakademiet](/blog/docs/federal-government-email-service-section-889-compliant), [Kanonisk/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Linux-stiftelsen](/blog/docs/linux-foundation-email-enterprise-case-study), [flere universiteter](/blog/docs/alumni-email-forwarding-university-case-study) og myndigheter, med flere.
 
-Målet vårt er å være en e-post- og sikkerhetsinfrastrukturplattform i bedriftsklassen – og vi overholder [flere prinsipper](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Målet vårt er å være en plattform for e-post og sikkerhetsinfrastruktur i bedriftsklassen – og vi overholder [flere prinsipper](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
 Hvis du er pressemedarbeider, journalist eller medierepresentant og ønsker å snakke med oss, stille spørsmål eller lære mer, kan du kontakte oss på `press@forwardemail.net`.
 

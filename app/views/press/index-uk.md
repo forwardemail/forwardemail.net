@@ -1,4 +1,4 @@
-# Прес- та медіа-кіт {#press--media-kit}
+# Прес-кіт та медіа-комплект {#press--media-kit}
 
 <img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
@@ -10,21 +10,21 @@
 * [Логотипи](#logos)
 * [Графіка](#graphics)
 
-## Про пересилання електронних листів {#about-forward-email}
+## Про пересилання електронної пошти {#about-forward-email}
 
 Forward Email – це єдиний сервіс хостингу електронної пошти зі 100% відкритим кодом, орієнтований на безпеку та конфіденційність. Дізнайтеся більше про нашу історію на [наша сторінка «Про нас»](/about).
 
-Наш сервіс було засновано у 2017 році та обслуговує електронну пошту для понад 500 000 доменів, включаючи таких відомих користувачів, як [Військово-морська академія США](/blog/docs/federal-government-email-service-section-889-compliant), [Canonical/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Фонд Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [кілька університетів](/blog/docs/alumni-email-forwarding-university-case-study), уряди тощо.
+Наш сервіс було засновано у 2017 році та обслуговує електронну пошту для понад 500 000 доменів, включаючи таких відомих користувачів, як [Військово-морська академія США](/blog/docs/federal-government-email-service-section-889-compliant), [Канонічний/Ubuntu](/blog/docs/canonical-ubuntu-email-enterprise-case-study), Netflix Games, [Фонд Linux](/blog/docs/linux-foundation-email-enterprise-case-study), [кілька університетів](/blog/docs/alumni-email-forwarding-university-case-study), уряди тощо.
 
-Наша мета — бути платформою корпоративного рівня для інфраструктури електронної пошти та безпеки, і ми дотримуємося [кілька принципів](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
+Наша мета — стати платформою корпоративного рівня для інфраструктури електронної пошти та безпеки, і ми дотримуємося [кілька принципів](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service#principles).
 
 Якщо ви є представником преси, журналістом або представником ЗМІ та хочете поспілкуватися з нами, поставити запитання або дізнатися більше, будь ласка, зв’яжіться з нами за адресою `press@forwardemail.net`.
 
 ## Шрифти {#fonts}
 
-* **Логотип:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (жирний; 700 вага)
-* **Основна частина:** [Nunito Sans](https://fonts.google.com/specimen/Nunito+Sans) (звичайний; 400 вага)
-* **Заголовки:** [Мед VC](https://verycoolstudio.com/typefaces/honey) (жирний; 700 вага)
+* **Логотип:** [Нуніто Санс](https://fonts.google.com/specimen/Nunito+Sans) (жирний; 700 шт.)
+* **Основна частина:** [Нуніто Санс](https://fonts.google.com/specimen/Nunito+Sans) (звичайний; 400 шт.)
+* **Заголовки:** [Мед VC](https://verycoolstudio.com/typefaces/honey) (жирний; 700 шт.)
 * **Значки:** [Шрифт Awesome 5](https://fontawesome.com/)
 
 ## Кольори {#colors}

@@ -1,8 +1,8 @@
-# Self-Hosted Releases {#self-hosted-releases}
+# Versiones autoalojadas {#self-hosted-releases}
 
 Esta sección documenta el flujo de trabajo de CI/CD para la solución autohospedada de ForwardEmail y explica cómo se crean, publican e implementan las imágenes de Docker.
 
-## Table of Contents {#table-of-contents}
+## Tabla de contenido {#table-of-contents}
 
 * [Descripción general](#overview)
 * [Flujo de trabajo de CI/CD](#cicd-workflow)
@@ -19,25 +19,25 @@ Esta sección documenta el flujo de trabajo de CI/CD para la solución autohospe
 * [Acceso a imágenes](#accessing-images)
 * [Contribuyendo](#contributing)
 
-## Overview {#overview}
+## Descripción general {#overview}
 
 La solución autoalojada de ForwardEmail utiliza GitHub Actions para generar y publicar automáticamente imágenes de Docker cada vez que se crea una nueva versión. Estas imágenes están disponibles para que los usuarios las implementen en sus propios servidores mediante el script de configuración proporcionado.
 
 > \[!NOTE]
-> There is also our [self-hosted blog](https://forwardemail.net/blog/docs/self-hosted-solution) and [self-hosted developer guide](https://forwardemail.net/self-hosted)
+> También existen nuestros [blog autoalojado](https://forwardemail.net/blog/docs/self-hosted-solution) y [guía para desarrolladores autoalojados](https://forwardemail.net/self-hosted)
 >
-> And for the more broken down step-by-step versions see the [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) or [Debian](https://forwardemail.net/guides/selfhosted-on-debian) based guides.
+> Para ver las versiones paso a paso más detalladas, consulte las guías basadas en [Ubuntu](https://forwardemail.net/guides/selfhosted-on-ubuntu) o [Debian](https://forwardemail.net/guides/selfhosted-on-debian).
 
-## CI/CD Workflow {#cicd-workflow}
+## Flujo de trabajo de CI/CD {#cicd-workflow}
 
-### GitHub Actions Workflow {#github-actions-workflow}
+### Flujo de trabajo de acciones de GitHub {#github-actions-workflow}
 
 El proceso de creación y publicación de imágenes Docker autoalojadas se define en `.github/workflows/docker-image-build-publish.yml`. Este flujo de trabajo:
 
 1. **Disparadores**: Se ejecuta automáticamente al publicar una nueva versión de GitHub.
 2. **Entorno**: Se ejecuta en Ubuntu con Node.js 18.20.4.
 3. **Proceso de compilación**:
-* Extrae el código del repositorio.
+* Verifica el código del repositorio.
 * Configura Docker Buildx para compilaciones multiplataforma.
 * Inicia sesión en el Registro de Contenedores de GitHub (GHCR).
 * Actualiza el esquema para la implementación autoalojada.
@@ -69,7 +69,7 @@ jobs:
           docker push ghcr.io/${{ github.repository }}-selfhosted:latest
 ```
 
-### Estructura de la imagen de Docker {#docker-image-structure}
+### Estructura de imagen de Docker {#docker-image-structure}
 
 La imagen de Docker se crea utilizando un enfoque de múltiples etapas definido en `self-hosting/Dockerfile-selfhosted`:
 
@@ -161,11 +161,11 @@ Los certificados SSL se gestionan automáticamente con opciones para:
 Cada lanzamiento de GitHub crea una nueva imagen de Docker etiquetada con:
 
 1. La versión de lanzamiento específica (p. ej., `v1.0.0`)
-2. La etiqueta `latest` de la versión más reciente
+2. La etiqueta `latest` para la versión más reciente
 
 Los usuarios pueden elegir utilizar una versión específica para mayor estabilidad o la etiqueta `latest` para obtener siempre las funciones más nuevas.
 
-## Acceso a imágenes {#accessing-images}
+## Accediendo a imágenes {#accessing-images}
 
 Las imágenes de Docker están disponibles públicamente en:
 
@@ -178,7 +178,7 @@ No se requiere autenticación para extraer estas imágenes.
 
 Para contribuir a la solución autohospedada:
 
-1. Modifique los archivos relevantes en el directorio `self-hosting`
-2. Pruebe localmente o en un VPS basado en Ubuntu usando el script `setup.sh` proporcionado
-3. Envíe una solicitud de incorporación de cambios
+1. Modifique los archivos relevantes en el directorio `self-hosting`.
+2. Pruebe localmente o en un VPS basado en Ubuntu usando el script `setup.sh` proporcionado.
+3. Envíe una solicitud de incorporación de cambios.
 4. Una vez fusionada la imagen y creada una nueva versión, el flujo de trabajo de integración continua compilará y publicará automáticamente la imagen de Docker actualizada.

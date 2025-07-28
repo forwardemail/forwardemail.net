@@ -5,10 +5,10 @@
 <p class="lead mt-3">Hoewel veel e-mailstartups miljoenen hebben geïnvesteerd in het oplossen van vermeende problemen, richten wij ons bij <a href="https://forwardemail.net">Forward Email</a> sinds 2017 op het vanaf nul opbouwen van een betrouwbare e-mailinfrastructuur. Deze analyse onderzoekt de patronen achter de resultaten van e-mailstartups en de fundamentele uitdagingen van e-mailinfrastructuur.</p>
 
 > \[!NOTE]
-> **Key Insight**: Most email startups don't build actual email infrastructure from scratch. Many build on top of existing solutions like Amazon SES or open-source systems like Postfix. The core protocols work well - the challenge is in the implementation.
+> **Belangrijk inzicht**: De meeste e-mailstartups bouwen geen daadwerkelijke e-mailinfrastructuur vanaf nul. Veel bouwen voort op bestaande oplossingen zoals Amazon SES of open-sourcesystemen zoals Postfix. De kernprotocollen werken goed - de uitdaging zit in de implementatie.
 
 > \[!TIP]
-> **Technical Deep Dive**: For comprehensive details on our approach, architecture, and security implementation, see our [Forward Email Technical Whitepaper](https://forwardemail.net/technical-whitepaper.pdf) and [About page](https://forwardemail.net/en/about) which documents our complete development timeline since 2017.
+> **Technische verdieping**: Voor uitgebreide details over onze aanpak, architectuur en beveiligingsimplementatie, zie onze [Technisch whitepaper over het doorsturen van e-mails](https://forwardemail.net/technical-whitepaper.pdf) en [Over pagina](https://forwardemail.net/en/about), waarin onze volledige ontwikkelingstijdlijn sinds 2017 wordt beschreven.
 
 ## Inhoudsopgave {#table-of-contents}
 
@@ -99,7 +99,7 @@
 ## De matrix voor mislukte e-mailstarts {#the-email-startup-failure-matrix}
 
 > \[!CAUTION]
-> **Failure Rate Alert**: [Techstars alone has 28 email-related companies](https://www.techstars.com/portfolio) with only 5 exits - an exceedingly high failure rate (sometimes calculated to be 80%+).
+> **Waarschuwing voor faalpercentage**: [Techstars alleen al heeft 28 e-mailgerelateerde bedrijven](https://www.techstars.com/portfolio) met slechts 5 exits - een extreem hoog faalpercentage (soms berekend op 80%+).
 
 Hieronder staan alle grote mislukkingen van e-mailstartups die we konden vinden, gesorteerd op accelerator, financiering en resultaat:
 
@@ -120,7 +120,7 @@ Hieronder staan alle grote mislukkingen van e-mailstartups die we konden vinden,
 ## De infrastructuur-realiteitscheck {#the-infrastructure-reality-check}
 
 > \[!WARNING]
-> **The Hidden Truth**: Every single "email startup" is just building UI on top of existing infrastructure. They're not building actual email servers - they're building apps that connect to real email infrastructure.
+> **De verborgen waarheid**: Elke "e-mailstartup" bouwt slechts een gebruikersinterface bovenop de bestaande infrastructuur. Ze bouwen geen echte e-mailservers - ze bouwen apps die verbinding maken met een echte e-mailinfrastructuur.
 
 ### Wat voert e-mail eigenlijk uit {#what-actually-runs-email}
 
@@ -157,17 +157,17 @@ graph LR
 ```
 
 > \[!TIP]
-> **Key Pattern for Email Success**: The companies that actually succeed in email don't try to reinvent the wheel. Instead, they build **infrastructure and tools that enhance** existing email workflows. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), and [Postmark](https://postmarkapp.com/) became billion-dollar companies by providing reliable SMTP APIs and delivery services - they work **with** email protocols, not against them. This is the same approach we take at Forward Email.
+> **Belangrijk patroon voor e-mailsucces**: De bedrijven die daadwerkelijk succesvol zijn in e-mail, proberen het wiel niet opnieuw uit te vinden. In plaats daarvan bouwen ze **infrastructuur en tools die** bestaande e-mailworkflows verbeteren. [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/) en [Poststempel](https://postmarkapp.com/) zijn miljardenbedrijven geworden door betrouwbare SMTP API's en bezorgservices te bieden - ze werken **met** e-mailprotocollen, niet ertegen. Dit is dezelfde aanpak die we bij Forward Email hanteren.
 
 ## Waarom de meeste e-mailstartups mislukken {#why-most-email-startups-fail}
 
 > \[!IMPORTANT]
-> **The Fundamental Pattern**: Email *client* startups typically fail because they try to replace working protocols, while email *infrastructure* companies can succeed by enhancing existing workflows. The key is understanding what users actually need versus what entrepreneurs think they need.
+> **Het fundamentele patroon**: Startups die zich richten op e-mailclients mislukken meestal omdat ze proberen werkende protocollen te vervangen, terwijl bedrijven die zich richten op e-mailinfrastructuur succesvol kunnen zijn door bestaande workflows te verbeteren. De sleutel is te begrijpen wat gebruikers daadwerkelijk nodig hebben en wat ondernemers denken dat ze nodig hebben.
 
 ### 1. E-mailprotocollen werken, implementatie vaak niet {#1-email-protocols-work-implementation-often-doesnt}
 
 > \[!NOTE]
-> **Email Statistics**: [347.3 billion emails sent daily](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) without major issues, serving [4.37 billion email users worldwide](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) as of 2023.
+> **E-mailstatistieken**: [347,3 miljard e-mails per dag verzonden](https://www.statista.com/statistics/456500/daily-number-of-e-mails-worldwide/) zonder grote problemen, in dienst van [4,37 miljard e-mailgebruikers wereldwijd](https://www.statista.com/statistics/255080/number-of-e-mail-users-worldwide/) vanaf 2023.
 
 De kernprotocollen voor e-mail zijn solide, maar de kwaliteit van de implementatie varieert sterk:
 
@@ -205,7 +205,7 @@ Voor het bouwen van een echte e-mailinfrastructuur is het volgende nodig:
 * **SMTP-servers**: Complexe levering en [reputatiemanagement](https://postmarkapp.com/blog/monitoring-your-email-delivery-and-reputation)
 * **Spamfiltering**: Constant in ontwikkeling [dreigingslandschap](https://www.spamhaus.org/)
 * **Opslagsystemen**: Betrouwbare implementatie van [IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
-* **Authenticatie**: [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489), [ARC](https://tools.ietf.org/html/rfc8617) compliance
+* **Authenticatie**: Naleving van [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208), [DMARC](https://tools.ietf.org/html/rfc7489) en [ARC](https://tools.ietf.org/html/rfc8617)
 * **Leverbaarheid**: ISP-relaties en [reputatiemanagement](https://sendgrid.com/blog/what-is-email-deliverability/)
 
 ### 5. De infrastructuur bestaat al {#5-the-infrastructure-already-exists}
@@ -230,15 +230,15 @@ Skiff is een prachtig voorbeeld van wat er allemaal mis is met e-mailstartups.
 * **Financiering**: [Aanzienlijke durfkapitaalinvesteringen](https://techcrunch.com/2022/03/30/skiff-series-a-encrypted-workspaces/)
 * **Belofte**: Betere e-mail door privacy en encryptie
 
-#### De overname {#the-acquisition}
+#### De acquisitie {#the-acquisition}
 
-[Notion nam Skiff over in februari 2024](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) met de typische acquisitiebeloftes over integratie en doorontwikkeling.
+[Notion nam Skiff in februari 2024 over](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/) met typische acquisitiebeloftes over integratie en doorontwikkeling.
 
 #### De realiteit {#the-reality}
 
 * **Onmiddellijke uitschakeling**: [Skiff binnen enkele maanden gesloten](https://en.wikipedia.org/wiki/Skiff_\(email_service\))
-* **Uitstroom van oprichters**: [De oprichters van Skiff verlieten Notion en sloten zich aan bij Cursor](https://x.com/skeptrune/status/1939763513695903946)
-* **Gebruikers verlaten hun site**: Duizenden gebruikers gedwongen te migreren
+* **Oprichters vertrekken**: [De oprichters van Skiff verlieten Notion en sloten zich aan bij Cursor](https://x.com/skeptrune/status/1939763513695903946)
+* **Gebruikers verlaten**: Duizenden gebruikers gedwongen te migreren
 
 ### De Accelerator-analyse {#the-accelerator-analysis}
 
@@ -248,8 +248,8 @@ Skiff is een prachtig voorbeeld van wat er allemaal mis is met e-mailstartups.
 
 * **[E-mail](https://www.ycdb.co/company/emailio)** (2014): Mobiele e-mailclient → overgestapt op 'wellness'
 * **[MailTime](https://www.ycdb.co/company/mailtime)** (2016): Chat-stijl e-mail → overgestapt op analytics
-* **[opnieuw mailen](https://www.ycombinator.com/companies/remail)** (2009): iPhone-e-mail zoeken → [overgenomen door Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → stopzetting
-* **[Rapportief](https://www.ycombinator.com/companies/rapportive)** (2012): Gmail sociale profielen → [overgenomen door LinkedIn](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → stopzetting
+* **[opnieuw mailen](https://www.ycombinator.com/companies/remail)** (2009): E-mail zoeken op iPhone → [overgenomen door Google](https://techcrunch.com/2010/02/17/google-remail-iphone/) → stopgezet
+* **[Rapportief](https://www.ycombinator.com/companies/rapportive)** (2012): Sociale profielen in Gmail → [overgenomen door LinkedIn](https://techcrunch.com/2012/02/22/rapportive-linkedin-acquisition/) → stopgezet
 
 **Succespercentage**: Gemengde resultaten met enkele opvallende exits. Verschillende bedrijven hebben succesvolle overnames gerealiseerd (reMail naar Google, Rapportive naar LinkedIn), terwijl andere zich hebben teruggetrokken uit e-mail of zijn overgenomen voor talent.
 
@@ -259,7 +259,7 @@ Skiff is een prachtig voorbeeld van wat er allemaal mis is met e-mailstartups.
 
 * **[E-mail Copilot](https://www.validity.com/everest/returnpath/)** (2012): Verkregen → afgesloten
 * **[BeantwoordenVerzenden](https://www.crunchbase.com/organization/replysend)** (2012): Volledig mislukt
-* **[Omhuld](https://www.crunchbase.com/organization/nveloped)** (2012): "Easy. Secure. Email" → mislukt
+* **[Omhuld](https://www.crunchbase.com/organization/nveloped)** (2012): "Eenvoudig. Veilig. E-mail" → mislukt
 * **[Mengelmoes](https://www.crunchbase.com/organization/jumble/technology)** (2015): E-mailversleuteling → mislukt
 * **[InboxFever](https://www.crunchbase.com/organization/inboxfever)** (2011): E-mail-API → mislukt
 
@@ -268,7 +268,7 @@ Skiff is een prachtig voorbeeld van wat er allemaal mis is met e-mailstartups.
 ### De valkuil van durfkapitaal {#the-venture-capital-trap}
 
 > \[!CAUTION]
-> **VC Funding Paradox**: VCs love email startups because they sound simple but are actually impossible. The fundamental assumptions that attract investment are exactly what guarantee failure.
+> **Paradox van VC-financiering**: VC's zijn dol op e-mailstartups omdat ze simpel klinken, maar in werkelijkheid onmogelijk zijn. De fundamentele aannames die investeringen aantrekken, zijn precies wat mislukking garandeert.
 
 VC's zijn dol op e-mailstartups, omdat ze eenvoudig klinken, maar in werkelijkheid onmogelijk zijn:
 
@@ -314,13 +314,13 @@ graph LR
 **Geheugenexplosie**: De meeste e-mail-apps zijn op Electron gebaseerde web-apps die enorme hoeveelheden RAM verbruiken:
 
 * **[Mailspring](https://getmailspring.com/)**: [500 MB+ voor basis-e-mail](https://github.com/Foundry376/Mailspring/issues/1758)
-* **Nylas Mail**: [1GB+ geheugengebruik](https://github.com/nylas/nylas-mail/issues/3501) vóór afsluiten
+* **Nylas Mail**: [1GB+ geheugengebruik](https://github.com/nylas/nylas-mail/issues/3501) vóór afsluiting
 * **[Brievenbus](https://www.postbox-inc.com/)**: [300 MB+ inactief geheugen](https://forums.macrumors.com/threads/postbox-why-does-it-take-up-so-much-ram.1411335/)
 * **[Canarische post](https://canarymail.io/)**: [Regelmatige crashes vanwege geheugenproblemen](https://www.reddit.com/r/CanaryMail/comments/10pe7jf/canary_is_crashing_on_all_my_devices/)
 * **[Dondervogel](https://www.thunderbird.net/)**: [Hoog RAM-gebruik tot 90%](https://www.reddit.com/r/Thunderbird/comments/141s473/high_ram_usage_up_to\_90/) van het systeemgeheugen
 
 > \[!WARNING]
-> **Electron Performance Crisis**: Modern email clients built with Electron and React Native suffer from severe memory bloat and performance issues. These cross-platform frameworks, while convenient for developers, create resource-heavy applications that consume hundreds of megabytes to gigabytes of RAM for basic email functionality.
+> **Electron-prestatiecrisis**: Moderne e-mailclients die gebouwd zijn met Electron en React Native kampen met ernstige geheugenproblemen en prestatieproblemen. Deze platformonafhankelijke frameworks zijn weliswaar handig voor ontwikkelaars, maar creëren applicaties die veel resources verbruiken en honderden megabytes tot gigabytes RAM verbruiken voor basisfunctionaliteit voor e-mail.
 
 **Batterijverbruik**: Constante synchronisatie en inefficiënte code:
 
@@ -369,7 +369,7 @@ flowchart TD
 
 **Fouten in client-app**:
 
-* **Mailbox → Dropbox → Afsluiten** (2013-2015)
+* **Postbus → Dropbox → Afsluiten** (2013-2015)
 * **[Sparrow → Google → Afsluiten](https://www.theverge.com/2012/7/20/3172365/sources-google-sparrow-25-million-gmail-client)** (2012-2013)
 * **[reMail → Google → Afsluiten](https://techcrunch.com/2010/02/17/google-remail-iphone/)** (2010-2011)
 * **[Skiff → Notion → Afsluiten](https://techcrunch.com/2024/02/09/notion-acquires-privacy-focused-productivity-platform-skiff/)** (2024)
@@ -384,9 +384,9 @@ flowchart TD
 * **[Mailgun → Sinch](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021): Strategische integratie
 * **[Poststempel → Actieve campagne](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022): Verbeterd platform
 
-## Evolutie en consolidatie van de industrie {#industry-evolution-and-consolidation}
+## Industrie-evolutie en consolidatie {#industry-evolution-and-consolidation}
 
-### Natuurlijke industriële ontwikkeling {#natural-industry-progression}
+### Natuurlijke industriële progressie {#natural-industry-progression}
 
 De e-mailindustrie is op natuurlijke wijze geëvolueerd naar consolidatie, waarbij grote bedrijven kleinere bedrijven overnemen om functies te integreren of de concurrentie uit te schakelen. Dit is niet per se negatief – het is hoe de meeste volwassen industrieën zich ontwikkelen.
 
@@ -399,7 +399,7 @@ Wanneer e-mailbedrijven worden overgenomen, worden gebruikers vaak geconfronteer
 * **Prijsaanpassingen**: Verschillende abonnementsmodellen
 * **Integratieperioden**: Tijdelijke serviceonderbrekingen
 
-### Overwegingen voor gebruikers tijdens overgangen {#user-considerations-during-transitions}
+### Gebruikersoverwegingen tijdens overgangen {#user-considerations-during-transitions}
 
 Tijdens de consolidatie van de sector profiteren gebruikers van:
 
@@ -407,7 +407,7 @@ Tijdens de consolidatie van de sector profiteren gebruikers van:
 * **Inzicht in migratiepaden**: De meeste diensten bieden exporttools
 * **Rekening houden met stabiliteit op lange termijn**: Gevestigde aanbieders bieden vaak meer continuïteit
 
-## De realiteitscheck van Hacker News {#the-hacker-news-reality-check}
+## De Hacker News Reality Check {#the-hacker-news-reality-check}
 
 Elke e-mailstartup krijgt dezelfde opmerkingen over [Hacker Nieuws](https://news.ycombinator.com/):
 
@@ -418,7 +418,7 @@ Elke e-mailstartup krijgt dezelfde opmerkingen over [Hacker Nieuws](https://news
 
 **De community heeft gelijk**. Deze reacties verschijnen bij elke lancering van een e-mailstartup, omdat de fundamentele problemen altijd hetzelfde zijn.
 
-## De moderne AI-e-mailfraude {#the-modern-ai-email-grift}
+## De moderne AI-e-mailgrift {#the-modern-ai-email-grift}
 
 ### De nieuwste golf {#the-latest-wave}
 
@@ -458,10 +458,10 @@ Het toevoegen van 'AI' lost de fundamentele uitdagingen niet op:
 * **Wij**: 7+ jaar, winstgevend, groeiend
 
 > \[!WARNING]
-> **The JMAP Investment Question**: While Fastmail invests resources in [JMAP](https://jmap.io/), a protocol that's [10+ years old with limited adoption](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790), they simultaneously [refuse to implement PGP encryption](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) that many users request. This represents a strategic choice to prioritize protocol innovation over user-requested features. Whether JMAP will gain broader adoption remains to be seen, but the current email client ecosystem continues to rely primarily on IMAP/SMTP.
+> **De JMAP-investeringsvraag**: Fastmail investeert weliswaar in [JMAP](https://jmap.io/), een protocol dat [10+ jaar oud met beperkte adoptie](https://github.com/zone-eu/wildduck/issues/2#issuecomment-1765190790) is, maar tegelijkertijd ook in [weigeren PGP-encryptie te implementeren](https://www.fastmail.com/blog/why-we-dont-offer-pgp/), een protocol dat veel gebruikers aanvragen. Dit is een strategische keuze om protocolinnovatie voorrang te geven boven door gebruikers gevraagde functies. Of JMAP breder zal worden toegepast, valt nog te bezien, maar het huidige ecosysteem van e-mailclients blijft voornamelijk afhankelijk van IMAP/SMTP.
 
 > \[!TIP]
-> **Enterprise Success**: Forward Email powers [alumni email solutions for top universities](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), including the University of Cambridge with 30,000 alumni addresses, delivering $87,000 in annual cost savings compared to traditional solutions.
+> **Succes voor ondernemingen**: Forward Email ondersteunt [alumni-e-mailoplossingen voor topuniversiteiten](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), waaronder de Universiteit van Cambridge met 30.000 alumni-adressen, wat een jaarlijkse kostenbesparing van $ 87.000 oplevert ten opzichte van traditionele oplossingen.
 
 **Patroon**: Ze verbeteren e-mail, maar vervangen het niet.
 
@@ -476,9 +476,9 @@ Het toevoegen van 'AI' lost de fundamentele uitdagingen niet op:
 * **Gericht op integratie**: Werkte met bestaande workflows
 * **Focus op bedrijven**: Gericht op zakelijke gebruikers met echte knelpunten
 
-**Het succes**: [Xobni werd in 2013 voor 60 miljoen dollar overgenomen door Yahoo](https://en.wikipedia.org/wiki/Xobni), dat een solide rendement voor investeerders en een succesvolle exit voor oprichters oplevert.
+**Het succes**: [Xobni werd in 2013 voor 60 miljoen dollar overgenomen door Yahoo](https://en.wikipedia.org/wiki/Xobni), dat een solide rendement voor investeerders en een succesvolle exit voor oprichters biedt.
 
-#### Waarom Xobni succesvol was waar anderen faalden {#why-xobni-succeeded-where-others-failed}
+#### Waarom Xobni slaagde waar anderen faalden {#why-xobni-succeeded-where-others-failed}
 
 1. **Gebouwd op een bewezen infrastructuur**: Gebruikte de bestaande e-mailverwerking van Outlook
 2. **Echte problemen opgelost**: Contactbeheer was echt kapot
@@ -489,7 +489,7 @@ Het toevoegen van 'AI' lost de fundamentele uitdagingen niet op:
 
 [Matt Brezina](https://www.linkedin.com/in/mattbrezina/) en [Adam Smith](https://www.linkedin.com/in/adamjsmith/) stopten niet na Xobni:
 
-* **Matt Brezina**: Werd een actieve [investeerder](https://mercury.com/investor-database/matt-brezina) met investeringen in Dropbox, Mailbox en andere
+* **Matt Brezina**: Werd een actieve [investeerder](https://mercury.com/investor-database/matt-brezina) met investeringen in Dropbox, Mailbox en andere bedrijven
 * **Adam Smith**: Blijft succesvolle bedrijven bouwen in de productiviteitssector
 * **Beide oprichters**: Hebben aangetoond dat e-mailsucces voortkomt uit verbetering, niet uit vervanging
 
@@ -500,7 +500,7 @@ Bedrijven zijn succesvol met e-mail als ze:
 1. **Infrastructuur bouwen** ([SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/))
 2. **Bestaande workflows verbeteren** ([Hobney](https://en.wikipedia.org/wiki/Xobni), [FastMail](https://www.fastmail.com/))
 3. **Focus op betrouwbaarheid** ([Amazon SES](https://aws.amazon.com/ses/), [Poststempel](https://postmarkapp.com/))
-4. **Ontwikkelaars bedienen** (API's en tools, geen eindgebruikersapps)
+4. **Ontwikkelaars bedienen** (API's en tools, geen apps voor eindgebruikers)
 
 ## Heeft iemand e-mail met succes opnieuw uitgevonden? {#has-anyone-successfully-reinvented-email}
 
@@ -519,7 +519,7 @@ Een blik op e-mailinnovaties van de afgelopen 20 jaar:
 
 ### Nieuwe tools vullen e-mail aan (maar vervangen het niet) {#new-tools-complement-email-but-dont-replace-it}
 
-* **[Slack](https://slack.com/)**: Geweldig voor teamchat, maar stuurt nog steeds e-mailmeldingen
+* **[Slack](https://slack.com/)**: Ideaal voor teamchat, maar stuurt ook e-mailmeldingen
 * **[Meningsverschil](https://discord.com/)**: Uitstekend voor communities, maar gebruikt e-mail voor accountbeheer
 * **[WhatsApp](https://www.whatsapp.com/)**: Perfect voor berichten, maar bedrijven gebruiken nog steeds e-mail
 * **[Zoom](https://zoom.us/)**: Essentieel voor videogesprekken, maar uitnodigingen voor vergaderingen komen via e-mail
@@ -527,7 +527,7 @@ Een blik op e-mailinnovaties van de afgelopen 20 jaar:
 ### Het HEY-experiment {#the-hey-experiment}
 
 > \[!IMPORTANT]
-> **Real-World Validation**: HEY's founder [DHH](https://dhh.dk/) actually uses our service at Forward Email for his personal domain `dhh.dk` and has for several years, demonstrating that even email innovators rely on proven infrastructure.
+> **Validatie in de praktijk**: De oprichter van HEY, [DHH](https://dhh.dk/), maakt al jaren gebruik van onze service bij Forward Email voor zijn persoonlijke domein `dhh.dk`, wat aantoont dat zelfs e-mailinnovatoren vertrouwen op bewezen infrastructuur.
 
 [HEY](https://hey.com/) van [Basiskamp](https://basecamp.com/) vertegenwoordigt de meest serieuze recente poging om e-mail "opnieuw uit te vinden":
 
@@ -536,7 +536,7 @@ Een blik op e-mailinnovaties van de afgelopen 20 jaar:
 * **Ontvangst**: Gemengd - sommigen zijn er dol op, de meesten houden vast aan hun bestaande e-mail
 * **Realiteit**: Het is nog steeds e-mail (SMTP/IMAP) met een andere interface
 
-### Wat echt werkt {#what-actually-works}
+### Wat werkt echt {#what-actually-works}
 
 De meest succesvolle e-mailinnovaties zijn:
 
@@ -566,7 +566,7 @@ graph TD
     D --> G[Always fails: Trying to replace SMTP, IMAP, or POP3]
 ```
 
-### Waarom wij ons richten op infrastructuur {#why-we-focus-on-infrastructure}
+### Waarom we ons richten op infrastructuur {#why-we-focus-on-infrastructure}
 
 Wij hebben ervoor gekozen om een moderne e-mailinfrastructuur te bouwen omdat:
 
@@ -575,7 +575,7 @@ Wij hebben ervoor gekozen om een moderne e-mailinfrastructuur te bouwen omdat:
 * **Gebruikers willen betrouwbaarheid**: Geen nieuwe functies die bestaande workflows verstoren
 * **Ontwikkelaars hebben tools nodig**: Betere API's en beheerinterfaces
 
-### Wat werkt echt in e-mail {#what-actually-works-in-email}
+### Wat werkt er eigenlijk in e-mail {#what-actually-works-in-email}
 
 Het succesvolle patroon is eenvoudig: **bestaande e-mailworkflows verbeteren in plaats van ze te vervangen**. Dit betekent:
 
@@ -584,15 +584,15 @@ Het succesvolle patroon is eenvoudig: **bestaande e-mailworkflows verbeteren in 
 * Ontwikkelaarsvriendelijke API's aanbieden voor bestaande protocollen
 * De afleverbaarheid verbeteren door middel van een goede infrastructuur
 
-## Onze aanpak: waarom wij anders zijn {#our-approach-why-were-different}
+## Onze aanpak: waarom we anders zijn {#our-approach-why-were-different}
 
 ### Wat we doen {#what-we-do}
 
 * **Bouw daadwerkelijke infrastructuur**: Aangepaste SMTP/IMAP-servers vanaf nul
 * **Focus op betrouwbaarheid**: [99,99% uptime](https://status.forwardemail.net), correcte foutafhandeling
 * **Verbeter bestaande workflows**: Werk met alle e-mailclients
-* **Dien ontwikkelaars**: API's en tools die echt werken
-* **Behoud compatibiliteit**: Volledige [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)-naleving
+* **Bedien ontwikkelaars**: API's en tools die echt werken
+* **Behoud compatibiliteit**: Volledige naleving van [SMTP](https://tools.ietf.org/html/rfc5321)/[IMAP](https://tools.ietf.org/html/rfc3501)/[POP3](https://tools.ietf.org/html/rfc1939)
 
 ### Wat we niet doen {#what-we-dont-do}
 
@@ -614,10 +614,10 @@ Terwijl andere bedrijven miljoenen verspillen aan het opnieuw uitvinden van e-ma
 ### Wat ons anders maakt {#what-makes-us-different}
 
 > \[!TIP]
-> **Government-Grade Compliance**: Forward Email is [Section 889 compliant](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) and serves organizations like the US Naval Academy, demonstrating our commitment to meeting stringent federal security requirements.
+> **Overheidsconformiteit**: Forward Email is [Voldoet aan sectie 889](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) en wordt gebruikt door organisaties zoals de US Naval Academy, wat aantoont dat we ons inzetten om te voldoen aan de strenge federale veiligheidseisen.
 
 > \[!NOTE]
-> **OpenPGP and OpenWKD Implementation**: Unlike Fastmail, which [refuses to implement PGP](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) citing complexity concerns, Forward Email provides full OpenPGP support with OpenWKD (Web Key Directory) compliance, giving users the encryption they actually want without forcing them to use experimental protocols like JMAP.
+> **OpenPGP- en OpenWKD-implementatie**: In tegenstelling tot Fastmail, waarover [weigert PGP te implementeren](https://www.fastmail.com/blog/why-we-dont-offer-pgp/) complexiteitsproblemen aanvoerde, biedt Forward Email volledige OpenPGP-ondersteuning met OpenWKD-compatibiliteit (Web Key Directory). Hierdoor krijgen gebruikers de encryptie die ze daadwerkelijk willen, zonder dat ze gedwongen worden experimentele protocollen zoals JMAP te gebruiken.
 
 **Technische stackvergelijking**:
 
@@ -651,14 +651,14 @@ graph TD
 * **Geen legacy-schuld**: Schone, moderne codebase zonder tientallen jaren aan patches
 
 > \[!NOTE]
-> **Privacy by Design**: Our [privacy policy](https://forwardemail.net/en/privacy) ensures we don't store forwarded emails to disk storage or databases, don't store metadata about emails, and don't store logs or IP addresses - operating in-memory only for email forwarding services.
+> **Privacy by Design**: Onze [privacybeleid](https://forwardemail.net/en/privacy) zorgt ervoor dat we doorgestuurde e-mails niet opslaan op schijfruimte of in databases, geen metadata over e-mails opslaan en geen logs of IP-adressen opslaan. De service werkt alleen in het geheugen voor e-maildoorstuurservices.
 
 **Technische documentatie**: Voor uitgebreide informatie over onze aanpak, architectuur en beveiligingsimplementatie, zie onze [technisch whitepaper](https://forwardemail.net/technical-whitepaper.pdf) en uitgebreide technische documentatie.
 
-### Vergelijking van e-mail serviceproviders: groei dankzij bewezen protocollen {#email-service-provider-comparison-growth-through-proven-protocols}
+### Vergelijking van e-mail serviceproviders: groei door bewezen protocollen {#email-service-provider-comparison-growth-through-proven-protocols}
 
 > \[!NOTE]
-> **Real Growth Numbers**: While other providers chase experimental protocols, Forward Email focuses on what users actually want - reliable IMAP, POP3, SMTP, CalDAV, and CardDAV that works across all devices. Our growth demonstrates the value of this approach.
+> **Echte groeicijfers**: Terwijl andere providers experimentele protocollen nastreven, richt Forward Email zich op wat gebruikers daadwerkelijk willen: betrouwbare IMAP, POP3, SMTP, CalDAV en CardDAV die op alle apparaten werken. Onze groei bewijst de waarde van deze aanpak.
 
 | Aanbieder | Domeinnamen (2024 via [SecurityTrails](https://securitytrails.com/)) | Domeinnamen (2025 via [ViewDNS](https://viewdns.info/reversemx/)) | Percentage verandering | MX-record |
 | ------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------- | ------------------------------ |
@@ -674,7 +674,7 @@ graph TD
 * **Forward Email** laat een sterke groei zien (+21,1%) met meer dan 500.000 domeinen die onze MX-records gebruiken
 * **Bewezen infrastructuurwinsten**: Diensten met betrouwbare IMAP/SMTP laten een consistente domeinacceptatie zien
 * **JMAP-irrelevantie**: Fastmails JMAP-investering laat een tragere groei zien (+14%) vergeleken met providers die zich richten op standaardprotocollen
-* **Skiff's ondergang**: De ter ziele gegane startup verloor 55,2% van zijn domeinen, wat het falen van "revolutionaire" e-mailbenaderingen aantoont
+* **Skiff's ondergang**: De ter ziele gegane startup verloor 55,2% van haar domeinen, wat het falen van "revolutionaire" e-mailbenaderingen aantoont
 * **Marktvalidatie**: De groei van het aantal domeinen weerspiegelt de daadwerkelijke gebruikersacceptatie, niet de marketingstatistieken
 
 ### De technische tijdlijn {#the-technical-timeline}
@@ -719,7 +719,7 @@ graph TD
 ## Beveiligingsuitdagingen in e-mailinfrastructuur {#security-challenges-in-email-infrastructure}
 
 > \[!IMPORTANT]
-> **Quantum-Safe Email Security**: Forward Email is the [world's first and only email service to use quantum-resistant and individually encrypted SQLite mailboxes](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service), providing unprecedented security against future quantum computing threats.
+> **Quantumveilige e-mailbeveiliging**: Forward Email is de ['s werelds eerste en enige e-mailservice die gebruikmaakt van kwantumbestendige en individueel gecodeerde SQLite-mailboxen](https://forwardemail.net/en/blog/docs/best-quantum-safe-encrypted-email-service) en biedt ongekende beveiliging tegen toekomstige bedreigingen voor quantumcomputing.
 
 E-mailbeveiliging is een complexe uitdaging die alle aanbieders in de branche aangaat. In plaats van individuele incidenten te benadrukken, is het waardevoller om de algemene beveiligingsaspecten te begrijpen waarmee alle aanbieders van e-mailinfrastructuur rekening moeten houden.
 
@@ -733,7 +733,7 @@ Alle e-mailproviders worden geconfronteerd met vergelijkbare beveiligingsuitdagi
 * **Compliance**: Voldoen aan diverse wettelijke vereisten, zoals [GDPR](https://gdpr.eu/) en [CCPA](https://oag.ca.gov/privacy/ccpa)
 
 > \[!NOTE]
-> **Advanced Encryption**: Our [security practices](https://forwardemail.net/en/security) include ChaCha20-Poly1305 encryption for mailboxes, full disk encryption with LUKS v2, and comprehensive protection with encryption-at-rest, encryption-in-memory, and encryption-in-transit.
+> **Geavanceerde encryptie**: Onze [beveiligingspraktijken](https://forwardemail.net/en/security) omvat ChaCha20-Poly1305-encryptie voor mailboxen, volledige schijfencryptie met LUKS v2 en uitgebreide bescherming met encryptie in rust, encryptie in het geheugen en encryptie tijdens verzending.
 
 ### De waarde van transparantie {#the-value-of-transparency}
 
@@ -754,7 +754,7 @@ De e-mailindustrie blijft haar beveiligingspraktijken verder ontwikkelen:
 * **Authenticatieprotocollen**: Verbetering van [DKIM](https://tools.ietf.org/html/rfc6376), [SPF](https://tools.ietf.org/html/rfc7208) en [DMARC](https://tools.ietf.org/html/rfc7489)
 * **Bedreigingsdetectie**: Ontwikkeling van betere spam- en phishingfilters
 * **Infrastructuurverharding**: Servers en databases beveiligen
-* **Domeinreputatiebeheer**: Omgaan met [ongekende spam van het onmicrosoft.com-domein van Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/) die [willekeurige blokkeringsregels](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) en [aanvullende MSP-discussies](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/) vereist
+* **Domeinreputatiebeheer**: Omgaan met [ongekende spam van het onmicrosoft.com-domein van Microsoft](https://www.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/), waarvoor [willekeurige blokkeringsregels](https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c) en [aanvullende MSP-discussies](https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/) nodig zijn
 
 Deze uitdagingen vereisen voortdurende investeringen en expertise van alle aanbieders in de sector.
 
@@ -764,9 +764,9 @@ Deze uitdagingen vereisen voortdurende investeringen en expertise van alle aanbi
 
 Na analyse van honderden e-mailstartups:
 
-* **[80%+ falingspercentage](https://www.techstars.com/portfolio)**: De meeste e-mailstartups mislukken volledig (dit percentage is waarschijnlijk VEEL hoger dan 80%; we zijn aardig)
+* **[80%+ falingspercentage](https://www.techstars.com/portfolio)**: De meeste e-mailstartups mislukken volledig (dit cijfer is waarschijnlijk VEEL hoger dan 80%; we zijn aardig)
 * **Client-apps mislukken meestal**: Overname betekent meestal de dood voor e-mailclients
-* **Infrastructuur kan succesvol zijn**: Bedrijven die SMTP/API-diensten bouwen, floreren vaak
+* **Infrastructuur kan slagen**: Bedrijven die SMTP/API-diensten bouwen, floreren vaak
 * **VC-financiering creëert druk**: Risicokapitaal creëert onrealistische groeiverwachtingen
 * **Technische schuld bouwt zich op**: Het bouwen van e-mailinfrastructuur is moeilijker dan het lijkt
 
@@ -796,33 +796,33 @@ De les is niet dat e-mail niet verbeterd kan worden. Het gaat om het kiezen van 
 **De kans**: Betere implementatie van bewezen protocollen, geen vervanging van protocollen.
 
 > \[!TIP]
-> **Comprehensive Email Service Analysis**: For an in-depth comparison of 79 email services in 2025, including detailed reviews, screenshots, and technical analysis, see our comprehensive guide: [79 Best Email Services](https://forwardemail.net/en/blog/best-email-service). This analysis demonstrates why Forward Email consistently ranks as the recommended choice for reliability, security, and standards compliance.
+> **Uitgebreide analyse van e-maildiensten**: Raadpleeg onze uitgebreide handleiding: [79 beste e-mailservices](https://forwardemail.net/en/blog/best-email-service) voor een diepgaande vergelijking van 79 e-maildiensten in 2025, inclusief gedetailleerde reviews, screenshots en technische analyses. Deze analyse laat zien waarom Forward Email consequent wordt beoordeeld als de aanbevolen keuze voor betrouwbaarheid, beveiliging en naleving van standaarden.
 
 > \[!NOTE]
-> **Real-World Validation**: Our approach works for organizations ranging from [government agencies requiring Section 889 compliance](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) to [major universities managing tens of thousands of alumni addresses](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study), proving that building reliable infrastructure is the path to email success.
+> **Validatie in de praktijk**: Onze aanpak werkt voor organisaties van [overheidsinstanties die naleving van sectie 889 vereisen](https://forwardemail.net/en/blog/docs/federal-government-email-service-section-889-compliant) tot [grote universiteiten beheren tienduizenden alumni-adressen](https://forwardemail.net/en/blog/docs/alumni-email-forwarding-university-case-study) en bewijst dat het bouwen van een betrouwbare infrastructuur de weg is naar e-mailsucces.
 
 Als je overweegt een e-mailstartup op te zetten, overweeg dan om een e-mailinfrastructuur te bouwen. De wereld heeft betere e-mailservers nodig, niet meer e-mailapps.
 
 ## Het uitgebreide e-mailkerkhof: meer storingen en afsluitingen {#the-extended-email-graveyard-more-failures-and-shutdowns}
 
-### Google's e-mailexperimenten zijn mislukt {#googles-email-experiments-gone-wrong}
+### Google's e-mailexperimenten mislukken {#googles-email-experiments-gone-wrong}
 
-Google heeft, ondanks het feit dat het eigenaar is van [Gmail](https://gmail.com/), meerdere e-mailprojecten stopgezet:
+Google heeft, ondanks dat het eigenaar is van [Gmail](https://gmail.com/), meerdere e-mailprojecten stopgezet:
 
 * **[Google Wave](https://en.wikipedia.org/wiki/Apache_Wave)** (2009-2012): "E-mailkiller" die niemand begreep
 * **[Google Buzz](https://en.wikipedia.org/wiki/Google_Buzz)** (2010-2011): Ramp met de integratie van sociale e-mail
 * **[Postvak IN van Gmail](https://killedbygoogle.com/)** (2014-2019): De "slimme" opvolger van Gmail, verlaten
-* **[Google+](https://killedbygoogle.com/)** E-mailfuncties (2011-2019): E-mailintegratie van sociale netwerken
+* **[Google+](https://killedbygoogle.com/)** e-mailfuncties (2011-2019): E-mailintegratie via sociale netwerken
 
 **Patroon**: Zelfs Google kan e-mail niet opnieuw uitvinden.
 
 ### De seriele mislukking: de drie doden van Newton Mail {#the-serial-failure-newton-mails-three-deaths}
 
-[Newton Mail](https://en.wikipedia.org/wiki/CloudMagic) is **drie keer** gestorven:
+[Newton Mail](https://en.wikipedia.org/wiki/CloudMagic) is **drie keer** overleden:
 
 1. **[CloudMagic](https://en.wikipedia.org/wiki/CloudMagic)** (2013-2016): E-mailclient overgenomen door Newton
 2. **Newton Mail** (2016-2018): Rebranding, abonnementsmodel mislukt
-3. **[Newton Mail Revival](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Poging tot comeback, opnieuw mislukt
+3. **[Newton Mail Revival](https://9to5mac.com/2019/02/05/newton-mail-returns-ios-download/)** (2019-2020): Poging tot comeback, wederom mislukt
 
 **Les**: E-mailclients kunnen geen abonnementsmodellen ondersteunen.
 
@@ -844,16 +844,16 @@ Veel e-mailstartups gingen failliet voordat ze van start gingen:
 
 ### Consolidatie van e-mailinfrastructuur {#email-infrastructure-consolidation}
 
-* **[Postbus → eM Client](https://www.postbox-inc.com/)** (2024): Postbus direct afgesloten na overname
-* **Meerdere overnames**: [ImprovMX](https://improvmx.com/) is meerdere keren overgenomen, met [privacyzorgen geuit](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [overnameaankondigingen](https://improvmx.com/blog/improvmx-has-been-acquired) en [bedrijfsvermeldingen](https://quietlight.com/listings/15877422)
-* **Serviceverslechtering**: Veel services verslechteren na overname
+* **[Postbus → eM Client](https://www.postbox-inc.com/)** (2024): Postbus direct afgesloten na acquisitie
+* **Meerdere acquisities**: [ImprovMX](https://improvmx.com/) is meerdere keren geacquireerd, met [privacyzorgen geuit](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [overnameaankondigingen](https://improvmx.com/blog/improvmx-has-been-acquired) en [bedrijfsvermeldingen](https://quietlight.com/listings/15877422)
+* **Serviceverslechtering**: Veel services verslechteren na acquisitie
 
 ## Het open-source e-mailkerkhof: wanneer 'gratis' niet duurzaam is {#the-open-source-email-graveyard-when-free-isnt-sustainable}
 
-### Nylas Mail → Mailspring: de fork die het niet kon {#nylas-mail--mailspring-the-fork-that-couldnt}
+### Nylas Mail → Mailspring: de fork die {#nylas-mail--mailspring-the-fork-that-couldnt} niet kon
 
 * **[Nylas Mail](https://github.com/nylas/nylas-mail)**: Open-source e-mailclient, [stopgezet 2017](https://github.com/nylas/nylas-mail) en had [enorme problemen met geheugengebruik](https://github.com/nylas/nylas-mail/issues/3501)
-* **[Mailspring](https://getmailspring.com/)**: Communityfork, worstelt met onderhoud en [problemen met hoog RAM-gebruik](https://github.com/Foundry376/Mailspring/issues/1758)
+* **[Mailspring](https://getmailspring.com/)**: Community fork, worstelt met onderhoud en [problemen met hoog RAM-gebruik](https://github.com/Foundry376/Mailspring/issues/1758)
 * **Realiteit**: Open-source e-mailclients kunnen niet concurreren met native apps
 
 ### Eudora: De 18-jarige dodenmars {#eudora-the-18-year-death-march}
@@ -866,7 +866,7 @@ Veel e-mailstartups gingen failliet voordat ze van start gingen:
 
 ### FairEmail: gedood door Google Play Politics {#fairemail-killed-by-google-play-politics}
 
-* **[FairEmail](https://email.faircode.eu/)**: Android-e-mailclient met privacy als uitgangspunt
+* **[FairEmail](https://email.faircode.eu/)**: Privacygerichte Android-e-mailclient
 * **Google Play**: [Verbannen wegens 'schending van het beleid'](https://github.com/M66B/FairEmail/blob/master/FAQ.md#user-content-faq147)
 * **Realiteit**: Platformbeleid kan e-mailapps direct uitschakelen
 
@@ -879,7 +879,7 @@ Open source e-mailprojecten mislukken omdat:
 * **Compatibiliteit**: Moet met alle e-mailproviders werken
 * **Hulpbronnen**: Vrijwillige ontwikkelaars raken uitgeput
 
-## De opkomst van AI-e-mailstartups: geschiedenis herhaalt zich met "intelligentie" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
+## De AI-e-mailstartup-golf: geschiedenis herhaalt zich met "intelligentie" {#the-ai-email-startup-surge-history-repeating-with-intelligence}
 
 ### De huidige AI-e-mailgoudkoorts {#the-current-ai-email-gold-rush}
 
@@ -905,7 +905,7 @@ VC's gooien geld naar "AI + E-mail":
 
 1. **AI lost geen niet-problemen met e-mail op**: E-mail werkt prima
 2. **[Gmail heeft al AI](https://support.google.com/mail/answer/9116836)**: Slimme antwoorden, prioriteitsinbox, spamfiltering
-3. **Privacyproblemen**: AI vereist het lezen van al uw e-mails
+3. **Privacyoverwegingen**: AI vereist het lezen van al je e-mails
 4. **Kostenstructuur**: AI-verwerking is duur, e-mail is een basisproduct
 5. **Netwerkeffecten**: Kan de dominantie van Gmail/Outlook niet doorbreken
 
@@ -918,18 +918,18 @@ VC's gooien geld naar "AI + E-mail":
 
 ## De consolidatiecatastrofe: wanneer 'overlevenden' rampen worden {#the-consolidation-catastrophe-when-survivors-become-disasters}
 
-### De grote consolidatie van e-maildiensten {#the-great-email-service-consolidation}
+### De grote e-mailserviceconsolidatie {#the-great-email-service-consolidation}
 
 De e-mailindustrie is dramatisch geconsolideerd:
 
 * **[ActiveCampaign heeft Postmark overgenomen](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign)** (2022)
 * **[Sinch heeft Mailgun overgenomen](https://sinch.com/news/sinch-acquires-mailgun-and-mailjet/)** (2021)
 * **[Twilio heeft SendGrid overgenomen](https://en.wikipedia.org/wiki/SendGrid)** (2019)
-* **Meerdere [ImprovMX](https://improvmx.com/) overnames** (lopend) met [zorgen over privacy](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55) en [overnameaankondigingen](https://improvmx.com/blog/improvmx-has-been-acquired) en [bedrijfsvermeldingen](https://quietlight.com/listings/15877422)
+* **Meerdere [ImprovMX](https://improvmx.com/)-acquisities** (lopend) met [zorgen over privacy](https://discuss.privacyguides.net/t/forward-email-new-features/24845/55), [overnameaankondigingen](https://improvmx.com/blog/improvmx-has-been-acquired) en [bedrijfsvermeldingen](https://quietlight.com/listings/15877422)
 
-### Outlook: De "Survivor" die niet kan stoppen met het breken van {#outlook-the-survivor-that-cant-stop-breaking}
+### Outlook: De "overlever" die niet kan stoppen met breken {#outlook-the-survivor-that-cant-stop-breaking}
 
-[Microsoft Outlook](https://outlook.com/) heeft, ondanks dat het een "overlever" is, voortdurend problemen:
+[Microsoft Outlook](https://outlook.com/) heeft, ondanks dat hij een "overlever" is, voortdurend problemen:
 
 * **Geheugenlekken**: [Outlook verbruikt gigabytes RAM](https://www.reddit.com/r/sysadmin/comments/1g0ejp6/anyone_else_currently_experiencing_strange/) en [vereist frequente herstarts](https://answers.microsoft.com/en-us/outlook_com/forum/all/new-outlook-use-excessive-memory-after-last-update/5e2a06a6-5f72-4266-8053-7c8b6df42f3d)
 * **Synchronisatieproblemen**: E-mails verdwijnen en verschijnen willekeurig
@@ -938,7 +938,7 @@ De e-mailindustrie is dramatisch geconsolideerd:
 
 **Onze praktijkervaring**: We helpen regelmatig klanten waarvan de Outlook-instellingen onze perfect compatibele IMAP-implementatie verstoren.
 
-### Het probleem met de poststempelinfrastructuur {#the-postmark-infrastructure-problem}
+### Het poststempelinfrastructuurprobleem {#the-postmark-infrastructure-problem}
 
 Na [Overname van ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc-digests-acquired-by-activecampaign):
 
@@ -949,7 +949,7 @@ Na [Overname van ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc
 
 ### Recente slachtoffers van e-mailclients (2024-2025) {#recent-email-client-casualties-2024-2025}
 
-**[Postbus → eM Client](https://www.postbox-inc.com/) Overname**: In 2024 nam eM Client Postbox en [onmiddellijk uitschakelen](https://www.postbox-inc.com/) over, waardoor duizenden gebruikers gedwongen werden te migreren.
+**Overname van [Postbus → eM Client](https://www.postbox-inc.com/)**: In 2024 nam eM Client Postbox en [onmiddellijk uitschakelen](https://www.postbox-inc.com/) over, waardoor duizenden gebruikers moesten migreren.
 
 **[Canarische post](https://canarymail.io/) Problemen**: Ondanks [Sequoia-achterkant](https://www.sequoiacap.com/) melden gebruikers niet-werkende functies en slechte klantondersteuning.
 
@@ -961,17 +961,17 @@ Na [Overname van ActiveCampaign](https://postmarkapp.com/blog/postmark-and-dmarc
 
 ### E-mailuitbreiding en service-acquisities {#email-extension-and-service-acquisitions}
 
-**[HubSpot-hulpprogramma](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Stopgezet**: De e-mailtrackingextensie van HubSpot was [stopgezet in 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) en vervangen door "HubSpot Sales."
+**[HubSpot-hulpprogramma](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) → Niet meer leverbaar**: De e-mailtrackingextensie van HubSpot was [stopgezet in 2016](https://en.wikipedia.org/wiki/HubSpot#Products_and_services) en vervangen door "HubSpot Sales."
 
-**[Engage voor Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Uit productie genomen**: De Gmail-extensie van Salesforce was [gepensioneerd in juni 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), waardoor gebruikers gedwongen werden te migreren naar andere oplossingen.
+**[Engage voor Gmail](https://help.salesforce.com/s/articleView?id=000394547\&type=1) → Uit dienst**: De Gmail-extensie van Salesforce was [gepensioneerd in juni 2024](https://help.salesforce.com/s/articleView?id=000394547\&type=1), waardoor gebruikers gedwongen werden te migreren naar andere oplossingen.
 
 ### De overlevenden: e-mailbedrijven die echt werken {#the-survivors-email-companies-that-actually-work}
 
 Niet alle e-mailbedrijven falen. Dit zijn de bedrijven die wél werken:
 
-**[Mailmodo](https://www.mailmodo.com/)**: [Succesverhaal van Y Combinator](https://www.ycombinator.com/companies/mailmodo), [$2 miljoen van Sequoia's Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) door te focussen op interactieve e-mailcampagnes.
+**[Mailmodo](https://www.mailmodo.com/)**: [Succesverhaal van Y Combinator](https://www.ycombinator.com/companies/mailmodo), [$2 miljoen van Sequoia's Surge](https://www.techinasia.com/saas-email-marketing-platform-nets-2-mn-ycombinator-sequoia-surge) door zich te richten op interactieve e-mailcampagnes.
 
-**[Mixmax](https://mixmax.com/)**: [Totale financiering van $ 13,3 miljoen](https://www.mixmax.com/about) verhoogd en blijft functioneren als succesvol sales engagement platform.
+**[Mixmax](https://mixmax.com/)**: [Totale financiering van $ 13,3 miljoen](https://www.mixmax.com/about) is verhoogd en het blijft functioneren als succesvol sales engagement platform.
 
 **[Outreach.io](https://www.outreach.io/)**: [Waardering van $4,4 miljard+](https://www.prnewswire.com/news-releases/outreach-closes-200-million-round-4-4-billion-valuation-for-sales-engagement-category-leader-301304239.html) bereikt en bereidt zich voor op een potentiële beursgang als sales engagement platform.
 
@@ -979,13 +979,13 @@ Niet alle e-mailbedrijven falen. Dit zijn de bedrijven die wél werken:
 
 **[GMass](https://www.gmass.co/)**: Bootstrap-succesverhaal waarbij [$140K/maand](https://www.indiehackers.com/product/gmass) werd gegenereerd als Gmail-extensie voor e-mailmarketing.
 
-**[Streak CRM](https://www.streak.com/)**: Succesvol Gmail-gebaseerd CRM dat [sinds 2012](https://www.streak.com/about) zonder grote problemen functioneert.
+**[Streak CRM](https://www.streak.com/)**: Succesvol Gmail-gebaseerd CRM dat [sinds 2012](https://www.streak.com/about) zonder grote problemen heeft gedraaid.
 
-**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [overgenomen door Marketo in 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) succesvol afgerond na het ophalen van meer dan $ 15 miljoen aan financiering.
+**[ToutApp](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html)**: [overgenomen door Marketo in 2017](https://blog.marketo.com/2017/05/marketo-acquires-toutapp.html) is succesvol gestart na het ophalen van meer dan $ 15 miljoen aan financiering.
 
 **[Bananatag](https://staffbase.com/blog/staffbase-acquires-bananatag/)**: [Overgenomen door Staffbase in 2021](https://staffbase.com/blog/staffbase-acquires-bananatag/) en blijft functioneren als "Staffbase Email."
 
 **Belangrijk patroon**: Deze bedrijven slagen omdat ze **bestaande e-mailworkflows verbeteren** in plaats van te proberen e-mail volledig te vervangen. Ze bouwen tools die **samen** werken met de e-mailinfrastructuur, niet ertegen.
 
 > \[!TIP]
-> **Don't see a provider you know of mentioned here?** (e.g. Posteo, Mailbox.org, Migadu, etc.) Refer to our [comprehensive email service comparison page](https://forwardemail.net/en/blog/best-email-service) for more insight.
+> **Staat er hier geen provider vermeld die u kent?** (bijv. Posteo, Mailbox.org, Migadu, enz.) Raadpleeg onze [uitgebreide e-mailservicevergelijkingspagina](https://forwardemail.net/en/blog/best-email-service) voor meer informatie.

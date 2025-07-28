@@ -10,7 +10,7 @@
   * [Cure53](#cure53)
   * [Radikalt åpen sikkerhet](#radically-open-security)
   * [Assured AB](#assured-ab)
-  * [Trail of Bits](#trail-of-bits)
+  * [Spor av biter](#trail-of-bits)
 * [Selskapssammenligning](#company-comparison)
 * [Utvalgskriterier](#selection-criteria)
 
@@ -36,13 +36,13 @@ Det er viktig å merke seg at selskapene som er oppført nedenfor ikke er ranger
 
 Cure53 er et tysk cybersikkerhetsfirma kjent for sin grundige tilnærming til sikkerhetstesting av webapplikasjoner og penetrasjonstesting. De er basert i Berlin og har etablert seg som ledende innen feltet gjennom sine omfattende testmetoder og detaljerte rapporteringspraksiser.
 
-Selskapet har bygget en imponerende portefølje av sikkerhetsvurderinger for høyprofilerte kunder og åpen kildekode-prosjekter. Arbeidet deres demonstrerer en dyp forståelse av moderne webteknologier, kryptografiske implementeringer og infrastruktursikkerhet. Cure53s rapporter er spesielt bemerkelsesverdige for sin tekniske dybde og handlingsrettede anbefalinger.
+Selskapet har bygget en imponerende portefølje av sikkerhetsvurderinger for høyprofilerte kunder og åpen kildekode-prosjekter. Arbeidet deres demonstrerer en dyp forståelse av moderne webteknologier, kryptografiske implementeringer og infrastruktursikkerhet. Cure53s rapporter er spesielt bemerkelsesverdige for deres tekniske dybde og handlingsrettede anbefalinger.
 
 **Viktige publikasjoner og rapporter**:
 
 * [Mullvad-serversikkerhetsvurdering 2024](https://cure53.de/pentest-report_mullvad\_2024\_v1.pdf) - Omfattende evaluering av infrastruktursikkerhet
 * [Mullvad Apps/API-sikkerhetsvurdering 2020](https://cure53.de/pentest-report_mullvad\_2020\_v2.pdf) - Analyse av applikasjons- og API-sikkerhet
-* [Mullvad-serversikkerhetsvurdering 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Oppfølgende vurdering av infrastruktur
+* [Mullvad-serversikkerhetsvurdering 2021](https://cure53.de/pentest-report_mullvad\_2021\_v1.pdf) - Oppfølgingsvurdering av infrastruktur
 
 ### Radikalt åpen sikkerhet {#radically-open-security}
 
@@ -58,9 +58,9 @@ Deres ideelle modell lar dem fokusere utelukkende på sikkerhetsresultater snare
 
 * [Droid2Tracking sikkerhetsvurdering](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20OnNet%20-%20OF-Droid2Tracking%20the%20Trackers%20-%202022.pdf) - Analyse av mobilsporing
 * [Sikkerhetsvurdering av Tauri-programmet 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20The%20Tauri%20Programme%20-2022.pdf) - Evaluering av rammeverk for applikasjoner på tvers av plattformer
-* [Mullvad VPN-sikkerhetsvurdering 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Sikkerhetsanalyse av VPN-tjenester
+* [Mullvad VPN-sikkerhetsvurdering 2022](https://github.com/radicallyopensecurity/ros-website/blob/main/ros-public-reports/ROS%20-%20Mullvad%20VPN%202022.pdf) - Sikkerhetsanalyse av VPN-tjenesten
 
-### Garantert AB {#assured-ab}
+### Sikret AB {#assured-ab}
 
 **Sted**: Gøteborg, Sverige
 **Nettsted**: <https://www.assured.se/>
@@ -76,7 +76,7 @@ Selskapets tilnærming vektlegger grundig teknisk analyse kombinert med praktisk
 * [Mullvad API Security Audit 2022](https://www.assured.se/publications/Assured_Mullvad_API_audit_report\_2022.pdf) - API-sikkerhetsevaluering
 * [Mullvad DNS-serversikkerhetsrevisjon 2022](https://www.assured.se/publications/Assured_Mullvad_DNS_server_audit_report\_2022.pdf) - Vurdering av DNS-infrastruktur
 
-### Bitspor {#trail-of-bits}
+### Sti av biter {#trail-of-bits}
 
 **Sted**: New York, New York, USA
 **Nettsted**: <https://www.trailofbits.com/>

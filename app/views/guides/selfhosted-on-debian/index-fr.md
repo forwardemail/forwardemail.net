@@ -22,7 +22,7 @@
   * [Étape 14 : Mettre à jour les chemins SSL dans la configuration](#step-14-update-ssl-paths-in-configuration)
   * [Étape 15 : Configurer l’authentification de base](#step-15-set-up-basic-authentication)
   * [Étape 16 : Déployer avec Docker Compose](#step-16-deploy-with-docker-compose)
-  * [Étape 17 : Vérifier l'installation](#step-17-verify-installation)
+  * [Étape 17 : Vérifier l’installation](#step-17-verify-installation)
 * [Configuration post-installation](#post-installation-configuration)
   * [Configuration des enregistrements DNS](#dns-records-setup)
   * [Première connexion](#first-login)
@@ -45,11 +45,11 @@
 * [Meilleures pratiques de sécurité](#security-best-practices)
 * [Conclusion](#conclusion)
 
-## Présentation {#overview}
+## Présentation de {#overview}
 
 Ce guide fournit des instructions étape par étape pour installer la solution auto-hébergée de Forward Email sur les systèmes Debian. Ce guide est spécialement conçu pour Debian 11 (Bullseye) et Debian 12 (Bookworm).
 
-## Conditions préalables {#prerequisites}
+## Prérequis {#prerequisites}
 
 Avant de commencer l'installation, assurez-vous d'avoir :
 
@@ -59,7 +59,7 @@ Avant de commencer l'installation, assurez-vous d'avoir :
 * **Serveur propre** : Il est recommandé d'utiliser une nouvelle installation Debian
 * **Connexion Internet** : Requise pour télécharger les paquets et les images Docker
 
-Configuration requise pour ## {#system-requirements}
+## Configuration requise pour {#system-requirements}
 
 * **RAM** : 2 Go minimum (4 Go recommandés pour la production)
 * **Stockage** : 20 Go minimum d’espace disponible (50 Go minimum recommandés pour la production)
@@ -471,7 +471,7 @@ echo ""
 
 ### Étape 16 : Déployer avec Docker Compose {#step-16-deploy-with-docker-compose}
 
-Démarrez tous les services de transfert de courrier électronique :
+Démarrer tous les services de transfert de courrier électronique :
 
 ```bash
 # Set Docker Compose file path
@@ -531,13 +531,13 @@ curl -I https://$DOMAIN
 ss -tlnp | grep -E ':(25|80|443|465|587|993|995)'
 ```
 
-Configuration post-installation de ## {#post-installation-configuration}
+## Configuration post-installation {#post-installation-configuration}
 
-Configuration des enregistrements DNS ### {#dns-records-setup}
+### Configuration des enregistrements DNS {#dns-records-setup}
 
 Vous devez configurer les enregistrements DNS suivants pour votre domaine :
 
-Enregistrement MX #### {#mx-record}
+#### Enregistrement MX {#mx-record}
 
 ```
 @ MX 10 mx.yourdomain.com
@@ -556,13 +556,13 @@ caldav A YOUR_SERVER_IP
 carddav A YOUR_SERVER_IP
 ```
 
-Enregistrement SPF #### {#spf-record}
+#### Enregistrement SPF {#spf-record}
 
 ```
 @ TXT "v=spf1 mx ~all"
 ```
 
-Enregistrement DKIM #### {#dkim-record}
+#### Enregistrement DKIM {#dkim-record}
 
 Obtenez votre clé publique DKIM :
 
@@ -577,7 +577,7 @@ Créer un enregistrement DNS DKIM :
 default._domainkey TXT "v=DKIM1; k=rsa; p=YOUR_DKIM_PUBLIC_KEY"
 ```
 
-Enregistrement DMARC #### {#dmarc-record}
+#### Enregistrement DMARC {#dmarc-record}
 
 ```
 _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
@@ -586,9 +586,9 @@ _dmarc TXT "v=DMARC1; p=quarantine; rua=mailto:dmarc@yourdomain.com"
 ### Première connexion {#first-login}
 
 1. Ouvrez votre navigateur web et accédez à `https://yourdomain.com`
-2. Saisissez les identifiants d'authentification de base enregistrés précédemment.
-3. Suivez l'assistant de configuration initiale.
-4. Créez votre premier compte e-mail.
+2. Saisissez les identifiants d'authentification de base enregistrés précédemment
+3. Suivez l'assistant de configuration initiale
+4. Créez votre premier compte e-mail
 
 ## Configuration de sauvegarde {#backup-configuration}
 
@@ -618,7 +618,7 @@ EOF
 echo "endpoint_url = YOUR_S3_ENDPOINT_URL" >> ~/.aws/config
 ```
 
-### Configurer les tâches de sauvegarde cron {#set-up-backup-cron-jobs}
+### Configurer les tâches de sauvegarde Cron {#set-up-backup-cron-jobs}
 
 ```bash
 # Make backup scripts executable
@@ -656,7 +656,7 @@ crontab -l
 
 ## Considérations spécifiques à Debian {#debian-specific-considerations}
 
-Différences de gestion des paquets ### {#package-management-differences}
+### Différences de gestion des packages {#package-management-differences}
 
 * **Snapd** : Non installé par défaut sur Debian, nécessite une installation manuelle
 * **Docker** : Utilise les dépôts spécifiques à Debian et les clés GPG
@@ -693,7 +693,7 @@ nslookup google.com
 
 ## Maintenance et surveillance {#maintenance-and-monitoring}
 
-Emplacements des journaux ### {#log-locations}
+### Emplacements des journaux {#log-locations}
 
 * **Journaux Docker Compose** : utilisez la commande Docker Compose appropriée en fonction de l'installation
 * **Journaux système** : `/var/log/syslog`
@@ -706,7 +706,7 @@ Emplacements des journaux ### {#log-locations}
 1. **Surveiller l'espace disque** : `df -h`
 2. **Vérifier l'état du service** : Utiliser la commande Docker Compose appropriée
 3. **Consulter les journaux** : Vérifier les journaux d'application et système
-4. **Mettre à jour les paquets système** : `apt update && apt upgrade`
+4. **Mettre à jour les packages système** : `apt update && apt upgrade`
 5. **Surveiller snapd** : `snap list` et `snap refresh`
 
 ### Renouvellement du certificat {#certificate-renewal}
@@ -728,7 +728,7 @@ else
 fi
 ```
 
-## Dépannage {#troubleshooting}
+## Dépannage de {#troubleshooting}
 
 ### Problèmes spécifiques à Debian {#debian-specific-issues}
 
@@ -792,7 +792,7 @@ journalctl -u docker
 nohup dockerd >/dev/null 2>/dev/null &
 ```
 
-#### 2. La génération du certificat échoue {#2-certificate-generation-fails}
+#### 2. Échec de la génération du certificat {#2-certificate-generation-fails}
 
 * Assurez-vous que les ports 80 et 443 sont accessibles
 * Vérifiez que les enregistrements DNS pointent vers votre serveur
@@ -820,7 +820,7 @@ nohup dockerd >/dev/null 2>/dev/null &
 6. **Audits de sécurité réguliers** : Vérifier régulièrement votre configuration
 7. **Surveiller Snapd** : Maintenir les paquets Snap à jour avec `snap refresh`
 
-Conclusion
+## Conclusion {#conclusion}
 
 Votre installation auto-hébergée de Forward Email devrait maintenant être terminée et opérationnelle sur Debian. N'oubliez pas :
 

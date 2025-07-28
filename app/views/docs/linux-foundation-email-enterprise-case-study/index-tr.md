@@ -1,6 +1,6 @@
 # Vaka Çalışması: Linux Vakfı, Yönlendirilmiş E-posta ile 250'den Fazla Alanda E-posta Yönetimini Nasıl Optimize Ediyor? {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="tembel" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
 
 ## İçindekiler {#table-of-contents}
 
@@ -17,29 +17,29 @@
   * [Verimlilik İyileştirmeleri](#efficiency-improvements)
   * [Maliyet Yönetimi](#cost-management)
   * [Gelişmiş Güvenlik](#enhanced-security)
-  * [Gelişmiş Kullanıcı Deneyimi](#improved-user-experience)
+  * [Geliştirilmiş Kullanıcı Deneyimi](#improved-user-experience)
 * [Çözüm](#conclusion)
 * [Referanslar](#references)
 
 ## Giriş {#introduction}
 
-[Linux Vakfı](https://en.wikipedia.org/wiki/Linux_Foundation), [linux.com](https://www.linux.com/) ve [jQuery.com](https://jquery.com/) dahil olmak üzere 250'den fazla alanda 900'den fazla açık kaynaklı projeyi yönetmektedir. Bu vaka çalışması, açık kaynak ilkeleriyle uyumu korurken e-posta yönetimini kolaylaştırmak için [E-postayı İlet](https://forwardemail.net) ile nasıl ortaklık kurduklarını incelemektedir.
+[Linux Vakfı](https://en.wikipedia.org/wiki/Linux_Foundation), [linux.com](https://www.linux.com/) ve [jQuery.com](https://jquery.com/) dahil olmak üzere 250'den fazla alanda 900'den fazla açık kaynaklı projeyi yönetiyor. Bu vaka çalışması, açık kaynak ilkeleriyle uyumu korurken e-posta yönetimini kolaylaştırmak için [E-postayı İlet](https://forwardemail.net) ile nasıl ortaklık kurduklarını inceliyor.
 
 ## Meydan Okuma {#the-challenge}
 
 Linux Vakfı e-posta yönetimi konusunda çeşitli zorluklarla karşı karşıyaydı:
 
-* **Ölçek**: Farklı gereksinimlere sahip 250'den fazla etki alanında e-postayı yönetme
-* **İdari Yük**: DNS kayıtlarını yapılandırma, yönlendirme kurallarını sürdürme ve destek isteklerine yanıt verme
+* **Ölçek**: Farklı gereksinimlere sahip 250'den fazla alan adında e-posta yönetimi
+* **İdari Yük**: DNS kayıtlarını yapılandırma, yönlendirme kurallarını sürdürme ve destek taleplerine yanıt verme
 * **Güvenlik**: Gizliliği korurken e-posta tabanlı tehditlere karşı koruma
-* **Maliyet**: Geleneksel kullanıcı başına çözümler ölçeklerinde aşırı pahalıydı
-* **Açık Kaynak Uyumlaştırması**: Açık kaynak değerlerine olan bağlılıklarını karşılayan çözümlere ihtiyaç
+* **Maliyet**: Geleneksel kullanıcı başına çözümler, ölçeklerinde aşırı pahalıydı
+* **Açık Kaynak Uyumlaştırması**: Açık kaynak değerlerine olan bağlılıklarını karşılayan çözümlere ihtiyaç duyuluyordu
 
 [Kanonik/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study)'ın birden fazla dağıtım alanıyla karşılaştığı zorluklara benzer şekilde, Linux Vakfı'nın da birleşik bir yönetim yaklaşımını korurken çeşitli projeleri yönetebilecek bir çözüme ihtiyacı vardı.
 
-## Çözüm {#the-solution}
+## Çözümü {#the-solution}
 
-Forward Email, temel özellikleriyle kapsamlı bir çözüm sunar:
+Forward Email, temel özellikleriyle kapsamlı bir çözüm sağladı:
 
 ```mermaid
 graph TD
@@ -57,15 +57,15 @@ Tamamen açık kaynaklı bir platforma (hem ön uç hem de arka uç) sahip tek e
 
 ### Gizlilik Odaklı Tasarım {#privacy-focused-design}
 
-Forward Email'in katı [gizlilik politikaları](https://forwardemail.net/privacy) özelliği, Linux Vakfı'nın ihtiyaç duyduğu güvenliği sağlar. [e-posta gizlilik koruması teknik uygulama](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) özelliğimiz ise, e-posta içeriğinin kaydedilmesi veya taranması olmadan tüm iletişimlerin güvenli kalmasını sağlar.
+Forward Email'in sıkı [gizlilik politikaları](https://forwardemail.net/privacy)'ı, Linux Vakfı'nın ihtiyaç duyduğu güvenliği sağladı. [e-posta gizlilik koruması teknik uygulaması](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation)'imiz ise, e-posta içeriğinin kaydedilmesi veya taranması olmadan, tüm iletişimlerin tasarım gereği güvenli kalmasını sağlar.
 
 Teknik uygulama dokümanlarımızda ayrıntılı olarak açıklandığı gibi:
 
-> "Tüm sistemimizi e-postalarınızın yalnızca size ait olduğu ilkesi üzerine kurduk. Reklam veya yapay zeka eğitimi için e-posta içeriğini tarayan diğer sağlayıcıların aksine, tüm iletişimlerin gizliliğini koruyan katı bir kayıt tutmama, taramama politikası sürdürüyoruz."
+> "Tüm sistemimizi, e-postalarınızın yalnızca size ait olduğu ilkesi üzerine kurduk. Reklam veya yapay zeka eğitimi için e-posta içeriklerini tarayan diğer sağlayıcıların aksine, tüm iletişimlerin gizliliğini koruyan katı bir kayıt tutmama ve taramama politikası uyguluyoruz."
 
 ### Kurumsal Düzeyde Güvenlik {#enterprise-grade-security}
 
-ChaCha20-Poly1305 kullanılarak [kuantum dirençli şifreleme](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)'ün uygulanması, her posta kutusunun ayrı bir şifreli dosya olmasıyla en son teknoloji güvenliği sağladı. Bu yaklaşım, kuantum bilgisayarlar mevcut şifreleme standartlarını aşabilecek kapasiteye ulaşsa bile, Linux Vakfı'nın iletişimlerinin güvenli kalacağını garanti altına alıyor.
+[kuantum dirençli şifreleme](https://forwardemail.net/blog/docs/best-quantum-safe-encrypted-email-service)'ın ChaCha20-Poly1305 kullanılarak uygulanması, her posta kutusunun ayrı bir şifreli dosya olmasıyla en üst düzey güvenlik sağladı. Bu yaklaşım, kuantum bilgisayarlar mevcut şifreleme standartlarını aşabilecek kapasiteye ulaşsa bile, Linux Vakfı'nın iletişimlerinin güvenli kalacağını garanti altına alıyor.
 
 ### Sabit Fiyatlı Kurumsal Model {#fixed-price-enterprise-model}
 
@@ -73,11 +73,11 @@ Forward Email'in [kurumsal fiyatlandırma](https://forwardemail.net/pricing) ç�
 
 ### Geliştirici Dostu API {#developer-friendly-api}
 
-[README-önce yaklaşımı](https://tom.preston-werner.com/2010/08/23/readme-driven-development)'yi takip eden ve [Stripe'ın RESTful API tasarımı](https://amberonrails.com/building-stripes-api)'den ilham alan Forward Email'in [API](https://forwardemail.net/api)'u, Linux Foundation'ın Proje Kontrol Merkezi ile derin bir entegrasyon sağladı. Bu entegrasyon, çeşitli proje portföylerindeki e-posta yönetimini otomatikleştirmek için hayati önem taşıyordu.
+[README-önce yaklaşımı](https://tom.preston-werner.com/2010/08/23/readme-driven-development)'ı takip eden ve [Stripe'ın RESTful API tasarımı](https://amberonrails.com/building-stripes-api)'den ilham alan Forward Email'in [API](https://forwardemail.net/api) çözümü, Linux Foundation'ın Proje Kontrol Merkezi ile derin entegrasyon sağladı. Bu entegrasyon, çeşitli proje portföylerindeki e-posta yönetimini otomatikleştirmek için hayati önem taşıyordu.
 
 ## Uygulama Süreci {#implementation-process}
 
-Uygulama yapılandırılmış bir yaklaşım izledi:
+Uygulama yapılandırılmış bir yaklaşımla gerçekleştirildi:
 
 ```mermaid
 flowchart LR
@@ -86,7 +86,7 @@ flowchart LR
     C --> D[Deployment & Training]
 ```
 
-1. **İlk Alan Adı Göçü**: DNS kayıtlarını yapılandırma, SPF/DKIM/DMARC'ı ayarlama, mevcut kuralları taşıma
+1. **İlk Alan Adı Taşıma**: DNS kayıtlarını yapılandırma, SPF/DKIM/DMARC'ı ayarlama, mevcut kuralları taşıma
 
    ```sh
    # Example DNS configuration for a Linux Foundation domain
@@ -99,7 +99,7 @@ flowchart LR
 
 3. **Özel Özellik Geliştirme**: Çoklu alan yönetimi, raporlama, güvenlik politikaları
 
-Linux Vakfı ile yakın bir şekilde çalışarak, tıpkı [üniversite mezunları e-posta sistemleri](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) için özel çözümler oluşturduğumuz gibi, özellikle onların çoklu proje ortamı için özellikler geliştirdik (bunlar aynı zamanda %100 açık kaynaklıdır, böylece herkes bundan faydalanabilir).
+[üniversite mezunları e-posta sistemleri](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) için özel çözümler oluşturduğumuz gibi, Linux Vakfı ile yakın bir şekilde çalışarak, özellikle onların çoklu proje ortamı için özellikler geliştirdik (bunlar aynı zamanda %100 açık kaynaklıdır, böylece herkes bundan faydalanabilir).
 
 ## Sonuçlar ve Faydalar {#results-and-benefits}
 
@@ -108,18 +108,18 @@ Uygulama önemli faydalar sağladı:
 ### Verimlilik İyileştirmeleri {#efficiency-improvements}
 
 * Azaltılmış idari yük
-* Daha hızlı proje katılımı (günlerden dakikalara)
-* Tek bir arayüzden 250'den fazla etki alanının tümünün kolaylaştırılmış yönetimi
+* Daha hızlı proje başlatma (günlerden dakikalara)
+* 250'den fazla alanın tamamının tek bir arayüzden yönetimi kolaylaştırıldı
 
 ### Maliyet Yönetimi {#cost-management}
 
 * Alan adı veya kullanıcı sayısındaki büyümeden bağımsız olarak sabit fiyatlandırma
 * Kullanıcı başına lisans ücretlerinin ortadan kaldırılması
-* [üniversite vaka çalışması](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) çözümümüze benzer şekilde, Linux Vakfı geleneksel çözümlere kıyasla önemli maliyet tasarrufları elde etti
+* [üniversite vaka çalışması](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study)'ımıza benzer şekilde, Linux Vakfı geleneksel çözümlere kıyasla önemli maliyet tasarrufları elde etti
 
 ### Gelişmiş Güvenlik {#enhanced-security}
 
-* Tüm alanlarda kuantum dirençli şifreleme
+* Tüm etki alanlarında kuantum dirençli şifreleme
 * Sahtecilik ve kimlik avını önleyen kapsamlı e-posta kimlik doğrulaması
 * [güvenlik özellikleri](https://forwardemail.net/security) aracılığıyla güvenlik testleri ve uygulamaları
 * [teknik uygulama](https://forwardemail.net/blog/docs/email-privacy-protection-technical-implementation) aracılığıyla gizlilik koruması
@@ -128,17 +128,17 @@ Uygulama önemli faydalar sağladı:
 
 * Proje yöneticileri için self servis e-posta yönetimi
 * Tüm Linux Foundation etki alanlarında tutarlı deneyim
-* Sağlam kimlik doğrulamasıyla güvenilir e-posta teslimi
+* Güçlü kimlik doğrulamasıyla güvenilir e-posta teslimi
 
 ## Sonuç {#conclusion}
 
-Linux Foundation'ın Forward Email ile ortaklığı, kuruluşların temel değerleriyle uyum içinde kalırken karmaşık e-posta yönetimi zorluklarını nasıl çözebileceklerini göstermektedir. Açık kaynak ilkelerine, gizliliğe ve güvenliğe öncelik veren bir çözüm seçerek Linux Foundation, e-posta yönetimini idari bir yükten stratejik bir avantaja dönüştürmüştür.
+Linux Foundation'ın Forward Email ile ortaklığı, kuruluşların temel değerleriyle uyum içinde çalışırken karmaşık e-posta yönetimi zorluklarının üstesinden nasıl gelebileceklerini göstermektedir. Açık kaynak ilkelerine, gizliliğe ve güvenliğe öncelik veren bir çözüm seçerek Linux Foundation, e-posta yönetimini idari bir yükten stratejik bir avantaja dönüştürmüştür.
 
-[Kanonik/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) ve [büyük üniversiteler](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) ile yaptığımız çalışmalarda görüldüğü üzere, karmaşık alan portföylerine sahip kuruluşlar, Forward Email'in kurumsal çözümü sayesinde verimlilik, güvenlik ve maliyet yönetiminde önemli iyileştirmeler elde edebilirler.
+Hem [Kanonik/Ubuntu](https://forwardemail.net/blog/docs/canonical-ubuntu-email-enterprise-case-study) hem de [büyük üniversiteler](https://forwardemail.net/blog/docs/alumni-email-forwarding-university-case-study) ile yaptığımız çalışmada görüldüğü üzere, karmaşık alan portföylerine sahip kuruluşlar, Forward Email'in kurumsal çözümü sayesinde verimlilik, güvenlik ve maliyet yönetiminde önemli iyileştirmeler elde edebilirler.
 
-Forward Email'in kuruluşunuzun birden fazla etki alanında e-postaları yönetmesine nasıl yardımcı olabileceği hakkında daha fazla bilgi için [forwardemail.net](https://forwardemail.net) adresini ziyaret edin veya ayrıntılı [belgeleme](https://forwardemail.net/email-api) ve [rehberler](https://forwardemail.net/guides) bölümlerimizi inceleyin.
+Forward Email'in kuruluşunuzun birden fazla etki alanındaki e-postaları yönetmesine nasıl yardımcı olabileceği hakkında daha fazla bilgi için [forwardemail.net](https://forwardemail.net) adresini ziyaret edin veya ayrıntılı [dokümantasyon](https://forwardemail.net/email-api) ve [rehberler](https://forwardemail.net/guides) sayfalarımızı inceleyin.
 
-## Referanslar {#references}
+## Başvuruları {#references}
 
 * Linux Vakfı. (2025). "Projelere Göz Atın." <https://www.linuxfoundation.org/projects> adresinden alındı
 * Wikipedia. (2025). "Linux Vakfı." <https://en.wikipedia.org/wiki/Linux_Foundation> adresinden alındı

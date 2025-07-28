@@ -1,4 +1,4 @@
-# PayPal の 11 年間にわたる API 災害: 開発者を無視する中で、私たちがどのように回避策を構築したか {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
+# PayPal の 11 年間にわたる API 問題: 開発者を無視する中で、私たちがどのように回避策を構築したか {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
 <img 読み込み="遅延" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
@@ -76,7 +76,7 @@
   * [文書の嘘](#the-documentation-lie)
 * [開発者にとってこれが何を意味するか](#what-this-means-for-developers)
 
-## 欠けている部分: サブスクリプションをリストする方法がない {#the-missing-piece-no-way-to-list-subscriptions}
+## 欠けている部分: サブスクリプションを一覧表示する方法がない {#the-missing-piece-no-way-to-list-subscriptions}
 
 驚くべき事実は、PayPal は 2014 年からサブスクリプションの請求サービスを提供しているにもかかわらず、販売者が独自のサブスクリプションをリストする方法を一度も提供していないことです。
 
@@ -91,7 +91,7 @@
 
 でも PayPal はどうですか? 彼らはそれを...作らなかったんです。
 
-## 2014-2017: 問題が浮上 {#2014-2017-the-problem-emerges}
+## 2014-2017: 問題発生 {#2014-2017-the-problem-emerges}
 
 サブスクリプションのリストの問題は、2017 年に PayPal のコミュニティ フォーラムで初めて発生しました。開発者は当然の質問をしていました。「自分のサブスクリプションのリストを取得するにはどうすればいいですか?」
 
@@ -103,9 +103,9 @@ PayPal の反応は？ 無反応。
 
 > 「+1。もう3年近く経ちました。」 - laudukang (つまり、問題は2014年から存在していた)
 
-2017年の[オリジナルのコミュニティ投稿](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066) では、開発者がこの基本機能の実現を強く求めている様子が伺えます。PayPal の対応は、問題が報告されていたリポジトリをアーカイブすることでした。
+2017年の[オリジナルのコミュニティ投稿](https://web.archive.org/web/20201019142512/https://www.paypal-community.com/t5/REST-API-SDK/List-all-subscriptions/td-p/1147066)は、開発者がこの基本機能の実現を強く求めていたことを示しています。PayPalの対応は、問題が報告されていたリポジトリをアーカイブすることでした。
 
-## 2020: 詳細なフィードバックを提供します {#2020-we-give-them-extensive-feedback}
+## 2020: 徹底的なフィードバックを提供します {#2020-we-give-them-extensive-feedback}
 
 2020年10月、PayPalから正式なフィードバックセッションの依頼がありました。これは単なる雑談ではなく、Sri Shivananda（CTO）、Edwin Aoki、Jim Magats、John Kunzeなど、PayPalの幹部8名と45分間のMicrosoft Teams通話を組んで行われたのです。
 
@@ -129,7 +129,7 @@ Mark Stuart 氏は、アクセス トークンの問題が特に次の点に関�
 
 > アクセス トークンの生成に関する問題は、通常は聞かれません。
 
-### チームが関与し、約束がなされました {#teams-got-involved-promises-were-made}
+### チームが参加し、約束がなされました {#teams-got-involved-promises-were-made}
 
 新たな問題が発見されるにつれ、PayPalは会話にさらに多くのチームを追加していきました。サブスクリプション管理UIチームのDarshan Raju氏が参加し、次のように述べました。
 
@@ -143,7 +143,7 @@ Mark Stuart 氏は、アクセス トークンの問題が特に次の点に関�
 
 > PayPal を開発者にとって最適なものにします。
 
-### 結果？何もなし。 {#the-result-nothing}
+### 結果？何もなし。{#the-result-nothing}
 
 正式なフィードバック セッション、27 項目の広範なリスト、複数のチームの関与、および次の約束にもかかわらず、
 
@@ -151,7 +151,7 @@ Mark Stuart 氏は、アクセス トークンの問題が特に次の点に関�
 
 問題はまったく解決されませんでした。
 
-## 幹部の流出：PayPal が組織としての記憶をすべて失った経緯 {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
+## 幹部の大量流出：PayPalが組織としての記憶を失ってしまった経緯 {#the-executive-exodus-how-paypal-lost-all-institutional-memory}
 
 ここからが本当に面白いところです。2020年のフィードバックを受け取った人全員がPayPalを去っています。
 
@@ -162,14 +162,14 @@ Mark Stuart 氏は、アクセス トークンの問題が特に次の点に関�
 
 **約束して去った技術リーダー:**
 
-* **マーク・スチュアート** (フィードバックが「触媒」となると約束) → [リップル社に入社](https://www.linkedin.com/in/markstuartsf)
+* **マーク・スチュアート** (フィードバックは「触媒」となると約束) → [リップル社に入社](https://www.linkedin.com/in/markstuartsf)
 * **ジム・マガッツ** (PayPal 18年目のベテラン) → [MXのCEO](https://www.cnbc.com/2022/07/28/paypal-veteran-jim-magats-is-named-ceo-of-mx-the-startup-that-connects-banks-and-fintech-players.html) (2022年)
 * **ジョン・クンツェ** (グローバルコンシューマープロダクト担当バイスプレジデント) → [引退](https://www.linkedin.com/in/john-kunze-5724a86) (2023年)
 * **エドウィン・アオキ** (最後の一人) → [ナスダックへ出発しました](https://www.linkedin.com/posts/edwinaoki_apparently-i-just-cant-stay-awaythe-day-activity-7289388518487793664-j8OZ) (2025年1月)
 
 PayPal は、幹部が開発者のフィードバックを集め、約束を交わし、その後 JP モルガン、リップル、その他のフィンテック企業など、より優れた企業へと移る、回転ドアのような会社になっている。
 
-これは、2025 年の GitHub の問題への対応が 2020 年のフィードバックと完全に切り離されているように見える理由を説明しています。文字通り、そのフィードバックを受け取ったすべての人が PayPal を去ったのです。
+これは、2025 年の GitHub の問題への対応が 2020 年のフィードバックと完全に切り離されているように見える理由を説明しています。文字通り、そのフィードバックを受け取ったすべての人が PayPal を去っています。
 
 ## 2025年: 新しいリーダーシップ、同じ問題 {#2025-new-leadership-same-problems}
 
@@ -181,13 +181,13 @@ PayPal は、幹部が開発者のフィードバックを集め、約束を交�
 
 > ニックさん、こんにちは。ご連絡とフィードバックをありがとうございます。ミシェル（CC）がチームと連携し、この件について一緒に解決に向けて取り組んでいます。ありがとうございます。 -A
 
-### ミシェル・ギルの返答 {#michelle-gills-response}
+### ミシェル・ギルの回答 {#michelle-gills-response}
 
 中小企業・金融サービス部門のEVP兼ゼネラルマネージャーであるミシェル・ギル氏は次のように答えた。
 
 > ニックさん、ありがとうございます。アレックスをBCCに移動しました。以前の投稿以来、この件について調査中です。今週中にご連絡いたします。担当者からご連絡させていただきますので、ご連絡先を教えていただけますでしょうか。ミシェル
 
-### 私たちの対応: 会議はもう行いません {#our-response-no-more-meetings}
+### 当社の対応: 会議はもう行いません {#our-response-no-more-meetings}
 
 私たちは、不満を述べて、次の会合を断りました。
 
@@ -210,7 +210,7 @@ GET /v1/billing/subscriptions
 Authorization: Bearer {access_token}
 ```
 
-### 「シンプルなCRUD」の矛盾 {#the-simple-crud-contradiction}
+### 「単純なCRUD」の矛盾 {#the-simple-crud-contradiction}
 
 これは 2014 年から存在するはずだった基本的な CRUD 機能であると指摘したとき、Marty の返答は次のような意味深いものでした。
 
@@ -222,18 +222,18 @@ PayPal TypeScript SDK は、数か月の開発期間を経て現在は 3 つの�
 
 > 「シンプルなCRUD操作がコアAPIの一部」だとしたら、サブスクリプション一覧のエンドポイントはどこにあるのでしょうか？開発者たちは2014年からこの「シンプルなCRUD操作」を求めてきました。もう11年も経ちます。他の決済処理業者は、最初からこの基本機能を備えていました。
 
-### 断絶が明らかになる {#the-disconnect-becomes-clear}
+### 切断が明らかになる {#the-disconnect-becomes-clear}
 
-2025 年のアレックス・クリス、ミシェル・ギル、マーティ・ブロドベックとのやり取りでは、同様の組織的機能不全が示されています。
+2025 年のアレックス・クリス、ミシェル・ギル、マーティ・ブロドベックとのやり取りでは、同様の組織的機能不全が見受けられます。
 
 1. **新しいリーダーは過去のフィードバックセッションについて何も知らない**
 2. **同じ過剰なソリューションを提案する**
 3. **自社のAPIの限界を理解していない**
 4. **問題を解決するだけでなく、より多くの会議を求める**
 
-このパターンは、2025 年の PayPal チームが 2020 年に提供された広範なフィードバックから完全に切り離されているように見える理由を説明しています。そのフィードバックを受け取った人々はいなくなり、新しいリーダーシップが同じ間違いを繰り返しています。
+このパターンは、2025 年の PayPal チームが 2020 年に提供された広範なフィードバックから完全に切り離されているように見える理由を説明しています。フィードバックを受け取った人々はいなくなり、新しいリーダーシップが同じ間違いを繰り返しています。
 
-## 何年も無視されてきたバグレポート {#years-of-bug-reports-they-ignored}
+## 彼らが無視した何年にもわたるバグレポート {#years-of-bug-reports-they-ignored}
 
 私たちは単に機能の不足について不満を言うだけでなく、積極的にバグを報告し、改善に努めました。以下に、記録した問題の包括的なタイムラインを示します。
 
@@ -282,7 +282,7 @@ Mark Stuart はそれを消費者製品チームに転送しました:
 
 **結果**: 応答なし、修正なし。開発者は依然としてサンドボックスの信頼性の問題に直面しています。
 
-### 2021: システムが完全に壊れていると報告 {#2021-reports-system-completely-broken}
+### 2021: システムが完全に壊れたと報告 {#2021-reports-system-completely-broken}
 
 2021年5月に、PayPalの取引レポートのダウンロードシステムが完全に壊れていると報告しました。
 
@@ -298,7 +298,7 @@ Mark Stuart 氏はセッション タイムアウトの問題を認識しまし�
 
 **結果**: セッションタイムアウトは依然として60秒です。レポートシステムは依然として定期的に障害を起こします。
 
-### 2022: コア API 機能が見つかりません (再び) {#2022-core-api-feature-missing-again}
+### 2022: コアAPI機能が見つかりません（再び）{#2022-core-api-feature-missing-again}
 
 2022 年 1 月、サブスクリプション リストの問題を再度エスカレーションしましたが、今回はドキュメントの誤りについてさらに詳しく説明しました。
 
@@ -379,7 +379,7 @@ PayPal の典型的なエラーメッセージ - 難解で役に立たない
 <img loading="lazy" src="/img/articles/pypl-errors.png" alt="" class="rounded-lg" />
 </figure>
 
-### SDK の問題 {#sdk-problems}
+### SDKの問題 {#sdk-problems}
 
 * スクリプトタグを使用してSDKを再読み込みしながらボタンの入れ替えと再レンダリングを行う複雑な回避策を講じなければ、1回限りの支払いとサブスクリプションの両方に対応できません。
 * JavaScript SDKは基本的な規則に違反しています（クラス名は小文字、インスタンスチェックなし）。
@@ -457,17 +457,17 @@ PayPalサポートはすべて問題ないと主張しているが、支払い�
 
 ## PayPalを廃止できない理由 {#why-we-cant-just-drop-paypal}
 
-こうした問題にもかかわらず、PayPalを決済手段としてしか利用していないお客様もいらっしゃるため、PayPalを完全に廃止することはできません。あるお客様は[ステータスページ](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515)で次のように述べています。
+こうした問題にもかかわらず、PayPalを決済手段としてしか利用していないお客様もいらっしゃるため、PayPalを完全に廃止することはできません。[ステータスページ](https://github.com/forwardemail/status.forwardemail.net/issues/1658#issuecomment-3026530515)で、あるお客様が次のように述べました。
 
 > PayPalが唯一の支払い方法
 
 **PayPal が特定のユーザーに対して支払いの独占権を作り出したため、私たちは壊れたプラットフォームをサポートせざるを得ません。**
 
-## コミュニティによる回避策 {#the-community-workaround}
+## コミュニティの回避策 {#the-community-workaround}
 
 PayPalは基本的なサブスクリプションリスト機能を提供しないため、開発者コミュニティは回避策を構築しました。PayPalサブスクリプションの管理に役立つスクリプトを作成しました：[set-active-pypl-subscription-ids.js](https://github.com/forwardemail/forwardemail.net/blob/master/scripts/set-active-pypl-subscription-ids.js)
 
-このスクリプトは、開発者がソリューションを共有する[コミュニティの要点](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)を参照しています。PayPalが何年も前に構築すべきだったものを提供しているユーザーは、実際には[感謝の意を表して](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4?permalink_comment_id=5045775#gistcomment-5045775)です。
+このスクリプトは、開発者がソリューションを共有する[コミュニティの要点](https://gist.github.com/titanism/955f0c21d53e8c98068c549fb79e75d4)を参照しています。PayPalが何年も前に構築すべきだったものを提供しているのは、実際にはユーザーです。
 
 ## フィッシングのため PayPal テンプレートをブロックしています {#blocking-paypal-templates-due-to-phishing}
 
@@ -479,11 +479,11 @@ PayPalを装ったフィッシング詐欺メールが定期的に報告され�
 
 **件名:** `[Sandbox] TEST - New invoice from PaypalBilling434567 sandbox #A4D369E8-0001`
 
-このメールはフィッシング詐欺の疑いがあるため、`abuse@microsoft.com` に転送されました。問題は？実際にはPayPalのサンドボックス環境から送信されたものの、テンプレートのデザインがあまりにも粗雑だったため、フィッシング検出システムが反応してしまったことです。
+このメールはフィッシング詐欺の疑いがあるため、`abuse@microsoft.com` に転送されました。問題は、実際には PayPal のサンドボックス環境から送信されたものの、テンプレートのデザインがあまりにも粗雑だったため、フィッシング検出システムが反応してしまったことです。
 
 ### 当社の実装 {#our-implementation}
 
-PayPal 固有のフィルタリングは、[電子メールフィルタリングコード](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) で実装されています。
+PayPal 固有のフィルタリングは [電子メールフィルタリングコード](https://github.com/forwardemail/forwardemail.net/blob/3b45c70391b5b572b2568749d71be3f7198cd995/helpers/is-arbitrary.js#L151-L172) に実装されています。
 
 ```javascript
 // check for paypal scam (very strict until PayPal resolves phishing on their end)
@@ -526,7 +526,7 @@ PayPalの不正使用対策チームに繰り返し報告したにもかかわ�
 * 「[会社名]からの請求書（[注文ID]）」
 * 電話番号や注文IDが異なる複数のバリエーション
 
-これらのメールは多くの場合、`outlook.com` ホストから送信されていますが、PayPal の正規のシステムから送信されているように見えるため、特に危険です。これらのメールは PayPal の実際のインフラストラクチャを経由して送信されるため、SPF、DKIM、DMARC 認証を通過します。
+これらのメールは多くの場合、`outlook.com`ホストから送信されていますが、PayPalの正規のシステムから送信されているように見えるため、特に危険です。これらのメールはPayPalの実際のインフラストラクチャを介して送信されるため、SPF、DKIM、DMARC認証を通過します。
 
 弊社の技術ログによると、これらのスパムメールには正当な PayPal ヘッダーが含まれています。
 
@@ -537,7 +537,7 @@ PayPalの不正使用対策チームに繰り返し報告したにもかかわ�
 
 これにより、あり得ない状況が発生します。正当な PayPal メールとスパムはどちらも同一の技術的特性を持っています。
 
-### アイロニー {#the-irony}
+### 皮肉 {#the-irony}
 
 金融詐欺対策を主導すべき企業であるPayPalは、メールテンプレートの設計があまりにもずさんで、フィッシング対策システムを誤作動させてしまうほどです。PayPalからの正規のメールは詐欺メールと見分けがつかないため、ブロックせざるを得ません。
 
@@ -545,7 +545,7 @@ PayPalの不正使用対策チームに繰り返し報告したにもかかわ�
 
 ### 現実世界への影響：新しいPayPal詐欺 {#real-world-impact-novel-paypal-scams}
 
-問題はテンプレートのデザインが不適切というだけにとどまりません。PayPalの請求書システムは非常に簡単に悪用されるため、詐欺師は正規の請求書を装った偽の請求書を定期的に送信しています。セキュリティ研究者のギャビン・アンダーレッグ氏は、詐欺師がすべての認証チェックを通過した本物のPayPal請求書を送信する事例を[斬新なPayPal詐欺](https://anderegg.ca/2023/02/01/a-novel-paypal-scam)で報告しています。
+問題はテンプレートのデザインが不適切というだけではありません。PayPalの請求書システムは非常に簡単に悪用されるため、詐欺師は正規の請求書を装った偽の請求書を定期的に送信しています。セキュリティ研究者のギャビン・アンダーレッグ氏は、詐欺師がすべての認証チェックを通過した本物のPayPal請求書を送信する[斬新なPayPal詐欺](https://anderegg.ca/2023/02/01/a-novel-paypal-scam)について記録しています。
 
 > 送信元を調べたところ、メールはPayPalから送信されたように見えました（SPF、DKIM、DMARCはすべて合格）。ボタンには、正規のPayPal URLに似たリンクが貼られていました… 正規のメールだと気づくまで少し時間がかかりました。詐欺師から、唐突な「請求書」が送られてきたのです。
 
@@ -568,7 +568,7 @@ PayPalの不正使用対策チームに繰り返し報告したにもかかわ�
 
 PayPalプラットフォームで最も苛立たしい点の一つは、コンプライアンスと顧客確認（KYC）手続きに対する時代遅れのアプローチです。他の決済代行サービスとは異なり、PayPalは開発者が適切な認証を完了する前にAPIを統合し、本番環境で決済の収集を開始できるようにしています。
 
-### 仕組み {#how-it-should-work}
+### 動作方法 {#how-it-should-work}
 
 すべての正当な支払い処理業者は次の論理的な順序に従います。
 
@@ -592,16 +592,16 @@ PayPal のプロセスは完全に逆です。
 
 ### 現実世界への影響 {#the-real-world-impact}
 
-この逆方向のプロセスは企業にとって災難を引き起こします。
+この逆方向のプロセスは企業にとって災難をもたらします。
 
-* 繁忙期に**顧客が購入を完了できない**
+* 繁忙期に顧客が購入を完了できない**
 * 確認が必要であることを**事前に通知されない**
 * 支払いがブロックされても**メール通知がない**
 * **加盟店は混乱した顧客から問題を知る**
 * 重要なビジネス期間に**収益が失われる**
 * **支払いが不可解に失敗すると**顧客の信頼が損なわれる**
 
-### 2025年7月のアカウント移行災害 {#the-july-2025-account-migration-disaster}
+### 2025年7月のアカウント移行の惨事 {#the-july-2025-account-migration-disaster}
 
 まさにこのシナリオが、2025年7月の定期的なアカウント移行の際に発生しました。PayPalは当初は支払いを許可していたものの、その後、何の通知もなく突然支払いをブロックしました。お客様から支払いができないという報告が寄せられ始めてから、私たちは問題に気付きました。
 
@@ -619,7 +619,7 @@ PayPalが実装を拒否しているサブスクリプションリスティン�
 
 ### ストライプ {#stripe}
 
-StripeはAPIリリース当初からサブスクリプションリスト機能を提供しています。ドキュメントには、顧客アカウントまたは加盟店アカウントのすべてのサブスクリプションを取得する方法が明確に記載されています。これは基本的なCRUD機能と言えるでしょう。
+StripeはAPIリリース当初からサブスクリプションリスト機能を提供しています。ドキュメントには、顧客または加盟店アカウントのすべてのサブスクリプションを取得する方法が明確に記載されています。これは基本的なCRUD機能と言えるでしょう。
 
 ### パドル {#paddle}
 
@@ -694,11 +694,11 @@ Authorization: Bearer access_token
 
 **PayPal の利用可能なエンドポイント:**
 
-* `POST /v1/billing/subscriptions` - サブスクリプションを作成する
-* `GET /v1/billing/subscriptions/{id}` - サブスクリプションを1つ取得する（IDがわかっている場合）
-* `PATCH /v1/billing/subscriptions/{id}` - サブスクリプションを更新する
-* `POST /v1/billing/subscriptions/{id}/cancel` - サブスクリプションをキャンセルする
-* `POST /v1/billing/subscriptions/{id}/suspend` - サブスクリプションを停止する
+* `POST /v1/billing/subscriptions` - サブスクリプションの作成
+* `GET /v1/billing/subscriptions/{id}` - サブスクリプションを1つ取得（IDがわかっている場合）
+* `PATCH /v1/billing/subscriptions/{id}` - サブスクリプションの更新
+* `POST /v1/billing/subscriptions/{id}/cancel` - サブスクリプションのキャンセル
+* `POST /v1/billing/subscriptions/{id}/suspend` - サブスクリプションの一時停止
 
 **PayPalに欠けているもの:**
 
@@ -715,9 +715,9 @@ PayPal の批判への対応方法を完璧に要約する動きとして、同�
 
 ### 大いなる消滅 {#the-great-erasure}
 
-`paypal-community.com` にあった最初の PayPal コミュニティには **6,003,558 人のメンバー** が参加し、数十万件もの投稿、バグ報告、苦情、そして PayPal の API 障害に関する議論が交わされていました。これは、PayPal のシステム上の問題が 10 年以上にわたって記録されてきた証拠です。
+`paypal-community.com` にあった当初の PayPal コミュニティには **6,003,558 人のメンバー** が参加し、数十万件もの投稿、バグレポート、苦情、そして PayPal の API 障害に関する議論が交わされていました。これは、PayPal のシステム上の問題が 10 年以上にわたって記録されてきた証拠です。
 
-2025年6月30日、PayPalはひっそりとフォーラム全体をオフラインにしました。`paypal-community.com` のすべてのリンクは404エラーを返すようになりました。これは移行やアップグレードではありません。
+2025年6月30日、PayPalはひっそりとフォーラム全体をオフラインにしました。`paypal-community.com`リンクはすべて404エラーを返すようになりました。これは移行やアップグレードではありません。
 
 ### サードパーティによる救済 {#the-third-party-rescue}
 
@@ -732,15 +732,15 @@ PayPal の批判への対応方法を完璧に要約する動きとして、同�
 
 このフォーラムの閉鎖は、組織的な失敗を世間の監視から隠そうとする、これまでで最も大胆な試みである。
 
-## 11年間のキャプチャーバグ災害：1,899ドル以上 {#the-11-year-capture-bug-disaster-1899-and-counting}
+## 11年間続いたキャプチャーバグ災害：1,899ドル以上 {#the-11-year-capture-bug-disaster-1899-and-counting}
 
 PayPalがフィードバックセッションの開催や約束に忙殺されている間に、同社の中核となる決済処理システムは11年以上もの間、根本的に機能不全に陥っていました。その証拠は壊滅的です。
 
-### 転送メールの1,899ドルの損失 {#forward-emails-1899-loss}
+### 転送メールの損失 1,899 ドル {#forward-emails-1899-loss}
 
 弊社の本番システムにおいて、PayPalのキャプチャエラーにより失われたPayPal決済が108件、合計**$1,899**あることが判明しました。これらの決済には一貫したパターンが見られます。
 
-* `CHECKOUT.ORDER.APPROVED` ウェブフックを受信しました
+* `CHECKOUT.ORDER.APPROVED` の Webhook を受信しました
 * PayPal のキャプチャ API が 404 エラーを返しました
 * PayPal の API 経由で注文にアクセスできなくなりました
 
@@ -754,7 +754,7 @@ PayPal は 14 日後にデバッグ ログを完全に非表示にし、キャ�
 
 ### 2013年オリジナルレポート：11年以上の過失 {#the-2013-original-report-11-years-of-negligence}
 
-この問題に関する最も古い文書化されたレポートは、[2013年11月のStack Overflow](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([アーカイブ済み](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)) に掲載されています。
+この問題に関する最も古い文書化されたレポートは、[2013年11月のStack Overflow](https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture) ([アーカイブ済み](https://web.archive.org/web/20250708045416/https://stackoverflow.com/questions/19773755/keep-receiving-404-error-with-rest-api-when-doing-a-capture)) に記載されています。
 
 > 「キャプチャ時にRest APIで404エラーが発生し続ける」
 
@@ -777,7 +777,7 @@ PayPal は 14 日後にデバッグ ログを完全に非表示にし、キャ�
 
 ### 2016年の告白: PayPalが自社のSDKを破壊 {#the-2016-admission-paypal-breaks-their-own-sdk}
 
-2016年、PayPalのGitHubリポジトリに、公式PHP SDKに影響を与える[大規模な捕獲失敗](https://github.com/paypal/PayPal-PHP-SDK/issues/660)に関する文書が掲載されました。その規模は驚くべきものでした。
+2016年、PayPalのGitHubリポジトリに、公式PHP SDKに影響を与える[大規模な捕獲失敗](https://github.com/paypal/PayPal-PHP-SDK/issues/660)が記録されました。その影響は甚大でした。
 
 > 「2016年9月20日以降、PayPalのキャプチャ試行はすべて「INVALID_RESOURCE_ID - 要求されたリソースIDが見つかりません。」というエラーで失敗しています。9月19日から9月20日の間にAPI統合に変更はありませんでした。**9月20日以降のキャプチャ試行の100%でこのエラーが返されました。**」
 
@@ -789,20 +789,20 @@ PayPalの当初の対応は、販売業者を責め、テクニカルサポー�
 
 > 「製品開発者から最新情報が届きました。送信されているヘッダーを見ると、PayPalリクエストIDが42文字で送信されていることに気づいていますが、**最近の変更により、このIDは38文字に制限されているようです。**」
 
-この告白はPayPalの組織的な過失を明らかにしている。
+この告白は PayPal の組織的な過失を明らかにしている。
 
 1. **文書化されていない重大な変更を行った**
 2. **自社の公式SDKを破壊した**
 3. **まず販売業者を責めた**
 4. **プレッシャーを受けて初めて過失を認めた**
 
-問題が「修正」された後でも、販売業者は次のように報告しました。
+問題が「修正」された後も、販売業者は次のように報告しました。
 
-> 「SDK を v1.7.4 にアップグレードしましたが、**問題は引き続き発生します。**」
+> 「SDK を v1.7.4 にアップグレードしましたが、**問題は引き続き発生しています。**」
 
 ### 2024年のエスカレーション：依然として機能していない {#the-2024-escalation-still-broken}
 
-PayPalコミュニティからの最近の報告によると、問題はさらに悪化しているようです。[2024年9月の議論](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([アーカイブ済み](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) にも全く同じ問題が報告されています。
+PayPalコミュニティからの最近の報告によると、問題はさらに悪化しているようです。[2024年9月の議論](https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093) ([アーカイブ済み](https://web.archive.org/web/20250708045416/https://ppl.lithium.com/t5/REST-APIs/Receiving-APPROVED-Webhooks-for-Order-but-capture-leads-to-404/td-p/3176093)) にも全く同じ問題が記録されています。
 
 > 「この問題は約 2 週間前から発生し始めたばかりで、すべての注文に影響しているわけではありません。**より一般的なのは、キャプチャ時に 404 エラーが発生することです。**」
 
@@ -810,9 +810,9 @@ PayPalコミュニティからの最近の報告によると、問題はさら�
 
 > 「注文をキャプチャしようとした後、PayPal は 404 を返します。注文の詳細を取得すると: {'id': 'ID', 'intent': 'CAPTURE', 'status': 'COMPLETED', ..., 'final_capture': true, ...} **これは、当社側でキャプチャが成功したという痕跡がない状態です。**」
 
-### Webhook の信頼性の失敗 {#the-webhook-reliability-disaster}
+### Webhookの信頼性の失敗 {#the-webhook-reliability-disaster}
 
-別の[保存コミュニティの議論](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) では、PayPal の Webhook システムが根本的に信頼できないことが明らかになっています。
+別の [保存コミュニティの議論](https://ppl.lithium.com/t5/REST-APIs/Not-received-PAYMENT-CAPTURE-COMPLETED-when-had-captured/m-p/3042446) は、PayPal の Webhook システムが根本的に信頼できないことを明らかにしています。
 
 > 「理論的には、Webhook イベントから 2 つのイベント (CHECKOUT.ORDER.APPROVED と PAYMENT.CAPTURE.COMPLETED) が発生するはずです。実際には、**これら 2 つのイベントがすぐに受信されることは稀で、PAYMENT.CAPTURE.COMPLETED はほとんどの場合受信できないか、数時間以内に受信されます。**」
 
@@ -831,7 +831,7 @@ PayPalコミュニティからの最近の報告によると、問題はさら�
 証拠は11年以上にわたり、明確なパターンを示しています。
 
 * **2013**: 「PayPalは対応中」
-* **2016**: PayPalは重大な変更を認め、修正プログラムを提供
+* **2016**: PayPalは重大な変更を認め、不具合の修正を提供
 * **2024**: 全く同じエラーが依然として発生しており、Forward Emailをはじめ、数多くのサービスに影響
 
 これはバグではありません - **これは組織的な過失です。** PayPal は、これらの重大な支払い処理の失敗について 10 年以上前から認識しており、一貫して次の対応をしてきました。
@@ -855,7 +855,7 @@ PayPalの公式ドキュメントには、加盟店がキャプチャ処理に�
 
 **他のすべての支払い処理業者は、最初から機能する信頼性の高いキャプチャ API を提供しています。**
 
-## PayPal の広範な詐欺パターン {#paypals-broader-pattern-of-deception}
+## PayPalの広範な詐欺パターン {#paypals-broader-pattern-of-deception}
 
 キャプチャーバグによる惨事は、顧客を欺き、失敗を隠蔽しようとする PayPal の組織的なアプローチの一例にすぎません。
 
@@ -867,7 +867,7 @@ PayPalの公式ドキュメントには、加盟店がキャプチャ処理に�
 
 ### ハニー訴訟：アフィリエイトリンクの書き換え {#the-honey-lawsuit-rewriting-affiliate-links}
 
-PayPalによるHoneyの買収は、コンテンツクリエイターやインフルエンサーから手数料を横領する[ハニーがアフィリエイトリンクを書き換えていると主張する訴訟](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer)という行為につながりました。これは、本来他者に還元されるべき収益をPayPalが不正に流用することで利益を得ている、組織的な欺瞞行為の新たな形です。
+PayPalによるHoneyの買収は、[ハニーがアフィリエイトリンクを書き換えていると主張する訴訟](https://www.theverge.com/2024/12/23/24328767/honey-paypal-lawsuit-affiliate-commission-influencer)という、コンテンツクリエイターやインフルエンサーからコミッションを横領する行為を生み出しました。これは、本来他者に還元されるべき収益をPayPalが不正に流用することで利益を得ている、組織的な欺瞞行為の新たな形です。
 
 パターンは明らかです。
 
@@ -900,7 +900,7 @@ PayPalの公式ドキュメントでは、加盟店が遭遇する可能性の�
 
 ## 開発者にとってこれが何を意味するか {#what-this-means-for-developers}
 
-PayPalが広範なフィードバックを収集しながらも、開発者の基本的なニーズへの対応を組織的に怠っていることは、組織としての根本的な問題を示しています。彼らはフィードバック収集を、問題の実際の解決の代替手段とみなしています。
+PayPalが広範なフィードバックを収集しながらも、開発者の基本的なニーズへの対応を組織的に怠っていることは、根本的な組織的問題を示しています。彼らはフィードバック収集を、問題の実際の解決の代替手段とみなしています。
 
 パターンは明らかです。
 
@@ -915,7 +915,7 @@ PayPalが広範なフィードバックを収集しながらも、開発者の�
 
 一方、開発者は支払いを受け入れるためだけに、回避策を構築し、セキュリティを犠牲にし、壊れた UI に対処せざるを得ません。
 
-決済システムを構築する場合は、私たちの経験から学んでください。[トリフェクタアプローチ](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal) は複数のプロセッサで構築しますが、PayPal が必要な基本機能をすべて提供してくれるとは期待しないでください。初日から回避策を講じる計画を立ててください。
+決済システムを構築する場合は、私たちの経験から学んでください。[トリフェクタアプローチ](https://forwardemail.net/en/blog/docs/building-reliable-payment-system-stripe-paypal)は複数のプロセッサで構築しますが、PayPalが必要な基本機能をすべて提供してくれるとは期待しないでください。初日から回避策を講じる計画を立ててください。
 
 > この投稿は、Forward EmailにおけるPayPal APIの11年間の経験についてまとめたものです。すべてのコード例とリンクは、実際の運用システムから引用しています。これらの問題にもかかわらず、PayPal決済のサポートを継続しているのは、他に選択肢がないお客様もいるためです。
 

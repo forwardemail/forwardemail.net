@@ -41,9 +41,9 @@
   * [Ordner kopieren](#copy-folder)
 * [Ausgehende E-Mails](#outbound-emails)
   * [Erhalten Sie das Limit für ausgehende SMTP-E-Mails](#get-outbound-smtp-email-limit)
-  * [Ausgehende SMTP-E-Mails auflisten](#list-outbound-smtp-emails)
+  * [Auflisten ausgehender SMTP-E-Mails](#list-outbound-smtp-emails)
   * [Ausgehende SMTP-E-Mail erstellen](#create-outbound-smtp-email)
-  * [Abrufen ausgehender SMTP-E-Mails](#retrieve-outbound-smtp-email)
+  * [Ausgehende SMTP-E-Mails abrufen](#retrieve-outbound-smtp-email)
   * [Ausgehende SMTP-E-Mails löschen](#delete-outbound-smtp-email)
 * [Domänen](#domains)
   * [Domänen auflisten](#list-domains)
@@ -117,7 +117,7 @@ Wenn Fehler auftreten, enthält der Antworttext der API-Anfrage eine ausführlic
 | 504 | Gateway-Zeitüberschreitung |
 
 > \[!TIP]
-> If you receive a 5xx status code (which should not happen), then please contact us at <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a> and we will help you to resolve your issue immediately.
+> Sollten Sie einen 5xx-Statuscode erhalten (was nicht vorkommen sollte), kontaktieren Sie uns bitte unter <a href="mailto:api@forwardemail.net"><api@forwardemail.net></a>. Wir helfen Ihnen umgehend bei der Lösung Ihres Problems.
 
 ## Lokalisierung {#localization}
 
@@ -126,13 +126,13 @@ Unser Service ist in über 25 verschiedene Sprachen übersetzt. Alle API-Antwort
 ## Seitennummerierung {#pagination}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.
+> Ab dem 1. November 2024 werden die API-Endpunkte für [Domänen auflisten](#list-domains) und [Domänenaliase auflisten](#list-domain-aliases) standardmäßig auf `1000` maximale Ergebnisse pro Seite eingestellt. Wenn Sie dieses Verhalten frühzeitig aktivieren möchten, können Sie `?paginate=true` als zusätzlichen Abfrageparameter an die URL für die Endpunktabfrage übergeben.
 
 Die Paginierung wird von allen API-Endpunkten unterstützt, die Ergebnisse auflisten.
 
 Geben Sie einfach die Abfragezeichenfolgeneigenschaften `page` (und optional `limit`) an.
 
-Die Eigenschaft `page` sollte eine Zahl größer oder gleich `1` sein. Wenn Sie `limit` angeben (ebenfalls eine Zahl), beträgt der Mindestwert `10` und der Höchstwert `50` (sofern nicht anders angegeben).
+Die Eigenschaft `page` sollte eine Zahl größer oder gleich `1` sein. Wenn Sie `limit` (ebenfalls eine Zahl) angeben, ist der Mindestwert `10` und der Höchstwert `50` (sofern nicht anders angegeben).
 
 | Abfragezeichenfolgenparameter | Erforderlich | Typ | Beschreibung |
 | --------------------- | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -143,7 +143,7 @@ Um festzustellen, ob weitere Ergebnisse verfügbar sind, stellen wir diese HTTP-
 
 | HTTP-Antwortheader | Beispiel | Beschreibung |
 | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `X-Page-Count` | `X-Page-Count: 3` | Die insgesamt verfügbare Seitenzahl. |
+| `X-Page-Count` | `X-Page-Count: 3` | Die Gesamtzahl der verfügbaren Seiten. |
 | `X-Page-Current` | `X-Page-Current: 1` | Die aktuelle Seite mit den zurückgegebenen Ergebnissen (z. B. basierend auf dem Abfragezeichenfolgenparameter `page`). |
 | `X-Page-Size` | `X-Page-Size: 10` | Die Gesamtzahl der auf der Seite zurückgegebenen Ergebnisse (z. B. basierend auf dem Abfragezeichenfolgenparameter `limit` und den tatsächlich zurückgegebenen Ergebnissen). |
 | `X-Item-Count` | `X-Item-Count: 30` | Die Gesamtzahl der auf allen Seiten verfügbaren Elemente. |
@@ -162,9 +162,9 @@ curl BASE_URI/v1/domains/DOMAIN_NAME/aliases?page=2&pagination=true \
 
 Unsere API ermöglicht Ihnen den programmgesteuerten Download von Protokollen für Ihr Konto. Wenn Sie eine Anfrage an diesen Endpunkt senden, werden alle Protokolle für Ihr Konto verarbeitet und Ihnen nach Abschluss per E-Mail als Anhang ([Gzip](https://en.wikipedia.org/wiki/Gzip) komprimierte [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) Tabellenkalkulationsdatei) zugesandt.
 
-Dies ermöglicht Ihnen, Hintergrundjobs mit einem [Cron-Job](https://en.wikipedia.org/wiki/Cron) zu erstellen oder unseren [Node.js-Jobplanungssoftware Bree](https://github.com/breejs/bree) zu verwenden, um Protokolle jederzeit abzurufen. Beachten Sie, dass dieser Endpunkt auf `10` Anfragen pro Tag beschränkt ist.
+Dies ermöglicht Ihnen, Hintergrundjobs mit einem [Cron-Job](https://en.wikipedia.org/wiki/Cron) zu erstellen oder unseren [Node.js-Jobplanungssoftware Bree](https://github.com/breejs/bree) zu verwenden, um Protokolle jederzeit zu erhalten. Beachten Sie, dass dieser Endpunkt auf `10` Anfragen pro Tag beschränkt ist.
 
-Der Anhang enthält die Kleinbuchstaben `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz` und die E-Mail selbst eine kurze Zusammenfassung der abgerufenen Protokolle. Sie können die Protokolle jederzeit auch von [Mein Konto → Protokolle](/my-account/logs) herunterladen.
+Der Anhang besteht aus der Kleinbuchstabenform von `email-deliverability-logs-YYYY-MM-DD-h-mm-A-z.csv.gz`. Die E-Mail selbst enthält eine kurze Zusammenfassung der abgerufenen Protokolle. Sie können Protokolle jederzeit auch von [Mein Konto → Protokolle](/my-account/logs) herunterladen.
 
 > `GET /v1/logs/download`
 
@@ -256,10 +256,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-Kontakte (CardDAV) {#alias-contacts-carddav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Im Gegensatz zu anderen API-Endpunkten benötigen diese [Authentifizierung](#authentication) „Benutzername“ (entsprechend dem Alias-Benutzernamen) und „Passwort“ (entsprechend dem vom Alias generierten Passwort) als Header für die Basisautorisierung.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Dieser Endpunktbereich befindet sich in der Entwicklung und wird (hoffentlich) 2024 veröffentlicht. Bitte verwenden Sie in der Zwischenzeit einen IMAP-Client aus dem Dropdown-Menü „Apps“ in der Navigation unserer Website.
 
 ### Kontakte auflisten {#list-contacts}
 
@@ -294,10 +294,10 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-Kalender (CalDAV) {#alias-calendars-caldav}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Im Gegensatz zu anderen API-Endpunkten benötigen diese [Authentifizierung](#authentication) „Benutzername“ (entsprechend dem Alias-Benutzernamen) und „Passwort“ (entsprechend dem vom Alias generierten Passwort) als Header für die Basisautorisierung.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Dieser Endpunktbereich befindet sich in der Entwicklung und wird (hoffentlich) 2024 veröffentlicht. Bitte verwenden Sie in der Zwischenzeit einen IMAP-Client aus dem Dropdown-Menü „Apps“ in der Navigation unserer Website.
 
 ### Kalender auflisten {#list-calendars}
 
@@ -332,14 +332,14 @@ curl -X PUT BASE_URI/v1/account \
 ## Alias-Nachrichten (IMAP/POP3) {#alias-messages-imappop3}
 
 > \[!NOTE]
-> Unlike other API endpoints, these require [Authentication](#authentication) "username" equal to the alias username and "password" equal to the alias generated password as Basic Authorization headers.
+> Im Gegensatz zu anderen API-Endpunkten benötigen diese [Authentifizierung](#authentication) „Benutzername“ (entsprechend dem Alias-Benutzernamen) und „Passwort“ (entsprechend dem vom Alias generierten Passwort) als Header für die Basisautorisierung.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Dieser Endpunktbereich befindet sich in der Entwicklung und wird (hoffentlich) 2024 veröffentlicht. Bitte verwenden Sie in der Zwischenzeit einen IMAP-Client aus dem Dropdown-Menü „Apps“ in der Navigation unserer Website.
 
 Bitte stellen Sie sicher, dass Sie die Einrichtungsanweisungen für Ihre Domäne befolgt haben.
 
-Diese Anleitung finden Sie in unserem FAQ-Bereich [Unterstützen Sie den E-Mail-Empfang mit IMAP?](/faq#do-you-support-receiving-email-with-imap).
+Diese Anweisungen finden Sie in unserem FAQ-Bereich [Unterstützen Sie den E-Mail-Empfang mit IMAP?](/faq#do-you-support-receiving-email-with-imap).
 
 ### Nachrichten auflisten und suchen {#list-and-search-for-messages}
 
@@ -350,7 +350,7 @@ Diese Anleitung finden Sie in unserem FAQ-Bereich [Unterstützen Sie den E-Mail-
 ### Nachricht erstellen {#create-message}
 
 > \[!NOTE]
-> This will **NOT** send an email – it will only simply add the message to your mailbox folder (e.g. this is similar to the IMAP `APPEND` command).  If you would like to send an email, then see [Create outbound SMTP email](#create-outbound-smtp-email) below.  After creating the outbound SMTP email, then you can append a copy of it using this endpoint to your alias' mailbox for storage purposes.
+> Dadurch wird **KEINE** E-Mail gesendet – die Nachricht wird lediglich Ihrem Postfachordner hinzugefügt (ähnlich dem IMAP-Befehl `APPEND`). Wenn Sie eine E-Mail senden möchten, lesen Sie bitte unten den Befehl [Ausgehende SMTP-E-Mail erstellen](#create-outbound-smtp-email). Nachdem Sie die ausgehende SMTP-E-Mail erstellt haben, können Sie über diesen Endpunkt eine Kopie davon zur Speicherung an das Postfach Ihres Alias anhängen.
 
 > `POST /v1/messages`
 
@@ -377,10 +377,10 @@ Diese Anleitung finden Sie in unserem FAQ-Bereich [Unterstützen Sie den E-Mail-
 ## Alias-Ordner (IMAP/POP3) {#alias-folders-imappop3}
 
 > \[!TIP]
-> Folder endpoints with a folder's path <code>/v1/folders/:path</code> as their endpoint are interchangeable with a folder's ID <code>:id</code>. This means you can refer to the folder by either its <code>path</code> or <code>id</code> value.
+> Ordnerendpunkte mit dem Ordnerpfad <code>/v1/folders/:path</code> als Endpunkt sind mit der Ordner-ID <code>:id</code> austauschbar. Das bedeutet, dass Sie den Ordner entweder über seinen <code>path</code>- oder <code>id</code>-Wert referenzieren können.
 
 > \[!WARNING]
-> This endpoint section is a work in progress and will be released (hopefully) in 2024.  In the interim please use an IMAP client from the "Apps" dropdown in the navigation of our website.
+> Dieser Endpunktbereich befindet sich in der Entwicklung und wird (hoffentlich) 2024 veröffentlicht. Bitte verwenden Sie in der Zwischenzeit einen IMAP-Client aus dem Dropdown-Menü „Apps“ in der Navigation unserer Website.
 
 ### Ordner auflisten {#list-folders}
 
@@ -400,13 +400,13 @@ Diese Anleitung finden Sie in unserem FAQ-Bereich [Unterstützen Sie den E-Mail-
 
 **Demnächst verfügbar**
 
-### Ordner aktualisieren {#update-folder}
+### Update-Ordner {#update-folder}
 
 > `PUT /v1/folders/:id`
 
 **Demnächst verfügbar**
 
-### Ordner löschen {#delete-folder}
+### Ordner {#delete-folder} löschen
 
 > `DELETE /v1/folders/:id`
 
@@ -422,9 +422,9 @@ Diese Anleitung finden Sie in unserem FAQ-Bereich [Unterstützen Sie den E-Mail-
 
 Bitte stellen Sie sicher, dass Sie die Einrichtungsanweisungen für Ihre Domäne befolgt haben.
 
-Diese Anweisungen finden Sie unter [Mein Konto → Domänen → Einstellungen → Outbound SMTP-Konfiguration](/my-account/domains). Sie müssen sicherstellen, dass DKIM, Return-Path und DMARC für das Senden ausgehender SMTP-Nachrichten mit Ihrer Domäne eingerichtet sind.
+Diese Anweisungen finden Sie unter [Mein Konto → Domänen → Einstellungen → Outbound SMTP-Konfiguration](/my-account/domains). Sie müssen die Einrichtung von DKIM, Return-Path und DMARC für das Senden ausgehender SMTP-Nachrichten mit Ihrer Domäne sicherstellen.
 
-### Limit für ausgehende SMTP-E-Mails abrufen {#get-outbound-smtp-email-limit}
+### Erhalten Sie das Limit für ausgehende SMTP-E-Mails {#get-outbound-smtp-email-limit}
 
 Dies ist ein einfacher Endpunkt, der ein JSON-Objekt zurückgibt, das `count` und `limit` für die Anzahl der täglich ausgehenden SMTP-Nachrichten pro Konto enthält.
 
@@ -437,7 +437,7 @@ curl BASE_URI/v1/emails/limit \
   -u API_TOKEN:
 ```
 
-### Ausgehende SMTP-E-Mails auflisten {#list-outbound-smtp-emails}
+### Liste ausgehender SMTP-E-Mails {#list-outbound-smtp-emails}
 
 Beachten Sie, dass dieser Endpunkt keine Eigenschaftswerte für `message`, `headers` oder `rejectedErrors` einer E-Mail zurückgibt.
 
@@ -449,7 +449,7 @@ Um diese Eigenschaften und ihre Werte zurückzugeben, verwenden Sie bitte den En
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `q` | NEIN | Zeichenfolge (RegExp wird unterstützt) | Suche nach E-Mails anhand von Metadaten |
 | `domain` | NEIN | Zeichenfolge (RegExp wird unterstützt) | Suche nach E-Mails anhand des Domänennamens |
-| `sort` | NEIN | Zeichenfolge | Sortieren Sie nach einem bestimmten Feld (stellen Sie einen einzelnen Bindestrich `-` voran, um in die umgekehrte Richtung dieses Felds zu sortieren). Der Standardwert ist `created_at`, falls nicht festgelegt. |
+| `sort` | NEIN | Zeichenfolge | Sortieren Sie nach einem bestimmten Feld (stellen Sie einen einzelnen Bindestrich `-` voran, um in umgekehrter Reihenfolge dieses Felds zu sortieren). Der Standardwert ist `created_at`, falls nicht festgelegt. |
 | `page` | NEIN | Nummer | Weitere Informationen finden Sie unter [Pagination](#pagination) |
 | `limit` | NEIN | Nummer | Weitere Informationen finden Sie unter [Pagination](#pagination) |
 
@@ -462,7 +462,7 @@ curl BASE_URI/v1/emails?limit=1 \
 
 ### Ausgehende SMTP-E-Mail erstellen {#create-outbound-smtp-email}
 
-Unsere API zum Erstellen einer E-Mail ist von der Nachrichtenoptionenkonfiguration von Nodemailer inspiriert und nutzt diese. Bitte beachten Sie den [Nodemailer-Nachrichtenkonfiguration](https://nodemailer.com/message/) für alle unten aufgeführten Textparameter.
+Unsere API zum Erstellen einer E-Mail ist von der Nachrichtenoptionenkonfiguration von Nodemailer inspiriert und nutzt diese. Bitte verwenden Sie den [Nodemailer-Nachrichtenkonfiguration](https://nodemailer.com/message/) für alle unten aufgeführten Textparameter.
 
 Beachten Sie, dass wir mit Ausnahme von `envelope` und `dkim` (da wir diese automatisch für Sie festlegen) alle Nodemailer-Optionen unterstützen. Aus Sicherheitsgründen setzen wir die Optionen `disableFileAccess` und `disableUrlAccess` automatisch auf `true`.
 
@@ -483,7 +483,7 @@ Dieser API-Endpunkt kodiert automatisch Emojis für Sie, wenn diese in den Heade
 | `html` | NEIN | String oder Puffer | Die HTML-Version der Nachricht. |
 | `attachments` | NEIN | Array | Ein Array von Anhangsobjekten (siehe [Nodemailer's common fields](https://nodemailer.com/message/#common-fields)). |
 | `sender` | NEIN | Zeichenfolge | Die E-Mail-Adresse für den Header „Absender“ (siehe [Nodemailer's more advanced fields](https://nodemailer.com/message/#more-advanced-fields)). |
-| `replyTo` | NEIN | Zeichenfolge | Die E-Mail-Adresse für den „Antwort-an“-Header. |
+| `replyTo` | NEIN | Zeichenfolge | Die E-Mail-Adresse für den „Antwort-An“-Header. |
 | `inReplyTo` | NEIN | Zeichenfolge | Die Nachrichten-ID, auf die die Nachricht antwortet. |
 | `references` | NEIN | String oder Array | Durch Leerzeichen getrennte Liste oder ein Array von Nachrichten-IDs. |
 | `attachDataUrls` | NEIN | Boolesch | Wenn `true`, dann konvertiert `data:` Bilder im HTML-Inhalt der Nachricht in eingebettete Anhänge. |
@@ -492,7 +492,7 @@ Dieser API-Endpunkt kodiert automatisch Emojis für Sie, wenn diese in den Heade
 | `icalEvent` | NEIN | Objekt | Ein iCalendar-Ereignis, das als alternativer Nachrichteninhalt verwendet werden kann (siehe [Nodemailer's calendar events](https://nodemailer.com/message/calendar-events/)). |
 | `alternatives` | NEIN | Array | Ein Array mit alternativen Nachrichteninhalten (siehe [Nodemailer's alternative content](https://nodemailer.com/message/alternatives/)). |
 | `encoding` | NEIN | Zeichenfolge | Kodierung für die Text- und HTML-Zeichenfolgen (standardmäßig `"utf-8"`, unterstützt aber auch die Kodierungswerte `"hex"` und `"base64"`). |
-| `raw` | NEIN | String oder Puffer | Zu verwendende, benutzerdefinierte Nachricht im RFC822-Format (anstelle einer von Nodemailer generierten Nachricht – siehe [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
+| `raw` | NEIN | String oder Puffer | Eine benutzerdefinierte, generierte Nachricht im RFC822-Format, die verwendet werden soll (anstelle einer von Nodemailer generierten Nachricht – siehe [Nodemailer's custom source](https://nodemailer.com/message/custom-source/)). |
 | `textEncoding` | NEIN | Zeichenfolge | Kodierung, die für Textwerte zwingend verwendet werden muss (entweder `"quoted-printable"` oder `"base64"`). Der Standardwert ist der nächstliegende erkannte Wert (für ASCII verwenden Sie `"quoted-printable"`). |
 | `priority` | NEIN | Zeichenfolge | Prioritätsstufe der E-Mail (kann entweder `"high"`, `"normal"` (Standard) oder `"low"` sein). Beachten Sie, dass der Wert `"normal"` keinen Prioritätsheader setzt (dies ist das Standardverhalten). Wenn der Wert `"high"` oder `"low"` gesetzt ist, setzen die Header `X-Priority`, `X-MSMail-Priority` und `Importance` [will be set accordingly](https://github.com/nodemailer/nodemailer/blob/19fce2dc4dcb83224acaf1cfc890d08126309594/lib/mailer/mail-message.js#L222-L240). |
 | `headers` | NEIN | Objekt oder Array | Ein Objekt oder ein Array zusätzlicher Headerfelder zum Festlegen (siehe [Nodemailer's custom headers](https://nodemailer.com/message/custom-headers/)). |
@@ -530,9 +530,9 @@ curl BASE_URI/v1/emails/:id \
   -u API_TOKEN:
 ```
 
-### Ausgehende SMTP-E-Mail löschen {#delete-outbound-smtp-email}
+### Ausgehende SMTP-E-Mails löschen {#delete-outbound-smtp-email}
 
-Das Löschen einer E-Mail setzt den Status auf `"rejected"` (und verarbeitet sie anschließend nicht in der Warteschlange), wenn der aktuelle Status `"pending"`, `"queued"` oder `"deferred"` ist. Wir löschen E-Mails möglicherweise automatisch 30 Tage nach ihrer Erstellung und/oder ihrem Versand. Daher sollten Sie eine Kopie ausgehender SMTP-E-Mails in Ihrem Client, Ihrer Datenbank oder Ihrer Anwendung aufbewahren. Sie können bei Bedarf unsere E-Mail-ID in Ihrer Datenbank referenzieren – dieser Wert wird sowohl von den Endpunkten [E-Mail erstellen](#create-email) als auch [E-Mail abrufen](#retrieve-email) zurückgegeben.
+Das Löschen einer E-Mail setzt den Status auf `"rejected"` (und verarbeitet sie anschließend nicht in der Warteschlange), wenn der aktuelle Status `"pending"`, `"queued"` oder `"deferred"` ist. Wir löschen E-Mails möglicherweise automatisch 30 Tage nach ihrer Erstellung und/oder ihrem Versand. Bewahren Sie daher eine Kopie ausgehender SMTP-E-Mails in Ihrem Client, Ihrer Datenbank oder Ihrer Anwendung auf. Sie können bei Bedarf auf unsere E-Mail-ID in Ihrer Datenbank verweisen – dieser Wert wird sowohl von den Endpunkten [E-Mail erstellen](#create-email) als auch [E-Mail abrufen](#retrieve-email) zurückgegeben.
 
 > `DELETE /v1/emails/:id`
 
@@ -546,12 +546,12 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 ## Domänen {#domains}
 
 > \[!TIP]
-> Domain endpoints with a domain's name <code>/v1/domains/:domain_name</code> as their endpoint are interchangeable with a domain's ID <code>:domain_id</code>. This means you can refer to the domain by either its <code>name</code> or <code>id</code> value.
+> Domänenendpunkte mit dem Domänennamen <code>/v1/domains/:Domänenname</code> als Endpunkt sind durch die Domänen-ID <code>:Domänen-ID</code> austauschbar. Das bedeutet, dass Sie die Domäne entweder über ihren <code>Name</code> oder ihren <code>ID</code>-Wert referenzieren können.
 
 ### Domänen auflisten {#list-domains}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Ab dem 1. November 2024 werden die API-Endpunkte für [Domänen auflisten](#list-domains) und [Domänenaliase auflisten](#list-domain-aliases) standardmäßig auf `1000` maximale Ergebnisse pro Seite eingestellt. Wenn Sie dieses Verhalten frühzeitig aktivieren möchten, können Sie `?paginate=true` als zusätzlichen Abfrageparameter an die URL für die Endpunktabfrage übergeben. Weitere Informationen finden Sie unter [Pagination](#pagination).
 
 > `GET /v1/domains`
 
@@ -559,7 +559,7 @@ curl -X DELETE BASE_URI/v1/emails/:id \
 | --------------------- | -------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `q` | NEIN | Zeichenfolge (RegExp wird unterstützt) | Suche nach Domänen nach Namen |
 | `name` | NEIN | Zeichenfolge (RegExp wird unterstützt) | Suche nach Domänen nach Namen |
-| `sort` | NEIN | Zeichenfolge | Sortieren Sie nach einem bestimmten Feld (stellen Sie einen einzelnen Bindestrich `-` voran, um in die umgekehrte Richtung dieses Felds zu sortieren). Der Standardwert ist `created_at`, falls nicht festgelegt. |
+| `sort` | NEIN | Zeichenfolge | Sortieren Sie nach einem bestimmten Feld (stellen Sie einen einzelnen Bindestrich `-` voran, um in umgekehrter Reihenfolge dieses Felds zu sortieren). Der Standardwert ist `created_at`, falls nicht festgelegt. |
 | `page` | NEIN | Nummer | Weitere Informationen finden Sie unter [Pagination](#pagination) |
 | `limit` | NEIN | Nummer | Weitere Informationen finden Sie unter [Pagination](#pagination) |
 
@@ -737,7 +737,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 ```
 
 > \[!IMPORTANT]
-> If the user being invited is already an accepted member of any other domains the admin inviting them is a member of, then it will auto-accept the invite and not send an email.
+> Wenn der eingeladene Benutzer bereits akzeptiertes Mitglied einer anderen Domain ist, der der einladende Administrator angehört, wird die Einladung automatisch angenommen und es wird keine E-Mail gesendet.
 
 ### Domäneneinladung entfernen {#remove-domain-invite}
 
@@ -745,7 +745,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/invites \
 
 | Körperparameter | Erforderlich | Typ | Beschreibung |
 | -------------- | -------- | -------------- | ------------------------------------------------ |
-| `email` | Ja | Zeichenfolge (E-Mail) | Aus der Liste der Domänenmitglieder zu entfernende E-Mail-Adresse |
+| `email` | Ja | Zeichenfolge (E-Mail) | Aus der Domänenmitgliederliste zu entfernende E-Mail-Adresse |
 
 > Beispielanfrage:
 
@@ -786,7 +786,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/members/:member_id \
 
 ### Generieren Sie ein Alias-Passwort {#generate-an-alias-password}
 
-Beachten Sie, dass Benutzername und Kennwort im JSON-Antworttext einer erfolgreichen Anfrage im Format `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` enthalten sind, wenn Sie keine Anweisungen per E-Mail senden.
+Beachten Sie: Wenn Sie keine Anweisungen per E-Mail senden, werden Benutzername und Kennwort im JSON-Antworttext einer erfolgreichen Anfrage im Format `{ username: 'alias@yourdomain.com', password: 'some-generated-password' }` angezeigt.
 
 > `POST /v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password`
 
@@ -794,7 +794,7 @@ Beachten Sie, dass Benutzername und Kennwort im JSON-Antworttext einer erfolgrei
 | ---------------------- | -------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `new_password` | NEIN | Zeichenfolge | Ihr neues, benutzerdefiniertes Passwort für den Alias. Beachten Sie, dass Sie dieses Feld leer lassen oder im Text Ihrer API-Anforderung ganz weglassen können, wenn Sie ein zufällig generiertes und sicheres Passwort wünschen. |
 | `password` | NEIN | Zeichenfolge | Vorhandenes Passwort für Alias, um das Passwort zu ändern, ohne den vorhandenen IMAP-Postfachspeicher zu löschen (siehe Option `is_override` unten, wenn Sie das vorhandene Passwort nicht mehr haben). |
-| `is_override` | NEIN | Boolesch | **VORSICHT**: Dadurch werden das bestehende Alias-Passwort und die Datenbank vollständig überschrieben, der bestehende IMAP-Speicher dauerhaft gelöscht und die SQLite-E-Mail-Datenbank des Alias vollständig zurückgesetzt. Bitte erstellen Sie nach Möglichkeit eine Sicherungskopie, wenn Sie ein bestehendes Postfach mit diesem Alias verknüpft haben. |
+| `is_override` | NEIN | Boolesch | **VORSICHT**: Dadurch werden das bestehende Alias-Passwort und die Datenbank vollständig überschrieben, der vorhandene IMAP-Speicher dauerhaft gelöscht und die SQLite-E-Mail-Datenbank des Alias vollständig zurückgesetzt. Bitte erstellen Sie nach Möglichkeit eine Sicherungskopie, wenn Sie ein bestehendes Postfach mit diesem Alias verknüpft haben. |
 | `emailed_instructions` | NEIN | Zeichenfolge | E-Mail-Adresse, an die das Passwort und die Einrichtungsanweisungen für den Alias gesendet werden sollen. |
 
 > Beispielanfrage:
@@ -804,10 +804,10 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
   -u API_TOKEN:
 ```
 
-### Domain-Aliase auflisten {#list-domain-aliases}
+### Domänen-Aliase auflisten {#list-domain-aliases}
 
 > \[!NOTE]
-> As of November 1st, 2024 the API endpoints for [List domains](#list-domains) and [List domain aliases](#list-domain-aliases) will default to `1000` max results per page.  If you would like to opt-in to this behavior early, you can pass `?paginate=true` as an additional querystring parameter to the URL for the endpoint query.  See [Pagination](#pagination) for more insight.
+> Ab dem 1. November 2024 werden die API-Endpunkte für [Domänen auflisten](#list-domains) und [Domänenaliase auflisten](#list-domain-aliases) standardmäßig auf `1000` maximale Ergebnisse pro Seite eingestellt. Wenn Sie dieses Verhalten frühzeitig aktivieren möchten, können Sie `?paginate=true` als zusätzlichen Abfrageparameter an die URL für die Endpunktabfrage übergeben. Weitere Informationen finden Sie unter [Pagination](#pagination).
 
 > `GET /v1/domains/DOMAIN_NAME/aliases`
 
@@ -816,7 +816,7 @@ curl -X POST BASE_URI/v1/domains/DOMAIN_NAME/aliases/ALIAS_ID/generate-password 
 | `q` | NEIN | Zeichenfolge (RegExp wird unterstützt) | Suche nach Aliasnamen in einer Domäne nach Name, Bezeichnung oder Empfänger |
 | `name` | NEIN | Zeichenfolge (RegExp wird unterstützt) | Suche nach Aliasnamen in einer Domäne nach Namen |
 | `recipient` | NEIN | Zeichenfolge (RegExp wird unterstützt) | Suche nach Aliasnamen in einer Domäne nach Empfänger |
-| `sort` | NEIN | Zeichenfolge | Sortieren Sie nach einem bestimmten Feld (stellen Sie einen einzelnen Bindestrich `-` voran, um in die umgekehrte Richtung dieses Felds zu sortieren). Der Standardwert ist `created_at`, falls nicht festgelegt. |
+| `sort` | NEIN | Zeichenfolge | Sortieren Sie nach einem bestimmten Feld (stellen Sie einen einzelnen Bindestrich `-` voran, um in umgekehrter Reihenfolge dieses Felds zu sortieren). Der Standardwert ist `created_at`, falls nicht festgelegt. |
 | `page` | NEIN | Nummer | Weitere Informationen finden Sie unter [Pagination](#pagination) |
 | `limit` | NEIN | Nummer | Weitere Informationen finden Sie unter [Pagination](#pagination) |
 
@@ -922,7 +922,7 @@ curl -X DELETE BASE_URI/v1/domains/:domain_name/aliases/:alias_id \
 
 ## Verschlüsseln {#encrypt}
 
-Wir ermöglichen Ihnen die kostenlose Verschlüsselung von Datensätzen auch im kostenlosen Tarif. Datenschutz sollte kein Feature sein, sondern in alle Aspekte eines Produkts integriert sein. Wie bereits in [Diskussion zu Datenschutzleitfäden](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) und [unsere GitHub-Probleme](https://github.com/forwardemail/forwardemail.net/issues/254) mehrfach gefordert, haben wir dies hinzugefügt.
+Wir ermöglichen Ihnen die kostenlose Verschlüsselung von Datensätzen auch im kostenlosen Tarif. Datenschutz sollte kein Feature sein, sondern in alle Aspekte eines Produkts integriert sein. Wie bereits in [Diskussion zu Datenschutzleitfäden](https://discuss.privacyguides.net/t/forward-email-email-provider/13370) und [unsere GitHub-Probleme](https://github.com/forwardemail/forwardemail.net/issues/254) häufig gewünscht, haben wir dies hinzugefügt.
 
 ### TXT-Eintrag verschlüsseln {#encrypt-txt-record}
 
