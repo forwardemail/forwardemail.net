@@ -45,6 +45,27 @@ async function sendEmailWithCustomDomainSMTP(ctx, next) {
       root.querySelector('#smtp-instructions').outerHTML;
   } catch (err) {
     ctx.logger.error(err);
+    //
+    // NOTE: if the locale was not "en" then try again
+    //       (this is due to translation bug issues)
+    //
+    try {
+      const html = pug.renderFile(
+        path.join(config.views.root, 'faq', 'index.pug'),
+        {
+          ...ctx.state,
+          locale: 'en',
+          flash() {
+            return {};
+          }
+        }
+      );
+
+      // expose it to the view
+      const root = parse(html);
+      ctx.state.sendEmailWithCustomDomainSMTP =
+        root.querySelector('#smtp-instructions').outerHTML;
+    } catch {}
   }
 
   return next();
@@ -84,6 +105,31 @@ async function sendMailAs(ctx, next) {
       root.querySelector('#legacy-free-guide').outerHTML;
   } catch (err) {
     ctx.logger.error(err);
+    //
+    // NOTE: if the locale was not "en" then try again
+    //       (this is due to translation bug issues)
+    //
+    try {
+      const html = pug.renderFile(
+        path.join(config.views.root, 'faq', 'index.pug'),
+        // make flash a noop so we don't interfere with messages/session
+        {
+          ...ctx.state,
+          locale: 'en',
+          flash() {
+            return {};
+          }
+        }
+      );
+
+      // expose it to the view
+      const root = parse(html);
+      ctx.state.sendMailAsContent = root.querySelector(
+        '#send-mail-as-content'
+      ).outerHTML;
+      ctx.state.legacyFreeGuide =
+        root.querySelector('#legacy-free-guide').outerHTML;
+    } catch {}
   }
 
   return next();
