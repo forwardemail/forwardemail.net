@@ -23,11 +23,6 @@ block body
         each doc in tools
           .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
             .card.rounded-lg
-              noscript
-                img.card-img-top.img-fluid(
-                  src=doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`),
-                  alt=striptags(t(doc.title))
-                )
               img.card-img-top.img-fluid(
                 loading="lazy",
                 src=doc.ogImage ? manifest(doc.ogImage) : l(`${doc.slug}.png`),

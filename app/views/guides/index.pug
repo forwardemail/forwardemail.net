@@ -32,11 +32,6 @@ block body
                       = "GIF"
               - const str = t('How to Setup Email with <span class="notranslate">%s</span>', provider.name);
               - const str2 = t('<span class="notranslate">%s</span> Email Setup Tutorial', provider.name);
-              noscript
-                img.card-img-top.img-fluid(
-                  src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
-                  alt=striptags(str)
-                )
               img.card-img-top.img-fluid(
                 loading="lazy",
                 src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),

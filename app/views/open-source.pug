@@ -65,18 +65,6 @@ mixin renderCard(platform, provider)
         = " "
         != t('The official description from its website says, "<span class="notranslate">%s</span>"', t(provider.description))
       .text-center
-        noscript
-          a(
-            href=manifest(provider.img),
-            target="_blank",
-            data-toggle="lightbox",
-            data-title=provider.name,
-            data-footer=t(provider.attribution)
-          )
-            img.img-fluid.img-thumbnail.max-height-300px(
-              src=manifest(provider.img),
-              alt=striptags(str)
-            )
         a(
           href=manifest(provider.img),
           target="_blank",
@@ -375,11 +363,6 @@ block body
           each tool in tools
             .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
               .card.rounded-lg.position-relative
-                noscript
-                  img.card-img-top.img-fluid(
-                    src=l(`${tool.slug}.png`),
-                    alt=striptags(t(tool.title))
-                  )
                 img.card-img-top.img-fluid(
                   loading="lazy",
                   src=l(`${tool.slug}.png`),
