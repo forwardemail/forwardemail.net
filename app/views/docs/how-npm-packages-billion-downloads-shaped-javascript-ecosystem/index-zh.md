@@ -1,6 +1,6 @@
 # 十年影响：我们的 npm 软件包如何达到 10 亿次下载量并塑造 JavaScript {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img 加载="懒惰" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

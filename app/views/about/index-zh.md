@@ -1,6 +1,6 @@
 # 关于转发电子邮件 {#about-forward-email}
 
-<img 加载="懒惰" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
 
 # 关于转发电子邮件 {#about-forward-email-1}
 
@@ -138,4 +138,4 @@ Forward Email 的使命不仅仅是提供电子邮件服务，更旨在改变行
 
 该平台不断发展，定期发布功能并改进基础设施，保持其作为当今唯一 100% 开源、加密、注重隐私、透明和抗量子的电子邮件服务的地位。
 
-<img 加载="懒惰" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />

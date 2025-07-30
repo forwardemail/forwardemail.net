@@ -1,6 +1,6 @@
 # คำถามที่พบบ่อย {#frequently-asked-questions}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

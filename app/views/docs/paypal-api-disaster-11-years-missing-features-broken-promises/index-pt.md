@@ -1,6 +1,6 @@
 # Desastre de 11 anos da API do PayPal: como criamos soluções alternativas enquanto eles ignoravam os desenvolvedores {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img carregando="preguiçoso" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">Na Forward Email, lidamos com as APIs quebradas do PayPal há mais de uma década. O que começou como pequenas frustrações se transformou em um desastre completo, que nos forçou a criar nossas próprias soluções alternativas, bloquear os modelos de phishing e, por fim, interromper todos os pagamentos do PayPal durante uma migração crítica de conta.</p>
 <p class="lead mt-3">Esta é a história de 11 anos em que o PayPal ignorou as necessidades básicas dos desenvolvedores enquanto tentávamos de tudo para fazer a plataforma deles funcionar.</p>
@@ -444,8 +444,8 @@ O processo de verificação de identidade que supostamente não "consertou" nada
 <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="preguiçoso" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="preguiçoso" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -919,4 +919,4 @@ Se você está construindo um sistema de pagamento, aprenda com a nossa experiê
 
 > Esta publicação documenta nossa experiência de 11 anos com as APIs do PayPal na Forward Email. Todos os exemplos de código e links são de nossos sistemas de produção. Continuamos a oferecer suporte aos pagamentos do PayPal, apesar desses problemas, porque alguns clientes não têm outra opção.
 
-<img carregando="preguiçoso" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

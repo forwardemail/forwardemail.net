@@ -1,6 +1,6 @@
 # ผลกระทบในทศวรรษ: แพ็กเกจ npm ของเรามียอดดาวน์โหลดถึง 1 พันล้านครั้งและสร้างรูปร่างให้กับ JavaScript ได้อย่างไร {#a-decade-of-impact-how-our-npm-packages-hit-1-billion-downloads-and-shaped-javascript}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/npm.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

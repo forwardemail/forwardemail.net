@@ -1,6 +1,6 @@
 # كيفية تحسين البنية التحتية لإنتاج Node.js: أفضل الممارسات {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img تحميل="كسول" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # 最高のセキュリティ監査会社 {#best-security-audit-companies}
 
-<img 読み込み="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

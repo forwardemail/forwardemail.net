@@ -1,6 +1,6 @@
 # كارثة واجهة برمجة التطبيقات (API) الخاصة بـ PayPal والتي استمرت لمدة 11 عامًا: كيف قمنا ببناء حلول بديلة بينما تجاهلوا المطورين {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img تحميل="كسول" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">في Forward Email، نتعامل مع واجهات برمجة تطبيقات PayPal المعطوبة منذ أكثر من عقد. ما بدأ كإحباطات بسيطة تحول إلى كارثة حقيقية أجبرتنا على بناء حلول بديلة، وحظر قوالب التصيد الاحتيالي الخاصة بهم، وفي النهاية إيقاف جميع مدفوعات PayPal أثناء عملية نقل حساب مهمة.</p>
 <p class="lead mt-3">هذه قصة 11 عامًا من تجاهل PayPal لاحتياجات المطورين الأساسية بينما كنا نبذل قصارى جهدنا لجعل منصتهم تعمل.</p>
@@ -447,9 +447,9 @@ Authorization: Bearer {access_token}
 <img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img تحميل = "كسول" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img تحميل = "كسول" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img تحميل = "كسول" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -920,4 +920,4 @@ PayPal هو معالج الدفع الرئيسي الوحيد الذي يجبر 
 
 يوثّق هذا المنشور خبرتنا الممتدة لأحد عشر عامًا مع واجهات برمجة تطبيقات PayPal في Forward Email. جميع أمثلة الأكواد والروابط مأخوذة من أنظمة الإنتاج الفعلية لدينا. نواصل دعم مدفوعات PayPal على الرغم من هذه المشاكل، لأن بعض العملاء لا يملكون خيارًا آخر.
 
-<img تحميل="كسول" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

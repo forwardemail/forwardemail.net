@@ -1,6 +1,6 @@
 # الشروط {#terms}
 
-<img تحميل="كسول" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

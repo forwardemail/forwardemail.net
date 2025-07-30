@@ -2,7 +2,7 @@
 
 <!-- v1.0 da <https://github.com/CommonPaper/DPA> -->
 
-<img caricamento="pigro" src="/img/articles/dpa.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Case-tutkimus: Miten sähköpostin välitys tukee alumnien sähköpostiratkaisuja huippuyliopistoille {#case-study-how-forward-email-powers-alumni-email-solutions-for-top-universities}
 
-<img loading="laiska" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/alumni.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

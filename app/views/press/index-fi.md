@@ -1,6 +1,6 @@
 # Lehdistö- ja mediapaketti {#press--media-kit}
 
-<img loading="laiska" src="/img/articles/press.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

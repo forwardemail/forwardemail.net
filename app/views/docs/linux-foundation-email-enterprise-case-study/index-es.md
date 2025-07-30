@@ -1,6 +1,6 @@
 # Caso práctico: Cómo la Fundación Linux optimiza la gestión del correo electrónico en más de 250 dominios con Forward Email {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img loading="perezoso" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
 
 ## Tabla de contenido {#table-of-contents}
 

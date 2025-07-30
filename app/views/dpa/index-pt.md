@@ -2,7 +2,7 @@
 
 <!-- v1.0 de <https://github.com/CommonPaper/DPA> -->
 
-<img carregando="preguiçoso" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

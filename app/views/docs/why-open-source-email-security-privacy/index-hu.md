@@ -1,6 +1,6 @@
 # Miért a nyílt forráskódú e-mail a jövő: Az e-mail továbbításának előnye {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img loading="lusta" src="/img/articles/open-source.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

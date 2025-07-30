@@ -1,6 +1,6 @@
 # เงื่อนไข {#terms}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

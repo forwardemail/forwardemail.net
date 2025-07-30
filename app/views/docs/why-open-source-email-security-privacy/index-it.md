@@ -1,6 +1,6 @@
 # Perché la posta elettronica open source è il futuro: il vantaggio della posta elettronica avanzata {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img caricamento="pigro" src="/img/articles/open-source.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

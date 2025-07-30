@@ -1,6 +1,6 @@
 # Bemutatkozik a kriptofizetés: Fokozott adatvédelem az e-mail szolgáltatásához {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img loading="lusta" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # الإبلاغ عن إساءة {#report-abuse}
 
-<img تحميل="كسول" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

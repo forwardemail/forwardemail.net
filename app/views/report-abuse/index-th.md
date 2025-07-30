@@ -1,6 +1,6 @@
 # รายงานการละเมิด {#report-abuse}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # PayPalin 11 vuotta kestänyt API-katastrofi: Miten loimme kiertoteitä, kun he jättivät kehittäjät huomiotta {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="laiska" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">Me Forward Emaililla olemme käsitelleet PayPalin rikkinäisiä API-rajapintoja yli vuosikymmenen ajan. Se, mikä alkoi pieninä turhautumisina, on muuttunut täydelliseksi katastrofiksi, joka pakotti meidät kehittämään omia kiertoteitä, estämään heidän tietojenkalastelumallinsa ja lopulta pysäyttämään kaikki PayPal-maksut kriittisen tilin siirron aikana.</p>
 <p class="lead mt-3">Tämä on tarina 11 vuodesta, jolloin PayPal jätti huomiotta kehittäjien perustarpeet, kun me yritimme kaikkea saadaksemme heidän alustansa toimimaan.</p>
@@ -432,20 +432,20 @@ PayPalin tuki väitti kaiken olevan kunnossa, vaikka maksut olivat täysin rikki
 <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img loading="laiska" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
 <figcaption><div class="alert alert-danger small text-center">
 Henkilöllisyyden varmennusprosessi, jonka väitettiin "korjaavan" mitään
 </div></figcaption>
-<img loading="laiska" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
-<img loading="laiska" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
-<img loading="laiska" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
-<img loading="laiska" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
-<img loading="laiska" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img loading="laiska" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img loading="laiska" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-1.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-2.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -919,4 +919,4 @@ Jos olet rakentamassa maksujärjestelmää, opi kokemuksestamme: rakenna [trifec
 
 > Tämä viesti dokumentoi 11 vuoden kokemuksemme PayPalin API-rajapinnoista Forward Emaililla. Kaikki koodiesimerkit ja linkit ovat peräisin todellisista tuotantojärjestelmistämme. Jatkamme PayPal-maksujen tukemista näistä ongelmista huolimatta, koska joillakin asiakkailla ei ole muuta vaihtoehtoa.
 
-<img loading="laiska" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

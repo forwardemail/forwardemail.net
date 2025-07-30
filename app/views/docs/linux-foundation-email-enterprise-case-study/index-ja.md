@@ -1,6 +1,6 @@
 # ケーススタディ: Linux Foundation がメール転送機能を使用して 250 以上のドメインにわたるメール管理を最適化する方法 {#case-study-how-the-linux-foundation-optimizes-email-management-across-250-domains-with-forward-email}
 
-<img 読み込み="遅延" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/linux-foundation.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # 安全实践 {#security-practices}
 
-<img 加载="懒惰" src="/img/articles/security.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

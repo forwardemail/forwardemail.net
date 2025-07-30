@@ -1,6 +1,6 @@
 # Denunciar abuso {#report-abuse}
 
-<img carregando="preguiçoso" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

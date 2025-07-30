@@ -1,6 +1,6 @@
 # プライバシーポリシー {#privacy-policy}
 
-<img 読み込み="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

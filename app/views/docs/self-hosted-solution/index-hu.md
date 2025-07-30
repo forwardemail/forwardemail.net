@@ -1,6 +1,6 @@
 # Saját tárhelyen tárolt e-mail: Elkötelezettség a nyílt forráskód mellett {#self-hosted-email-commitment-to-open-source}
 
-<img loading="lusta" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

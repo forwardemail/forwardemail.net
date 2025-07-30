@@ -1,6 +1,6 @@
 # Hogyan működik az e-mail-továbbítás az e-mailek továbbításával: A teljes útmutató {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img loading="lusta" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

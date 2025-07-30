@@ -1,6 +1,6 @@
 # Como funciona o encaminhamento de e-mail com o Forward Email: o guia definitivo {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img carregando="preguiçoso" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

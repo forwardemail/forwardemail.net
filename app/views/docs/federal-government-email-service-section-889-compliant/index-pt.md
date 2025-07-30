@@ -1,6 +1,6 @@
 # Encaminhar e-mail: sua solução de encaminhamento de e-mail em conformidade com a Seção 889 {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img carregando="preguiçoso" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

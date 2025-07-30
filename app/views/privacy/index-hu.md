@@ -1,6 +1,6 @@
 # Adatvédelmi irányelvek {#privacy-policy}
 
-<img loading="lusta" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

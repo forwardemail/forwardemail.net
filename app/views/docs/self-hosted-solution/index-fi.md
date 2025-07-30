@@ -1,6 +1,6 @@
 # Itse isännöity sähköposti: Sitoutuminen avoimeen lähdekoodiin {#self-hosted-email-commitment-to-open-source}
 
-<img loading="laiska" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

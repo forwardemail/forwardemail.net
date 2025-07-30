@@ -1,6 +1,6 @@
 # مجموعة الصحافة والإعلام {#press--media-kit}
 
-<img تحميل="كسول" src="/img/articles/press.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

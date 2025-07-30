@@ -1,6 +1,6 @@
 # البريد الإلكتروني المستضاف ذاتيًا: الالتزام بالمصدر المفتوح {#self-hosted-email-commitment-to-open-source}
 
-<img تحميل="كسول" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

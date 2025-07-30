@@ -1,6 +1,6 @@
 # 자주 묻는 질문 {#frequently-asked-questions}
 
-<img 로딩="게으른" src="/img/articles/faq.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

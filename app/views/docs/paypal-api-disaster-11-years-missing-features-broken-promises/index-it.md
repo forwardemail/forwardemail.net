@@ -1,6 +1,6 @@
 # Il disastro API di PayPal durato 11 anni: come abbiamo trovato soluzioni alternative mentre loro ignoravano gli sviluppatori {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img caricamento="pigro" src="/img/articles/pypl-disaster.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" classe="arrotondato-lg" />
 
 <p class="lead mt-3">In Forward Email, abbiamo a che fare con le API non funzionanti di PayPal da oltre un decennio. Quella che era iniziata come una piccola frustrazione si è trasformata in un disastro totale che ci ha costretti a sviluppare soluzioni alternative, bloccare i loro modelli di phishing e, infine, interrompere tutti i pagamenti PayPal durante una migrazione critica del conto.</p>
 <p class="lead mt-3">Questa è la storia di 11 anni in cui PayPal ha ignorato le esigenze di base degli sviluppatori, mentre noi abbiamo provato di tutto per far funzionare la loro piattaforma.</p>
@@ -432,7 +432,7 @@ L'assistenza PayPal sosteneva che tutto andava bene, mentre i pagamenti erano co
 <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img caricamento="pigro" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -444,8 +444,8 @@ Il processo di verifica dell'identità che presumibilmente non ha "risolto" null
 <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img caricamento="pigro" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img caricamento="pigro" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -919,4 +919,4 @@ Se stai sviluppando un sistema di pagamento, impara dalla nostra esperienza: cre
 
 > Questo post documenta la nostra esperienza di 11 anni con le API di PayPal su Forward Email. Tutti gli esempi di codice e i link provengono dai nostri sistemi di produzione effettivi. Continuiamo a supportare i pagamenti PayPal nonostante questi problemi, perché alcuni clienti non hanno altra scelta.
 
-<img caricamento="pigro" src="/img/articles/paypal-api-issues.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" classe="arrotondato-lg" />

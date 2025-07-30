@@ -1,6 +1,6 @@
 # 举报滥用行为 {#report-abuse}
 
-<img 加载="懒惰" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

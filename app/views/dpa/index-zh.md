@@ -2,7 +2,7 @@
 
 <!-- v1.0 来自 <https://github.com/CommonPaper/DPA> -->
 
-<img 加载="懒惰" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

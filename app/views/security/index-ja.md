@@ -1,6 +1,6 @@
 # セキュリティプラクティス {#security-practices}
 
-<img 読み込み="遅延" src="/img/articles/security.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

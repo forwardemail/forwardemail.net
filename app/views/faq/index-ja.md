@@ -1,6 +1,6 @@
 # よくある質問 {#frequently-asked-questions}
 
-<img 読み込み="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

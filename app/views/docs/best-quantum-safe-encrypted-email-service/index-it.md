@@ -1,6 +1,6 @@
 # Email resistente ai quantum: come utilizziamo le caselle di posta SQLite crittografate per proteggere la tua posta elettronica {#quantum-resistant-email-how-we-use-encrypted-sqlite-mailboxes-to-keep-your-email-safe}
 
-<img caricamento="pigro" src="/img/articles/quantum.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/quantum.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

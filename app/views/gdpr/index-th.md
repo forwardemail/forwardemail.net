@@ -1,6 +1,6 @@
 # การปฏิบัติตาม GDPR {#gdpr-compliance}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

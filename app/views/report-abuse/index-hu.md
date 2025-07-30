@@ -1,6 +1,6 @@
 # Visszaélés bejelentése {#report-abuse}
 
-<img loading="lusta" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

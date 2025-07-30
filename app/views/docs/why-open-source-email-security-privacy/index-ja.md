@@ -1,6 +1,6 @@
 # オープンソースメールが未来である理由: フォワードメールの利点 {#why-open-source-email-is-the-future-the-forward-email-advantage}
 
-<img 読み込み="lazy" src="/img/articles/open-source.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/open-source.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

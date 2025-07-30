@@ -1,6 +1,6 @@
 # A PayPal 11 éves API-katasztrófája: Hogyan dolgoztunk ki kerülő megoldásokat, miközben ők figyelmen kívül hagyták a fejlesztőket {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img loading="lusta" src="/img/articles/pypl-disaster.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="lekerekített-lg" />
 
 <p class="lead mt-3">A Forward Emailnél több mint egy évtizede küzdünk a PayPal hibás API-jaival. Ami apró frusztrációként indult, az teljes katasztrófává fajult, ami arra kényszerített minket, hogy saját megoldásokat dolgozzunk ki, blokkoljuk az adathalász sablonokat, és végül leállítsuk az összes PayPal-fizetést egy kritikus fiókmigráció során.</p>
 <p class="lead mt-3">Ez a PayPal 11 évének története, amely során figyelmen kívül hagyta az alapvető fejlesztői igényeket, miközben mi mindent megpróbáltunk, hogy a platformjuk működjön.</p>
@@ -432,7 +432,7 @@ A PayPal ügyfélszolgálata azt állította, hogy minden rendben volt, miközbe
 <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="lekerekített-hosszú" />
-<img loading="lusta" src="/img/articles/pypl-help-center-6.png" alt="" class="lekerekített-hosszú" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="lekerekített-hosszú" />
 </figure>
 
 <figure>
@@ -444,8 +444,8 @@ A személyazonosság-ellenőrzési folyamat, ami állítólag semmit sem "javít
 <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="lekerekített-hosszú" />
-<img loading="lusta" src="/img/articles/pypl-take-care-6.png" alt="" class="lekerekített-hosszú" />
-<img loading="lusta" src="/img/articles/pypl-take-care-7.png" alt="" class="lekerekített-hosszú" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="lekerekített-hosszú" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="lekerekített-hosszú" />
 </figure>
 
 <figure>
@@ -919,4 +919,4 @@ Ha fizetési rendszert építesz, tanulj a tapasztalatainkból: építsd fel a [
 
 > Ez a bejegyzés a Forward Email PayPal API-jaival szerzett 11 éves tapasztalatunkat dokumentálja. Minden kódpélda és link a tényleges éles rendszereinkből származik. A problémák ellenére továbbra is támogatjuk a PayPal-fizetéseket, mivel egyes ügyfeleknek nincs más lehetőségük.
 
-<img loading="lusta" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

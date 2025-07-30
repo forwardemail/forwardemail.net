@@ -1,6 +1,6 @@
 # Kit stampa e media {#press--media-kit}
 
-<img caricamento="pigro" src="/img/articles/press.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

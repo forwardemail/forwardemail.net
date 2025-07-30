@@ -1,6 +1,6 @@
 # 个条款 {#terms}
 
-<img 加载="懒惰" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

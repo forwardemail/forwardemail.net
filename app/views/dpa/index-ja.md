@@ -2,7 +2,7 @@
 
 <!-- v1.0 から <https://github.com/CommonPaper/DPA> -->
 
-<img 読み込み="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

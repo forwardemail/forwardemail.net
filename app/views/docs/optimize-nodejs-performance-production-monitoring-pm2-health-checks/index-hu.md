@@ -1,6 +1,6 @@
 # A Node.js éles infrastruktúra optimalizálása: Bevált gyakorlatok {#how-to-optimize-nodejs-production-infrastructure-best-practices}
 
-<img loading="lusta" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/nodejs-performance.webp" alt="" class="rounded-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

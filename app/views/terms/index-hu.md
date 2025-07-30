@@ -1,6 +1,6 @@
 # Feltételek {#terms}
 
-<img loading="lusta" src="/img/articles/terms.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="lekerekített-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

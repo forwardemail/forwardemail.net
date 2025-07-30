@@ -1,6 +1,6 @@
 # แนวทางปฏิบัติด้านความปลอดภัย {#security-practices}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/security.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

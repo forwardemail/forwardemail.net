@@ -1,6 +1,6 @@
 # 隐私政策 {#privacy-policy}
 
-<img 加载="懒惰" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

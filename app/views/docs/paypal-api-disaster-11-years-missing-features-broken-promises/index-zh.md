@@ -1,6 +1,6 @@
 # PayPal 11 年的 API 灾难：当他们忽视开发人员时，我们如何构建解决方法{#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img 加载="懒惰" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">在 Forward Email，我们十多年来一直在处理 PayPal 的 API 问题。起初只是些小麻烦，后来却演变成一场彻底的灾难，迫使我们自行构建变通方案，屏蔽他们的钓鱼模板，并最终在一次关键的账户迁移期间暂停所有 PayPal 付款。</p>
 <p class="lead mt-3">这 11 年来，PayPal 一直忽视开发者的基本需求，而我们却竭尽全力让他们的平台正常运行。</p>
@@ -432,7 +432,7 @@ PayPal 支持人员声称一切正常，但付款却完全中断。最后一条�
 <img loading="lazy" src="/img/articles/pypl-help-center-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-help-center-5.png" alt="" class="rounded-lg" />
-<img 加载中="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-help-center-6.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -444,8 +444,8 @@ PayPal 支持人员声称一切正常，但付款却完全中断。最后一条�
 <img loading="lazy" src="/img/articles/pypl-take-care-3.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-4.png" alt="" class="rounded-lg" />
 <img loading="lazy" src="/img/articles/pypl-take-care-5.png" alt="" class="rounded-lg" />
-<img 加载中="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
-<img 加载中="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-6.png" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-take-care-7.png" alt="" class="rounded-lg" />
 </figure>
 
 <figure>
@@ -919,4 +919,4 @@ PayPal 在收集大量反馈的同时，却未能系统性地满足开发者的�
 
 > 这篇文章记录了我们在 Forward Email 使用 PayPal API 11 年的经验。所有代码示例和链接均来自我们的实际生产系统。尽管存在这些问题，我们仍继续支持 PayPal 付款，因为有些客户别无选择。
 
-<img 加载="懒惰" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

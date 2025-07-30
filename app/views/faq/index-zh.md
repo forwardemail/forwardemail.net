@@ -1,6 +1,6 @@
 # 常见问题解答 {#frequently-asked-questions}
 
-<img 加载="懒惰" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

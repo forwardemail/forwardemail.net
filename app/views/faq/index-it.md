@@ -1,6 +1,6 @@
 # Domande frequenti {#frequently-asked-questions}
 
-<img caricamento="pigro" src="/img/articles/faq.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

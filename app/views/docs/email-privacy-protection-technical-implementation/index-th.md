@@ -1,6 +1,6 @@
 # การส่งต่ออีเมลทำงานอย่างไรด้วยการส่งต่ออีเมล: คู่มือฉบับสมบูรณ์ {#how-email-forwarding-works-with-forward-email-the-ultimate-guide}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-privacy.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Email auto-ospitata: impegno verso l'open source {#self-hosted-email-commitment-to-open-source}
 
-<img caricamento="pigro" src="/img/articles/self-hosted.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # ชุดข่าวและสื่อ {#press--media-kit}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/press.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

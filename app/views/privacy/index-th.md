@@ -1,6 +1,6 @@
 # นโยบายความเป็นส่วนตัว {#privacy-policy}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

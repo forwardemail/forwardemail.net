@@ -1,6 +1,6 @@
 # 推出加密支付：增强您的电子邮件服务的隐私性 {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img 加载="懒惰" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

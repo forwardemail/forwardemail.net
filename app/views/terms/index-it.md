@@ -1,6 +1,6 @@
 # Termini {#terms}
 
-<img caricamento="pigro" src="/img/articles/terms.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

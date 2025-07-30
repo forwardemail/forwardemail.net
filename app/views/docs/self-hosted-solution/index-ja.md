@@ -1,6 +1,6 @@
 # セルフホスト型メール: オープンソースへの取り組み {#self-hosted-email-commitment-to-open-source}
 
-<img 読み込み="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

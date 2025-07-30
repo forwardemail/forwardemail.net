@@ -1,6 +1,6 @@
 # Sajtó- és médiakészlet {#press--media-kit}
 
-<img loading="lusta" src="/img/articles/press.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" class="lekerekített-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Gyakran Ismételt Kérdések {#frequently-asked-questions}
 
-<img loading="lusta" src="/img/articles/faq.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="lekerekített-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # Política de Privacidade {#privacy-policy}
 
-<img carregando="preguiçoso" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

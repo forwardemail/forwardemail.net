@@ -1,6 +1,6 @@
 # حول إعادة توجيه البريد الإلكتروني {#about-forward-email}
 
-<img تحميل="كسول" src="/img/articles/about.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about.webp" alt="" class="rounded-lg" />
 
 # حول إعادة توجيه البريد الإلكتروني {#about-forward-email-1}
 
@@ -138,4 +138,4 @@
 
 تستمر المنصة في التطور مع إصدارات منتظمة للميزات وتحسينات البنية التحتية، مما يحافظ على مكانتها باعتبارها خدمة البريد الإلكتروني الوحيدة مفتوحة المصدر بنسبة 100% والمشفرة والموجهة نحو الخصوصية والشفافة والمقاومة للكم المتاحة اليوم.
 
-<img تحميل="كسول" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/about-footer.webp" alt="" class="rounded-lg" />

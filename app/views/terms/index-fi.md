@@ -1,6 +1,6 @@
 # Ehdot {#terms}
 
-<img loading="laiska" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

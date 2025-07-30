@@ -1,6 +1,6 @@
 # الأسئلة الشائعة {#frequently-asked-questions}
 
-<img تحميل="كسول" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

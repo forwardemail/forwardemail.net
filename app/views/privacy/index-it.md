@@ -1,6 +1,6 @@
 # Informativa sulla privacy {#privacy-policy}
 
-<img caricamento="pigro" src="/img/articles/privacy.webp" alt="" classe="arrotondato-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" classe="arrotondato-lg" />
 
 ## Indice {#table-of-contents}
 

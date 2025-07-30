@@ -1,6 +1,6 @@
 # Ilmoita väärinkäytöstä {#report-abuse}
 
-<img loading="laiska" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

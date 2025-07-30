@@ -1,6 +1,6 @@
 # Usein kysytyt kysymykset {#frequently-asked-questions}
 
-<img loading="laiska" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/faq.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

@@ -1,6 +1,6 @@
 # แนะนำการชำระเงินด้วย Crypto: ความเป็นส่วนตัวที่ได้รับการปรับปรุงสำหรับบริการอีเมลของคุณ {#introducing-crypto-payments-enhanced-privacy-for-your-email-service}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/crypto-payments.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

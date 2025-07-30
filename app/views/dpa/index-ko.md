@@ -2,7 +2,7 @@
 
 <!-- <https://github.com/CommonPaper/DPA>에서 v1.0으로 -->
 
-<img 로딩="게으른" src="/img/articles/dpa.webp" alt="" 클래스="둥근-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" 클래스="둥근-lg" />
 
 ## 목차 {#table-of-contents}
 

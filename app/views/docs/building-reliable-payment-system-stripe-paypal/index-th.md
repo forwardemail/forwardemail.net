@@ -1,6 +1,6 @@
 # เราสร้างระบบการชำระเงินที่แข็งแกร่งด้วย Stripe และ PayPal ได้อย่างไร: แนวทาง Trifecta {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

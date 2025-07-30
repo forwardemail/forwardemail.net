@@ -1,6 +1,6 @@
 # Cómo el reenvío de correo electrónico protege su privacidad, dominio y seguridad: análisis técnico profundo {#how-forward-email-protects-your-privacy-domain-and-security-the-technical-deep-dive}
 
-<img loading="perezoso" src="/img/articles/email-forwarding.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/email-forwarding.webp" alt="" class="rounded-lg" />
 
 ## Tabla de contenido {#table-of-contents}
 

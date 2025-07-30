@@ -1,6 +1,6 @@
 # E-mail továbbítása: Az Ön 889. szakasznak megfelelő e-mail-továbbítási megoldása {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="lusta" src="/img/articles/federal.webp" alt="" class="lekerekített-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="" class="lekerekített-lg" />
 
 ## Tartalomjegyzék {#table-of-contents}
 

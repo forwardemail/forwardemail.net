@@ -1,6 +1,6 @@
 # Tietoturvakäytännöt {#security-practices}
 
-<img loading="laiska" src="/img/articles/security.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

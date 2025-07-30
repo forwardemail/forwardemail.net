@@ -1,6 +1,6 @@
 # อีเมลที่โฮสต์ด้วยตนเอง: ความมุ่งมั่นต่อโอเพ่นซอร์ส {#self-hosted-email-commitment-to-open-source}
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

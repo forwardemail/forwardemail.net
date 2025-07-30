@@ -1,6 +1,6 @@
 # GDPR-vaatimustenmukaisuus {#gdpr-compliance}
 
-<img loading="laiska" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

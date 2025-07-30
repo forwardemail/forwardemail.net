@@ -1,6 +1,6 @@
 # Kit de prensa y medios {#press--media-kit}
 
-<img loading="perezoso" src="/img/articles/press.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/press.webp" alt="" class="rounded-lg" />
 
 ## Tabla de contenido {#table-of-contents}
 

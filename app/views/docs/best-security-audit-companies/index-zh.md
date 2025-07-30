@@ -1,6 +1,6 @@
 # 最佳安全审计公司 {#best-security-audit-companies}
 
-<img 加载="懒惰" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
 
 ## 目录 {#table-of-contents}
 

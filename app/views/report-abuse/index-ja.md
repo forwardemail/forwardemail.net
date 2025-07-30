@@ -1,6 +1,6 @@
 # 不正行為を報告する {#report-abuse}
 
-<img 読み込み="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/report-abuse.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

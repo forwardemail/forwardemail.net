@@ -1,6 +1,6 @@
 # Términos {#terms}
 
-<img loading="perezoso" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
 ## Tabla de contenido {#table-of-contents}
 

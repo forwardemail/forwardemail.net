@@ -1,6 +1,6 @@
 # سياسة الخصوصية {#privacy-policy}
 
-<img تحميل="كسول" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/privacy.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 

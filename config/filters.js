@@ -156,7 +156,8 @@ function fixTableOfContents(content, options) {
   a.setAttribute('href', '#top');
 
   // remove first <h1> if on docs page
-  if (options.isDocs) h1.remove();
+  // or if multiple <h1> tags
+  if (options.isDocs || root.querySelectorAll('h1').length > 1) h1.remove();
 
   // center first <p> if on docs page and had no previous element
   if (options.isDocs) {

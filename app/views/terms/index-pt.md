@@ -1,6 +1,6 @@
 # Termos {#terms}
 
-<img carregando="preguiçoso" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/terms.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

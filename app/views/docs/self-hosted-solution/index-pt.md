@@ -1,6 +1,6 @@
 # E-mail auto-hospedado: Compromisso com o código aberto {#self-hosted-email-commitment-to-open-source}
 
-<img carregando="preguiçoso" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/self-hosted.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

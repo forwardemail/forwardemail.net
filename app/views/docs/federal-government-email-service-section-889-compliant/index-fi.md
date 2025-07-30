@@ -1,6 +1,6 @@
 # Sähköpostin edelleenlähetys: Pykälän 889 mukainen sähköpostin edelleenlähetysratkaisusi {#forward-email-your-section-889-compliant-email-forwarding-solution}
 
-<img loading="laiska" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/federal.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

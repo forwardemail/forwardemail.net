@@ -1,6 +1,6 @@
 # Stripe と PayPal を使った堅牢な決済システムの構築方法: トリフェクタアプローチ {#how-we-built-a-robust-payment-system-with-stripe-and-paypal-a-trifecta-approach}
 
-<img 読み込み="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/payment-trifecta.webp" alt="" class="rounded-lg" />
 
 ## 目次 {#table-of-contents}
 

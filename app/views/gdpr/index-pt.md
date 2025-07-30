@@ -1,6 +1,6 @@
 # Conformidade com o RGPD {#gdpr-compliance}
 
-<img carregando="preguiçoso" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/gdpr.webp" alt="" class="rounded-lg" />
 
 ## Índice {#table-of-contents}
 

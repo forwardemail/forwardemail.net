@@ -1,6 +1,6 @@
 # PayPal の 11 年間にわたる API 問題: 開発者を無視する中で、私たちがどのように回避策を構築したか {#paypals-11-year-api-disaster-how-we-built-workarounds-while-they-ignored-developers}
 
-<img 読み込み="遅延" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/pypl-disaster.webp" alt="" class="rounded-lg" />
 
 <p class="lead mt-3">Forward Emailでは、10年以上にわたりPayPalのAPIの不具合に対処してきました。最初は些細な不満だったものが、完全なる大惨事へと発展し、独自の回避策を構築し、フィッシング詐欺テンプレートをブロックせざるを得なくなり、最終的には重要なアカウント移行中にPayPalでのすべての決済を停止せざるを得なくなりました。</p>
 <p class="lead mt-3">これは、PayPalが開発者の基本的なニーズを無視し、私たちがPayPalのプラットフォームを機能させるためにあらゆる努力を尽くした11年間の物語です。</p>
@@ -919,4 +919,4 @@ PayPalが広範なフィードバックを収集しながらも、開発者の�
 
 > この投稿は、Forward EmailにおけるPayPal APIの11年間の経験についてまとめたものです。すべてのコード例とリンクは、実際の運用システムから引用しています。これらの問題にもかかわらず、PayPal決済のサポートを継続しているのは、他に選択肢がないお客様もいるためです。
 
-<img 読み込み="遅延" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/paypal-api-issues.webp" alt="" class="rounded-lg" />

@@ -2,7 +2,7 @@
 
 <!-- v1.0 จาก <https://github.com/CommonPaper/DPA> -->
 
-<img กำลังโหลด="ขี้เกียจ" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/dpa.webp" alt="" class="rounded-lg" />
 
 ## สารบัญ {#table-of-contents}
 

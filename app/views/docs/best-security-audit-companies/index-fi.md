@@ -1,6 +1,6 @@
 # Parhaat tietoturvatarkastusyritykset {#best-security-audit-companies}
 
-<img loading="laiska" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security-audit.webp" alt="" class="rounded-lg" />
 
 ## Sisällysluettelo {#table-of-contents}
 

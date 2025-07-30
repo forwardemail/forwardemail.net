@@ -1,6 +1,6 @@
 # ممارسات الأمان {#security-practices}
 
-<img تحميل="كسول" src="/img/articles/security.webp" alt="" class="rounded-lg" />
+<img loading="lazy" src="/img/articles/security.webp" alt="" class="rounded-lg" />
 
 ## جدول المحتويات {#table-of-contents}
 
