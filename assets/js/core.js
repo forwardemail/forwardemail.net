@@ -302,7 +302,8 @@ window.addEventListener(
       $('.remove-on-table-ajax-form-reloaded').remove();
       // scroll to top of first ajax table form found
       const $form = $('form.table-ajax-form:first');
-      if ($form.length > 0) $form.get(0).scrollIntoView();
+      if ($form.length > 0 && $form.data('table') && $($form.data('table')))
+        $($form.data('table')).get(0).scrollIntoView();
     });
 
     // handle popstate
