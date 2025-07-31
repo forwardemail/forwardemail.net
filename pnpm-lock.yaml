@@ -487,8 +487,8 @@ importers:
         specifier: 5.4.5
         version: 5.4.5
       mandarin:
-        specifier: 5.1.3
-        version: 5.1.3(encoding@0.1.13)
+        specifier: 5.1.4
+        version: 5.1.4(encoding@0.1.13)
       manifest-rev:
         specifier: 1.0.3
         version: 1.0.3
@@ -11721,8 +11721,8 @@ packages:
   manage-path@2.0.0:
     resolution: {integrity: sha512-NJhyB+PJYTpxhxZJ3lecIGgh4kwIY2RAh44XvAz9UlqthlQwtPBf62uBVR8XaD8CRuSjQ6TnZH2lNJkbLPZM2A==}
 
-  mandarin@5.1.3:
-    resolution: {integrity: sha512-WcJKV4SHnkXnIWZ9fZvdf4zUfxT3kpa/yYpdo6pXIgjAYOfXvdwKOqcE+ZfYC9eaB7ADpGECpwkvg23whcSHGw==}
+  mandarin@5.1.4:
+    resolution: {integrity: sha512-+ZWkfj4FQhbelBToSqO2n9Z9OrtCLIehRT8Z6Cwuhb1av6OI7yBAvhhVDiClkmvbtPeRdbDZgmPOTTPSOlcN5Q==}
     engines: {node: '>=14'}
 
   manifest-rev@1.0.3:
@@ -27436,7 +27436,7 @@ snapshots:
 
   eslint-config-xo-lass@2.0.1: {}
 
-  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
+  eslint-config-xo-typescript@0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10):
     dependencies:
       '@typescript-eslint/eslint-plugin': 3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@8.39.0)(typescript@3.9.10)
       eslint: 7.32.0
@@ -32187,7 +32187,7 @@ snapshots:
 
   manage-path@2.0.0: {}
 
-  mandarin@5.1.3(encoding@0.1.13):
+  mandarin@5.1.4(encoding@0.1.13):
     dependencies:
       '@cospired/i18n-iso-languages': 4.2.0
       '@google-cloud/translate': 7.2.2(encoding@0.1.13)
@@ -35777,7 +35777,7 @@ snapshots:
 
   proto3-json-serializer@1.1.1:
     dependencies:
-      protobufjs: 7.2.4
+      protobufjs: 7.5.3
 
   proto3-json-serializer@3.0.1:
     dependencies:
@@ -40561,7 +40561,7 @@ snapshots:
       eslint: 7.32.0
       eslint-config-prettier: 6.15.0(eslint@7.32.0)
       eslint-config-xo: 0.30.0(eslint@7.32.0)
-      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
+      eslint-config-xo-typescript: 0.31.0(@typescript-eslint/eslint-plugin@3.10.1(@typescript-eslint/parser@3.10.1(eslint@8.39.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10))(eslint@7.32.0)(typescript@3.9.10)
       eslint-formatter-pretty: 3.0.1
       eslint-import-resolver-webpack: 0.12.2(eslint-plugin-import@2.26.0)(webpack@5.100.2)
       eslint-plugin-ava: 10.5.0(eslint@7.32.0)

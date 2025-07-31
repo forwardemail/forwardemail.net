@@ -126,6 +126,16 @@ function handleExplicitTurnstile() {
   Swal.fire(window._types.error, window.TURNSTILE_RENDER_ERROR, 'error');
 }
 
+// Allow ?return_to=/some/path
+returnTo();
+
+// Handle hashes when page loads
+// <http://stackoverflow.com/a/29853395>
+handleHashOnLoad();
+
+// Handle hash change when user clicks on links
+$('body').on('click.handleHashChange', "a[href^='#']", handleHashChange);
+
 // an alternative approach for performance is to use IntersectionObserver API
 window.onloadTurnstileCallback = function () {
   $('.cf-explicit-turnstile')
@@ -167,15 +177,10 @@ window.addEventListener(
     // const hljs = require('highlight.js');
     // hljs.initHighlightingOnLoad();
 
-    // Allow ?return_to=/some/path
-    returnTo();
 
     // flash and toast messaging with sweetalert2
     flash();
 
-    // Handle hashes when page loads
-    // <http://stackoverflow.com/a/29853395>
-    handleHashOnLoad();
     // $(window).on('resize.resizeNavbarPadding', () => {
     //   resizeNavbarPadding($);
     // });
@@ -254,9 +259,6 @@ window.addEventListener(
     // then the URL bar will update to #section-b
     // if (!navigator || !navigator.userAgentData || !navigator.userAgentData.mobile)
     //   $(window).on('scroll.changeHashOnScroll', debounce(changeHashOnScroll, 1000));
-
-    // Handle hash change when user clicks on links
-    $body.on('click.handleHashChange', "a[href^='#']", handleHashChange);
 
     // Automatically show tooltips and popovers
     $('[data-toggle="tooltip"]').tooltip();
