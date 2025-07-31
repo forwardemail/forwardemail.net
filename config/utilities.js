@@ -690,7 +690,7 @@ const emailClients = _.sortBy(
       description:
         'Access all your messages, calendars, and contacts in one fast app.',
       link: 'https://www.thunderbird.net/',
-      img: 'img/email-clients/thunderbird.png',
+      img: 'img/email-clients/thunderbird.webp',
       screenshot:
         'https://upload.wikimedia.org/wikipedia/commons/4/4f/Thunderbird_115.png',
       attribution: 'Screenshot by MZLA Technologies Corporation',
@@ -704,7 +704,7 @@ const emailClients = _.sortBy(
       name: 'Geary',
       description:
         'Geary is an email application built around conversations for the GNOME desktop.',
-      img: 'img/email-clients/geary.png',
+      img: 'img/email-clients/geary.webp',
       link: 'https://wiki.gnome.org/Apps/Geary',
       screenshot:
         'https://wiki.gnome.org/Apps/Geary?action=AttachFile&do=get&target=geary-3-32-main-window.png',
@@ -716,7 +716,7 @@ const emailClients = _.sortBy(
     {
       name: 'GNOME Evolution',
       link: 'https://wiki.gnome.org/Apps/Evolution',
-      img: 'img/email-clients/gnome-evolution.png',
+      img: 'img/email-clients/gnome-evolution.webp',
       description:
         'Evolution is a personal information management application that provides integrated mail, calendaring and address book functionality.',
       attribution: 'Screenshot by AlexanderVanLoon',
@@ -731,7 +731,7 @@ const emailClients = _.sortBy(
       link: 'https://www.thunderbird.net/en-US/mobile/',
       description:
         'Meet the leading open-source email app for Android. Enjoy complete freedom anywhere you take your smartphone.',
-      img: 'img/email-clients/thunderbird-mobile.png',
+      img: 'img/email-clients/thunderbird-mobile.webp',
       attribution: 'Screenshot by Thunderbird Mobile',
       screenshot:
         'https://f-droid.org/repo/net.thunderbird.android/en-US/phoneScreenshots/1.png',
@@ -745,7 +745,7 @@ const emailClients = _.sortBy(
       link: 'https://k9mail.app/',
       description:
         'K-9 Mail is an open source email client focused on making it easy to chew through large volumes of email.',
-      img: 'img/email-clients/k-9-mail.png',
+      img: 'img/email-clients/k-9-mail.webp',
       attribution: 'Screenshot by K-9 Mail',
       screenshot:
         'https://docs.k9mail.app/en/6.400/reading/img/reading_folder_view.png',
@@ -772,7 +772,7 @@ const emailClients = _.sortBy(
       name: 'GNUMail',
       description: 'An email client for GNUstep.',
       link: 'https://www.nongnu.org/gnustep-nonfsf/gnumail/',
-      img: 'img/email-clients/gnumail.png',
+      img: 'img/email-clients/gnumail.webp',
       attribution:
         'Screenshot by Germán Arias, Riccardo Mottola, Sebastian Reitenbach and others.',
       screenshot:
@@ -786,7 +786,7 @@ const emailClients = _.sortBy(
       name: 'KMail (Kontact)',
       description:
         'KMail is the email component of Kontact, the integrated personal information manager from KDE.',
-      img: 'img/email-clients/kmail-kontact.png',
+      img: 'img/email-clients/kmail-kontact.webp',
       link: 'https://kontact.kde.org/components/kmail/',
       wikipedia: 'https://en.wikipedia.org/wiki/Kontact#E-Mail',
       attribution: 'Screenshot by KDE Webmasters',
@@ -798,7 +798,7 @@ const emailClients = _.sortBy(
       name: 'Alpine',
       description:
         'Alpine is a rewrite of the Pine Message System that adds support for Unicode and other features.',
-      img: 'img/email-clients/alpine.png',
+      img: 'img/email-clients/alpine.webp',
       link: 'https://alpineapp.email/',
       attribution:
         'Screenshot by Office of UW Technology, University of Washington',
@@ -813,7 +813,7 @@ const emailClients = _.sortBy(
       description:
         'NeoMutt is a command line mail reader (or MUA). It’s a fork of Mutt with added features.',
       link: 'https://muttwizard.com/',
-      img: 'img/email-clients/neomutt.png',
+      img: 'img/email-clients/neomutt.webp',
       attribution: 'Screenshot by Richard Russon',
       screenshot:
         'https://raw.githubusercontent.com/neomutt/gfx/main/screenshots/screenshot/dlg-index1-100.png',
@@ -825,7 +825,7 @@ const emailClients = _.sortBy(
       description:
         'Roundcube webmail is a browser-based multilingual IMAP client with an application-like user interface.',
       wikipedia: 'https://en.wikipedia.org/wiki/Roundcube',
-      img: 'img/email-clients/roundcube.png',
+      img: 'img/email-clients/roundcube.webp',
       link: 'https://roundcube.net/',
       attribution: 'Screenshot by The Roundcube Dev Team',
       screenshot:
@@ -839,7 +839,7 @@ const emailClients = _.sortBy(
         'Balsa is an e-mail client for GNOME, highly configurable and incorporating all the features you would expect in a robust mail client.',
       link: 'https://pawsa.fedorapeople.org/balsa/',
       attribution: 'Screenshot by Manuel Allaud',
-      img: 'img/email-clients/balsa.png',
+      img: 'img/email-clients/balsa.webp',
       screenshot:
         'https://pawsa.fedorapeople.org/balsa/screens/2.2/balsa-main-window.png',
       wikipedia: 'https://en.wikipedia.org/wiki/Balsa_(email_client)',
@@ -851,7 +851,7 @@ const emailClients = _.sortBy(
       description:
         'Fully featured, open source, privacy friendly email app for Android',
       link: 'https://github.com/M66B/FairEmail',
-      img: 'img/email-clients/fairemail.png',
+      img: 'img/email-clients/fairemail.webp',
       screenshot:
         'https://raw.githubusercontent.com/M66B/FairEmail/master/screenshots/setup.png',
       attribution: 'Screenshot by Marcel Bokhorst',
@@ -879,7 +879,7 @@ const emailClients = _.sortBy(
       screenshot:
         'https://user-images.githubusercontent.com/10437171/138774902-7b9de5a3-93eb-44b0-8cfb-6d2e11e3b1aa.png',
       language: 'Rust',
-      img: 'img/email-clients/himalaya.png',
+      img: 'img/email-clients/himalaya.webp',
       starred: true,
       terminal: true
     },
@@ -890,7 +890,7 @@ const emailClients = _.sortBy(
       link: 'https://www.claws-mail.org/',
       attribution: 'Screenshot by Claws Mail team and Hiroyuki Yamamoto',
       screenshot: 'https://www.claws-mail.org/img/screenshots/main.png',
-      img: 'img/email-clients/claws-mail.png',
+      img: 'img/email-clients/claws-mail.webp',
       wikipedia: 'https://en.wikipedia.org/wiki/Claws_Mail',
       language: 'C (GTK)',
       apple: true,
@@ -904,7 +904,7 @@ const emailClients = _.sortBy(
         "aerc is an email client that runs in your terminal. It's highly efficient and extensible, perfect for the discerning hacker.",
       screenshot:
         'https://screenshots.debian.net/shrine/screenshot/simage/large-a3449e4b14f51c4ce0ce785c8e2d0c67.png',
-      img: 'img/email-clients/aerc.png',
+      img: 'img/email-clients/aerc.webp',
       attribution: 'Screenshot by Debian Screenshots',
       language: 'Go',
       terminal: true
@@ -913,7 +913,7 @@ const emailClients = _.sortBy(
       name: 'SnappyMail',
       description: 'Simple, modern, lightweight & fast web-based email client.',
       link: 'https://github.com/the-djmaze/snappymail',
-      img: 'img/email-clients/snappymail.png',
+      img: 'img/email-clients/snappymail.webp',
       attribution: 'Screenshot by Forward Email',
       screenshot: 'https://snappymail.eu/demo',
       language: 'PHP',
@@ -924,7 +924,7 @@ const emailClients = _.sortBy(
       description:
         'Lightweight Open Source webmail written in PHP and JavaScript.',
       link: 'https://github.com/cypht-org/cypht/',
-      img: 'img/email-clients/cypht.png',
+      img: 'img/email-clients/cypht.webp',
       attribution: 'Screenshot by Cypht',
       screenshot:
         'https://raw.githubusercontent.com/cypht-org/cypht-website/master/img/cypht_shot1.png',
@@ -937,7 +937,7 @@ const emailClients = _.sortBy(
       link: 'https://github.com/RainLoop/rainloop-webmail',
       attribution: 'Screenshot by RainLoop team',
       screenshot: 'https://www.rainloop.net/static/media/screenshots/v2/12.png',
-      img: 'img/email-clients/rainloop.png',
+      img: 'img/email-clients/rainloop.webp',
       wikipedia: 'https://fr.wikipedia.org/wiki/RainLoop',
       language: 'PHP',
       web: true
@@ -948,7 +948,7 @@ const emailClients = _.sortBy(
       description:
         'Mail is an email client included by Apple Inc. with its operating systems macOS, iOS, iPadOS and watchOS... With Mail on iCloud.com, you can send and receive email from your iCloud Mail account using a web browser.',
       link: 'https://support.apple.com/mail',
-      img: 'img/email-clients/apple-mail.png',
+      img: 'img/email-clients/apple-mail.webp',
       language: 'Proprietary',
       attribution: 'Screenshot by Forward Email',
       screenshot:
@@ -990,7 +990,7 @@ const emailServers = _.sortBy(
       description:
         'Privacy-focused encrypted email for you. We are the go-to email service for hundreds of thousands of creators, developers, and businesses. Send and receive email as you@yourdomain.com with your custom domain or use one of ours.',
       link: 'https://forwardemail.net',
-      img: 'img/email-servers/forward-email.png',
+      img: 'img/email-servers/forward-email.webp',
       attribution: 'Screenshot by Forward Email',
       imap: true,
       smtp: true,
@@ -1001,7 +1001,7 @@ const emailServers = _.sortBy(
       description:
         'Maddy Mail Server implements all functionality required to run a e-mail server.',
       link: 'https://maddy.email/',
-      img: 'img/email-servers/maddy.png',
+      img: 'img/email-servers/maddy.webp',
       attribution: 'Screenshot by Forward Email',
       imap: true,
       smtp: true,
@@ -1012,7 +1012,7 @@ const emailServers = _.sortBy(
       description:
         'mailcow: dockerized is an open source groupware/email suite based on docker.',
       link: 'https://docs.mailcow.email/',
-      img: 'img/email-servers/mailcow.png',
+      img: 'img/email-servers/mailcow.webp',
       attribution: 'Screenshot by Forward Email',
       imap: true,
       smtp: true,
@@ -1023,7 +1023,7 @@ const emailServers = _.sortBy(
       description:
         'chasquid is an SMTP (email) server with a focus on simplicity, security, and ease of operation.',
       link: 'https://blitiri.com.ar/p/chasquid/',
-      img: 'img/email-servers/chasquid.png',
+      img: 'img/email-servers/chasquid.webp',
       attribution: 'Screenshot by Forward Email',
       imap: false,
       smtp: true,
@@ -1033,7 +1033,7 @@ const emailServers = _.sortBy(
       name: 'Haraka',
       description: 'A modern, high performance, flexible SMTP server.',
       link: 'https://haraka.github.io/',
-      img: 'img/email-servers/haraka.png',
+      img: 'img/email-servers/haraka.webp',
       attribution: 'Screenshot by Forward Email',
       wikipedia: 'https://en.wikipedia.org/wiki/Haraka_(software)',
       imap: false,
@@ -1045,7 +1045,7 @@ const emailServers = _.sortBy(
       description:
         'ZoneMTA provides granular control over routing different messages. ',
       link: 'https://github.com/zone-eu/zone-mta',
-      img: 'img/email-servers/zone-mta.png',
+      img: 'img/email-servers/zone-mta.webp',
       attribution: 'Screenshot by Forward Email',
       imap: false,
       smtp: true,
@@ -1056,7 +1056,7 @@ const emailServers = _.sortBy(
       description:
         'docker-mailserver, or DMS for short, is a production-ready fullstack but simple mail server (SMTP, IMAP, LDAP, Antispam, Antivirus, etc.).',
       link: 'https://docker-mailserver.github.io/docker-mailserver/latest/',
-      img: 'img/email-servers/docker-mailserver.png',
+      img: 'img/email-servers/docker-mailserver.webp',
       attribution: 'Screenshot by Forward Email',
       imap: true,
       smtp: true,
@@ -1067,7 +1067,7 @@ const emailServers = _.sortBy(
       description:
         'Take back control of your email with this easy-to-deploy mail server in a box.',
       link: 'https://mailinabox.email/',
-      img: 'img/email-servers/mail-in-a-box.png',
+      img: 'img/email-servers/mail-in-a-box.webp',
       attribution: 'Screenshot by Forward Email',
       wikipedia: 'https://en.wikipedia.org/wiki/Mail-in-a-Box',
       imap: true,
@@ -1079,7 +1079,7 @@ const emailServers = _.sortBy(
       description:
         'WildDuck is a modern mail server software for IMAP and POP3.',
       link: 'https://wildduck.email/',
-      img: 'img/email-servers/wildduck.png',
+      img: 'img/email-servers/wildduck.webp',
       attribution: 'Screenshot by Forward Email',
       imap: true,
       smtp: false,
@@ -1089,7 +1089,7 @@ const emailServers = _.sortBy(
       name: 'listmonk',
       description: 'Self-hosted newsletter and mailing list manager.',
       link: 'https://listmonk.app/',
-      img: 'img/email-servers/listmonk.png',
+      img: 'img/email-servers/listmonk.webp',
       attribution: 'Screenshot by Forward Email',
       imap: false,
       smtp: true,
@@ -1099,7 +1099,7 @@ const emailServers = _.sortBy(
       name: 'keila',
       description: 'Open Source Newsletter Tool.',
       link: 'https://www.keila.io/',
-      img: 'img/email-servers/keila.png',
+      img: 'img/email-servers/keila.webp',
       attribution: 'Screenshot by Forward Email',
       imap: false,
       smtp: true,
@@ -1110,7 +1110,7 @@ const emailServers = _.sortBy(
       description:
         'Postal is a complete and fully featured mail server for use by websites & web servers.',
       link: 'https://docs.postalserver.io/',
-      img: 'img/email-servers/postal.png',
+      img: 'img/email-servers/postal.webp',
       attribution: 'Screenshot by Forward Email',
       imap: false,
       smtp: true,
@@ -1121,7 +1121,7 @@ const emailServers = _.sortBy(
       description:
         "It is Wietse Venema's mail server that started life at IBM research as an alternative to the widely-used Sendmail program.",
       link: 'https://www.postfix.org/',
-      img: 'img/email-servers/postfix.png',
+      img: 'img/email-servers/postfix.webp',
       attribution: 'Screenshot by Forward Email',
       wikipedia: 'https://en.wikipedia.org/wiki/Postfix_(software)',
       imap: false,
@@ -1133,7 +1133,7 @@ const emailServers = _.sortBy(
       description:
         'Dovecot is an excellent choice for both small and large installations.',
       link: 'https://www.dovecot.org/',
-      img: 'img/email-servers/dovecot.png',
+      img: 'img/email-servers/dovecot.webp',
       attribution: 'Screenshot by Forward Email',
       wikipedia: 'https://en.wikipedia.org/wiki/Dovecot_%28software%29',
       imap: true,
@@ -1145,7 +1145,7 @@ const emailServers = _.sortBy(
       description:
         'Exim is a message transfer agent (MTA) originally developed at the University of Cambridge for use on Unix systems connected to the Internet.',
       link: 'https://www.exim.org/',
-      img: 'img/email-servers/exim.png',
+      img: 'img/email-servers/exim.webp',
       attribution: 'Screenshot by Forward Email',
       wikipedia: 'https://en.wikipedia.org/wiki/Exim',
       imap: false,

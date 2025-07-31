@@ -1,6 +1,6 @@
 extends layout
 
-mixin renderCard(alternative)
+mixin renderCard(alternative, i)
   .card.rounded-lg.position-relative.d-inline-block.mb-3.no-search
     .position-absolute.w-100.text-right.lead.d-none.d-xl-block
       if alternative.name === "Forward Email"
@@ -44,7 +44,7 @@ mixin renderCard(alternative)
           data-footer=t("Screenshot by Forward Email")
         )
           img.img-fluid.img-thumbnail.max-height-300px(
-            loading="lazy",
+            loading=i <= 1 ? false : "lazy",
             src=manifest(alternative.img),
             alt=striptags(str)
           )
@@ -263,7 +263,7 @@ block body
                         data-footer=t("Screenshot by Forward Email")
                       )
                         img.img-fluid.img-thumbnail.max-height-300px(
-                          loading="lazy",
+                          loading=i <= 1 ? false : "lazy",
                           src=manifest(alternatives[0].img),
                           alt=striptags(t(alternatives[0].description))
                         )
@@ -313,7 +313,7 @@ block body
                           rel="noopener noreferrer"
                         )
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Hardenize Test"),
                             width=128,
                             height=20,
@@ -334,7 +334,7 @@ block body
                           else if (alternatives[0].internetnl_site_value >= 80)
                             - color1a = "orange";
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Internet.nl Site Test"),
                             width=170,
                             height=20,
@@ -355,7 +355,7 @@ block body
                           else if (alternatives[0].internetnl_mail_value >= 80)
                             - color2a = "orange";
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Internet.nl Mail Test"),
                             width=172,
                             height=20,
@@ -371,7 +371,7 @@ block body
                           rel="noopener noreferrer"
                         )
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Mozilla HTTP Observatory Grade"),
                             src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[0].root_domain}`,
                             width=162,
@@ -393,7 +393,7 @@ block body
                           else if alternatives[0].ssl_labs.startsWith('B')
                             - colora = "orange";
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Qualys SSL Labs SSL Server Test"),
                             src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[0].ssl_labs}_Grade-${colora}`,
                             width=164,
@@ -427,7 +427,7 @@ block body
                         data-footer=t("Screenshot by Forward Email")
                       )
                         img.img-fluid.img-thumbnail.max-height-300px(
-                          loading="lazy",
+                          loading=i <= 1 ? false : "lazy",
                           src=manifest(alternatives[1].img),
                           alt=striptags(t(alternatives[1].description))
                         )
@@ -477,7 +477,7 @@ block body
                           rel="noopener noreferrer"
                         )
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Hardenize Test"),
                             width=128,
                             height=20,
@@ -498,7 +498,7 @@ block body
                           else if (alternatives[1].internetnl_site_value >= 80)
                             - color1 = "orange";
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Internet.nl Site Test"),
                             width=170,
                             height=20,
@@ -519,7 +519,7 @@ block body
                           else if (alternatives[1].internetnl_mail_value >= 80)
                             - color2 = "orange";
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Internet.nl Mail Test"),
                             width=172,
                             height=20,
@@ -535,7 +535,7 @@ block body
                           rel="noopener noreferrer"
                         )
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Mozilla HTTP Observatory Grade"),
                             src=`https://img.shields.io/mozilla-observatory/grade-score/${alternatives[1].root_domain}`,
                             width=162,
@@ -557,7 +557,7 @@ block body
                           else if alternatives[1].ssl_labs.startsWith('B')
                             - color = "orange";
                           img(
-                            loading="lazy",
+                            loading=i <= 1 ? false : "lazy",
                             alt=t("Qualys SSL Labs SSL Server Test"),
                             src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternatives[1].ssl_labs}_Grade-${color}`,
                             width=164,
@@ -946,7 +946,7 @@ block body
                       rel="noopener noreferrer"
                     )
                       img(
-                        loading="lazy",
+                        loading=i <= 1 ? false : "lazy",
                         alt=t("Hardenize Test"),
                         width=128,
                         height=20,
@@ -967,7 +967,7 @@ block body
                       else if (alternative.internetnl_site_value >= 80)
                         - color1 = "orange";
                       img(
-                        loading="lazy",
+                        loading=i <= 1 ? false : "lazy",
                         alt=t("Internet.nl Site Test"),
                         width=170,
                         height=20,
@@ -988,7 +988,7 @@ block body
                       else if (alternative.internetnl_mail_value >= 80)
                         - color2 = "orange";
                       img(
-                        loading="lazy",
+                        loading=i <= 1 ? false : "lazy",
                         alt=t("Internet.nl Mail Test"),
                         width=172,
                         height=20,
@@ -1004,7 +1004,7 @@ block body
                       rel="noopener noreferrer"
                     )
                       img(
-                        loading="lazy",
+                        loading=i <= 1 ? false : "lazy",
                         alt=t("Mozilla HTTP Observatory Grade"),
                         src=`https://img.shields.io/mozilla-observatory/grade-score/${alternative.root_domain}`,
                         width=162,
@@ -1026,7 +1026,7 @@ block body
                       else if alternative.ssl_labs.startsWith('B')
                         - color = "orange";
                       img(
-                        loading="lazy",
+                        loading=i <= 1 ? false : "lazy",
                         alt=t("Qualys SSL Labs SSL Server Test"),
                         src=`https://img.shields.io/badge/Qualys_SSL_Labs-${alternative.ssl_labs}_Grade-${color}`,
                         width=164,
@@ -1110,14 +1110,9 @@ block body
             else
               = t("Email Service Screenshots")
       .row
-        if alternatives.length <= 2
-          each alternative in alternatives
-            .d-flex.col-md-6.mb-3.align-items-stretch
-              +renderCard(alternative)
-        else
-          .card-columns-2
-            each alternative in alternatives
-              +renderCard(alternative)
+        each alternative, i in alternatives
+          .d-flex.col-md-6.mb-3.align-items-stretch
+            +renderCard(alternative, i)
       .row.mt-3
         .col.text-center
           ul.list-unstyled

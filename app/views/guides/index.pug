@@ -15,7 +15,7 @@ block body
         - const providers = [...nsProviders];
         - providers.unshift({ name: "Send Mail As with Gmail", slug: "send-mail-as-gmail-custom-domain", video: "https://youtu.be/MEheS8gM4Xs" });
         - providers.unshift({ name: "Send Email with Custom Domain", slug: "send-email-with-custom-domain-smtp" });
-        each provider in providers
+        each provider, i in providers
           .d-flex.col-md-6.col-lg-4.mb-3.align-items-stretch
             .card.rounded-lg.position-relative
               if provider.video || provider.gif
@@ -32,11 +32,31 @@ block body
                       = "GIF"
               - const str = t('How to Setup Email with <span class="notranslate">%s</span>', provider.name);
               - const str2 = t('<span class="notranslate">%s</span> Email Setup Tutorial', provider.name);
-              img.card-img-top.img-fluid(
-                loading="lazy",
-                src=provider.gif ? manifest(`img/guides/${provider.gif}.gif`) : l(`/guides/${provider.slug}.png`),
-                alt=striptags(str)
-              )
+              if provider.gif
+                video.card-img-top.img-fluid(
+                  loading=i <= 1 ? false : "lazy",
+                  controls,
+                  autoplay,
+                  loop,
+                  muted,
+                  width="480",
+                  height="270"
+                )
+                  source(
+                    src=manifest(`img/guides/${provider.gif}.webm`),
+                    type="video/webm"
+                  )
+                  source(
+                    src=manifest(`img/guides/${provider.gif}.mp4`),
+                    type="video/mp4"
+                  )
+                  = t("Your browser does not support the video tag.")
+              else
+                img.card-img-top.img-fluid(
+                  loading=i <= 1 ? false : "lazy",
+                  src=l(`/guides/${provider.slug}.png`),
+                  alt=striptags(str)
+                )
               .card-body
                 h2.h5.card-title= provider.name
                 h3.h6.card-subtitle.mb-1.text-muted!= str2

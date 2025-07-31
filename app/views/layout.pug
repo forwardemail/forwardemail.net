@@ -16,14 +16,8 @@ html.h-100.no-js(
       include _fonts
     block stylesheets
       if isBot(ctx.get('User-Agent'))
-        if ctx.pathWithoutLocale === '/' && botCss
+        if botCss
           style(nonce=nonce)!= botCss
-          link(
-            rel="prefetch",
-            href=manifest("css/app-bot.css"),
-            integrity=manifest("css/app-bot.css", "integrity"),
-            crossorigin="anonymous"
-          )
         else
           link(
             rel="stylesheet",
@@ -41,14 +35,8 @@ html.h-100.no-js(
             crossorigin="anonymous"
           )
         else
-          if ctx.pathWithoutLocale === '/' && appCss
+          if appCss
             style(nonce=nonce, data-critical="true")!= appCss
-            link(
-              rel="prefetch",
-              href=manifest("css/app.css"),
-              integrity=manifest("css/app.css", "integrity"),
-              crossorigin="anonymous"
-            )
           else
             link(
               rel="stylesheet",
