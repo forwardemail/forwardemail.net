@@ -6,10 +6,11 @@
 const punycode = require('node:punycode');
 const { Buffer } = require('node:buffer');
 
+const isSANB = require('is-string-and-not-blank');
 const mongoose = require('mongoose');
+
 const _ = require('#helpers/lodash');
 const isEmail = require('#helpers/is-email');
-
 const Aliases = require('#models/aliases');
 const Domains = require('#models/domains');
 const Emails = require('#models/emails');
@@ -312,6 +313,17 @@ async function onDataSMTP(session, date, headers, body) {
   // queue the email
   let email;
   try {
+    //
+    // normalize/map DSN object similar to one provided via API
+    //
+    const dsn = {};
+    if (isSANB(session.envelope?.dsn?.envid))
+      dsn.id = session.envelope.dsn.envid;
+    if (isSANB(session.envelope?.dsn.ret)) {
+      if (session.envelope.dsn.ret === 'FULL') dsn.return = 'full';
+      else if (session.envelope.dsn.ret === 'HDRS') dsn.return = 'headers';
+    }
+
     email = await Emails.queue({
       message: {
         envelope,
@@ -322,7 +334,9 @@ async function onDataSMTP(session, date, headers, body) {
       user,
       date,
       catchall: typeof session?.user?.alias_id !== 'string',
-      isPending: true
+      isPending: true,
+      rcptTo: session.envelope.rcptTo,
+      dsn
     });
 
     if (!_.isDate(domain.smtp_suspended_sent_at)) {

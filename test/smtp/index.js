@@ -18,7 +18,7 @@ const nodemailer = require('nodemailer');
 const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const test = require('ava');
-const { SMTPServer } = require('smtp-server');
+const { SMTPServer } = require('@forwardemail/smtp-server');
 const { randomstring } = require('@sidoshi/random-string');
 
 const utils = require('../utils');
@@ -155,7 +155,7 @@ Test`.trim()
     t.is(err.responseCode, 535);
     t.is(
       err.response,
-      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
+      '535 5.7.8 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
     );
   }
 
@@ -196,7 +196,7 @@ Test`.trim()
     t.is(err.responseCode, 535);
     t.is(
       err.response,
-      '535 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
+      '535 5.7.8 Domain is missing TXT verification record, go to http://example.com:3000/my-account/domains/test.com and click "Verify"'
     );
   }
 
@@ -2048,7 +2048,7 @@ Test`.trim()
         const err = new Error('Rejected!');
         // NOTE: smtp-server will close connection early if it's 421
         err.responseCode = 450;
-        err.response = '450 Rejected!';
+        err.response = '450 4.2.1 Rejected!';
         return fn(err);
       }
 
@@ -2314,7 +2314,7 @@ Test`.trim()
       );
 
       t.is(err.responseCode, 550);
-      t.is(err.response, '550 Rate limit exceeded');
+      t.is(err.response, '550 5.1.1 Rate limit exceeded');
     } else {
       const info = await transporter.sendMail({
         envelope: {
@@ -2525,7 +2525,7 @@ Test`.trim()
 
   t.is(
     err.message,
-    `Message failed: 550 From header must end with @${domain.name}`
+    `Message failed: 550 5.1.1 From header must end with @${domain.name}`
   );
 });
 
@@ -2873,7 +2873,7 @@ test('bounce webhook', async (t) => {
       if (address?.address === message.to[1]) {
         const err = new Error('Soft rejection');
         err.responseCode = 421;
-        err.response = '421 Soft';
+        err.response = '421 4.4.2 Soft';
         return fn(err);
       }
 
@@ -2881,7 +2881,7 @@ test('bounce webhook', async (t) => {
       if (address?.address === message.to[2]) {
         const err = new Error('Hard rejection');
         err.responseCode = 550;
-        err.response = '550 Hard';
+        err.response = '550 5.1.1 Hard';
         return fn(err);
       }
 
@@ -2959,4 +2959,1156 @@ test('bounce webhook', async (t) => {
       ])
     );
   }
+});
+
+test('DSN failure bounce notifications with NOTIFY parameters', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+
+  const port = await getPort();
+  const { resolver } = smtp;
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  t.true(typeof pass === 'string' && pass.length === 24);
+  await alias.save();
+
+  const isValid = await isValidPassword(alias.tokens, pass);
+
+  t.true(isValid);
+
+  const map = new Map();
+
+  // spoof foo.com mx records
+  map.set(
+    'mx:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    'txt:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'TXT',
+      [
+        // Set custom port
+        `forward-email-port=${port.toString()}`,
+        // Create catch-all alias (active)
+        `forward-email=test@${IP_ADDRESS}`
+      ],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // Mock SMTP server that rejects messages
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onMailFrom(address, session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const err = new Error('Error');
+        err.responseCode = 550; // trigger permanent failure
+        fn(err);
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  server.listen(port);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    // ignoreTLS: true,
+    // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+    secure: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  // Create test message with DSN parameters
+  const messageId = `${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}`;
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'foo@foo.com',
+      dsn: {
+        id: 'TEST-ENVELOPE-IDENTIFIER',
+        return: 'full',
+        notify: ['success', 'failure', 'delay'],
+        recipient: 'foo@foo.com'
+      }
+    },
+    raw: `
+Message-ID: <${messageId}>
+To: foo@foo.com
+From: ${alias.name}@${domain.name}
+Subject: Test DSN Message
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+  });
+
+  {
+    const email = await Emails.findOne({
+      messageId
+    })
+      .lean()
+      .exec();
+    t.true(email !== null);
+
+    const message = await Emails.getMessage(email.message, true);
+    t.true(message.includes(`Message-ID: <${messageId}>`));
+    t.true(message.includes(`From: ${alias.name}@${domain.name}`));
+
+    //
+    // process the email
+    //
+    const results = await processEmail({
+      email,
+      port,
+      resolver,
+      client
+    });
+    // results = [
+    //   {
+    //     accepted: [],
+    //     rejected: 'foo@foo.com',
+    //     rejectedErrors: [
+    //       Object { … },
+    //     ],
+    //   },
+    // ]
+    t.true(results[0].accepted.length === 0);
+    t.is(results[0].rejected, 'foo@foo.com');
+    t.is(results[0].rejectedErrors[0].responseCode, 550);
+  }
+
+  // Wait to ensure bounce notification is queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        subject: 'Delivery Status Notification (Failure)'
+      });
+      return Boolean(exists);
+    },
+    { timeout: ms('5s') }
+  );
+
+  await server.close();
+  await smtp.close();
+});
+
+test('DSN delay bounce notifications with NOTIFY parameters', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+
+  const port = await getPort();
+  const { resolver } = smtp;
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  t.true(typeof pass === 'string' && pass.length === 24);
+  await alias.save();
+
+  const isValid = await isValidPassword(alias.tokens, pass);
+
+  t.true(isValid);
+
+  const map = new Map();
+
+  // spoof foo.com mx records
+  map.set(
+    'mx:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    'txt:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'TXT',
+      [
+        // Set custom port
+        `forward-email-port=${port.toString()}`,
+        // Create catch-all alias (active)
+        `forward-email=test@${IP_ADDRESS}`
+      ],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // Mock SMTP server that rejects messages
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onMailFrom(address, session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const err = new Error('Error');
+        err.responseCode = 421; // trigger temp failure
+        fn(err);
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  server.listen(port);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    // ignoreTLS: true,
+    // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+    secure: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  // Create test message with DSN parameters
+  const messageId = `${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}`;
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'foo@foo.com',
+      dsn: {
+        id: 'TEST-ENVELOPE-IDENTIFIER',
+        return: 'full',
+        notify: ['success', 'failure', 'delay'],
+        recipient: 'foo@foo.com'
+      }
+    },
+    raw: `
+Message-ID: <${messageId}>
+To: foo@foo.com
+From: ${alias.name}@${domain.name}
+Subject: Test DSN Message
+Date: ${dayjs().subtract(1, 'hour').toDate().toISOString()}
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+  });
+
+  {
+    const email = await Emails.findOne({
+      messageId
+    })
+      .lean()
+      .exec();
+    t.true(email !== null);
+
+    const message = await Emails.getMessage(email.message, true);
+    t.true(message.includes(`Message-ID: <${messageId}>`));
+    t.true(message.includes(`From: ${alias.name}@${domain.name}`));
+
+    //
+    // process the email
+    //
+    const results = await processEmail({
+      email,
+      port,
+      resolver,
+      client
+    });
+    // results = [
+    //   {
+    //     accepted: [],
+    //     rejected: 'foo@foo.com',
+    //     rejectedErrors: [
+    //       Object { … },
+    //     ],
+    //   },
+    // ]
+    t.true(results[0].accepted.length === 0);
+    t.is(results[0].rejected, 'foo@foo.com');
+    t.is(results[0].rejectedErrors[0].responseCode, 421);
+  }
+
+  // Wait to ensure bounce notification is queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        subject: 'Delivery Status Notification (Delayed)'
+      });
+      return Boolean(exists);
+    },
+    { timeout: ms('5s') }
+  );
+
+  await server.close();
+  await smtp.close();
+});
+
+test('DSN bounce notifications respect NOTIFY=NEVER', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+
+  const port = await getPort();
+  const { resolver } = smtp;
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  t.true(typeof pass === 'string' && pass.length === 24);
+  await alias.save();
+
+  const isValid = await isValidPassword(alias.tokens, pass);
+
+  t.true(isValid);
+
+  const map = new Map();
+
+  // spoof foo.com mx records
+  map.set(
+    'mx:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    'txt:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'TXT',
+      [
+        // Set custom port
+        `forward-email-port=${port.toString()}`,
+        // Create catch-all alias (active)
+        `forward-email=test@${IP_ADDRESS}`
+      ],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // Mock SMTP server that rejects messages
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onMailFrom(address, session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        const err = new Error('Error');
+        err.responseCode = 550; // trigger permanent failure
+        fn(err);
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  server.listen(port);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    // ignoreTLS: true,
+    // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+    secure: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  // Create test message with DSN parameters
+  const messageId = `${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}`;
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'foo@foo.com',
+      dsn: {
+        id: 'TEST-ENVELOPE-IDENTIFIER',
+        return: 'full',
+        notify: ['never'],
+        recipient: 'foo@foo.com'
+      }
+    },
+    raw: `
+Message-ID: <${messageId}>
+To: foo@foo.com
+From: ${alias.name}@${domain.name}
+Subject: Test DSN Message
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+  });
+
+  {
+    const email = await Emails.findOne({
+      messageId
+    })
+      .lean()
+      .exec();
+    t.true(email !== null);
+
+    t.is(email.dsn.id, 'TEST-ENVELOPE-IDENTIFIER');
+    t.is(email.dsn.return, 'full');
+    t.is(email.rcptTo[0].address, 'foo@foo.com');
+    t.deepEqual(email.rcptTo[0].dsn.notify, ['NEVER']);
+    t.is(email.rcptTo[0].dsn.orcpt, 'rfc822;foo@foo.com');
+
+    const message = await Emails.getMessage(email.message, true);
+    t.true(message.includes(`Message-ID: <${messageId}>`));
+    t.true(message.includes(`From: ${alias.name}@${domain.name}`));
+
+    //
+    // process the email
+    //
+    const results = await processEmail({
+      email,
+      port,
+      resolver,
+      client
+    });
+    // results = [
+    //   {
+    //     accepted: [],
+    //     rejected: 'foo@foo.com',
+    //     rejectedErrors: [
+    //       Object { … },
+    //     ],
+    //   },
+    // ]
+    t.true(results[0].accepted.length === 0);
+    t.is(results[0].rejected, 'foo@foo.com');
+    t.is(results[0].rejectedErrors[0].responseCode, 550);
+  }
+
+  // Wait to ensure no bounce notification is queued
+  const err = await t.throwsAsync(
+    pWaitFor(
+      async () => {
+        const exists = await Emails.exists({
+          subject: 'Delivery Status Notification (Failure)',
+          'envelope.from': `mailer-daemon@${domain.name}`,
+          'envelope.to': `${alias.name}@${domain.name}`
+        });
+        return Boolean(exists);
+      },
+      { timeout: ms('5s') }
+    )
+  );
+  t.is(err.name, 'TimeoutError');
+
+  await server.close();
+  await smtp.close();
+});
+
+test('DSN success notifications with NOTIFY parameters', async (t) => {
+  const smtp = new SMTP({ client: t.context.client }, false);
+  if (!getPort) await pWaitFor(() => Boolean(getPort), { timeout: ms('30s') });
+  const smtpPort = await getPort();
+  await smtp.listen(smtpPort);
+
+  const port = await getPort();
+  const { resolver } = smtp;
+
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      has_smtp: true,
+      resolver
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  const pass = await alias.createToken();
+  t.true(typeof pass === 'string' && pass.length === 24);
+  await alias.save();
+
+  const isValid = await isValidPassword(alias.tokens, pass);
+
+  t.true(isValid);
+
+  const map = new Map();
+
+  // spoof foo.com mx records
+  map.set(
+    'mx:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'MX',
+      [{ exchange: IP_ADDRESS, priority: 0 }],
+      true
+    )
+  );
+
+  // spoof domain TXT record for verification
+  map.set(
+    'txt:foo.com',
+    resolver.spoofPacket(
+      'foo.com',
+      'TXT',
+      [
+        // Set custom port
+        `forward-email-port=${port.toString()}`,
+        // Create catch-all alias (active)
+        `forward-email=test@${IP_ADDRESS}`
+      ],
+      true
+    )
+  );
+
+  map.set(
+    `txt:${domain.name}`,
+    resolver.spoofPacket(
+      domain.name,
+      'TXT',
+      [`${config.paidPrefix}${domain.verification_record}`],
+      true
+    )
+  );
+
+  // dkim
+  map.set(
+    `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
+      'TXT',
+      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
+      true
+    )
+  );
+
+  // spf
+  map.set(
+    `txt:${env.WEB_HOST}`,
+    resolver.spoofPacket(
+      `${env.WEB_HOST}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // cname
+  map.set(
+    `cname:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'CNAME',
+      [env.WEB_HOST],
+      true
+    )
+  );
+
+  // cname -> txt
+  map.set(
+    `txt:${domain.return_path}.${domain.name}`,
+    resolver.spoofPacket(
+      `${domain.return_path}.${domain.name}`,
+      'TXT',
+      [`v=spf1 ip4:${IP_ADDRESS} -all`],
+      true
+    )
+  );
+
+  // dmarc
+  map.set(
+    `txt:_dmarc.${domain.name}`,
+    resolver.spoofPacket(
+      `_dmarc.${domain.name}`,
+      'TXT',
+      [
+        // TODO: consume dmarc reports and parse dmarc-$domain
+        `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
+      ],
+      true
+    )
+  );
+
+  await resolver.options.cache.mset(map);
+
+  // Mock SMTP server that rejects messages
+  const server = new SMTPServer({
+    disabledCommands: ['AUTH'],
+    onRcptTo(address, session, fn) {
+      fn();
+    },
+    onMailFrom(address, session, fn) {
+      fn();
+    },
+    onData(stream, session, fn) {
+      const writer = new Writable({
+        write(chunk, encoding, fn) {
+          fn();
+        }
+      });
+      stream.pipe(writer);
+      stream.on('end', () => {
+        fn(); // 250 success
+      });
+    },
+    logger,
+    secure: false
+  });
+
+  server.listen(port);
+
+  const mx = await asyncMxConnect({
+    target: IP_ADDRESS,
+    port: smtp.server.address().port,
+    dnsOptions: {
+      // <https://github.com/zone-eu/mx-connect/pull/4>
+      resolve: util.callbackify(resolver.resolve.bind(resolver))
+    }
+  });
+
+  const transporter = nodemailer.createTransport({
+    logger,
+    debug: true,
+    host: mx.host,
+    port: mx.port,
+    connection: mx.socket,
+    // ignoreTLS: true,
+    // set `secure` to `true` for port 465 otherwise `false` for port 587, 2587, 25, and 2525
+    secure: false,
+    tls: {
+      rejectUnauthorized: false
+    },
+    auth: {
+      user: `${alias.name}@${domain.name}`,
+      pass
+    }
+  });
+
+  // Create test message with DSN parameters
+  const messageId = `${randomstring({
+    characters: 'abcdefghijklmnopqrstuvwxyz0123456789',
+    length: 10
+  })}@${domain.name}`;
+  await transporter.sendMail({
+    envelope: {
+      from: `${alias.name}@${domain.name}`,
+      to: 'foo@foo.com',
+      dsn: {
+        id: 'TEST-ENVELOPE-IDENTIFIER',
+        return: 'full',
+        notify: ['success', 'failure', 'delay'],
+        recipient: 'foo@foo.com'
+      }
+    },
+    raw: `
+Message-ID: <${messageId}>
+To: foo@foo.com
+From: ${alias.name}@${domain.name}
+Subject: Test DSN Message
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+
+Test`.trim()
+  });
+
+  {
+    const email = await Emails.findOne({
+      messageId
+    })
+      .lean()
+      .exec();
+    t.true(email !== null);
+
+    const message = await Emails.getMessage(email.message, true);
+    t.true(message.includes(`Message-ID: <${messageId}>`));
+    t.true(message.includes(`From: ${alias.name}@${domain.name}`));
+
+    //
+    // process the email
+    //
+    const results = await processEmail({
+      email,
+      port,
+      resolver,
+      client
+    });
+    // results = [
+    //   {
+    //     accepted: [],
+    //     rejected: 'foo@foo.com',
+    //     rejectedErrors: [
+    //       Object { … },
+    //     ],
+    //   },
+    // ]
+    t.true(results[0].accepted.length === 1);
+  }
+
+  // Wait to ensure bounce notification is queued
+  await pWaitFor(
+    async () => {
+      const exists = await Emails.exists({
+        subject: 'Delivery Status Notification (Success)'
+      });
+      return Boolean(exists);
+    },
+    { timeout: ms('5s') }
+  );
+
+  await server.close();
+  await smtp.close();
 });

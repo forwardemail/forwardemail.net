@@ -4,27 +4,18 @@
  */
 
 const os = require('node:os');
-const { isIP } = require('node:net');
 
 const MimeNode = require('nodemailer/lib/mime-node');
 const ip = require('ip');
-const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
-const { convert } = require('html-to-text');
 
-const _ = require('#helpers/lodash');
 const config = require('#config');
-const getDiagnosticCode = require('#helpers/get-diagnostic-code');
-const getErrorCode = require('#helpers/get-error-code');
 const getRawHeaders = require('#helpers/get-raw-headers');
 
 const HOSTNAME = os.hostname();
 const IP_ADDRESS = ip.address();
 
-async function createBounce(email, error, message) {
-  const code = getErrorCode(error);
-  const isDelayed = code < 500;
-
+async function createDSNSuccess(email, recipient, deliveryTime) {
   const rootNode = new MimeNode(
     'multipart/report; report-type=delivery-status'
   );
@@ -37,30 +28,13 @@ async function createBounce(email, error, message) {
   rootNode.setHeader('To', email.envelope.to);
   rootNode.setHeader('Precedence', 'auto_reply');
   rootNode.setHeader('Auto-Submitted', 'auto-replied');
-  rootNode.setHeader('X-Failed-Recipients', error.recipient);
+  rootNode.setHeader('X-Successful-Recipients', recipient);
   rootNode.setHeader('X-Auto-Response-Suppress', 'All');
 
   // Add DSN-specific headers
   if (envelopeId) rootNode.setHeader('X-DSN-Envelope-ID', envelopeId);
 
-  if (isDelayed) {
-    if (_.isDate(error.date) || _.isDate(new Date(error.date)))
-      rootNode.setHeader(
-        'Last-Attempt-Date',
-        new Date(error.date).toUTCString().replace(/GMT/, '+0000')
-      );
-    rootNode.setHeader(
-      'Will-Retry-Until',
-      new Date(new Date(error.date).getTime() + config.maxRetryDuration)
-        .toUTCString()
-        .replace(/GMT/, '+0000')
-    );
-  }
-
-  rootNode.setHeader(
-    'Subject',
-    `Delivery Status Notification (${isDelayed ? 'Delayed' : 'Failure'})`
-  );
+  rootNode.setHeader('Subject', 'Delivery Status Notification (Success)');
 
   if (email.messageId) {
     rootNode.setHeader('In-Reply-To', `<${email.messageId}>`);
@@ -68,59 +42,27 @@ async function createBounce(email, error, message) {
     rootNode.setHeader('X-Original-Message-ID', `<${email.messageId}>`);
   }
 
-  const response = convert(error.response || error.message, {
-    wordwrap: false,
-    selectors: [
-      { selector: 'img', format: 'skip' },
-      { selector: 'ul', options: { itemPrefix: ' ' } },
-      {
-        selector: 'a',
-        options: { baseUrl: config.urls.web, linkBrackets: false }
-      }
-    ]
-  });
-
   rootNode
     .createChild('text/plain; charset=utf-8')
     .setHeader('Content-Description', 'Notification')
     .setContent(
       [
-        `Your message ${
-          isDelayed
-            ? 'is delayed and will be retried later'
-            : "wasn't delivered"
-        } to ${error.recipient} due to an error.`,
+        `Your message was successfully delivered to ${recipient}.`,
         '',
-        'The response was:',
-        '',
-        response
+        `Delivery completed at: ${deliveryTime
+          .toUTCString()
+          .replace(/GMT/, '+0000')}`
       ].join('\n')
     );
 
-  // TODO: support HTML down the road
-  // if (options.template && options.template.html)
-  //   rootNode
-  //     .createChild('text/html; charset=utf-8')
-  //     .setHeader('Content-Description', 'Notification')
-  //     .setContent(
-  //       options.template.html
-  //         .replace(new RE2(/BOUNCE_ADDRESS/g), options.bounce.address)
-  //         .replace(
-  //           new RE2(/BOUNCE_ERROR_MESSAGE/g),
-  //           options.bounce.err.message
-  //           // options.bounce.err.response || options.bounce.err.message
-  //         )
-  //     );
-
   const arr = [
-    `Arrival-Date: ${new Date(email.date)
+    `Arrival-Date: ${new Date(deliveryTime)
       .toUTCString()
       .replace(/GMT/, '+0000')}`,
-    `Final-Recipient: rfc822; ${error.recipient}`,
-    `Action: ${isDelayed ? 'delayed' : 'failed'}`,
-    // TODO: rewrite this with Enhanced Status Codes
-    `Status: ${isDelayed ? '4.0.0' : '5.0.0'}`,
-    `Diagnostic-Code: smtp; ${getDiagnosticCode(error)}`
+    `Final-Recipient: rfc822; ${recipient}`,
+    `Action: delivered`,
+    `Status: 2.0.0`,
+    `Last-Attempt-Date: ${deliveryTime.toUTCString().replace(/GMT/, '+0000')}`
   ];
 
   // Add DSN-specific fields if available
@@ -131,15 +73,12 @@ async function createBounce(email, error, message) {
     arr.push(`Original-Recipient: ${email.dsn.recipient}`);
   } else if (email.envelope?.rcptTo) {
     const recipient = email.envelope.rcptTo.find(
-      (rcpt) => rcpt.address === error.recipient
+      (rcpt) => rcpt.address === recipient
     );
     if (recipient?.dsn?.orcpt) {
       arr.push(`Original-Recipient: ${recipient.dsn.orcpt}`);
     }
   }
-
-  if (isFQDN(error.target) || isIP(error.target))
-    arr.push(`Remote-MTA: dns; ${error.target}`);
 
   arr.push(
     `Reporting-MTA: dns; ${HOSTNAME}`,
@@ -166,14 +105,14 @@ async function createBounce(email, error, message) {
 
   // Respect RET parameter
   if (typeof email.dsn === 'object' && email.dsn.return === 'full') {
-    rootNode.createChild('message/rfc822').setContent(message);
+    rootNode.createChild('message/rfc822').setContent(email.raw || '');
   } else {
     // Default to headers only when RET=HDRS or not specified
-    const headers = await getRawHeaders(message);
+    const headers = await getRawHeaders(email.raw || '');
     rootNode.createChild('text/rfc822-headers').setContent(headers);
   }
 
   return rootNode.createReadStream();
 }
 
-module.exports = createBounce;
+module.exports = createDSNSuccess;

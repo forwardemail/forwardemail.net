@@ -68,6 +68,8 @@ module.exports = async (data) => {
     Object.assign(data.locals, emailLocals);
     if (data?.message?.subject)
       data.message.subject = decode(striptags(data.message.subject));
+    // TODO: use MailComposer so we can then add to envelope
+    // TODO: add `envelope.dsn = { notify: 'never' }`
     const info = await email.send(data);
     return { info };
   } catch (err) {

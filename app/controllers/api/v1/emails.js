@@ -107,7 +107,7 @@ async function create(ctx) {
 
     // queue the email
     const email = await Emails.queue(
-      { message, user: ctx.state.user },
+      { message, user: ctx.state.user, dsn: message?.dsn },
       ctx.locale
     );
 

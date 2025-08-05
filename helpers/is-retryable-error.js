@@ -25,6 +25,8 @@ const HTTP_RETRY_ERROR_CODES = new Set([
   'EHOSTUNREACH',
   'EAI_AGAIN',
   'EADDRNOTAVAIL',
+  'ENETDOWN',
+  'ENETRESET',
 
   // undici related errors
   // <https://github.com/nodejs/undici/blob/main/docs/api/Errors.md>
@@ -58,6 +60,7 @@ const DNS_RETRY_CODES = new Set([
   'EBADQUERY',
   'EBADRESP',
   'EBADSTR',
+  'ECANCELED',
   'ECANCELLED',
   'ECONNREFUSED',
   'EDESTRUCTION',
@@ -88,6 +91,19 @@ const MAIL_RETRY_ERROR_CODES = new Set([
 function isRetryableError(err) {
   if (isTimeoutError(err)) return true;
   if (isSocketError(err)) return true;
+
+  // Error {
+  //   address: '192.168.1.16',
+  //   category: 'network',
+  //   code: 'ECONNRESET',
+  //   errno: -54,
+  //   port: 30972,
+  //   response: 'Network error: Network error when connecting to MX server 192.168.1.16[192.168.1.16] for 192.168.1.16: Connection reset by peer',
+  //   syscall: 'connect',
+  //   temporary: true,
+  //   message: 'Network error when connecting to MX server 192.168.1.16[192.168.1.16] for 192.168.1.16: Connection reset by peer',
+  // }
+  if (err?.temporary === true) return true;
 
   if (
     typeof err.code === 'string' &&

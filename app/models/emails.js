@@ -218,6 +218,65 @@ const Emails = new mongoose.Schema(
       // (combined To, Cc, Bcc - and then Bcc is removed from headers)
       to: mongoose.Schema.Types.Mixed
     },
+
+    //
+    // Delivery Status Notificatinos
+    //
+    // rcptTo = [
+    //   {
+    //     "address": "foo@foo.com",
+    //     "args": {
+    //       "NOTIFY": "SUCCESS,FAILURE,DELAY",
+    //       "ORCPT": "rfc822;foo@foo.com"
+    //     },
+    //     "dsn": {
+    //       "notify": [
+    //         "SUCCESS",
+    //         "FAILURE",
+    //         "DELAY"
+    //       ],
+    //       "orcpt": "rfc822;foo@foo.com"
+    //     },
+    //     "name": ""
+    //   }
+    // ]
+    rcptTo: mongoose.Schema.Types.Mixed,
+    // session.envelope.dsn {
+    //   ret: 'FULL',
+    //   envid: 'TEST-ENVELOPE-IDENTIFIER'
+    // }
+    dsn: {
+      // MAIL FROM gets this mapped via `session.envelope.dsn.envid` (see above)
+      // (otherwise API just sets it using nodemailer-like DSN object)
+      id: String,
+      // MAIL FROM gets this mapped via `session.envelope.dsn.ret` (see above)
+      // (otherwise API just sets it using nodemailer-like DSN object)
+      return: {
+        type: String,
+        lowercase: true,
+        validate: (v) => !v || ['headers', 'full'].includes(v)
+      },
+      // specific NOTIFY property for emails added via API
+      // (since it doesn't provide envelope RCPT TO)
+      notify: mongoose.Schema.Types.Mixed, // String or Array
+      // specific ORCPT property for emails added via API
+      // (since it doesn't provide envelope RCPT TO)
+      //
+      // NOTE: we do not validate this and leave it up to the sender to configure this properly
+      //       (e.g. it must be `ORCPT=<address-type>;<address>`)
+      //       where `<address-type>` could be, but not limited to:
+      //       - rfc822
+      //       - x400
+      //       - fax
+      //       - ediint
+      //       - ms
+      //       - ddn
+      //       - uucp
+      //       - smtp
+      //
+      recipient: String
+    },
+
     // email to be sent (with date, message-id, etc headers already set)
     message: {
       type: mongoose.Schema.Types.Mixed,
@@ -294,6 +353,72 @@ Emails.index(
   { locked_at: 1 },
   { partialFilterExpression: { locked_at: { $exists: true } } }
 );
+
+// DSN
+Emails.pre('validate', function (next) {
+  if (this.dsn === undefined) return next();
+
+  if (!_.isObject(this.dsn))
+    throw Boom.badRequest('Property "dsn" must be a plain object');
+
+  // need to call Object.values here since it's a Mongoose object
+  // (we might be able to do `toObject` here actually)
+  if (_.isEmpty(_.compact(Object.values(this.dsn)))) return next();
+
+  // dsn.id (String)
+  if (this.dsn.id !== undefined && !isSANB(this.dsn.id))
+    throw Boom.badRequest('Property "dsn.id" must be a non-empty String');
+
+  // dsn.return (String "headers" or "full")
+  if (
+    this.dsn.return !== undefined &&
+    (typeof this.dsn.return !== 'string' ||
+      !['headers', 'full'].includes(this.dsn.return))
+  )
+    throw Boom.badRequest(
+      'Property "dsn.return" must be either "headers" or "full"'
+    );
+
+  //
+  // dsn.notify (String or Array, "never", "success", and/or "failure")
+  //            (cannot combine "never" in the Array with others)
+  //
+  if (
+    this.dsn.notify === 'string' &&
+    !['never', 'success', 'failure'].includes(this.dsn.notify)
+  ) {
+    throw Boom.badRequest(
+      'Property "dsn.notify" must be "never", "success", or "failure"'
+    );
+  } else if (_.isArray(this.dsn.notify)) {
+    this.dsn.notify = _.compact(_.uniq(this.dsn.notify));
+    if (this.dsn.notify.length === 0)
+      throw Boom.badRequest('Property "dsn.notify" must be a non-empty Array');
+    if (
+      this.dsn.notify.every((v) => !['never', 'success', 'failure'].includes(v))
+    )
+      throw Boom.badRequest(
+        'Property "dsn.notify" must only contain "never", "success", or "failure"'
+      );
+    if (this.dsn.notify.includes('never') && this.dsn.notify.length > 1)
+      throw Boom.badRequest(
+        'Property "dsn.notify" can only contain "never" if "never" is set, no other values are permitted'
+      );
+  } else if (this.dsn.notify !== undefined) {
+    throw Boom.badRequest('Property "dsn.notify" must be a String or Array');
+  }
+
+  //
+  // dsn.recipient (ORCPT)
+  //
+  if (
+    this.dsn.recipient !== undefined &&
+    typeof this.dsn.recipient !== 'string'
+  )
+    throw Boom.badRequest('Property "dsn.recipient" must be a String');
+
+  next();
+});
 
 //
 // remove "<" and ">" from `messageId` if present
@@ -1099,6 +1224,8 @@ Emails.statics.getMessage = async function (obj, returnString = false) {
 // options.user (from `ctx.state.user` or `alias.user`)
 // options.date
 // options.catchall (boolean, true, if using domain-wide generated catch-all password)
+// options.dsn (for DSN from API)
+// options.rcptTo (for DSN from SMTP)
 
 Emails.statics.queue = async function (
   options = {},
@@ -1210,17 +1337,35 @@ Emails.statics.queue = async function (
     userId = options.user._id.toString();
   else if (typeof options?.user === 'object') userId = options.user.toString();
 
-  const domain =
-    options.domain ||
-    (userId
-      ? await Domains.findOne({
-          name: domainName,
-          'members.user': new mongoose.Types.ObjectId(userId)
-        }).populate(
-          'members.user',
-          `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
-        )
-      : null);
+  let domain;
+
+  // TODO: this is a double lookup on the domain
+  //       (but we keep it here because we rely on `populate`)
+  if (_.isObject(options.domain)) {
+    if (mongoose.isObjectIdOrHexString(options.domain)) {
+      domain = await Domains.findOne({
+        _id: options.domain
+      }).populate(
+        'members.user',
+        `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+      );
+    } else if (options.domain._id) {
+      domain = await Domains.findOne({
+        _id: options.domain._id
+      }).populate(
+        'members.user',
+        `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+      );
+    }
+  } else if (userId) {
+    domain = await Domains.findOne({
+      name: domainName,
+      'members.user': new mongoose.Types.ObjectId(userId)
+    }).populate(
+      'members.user',
+      `id plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID}`
+    );
+  }
 
   if (!domain)
     throw Boom.badRequest(i18n.translateError('DOMAIN_DOES_NOT_EXIST', locale));
@@ -1282,24 +1427,37 @@ Emails.statics.queue = async function (
   // ensure the alias exists (if it was not a catch-all)
   //
   let alias;
+
   if (!options.catchall) {
-    alias =
-      options.alias ||
-      (userId
-        ? await Aliases.findOne(
-            member.group === 'admin'
-              ? {
-                  domain: domain._id,
-                  name: aliasName
-                }
-              : {
-                  // users that are not admins must be an owner of the alias to send as it
-                  user: new mongoose.Types.ObjectId(userId),
-                  domain: domain._id,
-                  name: aliasName
-                }
-          ).populate('user', `id ${config.userFields.isBanned}`)
-        : null);
+    // TODO: this is a double lookup on the alias
+    //       (but we keep it here because we rely on `populate`)
+    if (_.isObject(options.alias)) {
+      if (mongoose.isObjectIdOrHexString(options.alias)) {
+        alias = await Aliases.findById(options.alias).populate(
+          'user',
+          `id ${config.userFields.isBanned}`
+        );
+      } else if (options.alias._id) {
+        alias = await Aliases.findById(options.alias._id).populate(
+          'user',
+          `id ${config.userFields.isBanned}`
+        );
+      }
+    } else if (userId) {
+      alias = await Aliases.findOne(
+        member.group === 'admin'
+          ? {
+              domain: domain._id,
+              name: aliasName
+            }
+          : {
+              // users that are not admins must be an owner of the alias to send as it
+              user: new mongoose.Types.ObjectId(userId),
+              domain: domain._id,
+              name: aliasName
+            }
+      ).populate('user', `id ${config.userFields.isBanned}`);
+    }
   }
 
   if (alias) {
@@ -1516,7 +1674,9 @@ Emails.statics.queue = async function (
     date,
     subject,
     status,
-    is_bounce: isBounce
+    is_bounce: isBounce,
+    dsn: options?.dsn,
+    rcptTo: options?.rcptTo
   });
 
   return email;

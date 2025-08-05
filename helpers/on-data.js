@@ -141,10 +141,10 @@ async function onData(stream, _session, fn) {
 
     // rudimentary debugging for silent banned users
     // (in case someone ever reaches out that a message not delivered)
-    if (rcptTo.length !== session.envelope.rcptTo.length) {
+    if (rcptTo.length !== session.envelope.rcptTo.length)
       session.hasSilentBanned = true;
-      session.originalRcptTo = [...session.envelope.rcptTo];
-    }
+
+    session.originalRcptTo = [...session.envelope.rcptTo];
 
     //
     // re-assign RCPT TO with values that were not silent banned and also with SRS rewritten addresses

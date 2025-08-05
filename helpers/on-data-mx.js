@@ -27,7 +27,6 @@ const URLParse = require('url-parse');
 const arrayJoinConjunction = require('array-join-conjunction');
 const bytes = require('@forwardemail/bytes');
 const escapeStringRegexp = require('escape-string-regexp');
-const getStream = require('get-stream');
 const ip = require('ip');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
@@ -54,7 +53,6 @@ const SMTPError = require('#helpers/smtp-error');
 const checkSRS = require('#helpers/check-srs');
 const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
-const createBounce = require('#helpers/create-bounce');
 const createSession = require('#helpers/create-session');
 const emailHelper = require('#helpers/email');
 const env = require('#config/env');
@@ -307,156 +305,6 @@ function createVacationResponder(vacationResponder, headers, session) {
   rootNode.setContent(vacationResponder.message);
 
   return rootNode.createReadStream();
-}
-
-async function sendBounce(bounce, headers, session, body) {
-  try {
-    // bounces are unique by fingerprint, address, and error code
-    const key = getFingerprintKey(
-      session,
-      encoder.pack([bounce.address, getErrorCode(bounce.err)])
-    );
-
-    // prevent sending a duplicate bounce to this address
-    const count = await this.client.incrby(key, 0);
-    if (count > 0) return;
-
-    const unsealed = Buffer.concat([headers.build(), body]);
-    const sealHeaders = await sealMessage(unsealed, {
-      ...config.signatureData,
-      authResults: session.arc.authResults,
-      cv: session.arc.status.result
-    });
-
-    const stream = createBounce(
-      {
-        envelope: {
-          from: `mailer-daemon@${env.WEB_HOST}`,
-          to: checkSRS(session.envelope.mailFrom.address)
-        },
-        messageId: headers.getFirst('message-id'),
-        date: session.arrivalDate
-      },
-      bounce.err,
-      Buffer.concat([sealHeaders, unsealed])
-    );
-
-    const raw = await getStream.buffer(stream);
-    try {
-      // NOTE: sendEmail function will handle DKIM signing and PGP encryption for bounces
-      const info = await sendEmail({
-        session,
-        cache: this.cache,
-        target: parseHostFromDomainOrAddress(
-          checkSRS(session.envelope.mailFrom.address)
-        ),
-        envelope: {
-          from: `mailer-daemon@${env.WEB_HOST}`,
-          to: checkSRS(session.envelope.mailFrom.address)
-        },
-        raw,
-        resolver: this.resolver,
-        client: this.client
-      });
-
-      logger.info('sent email', { info, session });
-
-      // store that we sent this so we don't again
-      this.client
-        .pipeline()
-        .incr(key)
-        .pexpire(key, config.fingerprintTTL)
-        .exec()
-        .then()
-        .catch((err) => logger.fatal(err));
-
-      // accepted counter
-      if (info.accepted && info.accepted.length > 0) {
-        this.client
-          .incrby(
-            `mail_accepted:${session.arrivalDateFormatted}`,
-            info.accepted.length
-          )
-          .then()
-          .catch((err) => logger.fatal(err));
-        // store a counter for the day of how many bounces were sent
-        this.client
-          .incrby(
-            `bounce_sent:${session.arrivalDateFormatted}`,
-            info.accepted.length
-          )
-          .then()
-          .catch((err) => logger.fatal(err));
-      }
-
-      if (info.rejectedErrors && info.rejectedErrors.length > 0) {
-        for (const err of info.rejectedErrors) {
-          logger.warn(err, { session });
-        }
-
-        // rejected counter
-        this.client
-          .incrby(
-            `mail_rejected:${session.arrivalDateFormatted}`,
-            info.rejectedErrors.length
-          )
-          .then()
-          .catch((err) => logger.fatal(err));
-      }
-    } catch (err) {
-      logger.fatal(err, { session });
-      // rejected counter
-      this.client
-        .incr(`mail_rejected:${session.arrivalDateFormatted}`)
-        .then()
-        .catch((err) => logger.fatal(err));
-    }
-  } catch (err_) {
-    logger.fatal(err_, { session });
-  }
-}
-
-async function processBounces(headers, bounces, session, body) {
-  //
-  // instead of returning an error if it bounced
-  // which would in turn cause the message to get retried
-  // we should instead send a bounce email to the user
-  //
-  // <https://github.com/nodemailer/smtp-server/issues/129>
-  //
-  // and we also need to make bounces unique by address here
-  // (will basically pick the first that was pushed to the list)
-  //
-  const uniqueBounces = _.uniqBy(bounces, 'address').filter((bounce) => {
-    // extra safeguards to prevent exception and let us know of any weirdness
-    if (!_.isObject(bounce)) return false;
-
-    if (!_.isError(bounce.err)) return false;
-
-    // < 500 error codes should not send a bounce error
-    return getErrorCode(bounce.err) >= 500;
-  });
-
-  // if all the bounces were retries, defer, slowdown, etc then return early
-  if (uniqueBounces.length === 0) return;
-
-  if (!shouldSendVacationOrBounce(headers, session)) {
-    this.client
-      .incrby(
-        `bounce_prevented_restricted:${session.arrivalDateFormatted}`,
-        bounces.length
-      )
-      .then()
-      .catch((err) => logger.fatal(err));
-    return;
-  }
-
-  // iterate over each unique bounces and send if we already haven't
-  // (note that we keep track of bounces we sent via fingerprint in order to prevent dups on SMTP retries)
-  //
-  await pMapSeries(uniqueBounces, (bounce) =>
-    sendBounce.call(this, bounce, headers, session, body)
-  );
 }
 
 function getFingerprintKey(session, value) {
@@ -1454,7 +1302,7 @@ async function forward(recipient, headers, session, body) {
                 const locals = { locale };
                 if (user) locals.user = user;
 
-                // TODO: use Emails.queue or something
+                // TODO: use Emails.queue
                 await emailHelper({
                   template: 'self-test',
                   message: { to: normal },
@@ -1910,7 +1758,7 @@ async function onDataMX(session, headers, body) {
         const cache = await this.client.get(key);
         if (cache) return;
         await this.client.set(key, true, 'PX', ms('30d'));
-        // TODO: use Emails.queue or something
+        // TODO: use Emails.queue
         await emailHelper({
           template: 'phishing',
           message: { to },
@@ -1968,15 +1816,6 @@ async function onDataMX(session, headers, body) {
 
   // preserve original bounce array
   err.bounces = bounces;
-
-  // if lowest error code was >= 500 then don't send a bounce email notification
-  if (err.responseCode >= 500) throw err;
-
-  // process (and then send) bounces if any in the background
-  processBounces
-    .call(this, headers, bounces, session, body)
-    .then()
-    .catch((err) => logger.fatal(err));
 
   // throw the error so it bubbles up to connection
   throw err;

@@ -18,6 +18,8 @@ const EMOJI_REGEX =
 
 const libmime = new Libmime();
 
+const DSN_FIELDS = ['id', 'return', 'notify', 'recipient'];
+
 function getNodemailerMessageFromRequest(ctx) {
   // <https://nodemailer.com/message/>
   const message = _.pick(ctx.request.body, [
@@ -60,8 +62,22 @@ function getNodemailerMessageFromRequest(ctx) {
     // NOTE: "folder" is special and used only for /v1/messages routes
     ...(ctx.pathWithoutLocale.startsWith('/v1/messages')
       ? ['folder', 'envelope']
-      : [])
+      : []),
+
+    'dsn'
   ]);
+
+  // dsn: {
+  //   id: "msg-123",
+  //   return: "headers",
+  //   notify: "success",
+  //   recipient: "sender@example.com",
+  // }
+  if (message.dsn !== undefined && !_.isPlainObject(message.dsn))
+    throw Boom.badRequest('Nodemailer option "dsn" must be an Object');
+
+  // <https://nodemailer.com/smtp/dsn#dsn-object-fields>
+  if (_.isObject(message.dsn)) message.dsn = _.pick(message.dsn, DSN_FIELDS);
 
   //
   // users may forget to programmatically encode their emoji
@@ -99,9 +115,9 @@ function getNodemailerMessageFromRequest(ctx) {
       if (message.raw.indexOf('\n\n')) {
         index = message.raw.indexOf('\n\n');
         delimiter = '\n\n';
-      } else if (message.raw.indexOf('\r\n')) {
-        index = message.raw.indexOf('\r\n');
-        delimiter = '\r\n';
+      } else if (message.raw.indexOf('\r\n\r\n')) {
+        index = message.raw.indexOf('\r\n\r\n');
+        delimiter = '\r\n\r\n';
       }
 
       if (index && delimiter) {

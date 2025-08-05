@@ -422,6 +422,10 @@ Test`.trim()
     );
 
     t.regex(err.message, /Failed to resolve any IP addresses/);
+    t.is(
+      err.message,
+      `Message failed: 421 4.4.2 Failed to resolve any IP addresses for the Mail Exchange (MX) server associated with "beep.com"`
+    );
     t.is(err.responseCode, 421);
   }
 

@@ -5,6 +5,9 @@
 
 function isSocketError(err) {
   if (typeof err !== 'object') return false;
+  // socket is not connected
+  if (err?.code === 'ENOTCONN') return true;
+  if (err?.code === 'ENOTSOCK') return true;
   for (const key of ['message', 'response']) {
     if (typeof err[key] !== 'string') continue;
     if (

@@ -177,7 +177,6 @@ window.addEventListener(
     // const hljs = require('highlight.js');
     // hljs.initHighlightingOnLoad();
 
-
     // flash and toast messaging with sweetalert2
     flash();
 

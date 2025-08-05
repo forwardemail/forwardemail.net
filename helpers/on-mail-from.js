@@ -47,6 +47,10 @@ function onMailFrom(address, session, fn) {
         fn(refineAndLogError(err, session, false, this))
       );
     }
+
+    // TODO: if MAIL FROM is bogus (no MX nor A then reject)
+    // NOTE: we did not implement this yet since there are
+    //       so many misconfigured (but legitimate) mail servers out there
   }
 
   setImmediate(fn);

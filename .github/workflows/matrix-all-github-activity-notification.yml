@@ -37,7 +37,7 @@ on:
   #  types: [started]
 
   # Forks
-  fork:
+  #fork:
 
   # Discussions
   discussion:

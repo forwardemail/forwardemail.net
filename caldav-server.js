@@ -1052,9 +1052,7 @@ class CalDAV extends API {
                 alias,
                 domain,
                 user: alias ? alias.user : undefined,
-                date: new Date(),
-                catchall: false,
-                isPending: false
+                date: new Date()
               });
             } catch (err) {
               ctx.logger.fatal(err);
@@ -1164,9 +1162,7 @@ class CalDAV extends API {
                   alias,
                   domain,
                   user: alias ? alias.user : undefined,
-                  date: new Date(),
-                  catchall: false,
-                  isPending: false
+                  date: new Date()
                 });
               } catch (err) {
                 ctx.logger.fatal(err);
@@ -1187,9 +1183,7 @@ class CalDAV extends API {
               alias,
               domain,
               user: alias ? alias.user : undefined,
-              date: new Date(),
-              catchall: false,
-              isPending: false
+              date: new Date()
             });
           }
         }
@@ -2139,9 +2133,7 @@ class CalDAV extends API {
         alias,
         domain,
         user: alias ? alias.user : undefined,
-        date: new Date(),
-        catchall: false,
-        isPending: false
+        date: new Date()
       });
     }
 

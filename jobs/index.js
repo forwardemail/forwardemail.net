@@ -250,23 +250,23 @@ let jobs = [
   // check alias abuse
   {
     name: 'check-alias-recipient-abuse',
-    interval: '1h',
+    interval: '1d',
     timeout: 0
   }
 ];
 
 if (process.env.NODE_ENV === 'production') {
   jobs.push(
-    {
-      name: 'translate-phrases',
-      interval: '1h',
-      timeout: 0
-    },
-    {
-      name: 'translate-markdown',
-      interval: '30m',
-      timeout: 0
-    },
+    // {
+    //   name: 'translate-phrases',
+    //   interval: '1h',
+    //   timeout: 0
+    // },
+    // {
+    //   name: 'translate-markdown',
+    //   interval: '30m',
+    //   timeout: 0
+    // },
     {
       name: 'ubuntu-sync-memberships',
       interval: '5m',

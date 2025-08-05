@@ -81,6 +81,8 @@ function syncStripePaymentIntent(user) {
       logger.info(`charge ${stripeCharge.id}`, { charge: stripeCharge });
 
       let amountRefunded;
+      let fee;
+      let exchangeRate;
       let currencyAmountRefunded;
 
       let { amount } = paymentIntent;
@@ -102,21 +104,31 @@ function syncStripePaymentIntent(user) {
 
         const [stripeChargeRefund] = stripeCharge.refunds.data;
 
-        if (!isSANB(stripeChargeRefund.balance_transaction))
+        if (
+          !isSANB(stripeChargeRefund.balance_transaction) &&
+          stripeChargeRefund.balance_transaction !== null
+        )
           throw new Error(
             `Payment intent ID ${payment?.stripe_payment_intent_id} has currency of ${payment?.currency} without "balance_transaction" ID in charge refund object retrieved`
           );
 
-        const balanceTransaction = await stripe.balanceTransactions.retrieve(
-          stripeChargeRefund.balance_transaction
-        );
-
-        if (!balanceTransaction)
-          throw new Error(
-            `Payment intent ID ${payment?.stripe_payment_intent_id} is missing balance transaction for refund`
+        //
+        // NOTE: balance transaction is usually null when `stripeChargeRefund.reason = "fraudulent"`
+        //
+        if (stripeChargeRefund.balance_transaction === null) {
+          currencyAmountRefunded = Math.abs(stripeChargeRefund.amount);
+        } else {
+          const balanceTransaction = await stripe.balanceTransactions.retrieve(
+            stripeChargeRefund.balance_transaction
           );
 
-        currencyAmountRefunded = Math.abs(balanceTransaction.amount);
+          if (!balanceTransaction)
+            throw new Error(
+              `Payment intent ID ${payment?.stripe_payment_intent_id} is missing balance transaction for refund`
+            );
+
+          currencyAmountRefunded = Math.abs(balanceTransaction.amount);
+        }
       }
 
       const hasInvoice = isSANB(paymentIntent.invoice);
@@ -213,7 +225,10 @@ function syncStripePaymentIntent(user) {
         [payment] = payments;
       }
 
-      if (!isSANB(stripeCharge.balance_transaction))
+      if (
+        !isSANB(stripeCharge.balance_transaction) &&
+        stripeCharge.balance_transaction !== null
+      )
         throw new Error(
           `Payment intent ID ${payment.stripe_payment_intent_id} has currency of ${payment.currency} without "balance_transaction" ID in charge object retrieved`
         );
@@ -223,24 +238,31 @@ function syncStripePaymentIntent(user) {
       //       and to get the converted amount and exchange rate we need to
       //       use the balance transaction API to retrieve based off stripe
       //       charge's balance_transaction ID
-      //
-      const balanceTransaction = await stripe.balanceTransactions.retrieve(
-        stripeCharge.balance_transaction
-      );
 
-      if (!balanceTransaction)
-        throw new Error(
-          `Payment intent ID ${payment.stripe_payment_intent_id} is missing balance transaction`
+      //
+      // NOTE: balance transaction is usually null when `stripeChargeRefund.reason = "fraudulent"`
+      //
+      if (stripeCharge.balance_transaction === null) {
+        amount = stripeCharge.amount;
+      } else {
+        const balanceTransaction = await stripe.balanceTransactions.retrieve(
+          stripeCharge.balance_transaction
         );
 
-      // sync payment amount in USD
-      amount = balanceTransaction.amount;
+        if (!balanceTransaction)
+          throw new Error(
+            `Payment intent ID ${payment.stripe_payment_intent_id} is missing balance transaction`
+          );
 
-      // sync fee
-      const { fee } = balanceTransaction;
+        // sync payment amount in USD
+        amount = balanceTransaction.amount;
 
-      // sync exchange rate
-      const exchangeRate = balanceTransaction.exchange_rate;
+        // sync fee
+        fee = balanceTransaction.fee;
+
+        // sync exchange rate
+        exchangeRate = balanceTransaction.exchange_rate;
+      }
 
       // always sync currency
       const { currency } = stripeCharge;
@@ -443,6 +465,7 @@ function syncStripePaymentIntent(user) {
       err.q = q;
       err.user = user;
       err.stripeCharge = stripeCharge;
+      err.stripeChargeRefundsData = stripeCharge?.refunds?.data;
 
       logger.error(err);
       errorEmails.push({

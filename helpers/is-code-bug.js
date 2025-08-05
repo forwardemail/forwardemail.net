@@ -41,12 +41,73 @@ function isCodeBug(err) {
       // syscalls
       // <https://github.com/Alex-D/check-disk-space/issues/33>
       (typeof err.syscall === 'string' && SYSCALLS.has(err.syscall)) ||
-      err.code === 'EACCES' ||
+      // <https://nodejs.org/api/os.html#posix-error-constants>
       err.code === 'E2BIG' ||
-      err.code === 'ESRCH' ||
-      err.code === 'EPERM' ||
+      err.code === 'EACCES' ||
+      err.code === 'EAFNOSUPPORT' ||
+      err.code === 'EAGAIN' ||
+      err.code === 'EALREADY' ||
+      err.code === 'EBADF' ||
+      err.code === 'EBADMSG' ||
+      err.code === 'EBUSY' ||
+      err.code === 'ECHILD' ||
+      err.code === 'EDEADLK' ||
+      err.code === 'EDESTADDRREQ' ||
+      err.code === 'EDOM' ||
+      err.code === 'EDQUOT' ||
+      err.code === 'EEXIST' ||
+      err.code === 'EFAULT' ||
+      err.code === 'EFBIG' ||
+      err.code === 'EIDRM' ||
+      err.code === 'EILSEQ' ||
+      err.code === 'EINPROGRESS' ||
+      err.code === 'EINTR' ||
+      err.code === 'EINVAL' ||
+      err.code === 'EIO' ||
+      err.code === 'EISCONN' ||
+      err.code === 'EISDIR' ||
+      err.code === 'ELOOP' ||
       err.code === 'EMFILE' ||
+      err.code === 'EMLINK' ||
+      err.code === 'EMSGSIZE' ||
+      err.code === 'EMULTIHOP' ||
+      err.code === 'ENAMETOOLONG' ||
+      err.code === 'ENFILE' ||
+      err.code === 'ENOBUFS' ||
+      err.code === 'ENODATA' ||
+      err.code === 'ENODEV' ||
+      err.code === 'ENOENT' ||
+      err.code === 'ENOEXEC' ||
+      err.code === 'ENOLCK' ||
+      err.code === 'ENOLINK' ||
       err.code === 'ENOMEM' ||
+      err.code === 'ENOMSG' ||
+      err.code === 'ENOPROTOOPT' ||
+      err.code === 'ENOSPC' ||
+      err.code === 'ENOSR' ||
+      err.code === 'ENOSTR' ||
+      err.code === 'ENOSYS' ||
+      err.code === 'ENOTDIR' ||
+      err.code === 'ENOTEMPTY' ||
+      err.code === 'ENOTSUP' ||
+      err.code === 'ENOTTY' ||
+      err.code === 'ENXIO' ||
+      err.code === 'EOPNOTSUPP' ||
+      err.code === 'EOVERFLOW' ||
+      err.code === 'EPERM' ||
+      err.code === 'EPIPE' ||
+      err.code === 'EPROTO' ||
+      err.code === 'EPROTONOSUPPORT' ||
+      err.code === 'EPROTOTYPE' ||
+      err.code === 'ERANGE' ||
+      err.code === 'EROFS' ||
+      err.code === 'ESPIPE' ||
+      err.code === 'ESRCH' ||
+      err.code === 'ESTALE' ||
+      err.code === 'ETIME' ||
+      err.code === 'ETXTBSY' ||
+      err.code === 'EWOULDBLOCK' ||
+      err.code === 'EXDEV' ||
       // pug related
       err.babylonError ||
       err.component ||

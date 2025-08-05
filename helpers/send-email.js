@@ -3,12 +3,17 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
+
 const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
 const WKD = require('./wkd');
+const _ = require('./lodash');
+const createDSNSuccess = require('./create-dsn-success');
 const createSession = require('./create-session');
+const checkSRS = require('./check-srs');
 const encryptMessage = require('./encrypt-message');
 const getTransporter = require('./get-transporter');
 const isEmail = require('./is-email');
@@ -19,8 +24,9 @@ const isTLSError = require('./is-tls-error');
 const logger = require('./logger');
 const shouldThrow = require('./should-throw');
 const signMessage = require('./sign-message');
-const _ = require('#helpers/lodash');
+const shouldSendDSN = require('./should-send-dsn');
 
+const Emails = require('#models/emails');
 const env = require('#config/env');
 const config = require('#config');
 
@@ -115,6 +121,48 @@ async function getPGPResults({
   if (!pgp || !finalRaw) finalRaw = await signMessage(raw, domain);
 
   return { finalRaw, pgp };
+}
+
+// eslint-disable-next-line max-params
+async function sendSuccessDSN(email, domain, info, raw, envelope, session) {
+  // TODO: improve the accuracy of this date
+  const deliveryTime = new Date();
+
+  const dsnStream = await createDSNSuccess(
+    {
+      ...(typeof email.toObject === 'function' ? email.toObject() : email),
+      envelope: {
+        from: punycode.toASCII(`mailer-daemon@${domain.name}`),
+        to: email.envelope.from
+      },
+      raw
+    },
+    envelope.to,
+    deliveryTime
+  );
+
+  // Queue the DSN success notification
+  await Emails.queue({
+    message: {
+      envelope: {
+        from: punycode.toASCII(`mailer-daemon@${domain.name}`),
+        to: [checkSRS(envelope.from)]
+      },
+      raw: dsnStream
+    },
+    alias: email.alias,
+    domain: email.domain,
+    user: email.user,
+    is_bounce: true,
+    date: deliveryTime
+  });
+
+  logger.debug('DSN success notification queued', {
+    email,
+    info,
+    envelope,
+    session
+  });
 }
 
 async function sendEmail(
@@ -220,17 +268,25 @@ async function sendEmail(
   session.tls = tls;
 
   try {
-    // TODO: handle transporter cleanup
-    // TODO: handle mx socket close
     const info = await transporter.sendMail({
       // if auto response then MAIL FROM should be <> (empty)
       envelope:
         email && email.is_bounce
           ? {
               ...envelope,
-              from: ''
+              from: '',
+              // <https://github.com/nodemailer/nodemailer/blob/8033604aed6d107dd9d44f6ede4508de3393e504/lib/smtp-connection/index.js#L1107C1-L1119>
+              dsn: {
+                notify: 'never'
+              }
             }
-          : envelope,
+          : {
+              ...envelope,
+              // <https://github.com/nodemailer/nodemailer/blob/8033604aed6d107dd9d44f6ede4508de3393e504/lib/smtp-connection/index.js#L1107C1-L1119>
+              dsn: {
+                notify: 'never'
+              }
+            },
       raw: pgpResults.finalRaw,
       //
       //       > It is RECOMMENDED that the NOTIFY=NEVER
@@ -240,15 +296,26 @@ async function sendEmail(
       //       <https://www.nodemailer.com/smtp/dsn/>
       //       <https://github.com/nodemailer/nodemailer/issues/1708>
       //
-      ...(email && email.is_bounce
-        ? {
-            dsn: {
-              notify: 'never'
-            }
-          }
-        : {})
+      dsn: {
+        notify: 'never'
+      }
     });
     info.pgp = pgpResults.pgp;
+    if (
+      email &&
+      !email.is_bounce &&
+      shouldSendDSN(email, envelope.to, 'SUCCESS')
+    )
+      sendSuccessDSN(
+        email,
+        domain,
+        info,
+        pgpResults.finalRaw,
+        envelope,
+        session
+      )
+        .then()
+        .catch((err) => logger.fatal(err, { session }));
     return info;
   } catch (err) {
     // delete `err.cert` for security
@@ -334,8 +401,6 @@ async function sendEmail(
       session.opportunisticTLS = requireTLS;
       session.tls = tls;
 
-      // TODO: handle transporter cleanup
-      // TODO: handle mx socket close
       try {
         const info = await transporter.sendMail({
           // if auto response then MAIL FROM should be <> (empty)
@@ -343,9 +408,19 @@ async function sendEmail(
             email && email.is_bounce
               ? {
                   ...envelope,
-                  from: ''
+                  from: '',
+                  // <https://github.com/nodemailer/nodemailer/blob/8033604aed6d107dd9d44f6ede4508de3393e504/lib/smtp-connection/index.js#L1107C1-L1119>
+                  dsn: {
+                    notify: 'never'
+                  }
                 }
-              : envelope,
+              : {
+                  ...envelope,
+                  // <https://github.com/nodemailer/nodemailer/blob/8033604aed6d107dd9d44f6ede4508de3393e504/lib/smtp-connection/index.js#L1107C1-L1119>
+                  dsn: {
+                    notify: 'never'
+                  }
+                },
           raw: pgpResults.finalRaw,
           //
           //       > It is RECOMMENDED that the NOTIFY=NEVER
@@ -355,14 +430,25 @@ async function sendEmail(
           //       <https://www.nodemailer.com/smtp/dsn/>
           //       <https://github.com/nodemailer/nodemailer/issues/1708>
           //
-          ...(email && email.is_bounce
-            ? {
-                dsn: {
-                  notify: 'never'
-                }
-              }
-            : {})
+          dsn: {
+            notify: 'never'
+          }
         });
+        if (
+          email &&
+          !email.is_bounce &&
+          shouldSendDSN(email, envelope.to, 'SUCCESS')
+        )
+          sendSuccessDSN(
+            email,
+            domain,
+            info,
+            pgpResults.finalRaw,
+            envelope,
+            session
+          )
+            .then()
+            .catch((err) => logger.fatal(err, { session }));
         info.pgp = pgpResults.pgp;
         return info;
       } catch (err) {

@@ -18,7 +18,7 @@ const ms = require('ms');
 const pify = require('pify');
 const pWaitFor = require('p-wait-for');
 const test = require('ava');
-const { SMTPServer } = require('smtp-server');
+const { SMTPServer } = require('@forwardemail/smtp-server');
 
 // const _ = require('lodash');
 const utils = require('../utils');

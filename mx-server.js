@@ -8,7 +8,7 @@ const fs = require('node:fs');
 const bytes = require('@forwardemail/bytes');
 const ms = require('ms');
 const pify = require('pify');
-const { SMTPServer } = require('smtp-server');
+const { SMTPServer } = require('@forwardemail/smtp-server');
 
 const config = require('#config');
 const createMtaStsCache = require('#helpers/create-mta-sts-cache');
@@ -48,6 +48,8 @@ class MX {
       //
       // most of these options mirror the FE forwarding server options
       //
+      hideENHANCEDSTATUSCODES: false,
+      hideDSN: true, // explicitly disable DSN support on MX server (SMTP only)
       size: MAX_BYTES,
       onData: onData.bind(this),
       onConnect: onConnect.bind(this),

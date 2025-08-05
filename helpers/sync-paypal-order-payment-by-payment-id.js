@@ -34,8 +34,10 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
   //
   logger.info('fetching transaction id', { payment });
 
+  let response;
+
   try {
-    const response = await agent.get(
+    response = await agent.get(
       `/v2/checkout/orders/${payment.paypal_order_id}`
     );
 
@@ -143,6 +145,9 @@ async function syncPayPalOrderPaymentByPaymentId(id) {
     //
     await setTimeout(FIVE_SECONDS);
   } catch (err) {
+    err.response = response;
+    err.purchase_units = response?.body?.purchase_units;
+
     // if a paypal account is deleted/removed then history is erased
     if (err.status === 404) {
       logger.error(err, { payment });

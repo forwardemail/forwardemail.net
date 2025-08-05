@@ -28,6 +28,7 @@ const { isURL } = require('@forwardemail/validator');
 
 const pkg = require('../package.json');
 
+const _ = require('./lodash');
 const combineErrors = require('./combine-errors');
 const createBounce = require('./create-bounce');
 const createMtaStsCache = require('./create-mta-sts-cache');
@@ -46,7 +47,7 @@ const sendEmail = require('./send-email');
 const updateHeaders = require('./update-headers');
 const { encoder } = require('./encoder-decoder');
 const { encrypt, decrypt } = require('./encrypt-decrypt');
-const _ = require('#helpers/lodash');
+const shouldSendDSN = require('./should-send-dsn');
 
 const config = require('#config');
 const env = require('#config/env');
@@ -275,22 +276,24 @@ async function processEmail({ email, port = 25, resolver, client }) {
               const count = await client.incrby(key, 0);
               if (count > 0) return;
 
+              // check for DSN here
+              if (!shouldSendDSN(email, error.recipient, 'FAILURE')) return;
+
               const envelope = {
-                from: `mailer-daemon@${domain.name}`,
+                from: punycode.toASCII(`mailer-daemon@${domain.name}`),
                 to: email.envelope.from
               };
 
-              const stream = createBounce(
+              const stream = await createBounce(
                 {
-                  envelope,
-                  messageId: email.messageId,
-                  date: email.date,
-                  id: email.id
+                  ...(typeof email.toObject === 'function'
+                    ? email.toObject()
+                    : email),
+                  envelope
                 },
                 error,
                 message
               );
-
               const raw = await getStream.buffer(stream);
               const bounceEmail = await Emails.queue({
                 message: {
@@ -1352,7 +1355,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           try {
             //
             // if it was a soft bounce and within 15 mins of email's date then return early
-            // (we don't want to send bounces until we try 5-6x within first hour of queue)
+            // (we don't want to send temporary bounce emails too quickly)
             //
             const code = getErrorCode(error);
 
@@ -1363,17 +1366,27 @@ async function processEmail({ email, port = 25, resolver, client }) {
             )
               return;
 
+            // check for DSN here
+            if (
+              !shouldSendDSN(
+                email,
+                error.recipient,
+                code < 500 ? 'DELAY' : 'FAILURE'
+              )
+            )
+              return;
+
             const envelope = {
-              from: `mailer-daemon@${domain.name}`,
+              from: punycode.toASCII(`mailer-daemon@${domain.name}`),
               to: email.envelope.from
             };
 
-            const stream = createBounce(
+            const stream = await createBounce(
               {
-                envelope,
-                messageId: email.messageId,
-                date: email.date,
-                id: email.id
+                ...(typeof email.toObject === 'function'
+                  ? email.toObject()
+                  : email),
+                envelope
               },
               error,
               message
