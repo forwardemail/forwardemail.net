@@ -319,7 +319,7 @@ async function onDataSMTP(session, date, headers, body) {
     const dsn = {};
     if (isSANB(session.envelope?.dsn?.envid))
       dsn.id = session.envelope.dsn.envid;
-    if (isSANB(session.envelope?.dsn.ret)) {
+    if (isSANB(session.envelope?.dsn?.ret)) {
       if (session.envelope.dsn.ret === 'FULL') dsn.return = 'full';
       else if (session.envelope.dsn.ret === 'HDRS') dsn.return = 'headers';
     }
