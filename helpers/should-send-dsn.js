@@ -98,24 +98,24 @@ function shouldSendDSN(email, recipient, kind) {
         }
 
         // if no match found then return true (unless success)
-        if (kind === 'success') return false;
+        if (kind === 'SUCCESS') return false;
 
         return true;
       }
 
       // if no match found then return true (unless success)
-      if (kind === 'success') return false;
+      if (kind === 'SUCCESS') return false;
       return true;
     }
 
     // if no match found then return true (unless success)
-    if (kind === 'success') return false;
+    if (kind === 'SUCCESS') return false;
 
     return true;
   }
 
   // if no `false` cases found then return true (unless success)
-  if (kind === 'success') return false;
+  if (kind === 'SUCCESS') return false;
   return true;
 }
 
