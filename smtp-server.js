@@ -66,7 +66,7 @@ class SMTP {
       //
       // TODO: APPLE MAIL EXPERIENCING ISSUES SO WE ARE DISABLING THIS FOR NOW
       hideENHANCEDSTATUSCODES: true, // false,
-      hideDSN: true, // false,
+      hideDSN: false,
       size: MAX_BYTES,
       onData: onData.bind(this),
       onConnect: onConnect.bind(this),
