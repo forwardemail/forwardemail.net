@@ -64,7 +64,8 @@ class SMTP {
       //
       // most of these options mirror the FE forwarding server options
       //
-      hideENHANCEDSTATUSCODES: false,
+      // TODO: APPLE MAIL EXPERIENCING ISSUES SO WE ARE DISABLING THIS FOR NOW
+      hideENHANCEDSTATUSCODES: true, // false,
       hideDSN: false,
       size: MAX_BYTES,
       onData: onData.bind(this),
