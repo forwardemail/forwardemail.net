@@ -20,7 +20,7 @@ const pWaitFor = require('p-wait-for');
 const pify = require('pify');
 const safeStringify = require('fast-safe-stringify');
 const test = require('ava');
-const { SMTPServer } = require('smtp-server');
+const { SMTPServer } = require('@forwardemail/smtp-server');
 const { SRS } = require('sender-rewriting-scheme');
 
 const utils = require('../utils');

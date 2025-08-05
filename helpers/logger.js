@@ -391,6 +391,7 @@ for (const level of logger.config.levels) {
     if (hash) meta.app.hash = hash;
 
     if (
+      (meta && meta.tnx) ||
       (typeof message === 'string' && message.includes(" tnx: '")) ||
       (meta && meta.ignore_hook === true) ||
       (err && err.is_duplicate_log === true) ||
