@@ -643,7 +643,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
           `return_path_check:${domain.id}`,
           true,
           'PX',
-          ms('7d')
+          ms('1d')
         );
         // send an email to all admins of the domain
         const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
