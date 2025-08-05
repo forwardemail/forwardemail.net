@@ -48,7 +48,7 @@ class MX {
       //
       // most of these options mirror the FE forwarding server options
       //
-      hideENHANCEDSTATUSCODES: true,
+      hideENHANCEDSTATUSCODES: false,
       hideDSN: true, // explicitly disable DSN support on MX server (SMTP only)
       size: MAX_BYTES,
       onData: onData.bind(this),
