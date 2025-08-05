@@ -384,7 +384,7 @@ Emails.pre('validate', function (next) {
   //            (cannot combine "never" in the Array with others)
   //
   if (
-    this.dsn.notify === 'string' &&
+    typeof this.dsn.notify === 'string' &&
     !['never', 'success', 'failure'].includes(this.dsn.notify)
   ) {
     throw Boom.badRequest(
