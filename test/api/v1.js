@@ -12,11 +12,12 @@ const Redis = require('ioredis-mock');
 const dashify = require('dashify');
 const dayjs = require('dayjs-with-plugins');
 const falso = require('@ngneat/falso');
+const intoStream = require('into-stream');
 const ip = require('ip');
 const isBase64 = require('is-base64');
 const ms = require('ms');
-const pify = require('pify');
 const pWaitFor = require('p-wait-for');
+const pify = require('pify');
 const test = require('ava');
 const { SMTPServer } = require('@forwardemail/smtp-server');
 
@@ -685,6 +686,7 @@ Test`.trim()
   // to ensure subject emojis get encoded automatically for users
   //
   {
+    const base64Gif = 'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='; // 1x1 transparent gif
     const res = await t.context.api
       .post('/v1/emails')
       .auth(user[config.userFields.apiToken])
@@ -694,9 +696,21 @@ Test`.trim()
         from: `${emoji('blush')} Test <${alias.name}@${domain.name}>`,
         to: 'test@foo.com',
         subject: `${emoji('blush')} testing this`,
-        text: 'test'
+        text: 'test',
+        attachments: [
+          {
+            filename: 'image.gif',
+            content: base64Gif,
+            encoding: 'base64',
+            contentType: 'image/gif'
+          }
+        ]
       });
 
+    t.true(res.body.message.includes(base64Gif));
+    t.true(
+      res.body.message.includes('Content-Type: image/gif; name=image.gif')
+    );
     t.is(res.status, 200);
 
     // validate header From was converted properly
@@ -906,6 +920,70 @@ Test`.trim()
     t.deepEqual(email.accepted.sort(), res.body.envelope.to.sort());
     t.deepEqual(email.rejectedErrors, []);
   }
+});
+
+// multipart/form-data
+test('creates email with binary attachment', async (t) => {
+  const user = await t.context.userFactory
+    .withState({
+      plan: 'enhanced_protection',
+      [config.userFields.planSetAt]: dayjs().startOf('day').toDate()
+    })
+    .create();
+
+  await t.context.paymentFactory
+    .withState({
+      user: user._id,
+      amount: 300,
+      invoice_at: dayjs().startOf('day').toDate(),
+      method: 'free_beta_program',
+      duration: ms('30d'),
+      plan: user.plan,
+      kind: 'one-time'
+    })
+    .create();
+
+  await user.save();
+
+  const domain = await t.context.domainFactory
+    .withState({
+      members: [{ user: user._id, group: 'admin' }],
+      plan: user.plan,
+      resolver,
+      has_smtp: true
+    })
+    .create();
+
+  const alias = await t.context.aliasFactory
+    .withState({
+      user: user._id,
+      domain: domain._id,
+      recipients: [user.email]
+    })
+    .create();
+
+  //
+  // create email
+  // (with large payload to ensure body-parser working properly past default limit)
+  //
+  const base64Gif = 'R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='; // 1x1 transparent gif
+  const gifBuffer = Buffer.from(base64Gif, 'base64');
+  const res = await t.context.api
+    .post('/v1/emails')
+    .auth(user[config.userFields.apiToken])
+    .attach('attachment', gifBuffer, 'image.gif') // Attach the file as a buffer (single file)
+    .attach('attachments', intoStream(gifBuffer), 'image0.gif') // Attach the file as a stream
+    .attach('attachments', gifBuffer, 'image1.gif') // Attach the file as a buffer
+    .field('from', `${alias.name}@${domain.name}`)
+    .field('to', 'test@foo.com')
+    .field('subject', 'test')
+    .field('text', 'test message');
+
+  t.true(res.body.message.includes(base64Gif));
+  t.true(res.body.message.includes('Content-Type: image/gif; name=image.gif'));
+  t.true(res.body.message.includes('Content-Type: image/gif; name=image0.gif'));
+  t.true(res.body.message.includes('Content-Type: image/gif; name=image1.gif'));
+  t.is(res.status, 200);
 });
 
 test('5+ day email bounce', async (t) => {

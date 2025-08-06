@@ -105,11 +105,57 @@ async function create(ctx) {
     // this will throw any errors if necessary
     const message = getNodemailerMessageFromRequest(ctx);
 
+    //
+    // ctx.request.files
+    // - attachment[]
+    // - attachments[]
+    //
+    if (_.isObject(ctx.request.files)) {
+      if (!_.isArray(message.attachments)) message.attachments = [];
+
+      const multerAttachments = [];
+
+      if (
+        _.isArray(ctx.request.files.attachment) &&
+        ctx.request.files.attachment.length > 0
+      ) {
+        multerAttachments.push(...ctx.request.files.attachment);
+        delete ctx.request.files.attachment; // cleanup
+      }
+
+      if (
+        _.isArray(ctx.request.files.attachments) &&
+        ctx.request.files.attachments.length > 0
+      ) {
+        multerAttachments.push(...ctx.request.files.attachments);
+        delete ctx.request.files.attachments; // cleanup
+      }
+
+      if (multerAttachments.length > 0)
+        message.attachments.push(
+          ...multerAttachments.map((file) => {
+            return {
+              filename: file.originalname,
+              content: file.buffer.toString('base64'), // Convert buffer to Base64 string
+              encoding: 'base64', // Crucially, specify the encoding for Nodemailer
+              contentType: file.mimetype
+            };
+          })
+        );
+    }
+
     // queue the email
-    const email = await Emails.queue(
-      { message, user: ctx.state.user, dsn: message?.dsn },
-      ctx.locale
-    );
+    let email;
+    try {
+      email = await Emails.queue(
+        { message, user: ctx.state.user, dsn: message?.dsn },
+        ctx.locale
+      );
+    } catch (err) {
+      if (err.code === 'ERR_UNKNOWN_ENCODING')
+        throw Boom.badRequest(err.message);
+      throw err;
+    }
 
     ctx.logger.debug('email created', {
       session: createSession(email),

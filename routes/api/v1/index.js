@@ -6,23 +6,136 @@
 const Boom = require('@hapi/boom');
 const Router = require('@koa/router');
 const bodyParser = require('koa-bodyparser');
+const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
-const multer = require('@koa/multer');
+const koaMulter = require('@koa/multer');
+const multer = require('multer');
 const paginate = require('koa-ctx-paginate');
 const { boolean } = require('boolean');
-const _ = require('#helpers/lodash');
 
+const _ = require('#helpers/lodash');
 const api = require('#controllers/api');
 const config = require('#config');
 const policies = require('#helpers/policies');
 const rateLimit = require('#helpers/rate-limit');
 const web = require('#controllers/web');
 
-const upload = multer();
+const upload = koaMulter();
+
+const fileUpload = koaMulter({
+  // storage: multer.memoryStorage() // this is the default
+  limits: {
+    //
+    // TODO: note this technically allows 102 MB total file uploads
+    //       but an alternative might be to use `koa-body` such as:
+    //
+    //       const { koaBody } = require('@koa/body');
+    //
+    //       koaBody({ // Add koaBody middleware here
+    //         multipart: true,
+    //         urlencoded: true,
+    //         json: true,
+    //         formLimit: '50mb', // Adjust as needed
+    //         jsonLimit: '50mb', // Adjust as needed
+    //         textLimit: '50mb', // Adjust as needed
+    //         formidable: {
+    //           maxFileSize: bytes('51MB'),
+    //           keepExtensions: true,
+    //         },
+    //       }),
+    //
+    fieldSize: bytes('51MB'),
+    fileSize: bytes('51MB')
+  }
+  // fileFilter(req, file, cb) {
+  //   console.log('Multer fileFilter triggered:', file.originalname); // Add this
+  //   cb(null, true);
+  // }
+});
 
 const router = new Router({
   prefix: '/v1'
 });
+
+router.post(
+  '/emails',
+  policies.ensureApiToken,
+  policies.checkVerifiedEmail,
+  web.myAccount.ensureNotBanned,
+  api.v1.enforcePaidPlan,
+  web.myAccount.ensurePaidToDate,
+  async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+      if (err instanceof multer.MulterError) {
+        // Handle Multer-specific errors
+        switch (err.code) {
+          case 'LIMIT_PART_COUNT': {
+            throw Boom.badRequest('Too many parts in the form.');
+          }
+
+          case 'LIMIT_FILE_SIZE': {
+            throw Boom.badRequest(
+              `File size too large: Maximum allowed size for "${err.field}" is 50 MB.`
+            );
+          }
+
+          case 'LIMIT_FILE_COUNT': {
+            throw Boom.badRequest('Too many files uploaded.');
+          }
+
+          case 'LIMIT_FIELD_KEY': {
+            throw Boom.badRequest(
+              `Field name too long: Maximum allowed length is ${err.field}.`
+            );
+          }
+
+          case 'LIMIT_FIELD_VALUE': {
+            throw Boom.badRequest(
+              `Field value too long for field: ${err.field}.`
+            );
+          }
+
+          case 'LIMIT_FIELD_COUNT': {
+            throw Boom.badRequest('Too many fields in the form.');
+          }
+
+          case 'LIMIT_UNEXPECTED_FILE': {
+            throw Boom.badRequest(
+              `Unexpected file field: "${err.field}". You must use "attachment" or "attachments" as the file field name.`
+            );
+          }
+
+          default: {
+            throw err;
+          }
+        }
+      }
+
+      throw err;
+    }
+  },
+  // support varying content types
+  // - application/json
+  // - application/x-www-form-urlencoded
+  // - multipart/form-data
+  async (ctx, next) => {
+    if (ctx.request.type.startsWith('multipart/form-data')) {
+      // support file uploads and binary content
+      return fileUpload.fields([
+        { name: 'attachment', maxCount: 1 },
+        { name: 'attachments' } // no maxCount
+      ])(ctx, next);
+    }
+
+    return bodyParser({
+      formLimit: bytes('51MB'),
+      jsonLimit: bytes('51MB')
+    })(ctx, next);
+  },
+  api.v1.emails.create
+);
 
 //
 // support form data (multipart/form-data)
@@ -144,13 +257,6 @@ router
   )
   .get('/emails/limit', api.v1.emails.limit)
   .get('/emails/:id', web.myAccount.retrieveEmail, api.v1.emails.retrieve)
-  .post(
-    '/emails',
-    bodyParser({
-      jsonLimit: '51mb'
-    }),
-    api.v1.emails.create
-  )
   .delete(
     '/emails/:id',
     web.myAccount.retrieveEmail,
