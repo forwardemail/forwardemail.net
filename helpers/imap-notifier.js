@@ -366,6 +366,14 @@ class IMAPNotifier extends EventEmitter {
   // <https://github.com/nodemailer/wildduck/blob/c9188b3766b547b091d140a33308b5c3ec3aa1d4/imap-core/lib/imap-connection.js#L616-L619>
   getUpdates(mailbox, modifyIndex, fn) {
     modifyIndex = Number(modifyIndex) || 0;
+
+    if (!conn)
+      conn = mongoose.connections.find(
+        (conn) => conn[connectionNameSymbol] === 'JOURNALS_MONGO_URI'
+      );
+    if (!conn) throw new Error('Mongoose connection does not exist');
+    if (!conn.models || !conn.models.Journals || !conn.models.Journals.find)
+      throw new Error('Mongoose journals model not yet initialized');
     conn.models.Journals.find({
       mailbox: mailbox._id || mailbox,
       modseq: {
