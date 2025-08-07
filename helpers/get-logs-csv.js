@@ -80,6 +80,11 @@ async function getLogsCsv(now = new Date(), query = {}, isAdmin = false) {
       log.message;
     if (!isAdmin && log?.err?.isCodeBug === true)
       response = 'An unexpected internal server error has occurred';
+    let smtpCode;
+    if (log?.err?.responseCode) smtpCode = log?.err?.responseCode;
+    if (log.message === 'delivered') smtpCode = 250;
+    if (log?.meta?.is_webhook === true) smtpCode = 200;
+
     // add new row to spreadsheet
     csv.push(
       makeDelimitedString([
@@ -102,7 +107,7 @@ async function getLogsCsv(now = new Date(), query = {}, isAdmin = false) {
         // SMTP Response
         response,
         // SMTP Code
-        log?.err?.responseCode,
+        smtpCode,
         // From
         log?.meta?.session?.originalFromAddress || '',
         // From Allowlisted
