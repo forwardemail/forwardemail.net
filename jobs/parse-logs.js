@@ -13,21 +13,29 @@ const { parentPort } = require('node:worker_threads');
 require('#config/mongoose');
 
 const Graceful = require('@ladjs/graceful');
-const parseErr = require('parse-err');
+const Redis = require('@ladjs/redis');
 const mongoose = require('mongoose');
+const parseErr = require('parse-err');
 const safeStringify = require('fast-safe-stringify');
+const sharedConfig = require('@ladjs/shared-config');
 
-const config = require('#config');
 const Logs = require('#models/logs');
+const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const logger = require('#helpers/logger');
-const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
+const setupMongoose = require('#helpers/setup-mongoose');
 
 monitorServer();
 
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
+const resolver = createTangerine(client, logger);
+
 const graceful = new Graceful({
   mongooses: [mongoose],
+  redisClients: [client],
   logger
 });
 
@@ -116,6 +124,8 @@ graceful.listen();
       try {
         // helper property to skip duplicate check
         log.skip_duplicate_check = true;
+        // resolver helper
+        log.resolver = resolver;
         await log.save();
       } catch (err) {
         if (err.is_denylist_without_domains)

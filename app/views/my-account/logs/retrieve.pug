@@ -58,6 +58,12 @@ block body
           - statusCode = log.err.statusCode;
         else if log.err && log.err.status
           - statusCode = log.err.status;
+        else if log.message === 'delivered'
+          - statusCode = 250;
+        //- webhooks have `200` status code
+        if log.meta && log.meta.is_webhook && log.meta.is_webhook === true
+          - statusCode = 200;
+
         if statusCode >= 500
           - badgeClass = "badge-danger";
         else if statusCode >= 400
@@ -77,6 +83,22 @@ block body
                 = " "
               if log.err && log.err.isCodeBug === true
                 = "An unexpected internal server error has occurred"
+              else if log.message === "delivered"
+                if log.meta && log.meta.info && log.meta.info.pgp === true
+                  = "("
+                  = t("PGP Encrypted")
+                  = ")"
+                  = " "
+                if log.meta && log.meta.is_webhook && log.meta.is_webhook === true
+                  = "("
+                  = t("Webhook")
+                  = ")"
+                  = " "
+                //- TODO: log more details from `log.info`, e.g. EHLO etc
+                if log.meta && log.meta.info && log.meta.info.response
+                  != ansiHTML(log.info.response)
+                else
+                  != ansiHTML(log.message)
               else
                 != log.err && log.err.message ? ansiHTML(log.err.message) : ansiHTML(log.message)
             if log.err && !log.err.isCodeBug && log.err.bounces && log.err.bounces.length > 0

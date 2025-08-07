@@ -199,7 +199,23 @@ async function hook(err, message, meta) {
       if (!conn.models || !conn.models.Logs || !conn.models.Logs.create)
         throw new Error('Mongoose logs model not yet initialized');
 
+      //
+      // if there is a `meta.resolver` property
+      // (which is a shared tangerine resolver instance)
+      // then leverage that as the `resolver` property and delete it from `meta`
+      //
+      let resolver;
+      if (
+        meta.resolver &&
+        meta.resolver.constructor &&
+        meta.resolver.constructor.name === 'Tangerine'
+      ) {
+        resolver = meta.resolver;
+        delete meta.resolver;
+      }
+
       const log = new conn.models.Logs({ err, message, meta });
+      if (resolver) log.resolver = resolver;
 
       if (typeof log.meta === 'object') {
         // user
@@ -357,8 +373,23 @@ for (const level of logger.config.levels) {
     if (typeof message === 'object')
       message = JSON.parse(safeStringify(message));
 
+    //
     // clone the data so that we don't mutate it
-    if (typeof meta === 'object') meta = JSON.parse(safeStringify(meta));
+    //
+    // NOTE: we preserve `resolver` on the meta object
+    //
+    if (typeof meta === 'object') {
+      let resolver;
+      if (
+        meta.resolver &&
+        meta.resolver.constructor &&
+        meta.resolver.constructor.name === 'Tangerine'
+      )
+        resolver = meta.resolver;
+
+      meta = JSON.parse(safeStringify(meta));
+      if (resolver) meta.resolver = resolver;
+    }
 
     //
     // TODO: merge this into axe

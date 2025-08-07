@@ -46,7 +46,7 @@ async function getPGPResults({
     isEncrypted = isMessageEncrypted(raw);
   } catch (err) {
     err.isCodeBug = true;
-    logger.fatal(err, { session });
+    logger.fatal(err, { session, resolver });
   }
 
   //
@@ -98,7 +98,7 @@ async function getPGPResults({
                   domains: [email.domain],
                   session: createSession(email)
                 }
-              : undefined
+              : { session }
           );
         }
       }
@@ -301,6 +301,21 @@ async function sendEmail(
       }
     });
     info.pgp = pgpResults.pgp;
+    logger.info('delivered', {
+      info,
+      ignore_hook: false,
+      resolver,
+      ...(email
+        ? {
+            user: email.user,
+            email: email._id,
+            domains: [email.domain],
+            session: createSession(email)
+          }
+        : {
+            session
+          })
+    });
     if (
       email &&
       !email.is_bounce &&
@@ -315,7 +330,7 @@ async function sendEmail(
         session
       )
         .then()
-        .catch((err) => logger.fatal(err, { session }));
+        .catch((err) => logger.fatal(err, { session, resolver }));
     return info;
   } catch (err) {
     // delete `err.cert` for security
@@ -337,7 +352,7 @@ async function sendEmail(
     err.opportunisticTLS = session.opportunisticTLS;
     err.tls = session.tls;
 
-    await shouldThrow(err, session);
+    await shouldThrow(err, session, resolver);
 
     //
     // NOTE: this is handled because `MAIL_RETRY_ERROR_CODES` has `ECONNRESET`
@@ -434,6 +449,23 @@ async function sendEmail(
             notify: 'never'
           }
         });
+        info.pgp = pgpResults.pgp;
+        logger.info('delivered', {
+          info,
+          ignore_hook: false,
+          resolver,
+          ...(email
+            ? {
+                user: email.user,
+                email: email._id,
+                domains: [email.domain],
+                session: createSession(email)
+              }
+            : {
+                session
+              })
+        });
+
         if (
           email &&
           !email.is_bounce &&
@@ -448,8 +480,8 @@ async function sendEmail(
             session
           )
             .then()
-            .catch((err) => logger.fatal(err, { session }));
-        info.pgp = pgpResults.pgp;
+            .catch((err) => logger.fatal(err, { session, resolver }));
+
         return info;
       } catch (err) {
         // delete `err.cert` for security
@@ -471,7 +503,7 @@ async function sendEmail(
         err.mxLastError = mxLastError;
         err.ignoreMXHosts = ignoreMXHosts;
 
-        await shouldThrow(err, session);
+        await shouldThrow(err, session, resolver);
 
         //
         // retry if code, tls, or ssl error

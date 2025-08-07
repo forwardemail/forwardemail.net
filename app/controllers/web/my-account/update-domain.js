@@ -84,7 +84,8 @@ async function updateDomain(ctx, next) {
       'has_executable_protection',
       'has_virus_protection',
       'has_recipient_verification',
-      'ignore_mx_check'
+      'ignore_mx_check',
+      'has_delivery_logs'
     ]) {
       if (_.isBoolean(ctx.request.body[bool]) || isSANB(ctx.request.body[bool]))
         ctx.state.domain[bool] = boolean(ctx.request.body[bool]);
@@ -172,6 +173,26 @@ async function updateDomain(ctx, next) {
           );
         ctx.state.domain.ignore_mx_check = boolean(
           ctx.request.body.ignore_mx_check
+        );
+
+        break;
+      }
+
+      case 'has_delivery_logs': {
+        // require paid plan
+        if (ctx.state.domain.plan === 'free')
+          throw Boom.paymentRequired(
+            ctx.translateError(
+              'PLAN_UPGRADE_REQUIRED',
+              ctx.state.l(
+                `/my-account/domains/${punycode.toASCII(
+                  ctx.state.domain.name
+                )}/billing?plan=enhanced_protection`
+              )
+            )
+          );
+        ctx.state.domain.has_delivery_logs = boolean(
+          ctx.request.body.has_delivery_logs
         );
 
         break;

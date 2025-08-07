@@ -1289,6 +1289,9 @@
           "ignore_mx_check": {
             "type": "boolean"
           },
+          "has_delivery_logs": {
+            "type": "boolean"
+          },
           "retention_days": {
             "type": "integer"
           },
@@ -1446,6 +1449,7 @@
           {
             "has_newsletter": false,
             "ignore_mx_check": false,
+            "has_delivery_logs": false,
             "retention_days": 0,
             "has_regex": false,
             "has_catchall": true,
@@ -1556,6 +1560,10 @@
             "type": "boolean",
             "description": "Ignore MX record check for advanced mail routing setups"
           },
+          "has_delivery_logs": {
+            "type": "boolean",
+            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
+          },
           "retention_days": {
             "type": "integer",
             "minimum": 0,
@@ -1621,6 +1629,10 @@
           "ignore_mx_check": {
             "type": "boolean",
             "description": "Whether to ignore the MX record check on the domain for verification (mainly for advanced MX routing setups)"
+          },
+          "has_delivery_logs": {
+            "type": "boolean",
+            "description": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions."
           },
           "retention_days": {
             "type": "integer",

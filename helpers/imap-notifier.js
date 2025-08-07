@@ -302,7 +302,13 @@ class IMAPNotifier extends EventEmitter {
             session.db.prepare(sql.query).run(sql.values);
           }
         } catch (err) {
-          logger.fatal(err, { mailbox, updated, modseq, session });
+          logger.fatal(err, {
+            mailbox,
+            updated,
+            modseq,
+            session,
+            resolver: instance.resolver
+          });
         }
       }
 

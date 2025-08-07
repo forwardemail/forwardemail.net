@@ -74,7 +74,7 @@ const COLUMN_PROPERTIES = [
   'foreign_key_table'
 ];
 
-async function migrateSchema(db, session, tables) {
+async function migrateSchema(instance, db, session, tables) {
   // indices store for index list (which we use for conditionally adding indices)
   const indexList = {};
 
@@ -159,7 +159,7 @@ async function migrateSchema(db, session, tables) {
               indexList[table] = db.pragma(`index_list(${table})`);
               // TODO: drop other indices that aren't necessary (?)
             } catch (err) {
-              logger.error(err, { session });
+              logger.error(err, { session, resolver: instance.resolver });
             }
           }
 
@@ -325,7 +325,7 @@ async function migrateSchema(db, session, tables) {
   if (errors.length > 0) {
     const err = combineErrors(errors);
     err.isCodeBug = true; // will email admins and text them
-    logger.fatal(err, { session });
+    logger.fatal(err, { session, resolver: instance.resolver });
   }
 
   //

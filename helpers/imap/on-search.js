@@ -667,7 +667,7 @@ async function onSearch(mailboxId, options, session, fn) {
       err.mailboxId = mailboxId;
       err.options = options;
       err.condition = condition;
-      this.logger.fatal(err, { session });
+      this.logger.fatal(err, { session, resolver: this.resolver });
       throw new IMAPError(i18n.translateError('IMAP_INVALID_SEARCH'), {
         imapResponse: 'CANNOT'
       });

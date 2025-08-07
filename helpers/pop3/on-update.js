@@ -118,7 +118,7 @@ async function onUpdate(update, session, fn) {
             }
           );
         } catch (err) {
-          this.logger.fatal(err, { update, session });
+          this.logger.fatal(err, { update, session, resolver: this.resolver });
         }
       }
 
@@ -138,7 +138,9 @@ async function onUpdate(update, session, fn) {
             }))
         )
         .then(() => this.server.notifier.fire(session.user.alias_id))
-        .catch((err) => this.logger.fatal(err, { update, session }));
+        .catch((err) =>
+          this.logger.fatal(err, { update, session, resolver: this.resolver })
+        );
     }
 
     // handle deleted

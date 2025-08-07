@@ -46,7 +46,7 @@ async function syncTemporaryMailbox(session) {
     try {
       tmpDb.pragma('wal_checkpoint(FULL)');
     } catch (err) {
-      logger.fatal(err, { session });
+      logger.fatal(err, { session, resolver: this.resolver });
     }
 
     const sql = builder.build({
@@ -150,21 +150,21 @@ async function syncTemporaryMailbox(session) {
       // run a checkpoint to copy over wal to db
       tmpDb.pragma('wal_checkpoint(PASSIVE)');
     } catch (err) {
-      logger.fatal(err, { session });
+      logger.fatal(err, { session, resolver: this.resolver });
     }
 
     // update storage
     try {
       await updateStorageUsed(session.user.alias_id, this.client);
     } catch (err) {
-      logger.fatal(err, { session });
+      logger.fatal(err, { session, resolver: this.resolver });
     }
 
     // NOTE: we don't want to close DB because we re-use it
     // try {
     //   await closeDatabase(tmpDb);
     // } catch (err) {
-    //   logger.fatal(err, { session });
+    //   logger.fatal(err, { session, resolver: this.resolver });
     // }
 
     if (err) throw err;

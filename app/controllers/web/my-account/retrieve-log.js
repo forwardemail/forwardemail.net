@@ -25,7 +25,11 @@ async function retrieveLog(ctx, next) {
     $and: [
       { _id: new mongoose.Types.ObjectId(ctx.params.id) },
       {
-        $or: [{ err: { $exists: false } }, { 'err.isCodeBug': { $ne: true } }]
+        $or: [
+          { err: { $exists: false } },
+          { 'err.isCodeBug': { $ne: true } },
+          { message: 'delivered' }
+        ]
       }
     ]
   })

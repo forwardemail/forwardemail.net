@@ -13465,5 +13465,21 @@
   "Free Mass Email Service for Youth Teams": "Bezpłatna usługa masowej poczty e-mail dla drużyn młodzieżowych",
   "We provide mass email service for youth teams and more. Sign up today for free and setup email hosting and forwarding in seconds.": "Zapewniamy masową obsługę poczty e-mail dla drużyn młodzieżowych i nie tylko. Zarejestruj się już dziś za darmo i skonfiguruj hosting poczty e-mail i przekierowanie w ciągu kilku sekund.",
   "Issue Detected": "Wykryto problem",
-  "Issue": "Wydanie"
+  "Issue": "Wydanie",
+  "Global domain": "Global domain",
+  "Admin - Logs": "Admin - Logs",
+  "Search for logs": "Search for logs",
+  "If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.": "If querying by partial index, include the proper conditions (e.g. <code>{ $and: [ { a: 1 }, { a: { $exists: true } } ] }</code>.",
+  "If querying by \"message\" property, then use <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> operator.": "If querying by \"message\" property, then use <a rel=\"noopener noreferrer\" href=\"https://www.mongodb.com/docs/manual/reference/operator/query/text/#mongodb-query-op.-text\">$text</a> operator.",
+  "Level": "Level",
+  "Request": "Request",
+  "6893e8963844dcd329c0f244": "6893e8963844dcd329c0f244",
+  "Enable Deliverability Logs for Successful Emails": "Enable Deliverability Logs for Successful Emails",
+  "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, or IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, or IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.",
+  "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.",
+  "Tip": "Tip",
+  "You can now opt-in for delivery logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.": "You can now opt-in for delivery logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.",
+  "You can now opt-in for \"delivered\" logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.": "You can now opt-in for \"delivered\" logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.",
+  "Delivered": "Delivered",
+  "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails.": "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails."
 }

@@ -5,15 +5,9 @@
 
 const dns = require('node:dns');
 const os = require('node:os');
-const process = require('node:process');
 const { Buffer } = require('node:buffer');
 const { isIP } = require('node:net');
 
-const Graceful = require('@ladjs/graceful');
-const Redis =
-  process.env.NODE_ENV === 'test'
-    ? require('ioredis-mock')
-    : require('@ladjs/redis');
 const ansiHTML = require('ansi-html-community');
 const bytes = require('@forwardemail/bytes');
 const dayjs = require('dayjs-with-plugins');
@@ -25,7 +19,6 @@ const pMap = require('p-map');
 const parseErr = require('parse-err');
 const revHash = require('rev-hash');
 const safeStringify = require('fast-safe-stringify');
-const sharedConfig = require('@ladjs/shared-config');
 const splitLines = require('split-lines');
 // const twilio = require('twilio');
 const { boolean } = require('boolean');
@@ -45,7 +38,6 @@ const _ = require('#helpers/lodash');
 
 const checkSRS = require('#helpers/check-srs');
 const config = require('#config');
-const createTangerine = require('#helpers/create-tangerine');
 const emailHelper = require('#helpers/email');
 const isEmail = require('#helpers/is-email');
 const isRetryableError = require('#helpers/is-retryable-error');
@@ -72,13 +64,6 @@ const KEYWORD_HEADERS = new Set([
 
 const PREFIX = `${config.recordPrefix}-site-verification=`;
 const concurrency = os.cpus().length;
-const webSharedConfig = sharedConfig('WEB');
-// TODO: we should find a way to share the existing redis connection
-const redis = new Redis(
-  webSharedConfig.redis,
-  logger,
-  webSharedConfig.redisMonitor
-);
 
 /*
 let twilioClient;
@@ -95,13 +80,6 @@ if (
     { env: {} }
   );
 */
-
-const resolver = createTangerine(redis, logger);
-
-const graceful = new Graceful({
-  redisClients: [redis]
-});
-graceful.listen();
 
 //
 // MongoDB supported language mapping with tinyld
@@ -227,6 +205,15 @@ const Logs = new mongoose.Schema({
     index: true
   }
 });
+
+// Shared tangerine resolver
+Logs.virtual('resolver')
+  .get(function () {
+    return this.__resolver;
+  })
+  .set(function (resolver) {
+    this.__resolver = resolver;
+  });
 
 Logs.virtual('skip_duplicate_check')
   .get(function () {
@@ -365,6 +352,16 @@ Logs.index({
   user: 1,
   'err.isCodeBug': 1,
   created_at: -1
+});
+
+//
+// if we're saving a "delivered" message
+// then ensure that `resolver` is set
+// otherwise we need to throw an error
+//
+Logs.pre('validate', function (next) {
+  if (this.message !== 'delivered' || this.resolver) return next();
+  return next(new TypeError('resolver is not set'));
 });
 
 //
@@ -851,6 +848,7 @@ Logs.pre('validate', function (next) {
 //       (e.g. RCPT TO: a@a.com and b@b.com, whereas a.com and b.com are two completely separate and private users)
 //
 async function parseLog(log) {
+  if (!log.resolver) return log;
   if (!log.is_restricted) return log;
   if (_.isDate(log.domains_checked_at)) return log;
   if (log.domains.length > 0) return log;
@@ -894,7 +892,7 @@ async function parseLog(log) {
       [...set],
       async (name) => {
         try {
-          const records = await resolver.resolveTxt(name);
+          const records = await log.resolver.resolveTxt(name);
           const verifications = [];
           for (const record of records) {
             const str = record.join('').trim();
@@ -918,6 +916,9 @@ async function parseLog(log) {
           });
 
           if (!domain) return;
+
+          // opt-in check for delivered message
+          if (log.message === 'delivered' && !domain.has_delivery_logs) return;
 
           return domain._id;
         } catch (err) {
@@ -950,6 +951,21 @@ Logs.pre('save', async function (next) {
 
   try {
     await parseLog(this);
+
+    //
+    // if the log message was "delivered"
+    // and no domains listed then delete the log
+    // (see how we check for opt-in status in `parseLog`)
+    //
+    if (
+      this.message === 'delivered' &&
+      (!Array.isArray(this.domains) || this.domains.length === 0)
+    ) {
+      const err = new Error('Delivered message without domains');
+      err.is_duplicate_log = true;
+      throw err;
+    }
+
     //
     // if it was not an error from an exchange then return early
     //

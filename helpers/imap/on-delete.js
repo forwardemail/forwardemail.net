@@ -56,7 +56,9 @@ async function onDelete(path, session, fn) {
           mailbox: mailbox._id
         })
         .then(() => this.server.notifier.fire(session.user.alias_id))
-        .catch((err) => this.logger.fatal(err, { path, session }));
+        .catch((err) =>
+          this.logger.fatal(err, { path, session, resolver: this.resolver })
+        );
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);
       fn(err);
@@ -173,7 +175,9 @@ async function onDelete(path, session, fn) {
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
-      .catch((err) => this.logger.fatal(err, { path, session }));
+      .catch((err) =>
+        this.logger.fatal(err, { path, session, resolver: this.resolver })
+      );
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

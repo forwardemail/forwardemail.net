@@ -549,7 +549,6 @@ function generateHTMLReport(reports, severity, severityConfig) {
     // Get all unbanned users (excluding those who have passed KYC verification)
     const unbannedUsers = await Users.find({
       [config.userFields.isBanned]: false,
-
       has_passed_kyc: { $ne: true }
     })
       .select(

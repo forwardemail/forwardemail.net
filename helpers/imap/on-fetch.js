@@ -66,7 +66,9 @@ async function onFetch(mailboxId, options, session, fn) {
         this.server.notifier
           .addEntries(this, session, mailboxId, entries)
           .then(() => this.server.notifier.fire(session.user.alias_id))
-          .catch((err) => this.logger.fatal(err, { session }));
+          .catch((err) =>
+            this.logger.fatal(err, { session, resolver: this.resolver })
+          );
       }
     } catch (err) {
       if (err.imapResponse) return fn(null, err.imapResponse);

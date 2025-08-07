@@ -283,7 +283,9 @@ async function onDataSMTP(session, date, headers, body) {
           }
         })
           .then()
-          .catch((err) => logger.fatal(err, { session }));
+          .catch((err) =>
+            logger.fatal(err, { session, resolver: this.resolver })
+          );
 
         //
         // reassign user to the admin
@@ -298,7 +300,7 @@ async function onDataSMTP(session, date, headers, body) {
         const err = new TypeError(
           `Domain name ${domain.name} (ID ${domain.id}) was using a catch-all alias that no longer has a valid admin/user assigned and SMTP onData attempted`
         );
-        logger.error(err, { session });
+        logger.error(err, { session, resolver: this.resolver });
         // throw an error that password is not valid
         throw new SMTPError('Catch-all password no longer exists', {
           responseCode: 535
@@ -344,7 +346,7 @@ async function onDataSMTP(session, date, headers, body) {
       await email.save();
     }
   } catch (err) {
-    logger.fatal(err, { session });
+    logger.fatal(err, { session, resolver: this.resolver });
     if (!err.emailAlreadyExists) throw err;
   }
 

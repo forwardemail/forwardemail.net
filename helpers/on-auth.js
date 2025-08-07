@@ -133,7 +133,7 @@ async function onAuth(auth, session, fn) {
           verifications.push(record.replace(config.paidPrefix, '').trim());
       }
     } catch (err) {
-      this.logger.debug(err, { session });
+      this.logger.debug(err, { session, resolver: this.resolver });
     }
 
     if (verifications.length === 0)
@@ -313,7 +313,7 @@ async function onAuth(auth, session, fn) {
         try {
           previousPasswordHashes = JSON.parse(previousPasswordHashes);
         } catch (err) {
-          this.logger.fatal(err, { session });
+          this.logger.fatal(err, { session, resolver: this.resolver });
         }
       }
 
@@ -413,15 +413,19 @@ async function onAuth(auth, session, fn) {
               }
             });
           } catch (err) {
-            this.logger.fatal(err, { session });
+            this.logger.fatal(err, { session, resolver: this.resolver });
             // backoff for 30m for the next retry
             this.client
               .set(`caldav_smtp_check:${domain.id}`, true, 'PX', ms('30m'))
               .then()
-              .catch((err) => this.logger.fatal(err, { session }));
+              .catch((err) =>
+                this.logger.fatal(err, { session, resolver: this.resolver })
+              );
           }
         })
-        .catch((err) => this.logger.fatal(err, { session }));
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
     }
 
     //
@@ -489,15 +493,19 @@ async function onAuth(auth, session, fn) {
               }
             });
           } catch (err) {
-            this.logger.fatal(err, { session });
+            this.logger.fatal(err, { session, resolver: this.resolver });
             // backoff for 30m for the next retry
             this.client
               .set(`imap_check:${alias.id}`, true, 'PX', ms('30m'))
               .then()
-              .catch((err) => this.logger.fatal(err, { session }));
+              .catch((err) =>
+                this.logger.fatal(err, { session, resolver: this.resolver })
+              );
           }
         })
-        .catch((err) => this.logger.fatal(err, { session }));
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
 
       // throw an error
       throw new SMTPError(
@@ -577,7 +585,7 @@ async function onAuth(auth, session, fn) {
                 }
               });
             } catch (err) {
-              this.logger.fatal(err, { session });
+              this.logger.fatal(err, { session, resolver: this.resolver });
               // backoff for 30m for the next retry
               this.client
                 .set(
@@ -587,10 +595,14 @@ async function onAuth(auth, session, fn) {
                   ms('30m')
                 )
                 .then()
-                .catch((err) => this.logger.fatal(err, { session }));
+                .catch((err) =>
+                  this.logger.fatal(err, { session, resolver: this.resolver })
+                );
             }
           })
-          .catch((err) => this.logger.fatal(err, { session }));
+          .catch((err) =>
+            this.logger.fatal(err, { session, resolver: this.resolver })
+          );
         throw new SMTPError('Too many concurrent connections', {
           responseCode: 421
         });
@@ -686,7 +698,9 @@ async function onAuth(auth, session, fn) {
         .then((sync) => {
           this.logger.debug('tmp db sync complete', { sync, session });
         })
-        .catch((err) => this.logger.fatal(err, { session }));
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
 
       // daily backup (run in background)
       this.wsp

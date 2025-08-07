@@ -221,10 +221,22 @@ async function onAppend(path, flags, date, raw, session, fn) {
           )
             .then()
             .catch((err) =>
-              this.logger.fatal(err, { path, flags, date, session })
+              this.logger.fatal(err, {
+                path,
+                flags,
+                date,
+                session,
+                resolver: this.resolver
+              })
             );
         } catch (err) {
-          this.logger.fatal(err, { path, flags, date, session });
+          this.logger.fatal(err, {
+            path,
+            flags,
+            date,
+            session,
+            resolver: this.resolver
+          });
           if (!isCodeBug(err) && !isRetryableError(err)) {
             // email alias user (only once a day as a reminder) if it was not a code bug
             const now = new Date();
@@ -288,11 +300,23 @@ async function onAppend(path, flags, date, raw, session, fn) {
                     })
                       .then()
                       .catch((err) =>
-                        this.logger.fatal(err, { path, flags, date, session })
+                        this.logger.fatal(err, {
+                          path,
+                          flags,
+                          date,
+                          session,
+                          resolver: this.resolver
+                        })
                       );
                   })
                   .catch((err) => {
-                    this.logger.fatal(err, { path, flags, date, session });
+                    this.logger.fatal(err, {
+                      path,
+                      flags,
+                      date,
+                      session,
+                      resolver: this.resolver
+                    });
                     Aliases.findOneAndUpdate(
                       {
                         _id: new mongoose.Types.ObjectId(session.user.alias_id),
@@ -307,12 +331,24 @@ async function onAppend(path, flags, date, raw, session, fn) {
                         }
                       }
                     ).catch((err) =>
-                      this.logger.fatal(err, { path, flags, date, session })
+                      this.logger.fatal(err, {
+                        path,
+                        flags,
+                        date,
+                        session,
+                        resolver: this.resolver
+                      })
                     );
                   });
               })
               .catch((err) =>
-                this.logger.fatal(err, { path, flags, date, session })
+                this.logger.fatal(err, {
+                  path,
+                  flags,
+                  date,
+                  session,
+                  resolver: this.resolver
+                })
               );
           }
         }
@@ -604,19 +640,30 @@ async function onAppend(path, flags, date, raw, session, fn) {
     this.server.notifier
       .addEntries(this, session, response.mailbox, entry)
       .then(() => this.server.notifier.fire(session.user.alias_id))
-      .catch((err) => this.logger.fatal(err, { session }));
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
       .catch((err) =>
-        this.logger.fatal(err, { message, path, flags, date, session })
+        this.logger.fatal(err, {
+          message,
+          path,
+          flags,
+          date,
+          session,
+          resolver: this.resolver
+        })
       );
 
     // send apple push notification
     sendApn(this.client, session.user.alias_id, path)
       .then()
-      .catch((err) => this.logger.fatal(err, { session }));
+      .catch((err) =>
+        this.logger.fatal(err, { session, resolver: this.resolver })
+      );
   } catch (err) {
     // delete attachments if we need to cleanup
     const attachmentIds =
@@ -637,7 +684,8 @@ async function onAppend(path, flags, date, raw, session, fn) {
       } catch (err) {
         this.logger.fatal(err, {
           attachmentIds,
-          session
+          session,
+          resolver: this.resolver
         });
       }
     }

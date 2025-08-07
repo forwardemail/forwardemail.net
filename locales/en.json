@@ -14742,5 +14742,15 @@
   "Ready to revolutionize your email integration?": "Ready to revolutionize your email integration?",
   "Start building with Forward Email's API today": "Start building with Forward Email's API today",
   "and experience the first complete email management platform designed for developers.": "and experience the first complete email management platform designed for developers.",
-  "Forward Email: The email service that finally gets APIs right.": "Forward Email: The email service that finally gets APIs right."
+  "Forward Email: The email service that finally gets APIs right.": "Forward Email: The email service that finally gets APIs right.",
+  "Payments": "Payments",
+  "6893e8963844dcd329c0f244": "6893e8963844dcd329c0f244",
+  "You have successfully upgraded to the Team Plan.": "You have successfully upgraded to the Team Plan.",
+  "Enable Deliverability Logs for Successful Emails": "Enable Deliverability Logs for Successful Emails",
+  "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, or IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, or IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.",
+  "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.": "Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.",
+  "Tip": "Tip",
+  "You can now opt-in for delivery logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.": "You can now opt-in for delivery logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.",
+  "You can now opt-in for \"delivered\" logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.": "You can now opt-in for \"delivered\" logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.",
+  "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails.": "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails."
 }

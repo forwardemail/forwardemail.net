@@ -110,13 +110,15 @@ async function onRename(path, newPath, session, fn) {
         path: renamedMailbox.path
       })
       .then(() => this.server.notifier.fire(session.user.alias_id))
-      .catch((err) => this.logger.fatal(err, { path, session }));
+      .catch((err) =>
+        this.logger.fatal(err, { path, session, resolver: this.resolver })
+      );
 
     // update storage in background
     // NOTE: this won't work since IMAP usage occurs here without FS access to SQLite server
     // updateStorageUsed(session.user.alias_id, this.client)
     //   .then()
-    //   .catch((err) => this.logger.fatal(err, { path, session }));
+    //   .catch((err) => this.logger.fatal(err, { path, session, resolver: this.resolver }));
   } catch (err) {
     const error = refineAndLogError(err, session, true, this);
     if (error.imapResponse) return fn(null, error.imapResponse);

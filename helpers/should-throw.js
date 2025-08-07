@@ -8,7 +8,7 @@ const isCodeBug = require('./is-code-bug');
 const isRetryableError = require('./is-retryable-error');
 const logger = require('./logger');
 
-async function shouldThrow(err, session) {
+async function shouldThrow(err, session, resolver) {
   // handle programmer mistakes
   err.isCodeBug = isCodeBug(err);
 
@@ -18,7 +18,7 @@ async function shouldThrow(err, session) {
   // throw early if it was a code bug
   if (err.isCodeBug) {
     // log the error
-    logger.fatal(err, { session });
+    logger.fatal(err, { session, resolver });
     throw err;
   }
 
@@ -26,7 +26,7 @@ async function shouldThrow(err, session) {
   // connection error then return early (so it will retry)
   if (isRetryableError(err)) {
     // log the error
-    logger.error(err, { session });
+    logger.error(err, { session, resolver });
     return;
   }
 
@@ -46,7 +46,7 @@ async function shouldThrow(err, session) {
   // TODO: https://sendersupport.olc.protection.outlook.com/pm/
 
   // log the error
-  logger.error(err, { session });
+  logger.error(err, { session, resolver });
 
   throw err;
 }

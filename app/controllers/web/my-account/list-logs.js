@@ -392,9 +392,14 @@ async function listLogs(ctx) {
   //
   // Filter out logs with err.isCodeBug=true for my-account users
   // (all my-account users should be treated as non-admin for this filtering)
+  // Also include logs with message: "delivered" to support success logs
   //
   const codebugFilter = {
-    $or: [{ err: { $exists: false } }, { 'err.isCodeBug': { $ne: true } }]
+    $or: [
+      { err: { $exists: false } },
+      { 'err.isCodeBug': { $ne: true } },
+      { message: 'delivered' }
+    ]
   };
 
   if (query.$and) {

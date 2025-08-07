@@ -34,6 +34,9 @@ const timezone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 const red = '#D24858';
 const yellow = '#EAB05E';
 
+// <https://www.colourlovers.com/color/9CD85F/omunanaral>
+const green = '#9CD85F';
+
 async function getLogs(category, dates, query) {
   const results = await Logs.aggregate([
     query,
@@ -303,10 +306,21 @@ async function listAnalytics(ctx) {
     // outbound chart
     (async () => {
       const series = [];
-      // TODO: need to have users opt-in
-      // Accepted (250)
-
-      const [soft, hard] = await Promise.all([
+      const [accepted, soft, hard] = await Promise.all([
+        getLogs('Delivered (250)', dates, {
+          $match: {
+            $or: query.$or.map((obj) => ({
+              // TODO: index here (?)
+              created_at: {
+                $gte: SEVEN_DAYS_AGO // THIRTY_DAYS_AGO
+              },
+              message: 'delivered',
+              // TODO: better way to do this query for self-hosted (?)
+              'meta.app.hostname': 'smtp.forwardemail.net', // env.SMTP_HOST,
+              ...obj
+            }))
+          }
+        }),
         getLogs('Soft Bounce (4xx)', dates, {
           $match: {
             $or: query.$or.map((obj) => ({
@@ -348,6 +362,11 @@ async function listAnalytics(ctx) {
 
       const colors = [];
 
+      if (accepted) {
+        series.push(accepted);
+        colors.push(green);
+      }
+
       if (soft) {
         series.push(soft);
         colors.push(yellow);
@@ -384,10 +403,24 @@ async function listAnalytics(ctx) {
     // inbound chart
     (async () => {
       const series = [];
-      // TODO: need to have users opt-in
-      // Accepted (250)
-
-      const [soft, hard] = await Promise.all([
+      const [accepted, soft, hard] = await Promise.all([
+        getLogs('Delivered (250)', dates, {
+          $match: {
+            $or: query.$or.map((obj) => ({
+              // TODO: index here (?)
+              created_at: {
+                $gte: SEVEN_DAYS_AGO // THIRTY_DAYS_AGO
+              },
+              message: 'delivered',
+              // TODO: better way to do this query for self-hosted (?)
+              'meta.app.hostname': {
+                // { $in: config.exchanges }
+                $in: ['mx1.forwardemail.net', 'mx2.forwardemail.net']
+              },
+              ...obj
+            }))
+          }
+        }),
         getLogs('Soft Bounce (4xx)', dates, {
           $match: {
             $or: query.$or.map((obj) => ({
@@ -432,6 +465,11 @@ async function listAnalytics(ctx) {
       ]);
 
       const colors = [];
+
+      if (accepted) {
+        series.push(accepted);
+        colors.push(green);
+      }
 
       if (soft) {
         series.push(soft);

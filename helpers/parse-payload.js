@@ -1264,7 +1264,9 @@ async function parsePayload(data, ws) {
                 if (!err)
                   sendApn(this.client, alias.id)
                     .then()
-                    .catch((err) => logger.fatal(err, { session }));
+                    .catch((err) =>
+                      logger.fatal(err, { session, resolver: this.resolver })
+                    );
 
                 if (err) throw err;
               }

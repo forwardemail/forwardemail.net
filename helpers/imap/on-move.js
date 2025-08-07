@@ -110,11 +110,21 @@ async function onMove(mailboxId, update, session, fn) {
               .addEntries(this, session, targetMailbox._id, existEntries)
               .then(() => this.server.notifier.fire(session.user.alias_id))
               .catch((err) =>
-                this.logger.fatal(err, { mailboxId, update, session })
+                this.logger.fatal(err, {
+                  mailboxId,
+                  update,
+                  session,
+                  resolver: this.resolver
+                })
               )
           )
           .catch((err) =>
-            this.logger.fatal(err, { mailboxId, update, session })
+            this.logger.fatal(err, {
+              mailboxId,
+              update,
+              session,
+              resolver: this.resolver
+            })
           );
       }
     } catch (err) {
@@ -370,13 +380,25 @@ async function onMove(mailboxId, update, session, fn) {
     try {
       session.db.pragma('wal_checkpoint(PASSIVE)');
     } catch (err) {
-      this.logger.fatal(err, { mailboxId, update, session });
+      this.logger.fatal(err, {
+        mailboxId,
+        update,
+        session,
+        resolver: this.resolver
+      });
     }
 
     // update storage in background
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
-      .catch((err) => this.logger.fatal(err, { mailboxId, update, session }));
+      .catch((err) =>
+        this.logger.fatal(err, {
+          mailboxId,
+          update,
+          session,
+          resolver: this.resolver
+        })
+      );
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));
   }

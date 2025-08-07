@@ -411,6 +411,23 @@ async function imap(alias, headers, session, body) {
         host: env.SQLITE_HOST
       });
     } else {
+      logger.info('delivered', {
+        // spoofing nodemailer info object
+        info: {
+          // TODO: improve this message in the future
+          response: `Appended to INBOX of ${alias.address}`
+          // TODO: we might want to spoof these in future too
+          // `messageId`
+          // `envelope`
+          // `accepted`
+          // `rejected`
+          // `pending`
+        },
+        ignore_hook: false,
+        resolver: this.resolver,
+        session
+      });
+
       // store that we sent this message so we don't again
       const key = getFingerprintKey(session, alias.id);
       this.client
@@ -427,7 +444,7 @@ async function imap(alias, headers, session, body) {
     }
   } catch (_err) {
     // an error occurred here with websockets so we bounce all IMAP recipients
-    logger.fatal(_err, { session });
+    logger.fatal(_err, { session, resolver: this.resolver });
     const err = parseError(_err);
     err.target = env.IMAP_HOST;
     bounces.push({
@@ -900,11 +917,32 @@ async function forward(recipient, headers, session, body) {
         }
       );
 
-      if (
+      let text = 'OK';
+      if (response.statusCode === 200) {
+        text = await response.body.text();
+      } else if (
         !response?.signal?.aborted &&
         typeof response?.body?.dump === 'function'
       )
         await response.body.dump();
+
+      logger.info('delivered', {
+        // spoofing nodemailer info object
+        info: {
+          response: text
+          // TODO: we might want to spoof these in future too
+          // `messageId`
+          // `envelope`
+          // `accepted`
+          // `rejected`
+          // `pending`
+        },
+        // TODO: use `is_webhook` later in the future
+        is_webhook: true,
+        ignore_hook: false,
+        resolver: this.resolver,
+        session
+      });
 
       // store that we sent this so we don't again
       this.client
@@ -933,7 +971,7 @@ async function forward(recipient, headers, session, body) {
 
       // preserve webhook for admins to inspect if user needs help
       err_.webhook = recipient.webhook;
-      logger.error(err_, { session });
+      logger.error(err_, { session, resolver: this.resolver });
 
       // determine if code or status is retryable here and set it as `err._responseCode`
       // TODO: rewrite `err.response` and `err.message` if either/both start with diagnostic code
@@ -1647,7 +1685,7 @@ async function onDataMX(session, headers, body) {
       data.normalized.length === 0 &&
       data.imap.length === 0)
   ) {
-    logger.debug('returning early', { session });
+    logger.debug('returning early', { session, resolver: this.resolver });
     return;
   }
 

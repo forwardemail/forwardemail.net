@@ -67,7 +67,7 @@ async function getTemporaryDatabase(session) {
   await setupPragma(tmpDb, tmpSession);
 
   // migrate schema
-  const commands = await migrateSchema(tmpDb, tmpSession, {
+  const commands = await migrateSchema(this, tmpDb, tmpSession, {
     TemporaryMessages
   });
 

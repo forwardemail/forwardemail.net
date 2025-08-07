@@ -225,7 +225,7 @@ async function getDatabase(
           error.alias = alias;
           error.session = session;
           error.dbFilePath = dbFilePath;
-          logger.fatal(error, { alias, session });
+          logger.fatal(error, { alias, session, resolver: instance.resolver });
         }
 
         //
@@ -559,7 +559,7 @@ async function getDatabase(
         //       need to stop sqlite server then
         //       purge all migrate_check:* keys
         //
-        const commands = await migrateSchema(db, session, {
+        const commands = await migrateSchema(instance, db, session, {
           Mailboxes,
           Messages,
           Threads,
@@ -578,7 +578,12 @@ async function getDatabase(
               // await knexDatabase.raw(command);
             } catch (err) {
               err.isCodeBug = true;
-              logger.fatal(err, { command, alias, session });
+              logger.fatal(err, {
+                command,
+                alias,
+                session,
+                resolver: instance.resolver
+              });
               // migration support in case existing rows
               if (
                 err.message.includes(
@@ -590,7 +595,12 @@ async function getDatabase(
                   db.prepare(command.replace(' NOT NULL', '')).run();
                 } catch (err) {
                   err.isCodeBug = true;
-                  logger.fatal(err, { command, alias, session });
+                  logger.fatal(err, {
+                    command,
+                    alias,
+                    session,
+                    resolver: instance.resolver
+                  });
                 }
               }
             }
@@ -661,15 +671,17 @@ async function getDatabase(
                   .then(() => {
                     instance.server.notifier.fire(session.user.alias_id);
                   })
-                  .catch((err) => logger.fatal(err, { session }));
+                  .catch((err) =>
+                    logger.fatal(err, { session, resolver: instance.resolver })
+                  );
               } catch (err) {
-                logger.fatal(err, { session });
+                logger.fatal(err, { session, resolver: instance.resolver });
               }
             })
           );
         }
       } catch (err) {
-        logger.fatal(err, { session });
+        logger.fatal(err, { session, resolver: instance.resolver });
       }
     }
 
@@ -836,7 +848,7 @@ async function getDatabase(
           */
         }
       } catch (err) {
-        logger.fatal(err, { session });
+        logger.fatal(err, { session, resolver: instance.resolver });
       }
     }
 
@@ -856,7 +868,7 @@ async function getDatabase(
           `DELETE FROM Threads WHERE _id NOT IN (SELECT thread FROM Messages);`
         );
       } catch (err) {
-        logger.fatal(err, { session });
+        logger.fatal(err, { session, resolver: instance.resolver });
       }
     }
 
@@ -897,7 +909,7 @@ async function getDatabase(
               });
           });
       } catch (err) {
-        logger.fatal(err, { session });
+        logger.fatal(err, { session, resolver: instance.resolver });
       }
     }
 
@@ -975,10 +987,11 @@ function retryGetDatabase(...args) {
     minTimeout: ms('5s'),
 
     async onFailedAttempt(error) {
+      const instance = args[0];
       const session = args[2];
 
       if (isRetryableError(error)) {
-        logger.fatal(error, { session });
+        logger.fatal(error, { session, resolver: instance.resolver });
         return;
       }
 
@@ -1155,10 +1168,10 @@ function retryGetDatabase(...args) {
           err.message = `Password token valid for ${session.user.username} with alias ID ${session.user.alias_id}\n\n ${err.message}`;
           err.isCodeBug = true;
           err.original_error = parseErr(error);
-          logger.fatal(err, { session });
+          logger.fatal(err, { session, resolver: instance.resolver });
         }
       } else {
-        logger.fatal(error, { session });
+        logger.fatal(error, { session, resolver: instance.resolver });
       }
 
       throw error;

@@ -531,7 +531,7 @@ async function getForwardingAddresses(
         // TODO: possibly email the owner/admin for things like negative lookhead or perl operator issues
         err.address = address;
         err.parsedRegex = parsedRegex;
-        logger.fatal(err, { session });
+        logger.fatal(err, { session, resolver: this.resolver });
       }
 
       if (username && regex && regex.test(username.toLowerCase())) {
@@ -758,7 +758,8 @@ async function getForwardingAddresses(
         forwardingAddresses.push(element);
       }
     } catch (err) {
-      if (!err.notConfigured) logger.error(err, { session });
+      if (!err.notConfigured)
+        logger.error(err, { session, resolver: this.resolver });
     }
   }
 

@@ -105,7 +105,7 @@ Test`.trim()
   );
 
   t.is(err.responseCode, 538);
-  t.is(err.response, '538 Error: Must issue a STARTTLS command first');
+  t.is(err.response, '538 5.7.0 Error: Must issue a STARTTLS command first');
 
   await smtp.close();
 });

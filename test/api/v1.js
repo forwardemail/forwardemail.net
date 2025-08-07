@@ -64,6 +64,7 @@ const { emoji } = config.views.locals;
 const keys = _.sortBy([
   'has_newsletter',
   'ignore_mx_check',
+  'has_delivery_logs',
   'retention_days',
   'has_regex',
   'has_catchall',

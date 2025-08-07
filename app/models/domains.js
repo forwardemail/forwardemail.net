@@ -218,6 +218,12 @@ Invite.plugin(mongooseCommonPlugin, {
 });
 
 const Domains = new mongoose.Schema({
+  // opt-in delivery logs (success)
+  has_delivery_logs: {
+    type: Boolean,
+    default: false
+  },
+
   // domain specific max quota per alias
   max_quota_per_alias: {
     type: Number,

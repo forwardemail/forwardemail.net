@@ -44,14 +44,18 @@ async function onGetQuotaRoot(path, session, fn) {
         .then((deleted) => {
           this.logger.debug('synced messages', { deleted });
         })
-        .catch((err) => this.logger.fatal(err, { session }));
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
     } else {
       syncTemporaryMailbox
         .call(this, session)
         .then((deleted) => {
           this.logger.debug('synced messages', { deleted });
         })
-        .catch((err) => this.logger.fatal(err, { session }));
+        .catch((err) =>
+          this.logger.fatal(err, { session, resolver: this.resolver })
+        );
     }
 
     const mailbox = await Mailboxes.findOne(this, session, {

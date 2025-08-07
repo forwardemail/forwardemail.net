@@ -5,6 +5,11 @@ block body
     .row.mt-1
       .col
         include ../../_breadcrumbs
+        .alert.alert-success.small
+          strong= t("Tip")
+          = ":"
+          = " "
+          != t('You can now opt-in for "delivered" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails.')
         if ctx.query.domains
           h4
             = t("Filtered for:")

@@ -66,7 +66,13 @@ async function onCopy(connection, mailboxId, update, session, fn) {
             this.server.notifier.fire(session.user.alias_id, update.destination)
           )
           .catch((err) =>
-            this.logger.fatal(err, { connection, mailboxId, update, session })
+            this.logger.fatal(err, {
+              connection,
+              mailboxId,
+              update,
+              session,
+              resolver: this.resolver
+            })
           );
       }
     } catch (err) {
@@ -331,7 +337,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
             this.logger.fatal(err, {
               mailboxId,
               update,
-              session
+              session,
+              resolver: this.resolver
             });
           }
         })
@@ -341,7 +348,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
             connection,
             mailboxId,
             update,
-            session
+            session,
+            resolver: this.resolver
           })
         );
 
@@ -359,7 +367,8 @@ async function onCopy(connection, mailboxId, update, session, fn) {
       //       connection,
       //       mailboxId,
       //       update,
-      //       session
+      //       session,
+      //       resolver: this.resolver
       //     })
       //   );
     }
@@ -367,7 +376,13 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     try {
       session.db.pragma('wal_checkpoint(PASSIVE)');
     } catch (err) {
-      this.logger.fatal(err, { connection, mailboxId, update, session });
+      this.logger.fatal(err, {
+        connection,
+        mailboxId,
+        update,
+        session,
+        resolver: this.resolver
+      });
     }
 
     const response = {
@@ -382,7 +397,13 @@ async function onCopy(connection, mailboxId, update, session, fn) {
     updateStorageUsed(session.user.alias_id, this.client)
       .then()
       .catch((err) =>
-        this.logger.fatal(err, { connection, mailboxId, update, session })
+        this.logger.fatal(err, {
+          connection,
+          mailboxId,
+          update,
+          session,
+          resolver: this.resolver
+        })
       );
   } catch (err) {
     fn(refineAndLogError(err, session, true, this));

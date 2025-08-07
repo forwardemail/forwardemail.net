@@ -185,7 +185,7 @@ async function getRecipients(session, scan) {
             //
             if (to.address.toLowerCase() === config.abuseEmail) {
               err.isCodeBug = true;
-              logger.fatal(err, { session });
+              logger.fatal(err, { session, resolver: this.resolver });
             } else {
               throw err;
             }
@@ -342,7 +342,7 @@ async function getRecipients(session, scan) {
           };
         }
 
-        logger.warn(err, { session });
+        logger.warn(err, { session, resolver: this.resolver });
         err.responseCode = getErrorCode(err);
         bounces.push({
           address: to.address,
@@ -456,7 +456,7 @@ async function getRecipients(session, scan) {
           } catch (err) {
             // TODO: e.g. if the MX servers don't exist for recipient
             // then obviously there should be an error
-            logger.warn(err, { session });
+            logger.warn(err, { session, resolver: this.resolver });
             errors.push(err);
           }
         },
@@ -478,7 +478,7 @@ async function getRecipients(session, scan) {
       if (recipient.addresses.length > 0 || recipient.hasIMAP) return recipient;
       if (errors.length === 0) return;
       for (const err of errors) {
-        logger.warn(err, { session });
+        logger.warn(err, { session, resolver: this.resolver });
       }
 
       const err = combineErrors(errors);

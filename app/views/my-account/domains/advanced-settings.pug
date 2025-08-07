@@ -276,6 +276,44 @@ block body
               = " "
               a.alert-link.text-muted(href="#delete-domain")
                 = t("Click here to go Delete Domain")
+      //- Opt-in Delivery Logs
+      if domain.group === 'admin' && !domain.is_global
+        #opt-in-delivery-logs.row
+          .col
+            form.ajax-form.confirm-prompt.card.border-themed.mb-3(
+              action=ctx.path,
+              method="POST",
+              disabled=isDisabled
+            )
+              input(type="hidden", name="_method", value="PUT")
+              input(type="hidden", name="_section", value="has_delivery_logs")
+              h2.h6.card-header= t("Enable Deliverability Logs for Successful Emails")
+              .card-body
+                +planRequired(false)
+                .form-group.form-check.mb-0
+                  input#input-has-delivery-logs.form-check-input(
+                    type="checkbox",
+                    disabled=isDisabled,
+                    name="has_delivery_logs",
+                    value="true",
+                    checked=domain.has_delivery_logs
+                  )
+                  label.form-check-label(for="input-has-delivery-logs")= t("Enable Deliverability Logs for Successful Emails")
+                  p.form-text.small.text-black.text-themed-50.mb-0
+                    != t("Opt-in to store headers and metadata (excluding message content) for successfully forwarded, webhook-sent, outbound SMTP, and IMAP-delivered emails, with logs retained for 7 days. This feature helps you monitor and troubleshoot email delivery performance with detailed insights into successful transmissions.")
+              .card-footer.text-right
+                ul.list-inline.mb-0
+                  li.list-inline-item
+                    button.confirm-prompt.btn.btn-lg.btn-secondary(
+                      type="reset",
+                      disabled=isDisabled
+                    )= t("Reset")
+                  li.list-inline-item
+                    button.btn.btn-lg.btn-primary(
+                      type="submit",
+                      disabled=isDisabled
+                    )= t("Save")
+
       //- Catch-all Passwords
       if domain.group === 'admin' && !domain.is_global
         #catch-all-passwords.row

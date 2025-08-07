@@ -33,6 +33,7 @@ async function parseLog(ctx) {
     if (ctx.isAuthenticated()) log.user = ctx.state.user._id;
 
     // store the log
+    log.resolver = ctx.resolver;
     await Logs.create(log);
 
     ctx.logger.info('log created', { log, ignore_hook: true });

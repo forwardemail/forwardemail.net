@@ -23,7 +23,7 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   if (typeof err.isCodeBug !== 'boolean') {
     err.isCodeBug = isCodeBug(err);
     if (err.isCodeBug) {
-      logger.fatal(err, { session });
+      logger.fatal(err, { session, resolver: instance.resolver });
       err.responseCode = 421;
     }
   }
@@ -41,7 +41,9 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
       instance.client.del(`trash_check:${session.user.alias_id}`)
     ])
       .then()
-      .catch((err) => logger.fatal(err, { session }));
+      .catch((err) =>
+        logger.fatal(err, { session, resolver: instance.resolver })
+      );
   }
 
   // if it was HTTP error and no `responseCode` set then try to parse it
@@ -62,7 +64,7 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
   } else {
-    logger.error(err, { session });
+    logger.error(err, { session, resolver: instance.resolver });
   }
 
   //
