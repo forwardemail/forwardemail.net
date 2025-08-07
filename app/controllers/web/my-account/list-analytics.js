@@ -200,8 +200,16 @@ async function listAnalytics(ctx) {
     outboundChart,
     inboundChart
   ] = await Promise.all([
-    // TODO: need to have users opt-in
-    Promise.resolve(0),
+    // successful delivery
+    // 250
+    Logs.countDocuments({
+      $and: [
+        {
+          message: 'delivered'
+        },
+        query
+      ]
+    }),
 
     // hard bounce
     // 5xx err.responseCode
