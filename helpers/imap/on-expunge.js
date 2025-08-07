@@ -65,7 +65,13 @@ async function onExpunge(mailboxId, update, session, fn) {
         );
       }
 
-      if (!update.silent && session?.selected?.uidList) {
+      //
+      // ONLY if messages were deleted should we return the total # of messages in the mailbox
+      // e.g. only if a change occurred, then we send the new count
+      //
+      // <https://github.com/zone-eu/wildduck/issues/241>
+      //
+      if (messages.length > 0 && !update.silent && session?.selected?.uidList) {
         payloads.push({
           tag: '*',
           command: String(session.selected.uidList.length),
