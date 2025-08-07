@@ -1308,8 +1308,8 @@ async function parsePayload(data, ws) {
           payload.session.user.alias_id
         );
 
-        // slight 20% overhead for backups
-        const spaceRequired = maxQuotaPerAlias * 1.2;
+        // slight overhead for backups
+        const spaceRequired = maxQuotaPerAlias * 1.75;
 
         const diskSpace = await checkDiskSpace(storagePath);
         if (diskSpace.free < spaceRequired)

@@ -159,7 +159,7 @@ async function rekey(payload) {
     }
 
     // we calculate size of db x 2 (backup + tarball)
-    const spaceRequired = stats.size * 1.2;
+    const spaceRequired = stats.size * 1.75;
 
     const diskSpace = await checkDiskSpace(storagePath);
     if (diskSpace.free < spaceRequired)
@@ -482,7 +482,7 @@ async function backup(payload) {
     if (isCancelled) throw new ServerShutdownError();
 
     // we calculate size of db * Y (backup + tarball)
-    const spaceRequired = stats.size * 1.2; // 20% (1.2) vs. 50% (2)
+    const spaceRequired = stats.size * 1.75; // 20% (1.2) vs. 50% (2)
 
     const diskSpace = await checkDiskSpace(storagePath);
     if (diskSpace.free < spaceRequired)
@@ -893,7 +893,7 @@ async function backup(payload) {
       }
 
       // we calculate size of db x 2 (backup + tarball)
-      const spaceRequired = stats.size * 1.2;
+      const spaceRequired = stats.size * 1.75;
 
       if (diskSpace.free < spaceRequired)
         throw new TypeError(
