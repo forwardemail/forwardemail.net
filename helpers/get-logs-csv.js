@@ -73,7 +73,11 @@ async function getLogsCsv(now = new Date(), query = {}, isAdmin = false) {
     .cursor()
     .addCursorFlag('noCursorTimeout', true)) {
     if (!log?.meta?.session?.id) continue;
-    let response = log?.err?.response || log?.err?.message || log.message;
+    let response =
+      log?.err?.response ||
+      log?.err?.message ||
+      log?.meta?.info?.response ||
+      log.message;
     if (!isAdmin && log?.err?.isCodeBug === true)
       response = 'An unexpected internal server error has occurred';
     // add new row to spreadsheet
