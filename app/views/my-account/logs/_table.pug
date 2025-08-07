@@ -114,7 +114,7 @@ table.table.table-hover.table-bordered.table-sm
                             = " "
                           //- TODO: log more details from `log.info`, e.g. EHLO etc
                           if log.meta && log.meta.info && log.meta.info.response
-                            != ansiHTML(log.info.response)
+                            != ansiHTML(log.meta.info.response)
                           else
                             != ansiHTML(log.message)
                         else
