@@ -74,7 +74,6 @@ function isCodeBug(err) {
       err.code === 'ENAMETOOLONG' ||
       err.code === 'ENFILE' ||
       err.code === 'ENOBUFS' ||
-      err.code === 'ENODATA' ||
       err.code === 'ENODEV' ||
       err.code === 'ENOENT' ||
       err.code === 'ENOEXEC' ||
