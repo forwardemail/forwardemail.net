@@ -1446,7 +1446,7 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
         //
         let reputableDNS = false;
         if (Array.isArray(ns) && ns.length > 0) {
-          reputableDNS = hasReputableDNS(ns);
+          reputableDNS = hasReputableDNS(ns, domain.name);
         }
 
         //
@@ -1476,8 +1476,8 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
           }
         }
 
-        // domain has legitimate hosting if it has reputable DNS OR legitimate A records
-        hasLegitimateHosting = reputableDNS || legitimateA || httpResponds;
+        // domain has legitimate hosting if it has reputable DNS AND legitimate A records AND HTTP response
+        hasLegitimateHosting = reputableDNS && legitimateA && httpResponds;
       } catch (err) {
         logger.debug(err);
         // reputation check is not required for SMTP, so we don't add to errors

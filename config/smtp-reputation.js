@@ -3,6 +3,9 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { isIP } = require('node:net');
+const REGEX_LOCALHOST = require('#helpers/regex-localhost');
+
 // Reputable DNS providers (check NS records for auto-approval)
 const REPUTABLE_DNS_PROVIDERS = new Set([
   // Cloudflare
@@ -71,12 +74,51 @@ const PARKING_IPS = new Set([
   // Register.com
   '65.254.248.100',
 
+  // Porkbun parking
+  '104.21.2.106',
+  '172.67.148.83',
+
+  // Hover.com parking
+  '216.40.47.26',
+
+  // Name.com parking
+  '69.46.88.64',
+
+  // 123-reg parking
+  '212.78.114.207',
+  '212.78.114.211',
+
+  // OVH parking
+  '213.186.33.5',
+  '87.98.231.6',
+
+  // CloudFlare parking
+  '104.21.2.106',
+  '172.67.148.83',
+
   // Common sinkhole/blackhole IPs
   '127.0.0.1',
-  '0.0.0.0'
+  '0.0.0.0',
+  '10.0.0.1',
+  '192.168.1.1',
+  '127.0.0.254'
 ]);
+
+// Function to validate resolved A records are not local/private IPs
+function isValidPublicIP(ip) {
+  if (!isIP(ip)) return false;
+
+  // Check if it's a localhost/private IP
+  if (REGEX_LOCALHOST.test(ip)) return false;
+
+  // Check if it's a parking IP
+  if (PARKING_IPS.has(ip)) return false;
+
+  return true;
+}
 
 module.exports = {
   REPUTABLE_DNS_PROVIDERS,
-  PARKING_IPS
+  PARKING_IPS,
+  isValidPublicIP
 };

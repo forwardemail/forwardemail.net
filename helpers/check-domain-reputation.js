@@ -3,18 +3,42 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { isIP } = require('node:net');
 const ms = require('ms');
 
 const logger = require('./logger');
 const retryRequest = require('./retry-request');
+const REGEX_LOCALHOST = require('#helpers/regex-localhost');
+const { nsProviderLookup } = require('#config/utilities');
 const {
   REPUTABLE_DNS_PROVIDERS,
-  PARKING_IPS
+  isValidPublicIP
 } = require('#config/smtp-reputation');
 
-function hasReputableDNS(nsRecords) {
+function hasReputableDNS(nsRecords, domain = null) {
   if (!Array.isArray(nsRecords) || nsRecords.length === 0) return false;
 
+  // Use nsProviderLookup if domain is provided (preferred approach)
+  if (domain) {
+    const provider = nsProviderLookup({ ns: nsRecords, name: domain });
+    if (provider && provider.name) {
+      // Check if provider name/slug matches our approved list
+      const providerName = provider.name.toLowerCase();
+      const providerSlug = provider.slug ? provider.slug.toLowerCase() : '';
+
+      return [...REPUTABLE_DNS_PROVIDERS].some((approvedProvider) => {
+        const approved = approvedProvider.toLowerCase();
+        return (
+          providerName.includes(approved) ||
+          providerSlug.includes(approved) ||
+          approved.includes(providerName) ||
+          approved.includes(providerSlug)
+        );
+      });
+    }
+  }
+
+  // Fallback to original logic
   return nsRecords.some((ns) => {
     const lowerNS = ns.toLowerCase();
     return [...REPUTABLE_DNS_PROVIDERS].some((provider) =>
@@ -25,10 +49,13 @@ function hasReputableDNS(nsRecords) {
 
 function hasLegitimateHosting(aRecords) {
   if (!Array.isArray(aRecords) || aRecords.length === 0) return false;
-  return aRecords.some((ip) => !PARKING_IPS.has(ip));
+  return aRecords.some((ip) => isValidPublicIP(ip));
 }
 
 async function respondsToHTTP(domain, timeout = ms('5s')) {
+  // Check if domain resolves to localhost/private IP and return false if so
+  if (isIP(domain) && REGEX_LOCALHOST.test(domain)) return false;
+
   const urls = [`https://${domain}`, `http://${domain}`];
 
   for (const url of urls) {
