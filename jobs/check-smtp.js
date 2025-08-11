@@ -189,8 +189,7 @@ async function mapper(id) {
     } else if (!domain.has_smtp && isVerified) {
       domain.missing_smtp_sent_at = undefined;
       if (count > 0 && !_.isDate(domain.smtp_verified_at)) {
-        // otherwise if the domain was newly verified
-        // and doesn't have smtp yet then email admins
+        // if the domain was newly verified and doesn't have smtp yet then email admins
         const subject = i18n.translate(
           'SMTP_ACCESS_SUBJECT',
           locale,
