@@ -11,7 +11,7 @@ const retryRequest = require('./retry-request');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const { nsProviderLookup } = require('#config/utilities');
 const {
-  REPUTABLE_DNS_PROVIDERS,
+  REPUTABLE_DNS_PROVIDER_SLUGS,
   isValidPublicIP
 } = require('#config/smtp-reputation');
 
@@ -21,30 +21,13 @@ function hasReputableDNS(nsRecords, domain = null) {
   // Use nsProviderLookup if domain is provided (preferred approach)
   if (domain) {
     const provider = nsProviderLookup({ ns: nsRecords, name: domain });
-    if (provider && provider.name) {
-      // Check if provider name/slug matches our approved list
-      const providerName = provider.name.toLowerCase();
-      const providerSlug = provider.slug ? provider.slug.toLowerCase() : '';
-
-      return [...REPUTABLE_DNS_PROVIDERS].some((approvedProvider) => {
-        const approved = approvedProvider.toLowerCase();
-        return (
-          providerName.includes(approved) ||
-          providerSlug.includes(approved) ||
-          approved.includes(providerName) ||
-          approved.includes(providerSlug)
-        );
-      });
+    if (provider && provider.slug) {
+      return REPUTABLE_DNS_PROVIDER_SLUGS.has(provider.slug);
     }
   }
 
-  // Fallback to original logic
-  return nsRecords.some((ns) => {
-    const lowerNS = ns.toLowerCase();
-    return [...REPUTABLE_DNS_PROVIDERS].some((provider) =>
-      lowerNS.includes(provider.toLowerCase())
-    );
-  });
+  // Fallback: return false if no domain provided (requires nsProviderLookup)
+  return false;
 }
 
 function hasLegitimateHosting(aRecords) {

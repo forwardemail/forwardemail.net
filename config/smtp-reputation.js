@@ -6,40 +6,33 @@
 const { isIP } = require('node:net');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 
-// Reputable DNS providers (check NS records for auto-approval)
-const REPUTABLE_DNS_PROVIDERS = new Set([
-  // Cloudflare
-  'cloudflare.com',
-  'ns.cloudflare.com',
-
-  // AWS Route 53
-  'awsdns',
-  'amazonaws.com',
-
-  // Google Cloud DNS / Google Domains
-  'googledomains.com',
-  'google.com',
-  'dns.google',
+// Reputable DNS provider slugs (based on NS_PROVIDERS from config/utilities)
+const REPUTABLE_DNS_PROVIDER_SLUGS = new Set([
+  // Major cloud providers
+  'cloudflare',
+  'amazon-route-53', // AWS Route 53
+  'google-domains',
+  'google-cloud-dns',
+  'azure',
 
   // Popular registrars with good DNS
-  'namecheap.com',
-  'registrar-servers.com', // Namecheap
-  'dnsowl.com', // Namecheap premium
+  'namecheap',
+  'godaddy',
 
   // Other reputable providers
-  'ns1.com',
-  'dnsimple.com',
-  'zoneedit.com',
-  'dnsmadeeasy.com',
-  'ultradns.com',
-  'easydns.com',
-
-  // Enterprise/business DNS
-  'azure-dns.com',
-  'azuredns.com',
-  'digitalocean.com',
-  'linode.com',
-  'hover.com'
+  'ns1',
+  'dns-made-easy',
+  'digital-ocean',
+  'linode-akamai',
+  'hover',
+  'gandi',
+  'ionos',
+  'ovhcloud',
+  'vultr',
+  'easydns',
+  'ultradns',
+  'hurricane-electric',
+  'cloudns'
 ]);
 
 // Known parking/default IPs that indicate non-legitimate hosting
@@ -97,11 +90,7 @@ const PARKING_IPS = new Set([
   '172.67.148.83',
 
   // Common sinkhole/blackhole IPs
-  '127.0.0.1',
-  '0.0.0.0',
-  '10.0.0.1',
-  '192.168.1.1',
-  '127.0.0.254'
+  '0.0.0.0'
 ]);
 
 // Function to validate resolved A records are not local/private IPs
@@ -118,7 +107,7 @@ function isValidPublicIP(ip) {
 }
 
 module.exports = {
-  REPUTABLE_DNS_PROVIDERS,
+  REPUTABLE_DNS_PROVIDER_SLUGS,
   PARKING_IPS,
   isValidPublicIP
 };
