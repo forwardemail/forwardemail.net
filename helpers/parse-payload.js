@@ -1309,7 +1309,7 @@ async function parsePayload(data, ws) {
         );
 
         // slight overhead for backups
-        const spaceRequired = maxQuotaPerAlias * 1.75;
+        const spaceRequired = maxQuotaPerAlias * 2;
 
         const diskSpace = await checkDiskSpace(storagePath);
         if (diskSpace.free < spaceRequired)
