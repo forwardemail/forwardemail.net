@@ -151,9 +151,9 @@ async function verifySMTP(ctx) {
       );
 
       if (
-        (ctx.state.user.has_passed_kyc && !hasSomeSuspendedDomains) ||
-        hasLegitimateHosting ||
-        hasExistingApprovedDomains
+        ctx.state.user.has_passed_kyc ||
+        (hasLegitimateHosting && !hasSomeSuspendedDomains) ||
+        (hasExistingApprovedDomains && !hasSomeSuspendedDomains)
       ) {
         domain.has_smtp = true;
         if (!ctx.api)
@@ -198,7 +198,24 @@ async function verifySMTP(ctx) {
               subject
             },
             locals: {
-              message: `<a href="${config.urls.web}/admin/domains?name=${domain.name}" class="btn btn-dark btn-md">Review Domain</a>`,
+              message: `
+              <ul>
+                <li><strong>Legitimate Hosting</strong> ${hasLegitimateHosting.toString()}</li>
+                <li><strong>Suspended Domains</strong> ${hasSomeSuspendedDomains.toString()}</li>
+                <li><strong>Approved Domains</strong> ${hasExistingApprovedDomains.toString()}</li>
+                <li>
+                  <strong>NS Provider(s):</strong>
+                  ${
+                    ns && ns.length > 0
+                      ? `<ul><li>${ns.join('</li><li>')}</li></ul>`
+                      : ''
+                  }
+                </li>
+              </ul>
+              <a href="${config.urls.web}/admin/domains?name=${
+                domain.name
+              }" class="btn btn-dark btn-md">Review Domain</a>
+              `.trim(),
               locale
             }
           })

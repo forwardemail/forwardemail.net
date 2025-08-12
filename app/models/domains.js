@@ -1363,6 +1363,9 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
   let returnPath = false;
   let dmarc = false;
   let hasLegitimateHosting = false;
+  let reputableDNS = false;
+  let legitimateA = false;
+  let httpResponds = false;
 
   //
   // attempt to purge Cloudflare cache programmatically
@@ -1434,54 +1437,36 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
       const results = await getNSRecords(domain, resolver);
       ns = results.ns;
       errors.push(...results.errors);
+      //
+      // check NS records for reputable DNS providers
+      //
+      if (Array.isArray(ns) && ns.length > 0)
+        reputableDNS = hasReputableDNS(ns, domain.name);
     })(),
 
     //
-    // check domain reputation for auto-approval
+    // check A records for legitimate hosting (not parking pages)
     //
     (async function () {
       try {
-        //
-        // check NS records for reputable DNS providers
-        //
-        let reputableDNS = false;
-        if (Array.isArray(ns) && ns.length > 0) {
-          reputableDNS = hasReputableDNS(ns, domain.name);
-        }
-
-        //
-        // check A records for legitimate hosting (not parking pages)
-        //
-        let legitimateA = false;
-        try {
-          const aRecords = await resolver.resolve4(domain.name, {
-            purgeCache: true
-          });
-          if (Array.isArray(aRecords) && aRecords.length > 0) {
-            legitimateA = hasLegitimateHosting(aRecords);
-          }
-        } catch (err) {
-          logger.debug(err);
-        }
-
-        //
-        // check HTTP response (basic availability check)
-        //
-        let httpResponds = false;
-        if (legitimateA) {
-          try {
-            httpResponds = await respondsToHTTP(domain.name);
-          } catch (err) {
-            logger.debug(err);
-          }
-        }
-
-        // domain has legitimate hosting if it has reputable DNS AND legitimate A records AND HTTP response
-        hasLegitimateHosting = reputableDNS && legitimateA && httpResponds;
+        const aRecords = await resolver.resolve4(domain.name, {
+          purgeCache: true
+        });
+        if (Array.isArray(aRecords) && aRecords.length > 0)
+          legitimateA = hasLegitimateHosting(aRecords);
       } catch (err) {
         logger.debug(err);
-        // reputation check is not required for SMTP, so we don't add to errors
-        // this is just for auto-approval logic
+      }
+    })(),
+
+    //
+    // check HTTP response (basic availability check)
+    //
+    (async function () {
+      try {
+        httpResponds = await respondsToHTTP(domain.name);
+      } catch (err) {
+        logger.debug(err);
       }
     })(),
 
@@ -1604,6 +1589,9 @@ async function verifySMTP(domain, resolver, purgeCache = true) {
       }
     })()
   ]);
+
+  // domain has legitimate hosting if it has reputable DNS AND legitimate A records AND HTTP response
+  hasLegitimateHosting = reputableDNS && legitimateA && httpResponds;
 
   if (!dkim) {
     errors.push(

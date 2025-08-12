@@ -6,14 +6,18 @@
 const { isIP } = require('node:net');
 const ms = require('ms');
 
+const pkg = require('../package.json');
+
+const REGEX_LOCALHOST = require('./regex-localhost');
 const logger = require('./logger');
 const retryRequest = require('./retry-request');
-const REGEX_LOCALHOST = require('#helpers/regex-localhost');
-const { nsProviderLookup } = require('#config/utilities');
+
 const {
   REPUTABLE_DNS_PROVIDER_SLUGS,
   isValidPublicIP
 } = require('#config/smtp-reputation');
+const config = require('#config');
+const { nsProviderLookup } = require('#config/utilities');
 
 function hasReputableDNS(nsRecords, domain = null) {
   if (!Array.isArray(nsRecords) || nsRecords.length === 0) return false;
@@ -48,8 +52,7 @@ async function respondsToHTTP(domain, timeout = ms('5s')) {
         timeout,
         retries: 0,
         headers: {
-          'User-Agent':
-            'Mozilla/5.0 (compatible; ForwardEmail/1.0; +https://forwardemail.net)'
+          'User-Agent': `Mozilla/5.0 (compatible; ${pkg.name}/${pkg.version}; +${config.urls.web})`
         }
       });
 

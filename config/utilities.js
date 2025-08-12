@@ -465,6 +465,54 @@ const NS_PROVIDERS = {
     'https://portal.ultradns.com/',
     false,
     ''
+  ],
+  sedo: [
+    'sedo',
+    'Sedo',
+    // Sedo is a major domain parking service
+    'https://sedo.com/us/login/',
+    false,
+    ''
+  ],
+  afternic: [
+    'afternic',
+    'Afternic (GoDaddy)',
+    // Afternic is GoDaddy's domain resale and parking platform
+    'https://www.afternic.com/login',
+    false,
+    ''
+  ],
+  bodis: [
+    'bodis',
+    'Bodis',
+    // Bodis is a domain parking and monetization service
+    'https://www.bodis.com/login',
+    false,
+    ''
+  ],
+  hostgator: [
+    'hostgator',
+    'HostGator',
+    // Part of Endurance International Group (EIG )
+    'https://portal.hostgator.com/login',
+    false,
+    ''
+  ],
+  'unifiedlayer.com': [
+    'unified-layer',
+    'Unified Layer (Bluehost/HostGator)',
+    // The infrastructure behind many EIG brands
+    'https://www.unifiedlayer.com/', // No public login
+    false,
+    ''
+  ],
+  'web.com': [
+    'web-com-group',
+    'Web.com Group',
+    // Parent company of Network Solutions, Register.com
+    'https://www.web.com/my-account/login',
+    false,
+    ''
   ]
 };
 
