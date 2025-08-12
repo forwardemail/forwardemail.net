@@ -246,11 +246,9 @@ function analyzeUserAccount(user, matchedDomain, matchType) {
       indicators.push('Unverified email address');
     }
 
-    // Plan analysis
-    if (user.plan !== 'free') {
-      riskScore += 25;
-      indicators.push(`Paid plan user (${user.plan}) with suspicious domain`);
-    }
+    // Plan analysis (all analyzed users are paid since free users are excluded)
+    riskScore += 25;
+    indicators.push(`Paid plan user (${user.plan}) with suspicious domain`);
 
     // Payment method analysis
     const paymentMethods = [];
@@ -529,7 +527,7 @@ function generateHTMLReport(reports, severity, severityConfig) {
           <li><strong>Low:</strong> Add to monitoring list for pattern analysis</li>
         </ul>
 
-        <p><strong>Note:</strong> This job detects users with domains they own/manage that were previously used by banned users or are on the denylist. Domains on the allowlist are automatically excluded. Users who have passed KYC verification are excluded from this analysis. Please verify findings before taking action on user accounts.</p>
+        <p><strong>Note:</strong> This job detects users with domains they own/manage that were previously used by banned users or are on the denylist. Domains on the allowlist are automatically excluded. Users who have passed KYC verification and free plan users are excluded from this analysis. Please verify findings before taking action on user accounts.</p>
       </div>
     </div>
   `;
@@ -546,10 +544,11 @@ function generateHTMLReport(reports, severity, severityConfig) {
   try {
     logger.info('Starting user domain abuse detection analysis...');
 
-    // Get all unbanned users (excluding those who have passed KYC verification)
+    // Get all unbanned users (excluding KYC-verified and free plan users)
     const unbannedUsers = await Users.find({
       [config.userFields.isBanned]: false,
-      has_passed_kyc: { $ne: true }
+      has_passed_kyc: { $ne: true },
+      plan: { $in: ['enhanced_protection', 'team'] }
     })
       .select(
         `email created_at plan has_verified_email ${config.userFields.planExpiresAt} stripe_customer_id paypal_payer_id`
@@ -558,7 +557,7 @@ function generateHTMLReport(reports, severity, severityConfig) {
       .exec();
 
     logger.info(
-      `Analyzing ${unbannedUsers.length} unbanned users (excluding KYC-verified) for suspicious domains`
+      `Analyzing ${unbannedUsers.length} unbanned paid users (excluding KYC-verified and free plan) for suspicious domains`
     );
 
     // Get domains from banned users

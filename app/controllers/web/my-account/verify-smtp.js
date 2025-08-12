@@ -64,10 +64,8 @@ async function verifySMTP(ctx) {
     domain.locale = ctx.locale;
     domain.resolver = ctx.resolver;
 
-    const { ns, dkim, returnPath, dmarc, errors } = await Domains.verifySMTP(
-      domain,
-      ctx.resolver
-    );
+    const { ns, dkim, returnPath, dmarc, hasLegitimateHosting, errors } =
+      await Domains.verifySMTP(domain, ctx.resolver);
 
     // skip verification since this is separate from domain forwarding setup
     domain.skip_verification = true;
@@ -134,10 +132,29 @@ async function verifySMTP(ctx) {
     } else if (!domain.has_smtp && isVerified) {
       domain.missing_smtp_sent_at = undefined;
       //
-      // if the logged-in user has passed KYC (know your customer check)
-      // then we should auto-approve their SMTP usage without them needing us to check
+      // Auto-approve SMTP if:
+      // 1. User has passed KYC (know your customer check) AND has no suspended domains, OR
+      // 2. Domain has legitimate hosting (reputable DNS, non-parking IPs, HTTP response), OR
+      // 3. User already has other approved and non-suspended SMTP domains
       //
-      if (ctx.state.user.has_passed_kyc) {
+      const hasExistingApprovedDomains = ctx.state.domains.some(
+        (d) =>
+          d.has_smtp &&
+          !d.is_smtp_suspended &&
+          d.group === 'admin' &&
+          d._id.toString() !== domain._id.toString()
+      );
+
+      // Check if user has any suspended domains
+      const hasSomeSuspendedDomains = ctx.state.domains.some(
+        (d) => d.is_smtp_suspended && d.group === 'admin'
+      );
+
+      if (
+        (ctx.state.user.has_passed_kyc && !hasSomeSuspendedDomains) ||
+        hasLegitimateHosting ||
+        hasExistingApprovedDomains
+      ) {
         domain.has_smtp = true;
         if (!ctx.api)
           ctx.flash(
