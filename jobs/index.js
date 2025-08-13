@@ -252,6 +252,12 @@ let jobs = [
     name: 'check-alias-recipient-abuse',
     interval: '1d',
     timeout: 0
+  },
+  // check for suspicious email patterns similar to banned accounts
+  {
+    name: 'check-suspicious-emails',
+    interval: '6h',
+    timeout: 0
   }
 ];
 
