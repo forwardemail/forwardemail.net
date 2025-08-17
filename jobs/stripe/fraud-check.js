@@ -56,7 +56,7 @@ async function mapper(customer) {
     emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: `Potential Payment Method Fraud: ${user.email} - ${customer.id} - ${paymentMethods.data.length} payment methods`
       },
       locals: {

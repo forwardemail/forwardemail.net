@@ -97,7 +97,7 @@ graceful.listen();
               await emailHelper({
                 template: 'alert',
                 message: {
-                  to: config.email.message.from,
+                  to: config.alertsEmail,
                   subject
                 },
                 locals: {
@@ -125,7 +125,7 @@ graceful.listen();
             await emailHelper({
               template: 'alert',
               message: {
-                to: config.email.message.from,
+                to: config.alertsEmail,
                 subject
               },
               locals: {
@@ -147,7 +147,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Check PM2 had an error'
       },
       locals: {

@@ -150,7 +150,7 @@ async function checkDate(date) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Scan MX had an error'
       },
       locals: {

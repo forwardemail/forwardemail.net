@@ -98,7 +98,7 @@ graceful.listen();
             await emailHelper({
               template: 'alert',
               message: {
-                to: config.email.message.from,
+                to: config.alertsEmail,
                 subject: `PayPal Payment Recovered - ${payment.user.email} - $${
                   payment.amount / 100
                 }`
@@ -180,7 +180,7 @@ graceful.listen();
             template: 'alert',
             message: {
               to: payment.user.email,
-              cc: config.email.message.from,
+              cc: config.alertsEmail,
               subject: 'Payment Processing Failed - Please Retry Your Payment'
             },
             locals: {
@@ -221,7 +221,7 @@ graceful.listen();
           await emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               cc: payment.user.email,
               subject: `PayPal Payment Failed & Deleted - ${
                 payment.user.email
@@ -299,7 +299,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'PayPal Automated Capture Retry Error'
       },
       locals: {

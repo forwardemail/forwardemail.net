@@ -384,7 +384,7 @@ async function sendAbuseAlert(severity, reports) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: `${configSeverity.subject} (${reports.length} users)`
       },
       locals: {
@@ -683,7 +683,7 @@ function generateHTMLReport(reports, severity, severityConfig) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'User Domain Abuse Detection Error'
       },
       locals: {

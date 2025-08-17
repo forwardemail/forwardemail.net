@@ -41,7 +41,7 @@ graceful.listen();
       await email({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `(${count}) Unknown Payment Methods Detected`
         },
         locals: {

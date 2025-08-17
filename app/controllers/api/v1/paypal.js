@@ -100,7 +100,7 @@ async function processEvent(ctx) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Customer banned for opening PayPal dispute: ${user.email}`
           },
           locals: {
@@ -238,7 +238,7 @@ async function processEvent(ctx) {
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             cc: res.body.subscriber.email_address.toLowerCase(),
             subject: `PayPal Subscription Issue (${res.body.id})`
           },
@@ -491,7 +491,7 @@ async function processEvent(ctx) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `${
                 isRetryExhausted ? 'CRITICAL: ' : ''
               }Error while capturing PayPal order payment for ${user.email}${
@@ -684,7 +684,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
           template: 'alert',
           message: {
             to: user.email,
-            cc: config.email.message.from,
+            cc: config.alertsEmail,
             subject: 'Payment Processing Issue - Please Retry Your Payment'
           },
           locals: {
@@ -731,7 +731,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             cc: user.email,
             subject: `PayPal Payment Approval Reversed - ${user.email} - Order ${body.resource.id}`
           },

@@ -95,7 +95,7 @@ graceful.listen();
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Cache issues detected for ${errors.length} assets`
         },
         locals: {
