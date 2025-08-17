@@ -5,41 +5,45 @@ include ../../_pagination
   table.table.table-hover.table-bordered.table-sm
     thead.thead-dark
       tr
-        th.text-center.align-middle(scope="col")= t("Selected")
-        th(scope="col")
-          +sortHeader('email', null, '#table-inquiries')
-        th.text-center.align-middle(scope="col")= t("Message")
-        th(scope="col")
-          +sortHeader('plan', null, '#table-inquiries')
-        th(scope="col")
-          +sortHeader('reference', Reference, '#table-inquiries')
-        th(scope="col")
+        th(scope="col", style="width: 200px;")
+          +sortHeader('email', 'From', '#table-inquiries')
+        th.text-center.align-middle(scope="col", style="width: 350px;")= t("Subject & Preview")
+        th(scope="col", style="width: 100px;")
+          +sortHeader('plan', 'Plan', '#table-inquiries')
+        th(scope="col", style="width: 120px;")
+          +sortHeader('reference', 'Reference', '#table-inquiries')
+        th(scope="col", style="width: 120px;")
           +sortHeader('created_at', 'Created', '#table-inquiries')
-        th(scope="col")
-          +sortHeader('updated_at', 'Updated', '#table-inquiries')
-        th.text-center.align-middle(scope="col")= t("Actions")
+        th.text-center.align-middle(scope="col", style="width: 150px;")= t("Actions")
     tbody
       if inquiries.length === 0
-        td.alert.alert-info= t("No inquiries exist for that search.")
+        tr
+          td.text-center.py-4(colspan="5")
+            .alert.alert-info.mb-0= t("No inquiries exist for that search.")
       else
         each inquiry in inquiries
-          tr
-            td.align-middle.text-center
-              .form-group.form-check.form-check-inline.mb-0
-                input.form-check-input(
-                  type="checkbox",
-                  name="is_inquiry_selected",
-                  value=inquiry.id,
-                  data-email=inquiry.email
-                )
+          tr(class=inquiry.is_resolved ? 'bg-white text-dark' : 'bg-white text-dark')
             td.align-middle
-              a(
+              a.text-primary(
                 href=l(`/admin/users?mongodb_query={ email: "${inquiry.email}" }`),
                 target="_blank",
                 rel="noopener noreferrer"
               )= inquiry.email
             td.align-middle
-              = inquiry.message
+              .d-flex.flex-column
+                .font-weight-medium.text-truncate(style="max-width: 280px;", title=inquiry.subject || '[No Subject]')
+                  = inquiry.subject || '[No Subject]'
+                small.text-muted.text-truncate(style="max-width: 280px;")
+                  = inquiry.message ? inquiry.message.substring(0, 100) + (inquiry.message.length > 100 ? '...' : '') : ''
+                .mt-1
+                  if inquiry.has_attachment
+                    span.badge.badge-info.badge-sm.mr-1
+                      i.fa.fa-paperclip.mr-1
+                      = t("Attachment")
+                  if inquiry.thread_id
+                    span.badge.badge-secondary.badge-sm.mr-1
+                      i.fa.fa-comments.mr-1
+                      = t("Thread")
             td.align-middle
               = titleize(humanize(inquiry.plan || "none"))
             td.align-middle
@@ -47,57 +51,23 @@ include ../../_pagination
             td.align-middle.dayjs(
               data-time=new Date(inquiry.created_at).getTime()
             )= dayjs(inquiry.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
-            td.align-middle.dayjs(
-              data-time=new Date(inquiry.updated_at).getTime()
-            )= dayjs(inquiry.updated_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
             td.align-middle
-              .btn-group(role="group", aria-label=t("Actions"))
+              .btn-group.btn-group-sm(role="group", aria-label=t("Actions"))
                 a.btn.btn-primary(
                   href=l(`/admin/inquiries/${inquiry.id}`),
                   data-toggle="tooltip",
                   data-title=t("Reply")
-                ): i.fa.fa-fw.fa-edit
-                form.ajax-form.confirm-prompt.btn-group(
-                  action=l(`/admin/inquiries/${inquiry.id}`),
-                  method="POST",
-                  autocomplete="off"
-                )
-                  input(type="hidden", name="_method", value="PUT")
-                  button.btn.btn-secondary(
-                    type="submit",
-                    data-toggle="tooltip",
-                    data-title=t("Resolve")
-                  ): i.fa.fa-fw.fa-regular.fa-check-circle
-  button#bulk-reply-button.btn.btn-secondary.float-right.mb-3 Bulk Reply
-  #bulk-reply-modal.modal.fade(
-    tabindex="-1",
-    role="dialog",
-    aria-labelledby="modal-bulk-reply-title",
-    aria-hidden="true"
-  )
-    .modal-dialog(role="document")
-      .modal-content
-        .modal-header.text-center.d-block
-          h4#modal-bulk-reply-title.d-inline-block.ml-4= t("Bulk Reply")
-          button.close(type="button", data-dismiss="modal", aria-label="Close")
-            span(aria-hidden="true") &times;
-        .modal-body
-          .form-group
-            h5= t("Replying to")
-            #modal-reply-to-email-list
-          .text-center
-            form.form-group
-              label(for="textarea-bulk-reply-message")
-                h5= t("Message")
-                  = " "
-              textarea#textarea-bulk-reply-message.form-control(
-                name="bulk-reply-message",
-                rows=8
-              )
-              button#submit-bulk-reply.btn.btn-lg.btn-block.btn-primary.mt-3(
-                type="button"
-              )
-                i.fa.fa-edit
-                = " "
-                = t("Submit Bulk Reply")
+                ): i.fa.fa-fw.fa-reply
+                if !inquiry.is_resolved
+                  form.ajax-form.confirm-prompt.btn-group(
+                    action=l(`/admin/inquiries/${inquiry.id}`),
+                    method="POST",
+                    autocomplete="off"
+                  )
+                    input(type="hidden", name="_method", value="PUT")
+                    button.btn.btn-success(
+                      type="submit",
+                      data-toggle="tooltip",
+                      data-title=t("Mark as Resolved")
+                    ): i.fa.fa-fw.fa-check
 +paginate('#table-inquiries')

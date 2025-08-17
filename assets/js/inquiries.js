@@ -11,73 +11,47 @@ const sendRequest = require('./send-request');
 
 const spinner = new Spinner($);
 
-function handleBulkReply() {
-  const checkboxes = $('#table-inquiries input[type="checkbox"]:checked');
-  const inquiries = checkboxes
-    .map(function () {
-      return { id: $(this).val(), email: $(this).data('email') };
-    })
-    .get();
-
-  const emails = inquiries.map((inquiry) => inquiry.email);
-  const uniqueEmails = [...new Set(emails)];
-
-  if (inquiries.length === 0) {
-    Swal.fire(window._types.error, 'No inquiries selected.', 'error');
-    return;
+// Enhanced functionality for Email API-based inquiries
+class InquiryEnhancements {
+  constructor() {
+    this.init();
   }
 
-  if (inquiries.length === 1) {
-    const { origin, pathname } = window.location;
-    const redirectUrl = `${origin}${pathname}/${inquiries[0].id}`;
-    window.location.href = redirectUrl;
-    return;
+  init() {
+    // Initialize tooltips
+    $('[data-toggle="tooltip"]').tooltip();
+    
+    // Add visual enhancements
+    this.addVisualEnhancements();
+    
+    // Enhanced status indicators
+    this.updateStatusIndicators();
   }
 
-  const $emailList = $('#modal-reply-to-email-list');
-  $emailList.empty();
-
-  for (const email of uniqueEmails) {
-    const listItem = $('<li class="list-group-item">').text(email);
-    $emailList.append(listItem);
+  addVisualEnhancements() {
+    // Add loading states to action buttons
+    $('.btn').on('click', function() {
+      if (!$(this).hasClass('no-loading')) {
+        $(this).prop('disabled', true);
+        setTimeout(() => $(this).prop('disabled', false), 2000);
+      }
+    });
   }
 
-  $('#bulk-reply-modal').modal('show');
-}
-
-async function handleSubmitBulkReply() {
-  console.log('testing');
-  const checkboxes = $('#table-inquiries input[type="checkbox"]:checked');
-  const inquiries = checkboxes
-    .map(function () {
-      return { id: $(this).val(), email: $(this).data('email') };
-    })
-    .get();
-
-  const ids = inquiries.map((inquiry) => inquiry.id);
-
-  const message = $('#textarea-bulk-reply-message').val();
-
-  try {
-    spinner.show();
-
-    const url = `${window.location.pathname}/bulk`;
-    const response = await sendRequest({ ids, message }, url);
-
-    if (response.err) {
-      console.log('error in response', { response });
-      throw response.err;
-    }
-
-    spinner.hide();
-
-    location.reload(true);
-  } catch (err) {
-    console.error(err);
-    spinner.hide();
-    Swal.fire(window._types.error, err.message, 'error');
+  updateStatusIndicators() {
+    // Update row highlighting based on status - use white background instead
+    $('tr').each(function() {
+      const $row = $(this);
+      if ($row.find('.badge-warning').length > 0) {
+        $row.addClass('bg-white');
+      }
+    });
   }
 }
 
-$('#table-inquiries').on('click', '#bulk-reply-button', handleBulkReply);
-$('#submit-bulk-reply').on('click', handleSubmitBulkReply);
+// Initialize enhancements
+$(document).ready(() => {
+  new InquiryEnhancements();
+});
+
+// Bulk functionality removed - now focusing on individual inquiry management

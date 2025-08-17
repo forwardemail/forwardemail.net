@@ -59,16 +59,6 @@ router
   .get('/inquiries', paginate.middleware(10, 50), web.admin.inquiries.list)
   .get('/inquiries/:id', web.admin.inquiries.retrieve)
   .post(
-    '/inquiries/bulk',
-    upload.fields([
-      {
-        name: 'attachments',
-        maxCount: 3
-      }
-    ]),
-    web.admin.inquiries.bulkReply
-  )
-  .post(
     '/inquiries/:id',
     upload.fields([
       {

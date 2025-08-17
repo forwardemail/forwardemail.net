@@ -5,43 +5,254 @@ block body
     .row.mt-1
       .col
         include ../../_breadcrumbs
-        each message in messages
-          iframe.bg-white.border-dark(
-            sandbox="allow-downloads allow-scripts",
-            referrerpolicy="no-referrer",
-            seamless="seamless",
-            srcdoc=`<base target='_top'>${message.html}`,
-            height="400px",
-            width="100%"
-          )
-          hr
-        form.confirm-prompt(
-          action=ctx.path,
-          method="POST",
-          enctype="multipart/form-data"
-        )
-          .card.border-themed.card-custom
-            .card-body
+        
+        // Header with basic info and actions following admin conventions
+        .card.border-themed.mb-4
+          h4.card-header.bg-dark.text-white= result.subject || '[No Subject]'
+          .card-body
+            .row.mb-3
+              .col-md-8
+                .small.text-muted.mb-2
+                  span.mr-3 Thread ID: #{result.thread_id || result.id}
+                  span.mr-3= dayjs(result.created_at || messages[0].created_at).format("M/D/YY h:mm A")
+                  span.mr-3 #{messages.length} messages
+                if result.is_resolved
+                  span.badge.badge-success
+                    i.fa.fa-check.mr-1
+                    = t("Resolved")
+                else
+                  span.badge.badge-warning
+                    i.fa.fa-clock.mr-1
+                    = t("Pending")
+              .col-md-4.text-md-right
+                .btn-group(role="group")
+                  a.btn.btn-secondary.btn-sm(href="/admin/inquiries")
+                    i.fa.fa-arrow-left.mr-1
+                    | Back
+                  button.btn.btn-primary.btn-sm(onclick="toggleReplyForm()")
+                    i.fa.fa-reply.mr-1
+                    | Reply
+                  if !result.is_resolved
+                    button.btn.btn-success.btn-sm(onclick="markAsResolved()")
+                      i.fa.fa-check.mr-1
+                      | Resolve
+        
+        // Message Thread - Following admin table conventions
+        .card.border-themed
+          .card-header.bg-dark.text-white
+            i.fa.fa-comments.mr-2
+            | Conversation Thread
+          .card-body.p-0.bg-white
+            each message, index in messages
+              .border-bottom.p-3.bg-white.text-dark(data-message-id=message.id, class=index === 0 ? 'bg-light' : '')
+                .d-flex.justify-content-between.align-items-start.mb-2
+                  .d-flex.align-items-center
+                    .badge.rounded-circle.mr-3(class=message.isSupport ? 'badge-success' : 'badge-primary', style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;")
+                      = message.fromName ? message.fromName.charAt(0).toUpperCase() : '?'
+                    div
+                      strong.text-dark= message.fromName || 'Unknown Sender'
+                      br
+                      small.text-muted= message.fromAddress || 'Unknown'
+                  .text-right
+                    .small.text-muted.mb-1= dayjs(message.created_at).format("M/D/YY h:mm A")
+                    div
+                      if !message.isRead
+                        span.badge.badge-primary.badge-sm.mr-1 Unread
+                      if message.isAnswered
+                        span.badge.badge-success.badge-sm.mr-1 Answered
+                      if message.hasAttachments
+                        span.badge.badge-secondary.badge-sm.mr-1
+                          i.fa.fa-paperclip
+                      button.btn.btn-outline-secondary.btn-sm.btn-expand(onclick=`toggleMessage('${message.id}')`, data-message-id=message.id)
+                        i.fa.fa-chevron-down(id=`icon-${message.id}`)
+                
+                .message-content.collapse(id=`message-content-${message.id}`)
+                  .mt-3.p-3.bg-white.border.rounded.text-dark
+                    if message.text && message.text.trim()
+                      .mb-3.text-dark(style="white-space: pre-wrap; word-wrap: break-word;")= message.text
+                    else if message.originalContent && message.originalContent.trim()
+                      .mb-3.text-dark(style="white-space: pre-wrap; word-wrap: break-word;")= message.originalContent
+                    else if message.html
+                      .alert.alert-info.mb-2
+                        i.fa.fa-info-circle.mr-1
+                        | This message contains HTML content
+                      .mb-3.text-dark!= message.html
+                    else
+                      .alert.alert-warning.mb-3
+                        i.fa.fa-exclamation-triangle.mr-1
+                        | No readable content found
+                        if message.raw
+                          .small.mt-1 Raw email data available in technical details
+                    
+                    // Technical details section
+                    if message.id || message.flags || message.internal_date
+                      button.btn.btn-sm.btn-outline-info(type="button", data-toggle="collapse", data-target=`#tech-${message.id}`, aria-expanded="false")
+                        i.fa.fa-cog.mr-1
+                        | Technical Details
+                      .collapse.mt-2(id=`tech-${message.id}`)
+                        .table-responsive
+                          table.table.table-sm.table-bordered
+                            tbody
+                              if message.id
+                                tr
+                                  th.bg-light.text-dark Message ID
+                                  td.text-break.small.text-dark= message.id
+                              if message.internal_date
+                                tr
+                                  th.bg-light.text-dark Internal Date
+                                  td.small.text-dark= dayjs(message.internal_date).format("YYYY-MM-DD HH:mm:ss")
+                              if message.flags && message.flags.length > 0
+                                tr
+                                  th.bg-light.text-dark Flags
+                                  td.small.text-dark= message.flags.join(', ')
+                              if message.toAddress
+                                tr
+                                  th.bg-light.text-dark To Address
+                                  td.text-break.small.text-dark= message.toAddress
+                    
+                    .mt-3
+                      button.btn.btn-outline-primary.btn-sm.mr-2(onclick=`replyToMessage('${message.id}')`)
+                        i.fa.fa-reply.mr-1
+                        | Reply to this message
+        
+        // Reply Section
+        .card.border-themed.mt-4(id="reply-section", style="display: none;")
+          .card-header.bg-primary.text-white
+            i.fa.fa-reply.mr-2
+            | Reply to Inquiry
+          .card-body.bg-white
+            form.confirm-prompt(
+              action=ctx.path,
+              method="POST",
+              enctype="multipart/form-data"
+            )
               .form-group.floating-label
-                label.read-only-message.text-muted= result.message || result.text
-              .form-group.floating-label
-                textarea#input-message.form-control(
-                  rows="8",
+                textarea.form-control(
+                  id="reply-message",
+                  name="message",
                   required,
                   maxlength=config.supportRequestMaxLength,
-                  name="message",
-                  placeholder=t("Write your response")
+                  placeholder="Write your response to this inquiry...",
+                  rows="6"
                 )
-                label(for="input-message")= t("Reply")
-              .form-group
-                input#input-attachments.form-control(
+                label(for="reply-message") Response Message
+              
+              .form-group.floating-label
+                input.form-control-file(
+                  id="input-attachments",
                   type="file",
                   name="attachments",
                   multiple
                 )
-            .card-footer
-              button.btn.btn-block.btn-primary.btn-lg(
-                type="submit",
-                data-toggle="tooltip",
-                data-placement="bottom"
-              )= t("Send reply")
+              
+              .form-check.mb-3
+                input#auto-resolve.form-check-input(type="checkbox", name="auto-resolve", checked)
+                label.form-check-label(for="auto-resolve") Mark as resolved after sending
+              
+              .text-right
+                button.btn.btn-secondary.mr-2(type="button", onclick="toggleReplyForm()") Cancel
+                button.btn.btn-primary(type="submit")
+                  i.fa.fa-paper-plane.mr-1
+                  | Send Reply
+
+block append scripts
+  script(nonce=nonce).
+    let replyFormVisible = false;
+    
+    // Toggle message expansion using Bootstrap collapse
+    function toggleMessage(messageId) {
+      const content = document.getElementById(`message-content-${messageId}`);
+      const icon = document.getElementById(`icon-${messageId}`);
+      
+      $(content).collapse('toggle');
+      
+      // Toggle icon rotation
+      $(content).on('show.bs.collapse', function() {
+        icon.style.transform = 'rotate(180deg)';
+      });
+      
+      $(content).on('hide.bs.collapse', function() {
+        icon.style.transform = 'rotate(0deg)';
+      });
+    }
+    
+    // Toggle reply form
+    function toggleReplyForm() {
+      const replySection = document.getElementById('reply-section');
+      
+      if (replyFormVisible) {
+        // Hide reply form
+        replySection.style.display = 'none';
+        replyFormVisible = false;
+      } else {
+        // Show reply form
+        replySection.style.display = 'block';
+        replyFormVisible = true;
+        
+        // Focus on textarea
+        setTimeout(() => {
+          document.getElementById('reply-message').focus();
+        }, 100);
+        
+        // Scroll to reply form
+        replySection.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+    
+    // Reply to specific message
+    function replyToMessage(messageId) {
+      // Show reply form if not visible
+      if (!replyFormVisible) {
+        toggleReplyForm();
+      }
+    }
+    
+    // Mark as resolved
+    function markAsResolved() {
+      if (confirm('Mark this inquiry as resolved?')) {
+        // Create form and submit with PUT method
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = window.location.pathname;
+        
+        // Add method override for PUT
+        const methodInput = document.createElement('input');
+        methodInput.type = 'hidden';
+        methodInput.name = '_method';
+        methodInput.value = 'PUT';
+        form.appendChild(methodInput);
+        
+        document.body.appendChild(form);
+        form.submit();
+      }
+    }
+    
+    // Auto-expand first unread message or latest message
+    document.addEventListener('DOMContentLoaded', function() {
+      // Find elements with proper selectors for the new layout
+      const messageElements = document.querySelectorAll('[data-message-id]');
+      
+      // Look for first unread message
+      let targetMessageId = null;
+      
+      for (const element of messageElements) {
+        const unreadBadge = element.querySelector('.badge-primary');
+        if (unreadBadge && unreadBadge.textContent.includes('Unread')) {
+          targetMessageId = element.dataset.messageId;
+          break;
+        }
+      }
+      
+      // If no unread, expand the latest message
+      if (!targetMessageId && messageElements.length > 0) {
+        const latestMessage = messageElements[messageElements.length - 1];
+        targetMessageId = latestMessage.dataset.messageId;
+      }
+      
+      // Auto-expand the target message
+      if (targetMessageId) {
+        setTimeout(() => {
+          toggleMessage(targetMessageId);
+        }, 500);
+      }
+    });
