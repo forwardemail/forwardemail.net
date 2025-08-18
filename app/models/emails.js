@@ -139,8 +139,21 @@ const Emails = new mongoose.Schema(
     },
     priority: {
       type: Number,
+      default: 1, // PRIORITY_LEVELS.NORMAL
+      index: true
+    },
+    // abuse score (0-100, higher = more suspicious)
+    abuse_score: {
+      type: Number,
       default: 0,
-      min: 0
+      min: 0,
+      max: 100,
+      index: true
+    },
+    // temporary throttling (if set, email won't be processed until this date)
+    throttled_until: {
+      type: Date,
+      index: true
     },
     alias: {
       type: mongoose.Schema.ObjectId,
@@ -344,7 +357,9 @@ Emails.plugin(mongooseCommonPlugin, {
     'message',
     'locked_by',
     'locked_at',
-    'priority'
+    'priority',
+    'abuse_score',
+    'throttled_until'
   ]
 });
 
@@ -353,6 +368,24 @@ Emails.index(
   { locked_at: 1 },
   { partialFilterExpression: { locked_at: { $exists: true } } }
 );
+
+// composite index for fair queue processing (most important queries first)
+Emails.index({
+  status: 1,
+  priority: -1, // higher priority first
+  domain: 1,
+  user: 1,
+  created_at: 1 // FIFO within same priority/domain/user
+});
+
+// index for throttled emails cleanup
+Emails.index(
+  { throttled_until: 1, status: 1 },
+  { partialFilterExpression: { throttled_until: { $exists: true } } }
+);
+
+// index for abuse score queries
+Emails.index({ abuse_score: 1, user: 1 });
 
 // DSN
 Emails.pre('validate', function (next) {
@@ -701,27 +734,62 @@ Emails.pre('save', function (next) {
   }
 });
 
-// determine priority
+// determine priority using fair queue system
 Emails.pre('save', async function (next) {
   try {
-    const domain = await Domains.findById(this.domain);
-    // we return here instead of erroring
-    if (!domain) {
-      this.status = 'pending';
-      this.priority = 0;
+    // Only calculate priority for new emails or when priority is not set
+    if (!this.isNew && this.priority !== undefined) {
       return next();
     }
 
-    // if any of the domain admins are admins then set priority to 1
-    const adminExists = await Users.exists({
-      _id: {
-        $in: domain.members
-          .filter((m) => m.group === 'admin')
-          .map((m) => m.user)
-      },
-      group: 'admin'
-    });
-    this.priority = adminExists ? 1 : 0;
+    const { PRIORITY_LEVELS } = require('#config/priority-levels');
+    const dayjs = require('dayjs-with-plugins');
+
+    // Default priority
+    let priority = PRIORITY_LEVELS.NORMAL;
+
+    const [domain, user] = await Promise.all([
+      Domains.findById(this.domain).populate('members.user', 'id group plan created_at'),
+      Users.findById(this.user).select('id group plan created_at').lean()
+    ]);
+
+    // If domain or user not found, set to pending with low priority
+    if (!domain || !user) {
+      this.status = 'pending';
+      this.priority = PRIORITY_LEVELS.LOW;
+      return next();
+    }
+
+    // Check if user is an admin
+    const isUserAdmin = user.group === 'admin';
+    
+    // Check if domain has admin users with premium plans
+    const hasAdminMembers = domain.members.some(
+      m => m.user && 
+           m.group === 'admin' && 
+           m.user.group === 'admin' &&
+           ['enhanced_protection', 'team'].includes(m.user.plan)
+    );
+
+    // Determine priority based on user/domain status
+    if (isUserAdmin || hasAdminMembers) {
+      priority = PRIORITY_LEVELS.HIGH;
+    } else if (user.plan && ['enhanced_protection', 'team'].includes(user.plan)) {
+      priority = PRIORITY_LEVELS.HIGH;
+    } else if (dayjs().diff(user.created_at, 'days') < 7) {
+      // New accounts get lower priority for the first week
+      priority = PRIORITY_LEVELS.LOW;
+    } else {
+      priority = PRIORITY_LEVELS.NORMAL;
+    }
+
+    this.priority = priority;
+    
+    // Initialize abuse score if not set
+    if (this.abuse_score === undefined) {
+      this.abuse_score = 0;
+    }
+
     next();
   } catch (err) {
     next(err);
