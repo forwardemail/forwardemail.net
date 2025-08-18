@@ -12,7 +12,7 @@ const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
-const { Users } = require('#models');
+const { Users, Emails } = require('#models');
 const config = require('#config');
 
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
@@ -52,7 +52,12 @@ async function list(ctx) {
     }
   }
 
-  const [users, itemCount] = await Promise.all([
+  const now = new Date();
+  const oneHourAgo = new Date(now - 60 * 60 * 1000);
+  const twentyFourHoursAgo = new Date(now - 24 * 60 * 60 * 1000);
+  const seventyTwoHoursAgo = new Date(now - 72 * 60 * 60 * 1000);
+
+  const [users, itemCount, emailCounts] = await Promise.all([
     // eslint-disable-next-line unicorn/no-array-callback-reference
     Users.find(query)
       .limit(ctx.query.limit)
@@ -60,21 +65,78 @@ async function list(ctx) {
       .lean()
       .sort(ctx.query.sort || '-created_at')
       .exec(),
-    Users.countDocuments(query)
+    Users.countDocuments(query),
+    // Get SMTP outbound email counts per user with time-based breakdowns
+    Emails.aggregate([
+      {
+        $match: {
+          // Only count delivered/sent emails (not failed/bounced)
+          status: { $in: ['delivered', 'deferred', 'sent'] }
+        }
+      },
+      {
+        $group: {
+          _id: '$user',
+          totalEmails: { $sum: 1 },
+          lastEmailAt: { $max: '$created_at' },
+          // Count emails within time periods
+          emailsLast1Hour: {
+            $sum: {
+              $cond: [{ $gte: ['$created_at', oneHourAgo] }, 1, 0]
+            }
+          },
+          emailsLast24Hours: {
+            $sum: {
+              $cond: [{ $gte: ['$created_at', twentyFourHoursAgo] }, 1, 0]
+            }
+          },
+          emailsLast72Hours: {
+            $sum: {
+              $cond: [{ $gte: ['$created_at', seventyTwoHoursAgo] }, 1, 0]
+            }
+          }
+        }
+      }
+    ])
   ]);
+
+  // Create a map for quick lookup of email counts
+  const emailCountMap = new Map();
+  for (const count of emailCounts) {
+    emailCountMap.set(count._id.toString(), {
+      totalEmails: count.totalEmails,
+      lastEmailAt: count.lastEmailAt,
+      emailsLast1Hour: count.emailsLast1Hour,
+      emailsLast24Hours: count.emailsLast24Hours,
+      emailsLast72Hours: count.emailsLast72Hours
+    });
+  }
+
+  // Add email counts to each user
+  const usersWithEmailCounts = users.map((user) => ({
+    ...user,
+    totalEmails: emailCountMap.get(user._id.toString())?.totalEmails || 0,
+    lastEmailAt: emailCountMap.get(user._id.toString())?.lastEmailAt || null,
+    emailsLast1Hour:
+      emailCountMap.get(user._id.toString())?.emailsLast1Hour || 0,
+    emailsLast24Hours:
+      emailCountMap.get(user._id.toString())?.emailsLast24Hours || 0,
+    emailsLast72Hours:
+      emailCountMap.get(user._id.toString())?.emailsLast72Hours || 0
+  }));
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
   if (ctx.accepts('html'))
     return ctx.render('admin/users', {
-      users,
+      users: usersWithEmailCounts,
       pageCount,
       itemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
   const table = await ctx.render('admin/users/_table', {
-    users,
+    users: usersWithEmailCounts,
     pageCount,
     itemCount,
     pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)

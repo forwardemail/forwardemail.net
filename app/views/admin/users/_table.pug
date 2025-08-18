@@ -26,6 +26,16 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('smtp_limit', 'SMTP Limit', '#table-users')
         th(scope="col")
+          +sortHeader('totalEmails', 'Emails Sent', '#table-users')
+        th(scope="col")
+          +sortHeader('emailsLast1Hour', '1hr', '#table-users')
+        th(scope="col")
+          +sortHeader('emailsLast24Hours', '24hr', '#table-users')
+        th(scope="col")
+          +sortHeader('emailsLast72Hours', '72hr', '#table-users')
+        th(scope="col")
+          +sortHeader('lastEmailAt', 'Last Email', '#table-users')
+        th(scope="col")
           +sortHeader('created_at', 'Created', '#table-users')
         th(scope="col")
           +sortHeader('updated_at', 'Updated', '#table-users')
@@ -37,7 +47,7 @@ include ../../_pagination
         th.text-center.align-middle(scope="col")= t("Actions")
     tbody
       if users.length === 0
-        td.alert.alert-info(colspan=passport && passport.otp ? "14" : "13")= t("No users exist for that search.")
+        td.alert.alert-info(colspan=passport && passport.otp ? "19" : "18")= t("No users exist for that search.")
       else
         each user in users
           tr
@@ -116,6 +126,28 @@ include ../../_pagination
                       data-toggle="tooltip",
                       data-title=t("Update")
                     ): i.fa.fa-fw.fa-save
+            td.align-middle.text-right
+              if user.totalEmails > 0
+                a(href=l(`/admin/emails?user=${user._id}`), target="_blank")= user.totalEmails.toLocaleString()
+              else
+                = user.totalEmails
+            td.align-middle.text-right
+              span.badge(
+                class=user.emailsLast1Hour > 0 ? "badge-warning" : "badge-light"
+              )= user.emailsLast1Hour
+            td.align-middle.text-right
+              span.badge(
+                class=user.emailsLast24Hours > 0 ? "badge-info" : "badge-light"
+              )= user.emailsLast24Hours
+            td.align-middle.text-right
+              span.badge(
+                class=user.emailsLast72Hours > 0 ? "badge-primary" : "badge-light"
+              )= user.emailsLast72Hours
+            td.align-middle
+              if user.lastEmailAt
+                .dayjs(data-time=new Date(user.lastEmailAt).getTime())= dayjs(user.lastEmailAt).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+              else
+                = "Never"
             td.align-middle.dayjs(
               data-time=new Date(user.created_at).getTime()
             )= dayjs(user.created_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
