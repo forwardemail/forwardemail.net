@@ -86,7 +86,7 @@ async function processEvent(ctx, event) {
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `${
               count > 0
                 ? 'Potential Fraud to Investigate'
@@ -208,9 +208,9 @@ async function processEvent(ctx, event) {
           to: user[config.userFields.receiptEmail] || user.email,
           ...(user[config.userFields.receiptEmail]
             ? {
-                cc: [user.email, config.email.message.from]
+                cc: [user.email, config.alertsEmail]
               }
-            : { cc: config.email.message.from }),
+            : { cc: config.alertsEmail }),
           subject: 'Issue with delayed payment'
         },
         locals: {
@@ -378,9 +378,9 @@ async function processEvent(ctx, event) {
               to: user[config.userFields.receiptEmail] || user.email,
               ...(user[config.userFields.receiptEmail]
                 ? {
-                    cc: [user.email, config.email.message.from]
+                    cc: [user.email, config.alertsEmail]
                   }
-                : { cc: config.email.message.from }),
+                : { cc: config.alertsEmail }),
               subject: 'Your payment was successful: please follow these steps'
             },
             locals: {
@@ -469,7 +469,7 @@ async function processEvent(ctx, event) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Customer banned for opening Stripe dispute: ${user.email}`
           },
           locals: {
@@ -534,7 +534,7 @@ async function processEvent(ctx, event) {
             emailHelper({
               template: 'alert',
               message: {
-                to: config.email.message.from,
+                to: config.alertsEmail,
                 subject: 'Banned User for Fraud Alert'
               },
               locals: {
@@ -577,7 +577,7 @@ async function processEvent(ctx, event) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Multiple Subscriptions Detected: ${event.data.object.customer}`
             },
             locals: {

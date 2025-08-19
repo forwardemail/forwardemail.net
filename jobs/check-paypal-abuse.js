@@ -633,7 +633,7 @@ function levenshteinDistance(str1, str2) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'PayPal Fraud Alert Error'
       },
       locals: {
@@ -686,7 +686,7 @@ async function sendFraudAlert(severity, reports) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: `${config_severity.subject} (${reports.length} cases, ${totalUsers} users)`
       },
       locals: {

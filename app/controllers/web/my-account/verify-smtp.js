@@ -193,7 +193,7 @@ async function verifySMTP(ctx) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               replyTo: to,
               subject
             },

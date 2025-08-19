@@ -985,7 +985,7 @@ async function sendRateLimitEmail(user) {
     template: 'alert',
     message: {
       to: user.email,
-      bcc: config.email.message.from,
+      bcc: config.alertsEmail,
       locale: user[config.lastLocaleField],
       subject: i18n.translate(
         'SMTP_RATE_LIMIT_EXCEEDED',

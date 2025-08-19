@@ -357,7 +357,7 @@ async function checkDate(date) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Update Umbrella Successful'
       },
       locals: {
@@ -383,7 +383,7 @@ async function checkDate(date) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Update Umbrella had an error'
       },
       locals: {
@@ -462,7 +462,7 @@ async function checkDate(date) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Allowlist cleanup report'
       },
       locals: {
@@ -488,7 +488,7 @@ async function checkDate(date) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Allowlist cleanup had an error'
       },
       locals: {
