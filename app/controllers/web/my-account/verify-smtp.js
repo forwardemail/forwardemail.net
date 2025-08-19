@@ -155,10 +155,10 @@ async function verifySMTP(ctx) {
       const isGoodDomainTld = config.goodDomains.includes(domainTld);
 
       if (
-        isGoodDomainTld &&
-        (ctx.state.user.has_passed_kyc ||
-          (hasLegitimateHosting && !hasSomeSuspendedDomains) ||
-          (hasExistingApprovedDomains && !hasSomeSuspendedDomains))
+        ctx.state.user.has_passed_kyc ||
+        (isGoodDomainTld &&
+          ((hasLegitimateHosting && !hasSomeSuspendedDomains) ||
+            (hasExistingApprovedDomains && !hasSomeSuspendedDomains)))
       ) {
         domain.has_smtp = true;
 
@@ -172,7 +172,7 @@ async function verifySMTP(ctx) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.supportEmail,
             replyTo: to,
             subject: autoApprovalSubject
           },
@@ -238,7 +238,7 @@ async function verifySMTP(ctx) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.alertsEmail,
+              to: config.supportEmail,
               replyTo: to,
               subject
             },
