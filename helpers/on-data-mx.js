@@ -1796,7 +1796,6 @@ async function onDataMX(session, headers, body) {
         const cache = await this.client.get(key);
         if (cache) return;
         await this.client.set(key, true, 'PX', ms('30d'));
-        // TODO: use Emails.queue
         await emailHelper({
           template: 'phishing',
           message: { to },

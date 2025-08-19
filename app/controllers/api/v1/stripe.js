@@ -205,12 +205,10 @@ async function processEvent(ctx, event) {
       await emailHelper({
         template: 'alert',
         message: {
-          to:
-            user[config.userFields.receiptEmail] ||
-            user[config.userFields.fullEmail],
+          to: user[config.userFields.receiptEmail] || user.email,
           ...(user[config.userFields.receiptEmail]
             ? {
-                cc: [user[config.userFields.fullEmail], config.alertsEmail]
+                cc: [user.email, config.alertsEmail]
               }
             : { cc: config.alertsEmail }),
           subject: 'Issue with delayed payment'
@@ -377,12 +375,10 @@ async function processEvent(ctx, event) {
           await emailHelper({
             template: 'alert',
             message: {
-              to:
-                user[config.userFields.receiptEmail] ||
-                user[config.userFields.fullEmail],
+              to: user[config.userFields.receiptEmail] || user.email,
               ...(user[config.userFields.receiptEmail]
                 ? {
-                    cc: [user[config.userFields.fullEmail], config.alertsEmail]
+                    cc: [user.email, config.alertsEmail]
                   }
                 : { cc: config.alertsEmail }),
               subject: 'Your payment was successful: please follow these steps'

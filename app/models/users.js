@@ -152,6 +152,25 @@ const Users = new mongoose.Schema({
     index: true
   },
 
+  //
+  // users have complained that they want opted out of certain emails
+  // like the marketing and two-factor auth reminder emails
+  //
+  // - feature-reminder
+  // - two-factor-reminder
+  // - welcome
+  //
+  //
+  opt_out_templates: [
+    {
+      type: String,
+      lowercase: true,
+      trim: true,
+      index: true,
+      enum: config.optOutTemplates
+    }
+  ],
+
   // Timezone
   // (automatically updated client-side via POST /my-account/timezone)
   timezone: String,

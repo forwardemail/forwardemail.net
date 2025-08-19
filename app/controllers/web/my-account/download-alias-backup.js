@@ -96,7 +96,7 @@ async function downloadAliasBackup(ctx) {
           to,
           ...(to.includes(ctx.state.user.email)
             ? {}
-            : { cc: ctx.state.user[config.userFields.fullEmail] }),
+            : { cc: ctx.state.user.email }),
           subject: i18n.translate(
             'ALIAS_BACKUP_DOWNLOAD_SUBJECT',
             locale,
@@ -131,7 +131,7 @@ async function downloadAliasBackup(ctx) {
           action: 'backup',
           backup_at: new Date().toISOString(),
           format: ctx.request.body.format,
-          email: ctx.state.user[config.userFields.fullEmail],
+          email: ctx.state.user.email,
           session: {
             user: {
               id: alias.id,

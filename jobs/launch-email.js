@@ -61,7 +61,7 @@ graceful.listen();
         await email({
           template: 'launch',
           message: {
-            to: user[config.userFields.fullEmail]
+            to: user.email
           },
           locals: { user: user.toObject() }
         });

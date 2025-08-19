@@ -99,12 +99,8 @@ async function mapper(user) {
         await emailHelper({
           template: 'visa-trial-subscription-requirement',
           message: {
-            to:
-              user[config.userFields.receiptEmail] ||
-              user[config.userFields.fullEmail],
-            ...(user[config.userFields.receiptEmail]
-              ? { cc: user[config.userFields.fullEmail] }
-              : {})
+            to: user[config.userFields.receiptEmail] || user.email,
+            ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {})
           },
           locals: {
             user,
@@ -258,12 +254,8 @@ async function mapper(user) {
       await emailHelper({
         template: 'visa-trial-subscription-requirement',
         message: {
-          to:
-            user[config.userFields.receiptEmail] ||
-            user[config.userFields.fullEmail],
-          ...(user[config.userFields.receiptEmail]
-            ? { cc: user[config.userFields.fullEmail] }
-            : {})
+          to: user[config.userFields.receiptEmail] || user.email,
+          ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {})
         },
         locals: {
           user,

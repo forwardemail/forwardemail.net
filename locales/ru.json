@@ -13487,5 +13487,15 @@
   "You can now opt-in for delivery logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.": "You can now opt-in for delivery logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.",
   "You can now opt-in for \"delivered\" logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.": "You can now opt-in for \"delivered\" logs under My Account &rarr; Domains!  Simply check the checkbox on a per-domain basis.",
   "Delivered": "Delivered",
-  "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails.": "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails."
+  "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails.": "You can now opt-in for \"delivered\" logs on a per-domain basis under My Account &rarr; Domains &rarr; Settings &rarr; Enable Deliverability Logs for Successful Emails.",
+  "Domain configuration issue emails": "Domain configuration issue emails",
+  "Domain onboard emails": "Domain onboard emails",
+  "Domain restrictions reminder emails": "Domain restrictions reminder emails",
+  "Domain verified emails": "Domain verified emails",
+  "Email suspended emails": "Email suspended emails",
+  "Feature reminder emails": "Feature reminder emails",
+  "Phishing emails": "Phishing emails",
+  "Two factor reminder emails": "Two factor reminder emails",
+  "Welcome emails": "Welcome emails",
+  "Changelog and newsletters": "Changelog and newsletters"
 }

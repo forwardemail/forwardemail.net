@@ -118,7 +118,7 @@ graceful.listen();
       await emailHelper({
         template: 'alert',
         message: {
-          to: user[config.userFields.fullEmail],
+          to: user.email,
           bcc: config.email.message.from,
           subject
         },

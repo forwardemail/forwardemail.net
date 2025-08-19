@@ -79,7 +79,7 @@ async function createCatchAllPassword(ctx) {
         to,
         ...(to.includes(ctx.state.user.email)
           ? {}
-          : { cc: ctx.state.user[config.userFields.fullEmail] }),
+          : { cc: ctx.state.user.email }),
         subject: i18n.translate(
           'ALIAS_PASSWORD_GENERATED_SUBJECT',
           locale,

@@ -478,7 +478,7 @@ async function forgotPassword(ctx) {
     await email({
       template: 'reset-password',
       message: {
-        to: user[config.userFields.fullEmail]
+        to: user.email
       },
       locals: {
         user: user.toObject(),
@@ -781,7 +781,7 @@ async function verify(ctx) {
       await email({
         template: 'recovery',
         message: {
-          to: ctx.state.user[config.userFields.fullEmail],
+          to: ctx.state.user.email,
           cc: config.email.message.from
         },
         locals: {

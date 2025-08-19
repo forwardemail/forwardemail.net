@@ -1118,8 +1118,6 @@ async function processEmail({ email, port = 25, resolver, client }) {
     //       (if out of credits then make an automated job email users courtesy)
     //       (once user pays up their credit balance this date email sent is reset)
 
-    // TODO: check against silent ban and denylist (to wherever we're sending)
-
     meta.results = results;
     logger.debug('sent email', meta);
 

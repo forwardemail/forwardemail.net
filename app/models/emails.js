@@ -984,7 +984,7 @@ async function sendRateLimitEmail(user) {
   await emailHelper({
     template: 'alert',
     message: {
-      to: user[config.userFields.fullEmail],
+      to: user.email,
       bcc: config.alertsEmail,
       locale: user[config.lastLocaleField],
       subject: i18n.translate(

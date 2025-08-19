@@ -32,7 +32,7 @@ async function sendPaginationCheck(ctx) {
     emailHelper({
       template: 'alert',
       message: {
-        to: ctx.state.user[config.userFields.fullEmail],
+        to: ctx.state.user.email,
         bcc: config.email.message.from,
         subject
       },

@@ -76,7 +76,7 @@ graceful.listen();
         await email({
           template: 'welcome',
           message: {
-            to: user[config.userFields.fullEmail]
+            to: user.email
           },
           locals: { user, domain }
         });

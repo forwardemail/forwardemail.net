@@ -69,7 +69,11 @@ block body
         .col-md
           form.ajax-form.confirm-prompt(action=ctx.path, method="POST")
             input(type="hidden", name="_method", value="PUT")
-            input(type="hidden", name="is_newsletter", value="true")
+            input(
+              type="hidden",
+              name="is_communication_preferences",
+              value="true"
+            )
             .card.border-themed
               h2.h6.card-header= t("Communication Preferences")
               .card-body.pb-0
@@ -81,11 +85,18 @@ block body
                     checked=user.has_newsletter
                   )
                   label.form-check-label(for="input-newsletter")
-                    = t("Newsletter")
-                    = " "
-                    = "("
-                    = t("New Features and Product Updates")
-                    = ")"
+                    = t("Changelog and newsletters")
+                each optOutTemplate in config.optOutTemplates
+                  .form-group.form-check
+                    input.form-check-input(
+                      id=`input-${optOutTemplate}`,
+                      type="checkbox",
+                      name=optOutTemplate,
+                      value="true",
+                      checked=user.opt_out_templates && Array.isArray(user.opt_out_templates) && !user.opt_out_templates.includes(optOutTemplate)
+                    )
+                    label.form-check-label(for=`input-${optOutTemplate}`)
+                      = t(`${humanize(titleize(optOutTemplate))} emails`)
                 .form-group.form-check
                   input#input-account-updates.form-check-input(
                     type="checkbox",

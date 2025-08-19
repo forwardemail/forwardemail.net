@@ -8,7 +8,6 @@ const isSANB = require('is-string-and-not-blank');
 const reservedAdminList = require('reserved-email-addresses-list/admin-list.json');
 const reservedEmailAddressesList = require('reserved-email-addresses-list');
 
-const config = require('#config');
 const emailHelper = require('#helpers/email');
 const { Aliases, Domains } = require('#models');
 
@@ -129,7 +128,7 @@ async function updateMember(ctx, next) {
       emailHelper({
         template: 'alert',
         message: {
-          to: ctx.state.user[config.userFields.fullEmail]
+          to: ctx.state.user.email
         },
         locals: { user: ctx.state.user.toObject(), message }
       })

@@ -150,12 +150,8 @@ async function mapper(user) {
       await email({
         template: 'alert',
         message: {
-          to:
-            user[config.userFields.receiptEmail] ||
-            user[config.userFields.fullEmail],
-          ...(user[config.userFields.receiptEmail]
-            ? { cc: user[config.userFields.fullEmail] }
-            : {}),
+          to: user[config.userFields.receiptEmail] || user.email,
+          ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {}),
           // bcc: config.email.message.from,
           subject: i18n.api.t({
             phrase: config.i18n.phrases.EMAIL_FORWARDING_PAUSED,
@@ -216,12 +212,8 @@ async function mapper(user) {
     await email({
       template: 'payment-reminder',
       message: {
-        to:
-          user[config.userFields.receiptEmail] ||
-          user[config.userFields.fullEmail],
-        ...(user[config.userFields.receiptEmail]
-          ? { cc: user[config.userFields.fullEmail] }
-          : {})
+        to: user[config.userFields.receiptEmail] || user.email,
+        ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {})
       },
       locals: { user, domains }
     });

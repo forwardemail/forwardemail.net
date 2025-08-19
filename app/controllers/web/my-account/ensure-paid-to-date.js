@@ -107,11 +107,11 @@ async function ensurePaidToDate(ctx, next) {
         message: {
           to:
             ctx.state.user[config.userFields.receiptEmail] ||
-            ctx.state.user[config.userFields.fullEmail],
+            ctx.state.user.email,
           ...(ctx.state.user[config.userFields.receiptEmail]
             ? {
                 cc: [
-                  ctx.state.user[config.userFields.fullEmail]
+                  ctx.state.user.email
                   // config.email.message.from
                 ]
               }
@@ -138,13 +138,10 @@ async function ensurePaidToDate(ctx, next) {
           message: {
             to:
               ctx.state.user[config.userFields.receiptEmail] ||
-              ctx.state.user[config.userFields.fullEmail],
+              ctx.state.user.email,
             ...(ctx.state.user[config.userFields.receiptEmail]
               ? {
-                  cc: [
-                    ctx.state.user[config.userFields.fullEmail],
-                    config.email.message.from
-                  ]
+                  cc: [ctx.state.user.email, config.email.message.from]
                 }
               : { cc: config.email.message.from }),
             subject

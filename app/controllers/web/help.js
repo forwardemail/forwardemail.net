@@ -64,7 +64,7 @@ async function help(ctx) {
     const { email, info } = await emailHelper({
       template: 'inquiry',
       message: {
-        to: ctx.state.user[config.userFields.fullEmail],
+        to: ctx.state.user.email,
         cc: config.email.message.from
       },
       locals: {

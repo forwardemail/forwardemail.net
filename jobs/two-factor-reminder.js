@@ -80,7 +80,7 @@ async function mapper(_id) {
     await email({
       template: 'two-factor-reminder',
       message: {
-        to: user[config.userFields.fullEmail]
+        to: user.email
       },
       locals: { user }
     });
