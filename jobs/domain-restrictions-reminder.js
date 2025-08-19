@@ -235,12 +235,8 @@ graceful.listen();
         await email({
           template: 'domain-restrictions-reminder',
           message: {
-            to:
-              user[config.userFields.receiptEmail] ||
-              user[config.userFields.fullEmail],
-            ...(user[config.userFields.receiptEmail]
-              ? { cc: user[config.userFields.fullEmail] }
-              : {})
+            to: user[config.userFields.receiptEmail] || user.email,
+            ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {})
           },
           locals: { user, domains }
         });

@@ -19,7 +19,7 @@ async function sendVerificationEmail(ctx) {
     await email({
       template: 'verify',
       message: {
-        to: ctx.state.user[config.userFields.fullEmail]
+        to: ctx.state.user.email
       },
       locals: {
         user: ctx.state.user.toObject(),

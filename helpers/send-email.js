@@ -9,22 +9,24 @@ const isSANB = require('is-string-and-not-blank');
 const previewEmail = require('preview-email');
 const { readKey } = require('openpgp/dist/node/openpgp.js');
 
+const DenylistError = require('./denylist-error');
 const WKD = require('./wkd');
 const _ = require('./lodash');
+const checkSRS = require('./check-srs');
 const createDSNSuccess = require('./create-dsn-success');
 const createSession = require('./create-session');
-const checkSRS = require('./check-srs');
 const encryptMessage = require('./encrypt-message');
 const getTransporter = require('./get-transporter');
+const isDenylisted = require('./is-denylisted');
 const isEmail = require('./is-email');
 const isMessageEncrypted = require('./is-message-encrypted');
 const isRetryableError = require('./is-retryable-error');
 const isSSLError = require('./is-ssl-error');
 const isTLSError = require('./is-tls-error');
 const logger = require('./logger');
+const shouldSendDSN = require('./should-send-dsn');
 const shouldThrow = require('./should-throw');
 const signMessage = require('./sign-message');
-const shouldSendDSN = require('./should-send-dsn');
 
 const Emails = require('#models/emails');
 const env = require('#config/env');
@@ -186,6 +188,30 @@ async function sendEmail(
     !isEmail(envelope.to)
   )
     throw new TypeError('Envelope to missing or not a single email');
+
+  // check against denylist
+  try {
+    await isDenylisted(envelope.to, client, resolver);
+  } catch (err) {
+    // store a counter
+    if (err instanceof DenylistError)
+      this.client
+        //
+        // TODO: improve this date's accuracy later via `email` perhaps
+        // (but we didn't for now since most likely switching off redis for these counters in future)
+        //
+        .incr(
+          `denylist_prevented:${
+            session.arrivalDateFormatted ||
+            new Date().toISOString().split('T')[0]
+          }`
+        )
+        .then()
+        .catch((err) => logger.fatal(err));
+    throw err;
+  }
+
+  // TODO: check against silent ban via `checkSilentBan` option (?)
 
   //
   // if we're in development mode then use preview-email to render queue processing

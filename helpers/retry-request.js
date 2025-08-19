@@ -10,6 +10,8 @@ const ms = require('ms');
 const TimeoutError = require('./timeout-error');
 const isRetryableError = require('./is-retryable-error');
 
+const config = require('#config');
+
 async function retryRequest(url, opts = {}, count = 1) {
   try {
     opts.timeout = opts.timeout || ms('30s');
@@ -30,27 +32,37 @@ async function retryRequest(url, opts = {}, count = 1) {
         );
     }, opts.timeout);
 
-    //
-    // TODO: an uncaught exception occurs here in self hosting sometimes (?)
-    // TypeError: Cannot read properties of undefined (reading 'length')
-    // (which means it occurs in tangerine under the hood)
-    //
     if (opts.resolver)
       opts.dispatcher = new undici.Agent({
         // TODO: should we change defaults here; if so, change elsewhere too
         // headersTimeout: ms(DURATION),
         // connectTimeout: ms(DURATION),
         // bodyTimeout: ms(DURATION),
-        connect: {
-          lookup(hostname, options, fn) {
-            opts.resolver
-              .lookup(hostname, options)
-              .then((result) => {
-                fn(null, result?.address, result?.family);
-              })
-              .catch((err) => fn(err));
-          }
-        }
+        //
+        //
+        // TODO: there is a bug in tangerine where if we supply
+        //       a custom resolver in self-hosted mode then
+        //       it causes an uncaught exception it appears
+        //
+        //
+        // TODO: an uncaught exception occurs here in self hosting sometimes (?)
+        // TypeError: Cannot read properties of undefined (reading 'length')
+        // (which means it occurs in tangerine under the hood)
+        //
+        ...(config.isSelfHosted
+          ? {}
+          : {
+              connect: {
+                lookup(hostname, options, fn) {
+                  opts.resolver
+                    .lookup(hostname, options)
+                    .then((result) => {
+                      fn(null, result?.address, result?.family);
+                    })
+                    .catch((err) => fn(err));
+                }
+              }
+            })
       });
 
     const response = await undici.request(url, opts);

@@ -3934,10 +3934,13 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">as</code></li>
   <li class="list-inline-item"><code class="notranslate">at</code></li>
   <li class="list-inline-item"><code class="notranslate">au</code></li>
+  <li class="list-inline-item"><code class="notranslate">ax</code></li>
   <li class="list-inline-item"><code class="notranslate">ba</code></li>
   <li class="list-inline-item"><code class="notranslate">be</code></li>
+  <li class="list-inline-item"><code class="notranslate">bg</code></li>
   <li class="list-inline-item"><code class="notranslate">br</code></li>
   <li class="list-inline-item"><code class="notranslate">by</code></li>
+  <li class="list-inline-item"><code class="notranslate">bzh</code></li>
   <li class="list-inline-item"><code class="notranslate">ca</code></li>
   <li class="list-inline-item"><code class="notranslate">cc</code></li>
   <li class="list-inline-item"><code class="notranslate">cd</code></li>
@@ -3955,9 +3958,16 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">family</code></li>
   <li class="list-inline-item"><code class="notranslate">fi</code></li>
   <li class="list-inline-item"><code class="notranslate">fm</code></li>
+  <li class="list-inline-item"><code class="notranslate">fo</code></li>
   <li class="list-inline-item"><code class="notranslate">fr</code></li>
+  <li class="list-inline-item"><code class="notranslate">gf</code></li>
   <li class="list-inline-item"><code class="notranslate">gg</code></li>
+  <li class="list-inline-item"><code class="notranslate">gi</code></li>
   <li class="list-inline-item"><code class="notranslate">gl</code></li>
+  <li class="list-inline-item"><code class="notranslate">gp</code></li>
+  <li class="list-inline-item"><code class="notranslate">gr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hr</code></li>
+  <li class="list-inline-item"><code class="notranslate">hu</code></li>
   <li class="list-inline-item"><code class="notranslate">id</code></li>
   <li class="list-inline-item"><code class="notranslate">ie</code></li>
   <li class="list-inline-item"><code class="notranslate">il</code></li>
@@ -3973,14 +3983,21 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">kr</code></li>
   <li class="list-inline-item"><code class="notranslate">la</code></li>
   <li class="list-inline-item"><code class="notranslate">li</code></li>
+  <li class="list-inline-item"><code class="notranslate">lt</code></li>
+  <li class="list-inline-item"><code class="notranslate">lu</code></li>
   <li class="list-inline-item"><code class="notranslate">lv</code></li>
   <li class="list-inline-item"><code class="notranslate">ly</code></li>
+  <li class="list-inline-item"><code class="notranslate">mc</code></li>
   <li class="list-inline-item"><code class="notranslate">md</code></li>
   <li class="list-inline-item"><code class="notranslate">me</code></li>
+  <li class="list-inline-item"><code class="notranslate">mk</code></li>
   <li class="list-inline-item"><code class="notranslate">mn</code></li>
+  <li class="list-inline-item"><code class="notranslate">mq</code></li>
   <li class="list-inline-item"><code class="notranslate">ms</code></li>
+  <li class="list-inline-item"><code class="notranslate">mt</code></li>
   <li class="list-inline-item"><code class="notranslate">mu</code></li>
   <li class="list-inline-item"><code class="notranslate">mx</code></li>
+  <li class="list-inline-item"><code class="notranslate">nc</code></li>
   <li class="list-inline-item"><code class="notranslate">net</code></li>
   <li class="list-inline-item"><code class="notranslate">ni</code></li>
   <li class="list-inline-item"><code class="notranslate">nl</code></li>
@@ -3988,30 +4005,39 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">nu</code></li>
   <li class="list-inline-item"><code class="notranslate">nz</code></li>
   <li class="list-inline-item"><code class="notranslate">org</code></li>
+  <li class="list-inline-item"><code class="notranslate">pf</code></li>
   <li class="list-inline-item"><code class="notranslate">pl</code></li>
+  <li class="list-inline-item"><code class="notranslate">pm</code></li>
   <li class="list-inline-item"><code class="notranslate">pr</code></li>
   <li class="list-inline-item"><code class="notranslate">pt</code></li>
   <li class="list-inline-item"><code class="notranslate">pw</code></li>
+  <li class="list-inline-item"><code class="notranslate">re</code></li>
+  <li class="list-inline-item"><code class="notranslate">ro</code></li>
   <li class="list-inline-item"><code class="notranslate">rs</code></li>
   <li class="list-inline-item"><code class="notranslate">sc</code></li>
   <li class="list-inline-item"><code class="notranslate">se</code></li>
   <li class="list-inline-item"><code class="notranslate">sh</code></li>
   <li class="list-inline-item"><code class="notranslate">si</code></li>
+  <li class="list-inline-item"><code class="notranslate">sk</code></li>
   <li class="list-inline-item"><code class="notranslate">sm</code></li>
   <li class="list-inline-item"><code class="notranslate">sr</code></li>
   <li class="list-inline-item"><code class="notranslate">st</code></li>
   <li class="list-inline-item"><code class="notranslate">tc</code></li>
+  <li class="list-inline-item"><code class="notranslate">tf</code></li>
   <li class="list-inline-item"><code class="notranslate">tm</code></li>
   <li class="list-inline-item"><code class="notranslate">to</code></li>
   <li class="list-inline-item"><code class="notranslate">tv</code></li>
   <li class="list-inline-item"><code class="notranslate">uk</code></li>
   <li class="list-inline-item"><code class="notranslate">us</code></li>
   <li class="list-inline-item"><code class="notranslate">uz</code></li>
+  <li class="list-inline-item"><code class="notranslate">va</code></li>
   <li class="list-inline-item"><code class="notranslate">vc</code></li>
   <li class="list-inline-item"><code class="notranslate">vg</code></li>
   <li class="list-inline-item"><code class="notranslate">vu</code></li>
+  <li class="list-inline-item"><code class="notranslate">wf</code></li>
   <li class="list-inline-item"><code class="notranslate">ws</code></li>
   <li class="list-inline-item"><code class="notranslate">xyz</code></li>
+  <li class="list-inline-item"><code class="notranslate">yt</code></li>
   <li class="list-inline-item"><code class="notranslate">za</code></li>
 </ul>
 

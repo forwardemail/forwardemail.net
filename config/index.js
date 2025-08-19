@@ -26,6 +26,7 @@ const noReplyList = require('reserved-email-addresses-list/no-reply-list.json');
 
 const pkg = require('../package');
 const env = require('./env');
+
 const filters = require('./filters');
 const i18n = require('./i18n');
 const loggerConfig = require('./logger');
@@ -649,6 +650,18 @@ const POSTMASTER_USERNAMES = new Set([
 const config = {
   ...metaConfig,
 
+  optOutTemplates: [
+    // 'dmarc-issue', // TODO: need to hook this in
+    'domain-configuration-issue',
+    'domain-onboard',
+    'domain-restrictions-reminder',
+    'domain-verified',
+    'feature-reminder',
+    'phishing',
+    'two-factor-reminder',
+    'welcome'
+  ],
+
   signatureData: {
     signingDomain: env.DKIM_DOMAIN_NAME,
     selector: env.DKIM_KEY_SELECTOR,
@@ -892,7 +905,19 @@ const config = {
     },
     subjectPrefix: `${env.APP_NAME} – `,
     message: {
-      from: env.EMAIL_DEFAULT_FROM
+      from: env.EMAIL_DEFAULT_FROM,
+      //
+      // set DSN to NEVER so we do not get DSN notifications for SMTP queued emails of our own
+      // <https://nodemailer.com/smtp/dsn#3-opting-out-of-dsn-entirely>
+      //
+      // TODO: we should add in a bounce webhook of our own for our own emails
+      //       so that if an account is registered or emails can't be delivered to a user's account
+      //       we can mark a boolean flag like `is_email_working: false` or something similar
+      //       and then render an alert/toast notification for the user and email them
+      //
+      dsn: {
+        notify: 'never'
+      }
     },
     send: env.SEND_EMAIL,
     juiceResources: {
@@ -1657,7 +1682,8 @@ config.views.locals.config = _.pick(config, [
   'modulusLength',
   'openPGPKey',
   'ubuntuTeamMapping',
-  'maxQuotaPerAlias'
+  'maxQuotaPerAlias',
+  'optOutTemplates'
 ]);
 
 // <https://nodemailer.com/transports/>

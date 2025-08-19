@@ -226,12 +226,8 @@ async function mapper(customer) {
     await emailHelper({
       template: 'alert',
       message: {
-        to:
-          user[config.userFields.receiptEmail] ||
-          user[config.userFields.fullEmail],
-        ...(user[config.userFields.receiptEmail]
-          ? { cc: user[config.userFields.fullEmail] }
-          : {}),
+        to: user[config.userFields.receiptEmail] || user.email,
+        ...(user[config.userFields.receiptEmail] ? { cc: user.email } : {}),
         subject: i18n.api.t({
           phrase: config.i18n.phrases.BILLING_CYCLE_UPDATED_SUBJECT,
           locale

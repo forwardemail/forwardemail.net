@@ -3,27 +3,25 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const Boom = require('@hapi/boom');
 const Email = require('email-templates');
+const humanize = require('humanize-string');
+const mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 const striptags = require('striptags');
+const titleize = require('titleize');
 const { boolean } = require('boolean');
 const { decode } = require('html-entities');
 
+const isEmail = require('./is-email');
 const getEmailLocals = require('./get-email-locals');
 const logger = require('./logger');
-const _ = require('#helpers/lodash');
+const _ = require('./lodash');
 
 const config = require('#config');
 const env = require('#config/env');
 
 /*
-const conn = mongoose.connections.find(
-  (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
-);
-if (!conn) {
-  throw new Error('Mongoose connection does not exist');
-}
-
 const emailConn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'EMAILS_MONGO_URI'
 );
@@ -60,6 +58,8 @@ const email = new Email({
   })
 });
 
+let conn;
+
 module.exports = async (data) => {
   try {
     logger.info('sending email', { data });
@@ -68,8 +68,77 @@ module.exports = async (data) => {
     Object.assign(data.locals, emailLocals);
     if (data?.message?.subject)
       data.message.subject = decode(striptags(data.message.subject));
-    // TODO: use MailComposer so we can then add to envelope
-    // TODO: add `envelope.dsn = { notify: 'never' }`
+
+    //
+    // if `template` was set and it's included in `config.optOutTemplates`
+    // then go through `data.to`, `data.cc`, `data.bcc` and
+    // if the value is an array, iterate over each
+    // otherwise if it's a string then check it using a simple
+    // `Users.exists({ email: someEmailAddress, opt_out_templates: template });
+    // and if a value is returned (e.g. non null) then continue along
+    // otherwise the user specifically opted out from these emails
+    //
+    if (
+      _.isObject(data.message) &&
+      typeof data?.template === 'string' &&
+      config.optOutTemplates.includes(data.template)
+    ) {
+      const emails = [];
+      for (const key of ['to', 'cc', 'bcc']) {
+        if (isEmail(data?.message[key])) {
+          emails.push(data.message[key].toLowerCase());
+        } else if (_.isArray(data.message[key])) {
+          for (const addr of data.message[key]) {
+            if (isEmail(addr)) emails.push(addr.toLowerCase());
+          }
+        }
+      }
+
+      if (emails.length > 0) {
+        if (!conn)
+          conn = mongoose.connections.find(
+            (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
+          );
+        if (!conn) throw new Error('Mongoose connection does not exist');
+        const optedOutEmails = await conn.models.Users.distinct('email', {
+          email: {
+            $in: emails
+          },
+          opt_out_templates: data.template
+        });
+        for (const key of ['to', 'cc', 'bcc']) {
+          if (isEmail(data?.message[key])) {
+            if (optedOutEmails.includes(data.message[key].toLowerCase()))
+              delete data.message[key];
+          } else if (_.isArray(data.message[key])) {
+            data.message[key] = data.message[key].filter((v) =>
+              isEmail(v) ? !optedOutEmails.includes(v.toLowerCase()) : true
+            );
+            if (_.isEmpty(data.message[key])) delete data.message[key];
+          }
+        }
+      }
+    }
+
+    // safeguard
+    if (
+      !data?.message?.raw &&
+      ((!isEmail(data?.message?.to) && !_.isArray(data?.message?.to)) ||
+        data.message.to.length === 0) &&
+      ((!isEmail(data?.message?.cc) && !_.isArray(data?.message?.cc)) ||
+        data.message.cc.length === 0) &&
+      ((!isEmail(data?.message?.bcc) && !_.isArray(data?.message?.bcc)) ||
+        data.message.bcc.length === 0)
+    ) {
+      let msg =
+        'Email must contain at least one valid address in the To, Cc, or Bcc headers.';
+      if (typeof data?.template === 'string')
+        msg += ` Recipients may have unsubscribed from ${humanize(
+          titleize(data.template)
+        )} emails.`;
+      throw Boom.badRequest(msg);
+    }
+
     const info = await email.send(data);
     return { info };
   } catch (err) {

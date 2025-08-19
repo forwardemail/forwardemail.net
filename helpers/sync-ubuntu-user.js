@@ -82,7 +82,7 @@ function getAdminEmailsForDomain(domain) {
         !m.user[config.userFields.isBanned] &&
         m.user[config.userFields.hasVerifiedEmail]
     )
-    .map((m) => m.user[config.userFields.fullEmail]);
+    .map((m) => m.user.email);
 }
 
 //

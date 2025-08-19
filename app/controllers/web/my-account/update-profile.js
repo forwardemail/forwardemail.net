@@ -20,11 +20,26 @@ const { Users } = require('#models');
 async function updateProfile(ctx) {
   const { body } = ctx.request;
 
-  // newsletter updates
-  if (boolean(body.is_newsletter)) {
+  // communication preferences
+  if (boolean(body.is_communication_preferences)) {
+    const newsletterChanged =
+      ctx.state.user.has_newsletter !== boolean(body.newsletter);
+
+    // newsletter
     ctx.state.user.has_newsletter = boolean(body.newsletter);
+
+    // opt_out_templates
+    ctx.state.user.opt_out_templates = [];
+
+    for (const optOutTemplate of config.optOutTemplates) {
+      if (!boolean(body[optOutTemplate])) {
+        ctx.state.user.opt_out_templates.push(optOutTemplate);
+      }
+    }
+
     ctx.state.user = await ctx.state.user.save();
-    if (!ctx.api) {
+
+    if (!ctx.api && newsletterChanged) {
       ctx.flash(
         'success',
         ctx.translate(

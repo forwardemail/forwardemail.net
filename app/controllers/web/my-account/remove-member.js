@@ -6,7 +6,6 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 
-const config = require('#config');
 const emailHelper = require('#helpers/email');
 const { Aliases, Domains } = require('#models');
 
@@ -53,7 +52,7 @@ async function removeMember(ctx, next) {
       emailHelper({
         template: 'alert',
         message: {
-          to: ctx.state.user[config.userFields.fullEmail]
+          to: ctx.state.user.email
         },
         locals: { user: ctx.state.user.toObject(), message }
       })
@@ -83,7 +82,7 @@ async function removeMember(ctx, next) {
       emailHelper({
         template: 'alert',
         message: {
-          to: ctx.state.user[config.userFields.fullEmail]
+          to: ctx.state.user.email
         },
         locals: { user: ctx.state.user.toObject(), message }
       })

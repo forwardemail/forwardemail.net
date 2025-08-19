@@ -556,11 +556,6 @@ router
   .get(
     '/security',
     web.myAccount.checkVerifiedEmail,
-    (ctx, next) => {
-      if (ctx.query.unsubscribe === 'true')
-        ctx.flash('warning', ctx.translate('TO_UNSUBSCRIBE_DELETE_ACCOUNT'));
-      return next();
-    },
     render('my-account/security')
   )
   .post('/recovery-keys', web.myAccount.recoveryKeys)
@@ -728,7 +723,7 @@ router
     email({
       template: 'alert',
       message: {
-        to: ctx.state.user[config.userFields.fullEmail],
+        to: ctx.state.user.email,
         subject: i18n.translate('PASSKEY_ADDED', ctx.locale)
       },
       locals: {
@@ -783,7 +778,7 @@ router
     email({
       template: 'alert',
       message: {
-        to: ctx.state.user[config.userFields.fullEmail],
+        to: ctx.state.user.email,
         subject: i18n.translate('PASSKEY_REMOVED', ctx.locale)
       },
       locals: {

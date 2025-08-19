@@ -865,9 +865,9 @@ async function retrieveDomainBilling(ctx) {
           message: {
             to:
               ctx.state.user[config.userFields.receiptEmail] ||
-              ctx.state.user[config.userFields.fullEmail],
+              ctx.state.user.email,
             ...(ctx.state.user[config.userFields.receiptEmail]
-              ? { cc: ctx.state.user[config.userFields.fullEmail] }
+              ? { cc: ctx.state.user.email }
               : {}),
             subject
           },
@@ -1382,9 +1382,9 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
           message: {
             to:
               ctx.state.user[config.userFields.receiptEmail] ||
-              ctx.state.user[config.userFields.fullEmail],
+              ctx.state.user.email,
             ...(ctx.state.user[config.userFields.receiptEmail]
-              ? { cc: ctx.state.user[config.userFields.fullEmail] }
+              ? { cc: ctx.state.user.email }
               : {}),
             subject
           },
@@ -1734,7 +1734,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
         emailHelper({
           template: 'alert',
           message: {
-            to: ctx.state.user[config.userFields.fullEmail],
+            to: ctx.state.user.email,
             subject
           },
           locals: { user: ctx.state.user.toObject(), message }

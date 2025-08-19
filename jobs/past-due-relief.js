@@ -85,7 +85,7 @@ async function mapper(user) {
     await email({
       template: 'past-due-relief',
       message: {
-        to: user[config.userFields.fullEmail]
+        to: user.email
       },
       locals: { user }
     });
