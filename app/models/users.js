@@ -231,6 +231,40 @@ object[config.userFields.smtpLimit] = {
   max: 100000
 };
 
+// SMTP count tracking for admin dashboard
+object.smtp_emails_sent_1h = {
+  type: Number,
+  default: 0,
+  min: 0,
+  index: true
+};
+
+object.smtp_emails_sent_24h = {
+  type: Number,
+  default: 0,
+  min: 0,
+  index: true
+};
+
+object.smtp_emails_sent_72h = {
+  type: Number,
+  default: 0,
+  min: 0,
+  index: true
+};
+
+object.smtp_emails_sent_total = {
+  type: Number,
+  default: 0,
+  min: 0,
+  index: true
+};
+
+object.smtp_last_email_sent_at = {
+  type: Date,
+  index: true
+};
+
 // Custom receipt email
 object[config.userFields.receiptEmail] = {
   type: String,
