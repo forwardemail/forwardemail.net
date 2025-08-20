@@ -150,12 +150,57 @@ async function verifySMTP(ctx) {
         (d) => d.is_smtp_suspended && d.group === 'admin'
       );
 
+      // Check if domain TLD is in config.goodDomains
+      const domainTld = domain.name.split('.').pop().toLowerCase();
+      const isGoodDomainTld = config.goodDomains.includes(domainTld);
+
       if (
         ctx.state.user.has_passed_kyc ||
-        (hasLegitimateHosting && !hasSomeSuspendedDomains) ||
-        (hasExistingApprovedDomains && !hasSomeSuspendedDomains)
+        (isGoodDomainTld &&
+          ((hasLegitimateHosting && !hasSomeSuspendedDomains) ||
+            (hasExistingApprovedDomains && !hasSomeSuspendedDomains)))
       ) {
         domain.has_smtp = true;
+
+        // Email admins about auto-approval with metadata
+        const autoApprovalSubject = i18n.translate(
+          'SMTP_AUTO_APPROVAL_SUBJECT',
+          locale,
+          domain.name
+        );
+
+        await emailHelper({
+          template: 'alert',
+          message: {
+            to: config.supportEmail,
+            replyTo: to,
+            subject: autoApprovalSubject
+          },
+          locals: {
+            message: `
+              <ul>
+                <li><strong>Auto-approved:</strong> true</li>
+                <li><strong>Has passed KYC:</strong> ${ctx.state.user.has_passed_kyc.toString()}</li>
+                <li><strong>Legitimate Hosting</strong> ${hasLegitimateHosting.toString()}</li>
+                <li><strong>Suspended Domains</strong> ${hasSomeSuspendedDomains.toString()}</li>
+                <li><strong>Approved Domains</strong> ${hasExistingApprovedDomains.toString()}</li>
+                <li>
+                  <strong>NS Provider(s):</strong>
+                  ${
+                    ns && ns.length > 0
+                      ? `<ul><li>${ns.join('</li><li>')}</li></ul>`
+                      : ''
+                  }
+                </li>
+              </ul>
+              <a href="${config.urls.web}/admin/domains?name=${
+              domain.name
+            }" class="btn btn-dark btn-md">Review Domain</a>
+              `.trim(),
+            locale
+          }
+        });
+
         if (!ctx.api)
           ctx.flash(
             'success',
@@ -193,7 +238,7 @@ async function verifySMTP(ctx) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.alertsEmail,
+              to: config.supportEmail,
               replyTo: to,
               subject
             },

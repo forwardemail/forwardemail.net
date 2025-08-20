@@ -254,6 +254,8 @@ module.exports = {
     '<p class="text-center">Your domain <span class="notranslate">%s</span> has a configuration issue detected for outbound SMTP access.</p><p class="text-center mb-0"><a class="btn btn-lg btn-danger" href="%s">Verify Setup</a></p>',
   SMTP_ACCESS_SUBJECT:
     'Outbound SMTP for <span class="notranslate">%s</span> is now pending admin approval',
+  SMTP_AUTO_APPROVAL_SUBJECT:
+    'Outbound SMTP for <span class="notranslate">%s</span> has been auto-approved',
   SMTP_ACCESS_PENDING:
     'Your outbound SMTP configuration for <strong class="notranslate">%s</strong> was successfully verified and is now pending admin approval. We have been notified and you will receive a follow-up email as soon as an admin reviews this information.',
   ADD_DOMAIN: 'What is your domain name?',
