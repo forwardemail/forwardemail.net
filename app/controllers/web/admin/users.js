@@ -63,28 +63,18 @@ async function list(ctx) {
     Users.countDocuments(query)
   ]);
 
-  // Use the optimized user model counters instead of aggregation
-  const usersWithEmailCounts = users.map((user) => ({
-    ...user,
-    totalEmails: user.smtp_emails_sent_total || 0,
-    lastEmailAt: user.smtp_last_email_sent_at || null,
-    emailsLast1Hour: user.smtp_emails_sent_1h || 0,
-    emailsLast24Hours: user.smtp_emails_sent_24h || 0,
-    emailsLast72Hours: user.smtp_emails_sent_72h || 0
-  }));
-
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
   if (ctx.accepts('html'))
     return ctx.render('admin/users', {
-      users: usersWithEmailCounts,
+      users,
       pageCount,
       itemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
 
   const table = await ctx.render('admin/users/_table', {
-    users: usersWithEmailCounts,
+    users,
     pageCount,
     itemCount,
     pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)

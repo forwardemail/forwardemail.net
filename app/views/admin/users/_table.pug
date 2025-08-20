@@ -26,15 +26,15 @@ include ../../_pagination
         th(scope="col")
           +sortHeader('smtp_limit', 'SMTP Limit', '#table-users')
         th(scope="col")
-          +sortHeader('totalEmails', 'Emails Sent', '#table-users')
+          +sortHeader('smtp_emails_sent_total', 'Emails Sent', '#table-users')
         th(scope="col")
-          +sortHeader('emailsLast1Hour', '1hr', '#table-users')
+          +sortHeader('smtp_emails_sent_1h', '1hr', '#table-users')
         th(scope="col")
-          +sortHeader('emailsLast24Hours', '24hr', '#table-users')
+          +sortHeader('smtp_emails_sent_24h', '24hr', '#table-users')
         th(scope="col")
-          +sortHeader('emailsLast72Hours', '72hr', '#table-users')
+          +sortHeader('smtp_emails_sent_72h', '72hr', '#table-users')
         th(scope="col")
-          +sortHeader('lastEmailAt', 'Last Email', '#table-users')
+          +sortHeader('smtp_last_email_sent_at', 'Last Email', '#table-users')
         th(scope="col")
           +sortHeader('created_at', 'Created', '#table-users')
         th(scope="col")
@@ -127,25 +127,27 @@ include ../../_pagination
                       data-title=t("Update")
                     ): i.fa.fa-fw.fa-save
             td.align-middle.text-right
-              if user.totalEmails > 0
-                a(href=l(`/admin/emails?user=${user._id}`), target="_blank")= user.totalEmails.toLocaleString()
+              if user.smtp_emails_sent_total > 0
+                a(href=l(`/admin/emails?user=${user._id}`), target="_blank")= user.smtp_emails_sent_total.toLocaleString()
               else
-                = user.totalEmails
+                = user.smtp_emails_sent_total || 0
             td.align-middle.text-right
               span.badge(
-                class=user.emailsLast1Hour > 0 ? "badge-warning" : "badge-light"
-              )= user.emailsLast1Hour
+                class=user.smtp_emails_sent_1h > 0 ? "badge-warning" : "badge-light"
+              )= user.smtp_emails_sent_1h || 0
             td.align-middle.text-right
               span.badge(
-                class=user.emailsLast24Hours > 0 ? "badge-info" : "badge-light"
-              )= user.emailsLast24Hours
+                class=user.smtp_emails_sent_24h > 0 ? "badge-info" : "badge-light"
+              )= user.smtp_emails_sent_24h || 0
             td.align-middle.text-right
               span.badge(
-                class=user.emailsLast72Hours > 0 ? "badge-primary" : "badge-light"
-              )= user.emailsLast72Hours
+                class=user.smtp_emails_sent_72h > 0 ? "badge-primary" : "badge-light"
+              )= user.smtp_emails_sent_72h || 0
             td.align-middle
-              if user.lastEmailAt
-                .dayjs(data-time=new Date(user.lastEmailAt).getTime())= dayjs(user.lastEmailAt).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
+              if user.smtp_last_email_sent_at
+                .dayjs(
+                  data-time=new Date(user.smtp_last_email_sent_at).getTime()
+                )= dayjs(user.smtp_last_email_sent_at).tz(user.timezone === 'Etc/Unknown' ? 'UTC' : user.timezone).format("M/D/YY h:mm A z")
               else
                 = "Never"
             td.align-middle.dayjs(
