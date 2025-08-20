@@ -104,7 +104,6 @@ async function sendAggregatedAlert(suspiciousUsers) {
             <li>Registration: ${dayjs(user.created_at).format(
               'YYYY-MM-DD HH:mm:ss UTC'
             )}</li>
-            <li>IP: ${user.ip || 'Unknown'}</li>
             <li>Type: ${suspicionResult.type}</li>
             <li>Reason: ${suspicionResult.reason}</li>
             ${
@@ -124,14 +123,13 @@ async function sendAggregatedAlert(suspiciousUsers) {
       .join('');
 
     const message = `
-      <p><strong>Found ${suspiciousUsers.length} suspicious email registration(s) in the last 6 hours:</strong></p>
+      <p><strong>Found ${suspiciousUsers.length} suspicious email registration(s) among paid users:</strong></p>
       <ul>${usersList}</ul>
       <p><strong>Recommended Actions:</strong></p>
       <ul>
         <li>Review user account activity</li>
         <li>Monitor for suspicious behavior</li>
         <li>Consider additional verification if needed</li>
-        <li>Check for related accounts from same IPs</li>
       </ul>
     `;
 
@@ -159,10 +157,8 @@ graceful.listen();
   await setupMongoose(logger);
 
   try {
-    const since = dayjs().subtract(6, 'hours').toDate();
-
-    const recentUsers = await Users.find({
-      created_at: { $gte: since },
+    const paidUsers = await Users.find({
+      plan: { $ne: 'free' },
       [config.userFields.isBanned]: false,
       email: {
         $exists: true,
@@ -170,12 +166,12 @@ graceful.listen();
         $not: { $regex: `@${config.removedEmailDomain}$` }
       }
     })
-      .select('_id email created_at ip')
+      .select('_id email created_at')
       .lean()
       .exec();
 
-    if (recentUsers.length === 0) {
-      logger.info('No recent users to check for suspicious emails');
+    if (paidUsers.length === 0) {
+      logger.info('No paid users to check for suspicious emails');
       return;
     }
 
@@ -183,7 +179,7 @@ graceful.listen();
     const suspiciousUsers = [];
 
     await pMap(
-      recentUsers,
+      paidUsers,
       async (user) => {
         try {
           const suspicionResult = isEmailSuspicious(user.email, bannedEmails);
@@ -211,7 +207,7 @@ graceful.listen();
     await sendAggregatedAlert(suspiciousUsers);
 
     logger.info('Suspicious email check completed', {
-      usersChecked: recentUsers.length,
+      usersChecked: paidUsers.length,
       suspiciousFound: suspiciousUsers.length,
       bannedEmailsCount: bannedEmails.length
     });
