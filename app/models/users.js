@@ -30,6 +30,7 @@ mongoose.Error.messages = require('@ladjs/mongoose-error-messages');
 
 const Payments = require('./payments');
 
+const TimezoneHandler = require('#helpers/timezone-handler');
 const _ = require('#helpers/lodash');
 const config = require('#config');
 const email = require('#helpers/email');
@@ -37,6 +38,8 @@ const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
+
+const timezoneHandler = new TimezoneHandler();
 
 if (config.passportLocalMongoose.usernameField !== 'email') {
   throw new Error(
@@ -173,7 +176,10 @@ const Users = new mongoose.Schema({
 
   // Timezone
   // (automatically updated client-side via POST /my-account/timezone)
-  timezone: String,
+  timezone: {
+    type: String,
+    default: 'UTC'
+  },
   // Passkeys
   passkeys: [Passkey],
   // Plan
@@ -542,6 +548,26 @@ object[config.userFields.addressCountry] = {
 
 // Finally add the fields
 Users.add(object);
+
+// validate timezone
+Users.pre('validate', function (next) {
+  // if not set yet then default to UTC
+  if (!isSANB(this.timezone)) {
+    this.timezone = 'UTC';
+    return next();
+  }
+
+  try {
+    const normalized = timezoneHandler.normalizeTimezone(this.timezone);
+    const works = timezoneHandler.testTimezone(normalized);
+    this.timezone = works ? normalized : 'UTC';
+  } catch (err) {
+    logger.fatal(err);
+    this.timezone = 'UTC';
+  }
+
+  next();
+});
 
 // Set plan at date to a default value
 // of when user was created or >= their first payment
