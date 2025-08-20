@@ -42,7 +42,7 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
     ])
       .then()
       .catch((err) =>
-        logger.fatal(err, { session, resolver: instance.resolver })
+        logger.fatal(err, { session, resolver: instance?.resolver })
       );
   }
 
@@ -64,7 +64,7 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
     // wildduck uses `responseMessage` in some instances
     err.responseMessage = err.message;
   } else {
-    logger.error(err, { session, resolver: instance.resolver });
+    logger.error(err, { session, resolver: instance?.resolver });
   }
 
   //
