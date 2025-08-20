@@ -23,7 +23,7 @@ function refineAndLogError(err, session, isIMAP = false, instance) {
   if (typeof err.isCodeBug !== 'boolean') {
     err.isCodeBug = isCodeBug(err);
     if (err.isCodeBug) {
-      logger.fatal(err, { session, resolver: instance.resolver });
+      logger.fatal(err, { session, resolver: instance?.resolver });
       err.responseCode = 421;
     }
   }

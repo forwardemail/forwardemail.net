@@ -30,7 +30,9 @@ We review abuse reports and serve information requests for the [general public](
 
 Abuse reports and information requests with regards to users, emails, IP addresses, and/or domains are referred to collectively as an "Account" below.
 
-Our email address to contact with your request or report regarding abuse is: `abuse@forwardemail.net`
+Our email addresses to contact with your request or report regarding abuse is: `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net`.
+
+Please send a copy to all of these email addresses if possible, and also send reminder emails if we do not follow up within 24-48+ hours.
 
 Read the sections below for more information that may pertain to you.
 

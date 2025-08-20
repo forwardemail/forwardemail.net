@@ -432,7 +432,14 @@ function createWebSocketAsPromised(options = {}) {
 
       err.isCodeBug = true;
       logger.fatal(err);
-      throw refineAndLogError(err);
+      throw refineAndLogError(err, data?.session);
+      //
+      // TODO: we need to pass client and resolver
+      //       (maybe we do a global.client and global.resolver or something down the road?)
+      //       (otherwise having to pass client and resolver throughout the codebase is a nightmare)
+      //       (and we could just opt for an approach more like mongoose with a global)
+      //
+      // throw refineAndLogError(err, data?.session, false, { client, resolver });
     }
   };
 

@@ -1797,7 +1797,7 @@ async function onDataMX(session, headers, body) {
         if (cache) return;
         await this.client.set(key, true, 'PX', ms('30d'));
         await emailHelper({
-          template: 'phishing',
+          template: 'phishing-alert',
           message: { to },
           locals: {
             from: session.originalFromAddress,

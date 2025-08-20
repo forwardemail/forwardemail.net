@@ -657,7 +657,7 @@ const config = {
     'domain-restrictions-reminder',
     'domain-verified',
     'feature-reminder',
-    'phishing',
+    'phishing-alert',
     'two-factor-reminder',
     'welcome'
   ],

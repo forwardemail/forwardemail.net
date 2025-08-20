@@ -353,45 +353,6 @@ Aliases.index({ user: 1, domain: 1 });
 Aliases.index({ _id: 1, domain: 1 });
 Aliases.index({ name: 1, domain: 1 });
 
-// vacation responder support
-Aliases.pre('validate', function (next) {
-  //
-  // vacation responder cannot be enabled
-  // on regular expressions nor wildcard matches
-  //
-  if (
-    this?.vacation_responder?.is_enabled &&
-    (this.name === '*' || this.name.startsWith('/'))
-  )
-    return next(
-      Boom.badRequest(i18n.translateError('VACATION_RESPONDER_NAME_SPECIFIC'))
-    );
-
-  // strip tags/html from subject
-  if (isSANB(this?.vacation_responder?.subject))
-    this.vacation_responder.subject = striptags(
-      this.vacation_responder.subject
-    );
-  // strip tags/html from message
-  if (isSANB(this?.vacation_responder?.message))
-    this.vacation_responder.message = striptags(
-      this.vacation_responder.message
-    );
-  // if start_date AND end_date both set, ensure start_date is before
-  if (
-    _.isDate(this?.vacation_responder?.start_date) &&
-    _.isDate(this?.vacation_responder?.end_date) &&
-    new Date(this.vacation_responder.start_date).getTime() >=
-      new Date(this.vacation_responder.end_date)
-  )
-    return next(
-      Boom.badRequest(
-        i18n.translateError('VACATION_RESPONDER_DATE_ISSUE', this.locale)
-      )
-    );
-  next();
-});
-
 // validate PGP key if any
 Aliases.pre('save', async function (next) {
   if (!this.public_key) return next();
@@ -513,6 +474,45 @@ Aliases.pre('validate', function (next) {
   if (isSANB(this.description)) this.description = striptags(this.description);
   if (!isSANB(this.description)) this.description = undefined;
 
+  next();
+});
+
+// vacation responder support
+Aliases.pre('validate', function (next) {
+  //
+  // vacation responder cannot be enabled
+  // on regular expressions nor wildcard matches
+  //
+  if (
+    this?.vacation_responder?.is_enabled &&
+    (this.name === '*' || (isSANB(this.name) && this.name.startsWith('/')))
+  )
+    return next(
+      Boom.badRequest(i18n.translateError('VACATION_RESPONDER_NAME_SPECIFIC'))
+    );
+
+  // strip tags/html from subject
+  if (isSANB(this?.vacation_responder?.subject))
+    this.vacation_responder.subject = striptags(
+      this.vacation_responder.subject
+    );
+  // strip tags/html from message
+  if (isSANB(this?.vacation_responder?.message))
+    this.vacation_responder.message = striptags(
+      this.vacation_responder.message
+    );
+  // if start_date AND end_date both set, ensure start_date is before
+  if (
+    _.isDate(this?.vacation_responder?.start_date) &&
+    _.isDate(this?.vacation_responder?.end_date) &&
+    new Date(this.vacation_responder.start_date).getTime() >=
+      new Date(this.vacation_responder.end_date)
+  )
+    return next(
+      Boom.badRequest(
+        i18n.translateError('VACATION_RESPONDER_DATE_ISSUE', this.locale)
+      )
+    );
   next();
 });
 
