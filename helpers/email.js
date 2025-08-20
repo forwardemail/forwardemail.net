@@ -123,11 +123,11 @@ module.exports = async (data) => {
     // safeguard
     if (
       !data?.message?.raw &&
-      ((!isEmail(data?.message?.to) && !_.isArray(data?.message?.to)) ||
+      ((!data?.message?.to && !_.isArray(data?.message?.to)) ||
         data.message.to.length === 0) &&
-      ((!isEmail(data?.message?.cc) && !_.isArray(data?.message?.cc)) ||
+      ((!data?.message?.cc && !_.isArray(data?.message?.cc)) ||
         data.message.cc.length === 0) &&
-      ((!isEmail(data?.message?.bcc) && !_.isArray(data?.message?.bcc)) ||
+      ((!data?.message?.bcc && !_.isArray(data?.message?.bcc)) ||
         data.message.bcc.length === 0)
     ) {
       let msg =
