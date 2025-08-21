@@ -195,7 +195,7 @@ async function sendEmail(
   } catch (err) {
     // store a counter
     if (err instanceof DenylistError)
-      this.client
+      client
         //
         // TODO: improve this date's accuracy later via `email` perhaps
         // (but we didn't for now since most likely switching off redis for these counters in future)
