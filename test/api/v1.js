@@ -286,6 +286,8 @@ test('creates alias with global catch-all', async (t) => {
       'locale',
       'object',
       'otp_enabled',
+      'opt_out_templates',
+      'timezone',
       'plan',
       'sessions',
       'updated_at'
