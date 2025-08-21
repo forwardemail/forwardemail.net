@@ -41,7 +41,7 @@ async function syncPayPalOrderPayments() {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Sync PayPal Orders had an error'
       },
       locals: {

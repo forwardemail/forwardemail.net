@@ -410,7 +410,7 @@ async function getForwardingAddresses(
               template: 'alert',
               message: {
                 subject: `Possible paid plan abuse: ${rootDomain}`,
-                to: config.email.message.from
+                to: config.alertsEmail
               },
               locals: {
                 message: `<pre><code>${emails.join('<br />')}</code></pre>`,
