@@ -250,7 +250,7 @@ router
   )
   .get(
     '/emails',
-    paginate.middleware(10, 50),
+    paginate.middleware(25, 100),
     web.myAccount.retrieveDomains,
     web.myAccount.listEmails,
     api.v1.emails.list
@@ -506,7 +506,7 @@ router
 // contacts (CardDAV)
 router
   .use('/contacts', api.v1.aliasAuth)
-  .get('/contacts', paginate.middleware(10, 50), api.v1.contacts.list)
+  .get('/contacts', paginate.middleware(25, 100), api.v1.contacts.list)
   .post('/contacts', api.v1.contacts.create)
   .get('/contacts/:id', api.v1.contacts.retrieve)
   .put('/contacts/:id', api.v1.contacts.update)
@@ -515,7 +515,7 @@ router
 // calendars (CalDAV)
 router
   .use('/calendars', api.v1.aliasAuth)
-  .get('/calendars', paginate.middleware(10, 50), api.v1.calendars.list)
+  .get('/calendars', paginate.middleware(25, 100), api.v1.calendars.list)
   .post('/calendars', api.v1.calendars.create)
   .get('/calendars/:id', api.v1.calendars.retrieve)
   .put('/calendars/:id', api.v1.calendars.update)
@@ -524,7 +524,7 @@ router
 // messages (IMAP/POP3)
 router
   .use('/messages', api.v1.aliasAuth)
-  .get('/messages', paginate.middleware(10, 50), api.v1.messages.list)
+  .get('/messages', paginate.middleware(25, 100), api.v1.messages.list)
   .post('/messages', api.v1.messages.create)
   .get('/messages/:id', api.v1.messages.retrieve)
   .put('/messages/:id', api.v1.messages.update)
@@ -533,7 +533,7 @@ router
 // folders (IMAP/POP3)
 router
   .use('/folders', api.v1.aliasAuth)
-  .get('/folders', paginate.middleware(10, 50), api.v1.folders.list)
+  .get('/folders', paginate.middleware(25, 100), api.v1.folders.list)
   .post('/folders', api.v1.folders.create)
   .get('/folders/:id', api.v1.folders.retrieve)
   .put('/folders/:id', api.v1.folders.update)

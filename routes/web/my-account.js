@@ -76,7 +76,7 @@ router
     '/billing',
     web.myAccount.retrieveBilling,
     web.myAccount.setConversionAndRefundStateHelpers,
-    paginate.middleware(10, 50),
+    paginate.middleware(25, 100),
     web.myAccount.listBilling
   )
   .delete(
@@ -84,7 +84,7 @@ router
     web.myAccount.cancelSubscription,
     web.myAccount.retrieveBilling,
     web.myAccount.setConversionAndRefundStateHelpers,
-    paginate.middleware(10, 50),
+    paginate.middleware(25, 100),
     web.myAccount.listBilling
   )
   // deprecated old endpoint (can remove in future)
@@ -141,7 +141,7 @@ router
     rateLimit(90, 'retrieve receipt'),
     web.myAccount.retrieveReceipt
   )
-  .get('/domains', paginate.middleware(10, 50), web.myAccount.listDomains)
+  .get('/domains', paginate.middleware(25, 100), web.myAccount.listDomains)
   // TODO: document this endpoint
   .post(
     '/aliases',
@@ -301,7 +301,7 @@ router
     web.myAccount.checkVerifiedEmail,
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,
-    paginate.middleware(10, 50),
+    paginate.middleware(25, 100),
     web.myAccount.retrieveAliases,
     web.myAccount.listAliases
   )
@@ -452,7 +452,7 @@ router
   )
   .get(
     '/emails',
-    paginate.middleware(10, 50),
+    paginate.middleware(25, 100),
     rateLimit(100, 'list emails'),
     web.myAccount.listEmails
   )
@@ -470,7 +470,7 @@ router
   )
   .get(
     '/logs',
-    paginate.middleware(10, 50),
+    paginate.middleware(25, 100),
     rateLimit(100, 'list logs'),
     web.myAccount.listLogs
   )
