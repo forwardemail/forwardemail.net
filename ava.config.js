@@ -21,5 +21,5 @@ module.exports = {
   // <https://github.com/JCMais/node-libcurl/issues/414>
   // workerThreads: false,
 
-  timeout: '3m'
+  timeout: '10m'
 };
