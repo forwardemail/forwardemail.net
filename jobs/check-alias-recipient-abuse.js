@@ -532,7 +532,7 @@ graceful.listen();
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.securityEmail,
+          to: config.alertsEmail,
           subject: `👀 Check Alias Recipient Abuse (${lis.length} users)`
         },
         locals: {
