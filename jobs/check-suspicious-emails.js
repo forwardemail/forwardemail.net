@@ -136,7 +136,7 @@ async function sendAggregatedAlert(suspiciousUsers) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject
       },
       locals: { message }

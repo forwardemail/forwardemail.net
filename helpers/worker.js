@@ -367,7 +367,7 @@ async function rekey(payload) {
       template: 'alert',
       message: {
         to: payload.session.user.owner_full_email,
-        cc: config.email.message.from,
+        cc: config.alertsEmail,
         subject: i18n.translate(
           'ALIAS_REKEY_FAILED_SUBJECT',
           payload.session.user.locale,
@@ -1000,7 +1000,7 @@ async function backup(payload) {
     await email({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: i18n.translate(
           'ALIAS_BACKUP_FAILED_SUBJECT',
           payload.session.user.locale,

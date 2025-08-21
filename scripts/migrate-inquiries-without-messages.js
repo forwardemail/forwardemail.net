@@ -78,7 +78,7 @@ graceful.listen();
         template: 'inquiry',
         message: {
           to: inquiry?.email || inquiry?.sender_email,
-          cc: config.email.message.from
+          cc: config.alertsEmail
         },
         locals: {
           user: user.toObject(),

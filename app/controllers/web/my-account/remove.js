@@ -120,7 +120,7 @@ async function remove(ctx) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Error deleting PayPal subscription ID ${
               ctx.state.user[config.userFields.paypalSubscriptionID]
             } for ${ctx.state.user.email}`
@@ -148,7 +148,7 @@ async function remove(ctx) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Error deleting Stripe subscription ID ${
               ctx.state.user[config.userFields.stripeSubscriptionID]
             } for ${ctx.state.user.email}`

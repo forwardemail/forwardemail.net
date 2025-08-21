@@ -248,7 +248,7 @@ graceful.listen();
             await emailHelper({
               template: 'alert',
               message: {
-                to: config.email.message.from,
+                to: config.alertsEmail,
                 subject: `Backscatter results detected for ${domain.name}`
               },
               locals: {
@@ -280,7 +280,7 @@ graceful.listen();
           await emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Denylist results detected for ${domain.name}`
             },
             locals: {
@@ -321,7 +321,7 @@ graceful.listen();
           await emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Silent ban results detected for ${domain.name}`
             },
             locals: {
@@ -354,7 +354,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Sync paid alias allowlist had an error'
       },
       locals: {

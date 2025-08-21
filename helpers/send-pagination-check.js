@@ -33,7 +33,7 @@ async function sendPaginationCheck(ctx) {
       template: 'alert',
       message: {
         to: ctx.state.user.email,
-        bcc: config.email.message.from,
+        bcc: config.alertsEmail,
         subject
       },
       locals: {

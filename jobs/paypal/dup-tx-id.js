@@ -69,7 +69,7 @@ async function mapper(id) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Duplicate PayPal Transactions Detected'
       },
       locals: {

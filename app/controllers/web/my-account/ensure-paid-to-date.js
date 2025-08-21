@@ -112,11 +112,11 @@ async function ensurePaidToDate(ctx, next) {
             ? {
                 cc: [
                   ctx.state.user.email
-                  // config.email.message.from
+                  // config.alertsEmail
                 ]
               }
             : {}),
-          // : { cc: config.email.message.from }),
+          // : { cc: config.alertsEmail }),
           subject: ctx.translate('PAYMENT_PAST_DUE_API_RESTRICTED')
         },
         locals: { message, user: ctx.state.user.toObject() }
@@ -141,9 +141,9 @@ async function ensurePaidToDate(ctx, next) {
               ctx.state.user.email,
             ...(ctx.state.user[config.userFields.receiptEmail]
               ? {
-                  cc: [ctx.state.user.email, config.email.message.from]
+                  cc: [ctx.state.user.email, config.alertsEmail]
                 }
-              : { cc: config.email.message.from }),
+              : { cc: config.alertsEmail }),
             subject
           },
           locals: { message, locale: ctx.state.user[config.lastLocale] }

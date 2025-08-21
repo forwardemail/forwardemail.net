@@ -172,7 +172,7 @@ async function verifySMTP(ctx) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.supportEmail,
+            to: config.alertsEmail,
             replyTo: to,
             subject: autoApprovalSubject
           },

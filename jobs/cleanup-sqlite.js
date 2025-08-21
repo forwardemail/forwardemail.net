@@ -138,7 +138,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
       emailHelper({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `SQLite cleanup successfully removed (${filePaths.length}) stale backups`
         },
         locals: {
@@ -170,7 +170,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: 'SQLite banned/removed aliases detected'
           },
           locals: {
@@ -343,7 +343,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
             message: {
               to: `${alias.name}@${domain.name}`,
               cc: to,
-              // bcc: config.email.message.from,
+              // bcc: config.alertsEmail,
               subject
             },
             locals: {
@@ -378,7 +378,7 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'SQLite cleanup had an error'
       },
       locals: {

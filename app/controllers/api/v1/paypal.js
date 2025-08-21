@@ -820,7 +820,7 @@ async function webhook(ctx) {
       emailHelper({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Error with PayPal Webhook (Event ID ${ctx.request.body.id})`
         },
         locals: {

@@ -95,7 +95,7 @@ const resolver = createTangerine(client, logger);
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Ubuntu Sync Memberships Issue'
       },
       locals: {

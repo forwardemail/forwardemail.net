@@ -53,7 +53,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Error with job for Stripe fraud check'
       },
       locals: {
@@ -79,7 +79,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Error with job for Stripe checking subscription accuracy'
       },
       locals: {
@@ -128,7 +128,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Error with job for Stripe syncing of deleted subscriptions'
       },
       locals: {
@@ -160,7 +160,7 @@ graceful.listen();
           await emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Duplicate Stripe Payment Intent ID detected (${id})`
             },
             locals: {
@@ -175,7 +175,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject:
           'Error with job for Stripe checking of duplicate payment intent IDs'
       },
@@ -200,7 +200,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Error with job for Stripe syncing of payments'
       },
       locals: {

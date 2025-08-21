@@ -144,7 +144,7 @@ async function mapper(user) {
           await emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: 'VISA Trial Subscription Requirement Error'
             },
             locals: {
@@ -360,7 +360,7 @@ async function mapper(user) {
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'VISA Trial Subscription Requirement Error'
       },
       locals: {

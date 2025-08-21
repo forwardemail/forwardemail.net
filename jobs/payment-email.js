@@ -89,9 +89,9 @@ async function mapper(id) {
 
   let bcc;
   if (payment.method === 'plan_conversion') {
-    bcc = config.email.message.from;
+    bcc = config.alertsEmail;
   } else if (payment.amount_refunded > 0) {
-    if (payment.method !== 'free_beta_program') bcc = config.email.message.from;
+    if (payment.method !== 'free_beta_program') bcc = config.alertsEmail;
     $set.refund_receipt_sent_at = $set.receipt_sent_at;
   }
 

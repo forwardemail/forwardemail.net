@@ -276,7 +276,7 @@ async function onAppend(path, flags, date, raw, session, fn) {
                   template: 'alert',
                   message: {
                     to: session.user.owner_full_email,
-                    // cc: config.email.message.from,
+                    // cc: config.alertsEmail,
                     subject: i18n.translate(
                       'PGP_ENCRYPTION_ERROR',
                       session.user.locale

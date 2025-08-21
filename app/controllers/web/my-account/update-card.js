@@ -42,7 +42,7 @@ async function redirectToPortal(ctx) {
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Error creating Stripe billing portal session for customer ID ${
             ctx.state.user[config.userFields.stripeCustomerID]
           } for ${ctx.state.user.email}`

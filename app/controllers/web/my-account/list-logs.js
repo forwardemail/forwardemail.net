@@ -432,7 +432,7 @@ async function listLogs(ctx) {
           template: 'alert',
           message: {
             to: ctx.state.user.email,
-            // bcc: config.email.message.from,
+            // bcc: config.alertsEmail,
             subject: results.subject,
             attachments:
               results.count > 0

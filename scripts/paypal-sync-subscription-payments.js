@@ -286,7 +286,7 @@ async function syncSubscriptionPayments(
         errorEmails.push({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `${customer.email} had an issue syncing transaction ${transaction.id} from PayPal subscription ${subscriptionId}`
           },
           locals: {
@@ -353,7 +353,7 @@ async function syncSubscriptionPayments(
       errorEmails.push({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Error syncing PayPal subscription ${subscriptionId} with ${agentType} agent`
         },
         locals: {
@@ -420,7 +420,7 @@ async function syncAllSubscriptions() {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `PayPal subscription sync hit ${config.paypalErrorThreshold} errors`
           },
           locals: {

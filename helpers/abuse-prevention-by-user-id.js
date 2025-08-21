@@ -73,7 +73,7 @@ async function abusePreventionByUserId(ctx) {
       await emailHelper({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Delete Request: ${user.email}`
         },
         locals: {

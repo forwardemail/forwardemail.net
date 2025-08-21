@@ -669,7 +669,7 @@ async function retrieveDomainBilling(ctx) {
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: paymentIntent
               ? `Error retrieving Stripe Payment Method ID ${paymentIntent.payment_method} for ${ctx.state.user.email}`
               : `Stripe Payment Intent/Method Error for ${ctx.state.user.email}`
@@ -718,7 +718,7 @@ async function retrieveDomainBilling(ctx) {
             emailHelper({
               template: 'alert',
               message: {
-                to: config.email.message.from,
+                to: config.alertsEmail,
                 subject: `Error deleting Stripe subscription ID ${
                   ctx.state.user[config.userFields.stripeSubscriptionID]
                 } for ${ctx.state.user.email}`
@@ -807,7 +807,7 @@ async function retrieveDomainBilling(ctx) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Error retrieving/creating stripe payment for ${ctx.state.user.email}`
             },
             locals: {
@@ -832,7 +832,7 @@ async function retrieveDomainBilling(ctx) {
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
@@ -901,7 +901,7 @@ async function retrieveDomainBilling(ctx) {
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Error deleting PayPal subscription ID ${
                 ctx.state.user[config.userFields.paypalSubscriptionID]
               } for ${ctx.state.user.email}`
@@ -1092,7 +1092,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
           },
           locals: {
@@ -1116,7 +1116,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
@@ -1171,7 +1171,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Error deleting PayPal subscription ID ${
                 ctx.state.user[config.userFields.paypalSubscriptionID]
               } for ${ctx.state.user.email}`
@@ -1324,7 +1324,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Error retrieving/creating paypal payment for ${ctx.state.user.email}`
             },
             locals: {
@@ -1349,7 +1349,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Error saving user for ${ctx.state.user.email}`
           },
           locals: {
@@ -1412,7 +1412,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
           emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Error deleting Stripe subscription ID when user set up PayPal${
                 ctx.state.user[config.userFields.stripeSubscriptionID]
               } for ${ctx.state.user.email}`
@@ -1503,7 +1503,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
                 emailHelper({
                   template: 'alert',
                   message: {
-                    to: config.email.message.from,
+                    to: config.alertsEmail,
                     subject: `Error deleting Stripe subscription ID ${
                       ctx.state.user[config.userFields.stripeSubscriptionID]
                     } for ${ctx.state.user.email}`
@@ -1537,7 +1537,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
                 emailHelper({
                   template: 'alert',
                   message: {
-                    to: config.email.message.from,
+                    to: config.alertsEmail,
                     subject: `Error deleting PayPal subscription ID ${
                       ctx.state.user[config.userFields.paypalSubscriptionID]
                     } for ${ctx.state.user.email}`
@@ -1626,7 +1626,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `A refund error occurred for ${ctx.state.user.email}`
           },
           locals: {
@@ -1693,7 +1693,7 @@ ${safeStringify(parseErr(err), null, 2)}</code></pre>`
         emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `A refund error occurred for ${ctx.state.user.email}`
           },
           locals: {

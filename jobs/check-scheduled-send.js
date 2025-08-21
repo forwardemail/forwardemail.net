@@ -119,7 +119,7 @@ graceful.listen();
         template: 'alert',
         message: {
           to: user.email,
-          bcc: config.email.message.from,
+          // bcc: config.email.message.from,
           subject
         },
         locals: {

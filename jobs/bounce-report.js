@@ -64,7 +64,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject,
         attachments: [
           {
@@ -85,7 +85,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Email Deliverability Report Issue'
       },
       locals: {

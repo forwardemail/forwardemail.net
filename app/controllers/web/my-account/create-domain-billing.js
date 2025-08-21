@@ -166,7 +166,7 @@ async function createDomainBilling(ctx) {
           await emailHelper({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Error creating Stripe customer for ${ctx.state.user.email}`
             },
             locals: { message: err.message }

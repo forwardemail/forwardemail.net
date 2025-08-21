@@ -1141,7 +1141,7 @@ function retryGetDatabase(...args) {
           email({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `Database backup fix for ${session.user.username} (${session.user.alias_id})`
             },
             locals: {

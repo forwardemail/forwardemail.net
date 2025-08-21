@@ -1324,7 +1324,7 @@ async function processEmail({ email, port = 25, resolver, client }) {
                 template: 'alert',
                 message: {
                   to: obj.to,
-                  bcc: config.email.message.from,
+                  bcc: config.alertsEmail,
                   subject
                 },
                 locals: {

@@ -243,7 +243,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
             errorEmails.push({
               template: 'alert',
               message: {
-                to: config.email.message.from,
+                to: config.alertsEmail,
                 subject: `${customer.email} had an issue syncing a transaction from paypal subscription ${subscriptionId} and transaction ${transaction.id}`
               },
               locals: {
@@ -302,7 +302,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
           errorEmails.push({
             template: 'alert',
             message: {
-              to: config.email.message.from,
+              to: config.alertsEmail,
               subject: `${customer.email} has an issue syncing all payments from paypal subscription ${subscriptionId} that were not synced by the sync-payment-histories job`
             },
             locals: {
@@ -329,7 +329,7 @@ async function syncPayPalSubscriptionPaymentsByUser(errorEmails, customer) {
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: `Sync PayPal payment histories hit ${config.paypalErrorThreshold} errors during the script`
           },
           locals: {

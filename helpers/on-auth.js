@@ -391,7 +391,7 @@ async function onAuth(auth, session, fn) {
               template: 'alert',
               message: {
                 to,
-                bcc: config.email.message.from,
+                // bcc: config.email.message.from,
                 subject: i18n.translate(
                   'CALDAV_SMTP_NOT_ENABLED_SUBJECT',
                   locale,
@@ -568,7 +568,7 @@ async function onAuth(auth, session, fn) {
                 template: 'alert',
                 message: {
                   to,
-                  bcc: config.email.message.from,
+                  // bcc: config.email.message.from,
                   subject: i18n.translate(
                     'CONCURRENCY_EXCEEDED_SUBJECT',
                     locale,

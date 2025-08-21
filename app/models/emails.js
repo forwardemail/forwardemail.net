@@ -1600,7 +1600,7 @@ Emails.statics.queue = async function (
         if (!cache) {
           await emailHelper({
             template: 'smtp-prevented',
-            message: { to: obj.to }, // , bcc: config.email.message.from },
+            message: { to: obj.to }, // , bcc: config.alertsEmail },
             locals: {
               domain:
                 typeof domain.toObject === 'function'

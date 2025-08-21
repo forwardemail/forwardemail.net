@@ -612,7 +612,7 @@ async function getForwardingConfiguration({
             template: 'alert',
             message: {
               to: obj.to,
-              bcc: config.email.message.from,
+              bcc: config.alertsEmail,
               subject
             },
             locals: {
