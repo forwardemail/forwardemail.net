@@ -63,16 +63,31 @@ function WKD(resolver, client) {
         headersTimeout: ms(DURATION),
         connectTimeout: ms(DURATION),
         bodyTimeout: ms(DURATION),
-        connect: {
-          lookup(hostname, options, fn) {
-            resolver
-              .lookup(hostname, options)
-              .then((result) => {
-                fn(null, result?.address, result?.family);
-              })
-              .catch((err) => fn(err));
-          }
-        }
+        //
+        //
+        // TODO: there is a bug in tangerine where if we supply
+        //       a custom resolver in self-hosted mode then
+        //       it causes an uncaught exception it appears
+        //
+        //
+        // TODO: an uncaught exception occurs here in self hosting sometimes (?)
+        // TypeError: Cannot read properties of undefined (reading 'length')
+        // (which means it occurs in tangerine under the hood)
+        //
+        ...(config.isSelfHosted
+          ? {}
+          : {
+              connect: {
+                lookup(hostname, options, fn) {
+                  resolver
+                    .lookup(hostname, options)
+                    .then((result) => {
+                      fn(null, result?.address, result?.family);
+                    })
+                    .catch((err) => fn(err));
+                }
+              }
+            })
       })
     });
     clearTimeout(t);

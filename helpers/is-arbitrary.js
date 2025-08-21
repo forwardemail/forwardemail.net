@@ -268,6 +268,7 @@ function isArbitrary(session, headers) {
   // and contain a spoofed "From" address that looks like it's from us
   //
   if (
+    !config.isSelfHosted &&
     (!session.hadAlignedAndPassingDKIM ||
       (session.hadAlignedAndPassingDKIM &&
         session.originalFromAddressRootDomain !== env.WEB_HOST)) &&
