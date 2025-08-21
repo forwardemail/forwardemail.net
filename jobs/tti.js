@@ -421,7 +421,7 @@ Forward Email
         await emailHelper({
           template: 'alert',
           message: {
-            to: config.email.message.from,
+            to: config.alertsEmail,
             subject: 'TTI Issue Detected'
           },
           locals: {

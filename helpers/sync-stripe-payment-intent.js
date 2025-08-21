@@ -471,7 +471,7 @@ function syncStripePaymentIntent(user) {
       errorEmails.push({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Problem syncing billing history for ${user.email} - payment_intent ${paymentIntent.id}`
         },
         locals: {

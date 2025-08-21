@@ -69,7 +69,7 @@ async function syncStripePayments() {
       errorEmails.push({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `Problem syncing billing history for ${user.email} - could not retrieve customer payments`
         },
         locals: {
@@ -182,7 +182,7 @@ async function syncStripePayments() {
       errorEmails.push({
         template: 'alert',
         message: {
-          to: config.email.message.from,
+          to: config.alertsEmail,
           subject: `${user.email} has stripe payments that were not synced by the sync-payment-histories job`
         },
         locals: {

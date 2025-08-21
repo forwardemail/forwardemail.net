@@ -46,7 +46,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Error with job for PayPal syncing of order payments'
       },
       locals: {
@@ -70,7 +70,7 @@ graceful.listen();
     await emailHelper({
       template: 'alert',
       message: {
-        to: config.email.message.from,
+        to: config.alertsEmail,
         subject: 'Error with job for PayPal syncing of subscription payments'
       },
       locals: {
