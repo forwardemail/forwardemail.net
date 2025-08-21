@@ -36,9 +36,24 @@ function getErrorCode(err) {
   // hard-coded denylist errors have 550 while others have 421
   if (err.name === 'DenylistError') return err.responseCode;
   if (
-    (typeof err.responseCode !== 'number' || err.responseCode > 500) &&
+    err.bounceInfo.category === 'block' &&
+    err.responseCode >= 500 &&
+    err.bounceInfo.action === 'reject' &&
+    [
+      'Using dynamic IP range',
+      'Sender is open relay',
+      'Sender IP blocked'
+    ].includes(err.bounceInfo.message)
+  ) {
+    return 421;
+  }
+
+  if (
+    (typeof err.responseCode !== 'number' || err.responseCode >= 500) &&
+    err.bounceInfo.action !== 'reject' &&
+    err.bounceInfo.category !== 'protocol' &&
     (['defer', 'slowdown'].includes(err.bounceInfo.action) ||
-      ['block', 'blocklist', 'network', 'protocol', 'policy'].includes(
+      ['blocklist', 'network', 'protocol', 'policy'].includes(
         err.bounceInfo.category
       ))
   )
