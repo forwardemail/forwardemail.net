@@ -54,7 +54,12 @@ async function setupAuthSession(ctx, username, password) {
       (ctx.headers['user-agent'].includes('macOS') ||
         ctx.headers['user-agent'].includes('iOS'));
 
-    ctx.logger.debug('isApple', ctx.state.isApple);
+    ctx.logger.debug('CardDAV client detection:', {
+      userAgent: ctx.headers['user-agent'],
+      isApple: ctx.state.isApple,
+      username,
+      remoteAddress: ctx.ip
+    });
 
     // set locale for translation in ctx
     ctx.isAuthenticated = () => true;

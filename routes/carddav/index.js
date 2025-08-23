@@ -164,9 +164,27 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
     }
 
     case 'PUT': {
+      // Debug logging for PUT operation
+      ctx.logger.debug('CardDAV PUT operation debug info:', {
+        userAgent: ctx.headers['user-agent'],
+        isApple: ctx.state.isApple,
+        addressBookReadonly: addressBook.readonly,
+        addressBookId: addressBook.address_book_id,
+        contactId: contact,
+        contentType: ctx.headers['content-type'],
+        ifMatch: ctx.headers['if-match'],
+        requestBodyLength: ctx.request.body ? ctx.request.body.length : 0
+      });
+
       // Check if address book is read-only
-      if (addressBook.readonly)
+      if (addressBook.readonly) {
+        ctx.logger.warn('PUT blocked: Address book is readonly', {
+          userAgent: ctx.headers['user-agent'],
+          isApple: ctx.state.isApple,
+          addressBookId: addressBook.address_book_id
+        });
         throw Boom.forbidden(ctx.translateError('ADDRESS_BOOK_READONLY'));
+      }
 
       // Get vCard content
       const vCardContent = ctx.request.body.toString();
@@ -188,6 +206,14 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       const newEtag = xmlHelpers.generateETag(vCardContent);
 
       if (existingContact) {
+        ctx.logger.debug('CardDAV UPDATE operation:', {
+          userAgent: ctx.headers['user-agent'],
+          isApple: ctx.state.isApple,
+          contactId: contact,
+          existingEtag: existingContact.etag,
+          newEtag
+        });
+
         // Check If-Match header if present
         const ifMatch = ctx.request.headers['if-match'];
         if (ifMatch && ifMatch !== existingContact.etag)
@@ -232,6 +258,16 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         ctx.set('ETag', newEtag);
         ctx.status = 204;
       } else {
+        ctx.logger.debug('CardDAV CREATE operation:', {
+          userAgent: ctx.headers['user-agent'],
+          isApple: ctx.state.isApple,
+          contactId: contact,
+          newEtag,
+          vCardUID: vCard.UID,
+          vCardFN: vCard.FN,
+          vCardKIND: vCard.KIND
+        });
+
         // Create new contact
         await Contacts.create({
           // db virtual helper
@@ -274,9 +310,25 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
     }
 
     case 'DELETE': {
+      // Debug logging for DELETE operation
+      ctx.logger.debug('CardDAV DELETE operation debug info:', {
+        userAgent: ctx.headers['user-agent'],
+        isApple: ctx.state.isApple,
+        addressBookReadonly: addressBook.readonly,
+        addressBookId: addressBook.address_book_id,
+        contactId: contact,
+        ifMatch: ctx.headers['if-match']
+      });
+
       // Check if address book is read-only
-      if (addressBook.readonly)
+      if (addressBook.readonly) {
+        ctx.logger.warn('DELETE blocked: Address book is readonly', {
+          userAgent: ctx.headers['user-agent'],
+          isApple: ctx.state.isApple,
+          addressBookId: addressBook.address_book_id
+        });
         throw Boom.forbidden(ctx.translateError('ADDRESS_BOOK_READONLY'));
+      }
 
       // Find contact
       const contactObj = await Contacts.findOne(

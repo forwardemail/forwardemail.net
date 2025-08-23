@@ -12,37 +12,65 @@ async function ensureDefaultAddressBook(ctx) {
     ctx.state.session,
     {}
   );
+
+  ctx.logger.debug('ensureDefaultAddressBook called:', {
+    userAgent: ctx.headers['user-agent'],
+    isApple: ctx.state.isApple,
+    existingAddressBookCount: count,
+    userEmail: ctx.state.session.user.email
+  });
+
   if (count > 0) return;
-  //
-  // TODO: add apple support
-  //       (e.g. does it use DEFAULT_CONTACTS_NAME or something?)
-  //
-  // if (!ctx.state.isApple) {
-  await AddressBooks.create({
+
+  // Apple-specific address book configuration
+  const addressBookConfig = {
     // db virtual helper
     instance: ctx.instance,
     session: ctx.state.session,
 
-    // address book obj
-
-    // TODO: check how fennel does it
-    // TODO: should this be randomUUID() ?
-    address_book_id: 'default', // randomUUID()
-    // TODO: I18N_CONTACTS[ctx.locale] || ctx.translate('CONTACTS')
+    // Default configuration
+    address_book_id: 'default',
     name: 'Contacts',
-    // TODO: translate this
     description: 'Default address book',
-    color: '#0000FF', // blue
+    color: '#0000FF',
     readonly: false,
     synctoken: `${config.urls.web}/ns/sync-token/1`,
-    // TODO: do we need a timezone on the addressbook at all (?)
     timezone: ctx.state.session.user.timezone || 'UTC',
-    // TODO: isn't this automatic (?)
-    // TODO: if we need to change /default here (?)
-    // TODO: fix port if 443 or 80 then don't render it (?)
     url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/dav/${ctx.state.session.user.email}/addressbooks/default/`,
-    // TODO: isn't this automatic (?)
     prodId: `//forwardemail.net//carddav//EN`
+  };
+
+  // Apple-specific adjustments
+  if (ctx.state.isApple) {
+    ctx.logger.debug('Creating Apple-specific address book');
+
+    // Apple expects specific naming conventions
+    addressBookConfig.name = 'Contacts';
+    addressBookConfig.description = 'Default Address Book';
+
+    // Ensure readonly is explicitly false for Apple clients
+    addressBookConfig.readonly = false;
+
+    // Apple may expect different sync token format
+    addressBookConfig.synctoken = `${
+      config.urls.web
+    }/ns/sync-token/${Date.now()}`;
+
+    ctx.logger.debug('Apple address book config:', {
+      readonly: addressBookConfig.readonly,
+      name: addressBookConfig.name,
+      synctoken: addressBookConfig.synctoken
+    });
+  }
+
+  const createdAddressBook = await AddressBooks.create(addressBookConfig);
+
+  ctx.logger.debug('Address book created:', {
+    userAgent: ctx.headers['user-agent'],
+    isApple: ctx.state.isApple,
+    addressBookId: createdAddressBook.address_book_id,
+    readonly: createdAddressBook.readonly,
+    name: createdAddressBook.name
   });
 }
 
