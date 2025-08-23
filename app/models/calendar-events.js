@@ -68,6 +68,13 @@ const CalendarEvents = new mongoose.Schema(
       required: true,
       index: true
     },
+
+    // Component type to differentiate between events and tasks
+    componentType: {
+      type: String,
+      enum: ['VEVENT', 'VTODO'],
+      index: true
+    },
     /*
     sequence: String,
     transparency: {
@@ -105,7 +112,9 @@ const CalendarEvents = new mongoose.Schema(
     recurrences: mongoose.Schema.Types.Mixed,
     status: {
       type: String,
-      enum: [null, 'TENTATIVE', 'CONFIRMED', 'CANCELLED']
+      // VEVENT: TENTATIVE, CONFIRMED, CANCELLED
+      // VTODO: NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED
+      enum: [null, 'TENTATIVE', 'CONFIRMED', 'CANCELLED', 'NEEDS-ACTION', 'IN-PROCESS', 'COMPLETED']
     },
 
     //
@@ -127,6 +136,7 @@ const CalendarEvents = new mongoose.Schema(
         //   '770bc7b3-d4ec-4306-bbb0-a773e8206487': { type: 'VEVENT', params: [], end: 2024-01-27T20:43:19.700Z },
         //   vcalendar: { type: 'VCALENDAR' }
         // }
+        // Also supports VTODO components for task management
         if (!isSANB(ics)) return false;
 
         // safeguard in case library isn't working for some reason
@@ -141,9 +151,20 @@ const CalendarEvents = new mongoose.Schema(
         if (!comp) throw new TypeError('ICAL.Component was not successful');
 
         const vevent = comp.getFirstSubcomponent('vevent');
+        const vtodo = comp.getFirstSubcomponent('vtodo');
 
-        if (!vevent)
-          throw new TypeError('comp.getFirstSubcomponent was not successful');
+        if (!vevent && !vtodo)
+          throw new TypeError('No valid VEVENT or VTODO component found');
+
+        // Auto-detect and set component type
+        if (vevent && !vtodo) {
+          this.componentType = 'VEVENT';
+        } else if (vtodo && !vevent) {
+          this.componentType = 'VTODO';
+        } else if (vevent && vtodo) {
+          // If both exist, prioritize VEVENT for backward compatibility
+          this.componentType = 'VEVENT';
+        }
 
         return true;
       }
