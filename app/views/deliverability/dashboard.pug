@@ -1,0 +1,320 @@
+extends ../layout
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.pt-3
+      .row
+        .col
+          include ../_breadcrumbs
+
+    .container.text-center.mb-3
+      .row
+        .col-12
+          h1.h2= t("Email Deliverability Tool")
+          p.text-muted= t("Test your email sending configuration or analyze existing email messages")
+
+    .container.mb-3
+      .row
+        .col-12
+          .card
+            h2.h5.card-header= t("Live Email Deliverability Test")
+            .card-body
+              p.text-muted= t("Send an email to a temporary test address to analyze your sending configuration in real-time")
+              
+              form(action=l('/deliverability/create-test'), method="POST")
+                button.btn.btn-success.btn-lg(type="submit")
+                  i.fa.fa-envelope
+                  = " "
+                  = t("Generate Test Email Address")
+
+    .container.mb-3
+      .row
+        .col-12
+          .card
+            h2.h5.card-header= t("Raw Email Analysis")
+            .card-body
+              p.text-muted= t("Upload or paste a raw email message to analyze authentication and deliverability issues")
+              form#deliverability-form(action=l('/deliverability/analyze'), method="POST", enctype="multipart/form-data")
+                .form-group
+                  label.form-label(for="email")= t("Raw Email Content")
+                  textarea#email.form-control(
+                    name="email",
+                    rows="8",
+                    placeholder=t("Paste raw email content here (email headers and body)...")
+                  )
+                
+                .form-group
+                  label.form-label(for="emlFile")= t("Or Upload .eml File")
+                  input#emlFile.form-control-file(
+                    type="file",
+                    name="emlFile",
+                    accept=".eml"
+                  )
+                
+                button#analyze-btn.btn.btn-primary(type="submit")
+                  i.fa.fa-search
+                  = " "
+                  = t("Analyze Email")
+
+    if showEmailResults && emailResults
+      .container.mb-3
+        .row
+          .col-12
+            .card
+              h2.h5.card-header= t("Email Analysis Results")
+              .card-body
+                if emailResults.domain
+                  h3.h6= t("Extracted Domain: %s", emailResults.domain)
+                
+                if emailResults.email_headers
+                  h3.h6= t("Email Headers")
+                  .table-responsive
+                    table.table.table-sm
+                      tbody
+                        if emailResults.email_headers.from
+                          tr
+                            th= t("From")
+                            td= emailResults.email_headers.from
+                        if emailResults.email_headers.to
+                          tr
+                            th= t("To")
+                            td= emailResults.email_headers.to
+                        if emailResults.email_headers.subject
+                          tr
+                            th= t("Subject")
+                            td= emailResults.email_headers.subject
+                        if emailResults.email_headers.date
+                          tr
+                            th= t("Date")
+                            td= emailResults.email_headers.date
+                        if emailResults.email_headers.messageId
+                          tr
+                            th= t("Message-ID")
+                            td= emailResults.email_headers.messageId
+
+                if emailResults.dns_verification
+                  h3.h6= t("Email Authentication for %s", emailResults.domain)
+                  p.small.text-muted= t("Current DNS record status for the sender's domain (independent of this specific email)")
+                  .table-responsive
+                    table.table.table-hover.table-sm
+                      thead
+                        tr
+                          th.border-0
+                          th.border-0.align-middle= t("Record Type")
+                          th.border-0.align-middle= t("Status")
+                          th.border-0.align-middle= t("Details")
+                      tbody
+                        tr
+                          td(class=emailResults.dns_verification.has_mx_record ? "bg-success" : "bg-danger")
+                          th.align-middle.text-nowrap
+                            a.btn.btn-secondary.btn-sm(
+                              href="https://wikipedia.org/wiki/MX_record",
+                              target="_blank",
+                              rel="noopener noreferrer"
+                            )
+                              | MX
+                              = " "
+                              i.fa.fa-external-link
+                          td.align-middle= emailResults.dns_verification.has_mx_record ? t("Found") : t("Missing")
+                          td.align-middle.small
+                            if emailResults.dns_verification.has_mx_record && emailResults.dns_verification.verification_details && emailResults.dns_verification.verification_details.mx && Array.isArray(emailResults.dns_verification.verification_details.mx)
+                              each mx in emailResults.dns_verification.verification_details.mx
+                                .mb-1
+                                  span.badge.badge-secondary.mr-1= mx.priority
+                                  = mx.exchange
+                            else if emailResults.dns_verification.has_mx_record
+                              span.text-success= t("MX records found but details not available")
+                            else
+                              span.text-muted= t("No MX records found")
+
+                        tr
+                          td(class=emailResults.dns_verification.has_spf_record ? "bg-success" : "bg-danger")
+                          th.align-middle.text-nowrap
+                            a.btn.btn-secondary.btn-sm(
+                              href="https://wikipedia.org/wiki/Sender_Policy_Framework",
+                              target="_blank",
+                              rel="noopener noreferrer"
+                            )
+                              | SPF
+                              = " "
+                              i.fa.fa-external-link
+                          td.align-middle= emailResults.dns_verification.has_spf_record ? t("Found") : t("Missing")
+                          td.align-middle.small
+                            if emailResults.dns_verification.has_spf_record && emailResults.dns_verification.verification_details && emailResults.dns_verification.verification_details.spf
+                              code.text-break= typeof emailResults.dns_verification.verification_details.spf === 'string' ? emailResults.dns_verification.verification_details.spf : JSON.stringify(emailResults.dns_verification.verification_details.spf)
+                            else if emailResults.dns_verification.has_spf_record
+                              span.text-success= t("SPF record found but details not available")
+                            else
+                              span.text-muted= t("No SPF record found")
+
+                        tr
+                          td(class=emailResults.dns_verification.has_dkim_record ? "bg-success" : "bg-danger")
+                          th.align-middle.text-nowrap
+                            a.btn.btn-secondary.btn-sm(
+                              href="https://wikipedia.org/wiki/DomainKeys_Identified_Mail",
+                              target="_blank",
+                              rel="noopener noreferrer"
+                            )
+                              | DKIM
+                              = " "
+                              i.fa.fa-external-link
+                          td.align-middle= emailResults.dns_verification.has_dkim_record ? t("Found") : t("Missing")
+                          td.align-middle.small
+                            if emailResults.dns_verification.has_dkim_record && emailResults.dns_verification.verification_details && emailResults.dns_verification.verification_details.dkim
+                              .mb-1
+                                strong= t("Selector: ")
+                                span.badge.badge-info= emailResults.dns_verification.verification_details.dkim.selector
+                              if emailResults.dns_verification.verification_details.dkim.record
+                                - var record = Array.isArray(emailResults.dns_verification.verification_details.dkim.record) ? emailResults.dns_verification.verification_details.dkim.record.join('') : emailResults.dns_verification.verification_details.dkim.record
+                                code.text-break.small= record.substring(0, 100) + "..."
+                            else if emailResults.dns_verification.has_dkim_record
+                              span.text-success= t("DKIM record found but details not available")
+                            else
+                              span.text-muted= t("No DKIM record found (checked common selectors)")
+
+                        tr
+                          td.bg-secondary
+                          th.align-middle.text-nowrap
+                            a.btn.btn-secondary.btn-sm(
+                              href="https://wikipedia.org/wiki/Bounce_address",
+                              target="_blank",
+                              rel="noopener noreferrer"
+                            )
+                              | Return-Path
+                              = " "
+                              i.fa.fa-external-link
+                          td.align-middle.text-muted= t("N/A")
+                          td.align-middle.small
+                            span.text-muted= t("Return-Path records are service-specific and not applicable for general domains")
+
+                        tr
+                          td(class=emailResults.dns_verification.has_dmarc_record ? "bg-success" : "bg-danger")
+                          th.align-middle.text-nowrap
+                            a.btn.btn-secondary.btn-sm(
+                              href="https://wikipedia.org/wiki/DMARC",
+                              target="_blank",
+                              rel="noopener noreferrer"
+                            )
+                              | DMARC
+                              = " "
+                              i.fa.fa-external-link
+                          td.align-middle= emailResults.dns_verification.has_dmarc_record ? t("Found") : t("Missing")
+                          td.align-middle.small
+                            if emailResults.dns_verification.has_dmarc_record && emailResults.dns_verification.verification_details && emailResults.dns_verification.verification_details.dmarc
+                              code.text-break= typeof emailResults.dns_verification.verification_details.dmarc === 'string' ? emailResults.dns_verification.verification_details.dmarc : JSON.stringify(emailResults.dns_verification.verification_details.dmarc)
+                            else if emailResults.dns_verification.has_dmarc_record
+                              span.text-success= t("DMARC record found but details not available")
+                            else
+                              span.text-muted= t("No DMARC policy found")
+
+                  if emailResults.dns_verification.errors && emailResults.dns_verification.errors.length > 0
+                    .alert.alert-warning.mt-3
+                      h4.h6= t("DNS Lookup Issues:")
+                      ul.mb-0
+                        each error in emailResults.dns_verification.errors
+                          li
+                            strong= error.type + ": "
+                            = error.message
+
+                if emailResults.raw_analysis
+                  h3.h6= t("Email Content Analysis")
+                  .table-responsive
+                    table.table.table-sm
+                      tbody
+                        tr
+                          th= t("Has Attachments")
+                          td= emailResults.raw_analysis.hasAttachments ? t("Yes") : t("No")
+                        tr
+                          th= t("Text Size")
+                          td= emailResults.raw_analysis.textSize + " bytes"
+                        tr
+                          th= t("HTML Size")
+                          td= emailResults.raw_analysis.htmlSize + " bytes"
+
+                if emailResults.routing_analysis && emailResults.routing_analysis.hops.length > 0
+                  h3.h6= t("Email Routing Analysis")
+                  p.small.text-muted= t("Trace the path of the email through mail servers and check delays between hops")
+                  
+                  .mb-3
+                    strong= t("Routing Summary: ")
+                    span= emailResults.routing_analysis.total_hops + " hops, total delay: " + (emailResults.routing_analysis.total_delay_ms / 1000).toFixed(1) + "s"
+                  
+                  if emailResults.routing_analysis.suspicious_patterns && emailResults.routing_analysis.suspicious_patterns.length > 0
+                    .alert.alert-warning.mb-3
+                      h4.h6= t("Suspicious Patterns Detected:")
+                      ul.mb-0
+                        each pattern in emailResults.routing_analysis.suspicious_patterns
+                          li= pattern
+                  
+                  .table-responsive
+                    table.table.table-sm
+                      thead
+                        tr
+                          th.border-0= t("Hop")
+                          th.border-0= t("From Server")
+                          th.border-0= t("To Server")
+                          th.border-0= t("Timestamp")
+                          th.border-0= t("Delay")
+                      tbody
+                        each hop in emailResults.routing_analysis.hops
+                          tr
+                            td= hop.hop_number
+                            td= hop.from_server || t("Unknown")
+                            td= hop.server || t("Unknown")
+                            td
+                              if hop.timestamp_str
+                                small= hop.timestamp_str
+                              else
+                                span.text-muted= t("No timestamp")
+                            td(class=hop.delay_ms && hop.delay_ms > 60000 ? "text-warning" : "")
+                              if hop.delay_ms !== null && hop.delay_ms !== undefined
+                                = (hop.delay_ms / 1000).toFixed(1) + "s"
+                              else
+                                span.text-muted= "-"
+
+                if emailResults.authentication_details && (emailResults.authentication_details.detailed_results.length > 0 || emailResults.authentication_details.failure_reasons.length > 0)
+                  h3.h6= t("Authentication Analysis")
+                  p.small.text-muted= t("Detailed analysis from Authentication-Results headers showing specific failure reasons")
+                  
+                  if emailResults.authentication_details.failure_reasons.length > 0
+                    .alert.alert-danger.mb-3
+                      h4.h6= t("Authentication Failures:")
+                      ul.mb-0
+                        each reason in emailResults.authentication_details.failure_reasons
+                          li= reason
+                  
+                  if emailResults.authentication_details.detailed_results.length > 0
+                    .table-responsive
+                      table.table.table-sm
+                        thead
+                          tr
+                            th.border-0= t("Server")
+                            th.border-0= t("SPF")
+                            th.border-0= t("DKIM")
+                            th.border-0= t("DMARC")
+                        tbody
+                          each result in emailResults.authentication_details.detailed_results
+                            tr
+                              td
+                                code.small= result.server || t("Unknown")
+                              td(class=result.spf && result.spf.result === 'pass' ? 'text-success' : result.spf && result.spf.result === 'fail' ? 'text-danger' : '')
+                                if result.spf
+                                  div= result.spf.result
+                                  if result.spf.reason
+                                    small.text-muted= result.spf.reason
+                                else
+                                  span.text-muted= t("Not checked")
+                              td(class=result.dkim && result.dkim.result === 'pass' ? 'text-success' : result.dkim && result.dkim.result === 'fail' ? 'text-danger' : '')
+                                if result.dkim
+                                  div= result.dkim.result
+                                  if result.dkim.reason
+                                    small.text-muted= result.dkim.reason
+                                else
+                                  span.text-muted= t("Not checked")
+                              td(class=result.dmarc && result.dmarc.result === 'pass' ? 'text-success' : result.dmarc && result.dmarc.result === 'fail' ? 'text-danger' : '')
+                                if result.dmarc
+                                  div= result.dmarc.result
+                                  if result.dmarc.reason
+                                    small.text-muted= result.dmarc.reason
+                                else
+                                  span.text-muted= t("Not checked")

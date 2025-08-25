@@ -1,0 +1,81 @@
+extends ../layout
+
+block body
+  .min-vh-80.d-flex.flex-column
+    .container.pt-3
+      .row
+        .col
+          include ../_breadcrumbs
+
+    .container.text-center.mb-3
+      .row
+        .col-12
+          h1.h2= t("Email Deliverability Test")
+          p.text-muted= t("Send a test email and receive detailed analysis results")
+
+    .container.mb-3
+      .row
+        .col-12
+          .card.border-primary
+            h2.h5.card-header.bg-primary.text-white
+              i.fa.fa-envelope.mr-2
+              = t("Test Email Address Generated")
+            .card-body
+              .alert.alert-primary
+                h4.h6= t("Your temporary test email address:")
+                .input-group.input-group-lg.mb-3
+                  input.form-control.form-control-lg.text-center.font-weight-bold(
+                    readonly,
+                    value=session.alias,
+                    style="font-size: 1.25rem; letter-spacing: 1px;"
+                  )
+                  .input-group-append
+                    button.btn.btn-outline-primary(
+                      type="button",
+                      onclick=`navigator.clipboard.writeText('${session.alias}').then(() => { this.innerHTML = '<i class="fa fa-check"></i> Copied!'; setTimeout(() => this.innerHTML = '<i class="fa fa-copy"></i> Copy', 2000); })`
+                    )
+                      i.fa.fa-copy
+                      = " Copy"
+              
+              h4.h6= t("Instructions:")
+              ol.list-group.list-group-flush
+                li.list-group-item
+                  strong= t("1. Send a test email")
+                  br
+                  = t("Send an email from your system, application, or email client to the address above")
+                
+                li.list-group-item
+                  strong= t("2. Use your normal sending process")
+                  br  
+                  = t("Send the email exactly as you would normally - don't change any settings")
+                
+                li.list-group-item
+                  strong= t("3. Check your inbox")
+                  br
+                  = t("Analysis results will be sent back to the email address you sent from")
+                
+                li.list-group-item
+                  strong= t("4. Review the analysis")
+                  br
+                  = t("The results will include DNS configuration, authentication status, and recommendations")
+
+              .alert.alert-info.mt-3
+                h5.h6
+                  i.fa.fa-info-circle.mr-2
+                  = t("Important Notes:")
+                ul.mb-0
+                  li= t("This test address expires in 30 minutes")
+                  li= t("Send from the email address where you want to receive results")  
+                  li= t("The analysis will check your domain's SPF, DKIM, DMARC records")
+                  li= t("Results are sent automatically when your email is received")
+
+    .container.mb-3
+      .row
+        .col-12
+          .card
+            h2.h5.card-header= t("Alternative: Raw Email Analysis")
+            .card-body
+              p.text-muted= t("If you prefer to analyze a specific email file instead")
+              a.btn.btn-outline-primary(href=l('/deliverability'))
+                i.fa.fa-arrow-left.mr-2
+                = t("Back to Raw Email Analysis")

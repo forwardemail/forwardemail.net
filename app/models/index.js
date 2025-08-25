@@ -24,6 +24,7 @@ const CalendarEvents = require('./calendar-events');
 const AddressBooks = require('./address-books');
 const Contacts = require('./contacts');
 const TTI = require('./tti');
+const TestEmailSessions = require('./test-email-sessions');
 
 module.exports = {
   Attachments,
@@ -46,5 +47,6 @@ module.exports = {
   CalendarEvents,
   AddressBooks,
   Contacts,
-  TTI
+  TTI,
+  TestEmailSessions
 };

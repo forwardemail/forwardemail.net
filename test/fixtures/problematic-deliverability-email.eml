@@ -1,0 +1,54 @@
+Return-Path: <sender@badconfig.example>
+Received: from mail.badconfig.example ([10.0.0.100])
+	by mx.forwardemail.net with ESMTP id def456ghi789
+	Thu, 23 Aug 2025 10:30:45 +0000
+Received: from unknown-host.local (10.0.0.50)
+	by mail.badconfig.example with ESMTP id ghi789jkl012
+	Thu, 23 Aug 2025 10:30:44 +0000
+Authentication-Results: mx.forwardemail.net;
+	spf=fail (mail.badconfig.example: domain of sender@badconfig.example does not designate 10.0.0.100 as permitted sender) smtp.mailfrom=sender@badconfig.example;
+	dkim=none (message not signed);
+	dmarc=fail (p=reject sp=reject dis=none) header.from=badconfig.example
+Message-ID: <20250823103044.67890@badconfig.example>
+Date: Thu, 23 Aug 2025 10:30:44 +0000
+From: Bad Config <sender@badconfig.example>
+To: recipient@forwardemail.net
+Subject: Test Email with Authentication Issues
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Hello,
+
+This is a test email that demonstrates common deliverability problems:
+
+Authentication Issues Demonstrated:
+- SPF FAIL: The sending IP is not authorized in the SPF record
+- DKIM NONE: No DKIM signature present on the email
+- DMARC FAIL: Domain alignment fails due to SPF and DKIM failures
+
+DNS Configuration Problems:
+- Missing or incorrect SPF record
+- No DKIM selector configured  
+- Restrictive DMARC policy with no valid authentication
+
+Server Issues:
+- Sending from non-authorized IP address
+- No domain authentication setup
+- Poor sender reputation likely
+
+This email would likely be:
+- Rejected by strict email providers
+- Sent to spam folder by most providers
+- Flagged as potentially fraudulent
+- Subject to delivery delays
+
+Recommendations would include:
+1. Fix SPF record to include sending IP
+2. Set up DKIM signing with proper keys
+3. Adjust DMARC policy to quarantine until auth is fixed
+4. Use authenticated SMTP relay
+5. Monitor sender reputation
+
+Best regards,
+Bad Config Example

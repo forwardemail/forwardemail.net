@@ -580,6 +580,10 @@ nav.navbar(class=navbarClasses.join(" "))
                   class=ctx.pathWithoutLocale === "/ips" ? "active" : ""
                 )= t("IP Addresses")
                 a.dropdown-item(
+                  href=l("/deliverability"),
+                  class=ctx.pathWithoutLocale === "/deliverability" ? "active" : ""
+                )= t("Email Deliverability Tool")
+                a.dropdown-item(
                   href=l("/email-api"),
                   class=ctx.pathWithoutLocale === "/email-api" ? "active" : ""
                 )

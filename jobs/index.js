@@ -258,6 +258,12 @@ let jobs = [
     name: 'check-suspicious-emails',
     interval: '6h',
     timeout: 0
+  },
+  // cleanup expired test email sessions
+  {
+    name: 'test-email-cleanup',
+    interval: '15m',
+    timeout: '5m'
   }
 ];
 

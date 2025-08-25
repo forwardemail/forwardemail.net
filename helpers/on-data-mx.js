@@ -1520,6 +1520,42 @@ function updateMXHeaders(headers, session) {
 }
 
 async function onDataMX(session, headers, body) {
+  // Check for test email delivery first (before spam checks)
+  const { handleTestEmail } = require('#helpers/test-email-handler');
+
+  // Check if any recipient is a test email alias
+  if (session.envelope.rcptTo && Array.isArray(session.envelope.rcptTo)) {
+    for (const recipient of session.envelope.rcptTo) {
+      const { address } = recipient;
+      if (
+        address &&
+        address.startsWith('test-') &&
+        address.endsWith(`@${config.webHost}`)
+      ) {
+        // This is a test email - handle it immediately and return
+        try {
+          const rawEmail = body.toString();
+          await handleTestEmail(address, rawEmail, this.resolver);
+          // Log successful test email processing
+          this.logger.info('Test email processed successfully', {
+            alias: address,
+            sessionId: session.id,
+            from: session.envelope.mailFrom?.address
+          });
+        } catch (err_) {
+          this.logger.error('Test email processing failed', {
+            alias: address,
+            error: err_.message,
+            sessionId: session.id
+          });
+        }
+
+        // Return early - test emails don't go through normal processing
+        return;
+      }
+    }
+  }
+
   // TODO: possibly store a counter here too for arbitrary blocks by day
   // arbitrary spam checks
   // (this throws an error if any arbitrary checks were detected)

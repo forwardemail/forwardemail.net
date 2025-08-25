@@ -1,0 +1,44 @@
+Return-Path: <sender@example.com>
+Received: from mail.example.com ([192.168.1.100])
+	by mx.forwardemail.net with ESMTPS id abc123def456
+	(TLS1.3) (Exim 4.96) Thu, 23 Aug 2025 10:30:45 +0000
+Received: from sender-workstation.local (192.168.1.50)
+	by mail.example.com with ESMTPSA id xyz789abc123
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256)
+	Thu, 23 Aug 2025 10:30:44 +0000
+Authentication-Results: mx.forwardemail.net;
+	spf=pass (mail.example.com: domain of sender@example.com designates 192.168.1.100 as permitted sender) smtp.mailfrom=sender@example.com;
+	dkim=pass (2048-bit key; unprotected) header.d=example.com header.i=@example.com header.b="abc123==";
+	dmarc=pass (p=quarantine sp=quarantine dis=none) header.from=example.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=example.com; s=default;
+	t=1692792644; bh=abc123def456ghi789==; h=Date:From:To:Subject;
+	b=abc123def456ghi789jkl012mno345pqr678stu901vwx234yz567abc890def123ghi456jkl789mno012pqr345stu678vwx901==
+Message-ID: <20250823103044.12345@example.com>
+Date: Thu, 23 Aug 2025 10:30:44 +0000
+From: John Doe <sender@example.com>
+To: recipient@forwardemail.net
+Subject: Test Email for Deliverability Analysis
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Hello,
+
+This is a test email to demonstrate the email deliverability analysis tool.
+
+Key features being tested:
+- SPF authentication (should pass)
+- DKIM signature validation (should pass)
+- DMARC policy compliance (should pass)
+- IP reputation analysis
+- Header validation
+
+The sending server has proper authentication configured:
+- SPF record exists and includes the sending IP
+- DKIM signature is valid with 2048-bit key
+- DMARC policy is set to quarantine
+
+This email should demonstrate a well-configured email setup with good deliverability prospects.
+
+Best regards,
+John Doe

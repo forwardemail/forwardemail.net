@@ -220,6 +220,23 @@ localeRouter
   .get('/encrypt', render('encrypt'))
   .post('/encrypt', rateLimit(50, 'encrypt'), web.encryptTxt)
 
+  // email deliverability tool
+  .get('/deliverability', web.deliverability.renderDashboard)
+  .post(
+    '/deliverability/analyze',
+    rateLimit(20, 'deliverability analysis'),
+    web.deliverability.analyzeEmailWithUpload
+  )
+  .post(
+    '/deliverability/create-test',
+    rateLimit(10, 'create test session'),
+    web.deliverability.createTestSession
+  )
+  .get(
+    '/deliverability/test/:sessionId',
+    web.deliverability.renderTestInstructions
+  )
+
   //
   // ips
   //

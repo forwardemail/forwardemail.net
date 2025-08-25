@@ -1,0 +1,33 @@
+Return-Path: <bounce@suspicious-sender.com>
+Received: from suspicious-server.com ([203.0.113.5])
+	by mx.forwardemail.net with SMTP id xyz789abc123
+	Thu, 23 Aug 2025 10:35:00 +0000
+Received: from [203.0.113.5] (helo=desktop-user)
+	by suspicious-server.com Thu, 23 Aug 2025 10:34:58 +0000
+Authentication-Results: mx.forwardemail.net;
+	spf=fail (suspicious-sender.com: domain of sender@suspicious-sender.com does not designate 203.0.113.5 as permitted sender) smtp.mailfrom=sender@suspicious-sender.com;
+	dkim=fail (signature verification failed) header.d=suspicious-sender.com;
+	dmarc=fail (p=none dis=none) header.from=suspicious-sender.com
+From: Sender Name <sender@suspicious-sender.com>
+To: target@forwardemail.net
+Subject: Urgent: Verify Your Account Information
+Date: Thu, 23 Aug 2025 10:34:58 +0000
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html>
+<html>
+<body>
+<p>Dear Valued Customer,</p>
+
+<p>We have detected unusual activity on your account. Please verify your information immediately by clicking the link below:</p>
+
+<p><a href="http://suspicious-verification.com/verify">Verify Account Now</a></p>
+
+<p>If you do not verify within 24 hours, your account may be suspended.</p>
+
+<p>Thank you,<br>
+Security Team</p>
+</body>
+</html>
