@@ -1542,6 +1542,7 @@ Tasks and reminders will automatically be separated from calendar events into th
 **Setup instructions by platform:**
 
 **macOS/iOS:**
+
 1. Add a new CalDAV account in System Preferences > Internet Accounts (or Settings > Accounts on iOS)
 2. Use `caldav.forwardemail.net` as the server
 3. Enter your Forward Email alias and generated password
@@ -1549,13 +1550,15 @@ Tasks and reminders will automatically be separated from calendar events into th
 5. Use the Reminders app to create and manage tasks
 
 **Android with Tasks.org:**
+
 1. Install Tasks.org from Google Play Store or F-Droid
 2. Go to Settings > Synchronization > Add Account > CalDAV
 3. Enter server: `https://caldav.forwardemail.net`
-4. Enter your Forward Email alias and generated password  
+4. Enter your Forward Email alias and generated password
 5. Tasks.org will automatically discover your task calendars
 
 **Thunderbird:**
+
 1. Install the Lightning add-on if not already installed
 2. Create a new calendar with type "CalDAV"
 3. Use URL: `https://caldav.forwardemail.net`
@@ -1579,9 +1582,10 @@ If you're having trouble creating tasks in macOS Reminders, try these troublesho
 6. **Force sync**: In Reminders app, try creating a task and then manually refreshing the sync
 
 **Common issues:**
-- **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
-- **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
-- **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
+
+* **"Reminders calendar not found"**: The server may need a moment to create the Reminders collection on first access
+* **Tasks not syncing**: Check that both devices are using the same CalDAV account credentials
+* **Mixed content**: Ensure tasks are being created in the "Reminders" calendar, not the general "Calendar"
 
 ### How do I set up Tasks.org on Android
 
@@ -1590,44 +1594,46 @@ Tasks.org is a popular open-source task manager that works excellently with Forw
 **Installation and Setup:**
 
 1. **Install Tasks.org**:
-   - From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
-   - From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
+   * From Google Play Store: [Tasks.org](https://play.google.com/store/apps/details?id=org.tasks)
+   * From F-Droid: [Tasks.org on F-Droid](https://f-droid.org/packages/org.tasks/)
 
 2. **Configure CalDAV sync**:
-   - Open Tasks.org
-   - Go to ☰ Menu > Settings > Synchronization
-   - Tap "Add Account" 
-   - Select "CalDAV"
+   * Open Tasks.org
+   * Go to ☰ Menu > Settings > Synchronization
+   * Tap "Add Account"
+   * Select "CalDAV"
 
 3. **Enter Forward Email settings**:
-   - **Server URL**: `https://caldav.forwardemail.net`
-   - **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
-   - **Password**: Your alias-specific generated password
-   - Tap "Add Account"
+   * **Server URL**: `https://caldav.forwardemail.net`
+   * **Username**: Your Forward Email alias (e.g., `you@yourdomain.com`)
+   * **Password**: Your alias-specific generated password
+   * Tap "Add Account"
 
 4. **Account discovery**:
-   - Tasks.org will automatically discover your task calendars
-   - You should see your "Reminders" collection appear
-   - Tap "Subscribe" to enable sync for the task calendar
+   * Tasks.org will automatically discover your task calendars
+   * You should see your "Reminders" collection appear
+   * Tap "Subscribe" to enable sync for the task calendar
 
 5. **Test sync**:
-   - Create a test task in Tasks.org
-   - Check that it appears in other CalDAV clients (like macOS Reminders)
-   - Verify changes sync both ways
+   * Create a test task in Tasks.org
+   * Check that it appears in other CalDAV clients (like macOS Reminders)
+   * Verify changes sync both ways
 
 **Features available:**
-- ✅ Task creation and editing
-- ✅ Due dates and reminders  
-- ✅ Task completion and status
-- ✅ Priority levels
-- ✅ Subtasks and task hierarchy
-- ✅ Tags and categories
-- ✅ Two-way sync with other CalDAV clients
+
+* ✅ Task creation and editing
+* ✅ Due dates and reminders
+* ✅ Task completion and status
+* ✅ Priority levels
+* ✅ Subtasks and task hierarchy
+* ✅ Tags and categories
+* ✅ Two-way sync with other CalDAV clients
 
 **Troubleshooting:**
-- If no task calendars appear, try manually refreshing in Tasks.org settings
-- Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
-- Check network connectivity to `caldav.forwardemail.net`
+
+* If no task calendars appear, try manually refreshing in Tasks.org settings
+* Ensure you have at least one task created on the server (you can create one in macOS Reminders first)
+* Check network connectivity to `caldav.forwardemail.net`
 
 ### How do I set up SRS for Forward Email
 
@@ -1814,28 +1820,30 @@ In order to use calendar support, the **user** must be the email address of an a
 
 ### Do you support tasks and reminders (CalDAV VTODO)
 
-Yes, as of [INSERT DATE] we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+Yes, as of \[INSERT DATE] we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
 
 Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components, with automatic separation into appropriate calendar collections:
 
-- **Calendar events** go into your main "Calendar" collection
-- **Tasks/reminders** go into a separate "Reminders" collection
+* **Calendar events** go into your main "Calendar" collection
+* **Tasks/reminders** go into a separate "Reminders" collection
 
 **Supported task clients:**
-- **macOS Reminders** - Full native support for task creation, editing, completion, and sync
-- **iOS Reminders** - Full native support across all iOS devices  
-- **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-- **Thunderbird with Lightning** - Task support in desktop email client
-- **Any CalDAV-compatible task manager** - Standard VTODO component support
+
+* **macOS Reminders** - Full native support for task creation, editing, completion, and sync
+* **iOS Reminders** - Full native support across all iOS devices
+* **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
+* **Thunderbird with Lightning** - Task support in desktop email client
+* **Any CalDAV-compatible task manager** - Standard VTODO component support
 
 **Task features supported:**
-- Task creation, editing, and deletion
-- Due dates and start dates
-- Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
-- Task priority levels
-- Recurring tasks
-- Task descriptions and notes
-- Multi-device synchronization
+
+* Task creation, editing, and deletion
+* Due dates and start dates
+* Task completion status (NEEDS-ACTION, IN-PROCESS, COMPLETED, CANCELLED)
+* Task priority levels
+* Recurring tasks
+* Task descriptions and notes
+* Multi-device synchronization
 
 The login credentials are the same as for calendar support:
 
