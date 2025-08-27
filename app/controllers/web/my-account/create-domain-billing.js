@@ -72,7 +72,7 @@ async function createDomainBilling(ctx) {
     // plan
     if (
       !isSANB(plan) ||
-      !['free', 'enhanced_protection', 'team'].includes(plan)
+      !['free', 'enhanced_protection', 'team', 'enterprise'].includes(plan)
     ) {
       throw Boom.badRequest(ctx.translateError('INVALID_PLAN'));
     }

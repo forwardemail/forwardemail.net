@@ -38,7 +38,7 @@ graceful.listen();
   // check where recipient has same as user
   //
   for await (const domain of Domains.find({
-    plan: { $in: ['enhanced_protection', 'team'] }
+    plan: { $in: ['enhanced_protection', 'team', 'enterprise'] }
   })
     .lean()
     .select('id name')

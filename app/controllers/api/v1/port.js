@@ -51,7 +51,7 @@ async function port(ctx) {
       const domain = await Domains.findOne({
         name: ctx.query.domain,
         verification_record: verifications[0],
-        plan: { $in: ['enhanced_protection', 'team'] }
+        plan: { $in: ['enhanced_protection', 'team', 'enterprise'] }
       })
         .lean()
         .exec();

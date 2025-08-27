@@ -91,6 +91,7 @@ const omitExtraFields = [
   config.userFields.approvedDomains,
   config.userFields.isRemoved,
   config.userFields.smtpLimit,
+  config.userFields.isEnterprise,
 
   config.userFields.apiPastDueSentAt,
   config.userFields.apiRestrictedSentAt
@@ -185,7 +186,7 @@ const Users = new mongoose.Schema({
   // Plan
   plan: {
     type: String,
-    enum: ['free', 'enhanced_protection', 'team'],
+    enum: ['free', 'enhanced_protection', 'team', 'enterprise'],
     default: 'free',
     index: true
   },
@@ -319,6 +320,12 @@ object[config.userFields.isRemoved] = {
 };
 
 object[config.userFields.isBanned] = {
+  type: Boolean,
+  default: false,
+  index: true
+};
+
+object[config.userFields.isEnterprise] = {
   type: Boolean,
   default: false,
   index: true

@@ -13,7 +13,8 @@ async function enforcePaidPlan(ctx, next) {
   // if the user is a member of a team plan and in the admin group, continue
   if (
     ctx.state?.domain?.group === 'admin' &&
-    ctx.state?.domain?.plan === 'team'
+    (ctx.state?.domain?.plan === 'team' ||
+      ctx.state?.domain?.plan === 'enterprise')
   )
     return next();
 

@@ -254,7 +254,7 @@ async function mapper(user) {
 
   try {
     for await (const user of Users.find({
-      plan: { $in: ['enhanced_protection', 'team'] },
+      plan: { $in: ['enhanced_protection', 'team', 'enterprise'] },
       group: 'user',
       [config.userFields.isBanned]: false,
       [config.userFields.hasVerifiedEmail]: true,

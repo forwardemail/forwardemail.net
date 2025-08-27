@@ -284,7 +284,7 @@ async function analyzeUserAccount(user) {
     // Paid plan with no verified domains
     if (
       verifiedDomains === 0 &&
-      ['enhanced_protection', 'team'].includes(user.plan)
+      ['enhanced_protection', 'team', 'enterprise'].includes(user.plan)
     ) {
       riskScore += 35;
       indicators.push('Paid plan with zero verified domains');

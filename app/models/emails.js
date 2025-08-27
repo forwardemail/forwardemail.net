@@ -1392,7 +1392,11 @@ Emails.statics.queue = async function (
   // validate that at least one paying, non-banned admin on >= same plan without expiration
   //
   const validPlans =
-    domain.plan === 'team' ? ['team'] : ['team', 'enhanced_protection'];
+    domain.plan === 'team'
+      ? ['team']
+      : domain.plan === 'enterprise'
+      ? ['enterprise']
+      : ['team', 'enhanced_protection', 'enterprise'];
 
   if (
     !domain.members.some(

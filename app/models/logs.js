@@ -912,7 +912,7 @@ async function parseLog(log) {
           const domain = await Domains.findOne({
             name,
             verification_record: verifications[0],
-            plan: { $in: ['enhanced_protection', 'team'] }
+            plan: { $in: ['enhanced_protection', 'team', 'enterprise'] }
           });
 
           if (!domain) return;

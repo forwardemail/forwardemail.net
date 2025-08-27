@@ -35,7 +35,7 @@ async function remove(ctx) {
   // check that we're not an admin of any team domains
   const domainsWithOtherAdmins = ctx.state.domains.some(
     (d) =>
-      d.plan === 'team' &&
+      (d.plan === 'team' || d.plan === 'enterprise') &&
       d.group === 'admin' &&
       d.members.some(
         (m) => m.group === 'admin' && m.user.id !== ctx.state.user.id

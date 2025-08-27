@@ -17,7 +17,8 @@ function ensureUpgradedPlan(ctx, next) {
 
   if (
     (!ctx.state.domain && ctx.state.user.plan !== 'free') ||
-    ctx.state?.domain?.plan === 'team'
+    ctx.state?.domain?.plan === 'team' ||
+    ctx.state?.domain?.plan === 'enterprise'
   )
     return next();
 

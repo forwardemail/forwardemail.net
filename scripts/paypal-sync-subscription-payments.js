@@ -47,13 +47,15 @@ const NEW_PAYPAL_SUBSCRIPTION_IDS = [];
 const { PAYPAL_PLAN_MAPPING, PAYPAL_PLAN_MAPPING_LEGACY } = config.payments;
 const PAYPAL_PLANS = {
   enhanced_protection: Object.values(PAYPAL_PLAN_MAPPING.enhanced_protection),
-  team: Object.values(PAYPAL_PLAN_MAPPING.team)
+  team: Object.values(PAYPAL_PLAN_MAPPING.team),
+  enterprise: Object.values(PAYPAL_PLAN_MAPPING.enterprise)
 };
 const PAYPAL_PLANS_LEGACY = {
   enhanced_protection: Object.values(
     PAYPAL_PLAN_MAPPING_LEGACY.enhanced_protection
   ),
-  team: Object.values(PAYPAL_PLAN_MAPPING_LEGACY.team)
+  team: Object.values(PAYPAL_PLAN_MAPPING_LEGACY.team),
+  enterprise: Object.values(PAYPAL_PLAN_MAPPING_LEGACY.enterprise)
 };
 
 async function syncSubscriptionPayments(
