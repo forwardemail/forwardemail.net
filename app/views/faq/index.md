@@ -16,6 +16,7 @@
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
   * [Mobile Devices](#mobile-devices)
+  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
   * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
   * [What is the legacy free guide for Send Mail As using Gmail](#what-is-the-legacy-free-guide-for-send-mail-as-using-gmail)
   * [Advanced Gmail Routing Configuration](#advanced-gmail-routing-configuration)
@@ -65,7 +66,6 @@
   * [What are your SMTP server configuration settings](#what-are-your-smtp-server-configuration-settings)
   * [What are your IMAP server configuration settings](#what-are-your-imap-server-configuration-settings)
   * [What are your POP3 server configuration settings](#what-are-your-pop3-server-configuration-settings)
-  * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
 * [Security](#security)
   * [Advanced Server Hardening Techniques](#advanced-server-hardening-techniques)
   * [Do you have SOC 2 or ISO 27001 certifications](#do-you-have-soc-2-or-iso-27001-certifications)
@@ -288,6 +288,96 @@ For Android:
 1. Go to **Settings → Accounts → Add Account → Personal (IMAP)**
 2. Enter your Forward Email address and password
 3. For server settings, use the same IMAP and SMTP settings as above
+
+### Postfix SMTP Relay Configuration
+
+You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
+
+<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
+  <i class="fa fa-stopwatch font-weight-bold"></i>
+  <strong class="font-weight-bold">Estimated Setup Time:</strong>
+  <span>Less than 15 minutes</span>
+</div>
+
+<div class="alert my-3 alert-warning">
+  <i class="fa fa-exclamation-circle font-weight-bold"></i>
+  <strong class="font-weight-bold">
+    Important:
+  </strong>
+  <span>
+    This requires a paid plan with SMTP access enabled.
+  </span>
+</div>
+
+#### Installation
+
+1. Install Postfix on your server:
+
+```bash
+# Ubuntu/Debian
+sudo apt update && sudo apt install postfix
+
+# CentOS/RHEL
+sudo yum install postfix
+
+# macOS
+brew install postfix
+```
+
+2. During installation, select "Internet Site" when prompted for configuration type.
+
+#### Configuration
+
+1. Edit the main Postfix configuration file:
+
+```bash
+sudo nano /etc/postfix/main.cf
+```
+
+2. Add or modify these settings:
+
+```
+# SMTP relay configuration
+relayhost = [smtp.forwardemail.net]:587
+smtp_use_tls = yes
+smtp_sasl_auth_enable = yes
+smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
+smtp_sasl_security_options = noanonymous
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+```
+
+3. Create the SASL password file:
+
+```bash
+sudo nano /etc/postfix/sasl_passwd
+```
+
+4. Add your Forward Email credentials:
+
+```
+[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
+```
+
+5. Secure and hash the password file:
+
+```bash
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+```
+
+6. Restart Postfix:
+
+```bash
+sudo systemctl restart postfix
+```
+
+#### Testing
+
+Test your configuration by sending a test email:
+
+```bash
+echo "Test email body" | mail -s "Test Subject" recipient@example.com
+```
 
 ### How to Send Mail As using Gmail
 
@@ -2589,96 +2679,6 @@ In order to connect with POP3, the **POP3 user** must be the email address of an
 
 Please refer to [Do you support POP3](#do-you-support-pop3) for step by step instructions.
 
-### Postfix SMTP Relay Configuration
-
-You can configure Postfix to relay emails through Forward Email's SMTP servers. This is useful for server applications that need to send emails.
-
-<div class="alert my-3 bg-dark border-themed text-white d-inline-block">
-  <i class="fa fa-stopwatch font-weight-bold"></i>
-  <strong class="font-weight-bold">Estimated Setup Time:</strong>
-  <span>Less than 15 minutes</span>
-</div>
-
-<div class="alert my-3 alert-warning">
-  <i class="fa fa-exclamation-circle font-weight-bold"></i>
-  <strong class="font-weight-bold">
-    Important:
-  </strong>
-  <span>
-    This requires a paid plan with SMTP access enabled.
-  </span>
-</div>
-
-#### Installation
-
-1. Install Postfix on your server:
-
-```bash
-# Ubuntu/Debian
-sudo apt update && sudo apt install postfix
-
-# CentOS/RHEL
-sudo yum install postfix
-
-# macOS
-brew install postfix
-```
-
-2. During installation, select "Internet Site" when prompted for configuration type.
-
-#### Configuration
-
-1. Edit the main Postfix configuration file:
-
-```bash
-sudo nano /etc/postfix/main.cf
-```
-
-2. Add or modify these settings:
-
-```
-# SMTP relay configuration
-relayhost = [smtp.forwardemail.net]:587
-smtp_use_tls = yes
-smtp_sasl_auth_enable = yes
-smtp_sasl_password_maps = hash:/etc/postfix/sasl_passwd
-smtp_sasl_security_options = noanonymous
-smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
-```
-
-3. Create the SASL password file:
-
-```bash
-sudo nano /etc/postfix/sasl_passwd
-```
-
-4. Add your Forward Email credentials:
-
-```
-[smtp.forwardemail.net]:587 your-alias@yourdomain.com:your-generated-password
-```
-
-5. Secure and hash the password file:
-
-```bash
-sudo chmod 600 /etc/postfix/sasl_passwd
-sudo postmap /etc/postfix/sasl_passwd
-```
-
-6. Restart Postfix:
-
-```bash
-sudo systemctl restart postfix
-```
-
-#### Testing
-
-Test your configuration by sending a test email:
-
-```bash
-echo "Test email body" | mail -s "Test Subject" recipient@example.com
-```
-
 
 ## Security
 
@@ -3216,7 +3216,9 @@ We publish our IP addresses at <https://forwardemail.net/ips>.
 
 Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
-All emails, domains, and recipients from customers on paid plans are automatically added to our allowlist.
+All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly &ndash; which alerts admins who can manually intervene if necessary.
+
+Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) &ndash; then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
 
 ### What domain name extensions are allowlisted by default
 

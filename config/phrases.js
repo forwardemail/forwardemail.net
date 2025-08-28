@@ -19,6 +19,14 @@ for (const key of Object.keys(statuses.message)) {
   STATUSES[key.toString()] = statuses.message[key];
 }
 
+const DENYLIST_SUBJECT =
+  'Your domain <span class="notranslate">%s</span> sent <span class="notranslate">%s</span> content';
+
+const DENYLIST_MESSAGE = `
+<p>We detected that <strong class="notranslate">%s</span> was sending <span class="notranslate">%s</span>. In order to protect our server's IP reputation, we had to block it &ndash; and therefore we added it to our denylist.</p>
+<p>If this looks suspicious or is a false positive, then please contact us by responding to this message.  You should also check to ensure that you have a DMARC policy with "p=reject" (not "p=none") and are signing your outbound messages with a DKIM signature (e.g. using our SMTP servers).</p>
+`.trim();
+
 const ALIAS_GENERATED_PASSWORD = `
 <div class="container mt-4">
   <div class="alert alert-danger small font-weight-bold d-inline-block mb-4">
@@ -83,6 +91,8 @@ const ALIAS_GENERATED_PASSWORD = `
 </div>`.trim();
 
 module.exports = {
+  DENYLIST_SUBJECT,
+  DENYLIST_MESSAGE,
   ABUSE_PREVENTION_DELETE_ACCOUNT:
     'You cannot perform this deletion until 5 days after your first payment was made. This is an abuse prevention measure to mitigate fraud and spam, and it is noted in our privacy policy.',
   LOGGED_OUT_OTHER_DEVICES: 'Successfully logged out all other devices.',

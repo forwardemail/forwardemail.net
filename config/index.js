@@ -704,7 +704,7 @@ const config = {
   srs: {
     separator: '=',
     secret: env.SRS_SECRET,
-    maxAge: 24 * 60 * 5 // 5 days
+    maxAge: 24 * 60 * 10 // 10 days
   },
   twilio: {
     accountSid: env.TWILIO_ACCOUNT_SID,

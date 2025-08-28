@@ -79,6 +79,14 @@ const mountDir = config.env === 'production' ? '/mnt' : tmpdir;
 
   subscriber.subscribe('sqlite_auth_response');
 
+  //
+  // TODO: delete aliases that no longer exist in R2
+  //       - 605249d9559c394835521bbe.sqlite.gz
+  //       - 605249d9559c394835521bbe.sqlite
+  //
+  // TODO: delete aliases that no longer exist in SQLite
+  //
+
   try {
     if (isCancelled) return;
 

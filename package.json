@@ -30,7 +30,7 @@
     "@aws-sdk/client-s3": "3.844.0",
     "@aws-sdk/lib-storage": "3.844.0",
     "@aws-sdk/s3-request-presigner": "3.844.0",
-    "@cleandns/whois-rdap": "1.0.48",
+    "@cleandns/whois-rdap": "1.0.50",
     "@forevolve/bootstrap-dark": "4.0.2",
     "@fortawesome/fontawesome-free": "5.15.4",
     "@forwardemail/bytes": "4.0.0",

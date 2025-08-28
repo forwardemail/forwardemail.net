@@ -22,6 +22,12 @@ import('@cleandns/whois-rdap').then((obj) => {
   whois = obj.whois;
 });
 
+//
+// TODO: there's still a core bug with this package
+//       (but we wrap all our usage with try/catch currently so we're OK)
+//       <https://github.com/cleandns-inc/tool-whois/issues/12>
+//
+
 // <https://github.com/cleandns-inc/tool-whois/issues/3>
 // <https://github.com/LayeredStudio/whoiser/pull/121>
 // let whoisDomain;

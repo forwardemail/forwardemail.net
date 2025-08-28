@@ -23,6 +23,7 @@ const REGEX_BLOCKLIST = new RE2(/blocklist|block\s+list/im);
 // TODO: add these to bounces.txt
 // <https://github.com/zone-eu/zone-mta/issues/435>
 // <https://postmaster-earthlink.vadesecure.com/inbound_error_codes/>
+// <https://sendertool.vadesecure.com/en/> (how to remove if Vade Secure blocks)
 
 //
 // NOTE: we have access to `err.truthSource` if needed here

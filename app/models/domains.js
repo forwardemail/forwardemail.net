@@ -287,10 +287,6 @@ const Domains = new mongoose.Schema({
   // restricted alias names for admins only (prevents non-admin from using)
   restricted_alias_names: [String],
 
-  last_allowlist_sync_at: {
-    type: Date,
-    index: true
-  },
   has_adult_content_protection: {
     type: Boolean,
     default: true

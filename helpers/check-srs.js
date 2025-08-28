@@ -8,6 +8,7 @@ const parseErr = require('parse-err');
 const { SRS } = require('sender-rewriting-scheme');
 const _ = require('#helpers/lodash');
 
+const logger = require('#helpers/logger');
 const config = require('#config');
 
 const srs = new SRS(config.srs);
@@ -41,7 +42,17 @@ function checkSRS(address, shouldThrow = false, ignoreHook = false) {
     if (local[2]) local[2] = local[2].toUpperCase(); // T7
     const srsAddress = `${local.join('=')}@${domain}`;
     const reversed = srs.reverse(srsAddress);
-    if (_.isNull(reversed)) throw new Error('Bad signature');
+    if (_.isNull(reversed)) {
+      if (REGEX_SRS1.test(address)) {
+        const err2 = new TypeError('SRS1 reverse failed');
+        err2.address = address;
+        err2.isCodeBug = true;
+        logger.fatal(err2, { ignore_hook: false });
+      }
+
+      throw new Error('Bad signature');
+    }
+
     return reversed;
   } catch (_err) {
     let err = _err;

@@ -6,6 +6,7 @@
 const { isIP } = require('node:net');
 
 const Boom = require('@hapi/boom');
+const Redis = require('@ladjs/redis');
 const bytes = require('@forwardemail/bytes');
 const countryList = require('country-list');
 const cryptoRandomString = require('crypto-random-string');
@@ -19,6 +20,7 @@ const ms = require('ms');
 const passportLocalMongoose = require('passport-local-mongoose');
 const safeStringify = require('fast-safe-stringify');
 const sanitizeHtml = require('sanitize-html');
+const sharedConfig = require('@ladjs/shared-config');
 const striptags = require('striptags');
 const validator = require('@forwardemail/validator');
 const { authenticator } = require('otplib');
@@ -33,11 +35,18 @@ const Payments = require('./payments');
 const TimezoneHandler = require('#helpers/timezone-handler');
 const _ = require('#helpers/lodash');
 const config = require('#config');
+const createTangerine = require('#helpers/create-tangerine');
 const email = require('#helpers/email');
+const getUbuntuMembersMap = require('#helpers/get-ubuntu-members-map');
 const i18n = require('#helpers/i18n');
 const isEmail = require('#helpers/is-email');
 const logger = require('#helpers/logger');
 const syncUbuntuUser = require('#helpers/sync-ubuntu-user');
+
+// TODO: use a global redis/resolver approach like global mongoose
+const breeSharedConfig = sharedConfig('BREE');
+const client = new Redis(breeSharedConfig.redis, logger);
+const resolver = createTangerine(client, logger);
 
 const timezoneHandler = new TimezoneHandler();
 
@@ -130,6 +139,20 @@ Passkey.plugin(mongooseCommonPlugin, {
   uniqueId: false,
   locale: false
 });
+
+let map;
+
+if (config.env === 'production') {
+  // cache the ubuntu members map immediately
+  (async () => {
+    map = await getUbuntuMembersMap(resolver);
+  })();
+
+  // every 5 minutes update the ubuntu members map
+  setInterval(async () => {
+    map = await getUbuntuMembersMap(resolver);
+  }, ms('5m'));
+}
 
 const Users = new mongoose.Schema({
   //
@@ -1039,7 +1062,8 @@ Users.pre('save', async function (next) {
     return next();
 
   try {
-    await syncUbuntuUser(this);
+    if (!(map instanceof Map)) map = await getUbuntuMembersMap(resolver);
+    await syncUbuntuUser(this, map);
     this.last_ubuntu_sync = new Date();
   } catch (err) {
     this.last_ubuntu_sync = new Date();

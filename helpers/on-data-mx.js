@@ -28,6 +28,7 @@ const arrayJoinConjunction = require('array-join-conjunction');
 const bytes = require('@forwardemail/bytes');
 const escapeStringRegexp = require('escape-string-regexp');
 const ip = require('ip');
+const isFQDN = require('is-fqdn');
 const isSANB = require('is-string-and-not-blank');
 const ms = require('ms');
 const pMap = require('p-map');
@@ -47,6 +48,7 @@ const _ = require('#helpers/lodash');
 
 const getReceivedHeader = require('#helpers/get-received-header');
 
+const Domains = require('#models/domains');
 const DenylistError = require('#helpers/denylist-error');
 const REGEX_LOCALHOST = require('#helpers/regex-localhost');
 const SMTPError = require('#helpers/smtp-error');
@@ -174,6 +176,74 @@ async function sendSysAdminEmail(template, err, session, headers) {
   });
 }
 */
+
+//
+// TODO: digest email with parsed FQDN's or IP's parsed from rejected emails
+//
+async function addToDenylist(attr, headers, bounce, _session) {
+  await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
+  //
+  // we don't need to do a caching check here for sending the email
+  // because adding to the denylist sort of acts like a cache by itself
+  //
+  // (e.g. sometimes a service like example.com might have dmarc with p=none)
+  // (and bad actors could be impersonating them, which causes them to get marked as spam)
+  // (so we notify the admins, if any, on our side if they are a paying customer)
+  //
+  if (!isEmail(attr) && !isFQDN(attr)) return;
+
+  const host = parseHostFromDomainOrAddress(attr);
+  const root = parseRootDomain(host);
+
+  // lookup the main host, if not found, and if root differs, then lookup the root
+  let domain = await Domains.findOne({
+    plan: { $in: ['enhanced_protection', 'team'] },
+    // has_mx_record: true,
+    has_txt_record: true,
+    domain: host
+  })
+    .lean()
+    .exec();
+
+  if (!domain && host !== root)
+    domain = await Domains.findOne({
+      plan: { $in: ['enhanced_protection', 'team'] },
+      // has_mx_record: true,
+      has_txt_record: true,
+      domain: root
+    })
+      .lean()
+      .exec();
+
+  if (!domain) return;
+
+  const { to, locale } = await Domains.getToAndMajorityLocaleByDomain(domain);
+
+  emailHelper({
+    template: 'alert',
+    message: {
+      to,
+      bcc: config.alertsEmail,
+      subject: i18n.translate(
+        'DENYLIST_SUBJECT',
+        locale,
+        domain.name,
+        bounce.err.bounceInfo.category
+      )
+    },
+    locals: {
+      message: i18n.translate(
+        'DENYLIST_MESSAGE',
+        locale,
+        attr,
+        bounce.err.bounceInfo.category
+      ),
+      locale
+    }
+  })
+    .then()
+    .catch((err) => logger.fatal(err));
+}
 
 //
 // NOTE: we check against both MAIL FROM and From header for some arbitrary checks
@@ -658,9 +728,14 @@ async function checkBounceForSpam(bounce, headers, session) {
         err.bounce = bounce;
         err.session = session;
         err.isCodeBug = true;
-        logger.fatal(err);
+        logger.fatal(err, { session });
 
-        await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
+        // add to the denylist or email the affected customer (e.g. they may need DMARC)
+        try {
+          await addToDenylist.call(this, attr, headers, bounce, session);
+        } catch (err) {
+          logger.fatal(err, { session });
+        }
 
         return;
       }
@@ -711,10 +786,15 @@ async function checkBounceForSpam(bounce, headers, session) {
             err.session = session;
             err.isCodeBug = true;
             err.headers = headers;
-            logger.fatal(err);
+            logger.fatal(err, { session });
           }
 
-          await this.client.set(`denylist:${attr}`, true, 'PX', ms('30d'));
+          // add to the denylist or email the affected customer (e.g. they may need DMARC)
+          try {
+            await addToDenylist.call(this, attr, headers, bounce, session);
+          } catch (err) {
+            logger.fatal(err, { session });
+          }
         }
       }
     },

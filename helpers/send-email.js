@@ -194,7 +194,7 @@ async function sendEmail(
     await isDenylisted(envelope.to, client, resolver);
   } catch (err) {
     // store a counter
-    if (err instanceof DenylistError)
+    if (err instanceof DenylistError && client)
       client
         //
         // TODO: improve this date's accuracy later via `email` perhaps
