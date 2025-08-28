@@ -145,12 +145,20 @@ let map;
 if (config.env === 'production') {
   // cache the ubuntu members map immediately
   (async () => {
-    map = await getUbuntuMembersMap(resolver);
+    try {
+      map = await getUbuntuMembersMap(resolver);
+    } catch (err) {
+      logger.fatal(err);
+    }
   })();
 
   // every 5 minutes update the ubuntu members map
   setInterval(async () => {
-    map = await getUbuntuMembersMap(resolver);
+    try {
+      map = await getUbuntuMembersMap(resolver);
+    } catch (err) {
+      logger.fatal(err);
+    }
   }, ms('5m'));
 }
 
