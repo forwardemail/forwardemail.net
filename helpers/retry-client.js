@@ -86,7 +86,7 @@ class RetryClient extends undici.Client {
         if (ms) await timers.setTimeout(ms);
         return this.request(options, count + 1);
       } finally {
-        if (options.dispatcher) options.dispatcher.destroy();
+        // if (options.dispatcher) options.dispatcher.destroy();
       }
     };
   }
