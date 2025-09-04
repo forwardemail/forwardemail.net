@@ -498,6 +498,8 @@ const Domains = new mongoose.Schema({
   tokens: [Token]
 });
 
+Domains.index({ plan: 1, has_txt_record: 1, _id: 1 });
+
 Domains.index(
   { smtp_suspended_sent_at: 1 },
   {

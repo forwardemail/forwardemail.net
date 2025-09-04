@@ -15,6 +15,7 @@
   * [Thunderbird](#thunderbird)
   * [Microsoft Outlook](#microsoft-outlook)
   * [Apple Mail](#apple-mail)
+  * [eM Client](#em-client)
   * [Mobile Devices](#mobile-devices)
   * [Postfix SMTP Relay Configuration](#postfix-smtp-relay-configuration)
   * [How to Send Mail As using Gmail](#how-to-send-mail-as-using-gmail)
@@ -274,6 +275,20 @@ Everything is done in-memory and [our source code is on GitHub](https://github.c
    * Username: Your full email address
    * Password: Your generated password
 6. Click **Sign In**
+
+### eM Client
+
+1. Create a new alias and generate a password in your Forward Email dashboard
+2. Open eM Client and go to **Menu → Accounts → + Add Account**
+3. Click on **Mail** and then select **Other**
+4. Enter your Forward Email address and click **Next**
+5. Enter the following server settings:
+   * **Incoming server**: `imap.forwardemail.net`
+   * **Outgoing server**: `smtp.forwardemail.net`
+6. Enter your full email address as the **User name** and your generated password as the **Password** for both incoming and outgoing servers.
+7. eM Client will test the connection. Once it passes, click **Next**.
+8. Enter your name and choose an account name.
+9. Click **Finish**.
 
 ### Mobile Devices
 
@@ -3216,9 +3231,9 @@ We publish our IP addresses at <https://forwardemail.net/ips>.
 
 Yes, we have a [list of domain name extensions](#what-domain-name-extensions-are-allowlisted-by-default) that are allowlisted by default and a dynamic, cached, and rolling allowlist based off [strict criteria](#what-is-your-allowlist-criteria).
 
-All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly &ndash; which alerts admins who can manually intervene if necessary.
+All domains, emails, and IP addresses used by paying customers are automatically checked against our denylist hourly – which alerts admins who can manually intervene if necessary.
 
-Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) &ndash; then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
+Additionally, if one of your domains or its email addresses are denylisted (e.g. for sending spam, viruses, or due to impersonation attacks) – then the domain admins (you) and our team admins will be notified by email immediately.  We strongly recommend that you [configure DMARC](#how-do-i-set-up-dmarc-for-forward-email) to prevent this.
 
 ### What domain name extensions are allowlisted by default
 

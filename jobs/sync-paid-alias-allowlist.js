@@ -15,6 +15,7 @@ require('#config/mongoose');
 
 const process = require('node:process');
 const { parentPort } = require('node:worker_threads');
+const { setTimeout } = require('node:timers/promises');
 
 const Graceful = require('@ladjs/graceful');
 const Redis = require('@ladjs/redis');
@@ -52,67 +53,166 @@ const graceful = new Graceful({
 
 graceful.listen();
 
-(async () => {
-  await setupMongoose(logger);
+// Configuration for batch processing
+const DOMAIN_BATCH_SIZE = 1000; // Tune this based on your needs
+const ALIAS_BATCH_SIZE = 5000; // Larger batch for aliases as they're simpler
+const MAX_RETRIES = 3;
+const RETRY_DELAY = 1000; // 1 second
 
-  try {
-    const bannedUserIdsSet = await Users.getBannedUserIdSet(client);
+// Helper function for retrying operations
+async function retryOperation(
+  operation,
+  maxRetries = MAX_RETRIES,
+  delay = RETRY_DELAY
+) {
+  let lastError;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (err) {
+      lastError = err;
+      logger.warn(
+        `Operation failed (attempt ${attempt}/${maxRetries}):`,
+        err.message
+      );
+      if (attempt < maxRetries) {
+        await setTimeout(delay * attempt);
+      }
+    }
+  }
 
-    const set = new Set();
+  throw lastError;
+}
 
-    const cursor = Domains.find({
+// Optimized function to process domains with pagination
+async function processDomainsBatch(bannedUserIdsSet, set) {
+  let lastId = null;
+  let totalProcessed = 0;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const query = {
       plan: { $in: ['enhanced_protection', 'team'] },
-      // has_mx_record: true,
       has_txt_record: true
-    })
-      .select('name members _id')
-      .lean()
-      .cursor()
-      .addCursorFlag('noCursorTimeout', true);
+    };
 
-    await cursor.eachAsync(
-      async (domain) => {
-        logger.debug('processing %s', domain.name);
+    if (lastId) {
+      query._id = { $gt: lastId };
+    }
 
-        // filter out domains where all users are banned
-        if (
-          !domain.members ||
-          !Array.isArray(domain.members) ||
-          domain.members.every((m) => bannedUserIdsSet.has(m.user.toString()))
-        ) {
-          logger.info('all domain users were banned %s', domain.name);
-          return;
-        }
+    const domains = await retryOperation(async () => {
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      return Domains.find(query)
+        .select('name members _id')
+        .sort({ _id: 1 }) // Ensures consistent ordering for pagination
+        .limit(DOMAIN_BATCH_SIZE)
+        .lean();
+    });
 
-        set.add(punycode.toASCII(domain.name));
-        {
-          // parse root domain
-          const rootDomain = parseRootDomain(domain.name);
-          if (domain.name !== rootDomain) {
-            set.add(punycode.toASCII(rootDomain));
+    if (domains.length === 0) {
+      logger.info(`Completed processing ${totalProcessed} domains`);
+      break;
+    }
+
+    lastId = domains[domains.length - 1]._id;
+    totalProcessed += domains.length;
+
+    logger.info(
+      `Processing domain batch: ${domains.length} domains (total: ${totalProcessed})`
+    );
+
+    // Process the batch in parallel with controlled concurrency
+    await Promise.all(
+      domains.map(async (domain) => {
+        try {
+          logger.debug('processing %s', domain.name);
+
+          // filter out domains where all users are banned
+          if (
+            !domain.members ||
+            !Array.isArray(domain.members) ||
+            domain.members.every((m) => bannedUserIdsSet.has(m.user.toString()))
+          ) {
+            logger.info('all domain users were banned %s', domain.name);
+            return;
           }
-        }
 
-        const aliasCursor = Aliases.find({
-          domain: domain._id,
-          is_enabled: true,
-          user: {
-            $nin: [...bannedUserIdsSet]
+          set.add(punycode.toASCII(domain.name));
+          {
+            // parse root domain
+            const rootDomain = parseRootDomain(domain.name);
+            if (domain.name !== rootDomain) {
+              set.add(punycode.toASCII(rootDomain));
+            }
           }
-        })
-          .lean()
-          .select('name recipients')
-          .cursor()
-          .addCursorFlag('noCursorTimeout', true);
 
-        await aliasCursor.eachAsync(
-          (alias) => {
+          // Process aliases for this domain with pagination
+          await processAliasesBatch(domain, bannedUserIdsSet, set);
+        } catch (err) {
+          logger.error(`Error processing domain ${domain.name}:`, err);
+          // Continue processing other domains even if one fails
+        }
+      })
+    );
+  }
+}
+
+// Optimized function to process aliases with pagination
+async function processAliasesBatch(domain, bannedUserIdsSet, set) {
+  let lastId = null;
+  let totalProcessed = 0;
+
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const query = {
+      domain: domain._id,
+      is_enabled: true,
+      user: {
+        $nin: [...bannedUserIdsSet]
+      }
+    };
+
+    if (lastId) {
+      query._id = { $gt: lastId };
+    }
+
+    const aliases = await retryOperation(async () => {
+      // eslint-disable-next-line unicorn/no-array-callback-reference
+      return Aliases.find(query)
+        .select('name recipients _id')
+        .sort({ _id: 1 }) // Ensures consistent ordering for pagination
+        .limit(ALIAS_BATCH_SIZE)
+        .lean();
+    });
+
+    if (aliases.length === 0) {
+      if (totalProcessed > 0) {
+        logger.debug(
+          `Completed processing ${totalProcessed} aliases for domain ${domain.name}`
+        );
+      }
+
+      break;
+    }
+
+    lastId = aliases[aliases.length - 1]._id;
+    totalProcessed += aliases.length;
+
+    // Process aliases in smaller chunks to avoid overwhelming the system
+    const chunkSize = 1000;
+    for (let i = 0; i < aliases.length; i += chunkSize) {
+      const chunk = aliases.slice(i, i + chunkSize);
+
+      await Promise.all(
+        chunk.map(async (alias) => {
+          try {
             logger.debug(
               'alias %s@%s (%d recipients)',
               alias.name,
               domain.name,
               alias.recipients.length
             );
+
             // add alias.name @ domain.name
             /*
             if (
@@ -152,59 +252,83 @@ graceful.listen();
               }
               // TODO: we don't ban webhooks currently
             }
-          },
-          { parallel: 10000 }
-        );
-
-        /*
-      // lookup mx records for recipient and domain
-      for (const host of set) {
-        if (!isFQDN(host)) continue;
-        // lookup A record for the hostname
-        try {
-          const ips = await resolver.resolve(host);
-
-          for (const ip of ips) {
-            if (isIP(ip)) set.add(ip);
+          } catch (err) {
+            logger.error(
+              `Error processing alias ${alias.name}@${domain.name}:`,
+              err
+            );
+            // Continue processing other aliases even if one fails
           }
-        } catch (err) {
-          logger.debug(err, { domain, host });
-        }
+        })
+      );
+    }
+  }
+}
 
-        // TODO: we should also check hostnames of the exchanges for denylist (?)
-        //       (we'd need to mirror this to SMTP side if so)
+// Optimized function to process Redis streams with error handling
+// eslint-disable-next-line max-params
+async function processRedisStream(client, pattern, set, targetSet, p) {
+  try {
+    const stream = client.scanStream({
+      match: pattern,
+      count: 10000,
+      type: 'string'
+    });
 
-        //
-        // lookup the MX records for the hostname
-        // and then if any are found, if they are IP's then add otherwise if FQDN then lookup A records
-        //
+    const processKeys = (keys) => {
+      for (const key of keys) {
         try {
-          const records = await resolver.resolveMx(host);
-          if (records.length > 0) {
-            for (const record of records) {
-              if (isIP(record.exchange)) {
-                set.add(record.exchange);
-              } else if (isFQDN(record.exchange)) {
-                // lookup the IP address of the exchange
-                try {
-                  const ips = await resolver.resolve(record.exchange);
-                  for (const ip of ips) {
-                    if (isIP(ip)) set.add(ip);
-                  }
-                } catch (err) {
-                  logger.debug(err, { domain, host });
-                }
-              }
+          const prefix = pattern.replace('*', '');
+          const keyWithoutPrefix = key.replace(prefix, '');
+
+          if (set.has(keyWithoutPrefix)) {
+            p.del(key);
+            targetSet.add(keyWithoutPrefix);
+          }
+
+          if (isIP(keyWithoutPrefix)) continue;
+
+          if (isFQDN(keyWithoutPrefix) || isEmail(keyWithoutPrefix)) {
+            const host = parseHostFromDomainOrAddress(keyWithoutPrefix);
+            const root = parseRootDomain(host);
+
+            if (set.has(host)) {
+              p.del(key);
+              targetSet.add(keyWithoutPrefix);
+            }
+
+            if (host !== root && set.has(root)) {
+              p.del(key);
+              targetSet.add(keyWithoutPrefix);
             }
           }
         } catch (err) {
-          logger.debug(err, { domain, host });
+          logger.error(`Error processing Redis key ${key}:`, err);
+          // Continue processing other keys even if one fails
         }
       }
-      */
-      },
-      { parallel: 10000 }
-    );
+    };
+
+    stream.on('data', processKeys);
+    await pEvent(stream, 'end');
+  } catch (err) {
+    logger.error(`Error processing Redis stream ${pattern}:`, err);
+    throw err;
+  }
+}
+
+(async () => {
+  await setupMongoose(logger);
+
+  try {
+    const bannedUserIdsSet = await Users.getBannedUserIdSet(client);
+
+    const set = new Set();
+
+    // Process domains with optimized pagination
+    await processDomainsBatch(bannedUserIdsSet, set);
+
+    logger.info(`Total unique entries in allowlist: ${set.size}`);
 
     const p = client.pipeline();
 
@@ -214,131 +338,32 @@ graceful.listen();
     }
     */
 
-    // denylist:*
+    // Process Redis streams with error handling
     const denylistSet = new Set();
-    {
-      const stream = client.scanStream({
-        match: 'denylist:*',
-        count: 10000,
-        type: 'string'
-      });
+    await processRedisStream(client, 'denylist:*', set, denylistSet, p);
 
-      stream.on('data', (keys) => {
-        for (const key of keys) {
-          const keyWithoutPrefix = key.replace('denylist:', '');
-          if (set.has(keyWithoutPrefix)) {
-            p.del(key);
-            denylistSet.add(keyWithoutPrefix);
-          }
-
-          if (isIP(keyWithoutPrefix)) continue;
-
-          if (isFQDN(keyWithoutPrefix) || isEmail(keyWithoutPrefix)) {
-            const host = parseHostFromDomainOrAddress(keyWithoutPrefix);
-            const root = parseRootDomain(host);
-            if (set.has(host)) {
-              p.del(key);
-              denylistSet.add(keyWithoutPrefix);
-            }
-
-            if (host !== root && set.has(root)) {
-              p.del(key);
-              denylistSet.add(keyWithoutPrefix);
-            }
-          }
-        }
-      });
-      await pEvent(stream, 'end');
-    }
-
-    // silent:*
     const silentSet = new Set();
-    {
-      const stream = client.scanStream({
-        match: 'silent:*',
-        count: 10000,
-        type: 'string'
-      });
+    await processRedisStream(client, 'silent:*', set, silentSet, p);
 
-      stream.on('data', (keys) => {
-        for (const key of keys) {
-          const keyWithoutPrefix = key.replace('silent:', '');
-          if (set.has(keyWithoutPrefix)) {
-            p.del(key);
-            silentSet.add(keyWithoutPrefix);
-          }
-
-          if (isIP(keyWithoutPrefix)) continue;
-
-          if (isFQDN(keyWithoutPrefix) || isEmail(keyWithoutPrefix)) {
-            const host = parseHostFromDomainOrAddress(keyWithoutPrefix);
-            const root = parseRootDomain(host);
-            if (set.has(host)) {
-              p.del(key);
-              silentSet.add(keyWithoutPrefix);
-            }
-
-            if (host !== root && set.has(root)) {
-              p.del(key);
-              silentSet.add(keyWithoutPrefix);
-            }
-          }
-        }
-      });
-      await pEvent(stream, 'end');
-    }
-
-    // backscatter:*
     const backscatterSet = new Set();
-    {
-      const stream = client.scanStream({
-        match: 'backscatter:*',
-        count: 10000,
-        type: 'string'
-      });
+    await processRedisStream(client, 'backscatter:*', set, backscatterSet, p);
 
-      stream.on('data', (keys) => {
-        for (const key of keys) {
-          const keyWithoutPrefix = key.replace('backscatter:', '');
-          if (set.has(keyWithoutPrefix)) {
-            p.del(key);
-            backscatterSet.add(keyWithoutPrefix);
-          }
-
-          if (isIP(keyWithoutPrefix)) continue;
-
-          if (isFQDN(keyWithoutPrefix) || isEmail(keyWithoutPrefix)) {
-            const host = parseHostFromDomainOrAddress(keyWithoutPrefix);
-            const root = parseRootDomain(host);
-            if (set.has(host)) {
-              p.del(key);
-              backscatterSet.add(keyWithoutPrefix);
-            }
-
-            if (host !== root && set.has(root)) {
-              p.del(key);
-              backscatterSet.add(keyWithoutPrefix);
-            }
-          }
-        }
-      });
-      await pEvent(stream, 'end');
-    }
-
-    await p.exec();
+    await retryOperation(async () => {
+      await p.exec();
+    });
 
     const csvContent = ['prefix,value']; // header row
 
     for (const key of denylistSet) {
-      csvContent.push('denylist', key);
+      csvContent.push(`denylist,${key}`);
     }
 
     for (const key of backscatterSet) {
-      csvContent.push('backscatter', key);
+      csvContent.push(`backscatter,${key}`);
     }
 
     for (const key of silentSet) {
-      csvContent.push('silent', key);
+      csvContent.push(`silent,${key}`);
     }
 
     await emailHelper({
@@ -363,6 +388,8 @@ graceful.listen();
         `.trim()
       }
     });
+
+    logger.info('Sync paid users job completed successfully');
   } catch (err) {
     await logger.error(err);
     await emailHelper({

@@ -94,6 +94,8 @@ async function retryRequest(url, opts = {}, count = 1) {
     const ms = opts.calculateDelay(count);
     if (ms) await timers.setTimeout(ms);
     return retryRequest(url, opts, count + 1);
+  } finally {
+    if (opts.dispatcher) opts.dispatcher.destroy();
   }
 }
 

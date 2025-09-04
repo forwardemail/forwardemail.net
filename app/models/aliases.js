@@ -349,6 +349,7 @@ const Aliases = new mongoose.Schema({
 });
 
 // compound index
+Aliases.index({ domain: 1, is_enabled: 1, user: 1, _id: 1 });
 Aliases.index({ user: 1, domain: 1 });
 Aliases.index({ _id: 1, domain: 1 });
 Aliases.index({ name: 1, domain: 1 });

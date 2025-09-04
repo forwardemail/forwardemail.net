@@ -57,38 +57,40 @@ function WKD(resolver, client) {
           new TimeoutError(`${url} took longer than ${DURATION}`)
         );
     }, ms(DURATION));
+    const dispatcher = new undici.Agent({
+      headersTimeout: ms(DURATION),
+      connectTimeout: ms(DURATION),
+      bodyTimeout: ms(DURATION),
+      //
+      //
+      // TODO: there is a bug in tangerine where if we supply
+      //       a custom resolver in self-hosted mode then
+      //       it causes an uncaught exception it appears
+      //
+      //
+      // TODO: an uncaught exception occurs here in self hosting sometimes (?)
+      // TypeError: Cannot read properties of undefined (reading 'length')
+      // (which means it occurs in tangerine under the hood)
+      //
+      ...(config.isSelfHosted
+        ? {}
+        : {
+            connect: {
+              lookup(hostname, options, fn) {
+                resolver
+                  .lookup(hostname, options)
+                  .then((result) => {
+                    fn(null, result?.address, result?.family);
+                  })
+                  .catch((err) => fn(err));
+              }
+            }
+          })
+    });
     const response = await undici.fetch(url, {
       signal: abortController.signal,
-      dispatcher: new undici.Agent({
-        headersTimeout: ms(DURATION),
-        connectTimeout: ms(DURATION),
-        bodyTimeout: ms(DURATION),
-        //
-        //
-        // TODO: there is a bug in tangerine where if we supply
-        //       a custom resolver in self-hosted mode then
-        //       it causes an uncaught exception it appears
-        //
-        //
-        // TODO: an uncaught exception occurs here in self hosting sometimes (?)
-        // TypeError: Cannot read properties of undefined (reading 'length')
-        // (which means it occurs in tangerine under the hood)
-        //
-        ...(config.isSelfHosted
-          ? {}
-          : {
-              connect: {
-                lookup(hostname, options, fn) {
-                  resolver
-                    .lookup(hostname, options)
-                    .then((result) => {
-                      fn(null, result?.address, result?.family);
-                    })
-                    .catch((err) => fn(err));
-                }
-              }
-            })
-      })
+      dispatcher
+      // TODO: may need `dispatcher.destroy()`, but not sure since we use `undici.fetch` vs `undici.request`
     });
     clearTimeout(t);
     return response;
