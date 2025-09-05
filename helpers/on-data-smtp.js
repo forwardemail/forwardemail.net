@@ -131,13 +131,9 @@ async function onDataSMTP(session, date, headers, body) {
     );
 
   if (!domain.has_smtp) {
-    if (!_.isDate(domain.smtp_verified_at))
+    if (_.isDate(domain.smtp_verified_at))
       throw new SMTPError(
-        `Domain is not configured for outbound SMTP, go to ${
-          config.urls.web
-        }/my-account/domains/${punycode.toASCII(
-          domain.name
-        )}/verify-smtp and click "Verify"`,
+        `Domain is pending admin approval for outbound SMTP access. Approval typically takes less than 24 hours; please check your inbox soon as we may be requesting additional information`,
         {
           responseCode: 535,
           ignoreHook: true
@@ -145,7 +141,11 @@ async function onDataSMTP(session, date, headers, body) {
       );
 
     throw new SMTPError(
-      `Domain is pending admin approval for outbound SMTP access. Approval typically takes less than 24 hours; please check your inbox soon as we may be requesting additional information`,
+      `Domain is not configured for outbound SMTP, go to ${
+        config.urls.web
+      }/my-account/domains/${punycode.toASCII(
+        domain.name
+      )}/verify-smtp and click "Verify"`,
       {
         responseCode: 535,
         ignoreHook: true

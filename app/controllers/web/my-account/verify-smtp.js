@@ -161,6 +161,7 @@ async function verifySMTP(ctx) {
             (hasExistingApprovedDomains && !hasSomeSuspendedDomains)))
       ) {
         domain.has_smtp = true;
+        domain.smtp_verified_at = new Date();
 
         // Email admins about auto-approval with metadata
         const autoApprovalSubject = i18n.translate(

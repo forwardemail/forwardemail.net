@@ -232,8 +232,7 @@ function validateAlias(ctx, next) {
     //
     if (
       body.vacation_responder.is_enabled &&
-      (!ctx?.state?.domain?.smtp_verified_at ||
-        ctx?.state?.domain?.is_smtp_suspended)
+      (!ctx?.state?.domain?.has_smtp || ctx?.state?.domain?.is_smtp_suspended)
     )
       throw Boom.badRequest(
         ctx.translateError(
