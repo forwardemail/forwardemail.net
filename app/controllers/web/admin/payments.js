@@ -259,12 +259,7 @@ async function freeCredit(ctx) {
     ? `${durationMapping[0]} ${durationMapping[1]}`
     : dayjs.duration(duration, 'milliseconds').humanize();
 
-  const message = ctx.translate(
-    'FREE_CREDIT_GRANTED',
-    email,
-    plan,
-    durationFormatted
-  );
+  const message = `Free credit granted successfully to ${email} for ${plan} plan (${durationFormatted} duration)`;
 
   if (ctx.accepts('html')) {
     ctx.flash('custom', {
