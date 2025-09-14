@@ -1,0 +1,259 @@
+extends ../../layout
+
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+
+        .compose-container
+          .compose-header
+            .d-flex.justify-content-between.align-items-center
+              h3.mb-0
+                i.fa.fa-plus.me-2
+                = t('Compose Email')
+              a.btn.btn-light.btn-sm(href=l("/my-account/inbox"))
+                i.fa.fa-times.me-2
+                = t('Cancel')
+
+          form#compose-form.compose-form(method="POST", action=l("/my-account/compose"), enctype="multipart/form-data")
+            //- Handle reply/forward context
+            if ctx.query.reply
+              input(type="hidden", name="reply_to", value=ctx.query.reply)
+            if ctx.query.forward
+              input(type="hidden", name="forward_id", value=ctx.query.forward)
+
+            .row.mb-3
+              .col-md-6
+                label.form-label(for="compose-to")= t('To')
+                input.form-control#compose-to(
+                  type="email",
+                  name="to",
+                  value=ctx.query.to || "",
+                  placeholder="recipient@example.com",
+                  required,
+                  multiple
+                )
+                .form-text= t('Separate multiple recipients with commas')
+
+              .col-md-6
+                label.form-label(for="compose-from")= t('From')
+                select.form-select#compose-from(name="from", required)
+                  //- TODO: Populate with user's aliases
+                  option(value="") #{t('Select sending address')}
+                  //- This will be populated by the controller
+                  if ctx.state.user && ctx.state.aliases
+                    each alias in ctx.state.aliases
+                      option(value=alias.name)= alias.name
+
+            .row.mb-3
+              .col-md-6
+                label.form-label(for="compose-cc")= t('CC')
+                input.form-control#compose-cc(
+                  type="email",
+                  name="cc",
+                  placeholder="cc@example.com",
+                  multiple
+                )
+
+              .col-md-6
+                label.form-label(for="compose-bcc")= t('BCC')
+                input.form-control#compose-bcc(
+                  type="email",
+                  name="bcc",
+                  placeholder="bcc@example.com",
+                  multiple
+                )
+
+            .mb-3
+              label.form-label(for="compose-subject")= t('Subject')
+              input.form-control#compose-subject(
+                type="text",
+                name="subject",
+                value=ctx.query.subject || "",
+                placeholder=t("Enter subject..."),
+                required
+              )
+
+            //- Rich text editor would go here
+            .mb-3
+              label.form-label(for="compose-body")= t('Message')
+              .editor-toolbar.mb-2
+                .btn-group.btn-group-sm(role="group")
+                  button.btn.btn-outline-secondary(type="button", data-command="bold", title=t("Bold"))
+                    i.fa.fa-bold
+                  button.btn.btn-outline-secondary(type="button", data-command="italic", title=t("Italic"))
+                    i.fa.fa-italic
+                  button.btn.btn-outline-secondary(type="button", data-command="underline", title=t("Underline"))
+                    i.fa.fa-underline
+
+                .btn-group.btn-group-sm.ms-2(role="group")
+                  button.btn.btn-outline-secondary(type="button", data-command="insertUnorderedList", title=t("Bullet List"))
+                    i.fa.fa-list-ul
+                  button.btn.btn-outline-secondary(type="button", data-command="insertOrderedList", title=t("Numbered List"))
+                    i.fa.fa-list-ol
+
+                .btn-group.btn-group-sm.ms-2(role="group")
+                  button.btn.btn-outline-secondary(type="button", data-command="createLink", title=t("Insert Link"))
+                    i.fa.fa-link
+
+              //- Rich text editor div
+              .border.rounded.p-3#compose-editor(
+                contenteditable="true",
+                style="min-height: 300px; max-height: 500px; overflow-y: auto;"
+              )
+
+              //- Hidden textarea for form submission
+              textarea.d-none#compose-body(name="body", required)
+
+            //- Attachments
+            .mb-3
+              label.form-label= t('Attachments')
+              .attachment-zone#attachment-zone
+                i.fa.fa-cloud-upload.fa-2x.text-muted.mb-3
+                p.mb-2= t('Drag and drop files here, or click to select')
+                input.d-none#file-input(type="file", name="attachments", multiple, accept="*/*")
+                button.btn.btn-outline-primary.btn-sm(type="button", onclick="document.getElementById('file-input').click()")
+                  i.fa.fa-plus.me-2
+                  = t('Select Files')
+
+              .attachment-list#attachment-list
+                //- Dynamically populated attachments will appear here
+
+          .compose-actions
+            .d-flex.justify-content-between.align-items-center
+              .form-check
+                input.form-check-input#send-copy(type="checkbox", name="send_copy")
+                label.form-check-label(for="send-copy")= t('Send me a copy')
+
+              .d-flex.gap-2
+                button.btn.btn-outline-secondary#save-draft(type="button")
+                  i.fa.fa-save.me-2
+                  = t('Save Draft')
+
+                button.btn.btn-primary#send-btn(type="submit", form="compose-form")
+                  i.fa.fa-paper-plane.me-2
+                  = t('Send Message')
+
+block scripts
+  script(nonce=nonce).
+    document.addEventListener('DOMContentLoaded', function() {
+      const composeForm = document.getElementById('compose-form');
+      const composeEditor = document.getElementById('compose-editor');
+      const composeBody = document.getElementById('compose-body');
+      const fileInput = document.getElementById('file-input');
+      const attachmentZone = document.getElementById('attachment-zone');
+      const attachmentList = document.getElementById('attachment-list');
+      const attachedFiles = new Set();
+
+      // Rich text editor toolbar
+      document.querySelectorAll('[data-command]').forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          const command = this.dataset.command;
+
+          if (command === 'createLink') {
+            const url = prompt('#{t("Enter the URL:")}');
+            if (url) {
+              document.execCommand(command, false, url);
+            }
+          } else {
+            document.execCommand(command, false, null);
+          }
+
+          composeEditor.focus();
+        });
+      });
+
+      // Sync rich text editor with textarea
+      composeEditor.addEventListener('input', function() {
+        composeBody.value = this.innerHTML;
+      });
+
+      // File upload handling
+      fileInput.addEventListener('change', function(e) {
+        handleFiles(e.target.files);
+      });
+
+      // Drag and drop
+      attachmentZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+      });
+
+      attachmentZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+      });
+
+      attachmentZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        handleFiles(e.dataTransfer.files);
+      });
+
+      function handleFiles(files) {
+        Array.from(files).forEach(file => {
+          if (!attachedFiles.has(file.name)) {
+            attachedFiles.add(file.name);
+            addAttachmentToList(file);
+          }
+        });
+      }
+
+      function addAttachmentToList(file) {
+        const item = document.createElement('div');
+        item.className = 'attachment-item';
+        item.innerHTML = `
+          <div class="flex-grow-1">
+            <i class="fa fa-file me-2"></i>
+            <span class="fw-medium">${file.name}</span>
+            <span class="text-muted ms-2">(${(file.size / 1024).toFixed(1)} KB)</span>
+          </div>
+          <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeAttachment(this, '${file.name}')">
+            <i class="fa fa-times"></i>
+          </button>
+        `;
+        attachmentList.appendChild(item);
+      }
+
+      window.removeAttachment = function(button, filename) {
+        attachedFiles.delete(filename);
+        button.closest('.attachment-item').remove();
+      };
+
+      // Save draft functionality
+      document.getElementById('save-draft').addEventListener('click', function() {
+        // TODO: Implement draft saving
+        alert('#{t("Draft saved successfully!")}');
+      });
+
+      // Form submission
+      composeForm.addEventListener('submit', function(e) {
+        // Ensure textarea is synced with rich text editor
+        composeBody.value = composeEditor.innerHTML;
+
+        // Basic validation
+        if (!composeBody.value.trim()) {
+          e.preventDefault();
+          alert('#{t("Please enter a message.")}');
+          composeEditor.focus();
+        }
+      });
+
+      // Initialize with any existing content for reply/forward
+      if (composeEditor.innerHTML.trim() === '') {
+        composeEditor.innerHTML = '<p><br></p>';
+      }
+
+      // Handle reply/forward initialization
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('reply')) {
+        // TODO: Load original message for reply context
+        composeEditor.innerHTML = '<p><br></p><hr><p><em>#{t("Original message:")}</em></p>';
+      } else if (urlParams.get('forward')) {
+        // TODO: Load original message for forward context
+        composeEditor.innerHTML = '<p><br></p><hr><p><em>#{t("Forwarded message:")}</em></p>';
+      }
+    });

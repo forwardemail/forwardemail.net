@@ -1,0 +1,272 @@
+extends ../../layout
+
+
+block body
+  .container-fluid.p-0
+    .row.g-0
+      .col
+        //- Back navigation
+        .back-btn
+          .d-flex.justify-content-between.align-items-center
+            a.btn.btn-outline-secondary(href=l("/my-account/inbox"))
+              i.fa.fa-arrow-left.me-2
+              = t('Back to Inbox')
+
+            //- Mobile folder navigation
+            .dropdown.d-md-none
+              button.btn.btn-outline-secondary.dropdown-toggle(
+                type="button",
+                data-bs-toggle="dropdown"
+              )
+                i.fa.fa-folder.me-2
+                = t('Folders')
+              ul.dropdown-menu
+                each mailbox in mailboxes
+                  li: a.dropdown-item(href=l(`/my-account/inbox/${mailbox.key}`))
+                    i.fa(class=getFolderIcon(mailbox.key)).me-2
+                    = t(mailbox.name)
+
+        //- Message actions
+        .message-actions
+          button.btn.btn-primary.btn-sm#reply-btn(type="button")
+            i.fa.fa-reply.me-2
+            = t('Reply')
+
+          button.btn.btn-outline-primary.btn-sm#reply-all-btn(type="button")
+            i.fa.fa-reply-all.me-2
+            = t('Reply All')
+
+          button.btn.btn-outline-primary.btn-sm#forward-btn(type="button")
+            i.fa.fa-share.me-2
+            = t('Forward')
+
+          .dropdown
+            button.btn.btn-outline-secondary.btn-sm.dropdown-toggle(
+              type="button",
+              data-bs-toggle="dropdown"
+            )
+              i.fa.fa-ellipsis-h.me-2
+              = t('More')
+            ul.dropdown-menu
+              li: a.dropdown-item.message-action(href="#", data-action="mark_unread")
+                i.fa.fa-envelope.me-2
+                = t('Mark as Unread')
+              li: a.dropdown-item.message-action(href="#", data-action="move", data-target="spam")
+                i.fa.fa-exclamation-triangle.me-2
+                = t('Move to Spam')
+              li: a.dropdown-item.message-action(href="#", data-action="move", data-target="trash")
+                i.fa.fa-trash.me-2
+                = t('Move to Trash')
+              li: hr.dropdown-divider
+              li: a.dropdown-item.message-action.text-danger(href="#", data-action="delete")
+                i.fa.fa-times.me-2
+                = t('Delete Permanently')
+
+        //- Message header
+        .message-header
+          if message
+            .message-subject= message.subject || t('(no subject)')
+
+            .message-meta
+              .row.mb-2
+                .col-sm-2.fw-bold= t('From:')
+                .col-sm-10.message-from
+                  = (message.from && message.from.name) || (message.from && message.from.address) || t('Unknown')
+                  if message.from && message.from.address && message.from.name
+                    = ` <${message.from.address}>`
+
+              if message.to && message.to.length > 0
+                .row.mb-2
+                  .col-sm-2.fw-bold= t('To:')
+                  .col-sm-10
+                    each recipient, index in message.to
+                      = recipient.name || recipient.address
+                      if recipient.address && recipient.name
+                        = ` <${recipient.address}>`
+                      if index < message.to.length - 1
+                        = ', '
+
+              if message.cc && message.cc.length > 0
+                .row.mb-2
+                  .col-sm-2.fw-bold= t('CC:')
+                  .col-sm-10
+                    each recipient, index in message.cc
+                      = recipient.name || recipient.address
+                      if recipient.address && recipient.name
+                        = ` <${recipient.address}>`
+                      if index < message.cc.length - 1
+                        = ', '
+
+              .row.mb-2
+                .col-sm-2.fw-bold= t('Date:')
+                .col-sm-10
+                  if message.date
+                    span.dayjs(data-time=message.date.getTime())= dayjs(message.date).format('MMMM D, YYYY [at] h:mm A')
+                  else
+                    = t('Unknown')
+
+              if message.messageId
+                .row
+                  .col-sm-2.fw-bold= t('Message ID:')
+                  .col-sm-10: small.text-muted.font-monospace= message.messageId
+
+        //- Attachments
+        if message && message.attachments && message.attachments.length > 0
+          .attachment-list
+            h6.mb-3
+              i.fa.fa-paperclip.me-2
+              = t('Attachments (%d)', message.attachments.length)
+
+            each attachment in message.attachments
+              .attachment-item
+                .flex-shrink-0.me-3
+                  i.fa.fa-file.text-muted
+                .flex-grow-1
+                  .fw-medium= attachment.filename || t('Unnamed attachment')
+                  .small.text-muted
+                    = attachment.size ? `${(attachment.size / 1024).toFixed(1)} KB` : t('Unknown size')
+                    if attachment.contentType
+                      = ` • ${attachment.contentType}`
+                .flex-shrink-0
+                  if attachment.downloadUrl
+                    a.btn.btn-sm.btn-outline-primary(
+                      href=attachment.downloadUrl,
+                      download=attachment.filename
+                    )
+                      i.fa.fa-download.me-1
+                      = t('Download')
+
+        //- Message content
+        .message-content
+          if message && message.html
+            .message-body!= message.html
+          else if message && message.text
+            .message-body
+              pre(style="white-space: pre-wrap; font-family: inherit;")= message.text
+          else
+            .text-center.text-muted.py-5
+              i.fa.fa-envelope-open.fa-3x.mb-3
+              div= t('Message content could not be displayed')
+
+//- Reply modal
+.modal.fade#reply-modal(tabindex="-1")
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        h5.modal-title= t('Reply')
+        button.btn-close(type="button", data-bs-dismiss="modal")
+      .modal-body
+        form#reply-form(method="POST", action=l("/my-account/compose"))
+          input(type="hidden", name="reply_to", value=(message && message.id) || "")
+
+          .mb-3
+            label.form-label(for="reply-to")= t('To')
+            input.form-control#reply-to(
+              type="email",
+              name="to",
+              value=(message && message.from && message.from.address) || "",
+              readonly
+            )
+
+          .mb-3
+            label.form-label(for="reply-subject")= t('Subject')
+            input.form-control#reply-subject(
+              type="text",
+              name="subject",
+              value=(message && message.subject) ? `Re: ${message.subject}` : "Re:",
+              required
+            )
+
+          .mb-3
+            label.form-label(for="reply-body")= t('Message')
+            textarea.form-control#reply-body(
+              name="body",
+              rows="10",
+              required
+            )
+      .modal-footer
+        button.btn.btn-secondary(type="button", data-bs-dismiss="modal")= t('Cancel')
+        button.btn.btn-primary(type="submit", form="reply-form")
+          i.fa.fa-reply.me-2
+          = t('Send Reply')
+
+block scripts
+  script(nonce=nonce).
+    // Helper function to get folder icons
+    window.getFolderIcon = function(folder) {
+      const icons = {
+        inbox: 'fa-inbox',
+        sent: 'fa-paper-plane',
+        drafts: 'fa-edit',
+        trash: 'fa-trash',
+        spam: 'fa-exclamation-triangle'
+      };
+      return icons[folder] || 'fa-folder';
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const replyModal = new bootstrap.Modal(document.getElementById('reply-modal'));
+
+      // Reply button handler
+      const replyBtn = document.getElementById('reply-btn');
+      if (replyBtn) replyBtn.addEventListener('click', function() {
+        replyModal.show();
+      });
+
+      // Reply all button handler
+      const replyAllBtn = document.getElementById('reply-all-btn');
+      if (replyAllBtn) replyAllBtn.addEventListener('click', function() {
+        // TODO: Implement reply all logic
+        replyModal.show();
+      });
+
+      // Forward button handler
+      const forwardBtn = document.getElementById('forward-btn');
+      if (forwardBtn) forwardBtn.addEventListener('click', function() {
+        // TODO: Implement forward logic
+        window.location.href = '/my-account/compose?forward=' + encodeURIComponent('#{message && message.id || ""}');
+      });
+
+      // Message action handlers
+      document.querySelectorAll('.message-action').forEach(function(btn) {
+        btn.addEventListener('click', function(e) {
+          e.preventDefault();
+          const action = this.dataset.action;
+          const target = this.dataset.target;
+
+          // TODO: Implement message actions via AJAX
+          console.log('Message action:', action, target);
+
+          if (action === 'delete' && !confirm('#{t("Are you sure you want to permanently delete this message?")}')) {
+            return;
+          }
+
+          // Example AJAX call structure
+          fetch('/my-account/inbox/message/#{message && message.id || ""}/action', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+              action: action,
+              target: target
+            })
+          })
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              if (action === 'delete' || (action === 'move' && target === 'trash')) {
+                window.location.href = '/my-account/inbox';
+              } else {
+                location.reload();
+              }
+            }
+          })
+          .catch(error => {
+            console.error('Action failed:', error);
+            alert('#{t("Action failed. Please try again.")}');
+          });
+        });
+      });
+    });

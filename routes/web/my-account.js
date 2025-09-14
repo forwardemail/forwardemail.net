@@ -468,6 +468,61 @@ router
     web.myAccount.retrieveEmail,
     web.myAccount.removeEmail
   )
+  // Inbox interface routes (Fastmail-inspired email client)
+  .get(
+    '/inbox/:folder?',
+    paginate.middleware(25, 100),
+    rateLimit(100, 'list inbox'),
+    web.myAccount.inbox.listMessages
+  )
+  .get(
+    '/inbox/message/:id',
+    rateLimit(100, 'get inbox message'),
+    web.myAccount.inbox.getMessage
+  )
+  .post(
+    '/inbox/message/:id/action',
+    rateLimit(100, 'inbox message action'),
+    web.myAccount.inbox.performMessageAction
+  )
+  .get(
+    '/compose',
+    rateLimit(50, 'show compose'),
+    web.myAccount.inbox.composeMessage
+  )
+  .post(
+    '/compose',
+    rateLimit(50, 'send message'),
+    web.myAccount.inbox.composeMessage
+  )
+  .post(
+    '/inbox/bulk-action',
+    rateLimit(100, 'bulk message action'),
+    web.myAccount.inbox.performBulkAction
+  )
+  .get(
+    '/search',
+    rateLimit(100, 'search messages'),
+    web.myAccount.inbox.searchMessages
+  )
+
+  // Email settings routes
+  .get(
+    '/email-settings',
+    rateLimit(100, 'get email settings'),
+    web.myAccount.emailSettings.renderEmailSettings
+  )
+  .post(
+    '/email-settings',
+    rateLimit(10, 'update email settings'),
+    web.myAccount.emailSettings.updateEmailSettings
+  )
+  .post(
+    '/email-settings/test',
+    rateLimit(5, 'test email connection'),
+    web.myAccount.emailSettings.testEmailConnection
+  )
+
   .get(
     '/logs',
     paginate.middleware(25, 100),

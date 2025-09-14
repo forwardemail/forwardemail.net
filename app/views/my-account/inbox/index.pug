@@ -1,0 +1,245 @@
+extends ../../layout
+
+
+block body
+  .container-fluid.p-0
+    .row.g-0
+      .col
+        include ../../_breadcrumbs
+
+        //- Alert for new users
+        .alert.alert-info.mx-3.mt-3
+          i.fa.fa-info-circle.me-2
+          = t('Welcome to your email inbox! You can compose, read, and manage your emails here.')
+
+        .inbox-container.mx-3
+          //- Top search header
+          .inbox-header-top
+            .search-container
+              i.fa.fa-search.search-icon
+              form(method="GET", action=l("/my-account/inbox/search"))
+                input.search-input(
+                  type="search",
+                  name="q",
+                  placeholder="Search mail",
+                  value=ctx.query.q || ""
+                )
+
+          .inbox-main
+            //- Sidebar (folders/navigation)
+            .inbox-sidebar
+                //- Compose button with new styling
+                button.btn.compose-btn#compose-btn(
+                  type="button",
+                  data-toggle="modal",
+                  data-target="#compose-modal"
+                )
+                  i.fa.fa-envelope
+                  = t('Compose')
+
+                //- Folder navigation
+                nav.nav.nav-pills.flex-column
+                  each mailbox in mailboxes
+                    a.nav-link(
+                      href=l(`/my-account/inbox/${mailbox.key}`),
+                      class=currentMailbox && currentMailbox.key === mailbox.key ? 'active' : ''
+                    )
+                      i.fa(class=mailbox.icon)
+                      = t(mailbox.name)
+                      if mailbox.unreadCount > 0
+                        span.folder-count= mailbox.unreadCount
+
+            //- Content area (replaces the 3-column layout)
+            .inbox-content-area
+              .content-header
+                h5= t(currentMailbox ? currentMailbox.name : 'Inbox')
+
+              .message-list
+                .messages-container
+                  if messages && messages.length > 0
+                    each message in messages
+                      .message-row(
+                        data-message-id=message.id,
+                        class=message.unread ? 'unread' : ''
+                      )
+                        .d-flex.justify-content-between.align-items-start
+                          .flex-grow-1
+                            .message-from= (message.from && message.from.name) || (message.from && message.from.address) || t('Unknown')
+                            .message-subject= message.subject || t('(no subject)')
+                            .message-preview= message.preview || ''
+                          .message-time.text-nowrap.ms-2
+                            = message.date ? dayjs(message.date).format('MMM D') : ''
+
+                        //- Message flags/indicators
+                        .mt-1
+                          if message.hasAttachments
+                            i.fa.fa-paperclip.text-muted.me-1
+                          if message.isImportant
+                            i.fa.fa-star.text-warning.me-1
+                  else
+                    .empty-state
+                      i.fa.fa-inbox.fa-3x
+                      div= t('No messages in this folder')
+
+        //- Professional compose modal
+        .compose-modal#compose-modal
+          .compose-dialog
+            .compose-header
+              h3.compose-title= t('New Message')
+              button.compose-close#close-compose ×
+
+            .compose-body
+              form#compose-form(method="POST", action=l("/my-account/compose"))
+                input(type="hidden", name="_csrf", value=ctx.csrf)
+
+                .form-field
+                  label.field-label(for="compose-to")= t('To')
+                  input.field-input#compose-to(
+                    type="email",
+                    name="to",
+                    required,
+                    placeholder="recipient@example.com"
+                  )
+
+                .form-field
+                  label.field-label(for="compose-subject")= t('Subject')
+                  input.field-input#compose-subject(
+                    type="text",
+                    name="subject",
+                    placeholder=t('Enter subject')
+                  )
+
+                .form-field
+                  label.field-label(for="compose-message")= t('Message')
+                  textarea.field-textarea#compose-message(
+                    name="body",
+                    rows="8",
+                    placeholder=t('Write your message...')
+                  )
+
+            .compose-footer
+              .footer-actions
+                button.btn.btn-secondary#cancel-compose(type="button")= t('Cancel')
+                button.btn.btn-primary(type="submit", form="compose-form")
+                  i.fa.fa-paper-plane.me-1
+                  = t('Send')
+
+block scripts
+  //- Email client JavaScript
+  script(nonce=nonce).
+    document.addEventListener('DOMContentLoaded', function() {
+      // Initialize email client functionality
+
+      // Initialize compose modal functionality
+      function initializeCompose() {
+        console.log('Initializing compose functionality...');
+        console.log('Bootstrap available:', typeof window.bootstrap, typeof $);
+
+        const composeBtn = document.getElementById('compose-btn');
+        const composeModal = document.getElementById('compose-modal');
+
+        console.log('Compose button:', composeBtn);
+        console.log('Compose modal:', composeModal);
+
+        // Manual click handler as fallback
+        if (composeBtn && composeModal) {
+          composeBtn.addEventListener('click', function(e) {
+            console.log('Compose button clicked manually');
+            e.preventDefault();
+
+            // Try different approaches to open modal
+            if (typeof $ !== 'undefined' && $.fn.modal) {
+              console.log('Opening with jQuery');
+              $(composeModal).modal('show');
+            } else if (window.bootstrap && window.bootstrap.Modal) {
+              console.log('Opening with Bootstrap 5');
+              const modal = new window.bootstrap.Modal(composeModal);
+              modal.show();
+            } else {
+              console.log('No modal library found, showing simple modal');
+              composeModal.classList.add('show');
+              document.body.style.overflow = 'hidden';
+            }
+          });
+        }
+
+        // Simple modal close functionality
+        function closeComposeModal() {
+          console.log('Closing compose modal');
+          composeModal.classList.remove('show');
+          document.body.style.overflow = '';
+
+          // Reset form
+          const form = document.getElementById('compose-form');
+          if (form) form.reset();
+        }
+
+        // Attach close handlers to modal elements
+        if (composeModal) {
+          // Close button (X)
+          const closeBtn = document.getElementById('close-compose');
+          if (closeBtn) {
+            closeBtn.addEventListener('click', closeComposeModal);
+          }
+
+          // Cancel button
+          const cancelBtn = document.getElementById('cancel-compose');
+          if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeComposeModal);
+          }
+
+          // Click outside modal (backdrop)
+          composeModal.addEventListener('click', function(e) {
+            if (e.target === composeModal) {
+              closeComposeModal();
+            }
+          });
+
+          // ESC key
+          document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && composeModal.classList.contains('show')) {
+              closeComposeModal();
+            }
+          });
+        }
+
+      }
+
+      // Search form submission
+      const searchForm = document.querySelector('.inbox-header-top form');
+      if (searchForm) {
+        searchForm.addEventListener('submit', function(e) {
+          const searchInput = this.querySelector('input[name="q"]');
+          if (!searchInput.value.trim()) {
+            e.preventDefault();
+            return;
+          }
+        });
+      }
+
+      // Message row click handlers
+      document.querySelectorAll('.message-row').forEach(function(row) {
+        row.addEventListener('click', function() {
+          const messageId = this.dataset.messageId;
+          if (messageId) {
+            window.location.href = '/my-account/inbox/message/' + messageId;
+          }
+        });
+      });
+
+      // Initialize compose functionality
+      initializeCompose();
+
+      // Enhanced search functionality
+      const searchInput = document.querySelector('.search-input');
+      if (searchInput) {
+        // Add focus/blur effects
+        searchInput.addEventListener('focus', function() {
+          this.parentElement.style.transform = 'scale(1.02)';
+        });
+
+        searchInput.addEventListener('blur', function() {
+          this.parentElement.style.transform = 'scale(1)';
+        });
+      }
+    });

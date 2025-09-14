@@ -1,0 +1,107 @@
+extends ../../layout
+
+block body
+  .container-fluid.py-3
+    .row.mt-1
+      .col
+        include ../../_breadcrumbs
+
+        .d-flex.justify-content-between.align-items-center.mb-4
+          h3
+            i.fa.fa-search.me-2
+            = t('Search Results')
+            if searchQuery
+              span.text-muted  for "#{searchQuery}"
+
+          a.btn.btn-outline-primary(href=l("/my-account/inbox"))
+            i.fa.fa-arrow-left.me-2
+            = t('Back to Inbox')
+
+        //- Search form
+        .card.mb-4
+          .card-body
+            form.d-flex(method="GET", action=l("/my-account/search"))
+              input.form-control.me-3(
+                type="search",
+                name="q",
+                placeholder=t("Search messages..."),
+                value=searchQuery || "",
+                autofocus
+              )
+              button.btn.btn-primary(type="submit")
+                i.fa.fa-search.me-2
+                = t('Search')
+
+        //- Search results
+        if searchResults && searchResults.length > 0
+          .card
+            .card-header
+              .d-flex.justify-content-between.align-items-center
+                h5.mb-0= t('Found %d result(s)', itemCount)
+                .text-muted= t('Page %d of %d', currentPage, pageCount)
+
+            .list-group.list-group-flush
+              each message in searchResults
+                .list-group-item.list-group-item-action(
+                  onclick=`window.location.href='/my-account/inbox/message/${message.id}'`,
+                  style="cursor: pointer;"
+                )
+                  .d-flex.justify-content-between.align-items-start
+                    .flex-grow-1
+                      .d-flex.justify-content-between.align-items-center.mb-2
+                        .fw-bold(class=message.unread ? 'text-dark' : 'text-muted')
+                          = (message.from && message.from.name) || (message.from && message.from.address) || t('Unknown')
+                        .text-muted.small
+                          if message.date
+                            span.dayjs(data-time=message.date.getTime())= dayjs(message.date).format('MMM D, YYYY')
+
+                      .mb-2(class=message.unread ? 'fw-bold' : '')
+                        = message.subject || t('(no subject)')
+
+                      if message.preview
+                        .text-muted.small= message.preview
+
+                    .flex-shrink-0.ms-3
+                      .d-flex.flex-column.align-items-end.gap-1
+                        if message.hasAttachments
+                          i.fa.fa-paperclip.text-muted
+                        if message.isImportant
+                          i.fa.fa-star.text-warning
+
+            //- Pagination
+            if pageCount > 1
+              .card-footer
+                include ../../_pagination
+
+        else
+          .text-center.text-muted.py-5
+            i.fa.fa-search.fa-3x.mb-3
+            div
+              if searchQuery
+                = t('No messages found for "%s"', searchQuery)
+              else
+                = t('Enter a search term to find messages')
+
+            .mt-3
+              p.mb-2= t('Search tips:')
+              ul.list-unstyled.small.text-start.d-inline-block
+                li • #{t('Search by sender name or email address')}
+                li • #{t('Search by subject line keywords')}
+                li • #{t('Search terms are not case-sensitive')}
+
+block scripts
+  script(nonce=nonce).
+    document.addEventListener('DOMContentLoaded', function() {
+      // Auto-focus search input
+      const searchInput = document.querySelector('input[name="q"]');
+      if (searchInput && !searchInput.value) {
+        searchInput.focus();
+      }
+
+      // Handle Enter key in search
+      if (searchInput) searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          this.closest('form').submit();
+        }
+      });
+    });

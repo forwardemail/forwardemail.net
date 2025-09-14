@@ -1,0 +1,197 @@
+extends ../../layout
+
+block meta
+  meta(name="description", content=meta.description)
+
+block body
+  .container.my-4
+    .row
+      .col-lg-8.offset-lg-2
+        .card
+          .card-header
+            h4.mb-0
+              i.fa.fa-cogs.me-2
+              = t('Email Settings')
+          .card-body
+            p.text-muted= t('Configure your email credentials to access your inbox through Forward Email.')
+
+            form#email-settings-form(action=l('/my-account/email-settings'), method='POST')
+              input(type='hidden', name='_csrf', value=ctx.csrf)
+
+              .row
+                .col-md-6
+                  .form-group.mb-3
+                    label.form-label(for='domain_id')= t('Domain')
+                    select.form-select#domain_id(name='domain_id', required)
+                      option(value='')= t('Select a domain...')
+                      each domain in domains
+                        option(
+                          value=domain._id.toString(),
+                          selected=emailSettings.domain_id === domain._id.toString()
+                        )= domain.name
+
+                .col-md-6
+                  .form-group.mb-3
+                    label.form-label(for='alias_id')= t('Email Alias')
+                    select.form-select#alias_id(name='alias_id', required, disabled)
+                      option(value='')= t('Select an alias...')
+
+              .form-group.mb-3
+                label.form-label(for='password')= t('Email Password')
+                input.form-control#password(
+                  type='password',
+                  name='password',
+                  required,
+                  placeholder=t('Enter your email password'),
+                  autocomplete='new-password'
+                )
+                .form-text= t('This password will be encrypted and stored securely.')
+
+              .row
+                .col-md-6
+                  h6.text-muted= t('IMAP Settings (Optional)')
+                  .form-group.mb-3
+                    label.form-label(for='imap_host')= t('IMAP Server')
+                    input.form-control#imap_host(
+                      type='text',
+                      name='imap_host',
+                      placeholder='imap.yourdomain.com',
+                      value=emailSettings.imap_host || ''
+                    )
+
+                  .form-group.mb-3
+                    label.form-label(for='imap_port')= t('IMAP Port')
+                    input.form-control#imap_port(
+                      type='number',
+                      name='imap_port',
+                      placeholder='993',
+                      value=emailSettings.imap_port || '993'
+                    )
+
+                .col-md-6
+                  h6.text-muted= t('SMTP Settings (Optional)')
+                  .form-group.mb-3
+                    label.form-label(for='smtp_host')= t('SMTP Server')
+                    input.form-control#smtp_host(
+                      type='text',
+                      name='smtp_host',
+                      placeholder='smtp.yourdomain.com',
+                      value=emailSettings.smtp_host || ''
+                    )
+
+                  .form-group.mb-3
+                    label.form-label(for='smtp_port')= t('SMTP Port')
+                    input.form-control#smtp_port(
+                      type='number',
+                      name='smtp_port',
+                      placeholder='465',
+                      value=emailSettings.smtp_port || '465'
+                    )
+
+              .d-flex.gap-3
+                button.btn.btn-primary(type='submit')
+                  i.fa.fa-save.me-2
+                  = t('Save Settings')
+
+                button.btn.btn-outline-secondary#test-connection(type='button')
+                  i.fa.fa-plug.me-2
+                  = t('Test Connection')
+
+                if emailSettings.domain_id
+                  a.btn.btn-success(href=l('/my-account/inbox'))
+                    i.fa.fa-inbox.me-2
+                    = t('Go to Inbox')
+
+    script.
+      document.addEventListener('DOMContentLoaded', function() {
+        const domainSelect = document.getElementById('domain_id');
+        const aliasSelect = document.getElementById('alias_id');
+        const testBtn = document.getElementById('test-connection');
+        const form = document.getElementById('email-settings-form');
+
+        // Populate aliases when domain changes
+        const aliases = !{JSON.stringify(aliases)};
+
+        domainSelect.addEventListener('change', function() {
+          aliasSelect.innerHTML = '<option value="">' + '!{t("Select an alias...")}' + '</option>';
+          aliasSelect.disabled = !this.value;
+
+          if (this.value) {
+            const domainAliases = aliases.filter(alias => alias.domain._id === this.value);
+            domainAliases.forEach(alias => {
+              const option = document.createElement('option');
+              option.value = alias._id;
+              option.textContent = alias.name;
+              if ('!{emailSettings.alias_id}' === alias._id) {
+                option.selected = true;
+              }
+              aliasSelect.appendChild(option);
+            });
+          }
+        });
+
+        // Initialize alias dropdown if domain is pre-selected
+        if (domainSelect.value) {
+          domainSelect.dispatchEvent(new Event('change'));
+        }
+
+        // Test connection
+        testBtn.addEventListener('click', async function() {
+          const aliasId = aliasSelect.value;
+          const password = document.getElementById('password').value;
+          const imapHost = document.getElementById('imap_host').value;
+          const imapPort = document.getElementById('imap_port').value;
+
+          if (!aliasId || !password) {
+            alert('!{t("Please select an alias and enter your password")}');
+            return;
+          }
+
+          const originalText = this.innerHTML;
+          this.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i>!{t("Testing...")}';
+          this.disabled = true;
+
+          try {
+            const response = await fetch('!{l("/my-account/email-settings/test")}', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-Token': '!{ctx.csrf}'
+              },
+              body: JSON.stringify({
+                alias_id: aliasId,
+                password: password,
+                imap_host: imapHost,
+                imap_port: imapPort
+              })
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              alert('!{t("Connection successful!")}' + (result.info ? ` (${result.info.messages} messages, ${result.info.unseen} unread)` : ''));
+            } else {
+              alert('!{t("Connection failed:")} ' + result.message);
+            }
+          } catch (err) {
+            alert('!{t("Connection test failed:")} ' + err.message);
+          } finally {
+            this.innerHTML = originalText;
+            this.disabled = false;
+          }
+        });
+
+        // Auto-populate server settings based on domain
+        domainSelect.addEventListener('change', function() {
+          const selectedOption = this.selectedOptions[0];
+          if (selectedOption && selectedOption.text) {
+            const domain = selectedOption.text;
+            if (!document.getElementById('imap_host').value) {
+              document.getElementById('imap_host').value = `imap.${domain}`;
+            }
+            if (!document.getElementById('smtp_host').value) {
+              document.getElementById('smtp_host').value = `smtp.${domain}`;
+            }
+          }
+        });
+      });
