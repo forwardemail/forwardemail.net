@@ -81,48 +81,131 @@ block body
                       i.fa.fa-inbox.fa-3x
                       div= t('No messages in this folder')
 
-        //- Professional compose modal
+        //- Enhanced Professional compose modal
         .compose-modal#compose-modal
           .compose-dialog
             .compose-header
-              h3.compose-title= t('New Message')
+              h3.compose-title
+                i.fa.fa-envelope
+                = t('New Message')
               button.compose-close#close-compose ×
 
             .compose-body
-              form#compose-form(method="POST", action=l("/my-account/compose"))
+              form#compose-form(method="POST", action=l("/my-account/inbox/compose"))
                 input(type="hidden", name="_csrf", value=ctx.csrf)
 
-                .form-field
-                  label.field-label(for="compose-to")= t('To')
-                  input.field-input#compose-to(
-                    type="email",
-                    name="to",
-                    required,
-                    placeholder="recipient@example.com"
-                  )
+                //- Recipients Section
+                .email-recipients
+                  .form-field
+                    .recipient-row
+                      .recipient-label To
+                      .recipient-input
+                        input.field-input#compose-to(
+                          type="email",
+                          name="to",
+                          required,
+                          placeholder="Enter recipient email addresses",
+                          autocomplete="off"
+                        )
+                        .autocomplete-dropdown#to-autocomplete(style="display: none;")
 
+                  .form-field.field-cc#cc-field
+                    .recipient-row
+                      .recipient-label Cc
+                      .recipient-input
+                        input.field-input#compose-cc(
+                          type="email",
+                          name="cc",
+                          placeholder="Carbon copy recipients",
+                          autocomplete="off"
+                        )
+                        .autocomplete-dropdown#cc-autocomplete(style="display: none;")
+
+                  .form-field.field-bcc#bcc-field
+                    .recipient-row
+                      .recipient-label Bcc
+                      .recipient-input
+                        input.field-input#compose-bcc(
+                          type="email",
+                          name="bcc",
+                          placeholder="Blind carbon copy recipients",
+                          autocomplete="off"
+                        )
+                        .autocomplete-dropdown#bcc-autocomplete(style="display: none;")
+
+                  .recipient-toggle
+                    a.toggle-link#toggle-cc(href="#")= t('Add Cc')
+                    a.toggle-link#toggle-bcc(href="#")= t('Add Bcc')
+
+                //- Subject
                 .form-field
                   label.field-label(for="compose-subject")= t('Subject')
                   input.field-input#compose-subject(
                     type="text",
                     name="subject",
-                    placeholder=t('Enter subject')
+                    placeholder=t('Enter subject line')
                   )
 
+                //- Message Body with Rich Text Editor
                 .form-field
                   label.field-label(for="compose-message")= t('Message')
+                  .rich-editor-container#rich-editor-container
+                    .rich-editor-toolbar#rich-editor-toolbar
+                      //- Formatting buttons will be populated by JavaScript
+                    .rich-editor-content#rich-editor-content(contenteditable="true")
+
+                  //- Fallback textarea (hidden by default)
                   textarea.field-textarea#compose-message(
                     name="body",
-                    rows="8",
-                    placeholder=t('Write your message...')
+                    rows="12",
+                    placeholder=t('Write your message...'),
+                    style="display: none;"
                   )
+
+                //- Attachments Section
+                .attachment-section#attachment-section
+                  .attachment-header
+                    h6.attachment-title
+                      i.fa.fa-paperclip.me-1
+                      = t('Attachments')
+                    .attachment-actions
+                      input#file-input(type="file", multiple, style="display: none;")
+                      button.btn-attach#btn-browse(type="button")
+                        i.fa.fa-folder.me-1
+                        = t('Browse')
+                      button.btn-attach#btn-cloud(type="button")
+                        i.fa.fa-cloud.me-1
+                        = t('Cloud')
+
+                  .attachment-drop-zone#attachment-drop-zone
+                    .drop-zone-content
+                      .drop-icon
+                        i.fa.fa-cloud-upload
+                      .drop-text
+                        | Drop files here or
+                        span.drop-highlight click to browse
+                      .drop-formats
+                        | Supports: Images, Documents, PDFs (Max 25MB)
+
+                  .attachment-list#attachment-list
+                    //- Attachments will be populated here
 
             .compose-footer
               .footer-actions
-                button.btn.btn-secondary#cancel-compose(type="button")= t('Cancel')
-                button.btn.btn-primary(type="submit", form="compose-form")
-                  i.fa.fa-paper-plane.me-1
-                  = t('Send')
+                .footer-left
+                  button.btn.btn-secondary#btn-save-draft(type="button")
+                    i.fa.fa-save.me-1
+                    = t('Save Draft')
+
+                  button.btn.btn-outline-secondary#btn-schedule(type="button")
+                    i.fa.fa-clock.me-1
+                    = t('Schedule')
+
+                .footer-right
+                  button.btn.btn-secondary#cancel-compose(type="button")= t('Cancel')
+                  button.btn.btn-primary#send-compose(type="submit", form="compose-form")
+                    i.fa.fa-paper-plane.me-1
+                    = t('Send')
 
 block scripts
   //- Email client JavaScript
@@ -130,72 +213,62 @@ block scripts
     document.addEventListener('DOMContentLoaded', function() {
       // Initialize email client functionality
 
-      // Initialize compose modal functionality
+      // Enhanced compose modal functionality
       function initializeCompose() {
-        console.log('Initializing compose functionality...');
-        console.log('Bootstrap available:', typeof window.bootstrap, typeof $);
+        console.log('Initializing enhanced compose functionality...');
 
         const composeBtn = document.getElementById('compose-btn');
         const composeModal = document.getElementById('compose-modal');
+        const richEditorContainer = document.getElementById('rich-editor-container');
+        const richEditorContent = document.getElementById('rich-editor-content');
+        const fallbackTextarea = document.getElementById('compose-message');
 
-        console.log('Compose button:', composeBtn);
-        console.log('Compose modal:', composeModal);
-
-        // Manual click handler as fallback
+        // Modal open/close functionality
         if (composeBtn && composeModal) {
           composeBtn.addEventListener('click', function(e) {
-            console.log('Compose button clicked manually');
             e.preventDefault();
-
-            // Try different approaches to open modal
-            if (typeof $ !== 'undefined' && $.fn.modal) {
-              console.log('Opening with jQuery');
-              $(composeModal).modal('show');
-            } else if (window.bootstrap && window.bootstrap.Modal) {
-              console.log('Opening with Bootstrap 5');
-              const modal = new window.bootstrap.Modal(composeModal);
-              modal.show();
-            } else {
-              console.log('No modal library found, showing simple modal');
-              composeModal.classList.add('show');
-              document.body.style.overflow = 'hidden';
-            }
+            openComposeModal();
           });
         }
 
-        // Simple modal close functionality
+        function openComposeModal() {
+          composeModal.classList.add('show');
+          document.body.style.overflow = 'hidden';
+
+          // Focus on the To field
+          setTimeout(() => {
+            const toField = document.getElementById('compose-to');
+            if (toField) toField.focus();
+          }, 100);
+        }
+
         function closeComposeModal() {
-          console.log('Closing compose modal');
           composeModal.classList.remove('show');
           document.body.style.overflow = '';
 
-          // Reset form
+          // Reset form and editor
           const form = document.getElementById('compose-form');
           if (form) form.reset();
+          if (richEditorContent) richEditorContent.innerHTML = '';
+
+          // Reset CC/BCC fields
+          document.getElementById('cc-field').classList.remove('show');
+          document.getElementById('bcc-field').classList.remove('show');
+
+          // Clear attachments
+          const attachmentList = document.getElementById('attachment-list');
+          if (attachmentList) attachmentList.innerHTML = '';
         }
 
-        // Attach close handlers to modal elements
+        // Attach close handlers
         if (composeModal) {
-          // Close button (X)
-          const closeBtn = document.getElementById('close-compose');
-          if (closeBtn) {
-            closeBtn.addEventListener('click', closeComposeModal);
-          }
+          document.getElementById('close-compose')?.addEventListener('click', closeComposeModal);
+          document.getElementById('cancel-compose')?.addEventListener('click', closeComposeModal);
 
-          // Cancel button
-          const cancelBtn = document.getElementById('cancel-compose');
-          if (cancelBtn) {
-            cancelBtn.addEventListener('click', closeComposeModal);
-          }
-
-          // Click outside modal (backdrop)
           composeModal.addEventListener('click', function(e) {
-            if (e.target === composeModal) {
-              closeComposeModal();
-            }
+            if (e.target === composeModal) closeComposeModal();
           });
 
-          // ESC key
           document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape' && composeModal.classList.contains('show')) {
               closeComposeModal();
@@ -203,6 +276,33 @@ block scripts
           });
         }
 
+        // CC/BCC toggle functionality
+        document.getElementById('toggle-cc')?.addEventListener('click', function(e) {
+          e.preventDefault();
+          const ccField = document.getElementById('cc-field');
+          ccField.classList.add('show');
+          this.style.display = 'none';
+          document.getElementById('compose-cc').focus();
+        });
+
+        document.getElementById('toggle-bcc')?.addEventListener('click', function(e) {
+          e.preventDefault();
+          const bccField = document.getElementById('bcc-field');
+          bccField.classList.add('show');
+          this.style.display = 'none';
+          document.getElementById('compose-bcc').focus();
+        });
+
+        // Simple rich text editor (basic implementation)
+        if (richEditorContainer && richEditorContent) {
+          initializeSimpleRichEditor();
+        }
+
+        // Attachment functionality
+        initializeAttachments();
+
+        // Auto-complete functionality
+        initializeAutoComplete();
       }
 
       // Search form submission
@@ -230,10 +330,229 @@ block scripts
       // Initialize compose functionality
       initializeCompose();
 
+      // Simple Rich Text Editor Implementation
+      function initializeSimpleRichEditor() {
+        const toolbar = document.getElementById('rich-editor-toolbar');
+        const content = document.getElementById('rich-editor-content');
+        const fallback = document.getElementById('compose-message');
+
+        // Create basic toolbar buttons
+        const buttons = [
+          { cmd: 'bold', icon: 'fa-bold', title: 'Bold' },
+          { cmd: 'italic', icon: 'fa-italic', title: 'Italic' },
+          { cmd: 'underline', icon: 'fa-underline', title: 'Underline' },
+          { type: 'separator' },
+          { cmd: 'insertOrderedList', icon: 'fa-list-ol', title: 'Numbered List' },
+          { cmd: 'insertUnorderedList', icon: 'fa-list-ul', title: 'Bulleted List' },
+          { type: 'separator' },
+          { cmd: 'createLink', icon: 'fa-link', title: 'Insert Link' },
+          { cmd: 'insertImage', icon: 'fa-image', title: 'Insert Image' }
+        ];
+
+        buttons.forEach(btn => {
+          if (btn.type === 'separator') {
+            const separator = document.createElement('span');
+            separator.className = 'toolbar-separator';
+            separator.style.cssText = 'width: 1px; height: 20px; background: #ccc; margin: 0 4px;';
+            toolbar.appendChild(separator);
+          } else {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'toolbar-btn';
+            button.innerHTML = `<i class="fa ${btn.icon}"></i>`;
+            button.title = btn.title;
+            button.style.cssText = 'border: none; background: none; padding: 6px; margin: 2px; border-radius: 3px; cursor: pointer; transition: background 0.2s;';
+
+            button.addEventListener('mouseenter', () => button.style.background = '#e9ecef');
+            button.addEventListener('mouseleave', () => button.style.background = 'none');
+
+            button.addEventListener('click', () => {
+              if (btn.cmd === 'createLink') {
+                const url = prompt('Enter URL:');
+                if (url) document.execCommand(btn.cmd, false, url);
+              } else if (btn.cmd === 'insertImage') {
+                const url = prompt('Enter image URL:');
+                if (url) document.execCommand(btn.cmd, false, url);
+              } else {
+                document.execCommand(btn.cmd, false, null);
+              }
+              content.focus();
+            });
+
+            toolbar.appendChild(button);
+          }
+        });
+
+        // Sync content with hidden textarea for form submission
+        content.addEventListener('input', () => {
+          fallback.value = content.innerHTML;
+        });
+
+        // Set placeholder behavior
+        content.addEventListener('focus', function() {
+          if (this.textContent.trim() === '') {
+            this.innerHTML = '';
+          }
+        });
+
+        content.addEventListener('blur', function() {
+          if (this.textContent.trim() === '') {
+            this.innerHTML = '<p style="color: #6c757d; margin: 0;">Write your message...</p>';
+          }
+        });
+
+        // Initialize with placeholder
+        content.innerHTML = '<p style="color: #6c757d; margin: 0;">Write your message...</p>';
+      }
+
+      // Attachment System
+      function initializeAttachments() {
+        const dropZone = document.getElementById('attachment-drop-zone');
+        const fileInput = document.getElementById('file-input');
+        const browseBtn = document.getElementById('btn-browse');
+        const attachmentList = document.getElementById('attachment-list');
+        let attachedFiles = [];
+
+        // File input trigger
+        browseBtn?.addEventListener('click', () => fileInput.click());
+        dropZone?.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop handlers
+        if (dropZone) {
+          dropZone.addEventListener('dragover', handleDragOver);
+          dropZone.addEventListener('dragleave', handleDragLeave);
+          dropZone.addEventListener('drop', handleDrop);
+        }
+
+        function handleDragOver(e) {
+          e.preventDefault();
+          dropZone.classList.add('drag-over');
+        }
+
+        function handleDragLeave(e) {
+          e.preventDefault();
+          if (!dropZone.contains(e.relatedTarget)) {
+            dropZone.classList.remove('drag-over');
+          }
+        }
+
+        function handleDrop(e) {
+          e.preventDefault();
+          dropZone.classList.remove('drag-over');
+          const files = Array.from(e.dataTransfer.files);
+          addFiles(files);
+        }
+
+        fileInput?.addEventListener('change', (e) => {
+          const files = Array.from(e.target.files);
+          addFiles(files);
+        });
+
+        function addFiles(files) {
+          files.forEach(file => {
+            if (file.size > 25 * 1024 * 1024) {
+              alert(`File "${file.name}" is too large. Maximum size is 25MB.`);
+              return;
+            }
+
+            const fileId = Date.now() + Math.random();
+            attachedFiles.push({ id: fileId, file });
+
+            const item = createAttachmentItem(fileId, file);
+            attachmentList.appendChild(item);
+          });
+        }
+
+        function createAttachmentItem(id, file) {
+          const div = document.createElement('div');
+          div.className = 'attachment-item';
+          div.innerHTML = `
+            <div class="attachment-info">
+              <div class="attachment-icon">
+                <i class="fa fa-file"></i>
+              </div>
+              <div class="attachment-details">
+                <p class="attachment-name">${file.name}</p>
+                <p class="attachment-size">${formatFileSize(file.size)}</p>
+              </div>
+            </div>
+            <div class="attachment-actions">
+              <button type="button" class="btn-remove" onclick="removeAttachment('${id}')">
+                <i class="fa fa-times"></i>
+              </button>
+            </div>
+          `;
+          return div;
+        }
+
+        window.removeAttachment = function(id) {
+          attachedFiles = attachedFiles.filter(f => f.id != id);
+          document.querySelector(`[onclick="removeAttachment('${id}')"]`).closest('.attachment-item').remove();
+        };
+
+        function formatFileSize(bytes) {
+          if (bytes === 0) return '0 Bytes';
+          const k = 1024;
+          const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+          const i = Math.floor(Math.log(bytes) / Math.log(k));
+          return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+      }
+
+      // Auto-complete functionality (basic implementation)
+      function initializeAutoComplete() {
+        const fields = ['compose-to', 'compose-cc', 'compose-bcc'];
+        const mockContacts = [
+          { name: 'John Doe', email: 'john@example.com' },
+          { name: 'Jane Smith', email: 'jane@company.com' },
+          { name: 'Bob Johnson', email: 'bob@domain.org' }
+        ];
+
+        fields.forEach(fieldId => {
+          const input = document.getElementById(fieldId);
+          const dropdown = document.getElementById(fieldId.replace('compose-', '') + '-autocomplete');
+
+          if (!input || !dropdown) return;
+
+          input.addEventListener('input', function() {
+            const query = this.value.toLowerCase();
+            if (query.length < 2) {
+              dropdown.style.display = 'none';
+              return;
+            }
+
+            const matches = mockContacts.filter(contact =>
+              contact.name.toLowerCase().includes(query) ||
+              contact.email.toLowerCase().includes(query)
+            );
+
+            if (matches.length > 0) {
+              dropdown.innerHTML = matches.map(contact => `
+                <div class="autocomplete-item" onclick="selectContact('${fieldId}', '${contact.email}')">
+                  <div class="contact-name">${contact.name}</div>
+                  <div class="contact-email">${contact.email}</div>
+                </div>
+              `).join('');
+              dropdown.style.display = 'block';
+            } else {
+              dropdown.style.display = 'none';
+            }
+          });
+
+          input.addEventListener('blur', () => {
+            setTimeout(() => dropdown.style.display = 'none', 200);
+          });
+        });
+
+        window.selectContact = function(fieldId, email) {
+          document.getElementById(fieldId).value = email;
+          document.getElementById(fieldId.replace('compose-', '') + '-autocomplete').style.display = 'none';
+        };
+      }
+
       // Enhanced search functionality
       const searchInput = document.querySelector('.search-input');
       if (searchInput) {
-        // Add focus/blur effects
         searchInput.addEventListener('focus', function() {
           this.parentElement.style.transform = 'scale(1.02)';
         });
