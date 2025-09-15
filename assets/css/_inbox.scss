@@ -133,7 +133,7 @@
     border-color: var(--email-compose-bg);
     color: var(--email-compose-text);
     font-weight: 500;
-    font-size: var(--email-font-size-sm);
+    font-size: var(--email-font-size-base);
     padding: 0.75rem;
     margin-bottom: var(--email-spacer);
     transition: var(--email-transition);
@@ -229,7 +229,7 @@
     font-size: 1.125rem;
     font-weight: 600;
     margin: 0;
-    color: var(--email-dark);
+    color: #ffffff !important;
   }
 }
 
@@ -612,6 +612,8 @@
 
     // Enhanced CC/BCC toggle
     .email-recipients {
+      margin-bottom: var(--email-spacer-lg);
+
       .recipient-row {
         display: flex;
         align-items: center;
@@ -621,7 +623,7 @@
         .recipient-label {
           min-width: 40px;
           font-weight: 600;
-          color: var(--email-dark);
+          color: #ffffff !important;
           font-size: var(--email-font-size-base);
         }
 
@@ -738,6 +740,10 @@
       transition: var(--email-transition);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
+      i {
+        margin-right: 0.5rem !important;
+      }
+
       &:hover {
         background-color: var(--email-compose-hover);
         border-color: var(--email-compose-hover);
@@ -754,6 +760,10 @@
       background-color: var(--bs-secondary);
       border-color: var(--bs-secondary);
       color: white;
+
+      i {
+        margin-right: 0.5rem !important;
+      }
 
       &:hover {
         background-color: var(--email-secondary-hover);
@@ -926,7 +936,7 @@
 
     .attachment-title {
       font-weight: 600;
-      color: var(--email-dark);
+      color: #ffffff !important;
       font-size: var(--email-font-size-base);
       margin: 0;
     }

@@ -2,17 +2,17 @@ extends ../../layout
 
 
 block body
-  .container-fluid.p-0
+  .container-fluid.p-3
     .row.g-0
       .col
         include ../../_breadcrumbs
 
         //- Alert for new users
-        .alert.alert-info.mx-3.mt-3
+        .alert.alert-info.mt-3
           i.fa.fa-info-circle.me-2
           = t('Welcome to your email inbox! You can compose, read, and manage your emails here.')
 
-        .inbox-container.mx-3
+        .inbox-container
           //- Top search header
           .inbox-header-top
             .search-container
