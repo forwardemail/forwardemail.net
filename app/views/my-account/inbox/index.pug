@@ -17,7 +17,7 @@ block body
           .inbox-header-top
             .search-container
               i.fa.fa-search.search-icon
-              form(method="GET", action=l("/my-account/inbox/search"))
+              form(method="GET", action=l(`/my-account/mailbox/${currentMailbox ? currentMailbox.key : 'inbox'}`))
                 input.search-input(
                   type="search",
                   name="q",
@@ -41,7 +41,7 @@ block body
                 nav.nav.nav-pills.flex-column
                   each mailbox in mailboxes
                     a.nav-link(
-                      href=l(`/my-account/inbox/${mailbox.key}`),
+                      href=l(`/my-account/mailbox/${mailbox.key}`),
                       class=currentMailbox && currentMailbox.key === mailbox.key ? 'active' : ''
                     )
                       i.fa(class=mailbox.icon)
@@ -99,7 +99,7 @@ block body
               button.compose-close#close-compose ×
 
             .compose-body
-              form#compose-form(method="POST", action=l("/my-account/inbox/compose"))
+              form#compose-form(method="POST", action=l("/my-account/mailbox/compose"))
                 input(type="hidden", name="_csrf", value=ctx.csrf)
 
                 //- Recipients Section
@@ -324,7 +324,7 @@ block scripts
         row.addEventListener('click', function() {
           const messageId = this.dataset.messageId;
           if (messageId) {
-            window.location.href = '/my-account/inbox/message/' + messageId;
+            window.location.href = '/my-account/mailbox/message/' + messageId;
           }
         });
       });

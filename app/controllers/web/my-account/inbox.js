@@ -197,6 +197,7 @@ async function listMessages(ctx) {
   const folder = ctx.params.folder || 'inbox';
   const page = Math.max(1, parseInt(ctx.query.page) || 1);
   const limit = Math.min(100, Math.max(1, parseInt(ctx.query.limit) || 25));
+  const searchQuery = ctx.query.q; // Get search query parameter
 
   try {
     // Get user's mailboxes
@@ -211,8 +212,12 @@ async function listMessages(ctx) {
 
     // For now, return empty messages list
     // TODO: Integrate with actual SQLite database once password handling is implemented
-    const transformedMessages = [];
-    const totalCount = 0;
+    let transformedMessages = [];
+    let totalCount = 0;
+
+    // If there's a search query, we would filter messages here
+    // For now, just pass the search query to the template
+    ctx.state.searchQuery = searchQuery;
 
     ctx.state.messages = transformedMessages;
     ctx.state.currentMailbox = currentMailbox;
@@ -234,6 +239,7 @@ async function listMessages(ctx) {
       messages: transformedMessages,
       currentMailbox,
       mailboxes,
+      searchQuery,
       pagination: {
         page,
         limit,
@@ -755,91 +761,6 @@ async function composeMessage(ctx) {
   }
 }
 
-async function searchMessages(ctx) {
-  await ensureAuthenticated(ctx);
-
-  const query = ctx.query.q;
-  if (!isSANB(query)) {
-    throw Boom.badRequest('Search query required');
-  }
-
-  const page = Math.max(1, parseInt(ctx.query.page) || 1);
-  const limit = Math.min(100, Math.max(1, parseInt(ctx.query.limit) || 25));
-
-  try {
-    // Build search conditions using the existing search patterns
-    const searchConditions = [];
-    const escapedQuery = _.escapeRegExp(query.trim());
-
-    // Search in subject
-    searchConditions.push({
-      subject: { $regex: escapedQuery, $options: 'i' }
-    });
-
-    // Search in headers (from, to fields)
-    searchConditions.push({
-      'envelope.from': { $regex: escapedQuery, $options: 'i' }
-    });
-
-    searchConditions.push({
-      'envelope.to': { $regex: escapedQuery, $options: 'i' }
-    });
-
-    // Build the main query
-    const searchQuery = {
-      undeleted: true,
-      $or: searchConditions
-    };
-
-    // Get search results with pagination
-    const [results, totalCount] = await Promise.all([
-      Messages.find(
-        ctx.instance,
-        ctx.state.session,
-        searchQuery,
-        {},
-        {
-          limit,
-          offset: (page - 1) * limit,
-          sort: '-hdate' // Sort by date, newest first
-        }
-      ),
-      Messages.countDocuments(ctx.instance, ctx.state.session, searchQuery)
-    ]);
-
-    // Transform results for UI
-    const transformedResults = results.map(message => transformMessageForUI(message));
-
-    ctx.state.searchResults = transformedResults;
-    ctx.state.searchQuery = query;
-    ctx.state.mailboxes = await getMailboxes(ctx);
-    ctx.state.itemCount = totalCount;
-    ctx.state.pageCount = Math.ceil(totalCount / limit);
-    ctx.state.currentPage = page;
-
-    // Set pagination headers
-    setPaginationHeaders(ctx, ctx.state.pageCount, page, results.length, totalCount);
-
-    if (ctx.accepts('html')) {
-      return ctx.render('my-account/inbox/search');
-    }
-
-    ctx.body = {
-      query,
-      results: transformedResults,
-      pagination: {
-        page,
-        limit,
-        totalCount,
-        pageCount: ctx.state.pageCount
-      }
-    };
-
-  } catch (err) {
-    ctx.logger.error('Search failed', err);
-    throw Boom.badImplementation('Search failed');
-  }
-}
 
 async function performBulkAction(ctx) {
   await ensureAuthenticated(ctx);
@@ -899,6 +820,5 @@ module.exports = {
   performMessageAction,
   performBulkAction,
   composeMessage,
-  searchMessages,
   ensureAuthenticated
 };

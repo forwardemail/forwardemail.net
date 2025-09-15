@@ -8,7 +8,7 @@ block body
         //- Back navigation
         .back-btn
           .d-flex.justify-content-between.align-items-center
-            a.btn.btn-outline-secondary(href=l("/my-account/inbox"))
+            a.btn.btn-outline-secondary(href=l("/my-account/mailbox/inbox"))
               i.fa.fa-arrow-left.me-2
               = t('Back to Inbox')
 
@@ -22,7 +22,7 @@ block body
                 = t('Folders')
               ul.dropdown-menu
                 each mailbox in mailboxes
-                  li: a.dropdown-item(href=l(`/my-account/inbox/${mailbox.key}`))
+                  li: a.dropdown-item(href=l(`/my-account/mailbox/${mailbox.key}`))
                     i.fa(class=getFolderIcon(mailbox.key)).me-2
                     = t(mailbox.name)
 
@@ -257,7 +257,7 @@ block scripts
           .then(data => {
             if (data.success) {
               if (action === 'delete' || (action === 'move' && target === 'trash')) {
-                window.location.href = '/my-account/inbox';
+                window.location.href = '/my-account/mailbox/inbox';
               } else {
                 location.reload();
               }

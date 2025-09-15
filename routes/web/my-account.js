@@ -468,42 +468,37 @@ router
     web.myAccount.retrieveEmail,
     web.myAccount.removeEmail
   )
-  // Inbox interface routes (Fastmail-inspired email client)
+  // Mailbox interface routes (Fastmail-inspired email client)
   .get(
-    '/inbox/:folder?',
+    '/mailbox/:folder?',
     paginate.middleware(25, 100),
-    rateLimit(100, 'list inbox'),
+    rateLimit(100, 'list mailbox'),
     web.myAccount.inbox.listMessages
   )
   .get(
-    '/inbox/message/:id',
-    rateLimit(100, 'get inbox message'),
+    '/mailbox/message/:id',
+    rateLimit(100, 'get mailbox message'),
     web.myAccount.inbox.getMessage
   )
   .post(
-    '/inbox/message/:id/action',
-    rateLimit(100, 'inbox message action'),
+    '/mailbox/message/:id/action',
+    rateLimit(100, 'mailbox message action'),
     web.myAccount.inbox.performMessageAction
   )
   .get(
-    '/compose',
+    '/mailbox/compose',
     rateLimit(50, 'show compose'),
     web.myAccount.inbox.composeMessage
   )
   .post(
-    '/compose',
+    '/mailbox/compose',
     rateLimit(50, 'send message'),
     web.myAccount.inbox.composeMessage
   )
   .post(
-    '/inbox/bulk-action',
+    '/mailbox/bulk-action',
     rateLimit(100, 'bulk message action'),
     web.myAccount.inbox.performBulkAction
-  )
-  .get(
-    '/search',
-    rateLimit(100, 'search messages'),
-    web.myAccount.inbox.searchMessages
   )
 
   // Email settings routes

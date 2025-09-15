@@ -18,7 +18,7 @@
           span(aria-hidden="true") &times;
 
       .modal-body.compose-body
-        form.ajax-form#compose-form(method="POST", action=l("/my-account/inbox/compose"))
+        form.ajax-form#compose-form(method="POST", action=l("/my-account/mailbox/compose"))
           input(type="hidden", name="_csrf", value=ctx.csrf)
 
           //- Recipients Section

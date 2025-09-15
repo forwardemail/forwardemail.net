@@ -13,7 +13,7 @@ block body
             if searchQuery
               span.text-muted  for "#{searchQuery}"
 
-          a.btn.btn-outline-primary(href=l("/my-account/inbox"))
+          a.btn.btn-outline-primary(href=l("/my-account/mailbox/inbox"))
             i.fa.fa-arrow-left.me-2
             = t('Back to Inbox')
 
@@ -43,7 +43,7 @@ block body
             .list-group.list-group-flush
               each message in searchResults
                 .list-group-item.list-group-item-action(
-                  onclick=`window.location.href='/my-account/inbox/message/${message.id}'`,
+                  onclick=`window.location.href='/my-account/mailbox/message/${message.id}'`,
                   style="cursor: pointer;"
                 )
                   .d-flex.justify-content-between.align-items-start
