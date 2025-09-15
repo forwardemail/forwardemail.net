@@ -1,0 +1,138 @@
+#compose-modal.modal.fade.compose-modal-dark(
+  tabindex="-1",
+  role="dialog",
+  aria-labelledby="compose-modal-title",
+  aria-hidden="true"
+)
+  .modal-dialog.modal-lg(role="document")
+    .modal-content.compose-modal-content
+      .modal-header.compose-header
+        h4#compose-modal-title.modal-title.compose-title
+          i.fa.fa-envelope.me-2
+          = t('New Message')
+        button.btn-close.compose-close(
+          type="button",
+          data-bs-dismiss="modal",
+          aria-label="Close"
+        )
+          span(aria-hidden="true") &times;
+
+      .modal-body.compose-body
+        form.ajax-form#compose-form(method="POST", action=l("/my-account/inbox/compose"))
+          input(type="hidden", name="_csrf", value=ctx.csrf)
+
+          //- Recipients Section
+          .email-recipients
+            .form-field
+              label.field-label(for="compose-to")= t('To')
+              input.field-input#compose-to(
+                type="email",
+                name="to",
+                required,
+                placeholder="Enter recipient email addresses",
+                autocomplete="off"
+              )
+              .autocomplete-dropdown#to-autocomplete(style="display: none;")
+
+            .form-field.field-cc#cc-field
+              .recipient-row
+                .recipient-label Cc
+                .recipient-input
+                  input.field-input#compose-cc(
+                    type="email",
+                    name="cc",
+                    placeholder="Carbon copy recipients",
+                    autocomplete="off"
+                  )
+                  .autocomplete-dropdown#cc-autocomplete(style="display: none;")
+
+            .form-field.field-bcc#bcc-field
+              .recipient-row
+                .recipient-label Bcc
+                .recipient-input
+                  input.field-input#compose-bcc(
+                    type="email",
+                    name="bcc",
+                    placeholder="Blind carbon copy recipients",
+                    autocomplete="off"
+                  )
+                  .autocomplete-dropdown#bcc-autocomplete(style="display: none;")
+
+            .recipient-toggle
+              a.toggle-link#toggle-cc(href="#", data-action="show-cc")= t('Add Cc')
+              a.toggle-link#toggle-bcc(href="#", data-action="show-bcc")= t('Add Bcc')
+
+          //- From field (if user has multiple aliases)
+          if aliases && aliases.length > 1
+            .form-field
+              label.field-label(for="compose-from")= t('From')
+              select.field-input#compose-from(name="from", required)
+                each alias in aliases
+                  option(value=alias._id)= `${alias.name}@${alias.domain.name}`
+
+          //- Subject
+          .form-field
+            label.field-label(for="compose-subject")= t('Subject')
+            input.field-input#compose-subject(
+              type="text",
+              name="subject",
+              placeholder=t('Enter subject line')
+            )
+
+          //- Message Body with Rich Text Editor
+          .form-field
+            label.field-label(for="compose-message")= t('Message')
+            .rich-editor-container#rich-editor-container
+              .rich-editor-toolbar#rich-editor-toolbar
+                //- Formatting buttons will be populated by JavaScript
+              .rich-editor-content#rich-editor-content(contenteditable="true")
+
+            //- Fallback textarea (hidden by default)
+            textarea.field-textarea#compose-message(
+              name="body",
+              rows="12",
+              placeholder=t('Write your message...'),
+              style="display: none;"
+            )
+
+          //- Attachments Section
+          .attachment-section#attachment-section
+            .attachment-header
+              h6.attachment-title
+                i.fa.fa-paperclip.me-1
+                = t('Attachments')
+              .attachment-actions
+                input#file-input(type="file", multiple, style="display: none;")
+                button.btn-attach#btn-browse(type="button")
+                  i.fa.fa-folder.me-1
+                  = t('Browse')
+
+            .attachment-drop-zone#attachment-drop-zone
+              .drop-zone-content
+                .drop-icon
+                  i.fa.fa-paperclip
+                .drop-text
+                  | Drop files here or&nbsp;
+                  span.drop-highlight click to browse
+                .drop-formats
+                  | Supports: Images, Documents, PDFs (Max 25MB)
+
+            .attachment-list#attachment-list
+              //- Attachments will be populated here
+
+      .modal-footer.compose-footer
+        .footer-actions
+          .footer-left
+            button.btn.btn-secondary#btn-save-draft(type="button")
+              i.fa.fa-save.me-2
+              = t('Save Draft')
+
+
+          .footer-right
+            button.btn.btn-secondary(
+              type="button",
+              data-bs-dismiss="modal"
+            )= t('Cancel')
+            button.btn.btn-primary#send-compose(type="submit", form="compose-form")
+              i.fa.fa-paper-plane.me-2
+              = t('Send')

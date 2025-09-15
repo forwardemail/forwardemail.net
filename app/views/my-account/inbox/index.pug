@@ -173,14 +173,11 @@ block body
                       button.btn-attach#btn-browse(type="button")
                         i.fa.fa-folder.me-1
                         = t('Browse')
-                      button.btn-attach#btn-cloud(type="button")
-                        i.fa.fa-cloud.me-1
-                        = t('Cloud')
 
                   .attachment-drop-zone#attachment-drop-zone
                     .drop-zone-content
                       .drop-icon
-                        i.fa.fa-cloud-upload
+                        i.fa.fa-paperclip
                       .drop-text
                         | Drop files here or
                         span.drop-highlight click to browse
@@ -194,17 +191,14 @@ block body
               .footer-actions
                 .footer-left
                   button.btn.btn-secondary#btn-save-draft(type="button")
-                    i.fa.fa-save.me-1
+                    i.fa.fa-save.me-2
                     = t('Save Draft')
 
-                  button.btn.btn-outline-secondary#btn-schedule(type="button")
-                    i.fa.fa-clock.me-1
-                    = t('Schedule')
 
                 .footer-right
                   button.btn.btn-secondary#cancel-compose(type="button")= t('Cancel')
                   button.btn.btn-primary#send-compose(type="submit", form="compose-form")
-                    i.fa.fa-paper-plane.me-1
+                    i.fa.fa-paper-plane.me-2
                     = t('Send')
 
 block scripts
