@@ -207,7 +207,19 @@
   }
 }
 
-// Content area - now takes full remaining space
+// Message list column (middle column)
+.inbox-list {
+  background-color: var(--bs-body-bg);
+  border-right: 1px solid var(--email-border-color);
+  overflow-y: auto;
+  height: 100%;
+  flex-shrink: 0;
+  width: 350px;
+  display: flex;
+  flex-direction: column;
+}
+
+// Content area - message content (right column)
 .inbox-content-area {
   background-color: var(--bs-body-bg);
   overflow-y: auto;

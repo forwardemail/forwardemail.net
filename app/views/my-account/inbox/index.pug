@@ -49,8 +49,8 @@ block body
                       if mailbox.unreadCount > 0
                         span.folder-count= mailbox.unreadCount
 
-            //- Content area (replaces the 3-column layout)
-            .inbox-content-area
+            //- Message list column (3rd column)
+            .inbox-list
               .content-header
                 h5= t(currentMailbox ? currentMailbox.name : 'Inbox')
 
@@ -80,6 +80,14 @@ block body
                     .empty-state
                       i.fa.fa-inbox.fa-3x
                       div= t('No messages in this folder')
+
+            //- Message content area (right column)
+            .inbox-content-area
+              .content-header
+                h5= t('Select a message to view')
+              .message-content.p-4.text-center.text-muted
+                i.fa.fa-envelope-open.fa-3x.mb-3
+                p= t('Select a message from the list to read it here')
 
         //- Enhanced Professional compose modal
         .compose-modal#compose-modal
