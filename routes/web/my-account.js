@@ -500,6 +500,17 @@ router
     rateLimit(100, 'bulk message action'),
     web.myAccount.inbox.performBulkAction
   )
+  // Alias switching routes for email client
+  .get(
+    '/mailbox/aliases',
+    rateLimit(50, 'get aliases'),
+    web.myAccount.inbox.getAvailableAliases
+  )
+  .post(
+    '/mailbox/switch-alias',
+    rateLimit(50, 'switch alias'),
+    web.myAccount.inbox.switchAlias
+  )
 
   // Email settings routes
   .get(

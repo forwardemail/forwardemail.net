@@ -577,6 +577,49 @@ object[config.userFields.addressCountry] = {
   default: 'None'
 };
 
+// Email client preferences
+object.email_client_preferences = {
+  selected_alias_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Aliases'
+  },
+  last_accessed_folder: {
+    type: String,
+    default: 'inbox'
+  },
+  preferred_page_size: {
+    type: Number,
+    default: 25,
+    min: 10,
+    max: 100
+  },
+  updated_at: Date
+};
+
+// Email settings for IMAP/SMTP connection
+object.email_settings = {
+  domain_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Domains'
+  },
+  alias_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Aliases'
+  },
+  encrypted_password: String,
+  imap_host: String,
+  imap_port: {
+    type: Number,
+    default: 993
+  },
+  smtp_host: String,
+  smtp_port: {
+    type: Number,
+    default: 465
+  },
+  updated_at: Date
+};
+
 // Finally add the fields
 Users.add(object);
 

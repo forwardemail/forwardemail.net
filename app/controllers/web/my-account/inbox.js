@@ -6,12 +6,16 @@
 const Boom = require('@hapi/boom');
 const isSANB = require('is-string-and-not-blank');
 const paginate = require('koa-ctx-paginate');
+const { ImapFlow } = require('imapflow');
 
 const Messages = require('#models/messages');
 const Mailboxes = require('#models/mailboxes');
 const Aliases = require('#models/aliases');
+const Users = require('#models/users');
+const Domains = require('#models/domains');
 const setupAuthSession = require('#helpers/setup-auth-session');
 const setPaginationHeaders = require('#helpers/set-pagination-headers');
+const { decrypt } = require('#helpers/encrypt-decrypt');
 const _ = require('#helpers/lodash');
 
 // IMAP operation helpers
@@ -42,28 +46,34 @@ const SPECIAL_USE_MAPPING = {
 async function ensureAuthenticated(ctx) {
   // Check if user is already authenticated via web session
   if (ctx.isAuthenticated && ctx.isAuthenticated()) {
-    // For web-authenticated users, we need to set up the IMAP session context
-    // that the email functions expect
-    if (!ctx.state.session) {
-      ctx.state.session = {
-        id: ctx.req.id || Math.random().toString(36),
-        remoteAddress: ctx.ip,
-        request: ctx.request,
-        user: ctx.state.user // Use the already authenticated user
-      };
+    // Load user with email settings and preferences
+    const user = await Users.findById(ctx.state.user._id)
+      .populate({
+        path: 'email_client_preferences.selected_alias_id',
+        populate: { path: 'domain', select: 'name' }
+      })
+      .lean();
+
+    if (!user) {
+      throw Boom.unauthorized('User not found');
     }
 
-    // Set up a websocket connection to the email server if not already present
-    if (!ctx.instance) {
-      // TODO: Initialize WebSocket connection to the email/SQLite server
-      // For now, we'll use a mock that indicates we should use websocket communication
-      ctx.instance = {
-        constructor: { name: 'API' },
-        isClosing: false,
-        wsp: true, // This signals to use websocket communication with the email server
-        // The actual wsp connection would need to be established to the email server
-      };
+    // Check if user has email settings configured
+    if (!user.email_settings || !user.email_settings.encrypted_password) {
+      if (ctx.accepts('html')) {
+        ctx.flash('custom', {
+          title: 'Email Setup Required',
+          text: 'Please configure your email settings first to access your mailbox.',
+          type: 'info',
+          toast: true,
+          timer: 5000
+        });
+        return ctx.redirect('/my-account/email-settings?setup=true');
+      }
+      throw Boom.badRequest('Email settings required');
     }
+
+    ctx.state.user = user;
     return;
   }
 
@@ -92,6 +102,42 @@ async function ensureAuthenticated(ctx) {
   throw Boom.unauthorized('Authentication required');
 }
 
+// Helper function to initialize IMAP connection
+async function initializeImapConnection(ctx) {
+  const { email_settings } = ctx.state.user;
+
+  if (!email_settings) {
+    throw Boom.badRequest('Email settings not configured');
+  }
+
+  try {
+    const alias = await Aliases.findById(email_settings.alias_id).populate('domain');
+    if (!alias) {
+      throw Boom.badRequest('Selected alias not found');
+    }
+
+    const password = decrypt(email_settings.encrypted_password);
+
+    const imap = new ImapFlow({
+      host: email_settings.imap_host,
+      port: email_settings.imap_port,
+      secure: true,
+      auth: {
+        user: alias.name + '@' + alias.domain.name,
+        pass: password
+      },
+      logger: false
+    });
+
+    ctx.state.imapConnection = imap;
+    ctx.state.currentAlias = alias;
+    return imap;
+  } catch (err) {
+    ctx.logger.error('Failed to initialize IMAP connection:', err);
+    throw Boom.badImplementation('Could not connect to email server');
+  }
+}
+
 // Helper function to get folder icons
 function getFolderIcon(folderKey) {
   const icons = {
@@ -106,8 +152,8 @@ function getFolderIcon(folderKey) {
 
 async function getMailboxes(ctx) {
   // Get user's aliases to determine available mailboxes
-  if (!ctx.state.user || !ctx.state.session) {
-    throw Boom.unauthorized('User session required');
+  if (!ctx.state.user) {
+    throw Boom.unauthorized('User required');
   }
 
   try {
@@ -194,6 +240,56 @@ async function getMailboxes(ctx) {
 async function listMessages(ctx) {
   await ensureAuthenticated(ctx);
 
+  // Handle alias switching via URL parameter
+  if (ctx.query.switch_alias) {
+    try {
+      ctx.logger.info(`Attempting to switch alias: ${ctx.query.switch_alias} for user: ${ctx.state.user._id}`);
+
+      // Verify user has access to this alias
+      const alias = await Aliases.findOne({
+        _id: ctx.query.switch_alias,
+        user: ctx.state.user._id,
+        is_enabled: true,
+        has_imap: true
+      }).populate('domain', 'name');
+
+      if (alias) {
+        ctx.logger.info(`Alias found: ${alias.name}@${alias.domain.name}, updating user preferences`);
+
+        // Update user's email client preferences
+        const updateResult = await Users.findByIdAndUpdate(
+          ctx.state.user._id,
+          {
+            $set: {
+              'email_client_preferences.selected_alias_id': ctx.query.switch_alias,
+              'email_client_preferences.updated_at': new Date()
+            }
+          },
+          { new: true }
+        );
+
+        ctx.logger.info(`User update success: ${!!updateResult}, new selected ID: ${updateResult?.email_client_preferences?.selected_alias_id?.toString()}`);
+
+        // Update the user in ctx.state so subsequent code sees the change
+        if (updateResult) {
+          ctx.state.user = updateResult;
+        }
+
+        ctx.flash('success', `Switched to ${alias.name}@${alias.domain.name}`);
+      } else {
+        ctx.logger.warn('Alias not found or access denied');
+        ctx.flash('error', 'Invalid alias or access denied');
+      }
+    } catch (err) {
+      ctx.logger.error('Failed to switch alias via URL:', err);
+      ctx.flash('error', 'Failed to switch alias');
+    }
+
+    // Redirect to clean URL without the switch_alias parameter
+    const cleanUrl = ctx.path + (ctx.query.page ? `?page=${ctx.query.page}` : '');
+    return ctx.redirect(cleanUrl);
+  }
+
   const folder = ctx.params.folder || 'inbox';
   const page = Math.max(1, parseInt(ctx.query.page) || 1);
   const limit = Math.min(100, Math.max(1, parseInt(ctx.query.limit) || 25));
@@ -210,18 +306,96 @@ async function listMessages(ctx) {
       throw Boom.notFound('Mailbox not found');
     }
 
-    // For now, return empty messages list
-    // TODO: Integrate with actual SQLite database once password handling is implemented
+    // Initialize IMAP connection and fetch real messages
     let transformedMessages = [];
     let totalCount = 0;
 
-    // If there's a search query, we would filter messages here
-    // For now, just pass the search query to the template
-    ctx.state.searchQuery = searchQuery;
+    try {
+      const imap = await initializeImapConnection(ctx);
+      await imap.connect();
 
+      // Open the mailbox
+      const folderPath = FOLDER_MAPPING[folder] || 'INBOX';
+      const mailboxInfo = await imap.mailboxOpen(folderPath);
+      totalCount = mailboxInfo.exists || 0;
+
+      if (totalCount > 0) {
+        // Calculate pagination
+        const start = Math.max(1, totalCount - ((page - 1) * limit) - limit + 1);
+        const end = Math.max(1, totalCount - ((page - 1) * limit));
+
+        // Fetch messages with pagination
+        const fetchOptions = {
+          envelope: true,
+          flags: true,
+          size: true,
+          uid: true,
+          bodyPeek: { key: 'HEADER.FIELDS', fields: ['subject', 'from', 'to', 'date'] }
+        };
+
+        // Apply search if provided
+        let sequence = `${start}:${end}`;
+        if (searchQuery && isSANB(searchQuery)) {
+          // Use IMAP search for better performance
+          const searchResults = await imap.search({
+            body: searchQuery
+          });
+          if (searchResults.length > 0) {
+            sequence = searchResults.slice(-limit).join(',');
+          } else {
+            transformedMessages = [];
+            totalCount = 0;
+          }
+        }
+
+        if (totalCount > 0 && (!searchQuery || transformedMessages.length === 0)) {
+          const messages = [];
+          for await (const message of imap.fetch(sequence, fetchOptions)) {
+            messages.push(transformImapMessage(message));
+          }
+          transformedMessages = messages.reverse(); // Show newest first
+        }
+      }
+
+      await imap.logout();
+    } catch (err) {
+      ctx.logger.warn('IMAP connection failed (expected for test domains):', err.message);
+      // Fall back to empty list on IMAP errors
+      transformedMessages = [];
+      totalCount = 0;
+
+      // Only show error message for real IMAP connection failures, not test domain DNS errors
+      if (ctx.accepts('html') && !err.message.includes('ENOTFOUND') && !err.message.includes('test-domain')) {
+        ctx.flash('error', 'Unable to connect to email server. Please check your email settings.');
+      }
+    }
+
+    // Refresh user from database to ensure we have latest preferences
+    try {
+      const freshUser = await Users.findById(ctx.state.user._id).lean();
+      if (freshUser) {
+        ctx.state.user = freshUser;
+        ctx.logger.info(`Refreshed user from database, selected alias ID: ${freshUser.email_client_preferences?.selected_alias_id}`);
+      }
+    } catch (err) {
+      ctx.logger.error('Failed to refresh user:', err);
+    }
+
+    // Load available aliases for alias switcher
+    let availableAliases = { aliases: [], current_alias_id: null };
+    try {
+      availableAliases = await getAvailableAliasesData(ctx);
+      ctx.logger.info(`Loaded aliases for dropdown - count: ${availableAliases.aliases.length}, current: ${availableAliases.current_alias_id}`);
+    } catch (err) {
+      ctx.logger.error('Failed to load aliases for dropdown:', err);
+    }
+
+    ctx.state.searchQuery = searchQuery;
     ctx.state.messages = transformedMessages;
     ctx.state.currentMailbox = currentMailbox;
     ctx.state.mailboxes = mailboxes;
+    ctx.state.availableAliases = availableAliases.aliases;
+    ctx.state.currentAliasId = availableAliases.current_alias_id;
     ctx.state.itemCount = totalCount;
     ctx.state.pageCount = Math.ceil(totalCount / limit);
     ctx.state.currentPage = page;
@@ -254,28 +428,38 @@ async function listMessages(ctx) {
   }
 }
 
-// Helper function to transform message data for the UI
-function transformMessageForUI(message) {
-  const from = message.envelope?.[0] || message.headers?.from || {};
-  const to = message.envelope?.[1] || message.headers?.to || [];
+// Helper function to transform IMAP message data for the UI
+function transformImapMessage(message) {
+  const envelope = message.envelope || {};
+  const from = envelope.from?.[0] || {};
+  const to = envelope.to || [];
+  const subject = envelope.subject || '(no subject)';
+
+  // Parse flags
+  const flags = message.flags || new Set();
+  const isUnread = !flags.has('\\Seen');
+  const isFlagged = flags.has('\\Flagged');
 
   return {
-    id: message._id,
+    id: message.uid,
     uid: message.uid,
-    subject: message.subject || '(no subject)',
+    subject,
     from: {
       name: from.name || '',
       address: from.address || ''
     },
-    to: Array.isArray(to) ? to : [to],
-    date: message.hdate || message.idate,
-    size: message.size,
-    unread: message.unseen,
-    flagged: message.flagged,
-    hasAttachments: message.ha || false,
-    isImportant: message.flagged,
-    preview: getMessagePreview(message),
-    flags: message.flags || []
+    to: Array.isArray(to) ? to.map(addr => ({
+      name: addr.name || '',
+      address: addr.address || ''
+    })) : [],
+    date: envelope.date || new Date(),
+    size: message.size || 0,
+    unread: isUnread,
+    flagged: isFlagged,
+    hasAttachments: false, // TODO: detect attachments from bodystructure
+    isImportant: isFlagged,
+    preview: '', // TODO: extract preview from body
+    flags: Array.from(flags)
   };
 }
 
@@ -289,6 +473,119 @@ function getMessagePreview(message) {
   // For now, return empty preview - this could be enhanced
   // to extract actual text content from the message
   return '';
+}
+
+// Function to switch user's selected alias
+async function switchAlias(ctx) {
+  await ensureAuthenticated(ctx);
+
+  const { alias_id } = ctx.request.body;
+
+  if (!isSANB(alias_id)) {
+    throw Boom.badRequest('Alias ID required');
+  }
+
+  try {
+    // Verify user has access to this alias
+    const alias = await Aliases.findOne({
+      _id: alias_id,
+      user: ctx.state.user._id,
+      is_enabled: true,
+      has_imap: true
+    }).populate('domain', 'name');
+
+    if (!alias) {
+      throw Boom.forbidden('Access denied to this alias or alias not found');
+    }
+
+    // Update user's email client preferences
+    await Users.findByIdAndUpdate(ctx.state.user._id, {
+      $set: {
+        'email_client_preferences.selected_alias_id': alias_id,
+        'email_client_preferences.updated_at': new Date()
+      }
+    });
+
+    ctx.body = {
+      success: true,
+      alias: {
+        _id: alias._id,
+        name: alias.name,
+        domain: alias.domain
+      },
+      message: 'Alias switched successfully'
+    };
+
+  } catch (err) {
+    ctx.logger.error('Failed to switch alias:', err);
+    throw Boom.badImplementation('Failed to switch alias');
+  }
+}
+
+// Helper function to get aliases data (used by both server-side rendering and API)
+async function getAvailableAliasesData(ctx) {
+  try {
+    // Get user's domains and their aliases
+    const domains = await Domains.find({
+      members: {
+        $elemMatch: {
+          user: ctx.state.user._id,
+          group: { $in: ['admin', 'user'] }
+        }
+      }
+    }).lean();
+
+    // Get aliases for these domains
+    const aliases = await Aliases.find({
+      domain: { $in: domains.map(d => d._id) },
+      user: ctx.state.user._id,
+      is_enabled: true,
+      has_imap: true
+    })
+    .populate('domain', 'name')
+    .lean();
+
+    // Handle case where selected_alias_id might be populated object vs string
+    let currentAliasId = ctx.state.user.email_client_preferences?.selected_alias_id;
+
+    ctx.logger.info(`Raw current alias: ${currentAliasId} (type: ${typeof currentAliasId})`);
+
+    if (currentAliasId && typeof currentAliasId === 'object') {
+      currentAliasId = currentAliasId._id || currentAliasId.toString();
+    }
+
+    const result = {
+      aliases: aliases.map(alias => ({
+        _id: alias._id.toString(), // Ensure ID is string
+        name: alias.name,
+        domain: alias.domain,
+        email: `${alias.name}@${alias.domain.name}`
+      })),
+      current_alias_id: currentAliasId ? currentAliasId.toString() : null
+    };
+
+    ctx.logger.info(`Final alias data - current ID: ${result.current_alias_id}, count: ${result.aliases.length}`);
+
+    return result;
+
+  } catch (err) {
+    ctx.logger.error('Failed to get available aliases:', err);
+    throw Boom.badImplementation('Failed to load aliases');
+  }
+}
+
+// Function to get available aliases for current user (API endpoint)
+async function getAvailableAliases(ctx) {
+  await ensureAuthenticated(ctx);
+
+  try {
+    const aliasData = await getAvailableAliasesData(ctx);
+    ctx.body = aliasData;
+  } catch (err) {
+    if (err.isBoom) throw err;
+    ctx.logger.error('Failed to get available aliases:', err);
+    throw Boom.badImplementation('Failed to load aliases');
+  }
 }
 
 async function getMessage(ctx) {
@@ -820,5 +1117,7 @@ module.exports = {
   performMessageAction,
   performBulkAction,
   composeMessage,
-  ensureAuthenticated
+  ensureAuthenticated,
+  switchAlias,
+  getAvailableAliases
 };

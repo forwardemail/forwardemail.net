@@ -12,18 +12,48 @@ block body
           i.fa.fa-info-circle.me-2
           = t('Welcome to your email inbox! You can compose, read, and manage your emails here.')
 
+
         .inbox-container
           //- Top search header
           .inbox-header-top
-            .search-container
-              i.fa.fa-search.search-icon
-              form(method="GET", action=l(`/my-account/mailbox/${currentMailbox ? currentMailbox.key : 'inbox'}`))
-                input.search-input(
-                  type="search",
-                  name="q",
-                  placeholder="Search mail",
-                  value=ctx.query.q || ""
-                )
+            .d-flex.justify-content-between.align-items-center
+              .search-container
+                i.fa.fa-search.search-icon
+                form(method="GET", action=l(`/my-account/mailbox/${currentMailbox ? currentMailbox.key : 'inbox'}`))
+                  input.search-input(
+                    type="search",
+                    name="q",
+                    placeholder="Search mail",
+                    value=ctx.query.q || ""
+                  )
+
+              //- Alias dropdown showing current alias
+              if availableAliases && availableAliases.length > 0
+                .btn-group.btn-link.btn-group-sm
+                  button.btn.btn-sm.btn-link.dropdown-toggle.text-themed(
+                    type="button",
+                    data-toggle="dropdown",
+                    data-boundary="window",
+                    aria-haspopup="true",
+                    aria-expanded="false"
+                  )
+                    i.fa.fa-user.me-1
+                    - const currentAlias = availableAliases.find(alias => alias._id.toString() === (currentAliasId ? currentAliasId.toString() : '')) || availableAliases[0]
+                    = currentAlias.email
+                  .dropdown-menu
+                    h6.dropdown-header= t("Switch to:")
+                    each alias in availableAliases.filter(alias => alias._id.toString() !== (currentAliasId ? currentAliasId.toString() : ''))
+                      a.dropdown-item(
+                        href=l(`/my-account/mailbox?switch_alias=${alias._id}`)
+                      )
+                        i.fa.fa-fw.fa-envelope
+                        = " "
+                        = alias.email
+                    if availableAliases.length > 1
+                      .dropdown-divider
+                      a.dropdown-item.small.text-muted(
+                        href=l('/my-account/email-settings')
+                      )= t("Email Settings")
 
           .inbox-main
             //- Sidebar (folders/navigation)
@@ -209,7 +239,7 @@ block body
                     i.fa.fa-paper-plane.me-2
                     = t('Send')
 
-block scripts
+block append scripts
   //- Email client JavaScript
   script(nonce=nonce).
     document.addEventListener('DOMContentLoaded', function() {
@@ -564,3 +594,9 @@ block scripts
         });
       }
     });
+
+  //- Include alias switcher functionality
+  script(defer, src=manifest('js/email-alias-switcher.js'), nonce=nonce)
+
+  //- Include real-time updates functionality
+  script(defer, src=manifest('js/email-realtime.js'), nonce=nonce)
