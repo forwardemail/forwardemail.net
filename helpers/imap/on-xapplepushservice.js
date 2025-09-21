@@ -55,6 +55,9 @@ async function onXAPPLEPUSHSERVICE(
 
     await alias.save();
 
+    // Mark session as using Apple Push Service for client detection
+    session.applePushServiceUsed = true;
+
     const certs = await getApnCerts(this.client);
     fn(null, certs.Mail.topic);
   } catch (err) {

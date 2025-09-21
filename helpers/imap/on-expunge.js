@@ -17,17 +17,22 @@ const pMapSeries = require('p-map-series');
 const tools = require('wildduck/lib/tools');
 const { Builder } = require('json-sql-enhanced');
 const { IMAPConnection } = require('wildduck/imap-core/lib/imap-connection');
+const pify = require('pify');
 
+const onMove = require('./on-move');
 const IMAPError = require('#helpers/imap-error');
 const Mailboxes = require('#models/mailboxes');
 const getAttachments = require('#helpers/get-attachments');
 const i18n = require('#helpers/i18n');
+const isAppleMailClient = require('#helpers/is-apple-mail-client');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 const updateStorageUsed = require('#helpers/update-storage-used');
 
 const { formatResponse } = IMAPConnection.prototype;
 
 const builder = new Builder();
+
+const onMovePromise = pify(onMove, { multiArgs: true });
 
 async function onExpunge(mailboxId, update, session, fn) {
   this.logger.debug('EXPUNGE', { mailboxId, update, session });
@@ -143,18 +148,94 @@ async function onExpunge(mailboxId, update, session, fn) {
         }
       );
 
-    // let storageUsed = 0;
+    // Check if this is an Apple Mail client and handle accordingly
+    const isAppleMail = isAppleMailClient(session);
+    const isTrashFolder =
+      mailbox.specialUse === '\\Trash' || mailbox.path === 'Trash';
 
-    //
-    // NOTE: we return early as a safeguard if the mailbox is not Trash/Junk/Spam
-    //       <https://github.com/nodemailer/wildduck/issues/702>
-    //       (mirrors trashCheck in `helpers/get-database.js`)
-    //
-    // if (
-    //   config.env === 'production' &&
-    //   !['Trash', 'Spam', 'Junk'].includes(mailbox.path)
-    // )
-    //   throw new IMAPError('EXPUNGE_RESERVED', { imapResponse: 'CANNOT' });
+    // For Apple Mail clients, move messages to trash instead of expunging (unless already in trash)
+    if (isAppleMail && !isTrashFolder) {
+      this.logger.debug(
+        'Apple Mail detected, moving messages to trash instead of expunging',
+        {
+          mailboxId,
+          mailbox: mailbox.path,
+          session: session.id
+        }
+      );
+
+      try {
+        // Find trash folder
+        const trashFolder = await Mailboxes.findOne(this, session, {
+          specialUse: '\\Trash'
+        });
+
+        if (trashFolder) {
+          // Get UIDs of messages to be expunged
+          const condition = {
+            mailbox: mailbox._id.toString(),
+            undeleted: 0
+          };
+
+          if (update.isUid && update.messages.length > 0) {
+            condition.uid = tools.checkRangeQuery(update.messages);
+          }
+
+          if (update._id) condition._id = update._id;
+
+          const sql = builder.build({
+            type: 'select',
+            table: 'Messages',
+            condition,
+            fields: ['uid'],
+            sort: 'uid'
+          });
+
+          const messagesToMove = session.db.prepare(sql.query).all(sql.values);
+
+          if (messagesToMove.length > 0) {
+            const uids = messagesToMove.map((m) => m.uid);
+
+            // Move messages to trash instead of expunging
+            const moveResult = await onMovePromise.call(
+              this,
+              mailboxId,
+              {
+                destination: 'Trash',
+                messages: uids,
+                isUid: true
+              },
+              session
+            );
+
+            this.logger.debug('Moved messages to trash for Apple Mail client', {
+              session: session.id,
+              uids,
+              moveResult: moveResult[0]
+            });
+
+            return fn(null, true, mailbox, []);
+          }
+        } else {
+          this.logger.warn(
+            'Trash folder not found for Apple Mail client, proceeding with normal expunge',
+            {
+              session: session.id,
+              mailbox: mailbox.path
+            }
+          );
+        }
+      } catch (err) {
+        this.logger.error(
+          'Failed to move messages to trash for Apple Mail client, falling back to expunge',
+          {
+            error: err.message,
+            session: session.id,
+            mailbox: mailbox.path
+          }
+        );
+      }
+    }
 
     const condition = {
       mailbox: mailbox._id.toString(),

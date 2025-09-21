@@ -362,7 +362,9 @@ async function onStore(mailboxId, update, session, fn) {
               // <https://stackoverflow.com/a/53308943>
 
               // TODO: edge case where modseq not accurate and so update does not occur
+              // Note: Retry update without modseq check if first attempt fails (for Apple Mail compatibility)
 
+              let updateResult;
               const sql = builder.build({
                 type: 'update',
                 table: 'Messages',
@@ -372,7 +374,41 @@ async function onStore(mailboxId, update, session, fn) {
                 }
               });
 
-              session.db.prepare(sql.query).run(sql.values);
+              updateResult = session.db.prepare(sql.query).run(sql.values);
+
+              // If no rows affected, retry without modseq condition (Apple Mail compatibility)
+              if (updateResult.changes === 0) {
+                const fallbackCondition = prepareQuery(Messages.mapping, {
+                  _id: message._id,
+                  mailbox: mailbox._id,
+                  uid: message.uid
+                });
+
+                const fallbackSql = builder.build({
+                  type: 'update',
+                  table: 'Messages',
+                  condition: fallbackCondition,
+                  modifier: {
+                    $set: prepareQuery(Messages.mapping, $set)
+                  }
+                });
+
+                updateResult = session.db
+                  .prepare(fallbackSql.query)
+                  .run(fallbackSql.values);
+
+                this.logger.debug(
+                  'Flag update required fallback without modseq check',
+                  {
+                    message: message._id,
+                    mailbox: mailbox._id,
+                    uid: message.uid,
+                    affected: updateResult.changes,
+                    flags: message.flags,
+                    session: session.id
+                  }
+                );
+              }
 
               const entry = {
                 command: 'FETCH',
