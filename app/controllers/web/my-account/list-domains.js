@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const punycode = require('node:punycode');
 const dayjs = require('dayjs-with-plugins');
 const isSANB = require('is-string-and-not-blank');
 const numeral = require('numeral');
@@ -117,6 +118,25 @@ async function listDomains(ctx, next) {
   }
 
   let { domains } = ctx.state;
+
+  //
+  // filter domains by domain name if query parameter is provided
+  //
+  if (isSANB(ctx.query.domain)) {
+    const domainQuery = ctx.query.domain.toLowerCase().trim();
+    // support both ASCII and Unicode domain names
+    const domainQueryASCII = punycode.toASCII(domainQuery);
+    const domainQueryUnicode = punycode.toUnicode(domainQuery);
+
+    domains = domains.filter((domain) => {
+      const domainName = domain.name.toLowerCase();
+      return (
+        domainName.includes(domainQuery) ||
+        domainName.includes(domainQueryASCII) ||
+        domainName.includes(domainQueryUnicode)
+      );
+    });
+  }
 
   //
   // starting November 1st we enforce API pagination on this endpoint
