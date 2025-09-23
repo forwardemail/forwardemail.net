@@ -1156,6 +1156,30 @@ Emails.post('save', async function (email, next) {
   }
 });
 
+// Update user SMTP counters when email is successfully sent
+Emails.post('save', async function (email) {
+  // Only update counters for new emails that are sent/delivered
+  if (!email._isNew || !['sent', 'delivered'].includes(email.status)) return;
+
+  try {
+    // Increment the user's SMTP counters
+    await Users.findByIdAndUpdate(email.user, {
+      $inc: {
+        smtp_emails_sent_1h: 1,
+        smtp_emails_sent_24h: 1,
+        smtp_emails_sent_72h: 1,
+        smtp_emails_sent_total: 1
+      },
+      $set: {
+        smtp_last_email_sent_at: new Date()
+      }
+    });
+  } catch (err) {
+    // Log error but don't fail the email save
+    logger.error(err, { email_id: email._id, user_id: email.user });
+  }
+});
+
 Emails.statics.getMessage = async function (obj, returnString = false) {
   if (Buffer.isBuffer(obj)) {
     if (returnString) return obj.toString();
