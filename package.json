@@ -60,7 +60,7 @@
     "@ladjs/redis": "1.1.1",
     "@ladjs/shared-config": "9.1.4",
     "@ladjs/web": "21.1.0",
-    "@mermaid-js/mermaid-cli": "10.9.1",
+    "@mermaid-js/mermaid-cli": "11.1.1",
     "@ngneat/falso": "7.4.0",
     "@octokit/core": "4.2.4",
     "@openpgp/wkd-client": "0.0.4",
