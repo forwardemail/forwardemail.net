@@ -1217,7 +1217,7 @@ function parseSchema(Model, modelName = '') {
         // stored as JSON (Array)
         if (typeof obj?.options?.default !== 'undefined') {
           default_value = safeStringify(obj.options.default);
-          _default = `DEFAULT "${default_value}"`;
+          _default = `DEFAULT '${default_value}'`;
         }
 
         getter = (v) => recursivelyParse(v);
@@ -1231,7 +1231,7 @@ function parseSchema(Model, modelName = '') {
         // stored as JSON (Object)
         if (typeof obj?.options?.default !== 'undefined') {
           default_value = safeStringify(obj.options.default);
-          _default = `DEFAULT "${default_value}"`;
+          _default = `DEFAULT '${default_value}'`;
         }
 
         getter = (v) => recursivelyParse(v);

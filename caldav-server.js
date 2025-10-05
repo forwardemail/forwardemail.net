@@ -330,7 +330,8 @@ async function ensureDefaultCalendars(ctx) {
       //
       // create "Calendar" in localized string
       //
-      name: I18N_CALENDAR[ctx.locale] || ctx.translate('CALENDAR')
+      name: I18N_CALENDAR[ctx.locale] || ctx.translate('CALENDAR'),
+      supportedComponents: ['VEVENT'] // Events only for non-Apple devices
     });
 
     // return early since Apple check is up next
@@ -383,7 +384,8 @@ async function ensureDefaultCalendars(ctx) {
           ...calendarDefaults,
           calendarId: randomUUID(),
           color: '#0000FF', // blue
-          name: 'DEFAULT_CALENDAR_NAME' // Calendar
+          name: 'DEFAULT_CALENDAR_NAME', // Calendar
+          supportedComponents: ['VEVENT'] // Events only
         }),
     defaultTaskCalendar
       ? Promise.resolve(defaultTaskCalendar)
@@ -391,7 +393,8 @@ async function ensureDefaultCalendars(ctx) {
           ...calendarDefaults,
           calendarId: randomUUID(),
           color: '#FF0000', // red
-          name: 'DEFAULT_TASK_CALENDAR_NAME' // Reminders
+          name: 'DEFAULT_TASK_CALENDAR_NAME', // Reminders
+          supportedComponents: ['VTODO'] // Tasks only
         })
   ]);
 
@@ -416,6 +419,37 @@ function bumpSyncToken(synctoken) {
     '/' +
     (Number.parseInt(parts[parts.length - 1], 10) + 1)
   );
+}
+
+// Helper function to detect component type from ICS data
+function getComponentType(icsData) {
+  try {
+    const parsed = ICAL.parse(icsData);
+    if (!parsed || parsed.length === 0) return null;
+
+    const comp = new ICAL.Component(parsed);
+    if (!comp) return null;
+
+    const vevent = comp.getFirstSubcomponent('vevent');
+    const vtodo = comp.getFirstSubcomponent('vtodo');
+
+    if (vevent && !vtodo) return 'VEVENT';
+    if (vtodo && !vevent) return 'VTODO';
+    if (vevent && vtodo) return 'VEVENT'; // Prioritize VEVENT for mixed content
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// Helper function to determine if calendar supports specific component type
+function calendarSupportsComponent(calendar, componentType) {
+  if (!calendar || !calendar.supportedComponents) {
+    // Default behavior: support VEVENT for backward compatibility
+    return componentType === 'VEVENT';
+  }
+
+  return calendar.supportedComponents.includes(componentType);
 }
 
 // TODO: support SMS reminders for VALARM
@@ -902,7 +936,20 @@ class CalDAV extends API {
       const comp = new ICAL.Component(ICAL.parse(calendarEvent.ical));
       if (!comp) throw new TypeError('Component not parsed');
 
-      // safeguard in case more than one event
+      // Check if this is a VTODO (task) - tasks don't typically send email invitations
+      const vtodos = comp.getAllSubcomponents('vtodo');
+      if (
+        vtodos.length > 0 &&
+        comp.getAllSubcomponents('vevent').length === 0
+      ) {
+        // This is a task-only component, skip email sending
+        ctx.logger.debug(
+          'Skipping email for VTODO component - tasks do not send invitations'
+        );
+        return;
+      }
+
+      // Handle VEVENT components (calendar events)
       const vevents = comp.getAllSubcomponents('vevent');
       let vevent = vevents.find((vevent) => {
         const uid = vevent.getFirstPropertyValue('uid');
@@ -1363,6 +1410,22 @@ class CalDAV extends API {
     //
     if (calendar) return calendar; // safeguard
 
+    // Determine supported components based on calendar name/type
+    let supportedComponents = ['VEVENT']; // Default to events
+
+    // Task/reminder calendars support VTODO
+    if (
+      name === 'DEFAULT_TASK_CALENDAR_NAME' ||
+      I18N_SET_REMINDERS.has(name) ||
+      I18N_SET_TASKS.has(name)
+    ) {
+      supportedComponents = ['VTODO'];
+    }
+    // Mixed calendars could support both (future enhancement)
+    // else if (someCondition) {
+    //   supportedComponents = ['VEVENT', 'VTODO'];
+    // }
+
     return Calendars.create({
       // db virtual helper
       instance: this,
@@ -1380,7 +1443,8 @@ class CalDAV extends API {
       timezone: timezone || ctx.state.session.user.timezone,
       url: config.urls.web,
       readonly: false,
-      synctoken: `${config.urls.web}/ns/sync-token/1`
+      synctoken: `${config.urls.web}/ns/sync-token/1`,
+      supportedComponents
     });
   }
 
@@ -1709,13 +1773,17 @@ class CalDAV extends API {
     for (const event of events) {
       const comp = new ICAL.Component(ICAL.parse(event.ical));
       const vevents = comp.getAllSubcomponents('vevent');
-      if (vevents.length === 0) {
-        const err = new TypeError('Event missing VEVENT');
+      const vtodos = comp.getAllSubcomponents('vtodo');
+
+      if (vevents.length === 0 && vtodos.length === 0) {
+        const err = new TypeError('Event missing VEVENT or VTODO component');
         ctx.logger.error(err, { event, calendar });
         continue;
       }
 
       let match = false;
+
+      // Process VEVENT components
       for (const vevent of vevents) {
         let lines = [];
         // start = dtstart
@@ -1811,6 +1879,104 @@ class CalDAV extends API {
         }
       }
 
+      // Process VTODO components (tasks)
+      if (!match) {
+        for (const vtodo of vtodos) {
+          let lines = [];
+          // For tasks, we use DUE instead of DTEND, and DTSTART might not exist
+          let dtstart = vtodo.getFirstPropertyValue('dtstart');
+          let due = vtodo.getFirstPropertyValue('due');
+
+          // Convert to JS dates if they exist
+          dtstart =
+            dtstart && dtstart instanceof ICAL.Time ? dtstart.toJSDate() : null;
+          due = due && due instanceof ICAL.Time ? due.toJSDate() : null;
+
+          // Collect recurrence rules for tasks (if any)
+          for (const key of ['rrule', 'exrule', 'exdate', 'rdate']) {
+            const properties = vtodo.getAllProperties(key);
+            for (const prop of properties) {
+              lines.push(prop.toICALString());
+            }
+          }
+
+          if (lines.length === 0) {
+            // Non-recurring task - check date ranges
+            // For tasks, we need to be more flexible with date matching
+            const taskStart = dtstart;
+            const taskEnd = due || dtstart; // Use due date as end, or start if no due date
+
+            if (
+              (!start || (taskEnd && start <= taskEnd)) &&
+              (!end || (taskStart && end >= taskStart))
+            ) {
+              match = true;
+              break;
+            }
+
+            continue;
+          }
+
+          // Handle recurring tasks (same logic as events)
+          let rruleSet;
+          try {
+            rruleSet = rrulestr(lines.join('\n'));
+          } catch (err) {
+            if (err.message.includes('Unsupported RFC prop EXDATE in EXDATE')) {
+              try {
+                lines = _.compact(
+                  lines.map((line) => {
+                    if (line.includes('EXDATE')) {
+                      return isValidExdate(line) ? line : null;
+                    }
+
+                    return line;
+                  })
+                );
+                rruleSet = rrulestr(lines.join('\n'));
+              } catch (err) {
+                err.isCodeBug = true;
+                ctx.logger.fatal(err);
+                throw err;
+              }
+            } else {
+              err.isCodeBug = true;
+              ctx.logger.fatal(err);
+              throw err;
+            }
+          }
+
+          // Check queried date range for recurring tasks
+          if (start && end) {
+            const dates = rruleSet.between(start, end, true);
+            if (dates.length > 0) {
+              match = true;
+              break;
+            }
+
+            continue;
+          }
+
+          if (start) {
+            const date = rruleSet.after(start, true);
+            if (date) {
+              match = true;
+              break;
+            }
+
+            continue;
+          }
+
+          if (end) {
+            const date = rruleSet.before(end, true);
+            if (date) {
+              match = true;
+              break;
+            }
+          }
+        }
+      }
+
       if (match) filtered.push(event);
     }
 
@@ -1877,6 +2043,18 @@ class CalDAV extends API {
       throw Boom.methodNotAllowed(
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
+
+    // Check if calendar supports the component type being created
+    const componentType = getComponentType(ctx.request.body);
+    if (!componentType) {
+      throw Boom.badRequest('Invalid calendar component');
+    }
+
+    if (!calendarSupportsComponent(calendar, componentType)) {
+      throw Boom.methodNotAllowed(
+        `Calendar does not support ${componentType} components`
+      );
+    }
 
     // check if there is an event with same calendar ID already
     const exists = await CalendarEvents.findOne(this, ctx.state.session, {
@@ -2004,6 +2182,18 @@ class CalDAV extends API {
       throw Boom.methodNotAllowed(
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
+
+    // Check if calendar supports the component type being updated
+    const componentType = getComponentType(ctx.request.body);
+    if (!componentType) {
+      throw Boom.badRequest('Invalid calendar component');
+    }
+
+    if (!calendarSupportsComponent(calendar, componentType)) {
+      throw Boom.methodNotAllowed(
+        `Calendar does not support ${componentType} components`
+      );
+    }
 
     let e = await CalendarEvents.findOne(this, ctx.state.session, {
       eventId,
@@ -2310,10 +2500,13 @@ class CalDAV extends API {
         }
       }
 
-      // add all VEVENTS
+      // add all VEVENTS and VTODOS
       for (const event of events) {
         const eventComp = new ICAL.Component(ICAL.parse(event.ical));
         const vevents = eventComp.getAllSubcomponents('vevent');
+        const vtodos = eventComp.getAllSubcomponents('vtodo');
+
+        // Process VEVENT components
         for (const vevent of vevents) {
           //
           // NOTE: until this issue is resolved we have to manually remove these lines
@@ -2324,6 +2517,18 @@ class CalDAV extends API {
 
           // add to main calendar
           comp.addSubcomponent(vevent);
+        }
+
+        // Process VTODO components
+        for (const vtodo of vtodos) {
+          //
+          // NOTE: clean up Mozilla-specific properties for tasks too
+          //
+          vtodo.removeAllProperties('X-MOZ-LASTACK');
+          vtodo.removeAllProperties('X-MOZ-GENERATION');
+
+          // add to main calendar
+          comp.addSubcomponent(vtodo);
         }
       }
 

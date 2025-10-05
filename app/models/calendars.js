@@ -110,6 +110,14 @@ const Calendars = new mongoose.Schema(
       required: true,
       lowercase: true,
       validate: (v) => isURL(v, { require_tld: false }) // require_tld: config.env === 'production'
+    },
+
+    // Supported calendar component types
+    supportedComponents: {
+      type: [String],
+      enum: ['VEVENT', 'VTODO'],
+      default: ['VEVENT'], // Default to events only for backward compatibility
+      index: true
     }
   },
   dummySchemaOptions
