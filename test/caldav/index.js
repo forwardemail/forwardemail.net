@@ -950,7 +950,7 @@ test('fetchCalendarObjects should be able to fetch VTODO objects with custom fil
         cal.displayName?.includes('Reminders') ||
         cal.displayName?.includes('Tasks') ||
         cal.displayName === 'Tasks' ||
-        cal.supportedComponents?.includes('VTODO')
+        cal.supportedComponents === 'VTODO'
     ) || calendars.find((cal) => cal.displayName === 'Tasks');
 
   const objectUrl = new URL('vtodo-1.ics', taskCalendar.url).href;
@@ -1016,7 +1016,7 @@ test('createObject should be able to create VTODO object', async (t) => {
         cal.displayName?.includes('Reminders') ||
         cal.displayName?.includes('Tasks') ||
         cal.displayName === 'Tasks' ||
-        cal.supportedComponents?.includes('VTODO')
+        cal.supportedComponents === 'VTODO'
     ) || calendars.find((cal) => cal.displayName === 'Tasks');
 
   const objectUrl = new URL('vtodo-test.ics', taskCalendar.url).href;
@@ -1088,7 +1088,7 @@ test('updateObject should be able to update VTODO status and progress', async (t
         cal.displayName?.includes('Reminders') ||
         cal.displayName?.includes('Tasks') ||
         cal.displayName === 'Tasks' ||
-        cal.supportedComponents?.includes('VTODO')
+        cal.supportedComponents === 'VTODO'
     ) || calendars.find((cal) => cal.displayName === 'Tasks');
 
   const objectUrl = new URL('vtodo-update.ics', taskCalendar.url).href;
@@ -1169,7 +1169,7 @@ test('fetchCalendarObjects should be able to filter VTODO by status', async (t) 
         cal.displayName?.includes('Reminders') ||
         cal.displayName?.includes('Tasks') ||
         cal.displayName === 'Tasks' ||
-        cal.supportedComponents?.includes('VTODO')
+        cal.supportedComponents === 'VTODO'
     ) || calendars.find((cal) => cal.displayName === 'Tasks');
 
   const objectUrl1 = new URL('vtodo-filter-1.ics', taskCalendar.url).href;
@@ -1237,7 +1237,7 @@ test('calendarMultiGet should be able to get multiple VTODO objects', async (t) 
         cal.displayName?.includes('Reminders') ||
         cal.displayName?.includes('Tasks') ||
         cal.displayName === 'Tasks' ||
-        cal.supportedComponents?.includes('VTODO')
+        cal.supportedComponents === 'VTODO'
     ) || calendars.find((cal) => cal.displayName === 'Tasks');
 
   const objectUrl1 = new URL('vtodo-multi-1.ics', taskCalendar.url).href;
