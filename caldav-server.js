@@ -331,7 +331,7 @@ async function ensureDefaultCalendars(ctx) {
       // create "Calendar" in localized string
       //
       name: I18N_CALENDAR[ctx.locale] || ctx.translate('CALENDAR'),
-      supportedComponents: ['VEVENT'] // Events only for non-Apple devices
+      supportedComponents: 'VEVENT' // Events only for non-Apple devices
     });
 
     // return early since Apple check is up next
@@ -385,7 +385,7 @@ async function ensureDefaultCalendars(ctx) {
           calendarId: randomUUID(),
           color: '#0000FF', // blue
           name: 'DEFAULT_CALENDAR_NAME', // Calendar
-          supportedComponents: ['VEVENT'] // Events only
+          supportedComponents: 'VEVENT' // Events only
         }),
     defaultTaskCalendar
       ? Promise.resolve(defaultTaskCalendar)
@@ -394,7 +394,7 @@ async function ensureDefaultCalendars(ctx) {
           calendarId: randomUUID(),
           color: '#FF0000', // red
           name: 'DEFAULT_TASK_CALENDAR_NAME', // Reminders
-          supportedComponents: ['VTODO'] // Tasks only
+          supportedComponents: 'VTODO' // Tasks only
         })
   ]);
 
@@ -449,7 +449,7 @@ function calendarSupportsComponent(calendar, componentType) {
     return componentType === 'VEVENT';
   }
 
-  return calendar.supportedComponents.includes(componentType);
+  return calendar.supportedComponents === componentType;
 }
 
 // TODO: support SMS reminders for VALARM
@@ -1411,7 +1411,7 @@ class CalDAV extends API {
     if (calendar) return calendar; // safeguard
 
     // Determine supported components based on calendar name/type
-    let supportedComponents = ['VEVENT']; // Default to events
+    let supportedComponents = 'VEVENT'; // Default to events
 
     // Task/reminder calendars support VTODO
     if (
@@ -1419,12 +1419,8 @@ class CalDAV extends API {
       I18N_SET_REMINDERS.has(name) ||
       I18N_SET_TASKS.has(name)
     ) {
-      supportedComponents = ['VTODO'];
+      supportedComponents = 'VTODO';
     }
-    // Mixed calendars could support both (future enhancement)
-    // else if (someCondition) {
-    //   supportedComponents = ['VEVENT', 'VTODO'];
-    // }
 
     return Calendars.create({
       // db virtual helper

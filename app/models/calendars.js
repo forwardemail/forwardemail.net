@@ -114,9 +114,9 @@ const Calendars = new mongoose.Schema(
 
     // Supported calendar component types
     supportedComponents: {
-      type: [String],
+      type: String,
       enum: ['VEVENT', 'VTODO'],
-      default: ['VEVENT'], // Default to events only for backward compatibility
+      default: 'VEVENT', // Default to events only for backward compatibility
       index: true
     }
   },
