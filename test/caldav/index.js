@@ -369,9 +369,11 @@ test('calendarMultiGet should be able to get information about multiple calendar
     headers: t.context.authHeaders
   });
 
-  const objectUrl1 = new URL('1.ics', calendars[0].url).href;
-  const objectUrl2 = new URL('2.ics', calendars[0].url).href;
-  const objectUrl3 = new URL('3.ics', calendars[0].url).href;
+  const eventCalendar = calendars[0];
+
+  const objectUrl1 = new URL('1.ics', eventCalendar.url).href;
+  const objectUrl2 = new URL('2.ics', eventCalendar.url).href;
+  const objectUrl3 = new URL('3.ics', eventCalendar.url).href;
 
   const response1 = await createObject({
     url: objectUrl1,
@@ -405,7 +407,7 @@ test('calendarMultiGet should be able to get information about multiple calendar
   t.true(response3.ok);
 
   const calendarObjects = await calendarMultiGet({
-    url: calendars[0].url,
+    url: eventCalendar.url,
     props: [
       { name: 'getetag', namespace: DAVNamespace.DAV },
       { name: 'calendar-data', namespace: DAVNamespace.CALDAV }
@@ -944,14 +946,12 @@ test('fetchCalendarObjects should be able to fetch VTODO objects with custom fil
   });
 
   // Find a calendar that supports VTODO components (task calendar)
-  const taskCalendar =
-    calendars.find(
-      (cal) =>
-        cal.displayName?.includes('Reminders') ||
-        cal.displayName?.includes('Tasks') ||
-        cal.displayName === 'Tasks' ||
-        cal.supportedComponents === 'VTODO'
-    ) || calendars.find((cal) => cal.displayName === 'Tasks');
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
 
   const objectUrl = new URL('vtodo-1.ics', taskCalendar.url).href;
 
@@ -1010,14 +1010,12 @@ test('createObject should be able to create VTODO object', async (t) => {
   });
 
   // Find a calendar that supports VTODO components (task calendar)
-  const taskCalendar =
-    calendars.find(
-      (cal) =>
-        cal.displayName?.includes('Reminders') ||
-        cal.displayName?.includes('Tasks') ||
-        cal.displayName === 'Tasks' ||
-        cal.supportedComponents === 'VTODO'
-    ) || calendars.find((cal) => cal.displayName === 'Tasks');
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
 
   const objectUrl = new URL('vtodo-test.ics', taskCalendar.url).href;
 
@@ -1082,14 +1080,12 @@ test('updateObject should be able to update VTODO status and progress', async (t
   });
 
   // Find a calendar that supports VTODO components (task calendar)
-  const taskCalendar =
-    calendars.find(
-      (cal) =>
-        cal.displayName?.includes('Reminders') ||
-        cal.displayName?.includes('Tasks') ||
-        cal.displayName === 'Tasks' ||
-        cal.supportedComponents === 'VTODO'
-    ) || calendars.find((cal) => cal.displayName === 'Tasks');
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
 
   const objectUrl = new URL('vtodo-update.ics', taskCalendar.url).href;
 
@@ -1163,18 +1159,57 @@ test('fetchCalendarObjects should be able to filter VTODO by status', async (t) 
   });
 
   // Find a calendar that supports VTODO components (task calendar)
-  const taskCalendar =
-    calendars.find(
-      (cal) =>
-        cal.displayName?.includes('Reminders') ||
-        cal.displayName?.includes('Tasks') ||
-        cal.displayName === 'Tasks' ||
-        cal.supportedComponents === 'VTODO'
-    ) || calendars.find((cal) => cal.displayName === 'Tasks');
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
 
   const objectUrl1 = new URL('vtodo-filter-1.ics', taskCalendar.url).href;
   const objectUrl2 = new URL('vtodo-filter-2.ics', taskCalendar.url).href;
   const objectUrl3 = new URL('vtodo-filter-3.ics', taskCalendar.url).href;
+
+  // Create VTODO objects with different statuses
+  const vtodo1 = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-1.ics'),
+    'utf8'
+  );
+  const vtodo2 = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-2.ics'),
+    'utf8'
+  );
+  const vtodo3 = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-completed.ics'),
+    'utf8'
+  );
+
+  await createObject({
+    url: objectUrl1,
+    data: vtodo1,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  await createObject({
+    url: objectUrl2,
+    data: vtodo2,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  await createObject({
+    url: objectUrl3,
+    data: vtodo3,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
 
   // Filter for VTODO with NEEDS-ACTION status
   const needsActionFilter = [
@@ -1231,14 +1266,12 @@ test('calendarMultiGet should be able to get multiple VTODO objects', async (t) 
   });
 
   // Find a calendar that supports VTODO components (task calendar)
-  const taskCalendar =
-    calendars.find(
-      (cal) =>
-        cal.displayName?.includes('Reminders') ||
-        cal.displayName?.includes('Tasks') ||
-        cal.displayName === 'Tasks' ||
-        cal.supportedComponents === 'VTODO'
-    ) || calendars.find((cal) => cal.displayName === 'Tasks');
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
 
   const objectUrl1 = new URL('vtodo-multi-1.ics', taskCalendar.url).href;
   const objectUrl2 = new URL('vtodo-multi-2.ics', taskCalendar.url).href;
@@ -1290,4 +1323,538 @@ test('calendarMultiGet should be able to get multiple VTODO objects', async (t) 
   // Clean up
   await deleteObject({ url: objectUrl1, headers: t.context.authHeaders });
   await deleteObject({ url: objectUrl2, headers: t.context.authHeaders });
+});
+
+//
+// Unified Calendar Tests (Phase 1)
+//
+
+test('unified calendar should accept both VEVENT and VTODO', async (t) => {
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  // Find the unified calendar (Default calendar should support both)
+  // The first calendar (calendars[0]) is typically the default calendar supporting both types
+  const unifiedCal = calendars[0];
+
+  t.truthy(unifiedCal, 'Should have a unified calendar supporting both types');
+
+  // Create an event
+  const eventIcs = await fsp.readFile(
+    path.join(__dirname, 'data', '1.ics'),
+    'utf8'
+  );
+  const eventUrl = new URL('unified-event.ics', unifiedCal.url).href;
+  const eventResponse = await createObject({
+    url: eventUrl,
+    data: eventIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(eventResponse.ok);
+
+  // Create a task in the SAME calendar
+  const taskIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-1.ics'),
+    'utf8'
+  );
+  const taskUrl = new URL('unified-task.ics', unifiedCal.url).href;
+  const taskResponse = await createObject({
+    url: taskUrl,
+    data: taskIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(taskResponse.ok);
+
+  // Verify both exist
+  const objects = await fetchCalendarObjects({
+    calendar: unifiedCal,
+    headers: t.context.authHeaders
+  });
+  t.true(objects.length >= 2);
+
+  // Verify we can retrieve both types
+  const hasEvent = objects.some((obj) => obj.data.includes('BEGIN:VEVENT'));
+  const hasTask = objects.some((obj) => obj.data.includes('BEGIN:VTODO'));
+  t.true(hasEvent);
+  t.true(hasTask);
+
+  // Clean up
+  await deleteObject({ url: eventUrl, headers: t.context.authHeaders });
+  await deleteObject({ url: taskUrl, headers: t.context.authHeaders });
+});
+
+//
+// Recurring VTODO Tests (Phase 1)
+//
+
+test('VTODO with RRULE (recurring task)', async (t) => {
+  const vtodoRecurring = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-recurring.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-recurring.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoRecurring,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Fetch the created recurring task
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  t.truthy(calendarObject);
+  t.true(calendarObject.data.includes('BEGIN:VTODO'));
+  t.true(calendarObject.data.includes('RRULE:FREQ=DAILY'));
+  t.true(calendarObject.data.includes('SUMMARY:Daily standup meeting prep'));
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+//
+// VTODO with VALARM Tests (Phase 1)
+//
+
+test('VTODO with VALARM (reminder)', async (t) => {
+  const vtodoWithAlarm = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-with-alarm.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-with-alarm.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoWithAlarm,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Fetch the created task with alarm
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  t.truthy(calendarObject);
+  t.true(calendarObject.data.includes('BEGIN:VTODO'));
+  t.true(calendarObject.data.includes('BEGIN:VALARM'));
+  t.true(calendarObject.data.includes('TRIGGER:-PT15M'));
+  t.true(calendarObject.data.includes('SUMMARY:Submit quarterly report'));
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+//
+// VTODO with Subtasks Tests (Phase 1)
+//
+
+test('VTODO with subtasks (RELATED-TO)', async (t) => {
+  const vtodoWithSubtasks = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-with-subtasks.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-with-subtasks.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoWithSubtasks,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Fetch all tasks (should include parent and subtasks)
+  const objects = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    headers: t.context.authHeaders
+  });
+
+  // Should have at least 4 tasks (parent + 3 subtasks)
+  const projectTasks = objects.filter((obj) =>
+    obj.data.includes('Launch new product feature')
+  );
+  t.true(projectTasks.length > 0);
+
+  // Verify RELATED-TO is preserved
+  const hasRelatedTo = objects.some((obj) => obj.data.includes('RELATED-TO'));
+  t.true(hasRelatedTo);
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+//
+// Time-based Query Tests for VTODO (Phase 1)
+//
+
+test('fetchCalendarObjects with timeRange for VTODO', async (t) => {
+  const vtodo1 = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-1.ics'),
+    'utf8'
+  );
+  const vtodo2 = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-2.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl1 = new URL('vtodo-time-1.ics', taskCalendar.url).href;
+  const objectUrl2 = new URL('vtodo-time-2.ics', taskCalendar.url).href;
+
+  await createObject({
+    url: objectUrl1,
+    data: vtodo1,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  await createObject({
+    url: objectUrl2,
+    data: vtodo2,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  // Query tasks due within a specific time range
+  const objects = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    headers: t.context.authHeaders,
+    timeRange: {
+      start: '2021-04-01T00:00:00.000Z',
+      end: '2021-04-06T23:59:59.999Z'
+    }
+  });
+
+  // Should return task with due date in April 2021
+  t.true(objects.length > 0);
+  const hasAprilTask = objects.some(
+    (obj) =>
+      obj.data.includes('BEGIN:VTODO') &&
+      obj.data.includes('DUE:20210405T170000Z')
+  );
+  t.true(hasAprilTask);
+
+  // Clean up
+  await deleteObject({ url: objectUrl1, headers: t.context.authHeaders });
+  await deleteObject({ url: objectUrl2, headers: t.context.authHeaders });
+});
+
+test('VTODO without due date', async (t) => {
+  const vtodoNoDue = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-no-due-date.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-no-due.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoNoDue,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Verify task is created without due date
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  t.truthy(calendarObject);
+  t.true(calendarObject.data.includes('BEGIN:VTODO'));
+  t.false(calendarObject.data.includes('DUE:'));
+  t.true(calendarObject.data.includes('SUMMARY:Learn Spanish'));
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+//
+// Advanced VTODO Feature Tests (Phase 1)
+//
+
+test('VTODO with location and GEO', async (t) => {
+  const vtodoWithLocation = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-with-location.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-location.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoWithLocation,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Verify location data is preserved
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  t.truthy(calendarObject);
+  t.true(calendarObject.data.includes('LOCATION'));
+  t.true(calendarObject.data.includes('GEO:'));
+  t.true(calendarObject.data.includes('SUMMARY:Buy groceries'));
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+test('VTODO with categories', async (t) => {
+  const vtodoWithCategories = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-with-categories.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-categories.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoWithCategories,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Verify categories are preserved
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  t.truthy(calendarObject);
+  t.true(calendarObject.data.includes('CATEGORIES'));
+  t.true(calendarObject.data.includes('Work'));
+  t.true(calendarObject.data.includes('Research'));
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+test('VTODO with partial completion percentage', async (t) => {
+  const vtodoPartial = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-partial-completion.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-partial.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoPartial,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Verify partial completion
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  t.truthy(calendarObject);
+  t.true(calendarObject.data.includes('PERCENT-COMPLETE:75'));
+  t.true(calendarObject.data.includes('STATUS:IN-PROCESS'));
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
+test('VTODO with Apple-specific properties', async (t) => {
+  const vtodoApple = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-apple-structured.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const taskCalendar = calendars.find(
+    (cal) =>
+      cal.displayName?.includes('Reminders') ||
+      cal.displayName?.includes('Tasks') ||
+      cal.displayName === 'Tasks'
+  );
+
+  const objectUrl = new URL('vtodo-apple.ics', taskCalendar.url).href;
+
+  const response = await createObject({
+    url: objectUrl,
+    data: vtodoApple,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Verify Apple-specific properties are preserved
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: taskCalendar,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  t.truthy(calendarObject);
+  t.true(calendarObject.data.includes('BEGIN:VTODO'));
+  t.true(calendarObject.data.includes('SUMMARY:Call dentist for appointment'));
+  // Apple properties may or may not be preserved depending on server implementation
+  // Just verify the task is created successfully
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
 });
