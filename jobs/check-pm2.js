@@ -44,6 +44,20 @@ graceful.listen();
 // Lock file to prevent concurrent executions
 const LOCK_FILE = path.join(os.tmpdir(), 'check-pm2.lock');
 
+// Helper function to check if a process is running
+function isProcessRunning(pid) {
+  try {
+    // Sending signal 0 checks if process exists without actually sending a signal
+    // This works on both Linux and macOS
+    process.kill(pid, 0);
+    return true;
+  } catch (err) {
+    // ESRCH means no such process
+    // EPERM means process exists but we don't have permission (still running)
+    return err.code === 'EPERM';
+  }
+}
+
 (async () => {
   let lockAcquired = false;
   let pm2Connected = false;
@@ -51,32 +65,61 @@ const LOCK_FILE = path.join(os.tmpdir(), 'check-pm2.lock');
   try {
     // Try to acquire lock
     try {
-      // Check if lock file exists and is stale (older than 30 minutes)
+      // Check if lock file exists
       if (fs.existsSync(LOCK_FILE)) {
-        const stats = fs.statSync(LOCK_FILE);
-        const lockAge = Date.now() - stats.mtimeMs;
-        if (lockAge > ms('30m')) {
-          // Lock is stale, remove it
+        let shouldRemoveLock = false;
+        let removalReason = '';
+
+        try {
+          // Read the PID from the lock file
+          const lockPid = Number.parseInt(
+            fs.readFileSync(LOCK_FILE, 'utf8').trim(),
+            10
+          );
+
+          if (Number.isNaN(lockPid)) {
+            shouldRemoveLock = true;
+            removalReason = 'invalid PID in lock file';
+          } else if (isProcessRunning(lockPid)) {
+            // Process is still running, check if lock is stale (older than 2 hours)
+            const stats = fs.statSync(LOCK_FILE);
+            const lockAge = Date.now() - stats.mtimeMs;
+            if (lockAge > ms('2h')) {
+              shouldRemoveLock = true;
+              removalReason = `lock is stale (age: ${prettyMilliseconds(
+                lockAge
+              )}, process ${lockPid} still running but likely hung)`;
+            } else {
+              // Valid lock held by running process
+              await logger.info(
+                `Another instance (PID ${lockPid}) is already running, exiting gracefully`
+              );
+              return;
+            }
+          } else {
+            shouldRemoveLock = true;
+            removalReason = `process ${lockPid} is no longer running`;
+          }
+        } catch (err) {
+          // Error reading lock file, treat as corrupted
+          shouldRemoveLock = true;
+          removalReason = `corrupted lock file: ${err.message}`;
+        }
+
+        if (shouldRemoveLock) {
           fs.unlinkSync(LOCK_FILE);
-          await logger.warn(
-            `Removed stale lock file (age: ${prettyMilliseconds(lockAge)})`
-          );
-        } else {
-          // Lock is held by another process
-          await logger.info(
-            'Another instance is already running, exiting gracefully'
-          );
-          return;
+          await logger.warn(`Removed lock file: ${removalReason}`);
         }
       }
 
-      // Create lock file with exclusive flag
+      // Create lock file with exclusive flag and write our PID
       fs.writeFileSync(LOCK_FILE, process.pid.toString(), { flag: 'wx' });
       lockAcquired = true;
     } catch (err) {
       if (err.code === 'EEXIST') {
+        // Race condition: another process created the lock between our check and write
         await logger.info(
-          'Another instance is already running, exiting gracefully'
+          'Another instance is already running (race condition), exiting gracefully'
         );
         return;
       }
