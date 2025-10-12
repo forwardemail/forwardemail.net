@@ -4089,7 +4089,9 @@ As of July 8, 2025 we have added these Europe-specific countries:
   <li class="list-inline-item"><code class="notranslate">va</code></li>
 </ul>
 
-We specifically did not include `cz`, `ru`, and `ua` due to high spam activity.
+In October 2025 we have also added <code class="notranslate">cz</code> (Czech Republic) due to demand.
+
+We specifically did not include `ru` and `ua` due to high spam activity.
 
 ### What is your allowlist criteria
 

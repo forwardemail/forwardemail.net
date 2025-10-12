@@ -1571,8 +1571,8 @@ const config = {
     'lt', // Lithuania
     'lu', // Luxembourg
     'mc', // Monaco
+    'cz', // Czech Republic
     // spammy and not supported
-    // 'cz', // Czech Republic
     // 'ru', // Russian Federation
     // 'ua', // Ukraine
     'mk', // North Macedonia
