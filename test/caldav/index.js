@@ -1391,6 +1391,64 @@ test('unified calendar should accept both VEVENT and VTODO', async (t) => {
   await deleteObject({ url: taskUrl, headers: t.context.authHeaders });
 });
 
+test('single ICS file with both VEVENT and VTODO components', async (t) => {
+  const mixedIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'mixed-components.ics'),
+    'utf8'
+  );
+
+  const calendars = await fetchCalendars({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  // Use the unified calendar (first calendar)
+  const unifiedCal = calendars[0];
+
+  // Upload the file with both components
+  const objectUrl = new URL('mixed-components.ics', unifiedCal.url).href;
+  const response = await createObject({
+    url: objectUrl,
+    data: mixedIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+
+  t.true(response.ok);
+
+  // Fetch the created object
+  const [calendarObject] = await fetchCalendarObjects({
+    calendar: unifiedCal,
+    objectUrls: [objectUrl],
+    headers: t.context.authHeaders
+  });
+
+  // NOTE: Current behavior stores the entire ICS as a single CalendarEvent
+  // The file contains both components, and they should both be preserved
+  t.truthy(calendarObject, 'Should have created calendar object');
+  t.true(
+    calendarObject.data.includes('BEGIN:VEVENT'),
+    'Should preserve VEVENT in stored ICS'
+  );
+  t.true(
+    calendarObject.data.includes('SUMMARY:Team Meeting'),
+    'Should preserve VEVENT summary'
+  );
+  t.true(
+    calendarObject.data.includes('BEGIN:VTODO'),
+    'Should preserve VTODO in stored ICS'
+  );
+  t.true(
+    calendarObject.data.includes('SUMMARY:Follow up with client'),
+    'Should preserve VTODO summary'
+  );
+
+  // Clean up
+  await deleteObject({ url: objectUrl, headers: t.context.authHeaders });
+});
+
 //
 // Recurring VTODO Tests (Phase 1)
 //
