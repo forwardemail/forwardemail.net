@@ -72,7 +72,8 @@ const CalendarEvents = new mongoose.Schema(
     // Component type to differentiate between events and tasks
     componentType: {
       type: String,
-      enum: ['VEVENT', 'VTODO'],
+      // enum: ['VEVENT', 'VTODO'],
+      default: 'VEVENT',
       index: true
     },
     /*
@@ -163,6 +164,8 @@ const CalendarEvents = new mongoose.Schema(
           this.componentType = 'VTODO';
         } else if (vevent && vtodo) {
           // If both exist, prioritize VEVENT for backward compatibility
+          this.componentType = 'VEVENT';
+        } else {
           this.componentType = 'VEVENT';
         }
 
