@@ -1565,7 +1565,7 @@ module.exports = {
   dummyProofModel,
   dummySchemaOptions: {
     versionKey: false,
-    strict: 'throw', // or true
+    strict: true, // or 'throw'
     id: false,
     timestamps: {
       createdAt: 'created_at',
