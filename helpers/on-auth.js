@@ -124,6 +124,7 @@ async function onAuth(auth, session, fn) {
     // trim password in-memory
     auth.password = auth.password.trim();
 
+    // Verify DNS records
     const verifications = [];
     try {
       const records = await this.resolver.resolveTxt(domainName);
@@ -677,13 +678,14 @@ async function onAuth(auth, session, fn) {
     fn(null, { user });
 
     //
-    // if we're on IMAP or POP3 server then sync messages with user
+    // if we're on IMAP, POP3, or CalDAV server then sync messages with user
     //
     if (
       alias &&
       alias.has_imap &&
       (this.server instanceof IMAPServer ||
-        this.server instanceof POP3Server) &&
+        this.server instanceof POP3Server ||
+        this?.constructor?.name === 'CalDAV') &&
       this.wsp
     ) {
       // sync with tmp db

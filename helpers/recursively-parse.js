@@ -57,8 +57,18 @@ function parseBuffers(json, objectId = false, checkDate = true) {
 }
 
 function recursivelyParse(str, objectId = false, checkDate = true) {
-  const json =
-    typeof str === 'object' && !Buffer.isBuffer(str) ? str : JSON.parse(str);
+  // Handle plain strings that aren't JSON (e.g., legacy data)
+  if (typeof str === 'string') {
+    try {
+      const json = JSON.parse(str);
+      return parseBuffers(json, objectId, checkDate);
+    } catch {
+      // Not valid JSON, return as-is (handles legacy string values)
+      return str;
+    }
+  }
+
+  const json = typeof str === 'object' && !Buffer.isBuffer(str) ? str : str;
   return parseBuffers(json, objectId, checkDate);
 }
 

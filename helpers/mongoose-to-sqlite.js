@@ -515,7 +515,10 @@ async function find(
 
   if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
   if (docs.length === 0) return [];
-  return Promise.all(docs.map((doc) => convertResult(this, doc, projections)));
+  const results = await Promise.all(
+    docs.map((doc) => convertResult(this, doc, projections))
+  );
+  return results;
 }
 
 // eslint-disable-next-line max-params

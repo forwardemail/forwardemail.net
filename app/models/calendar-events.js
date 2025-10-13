@@ -169,16 +169,6 @@ const CalendarEvents = new mongoose.Schema(
           this.componentType = 'VEVENT';
         }
 
-        // Validate that the component type is supported by the calendar
-        if (this.calendar) {
-          const calendar = await Calendars.findById(this.calendar);
-          if (calendar && calendar.supportedComponents !== this.componentType) {
-            throw new TypeError(
-              `Calendar does not support ${this.componentType} components`
-            );
-          }
-        }
-
         return true;
       }
     }
