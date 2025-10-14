@@ -1925,19 +1925,23 @@ In order to use calendar support, the **user** must be the email address of an a
 
 ### Do you support tasks and reminders (CalDAV VTODO)
 
-Yes, as of \[INSERT DATE] we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
+Yes, as of October 14, 2025 we have added CalDAV VTODO support for tasks and reminders. This uses the same server as our calendar support: `caldav.forwardemail.net`.
 
-Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components, with automatic separation into appropriate calendar collections:
+Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) components using **unified calendars**. This means each calendar can contain both events and tasks, providing maximum flexibility and compatibility across all CalDAV clients.
 
-* **Calendar events** go into your main "Calendar" collection
-* **Tasks/reminders** go into a separate "Reminders" collection
+**How calendars and lists work:**
+
+* **Each calendar supports both events and tasks** - You can add events, tasks, or both to any calendar
+* **Apple Reminders lists** - Each list you create in Apple Reminders becomes a separate calendar on the server
+* **Multiple calendars** - You can create as many calendars as you need, each with its own name, color, and organization
+* **Cross-client sync** - Tasks and events sync seamlessly between all compatible clients
 
 **Supported task clients:**
 
 * **macOS Reminders** - Full native support for task creation, editing, completion, and sync
 * **iOS Reminders** - Full native support across all iOS devices
 * **Tasks.org (Android)** - Popular open-source task manager with CalDAV sync
-* **Thunderbird with Lightning** - Task support in desktop email client
+* **Thunderbird** - Task and calendar support in desktop email client
 * **Any CalDAV-compatible task manager** - Standard VTODO component support
 
 **Task features supported:**
@@ -1949,6 +1953,8 @@ Our CalDAV server supports both calendar events (VEVENT) and tasks (VTODO) compo
 * Recurring tasks
 * Task descriptions and notes
 * Multi-device synchronization
+* Subtasks with RELATED-TO property
+* Task reminders with VALARM
 
 The login credentials are the same as for calendar support:
 
@@ -1957,7 +1963,12 @@ The login credentials are the same as for calendar support:
 | Username | `user@example.com`         | Email address of an alias that exists for the domain at <a href="/my-account/domains" target="_blank" rel="noopener noreferrer">My Account <i class="fa fa-angle-right"></i> Domains</a>. |
 | Password | `************************` | Alias-specific generated password.                                                                                                                                                        |
 
-**Important:** Tasks and calendar events are kept in separate collections to ensure proper client compatibility, especially with Apple devices that expect dedicated task calendars.
+**Important notes:**
+
+* **Each Reminders list is a separate calendar** - When you create a new list in Apple Reminders, it creates a new calendar on the CalDAV server
+* **Thunderbird users** - You'll need to manually subscribe to each calendar/list you want to sync, or use the calendar home URL: `https://caldav.forwardemail.net/dav/your-email@domain.com/`
+* **Apple users** - Calendar discovery happens automatically, so all your calendars and lists will appear in Calendar.app and Reminders.app
+* **Unified calendars** - All calendars support both events and tasks, giving you flexibility in how you organize your data
 
 ### Do you support contacts (CardDAV)
 

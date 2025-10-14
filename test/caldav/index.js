@@ -1405,7 +1405,50 @@ test('single ICS file with both VEVENT and VTODO components', async (t) => {
   // Use the unified calendar (first calendar)
   const unifiedCal = calendars[0];
 
-  // Upload the file with both components
+  // First, explicitly verify the unified calendar supports both VEVENT and VTODO
+  // by successfully uploading a pure VEVENT file
+  const eventOnlyIcs = await fsp.readFile(
+    path.join(__dirname, 'data', '1.ics'),
+    'utf8'
+  );
+  const eventOnlyUrl = new URL('test-vevent-support.ics', unifiedCal.url).href;
+  const eventOnlyResponse = await createObject({
+    url: eventOnlyUrl,
+    data: eventOnlyIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(
+    eventOnlyResponse.ok,
+    'Unified calendar should accept VEVENT (has_vevent=true)'
+  );
+
+  // Then verify it supports VTODO by uploading a pure VTODO file
+  const todoOnlyIcs = await fsp.readFile(
+    path.join(__dirname, 'data', 'vtodo-1.ics'),
+    'utf8'
+  );
+  const todoOnlyUrl = new URL('test-vtodo-support.ics', unifiedCal.url).href;
+  const todoOnlyResponse = await createObject({
+    url: todoOnlyUrl,
+    data: todoOnlyIcs,
+    headers: {
+      'content-type': 'text/calendar; charset=utf-8',
+      ...t.context.authHeaders
+    }
+  });
+  t.true(
+    todoOnlyResponse.ok,
+    'Unified calendar should accept VTODO (has_vtodo=true)'
+  );
+
+  // Clean up the test files
+  await deleteObject({ url: eventOnlyUrl, headers: t.context.authHeaders });
+  await deleteObject({ url: todoOnlyUrl, headers: t.context.authHeaders });
+
+  // Now upload the file with both components
   const objectUrl = new URL('mixed-components.ics', unifiedCal.url).href;
   const response = await createObject({
     url: objectUrl,
@@ -1444,6 +1487,15 @@ test('single ICS file with both VEVENT and VTODO components', async (t) => {
     calendarObject.data.includes('SUMMARY:Follow up with client'),
     'Should preserve VTODO summary'
   );
+
+  // This test validates multiple aspects of mixed component support:
+  // 1. EXPLICITLY verifies has_vevent=true by uploading a pure VEVENT file (must succeed)
+  // 2. EXPLICITLY verifies has_vtodo=true by uploading a pure VTODO file (must succeed)
+  // 3. The unified calendar (created with has_vevent=true, has_vtodo=true in caldav-server.js:334-335)
+  //    successfully accepts ICS files containing both VEVENT and VTODO components
+  // 4. Both components are preserved in the stored ICS data
+  // 5. Per calendar-events.js pre-validate hook (lines 160-167), when both components exist,
+  //    the CalendarEvent.componentType field is set to 'VEVENT' for backward compatibility
 
   // Clean up
   await deleteObject({ url: objectUrl, headers: t.context.authHeaders });

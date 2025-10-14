@@ -1434,21 +1434,9 @@ class CalDAV extends API {
     //
     if (calendar) return calendar; // safeguard
 
-    // Determine supported components based on calendar name/type
-    // Default: support both events and tasks
-    let has_vevent = true;
-    let has_vtodo = true;
-
-    // Task/reminder-only calendars (only if specifically named)
-    if (
-      name === 'DEFAULT_TASK_CALENDAR_NAME' ||
-      I18N_SET_REMINDERS.has(name) ||
-      I18N_SET_TASKS.has(name)
-    ) {
-      has_vevent = false; // Tasks only
-      has_vtodo = true;
-    }
-
+    // All calendars support both events and tasks (unified calendar approach)
+    // This ensures compatibility across all CalDAV clients (Apple, Thunderbird, etc.)
+    // and aligns with the default calendar creation behavior (see ensureDefaultCalendars)
     return Calendars.create({
       // db virtual helper
       instance: this,
@@ -1467,8 +1455,8 @@ class CalDAV extends API {
       url: config.urls.web,
       readonly: false,
       synctoken: `${config.urls.web}/ns/sync-token/1`,
-      has_vevent,
-      has_vtodo
+      has_vevent: true, // Support both events and tasks
+      has_vtodo: true
     });
   }
 
