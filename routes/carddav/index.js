@@ -84,7 +84,11 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
   if (!['PROPFIND', 'GET', 'PUT', 'DELETE'].includes(ctx.method))
     throw Boom.methodNotAllowed();
 
-  const { addressbook, contact } = ctx.params;
+  const { addressbook, contact: rawContact } = ctx.params;
+
+  // Normalize contact_id by removing .vcf extension if present
+  // macOS and other clients may or may not include the extension
+  const contact = rawContact.replace(/\.vcf$/i, '');
 
   // Find address book
   const addressBook = await AddressBooks.findOne(
@@ -126,10 +130,12 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         : null;
       const props = xmlHelpers.extractRequestedProps(xmlBody);
 
-      // Create response
+      // Create response - include .vcf extension for client compatibility
       const xml = xmlHelpers.getPropfindContactXML(
         {
-          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact}`,
+          href: `/dav/${
+            ctx.params.user
+          }/addressbooks/${addressbook}/${contact}${vcf(contact)}`,
           etag: contactObj.etag,
           content: contactObj.content
         },
@@ -397,7 +403,9 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
         for (const contact of contacts) {
           responses.push({
-            href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
+            href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+              contact.contact_id
+            }${vcf(contact.contact_id)}`,
             propstat: [
               {
                 props: [
@@ -876,10 +884,12 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
       return;
     }
 
-    // Get contact IDs from hrefs - preserve .vcf extension
+    // Get contact IDs from hrefs - normalize by removing .vcf extension
     const contactIds = hrefs.map((href) => {
       const parts = href.split('/');
-      return parts[parts.length - 1];
+      const filename = parts[parts.length - 1];
+      // Remove .vcf extension if present for consistent lookups
+      return filename.replace(/\.vcf$/i, '');
     });
 
     // Build query for specific contacts using actual model structure
@@ -957,7 +967,9 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
     );
 
     changes = modifiedContacts.map((contact) => ({
-      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
+      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+        contact.contact_id
+      }${vcf(contact.contact_id)}`,
       etag: contact.etag,
       vcard: contact.content,
       deleted: false
@@ -974,7 +986,9 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
     });
 
     changes = contacts.map((contact) => ({
-      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
+      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+        contact.contact_id
+      }${vcf(contact.contact_id)}`,
       etag: contact.etag,
       vcard: contact.content,
       deleted: false
