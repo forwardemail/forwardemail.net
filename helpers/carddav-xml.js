@@ -656,11 +656,52 @@ function getSyncCollectionXML(addressBook, changes, props) {
 }
 
 /**
+ * Validate vCard content before processing
+ * @param {string} vCardString - vCard string to validate
+ * @throws {Error} If vCard is invalid
+ */
+function validateVCard(vCardString) {
+  // Validate input type
+  if (typeof vCardString !== 'string') {
+    throw new TypeError('vCard input must be a string');
+  }
+
+  // Check size limit (1MB as advertised in max-resource-size)
+  if (vCardString.length > 1024 * 1024) {
+    throw new Error('vCard exceeds maximum size of 1MB');
+  }
+
+  // Validate basic vCard structure
+  if (!vCardString.includes('BEGIN:VCARD')) {
+    throw new Error('vCard must contain BEGIN:VCARD');
+  }
+
+  if (!vCardString.includes('END:VCARD')) {
+    throw new Error('vCard must contain END:VCARD');
+  }
+
+  // Validate VERSION property exists (required by RFC 6350)
+  if (!/^VERSION:[34]\.\d/m.test(vCardString)) {
+    throw new Error('vCard must contain valid VERSION property (3.0 or 4.0)');
+  }
+
+  // Validate FN property exists (required by RFC 6350)
+  if (!/^FN:/m.test(vCardString)) {
+    throw new Error('vCard must contain FN (Formatted Name) property');
+  }
+
+  return true;
+}
+
+/**
  * Parse vCard string into a JavaScript object (EXISTING FUNCTION - PRESERVED)
  * @param {string} vCardString - vCard string to parse
  * @returns {Object} - Parsed vCard as JavaScript object
  */
 function parseVCard(vCardString) {
+  // Validate before parsing
+  validateVCard(vCardString);
+
   const result = {};
   const lines = vCardString.split(/\r\n|\r|\n/);
   let currentKey = null;
@@ -740,5 +781,8 @@ module.exports = {
   getAddressbookPropfindXML,
 
   // Entity encoding function
-  encodeXMLEntities
+  encodeXMLEntities,
+
+  // vCard validation
+  validateVCard
 };

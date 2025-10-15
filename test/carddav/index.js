@@ -889,3 +889,286 @@ END:VCARD`;
     headers: t.context.authHeaders
   });
 });
+
+//
+// Tests for bug fixes
+//
+
+test('should reject invalid vCard (missing VERSION)', async (t) => {
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const invalidVCard = `BEGIN:VCARD
+FN:Invalid Contact
+EMAIL:invalid@example.com
+UID:invalid-uid
+END:VCARD`;
+
+  try {
+    await createVCard({
+      addressBook: addressBooks[0],
+      filename: 'invalid.vcf',
+      vCardString: invalidVCard,
+      headers: t.context.authHeaders
+    });
+    t.fail('Should have rejected vCard without VERSION');
+  } catch (err) {
+    t.is(err.response.status, 500);
+    t.true(err.response.data.includes('VERSION'));
+  }
+});
+
+test('should reject invalid vCard (missing FN)', async (t) => {
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const invalidVCard = `BEGIN:VCARD
+VERSION:3.0
+EMAIL:invalid@example.com
+UID:invalid-uid
+END:VCARD`;
+
+  try {
+    await createVCard({
+      addressBook: addressBooks[0],
+      filename: 'invalid2.vcf',
+      vCardString: invalidVCard,
+      headers: t.context.authHeaders
+    });
+    t.fail('Should have rejected vCard without FN');
+  } catch (err) {
+    t.is(err.response.status, 500);
+    t.true(err.response.data.includes('FN'));
+  }
+});
+
+test('should reject invalid vCard (missing BEGIN:VCARD)', async (t) => {
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const invalidVCard = `VERSION:3.0
+FN:Invalid Contact
+EMAIL:invalid@example.com
+UID:invalid-uid
+END:VCARD`;
+
+  try {
+    await createVCard({
+      addressBook: addressBooks[0],
+      filename: 'invalid3.vcf',
+      vCardString: invalidVCard,
+      headers: t.context.authHeaders
+    });
+    t.fail('Should have rejected vCard without BEGIN:VCARD');
+  } catch (err) {
+    t.is(err.response.status, 500);
+    t.true(err.response.data.includes('BEGIN:VCARD'));
+  }
+});
+
+test('should respect If-None-Match header when creating contact', async (t) => {
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  // Create a contact
+  const contactUrl = new URL('ifnonematch.vcf', addressBooks[0].url).href;
+  const createResponse = await createVCard({
+    addressBook: addressBooks[0],
+    filename: 'ifnonematch.vcf',
+    vCardString: SAMPLE_VCARD,
+    headers: t.context.authHeaders
+  });
+
+  t.is(createResponse.status, 201);
+
+  // Try to create it again with If-None-Match: *
+  try {
+    await createVCard({
+      addressBook: addressBooks[0],
+      filename: 'ifnonematch.vcf',
+      vCardString: SAMPLE_VCARD,
+      headers: {
+        ...t.context.authHeaders,
+        'If-None-Match': '*'
+      }
+    });
+    t.fail('Should have rejected due to If-None-Match: *');
+  } catch (err) {
+    t.is(err.response.status, 412); // Precondition Failed
+  }
+
+  // Clean up
+  await deleteVCard({
+    vCard: {
+      url: contactUrl
+    },
+    headers: t.context.authHeaders
+  });
+});
+
+test('PROPPATCH should update address book properties', async (t) => {
+  const axios = require('axios');
+
+  // Get address books
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const addressBook = addressBooks[0];
+  const originalName = addressBook.displayName;
+
+  // PROPPATCH to update displayname and description
+  const proppatchXml = `<?xml version="1.0" encoding="UTF-8"?>
+<d:propertyupdate xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  <d:set>
+    <d:prop>
+      <d:displayname>Updated Test Name</d:displayname>
+      <card:addressbook-description>Updated description via PROPPATCH</card:addressbook-description>
+    </d:prop>
+  </d:set>
+</d:propertyupdate>`;
+
+  const response = await axios({
+    method: 'PROPPATCH',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      ...t.context.authHeaders
+    },
+    data: proppatchXml
+  });
+
+  t.is(response.status, 207); // Multi-Status
+  t.true(response.data.includes('200 OK'));
+
+  // Verify the changes
+  const updatedAddressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const updatedBook = updatedAddressBooks.find(
+    (ab) => ab.url === addressBook.url
+  );
+  t.is(updatedBook.displayName, 'Updated Test Name');
+
+  // Restore original name
+  const restoreXml = `<?xml version="1.0" encoding="UTF-8"?>
+<d:propertyupdate xmlns:d="DAV:">
+  <d:set>
+    <d:prop>
+      <d:displayname>${originalName}</d:displayname>
+    </d:prop>
+  </d:set>
+</d:propertyupdate>`;
+
+  await axios({
+    method: 'PROPPATCH',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      ...t.context.authHeaders
+    },
+    data: restoreXml
+  });
+});
+
+test('sync-collection should return only modified contacts', async (t) => {
+  const axios = require('axios');
+
+  const addressBooks = await fetchAddressBooks({
+    account: t.context.account,
+    headers: t.context.authHeaders
+  });
+
+  const addressBook = addressBooks[0];
+
+  // Get initial sync token
+  const propfindResponse = await axios({
+    method: 'PROPFIND',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '0',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:propfind xmlns:d="DAV:">
+  <d:prop>
+    <d:sync-token/>
+  </d:prop>
+</d:propfind>`
+  });
+
+  // Extract sync token from response
+  const syncTokenMatch = propfindResponse.data.match(
+    /<d:sync-token>([^<]+)<\/d:sync-token>/
+  );
+  const initialSyncToken = syncTokenMatch ? syncTokenMatch[1] : null;
+
+  t.truthy(initialSyncToken);
+
+  // Wait a bit to ensure timestamp difference
+  await new Promise((resolve) => {
+    setTimeout(resolve, 100);
+  });
+
+  // Create a new contact
+  const contactUrl = new URL('sync-test.vcf', addressBook.url).href;
+  await createVCard({
+    addressBook,
+    filename: 'sync-test.vcf',
+    vCardString: SAMPLE_VCARD,
+    headers: t.context.authHeaders
+  });
+
+  // Perform sync-collection with the old token
+  const syncResponse = await axios({
+    method: 'REPORT',
+    url: addressBook.url,
+    headers: {
+      'Content-Type': 'application/xml',
+      Depth: '1',
+      ...t.context.authHeaders
+    },
+    data: `<?xml version="1.0" encoding="UTF-8"?>
+<d:sync-collection xmlns:d="DAV:" xmlns:card="urn:ietf:params:xml:ns:carddav">
+  <d:sync-token>${initialSyncToken}</d:sync-token>
+  <d:sync-level>1</d:sync-level>
+  <d:prop>
+    <d:getetag/>
+    <card:address-data/>
+  </d:prop>
+</d:sync-collection>`
+  });
+
+  t.is(syncResponse.status, 207);
+
+  // Response should contain only the newly created contact
+  t.true(syncResponse.data.includes('sync-test.vcf'));
+
+  // Verify new sync token is included
+  t.true(syncResponse.data.includes('<d:sync-token>'));
+
+  // Clean up
+  const contacts = await fetchVCards({
+    addressBook,
+    headers: t.context.authHeaders
+  });
+  const createdContact = contacts.find((c) => c.url === contactUrl);
+  if (createdContact) {
+    await deleteVCard({
+      vCard: createdContact,
+      headers: t.context.authHeaders
+    });
+  }
+});

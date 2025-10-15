@@ -40,7 +40,7 @@ async function ensureDefaultAddressBook(ctx) {
     // TODO: isn't this automatic (?)
     // TODO: if we need to change /default here (?)
     // TODO: fix port if 443 or 80 then don't render it (?)
-    url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/dav/${ctx.state.session.user.email}/addressbooks/default/`,
+    url: `${ctx.instance.config.protocol}://${ctx.instance.config.host}:${ctx.instance.config.port}/dav/${ctx.state.session.user.username}/addressbooks/default/`,
     // TODO: isn't this automatic (?)
     prodId: `//forwardemail.net//carddav//EN`
   });
