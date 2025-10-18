@@ -30,8 +30,6 @@ const logger = require('#helpers/logger');
 const setupMongoose = require('#helpers/setup-mongoose');
 const monitorServer = require('#helpers/monitor-server');
 
-monitorServer();
-
 const IP_ADDRESS = ip.address();
 
 const graceful = new Graceful({
@@ -61,8 +59,11 @@ function isProcessRunning(pid) {
 (async () => {
   let lockAcquired = false;
   let pm2Connected = false;
+  let monitorInterval = null;
 
   try {
+    // Start monitoring only after we're sure we'll proceed
+    monitorInterval = monitorServer();
     // Try to acquire lock
     try {
       // Check if lock file exists
@@ -81,10 +82,10 @@ function isProcessRunning(pid) {
             shouldRemoveLock = true;
             removalReason = 'invalid PID in lock file';
           } else if (isProcessRunning(lockPid)) {
-            // Process is still running, check if lock is stale (older than 2 hours)
+            // Process is still running, check if lock is stale (older than 30 minutes)
             const stats = fs.statSync(LOCK_FILE);
             const lockAge = Date.now() - stats.mtimeMs;
-            if (lockAge > ms('2h')) {
+            if (lockAge > ms('30m')) {
               shouldRemoveLock = true;
               removalReason = `lock is stale (age: ${prettyMilliseconds(
                 lockAge
@@ -94,7 +95,10 @@ function isProcessRunning(pid) {
               await logger.info(
                 `Another instance (PID ${lockPid}) is already running, exiting gracefully`
               );
-              return;
+              // Clear monitor interval before exiting
+              if (monitorInterval) clearInterval(monitorInterval);
+              if (parentPort) parentPort.postMessage('done');
+              else process.exit(0);
             }
           } else {
             shouldRemoveLock = true;
@@ -121,7 +125,10 @@ function isProcessRunning(pid) {
         await logger.info(
           'Another instance is already running (race condition), exiting gracefully'
         );
-        return;
+        // Clear monitor interval before exiting
+        if (monitorInterval) clearInterval(monitorInterval);
+        if (parentPort) parentPort.postMessage('done');
+        else process.exit(0);
       }
 
       throw err;
@@ -136,51 +143,80 @@ function isProcessRunning(pid) {
     //
     // <https://github.com/Unitech/pm2/issues/5837>
     //
-    await new Promise((resolve, reject) => {
-      pm2.connect((err) => {
-        if (err) return reject(err);
-        pm2Connected = true;
-
-        pm2.list(async (err, list) => {
+    await Promise.race([
+      new Promise((resolve, reject) => {
+        pm2.connect((err) => {
           if (err) return reject(err);
-          if (list.length === 0)
-            return reject(
-              new TypeError(
-                `PM2 list empty on ${os.hostname()} (${IP_ADDRESS})`
+          pm2Connected = true;
+
+          pm2.list(async (err, list) => {
+            if (err) return reject(err);
+            if (list.length === 0)
+              return reject(
+                new TypeError(
+                  `PM2 list empty on ${os.hostname()} (${IP_ADDRESS})`
+                )
+              );
+
+            const bad = [];
+            const reload = [];
+
+            for (const p of list) {
+              if (p.name === 'pm2-logrotate') continue;
+
+              // TODO: an improvement would be to read the `ecosystem-xyz.json` file to determine the processes necessary
+              if (
+                p.pm2_env.status !== 'online' ||
+                Date.now() - p.pm2_env.pm_uptime < ms('15m')
               )
-            );
+                bad.push(p);
 
-          const bad = [];
-          const reload = [];
+              // if any have "errored" status then attempt to reload them
+              if (['stopped', 'errored'].includes(p.pm2_env.status))
+                reload.push(p);
+            }
 
-          for (const p of list) {
-            if (p.name === 'pm2-logrotate') continue;
-
-            // TODO: an improvement would be to read the `ecosystem-xyz.json` file to determine the processes necessary
-            if (
-              p.pm2_env.status !== 'online' ||
-              Date.now() - p.pm2_env.pm_uptime < ms('15m')
-            )
-              bad.push(p);
-
-            // if any have "errored" status then attempt to reload them
-            if (['stopped', 'errored'].includes(p.pm2_env.status))
-              reload.push(p);
-          }
-
-          if (reload.length > 0) {
-            for (const p of reload) {
-              await new Promise((resolve, reject) => {
-                pm2.reload(p.name, (err) => {
-                  if (err) return reject(err);
-                  resolve();
+            if (reload.length > 0) {
+              for (const p of reload) {
+                await new Promise((resolve, reject) => {
+                  pm2.reload(p.name, (err) => {
+                    if (err) return reject(err);
+                    resolve();
+                  });
                 });
-              });
 
-              // reloaded process message
-              const subject = `PM2 reloaded ${
-                p.name
-              } on ${os.hostname()} (${IP_ADDRESS})`;
+                // reloaded process message
+                const subject = `PM2 reloaded ${
+                  p.name
+                } on ${os.hostname()} (${IP_ADDRESS})`;
+
+                await emailHelper({
+                  template: 'alert',
+                  message: {
+                    to: config.alertsEmail,
+                    subject
+                  },
+                  locals: {
+                    message: subject
+                  }
+                });
+              }
+            }
+
+            if (bad.length > 0) {
+              const subject = `PM2 on ${os.hostname()} (${IP_ADDRESS}) has ${
+                bad.length
+              } bad process${bad.length > 1 ? 'es' : ''}`;
+              const message = `<ul class="mb-0 text-left"><li>${bad
+                .map(
+                  (p) =>
+                    `${p.name} with status "${
+                      p.pm2_env.status
+                    }" and uptime of ${prettyMilliseconds(
+                      Date.now() - p.pm2_env.pm_uptime
+                    )}`
+                )
+                .join('</li><li>')}</li><ul>`;
 
               await emailHelper({
                 template: 'alert',
@@ -189,43 +225,22 @@ function isProcessRunning(pid) {
                   subject
                 },
                 locals: {
-                  message: subject
+                  message
                 }
               });
             }
-          }
 
-          if (bad.length > 0) {
-            const subject = `PM2 on ${os.hostname()} (${IP_ADDRESS}) has ${
-              bad.length
-            } bad process${bad.length > 1 ? 'es' : ''}`;
-            const message = `<ul class="mb-0 text-left"><li>${bad
-              .map(
-                (p) =>
-                  `${p.name} with status "${
-                    p.pm2_env.status
-                  }" and uptime of ${prettyMilliseconds(
-                    Date.now() - p.pm2_env.pm_uptime
-                  )}`
-              )
-              .join('</li><li>')}</li><ul>`;
-
-            await emailHelper({
-              template: 'alert',
-              message: {
-                to: config.alertsEmail,
-                subject
-              },
-              locals: {
-                message
-              }
-            });
-          }
-
-          resolve();
+            resolve();
+          });
         });
-      });
-    });
+      }),
+      new Promise((_, reject) => {
+        setTimeout(
+          () => reject(new Error('PM2 operations timed out after 10 minutes')),
+          ms('10m')
+        );
+      })
+    ]);
   } catch (err) {
     await logger.error(err);
 
@@ -244,6 +259,9 @@ function isProcessRunning(pid) {
       }
     });
   } finally {
+    // Clear monitor interval
+    if (monitorInterval) clearInterval(monitorInterval);
+
     // Always disconnect PM2 if connected
     if (pm2Connected) {
       await new Promise((resolve) => {
