@@ -54,7 +54,10 @@ const email = new Email({
       pass: env.SMTP_TRANSPORT_PASS
     },
     logger,
-    debug: boolean(env.TRANSPORT_DEBUG)
+    debug: boolean(env.TRANSPORT_DEBUG),
+    connectionTimeout: 30000, // 30 seconds to establish connection
+    greetingTimeout: 30000, // 30 seconds to wait for greeting
+    socketTimeout: 60000 // 60 seconds for socket inactivity
   })
 });
 
