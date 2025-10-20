@@ -89,6 +89,18 @@ class SMTP {
       needsUpgrade: secure,
       authMethods: ['PLAIN', 'LOGIN'], // XOAUTH2, CRAM-MD5
 
+      // TLS version control
+      ...(env.SMTP_TLS_MIN_VERSION
+        ? {
+            minVersion: env.SMTP_TLS_MIN_VERSION
+          }
+        : {}),
+      ...(env.SMTP_TLS_MAX_VERSION
+        ? {
+            maxVersion: env.SMTP_TLS_MAX_VERSION
+          }
+        : {}),
+
       // just in case smtp-server changes default and patch semver bump (unlikely but safeguard)
       allowInsecureAuth:
         config.env === 'production' ? false : env.SMTP_ALLOW_INSECURE_AUTH,

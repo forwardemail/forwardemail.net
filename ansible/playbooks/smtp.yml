@@ -79,6 +79,11 @@
         rule: allow
         port: 2465
         proto: tcp
+    - name: Allow port 2355
+      ufw:
+        rule: allow
+        port: 2355
+        proto: tcp
     - name: Allow http
       ufw:
         rule: allow
