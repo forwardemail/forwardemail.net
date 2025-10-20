@@ -4,6 +4,7 @@
  */
 
 const fs = require('node:fs');
+const tls = require('node:tls');
 
 const RateLimiter = require('async-ratelimiter');
 const bytes = require('@forwardemail/bytes');
@@ -28,10 +29,17 @@ const isLockingError = require('#helpers/is-locking-error');
 
 const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 
+// Force enable TLS 1.0 (if node_args approach is not used, safety net)
+if (env.SMTP_TLS_MIN_VERSION === 'TLSv1') {
+  tls.DEFAULT_MIN_VERSION = 'TLSv1';
+}
+
 class SMTP {
   constructor(
     options = {},
-    secure = env.SMTP_PORT === 465 || env.SMTP_PORT === 2465 || env.SMTP_PORT === 2355
+    secure = env.SMTP_PORT === 465 ||
+      env.SMTP_PORT === 2465 ||
+      env.SMTP_PORT === 2355
   ) {
     this.client = options.client;
 
