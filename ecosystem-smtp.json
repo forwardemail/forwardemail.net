@@ -93,7 +93,7 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
-      "node_args": "--tls-min-v1.0",
+      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2455,
@@ -109,7 +109,7 @@
       "wait_ready": true,
       "instances": "1",
       "pmx": false,
-      "node_args": "--tls-min-v1.0",
+      "node_args": "--tls-min-v1.0 --tls-cipher-list=DEFAULT@SECLEVEL=0",
       "env_production": {
         "NODE_ENV": "production",
         "SMTP_PORT": 2555,
