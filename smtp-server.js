@@ -31,7 +31,7 @@ const MAX_BYTES = bytes(env.SMTP_MESSAGE_MAX_SIZE);
 class SMTP {
   constructor(
     options = {},
-    secure = env.SMTP_PORT === 465 || env.SMTP_PORT === 2465
+    secure = env.SMTP_PORT === 465 || env.SMTP_PORT === 2465 || env.SMTP_PORT === 2355
   ) {
     this.client = options.client;
 
