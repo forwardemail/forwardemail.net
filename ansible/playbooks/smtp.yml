@@ -79,10 +79,17 @@
         rule: allow
         port: 2465
         proto: tcp
-    - name: Allow port 2355
+    # tls 1.0 with SSL
+    - name: Allow port 2455
       ufw:
         rule: allow
-        port: 2355
+        port: 2455
+        proto: tcp
+    # tls 1.0 with STARTTLS
+    - name: Allow port 2555
+      ufw:
+        rule: allow
+        port: 2555
         proto: tcp
     - name: Allow http
       ufw:

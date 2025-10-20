@@ -85,7 +85,23 @@
       }
     },
     {
-      "name": "smtp-tls-2355",
+      "name": "smtp-tls-2455",
+      "script": "smtp.js",
+      "max_restarts": 999,
+      "max_memory_restart": "8G",
+      "exec_mode": "fork",
+      "wait_ready": true,
+      "instances": "1",
+      "pmx": false,
+      "node_args": "--tls-min-v1.0",
+      "env_production": {
+        "NODE_ENV": "production",
+        "SMTP_PORT": 2555,
+        "SMTP_TLS_MIN_VERSION": "TLSv1"
+      }
+    },
+    {
+      "name": "smtp-ssl-2555",
       "script": "smtp.js",
       "max_restarts": 999,
       "max_memory_restart": "8G",

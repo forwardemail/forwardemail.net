@@ -39,7 +39,7 @@ class SMTP {
     options = {},
     secure = env.SMTP_PORT === 465 ||
       env.SMTP_PORT === 2465 ||
-      env.SMTP_PORT === 2355
+      env.SMTP_PORT === 2455
   ) {
     this.client = options.client;
 
@@ -97,19 +97,7 @@ class SMTP {
       needsUpgrade: secure,
       authMethods: ['PLAIN', 'LOGIN'], // XOAUTH2, CRAM-MD5
 
-      // TLS version control
-      ...(env.SMTP_TLS_MIN_VERSION
-        ? {
-            minVersion: env.SMTP_TLS_MIN_VERSION
-          }
-        : {}),
-      ...(env.SMTP_TLS_MAX_VERSION
-        ? {
-            maxVersion: env.SMTP_TLS_MAX_VERSION
-          }
-        : {}),
-
-      // just in case smtp-server changes default and patch semver bump (unlikely but safeguard)
+      // just in case smtp-server changes default and patch semver bump (unlikely but safeguard )
       allowInsecureAuth:
         config.env === 'production' ? false : env.SMTP_ALLOW_INSECURE_AUTH,
       authOptional: false,
@@ -117,14 +105,27 @@ class SMTP {
       // <https://github.com/nodemailer/wildduck/issues/563>
       // hide8BITMIME: true,
 
-      // keys
+      // keys and TLS options together
       ...(config.env === 'production'
         ? {
             key: fs.readFileSync(env.WEB_SSL_KEY_PATH),
             cert: fs.readFileSync(env.WEB_SSL_CERT_PATH),
-            ca: fs.readFileSync(env.WEB_SSL_CA_PATH)
+            ca: fs.readFileSync(env.WEB_SSL_CA_PATH),
+            ...(env.SMTP_TLS_MIN_VERSION
+              ? { minVersion: env.SMTP_TLS_MIN_VERSION }
+              : {}),
+            ...(env.SMTP_TLS_MAX_VERSION
+              ? { maxVersion: env.SMTP_TLS_MAX_VERSION }
+              : {})
           }
-        : {})
+        : {
+            ...(env.SMTP_TLS_MIN_VERSION
+              ? { minVersion: env.SMTP_TLS_MIN_VERSION }
+              : {}),
+            ...(env.SMTP_TLS_MAX_VERSION
+              ? { maxVersion: env.SMTP_TLS_MAX_VERSION }
+              : {})
+          })
     });
 
     // override logger
