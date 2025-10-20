@@ -85,7 +85,7 @@
       }
     },
     {
-      "name": "smtp-tls-2455",
+      "name": "smtp-ssl-2455",
       "script": "smtp.js",
       "max_restarts": 999,
       "max_memory_restart": "8G",
@@ -101,7 +101,7 @@
       }
     },
     {
-      "name": "smtp-ssl-2555",
+      "name": "smtp-tls-2555",
       "script": "smtp.js",
       "max_restarts": 999,
       "max_memory_restart": "8G",
