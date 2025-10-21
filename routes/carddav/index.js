@@ -84,7 +84,11 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
   if (!['PROPFIND', 'GET', 'PUT', 'DELETE'].includes(ctx.method))
     throw Boom.methodNotAllowed();
 
-  const { addressbook, contact } = ctx.params;
+  const { addressbook, contact: rawContact } = ctx.params;
+
+  // Normalize contact_id by removing .vcf extension if present
+  // macOS and other clients may or may not include the extension
+  const contact = rawContact.replace(/\.vcf$/i, '');
 
   // Find address book
   const addressBook = await AddressBooks.findOne(
@@ -126,10 +130,12 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
         : null;
       const props = xmlHelpers.extractRequestedProps(xmlBody);
 
-      // Create response
+      // Create response - include .vcf extension for client compatibility
       const xml = xmlHelpers.getPropfindContactXML(
         {
-          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact}`,
+          href: `/dav/${
+            ctx.params.user
+          }/addressbooks/${addressbook}/${contact}${vcf(contact)}`,
           etag: contactObj.etag,
           content: contactObj.content
         },
@@ -171,7 +177,7 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       // Get vCard content
       const vCardContent = ctx.request.body.toString();
 
-      // Parse vCard to extract properties
+      // Parse vCard to extract properties (this also validates the vCard)
       const vCard = xmlHelpers.parseVCard(vCardContent);
 
       // Check if contact already exists
@@ -183,6 +189,14 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
           contact_id: contact
         }
       );
+
+      // Check If-None-Match header (RFC 2616 Section 14.26)
+      const ifNoneMatch = ctx.request.headers['if-none-match'];
+      if (ifNoneMatch === '*' && existingContact) {
+        throw Boom.preconditionFailed(
+          ctx.translateError('RESOURCE_ALREADY_EXISTS')
+        );
+      }
 
       // Generate ETag
       const newEtag = xmlHelpers.generateETag(vCardContent);
@@ -320,7 +334,9 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
 });
 
 davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
-  if (!['PROPFIND', 'MKCOL', 'DELETE', 'REPORT'].includes(ctx.method))
+  if (
+    !['PROPFIND', 'MKCOL', 'DELETE', 'REPORT', 'PROPPATCH'].includes(ctx.method)
+  )
     throw Boom.methodNotAllowed();
 
   const { addressbook } = ctx.params;
@@ -387,7 +403,9 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
 
         for (const contact of contacts) {
           responses.push({
-            href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
+            href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+              contact.contact_id
+            }${vcf(contact.contact_id)}`,
             propstat: [
               {
                 props: [
@@ -517,6 +535,117 @@ davRouter.all('/:user/addressbooks/:addressbook', async (ctx) => {
         throw err;
       }
 
+      break;
+    }
+
+    case 'PROPPATCH': {
+      // Parse XML request body
+      const xmlBody = ctx.request.body
+        ? await xmlHelpers.parseXML(ctx.request.body.toString())
+        : null;
+
+      if (!xmlBody || !xmlBody.propertyupdate)
+        throw Boom.badRequest(ctx.translateError('INVALID_XML_REQUEST_BODY'));
+
+      // db virtual helper
+      addressBook.instance = ctx.instance;
+      addressBook.session = ctx.state.session;
+      addressBook.isNew = false;
+
+      // Track which properties were successfully updated
+      const updatedProps = [];
+      const failedProps = [];
+
+      // Handle set operations
+      if (xmlBody.propertyupdate.set) {
+        const setOperations = Array.isArray(xmlBody.propertyupdate.set)
+          ? xmlBody.propertyupdate.set
+          : [xmlBody.propertyupdate.set];
+
+        for (const setOp of setOperations) {
+          if (!setOp.prop) continue;
+
+          const props = setOp.prop;
+
+          // Update displayname
+          if (props.displayname) {
+            addressBook.name = props.displayname;
+            updatedProps.push('displayname');
+          }
+
+          // Update addressbook-description
+          if (props['addressbook-description']) {
+            addressBook.description = props['addressbook-description'];
+            updatedProps.push('addressbook-description');
+          }
+
+          // Update color (if provided)
+          if (props['calendar-color'] || props.color) {
+            addressBook.color = props['calendar-color'] || props.color;
+            updatedProps.push('calendar-color');
+          }
+        }
+      }
+
+      // Handle remove operations
+      if (xmlBody.propertyupdate.remove) {
+        const removeOperations = Array.isArray(xmlBody.propertyupdate.remove)
+          ? xmlBody.propertyupdate.remove
+          : [xmlBody.propertyupdate.remove];
+
+        for (const removeOp of removeOperations) {
+          if (!removeOp.prop) continue;
+
+          const props = removeOp.prop;
+
+          // Remove description
+          if (props['addressbook-description']) {
+            addressBook.description = '';
+            updatedProps.push('addressbook-description');
+          }
+        }
+      }
+
+      // Save changes
+      if (updatedProps.length > 0) {
+        await addressBook.save();
+
+        // Update sync token
+        addressBook.synctoken = `${
+          config.urls.web
+        }/ns/sync-token/${Date.now()}`;
+        await addressBook.save();
+      }
+
+      // Build response
+      const responses = [
+        {
+          href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/`,
+          propstat: []
+        }
+      ];
+
+      // Add success propstat if there are updated props
+      if (updatedProps.length > 0) {
+        responses[0].propstat.push({
+          props: updatedProps.map((name) => ({ name, value: '' })),
+          status: '200 OK'
+        });
+      }
+
+      // Add failed propstat if there are failed props
+      if (failedProps.length > 0) {
+        responses[0].propstat.push({
+          props: failedProps.map((name) => ({ name, value: '' })),
+          status: '403 Forbidden'
+        });
+      }
+
+      const xml = xmlHelpers.getMultistatusXML(responses);
+
+      ctx.type = 'application/xml';
+      ctx.status = 207;
+      ctx.body = xml;
       break;
     }
 
@@ -755,10 +884,12 @@ async function handleAddressbookMultiget(ctx, xmlBody, addressBook) {
       return;
     }
 
-    // Get contact IDs from hrefs - preserve .vcf extension
+    // Get contact IDs from hrefs - normalize by removing .vcf extension
     const contactIds = hrefs.map((href) => {
       const parts = href.split('/');
-      return parts[parts.length - 1];
+      const filename = parts[parts.length - 1];
+      // Remove .vcf extension if present for consistent lookups
+      return filename.replace(/\.vcf$/i, '');
     });
 
     // Build query for specific contacts using actual model structure
@@ -802,8 +933,15 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
 
   // Extract sync token
   let syncToken = null;
+  let syncTimestamp = null;
   if (xmlBody['sync-collection']['sync-token']) {
     syncToken = xmlBody['sync-collection']['sync-token'];
+
+    // Parse timestamp from sync token (format: http://domain.com/ns/sync-token/1234567890)
+    const match = syncToken.match(/\/sync-token\/(\d+)$/);
+    if (match && match[1]) {
+      syncTimestamp = new Date(Number.parseInt(match[1], 10));
+    }
   }
 
   // Extract props
@@ -817,34 +955,47 @@ async function handleSyncCollection(ctx, xmlBody, addressBook) {
   // Get changes since sync token
   let changes = [];
 
-  if (syncToken) {
-    // TODO: Implement proper sync token handling
-    // For now, just return all contacts
-    const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
-      address_book: addressBook._id
-    });
+  if (syncTimestamp && !Number.isNaN(syncTimestamp.getTime())) {
+    // Return only contacts modified after the sync token timestamp
+    const modifiedContacts = await Contacts.find(
+      ctx.instance,
+      ctx.state.session,
+      {
+        address_book: addressBook._id,
+        updated_at: { $gt: syncTimestamp }
+      }
+    );
 
-    changes = contacts.map((contact) => ({
-      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
+    changes = modifiedContacts.map((contact) => ({
+      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+        contact.contact_id
+      }${vcf(contact.contact_id)}`,
       etag: contact.etag,
       vcard: contact.content,
       deleted: false
     }));
+
+    // TODO: Track deleted contacts
+    // For now, we don't track deletions separately
+    // In a full implementation, you'd need a "deleted_contacts" table
+    // or a soft-delete flag with deleted_at timestamp
   } else {
-    // If no sync token, return all contacts
+    // If no sync token or invalid token, return all contacts (initial sync)
     const contacts = await Contacts.find(ctx.instance, ctx.state.session, {
       address_book: addressBook._id
     });
 
     changes = contacts.map((contact) => ({
-      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${contact.contact_id}`,
+      href: `/dav/${ctx.params.user}/addressbooks/${addressbook}/${
+        contact.contact_id
+      }${vcf(contact.contact_id)}`,
       etag: contact.etag,
       vcard: contact.content,
       deleted: false
     }));
   }
 
-  // Generate XML response
+  // Generate XML response with updated sync token
   const xml = xmlHelpers.getSyncCollectionXML(addressBook, changes, props);
 
   ctx.type = 'application/xml';
