@@ -10,6 +10,7 @@ const clamp = require('lodash/clamp');
 const clone = require('lodash/clone');
 const compact = require('lodash/compact');
 const defaultsDeep = require('lodash/defaultsDeep');
+const difference = require('lodash/difference');
 const escape = require('lodash/escape');
 const escapeRegExp = require('lodash/escapeRegExp');
 const extend = require('lodash/extend');
@@ -62,6 +63,7 @@ module.exports = {
   clone,
   compact,
   defaultsDeep,
+  difference,
   escape,
   escapeRegExp,
   extend,
