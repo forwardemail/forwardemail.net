@@ -545,6 +545,11 @@ async function getDatabase(
 
     // migrate schema
     // TODO: add p-timeout to the client.get calls below
+    //
+    // temporary fix remove this later (currently makes things very slow)
+    //
+    migrateCheck = true;
+
     if (!migrateCheck) {
       try {
         await instance.client.set(
