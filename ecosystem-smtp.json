@@ -7,7 +7,7 @@
       "max_memory_restart": "8G",
       "exec_mode": "fork",
       "wait_ready": true,
-      "instances": "1",
+      "instances": "3",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",
@@ -63,7 +63,7 @@
       "max_memory_restart": "8G",
       "exec_mode": "fork",
       "wait_ready": true,
-      "instances": "1",
+      "instances": "3",
       "pmx": false,
       "env_production": {
         "NODE_ENV": "production",

@@ -15,7 +15,7 @@ const env = require('#config/env');
 const logger = require('#helpers/logger');
 const setupPragma = require('#helpers/setup-pragma');
 
-// <https://www.sqlite.org/pragma.html#pragma_table_list>
+// https://www.sqlite.org/pragma.html#pragma_table_list
 function hasFTS5Already(db, table) {
   // [
   //   {
@@ -79,7 +79,7 @@ async function migrateSchema(instance, db, session, tables) {
   const indexList = {};
 
   // attempt to use knex
-  // <https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/69>
+  // https://github.com/m4heshd/better-sqlite3-multiple-ciphers/issues/69
 
   //
   // this is too verbose so we're just giving it noops for now
@@ -129,7 +129,7 @@ async function migrateSchema(instance, db, session, tables) {
     log,
     useNullAsDefault: true,
     pool: {
-      // <https://knexjs.org/faq/recipes.html#db-access-using-sqlite-and-sqlcipher>
+      // https://knexjs.org/faq/recipes.html#db-access-using-sqlite-and-sqlcipher
       async afterCreate(db, fn) {
         try {
           await setupPragma(db, session);
@@ -150,7 +150,7 @@ async function migrateSchema(instance, db, session, tables) {
           //   }
           // ]
           //
-          // <https://www.sqlite.org/pragma.html#pragma_index_list>
+          // https://www.sqlite.org/pragma.html#pragma_index_list
           //
           // we do this in advance in order to add missing indices if and only if needed
           //
@@ -177,7 +177,7 @@ async function migrateSchema(instance, db, session, tables) {
   const errors = [];
   const commands = [];
   for (const table of Object.keys(tables)) {
-    // <https://github.com/knex/knex/issues/360#issuecomment-1692481083>
+    // https://github.com/knex/knex/issues/360#issuecomment-1692481083
 
     const hasTable = await inspector.hasTable(table);
     if (!hasTable) {
@@ -220,7 +220,7 @@ async function migrateSchema(instance, db, session, tables) {
     //       which previously caused NOT NULL constraint errors
     //       (and we could have done a workaround to set a default value, e.g. '')
     //       (however newer version of SQLite - which we use - support dropping columns)
-    //       <https://stackoverflow.com/a/66399224>
+    //       https://stackoverflow.com/a/66399224
     //
     for (const key of Object.keys(columnInfoByKey)) {
       const column = columnInfoByKey[key];
@@ -228,6 +228,24 @@ async function migrateSchema(instance, db, session, tables) {
       // ensure mapping exists, otherwise remove it
       if (tables[table].mapping[key]) continue;
       db.exec(`ALTER TABLE ${table} DROP COLUMN ${key}`);
+    }
+
+    //
+    // get a list of existing and expected columns
+    //
+    const existingColumns = columnInfo.map((c) => c.name);
+    const expectedColumns = Object.keys(tables[table].mapping);
+
+    //
+    // if we are missing columns, then we need to add them
+    //
+    const missingColumns = _.difference(expectedColumns, existingColumns);
+    if (missingColumns.length > 0) {
+      for (const key of missingColumns) {
+        if (tables[table].mapping[key].alterStatement) {
+          commands.push(tables[table].mapping[key].alterStatement);
+        }
+      }
     }
 
     for (const key of Object.keys(tables[table].mapping)) {
@@ -293,8 +311,8 @@ async function migrateSchema(instance, db, session, tables) {
       // NOTE: sqlite does not support altering data types
       //       (so manual migration would be required)
       //       (e.g. which we would write to rename the col, add the proper one, then migrate the data)
-      //       <https://stackoverflow.com/a/2083562>
-      //       <https://sqlite.org/omitted.html>
+      //       https://stackoverflow.com/a/2083562
+      //       https://sqlite.org/omitted.html
       //
       // TODO: therefore if any of these changed from the mapping value
       // then we need to log a code bug error and throw it
@@ -330,7 +348,7 @@ async function migrateSchema(instance, db, session, tables) {
 
   //
   // NOTE: how do you access raw db knex connection (?)
-  // <https://github.com/knex/knex/issues/5720>
+  // https://github.com/knex/knex/issues/5720
   //
   await knexDatabase.destroy();
 
