@@ -201,6 +201,9 @@ const CalendarEvents = new mongoose.Schema(
 
 // TODO: test that timezone in VCALENDAR works properly
 
+// Composite index for efficient querying of non-deleted events per calendar
+CalendarEvents.index({ calendar: 1, deleted_at: 1 });
+
 CalendarEvents.plugin(sqliteVirtualDB);
 CalendarEvents.plugin(validationErrorTransform);
 
