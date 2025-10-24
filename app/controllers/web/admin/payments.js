@@ -91,8 +91,18 @@ async function list(ctx) {
     }
   }
 
-  const results = await Payments.aggregate([
+  // OPTIMIZATION: Get count separately (faster than $facet)
+  // This avoids counting after the expensive $lookup
+  const itemCount = await Payments.countDocuments(query);
+
+  // OPTIMIZATION: Paginate FIRST, then join
+  // This dramatically reduces the number of $lookup operations
+  const payments = await Payments.aggregate([
     { $match: query },
+    { $sort },
+    { $skip: ctx.paginate.skip },
+    { $limit: ctx.paginate.limit || 50 },
+    // Now $lookup only happens on the paginated subset (e.g., 50 records instead of 100,000)
     {
       $lookup: {
         from: 'users',
@@ -108,25 +118,10 @@ async function list(ctx) {
       $addFields: {
         user: { $arrayElemAt: ['$user', 0] } // More efficient than $unwind
       }
-    },
-    {
-      $facet: {
-        data: [
-          { $sort },
-          { $skip: ctx.paginate.skip },
-          { $limit: ctx.paginate.limit || 50 }
-        ],
-        count: [{ $count: 'count' }]
-      }
     }
   ]);
 
-  const payments = results[0].data;
-  const itemCount = results[0].count;
-
-  const pageCount = Math.ceil(
-    (itemCount[0]?.count || 0) / (ctx.paginate.limit || 50)
-  );
+  const pageCount = Math.ceil(itemCount / (ctx.paginate.limit || 50));
 
   if (
     ctx.accepts('html') &&
@@ -135,7 +130,7 @@ async function list(ctx) {
     return ctx.render('admin/payments', {
       payments,
       pageCount,
-      itemCount: itemCount[0]?.count || 0,
+      itemCount,
       pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
     });
   }
@@ -143,7 +138,7 @@ async function list(ctx) {
   const table = await ctx.render('admin/payments/_table', {
     payments,
     pageCount,
-    itemCount: itemCount[0]?.count || 0,
+    itemCount,
     pages: paginate.getArrayPages(ctx)(6, pageCount, ctx.query.page)
   });
 

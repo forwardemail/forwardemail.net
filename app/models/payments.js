@@ -544,6 +544,9 @@ Payments.index({ paypal_transaction_id: 1 }); // PayPal lookup
 Payments.index({ currency: 1 }); // Currency filtering
 Payments.index({ method: 1 }); // Method filtering
 
+// Compound index for user lookup with sorting (admin payments list optimization)
+Payments.index({ user: 1, created_at: -1 }); // User payments with default sort
+
 Payments.plugin(mongooseCommonPlugin, {
   object: 'payment',
   defaultLocale: i18n.config.defaultLocale
