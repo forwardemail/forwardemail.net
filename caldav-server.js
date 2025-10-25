@@ -1715,14 +1715,13 @@ class CalDAV extends API {
 
   async getEventsForCalendar(
     ctx,
-    { calendarId, principalId, user, fullData, showDeleted, limit }
+    { calendarId, principalId, user, fullData, showDeleted }
   ) {
     ctx.logger.debug('getEventsForCalendar', {
       calendarId,
       principalId,
       user,
-      fullData,
-      limit
+      fullData
     });
 
     const calendar = await this.getCalendar(ctx, {
@@ -1736,28 +1735,14 @@ class CalDAV extends API {
         ctx.translateError('CALENDAR_DOES_NOT_EXIST')
       );
 
-    // Build query to filter deleted events at database level
-    const query = {
+    let events = await CalendarEvents.find(this, ctx.state.session, {
       calendar: calendar._id
-    };
+    });
 
-    // Filter out deleted events at DB level for performance
-    if (!showDeleted) {
-      query.deleted_at = null;
-    }
+    // TODO: improve this with search directly on sql
+    if (!showDeleted) events = events.filter((e) => !_.isDate(e.deleted_at));
 
-    // Apply limit if specified (default to 10000 to prevent massive queries)
-    const maxLimit = limit || 10000;
-
-    const events = await CalendarEvents.find(
-      this,
-      ctx.state.session,
-      query,
-      {},
-      { sort: { eventId: 1 }, limit: maxLimit }
-    );
-
-    ctx.logger.debug('events', { count: events.length, limit: maxLimit });
+    ctx.logger.debug('events', { events });
 
     return events;
   }
