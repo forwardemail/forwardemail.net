@@ -1749,9 +1749,13 @@ class CalDAV extends API {
     // Apply limit if specified (default to 10000 to prevent massive queries)
     const maxLimit = limit || 10000;
 
-    const events = await CalendarEvents.find(this, ctx.state.session, query)
-      .limit(maxLimit)
-      .sort({ eventId: 1 });
+    const events = await CalendarEvents.find(
+      this,
+      ctx.state.session,
+      query,
+      {},
+      { sort: { eventId: 1 }, limit: maxLimit }
+    );
 
     ctx.logger.debug('events', { count: events.length, limit: maxLimit });
 
