@@ -306,10 +306,12 @@ function isArbitrary(session, headers) {
   // - CAT:INTOS - Intra-Organization phishing
   //
   // SFV (Spam Filtering Verdict) values:
+  // Reference: https://learn.microsoft.com/en-us/defender-office-365/message-headers-eop-mdo
   // - SFV:SPM - Message marked as spam by spam filtering
+  // - SFV:SKB - Message blocked because sender is in blocked senders/domains list
+  // - SFV:SKS - Message marked as spam before filtering (e.g., by mail flow rule setting SCL 5-9)
   // - SFV:NSPM - Message marked as non-spam
-  // - SFV:SKS - Marked as spam before filtering (by mail flow rule)
-  // - SFV:BLK - Blocked by user's blocked senders list
+  // - SFV:BLK - Blocked by user's blocked senders list (already blocked, won't reach us)
   //
   // SCL (Spam Confidence Level):
   // - Range: -1 to 9
@@ -317,7 +319,31 @@ function isArbitrary(session, headers) {
   // - SCL 5+ = medium-high to high spam confidence
   // - SCL -1 = whitelisted/bypass spam filtering
   //
-  // Reference: https://learn.microsoft.com/en-us/defender-office-365/message-headers-eop-mdo
+  // RELATIONSHIP BETWEEN SFV, SCL, AND CAT:
+  // ----------------------------------------
+  // These three fields are complementary but serve different purposes:
+  // - SCL: Numeric confidence score (0-9) - "How confident are we this is spam?"
+  // - CAT: Threat category classification - "What type of threat is this?"
+  // - SFV: Filtering verdict/decision - "What did we decide to do?"
+  //
+  // Reference: https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/email-protection-basics-in-microsoft-365-spam--phish/3555712
+  // Quote: "SCL:5 usually means the message was filtered as spam or phish, and you
+  //         will find the category CAT:SPM / CAT:PHISH in the message headers."
+  // Quote: "If we identify a message is spam or phish with a high degree of confidence,
+  //         we'll mark it accordingly as CAT:HSPM or CAT:HPHSH and assign SCL:9"
+  //
+  // Example from analyzed spam message:
+  // X-Forefront-Antispam-Report: ...SCL:5;SRV:;IPV:CAL;SFV:SPM;...CAT:OSPM;...
+  //
+  // This shows all three working together:
+  // - SCL:5 = Medium-high spam confidence (numeric score)
+  // - SFV:SPM = Verdict: marked as spam (filtering decision)
+  // - CAT:OSPM = Category: outbound spam (threat classification)
+  //
+  // Our checks cover all three dimensions for defense in depth:
+  // - CAT checks: Identify specific threat types
+  // - SFV checks: Respect Microsoft's filtering verdicts
+  // - SCL check: Catch-all for any spam Microsoft identifies
   //
   // ============================================================================
 
@@ -466,15 +492,26 @@ function isArbitrary(session, headers) {
       }
 
       //
-      // CHECK 5: Spam Classifications
-      // -----------------------------
-      // Block messages explicitly marked as spam:
-      // - SFV:SPM - Spam Filtering Verdict: Message marked as spam
+      // CHECK 5: Spam Filtering Verdicts and Classifications
+      // -----------------------------------------------------
+      // Block messages with explicit spam verdicts or classifications:
+      //
+      // SFV (Spam Filtering Verdict) values:
+      // - SFV:SPM - Message marked as spam by spam filtering
+      // - SFV:SKB - Message blocked because sender is in blocked senders/domains list
+      // - SFV:SKS - Message marked as spam before filtering (e.g., mail flow rule set SCL 5-9)
+      //
+      // CAT (Category) values:
       // - CAT:OSPM - Outbound spam (spam from within Microsoft infrastructure)
       // - CAT:SPM - Spam category
       //
       // CAT:OSPM is particularly important as it indicates spam originating from
       // compromised Microsoft 365 tenants, which is the exact problem we're solving.
+      //
+      // SFV:SKB and SFV:SKS are important because they represent explicit spam/block
+      // decisions made through Microsoft's policies and mail flow rules. If Microsoft
+      // has explicitly blocked or marked something as spam through these mechanisms,
+      // we should respect those decisions.
       //
       // Example from analyzed spam:
       // X-Forefront-Antispam-Report: CIP:185.227.111.180;CTRY:DE;LANG:en;SCL:5;
@@ -482,12 +519,22 @@ function isArbitrary(session, headers) {
       //  CAT:OSPM;SFS:(13230040)(82310400026)...;DIR:OUT;SFP:1501;
       //
       // Why block these:
-      // - SFV:SPM is Microsoft's explicit spam verdict
+      // - SFV:SPM is Microsoft's explicit spam verdict from filtering
+      // - SFV:SKB indicates admin policy blocked the sender
+      // - SFV:SKS indicates mail flow rule marked it as spam
       // - CAT:OSPM indicates compromised Microsoft tenant (our primary concern)
       // - CAT:SPM is the general spam category
       //
+      // Note: We do NOT check for SRV:BULK (bulk mail) because:
+      // - Bulk mail is not necessarily spam (newsletters, marketing users want)
+      // - Would cause false positives
+      // - Users can configure their own bulk mail thresholds
+      // - Our focus is spam from compromised tenants, not bulk mail
+      //
       if (
         lowerForefrontHeader.includes('sfv:spm') ||
+        lowerForefrontHeader.includes('sfv:skb') ||
+        lowerForefrontHeader.includes('sfv:sks') ||
         lowerForefrontHeader.includes('cat:ospm') ||
         lowerForefrontHeader.includes('cat:spm')
       ) {
@@ -521,6 +568,17 @@ function isArbitrary(session, headers) {
       // - Aligns with Microsoft's default spam handling
       // - Provides defense-in-depth (catches spam even if other checks miss it)
       // - Can be tuned based on false positive rate
+      //
+      // Relationship to CAT and SFV:
+      // According to Microsoft: "SCL:5 usually means the message was filtered as
+      // spam or phish, and you will find the category CAT:SPM / CAT:PHISH in the
+      // message headers."
+      //
+      // This means SCL and CAT are usually assigned together, making this check
+      // somewhat redundant with the CAT:SPM check above. However, we keep it as:
+      // - A catch-all for edge cases where SCL is assigned without CAT
+      // - Defense-in-depth
+      // - Explicit documentation of our spam threshold
       //
       // Reference: https://learn.microsoft.com/en-us/defender-office-365/anti-spam-spam-confidence-level-scl-about
       //
