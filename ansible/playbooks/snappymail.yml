@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-# SnappyMail Webmail Deployment
+# SnappyMail Mail Deployment
 # Reuses existing security, certificates, and HTTP infrastructure
 
 - name: Import security playbook
@@ -10,16 +10,16 @@
 - name: Import SSH keys playbook
   import_playbook: ssh-keys.yml
 
-- hosts: webmail
-  name: Webmail Hostname
+- hosts: mail
+  name: Mail Hostname
   become: true
   become_user: root
   tasks:
     - name: Set hostname
       hostname:
-        name: "{{ lookup('env', 'WEBMAIL_HOST') }}"
+        name: "{{ lookup('env', 'MAIL_HOST') }}"
 
-- hosts: webmail
+- hosts: mail
   name: SnappyMail PHP-FPM Setup
   become: true
   become_user: root
@@ -104,7 +104,7 @@
         dest: /etc/logrotate.d/php-fpm
         mode: '0644'
 
-- hosts: webmail
+- hosts: mail
   name: SnappyMail Nginx Setup
   become: true
   become_user: root
@@ -144,7 +144,7 @@
         enabled: true
         state: started
 
-- hosts: webmail
+- hosts: mail
   name: SnappyMail Application Deployment
   become: true
   become_user: root

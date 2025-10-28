@@ -12,7 +12,7 @@ upstream php-fpm {
 server {
     listen 80;
     listen [::]:80;
-    server_name {{ lookup('env', 'SERVER_NAME') | default('webmail.forwardemail.net') }};
+    server_name {{ lookup('env', 'SERVER_NAME') | default('mail.forwardemail.net') }};
     return 301 https://$server_name$request_uri;
 }
 {% endif %}
@@ -30,7 +30,7 @@ server {
     listen [::]:80;
 {% endif %}
 
-    server_name {{ lookup('env', 'SERVER_NAME') | default('webmail.forwardemail.net') }};
+    server_name {{ lookup('env', 'SERVER_NAME') | default('mail.forwardemail.net') }};
 
     # Document root
     root {{ lookup('env', 'APP_PATH') | default('/var/www/snappymail') }}/snappymail-upstream;
