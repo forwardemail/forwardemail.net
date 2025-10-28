@@ -228,6 +228,311 @@ function isArbitrary(session, headers) {
       'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
     );
 
+  //
+  // ============================================================================
+  // MICROSOFT EXCHANGE SPAM DETECTION
+  // ============================================================================
+  //
+  // This section detects spam that has been forwarded through Microsoft Exchange
+  // infrastructure by examining Microsoft's own spam classification headers.
+  //
+  // BACKGROUND:
+  // -----------
+  // Spam messages from compromised Microsoft 365 tenants (*.onmicrosoft.com) can
+  // bypass traditional spam detection because:
+  //
+  // 1. Microsoft Exchange adds its own valid DKIM signature when forwarding
+  // 2. External systems see dkim=pass for the Microsoft domain
+  // 3. Original authentication failures (spf=fail, dkim=none, dmarc=none) are
+  //    buried in inner headers and not checked by default
+  //
+  // TIMING & HEADER AVAILABILITY:
+  // ------------------------------
+  // Microsoft's mail flow rules (transport rules) run BEFORE anti-spam filtering,
+  // so they cannot check X-Forefront-Antispam-Report headers. However, ForwardEmail
+  // receives messages AFTER they have passed through Microsoft's complete processing
+  // pipeline, meaning all anti-spam headers are already present and available for
+  // inspection.
+  //
+  // Reference: https://learn.microsoft.com/en-us/answers/questions/125695/apply-transport-rule-per-junk-mail-category-to-pre
+  // Quote: "The rules are applied _before_ the anti-spam checks."
+  //
+  // SOLUTION:
+  // ---------
+  // We leverage Microsoft's own spam detection results by checking their headers:
+  // - X-MS-Exchange-Authentication-Results: Contains SPF/DKIM/DMARC results
+  // - X-Forefront-Antispam-Report: Contains spam classification and confidence
+  //
+  // This approach benefits from Microsoft's extensive anti-spam infrastructure
+  // without needing to replicate their analysis.
+  //
+  // COMMUNITY CONSENSUS:
+  // --------------------
+  // Reddit MSP community (18 upvotes) recommends checking:
+  // 1. Sender from *.onmicrosoft.com domains
+  // 2. X-MS-Exchange-Authentication-Results with spf=fail/softfail/dmarc=fail
+  // 3. Legitimate Microsoft email will have spf=pass
+  //
+  // Reference: https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/
+  //
+  // Note: We do NOT check for spf=none (no SPF record) because:
+  // - Many legitimate small/medium businesses don't implement SPF
+  // - spf=none is absence of authentication, not authentication failure
+  // - Would cause excessive false positives
+  // Reference: https://www.reddit.com/r/sysadmin/comments/fftrx0/block_email_when_spfnone/
+  // Quote: "Blocking for no SPF is horrible, sadly most small/medium businesses
+  //         don't implement spf, and more of those who do, do it wrong."
+  //
+  // MICROSOFT DOCUMENTATION:
+  // ------------------------
+  // CAT (Category) values and their priority order:
+  // Reference: https://learn.microsoft.com/en-us/defender-office-365/how-policies-and-protections-are-combined
+  //
+  // Priority Order (highest to lowest):
+  // 1. CAT:MALW - Malware (cannot be bypassed by transport rules)
+  // 2. CAT:HPHSH/HPHISH - High confidence phishing (cannot be bypassed)
+  // 3. CAT:PHSH - Phishing
+  // 4. CAT:HSPM - High confidence spam
+  // 5. CAT:SPOOF - Spoofing
+  // 6. CAT:UIMP - User impersonation (Defender for Office 365 only)
+  // 7. CAT:DIMP - Domain impersonation (Defender for Office 365 only)
+  // 8. CAT:GIMP - Mailbox intelligence/contact graph (Defender for Office 365 only)
+  // 9. CAT:SPM - Spam
+  // 10. CAT:BULK - Bulk mail
+  //
+  // Additional categories:
+  // - CAT:BIMP - Brand impersonation
+  // - CAT:OSPM - Outbound spam (spam from within Microsoft infrastructure)
+  // - CAT:INTOS - Intra-Organization phishing
+  //
+  // SFV (Spam Filtering Verdict) values:
+  // - SFV:SPM - Message marked as spam by spam filtering
+  // - SFV:NSPM - Message marked as non-spam
+  // - SFV:SKS - Marked as spam before filtering (by mail flow rule)
+  // - SFV:BLK - Blocked by user's blocked senders list
+  //
+  // SCL (Spam Confidence Level):
+  // - Range: -1 to 9
+  // - Higher values = more likely spam
+  // - SCL 5+ = medium-high to high spam confidence
+  // - SCL -1 = whitelisted/bypass spam filtering
+  //
+  // Reference: https://learn.microsoft.com/en-us/defender-office-365/message-headers-eop-mdo
+  //
+  // ============================================================================
+
+  //
+  // IMPORTANT: Only check these headers for messages from Microsoft infrastructure
+  // This prevents false positives from forged headers and ensures we only act on
+  // legitimate Microsoft spam classifications.
+  //
+  // We check session.resolvedClientHostname ends with '.outbound.protection.outlook.com'
+  // which is Microsoft's outbound email infrastructure. This ensures we only apply
+  // these checks to messages that have actually been processed by Microsoft's systems.
+  //
+  if (
+    session.resolvedClientHostname &&
+    session.resolvedClientHostname.endsWith('.outbound.protection.outlook.com')
+  ) {
+    const msAuthHeader = headers.getFirst(
+      'x-ms-exchange-authentication-results'
+    );
+    const forefrontHeader = headers.getFirst('x-forefront-antispam-report');
+
+    //
+    // CHECK 1: Authentication Failures
+    // --------------------------------
+    // Block if Microsoft detected that the original sender failed authentication.
+    // Legitimate email from Microsoft 365 tenants will have spf=pass.
+    //
+    // This check catches:
+    // - SPF failures: Sender IP not authorized by domain's SPF record
+    // - SPF softfails: Domain owner suggests IP is probably not authorized
+    // - DMARC failures: Domain's DMARC policy failed
+    //
+    // NOTE: We do NOT check for spf=none (no SPF record) because:
+    // - Many legitimate small/medium businesses don't implement SPF
+    // - spf=none indicates absence of authentication, not authentication failure
+    // - Blocking spf=none would cause excessive false positives
+    // - Community consensus: "Blocking for no SPF is horrible"
+    //
+    // Example from analyzed spam:
+    // X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 185.227.111.180)
+    //  smtp.mailfrom=smssa.moe.edu.bn; dkim=none (message not signed)
+    //  header.d=none;dmarc=none action=none header.from=smssa.moe.edu.bn;
+    //
+    if (msAuthHeader) {
+      const lowerMsAuthHeader = msAuthHeader.toLowerCase();
+      if (
+        lowerMsAuthHeader.includes('spf=fail') ||
+        lowerMsAuthHeader.includes('spf=softfail') ||
+        lowerMsAuthHeader.includes('dmarc=fail')
+      ) {
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+        );
+      }
+    }
+
+    if (forefrontHeader) {
+      const lowerForefrontHeader = forefrontHeader.toLowerCase();
+
+      //
+      // CHECK 2: High-Confidence Threats (Highest Priority)
+      // ----------------------------------------------------
+      // Block messages that Microsoft identified with high confidence as:
+      // - Malware (CAT:MALW)
+      // - High confidence phishing (CAT:HPHSH or CAT:HPHISH)
+      // - High confidence spam (CAT:HSPM)
+      //
+      // These are the highest priority threats in Microsoft's processing order
+      // and cannot be bypassed by transport rules within Exchange.
+      //
+      // Reference: https://learn.microsoft.com/en-us/defender-office-365/how-policies-and-protections-are-combined
+      // Quote: "High confidence phishing verdicts cannot be overridden by transport rules"
+      //
+      // Why block these:
+      // - Microsoft has high confidence these are threats
+      // - These represent the most dangerous message types
+      // - False positive rate is very low for high-confidence classifications
+      //
+      if (
+        lowerForefrontHeader.includes('cat:malw') ||
+        lowerForefrontHeader.includes('cat:hphsh') ||
+        lowerForefrontHeader.includes('cat:hphish') ||
+        lowerForefrontHeader.includes('cat:hspm')
+      ) {
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+        );
+      }
+
+      //
+      // CHECK 3: Impersonation Attempts
+      // --------------------------------
+      // Block messages flagged for various types of impersonation:
+      // - CAT:BIMP - Brand impersonation (impersonating known brands)
+      // - CAT:DIMP - Domain impersonation (impersonating protected domains)
+      // - CAT:GIMP - Mailbox intelligence impersonation (impersonating contacts)
+      // - CAT:UIMP - User impersonation (impersonating protected users)
+      //
+      // These categories indicate sophisticated phishing attempts where the attacker
+      // is trying to impersonate a trusted entity to deceive recipients.
+      //
+      // Note: DIMP, GIMP, and UIMP require Defender for Office 365 Plan 1 or 2.
+      // BIMP is available in all plans.
+      //
+      // Why block these:
+      // - Impersonation is a primary phishing technique
+      // - These represent targeted attacks against specific entities
+      // - Microsoft's machine learning has identified similarity to protected entities
+      //
+      if (
+        lowerForefrontHeader.includes('cat:bimp') ||
+        lowerForefrontHeader.includes('cat:dimp') ||
+        lowerForefrontHeader.includes('cat:gimp') ||
+        lowerForefrontHeader.includes('cat:uimp')
+      ) {
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+        );
+      }
+
+      //
+      // CHECK 4: Phishing and Spoofing
+      // -------------------------------
+      // Block messages identified as:
+      // - CAT:PHSH - Phishing (standard confidence)
+      // - CAT:SPOOF - Spoofing (forged sender)
+      //
+      // These are processed at priority levels 3 and 5 respectively in
+      // Microsoft's protection order.
+      //
+      // Phishing attempts to trick users into revealing sensitive information.
+      // Spoofing involves forging the sender's identity to appear as someone else.
+      //
+      // Why block these:
+      // - Both represent malicious intent
+      // - Spoofing indicates the From header is forged
+      // - Phishing is a common attack vector
+      //
+      if (
+        lowerForefrontHeader.includes('cat:phsh') ||
+        lowerForefrontHeader.includes('cat:spoof')
+      ) {
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+        );
+      }
+
+      //
+      // CHECK 5: Spam Classifications
+      // -----------------------------
+      // Block messages explicitly marked as spam:
+      // - SFV:SPM - Spam Filtering Verdict: Message marked as spam
+      // - CAT:OSPM - Outbound spam (spam from within Microsoft infrastructure)
+      // - CAT:SPM - Spam category
+      //
+      // CAT:OSPM is particularly important as it indicates spam originating from
+      // compromised Microsoft 365 tenants, which is the exact problem we're solving.
+      //
+      // Example from analyzed spam:
+      // X-Forefront-Antispam-Report: CIP:185.227.111.180;CTRY:DE;LANG:en;SCL:5;
+      //  SRV:;IPV:CAL;SFV:SPM;H:smssa.moe.edu.bn;PTR:InfoDomainNonexistent;
+      //  CAT:OSPM;SFS:(13230040)(82310400026)...;DIR:OUT;SFP:1501;
+      //
+      // Why block these:
+      // - SFV:SPM is Microsoft's explicit spam verdict
+      // - CAT:OSPM indicates compromised Microsoft tenant (our primary concern)
+      // - CAT:SPM is the general spam category
+      //
+      if (
+        lowerForefrontHeader.includes('sfv:spm') ||
+        lowerForefrontHeader.includes('cat:ospm') ||
+        lowerForefrontHeader.includes('cat:spm')
+      ) {
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+        );
+      }
+
+      //
+      // CHECK 6: Spam Confidence Level (SCL)
+      // -------------------------------------
+      // Block if SCL is 5 or higher (medium-high to high spam confidence).
+      //
+      // SCL Scale:
+      // -1: Whitelisted (skip spam filtering)
+      //  0-4: Low to medium spam likelihood
+      //  5-6: Medium-high spam likelihood (typically moved to Junk)
+      //  7-9: High spam likelihood (typically quarantined)
+      //
+      // Threshold of 5 chosen because:
+      // 1. The analyzed spam message had SCL:5 and was clearly spam
+      // 2. Microsoft's default policies treat SCL 5+ as spam
+      // 3. Balances false positives vs. catching spam
+      // 4. Organizations can adjust threshold to 6 or 7 if needed
+      //
+      // Example from analyzed spam:
+      // X-Forefront-Antispam-Report: ...SCL:5;SRV:;IPV:CAL;SFV:SPM...
+      //
+      // Why use SCL 5 as threshold:
+      // - Catches medium-high to high confidence spam
+      // - Aligns with Microsoft's default spam handling
+      // - Provides defense-in-depth (catches spam even if other checks miss it)
+      // - Can be tuned based on false positive rate
+      //
+      // Reference: https://learn.microsoft.com/en-us/defender-office-365/anti-spam-spam-confidence-level-scl-about
+      //
+      const sclMatch = forefrontHeader.match(/scl:(\d+)/i);
+      if (sclMatch && Number.parseInt(sclMatch[1], 10) >= 5) {
+        throw new SMTPError(
+          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+        );
+      }
+    }
+  }
+
   /*
   // Postmark has refused to do any KYC process to prevent Cash App scammers
   if (
