@@ -21,23 +21,23 @@ pm = dynamic
 
 ; Maximum number of child processes
 ; Increase from default 50 to handle more concurrent users
-pm.max_children = {{ lookup('env', 'PHP_MAX_CHILDREN') | default('200') }}
+pm.max_children = {{ lookup('env', 'MAIL_PHP_MAX_CHILDREN') | default('200') }}
 
 ; Number of child processes created on startup
-pm.start_servers = {{ lookup('env', 'PHP_START_SERVERS') | default('20') }}
+pm.start_servers = {{ lookup('env', 'MAIL_PHP_START_SERVERS') | default('20') }}
 
 ; Minimum number of idle server processes
-pm.min_spare_servers = {{ lookup('env', 'PHP_MIN_SPARE') | default('10') }}
+pm.min_spare_servers = {{ lookup('env', 'MAIL_PHP_MIN_SPARE') | default('10') }}
 
 ; Maximum number of idle server processes
-pm.max_spare_servers = {{ lookup('env', 'PHP_MAX_SPARE') | default('30') }}
+pm.max_spare_servers = {{ lookup('env', 'MAIL_PHP_MAX_SPARE') | default('30') }}
 
 ; Number of seconds after which an idle process will be killed
 pm.process_idle_timeout = 30s
 
 ; Number of requests each child process should execute before respawning
 ; Helps prevent memory leaks over time
-pm.max_requests = {{ lookup('env', 'PHP_MAX_REQUESTS') | default('1000') }}
+pm.max_requests = {{ lookup('env', 'MAIL_PHP_MAX_REQUESTS') | default('1000') }}
 
 ; Status monitoring endpoint
 pm.status_path = /status
@@ -50,7 +50,7 @@ ping.response = pong
 ; ==================
 
 ; Allow child processes to reach 128MB memory limit
-php_admin_value[memory_limit] = {{ lookup('env', 'PHP_MEMORY_LIMIT') | default('128M') }}
+php_admin_value[memory_limit] = {{ lookup('env', 'MAIL_PHP_MEMORY_LIMIT') | default('128M') }}
 
 ; Request timeout (should be higher than IMAP timeout)
 request_terminate_timeout = 60s
@@ -73,7 +73,7 @@ catch_workers_output = yes
 ; ========
 
 ; Limit allowed file operations to specific paths
-php_admin_value[open_basedir] = {{ lookup('env', 'APP_PATH') | default('/var/www/snappymail') }}:/tmp
+php_admin_value[open_basedir] = {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}:/tmp
 
 ; Disable dangerous PHP functions
 php_admin_value[disable_functions] = exec,passthru,shell_exec,system,proc_open,popen,curl_exec,curl_multi_exec,parse_ini_file,show_source
@@ -89,4 +89,4 @@ env[TMPDIR] = /tmp
 env[TEMP] = /tmp
 
 ; SnappyMail specific data folder path
-env[APP_DATA_FOLDER_PATH] = {{ lookup('env', 'APP_PATH') | default('/var/www/snappymail') }}/data
+env[APP_DATA_FOLDER_PATH] = {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}/data

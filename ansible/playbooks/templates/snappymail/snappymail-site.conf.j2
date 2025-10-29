@@ -7,18 +7,18 @@ upstream php-fpm {
     keepalive 32;  # Keep connections alive for better performance
 }
 
-{% if lookup('env', 'SSL_ENABLED') | default('false') == 'true' %}
+{% if lookup('env', 'MAIL_SSL_ENABLED') | default('false') == 'true' %}
 # Redirect HTTP to HTTPS
 server {
     listen 80;
     listen [::]:80;
-    server_name {{ lookup('env', 'SERVER_NAME') | default('mail.forwardemail.net') }};
+    server_name {{ lookup('env', 'MAIL_SERVER_NAME') | default('mail.forwardemail.net') }};
     return 301 https://$server_name$request_uri;
 }
 {% endif %}
 
 server {
-{% if lookup('env', 'SSL_ENABLED') | default('false') == 'true' %}
+{% if lookup('env', 'MAIL_SSL_ENABLED') | default('false') == 'true' %}
     # HTTPS Configuration
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
@@ -30,10 +30,10 @@ server {
     listen [::]:80;
 {% endif %}
 
-    server_name {{ lookup('env', 'SERVER_NAME') | default('mail.forwardemail.net') }};
+    server_name {{ lookup('env', 'MAIL_SERVER_NAME') | default('mail.forwardemail.net') }};
 
     # Document root
-    root {{ lookup('env', 'APP_PATH') | default('/var/www/snappymail') }}/snappymail-upstream;
+    root {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}/snappymail-upstream;
     index index.php;
 
     # Charset
@@ -44,7 +44,7 @@ server {
     ##
 
     # Limit concurrent connections per IP
-    limit_conn addr {{ lookup('env', 'CONN_LIMIT_PER_IP') | default('50') }};
+    limit_conn addr {{ lookup('env', 'MAIL_CONN_LIMIT_PER_IP') | default('50') }};
 
     # Apply rate limiting to API endpoints
     location ~ ^/\?/(Admin|User) {
@@ -62,7 +62,7 @@ server {
     # Content Security Policy
     add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
 
-{% if lookup('env', 'SSL_ENABLED') | default('false') == 'true' %}
+{% if lookup('env', 'MAIL_SSL_ENABLED') | default('false') == 'true' %}
     # Strict Transport Security (HSTS)
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
 {% endif %}

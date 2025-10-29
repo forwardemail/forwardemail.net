@@ -224,18 +224,18 @@
 
     - name: Clone repository
       git:
-        repo: "{{ lookup('env', 'SNAPPYMAIL_REPO') }}"
+        repo: "{{ lookup('env', 'MAIL_REPO') }}"
         dest: /var/www/snappymail
-        version: "{{ lookup('env', 'GIT_BRANCH') | default('main') }}"
+        version: "{{ lookup('env', 'MAIL_GIT_BRANCH') | default('main') }}"
         force: true
       become_user: deploy
       when: not git_repo.stat.exists
 
     - name: Update repository
       git:
-        repo: "{{ lookup('env', 'SNAPPYMAIL_REPO') }}"
+        repo: "{{ lookup('env', 'MAIL_REPO') }}"
         dest: /var/www/snappymail
-        version: "{{ lookup('env', 'GIT_BRANCH') | default('main') }}"
+        version: "{{ lookup('env', 'MAIL_GIT_BRANCH') | default('main') }}"
         force: true
         update: true
       become_user: deploy
