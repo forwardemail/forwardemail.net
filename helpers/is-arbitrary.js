@@ -356,6 +356,7 @@ function isArbitrary(session, headers) {
   // which is Microsoft's outbound email infrastructure. This ensures we only apply
   // these checks to messages that have actually been processed by Microsoft's systems.
   //
+  /*
   if (
     session.resolvedClientHostname &&
     session.resolvedClientHostname.endsWith('.outbound.protection.outlook.com')
@@ -590,6 +591,7 @@ function isArbitrary(session, headers) {
       }
     }
   }
+  */
 
   /*
   // Postmark has refused to do any KYC process to prevent Cash App scammers
