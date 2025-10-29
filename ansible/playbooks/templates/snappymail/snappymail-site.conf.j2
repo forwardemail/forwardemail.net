@@ -1,0 +1,211 @@
+# ForwardEmail SnappyMail Site Configuration
+# ===========================================
+
+# Upstream PHP-FPM backend
+upstream php-fpm {
+    server unix:/run/php/php8.2-fpm.sock;
+    keepalive 32;  # Keep connections alive for better performance
+}
+
+{% if lookup('env', 'MAIL_SSL_ENABLED') | default('false') == 'true' %}
+# Redirect HTTP to HTTPS
+server {
+    listen 80;
+    listen [::]:80;
+    server_name {{ lookup('env', 'MAIL_SERVER_NAME') | default('mail.forwardemail.net') }};
+    return 301 https://$server_name$request_uri;
+}
+{% endif %}
+
+server {
+{% if lookup('env', 'MAIL_SSL_ENABLED') | default('false') == 'true' %}
+    # HTTPS Configuration
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
+{% else %}
+    # HTTP Configuration
+    listen 80;
+    listen [::]:80;
+{% endif %}
+
+    server_name {{ lookup('env', 'MAIL_SERVER_NAME') | default('mail.forwardemail.net') }};
+
+    # Document root
+    root {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}/snappymail-upstream;
+    index index.php;
+
+    # Charset
+    charset utf-8;
+
+    ##
+    # Rate Limiting
+    ##
+
+    # Limit concurrent connections per IP
+    limit_conn addr {{ lookup('env', 'MAIL_CONN_LIMIT_PER_IP') | default('50') }};
+
+    # Apply rate limiting to API endpoints
+    location ~ ^/\?/(Admin|User) {
+        limit_req zone=api burst=20 nodelay;
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # General page rate limiting
+    limit_req zone=pages burst=50 nodelay;
+
+    ##
+    # Security Headers
+    ##
+
+    # Content Security Policy
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
+
+{% if lookup('env', 'MAIL_SSL_ENABLED') | default('false') == 'true' %}
+    # Strict Transport Security (HSTS)
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+{% endif %}
+
+    add_header X-Frame-Options "DENY" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+
+    ##
+    # Logging
+    ##
+
+    access_log /var/log/nginx/snappymail-access.log main;
+    error_log /var/log/nginx/snappymail-error.log warn;
+
+    ##
+    # Main Application
+    ##
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    ##
+    # PHP Processing
+    ##
+
+    location ~ \.php$ {
+        # Security: Don't execute PHP files in writable directories
+        location ~ ^/(data|cache)/ {
+            deny all;
+            return 404;
+        }
+
+        # Standard PHP processing
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
+
+        # Pass to PHP-FPM
+        fastcgi_pass php-fpm;
+        fastcgi_index index.php;
+
+        # PHP-FPM connection settings
+        fastcgi_connect_timeout 60s;
+        fastcgi_send_timeout 60s;
+        fastcgi_read_timeout 60s;
+        fastcgi_buffering on;
+        fastcgi_buffer_size 32k;
+        fastcgi_buffers 8 16k;
+        fastcgi_busy_buffers_size 32k;
+
+        # Keep connections alive
+        fastcgi_keep_conn on;
+
+        # Handle redirects properly
+        fastcgi_intercept_errors off;
+    }
+
+    ##
+    # Static File Caching
+    ##
+
+    # Cache static assets aggressively
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+        log_not_found off;
+    }
+
+    # Cache JSON/XML data files
+    location ~* \.(json|xml)$ {
+        expires 1d;
+        add_header Cache-Control "public";
+        access_log off;
+    }
+
+    ##
+    # Security: Block Access to Sensitive Files
+    ##
+
+    # Deny access to data directory
+    location ^~ /data/ {
+        deny all;
+        return 404;
+    }
+
+    # Deny access to hidden files
+    location ~ /\. {
+        deny all;
+        access_log off;
+        log_not_found off;
+        return 404;
+    }
+
+    # Deny access to backup/config files
+    location ~* \.(bak|config|sql|fla|psd|ini|log|sh|inc|swp|dist)$ {
+        deny all;
+        return 404;
+    }
+
+    # Deny access to composer/git files
+    location ~* (composer\.json|composer\.lock|\.git) {
+        deny all;
+        return 404;
+    }
+
+    ##
+    # Health Check Endpoints
+    ##
+
+    # PHP-FPM status page (restrict to localhost)
+    location ~ ^/(status|ping)$ {
+        allow 127.0.0.1;
+        deny all;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass php-fpm;
+    }
+
+    # Nginx stub status (restrict to localhost)
+    location /nginx_status {
+        stub_status;
+        allow 127.0.0.1;
+        deny all;
+        access_log off;
+    }
+
+    ##
+    # Favicon & Robots
+    ##
+
+    location = /favicon.ico {
+        access_log off;
+        log_not_found off;
+        expires 1y;
+    }
+
+    location = /robots.txt {
+        access_log off;
+        log_not_found off;
+    }
+}

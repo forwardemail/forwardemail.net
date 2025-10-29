@@ -1,0 +1,130 @@
+# ForwardEmail SnappyMail Nginx Configuration
+# ============================================
+# Optimized for high-performance mail service with security hardening
+
+user www-data;
+
+# Set to auto to match CPU cores automatically
+worker_processes auto;
+
+# Maximum open files per worker
+worker_rlimit_nofile 65535;
+
+pid /run/nginx.pid;
+error_log /var/log/nginx/error.log warn;
+
+events {
+    # Maximum simultaneous connections per worker
+    worker_connections {{ lookup('env', 'MAIL_NGINX_WORKER_CONNECTIONS') | default('4096') }};
+
+    # Use efficient connection processing method
+    use epoll;
+
+    # Accept multiple connections at once
+    multi_accept on;
+}
+
+http {
+    ##
+    # Basic Settings
+    ##
+
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    # Optimize file serving
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+
+    # Timeouts
+    keepalive_timeout 65;
+    client_body_timeout 30s;
+    client_header_timeout 30s;
+    send_timeout 30s;
+
+    # Buffer sizes (for handling larger email attachments)
+    client_body_buffer_size 128k;
+    client_max_body_size {{ lookup('env', 'MAIL_MAX_UPLOAD_SIZE') | default('50M') }};
+    client_header_buffer_size 1k;
+    large_client_header_buffers 4 8k;
+
+    ##
+    # Security Headers
+    ##
+
+    # Hide Nginx version
+    server_tokens off;
+
+    ##
+    # Rate Limiting & Connection Control
+    ##
+
+    # Define zone for IP-based connection limiting (10MB = ~160k IPs)
+    limit_conn_zone $binary_remote_addr zone=addr:10m;
+
+    # Define zone for API rate limiting (10MB zone, 10 req/sec)
+    limit_req_zone $binary_remote_addr zone=api:10m rate={{ lookup('env', 'MAIL_RATE_LIMIT_API') | default('10') }}r/s;
+
+    # Zone for general page requests (30 req/sec)
+    limit_req_zone $binary_remote_addr zone=pages:10m rate={{ lookup('env', 'MAIL_RATE_LIMIT_PAGES') | default('30') }}r/s;
+
+    # Status code for rate limit responses
+    limit_req_status 429;
+    limit_conn_status 429;
+
+    ##
+    # Logging
+    ##
+
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for" '
+                    'rt=$request_time uct="$upstream_connect_time" '
+                    'uht="$upstream_header_time" urt="$upstream_response_time"';
+
+    access_log /var/log/nginx/access.log main;
+
+    ##
+    # Gzip Compression
+    ##
+
+    gzip on;
+    gzip_vary on;
+    gzip_proxied any;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css text/xml text/javascript
+               application/json application/javascript application/xml+rss
+               application/xhtml+xml application/x-font-ttf application/x-font-opentype
+               application/vnd.ms-fontobject image/svg+xml;
+    gzip_disable "msie6";
+
+    ##
+    # Cache Settings
+    ##
+
+    # Cache static files in memory
+    open_file_cache max=10000 inactive=30s;
+    open_file_cache_valid 60s;
+    open_file_cache_min_uses 2;
+    open_file_cache_errors on;
+
+    ##
+    # SSL Settings (if using HTTPS)
+    ##
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+
+    ##
+    # Virtual Host Configuration
+    ##
+
+    include /etc/nginx/conf.d/*.conf;
+    include /etc/nginx/sites-enabled/*;
+}

@@ -1,0 +1,309 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+# SnappyMail Mail Deployment
+# Reuses existing security, certificates, and HTTP infrastructure
+
+- name: Import security playbook
+  import_playbook: security.yml
+- name: Import SSH keys playbook
+  import_playbook: ssh-keys.yml
+
+- hosts: mail
+  name: Mail Hostname
+  become: true
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'MAIL_HOST') }}"
+
+- hosts: mail
+  name: SnappyMail PHP-FPM Setup
+  become: true
+  become_user: root
+  handlers:
+    - name: Restart PHP-FPM
+      service:
+        name: php8.2-fpm
+        state: restarted
+  tasks:
+    - name: Add PHP repository
+      apt_repository:
+        repo: ppa:ondrej/php
+        state: present
+        update_cache: true
+
+    - name: Install PHP and extensions
+      apt:
+        name:
+          - php8.2-fpm
+          - php8.2-cli
+          - php8.2-common
+          - php8.2-intl
+          - php8.2-zip
+          - php8.2-gd
+          - php8.2-dom
+          - php8.2-xml
+          - php8.2-curl
+          - php8.2-mbstring
+          - php8.2-opcache
+          - php8.2-redis
+        state: present
+        update_cache: true
+
+    - name: Create PHP-FPM log directory
+      file:
+        path: /var/log/php-fpm
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0755'
+
+    - name: Configure PHP-FPM pool
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail/php-fpm-www.conf.j2"
+        dest: /etc/php/8.2/fpm/pool.d/www.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart PHP-FPM
+
+    - name: Configure PHP FPM settings
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail/php-fpm.ini.j2"
+        dest: /etc/php/8.2/fpm/conf.d/99-snappymail.ini
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart PHP-FPM
+
+    - name: Enable PHP-FPM service
+      systemd:
+        name: php8.2-fpm
+        enabled: true
+        state: started
+
+    - name: Configure PHP-FPM logrotate
+      copy:
+        content: |
+          /var/log/php-fpm/*.log {
+              daily
+              missingok
+              rotate 14
+              compress
+              delaycompress
+              notifempty
+              create 0640 www-data www-data
+              sharedscripts
+              postrotate
+                  [ -f /run/php/php8.2-fpm.pid ] && kill -USR1 $(cat /run/php/php8.2-fpm.pid)
+              endscript
+          }
+        dest: /etc/logrotate.d/php-fpm
+        mode: '0644'
+
+- hosts: mail
+  name: SnappyMail Nginx Setup
+  become: true
+  become_user: root
+  handlers:
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
+  tasks:
+    - name: Install Nginx
+      apt:
+        name:
+          - nginx
+          - nginx-extras
+        state: present
+        update_cache: true
+
+    - name: Remove default Nginx site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify: Reload Nginx
+
+    - name: Configure main Nginx config
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail/nginx.conf.j2"
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: '0644'
+        validate: 'nginx -t -c %s'
+      notify: Reload Nginx
+
+    - name: Enable Nginx service
+      systemd:
+        name: nginx
+        enabled: true
+        state: started
+
+- hosts: mail
+  name: SnappyMail Application Deployment
+  become: true
+  become_user: root
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
+    - name: Reload Nginx
+      service:
+        name: nginx
+        state: reloaded
+  tasks:
+    ##
+    # Firewall Configuration
+    ##
+
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    - name: Limit ufw ssh
+      ufw:
+        rule: limit
+        port: 22
+        proto: tcp
+
+    - name: Allow http
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'PROXY_PORT') }}"
+        proto: tcp
+
+    - name: Allow https
+      ufw:
+        rule: allow
+        port: "{{ lookup('env', 'HTTP_PORT') }}"
+        proto: tcp
+
+    - name: "Update ufw before.rules until #21 is resolved"
+      template:
+        src: "{{ playbook_dir }}/templates/before.rules.j2"
+        dest: /etc/ufw/before.rules
+        owner: root
+        mode: "0644"
+      notify: Reload UFW
+
+    ##
+    # Application Directory Setup
+    ##
+
+    - name: Create application directory
+      file:
+        path: /var/www/snappymail
+        state: directory
+        owner: deploy
+        group: deploy
+        mode: '0755'
+
+    - name: Create data directory
+      file:
+        path: /var/www/snappymail/data
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0700'
+
+    ##
+    # Deploy Application
+    ##
+
+    - name: Check if repository exists
+      stat:
+        path: /var/www/snappymail/.git
+      register: git_repo
+
+    - name: Clone repository
+      git:
+        repo: "{{ lookup('env', 'MAIL_REPO') }}"
+        dest: /var/www/snappymail
+        version: "{{ lookup('env', 'MAIL_GIT_BRANCH') | default('main') }}"
+        force: true
+      become_user: deploy
+      when: not git_repo.stat.exists
+
+    - name: Update repository
+      git:
+        repo: "{{ lookup('env', 'MAIL_REPO') }}"
+        dest: /var/www/snappymail
+        version: "{{ lookup('env', 'MAIL_GIT_BRANCH') | default('main') }}"
+        force: true
+        update: true
+      become_user: deploy
+      when: git_repo.stat.exists
+
+    - name: Initialize submodules
+      command: git submodule update --init --recursive
+      args:
+        chdir: /var/www/snappymail
+      become_user: deploy
+
+    - name: Sync configuration
+      command: ./scripts/sync-config.sh
+      args:
+        chdir: /var/www/snappymail
+      become_user: deploy
+
+    - name: Set permissions on data directory
+      file:
+        path: /var/www/snappymail/data
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: '0700'
+        recurse: true
+
+    ##
+    # Configure Nginx Site
+    ##
+
+    - name: Deploy Nginx site configuration
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail/snappymail-site.conf.j2"
+        dest: /etc/nginx/sites-available/snappymail.conf
+        owner: root
+        group: root
+        mode: '0644'
+        validate: 'nginx -t -c /etc/nginx/nginx.conf'
+      notify: Reload Nginx
+
+    - name: Enable Nginx site
+      file:
+        src: /etc/nginx/sites-available/snappymail.conf
+        dest: /etc/nginx/sites-enabled/snappymail.conf
+        state: link
+      notify: Reload Nginx
+
+    ##
+    # Health Check Cron
+    ##
+
+    - name: Create health check script
+      copy:
+        content: |
+          #!/bin/bash
+          # SnappyMail health check
+          set -e
+          systemctl is-active --quiet php8.2-fpm || systemctl restart php8.2-fpm
+          systemctl is-active --quiet nginx || systemctl restart nginx
+          curl -f -s http://localhost/ > /dev/null || exit 1
+        dest: /usr/local/bin/snappymail-health-check
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Add health check cron
+      cron:
+        name: "snappymail-health-check"
+        minute: "*/5"
+        job: "/usr/local/bin/snappymail-health-check > /dev/null 2>&1"
+        user: root

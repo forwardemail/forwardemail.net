@@ -1,0 +1,43 @@
+; SnappyMail PHP-FPM Configuration
+; =================================
+
+[PHP]
+memory_limit = 128M
+max_execution_time = 60
+upload_max_filesize = 50M
+post_max_size = 50M
+
+; Error reporting
+display_errors = Off
+log_errors = On
+error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
+
+; Session handling
+session.save_handler = redis
+session.save_path = "{{ lookup('env', 'MAIL_REDIS_URL') | default('tcp://127.0.0.1:6379?database=0') }}"
+session.gc_maxlifetime = 3600
+session.cookie_httponly = 1
+session.cookie_secure = 1
+session.cookie_samesite = "Strict"
+
+; OPcache settings for production
+opcache.enable = 1
+opcache.enable_cli = 0
+opcache.memory_consumption = 256
+opcache.interned_strings_buffer = 16
+opcache.max_accelerated_files = 20000
+opcache.revalidate_freq = 2
+opcache.fast_shutdown = 1
+opcache.validate_timestamps = 1
+
+; Security settings
+expose_php = Off
+allow_url_fopen = On
+allow_url_include = Off
+
+; File uploads
+file_uploads = On
+max_file_uploads = 20
+
+; Date timezone
+date.timezone = {{ lookup('env', 'MAIL_TIMEZONE') | default('UTC') }}
