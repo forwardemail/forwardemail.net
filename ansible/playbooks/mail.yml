@@ -173,6 +173,12 @@
         port: 22
         proto: tcp
 
+    - name: Allow ssh
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+
     - name: Allow http
       ufw:
         rule: allow
