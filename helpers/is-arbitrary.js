@@ -193,20 +193,6 @@ function isArbitrary(session, headers) {
   // <https://answers.microsoft.com/en-us/msoffice/forum/all/overwhelmed-by-onmicrosoftcom-spam-emails/6dcbd5c4-b661-47f5-95bc-1f3b412f398c>
   // <https://www.reddit.com/r/msp/comments/16n8p0j/comment/k1ns3ow/>
   //
-  if (session.originalFromAddressRootDomain === 'onmicrosoft.com') {
-    const msHeader = headers.getFirst('X-MS-Exchange-Authentication-Results');
-    if (
-      msHeader &&
-      (msHeader.includes('spf=fail') ||
-        msHeader.includes('spf=none') ||
-        msHeader.includes('dmarc=fail') ||
-        msHeader.includes('spf=softfail'))
-    )
-      throw new SMTPError(
-        'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
-      );
-  }
-
   //
   // due to high amount of Microsoft spam we are blocking their bounces
   // if from postmaster@outlook.com and message is "Undeliverable: "
@@ -356,7 +342,6 @@ function isArbitrary(session, headers) {
   // which is Microsoft's outbound email infrastructure. This ensures we only apply
   // these checks to messages that have actually been processed by Microsoft's systems.
   //
-  /*
   if (
     session.resolvedClientHostname &&
     session.resolvedClientHostname.endsWith('.outbound.protection.outlook.com')
@@ -370,34 +355,63 @@ function isArbitrary(session, headers) {
     // CHECK 1: Authentication Failures
     // --------------------------------
     // Block if Microsoft detected that the original sender failed authentication.
-    // Legitimate email from Microsoft 365 tenants will have spf=pass.
+    // According to RFC 7489 (DMARC), a message passes authentication if at least
+    // one of SPF, DKIM, or DMARC passes. We must check all three and only block
+    // if none of them pass.
     //
-    // This check catches:
+    // This check catches messages that fail all authentication methods:
     // - SPF failures: Sender IP not authorized by domain's SPF record
     // - SPF softfails: Domain owner suggests IP is probably not authorized
+    // - DKIM failures: Message signature verification failed
     // - DMARC failures: Domain's DMARC policy failed
     //
-    // NOTE: We do NOT check for spf=none (no SPF record) because:
-    // - Many legitimate small/medium businesses don't implement SPF
-    // - spf=none indicates absence of authentication, not authentication failure
-    // - Blocking spf=none would cause excessive false positives
+    // NOTE: We do NOT check for spf=none or dkim=none (no record) because:
+    // - Many legitimate small/medium businesses don't implement SPF/DKIM
+    // - spf=none/dkim=none indicates absence of authentication, not failure
+    // - Blocking for no SPF/DKIM would cause excessive false positives
     // - Community consensus: "Blocking for no SPF is horrible"
     //
-    // Example from analyzed spam:
+    // IMPORTANT: Per RFC 7489, we only block if ALL authentication methods fail.
+    // If any one of SPF, DKIM, or DMARC passes, the message should be allowed.
+    //
+    // Example legitimate forwarded email (should NOT be blocked):
+    // X-MS-Exchange-Authentication-Results: spf=fail (sender IP changed)
+    //  smtp.mailfrom=example.com; dkim=pass (signature verified)
+    //  header.d=example.com;dmarc=pass action=none header.from=example.com;
+    //
+    // Example spam (should be blocked):
     // X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 185.227.111.180)
-    //  smtp.mailfrom=smssa.moe.edu.bn; dkim=none (message not signed)
-    //  header.d=none;dmarc=none action=none header.from=smssa.moe.edu.bn;
+    //  smtp.mailfrom=smssa.moe.edu.bn; dkim=fail (signature verification failed)
+    //  header.d=none;dmarc=fail action=none header.from=smssa.moe.edu.bn;
     //
     if (msAuthHeader) {
       const lowerMsAuthHeader = msAuthHeader.toLowerCase();
-      if (
-        lowerMsAuthHeader.includes('spf=fail') ||
-        lowerMsAuthHeader.includes('spf=softfail') ||
-        lowerMsAuthHeader.includes('dmarc=fail')
-      ) {
-        throw new SMTPError(
-          'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
-        );
+
+      // Check if SPF passed
+      const spfPass = lowerMsAuthHeader.includes('spf=pass');
+
+      // Check if DKIM passed
+      const dkimPass = lowerMsAuthHeader.includes('dkim=pass');
+
+      // Check if DMARC passed
+      const dmarcPass = lowerMsAuthHeader.includes('dmarc=pass');
+
+      // Only block if ALL authentication methods failed (none passed)
+      // Per RFC 7489: at least one of SPF, DKIM, or DMARC must pass
+      if (!spfPass && !dkimPass && !dmarcPass) {
+        // Additionally verify that at least one method actually failed
+        // (not just absent) to avoid blocking messages with no auth headers
+        const spfFailed =
+          lowerMsAuthHeader.includes('spf=fail') ||
+          lowerMsAuthHeader.includes('spf=softfail');
+        const dkimFailed = lowerMsAuthHeader.includes('dkim=fail');
+        const dmarcFailed = lowerMsAuthHeader.includes('dmarc=fail');
+
+        if (spfFailed || dkimFailed || dmarcFailed) {
+          throw new SMTPError(
+            'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+          );
+        }
       }
     }
 
@@ -591,7 +605,6 @@ function isArbitrary(session, headers) {
       }
     }
   }
-  */
 
   /*
   // Postmark has refused to do any KYC process to prevent Cash App scammers
