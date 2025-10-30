@@ -22,8 +22,8 @@ server {
     # HTTPS Configuration
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
-    ssl_certificate /etc/nginx/ssl/cert.pem;
-    ssl_certificate_key /etc/nginx/ssl/key.pem;
+    ssl_certificate /var/www/production/.ssl-ca;
+    ssl_certificate_key /var/www/production/.ssl-key;
 {% else %}
     # HTTP Configuration
     listen 80;

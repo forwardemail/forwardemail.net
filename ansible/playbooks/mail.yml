@@ -182,13 +182,13 @@
     - name: Allow http
       ufw:
         rule: allow
-        port: "{{ lookup('env', 'PROXY_PORT') }}"
+        port: "{{ lookup('env', 'MAIL_PROXY_PORT') }}"
         proto: tcp
 
     - name: Allow https
       ufw:
         rule: allow
-        port: "{{ lookup('env', 'HTTP_PORT') }}"
+        port: "{{ lookup('env', 'MAIL_HTTP_PORT') }}"
         proto: tcp
 
     - name: "Update ufw before.rules until #21 is resolved"
@@ -210,14 +210,6 @@
         owner: deploy
         group: deploy
         mode: '0755'
-
-    - name: Create data directory
-      file:
-        path: /var/www/snappymail/data
-        state: directory
-        owner: www-data
-        group: www-data
-        mode: '0700'
 
     ##
     # Deploy Application
