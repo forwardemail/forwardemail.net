@@ -245,15 +245,15 @@
         chdir: /var/www/snappymail
       become_user: deploy
 
-    - name: Sync configuration
-      command: ./scripts/sync-config.sh
+    - name: Run build script to sync customizations
+      command: ./scripts/build.sh
       args:
         chdir: /var/www/snappymail
       become_user: deploy
 
     - name: Set permissions on data directory
       file:
-        path: /var/www/snappymail/data
+        path: /var/www/snappymail/mail/data
         state: directory
         owner: www-data
         group: www-data

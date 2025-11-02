@@ -33,7 +33,7 @@ server {
     server_name {{ lookup('env', 'MAIL_SERVER_NAME') | default('mail.forwardemail.net') }};
 
     # Document root
-    root {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}/snappymail-upstream;
+    root {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}/mail;
     index index.php;
 
     # Charset
