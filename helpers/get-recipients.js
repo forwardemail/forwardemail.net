@@ -3,21 +3,22 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const isSANB = require('is-string-and-not-blank');
+const ms = require('ms');
 const pMap = require('p-map');
 const safeStringify = require('fast-safe-stringify');
-const ms = require('ms');
-const isSANB = require('is-string-and-not-blank');
+const { getPublicSuffix } = require('tldts');
 const { isPort, isURL, isIP, isFQDN } = require('@forwardemail/validator');
-const _ = require('#helpers/lodash');
 
 const DenylistError = require('#helpers/denylist-error');
 const SMTPError = require('#helpers/smtp-error');
+const _ = require('#helpers/lodash');
 const combineErrors = require('#helpers/combine-errors');
 const config = require('#config');
 const env = require('#config/env');
 const getErrorCode = require('#helpers/get-error-code');
-const getSettings = require('#helpers/get-settings');
 const getForwardingAddresses = require('#helpers/get-forwarding-addresses');
+const getSettings = require('#helpers/get-settings');
 const isDenylisted = require('#helpers/is-denylisted');
 const isSilentBanned = require('#helpers/is-silent-banned');
 const logger = require('#helpers/logger');
@@ -209,13 +210,18 @@ async function getRecipients(session, scan) {
             customAllowlist.includes(session.resolvedClientHostname)
           )
             pass = true;
-          else if (
-            session.resolvedRootClientHostname &&
-            (customAllowlist.includes(session.resolvedRootClientHostname) ||
-              session.resolvedRootClientHostname === env.WEB_HOST)
-          )
-            pass = true;
-          else if (
+          else if (session.resolvedRootClientHostname) {
+            if (
+              customAllowlist.includes(session.resolvedRootClientHostname) ||
+              session.resolvedRootClientHostname === env.WEB_HOST
+            ) {
+              pass = true;
+            } else {
+              // Check wildcard TLD
+              const tld = getPublicSuffix(session.resolvedRootClientHostname);
+              if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
+            }
+          } else if (
             session.originalFromAddress &&
             customAllowlist.includes(session.originalFromAddress)
           )
@@ -226,6 +232,11 @@ async function getRecipients(session, scan) {
             const root = parseRootDomain(domain);
             if (customAllowlist.includes(domain)) pass = true;
             else if (customAllowlist.includes(root)) pass = true;
+            else {
+              // Check wildcard TLD
+              const tld = getPublicSuffix(domain);
+              if (tld && customAllowlist.includes(`*.${tld}`)) pass = true;
+            }
           }
 
           if (!pass)
@@ -243,12 +254,15 @@ async function getRecipients(session, scan) {
             customDenylist.includes(session.resolvedClientHostname)
           )
             pass = false;
-          else if (
-            session.resolvedRootClientHostname &&
-            customDenylist.includes(session.resolvedRootClientHostname)
-          )
-            pass = false;
-          else if (
+          else if (session.resolvedRootClientHostname) {
+            if (customDenylist.includes(session.resolvedRootClientHostname)) {
+              pass = false;
+            } else {
+              // Check wildcard TLD
+              const tld = getPublicSuffix(session.resolvedRootClientHostname);
+              if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
+            }
+          } else if (
             session.originalFromAddress &&
             customDenylist.includes(session.originalFromAddress)
           )
@@ -259,6 +273,11 @@ async function getRecipients(session, scan) {
             const root = parseRootDomain(domain);
             if (customDenylist.includes(domain)) pass = false;
             else if (customDenylist.includes(root)) pass = false;
+            else {
+              // Check wildcard TLD
+              const tld = getPublicSuffix(domain);
+              if (tld && customDenylist.includes(`*.${tld}`)) pass = false;
+            }
           }
 
           if (!pass)

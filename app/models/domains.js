@@ -29,6 +29,7 @@ const striptags = require('striptags');
 const { boolean } = require('boolean');
 const { convert } = require('html-to-text');
 const { isPort, isURL } = require('@forwardemail/validator');
+const tlds = require('tlds');
 
 const pkg = require('../../package.json');
 const _ = require('#helpers/lodash');
@@ -131,6 +132,16 @@ async function crawlDisposable() {
 */
 
 const REGEX_VERIFICATION = new RE2(/[^\da-z]/i);
+
+const WILDCARD_TLDS = new Set();
+
+for (const tld of tlds) {
+  WILDCARD_TLDS.add(`*.${punycode.toASCII(tld)}`);
+}
+
+function isWildcardTLD(v) {
+  return WILDCARD_TLDS.has(v);
+}
 
 const conn = mongoose.connections.find(
   (conn) => conn[Symbol.for('connection.name')] === 'MONGO_URI'
@@ -593,8 +604,10 @@ Domains.pre('validate', function (next) {
     // cleanup allowlist/denylist
     this[key] = _.compact(_.uniq(this[key].map((v) => v.toLowerCase().trim())));
 
-    // must be IP, FQDN, or email
-    this[key] = this[key].filter((v) => isIP(v) || isFQDN(v) || isEmail(v));
+    // must be IP, FQDN, email, or wildcard TLD
+    this[key] = this[key].filter(
+      (v) => isIP(v) || isFQDN(v) || isEmail(v) || isWildcardTLD(v)
+    );
 
     // can have at most 1000 entries in each list (arbitrary, can increase later)
     if (this[key].length > 1000)

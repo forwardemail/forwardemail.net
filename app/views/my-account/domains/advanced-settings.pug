@@ -662,7 +662,7 @@ block body
               h2.h6.card-header= t("Allowlisted Senders")
               .card-body
                 .alert.alert-danger.small!= t("<strong>Caution:</strong> If any values are entered below, then we will only allow these specific senders to send email to your domain <code class='alert-link notranslate'>%s</code> (all others will be rejected).", domain.name)
-                .alert.alert-info.small= t("Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.")
+                .alert.alert-info.small= t("Enter IP addresses, domain names, wildcard TLD's (e.g. <code>*.good</code> to allow only domains with a <code>.good</code> extension/TLD, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.")
                 label(for="#textarea-allowlist")= t("Allowlist")
                 textarea#textarea-allowlist.form-control(
                   name="allowlist",
@@ -681,7 +681,7 @@ block body
             )
               h2.h6.card-header= t("Denylisted Senders")
               .card-body
-                .alert.alert-info.small= t("Enter IP addresses, domain names, and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.")
+                .alert.alert-info.small= t("Enter IP addresses, domain names, wildcard TLD's (e.g. <code>*.bad</code> to block all domains with a <code>.bad</code> extension/TLD), and/or email addresses below.  You can use line breaks, commas, and/or spaces as delimiters.")
                 label(for="#textarea-denylist")= t("Denylist")
                 textarea#textarea-denylist.form-control(
                   name="denylist",
