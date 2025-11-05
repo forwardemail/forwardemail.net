@@ -89,4 +89,4 @@ env[TMPDIR] = /tmp
 env[TEMP] = /tmp
 
 ; SnappyMail specific data folder path
-env[APP_DATA_FOLDER_PATH] = {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}/mail/data
+env[APP_DATA_FOLDER_PATH] = {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail') }}/dist/data

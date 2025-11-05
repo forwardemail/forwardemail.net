@@ -253,7 +253,7 @@
 
     - name: Set permissions on data directory
       file:
-        path: /var/www/snappymail/mail/data
+        path: /var/www/snappymail/dist/data
         state: directory
         owner: www-data
         group: www-data

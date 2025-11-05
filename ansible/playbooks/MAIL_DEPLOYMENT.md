@@ -18,13 +18,11 @@ forwardemail.net (main monorepo)
                 └── snappymail-site.conf.j2
 
 Deployed to: /var/www/snappymail/
-    ├── mail/                 # SnappyMail (via mail-overrides submodule)
-    │   └── data/            # Runtime data directory
-    ├── plugins/             # Forward Email custom plugins
-    ├── themes/              # Forward Email custom themes
-    ├── configs/             # Configuration files
+    ├── dist/                 # SnappyMail build output (served by Nginx)
+    │   └── data/             # Runtime data directory
+    ├── configs/              # Configuration files
     └── scripts/
-        └── build.sh         # Syncs customizations into mail/
+        └── build.sh         # Generates dist/ from the clean submodule
 ```
 
 ## Repository Structure
@@ -45,8 +43,8 @@ The deployment uses a layered approach:
    ansible-playbook mail.yml
      → Clone mail-overrides
      → Initialize mail/ submodule
-     → Run build.sh (syncs plugins/themes into mail/)
-     → Configure Nginx to serve from /var/www/snappymail/mail/
+     → Run build.sh (produces dist/ with overrides applied)
+     → Configure Nginx to serve from /var/www/snappymail/dist/
    ```
 
 ## Environment Variables
@@ -141,8 +139,8 @@ ansible-playbook ansible/playbooks/mail.yml
    - Creates `/var/www/snappymail` directory (owned by deploy user)
    - Clones mail-overrides repository
    - Initializes mail/ submodule recursively
-   - Runs `./scripts/build.sh` to sync customizations
-   - Sets permissions on data directory (www-data)
+   - Runs `./scripts/build.sh` to generate `dist/` with customizations
+   - Sets permissions on `dist/data` (www-data)
 
 6. **Nginx Site Configuration**
    - Deploys site config to `/etc/nginx/sites-available/snappymail.conf`
@@ -156,8 +154,8 @@ ansible-playbook ansible/playbooks/mail.yml
 ## File Paths
 
 - **Application Root**: `/var/www/snappymail/`
-- **Document Root**: `/var/www/snappymail/mail/` (served by Nginx)
-- **Data Directory**: `/var/www/snappymail/mail/data/` (www-data:www-data, 0700)
+- **Document Root**: `/var/www/snappymail/dist/` (served by Nginx)
+- **Data Directory**: `/var/www/snappymail/dist/data/` (www-data:www-data, 0700)
 - **Nginx Config**: `/etc/nginx/sites-available/snappymail.conf`
 - **PHP-FPM Pool**: `/etc/php/8.2/fpm/pool.d/www.conf`
 - **PHP Settings**: `/etc/php/8.2/fpm/conf.d/99-snappymail.ini`
@@ -221,14 +219,14 @@ sudo -u deploy git submodule update --init --recursive
 ```bash
 cd /var/www/snappymail
 sudo -u deploy ./scripts/build.sh
-ls -la mail/snappymail/v/0.0.0/plugins/forwardemail/
+ls -la dist/snappymail/v/0.0.0/plugins/forwardemail/
 ```
 
 **3. Permission issues**
 ```bash
 # Data directory should be www-data:www-data
-sudo chown -R www-data:www-data /var/www/snappymail/mail/data
-sudo chmod 700 /var/www/snappymail/mail/data
+sudo chown -R www-data:www-data /var/www/snappymail/dist/data
+sudo chmod 700 /var/www/snappymail/dist/data
 ```
 
 **4. PHP-FPM socket errors**
