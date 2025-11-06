@@ -1,0 +1,3 @@
+[submodule "mail-overrides"]
+	path = mail-overrides
+	url = https://github.com/forwardemail/mail-overrides.git
