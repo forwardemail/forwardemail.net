@@ -184,7 +184,7 @@
     "lazyload": "2.0.0-rc.2",
     "libmime": "5.3.7",
     "lodash": "4.17.21",
-    "mailauth": "4.8.6",
+    "mailauth": "4.10.0",
     "mailparser": "3.7.4",
     "mailsplit": "5.4.5",
     "mandarin": "5.1.4",
