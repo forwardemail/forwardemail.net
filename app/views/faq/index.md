@@ -4157,6 +4157,7 @@ This new rule allows only the following domain name extensions to be used on our
   <li class="list-inline-item"><code class="notranslate">by</code></li>
   <li class="list-inline-item"><code class="notranslate">bzh</code></li>
   <li class="list-inline-item"><code class="notranslate">ca</code></li>
+  <li class="list-inline-item"><code class="notranslate">cat</code></li>
   <li class="list-inline-item"><code class="notranslate">cc</code></li>
   <li class="list-inline-item"><code class="notranslate">cd</code></li>
   <li class="list-inline-item"><code class="notranslate">ch</code></li>

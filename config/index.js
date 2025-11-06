@@ -1471,6 +1471,7 @@ const config = {
     'br',
     'by',
     'ca',
+    'cat',
     'cc',
     'cd',
     'ch',
