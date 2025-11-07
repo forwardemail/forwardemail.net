@@ -73,11 +73,11 @@ catch_workers_output = yes
 ; ========
 
 ; Limit allowed file operations to specific paths
-php_admin_value[open_basedir] = {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail', true) }}:/tmp
+php_admin_value[open_basedir] = {{ lookup('env', 'MAIL_APP_PATH') | default('/var/www/snappymail', true) }}:/tmp:/dev/shm/snappymail-cache
 
 ; Disable dangerous PHP functions
-; Note: SnappyMail needs proc_open and shell_exec for GPG operations
-php_admin_value[disable_functions] = exec,passthru,system,popen,curl_exec,curl_multi_exec,parse_ini_file,show_source
+; Note: SnappyMail needs proc_open, shell_exec for GPG operations, and parse_ini_file for config reading
+php_admin_value[disable_functions] = exec,passthru,system,popen,curl_exec,curl_multi_exec,show_source
 
 ; Environment Variables
 ; =====================

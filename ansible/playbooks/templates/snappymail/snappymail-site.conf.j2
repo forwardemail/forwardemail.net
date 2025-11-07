@@ -1,12 +1,6 @@
 # ForwardEmail SnappyMail Site Configuration
 # ===========================================
 
-# Upstream PHP-FPM backend
-upstream php-fpm {
-    server unix:/run/php/php8.2-fpm.sock;
-    keepalive 32;  # Keep connections alive for better performance
-}
-
 {% if lookup('env', 'MAIL_SSL_ENABLED') | default('true', true) != 'false' %}
 # Redirect HTTP to HTTPS
 server {
@@ -105,7 +99,7 @@ server {
         fastcgi_param PATH_TRANSLATED $document_root$fastcgi_path_info;
 
         # Pass to PHP-FPM
-        fastcgi_pass php-fpm;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
         fastcgi_index index.php;
 
         # PHP-FPM connection settings
@@ -183,7 +177,7 @@ server {
         deny all;
         include fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass php-fpm;
+        fastcgi_pass unix:/run/php/php8.2-fpm.sock;
     }
 
     # Nginx stub status (restrict to localhost)
