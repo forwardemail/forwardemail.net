@@ -304,6 +304,11 @@
       become_user: deploy
       when: not snappymail_built.stat.exists
 
+    - name: Remove old dist directory if it exists
+      file:
+        path: /var/www/snappymail/dist
+        state: absent
+
     - name: Run build script to sync customizations
       command: ./scripts/build.sh
       args:
