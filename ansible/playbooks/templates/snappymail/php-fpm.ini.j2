@@ -14,7 +14,7 @@ error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT
 
 ; Session handling
 session.save_handler = redis
-session.save_path = "{{ lookup('env', 'MAIL_REDIS_URL') | default('tcp://127.0.0.1:6379?database=0') }}"
+session.save_path = "{{ lookup('env', 'MAIL_REDIS_URL') | default('tcp://127.0.0.1:6379?database=0', true) }}"
 ; Session timeout: 8 hours (28800 seconds) - increased for better UX
 session.gc_maxlifetime = 28800
 session.cookie_httponly = 1
@@ -41,4 +41,4 @@ file_uploads = On
 max_file_uploads = 20
 
 ; Date timezone
-date.timezone = {{ lookup('env', 'MAIL_TIMEZONE') | default('UTC') }}
+date.timezone = {{ lookup('env', 'MAIL_TIMEZONE') | default('UTC', true) }}

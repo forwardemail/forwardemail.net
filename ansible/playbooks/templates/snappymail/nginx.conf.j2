@@ -15,7 +15,7 @@ error_log /var/log/nginx/error.log warn;
 
 events {
     # Maximum simultaneous connections per worker
-    worker_connections {{ lookup('env', 'MAIL_NGINX_WORKER_CONNECTIONS') | default('4096') }};
+    worker_connections {{ lookup('env', 'MAIL_NGINX_WORKER_CONNECTIONS') | default('4096', true) }};
 
     # Use efficient connection processing method
     use epoll;
@@ -45,7 +45,7 @@ http {
 
     # Buffer sizes (for handling larger email attachments)
     client_body_buffer_size 128k;
-    client_max_body_size {{ lookup('env', 'MAIL_MAX_UPLOAD_SIZE') | default('50M') }};
+    client_max_body_size {{ lookup('env', 'MAIL_MAX_UPLOAD_SIZE') | default('50M', true) }};
     client_header_buffer_size 1k;
     large_client_header_buffers 4 8k;
 
@@ -64,10 +64,10 @@ http {
     limit_conn_zone $binary_remote_addr zone=addr:10m;
 
     # Define zone for API rate limiting (10MB zone, 10 req/sec)
-    limit_req_zone $binary_remote_addr zone=api:10m rate={{ lookup('env', 'MAIL_RATE_LIMIT_API') | default('10') }}r/s;
+    limit_req_zone $binary_remote_addr zone=api:10m rate={{ lookup('env', 'MAIL_RATE_LIMIT_API') | default('10', true) }}r/s;
 
     # Zone for general page requests (30 req/sec)
-    limit_req_zone $binary_remote_addr zone=pages:10m rate={{ lookup('env', 'MAIL_RATE_LIMIT_PAGES') | default('30') }}r/s;
+    limit_req_zone $binary_remote_addr zone=pages:10m rate={{ lookup('env', 'MAIL_RATE_LIMIT_PAGES') | default('30', true) }}r/s;
 
     # Status code for rate limit responses
     limit_req_status 429;
