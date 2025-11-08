@@ -557,7 +557,7 @@ Use these settings in your camera, printer, scanner, or other legacy device:
 
 Simply configure your device with these settings and it will send emails directly through Forward Email without needing a local relay server.
 
-For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#legacy-tls-support).
+For more details, see the [Forward Email FAQ on Legacy TLS Support](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings).
 
 ### Option 2: Set Up a Postfix SMTP Relay {#option-2-set-up-a-postfix-smtp-relay}
 
