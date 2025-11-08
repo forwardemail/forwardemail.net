@@ -282,6 +282,16 @@ footer.mt-auto(aria-label=t("Footer"))
               href=l("/guides/send-mail-as-gmail-custom-domain")
             )
               = t("Send Mail As with Gmail")
+            li: a.d-block.text-white.py-2.py-md-0(href=l("/guides/"))
+              = t("NAS Email Setup Guide")
+            li: a.d-block.text-white.py-2.py-md-0(
+              href=l("/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility")
+            )
+              = t("Printer, Scanner, Fax, & Camera Email Setup")
+            li: a.d-block.text-white.py-2.py-md-0(
+              href=l("/guides/raspberry-pi-ftp-server-email-relay-security-camera")
+            )
+              = t("Raspberry Pi FTP Server with Email Camera Relay")
             if isBot(ctx.get('User-Agent'))
               each provider in nsProviders
                 li: a.d-block.text-white.py-2.py-md-0(

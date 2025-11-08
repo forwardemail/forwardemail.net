@@ -530,6 +530,23 @@ nav.navbar(class=navbarClasses.join(" "))
                 )
                   = t("Send Mail As with Gmail")
                 hr.dropdown-divider
+                h6.dropdown-header= t("Device Configurations")
+                a.dropdown-item(
+                  href=l("/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas"),
+                  class=ctx.pathWithoutLocale === "/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas" ? "active" : ""
+                )
+                  = t("NAS Email Setup Guide")
+                a.dropdown-item(
+                  href=l("/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility"),
+                  class=ctx.pathWithoutLocale === "/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility" ? "active" : ""
+                )
+                  = t("Printer, Scanner, Fax, & Camera Email Setup")
+                a.dropdown-item(
+                  href=l("/guides/raspberry-pi-ftp-server-email-relay-security-camera"),
+                  class=ctx.pathWithoutLocale === "/guides/raspberry-pi-ftp-server-email-relay-security-camera" ? "active" : ""
+                )
+                  = t("Raspberry Pi FTP Server with Email Camera Relay")
+                hr.dropdown-divider
                 h6.dropdown-header= t("Email Setup Guides")
                 .card-columns.small
                   each provider in nsProviders

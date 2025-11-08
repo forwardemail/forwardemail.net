@@ -466,6 +466,22 @@ localeRouter
     render('guides/port-25-blocked-by-isp-workaround')
   )
   .get(
+    '/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas',
+    render(
+      'guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas'
+    )
+  )
+  .get(
+    '/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility',
+    render(
+      'guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility'
+    )
+  )
+  .get(
+    '/guides/raspberry-pi-ftp-server-email-relay-security-camera',
+    render('guides/raspberry-pi-ftp-server-email-relay-security-camera')
+  )
+  .get(
     '/guides/newsletter-with-listmonk',
     render('guides/newsletter-with-listmonk')
   )

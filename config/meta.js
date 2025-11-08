@@ -199,9 +199,23 @@ module.exports = function (config, isSitemap = false) {
       'SMTP Integration Examples',
       "Integrate with Forward Email's SMTP service using various programming languages, frameworks, and email clients. Our SMTP service is designed to be reliable, secure, and easy to integrate with your existing applications."
     ],
+
     '/guides/port-25-blocked-by-isp-workaround': [
       'Port 25 blocked by ISP',
       'Workaround port blocking set by your Internet Service Provider on port 25.'
+    ],
+    '/guides/printer-camera-fax-scanner-email-smtp-setup-guide-tls-compatibility':
+      [
+        'Printer & Camera Email Setup: Fix SMTP & TLS Issues 2025',
+        'Fix printer scan-to-email, IP camera alerts & fax notifications. Complete SMTP setup guide for HP, Canon, Brother, Foscam & legacy TLS 1.0 devices.'
+      ],
+    '/guides/nas-email-notifications-smtp-setup-guide-synology-qnap-truenas': [
+      'NAS Email Setup Guide: SMTP Configuration for All Devices 2025',
+      'Complete NAS email notification setup guide for Synology, QNAP, TrueNAS, ReadyNAS & more. Fix TLS compatibility issues with Forward Email SMTP server.'
+    ],
+    '/guides/raspberry-pi-ftp-server-email-relay-security-camera': [
+      'Raspberry Pi FTP Server with Email Relay for Security Cameras',
+      'Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models.'
     ],
     '/domain-registration': [
       'Register Custom Domain for Email',

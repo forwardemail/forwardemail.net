@@ -13493,5 +13493,16 @@
   "Phishing emails": "Phishing emails",
   "Two factor reminder emails": "Two factor reminder emails",
   "Welcome emails": "Welcome emails",
-  "Changelog and newsletters": "Changelog and newsletters"
+  "Changelog and newsletters": "Changelog and newsletters",
+  "Device Configurations": "Device Configurations",
+  "NAS Email Setup Guide": "NAS Email Setup Guide",
+  "Printer/Scanner/Fax/Camera Email Setup": "Printer/Scanner/Fax/Camera Email Setup",
+  "Raspberry Pi FTP Server with Email Camera Relay": "Raspberry Pi FTP Server with Email Camera Relay",
+  "Printer, Scanner, Fax, & Camera Email Setup": "Printer, Scanner, Fax, & Camera Email Setup",
+  "NAS Email Setup Guide: SMTP Configuration for All Devices 2025": "NAS Email Setup Guide: SMTP Configuration for All Devices 2025",
+  "Complete NAS email notification setup guide for Synology, QNAP, TrueNAS, ReadyNAS & more. Fix TLS compatibility issues with Forward Email SMTP server.": "Complete NAS email notification setup guide for Synology, QNAP, TrueNAS, ReadyNAS & more. Fix TLS compatibility issues with Forward Email SMTP server.",
+  "Printer & Camera Email Setup: Fix SMTP & TLS Issues 2025": "Printer & Camera Email Setup: Fix SMTP & TLS Issues 2025",
+  "Fix printer scan-to-email, IP camera alerts & fax notifications. Complete SMTP setup guide for HP, Canon, Brother, Foscam & legacy TLS 1.0 devices.": "Fix printer scan-to-email, IP camera alerts & fax notifications. Complete SMTP setup guide for HP, Canon, Brother, Foscam & legacy TLS 1.0 devices.",
+  "Raspberry Pi FTP Server with Email Relay for Security Cameras": "Raspberry Pi FTP Server with Email Relay for Security Cameras",
+  "Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models.": "Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models."
 }

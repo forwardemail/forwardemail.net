@@ -3,3 +3,4 @@ test/**/snapshots/**/*.md
 locales/README.md
 *-*.md
 WHITEPAPER.md
+mail-overrides
