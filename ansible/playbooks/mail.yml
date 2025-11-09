@@ -143,7 +143,6 @@
         owner: root
         group: root
         mode: '0644'
-        validate: 'nginx -t -c %s'
       notify: Reload Nginx
 
     - name: Enable Nginx service
