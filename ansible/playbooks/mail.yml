@@ -330,7 +330,7 @@
       become_user: deploy
       environment:
         HOME: /home/deploy
-        FORWARDEMAIL_VERSION: "{{ lookup('env', 'FORWARDEMAIL_VERSION') | default('', true) }}"
+        APP_VERSION: "{{ lookup('env', 'APP_VERSION') | default('', true) }}"
 
     - name: Set permissions on data directory
       file:
