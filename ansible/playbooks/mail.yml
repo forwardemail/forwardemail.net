@@ -292,14 +292,13 @@
       debug:
         msg: "Node.js version: {{ node_version.stdout }}"
 
-    - name: Read package.json for SnappyMail app version
-      slurp:
-        src: /var/www/snappymail/package.json
-      register: snappymail_package_json
+    - name: Load local package.json for SnappyMail app version
+      set_fact:
+        snappymail_package_json: "{{ lookup('file', playbook_dir + '/../package.json') | from_json }}"
 
     - name: Set SnappyMail app version fact
       set_fact:
-        snappymail_app_version: "{{ (snappymail_package_json.content | b64decode | from_json).version | default('0.0.0', true) }}"
+        snappymail_app_version: "{{ snappymail_package_json.version | default('0.0.0', true) }}"
 
     - name: Check if SnappyMail is already built
       stat:
