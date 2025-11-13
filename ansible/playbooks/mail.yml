@@ -292,9 +292,18 @@
       debug:
         msg: "Node.js version: {{ node_version.stdout }}"
 
+    - name: Read package.json for SnappyMail app version
+      slurp:
+        src: /var/www/snappymail/package.json
+      register: snappymail_package_json
+
+    - name: Set SnappyMail app version fact
+      set_fact:
+        snappymail_app_version: "{{ (snappymail_package_json.content | b64decode | from_json).version | default('0.0.0', true) }}"
+
     - name: Check if SnappyMail is already built
       stat:
-        path: /var/www/snappymail/mail/snappymail/v/0.0.0/static/css/boot.min.css
+        path: "/var/www/snappymail/mail/snappymail/v/{{ snappymail_app_version | default('0.0.0', true) }}/static/css/boot.min.css"
       register: snappymail_built
 
     - name: Install SnappyMail dependencies
@@ -330,7 +339,7 @@
       become_user: deploy
       environment:
         HOME: /home/deploy
-        APP_VERSION: "{{ lookup('env', 'APP_VERSION') | default('', true) }}"
+        APP_VERSION: "{{ snappymail_app_version | default('0.0.0', true) }}"
 
     - name: Set permissions on data directory
       file:
