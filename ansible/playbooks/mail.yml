@@ -292,9 +292,13 @@
       debug:
         msg: "Node.js version: {{ node_version.stdout }}"
 
+    - name: Derive forwardemail.net repository root
+      set_fact:
+        forwardemail_repo_root: "{{ playbook_dir | dirname | dirname }}"
+
     - name: Load local package.json for SnappyMail app version
       set_fact:
-        snappymail_package_json: "{{ lookup('file', playbook_dir + '/../package.json') | from_json }}"
+        snappymail_package_json: "{{ lookup('file', forwardemail_repo_root + '/package.json') | from_json }}"
 
     - name: Set SnappyMail app version fact
       set_fact:
