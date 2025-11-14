@@ -26,11 +26,6 @@ This guide covers email setup for 75+ NAS providers with step-by-step instructio
 * [Western Digital My Cloud Configuration](#western-digital-my-cloud-configuration)
 * [TrueNAS Email Configuration](#truenas-email-configuration)
 * [OpenMediaVault Configuration](#openmediavault-configuration)
-* [Troubleshooting Common Configuration Issues](#troubleshooting-common-configuration-issues)
-* [Security Considerations and Best Practices](#security-considerations-and-best-practices)
-* [Advanced Configuration Options](#advanced-configuration-options)
-* [Conclusion](#conclusion)
-* [References](#references)
 * [Raspberry Pi NAS Configuration](#raspberry-pi-nas-configuration)
   * [Initial Raspberry Pi Setup](#initial-raspberry-pi-setup)
   * [Samba File Sharing Configuration](#samba-file-sharing-configuration)
@@ -223,238 +218,159 @@ Consider the security implications of using legacy TLS protocols. While Forward 
 
 ## TerraMaster NAS Configuration {#terramaster-nas-configuration}
 
-TerraMaster NAS devices running TOS (TerraMaster Operating System) provide solid email notification capabilities with good TLS 1.2 support. However, some users have reported configuration challenges after TOS 6 updates, which can be resolved with proper setup procedures.
+TerraMaster devices running TOS 6.x support modern TLS and work well with Forward Email's standard ports.
 
-Access your TerraMaster device through its web interface by navigating to the device's IP address. Log in with your administrator credentials and navigate to the System settings, then select the Notification section to configure email alerts.
+> \[!NOTE]
+> TerraMaster TOS 6.x provides comprehensive email notification features. Make sure your firmware is up to date for the best compatibility.
 
-In the email notification settings, enable email notifications and select "Custom SMTP Server" as your configuration method. This provides the flexibility needed to configure Forward Email's SMTP settings properly.
+1. **Access System Settings**
+   * Log into your TerraMaster web interface
+   * Navigate to **Control Panel** > **Notification**
 
-Enter smtp.forwardemail.net as the SMTP server address. For TLS configuration, select "SSL/TLS" encryption and configure port 465 for the most reliable connection. Some TOS versions may require specific TLS settings to work properly with external SMTP servers.
+2. **Configure SMTP Settings**
+   * Server: `smtp.forwardemail.net`
+   * Port: `465` (SSL/TLS) or `587` (STARTTLS)
+   * Username: Your Forward Email alias
+   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-If you encounter TLS-related errors after TOS 6 updates, try using port 587 with STARTTLS encryption instead of port 465 with SSL/TLS. This alternative configuration often resolves compatibility issues that some users experience with newer TOS versions.
+3. **Enable Notifications**
+   * Check the notification types you want to receive
+   * Test the configuration with the built-in test function
 
-Configure authentication by entering your Forward Email alias as the username and your generated password. TerraMaster devices support standard SMTP authentication, which integrates well with Forward Email's security requirements.
-
-Set up sender information with a descriptive name and your Forward Email alias as the sender address. This ensures that notifications are properly identified and can be filtered or organized in your email client.
-
-Configure recipient addresses for different types of notifications. TOS allows you to specify multiple recipients and can send different alert types to different email addresses, providing flexibility in notification management.
-
-Test the email configuration using TOS's built-in test function. If the test fails, verify your TLS settings and consider trying the alternative port configuration (587 with STARTTLS) if you initially configured port 465 with SSL/TLS.
-
-For users experiencing persistent issues with TOS 6, some community members have reported success by temporarily reverting to older TLS settings or using specific cipher configurations. However, these workarounds should be considered temporary solutions while TerraMaster addresses compatibility issues in future updates.
+> \[!TIP]
+> TerraMaster devices work best with port `465` for SSL/TLS connections. If you experience issues, try port `587` with STARTTLS.
 
 ## ASUSTOR NAS Configuration {#asustor-nas-configuration}
 
-ASUSTOR NAS devices running ADM (ASUSTOR Data Master) provide excellent email notification capabilities with comprehensive TLS support and advanced configuration options. The system offers both simple setup for basic users and advanced features for enterprise environments.
+ASUSTOR devices with ADM 4.x have solid email notification support and work seamlessly with Forward Email.
 
-Access your ASUSTOR device's web interface by entering its IP address in a web browser. Navigate to Settings and select the Notification section, then click on "E-Mail" to configure email notifications.
+> \[!NOTE]
+> ASUSTOR ADM 4.x includes advanced notification filtering options. You can customize which events trigger email alerts.
 
-ASUSTOR provides multiple email service options, including preset configurations for popular providers and custom SMTP server setup. Select "Custom SMTP Server" to configure Forward Email's settings manually.
+1. **Open Notification Settings**
+   * Access ADM web interface
+   * Go to **Settings** > **Notification**
 
-Enter smtp.forwardemail.net as the SMTP server address. ASUSTOR's email system supports both SSL/TLS and STARTTLS encryption methods, allowing you to choose the configuration that works best with your network environment.
+2. **Set Up SMTP Configuration**
+   * SMTP Server: `smtp.forwardemail.net`
+   * Port: `465` (recommended) or `587`
+   * Authentication: Enable
+   * Username: Your Forward Email alias
+   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-For SSL/TLS connections, configure port 465 and select "SSL/TLS" as the encryption method. For STARTTLS connections, use port 587 and select "STARTTLS" as the encryption method. Both configurations provide equivalent security when properly implemented.
+3. **Configure Alert Types**
+   * Select which system events should trigger emails
+   * Set up recipient addresses
+   * Test the configuration
 
-Configure authentication credentials using your Forward Email alias as the username and your generated password. ASUSTOR supports various authentication methods, but standard username/password authentication provides the most reliable compatibility with Forward Email.
-
-Set up sender information with a descriptive display name and your Forward Email alias as the sender address. This information appears in the "From" field of notification emails, helping you identify the source of alerts.
-
-ASUSTOR's advanced notification system allows you to configure multiple email accounts and assign different notification types to different accounts. This feature is particularly useful in business environments where different types of alerts should go to different team members.
-
-Configure notification filtering to control which events trigger email alerts. ASUSTOR provides granular control over notification types, including system events, security alerts, backup status, application notifications, and hardware monitoring alerts.
-
-Test the email configuration using ASUSTOR's comprehensive test system. The device will send test notifications for different alert types, allowing you to verify that all notification categories are working correctly.
-
-ASUSTOR devices also support notification scheduling, allowing you to configure quiet hours when non-critical notifications are suppressed. This feature helps prevent notification overload while ensuring that critical alerts are always delivered immediately.
+> \[!IMPORTANT]
+> ASUSTOR devices require authentication to be explicitly enabled in the SMTP settings. Don't forget to check this option.
 
 ## Buffalo TeraStation Configuration {#buffalo-terastation-configuration}
 
-Buffalo TeraStation devices provide reliable email notification capabilities, though the specific configuration process varies depending on the model and firmware version. Newer TeraStation models support modern TLS protocols, while older models may require legacy compatibility settings.
+Buffalo TeraStation devices have limited but functional email notification capabilities. Setup is straightforward once you know where to look.
 
-Access your TeraStation's web interface by entering the device's IP address in a web browser. Navigate to the Management section and select "Email Notification" or "SMTP Settings" depending on your firmware version.
+> \[!CAUTION]
+> Buffalo TeraStation firmware updates are infrequent. Make sure you're using the latest available firmware for your model before configuring email.
 
-Enable email notifications and select custom SMTP server configuration. Enter smtp.forwardemail.net as the SMTP server address to use Forward Email's infrastructure for reliable notification delivery.
+1. **Access Web Configuration**
+   * Connect to your TeraStation's web interface
+   * Navigate to **System** > **Notification**
 
-For newer TeraStation models with TLS 1.2 support, configure port 465 for SSL/TLS connections or port 587 for STARTTLS connections. These standard ports provide optimal security and compatibility with current firmware versions.
+2. **Configure Email Settings**
+   * SMTP Server: `smtp.forwardemail.net`
+   * Port: `465` or `587`
+   * Username: Your Forward Email alias
+   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Enable SSL/TLS encryption
 
-Older TeraStation models that only support legacy TLS protocols should use Forward Email's compatibility ports. Configure port 2455 for SSL/TLS connections or port 2555 for STARTTLS connections when working with older firmware that doesn't support modern TLS versions.
+3. **Set Notification Preferences**
+   * Choose which events trigger emails (disk errors, temperature alerts, etc.)
+   * Enter recipient email addresses
+   * Save and test the configuration
 
-Configure SMTP authentication by selecting the appropriate authentication type and entering your Forward Email alias as the username. Use the password generated from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains) to ensure secure authentication.
-
-Set up sender and recipient information according to your notification requirements. TeraStation devices typically support multiple recipient addresses, allowing you to distribute alerts to different team members or backup email accounts.
-
-Buffalo's email system supports various notification types, including system status alerts, security notifications, backup completion reports, and hardware monitoring alerts. Configure these notification types based on your monitoring requirements and the criticality of different system events.
-
-Test the email configuration using the built-in test function. TeraStation devices will attempt to send a test message using your configured settings, providing immediate feedback about configuration success or any errors that need to be resolved.
-
-For TeraStation models in business environments, consider configuring notification scheduling to prevent non-critical alerts during off-hours. This helps maintain appropriate alert levels while ensuring that genuine emergencies are always reported immediately.
+> \[!NOTE]
+> Some older TeraStation models may have limited SMTP configuration options. Check your model's documentation for specific capabilities.
 
 ## Western Digital My Cloud Configuration {#western-digital-my-cloud-configuration}
 
-Western Digital My Cloud devices offer email notification capabilities that vary significantly depending on the specific model and firmware version. My Cloud OS 5 provides modern TLS support, while older My Cloud OS 3 devices may require legacy compatibility settings.
+Western Digital My Cloud devices running OS 5 support email notifications, though the interface can be a bit buried in the settings.
 
-Access your My Cloud device's web interface through its IP address or the WD Discovery application. Navigate to Settings and select the Notifications section to configure email alerts.
+> \[!WARNING]
+> Western Digital has discontinued support for many My Cloud models. Check if your device still receives firmware updates before relying on email notifications for critical alerts.
 
-For My Cloud OS 5 devices, enable email notifications and configure custom SMTP settings. Enter smtp.forwardemail.net as the SMTP server address and select the appropriate encryption method based on your security requirements.
+1. **Navigate to Settings**
+   * Open the My Cloud web dashboard
+   * Go to **Settings** > **General** > **Notifications**
 
-Configure port 465 for SSL/TLS connections or port 587 for STARTTLS connections on My Cloud OS 5 devices. These modern devices support current TLS protocols and can use Forward Email's standard SMTP ports without compatibility issues.
+2. **Configure SMTP Details**
+   * Mail Server: `smtp.forwardemail.net`
+   * Port: `465` (SSL) or `587` (TLS)
+   * Username: Your Forward Email alias
+   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Enable encryption
 
-My Cloud OS 3 devices may require legacy port configuration due to limited TLS support. If you encounter connection issues with standard ports, try using Forward Email's legacy compatibility ports (2455 for SSL/TLS or 2555 for STARTTLS).
+3. **Set Up Alert Types**
+   * Select notification categories (system alerts, disk health, etc.)
+   * Add recipient email addresses
+   * Test the email configuration
 
-Enter your Forward Email alias as the username and your generated password for SMTP authentication. My Cloud devices support standard authentication methods that work reliably with Forward Email's infrastructure.
-
-Configure sender information with a descriptive name and your Forward Email alias as the sender address. This helps identify the source of notifications and enables proper email filtering and organization.
-
-My Cloud devices support up to five recipient email addresses for notifications. Configure these addresses based on your monitoring requirements and the distribution of responsibilities in your organization or household.
-
-Set up notification types according to your monitoring needs. My Cloud devices can send alerts for system status changes, security events, backup completion, storage capacity warnings, and hardware issues.
-
-Test the email configuration using the device's built-in test function. My Cloud devices will send a test notification to verify that all settings are correct and that communication with Forward Email's servers is working properly.
-
-For users with multiple My Cloud devices, consider using consistent notification settings across all devices to simplify management and ensure uniform alert distribution. This approach helps maintain consistent monitoring coverage across your entire storage infrastructure.
+> \[!TIP]
+> My Cloud devices work more reliably with port `587` and STARTTLS. If port `465` doesn't work, try the alternative.
 
 ## TrueNAS Email Configuration {#truenas-email-configuration}
 
-TrueNAS systems, including both TrueNAS SCALE and TrueNAS CORE, provide enterprise-grade email notification capabilities with excellent TLS support and advanced configuration options. The system supports both traditional SMTP authentication and modern OAuth integration.
+TrueNAS (both SCALE and CORE) has excellent email notification support with detailed configuration options.
 
-Access your TrueNAS web interface by navigating to the system's IP address or hostname. Log in with administrator credentials and navigate to System Settings, then select "Email" to configure notification settings.
+> \[!NOTE]
+> TrueNAS provides some of the most comprehensive email notification features among NAS systems. You can configure detailed alert rules and multiple recipients.
 
-TrueNAS provides multiple email configuration methods, including SMTP server configuration and Gmail OAuth integration. For Forward Email setup, select "SMTP" as the send mail method to configure custom SMTP settings.
+1. **Access System Settings**
+   * Log into the TrueNAS web interface
+   * Navigate to **System** > **Email**
 
-Enter smtp.forwardemail.net as the SMTP server address. TrueNAS supports comprehensive TLS configuration options, allowing you to specify encryption methods, port numbers, and security protocols according to your requirements.
+2. **Configure SMTP Settings**
+   * Outgoing Mail Server: `smtp.forwardemail.net`
+   * Mail Server Port: `465` or `587`
+   * Security: SSL (for 465) or TLS (for 587)
+   * Username: Your Forward Email alias
+   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
 
-Configure port 465 for SSL/TLS connections or port 587 for STARTTLS connections. TrueNAS's advanced email system supports both encryption methods and can automatically negotiate the appropriate security protocols with Forward Email's servers.
+3. **Set Up Alerts**
+   * Go to **System** > **Alert Services**
+   * Configure which alerts should be sent via email
+   * Set recipient addresses and alert levels
+   * Test the configuration with the built-in test function
 
-Set up authentication credentials using your Forward Email alias as the username and your generated password. TrueNAS supports various authentication methods, but standard username/password authentication provides reliable compatibility with Forward Email.
-
-Configure sender information with a descriptive "From Name" and your Forward Email alias as the sender address. This information appears in notification emails and helps identify the source of alerts in your email client.
-
-TrueNAS allows you to configure multiple recipient addresses and can send different types of notifications to different recipients. This advanced feature is particularly useful in enterprise environments where different alert types should be routed to different team members.
-
-Set up the Alert Service to define which system events should trigger email notifications. TrueNAS provides granular control over alert types, including system health monitoring, security events, backup status, and hardware alerts.
-
-Test the email configuration using TrueNAS's comprehensive test system. The system will send test alerts for different notification types, allowing you to verify that all alert categories are working correctly and reaching the intended recipients.
-
-TrueNAS also supports advanced features like alert scheduling, notification filtering, and integration with external monitoring systems. These enterprise features provide the flexibility needed for complex storage environments while maintaining reliable email notification delivery.
+> \[!IMPORTANT]
+> TrueNAS allows you to configure different alert levels (INFO, NOTICE, WARNING, ERROR, CRITICAL). Choose appropriate levels to avoid email spam while ensuring critical issues are reported.
 
 ## OpenMediaVault Configuration {#openmediavault-configuration}
 
-OpenMediaVault (OMV) provides robust email notification capabilities through its Postfix-based email system. As an open-source NAS solution, OMV offers extensive customization options while maintaining compatibility with standard SMTP protocols.
+OpenMediaVault provides solid email notification capabilities through its web interface. The setup process is clean and straightforward.
 
-Access your OpenMediaVault web interface by navigating to the system's IP address. Log in with administrator credentials and navigate to System, then select "Notification" to configure email settings.
+> \[!NOTE]
+> OpenMediaVault's notification system is plugin-based. Make sure you have the email notification plugin installed and enabled.
 
-OMV's notification system uses Postfix as the underlying mail transfer agent, configured in satellite mode for external SMTP relay. This architecture provides reliable email delivery while maintaining system security and performance.
+1. **Access Notification Settings**
+   * Open the OpenMediaVault web interface
+   * Go to **System** > **Notification** > **Email**
 
-Enable email notifications and configure the SMTP server settings. Enter smtp.forwardemail.net as the SMTP server address and select the appropriate encryption method based on your security requirements.
+2. **Configure SMTP Parameters**
+   * SMTP Server: `smtp.forwardemail.net`
+   * Port: `465` (SSL/TLS) or `587` (STARTTLS)
+   * Username: Your Forward Email alias
+   * Password: Generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains)
+   * Enable SSL/TLS
 
-Configure port 465 for SSL/TLS connections or port 587 for STARTTLS connections. OMV's Postfix backend supports both encryption methods and can handle the TLS negotiation automatically with Forward Email's servers.
+3. **Set Up Notification Rules**
+   * Navigate to **System** > **Notification** > **Notifications**
+   * Configure which system events should trigger emails
+   * Set recipient addresses
+   * Test the email functionality
 
-Set up SMTP authentication by entering your Forward Email alias as the username and your generated password. OMV supports standard SMTP authentication methods that integrate seamlessly with Forward Email's infrastructure.
-
-Configure sender information with your Forward Email alias as the sender address. OMV allows you to customize the sender name and address, helping identify the source of notifications in your email client.
-
-OMV supports up to two recipient addresses for email notifications. Configure these addresses based on your monitoring requirements and backup notification needs. The system can send all notification types to both configured addresses.
-
-Set up notification types according to your monitoring needs. OMV can send notifications for system events, login activities, sudo usage, MD RAID events, monitoring alerts, scheduled task outputs, and SMART attribute changes.
-
-OMV's notification system also supports third-party integration through hooks and scripts. This advanced feature allows you to extend the notification system with custom monitoring solutions or integration with external alerting platforms.
-
-Test the email configuration using OMV's built-in test function. The system will send a test notification to verify that all settings are correct and that the Postfix configuration is working properly with Forward Email's SMTP servers.
-
-For advanced users, OMV allows direct Postfix configuration customization, enabling fine-tuned control over email delivery, retry policies, and security settings. However, the standard configuration options are sufficient for most use cases and provide reliable notification delivery.
-
-## Troubleshooting Common Configuration Issues {#troubleshooting-common-configuration-issues}
-
-Even with proper configuration, NAS email setup can sometimes encounter issues due to network configurations, firewall settings, or authentication problems. Understanding common issues and their solutions helps ensure reliable notification delivery.
-
-Authentication failures are among the most common email configuration problems. Verify that you're using your correct Forward Email alias as the username and the generated password from [My Account -> Domains -> Aliases](https://forwardemail.net/my-account/domains). Avoid using your account login password, as SMTP authentication requires the specific generated password for security reasons.
-
-TLS connection issues often occur when NAS devices attempt to use unsupported encryption protocols. If you encounter TLS errors with modern devices, verify that you're using the correct port numbers (465 for SSL/TLS or 587 for STARTTLS). For legacy devices, ensure you're using Forward Email's compatibility ports (2455 or 2555) rather than standard SMTP ports.
-
-Network connectivity problems can prevent NAS devices from reaching Forward Email's SMTP servers. Verify that your network allows outbound connections on the configured SMTP ports. Some corporate firewalls or ISP configurations may block certain ports, requiring alternative port configurations or firewall rule adjustments.
-
-DNS resolution issues can cause connection failures even when network connectivity is available. Ensure that your NAS device can resolve smtp.forwardemail.net to the correct IP addresses. Consider configuring alternative DNS servers if your default DNS configuration is causing resolution problems.
-
-Certificate validation errors may occur on devices with outdated certificate stores or strict certificate validation settings. Forward Email uses valid SSL certificates, but some older NAS devices may not recognize the certificate authority. Check your device's certificate settings and consider updating firmware if certificate validation continues to fail.
-
-Timeout issues can result from network latency, server load, or incorrect timeout settings on the NAS device. If you experience timeout errors, try increasing the SMTP timeout values in your NAS configuration or test the connection during different times to identify potential network congestion issues.
-
-For devices that support multiple authentication methods, ensure you're using the correct authentication type. Most NAS devices work best with "LOGIN" or "PLAIN" authentication methods when connecting to Forward Email's SMTP servers.
-
-If test emails succeed but regular notifications fail, check the notification configuration on your NAS device. Verify that notification types are properly enabled and that the system events you expect to trigger notifications are actually occurring and being detected by the monitoring system.
-
-## Security Considerations and Best Practices {#security-considerations-and-best-practices}
-
-Configuring email notifications on NAS devices involves several security considerations that help protect your system and ensure reliable notification delivery. Following security best practices prevents unauthorized access while maintaining notification functionality.
-
-Use strong, unique passwords for your Forward Email account and enable two-factor authentication when available. The generated SMTP password should be treated as a sensitive credential and stored securely in your NAS device's configuration.
-
-Regularly review and update your notification settings to ensure they remain appropriate for your current security requirements. Remove unused recipient addresses and disable notification types that are no longer needed to reduce the attack surface and prevent information disclosure.
-
-Consider the sensitivity of information included in email notifications. Some NAS devices include detailed system information, file paths, or network configuration details in notification emails. Review sample notifications to ensure they don't contain sensitive information that could be useful to attackers.
-
-Monitor your email notifications for signs of suspicious activity or unauthorized access attempts. Unusual notification patterns, unexpected system events, or notifications about configuration changes you didn't make may indicate security issues that require investigation.
-
-Keep your NAS firmware updated when possible to maintain current security standards and TLS protocol support. While some devices have reached end-of-life status, applying available security updates helps protect against known vulnerabilities.
-
-Use network segmentation to isolate NAS devices from other network resources when possible. This approach limits the potential impact of security breaches while maintaining necessary connectivity for email notifications and legitimate access.
-
-Configure appropriate firewall rules to allow necessary SMTP traffic while blocking unnecessary network access. NAS devices typically only need outbound access to Forward Email's SMTP servers for notification functionality.
-
-Regularly test your email notification configuration to ensure it continues working properly. Periodic testing helps identify configuration drift, network changes, or service issues before they impact critical alert delivery.
-
-Consider implementing backup notification methods for critical alerts. While email notifications are reliable, having alternative alerting mechanisms (such as SMS or push notifications) provides redundancy for the most important system events.
-
-Document your email notification configuration and include it in your disaster recovery planning. Proper documentation ensures that notification settings can be quickly restored if device replacement or reconfiguration becomes necessary.
-
-## Advanced Configuration Options {#advanced-configuration-options}
-
-Many NAS devices provide advanced email configuration options that enable fine-tuned control over notification behavior, delivery timing, and alert prioritization. Understanding these advanced features helps optimize notification systems for specific environments and requirements.
-
-Notification scheduling allows you to configure quiet hours when non-critical alerts are suppressed or delayed. This feature is particularly valuable in business environments where after-hours notifications should be limited to genuine emergencies. Configure scheduling to balance timely alerting with appropriate notification volume.
-
-Alert prioritization systems enable different handling for different types of notifications. Critical alerts like hardware failures or security breaches can be configured for immediate delivery, while routine notifications like backup completion can be batched or delayed to reduce notification volume.
-
-Multiple recipient configuration allows different types of alerts to be sent to different email addresses or distribution lists. This approach enables appropriate alert routing in organizations where different team members are responsible for different aspects of system management.
-
-Custom notification templates allow you to modify the content and format of notification emails. Some NAS devices support template customization, enabling you to include additional context, modify alert severity indicators, or integrate with external ticketing systems.
-
-SMTP relay configuration can be used in complex network environments where direct internet access is not available or where email must be routed through corporate mail servers. Configure your NAS to relay through Forward Email while maintaining proper authentication and security.
-
-Notification filtering enables you to suppress specific types of alerts or configure threshold-based alerting. For example, you might configure temperature alerts only when values exceed specific thresholds rather than for every minor fluctuation.
-
-Integration with external monitoring systems allows NAS email notifications to be incorporated into broader infrastructure monitoring solutions. Many enterprise monitoring platforms can process email alerts and integrate them with other system monitoring data.
-
-Backup notification methods provide redundancy for critical alerts. Some advanced NAS systems support multiple notification channels, allowing you to configure email as the primary method with SMS or push notifications as backup options for the most critical events.
-
-Log retention and notification history features help track alert patterns and troubleshoot notification issues. Configure appropriate log retention to maintain notification history while managing storage usage on your NAS device.
-
-API integration capabilities on some NAS platforms allow custom notification solutions that extend beyond standard email alerts. These advanced features enable integration with custom applications, external services, or specialized alerting platforms.
-
-## Conclusion {#conclusion}
-
-Configuring reliable email notifications on NAS devices is essential for maintaining system health, security, and operational awareness. Forward Email's comprehensive SMTP service provides the compatibility and reliability needed to support the full spectrum of NAS devices, from modern systems with current TLS support to legacy devices that require older protocol compatibility.
-
-The configuration processes outlined in this guide provide step-by-step instructions for major NAS providers, ensuring that you can establish reliable email notifications regardless of your specific device or firmware version. Forward Email's dual-port strategy addresses the unique challenges of NAS email configuration, providing modern security standards for current devices while maintaining compatibility with legacy systems.
-
-Regular testing and maintenance of your email notification configuration ensures continued reliability and helps identify potential issues before they impact critical alert delivery. Following the security best practices and troubleshooting guidance in this guide helps maintain secure, reliable notification systems that keep you informed about your NAS device's status and health.
-
-Whether you're managing a single home NAS device or multiple enterprise storage systems, Forward Email provides the infrastructure and compatibility needed for reliable email notifications. Our service's focus on NAS device compatibility, combined with comprehensive documentation and support, ensures that your critical system alerts reach you when you need them most.
-
-For additional support with NAS email configuration or questions about Forward Email's compatibility with specific devices, visit our [FAQ section](https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings) or contact our support team. We're committed to helping you maintain reliable email notifications across all your network storage devices.
-
-## References {#references}
-
-\[1] Synology Knowledge Base - SMTP Configuration: <https://kb.synology.com/en-sg/DSM/help/MailServer/mailserver_smtp>
-\[2] QNAP Documentation - Email Notification Setup: <https://docs.qnap.com/operating-system/qts/4.5.x/en-us/GUID-EB4E6D7F-589E-4689-A5BD-B018661124C3.html>
-\[3] TrueNAS Documentation - System Email Setup: <https://www.truenas.com/docs/scale/scaletutorials/systemsettings/general/settingupsystememail/>
-\[4] OpenMediaVault Documentation - Notifications: <https://docs.openmediavault.org/en/stable/administration/general/notifications.html>
-\[5] Forward Email FAQ - SMTP Configuration: <https://forwardemail.net/en/faq#what-are-your-smtp-server-configuration-settings>
-\[6] ReadyNAS Community - TLS Issues: <https://community.netgear.com/discussions/readynas/readynas-ultra-4---tls-outdated---how-to-upgrade-tls-to-1-2/2275286>
-\[7] TerraMaster Forum - Email Configuration: <https://forum.terra-master.com/en/viewtopic.php?t=3990>
-\[8] ASUSTOR Knowledge Base - TLS Configuration: <https://www.asustor.com/en/knowledge/detail/?id=&group_id=1009>
-\[9] Buffalo Americas - TeraStation Email Setup: <https://buffaloamericas.com/knowledge-base/KB1087>
-\[10] Western Digital Support - My Cloud Notifications: <https://support-en.wd.com/app/answers/detailweb/a_id/25208/>
+> \[!TIP]
+> OpenMediaVault allows you to configure notification schedules. You can set quiet hours or limit notification frequency to avoid being overwhelmed by alerts.
 
 ## Raspberry Pi NAS Configuration {#raspberry-pi-nas-configuration}
 

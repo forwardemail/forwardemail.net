@@ -39,10 +39,10 @@ detect_os() {
     echo "❌ Cannot detect operating system. This script supports Ubuntu and Debian only."
     exit 1
   fi
-  
+
   # Convert to lowercase for consistency
   OS=$(echo "$OS" | tr '[:upper:]' '[:lower:]')
-  
+
   echo "Detected OS: $OS $OS_VERSION"
 }
 
@@ -297,7 +297,7 @@ export_from_env_file() {
 # Enhanced dependency installation with OS-specific handling
 install_dependencies() {
   echo "Installing dependencies for $OS $OS_VERSION..."
-  
+
   case "$OS" in
     ubuntu)
       install_dependencies_ubuntu

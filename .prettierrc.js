@@ -4,6 +4,8 @@
  */
 
 module.exports = {
+  tabWidth: 2,
+  useTabs: false,
   plugins: [require('@prettier/plugin-pug')],
   singleQuote: true,
   pugSingleQuote: false,

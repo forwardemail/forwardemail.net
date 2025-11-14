@@ -528,25 +528,17 @@ async function onAuth(auth, session, fn) {
     });
 
     //
-    // NOTE: this connection rate limiting is ONLY applied for IMAP and SMTP servers
+    // NOTE: this connection rate limiting is ONLY applied for IMAP
     //       (see `imap-notifier.js`'s releaseConnection function)
     //       (and `onClose` handler of SMTP)
     //
     // ensure we don't have more than 60 connections per alias
     // (or per domain if we're using a catch-all)
     //
-    // NOTE: this is only for non-DAV and non POP3 servers
-    //       (it doesn't apply to POP3 until this is GH issue is resolved)
-    //       <https://github.com/nodemailer/wildduck/issues/629>
+    // NOTE: this is only for IMAP servers
+    //       <https://github.com/zone-eu/wildduck/issues/629#issuecomment-1956910918>
     //
-    if (
-      this?.constructor?.name !== 'CalDAV' &&
-      this?.constructor?.name !== 'CardDAV' &&
-      this?.constructor?.name !== 'API' &&
-      this?.constructor?.name !== 'POP3' &&
-      this.server &&
-      !(this.server instanceof POP3Server) // not needed but keeping here anyways
-    ) {
+    if (this?.constructor?.name === 'IMAP' && this.server) {
       const key = `concurrent_${this.constructor.name.toLowerCase()}_${
         config.env
       }:${alias ? alias.id : domain.id}`;

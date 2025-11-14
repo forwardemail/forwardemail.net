@@ -11,6 +11,7 @@ async function onClose(session) {
   const prefix = `concurrent_${this.constructor.name.toLowerCase()}_${
     config.env
   }`;
+  // TODO: not needed for `SMTP` server (only IMAP)
   await Promise.all([
     //
     // decrease # concurrent connections for remote address

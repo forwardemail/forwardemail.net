@@ -1,5 +1,5 @@
 footer.mt-auto(aria-label=t("Footer"))
-  if ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/tti'
+  if !user && ctx.pathWithoutLocale !== '/' && ctx.pathWithoutLocale !== '/tti'
     include _tti
   //-.
     if !isHelp

@@ -104,7 +104,12 @@ async function sendMailAs(ctx, next) {
     ctx.state.legacyFreeGuide =
       root.querySelector('#legacy-free-guide').outerHTML;
   } catch (err) {
-    ctx.logger.error(err);
+    //
+    // NOTE: typical output/error is:
+    //       `TypeError: Cannot read properties of null (reading 'outerHTML')`
+    if (err.message.includes('Cannot read properties of null'))
+      ctx.logger.debug(err);
+    else ctx.logger.error(err);
     //
     // NOTE: if the locale was not "en" then try again
     //       (this is due to translation bug issues)

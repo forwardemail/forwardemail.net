@@ -1,9 +1,10 @@
-/**
- * Copyright (c) Forward Email LLC
- * SPDX-License-Identifier: BUSL-1.1
+/*
+ Copyright (c) Forward Email LLC
+ SPDX-License-Identifier: BUSL-1.1
  */
 
 const RE2 = require('re2');
+const confusables = require('confusables');
 const isSANB = require('is-string-and-not-blank');
 const { fromUrl, parseDomain } = require('parse-domain');
 
@@ -39,7 +40,7 @@ const YAHOO_DOMAINS = new Set([
   'netscape.net',
   'rocketmail.com',
   'rogers.com',
-  'sky.com'
+  'sky.com',
   'verizon.net',
   'yahoo.ca',
   'yahoo.co.in',
@@ -63,11 +64,10 @@ const YAHOO_DOMAINS = new Set([
 
 const REGEX_DOMAIN = new RE2(new RegExp(env.WEB_HOST, 'im'));
 
-//
 // this accounts for spammers that spoof our domain name in From
 // but omit the ".com" portion, e.g. "ForwardEmail" or "forwardemail"
 // (this will return just the domain portion, e.g. "forwardemail")
-//
+
 const result = parseDomain(fromUrl(env.WEB_HOST));
 const domainWithoutTLD =
   result?.type === 'LISTED' && result?.domain ? result.domain : env.WEB_HOST;
@@ -85,10 +85,11 @@ function isArbitrary(session, headers) {
   const from = getHeaders(headers, 'from');
 
   // rudimentary blocking
-  if (subject && REGEX_BLOCKED_PHRASES.test(subject))
+  if (subject && REGEX_BLOCKED_PHRASES.test(subject)) {
     throw new SMTPError('Spam', { responseCode: 421 });
+  }
 
-  // until adobe responds
+  // Until adobe responds
   // if (
   //   subject &&
   //   subject.includes('Signature requested on') &&
@@ -102,11 +103,11 @@ function isArbitrary(session, headers) {
     session.originalFromAddress === 'invoice@authorize.net' &&
     session.resolvedRootClientHostname === 'visa.com'
   ) {
-    const err = new SMTPError(
+    const error = new SMTPError(
       'Authorize.net and VISA have a phishing scam invoice vulnerability and this message was rejected'
     );
-    err.isCodeBug = true; // alert admins for inspection
-    throw err;
+    error.isCodeBug = true; // Alert admins for inspection
+    throw error;
   }
 
   // Amazon impersonation
@@ -116,9 +117,9 @@ function isArbitrary(session, headers) {
     (!session.resolvedRootClientHostname ||
       !session.resolvedRootClientHostname.startsWith('amazon.'))
   ) {
-    const err = new SMTPError('Prevented spoofing of Amazon.co.jp');
-    err.isCodeBug = true; // alert admins for inspection
-    throw err;
+    const error = new SMTPError('Prevented spoofing of Amazon.co.jp');
+    error.isCodeBug = true; // Alert admins for inspection
+    throw error;
   }
 
   // DocuSign impersonation
@@ -143,9 +144,9 @@ function isArbitrary(session, headers) {
     from &&
     from.includes('pCloud')
   ) {
-    const err = new SMTPError('Prevented spoofing of pCloud.com');
-    err.isCodeBug = true; // alert admins for inspection
-    throw err;
+    const error = new SMTPError('Prevented spoofing of pCloud.com');
+    error.isCodeBug = true; // Alert admins for inspection
+    throw error;
   }
 
   //
@@ -165,25 +166,25 @@ function isArbitrary(session, headers) {
       headers.getFirst('x-email-type-id')
     )
   ) {
-    const err = new SMTPError(
+    const error = new SMTPError(
       'Due to ongoing PayPal invoice spam, you must manually send an invoice link; See https://forwardemail.net/en/blog/docs/paypal-api-disaster-11-years-missing-features-broken-promises#the-11-year-capture-bug-disaster-1899-and-counting ;'
     );
-    err.isCodeBug = true; // alert admins for inspection
-    throw err;
+    error.isCodeBug = true; // Alert admins for inspection
+    throw error;
   }
 
   /*
-  // NOTE: disabled due to false positives
-  // check for btc crypto scam
-  if (
-    isSANB(bodyStr) &&
-    REGEX_BITCOIN.test(bodyStr) &&
-    REGEX_PASSWORD_MALWARE_INFECTED_VIDEO.test(bodyStr)
-  )
-    throw new SMTPError(
-      `Blocked crypto scam, please forward this to ${config.abuseEmail}`
-    );
-  */
+// NOTE: disabled due to false positives
+// check for btc crypto scam
+if (
+  isSANB(bodyStr) &&
+  REGEX_BITCOIN.test(bodyStr) &&
+  REGEX_PASSWORD_MALWARE_INFECTED_VIDEO.test(bodyStr)
+)
+  throw new SMTPError(
+    `Blocked crypto scam, please forward this to ${config.abuseEmail}`
+  );
+*/
 
   //
   // NOTE: due to unprecendented spam from Microsoft's "onmicrosoft.com" domain
@@ -209,12 +210,12 @@ function isArbitrary(session, headers) {
     subject &&
     (subject.startsWith('Undeliverable: ') ||
       subject.startsWith('No se puede entregar: '))
-  )
+  ) {
     throw new SMTPError(
       'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
     );
+  }
 
-  /*
   //
   // ============================================================================
   // MICROSOFT EXCHANGE SPAM DETECTION
@@ -385,26 +386,77 @@ function isArbitrary(session, headers) {
     //  smtp.mailfrom=smssa.moe.edu.bn; dkim=fail (signature verification failed)
     //  header.d=none;dmarc=fail action=none header.from=smssa.moe.edu.bn;
     //
-    if (msAuthHeader) {
+    //
+    // CRITICAL FIX: Check Microsoft's spam verdict FIRST
+    // ----------------------------------------------------
+    // Before rejecting based on authentication failures, check if Microsoft's
+    // spam filters already classified this message. If Microsoft says it's NOT spam
+    // (SFV:NSPM or low SCL), we should trust that judgment and not override it
+    // based solely on authentication failures.
+    //
+    // This prevents false positives for legitimate emails that have authentication
+    // issues during domain transitions (e.g., SPF softfail with "domain transitioning").
+    //
+    if (forefrontHeader) {
+      const lowerForefrontHeader = forefrontHeader.toLowerCase();
+
+      // Extract SCL (Spam Confidence Level) - scale 0-9
+      const sclMatch = lowerForefrontHeader.match(/scl:(\d+)/);
+      const scl = sclMatch ? Number.parseInt(sclMatch[1], 10) : null;
+
+      // Check SFV (Spam Filtering Verdict)
+      const sfvNotSpam = lowerForefrontHeader.includes('sfv:nspm');
+
+      // If Microsoft says it's NOT spam (low SCL or explicit NSPM verdict),
+      // skip authentication-based blocking to avoid false positives
+      const microsoftSaysNotSpam = sfvNotSpam || (scl !== null && scl <= 2);
+
+      if (!microsoftSaysNotSpam && msAuthHeader) {
+        // Microsoft either classified it as spam OR has no strong opinion
+        // Proceed with authentication checks
+        const lowerMsAuthHeader = msAuthHeader.toLowerCase();
+
+        // Check if SPF passed
+        const spfPass = lowerMsAuthHeader.includes('spf=pass');
+
+        // Check if DKIM passed
+        const dkimPass = lowerMsAuthHeader.includes('dkim=pass');
+
+        // Check if DMARC passed
+        const dmarcPass = lowerMsAuthHeader.includes('dmarc=pass');
+
+        // Only block if ALL authentication methods failed (none passed)
+        // Per RFC 7489: at least one of SPF, DKIM, or DMARC must pass
+        if (!spfPass && !dkimPass && !dmarcPass) {
+          // Additionally verify that at least one method actually failed
+          // (not just absent) to avoid blocking messages with no auth headers
+          //
+          // CRITICAL FIX: Only consider HARD SPF failures, not softfail
+          // spf=softfail indicates uncertainty (often during domain transitions)
+          // and should NOT be treated as a hard failure
+          const spfFailed = lowerMsAuthHeader.includes('spf=fail');
+          // REMOVED: lowerMsAuthHeader.includes('spf=softfail')
+          const dkimFailed = lowerMsAuthHeader.includes('dkim=fail');
+          const dmarcFailed = lowerMsAuthHeader.includes('dmarc=fail');
+
+          if (spfFailed || dkimFailed || dmarcFailed) {
+            throw new SMTPError(
+              'Due to spam from onmicrosoft.com we have implemented restrictions; see https://old.reddit.com/r/msp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/'
+            );
+          }
+        }
+      }
+    } else if (msAuthHeader) {
+      // No forefrontHeader available, fall back to authentication-only check
+      // (but still without treating softfail as hard failure)
       const lowerMsAuthHeader = msAuthHeader.toLowerCase();
 
-      // Check if SPF passed
       const spfPass = lowerMsAuthHeader.includes('spf=pass');
-
-      // Check if DKIM passed
       const dkimPass = lowerMsAuthHeader.includes('dkim=pass');
-
-      // Check if DMARC passed
       const dmarcPass = lowerMsAuthHeader.includes('dmarc=pass');
 
-      // Only block if ALL authentication methods failed (none passed)
-      // Per RFC 7489: at least one of SPF, DKIM, or DMARC must pass
       if (!spfPass && !dkimPass && !dmarcPass) {
-        // Additionally verify that at least one method actually failed
-        // (not just absent) to avoid blocking messages with no auth headers
-        const spfFailed =
-          lowerMsAuthHeader.includes('spf=fail') ||
-          lowerMsAuthHeader.includes('spf=softfail');
+        const spfFailed = lowerMsAuthHeader.includes('spf=fail');
         const dkimFailed = lowerMsAuthHeader.includes('dkim=fail');
         const dmarcFailed = lowerMsAuthHeader.includes('dmarc=fail');
 
@@ -416,6 +468,7 @@ function isArbitrary(session, headers) {
       }
     }
 
+    // Continue with remaining checks on forefrontHeader
     if (forefrontHeader) {
       const lowerForefrontHeader = forefrontHeader.toLowerCase();
 
@@ -606,7 +659,6 @@ function isArbitrary(session, headers) {
       }
     }
   }
-  */
 
   /*
   // Postmark has refused to do any KYC process to prevent Cash App scammers
@@ -626,10 +678,11 @@ function isArbitrary(session, headers) {
     session.originalFromAddress === 'postmaster@163.com' &&
     subject &&
     subject.includes('系统退信')
-  )
+  ) {
     throw new SMTPError(
       'Due to spam from postmaster@163.com we have implemented bounce block restrictions'
     );
+  }
 
   //
   // due to microsoft and docusign scam
@@ -638,29 +691,100 @@ function isArbitrary(session, headers) {
     session.originalFromAddress === 'dse_na4@docusign.net' &&
     (session?.spf?.domain.endsWith('.onmicrosoft.com') ||
       session?.spf?.domain === 'onmicrosoft.com')
-  )
+  ) {
     throw new SMTPError(
       'Due to spam from onmicrosoft.com and docusign.net SPF we have implemented restrictions; see https://old.sp/comments/16n8p0j/spam_increase_from_onmicrosoftcom_addresses/ ;'
     );
+  }
 
   //
   // this checks for messages that aren't coming from us
   // and contain a spoofed "From" address that looks like it's from us
   //
-  if (
-    !config.isSelfHosted &&
-    (!session.hadAlignedAndPassingDKIM ||
-      (session.hadAlignedAndPassingDKIM &&
-        session.originalFromAddressRootDomain !== env.WEB_HOST)) &&
-    (session.spfFromHeader.status.result !== 'pass' ||
-      session.originalFromAddressRootDomain !== env.WEB_HOST) &&
-    (REGEX_DOMAIN.test(from) ||
-      REGEX_DOMAIN_WITHOUT_TLD.test(from) ||
-      REGEX_APP_NAME.test(from))
-  )
-    throw new SMTPError(
-      `Blocked spoofing, please forward this to ${config.abuseEmail}`
-    );
+  // NOTE: we only check the DOMAIN portion of the From address, not the local part (username)
+  //       this allows users to have emails like "user+forwardemail@domain.com" or "forwardemail@company.com"
+  //       while still blocking impersonation attacks like "support@forwardemailclone.com"
+  //
+  // we also check for:
+  // 1. TLD spoofing (e.g., forwardemail.cn, forwardemail.io)
+  // 2. IDN homograph attacks (e.g., Cyrillic/Greek lookalike characters)
+  //
+  if (!config.isSelfHosted) {
+    // extract domain from From header
+    const fromDomain = parseHostFromDomainOrAddress(from);
+
+    // check if domain contains our brand name or is a homograph/TLD attack
+    let isDomainImpersonation = false;
+
+    if (fromDomain) {
+      // get root domain of the From address
+      const fromRootDomain = parseRootDomain(fromDomain);
+
+      // check for exact domain match (e.g., forwardemail.net)
+      if (REGEX_DOMAIN.test(fromDomain)) {
+        isDomainImpersonation = true;
+      }
+      // check for TLD spoofing (e.g., forwardemail.cn, forwardemail.io)
+      // this catches domains where the root domain contains our brand but has different TLD
+      else if (
+        fromRootDomain &&
+        fromRootDomain !== env.WEB_HOST &&
+        (REGEX_DOMAIN_WITHOUT_TLD.test(fromRootDomain) ||
+          REGEX_APP_NAME.test(fromRootDomain))
+      ) {
+        isDomainImpersonation = true;
+      }
+      // check for brand name in subdomain or other parts (e.g., forwardemailclone.com)
+      else if (
+        REGEX_DOMAIN_WITHOUT_TLD.test(fromDomain) ||
+        REGEX_APP_NAME.test(fromDomain)
+      ) {
+        isDomainImpersonation = true;
+      }
+      // check for IDN homograph attacks using confusables library
+      else {
+        // decode punycode if present
+        const punycode = require('node:punycode');
+        let decoded = fromDomain.toLowerCase();
+        try {
+          if (decoded.includes('xn--')) {
+            decoded = punycode.toUnicode(decoded);
+          }
+        } catch {
+          // if decoding fails, use original
+        }
+
+        // convert confusable characters to ASCII equivalents
+        // e.g., Cyrillic 'а' -> Latin 'a', Greek 'ο' -> Latin 'o'
+        const skeleton = confusables.remove(decoded);
+
+        // check if skeleton contains our brand name
+        if (
+          skeleton.includes(domainWithoutTLD.toLowerCase()) ||
+          skeleton.includes(env.APP_NAME.toLowerCase())
+        ) {
+          isDomainImpersonation = true;
+        }
+      }
+    }
+
+    // if domain impersonation detected, block it regardless of DKIM/SPF status
+    // (spammers can easily set up valid DKIM/SPF for impersonation domains)
+    // only allow if the authenticated domain is actually our domain (env.WEB_HOST)
+    if (isDomainImpersonation) {
+      // allow only if both DKIM and SPF are passing AND the root domain is ours
+      const isAuthenticatedAsUs =
+        session.hadAlignedAndPassingDKIM &&
+        session.spfFromHeader.status.result === 'pass' &&
+        session.originalFromAddressRootDomain === env.WEB_HOST;
+
+      if (!isAuthenticatedAsUs) {
+        throw new SMTPError(
+          `Blocked spoofing, please forward this to ${config.abuseEmail}`
+        );
+      }
+    }
+  }
 
   //
   // here is where we attempt to protect users from spammers
@@ -694,8 +818,10 @@ function isArbitrary(session, headers) {
         parseRootDomain(parseHostFromDomainOrAddress(checkSRS(to.address))) ===
         session.originalFromAddressRootDomain
     );
-    if (hasSameRcptToAsFrom && session.spfFromHeader.status.result !== 'pass')
-      session.isPotentialPhishing = true; // used after email is delivered to imap/webhook/forwarding to send a one-time email
+    if (hasSameRcptToAsFrom && session.spfFromHeader.status.result !== 'pass') {
+      session.isPotentialPhishing = true;
+    } // Used after email is delivered to imap/webhook/forwarding to send a one-time email
+
     if (
       hasSameRcptToAsFrom &&
       session.spfFromHeader.status.result !== 'pass' &&
@@ -705,8 +831,8 @@ function isArbitrary(session, headers) {
       !(
         headers.hasHeader('x-mailer') &&
         // PHP/PHPMailer/Drupal
-        ['php', 'drupal'].some((str) =>
-          headers.getFirst('x-mailer').toLowerCase().includes(str)
+        ['php', 'drupal'].some((string_) =>
+          headers.getFirst('x-mailer').toLowerCase().includes(string_)
         )
       ) &&
       !(subject && REGEX_SYSADMIN_SUBJECT.test(subject))

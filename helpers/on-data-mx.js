@@ -1260,7 +1260,9 @@ async function forward(recipient, headers, session, body) {
 
       //
       // if user mailbox is full or if they are receiving mail too quickly
-      // then we should back off from retrying an denylist the recipient for 1 hour
+      // then we should back off from retrying by greylisting the session fingerprint
+      // (this prevents repeated delivery attempts to the same recipient from the same sender
+      // without blocking other senders from delivering to that recipient)
       //
       if (
         err.truthSource &&
@@ -1276,10 +1278,10 @@ async function forward(recipient, headers, session, body) {
       ) {
         this.client
           .set(
-            `denylist:${recipient.to[0].toLowerCase()}`,
+            getGreylistKey(session.fingerprint),
             true,
             'PX',
-            ms('1h')
+            ms(session.isAllowlisted ? '30m' : '2h')
           )
           .then()
           .catch((err) => logger.fatal(err));

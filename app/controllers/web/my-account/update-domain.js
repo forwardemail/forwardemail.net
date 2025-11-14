@@ -14,6 +14,7 @@ const { isPort } = require('@forwardemail/validator');
 const _ = require('#helpers/lodash');
 
 const { Domains } = require('#models');
+const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 
 //
 // NOTE: this regex is not safe according to `safe-regex2` so we use `re2` to wrap it
@@ -236,6 +237,11 @@ async function updateDomain(ctx, next) {
   ctx.state.domain.locale = ctx.locale;
   ctx.state.domain.skip_verification = true;
   ctx.state.domain = await ctx.state.domain.save();
+
+  if (ctx.request.body.max_quota_per_alias)
+    clearAliasQuotaCache(ctx.client, ctx.state.domain._id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
 
   // clear cache for settings (used by SMTP)
   if (ctx.state.domain.plan !== 'free' && ctx.state.domain.has_txt_record)

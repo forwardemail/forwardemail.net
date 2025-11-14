@@ -13,6 +13,7 @@ const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
 const { Users } = require('#models');
+const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
 
 const REGEX_BYTES = new RE2(/^((-|\+)?(\d+(?:\.\d+)?)) *(kb|mb|gb|tb|pb)$/i);
@@ -147,6 +148,12 @@ async function update(ctx) {
   if (body.smtp_limit) user.smtp_limit = body.smtp_limit;
 
   await user.save();
+
+  if (body.max_quota_per_alias) {
+    clearAliasQuotaCache(ctx.client, ctx.state.domain._id)
+      .then()
+      .catch((err) => ctx.logger.fatal(err));
+  }
 
   if (user.id === ctx.state.user.id) await ctx.login(user);
 

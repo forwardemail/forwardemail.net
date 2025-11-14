@@ -18,7 +18,7 @@ async function retrieveEmail(ctx, next) {
   const [domains, aliases, goodDomains] = await Promise.all([
     Domains.distinct('_id', {
       has_smtp: true,
-      is_smtp_suspended: false,
+      // is_smtp_suspended: false,
       members: {
         $elemMatch: {
           user: ctx.state.user._id,
@@ -30,8 +30,8 @@ async function retrieveEmail(ctx, next) {
       user: ctx.state.user._id
     }),
     Domains.distinct('_id', {
-      has_smtp: true,
-      is_smtp_suspended: false
+      has_smtp: true
+      // is_smtp_suspended: false
     })
   ]);
 
