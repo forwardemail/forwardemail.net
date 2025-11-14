@@ -1180,7 +1180,9 @@ function parseSchema(Model, modelName = '') {
         setter = (v) => {
           if (v instanceof Date) return v.toISOString();
           if (v === null) return v;
-          throw new TypeError('Must be a date');
+          // could be an object such as:
+          // { $gt: Date }
+          return v;
         };
 
         break;
