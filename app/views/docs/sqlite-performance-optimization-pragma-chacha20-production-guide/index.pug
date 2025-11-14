@@ -1,6 +1,29 @@
 extends ../../layout
 
+block append scripts
+  script(
+    defer,
+    src=manifest("js/ekko-lightbox.js"),
+    integrity=manifest("js/ekko-lightbox.js", "integrity"),
+    crossorigin="anonymous"
+  )
+
 block body
+  if !isBot(ctx.get('User-Agent'))
+    script(defer, nonce=nonce).
+      window.addEventListener(
+        "load",
+        function load() {
+          if (!window.jQuery) return setTimeout(load, 50);
+          $(function () {
+            $(document).on("click", '[data-toggle="lightbox"]', function (ev) {
+              ev.preventDefault();
+              $(this).ekkoLightbox();
+            });
+          });
+        },
+        false
+      );
   .container-fluid.py-3
     .row
       case locale
