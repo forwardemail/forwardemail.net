@@ -53,6 +53,30 @@
         state: present
         update_cache: true
 
+    - name: Verify PHP curl extension is loaded in CLI
+      command: php -m
+      register: php_cli_modules
+      changed_when: false
+
+    - name: Display PHP CLI modules (curl check)
+      debug:
+        msg: "PHP CLI has curl: {{ 'YES' if 'curl' in php_cli_modules.stdout else 'NO - WILL INSTALL' }}"
+
+    - name: Ensure php-curl is installed
+      apt:
+        name: php8.2-curl
+        state: present
+      notify: Restart PHP-FPM
+
+    - name: Verify curl extension file exists
+      stat:
+        path: /etc/php/8.2/mods-available/curl.ini
+      register: curl_ini
+
+    - name: Display curl extension status
+      debug:
+        msg: "curl.ini exists: {{ curl_ini.stat.exists }}"
+
     - name: Create PHP-FPM log directory
       file:
         path: /var/log/php-fpm
