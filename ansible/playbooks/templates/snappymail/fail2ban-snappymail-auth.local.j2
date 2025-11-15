@@ -1,0 +1,9 @@
+[snappymail-auth]
+enabled = true
+filter = snappymail-auth
+port = http,https
+backend = systemd
+logpath = /var/log/auth.log
+maxretry = {{ lookup('env', 'MAIL_FAIL2BAN_MAXRETRY') | default(5, true) }}
+findtime = {{ lookup('env', 'MAIL_FAIL2BAN_FINDTIME') | default(600, true) }}
+bantime = {{ lookup('env', 'MAIL_FAIL2BAN_BANTIME') | default(3600, true) }}

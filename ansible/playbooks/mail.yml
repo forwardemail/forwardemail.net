@@ -163,6 +163,10 @@
       service:
         name: nginx
         state: reloaded
+    - name: Restart fail2ban
+      service:
+        name: fail2ban
+        state: restarted
   tasks:
     ##
     # Firewall Configuration
@@ -197,6 +201,36 @@
         rule: allow
         port: "{{ lookup('env', 'MAIL_HTTP_PORT') }}"
         proto: tcp
+
+    - name: Install fail2ban
+      apt:
+        name: fail2ban
+        state: present
+        update_cache: true
+
+    - name: Deploy fail2ban filter for SnappyMail
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail/fail2ban-snappymail-auth.conf.j2"
+        dest: /etc/fail2ban/filter.d/snappymail-auth.conf
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart fail2ban
+
+    - name: Configure fail2ban jail for SnappyMail
+      template:
+        src: "{{ playbook_dir }}/templates/snappymail/fail2ban-snappymail-auth.local.j2"
+        dest: /etc/fail2ban/jail.d/snappymail-auth.local
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart fail2ban
+
+    - name: Ensure fail2ban service is enabled
+      systemd:
+        name: fail2ban
+        enabled: true
+        state: started
 
     - name: "Update ufw before.rules until #21 is resolved"
       template:
