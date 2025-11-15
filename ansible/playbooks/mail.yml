@@ -399,9 +399,11 @@
       shell: |
         # Try to reset opcache via PHP CLI
         php -r "if(function_exists('opcache_reset')) opcache_reset();" 2>/dev/null || true
-      args:
-        chdir: /tmp
       become_user: www-data
+      environment:
+        TMPDIR: /tmp
+        TEMP: /tmp
+        TMP: /tmp
       ignore_errors: yes
 
     - name: Restart PHP-FPM to ensure fresh opcache
@@ -417,6 +419,65 @@
         group: www-data
         mode: '0700'
         recurse: true
+
+    ##
+    # Verify Plugin Deployment
+    ##
+
+    - name: Verify index.php has correct APP_VERSION
+      shell: grep "define('APP_VERSION'" /var/www/snappymail/dist/index.php
+      register: index_version
+      changed_when: false
+
+    - name: Display index.php APP_VERSION
+      debug:
+        msg: "index.php version: {{ index_version.stdout }}"
+
+    - name: Check if forwardemail plugin exists in versioned directory
+      stat:
+        path: "/var/www/snappymail/dist/snappymail/v/{{ snappymail_app_version }}/plugins/forwardemail/index.php"
+      register: plugin_file
+
+    - name: Verify plugin file exists
+      debug:
+        msg: "Plugin exists at v/{{ snappymail_app_version }}/plugins/forwardemail: {{ plugin_file.stat.exists }}"
+
+    - name: Check if plugin has new code (ensureCheckMailInterval)
+      shell: grep -c "ensureCheckMailInterval" "/var/www/snappymail/dist/snappymail/v/{{ snappymail_app_version }}/plugins/forwardemail/index.php" || echo "0"
+      register: plugin_has_new_code
+      changed_when: false
+      when: plugin_file.stat.exists
+
+    - name: Display plugin code verification
+      debug:
+        msg: "Plugin has ensureCheckMailInterval: {{ 'YES' if (plugin_has_new_code.stdout | int) > 0 else 'NO' }}"
+      when: plugin_file.stat.exists
+
+    - name: Verify forwardemail in enabled_list
+      shell: grep "enabled_list.*forwardemail" /var/www/snappymail/dist/data/_data_/_default_/configs/application.ini
+      register: plugin_enabled
+      changed_when: false
+      failed_when: false
+
+    - name: Display plugin enabled status
+      debug:
+        msg: "Plugin enabled in application.ini: {{ 'YES' if plugin_enabled.rc == 0 else 'NO - CHECK CONFIGURATION!' }}"
+
+    - name: Check for recent plugin log messages
+      shell: |
+        LOG_FILE=$(ls -t /var/www/snappymail/dist/data/_data_/_default_/logs/*.log 2>/dev/null | head -1)
+        if [ -n "$LOG_FILE" ]; then
+          grep "Forward Email Plugin" "$LOG_FILE" 2>/dev/null | tail -5 || echo "No plugin messages found"
+        else
+          echo "No log files found"
+        fi
+      register: plugin_logs
+      changed_when: false
+      failed_when: false
+
+    - name: Display recent plugin log messages
+      debug:
+        msg: "{{ plugin_logs.stdout_lines }}"
 
     ##
     # Configure Nginx Site
