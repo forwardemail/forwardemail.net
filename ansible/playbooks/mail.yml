@@ -378,6 +378,18 @@
         HOME: /home/deploy
         APP_VERSION: "{{ snappymail_app_version | default('0.0.0', true) }}"
 
+    - name: Clear PHP OPcache after deployment
+      shell: |
+        # Try to reset opcache via PHP CLI
+        php -r "if(function_exists('opcache_reset')) opcache_reset();" 2>/dev/null || true
+      become_user: www-data
+      ignore_errors: yes
+
+    - name: Restart PHP-FPM to ensure fresh opcache
+      service:
+        name: php8.2-fpm
+        state: restarted
+
     - name: Set permissions on data directory
       file:
         path: /var/www/snappymail/dist/data
