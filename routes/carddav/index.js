@@ -194,7 +194,7 @@ davRouter.all('/:user/addressbooks/:addressbook/:contact(.+)', async (ctx) => {
       const ifNoneMatch = ctx.request.headers['if-none-match'];
       if (ifNoneMatch === '*' && existingContact) {
         throw Boom.preconditionFailed(
-          ctx.translateError('RESOURCE_ALREADY_EXISTS')
+          ctx.translateError('CONTACT_ALREADY_EXISTS')
         );
       }
 

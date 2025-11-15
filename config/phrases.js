@@ -175,6 +175,7 @@ module.exports = {
   ETAG_DOES_NOT_MATCH: 'ETag does not match.',
 
   CONTACT_DOES_NOT_EXIST: 'Contact does not exist.',
+  CONTACT_ALREADY_EXISTS: 'Contact already exists.',
 
   CALENDAR: 'Calendar',
   CALENDAR_ALREADY_EXISTS: 'Calendar already exists.',

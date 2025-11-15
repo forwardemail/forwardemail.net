@@ -906,18 +906,16 @@ EMAIL:invalid@example.com
 UID:invalid-uid
 END:VCARD`;
 
-  try {
-    await createVCard({
-      addressBook: addressBooks[0],
-      filename: 'invalid.vcf',
-      vCardString: invalidVCard,
-      headers: t.context.authHeaders
-    });
-    t.fail('Should have rejected vCard without VERSION');
-  } catch (err) {
-    t.is(err.response.status, 500);
-    t.true(err.response.data.includes('VERSION'));
-  }
+  const createResponse = await createVCard({
+    addressBook: addressBooks[0],
+    filename: 'invalid.vcf',
+    vCardString: invalidVCard,
+    headers: t.context.authHeaders
+  });
+  t.is(createResponse.status, 400);
+
+  const json = await createResponse.json();
+  t.is(json.message, 'vCard must contain valid VERSION property (3.0 or 4.0)');
 });
 
 test('should reject invalid vCard (missing FN)', async (t) => {
@@ -932,18 +930,15 @@ EMAIL:invalid@example.com
 UID:invalid-uid
 END:VCARD`;
 
-  try {
-    await createVCard({
-      addressBook: addressBooks[0],
-      filename: 'invalid2.vcf',
-      vCardString: invalidVCard,
-      headers: t.context.authHeaders
-    });
-    t.fail('Should have rejected vCard without FN');
-  } catch (err) {
-    t.is(err.response.status, 500);
-    t.true(err.response.data.includes('FN'));
-  }
+  const createResponse = await createVCard({
+    addressBook: addressBooks[0],
+    filename: 'invalid2.vcf',
+    vCardString: invalidVCard,
+    headers: t.context.authHeaders
+  });
+  t.is(createResponse.status, 400);
+  const json = await createResponse.json();
+  t.is(json.message, 'vCard must contain FN (Formatted Name) property');
 });
 
 test('should reject invalid vCard (missing BEGIN:VCARD)', async (t) => {
@@ -958,18 +953,16 @@ EMAIL:invalid@example.com
 UID:invalid-uid
 END:VCARD`;
 
-  try {
-    await createVCard({
-      addressBook: addressBooks[0],
-      filename: 'invalid3.vcf',
-      vCardString: invalidVCard,
-      headers: t.context.authHeaders
-    });
-    t.fail('Should have rejected vCard without BEGIN:VCARD');
-  } catch (err) {
-    t.is(err.response.status, 500);
-    t.true(err.response.data.includes('BEGIN:VCARD'));
-  }
+  const createResponse = await createVCard({
+    addressBook: addressBooks[0],
+    filename: 'invalid3.vcf',
+    vCardString: invalidVCard,
+    headers: t.context.authHeaders
+  });
+
+  t.is(createResponse.status, 400);
+  const json = await createResponse.json();
+  t.is(json.message, 'vCard must contain BEGIN:VCARD');
 });
 
 test('should respect If-None-Match header when creating contact', async (t) => {
@@ -990,8 +983,8 @@ test('should respect If-None-Match header when creating contact', async (t) => {
   t.is(createResponse.status, 201);
 
   // Try to create it again with If-None-Match: *
-  try {
-    await createVCard({
+  {
+    const createResponse = await createVCard({
       addressBook: addressBooks[0],
       filename: 'ifnonematch.vcf',
       vCardString: SAMPLE_VCARD,
@@ -1000,9 +993,9 @@ test('should respect If-None-Match header when creating contact', async (t) => {
         'If-None-Match': '*'
       }
     });
-    t.fail('Should have rejected due to If-None-Match: *');
-  } catch (err) {
-    t.is(err.response.status, 412); // Precondition Failed
+    t.is(createResponse.status, 412); // Precondition Failed
+    const json = await createResponse.json();
+    t.is(json.message, 'Contact already exists.');
   }
 
   // Clean up

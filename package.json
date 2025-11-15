@@ -49,7 +49,7 @@
     "@ladjs/consolidate": "1.0.4",
     "@ladjs/env": "4.0.0",
     "@ladjs/graceful": "5.0.0",
-    "@ladjs/i18n": "8.0.3",
+    "@ladjs/i18n": "9.0.0",
     "@ladjs/koa-simple-ratelimit": "4.1.1",
     "@ladjs/mongoose": "7.0.0",
     "@ladjs/mongoose-error-messages": "1.0.0",

@@ -6,8 +6,9 @@
 const { Buffer } = require('node:buffer');
 const crypto = require('node:crypto');
 
-const { parseStringPromise, processors } = require('xml2js');
+const Boom = require('@hapi/boom');
 const xmlbuilder = require('xmlbuilder');
+const { parseStringPromise, processors } = require('xml2js');
 
 /**
  * Encode special characters for XML content to prevent parsing errors
@@ -15,9 +16,7 @@ const xmlbuilder = require('xmlbuilder');
  * @returns {string} - XML-safe encoded string
  */
 function encodeXMLEntities(str) {
-  if (typeof str !== 'string') {
-    return str;
-  }
+  if (typeof str !== 'string') return str;
 
   return str
     .replace(/&/g, '&amp;') // Must be first to avoid double-encoding
@@ -34,19 +33,18 @@ function encodeXMLEntities(str) {
  */
 async function parseXML(xmlString) {
   // Validate input
-  if (typeof xmlString !== 'string') {
-    throw new TypeError('XML input must be a string');
-  }
+  if (typeof xmlString !== 'string')
+    throw Boom.badRequest('XML input must be a string');
 
   // Check XML size limit (1MB)
-  if (xmlString.length > 1024 * 1024) {
-    throw new Error('XML input too large');
-  }
+  if (xmlString.length > 1024 * 1024)
+    throw Boom.badRequest('XML input too large');
 
   // Check for XML bomb patterns
-  if (xmlString.includes('<!ENTITY') || xmlString.includes('<!DOCTYPE')) {
-    throw new Error('XML entities and DOCTYPE declarations are not allowed');
-  }
+  if (xmlString.includes('<!ENTITY') || xmlString.includes('<!DOCTYPE'))
+    throw Boom.badRequest(
+      'XML entities and DOCTYPE declarations are not allowed'
+    );
 
   // Parse with security options
   return parseStringPromise(xmlString, {
@@ -96,9 +94,8 @@ function extractRequestedProps(xmlBody) {
   }
 
   // Default props if none specified
-  if (props.length === 0) {
+  if (props.length === 0)
     return ['displayname', 'resourcetype', 'getetag', 'address-data'];
-  }
 
   return props;
 }
@@ -118,11 +115,9 @@ function extractHrefs(xmlBody) {
   ) {
     const hrefData = xmlBody['addressbook-multiget'].href;
 
-    if (Array.isArray(hrefData)) {
+    if (Array.isArray(hrefData))
       hrefs.push(...hrefData.map((href) => href._ || href));
-    } else {
-      hrefs.push(hrefData._ || hrefData);
-    }
+    else hrefs.push(hrefData._ || hrefData);
   }
 
   return hrefs;
@@ -137,14 +132,10 @@ function extractHrefs(xmlBody) {
 function validateFilter(xmlBody) {
   try {
     const addressbookQuery = xmlBody && xmlBody['addressbook-query'];
-    if (!addressbookQuery) {
-      return { isValid: true }; // No query is valid (returns all)
-    }
+    if (!addressbookQuery) return { isValid: true }; // No query is valid (returns all)
 
     const { filter } = addressbookQuery;
-    if (!filter) {
-      return { isValid: true }; // No filter is valid (returns all)
-    }
+    if (!filter) return { isValid: true }; // No filter is valid (returns all)
 
     // Check for prop-filter elements
     const propFilters = Array.isArray(filter['prop-filter'])
@@ -662,33 +653,29 @@ function getSyncCollectionXML(addressBook, changes, props) {
  */
 function validateVCard(vCardString) {
   // Validate input type
-  if (typeof vCardString !== 'string') {
-    throw new TypeError('vCard input must be a string');
-  }
+  if (typeof vCardString !== 'string')
+    throw Boom.badRequest('vCard input must be a string');
 
   // Check size limit (1MB as advertised in max-resource-size)
-  if (vCardString.length > 1024 * 1024) {
-    throw new Error('vCard exceeds maximum size of 1MB');
-  }
+  if (vCardString.length > 1024 * 1024)
+    throw Boom.badRequest('vCard exceeds maximum size of 1MB');
 
   // Validate basic vCard structure
-  if (!vCardString.includes('BEGIN:VCARD')) {
-    throw new Error('vCard must contain BEGIN:VCARD');
-  }
+  if (!vCardString.includes('BEGIN:VCARD'))
+    throw Boom.badRequest('vCard must contain BEGIN:VCARD');
 
-  if (!vCardString.includes('END:VCARD')) {
-    throw new Error('vCard must contain END:VCARD');
-  }
+  if (!vCardString.includes('END:VCARD'))
+    throw Boom.badRequest('vCard must contain END:VCARD');
 
   // Validate VERSION property exists (required by RFC 6350)
-  if (!/^VERSION:[34]\.\d/m.test(vCardString)) {
-    throw new Error('vCard must contain valid VERSION property (3.0 or 4.0)');
-  }
+  if (!/^VERSION:[34]\.\d/m.test(vCardString))
+    throw Boom.badRequest(
+      'vCard must contain valid VERSION property (3.0 or 4.0)'
+    );
 
   // Validate FN property exists (required by RFC 6350)
-  if (!/^FN:/m.test(vCardString)) {
-    throw new Error('vCard must contain FN (Formatted Name) property');
-  }
+  if (!/^FN:/m.test(vCardString))
+    throw Boom.badRequest('vCard must contain FN (Formatted Name) property');
 
   return true;
 }

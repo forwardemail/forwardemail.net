@@ -14773,5 +14773,7 @@
   "Printer & Camera Email Setup: Fix SMTP & TLS Issues 2025": "Printer & Camera Email Setup: Fix SMTP & TLS Issues 2025",
   "Fix printer scan-to-email, IP camera alerts & fax notifications. Complete SMTP setup guide for HP, Canon, Brother, Foscam & legacy TLS 1.0 devices.": "Fix printer scan-to-email, IP camera alerts & fax notifications. Complete SMTP setup guide for HP, Canon, Brother, Foscam & legacy TLS 1.0 devices.",
   "Raspberry Pi FTP Server with Email Relay for Security Cameras": "Raspberry Pi FTP Server with Email Relay for Security Cameras",
-  "Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models.": "Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models."
+  "Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models.": "Setup a Raspberry Pi FTP server with automated email relay for security cameras & IoT devices. Supports legacy TLS 1.0. Works with all Pi models.",
+  "Contact already exists.": "Contact already exists.",
+  "SQLite Performance Optimization: Production PRAGMA Settings": "SQLite Performance Optimization: Production PRAGMA Settings"
 }
