@@ -369,6 +369,17 @@
       when: dist_dir.stat.exists
       become: true
 
+    - name: Verify PHP CLI is available for build script
+      command: which php
+      register: php_path
+      become_user: deploy
+      changed_when: false
+      failed_when: false
+
+    - name: Display PHP path
+      debug:
+        msg: "PHP CLI path: {{ php_path.stdout if php_path.rc == 0 else 'NOT FOUND' }}"
+
     - name: Run build script to sync customizations
       command: ./scripts/build.sh
       args:
@@ -377,11 +388,19 @@
       environment:
         HOME: /home/deploy
         APP_VERSION: "{{ snappymail_app_version | default('0.0.0', true) }}"
+        PATH: "/usr/local/bin:/usr/bin:/bin:{{ ansible_env.PATH }}"
+      register: build_output
+
+    - name: Display build script output
+      debug:
+        var: build_output.stdout_lines
 
     - name: Clear PHP OPcache after deployment
       shell: |
         # Try to reset opcache via PHP CLI
         php -r "if(function_exists('opcache_reset')) opcache_reset();" 2>/dev/null || true
+      args:
+        chdir: /tmp
       become_user: www-data
       ignore_errors: yes
 
