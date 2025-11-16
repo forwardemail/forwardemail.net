@@ -5,6 +5,8 @@
 
 This document describes the deployment configuration for Forward Email's webmail interface using SnappyMail with custom branding via the mail-overrides repository.
 
+> **See also:** [`mail-overrides/README.md`](https://github.com/forwardemail/mail-overrides/blob/main/README.md) for local development and override details.
+
 
 ## Architecture
 
@@ -162,6 +164,7 @@ ansible-playbook ansible/playbooks/mail.yml
 * **Application Root**: `/var/www/snappymail/`
 * **Document Root**: `/var/www/snappymail/dist/` (served by Nginx)
 * **Data Directory**: `/var/www/snappymail/dist/data/` (www-data:www-data, 0700)
+  * Treat this as runtime state: SnappyMail copies the `configs/*.ini` seeds into here on first boot and edits them thereafter.
 * **Nginx Config**: `/etc/nginx/sites-available/snappymail.conf`
 * **PHP-FPM Pool**: `/etc/php/8.2/fpm/pool.d/www.conf`
 * **PHP Settings**: `/etc/php/8.2/fpm/conf.d/99-snappymail.ini`
@@ -183,8 +186,8 @@ When `MAIL_SSL_ENABLED=true`:
 ## Security Features
 
 1. **PHP Security**
-   * `open_basedir` restricted to app path + /tmp
-   * Dangerous functions disabled (exec, shell\_exec, system, etc.)
+   * `open_basedir` restricted to the app path + `/tmp`
+   * Dangerous functions disabled (exec, shell\_exec, system, etc.) while leaving `curl_exec` enabled for CardDAV
    * Secure session handling via Redis
 
 2. **Nginx Security**
@@ -198,6 +201,28 @@ When `MAIL_SSL_ENABLED=true`:
    * UFW enabled with deny-all incoming policy
    * SSH allowed (with rate limiting)
    * HTTP/HTTPS ports opened based on config
+
+4. **Fail2ban**
+   * `security.yml` installs the upstream `oefenweb.fail2ban` role for SSH
+   * `mail.yml` adds a SnappyMail-specific jail that watches auth failures (enabled via `auth_syslog = On`)
+
+## Dependency Checklist
+
+| Component | Purpose |
+|-----------|---------|
+| `php8.2-curl` | Required for CardDAV/CalDAV sync (`curl_exec` must not be disabled in the FPM pool). |
+| `php8.2-sqlite3` | Backing store for contacts (SnappyMail defaults to SQLite). |
+| `php8.2-redis` | Session storage via Redis. |
+| `php8.2-intl`, `php8.2-mbstring`, `php8.2-xml`, `php8.2-gd`, `php8.2-zip` | Required by SnappyMail core. |
+
+After Ansible runs, confirm `phpinfo()` from the deployed site lists these modules under “Loaded Extensions”.
+
+## Operational Tips
+
+- **Runtime data is mutable**: SnappyMail copies the seed configs into `dist/data/_data_/_default_/`. Toggling plugins or settings writes to those runtime files. Deleting them (or the entire `data/` directory) resets to the seeds.
+- **Reset a user’s settings**: remove `dist/data/_data_/_default_/storage/<domain>/<user>/settings/` (and `settings_local/`). The next login pulls the latest defaults from `application.ini`.
+- **Reset CardDAV config**: delete `dist/data/_data_/_default_/storage/<domain>/<user>/configs/contacts_sync`. The Forward Email plugin will recreate it on login.
+- **Plugin state**: the authoritative file is `dist/data/_data_/_default_/configs/plugins.ini`. Editing the git copy only affects new deployments.
 
 
 ## Troubleshooting
