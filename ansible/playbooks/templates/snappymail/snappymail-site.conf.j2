@@ -55,7 +55,7 @@ server {
 
     # Content Security Policy
     # Note: Fonts may be embedded as data URIs or loaded from CDNs, so font-src includes 'self', data:, and https:
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https://forwardemail.net; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
 
 {% if lookup('env', 'MAIL_SSL_ENABLED') | default('true', true) != 'false' %}
     # Strict Transport Security (HSTS)
