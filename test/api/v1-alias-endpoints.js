@@ -326,6 +326,18 @@ test('creates, retrieves, and deletes message with alias auth', async (t) => {
   t.is(retrieveRes.body.object, 'message');
   t.is(retrieveRes.body.subject, messageData.subject);
 
+  // List message from folder
+  const listRes = await api
+    .get(`/v1/messages?folder=${messageData.folder}`)
+    .set(
+      'Authorization',
+      createAliasAuth(`${alias.name}@${domain.name}`, pass)
+    );
+
+  // Should list messages
+  t.is(listRes.status, 200);
+  t.is(listRes.body.length, 1);
+
   const deleteRes = await api
     .delete(`/v1/messages/${res.body.id}`)
     .set(

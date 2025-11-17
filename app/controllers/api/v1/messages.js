@@ -331,9 +331,8 @@ async function list(ctx) {
       path: ctx.query.folder
     });
 
-    if (mailbox) {
-      query.mailbox = mailbox._id;
-    }
+    // don't show any results if folder does not exist
+    query.mailbox = mailbox ? mailbox._id.toString() : null;
   }
 
   // Advanced search functionality
