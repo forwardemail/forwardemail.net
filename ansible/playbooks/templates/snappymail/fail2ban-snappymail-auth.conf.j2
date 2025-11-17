@@ -1,4 +1,5 @@
 [Definition]
-failregex = ^\s*\S+\s+\S+\s+snappymail\[\d+\]: Auth failed: ip=<HOST>\b
-            ^\s*\S+\s+\S+\s+snappymail\[\d+\]: Admin Auth failed: ip=<HOST>\b
+failregex = ^\s*\S+\s+\S+\s+snappymail(?:\[\d+\])?: Auth failed: ip=<HOST>\b
+            ^\s*\S+\s+\S+\s+snappymail(?:\[\d+\])?: Admin Auth failed: ip=<HOST>\b
+            ^\s*\S+\s+\S+\s+snappymail: message repeated \d+ times: \[\s*Auth failed: ip=<HOST>\b
 ignoreregex =
