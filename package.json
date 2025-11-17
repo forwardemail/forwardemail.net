@@ -64,7 +64,7 @@
     "@mermaid-js/mermaid-cli": "10.9.1",
     "@ngneat/falso": "7.4.0",
     "@octokit/core": "4.2.4",
-    "@octokit/rest": "20.1.1",
+    "@octokit/rest": "21.0.0",
     "@openpgp/wkd-client": "0.0.4",
     "@opensumi/reconnecting-websocket": "4.4.0",
     "@parse/node-apn": "6.5.0",
