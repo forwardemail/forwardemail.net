@@ -21,6 +21,11 @@ class MessageAnalyzer {
         sender: extractSenderEmail(message),
         senderName: extractSenderName(message),
         subject: message.subject || '(no subject)',
+        date:
+          message.nodemailer?.date ||
+          message.date ||
+          message.header_date ||
+          new Date(),
         content,
         keywords,
         questionType,

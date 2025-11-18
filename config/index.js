@@ -877,7 +877,7 @@ const config = {
   forwardEmailAliasUsername: env.FORWARD_EMAIL_ALIAS_USERNAME,
   forwardEmailAliasPassword: env.FORWARD_EMAIL_ALIAS_PASSWORD,
   customerSupportAiInboxLimit:
-    Number.parseInt(env.CUSTOMER_SUPPORT_AI_INBOX_LIMIT, 10) || 10,
+    Number.parseInt(env.CUSTOMER_SUPPORT_AI_INBOX_LIMIT, 10) || 100,
 
   // server
   env: env.NODE_ENV.toLowerCase(),

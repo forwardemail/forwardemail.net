@@ -19,7 +19,10 @@ const VectorStore = require('#helpers/customer-support-ai/vector-store');
 const messageAnalyzer = require('#helpers/customer-support-ai/message-analyzer');
 const responseGenerator = require('#helpers/customer-support-ai/response-generator');
 const {
+  extractSenderEmail,
   extractSenderText,
+  extractCC,
+  extractRecipients,
   buildReplyRecipients
 } = require('#helpers/customer-support-ai/message-utils');
 
@@ -344,10 +347,39 @@ async function createDraft(message, analysis, generatedResponse) {
     const from = config.forwardEmailAliasUsername;
 
     // Build reply recipients (handles Reply-To and CC)
-    const { to, cc } = buildReplyRecipients(message, from);
+    let { to, cc } = buildReplyRecipients(message, from);
+
+    // CRITICAL: Never reply back to ourselves (support@forwardemail.net)
+    // If the original sender is support@forwardemail.net, this is a help request notification
+    // Reply to the To header (the actual customer) instead
+    const originalSender = extractSenderEmail(message);
+    if (originalSender && originalSender.toLowerCase() === from.toLowerCase()) {
+      // This email is from us (support@forwardemail.net)
+      // Reply to the To recipients (the actual customer)
+      const toRecipients = extractRecipients(message);
+      const nonSupportRecipients = toRecipients.filter(
+        (email) => email.toLowerCase() !== from.toLowerCase()
+      );
+
+      if (nonSupportRecipients.length > 0) {
+        to = nonSupportRecipients[0];
+        cc = nonSupportRecipients.slice(1);
+        logger.info(
+          { originalSender, newTo: to, toRecipients, messageId: message.id },
+          'Adjusted recipients - original sender was support@forwardemail.net, replying to To recipient'
+        );
+      } else {
+        // This is a self-email with no other recipients - skip it
+        logger.warn(
+          { messageId: message.id, toRecipients },
+          'Skipping draft creation - email is from support@forwardemail.net with no other recipients'
+        );
+        return null;
+      }
+    }
 
     // Get original message details for quoting
-    const originalSender = extractSenderText(message);
+    const originalSenderText = extractSenderText(message);
     const originalDate =
       message.nodemailer?.date || message.header_date || new Date();
     const formattedDate = new Date(originalDate).toLocaleString('en-US', {
@@ -374,7 +406,7 @@ async function createDraft(message, analysis, generatedResponse) {
     // Note: Do NOT add signature here - LLM response should be complete
     const text = `${generatedResponse.response}
 
-On ${formattedDate}, ${originalSender} wrote:
+On ${formattedDate}, ${originalSenderText} wrote:
 ${quotedOriginal}`;
 
     // Extract threading headers from API response
