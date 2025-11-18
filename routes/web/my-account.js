@@ -301,7 +301,7 @@ router
     web.myAccount.checkVerifiedEmail,
     web.myAccount.retrieveDomain,
     web.myAccount.ensureUpgradedPlan,
-    paginate.middleware(25, 100),
+    paginate.middleware(50, 500),
     web.myAccount.retrieveAliases,
     web.myAccount.listAliases
   )
