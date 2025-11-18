@@ -106,7 +106,10 @@ class ForwardEmailClient {
           });
 
           // Update message with parsed content
-          message.nodemailer = parsed;
+          message.nodemailer = {
+            ...message.nodemailer, // preserves To, From, etc
+            ...parsed
+          };
 
           logger.debug('Parsed raw message', {
             id,

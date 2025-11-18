@@ -151,10 +151,30 @@ class VectorStore {
 
     try {
       // Search in LanceDB using vector
+      logger.debug('Executing LanceDB vector search', {
+        embeddingLength: queryEmbedding.length,
+        limit: options.limit || 5,
+        tableName: this.table.name
+      });
+
       const rawResults = await this.table
-        .search(queryEmbedding)
+        .vectorSearch(queryEmbedding)
         .limit(options.limit || 5)
-        .execute();
+        .toArray();
+
+      logger.debug('LanceDB vectorSearch raw results', {
+        resultType: typeof rawResults,
+        isArray: Array.isArray(rawResults),
+        length: Array.isArray(rawResults) ? rawResults.length : 'N/A',
+        firstItemKeys:
+          Array.isArray(rawResults) && rawResults[0]
+            ? Object.keys(rawResults[0])
+            : 'N/A',
+        firstItemSample:
+          Array.isArray(rawResults) && rawResults[0]
+            ? JSON.stringify(rawResults[0]).slice(0, 200)
+            : 'N/A'
+      });
 
       // LanceDB returns an array directly, but ensure it's an array
       const results = Array.isArray(rawResults) ? rawResults : [];

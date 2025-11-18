@@ -371,12 +371,8 @@ async function createDraft(message, analysis, generatedResponse) {
       .join('\n');
 
     // Build reply with quoted original message
+    // Note: Do NOT add signature here - LLM response should be complete
     const text = `${generatedResponse.response}
-
---
-Thank you,
-Forward Email
-https://forwardemail.net
 
 On ${formattedDate}, ${originalSender} wrote:
 ${quotedOriginal}`;
@@ -443,6 +439,18 @@ async function processMessage(message, vectorStore, historyVectorStore) {
 
     const fullMessage = await forwardEmailClient.getMessage(message.id);
 
+    // Check if a draft already exists for this message (optimization)
+    const messageId = fullMessage.header_message_id || fullMessage.id;
+    let existingDraft = await checkForExistingDraft(messageId);
+
+    if (existingDraft) {
+      logger.info(
+        { draftId: existingDraft.id, messageId: fullMessage.id },
+        'Skipping message - draft already exists'
+      );
+      return existingDraft;
+    }
+
     // Check for skip-ai label/tag (case-insensitive)
     const labels = fullMessage.labels || [];
     const hasSkipAI = labels.some((label) => label.toLowerCase() === 'skip-ai');
@@ -495,8 +503,7 @@ async function processMessage(message, vectorStore, historyVectorStore) {
     );
 
     // Check if a draft already exists for this message
-    const messageId = fullMessage.header_message_id || fullMessage.id;
-    const existingDraft = await checkForExistingDraft(messageId);
+    existingDraft = await checkForExistingDraft(messageId);
 
     if (existingDraft) {
       logger.info(

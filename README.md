@@ -676,7 +676,11 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
 4. If you need to configure IPv6 on your server, here is an example network config:
 
    ```sh
-   sudo vim /etc/cloud/cloud.cfg.d/90-installer-network.cfg
+   sudo touch /etc/cloud/cloud-init.disabled
+   ```
+
+   ```sh
+   sudo vim /etc/netplan/99-custom-netcfg.yaml
    ```
 
    > Replace `IPV4_GOES_HERE` with IPv4 address, `IPV6_GOES_HERE` with IPv6 address, `IPV6_GATEWAY` with IPv6 gateway, and `IPV4_GATEWAY` with IPV4 gateway:
@@ -688,6 +692,7 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
    ```sh
    # This is the network config written by 'subiquity'
    network:
+     version: 2
      bonds:
        bond0:
          addresses:
@@ -714,7 +719,30 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
      ethernets:
        enp1s0f0: {}
        enp1s0f1: {}
-     version: 2
+   ```
+
+   Run a test to ensure the YAML syntax is correct:
+
+   ```sh
+   sudo netplan try
+   ```
+
+   If there are no errors, apply the configuration permanently:
+
+   ```sh
+   sudo netplan apply
+   ```
+
+   To check the IP addresses and status of `bond0`:
+
+   ```sh
+   ip a show bond0
+   ```
+
+   To inspect the status of a bond and its member interfaces:
+
+   ```sh
+   cat /proc/net/bonding/bond0
    ```
 
 5. If you need to encrypt and auto-mount a disk, e.g. NVMe SSD drive at `/mnt/storage_do_1` for SQLite (`SQLITE_STORAGE_PATH`; see `helpers/get-path-to-database.js`):

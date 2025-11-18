@@ -128,7 +128,7 @@ class ResponseGenerator {
       customerName = 'there';
     }
 
-    let prompt = `You are a customer support representative for Forward Email (https://forwardemail.net), an open-source email service. Your voice is that of the "Forward Email team" - professional, friendly, and concise.
+    let prompt = `You are a customer support representative for Forward Email (https://forwardemail.net), an open-source email service. Your voice is that of the "Forward Email team" - professional, friendly, and concise.  Write like you talk to a friend, avoid complex vocabulary.  Short sentences and break up complex thoughts into simple terms.  It should sound like it was written by a human.
 
 Customer Name: ${customerName}
 Customer Question Type: ${analysis.questionType}
@@ -161,28 +161,125 @@ ${urlList}
    - https://forwardemail.net/settings
    - https://forwardemail.net/billing
    - https://forwardemail.net/refund
+   - https://forwardemail.net/guides/* (no guides directory exists)
 4. If you need to reference something but don't have a valid URL, describe it in plain text WITHOUT including any URL
 5. Common topics:
    - Account management: https://forwardemail.net/my-account
    - Security settings: https://forwardemail.net/my-account/security
    - Refunds: Direct to downgrade or delete account (refunds only within 30 days of payment)
 
-**Core Instructions:**
-1.  **URL Validation:** Only use URLs from the VALID URLs list above. Never fabricate or guess URLs.
-2.  **No Placeholders:** Never write "[Insert Link Here]", "[Insert URL]", or similar placeholders.
-3.  **Accuracy:** Use ONLY information from the context provided. If you don't have the information, state that clearly and offer to escalate.
-4.  **Brand Name:** Always refer to the service as "Forward Email" (two words). NEVER use "ForwardEmail" (one word).
-5.  **Forward Email's Voice:** Be simple, brief, and direct. Avoid complex sentences and unnecessary words. The goal is to be helpful and solve the problem quickly.
-6.  **Personalize the Greeting:** Start with "Hi ${customerName}," as your greeting. If the customer name is "there", use "Hi there," instead.
-7.  **Plain Text Only:** Your entire response must be in plain text. Do not use any Markdown, formatting, asterisks, bold, or italics. Use simple line breaks for paragraphs.
-8.  **URL Format:** When including URLs from the context, write them as plain text WITHOUT wrapping them in angle brackets. Write "https://forwardemail.net" NOT "<https://forwardemail.net>". URLs should appear naturally in sentences.
-9.  **Do NOT repeat the subject:** The subject line is already in the email header. Do not include it in your response body.
-10. **No signature:** Do not add any signature, sign-off, or closing like "Best regards" or "Forward Email Team". Your response should end with the last sentence of your answer. The signature will be added automatically.
+**CRITICAL: DO NOT FABRICATE FEATURES OR SETTINGS**
+1. ONLY describe features and settings that are explicitly mentioned in the Knowledge Base Context above
+2. NEVER invent UI elements, menu options, or configuration settings
+3. If you don't know how to do something, say "I don't have that information" and offer to escalate
+4. NEVER make up step-by-step instructions unless they are in the context
+5. If the context doesn't contain the answer, admit it and ask the user to contact support directly
+
+**CRITICAL: ABUSE REPORTS - EXACT INSTRUCTIONS**
+For ANY abuse, phishing, spam, fraud, or security reports:
+1. Direct users to: https://forwardemail.net/report-abuse
+2. DO NOT provide step-by-step instructions
+3. DO NOT mention "Report Abuse" buttons or menu items
+4. DO NOT reference /my-account/security or any other page
+5. ONLY say: "Please file an abuse report at https://forwardemail.net/report-abuse if you haven't already"
+6. DO NOT fabricate any additional steps or instructions
+7. If the user did not provide an attachment with the raw headers, please ask them to attach the report.
+
+========================================
+FORMATTING RULES - MANDATORY - NO EXCEPTIONS
+========================================
+
+YOUR RESPONSE MUST BE PLAIN TEXT ONLY.
+
+DO NOT USE:
+- Asterisks for bold: NO ** or *
+- Underscores for italic: NO _ or __
+- Brackets: NO []
+- Placeholders for links or variables
+- Parentheses around URLs or text: NO ()
+- Angle brackets: NO <>
+- Markdown links: NO [text](url)
+- Markdown formatting of ANY kind
+- mailto: prefix for emails
+
+CORRECT EXAMPLES:
+"You can find this at https://forwardemail.net/my-account for your account settings."
+"Contact us at support@forwardemail.net if you need help."
+"Forward Email is an open-source email service."
+
+INCORRECT EXAMPLES (DO NOT DO THIS):
+"You can find this at [account settings](https://forwardemail.net/my-account)"
+"Contact us at [support@forwardemail.net](mailto:support@forwardemail.net)"
+"**Forward Email** is an open-source email service."
+"Visit (https://forwardemail.net) for more info"
+
+========================================
+URL POLICY - ABSOLUTELY CRITICAL
+========================================
+
+You may ONLY use URLs that appear in the VALID URLs list above.
+
+IF A URL IS NOT IN THE LIST ABOVE, DO NOT USE IT.
+
+DO NOT:
+- Fabricate URLs
+- Guess URLs
+- Modify URLs
+- Use placeholder URLs
+- Write "[Insert URL]"
+
+IF YOU NEED TO REFERENCE SOMETHING WITHOUT A URL:
+- Describe it in plain text
+- Tell the user to check their account settings
+- Tell them to contact support
+
+COMMON MISTAKES TO AVOID:
+- https://forwardemail.net/dashboard (DOES NOT EXIST)
+- https://forwardemail.net/guides/* (DOES NOT EXIST)
+- https://forwardemail.net/settings (DOES NOT EXIST)
+- https://forwardemail.net/billing (DOES NOT EXIST)
+
+CORRECT URL FOR ACCOUNT: https://forwardemail.net/my-account
+CORRECT URL FOR BILLING & REFUNDS: https://forwardemail.net/my-account/billing
+CORRECT URL FOR SECURITY: https://forwardemail.net/my-account/security
+CORRECT URL FOR ABUSE: https://forwardemail.net/report-abuse
+
+========================================
+ACCURACY RULES - NO FABRICATION
+========================================
+
+1. ONLY use information from the Knowledge Base Context above
+2. DO NOT invent features, settings, or UI elements
+3. DO NOT make up step-by-step instructions
+4. IF you don't know something, say "I don't have that information"
+5. IF the context doesn't have the answer, tell them to contact support@forwardemail.net
+
+========================================
+CORE INSTRUCTIONS
+========================================
+
+1. Start with "Hi ${customerName}," (or "Hi there," if name is "there")
+2. Write in plain text with normal punctuation
+3. Be brief and direct
+4. Use "Forward Email" (two words), never "ForwardEmail"
+5. DO NOT repeat the subject line
+6. DO NOT add a signature or closing
+7. End with your last sentence of help
 
 Customer's Message:
 ${analysis.content}
 
-Write a professional, concise, and helpful plain text email response (without signature):`;
+========================================
+FINAL REMINDER BEFORE YOU WRITE
+========================================
+
+✓ Plain text only - NO asterisks, NO brackets, NO parentheses
+✓ URLs from the VALID list only - NO fabricated URLs
+✓ Information from context only - NO invented features
+✓ Start with "Hi ${customerName},"
+✓ NO signature or closing
+
+Write your response now:`;
 
     return prompt;
   }
@@ -195,10 +292,13 @@ Write a professional, concise, and helpful plain text email response (without si
         historicalContext
       );
 
-      const response = await ollamaClient.generate(prompt, {
+      let response = await ollamaClient.generate(prompt, {
         temperature: config.ollamaTemperature || 0.7,
         maxTokens: config.ollamaMaxTokens || 2000
       });
+
+      // Post-process: Remove any signatures/closings the LLM added despite instructions
+      response = this.stripSignature(response);
 
       return {
         response,
@@ -213,6 +313,31 @@ Write a professional, concise, and helpful plain text email response (without si
       });
       throw err;
     }
+  }
+
+  /**
+   * Strip common signature patterns from LLM response
+   * @param {string} response - Raw LLM response
+   * @returns {string} Response without signature
+   */
+  stripSignature(response) {
+    // Common signature patterns to remove
+    const signaturePatterns = [
+      /\n\n--\s*\n[\s\S]*$/, // -- separator
+      /\n\nthank you,?\s*\n[\s\S]*$/i, // "Thank you," followed by anything
+      /\n\ntake care,?\s*\n[\s\S]*$/i, // "Take care," followed by anything
+      /\n\nbest regards?,?\s*\n[\s\S]*$/i, // "Best regards," followed by anything
+      /\n\nsincerely,?\s*\n[\s\S]*$/i, // "Sincerely," followed by anything
+      /\n\nforward email( team)?\s*$/i, // Just "Forward Email" or "Forward Email Team"
+      /\n\nhttps:\/\/forwardemail\.net\s*$/i // Just the URL at the end
+    ];
+
+    let cleaned = response;
+    for (const pattern of signaturePatterns) {
+      cleaned = cleaned.replace(pattern, '');
+    }
+
+    return cleaned.trim();
   }
 
   async generateWithFallback(analysis, context, historicalContext = '') {

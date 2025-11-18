@@ -154,8 +154,6 @@ ${content}`;
                 metadata.replyText = replyText.slice(0, 500); // First 500 chars
               }
 
-              console.log('metadata', metadata);
-
               // Pass chunk.text (string), not chunk (object)
               await vectorStore.addDocument(chunk.text, metadata);
             }
