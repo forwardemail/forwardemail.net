@@ -56,10 +56,10 @@ echo ""
 
 # Recommend model based on RAM
 if [ "$TOTAL_RAM_GB" -ge 32 ]; then
-    RECOMMENDED_MODEL="qwen2.5-coder:7b-instruct-q4_K_M"
+    RECOMMENDED_MODEL="gpt-oss:20b"
     echo "💡 Recommended model: Qwen2.5-Coder-7B (technical support)"
 elif [ "$TOTAL_RAM_GB" -ge 16 ]; then
-    RECOMMENDED_MODEL="qwen2.5-coder:7b-instruct-q4_K_M"
+    RECOMMENDED_MODEL="gpt-oss:20b"
     echo "💡 Recommended model: Qwen2.5-Coder-7B (best for your RAM)"
 else
     RECOMMENDED_MODEL="mistral:7b"
@@ -75,8 +75,8 @@ echo "📥 Pulling ${RECOMMENDED_MODEL}..."
 ollama pull "$RECOMMENDED_MODEL"
 
 # Pull embedding model
-echo "📥 Pulling mxbai-embed-large..."
-ollama pull mxbai-embed-large
+echo "📥 Pulling nomic-embed-text..."
+ollama pull nomic-embed-text
 
 echo ""
 echo "✅ Models installed successfully"
@@ -116,7 +116,7 @@ if [ ! -f .env ]; then
 # Customer Support AI Configuration
 OLLAMA_HOST=http://localhost:11434
 OLLAMA_MODEL=${RECOMMENDED_MODEL}
-OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
+OLLAMA_EMBEDDING_MODEL=nomic-embed-text
 OLLAMA_TEMPERATURE=0.7
 OLLAMA_MAX_TOKENS=2000
 LANCEDB_PATH=$HOME/.local/share/lancedb

@@ -52,6 +52,7 @@ class ForwardEmailClient {
           eml: false, // Exclude EML file
           raw: false, // Exclude raw MIME
           nodemailer: false, // Exclude parsed content
+          pagination: true, // Enable pagination
           ...options
         }
       });
@@ -59,6 +60,68 @@ class ForwardEmailClient {
       return response.data;
     } catch (err) {
       logger.error(err, { context: 'forward email list messages' });
+      throw err;
+    }
+  }
+
+  /**
+   * List ALL messages with automatic pagination
+   * @param {Object} options - Options for listing messages
+   * @returns {Promise<Array>} All messages across all pages
+   */
+  async listAllMessages(options = {}) {
+    try {
+      const allMessages = [];
+      let page = 1;
+      let hasMore = true;
+
+      while (hasMore) {
+        const response = await axios.get(`${this.apiBase}/v1/messages`, {
+          auth: {
+            username: this.aliasUsername,
+            password: this.aliasPassword
+          },
+          params: {
+            folder: options.folder || 'INBOX',
+            limit: 100, // Max limit
+            page,
+            eml: false,
+            raw: false,
+            nodemailer: false,
+            pagination: true,
+            ...options
+          }
+        });
+
+        const messages = response.data;
+        if (Array.isArray(messages)) {
+          allMessages.push(...messages);
+        }
+
+        // Check pagination headers to see if there are more pages
+        const pageCount = parseInt(response.headers['x-page-count'], 10);
+        const currentPage = parseInt(response.headers['x-page-current'], 10);
+
+        logger.debug('Fetched page of messages', {
+          folder: options.folder || 'INBOX',
+          page: currentPage,
+          pageCount,
+          messagesOnPage: messages.length,
+          totalSoFar: allMessages.length
+        });
+
+        hasMore = currentPage < pageCount;
+        page++;
+      }
+
+      logger.info('Fetched all messages', {
+        folder: options.folder || 'INBOX',
+        total: allMessages.length
+      });
+
+      return allMessages;
+    } catch (err) {
+      logger.error(err, { context: 'forward email list all messages' });
       throw err;
     }
   }

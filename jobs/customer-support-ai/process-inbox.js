@@ -471,29 +471,7 @@ async function processMessage(message, vectorStore, historyVectorStore) {
 
     const fullMessage = await forwardEmailClient.getMessage(message.id);
 
-    // Check if a draft already exists for this message (optimization)
-    const messageId = fullMessage.header_message_id || fullMessage.id;
-    let existingDraft = await checkForExistingDraft(messageId);
-
-    if (existingDraft) {
-      logger.info(
-        { draftId: existingDraft.id, messageId: fullMessage.id },
-        'Skipping message - draft already exists'
-      );
-      return existingDraft;
-    }
-
-    // Check for skip-ai label/tag (case-insensitive)
-    const labels = fullMessage.labels || [];
-    const hasSkipAI = labels.some((label) => label.toLowerCase() === 'skip-ai');
-
-    if (hasSkipAI) {
-      logger.info(
-        { messageId: fullMessage.id },
-        'Skipping message with skip-ai label'
-      );
-      return null;
-    }
+    // Note: Draft existence and skip-ai label checks are now done upfront in main loop
 
     // Log message structure to debug content extraction
     logger.debug(
@@ -534,17 +512,7 @@ async function processMessage(message, vectorStore, historyVectorStore) {
       historicalContext
     );
 
-    // Check if a draft already exists for this message
-    existingDraft = await checkForExistingDraft(messageId);
-
-    if (existingDraft) {
-      logger.info(
-        { draftId: existingDraft.id, messageId: fullMessage.id },
-        'Skipping draft creation - draft already exists'
-      );
-      return existingDraft;
-    }
-
+    // Note: Draft check is done upfront in main loop, no need to check again
     const draft = await createDraft(fullMessage, analysis, generatedResponse);
 
     logger.info(
@@ -610,14 +578,76 @@ async function processMessage(message, vectorStore, historyVectorStore) {
     });
     await historyVectorStore.initialize();
 
-    const messages = await forwardEmailClient.listMessages({
-      folder: 'INBOX',
-      limit: config.customerSupportAiInboxLimit || 10
+    // OPTIMIZATION: List ALL drafts and inbox messages upfront, then filter
+    logger.info('Listing all drafts to check for existing responses...');
+    const allDrafts = await forwardEmailClient.listAllMessages({
+      folder: 'Drafts'
     });
 
-    logger.info({ count: messages.length }, 'Retrieved inbox messages');
+    // Extract all message IDs that drafts are replying to
+    const draftMessageIds = new Set();
+    for (const draft of allDrafts) {
+      // Check in-reply-to and references headers
+      const inReplyTo = draft.header_in_reply_to || draft.in_reply_to;
+      const references = draft.references || [];
+      
+      if (inReplyTo) draftMessageIds.add(inReplyTo);
+      if (Array.isArray(references)) {
+        for (const ref of references) {
+          draftMessageIds.add(ref);
+        }
+      }
+    }
 
-    for (const message of messages) {
+    logger.info(
+      { totalDrafts: allDrafts.length, uniqueMessageIds: draftMessageIds.size },
+      'Indexed existing drafts'
+    );
+
+    // List ALL inbox messages
+    logger.info('Listing all inbox messages...');
+    const allInboxMessages = await forwardEmailClient.listAllMessages({
+      folder: 'INBOX'
+    });
+
+    logger.info({ count: allInboxMessages.length }, 'Retrieved all inbox messages');
+
+    // Filter out messages that:
+    // 1. Already have drafts
+    // 2. Have "skip-ai" label
+    const messagesToProcess = allInboxMessages.filter((message) => {
+      // Check if draft already exists
+      const messageId = message.header_message_id || message.id;
+      if (draftMessageIds.has(messageId)) {
+        logger.debug(
+          { messageId: message.id },
+          'Skipping - draft already exists'
+        );
+        return false;
+      }
+
+      // Check for skip-ai label
+      const labels = message.labels || [];
+      const hasSkipAI = labels.some((label) => label.toLowerCase() === 'skip-ai');
+      if (hasSkipAI) {
+        logger.debug({ messageId: message.id }, 'Skipping - has skip-ai label');
+        return false;
+      }
+
+      return true;
+    });
+
+    logger.info(
+      {
+        total: allInboxMessages.length,
+        toProcess: messagesToProcess.length,
+        skipped: allInboxMessages.length - messagesToProcess.length
+      },
+      'Filtered messages to process'
+    );
+
+    // Process remaining messages
+    for (const message of messagesToProcess) {
       try {
         await processMessage(message, vectorStore, historyVectorStore);
       } catch (err) {
