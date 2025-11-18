@@ -14,5 +14,5 @@ module.exports = {
   notCodeExample: true,
   noYearAffix: true,
   hasSidebar: true,
-  ogImage: 'img/articles/ai-customer-support-agent-maze.web'
+  ogImage: 'img/articles/ai-customer-support-agent-maze.webp'
 };
