@@ -873,6 +873,7 @@ const config = {
   ollamaMaxTokens: Number.parseInt(env.OLLAMA_MAX_TOKENS, 10) || 2000,
   lancedbPath: env.LANCEDB_PATH,
   githubOctokitToken: env.GITHUB_OCTOKIT_TOKEN,
+  inboxZero: env.INBOX_ZERO || false,
   forwardEmailAliasUsername: env.FORWARD_EMAIL_ALIAS_USERNAME,
   forwardEmailAliasPassword: env.FORWARD_EMAIL_ALIAS_PASSWORD,
   customerSupportAiInboxLimit:

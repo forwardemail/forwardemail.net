@@ -520,19 +520,22 @@ async function processMessage(message, vectorStore, historyVectorStore) {
     );
 
     // Archive the original message after successful draft creation
-    try {
-      await forwardEmailClient.ensureFolder('Archive');
-      await forwardEmailClient.moveMessage(fullMessage.id, 'Archive');
-      logger.info(
-        { messageId: fullMessage.id, draftId: draft.id },
-        'Message archived successfully'
-      );
-    } catch (err) {
-      logger.error(err, {
-        context: 'archive message after draft creation',
-        messageId: fullMessage.id
-      });
-      // Don't throw - draft was created successfully
+    // (if and only if `env.INBOX_ZERO` is set to `true`)
+    if (config.inboxZero) {
+      try {
+        await forwardEmailClient.ensureFolder('Archive');
+        await forwardEmailClient.moveMessage(fullMessage.id, 'Archive');
+        logger.info(
+          { messageId: fullMessage.id, draftId: draft.id },
+          'Message archived successfully'
+        );
+      } catch (err) {
+        logger.error(err, {
+          context: 'archive message after draft creation',
+          messageId: fullMessage.id
+        });
+        // Don't throw - draft was created successfully
+      }
     }
 
     return draft;
