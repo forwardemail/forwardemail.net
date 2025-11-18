@@ -114,9 +114,13 @@ Without AI assistance, this constant context-switching leads to:
 ### What You Get
 
 ✅ **Speed**: AI drafts responses in seconds, humans review and send within minutes
+
 ✅ **Accuracy**: Responses based on our actual documentation and past solutions
+
 ✅ **Consistency**: Same high-quality answers whether it's 9am or 9pm
+
 ✅ **Human touch**: Every response reviewed and personalized by our team
+
 ✅ **No hallucinations**: AI only uses our verified knowledge base, not generic internet data
 
 > \[!NOTE]

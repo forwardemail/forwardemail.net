@@ -1,0 +1,337 @@
+# Copyright (c) Forward Email LLC
+# SPDX-License-Identifier: BUSL-1.1
+
+---
+- name: Import security playbook
+  import_playbook: security.yml
+- name: Import SSH keys playbook
+  import_playbook: ssh-keys.yml
+
+- hosts: mongo
+  name: Hostname
+  become: true
+  become_user: root
+  tasks:
+    - name: Set hostname
+      hostname:
+        name: "{{ lookup('env', 'MONGO_HOST') }}"
+
+- hosts: mongo
+  name: MongoDB
+  become: true
+  become_user: root
+  handlers:
+    - name: Reload UFW
+      ufw:
+        state: reloaded
+    - name: Restart MongoDB
+      service:
+        name: mongod
+        state: restarted
+  tasks:
+    # Install MongoDB using trfore.mongodb_install role
+    - name: Install MongoDB v6
+      include_role:
+        name: trfore.mongodb_install
+      vars:
+        mongodb_version: "6.0.18"
+        mongodb_security_authorization: "enabled"
+
+    # Configure MongoDB for TLS/SSL
+    - name: Ensure MongoDB TLS/SSL configuration directory exists
+      file:
+        path: /etc/mongodb/ssl
+        state: directory
+        owner: mongodb
+        group: mongodb
+        mode: "0750"
+
+    - name: Create MongoDB TLS/SSL certificate PEM file
+      shell: |
+        cat "{{ lookup('env', 'SSL_CERT_PATH') }}" "{{ lookup('env', 'SSL_KEY_PATH') }}" > /etc/mongodb/ssl/mongodb.pem
+        chown mongodb:mongodb /etc/mongodb/ssl/mongodb.pem
+        chmod 0400 /etc/mongodb/ssl/mongodb.pem
+      args:
+        creates: /etc/mongodb/ssl/mongodb.pem
+
+    - name: Copy CA certificate for MongoDB
+      copy:
+        src: "{{ lookup('env', 'SSL_CA_PATH') }}"
+        dest: /etc/mongodb/ssl/ca.pem
+        owner: mongodb
+        group: mongodb
+        mode: "0400"
+
+    - name: Configure MongoDB TLS/SSL in mongod.conf
+      blockinfile:
+        path: /etc/mongod.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK - TLS/SSL"
+        block: |
+          net:
+            tls:
+              mode: requireTLS
+              certificateKeyFile: /etc/mongodb/ssl/mongodb.pem
+              CAFile: /etc/mongodb/ssl/ca.pem
+      notify: Restart MongoDB
+
+    # UFW Configuration
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    - name: Limit ufw ssh
+      ufw:
+        rule: limit
+        port: 22
+        proto: tcp
+
+    - name: Allow ssh
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
+
+    # Fetch IP whitelist and configure UFW
+    - name: Fetch IP whitelist from forwardemail.net
+      uri:
+        url: https://forwardemail.net/ips/v4.txt?comments=false
+        return_content: true
+      register: ip_whitelist_response
+
+    - name: Parse IP whitelist
+      set_fact:
+        allowed_ips: "{{ ip_whitelist_response.content.split('\n') | select('match', '^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$') | list }}"
+
+    - name: Allow MongoDB port from whitelisted IPs
+      ufw:
+        rule: allow
+        from_ip: "{{ item }}"
+        to_port: 27017
+        proto: tcp
+        comment: "Auto-whitelist MongoDB"
+      loop: "{{ allowed_ips }}"
+      notify: Reload UFW
+
+    # Install UFW whitelist update script
+    - name: Create UFW whitelist update script
+      copy:
+        dest: /usr/local/bin/update-mongo-ufw-whitelist.sh
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Fetch current IP list
+          NEW_IPS=$(curl -s https://forwardemail.net/ips/v4.txt?comments=false | grep -E '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$')
+
+          # Get current UFW rules for MongoDB port
+          CURRENT_IPS=$(ufw status | grep "27017/tcp" | grep "ALLOW" | awk '{print $3}' | sort -u)
+
+          # Track if changes were made
+          CHANGED=0
+
+          # Add new IPs
+          for ip in $NEW_IPS; do
+            if ! echo "$CURRENT_IPS" | grep -q "^${ip}$"; then
+              ufw allow from "$ip" to any port 27017 proto tcp comment "Auto-whitelist MongoDB"
+              CHANGED=1
+            fi
+          done
+
+          # Remove old IPs (not in new list)
+          for ip in $CURRENT_IPS; do
+            if ! echo "$NEW_IPS" | grep -q "^${ip}$"; then
+              # Find and delete the rule
+              RULE_NUM=$(ufw status numbered | grep "27017/tcp" | grep "$ip" | grep -oP '^\[\s*\K[0-9]+' | head -1)
+              if [ -n "$RULE_NUM" ]; then
+                echo "y" | ufw delete "$RULE_NUM"
+                CHANGED=1
+              fi
+            fi
+          done
+
+          # Reload UFW if changes were made
+          if [ $CHANGED -eq 1 ]; then
+            ufw reload
+          fi
+
+    # Create systemd timer for UFW whitelist updates
+    - name: Create UFW whitelist update systemd service
+      copy:
+        dest: /etc/systemd/system/mongo-ufw-whitelist-update.service
+        content: |
+          [Unit]
+          Description=Update MongoDB UFW IP Whitelist
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/bin/update-mongo-ufw-whitelist.sh
+
+    - name: Create UFW whitelist update systemd timer
+      copy:
+        dest: /etc/systemd/system/mongo-ufw-whitelist-update.timer
+        content: |
+          [Unit]
+          Description=Update MongoDB UFW IP Whitelist Every 10 Minutes
+
+          [Timer]
+          OnBootSec=5min
+          OnUnitActiveSec=10min
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: Enable and start UFW whitelist update timer
+      systemd:
+        daemon_reload: true
+        name: mongo-ufw-whitelist-update.timer
+        enabled: true
+        state: started
+
+       # Install AWS CLI and GPG dependencies
+    - name: Install AWS CLI and GPG dependencies
+      apt:
+        name:
+          - python3-pip
+          - unzip
+          - gnupg
+        update_cache: true
+
+    - name: Install AWS CLI
+      shell: |
+        if ! command -v aws &> /dev/null; then
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+          unzip -q /tmp/awscliv2.zip -d /tmp
+          /tmp/aws/install
+          rm -rf /tmp/aws /tmp/awscliv2.zip
+        fi
+      args:
+        creates: /usr/local/bin/aws
+
+    # Create MongoDB backup script
+    - name: Create MongoDB backup script
+      copy:
+        dest: /usr/local/bin/backup-mongodb.sh
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Environment variables (set via systemd service or environment)
+          AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
+          AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+          AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL}"
+          BACKUP_BUCKET="${MONGO_BACKUP_BUCKET:-forwardemail-backups}"
+          BACKUP_SECRET="${BACKUP_SECRET}"
+
+          # Check if BACKUP_SECRET is set
+          if [ -z "$BACKUP_SECRET" ]; then
+            echo "Error: BACKUP_SECRET environment variable is not set"
+            exit 1
+          fi
+
+          # Timestamp and path
+          TIMESTAMP=$(date +%Y/%m/%d/%H)
+          BACKUP_NAME="mongodb-backup-$(date +%Y%m%d-%H%M%S).archive.gz.gpg"
+          S3_PATH="s3://${BACKUP_BUCKET}/mongodb/${TIMESTAMP}/${BACKUP_NAME}"
+
+          # Perform backup, encrypt with GPG, and stream directly to S3
+          mongodump --host=localhost --port=27017 --oplog --archive --gzip | \
+            gpg --symmetric --cipher-algo AES256 --batch --yes --passphrase "$BACKUP_SECRET" | \
+            aws s3 cp - "${S3_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}"
+
+          echo "MongoDB encrypted backup completed: ${S3_PATH}"
+
+    # Create MongoDB backup cleanup script
+    - name: Create MongoDB backup cleanup script
+      copy:
+        dest: /usr/local/bin/cleanup-mongodb-backups.sh
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          set -e
+
+          # Environment variables
+          AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}"
+          AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}"
+          AWS_ENDPOINT_URL="${AWS_ENDPOINT_URL}"
+          BACKUP_BUCKET="${MONGO_BACKUP_BUCKET:-forwardemail-backups}"
+
+          # Calculate dates
+          THIRTY_DAYS_AGO=$(date -d "30 days ago" +%s)
+          SEVEN_DAYS_AGO=$(date -d "7 days ago" +%s)
+
+          # List all backups
+          aws s3 ls "s3://${BACKUP_BUCKET}/mongodb/" --recursive --endpoint-url="${AWS_ENDPOINT_URL}" | while read -r line; do
+            FILE_DATE=$(echo "$line" | awk '{print $1}')
+            FILE_PATH=$(echo "$line" | awk '{print $4}')
+            FILE_TIMESTAMP=$(date -d "$FILE_DATE" +%s)
+
+            # Delete backups older than 30 days
+            if [ "$FILE_TIMESTAMP" -lt "$THIRTY_DAYS_AGO" ]; then
+              aws s3 rm "s3://${BACKUP_BUCKET}/${FILE_PATH}" --endpoint-url="${AWS_ENDPOINT_URL}"
+              echo "Deleted old backup: ${FILE_PATH}"
+            # For backups 8-30 days old, keep only one per day (delete others)
+            elif [ "$FILE_TIMESTAMP" -lt "$SEVEN_DAYS_AGO" ]; then
+              # Extract date from path (YYYY/MM/DD)
+              BACKUP_DATE=$(echo "$FILE_PATH" | grep -oP 'mongodb/\K[0-9]{4}/[0-9]{2}/[0-9]{2}')
+
+              # Get all backups for this date
+              DAILY_BACKUPS=$(aws s3 ls "s3://${BACKUP_BUCKET}/mongodb/${BACKUP_DATE}/" --recursive --endpoint-url="${AWS_ENDPOINT_URL}" | awk '{print $4}' | sort)
+
+              # Keep only the latest backup for the day
+              LATEST_BACKUP=$(echo "$DAILY_BACKUPS" | tail -1)
+
+              # Delete all except the latest
+              for backup in $DAILY_BACKUPS; do
+                if [ "$backup" != "$LATEST_BACKUP" ]; then
+                  aws s3 rm "s3://${BACKUP_BUCKET}/${backup}" --endpoint-url="${AWS_ENDPOINT_URL}"
+                  echo "Deleted non-latest daily backup: ${backup}"
+                fi
+              done
+            fi
+          done
+
+          echo "MongoDB backup cleanup completed"
+
+    # Create systemd service for MongoDB backup
+    - name: Create MongoDB backup systemd service
+      copy:
+        dest: /etc/systemd/system/mongodb-backup.service
+        content: |
+          [Unit]
+          Description=MongoDB Backup to Cloudflare R2
+
+          [Service]
+          Type=oneshot
+          Environment="AWS_ACCESS_KEY_ID={{ lookup('env', 'AWS_ACCESS_KEY_ID') }}"
+          Environment="AWS_SECRET_ACCESS_KEY={{ lookup('env', 'AWS_SECRET_ACCESS_KEY') }}"
+          Environment="AWS_ENDPOINT_URL={{ lookup('env', 'AWS_ENDPOINT_URL') }}"
+          Environment="MONGO_BACKUP_BUCKET={{ lookup('env', 'MONGO_BACKUP_BUCKET') | default('forwardemail-backups', true) }}"
+          Environment="BACKUP_SECRET={{ lookup('env', 'BACKUP_SECRET') }}"
+          ExecStart=/usr/local/bin/backup-mongodb.sh
+          ExecStartPost=/usr/local/bin/cleanup-mongodb-backups.sh
+
+    # Create systemd timer for MongoDB backup (every 6 hours)
+    - name: Create MongoDB backup systemd timer
+      copy:
+        dest: /etc/systemd/system/mongodb-backup.timer
+        content: |
+          [Unit]
+          Description=MongoDB Backup Every 6 Hours
+
+          [Timer]
+          OnBootSec=15min
+          OnUnitActiveSec=6h
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: Enable and start MongoDB backup timer
+      systemd:
+        daemon_reload: true
+        name: mongodb-backup.timer
+        enabled: true
+        state: started
