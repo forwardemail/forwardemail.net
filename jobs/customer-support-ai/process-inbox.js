@@ -19,7 +19,8 @@ const VectorStore = require('#helpers/customer-support-ai/vector-store');
 const messageAnalyzer = require('#helpers/customer-support-ai/message-analyzer');
 const responseGenerator = require('#helpers/customer-support-ai/response-generator');
 const {
-  extractSenderText
+  extractSenderText,
+  buildReplyRecipients
 } = require('#helpers/customer-support-ai/message-utils');
 
 const graceful = new Graceful({
@@ -342,10 +343,43 @@ async function createDraft(message, analysis, generatedResponse) {
 
     const from = config.forwardEmailAliasUsername;
 
-    // Extract To address using shared utility
-    const to = extractSenderText(message);
+    // Build reply recipients (handles Reply-To and CC)
+    const { to, cc } = buildReplyRecipients(message, from);
 
-    const text = `${generatedResponse.response}\n\n--\nThank you,\nForward Email\nhttps://forwardemail.net`;
+    // Get original message details for quoting
+    const originalSender = extractSenderText(message);
+    const originalDate =
+      message.nodemailer?.date || message.header_date || new Date();
+    const formattedDate = new Date(originalDate).toLocaleString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    });
+
+    // Get original message text content
+    const originalText =
+      message.nodemailer?.text || message.text || analysis.content || '';
+
+    // Quote the original message (prefix each line with "> ")
+    const quotedOriginal = originalText
+      .split('\n')
+      .map((line) => `> ${line}`)
+      .join('\n');
+
+    // Build reply with quoted original message
+    const text = `${generatedResponse.response}
+
+--
+Thank you,
+Forward Email
+https://forwardemail.net
+
+On ${formattedDate}, ${originalSender} wrote:
+${quotedOriginal}`;
 
     // Extract threading headers from API response
     // API returns these at root level and in nodemailer.headers
@@ -372,14 +406,21 @@ async function createDraft(message, analysis, generatedResponse) {
     // Join into space-separated string for email headers
     references = references.filter(Boolean).join(' ');
 
-    const draft = await forwardEmailClient.createDraft({
+    const draftData = {
       from,
       to,
       subject,
       text,
       inReplyTo,
       references
-    });
+    };
+
+    // Add CC if there are any recipients
+    if (cc.length > 0) {
+      draftData.cc = cc.join(', ');
+    }
+
+    const draft = await forwardEmailClient.createDraft(draftData);
 
     logger.info(
       { draftId: draft.id, messageId: analysis.messageId },
@@ -401,6 +442,18 @@ async function processMessage(message, vectorStore, historyVectorStore) {
     logger.info({ messageId: message.id }, 'Processing message');
 
     const fullMessage = await forwardEmailClient.getMessage(message.id);
+
+    // Check for skip-ai label/tag (case-insensitive)
+    const labels = fullMessage.labels || [];
+    const hasSkipAI = labels.some((label) => label.toLowerCase() === 'skip-ai');
+
+    if (hasSkipAI) {
+      logger.info(
+        { messageId: fullMessage.id },
+        'Skipping message with skip-ai label'
+      );
+      return null;
+    }
 
     // Log message structure to debug content extraction
     logger.debug(
@@ -463,8 +516,24 @@ async function processMessage(message, vectorStore, historyVectorStore) {
         urgency: analysis.urgency,
         model: generatedResponse.model
       },
-      'Message processed successfully'
+      'Draft created successfully'
     );
+
+    // Archive the original message after successful draft creation
+    try {
+      await forwardEmailClient.ensureFolder('Archive');
+      await forwardEmailClient.moveMessage(fullMessage.id, 'Archive');
+      logger.info(
+        { messageId: fullMessage.id, draftId: draft.id },
+        'Message archived successfully'
+      );
+    } catch (err) {
+      logger.error(err, {
+        context: 'archive message after draft creation',
+        messageId: fullMessage.id
+      });
+      // Don't throw - draft was created successfully
+    }
 
     return draft;
   } catch (err) {

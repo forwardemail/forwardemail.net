@@ -151,6 +151,69 @@ class ForwardEmailClient {
       throw err;
     }
   }
+
+  async moveMessage(messageId, targetFolder) {
+    try {
+      const response = await axios.put(
+        `${this.apiBase}/v1/messages/${messageId}`,
+        {
+          folder: targetFolder
+        },
+        {
+          auth: {
+            username: this.aliasUsername,
+            password: this.aliasPassword
+          }
+        }
+      );
+
+      return response.data;
+    } catch (err) {
+      logger.error(err, {
+        context: 'forward email move message',
+        messageId,
+        targetFolder
+      });
+      throw err;
+    }
+  }
+
+  async ensureFolder(folderName) {
+    try {
+      // List existing folders
+      const folders = await this.listFolders();
+
+      // Check if folder exists
+      const folderExists = folders.some(
+        (f) => f.name === folderName || f.path === folderName
+      );
+
+      if (folderExists) {
+        logger.debug('Folder already exists', { folderName });
+        return true;
+      }
+
+      // Create folder if it doesn't exist
+      logger.info('Creating folder', { folderName });
+      await axios.post(
+        `${this.apiBase}/v1/folders`,
+        {
+          name: folderName
+        },
+        {
+          auth: {
+            username: this.aliasUsername,
+            password: this.aliasPassword
+          }
+        }
+      );
+
+      return true;
+    } catch (err) {
+      logger.error(err, { context: 'forward email ensure folder', folderName });
+      throw err;
+    }
+  }
 }
 
 module.exports = new ForwardEmailClient();

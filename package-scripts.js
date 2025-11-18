@@ -53,6 +53,8 @@ module.exports = {
     pretest: concurrent.nps('lint', 'build-test'),
 
     test: 'nyc ava',
-    testUpdateSnapshots: series('nps pretest', 'ava --update-snapshots')
+    testUpdateSnapshots: series('nps pretest', 'ava --update-snapshots'),
+    testCustomerSupportAi:
+      'NODE_ENV=test node node_modules/.pnpm/ava@5.3.1/node_modules/ava/entrypoints/cli.mjs test/customer-support-ai'
   }
 };

@@ -195,6 +195,8 @@ const purgeCssOptions = {
       'disabled',
       'dropdown-toggle',
       'fa',
+      'fas',
+      'fa-brain',
       'fa-plug',
       'fa-angle-right',
       'fa-check',
