@@ -12,7 +12,7 @@ const parser = require('mongodb-query-parser');
 const { boolean } = require('boolean');
 const _ = require('#helpers/lodash');
 
-const { Users } = require('#models');
+const { Domains, Users } = require('#models');
 const clearAliasQuotaCache = require('#helpers/clear-alias-quota-cache');
 const config = require('#config');
 
@@ -131,11 +131,7 @@ async function update(ctx) {
 
     // indicates reset of the value
     if (body.max_quota_per_alias === '') {
-      user.max_quota_per_alias = Number.isFinite(
-        ctx.state.domain.max_quota_per_alias
-      )
-        ? ctx.state.domain.max_quota_per_alias
-        : config.maxQuotaPerAlias;
+      user.max_quota_per_alias = config.maxQuotaPerAlias;
     } else if (typeof body.max_quota_per_alias === 'string') {
       // test against bytes regex
       if (!REGEX_BYTES.test(body.max_quota_per_alias))
@@ -150,8 +146,19 @@ async function update(ctx) {
   await user.save();
 
   if (body.max_quota_per_alias) {
-    clearAliasQuotaCache(ctx.client, ctx.state.domain._id)
-      .then()
+    Domains.distinct('_id', {
+      members: {
+        $elemMatch: {
+          user: ctx.state.user._id,
+          group: 'admin'
+        }
+      }
+    })
+      .then((domainIds) => {
+        clearAliasQuotaCache(ctx.client, domainIds)
+          .then()
+          .catch((err) => ctx.logger.fatal(err));
+      })
       .catch((err) => ctx.logger.fatal(err));
   }
 

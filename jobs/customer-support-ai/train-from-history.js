@@ -83,63 +83,78 @@ graceful.listen();
         for (const message of context.messages) {
           try {
             // Skip messages that are encrypted but could not be decrypted
-            // (don't train on encrypted gibberish)
-            const messageData = thread.find(
-              (m) => m.subject === message.subject && m.from === message.from
-            );
-            if (
-              messageData &&
-              messageData.encrypted &&
-              !messageData.decrypted
-            ) {
+            if (message.encrypted && !message.decrypted) {
               logger.debug(
                 'Skipping encrypted message that could not be decrypted',
                 {
                   subject: message.subject,
-                  from: message.from
+                  id: message.id
                 }
               );
               continue;
             }
 
-            // Combine subject and body for better context
-            const content = `Subject: ${
-              message.subject || 'No subject'
-            }\n\nFrom: ${message.from}\nTo: ${
-              message.to?.join(', ') || 'Unknown'
-            }\n\n${message.text || message.html || ''}`;
+            // Use the already-parsed and decrypted content from nodemailer
+            // forward-email-client.getMessage() already did all the work:
+            // - Decrypted the raw message
+            // - Parsed with simpleParser()
+            // - Populated message.nodemailer with headers, text, html, etc.
+
+            // Get the plain text content (already parsed and decoded)
+            const text = message.nodemailer?.text || '';
+
+            // If no text, try HTML (strip tags)
+            const html = message.nodemailer?.html || '';
+            const content = text || html.replace(/<[^>]*>/g, ' ').trim();
 
             if (!content.trim()) {
+              logger.debug('Skipping message with no content', {
+                id: message.id,
+                subject: message.subject
+              });
               continue;
             }
 
+            // Use the subject and content as-is
+            // The headers (From, To, Cc, etc.) are already in the text content
+            const fullContent = `Subject: ${message.subject || 'No subject'}
+
+${content}`;
+
             // Chunk the content
-            const chunks = processor.chunkText(content, {
+            const chunks = processor.chunkText(fullContent, {
               chunkSize: 1000,
               chunkOverlap: 200
             });
 
             // Add each chunk to vector store with metadata
             for (const chunk of chunks) {
+              // Extract date from API response
+              // API returns: header_date (from email headers), internal_date (when received)
+              const date = message.header_date || message.internal_date;
+
               const metadata = {
                 type: 'historical_email',
-                folder: thread[0].folder || 'unknown',
+                folder: message.folder_path || message.folder || 'unknown',
                 subject: message.subject,
-                from: message.from,
-                date: message.date,
-                threadId: context.subject,
+                date: date ? new Date(date).toISOString() : null,
+                messageId: message.id,
+                threadId: message.thread_id || context.subject, // Use API thread_id
                 hasReply: message.hasReply,
-                encrypted: thread[0].encrypted || false,
-                decrypted: thread[0].decrypted || false,
+                encrypted: message.encrypted || false,
+                decrypted: message.decrypted || false,
                 // Include chunk metadata
                 ...chunk.metadata
               };
 
               // If this message has a reply, include it as context
               if (message.reply) {
-                metadata.replyFrom = message.reply.from;
-                metadata.replyText = message.reply.text?.slice(0, 500); // First 500 chars
+                const replyText = message.reply.nodemailer?.text || '';
+                metadata.replySubject = message.reply.subject;
+                metadata.replyText = replyText.slice(0, 500); // First 500 chars
               }
+
+              console.log('metadata', metadata);
 
               // Pass chunk.text (string), not chunk (object)
               await vectorStore.addDocument(chunk.text, metadata);

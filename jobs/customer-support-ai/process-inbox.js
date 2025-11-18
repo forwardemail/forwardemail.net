@@ -18,6 +18,9 @@ const forwardEmailClient = require('#helpers/customer-support-ai/forward-email-c
 const VectorStore = require('#helpers/customer-support-ai/vector-store');
 const messageAnalyzer = require('#helpers/customer-support-ai/message-analyzer');
 const responseGenerator = require('#helpers/customer-support-ai/response-generator');
+const {
+  extractSenderText
+} = require('#helpers/customer-support-ai/message-utils');
 
 const graceful = new Graceful({
   logger
@@ -81,8 +84,10 @@ function rankResults(results, sourceType = 'knowledge_base') {
     const sourceWeight = SOURCE_WEIGHTS[source] || 0.5;
 
     // Calculate final score (lower distance = higher similarity)
-    // Invert distance and apply source weight
-    const similarityScore = (1 - distance) * sourceWeight;
+    // LanceDB uses L2 distance which can be > 1, so we use inverse
+    // Score = sourceWeight / (1 + distance)
+    // This ensures all scores are positive and decay with distance
+    const similarityScore = sourceWeight / (1 + distance);
 
     return {
       text: doc,
@@ -116,15 +121,26 @@ function getSourceUrl(metadata) {
 
     case 'local_markdown': {
       if (sourcePath) {
-        // Convert app/views/path.md to https://forwardemail.net/path
+        // Map app/views paths to actual website URLs
+        // Docs: app/views/docs/{dir-name}/index.pug -> /blog/docs/{dir-name}
+        // Other: app/views/{path}.pug -> /{path}
+
+        // Handle docs directory structure
+        const docsMatch = sourcePath.match(/^app\/views\/docs\/([^/]+)/);
+        if (docsMatch) {
+          const dirName = docsMatch[1];
+          return `https://forwardemail.net/blog/docs/${dirName}`;
+        }
+
+        // Handle other views (remove app/views/ prefix and file extension)
         const webPath = sourcePath
           .replace(/^app\/views\//, '')
-          .replace(/\.md$/, '')
-          .replace(/index$/, '');
+          .replace(/\.(md|pug)$/, '')
+          .replace(/\/index$/, '');
         return `https://forwardemail.net/${webPath}`;
       }
 
-      return 'https://forwardemail.net/docs';
+      return 'https://forwardemail.net/search';
     }
 
     case 'technical_whitepaper': {
@@ -132,7 +148,7 @@ function getSourceUrl(metadata) {
     }
 
     case 'api_spec': {
-      return 'https://forwardemail.net/api';
+      return 'https://forwardemail.net/email-api';
     }
 
     case 'github_issue': {
@@ -155,25 +171,53 @@ function getSourceUrl(metadata) {
 
 async function retrieveContext(analysis, vectorStore) {
   try {
-    const queryText = `${analysis.subject} ${analysis.keywords.join(' ')}`;
+    // Use full message content for better context matching
+    const queryText = `${analysis.subject} ${analysis.content}`;
+    logger.debug(
+      { queryTextLength: queryText.length, subject: analysis.subject },
+      'Query text for context retrieval'
+    );
+
     const queryEmbedding = await ollamaClient.generateEmbedding(queryText);
+    logger.debug(
+      { embeddingLength: queryEmbedding.length },
+      'Generated query embedding'
+    );
 
     // Get dynamic limits based on question type
     const limits = getContextLimits(analysis);
+    logger.debug({ limits }, 'Context limits');
 
     // Query with higher limit to allow for filtering
     const results = await vectorStore.query(queryEmbedding, {
       limit: limits.kb * 2
     });
+    logger.debug(
+      {
+        documentsCount: results.documents?.[0]?.length || 0,
+        distancesCount: results.distances?.[0]?.length || 0,
+        metadatasCount: results.metadatas?.[0]?.length || 0
+      },
+      'Raw LanceDB results'
+    );
 
     // Rank and weight results
     let ranked = rankResults(results, 'knowledge_base');
+    logger.debug(
+      {
+        rankedCount: ranked.length,
+        topScores: ranked.slice(0, 3).map((r) => r.score)
+      },
+      'After ranking'
+    );
 
     // Deduplicate
     ranked = deduplicateContext(ranked);
+    logger.debug({ afterDedup: ranked.length }, 'After deduplication');
 
     // Take top N after ranking and deduplication
     ranked = ranked.slice(0, limits.kb);
+    logger.debug({ finalCount: ranked.length }, 'Final context count');
 
     // Format context with source attribution
     const contextParts = ranked.map((item) => {
@@ -199,7 +243,8 @@ async function retrieveContext(analysis, vectorStore) {
 
 async function retrieveHistoricalContext(analysis, historyVectorStore) {
   try {
-    const queryText = `${analysis.subject} ${analysis.keywords.join(' ')}`;
+    // Use full message content for better context matching
+    const queryText = `${analysis.subject} ${analysis.content}`;
     const queryEmbedding = await ollamaClient.generateEmbedding(queryText);
 
     // Get dynamic limits
@@ -242,6 +287,53 @@ async function retrieveHistoricalContext(analysis, historyVectorStore) {
   }
 }
 
+async function checkForExistingDraft(messageId) {
+  try {
+    // List drafts in Drafts folder
+    const drafts = await forwardEmailClient.listMessages({
+      folder: 'Drafts',
+      limit: 100,
+      eml: false,
+      raw: false,
+      nodemailer: false
+    });
+
+    // Check if any draft is in reply to this message
+    for (const draft of drafts) {
+      // Get full draft to check headers
+      const fullDraft = await forwardEmailClient.getMessage(draft.id);
+
+      // Check if this draft is replying to the current message
+      const inReplyTo =
+        fullDraft.nodemailer?.headers?.['in-reply-to'] ||
+        fullDraft.nodemailer?.inReplyTo;
+      const references =
+        fullDraft.references || fullDraft.nodemailer?.references || [];
+
+      // Convert references to array if needed
+      const refsArray = Array.isArray(references) ? references : [references];
+
+      // Check if messageId appears in in-reply-to or references
+      if (inReplyTo === messageId || refsArray.includes(messageId)) {
+        logger.info(
+          { draftId: draft.id, messageId },
+          'Found existing draft for this message'
+        );
+        return draft;
+      }
+    }
+
+    return null;
+  } catch (err) {
+    logger.error(err, {
+      context: 'check for existing draft',
+      messageId
+    });
+    // Don't throw - if check fails, proceed with creating draft
+    return null;
+  }
+}
+
 async function createDraft(message, analysis, generatedResponse) {
   try {
     const subject = `Re: ${analysis.subject
@@ -249,17 +341,44 @@ async function createDraft(message, analysis, generatedResponse) {
       .trim()}`;
 
     const from = config.forwardEmailAliasUsername;
-    const to = analysis.sender;
 
-    const text = `${generatedResponse.response}\n\n--\nThank you,\nForward Email Support Team\nhttps://forwardemail.net`;
+    // Extract To address using shared utility
+    const to = extractSenderText(message);
+
+    const text = `${generatedResponse.response}\n\n--\nThank you,\nForward Email\nhttps://forwardemail.net`;
+
+    // Extract threading headers from API response
+    // API returns these at root level and in nodemailer.headers
+    const messageId = message.header_message_id || message.id;
+
+    // Get in-reply-to from nodemailer headers
+    const inReplyTo =
+      message.nodemailer?.headers?.['in-reply-to'] ||
+      message.nodemailer?.inReplyTo ||
+      messageId;
+
+    // Get references from root level (API) or nodemailer
+    // API returns references as array at root level
+    let references = message.references || message.nodemailer?.references || [];
+
+    // Ensure references is an array
+    if (!Array.isArray(references)) {
+      references = [references];
+    }
+
+    // Add current message to references chain
+    references = [...references, messageId];
+
+    // Join into space-separated string for email headers
+    references = references.filter(Boolean).join(' ');
 
     const draft = await forwardEmailClient.createDraft({
       from,
       to,
       subject,
       text,
-      inReplyTo: message.messageId || message.id,
-      references: message.references || message.messageId || message.id
+      inReplyTo,
+      references
     });
 
     logger.info(
@@ -283,7 +402,32 @@ async function processMessage(message, vectorStore, historyVectorStore) {
 
     const fullMessage = await forwardEmailClient.getMessage(message.id);
 
-    const analysis = messageAnalyzer.analyze(fullMessage);
+    // Log message structure to debug content extraction
+    logger.debug(
+      {
+        hasNodemailer: Boolean(fullMessage.nodemailer),
+        hasNodemailerText: Boolean(fullMessage.nodemailer?.text),
+        hasNodemailerHtml: Boolean(fullMessage.nodemailer?.html),
+        hasText: Boolean(fullMessage.text),
+        hasHtml: Boolean(fullMessage.html),
+        hasBody: Boolean(fullMessage.body),
+        nodemailerTextLength: fullMessage.nodemailer?.text?.length || 0,
+        nodemailerHtmlLength: fullMessage.nodemailer?.html?.length || 0,
+        subject: fullMessage.subject
+      },
+      'Message structure'
+    );
+
+    const analysis = await messageAnalyzer.analyze(fullMessage);
+    logger.debug(
+      {
+        contentLength: analysis.content?.length || 0,
+        contentPreview: analysis.content?.slice(0, 100) || '(empty)',
+        subject: analysis.subject,
+        keywords: analysis.keywords
+      },
+      'Analysis result'
+    );
 
     const context = await retrieveContext(analysis, vectorStore);
     const historicalContext = await retrieveHistoricalContext(
@@ -296,6 +440,18 @@ async function processMessage(message, vectorStore, historyVectorStore) {
       context,
       historicalContext
     );
+
+    // Check if a draft already exists for this message
+    const messageId = fullMessage.header_message_id || fullMessage.id;
+    const existingDraft = await checkForExistingDraft(messageId);
+
+    if (existingDraft) {
+      logger.info(
+        { draftId: existingDraft.id, messageId: fullMessage.id },
+        'Skipping draft creation - draft already exists'
+      );
+      return existingDraft;
+    }
 
     const draft = await createDraft(fullMessage, analysis, generatedResponse);
 

@@ -14,7 +14,7 @@ class OllamaClient {
     const host = config.ollamaHost || 'http://localhost:11434';
     this.host = host.replace('localhost', '127.0.0.1');
     this.model = config.ollamaModel || 'qwen2.5-coder:7b-instruct-q4_K_M';
-    this.embeddingModel = config.ollamaEmbeddingModel || 'mistral-small';
+    this.embeddingModel = config.ollamaEmbeddingModel || 'mxbai-embed-large';
     this.temperature = config.ollamaTemperature || 0.7;
     this.maxTokens = config.ollamaMaxTokens || 2000;
   }

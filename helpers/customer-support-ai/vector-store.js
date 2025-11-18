@@ -15,7 +15,6 @@ const ollamaClient = require('#helpers/customer-support-ai/ollama-client');
 class VectorStore {
   constructor(options = {}) {
     this.dbPath =
-      options.lancedbPath ||
       config.lancedbPath ||
       path.join(os.homedir(), '.local', 'share', 'lancedb');
     this.tableName = options.collectionName || 'forward_email_knowledge_base';
@@ -152,10 +151,13 @@ class VectorStore {
 
     try {
       // Search in LanceDB using vector
-      const results = await this.table
+      const rawResults = await this.table
         .search(queryEmbedding)
         .limit(options.limit || 5)
         .execute();
+
+      // LanceDB returns an array directly, but ensure it's an array
+      const results = Array.isArray(rawResults) ? rawResults : [];
 
       // Transform to match ChromaDB format for compatibility
       return {

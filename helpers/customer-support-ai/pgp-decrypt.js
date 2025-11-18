@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const fs = require('node:fs');
 const { Buffer } = require('node:buffer');
 const process = require('node:process');
 const { promisify } = require('node:util');
@@ -13,6 +14,43 @@ const logger = require('#helpers/logger');
 const isMessageEncrypted = require('#helpers/is-message-encrypted');
 
 const execAsync = promisify(exec);
+
+// Cache the decrypted private key at module load
+let cachedDecryptedKey = null;
+
+// Read and decrypt private key from file if GPG_SECURITY_KEY is configured
+if (process.env.GPG_SECURITY_KEY) {
+  try {
+    // GPG_SECURITY_KEY is a file path, read the armored key
+    const privateKeyArmored = fs.readFileSync(
+      process.env.GPG_SECURITY_KEY,
+      'utf8'
+    );
+
+    // Initialize the key asynchronously but cache it
+    (async () => {
+      try {
+        const privateKey = await openpgp.readPrivateKey({
+          armoredKey: privateKeyArmored
+        });
+
+        // Decrypt the key with passphrase if provided
+        cachedDecryptedKey = process.env.GPG_SECURITY_PASSPHRASE
+          ? await openpgp.decryptKey({
+              privateKey,
+              passphrase: process.env.GPG_SECURITY_PASSPHRASE
+            })
+          : privateKey;
+
+        logger.info('PGP private key loaded and cached successfully');
+      } catch (err) {
+        logger.error(err, { context: 'load PGP private key' });
+      }
+    })();
+  } catch (err) {
+    logger.error(err, { context: 'read PGP private key file' });
+  }
+}
 
 /**
  * Decrypt PGP-encrypted message content with recursive decryption support
@@ -53,21 +91,17 @@ async function pgpDecrypt(content, depth = 0) {
 
     let decrypted = null;
 
-    // Method 1: Try GPG_SECURITY_KEY from environment
-    if (process.env.GPG_SECURITY_KEY) {
+    // Method 1: Try cached decrypted key
+    if (cachedDecryptedKey) {
       try {
-        decrypted = await decryptWithKey(
-          messageContent,
-          process.env.GPG_SECURITY_KEY,
-          process.env.GPG_SECURITY_PASSPHRASE
-        );
+        decrypted = await decryptWithKey(messageContent, cachedDecryptedKey);
         if (decrypted) {
           logger.info(
-            `Successfully decrypted with GPG_SECURITY_KEY (depth: ${depth})`
+            `Successfully decrypted with cached key (depth: ${depth})`
           );
         }
       } catch (err) {
-        logger.debug('GPG_SECURITY_KEY decryption failed', { err });
+        logger.debug('Cached key decryption failed', { err });
       }
     }
 
@@ -107,29 +141,18 @@ async function pgpDecrypt(content, depth = 0) {
 }
 
 /**
- * Decrypt using OpenPGP.js with provided private key
+ * Decrypt using OpenPGP.js with cached decrypted private key
+ * @param {String} messageContent - The encrypted message
+ * @param {Object} decryptedKey - Pre-loaded and decrypted private key
  */
-async function decryptWithKey(messageContent, privateKeyArmored, passphrase) {
+async function decryptWithKey(messageContent, decryptedKey) {
   try {
     // Read the PGP message
     const message = await openpgp.readMessage({
       armoredMessage: messageContent
     });
 
-    // Read the private key
-    const privateKey = await openpgp.readPrivateKey({
-      armoredKey: privateKeyArmored
-    });
-
-    // Decrypt the key if it's encrypted
-    const decryptedKey = passphrase
-      ? await openpgp.decryptKey({
-          privateKey,
-          passphrase
-        })
-      : privateKey;
-
-    // Decrypt the message
+    // Decrypt the message using the cached key
     const { data: decrypted } = await openpgp.decrypt({
       message,
       decryptionKeys: decryptedKey

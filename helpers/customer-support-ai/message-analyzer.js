@@ -3,23 +3,34 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const { extractSenderEmail, extractSenderName } = require('./message-utils');
 const logger = require('#helpers/logger');
 
 class MessageAnalyzer {
-  analyze(message) {
+  async analyze(message) {
     try {
+      const content = await this.extractContent(message);
+      const keywords = await this.extractKeywords(message);
+      const questionType = await this.classifyQuestionType(message);
+      const intent = await this.classifyIntent(message);
+      const urgency = await this.assessUrgency(message);
+      const category = await this.categorize(message);
+
       const analysis = {
         messageId: message.id || message._id,
         sender: this.extractSender(message),
+        senderName: this.extractSenderName(message),
         subject: message.subject || '(no subject)',
-        content: this.extractContent(message),
-        keywords: this.extractKeywords(message),
-        questionType: this.classifyQuestionType(message),
-        intent: this.classifyIntent(message),
-        urgency: this.assessUrgency(message),
-        category: this.categorize(message),
+        content,
+        keywords,
+        questionType,
+        intent,
+        urgency,
+        category,
         analyzedAt: new Date()
       };
+
+      console.log('analysis', analysis);
 
       return analysis;
     } catch (err) {
@@ -32,26 +43,35 @@ class MessageAnalyzer {
   }
 
   extractSender(message) {
-    if (typeof message.from === 'string') return message.from;
-    if (message.from && message.from.address) return message.from.address;
-    if (Array.isArray(message.from) && message.from[0]) {
-      return message.from[0].address || message.from[0];
-    }
-
-    return 'unknown@example.com';
+    return extractSenderEmail(message);
   }
 
-  extractContent(message) {
+  extractSenderName(message) {
+    return extractSenderName(message);
+  }
+
+  async extractContent(message) {
+    // forward-email-client.getMessage() already handles raw parsing and decryption
+    // and populates message.nodemailer with parsed content
+
+    // Try nodemailer.text (parsed by forward-email-client)
+    if (message.nodemailer?.text) return message.nodemailer.text;
+    if (message.nodemailer?.html) {
+      return message.nodemailer.html.replace(/<[^>]*>/g, ' ').trim();
+    }
+
+    // Fallback to root level properties
     if (message.text) return message.text;
     if (message.html) return message.html.replace(/<[^>]*>/g, ' ').trim();
     if (message.body) return message.body;
     return '';
   }
 
-  extractKeywords(message) {
-    const content = `${message.subject || ''} ${this.extractContent(
-      message
-    )}`.toLowerCase();
+  async extractKeywords(message) {
+    const extractedContent = await this.extractContent(message);
+    const content = `${
+      message.subject || ''
+    } ${extractedContent}`.toLowerCase();
 
     const keywords = [];
 
@@ -117,10 +137,11 @@ class MessageAnalyzer {
     return [...new Set(keywords)]; // Remove duplicates
   }
 
-  classifyQuestionType(message) {
-    const content = `${message.subject || ''} ${this.extractContent(
-      message
-    )}`.toLowerCase();
+  async classifyQuestionType(message) {
+    const extractedContent = await this.extractContent(message);
+    const content = `${
+      message.subject || ''
+    } ${extractedContent}`.toLowerCase();
 
     // How-to questions
     if (
@@ -177,10 +198,11 @@ class MessageAnalyzer {
    * @param {Object} message Message object
    * @returns {string} Intent classification
    */
-  classifyIntent(message) {
-    const content = `${message.subject || ''} ${this.extractContent(
-      message
-    )}`.toLowerCase();
+  async classifyIntent(message) {
+    const extractedContent = await this.extractContent(message);
+    const content = `${
+      message.subject || ''
+    } ${extractedContent}`.toLowerCase();
 
     // Information seeking
     if (
@@ -240,10 +262,11 @@ class MessageAnalyzer {
    * @param {Object} message Message object
    * @returns {string} Category
    */
-  categorize(message) {
-    const content = `${message.subject || ''} ${this.extractContent(
-      message
-    )}`.toLowerCase();
+  async categorize(message) {
+    const extractedContent = await this.extractContent(message);
+    const content = `${
+      message.subject || ''
+    } ${extractedContent}`.toLowerCase();
 
     // Email sending (SMTP)
     if (
@@ -342,10 +365,11 @@ class MessageAnalyzer {
     return 'general';
   }
 
-  assessUrgency(message) {
-    const content = `${message.subject || ''} ${this.extractContent(
-      message
-    )}`.toLowerCase();
+  async assessUrgency(message) {
+    const extractedContent = await this.extractContent(message);
+    const content = `${
+      message.subject || ''
+    } ${extractedContent}`.toLowerCase();
 
     // High urgency
     if (

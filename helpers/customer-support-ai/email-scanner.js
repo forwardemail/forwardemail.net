@@ -5,7 +5,6 @@
 
 const forwardEmailClient = require('./forward-email-client');
 const logger = require('#helpers/logger');
-const isMessageEncrypted = require('#helpers/is-message-encrypted');
 
 /**
  * Scan historical emails from all folders
@@ -158,41 +157,22 @@ class EmailScanner {
 
   /**
    * Process individual message
-   * Decryption is now handled by forwardEmailClient.getMessage()
+   * Fetches full message using getMessage() which handles decryption and parsing
+   * Returns the message object as-is from the API (with nodemailer, headers, raw, eml, etc.)
    */
-  async processMessage(message, folder, decryptPGP = true) {
+  async processMessage(message, folder) {
     try {
-      // If decryptPGP is enabled and we only have basic message data,
-      // fetch full message (which includes automatic decryption)
-      let fullMessage = message;
-      if (decryptPGP && message.id && !message.decrypted) {
-        const content = message.text || message.html;
-        if (content && isMessageEncrypted(content)) {
-          logger.debug('Fetching full message for decryption', {
-            id: message.id
-          });
-          fullMessage = await this.client.getMessage(message.id);
-        }
-      }
+      // listMessages only returns minimal metadata, so we need to fetch the full message
+      // getMessage() handles raw decryption and parsing automatically
+      logger.debug('Fetching full message', { id: message.id });
+      const fullMessage = await this.client.getMessage(message.id);
 
-      const processed = {
-        id: fullMessage.id,
-        folder,
-        from: fullMessage.from,
-        to: fullMessage.to,
-        cc: fullMessage.cc,
-        subject: fullMessage.subject,
-        date: fullMessage.date,
-        inReplyTo: fullMessage.inReplyTo,
-        references: fullMessage.references,
-        text: fullMessage.text || '',
-        html: fullMessage.html || '',
-        attachments: fullMessage.attachments || [],
-        encrypted: fullMessage.encrypted || false,
-        decrypted: fullMessage.decrypted || false
-      };
+      // Add folder to the message object for context
+      fullMessage.folder = folder;
 
-      return processed;
+      // Return the full API message object as-is
+      // It already has: nodemailer, headers, raw, eml, subject, date, encrypted, decrypted, etc.
+      return fullMessage;
     } catch (err) {
       logger.error('Error processing message', { err });
       return null;
@@ -255,30 +235,17 @@ class EmailScanner {
 
   /**
    * Extract conversation context from thread
-   * Useful for training on how conversations flow
+   * Returns messages as-is from the API with reply relationships
    */
   extractConversationContext(thread) {
     if (!thread || thread.length === 0) return null;
 
     const context = {
       subject: thread[0].subject,
-      participants: new Set(),
       messageCount: thread.length,
       duration: null,
       messages: []
     };
-
-    // Extract participants
-    for (const message of thread) {
-      if (message.from) context.participants.add(message.from);
-      if (message.to) {
-        for (const recipient of message.to) {
-          context.participants.add(recipient);
-        }
-      }
-    }
-
-    context.participants = [...context.participants];
 
     // Calculate duration
     if (thread.length > 1) {
@@ -287,27 +254,16 @@ class EmailScanner {
       context.duration = end - start;
     }
 
-    // Extract message pairs (question -> answer)
+    // Return messages as-is with reply relationships
     for (let i = 0; i < thread.length; i++) {
       const message = thread[i];
       const reply = thread[i + 1];
 
+      // Add the full message object with reply reference
       context.messages.push({
-        from: message.from,
-        to: message.to,
-        subject: message.subject,
-        text: message.text,
-        html: message.html,
-        date: message.date,
+        ...message,
         hasReply: Boolean(reply),
-        reply: reply
-          ? {
-              from: reply.from,
-              text: reply.text,
-              html: reply.html,
-              date: reply.date
-            }
-          : null
+        reply: reply || null
       });
     }
 

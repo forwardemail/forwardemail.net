@@ -5,11 +5,13 @@
 
 const Aliases = require('#models/aliases');
 
-async function clearAliasQuotaCache(client, domainId) {
+async function clearAliasQuotaCache(client, domainIds) {
   if (!client) throw new TypeError('Redis client missing');
-  if (!domainId) throw new TypeError('Domain ID missing');
+  if (!domainIds) throw new TypeError('Domain ID missing');
 
-  const aliasIds = await Aliases.distinct('id', { domain: domainId });
+  const aliasIds = Array.isArray(domainIds)
+    ? await Aliases.distinct('id', { domain: { $in: domainIds } })
+    : await Aliases.distinct('id', { domain: domainIds });
 
   if (aliasIds.length === 0) return;
 
