@@ -38,19 +38,19 @@ Here's the basic flow. It looks simple. It wasn't.
 
 ```mermaid
 graph TD
-    subgraph Data Ingestion (Nightly Job)
-        A[Data Sources] --> B{Scraper};
-        B --> C{Processor<br>Chunks text};
-        C --> D{Ollama Client<br>Generates embeddings};
-        D --> E[LanceDB<br>Vector Store];
+    subgraph "Data Ingestion (Nightly Job)"
+        A[Data Sources] --> B{Scraper}
+        B --> C{Processor<br/>Chunks text}
+        C --> D{Ollama Client<br/>Generates embeddings}
+        D --> E[LanceDB<br/>Vector Store]
     end
 
-    subgraph Live Email Processing
-        F[New Email] --> G{Email Scanner};
-        G --> H{Response Generator};
-        H -- Query --> E;
-        E -- Context --> H;
-        H -- Generates --> I[Email Response];
+    subgraph "Live Email Processing"
+        F[New Email] --> G{Email Scanner}
+        G --> H{Response Generator}
+        H -- Query --> E
+        E -- Context --> H
+        H -- Generates --> I[Email Response]
     end
 ```
 
