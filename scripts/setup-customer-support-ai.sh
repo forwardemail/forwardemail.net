@@ -75,8 +75,8 @@ echo "📥 Pulling ${RECOMMENDED_MODEL}..."
 ollama pull "$RECOMMENDED_MODEL"
 
 # Pull embedding model
-echo "📥 Pulling nomic-embed-text..."
-ollama pull nomic-embed-text
+echo "📥 Pulling mxbai-embed-large..."
+ollama pull mxbai-embed-large
 
 echo ""
 echo "✅ Models installed successfully"
@@ -116,7 +116,7 @@ if [ ! -f .env ]; then
 # Customer Support AI Configuration
 OLLAMA_HOST=http://localhost:11434
 OLLAMA_MODEL=${RECOMMENDED_MODEL}
-OLLAMA_EMBEDDING_MODEL=nomic-embed-text
+OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 OLLAMA_TEMPERATURE=0.7
 OLLAMA_MAX_TOKENS=2000
 LANCEDB_PATH=$HOME/.local/share/lancedb

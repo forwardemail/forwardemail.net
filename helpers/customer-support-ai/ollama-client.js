@@ -14,8 +14,8 @@ class OllamaClient {
     const host = config.ollamaHost || 'http://localhost:11434';
     this.host = host.replace('localhost', '127.0.0.1');
     this.model = config.ollamaModel || 'gpt-oss:20b';
-    // Updated to nomic-embed-text (45.7M pulls, better performance than nomic-embed-text)
-    this.embeddingModel = config.ollamaEmbeddingModel || 'nomic-embed-text';
+    // Updated to mxbai-embed-large (45.7M pulls, better performance than mxbai-embed-large)
+    this.embeddingModel = config.ollamaEmbeddingModel || 'mxbai-embed-large';
     this.temperature = config.ollamaTemperature || 0.7;
     this.maxTokens = config.ollamaMaxTokens || 2000;
   }

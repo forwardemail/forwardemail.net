@@ -868,7 +868,7 @@ const config = {
   // customer support AI
   ollamaHost: env.OLLAMA_HOST || 'http://localhost:11434',
   ollamaModel: env.OLLAMA_MODEL || 'gpt-oss:20b',
-  ollamaEmbeddingModel: env.OLLAMA_EMBEDDING_MODEL || 'nomic-embed-text',
+  ollamaEmbeddingModel: env.OLLAMA_EMBEDDING_MODEL || 'mxbai-embed-large',
   ollamaTemperature: Number.parseFloat(env.OLLAMA_TEMPERATURE) || 0.7,
   ollamaMaxTokens: Number.parseInt(env.OLLAMA_MAX_TOKENS, 10) || 2000,
   lancedbPath: env.LANCEDB_PATH,

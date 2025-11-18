@@ -479,7 +479,7 @@ graph TD
     E --> I
     F --> I
     G --> I
-    I --> J{Ollama Client<br/>nomic-embed-text embeddings}
+    I --> J{Ollama Client<br/>mxbai-embed-large embeddings}
     J --> K[LanceDB<br/>forward_email_knowledge_base]
 ```
 
@@ -588,7 +588,7 @@ GPG_SECURITY_PASSPHRASE="passphrase" # Key passphrase (optional)
 
 ### Processing Incoming Emails
 
-**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `nomic-embed-text` via Ollama to craft a response.
+**`process-inbox.js`**: This job runs on emails in our `support@forwardemail.net`, `abuse@forwardemail.net`, and `security@forwardemail.net` mailboxes (specifically the `INBOX` IMAP folder path). It leverages our API at <https://forwardemail.net/email-api> (e.g. `GET /v1/messages?folder=INBOX` using BasicAuth access with our IMAP credentials for each mailbox). It analyzes the email content, queries both the knowledge base (`forward_email_knowledge_base`) and the historical email vector store (`customer_support_history`), and then passes the combined context to `response-generator.js`. The generator uses `mxbai-embed-large` via Ollama to craft a response.
 
 **Automated Workflow Features:**
 
@@ -668,7 +668,7 @@ This was the first major roadblock. We tried multiple vector databases before se
 
 * **Node.js:** v18.0.0+ ([GitHub](https://github.com/nodejs/node))
 * **Ollama:** Latest ([GitHub](https://github.com/ollama/ollama))
-* **Model:** `nomic-embed-text` via Ollama
+* **Model:** `mxbai-embed-large` via Ollama
 * **Vector Database:** LanceDB ([GitHub](https://github.com/lancedb/lancedb))
 * **GitHub Access:** `@octokit/rest` for scraping issues ([GitHub](https://github.com/octokit/rest.js))
 * **SQLite:** For primary database (via `mongoose-to-sqlite`)
@@ -992,10 +992,10 @@ rm -rf ~/.local/share/lancedb/customer_support_history.lance
 
 # 3. Verify the embedding model is set correctly in .env
 grep OLLAMA_EMBEDDING_MODEL .env
-# Should show: OLLAMA_EMBEDDING_MODEL=nomic-embed-text
+# Should show: OLLAMA_EMBEDDING_MODEL=mxbai-embed-large
 
 # 4. Pull the embedding model in Ollama
-ollama pull nomic-embed-text
+ollama pull mxbai-embed-large
 
 # 5. Retrain the knowledge base
 node jobs/customer-support-ai/train-from-history.js
@@ -1236,7 +1236,7 @@ All tests are designed to run without external dependencies or network calls.
 3. **The ecosystem is broken:** Most vector databases are not dev-friendly. Test everything locally.
 4. **Security vulnerabilities are real:** ChromaDB and Qdrant have had critical RCE vulnerabilities.
 5. **LanceDB works:** It's embedded, serverless, and doesn't require a separate process.
-6. **Ollama is solid:** Local LLM inference with `nomic-embed-text` works well for our use case.
+6. **Ollama is solid:** Local LLM inference with `mxbai-embed-large` works well for our use case.
 7. **Type mismatches will kill you:** `text` vs. `content`, ObjectID vs. string. These bugs are silent and brutal.
 8. **Weighted ranking matters:** Not all context is equal. FAQ > GitHub issues > Historical emails.
 9. **Historical context is gold:** Training from past support emails dramatically improves response quality.
