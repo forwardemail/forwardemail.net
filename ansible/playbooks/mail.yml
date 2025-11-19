@@ -412,6 +412,10 @@
       debug:
         var: build_output.stdout_lines
 
+    - name: Clear SnappyMail application cache
+      shell: rm -rf /dev/shm/snappymail-cache/*
+      ignore_errors: yes
+
     - name: Clear PHP OPcache after deployment
       shell: |
         # Try to reset opcache via PHP CLI
