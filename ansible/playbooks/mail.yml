@@ -362,24 +362,17 @@
       set_fact:
         snappymail_app_version: "{{ snappymail_package_json.version | default('0.0.0', true) }}"
 
-    - name: Check if SnappyMail is already built
-      stat:
-        path: "/var/www/snappymail/mail/snappymail/v/{{ snappymail_app_version | default('0.0.0', true) }}/static/css/boot.min.css"
-      register: snappymail_built
-
     - name: Install SnappyMail dependencies
       command: npm install
       args:
         chdir: /var/www/snappymail/mail
       become_user: deploy
-      when: not snappymail_built.stat.exists
 
     - name: Build SnappyMail with gulp
       command: npx gulp
       args:
         chdir: /var/www/snappymail/mail
       become_user: deploy
-      when: not snappymail_built.stat.exists
 
     - name: Check if dist directory exists
       stat:
