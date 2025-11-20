@@ -271,7 +271,8 @@ test('auth with catch-all pass', async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -293,7 +294,8 @@ test('auth with catch-all pass', async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -315,7 +317,8 @@ test('auth with catch-all pass', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -430,7 +433,8 @@ test('auth with pass as alias', async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -452,7 +456,8 @@ test('auth with pass as alias', async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -474,7 +479,8 @@ test('auth with pass as alias', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -656,7 +662,8 @@ test('auth with catch-all password when alias exists too', async (t) => {
       'test.com',
       'MX',
       [{ exchange: IP_ADDRESS, priority: 0 }],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -677,7 +684,8 @@ test('auth with catch-all password when alias exists too', async (t) => {
       `${domain.dkim_key_selector}._domainkey.${domain.name}`,
       'TXT',
       [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -699,7 +707,8 @@ test('auth with catch-all password when alias exists too', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'CNAME',
       [env.WEB_HOST],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -724,7 +733,8 @@ test('auth with catch-all password when alias exists too', async (t) => {
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -870,7 +880,8 @@ test('automatic openpgp support', async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -892,7 +903,8 @@ test('automatic openpgp support', async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -914,7 +926,8 @@ test('automatic openpgp support', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1073,7 +1086,8 @@ test('smtp outbound auth', async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1163,7 +1177,8 @@ test(`unicode domain`, async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1185,7 +1200,8 @@ test(`unicode domain`, async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1207,7 +1223,8 @@ test(`unicode domain`, async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1408,11 +1425,7 @@ test(`10MB message size`, async (t) => {
   map.set(
     'mx:test.com',
     resolver.spoofPacket(
-      'test.com',
-      'MX',
-      [{ exchange: IP_ADDRESS, priority: 0 }],
-      true
-    )
+      'test.com', 'MX', [{ exchange: IP_ADDRESS, priority: 0 }], true, ms('5m'))
   );
 
   map.set(
@@ -1429,11 +1442,7 @@ test(`10MB message size`, async (t) => {
   map.set(
     `txt:${domain.dkim_key_selector}._domainkey.${domain.name}`,
     resolver.spoofPacket(
-      `${domain.dkim_key_selector}._domainkey.${domain.name}`,
-      'TXT',
-      [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
-    )
+      `${domain.dkim_key_selector}._domainkey.${domain.name}`, 'TXT', [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`], true, ms('5m'))
   );
 
   // spf
@@ -1451,11 +1460,7 @@ test(`10MB message size`, async (t) => {
   map.set(
     `cname:${domain.return_path}.${domain.name}`,
     resolver.spoofPacket(
-      `${domain.return_path}.${domain.name}`,
-      'CNAME',
-      [env.WEB_HOST],
-      true
-    )
+      `${domain.return_path}.${domain.name}`, 'CNAME', [env.WEB_HOST], true, ms('5m'))
   );
 
   // cname -> txt
@@ -1473,14 +1478,10 @@ test(`10MB message size`, async (t) => {
   map.set(
     `txt:_dmarc.${domain.name}`,
     resolver.spoofPacket(
-      `_dmarc.${domain.name}`,
-      'TXT',
-      [
+      `_dmarc.${domain.name}`, 'TXT', [
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
-      ],
-      true
-    )
+      ], true, ms('5m'))
   );
 
   await resolver.options.cache.mset(map);
@@ -1602,11 +1603,7 @@ test(`16MB message size`, async (t) => {
   map.set(
     `txt:${domain.name}`,
     resolver.spoofPacket(
-      domain.name,
-      'TXT',
-      [`${config.paidPrefix}${domain.verification_record}`],
-      true
-    )
+      domain.name, 'TXT', [`${config.paidPrefix}${domain.verification_record}`], true, ms('5m'))
   );
 
   // dkim
@@ -1624,11 +1621,7 @@ test(`16MB message size`, async (t) => {
   map.set(
     `txt:${env.WEB_HOST}`,
     resolver.spoofPacket(
-      `${env.WEB_HOST}`,
-      'TXT',
-      [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
-    )
+      `${env.WEB_HOST}`, 'TXT', [`v=spf1 ip4:${IP_ADDRESS} -all`], true, ms('5m'))
   );
 
   // cname
@@ -1646,11 +1639,7 @@ test(`16MB message size`, async (t) => {
   map.set(
     `txt:${domain.return_path}.${domain.name}`,
     resolver.spoofPacket(
-      `${domain.return_path}.${domain.name}`,
-      'TXT',
-      [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
-    )
+      `${domain.return_path}.${domain.name}`, 'TXT', [`v=spf1 ip4:${IP_ADDRESS} -all`], true, ms('5m'))
   );
 
   // dmarc
@@ -1852,7 +1841,8 @@ test('smtp outbound queue', async (t) => {
         domain.name,
         'TXT',
         [`${config.paidPrefix}${domain.verification_record}`],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -1874,7 +1864,8 @@ test('smtp outbound queue', async (t) => {
         `${env.WEB_HOST}`,
         'TXT',
         [`v=spf1 ip4:${IP_ADDRESS} -all`],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -1896,7 +1887,8 @@ test('smtp outbound queue', async (t) => {
         `${domain.return_path}.${domain.name}`,
         'TXT',
         [`v=spf1 ip4:${IP_ADDRESS} -all`],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -2028,7 +2020,8 @@ Test`.trim()
           domain,
           'MX',
           [{ exchange: IP_ADDRESS, priority: 0 }],
-          true
+          true,
+          ms('5m')
         )
       );
     }
@@ -2207,7 +2200,7 @@ test('smtp rate limiting', async (t) => {
         'TXT',
         [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
         true,
-        expires
+        ms('5m')
       )
     );
 
@@ -2231,7 +2224,7 @@ test('smtp rate limiting', async (t) => {
         'CNAME',
         [env.WEB_HOST],
         true,
-        expires
+        ms('5m')
       )
     );
 
@@ -2258,7 +2251,7 @@ test('smtp rate limiting', async (t) => {
           `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
         ],
         true,
-        expires
+        ms('5m')
       )
     );
 
@@ -2418,7 +2411,8 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
         `${domain.dkim_key_selector}._domainkey.${domain.name}`,
         'TXT',
         [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -2440,7 +2434,8 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
         `${domain.return_path}.${domain.name}`,
         'CNAME',
         [env.WEB_HOST],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -2465,7 +2460,8 @@ test('does not allow differing domain with domain-wide catch-all', async (t) => 
           // TODO: consume dmarc reports and parse dmarc-$domain
           `v=DMARC1; p=reject; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
         ],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -2598,7 +2594,8 @@ test('requires newsletter approval', async (t) => {
         `${domain.dkim_key_selector}._domainkey.${domain.name}`,
         'TXT',
         [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -2620,7 +2617,8 @@ test('requires newsletter approval', async (t) => {
         `${domain.return_path}.${domain.name}`,
         'CNAME',
         [env.WEB_HOST],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -2645,7 +2643,8 @@ test('requires newsletter approval', async (t) => {
           // TODO: consume dmarc reports and parse dmarc-$domain
           `v=DMARC1; p=reject; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
         ],
-        true
+        true,
+        ms('5m')
       )
     );
 
@@ -2804,7 +2803,8 @@ test('bounce webhook', async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -2826,7 +2826,8 @@ test('bounce webhook', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -2853,7 +2854,8 @@ test('bounce webhook', async (t) => {
         `mx:${domain}`,
         'MX',
         [{ exchange: IP_ADDRESS, priority: 0 }],
-        true
+        true,
+        ms('5m')
       )
     );
   }
@@ -3041,7 +3043,8 @@ test('DSN failure bounce notifications with NOTIFY parameters', async (t) => {
         // Create catch-all alias (active)
         `forward-email=test@${IP_ADDRESS}`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3062,7 +3065,8 @@ test('DSN failure bounce notifications with NOTIFY parameters', async (t) => {
       `${domain.dkim_key_selector}._domainkey.${domain.name}`,
       'TXT',
       [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3084,7 +3088,8 @@ test('DSN failure bounce notifications with NOTIFY parameters', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'CNAME',
       [env.WEB_HOST],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3109,7 +3114,8 @@ test('DSN failure bounce notifications with NOTIFY parameters', async (t) => {
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3327,7 +3333,8 @@ test('DSN delay bounce notifications with NOTIFY parameters', async (t) => {
         // Create catch-all alias (active)
         `forward-email=test@${IP_ADDRESS}`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3348,7 +3355,8 @@ test('DSN delay bounce notifications with NOTIFY parameters', async (t) => {
       `${domain.dkim_key_selector}._domainkey.${domain.name}`,
       'TXT',
       [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3370,7 +3378,8 @@ test('DSN delay bounce notifications with NOTIFY parameters', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'CNAME',
       [env.WEB_HOST],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3395,7 +3404,8 @@ test('DSN delay bounce notifications with NOTIFY parameters', async (t) => {
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3614,7 +3624,8 @@ test('DSN bounce notifications respect NOTIFY=NEVER', async (t) => {
         // Create catch-all alias (active)
         `forward-email=test@${IP_ADDRESS}`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3635,7 +3646,8 @@ test('DSN bounce notifications respect NOTIFY=NEVER', async (t) => {
       `${domain.dkim_key_selector}._domainkey.${domain.name}`,
       'TXT',
       [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3657,7 +3669,8 @@ test('DSN bounce notifications respect NOTIFY=NEVER', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'CNAME',
       [env.WEB_HOST],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3682,7 +3695,8 @@ test('DSN bounce notifications respect NOTIFY=NEVER', async (t) => {
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3911,7 +3925,8 @@ test('DSN success notifications with NOTIFY parameters', async (t) => {
         // Create catch-all alias (active)
         `forward-email=test@${IP_ADDRESS}`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3932,7 +3947,8 @@ test('DSN success notifications with NOTIFY parameters', async (t) => {
       `${domain.dkim_key_selector}._domainkey.${domain.name}`,
       'TXT',
       [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3954,7 +3970,8 @@ test('DSN success notifications with NOTIFY parameters', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'CNAME',
       [env.WEB_HOST],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -3979,7 +3996,8 @@ test('DSN success notifications with NOTIFY parameters', async (t) => {
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 

@@ -739,7 +739,8 @@ Test`.trim()
       `${domain.dkim_key_selector}._domainkey.${domain.name}`,
       'TXT',
       [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -761,7 +762,8 @@ Test`.trim()
       `${domain.return_path}.${domain.name}`,
       'CNAME',
       [env.WEB_HOST],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -786,7 +788,8 @@ Test`.trim()
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1216,7 +1219,8 @@ test('smtp outbound spam block detection', async (t) => {
       `${domain.dkim_key_selector}._domainkey.${domain.name}`,
       'TXT',
       [`v=DKIM1; k=rsa; p=${domain.dkim_public_key.toString('base64')};`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1238,7 +1242,8 @@ test('smtp outbound spam block detection', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'CNAME',
       [env.WEB_HOST],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1263,7 +1268,8 @@ test('smtp outbound spam block detection', async (t) => {
         // TODO: consume dmarc reports and parse dmarc-$domain
         `v=DMARC1; p=reject; pct=100; rua=mailto:dmarc-${domain.id}@forwardemail.net;`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1284,7 +1290,8 @@ test('smtp outbound spam block detection', async (t) => {
         `mx:${domain}`,
         'MX',
         [{ exchange: domain, priority: 0 }],
-        true
+        true,
+        ms('5m')
       )
     );
   }
@@ -2061,7 +2068,8 @@ test('smtp email blocklist', async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -2083,7 +2091,8 @@ test('smtp email blocklist', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -2112,7 +2121,8 @@ test('smtp email blocklist', async (t) => {
         `mx:${domain}`,
         'MX',
         [{ exchange: IP_ADDRESS, priority: 0 }],
-        true
+        true,
+        ms('5m')
       )
     );
   }

@@ -6,6 +6,7 @@
 const test = require('ava');
 const Redis = require('ioredis-mock');
 
+const ms = require('ms');
 const utils = require('./utils');
 
 const Domains = require('#models/domains');
@@ -28,7 +29,8 @@ test('correctly parses TXT records', async (t) => {
       'test.com',
       'TXT',
       [`forward-email=alias:https://requestbin.com/r/en8pfhdgcculn`],
-      true
+      true,
+      ms('5m')
     )
   );
 

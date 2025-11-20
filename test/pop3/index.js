@@ -142,7 +142,8 @@ test.beforeEach(async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 

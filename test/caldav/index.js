@@ -162,7 +162,8 @@ test.beforeEach(async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -184,7 +185,8 @@ test.beforeEach(async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -206,7 +208,8 @@ test.beforeEach(async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 

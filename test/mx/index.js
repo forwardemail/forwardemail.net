@@ -220,7 +220,7 @@ test('imap/forward/webhook', async (t) => {
   // spoof domain name for webhook
   map.set(
     `a:${domain.name}`,
-    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
   );
 
   // spoof test@test.com mx records
@@ -240,7 +240,8 @@ test('imap/forward/webhook', async (t) => {
       domain.name,
       'MX',
       [{ exchange: IP_ADDRESS, priority: 0 }],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -260,7 +261,8 @@ test('imap/forward/webhook', async (t) => {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -282,7 +284,8 @@ test('imap/forward/webhook', async (t) => {
       `${env.WEB_HOST}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -304,7 +307,8 @@ test('imap/forward/webhook', async (t) => {
       `${domain.return_path}.${domain.name}`,
       'TXT',
       [`v=spf1 ip4:${IP_ADDRESS} -all`],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -329,7 +333,8 @@ test('imap/forward/webhook', async (t) => {
       domain.name,
       'MX',
       [{ exchange: IP_ADDRESS, priority: 0 }],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -791,7 +796,8 @@ test('catch-all should not receive emails to inactive normal alias with 550 erro
       domain.name,
       'MX',
       [{ exchange: IP_ADDRESS, priority: 0 }],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -938,7 +944,7 @@ test('free plan catch-all should not receive emails to inactive regex alias with
   // spoof domain A record
   map.set(
     `a:${domain.name}`,
-    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true)
+    resolver.spoofPacket(domain.name, 'A', [IP_ADDRESS], true, ms('5m'))
   );
 
   // spoof domain MX record
@@ -966,7 +972,8 @@ test('free plan catch-all should not receive emails to inactive regex alias with
         // Create inactive regex alias with 250 error code (quiet reject)
         `forward-email=!/^(spam|bogus)$/:spam@${IP_ADDRESS}`
       ],
-      true
+      true,
+      ms('5m')
     )
   );
 
@@ -1148,7 +1155,8 @@ test('paid plan catch-all should not receive emails to inactive regex alias with
       domain.name,
       'MX',
       [{ exchange: IP_ADDRESS, priority: 0 }],
-      true
+      true,
+      ms('5m')
     )
   );
 

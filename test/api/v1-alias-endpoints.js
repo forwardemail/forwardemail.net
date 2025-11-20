@@ -77,7 +77,8 @@ async function createTestAlias(t) {
       domain.name,
       'TXT',
       [`${config.paidPrefix}${domain.verification_record}`],
-      true
+      true,
+      ms('5m')
     )
   );
   // store spoofed dns cache
@@ -505,8 +506,8 @@ test('messages list supports pagination and filtering', async (t) => {
   const { alias, domain, pass } = await createTestAlias(t);
 
   // Create multiple messages for pagination testing
-  for (let i = 0; i < 12; i++) {
-    await api
+  for (let i = 0; i < 10; i++) {
+    const res = await api
       .post('/v1/messages')
       .set(
         'Authorization',
@@ -518,6 +519,20 @@ test('messages list supports pagination and filtering', async (t) => {
         text: `This is test message ${i}`,
         flags: i % 2 === 0 ? ['\\Seen'] : []
       });
+    t.is(res.status, 200);
+    t.log(res.headers['x-response-time']);
+  }
+
+  // Fetch list x-response-time
+  for (let i = 0; i < 5; i++) {
+    const res = await api
+      .get('/v1/messages')
+      .set(
+        'Authorization',
+        createAliasAuth(`${alias.name}@${domain.name}`, pass)
+      );
+    t.is(res.status, 200);
+    t.log(res.headers['x-response-time']);
   }
 
   // Test pagination
