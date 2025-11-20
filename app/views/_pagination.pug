@@ -58,7 +58,18 @@ mixin paginate(tableSelector)
         = " "
         = t(ctx.query.limit.toString())
       .dropdown-menu(aria-labelledby="pagination-menu-link")
-        each limit in [10, 25, 50]
+        //- my-account/billing = max of 100, min of 25
+        //- my-account/logs = max of 100, min of 25
+        //- my-account/emails = max of 100, min of 25
+        //- my-account/domains/:domain_id/aliases = max of 500 min of 10
+        //- NOTE: there's a weird bug where if you specify limit < 10 then results are weird
+        //- (e.g. <https://forwardemail.net/en/my-account/domains/hideaddress.net/aliases?page=1&limit=5>)
+        - let limits = [10, 25, 50];
+        if ctx.query.limit === 25
+          - limits = [10, 25, 50, 100];
+        else if ctx.pathWithoutLocale.startsWith('/my-account/domains/') && ctx.pathWithoutLocale.endsWith('/aliases')
+          - limits = [10, 25, 50, 100, 500];
+        each limit in limits
           a.dropdown-item(
             class=ctx.query.limit === limit ? "active" : "",
             href=paginate.href({ page: 1, limit })

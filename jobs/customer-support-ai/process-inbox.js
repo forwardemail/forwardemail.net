@@ -21,7 +21,7 @@ const responseGenerator = require('#helpers/customer-support-ai/response-generat
 const {
   extractSenderEmail,
   extractSenderText,
-  extractCC,
+  // extractCC,
   extractRecipients,
   buildReplyRecipients
 } = require('#helpers/customer-support-ai/message-utils');
@@ -88,10 +88,13 @@ function rankResults(results, sourceType = 'knowledge_base') {
     const sourceWeight = SOURCE_WEIGHTS[source] || 0.5;
 
     // Calculate final score (lower distance = higher similarity)
-    // LanceDB uses L2 distance which can be > 1, so we use inverse
-    // Score = sourceWeight / (1 + distance)
-    // This ensures all scores are positive and decay with distance
-    const similarityScore = sourceWeight / (1 + distance);
+    // LanceDB returns normalized/squared L2 distances (typically 0.0-0.1)
+    // Use exponential decay for better score distribution:
+    // - distance 0.0 → score ~1.0 (perfect match)
+    // - distance 0.01 → score ~0.9 (excellent match)
+    // - distance 0.1 → score ~0.37 (good match)
+    // - distance 1.0 → score ~0.00005 (poor match)
+    const similarityScore = sourceWeight * Math.exp(-distance * 10);
 
     return {
       text: doc,
@@ -288,53 +291,6 @@ async function retrieveHistoricalContext(analysis, historyVectorStore) {
   } catch (err) {
     logger.error(err, { context: 'retrieve historical context' });
     return '';
-  }
-}
-
-async function checkForExistingDraft(messageId) {
-  try {
-    // List drafts in Drafts folder
-    const drafts = await forwardEmailClient.listMessages({
-      folder: 'Drafts',
-      limit: 100,
-      eml: false,
-      raw: false,
-      nodemailer: false
-    });
-
-    // Check if any draft is in reply to this message
-    for (const draft of drafts) {
-      // Get full draft to check headers
-      const fullDraft = await forwardEmailClient.getMessage(draft.id);
-
-      // Check if this draft is replying to the current message
-      const inReplyTo =
-        fullDraft.nodemailer?.headers?.['in-reply-to'] ||
-        fullDraft.nodemailer?.inReplyTo;
-      const references =
-        fullDraft.references || fullDraft.nodemailer?.references || [];
-
-      // Convert references to array if needed
-      const refsArray = Array.isArray(references) ? references : [references];
-
-      // Check if messageId appears in in-reply-to or references
-      if (inReplyTo === messageId || refsArray.includes(messageId)) {
-        logger.info(
-          { draftId: draft.id, messageId },
-          'Found existing draft for this message'
-        );
-        return draft;
-      }
-    }
-
-    return null;
-  } catch (err) {
-    logger.error(err, {
-      context: 'check for existing draft',
-      messageId
-    });
-    // Don't throw - if check fails, proceed with creating draft
-    return null;
   }
 }
 
@@ -590,7 +546,7 @@ async function processMessage(message, vectorStore, historyVectorStore) {
       // Check in-reply-to and references headers
       const inReplyTo = draft.header_in_reply_to || draft.in_reply_to;
       const references = draft.references || [];
-      
+
       if (inReplyTo) draftMessageIds.add(inReplyTo);
       if (Array.isArray(references)) {
         for (const ref of references) {
@@ -610,7 +566,10 @@ async function processMessage(message, vectorStore, historyVectorStore) {
       folder: 'INBOX'
     });
 
-    logger.info({ count: allInboxMessages.length }, 'Retrieved all inbox messages');
+    logger.info(
+      { count: allInboxMessages.length },
+      'Retrieved all inbox messages'
+    );
 
     // Filter out messages that:
     // 1. Already have drafts
@@ -628,7 +587,9 @@ async function processMessage(message, vectorStore, historyVectorStore) {
 
       // Check for skip-ai label
       const labels = message.labels || [];
-      const hasSkipAI = labels.some((label) => label.toLowerCase() === 'skip-ai');
+      const hasSkipAI = labels.some(
+        (label) => label.toLowerCase() === 'skip-ai'
+      );
       if (hasSkipAI) {
         logger.debug({ messageId: message.id }, 'Skipping - has skip-ai label');
         return false;

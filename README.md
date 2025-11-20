@@ -721,6 +721,11 @@ If you are provisioning servers after IPMI/VPN access, then you may need to take
        enp1s0f1: {}
    ```
 
+   ```sh
+   sudo rm /etc/netplan/50-cloud-init.yaml
+   sudo chmod 600 /etc/netplan/99-custom-netcfg.yaml
+   ```
+
    Run a test to ensure the YAML syntax is correct:
 
    ```sh

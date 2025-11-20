@@ -26,11 +26,13 @@ const mongoose = require('mongoose');
 
 const loggerConfig = require('../config/logger');
 
+const _ = require('./lodash');
 const isCodeBug = require('./is-code-bug');
-const isTLSError = require('./is-tls-error');
+const isErrorConstructorName = require('./is-error-constructor-name');
+const isMongoError = require('./is-mongo-error');
 const isSSLError = require('./is-ssl-error');
 const isSocketError = require('./is-socket-error');
-const _ = require('./lodash');
+const isTLSError = require('./is-tls-error');
 
 const silentSymbol = Symbol.for('axe.silent');
 const connectionNameSymbol = Symbol.for('connection.name');
@@ -272,13 +274,19 @@ async function hook(err, message, meta) {
         .catch((err) => {
           // return early if it was a duplicate log being created
           if (err.is_duplicate_log) return;
+          //
           // when tests close the connection closes so logs don't write
+          //
           if (
-            err.name === 'MongoNotConnectedError' &&
             // eslint-disable-next-line n/prefer-global/process
-            process.env.NODE_ENV === 'test'
-          )
+            process.env.NODE_ENV === 'test' &&
+            (isErrorConstructorName(err, 'MongoNotConnectedError') ||
+              (isErrorConstructorName(err, 'ValidationError') &&
+                isMongoError(err)))
+          ) {
             return;
+          }
+
           // unique hash (already exists)
           if (err.code === 11000 || err.message === 'Hash is not unique.')
             return;

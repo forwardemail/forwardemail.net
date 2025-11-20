@@ -48,9 +48,21 @@ const constructorNames = [
 
 function isMongoError(err) {
   if (typeof err !== 'object') return false;
+
   if (
     isErrorConstructorName(err, 'MongooseError') &&
     !isErrorConstructorName(err, 'ValidationError')
+  )
+    return true;
+
+  if (
+    isErrorConstructorName(err, 'ValidationError') &&
+    typeof err.errors === 'object' &&
+    Object.keys(err.errors).some((key) =>
+      constructorNames.some((constructorName) =>
+        isErrorConstructorName(err.errors[key], constructorName)
+      )
+    )
   )
     return true;
 

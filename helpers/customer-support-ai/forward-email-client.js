@@ -99,8 +99,11 @@ class ForwardEmailClient {
         }
 
         // Check pagination headers to see if there are more pages
-        const pageCount = parseInt(response.headers['x-page-count'], 10);
-        const currentPage = parseInt(response.headers['x-page-current'], 10);
+        const pageCount = Number.parseInt(response.headers['x-page-count'], 10);
+        const currentPage = Number.parseInt(
+          response.headers['x-page-current'],
+          10
+        );
 
         logger.debug('Fetched page of messages', {
           folder: options.folder || 'INBOX',

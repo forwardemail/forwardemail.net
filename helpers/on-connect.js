@@ -5,6 +5,7 @@
 
 const os = require('node:os');
 const punycode = require('node:punycode');
+const { isIP } = require('node:net');
 
 const isFQDN = require('is-fqdn');
 const POP3Server = require('wildduck/lib/pop3/server');
@@ -21,6 +22,119 @@ const parseRootDomain = require('#helpers/parse-root-domain');
 const refineAndLogError = require('#helpers/refine-and-log-error');
 
 const HOSTNAME = os.hostname();
+
+/**
+ * Parse client IP from SMTP EHLO message
+ * Expected format: EHLO [192.168.1.100] or EHLO [::1]
+ * @param {string} hostNameAppearsAs - The EHLO hostname
+ * @returns {string|null} - Extracted IP address or null
+ */
+function parseIpFromEhlo(hostNameAppearsAs) {
+  if (!hostNameAppearsAs || typeof hostNameAppearsAs !== 'string') return null;
+
+  // Match IP in brackets: [192.168.1.100] or [::1]
+  const match = hostNameAppearsAs.match(/^\[([^\]]+)]$/);
+  if (!match) return null;
+
+  const ip = match[1];
+  // Validate it's a valid IP address
+  if (isIP(ip)) return ip;
+
+  return null;
+}
+
+/**
+ * Parse client IP from IMAP/POP3 ID command
+ * Expected format from RFC 2971 ID command: contains "client-ip" parameter
+ * The clientId might be a string like: "name" "SnappyMail" "version" "2.x" "client-ip" "192.168.1.100"
+ * @param {string|object} clientId - The client ID from session
+ * @returns {string|null} - Extracted IP address or null
+ */
+function parseIpFromClientId(clientId) {
+  if (!clientId) return null;
+
+  let idString = '';
+
+  // Handle if clientId is an object
+  if (typeof clientId === 'object') {
+    // Check if it has a client-ip property
+    if (clientId['client-ip']) {
+      const ip = clientId['client-ip'];
+      if (isIP(ip)) return ip;
+    }
+
+    // Try to convert to string for parsing
+    try {
+      idString = JSON.stringify(clientId);
+    } catch {
+      return null;
+    }
+  } else if (typeof clientId === 'string') {
+    idString = clientId;
+  } else {
+    return null;
+  }
+
+  // Try to extract client-ip from string format
+  // Match patterns like: "client-ip" "192.168.1.100" or 'client-ip' '192.168.1.100'
+  const patterns = [
+    /"client-ip"\s+"([^"]+)"/i,
+    /'client-ip'\s+'([^']+)'/i,
+    /client-ip[:\s]+([^\s,}"']+)/i
+  ];
+
+  for (const pattern of patterns) {
+    const match = idString.match(pattern);
+    if (match && match[1]) {
+      const ip = match[1].trim();
+      if (isIP(ip)) return ip;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Check if the connecting server is in the CLIENT_IP_PASSTHROUGH_HOSTS list
+ * @param {string} remoteAddress - The remote IP address
+ * @param {string} resolvedClientHostname - The resolved hostname
+ * @param {string} resolvedRootClientHostname - The resolved root hostname
+ * @returns {boolean} - True if the server is trusted for IP passthrough
+ */
+function isTrustedPassthroughHost(
+  remoteAddress,
+  resolvedClientHostname,
+  resolvedRootClientHostname
+) {
+  if (env.CLIENT_IP_PASSTHROUGH_HOSTS.length === 0) return false;
+
+  // Check if the remote IP is in the list
+  if (env.CLIENT_IP_PASSTHROUGH_HOSTS.includes(remoteAddress.toLowerCase())) {
+    return true;
+  }
+
+  // Check if the resolved hostname is in the list
+  if (
+    resolvedClientHostname &&
+    env.CLIENT_IP_PASSTHROUGH_HOSTS.includes(
+      resolvedClientHostname.toLowerCase()
+    )
+  ) {
+    return true;
+  }
+
+  // Check if the resolved root hostname is in the list
+  if (
+    resolvedRootClientHostname &&
+    env.CLIENT_IP_PASSTHROUGH_HOSTS.includes(
+      resolvedRootClientHostname.toLowerCase()
+    )
+  ) {
+    return true;
+  }
+
+  return false;
+}
 
 async function onConnect(session, fn) {
   this.logger.debug('CONNECT', { session });
@@ -67,6 +181,97 @@ async function onConnect(session, fn) {
       //       <https://github.com/nodejs/node/issues/3112#issuecomment-1452548779>
       //
       if (env.NODE_ENV !== 'production') this.logger.debug(err, { session });
+    }
+
+    //
+    // Client IP Passthrough Logic
+    // Parse the real client IP from trusted passthrough hosts
+    //
+    if (
+      isTrustedPassthroughHost(
+        session.remoteAddress,
+        session.resolvedClientHostname,
+        session.resolvedRootClientHostname
+      )
+    ) {
+      let parsedClientIp = null;
+
+      // For WildDuck (IMAP/POP3) instances, parse from session.clientId
+      if ((isPOP || isIMAP) && session.clientId) {
+        parsedClientIp = parseIpFromClientId(session.clientId);
+        if (parsedClientIp) {
+          this.logger.debug('Parsed client IP from clientId', {
+            clientId: session.clientId,
+            parsedIp: parsedClientIp
+          });
+        }
+      }
+      // For SMTP instances, parse from session.hostNameAppearsAs
+      else if (!isPOP && !isIMAP && session.hostNameAppearsAs) {
+        parsedClientIp = parseIpFromEhlo(session.hostNameAppearsAs);
+        if (parsedClientIp) {
+          this.logger.debug('Parsed client IP from EHLO', {
+            hostNameAppearsAs: session.hostNameAppearsAs,
+            parsedIp: parsedClientIp
+          });
+        }
+      }
+
+      // If we successfully parsed a client IP, update the session
+      if (parsedClientIp) {
+        // Store original values
+        session._remoteAddress = session.remoteAddress;
+        session._resolvedClientHostname = session.resolvedClientHostname;
+        session._resolvedRootClientHostname =
+          session.resolvedRootClientHostname;
+
+        // Update session.remoteAddress with the parsed client IP
+        session.remoteAddress = parsedClientIp;
+        delete session.resolvedClientHostname;
+        delete session.resolvedRootClientHostname;
+
+        // Resolve the hostname for the new client IP
+        try {
+          const [newClientHostname] = await this.resolver.reverse(
+            parsedClientIp
+          );
+          if (isFQDN(newClientHostname)) {
+            let domain = newClientHostname.toLowerCase().trim();
+            try {
+              domain = punycode.toASCII(domain);
+            } catch {
+              // ignore punycode conversion errors
+            }
+
+            session.resolvedClientHostname = domain;
+            session.resolvedRootClientHostname = parseRootDomain(
+              session.resolvedClientHostname
+            );
+
+            this.logger.debug('Resolved hostname for passthrough IP', {
+              parsedIp: parsedClientIp,
+              resolvedHostname: domain
+            });
+          } else {
+            // If not a valid FQDN, clear the resolved hostname
+            session.resolvedClientHostname = undefined;
+            session.resolvedRootClientHostname = undefined;
+          }
+        } catch (err) {
+          // If reverse DNS fails, clear the resolved hostname
+          session.resolvedClientHostname = undefined;
+          session.resolvedRootClientHostname = undefined;
+          if (env.NODE_ENV !== 'production')
+            this.logger.debug(err, { session });
+        }
+
+        this.logger.info('Client IP passthrough applied', {
+          originalIp: session._remoteAddress,
+          originalHostname: session._resolvedClientHostname,
+          newIp: session.remoteAddress,
+          newHostname: session.resolvedClientHostname
+        });
+      }
     }
 
     // check against hard-coded denylist

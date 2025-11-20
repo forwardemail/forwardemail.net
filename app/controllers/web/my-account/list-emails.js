@@ -215,66 +215,128 @@ async function listEmails(ctx, next) {
       };
     }
 
-    const [emails, results] = await Promise.all([
-      Emails.aggregate([
-        ...arr,
-        {
-          $project: {
-            _id: 1,
-            id: 1,
-            created_at: 1,
-            updated_at: 1,
-            alias: 1,
-            domain: 1,
-            user: 1,
-            status: 1,
-            envelope: 1,
-            messageId: 1,
-            date: 1,
-            subject: 1,
-            // omit the following fields if API
-            // - message
-            // - headers
-            // - accepted
-            // - rejectedErrors
-            ...(ctx.api
-              ? {}
-              : {
-                  headers: 1,
-                  accepted: 1,
-                  rejectedErrors: 1
-                })
-          }
-        },
-        {
-          $sort
-        },
-        {
-          $skip: ctx.paginate.skip
-        },
-        {
-          $limit: Number.parseInt(ctx.query.limit, 10)
+    // OPTIMIZATION: Use $facet to combine count + data queries
+    const results = await Emails.aggregate([
+      ...arr,
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: [
+            {
+              $project: {
+                _id: 1,
+                id: 1,
+                object: 1,
+                created_at: 1,
+                updated_at: 1,
+                alias: 1,
+                domain: 1,
+                user: 1,
+                status: 1,
+                envelope: 1,
+                messageId: 1,
+                date: 1,
+                subject: 1,
+                hard_bounces: 1,
+                soft_bounces: 1,
+                is_bounce: 1,
+                is_locked: 1,
+                is_redacted: 1,
+                // omit the following fields if API
+                // - message
+                // - headers
+                // - accepted
+                // - rejectedErrors
+                ...(ctx.api
+                  ? {}
+                  : {
+                      headers: 1,
+                      accepted: 1,
+                      rejectedErrors: 1
+                    })
+              }
+            },
+            {
+              $sort
+            },
+            {
+              $skip: ctx.paginate.skip
+            },
+            {
+              $limit: Number.parseInt(ctx.query.limit, 10)
+            }
+          ]
         }
-      ]),
-      Emails.aggregate([...arr, { $count: 'count' }])
+      }
     ]);
 
-    ctx.state.emails = emails;
-    ctx.state.itemCount = results[0]?.count;
+    ctx.state.emails = results[0].data || [];
+    ctx.state.itemCount =
+      results[0].metadata && results[0].metadata.length > 0
+        ? results[0].metadata[0].total
+        : 0;
   } else {
-    const [emails, itemCount] = await Promise.all([
-      // eslint-disable-next-line unicorn/no-array-callback-reference
-      Emails.find(query)
-        .limit(ctx.query.limit)
-        .skip(ctx.paginate.skip)
-        .sort(isSANB(ctx.query.sort) ? ctx.query.sort : '-created_at')
-        .lean()
-        .exec(),
-      Emails.countDocuments(query)
+    // OPTIMIZATION: Use $facet to combine count + data queries
+    let $sort = { created_at: ctx.api ? 1 : -1 };
+    if (isSANB(ctx.query.sort)) {
+      const order = ctx.query.sort.startsWith('-') ? -1 : 1;
+      $sort = {
+        [order === -1 ? ctx.query.sort.slice(1) : ctx.query.sort]: order
+      };
+    }
+
+    const results = await Emails.aggregate([
+      {
+        $match: query
+      },
+      {
+        $facet: {
+          metadata: [{ $count: 'total' }],
+          data: [
+            {
+              $project: {
+                _id: 1,
+                id: 1,
+                object: 1,
+                created_at: 1,
+                updated_at: 1,
+                alias: 1,
+                domain: 1,
+                user: 1,
+                status: 1,
+                envelope: 1,
+                messageId: 1,
+                date: 1,
+                subject: 1,
+                headers: 1,
+                accepted: 1,
+                rejectedErrors: 1,
+                hard_bounces: 1,
+                soft_bounces: 1,
+                is_bounce: 1,
+                is_locked: 1,
+                is_redacted: 1
+              }
+            },
+            {
+              $sort
+            },
+            {
+              $skip: ctx.paginate.skip
+            },
+            {
+              $limit: Number.parseInt(ctx.query.limit, 10)
+            }
+          ]
+        }
+      }
     ]);
 
-    ctx.state.emails = emails;
-    ctx.state.itemCount = itemCount;
+    ctx.state.emails = results[0].data || [];
+    ctx.state.itemCount =
+      results[0].metadata && results[0].metadata.length > 0
+        ? results[0].metadata[0].total
+        : 0;
   }
 
   ctx.state.pageCount = Math.ceil(ctx.state.itemCount / ctx.query.limit);

@@ -354,6 +354,26 @@ Emails.index(
   { partialFilterExpression: { locked_at: { $exists: true } } }
 );
 
+// Compound indexes for optimal query performance on /my-account/emails page
+// These indexes support the common query patterns used in list-emails controller
+
+// For queries filtering by alias and sorting by created_at
+Emails.index({ alias: 1, created_at: -1 });
+
+// For queries filtering by domain and sorting by created_at
+Emails.index({ domain: 1, created_at: -1 });
+
+// For queries filtering by user and sorting by created_at
+Emails.index({ user: 1, created_at: -1 });
+
+// For status filtering with sorting
+Emails.index({ status: 1, created_at: -1 });
+
+// Compound indexes for common filter combinations
+Emails.index({ domain: 1, status: 1, created_at: -1 });
+Emails.index({ alias: 1, status: 1, created_at: -1 });
+Emails.index({ user: 1, status: 1, created_at: -1 });
+
 // DSN
 Emails.pre('validate', function (next) {
   if (this.dsn === undefined) return next();

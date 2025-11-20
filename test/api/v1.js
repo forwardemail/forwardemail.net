@@ -1765,6 +1765,8 @@ test('lists emails', async (t) => {
       .set('Accept', 'application/json');
 
     t.is(res.status, 200);
+    t.log(res.body);
+    t.log(res.headers);
     t.is(res.headers['x-page-count'], '1');
     t.is(res.headers['x-page-current'], '1');
     t.is(res.headers['x-page-size'], '1');
