@@ -4,10 +4,9 @@
  */
 
 const crypto = require('node:crypto');
+const { promisify } = require('node:util');
 
-const pify = require('pify');
-
-const cryptoPbkdf2 = pify(crypto.pbkdf2);
+const cryptoPbkdf2 = promisify(crypto.pbkdf2);
 
 function pbkdf2(options) {
   return cryptoPbkdf2(

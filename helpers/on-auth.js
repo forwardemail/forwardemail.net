@@ -44,6 +44,16 @@ async function onAuth(auth, session, fn) {
   // TODO: replace usage of config.recordPrefix with config.paidPrefix and config.freePrefix
 
   try {
+    // Cache server type checks for performance (conditional logic simplification)
+    const isIMAPServer = this.server instanceof IMAPServer;
+    const isPOP3Server = this.server instanceof POP3Server;
+    const isIMAPorPOP3 = isIMAPServer || isPOP3Server;
+    const isCalDAV = this?.constructor?.name === 'CalDAV';
+    const isCardDAV = this?.constructor?.name === 'CardDAV';
+    const isAPI = this?.constructor?.name === 'API';
+    const isIMAP = this?.constructor?.name === 'IMAP';
+    const isPOP3 = this?.constructor?.name === 'POP3';
+
     //
     // NOTE: until onConnect is available for IMAP and POP3 servers
     //       we leverage the existing SMTP helper in the interim
@@ -51,8 +61,7 @@ async function onAuth(auth, session, fn) {
     //       <https://github.com/nodemailer/wildduck/issues/721>
     //       (see this same comment in `helpers/on-connect.js`)
     //
-    if (this.server instanceof IMAPServer || this.server instanceof POP3Server)
-      await onConnectPromise.call(this, session);
+    if (isIMAPorPOP3) await onConnectPromise.call(this, session);
 
     // check if server is in the process of shutting down
     if (this.isClosing) throw new ServerShutdownError();
@@ -62,7 +71,7 @@ async function onAuth(auth, session, fn) {
 
     // NOTE: WildDuck POP3 doesn't expose socket on session yet (also see similar comment in onAuth helper)
     // check if socket is still connected (only applicable for IMAP and POP3 servers)
-    if (this.server instanceof IMAPServer) {
+    if (isIMAPServer) {
       const socket =
         (session.socket && session.socket._parent) || session.socket;
       if (!socket || socket?.destroyed || socket?.readyState !== 'open')
@@ -71,8 +80,7 @@ async function onAuth(auth, session, fn) {
 
     // NOTE: this is only required for WildDuck servers (IMAP/POP3)
     // override session.getQueryResponse (safeguard)
-    if (this.server instanceof IMAPServer || this.server instanceof POP3Server)
-      session.getQueryResponse = getQueryResponse;
+    if (isIMAPorPOP3) session.getQueryResponse = getQueryResponse;
 
     // username must be a valid email address
     if (
@@ -163,43 +171,152 @@ async function onAuth(auth, session, fn) {
         }
       );
 
-    const domain = await Domains.findOne({
-      name: domainName,
-      verification_record: verifications[0],
-      plan: { $in: ['enhanced_protection', 'team'] }
-    })
-      .populate(
-        'members.user',
-        `id group plan ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} timezone`
-      )
-      .select('+tokens.hash +tokens.salt')
-      .lean()
-      .exec();
+    //
+    // OPTIMIZATION: Combined domain and alias query using aggregation pipeline
+    // This reduces two separate database queries into one
+    //
+
+    const results = await Domains.aggregate([
+      {
+        $match: {
+          name: domainName,
+          verification_record: verifications[0],
+          plan: { $in: ['enhanced_protection', 'team'] }
+        }
+      },
+      {
+        $lookup: {
+          from: 'aliases',
+          let: { domainId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$domain', '$$domainId'] },
+                    { $eq: ['$name', name] }
+                  ]
+                }
+              }
+            },
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'user',
+                foreignField: '_id',
+                as: 'user'
+              }
+            },
+            {
+              $unwind: {
+                path: '$user',
+                preserveNullAndEmptyArrays: true
+              }
+            },
+            {
+              $addFields: {
+                user: {
+                  _id: '$user._id',
+                  id: '$user.id',
+                  [config.userFields
+                    .isBanned]: `$user.${config.userFields.isBanned}`,
+                  [config.userFields
+                    .smtpLimit]: `$user.${config.userFields.smtpLimit}`,
+                  email: '$user.email',
+                  [config.lastLocaleField]: `$user.${config.lastLocaleField}`,
+                  timezone: '$user.timezone'
+                }
+              }
+            }
+          ],
+          as: 'alias'
+        }
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'members.user',
+          foreignField: '_id',
+          as: 'memberUsers'
+        }
+      },
+      {
+        $addFields: {
+          members: {
+            $map: {
+              input: '$members',
+              as: 'member',
+              in: {
+                $mergeObjects: [
+                  '$$member',
+                  {
+                    user: {
+                      $arrayElemAt: [
+                        {
+                          $filter: {
+                            input: '$memberUsers',
+                            as: 'u',
+                            cond: { $eq: ['$$u._id', '$$member.user'] }
+                          }
+                        },
+                        0
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        $project: {
+          memberUsers: 0,
+          'members.user.password': 0,
+          'members.user.api_token': 0,
+          'members.user.otp_recovery_keys': 0,
+          'members.user.otp_enabled': 0,
+          'members.user.reset_token_expires_at': 0,
+          'members.user.reset_token': 0
+        }
+      },
+      {
+        $addFields: {
+          alias: {
+            $cond: {
+              if: { $gt: [{ $size: '$alias' }, 0] },
+              // eslint-disable-next-line unicorn/no-thenable
+              then: { $arrayElemAt: ['$alias', 0] },
+              else: null
+            }
+          }
+        }
+      }
+    ]);
+
+    const result = results[0];
+    if (!result) {
+      throw new SMTPError(
+        `Domain not found or does not have a valid plan, go to ${
+          config.urls.web
+        }/my-account/domains/${punycode.toASCII(
+          domainName
+        )} and click "Verify"`,
+        {
+          responseCode: 535,
+          ignoreHook: true
+        }
+      );
+    }
+
+    const domain = result;
+    const alias = name === '*' ? null : result.alias;
 
     // validate domain
     validateDomain(domain, domainName);
 
-    let alias;
-    if (name !== '*')
-      alias = await Aliases.findOne({
-        name,
-        domain: domain._id
-      })
-        .populate(
-          'user',
-          `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
-        )
-        .select('+tokens.hash +tokens.salt +is_rekey')
-        .lean()
-        .exec();
-
     // validate alias (will throw an error if !alias)
-    if (
-      alias ||
-      this.server instanceof IMAPServer ||
-      this.server instanceof POP3Server
-    )
-      validateAlias(alias, domain.name, name);
+    if (alias || isIMAPorPOP3) validateAlias(alias, domain.name, name);
 
     //
     // validate the `auth.password` provided
@@ -207,11 +324,10 @@ async function onAuth(auth, session, fn) {
 
     // IMAP/POP3/CalDAV/CardDAV/API servers can only validate against aliases
     if (
-      this.server instanceof IMAPServer ||
-      this.server instanceof POP3Server ||
-      (alias && this?.constructor?.name === 'CalDAV') ||
-      (alias && this?.constructor?.name === 'CardDAV') ||
-      (alias && this?.constructor?.name === 'API')
+      isIMAPorPOP3 ||
+      (alias && isCalDAV) ||
+      (alias && isCardDAV) ||
+      (alias && isAPI)
     ) {
       if (
         alias &&
@@ -295,8 +411,7 @@ async function onAuth(auth, session, fn) {
     //       we allow users to use a generated token for the domain
     //
     if (
-      !(this.server instanceof IMAPServer) &&
-      !(this.server instanceof POP3Server) &&
+      !isIMAPorPOP3 &&
       !isValid &&
       Array.isArray(domain.tokens) &&
       domain.tokens.length > 0
@@ -349,11 +464,16 @@ async function onAuth(auth, session, fn) {
       );
     }
 
-    // Clear authentication limit for this IP address
-    await this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`);
-
-    // this also ensures that at least one admin has a verified email address
-    const obj = await Domains.getToAndMajorityLocaleByDomain(domain);
+    //
+    // OPTIMIZATION: Parallelize independent async operations
+    // Clear auth limit and get locale info can run in parallel
+    //
+    const [, obj] = await Promise.all([
+      // Clear authentication limit for this IP address
+      this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`),
+      // this also ensures that at least one admin has a verified email address
+      Domains.getToAndMajorityLocaleByDomain(domain)
+    ]);
 
     const to = [];
 
@@ -376,7 +496,7 @@ async function onAuth(auth, session, fn) {
     // alert them by email to inform them they need to enable SMTP
     // (otherwise calendar invites will not be sent out automatically)
     //
-    if (alias && this?.constructor?.name === 'CalDAV' && !domain.has_smtp) {
+    if (alias && isCalDAV && !domain.has_smtp) {
       this.client
         .get(`caldav_smtp_check:${domain.id}`)
         .then(async (cache) => {
@@ -439,13 +559,7 @@ async function onAuth(auth, session, fn) {
       alias &&
       !alias.has_imap &&
       !_.isDate(alias.imap_not_enabled_sent_at) &&
-      (this.server instanceof IMAPServer ||
-        this.server instanceof POP3Server ||
-        this?.constructor?.name === 'CalDAV' ||
-        this?.constructor?.name === 'CardDAV' ||
-        this?.constructor?.name === 'API' ||
-        this?.constructor?.name === 'IMAP' ||
-        this?.constructor?.name === 'POP3')
+      (isIMAPorPOP3 || isCalDAV || isCardDAV || isAPI || isIMAP || isPOP3)
     ) {
       this.client
         .get(`imap_check:${alias.id}`)
@@ -538,7 +652,7 @@ async function onAuth(auth, session, fn) {
     // NOTE: this is only for IMAP servers
     //       <https://github.com/zone-eu/wildduck/issues/629#issuecomment-1956910918>
     //
-    if (this?.constructor?.name === 'IMAP' && this.server) {
+    if (isIMAP && this.server) {
       const key = `concurrent_${this.constructor.name.toLowerCase()}_${
         config.env
       }:${alias ? alias.id : domain.id}`;
@@ -672,14 +786,7 @@ async function onAuth(auth, session, fn) {
     //
     // if we're on IMAP, POP3, or CalDAV server then sync messages with user
     //
-    if (
-      alias &&
-      alias.has_imap &&
-      (this.server instanceof IMAPServer ||
-        this.server instanceof POP3Server ||
-        this?.constructor?.name === 'CalDAV') &&
-      this.wsp
-    ) {
+    if (alias && alias.has_imap && (isIMAPorPOP3 || isCalDAV) && this.wsp) {
       // sync with tmp db
       this.wsp
         .request(
