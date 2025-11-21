@@ -430,7 +430,11 @@ async function mobileConfig(ctx, next) {
 
     // validate password
     // ensure that the token is valid
-    const isValid = await isValidPassword(alias.tokens, decrypt(ctx.query.p));
+    const isValid = await isValidPassword(
+      alias.tokens,
+      decrypt(ctx.query.p),
+      alias
+    );
 
     if (!isValid) return next(); // 404
 

@@ -1066,7 +1066,8 @@ function retryGetDatabase(...args) {
           if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0) {
             isValid = await isValidPassword(
               alias.tokens,
-              decrypt(session.user.password)
+              decrypt(session.user.password),
+              alias
             );
           }
 

@@ -404,7 +404,7 @@ async function onAuth(auth, session, fn) {
     // ensure that the token is valid
     let isValid = false;
     if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0)
-      isValid = await isValidPassword(alias.tokens, auth.password);
+      isValid = await isValidPassword(alias.tokens, auth.password, alias);
 
     //
     // NOTE: this is only applicable to SMTP servers (outbound mail)
@@ -416,7 +416,7 @@ async function onAuth(auth, session, fn) {
       Array.isArray(domain.tokens) &&
       domain.tokens.length > 0
     )
-      isValid = await isValidPassword(domain.tokens, auth.password);
+      isValid = await isValidPassword(domain.tokens, auth.password, domain);
 
     if (!isValid) {
       // increase failed counter by 1 iff new password was used

@@ -74,7 +74,8 @@ async function onDataSMTP(session, date, headers, body) {
     if (Array.isArray(alias.tokens) && alias.tokens.length > 0)
       isValid = await isValidPassword(
         alias.tokens,
-        decrypt(session.user.password)
+        decrypt(session.user.password),
+        alias
       );
   }
 
@@ -104,7 +105,8 @@ async function onDataSMTP(session, date, headers, body) {
   if (!isValid && Array.isArray(domain.tokens) && domain.tokens.length > 0)
     isValid = await isValidPassword(
       domain.tokens,
-      decrypt(session.user.password)
+      decrypt(session.user.password),
+      domain
     );
 
   if (!isValid)
@@ -199,7 +201,8 @@ async function onDataSMTP(session, date, headers, body) {
       for (const token of domain.tokens) {
         isValid = await isValidPassword(
           [token],
-          decrypt(session.user.password)
+          decrypt(session.user.password),
+          domain
         );
         if (isValid) {
           tokenUsed = token;

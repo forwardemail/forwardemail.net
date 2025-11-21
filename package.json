@@ -63,6 +63,7 @@
     "@lancedb/lancedb": "0.22.3",
     "@mermaid-js/mermaid-cli": "10.9.1",
     "@ngneat/falso": "7.4.0",
+    "@node-rs/argon2": "2.0.2",
     "@octokit/core": "4.2.4",
     "@octokit/rest": "20.1.1",
     "@openpgp/wkd-client": "0.0.4",

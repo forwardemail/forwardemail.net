@@ -105,7 +105,8 @@ async function generateAliasPassword(ctx) {
       // ensure that the token is valid
       const isValid = await isValidPassword(
         alias.tokens,
-        ctx.request.body.password
+        ctx.request.body.password,
+        alias
       );
 
       if (!isValid) {
