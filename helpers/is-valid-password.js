@@ -148,6 +148,7 @@ async function isValidPassword(tokens = [], password, instance) {
           // enforce schema and require all required paths (dummyproof while we migrate)
           if (!tokens.every((token) => token.user && token.salt && token.hash))
             throw new TypeError('token missing user, salt, or hash');
+          /*
           // TODO: this migration needs improved/safeguarded since we don't use __v version key
           //       (e.g. if we detect `__v` then query for equality and increase it by 1 as well)
           await conn.models.Domains.findOneAndUpdate(
@@ -161,6 +162,7 @@ async function isValidPassword(tokens = [], password, instance) {
               }
             }
           );
+          */
         } else if (instance.object === 'alias') {
           // enforce schema and require all required paths (dummyproof while we migrate)
           if (!tokens.every((token) => token.salt && token.hash))
