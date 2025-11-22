@@ -171,13 +171,18 @@ const Token = new mongoose.Schema({
     type: String,
     select: false,
     required: true
+  },
+  has_pbkdf2_migration: {
+    type: Boolean,
+    default: false,
+    select: false
   }
 });
 
 Token.plugin(mongooseCommonPlugin, {
   object: 'token',
   omitCommonFields: false,
-  omitExtraFields: ['_id', '__v', 'salt', 'hash'],
+  omitExtraFields: ['_id', '__v', 'salt', 'hash', 'has_pbkdf2_migration'],
   uniqueId: false,
   locale: false
 });

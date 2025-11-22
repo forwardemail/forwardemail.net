@@ -720,7 +720,7 @@ const config = {
   smtpQueueTimeout: ms('180s'),
   smtpLimitMessages: env.NODE_ENV === 'test' ? 10 : 300,
   smtpLimitAuth: env.NODE_ENV === 'test' ? Number.MAX_VALUE : 10,
-  smtpLimitAuthDuration: ms('1h'),
+  smtpLimitAuthDuration: ms('1d'),
   smtpLimitDuration: ms('1d'),
   smtpLimitNamespace: `smtp_auth_limit_${env.NODE_ENV.toLowerCase()}`,
   supportEmail: env.EMAIL_DEFAULT_FROM_EMAIL,
@@ -1192,6 +1192,38 @@ const config = {
       MissingUsernameError: phrases.PASSPORT_MISSING_USERNAME_ERROR,
       UserExistsError: phrases.PASSPORT_USER_EXISTS_ERROR
     }
+  },
+
+  //
+  // argon2 configuration for domain and alias tokens
+  // (separate from passportLocalMongoose which is used for user authentication)
+  // <https://github.com/napi-rs/node-rs>
+  // <https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html>
+  // Bitwarden uses Argon2id for key derivation, with default settings of:
+  // 64 MiB memory, 3 iterations, and 4 parallelism
+  //
+  // But with fail2ban and rate limiting (5 attempts per IP over 24 hours it becomes impractical)
+  // However note we have allowlisted major ISP's and shared IP services (e.g. Gmail, Yahoo, etc)
+  // Though they have their own rate limiting in place as well to keep us protected
+  //
+  // Our default passwords are created with the following config (24 characters)
+  // which makes brute-force attempts totally impractical, but users can specify shorter
+  // passwords, although we use zxcvbn to prevent them from making easily guessible combinations
+  // and we also feed it a dictionary of metadata related to the user to protect them further
+  //
+  // Note that an attacker is limited by rate limiting (10 attempts per 24 hour by IP address) and NOT by hash speed
+  //
+  argon2: {
+    //
+    // previous onAuth with PBKDF2 takes 50-60ms for onAuth
+    //
+    memoryCost: 19456, // 19 MiB (20ms for onAuth)
+    // memoryCost: 32768, // 32 MiB (30ms for onAuth)
+    // memoryCost: 49152, // 48 MiB (40ms for onAuth)
+    // memoryCost: 65536, // 64 MiB (60ms for onAuth)
+    timeCost: 2, // iterations
+    parallelism: 1,
+    outputLen: 32 // hash length in bytes (8 bits per byte, 32 x 8 = 256 bits)
   },
 
   // passport callback options
@@ -1666,6 +1698,7 @@ config.alternatives = alternatives;
 config.views.locals.config = _.pick(config, [
   'smtpMessageMaxSize',
   'alternatives',
+  'argon2',
   'smtpLimitMessages',
   'smtpLimitDuration',
   'supportEmail',
