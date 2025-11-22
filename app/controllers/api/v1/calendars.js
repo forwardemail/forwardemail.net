@@ -40,20 +40,17 @@ async function list(ctx) {
   const query = {};
 
   // Get calendars with pagination
-  const [calendars, itemCount] = await Promise.all([
-    Calendars.find(
-      ctx.instance,
-      ctx.state.session,
-      query,
-      {},
-      {
-        limit: ctx.query.limit,
-        offset: ctx.paginate.skip,
-        sort: { created_at: -1 }
-      }
-    ),
-    Calendars.countDocuments(ctx.instance, ctx.state.session, query)
-  ]);
+  const { results: calendars, count: itemCount } = await Calendars.findAndCount(
+    ctx.instance,
+    ctx.state.session,
+    query,
+    {},
+    {
+      limit: ctx.query.limit,
+      offset: ctx.paginate.skip,
+      sort: { created_at: -1 }
+    }
+  );
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 

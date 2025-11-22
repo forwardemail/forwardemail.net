@@ -54,21 +54,18 @@ async function list(ctx) {
     query.subscribed = boolean(ctx.query.subscribed);
 
   // Get mailboxes/folders with pagination
-  const [mailboxes, itemCount] = await Promise.all([
-    Mailboxes.find(
-      ctx.instance,
-      ctx.state.session,
-      query,
-      {},
-      {
-        limit: ctx.query.limit,
-        offset: ctx.paginate.skip,
-        // Sort by path for logical folder ordering
-        sort: 'path'
-      }
-    ),
-    Mailboxes.countDocuments(ctx.instance, ctx.state.session, query)
-  ]);
+  const { results: mailboxes, count: itemCount } = await Mailboxes.findAndCount(
+    ctx.instance,
+    ctx.state.session,
+    query,
+    {},
+    {
+      limit: ctx.query.limit,
+      offset: ctx.paginate.skip,
+      // Sort by path for logical folder ordering
+      sort: 'path'
+    }
+  );
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 

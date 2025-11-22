@@ -590,10 +590,25 @@ async function list(ctx) {
     query.$and = searchConditions;
   }
 
+  // Build the count subquery
+  const countSql = builder.build({
+    type: 'select',
+    table: 'Messages',
+    condition: query,
+    fields: [{ expression: 'COUNT(*)' }]
+  });
+
   const opts = {
     type: 'select',
     table: 'Messages',
     condition: query,
+    fields: [
+      '*',
+      {
+        expression: `(${countSql.query})`,
+        alias: 'total_count'
+      }
+    ],
     limit: ctx.query.limit,
     offset: ctx.paginate.skip,
     sort: { created_at: -1 }
@@ -601,47 +616,39 @@ async function list(ctx) {
 
   const sql = builder.build(opts);
 
-  // <https://marc.info/?l=sqlite-users&m=112679232205850>
-  const expression = 'count(*)';
-  const countSql = builder.build({
-    type: 'select',
-    table: 'Messages',
-    condition: query,
-    fields: [
-      {
-        expression
-      }
+  // Get messages with pagination using single query with subquery
+  const messages = await ctx.instance.wsp.request({
+    action: 'stmt',
+    session: { user: ctx.state.session.user },
+    stmt: [
+      ['prepare', sql.query],
+      ['all', sql.values]
     ]
   });
 
-  // Get messages with pagination
-  const [messages, countResult] = await Promise.all([
-    ctx.instance.wsp.request({
-      action: 'stmt',
-      session: { user: ctx.state.session.user },
-      stmt: [
-        ['prepare', sql.query],
-        ['all', sql.values]
-      ]
-    }),
-    ctx.instance.wsp.request({
+  // Extract count - if no results, run count query separately
+  let itemCount = 0;
+  if (messages.length > 0) {
+    itemCount = messages[0].total_count;
+    // Remove total_count from all messages
+    for (const message of messages) {
+      delete message.total_count;
+    }
+  } else {
+    // No results from main query, but we still need the count
+    const countResult = await ctx.instance.wsp.request({
       action: 'stmt',
       session: { user: ctx.state.session.user },
       stmt: [
         ['prepare', countSql.query],
         ['get', countSql.values]
       ]
-    })
-  ]);
+    });
 
-  // safeguard
-  if (
-    typeof countResult !== 'object' ||
-    typeof countResult['count(*)'] !== 'number'
-  )
-    throw new TypeError('Count result was missing');
-
-  const itemCount = countResult['count(*)'];
+    if (countResult && typeof countResult['COUNT(*)'] === 'number') {
+      itemCount = countResult['COUNT(*)'];
+    }
+  }
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 

@@ -522,6 +522,154 @@ async function find(
 }
 
 // eslint-disable-next-line max-params
+async function findAndCount(
+  instance,
+  session,
+  filter = {},
+  projections = {},
+  options = {}
+) {
+  if (
+    !_.isEmpty(options) &&
+    !Object.keys(options).every(
+      (key) => key === 'sort' || key === 'limit' || key === 'offset'
+    )
+  )
+    throw new TypeError('Only sort, limit, and offset options supported');
+
+  const table = this?.collection?.modelName;
+  if (!isSANB(table)) throw new TypeError('Table name missing');
+  const mapping = this?.mapping;
+  if (typeof mapping !== 'object') throw new TypeError('Mapping is missing');
+  if (!session?.db || (!(session.db instanceof Database) && !session?.db.wsp))
+    throw new TypeError('Database is missing');
+
+  if (!instance.wsp && instance?.constructor?.name !== 'SQLite')
+    throw new TypeError('WebSocketAsPromised instance required');
+
+  if (typeof session?.user?.password !== 'string') {
+    const err = new TypeError('Session user and password missing');
+    err.session = session;
+    throw err;
+  }
+
+  const condition = prepareQuery(mapping, filter);
+
+  // Build the count subquery
+  const countSql = builder.build({
+    type: 'select',
+    table,
+    condition,
+    fields: [{ expression: 'COUNT(*)' }]
+  });
+
+  // Build the main query with count as a subquery field
+  const opts = {
+    type: 'select',
+    table,
+    condition
+  };
+
+  const fields = [];
+  for (const key of Object.keys(projections)) {
+    if (projections[key] === true) fields.push(key);
+  }
+
+  if (!_.isEmpty(projections) && projections._id !== false) fields.push('_id');
+
+  if (!_.isEmpty(fields)) {
+    opts.fields = [...fields];
+  } else {
+    opts.fields = ['*'];
+  }
+
+  // Add the count subquery as a field
+  opts.fields.push({
+    expression: `(${countSql.query})`,
+    alias: 'total_count'
+  });
+
+  // sort support
+  if (options.sort) opts.sort = options.sort;
+
+  // limit support
+  if (options.limit) {
+    if (Number.isFinite(options.limit) && Number.isInteger(options.limit))
+      opts.limit = options.limit;
+    else throw new TypeError('Limit must be a finite integer');
+  }
+
+  // offset support
+  if (options.offset) {
+    if (Number.isFinite(options.offset) && Number.isInteger(options.offset))
+      opts.offset = options.offset;
+    else throw new TypeError('Offset must be a finite integer');
+  }
+
+  const sql = builder.build(opts);
+
+  let docs;
+  if (instance.wsp) {
+    docs = await instance.wsp.request(
+      {
+        action: 'stmt',
+        session: { user: session.user },
+        stmt: [
+          ['prepare', sql.query],
+          ['all', sql.values]
+        ]
+      },
+      0
+    );
+  } else {
+    docs = session.db.prepare(sql.query).all(sql.values);
+  }
+
+  if (!Array.isArray(docs)) throw new TypeError('Docs should be an Array');
+
+  // Extract count - if no results, we need to run count query separately
+  let count = 0;
+  if (docs.length > 0) {
+    count = docs[0].total_count;
+    // Remove total_count from all docs
+    for (const doc of docs) {
+      delete doc.total_count;
+    }
+  } else {
+    // No results from main query, but we still need the count
+    // Run the count query separately
+    let countResult;
+    if (instance.wsp) {
+      countResult = await instance.wsp.request(
+        {
+          action: 'stmt',
+          session: { user: session.user },
+          stmt: [
+            ['prepare', countSql.query],
+            ['get', countSql.values]
+          ]
+        },
+        0
+      );
+    } else {
+      countResult = session.db.prepare(countSql.query).get(countSql.values);
+    }
+
+    if (countResult && typeof countResult['COUNT(*)'] === 'number') {
+      count = countResult['COUNT(*)'];
+    }
+  }
+
+  if (docs.length === 0) return { results: [], count };
+
+  const results = await Promise.all(
+    docs.map((doc) => convertResult(this, doc, projections))
+  );
+
+  return { results, count };
+}
+
+// eslint-disable-next-line max-params
 async function findById(
   instance,
   session,
@@ -987,6 +1135,7 @@ function dummyProofModel(model) {
 
   model.countDocuments = wrapWithRetry(countDocuments, model);
   model.find = wrapWithRetry(find, model);
+  model.findAndCount = wrapWithRetry(findAndCount, model);
   model.findById = wrapWithRetry(findById, model);
   model.findOne = wrapWithRetry(findOne, model);
   model.deleteOne = wrapWithRetry(deleteOne, model);

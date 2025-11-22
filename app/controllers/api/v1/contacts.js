@@ -86,20 +86,17 @@ async function list(ctx) {
   const query = { address_book: addressBook._id };
 
   // Get contacts with pagination
-  const [contacts, itemCount] = await Promise.all([
-    Contacts.find(
-      ctx.instance,
-      ctx.state.session,
-      query,
-      {},
-      {
-        limit: ctx.query.limit,
-        offset: ctx.paginate.skip,
-        sort: { created_at: -1 }
-      }
-    ),
-    Contacts.countDocuments(ctx.instance, ctx.state.session, query)
-  ]);
+  const { results: contacts, count: itemCount } = await Contacts.findAndCount(
+    ctx.instance,
+    ctx.state.session,
+    query,
+    {},
+    {
+      limit: ctx.query.limit,
+      offset: ctx.paginate.skip,
+      sort: { created_at: -1 }
+    }
+  );
 
   const pageCount = Math.ceil(itemCount / ctx.query.limit);
 
