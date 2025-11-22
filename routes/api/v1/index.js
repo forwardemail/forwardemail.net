@@ -539,4 +539,138 @@ router
   .put('/folders/:id', api.v1.folders.update)
   .delete('/folders/:id', api.v1.folders.remove);
 
+//
+// webmail (enhanced email operations)
+// These endpoints provide webmail-specific functionality like drafts, threads, batch operations
+//
+router
+  // Apply alias auth and ban check to all webmail routes
+  .use('/webmail', api.v1.aliasAuth, web.myAccount.ensureNotBanned)
+
+  // Threads
+  .get(
+    '/webmail/threads/:mailbox_id',
+    rateLimit(100, 'webmail'),
+    paginate.middleware(25, 100),
+    api.v1.webmail.listThreads
+  )
+
+  // Drafts
+  .get(
+    '/webmail/drafts',
+    rateLimit(100, 'webmail'),
+    paginate.middleware(25, 100),
+    api.v1.webmail.listDrafts
+  )
+  .post(
+    '/webmail/drafts',
+    rateLimit(50, 'webmail'),
+    bodyParser(),
+    api.v1.webmail.createDraft
+  )
+  .put(
+    '/webmail/drafts/:id',
+    rateLimit(50, 'webmail'),
+    bodyParser(),
+    api.v1.webmail.updateDraft
+  )
+  .delete(
+    '/webmail/drafts/:id',
+    rateLimit(50, 'webmail'),
+    api.v1.webmail.deleteDraft
+  )
+  .post(
+    '/webmail/drafts/:id/send',
+    api.v1.enforcePaidPlan,
+    web.myAccount.ensurePaidToDate,
+    rateLimit(25, 'webmail-send'),
+    bodyParser(),
+    api.v1.webmail.sendDraft
+  )
+
+  // Composition helpers
+  .post(
+    '/webmail/compose',
+    rateLimit(100, 'webmail'),
+    bodyParser(),
+    api.v1.webmail.compose
+  )
+  .post(
+    '/webmail/reply/:message_id',
+    rateLimit(100, 'webmail'),
+    bodyParser(),
+    api.v1.webmail.reply
+  )
+  .post(
+    '/webmail/forward/:message_id',
+    rateLimit(100, 'webmail'),
+    bodyParser(),
+    api.v1.webmail.forward
+  )
+  .get(
+    '/webmail/quote/:message_id',
+    rateLimit(100, 'webmail'),
+    api.v1.webmail.getQuote
+  )
+
+  // Batch operations
+  .post(
+    '/webmail/batch/flags',
+    rateLimit(50, 'webmail-batch'),
+    bodyParser(),
+    api.v1.webmail.batchFlags
+  )
+  .post(
+    '/webmail/batch/move',
+    rateLimit(50, 'webmail-batch'),
+    bodyParser(),
+    api.v1.webmail.batchMove
+  )
+  .post(
+    '/webmail/batch/delete',
+    rateLimit(50, 'webmail-batch'),
+    bodyParser(),
+    api.v1.webmail.batchDelete
+  )
+
+  // Search
+  .get(
+    '/webmail/search',
+    rateLimit(100, 'webmail-search'),
+    paginate.middleware(25, 100),
+    api.v1.webmail.search
+  )
+
+  // Contacts integration
+  .get(
+    '/webmail/contacts/autocomplete',
+    rateLimit(200, 'webmail-autocomplete'),
+    api.v1.webmail.contactAutocomplete
+  )
+  .post(
+    '/webmail/contacts/from-message',
+    rateLimit(50, 'webmail'),
+    bodyParser(),
+    api.v1.webmail.addContactFromMessage
+  )
+  .get(
+    '/webmail/contacts/frequent',
+    rateLimit(100, 'webmail'),
+    paginate.middleware(10, 50),
+    api.v1.webmail.frequentContacts
+  )
+
+  // Settings
+  .get(
+    '/webmail/settings',
+    rateLimit(100, 'webmail'),
+    api.v1.webmail.getSettings
+  )
+  .put(
+    '/webmail/settings',
+    rateLimit(50, 'webmail'),
+    bodyParser(),
+    api.v1.webmail.updateSettings
+  );
+
 module.exports = router;

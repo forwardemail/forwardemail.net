@@ -26,6 +26,7 @@ const test = require('./test');
 const users = require('./users');
 const upgrade = require('./upgrade');
 const emails = require('./emails');
+const webmail = require('./webmail');
 
 module.exports = {
   aliases,
@@ -50,5 +51,6 @@ module.exports = {
   test,
   users,
   upgrade,
-  emails
+  emails,
+  webmail
 };
