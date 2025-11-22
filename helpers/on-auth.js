@@ -53,6 +53,8 @@ async function onAuth(auth, session, fn) {
     const isAPI = this?.constructor?.name === 'API';
     const isIMAP = this?.constructor?.name === 'IMAP';
     const isPOP3 = this?.constructor?.name === 'POP3';
+    const authLimitKey = `auth_limit_${config.env}:${session.remoteAddress}`;
+    const attemptsKey = `auth_attempts_${config.env}:${session.remoteAddress}`;
 
     //
     // NOTE: until onConnect is available for IMAP and POP3 servers
@@ -131,6 +133,37 @@ async function onAuth(auth, session, fn) {
 
     // trim password in-memory
     auth.password = auth.password.trim();
+
+    //
+    // rate limiting (checks if we have had more than X failed auth attempts in Y time period)
+    // smtpLimitAuth = X (10)
+    // smtpLimitAuthDuration = Y (1 day)
+    //
+    // NOTE: this must come BEFORE we do `isValidPassword` check otherwise brute-force attempts can occur
+    //       we also put it before other CPU expensive and DB operations to prevent brute-force DDoS attacks
+    //
+    // NOTE: attackers could spam from shared IP address space (e.g. Gmail)
+    //       and cause other Gmail users to get locked out of using the service
+    //       so far nobody has complained about this, but if they do, then we will need to implement higher limits
+    //       (e.g. for truth sources/ISP's or just the relevant services, e.g. Gmail)
+    //
+    if (
+      // do not rate limit IP addresses corresponding to our servers
+      // (basically ANYONE but our servers gets rate limited by IP)
+      !session.resolvedClientHostname ||
+      parseRootDomain(session.resolvedClientHostname) !== env.WEB_HOST
+    ) {
+      const count = await this.client.incrby(authLimitKey, 0);
+      if (count >= config.smtpLimitAuth) {
+        throw new SMTPError(
+          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
+          // { ignoreHook: true },
+          {
+            imapResponse: 'CONTACTADMIN'
+          }
+        );
+      }
+    }
 
     // Verify DNS records
     const verifications = [];
@@ -378,29 +411,6 @@ async function onAuth(auth, session, fn) {
         }
       );
 
-    //
-    // rate limiting (checks if we have had more than 5 failed auth attempts in a row)
-    //
-    if (
-      // do not rate limit IP addresses corresponding to our servers
-      !session.resolvedClientHostname ||
-      parseRootDomain(session.resolvedClientHostname) !== env.WEB_HOST
-    ) {
-      const count = await this.client.incrby(
-        `auth_limit_${config.env}:${session.remoteAddress}`,
-        0
-      );
-      if (count >= config.smtpLimitAuth) {
-        throw new SMTPError(
-          `You have exceeded the maximum number of failed authentication attempts. Please try again later or contact us at ${config.supportEmail}`,
-          // { ignoreHook: true },
-          {
-            imapResponse: 'CONTACTADMIN'
-          }
-        );
-      }
-    }
-
     // ensure that the token is valid
     let isValid = false;
     if (alias && Array.isArray(alias.tokens) && alias.tokens.length > 0)
@@ -420,8 +430,6 @@ async function onAuth(auth, session, fn) {
 
     if (!isValid) {
       // increase failed counter by 1 iff new password was used
-      const key = `auth_limit_${config.env}:${session.remoteAddress}`;
-      const attemptsKey = `auth_attempts_${config.env}:${session.remoteAddress}`;
       const hash = revHash(auth.password);
 
       let previousPasswordHashes = await this.client.get(attemptsKey);
@@ -439,8 +447,8 @@ async function onAuth(auth, session, fn) {
         previousPasswordHashes.push(hash);
         await this.client
           .pipeline()
-          .incrby(key, 1)
-          .pexpire(key, config.smtpLimitAuthDuration)
+          .incrby(authLimitKey, 1)
+          .pexpire(authLimitKey, config.smtpLimitAuthDuration)
           .set(
             attemptsKey,
             safeStringify(previousPasswordHashes),
@@ -470,7 +478,7 @@ async function onAuth(auth, session, fn) {
     //
     const [, obj] = await Promise.all([
       // Clear authentication limit for this IP address
-      this.client.del(`auth_limit_${config.env}:${session.remoteAddress}`),
+      this.client.del(authLimitKey),
       // this also ensures that at least one admin has a verified email address
       Domains.getToAndMajorityLocaleByDomain(domain)
     ]);
