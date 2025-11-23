@@ -415,7 +415,7 @@ async function mobileConfig(ctx, next) {
     if (!isSANB(ctx.query.p)) return next(); // 404
 
     const alias = await Aliases.findById(ctx.query.a)
-      .select('+tokens.hash +tokens.salt')
+      .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
       .populate('domain', 'name')
       .lean()
       .exec();

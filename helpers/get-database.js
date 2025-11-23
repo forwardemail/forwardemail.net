@@ -1025,7 +1025,7 @@ function retryGetDatabase(...args) {
               'user',
               `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} email ${config.lastLocaleField} timezone`
             )
-            .select('+tokens.hash +tokens.salt')
+            .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
             .lean()
             .exec();
 

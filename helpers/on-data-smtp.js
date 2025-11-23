@@ -60,7 +60,7 @@ async function onDataSMTP(session, date, headers, body) {
         'user',
         `id ${config.userFields.isBanned} ${config.userFields.smtpLimit} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
       )
-      .select('+tokens.hash +tokens.salt')
+      .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
       .lean()
       .exec();
 
@@ -87,7 +87,7 @@ async function onDataSMTP(session, date, headers, body) {
       'members.user',
       `id plan email ${config.userFields.isBanned} ${config.userFields.hasVerifiedEmail} ${config.userFields.planExpiresAt} ${config.userFields.smtpLimit} ${config.userFields.stripeSubscriptionID} ${config.userFields.paypalSubscriptionID} smtp_rate_limit_sent_at ${config.userFields.fullEmail} ${config.lastLocaleField}`
     )
-    .select('+tokens +tokens.hash +tokens.salt')
+    .select('+tokens +tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
     .exec();
 
   if (!domain)

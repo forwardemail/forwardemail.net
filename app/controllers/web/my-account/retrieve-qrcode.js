@@ -38,7 +38,7 @@ async function retrieveQRCode(ctx) {
 
   try {
     const alias = await Aliases.findById(ctx.state.alias._id)
-      .select('+tokens.hash +tokens.salt')
+      .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
       .exec();
 
     if (alias.name === '*')

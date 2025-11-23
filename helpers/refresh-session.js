@@ -103,7 +103,7 @@ async function refreshSession(session, command) {
           // TODO: we can remove `smtpLimit` (?)
           `id email ${config.userFields.isBanned} ${config.userFields.smtpLimit} ${config.lastLocaleField}`
         )
-        .select('+tokens.hash +tokens.salt')
+        .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
         .lean()
         .exec()
     ]);

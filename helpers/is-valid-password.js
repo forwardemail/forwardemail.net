@@ -124,6 +124,21 @@ async function isValidPassword(tokens = [], password, instance) {
   //
   if (match && matchedToken && matchedToken.has_pbkdf2_migration !== true) {
     try {
+      // Find the matched token index
+      const tokenIndex = tokens.findIndex(
+        (t) =>
+          t._id &&
+          matchedToken._id &&
+          (t._id.toString ? t._id.toString() : String(t._id)) ===
+            (matchedToken._id.toString
+              ? matchedToken._id.toString()
+              : String(matchedToken._id))
+      );
+
+      if (tokenIndex === -1) {
+        throw new TypeError('Could not find matched token in tokens array');
+      }
+
       // check if hash is argon2 format (starts with $argon2)
       const isArgon2Hash = matchedToken.hash.startsWith('$argon2');
       if (isArgon2Hash) {
@@ -145,38 +160,30 @@ async function isValidPassword(tokens = [], password, instance) {
         if (typeof instance.object !== 'string')
           throw new TypeError('instance.object was undefined');
         if (instance.object === 'domain') {
-          // enforce schema and require all required paths (dummyproof while we migrate)
-          if (!tokens.every((token) => token.user && token.salt && token.hash))
-            throw new TypeError('token missing user, salt, or hash');
-          /*
-          // TODO: this migration needs improved/safeguarded since we don't use __v version key
-          //       (e.g. if we detect `__v` then query for equality and increase it by 1 as well)
           await conn.models.Domains.findOneAndUpdate(
             {
               _id: instance._id,
-              tokens: { $size: tokens.length }
+              [`tokens.${tokenIndex}._id`]: matchedToken._id
             },
             {
               $set: {
-                tokens
+                [`tokens.${tokenIndex}.hash`]: matchedToken.hash,
+                [`tokens.${tokenIndex}.has_pbkdf2_migration`]:
+                  matchedToken.has_pbkdf2_migration
               }
             }
           );
-          */
         } else if (instance.object === 'alias') {
-          // enforce schema and require all required paths (dummyproof while we migrate)
-          if (!tokens.every((token) => token.salt && token.hash))
-            throw new TypeError('token missing user, salt, or hash');
-          // TODO: this migration needs improved/safeguarded since we don't use __v version key
-          //       (e.g. if we detect `__v` then query for equality and increase it by 1 as well)
           await conn.models.Aliases.findOneAndUpdate(
             {
               _id: instance._id,
-              tokens: { $size: tokens.length }
+              [`tokens.${tokenIndex}._id`]: matchedToken._id
             },
             {
               $set: {
-                tokens
+                [`tokens.${tokenIndex}.hash`]: matchedToken.hash,
+                [`tokens.${tokenIndex}.has_pbkdf2_migration`]:
+                  matchedToken.has_pbkdf2_migration
               }
             }
           );

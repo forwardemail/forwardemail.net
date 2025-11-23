@@ -449,7 +449,7 @@ async function regenerateAliasPassword(ctx) {
       id: ctx.params.alias_id,
       domain: domain._id
     })
-      .select('+tokens.hash +tokens.salt')
+      .select('+tokens.hash +tokens.salt +tokens.has_pbkdf2_migration')
       .exec();
 
     // validate alias exists

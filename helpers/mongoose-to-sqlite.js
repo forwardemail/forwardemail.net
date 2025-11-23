@@ -577,11 +577,7 @@ async function findAndCount(
 
   if (!_.isEmpty(projections) && projections._id !== false) fields.push('_id');
 
-  if (!_.isEmpty(fields)) {
-    opts.fields = [...fields];
-  } else {
-    opts.fields = ['*'];
-  }
+  opts.fields = _.isEmpty(fields) ? ['*'] : [...fields];
 
   // Add the count subquery as a field
   opts.fields.push({

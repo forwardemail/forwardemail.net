@@ -14,7 +14,7 @@ const isErrorConstructorName = require('#helpers/is-error-constructor-name');
 async function removeCatchAllPassword(ctx) {
   try {
     const domain = await Domains.findById(ctx.state.domain._id).select(
-      '+tokens +tokens.description +tokens.hash +tokens.salt'
+      '+tokens +tokens.description +tokens.hash +tokens.salt +tokens.has_pbkdf2_migration'
     );
     if (!domain)
       throw Boom.notFound(ctx.translateError('DOMAIN_DOES_NOT_EXIST'));
