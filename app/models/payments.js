@@ -273,6 +273,8 @@ const Payments = new mongoose.Schema({
       'alipay',
       // A Buy Now, Pay Later payment method that lets customers pay in 2, 3, or 4 installments
       'alma',
+      // A buy now, pay later payment method
+      'alman',
       // A Wallet payment method that lets hundreds of millions of Amazon customers pay their way, every day
       'amazon_pay',
       // Used to debit Australian bank accounts through the Bulk Electronic Clearing System (BECS)
@@ -283,6 +285,8 @@ const Payments = new mongoose.Schema({
       'bancontact',
       // Used for bank transfers in the EU
       'blik',
+      // Used for B2B buy now, pay later payments in Germany
+      'billie',
       // Used for bank transfers in Brazil
       'boleto',
       // Credit or debit card
@@ -293,6 +297,8 @@ const Payments = new mongoose.Schema({
       'cashapp',
       // Used for cryptocurrency payments (Note: This is for integration with crypto wallets, not direct crypto payments)
       'crypto',
+      // Custom payment method
+      'custom',
       // Used for customer balance payments
       'customer_balance',
       // Used for bank transfers in the EU
@@ -307,28 +313,52 @@ const Payments = new mongoose.Schema({
       'ideal',
       // Used for in-person payments in Canada
       'interac_present',
+      // Used for digital wallet payments in South Korea
+      'kakao_pay',
       // Used for buy now, pay later payments
       'klarna',
       // Used for convenience store payments in Japan
       'konbini',
+      // Used for card payments in South Korea
+      'kr_card',
       // Used for accelerated checkout with saved payment details
       'link',
+      // Used for mobile wallet payments in Portugal
+      'mb_way',
       // Used for mobile payments in Nordic countries
       'mobilepay',
       // Used for bank transfers in Portugal
       'multibanco',
+      // Used for digital wallet payments in South Korea
+      'naver_pay',
+      // Used for bank account payments in New Zealand
+      'nz_bank_account',
       // Used for cash voucher payments in Mexico
       'oxxo',
       // Used for bank transfers in Poland
       'p24',
+      // Used for real-time bank payments
+      'pay_by_bank',
+      // Used for digital wallet payments in South Korea
+      'payco',
       // Used for real-time payments in Singapore
       'paynow',
       // Used for prepaid card payments
       'paysafecard',
+      // Used for digital wallet payments in Japan
+      'paypay',
+      // Used for instant payments in Brazil
+      'pix',
       // Used for QR code payments in Thailand
       'promptpay',
+      // Radar options for fraud prevention
+      'radar_options',
       // Used for Revolut payments
       'revolut_pay',
+      // Used for digital wallet payments via Samsung Pay
+      'samsung_pay',
+      // Used for mobile payments in Italy
+      'satispay',
       // Used for bank transfers in the EU
       'sepa_debit',
       // Used for bank transfers in Germany, Austria, Belgium, Italy, Netherlands, and Spain
