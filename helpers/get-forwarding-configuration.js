@@ -35,20 +35,21 @@ async function getForwardingConfiguration({
   if (!isSANB(verificationRecord))
     throw Boom.badRequest(i18n.translateError('DOMAIN_DOES_NOT_EXIST', locale));
 
-  const domain = await Domains.findOne({
-    verification_record: verificationRecord
-  })
-    .select(
-      'has_catchall has_regex is_global _id is_catchall_regex_disabled members name id plan email_suspended_sent_at has_smtp is_smtp_suspended'
-    )
-    .lean()
-    .exec();
+  const [domain, bannedUserIdSet] = await Promise.all([
+    Domains.findOne({
+      verification_record: verificationRecord
+    })
+      .select(
+        'has_catchall has_regex is_global _id is_catchall_regex_disabled members name id plan email_suspended_sent_at has_smtp is_smtp_suspended'
+      )
+      .lean()
+      .exec(),
+    Users.getBannedUserIdSet(client)
+  ]);
 
   if (!domain || domain.plan === 'free') return {};
 
   let hasMultiplePGP = false;
-
-  const bannedUserIdSet = await Users.getBannedUserIdSet(client);
 
   let aliasQuery = {};
   // if the domain was is_global then filter for

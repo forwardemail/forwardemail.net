@@ -514,6 +514,12 @@ const Domains = new mongoose.Schema({
   tokens: [Token]
 });
 
+// Domain compound index for auth query
+Domains.index({ name: 1, verification_record: 1, plan: 1 });
+
+// Member user index
+Domains.index({ 'members.user': 1, 'members.group': 1 });
+
 Domains.index({ plan: 1, has_txt_record: 1, _id: 1 });
 
 Domains.index(

@@ -6,6 +6,7 @@
 const { Buffer } = require('node:buffer');
 
 const test = require('ava');
+const mongoose = require('mongoose');
 
 const utils = require('../utils');
 
@@ -43,13 +44,20 @@ test('isValidPassword validates new argon2 passwords', async (t) => {
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: false
     }
   ];
 
-  const isValid = await isValidPassword(tokens, password);
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
+  const isValid = await isValidPassword(tokens, password, mockAlias);
   t.true(isValid);
 });
 
@@ -59,13 +67,24 @@ test('isValidPassword rejects invalid password for argon2', async (t) => {
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: false
     }
   ];
 
-  const isValid = await isValidPassword(tokens, 'WrongPassword123!@#');
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
+  const isValid = await isValidPassword(
+    tokens,
+    'WrongPassword123!@#',
+    mockAlias
+  );
   t.false(isValid);
 });
 
@@ -87,13 +106,20 @@ test('isValidPassword validates legacy pbkdf2 passwords', async (t) => {
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: false
     }
   ];
 
-  const isValid = await isValidPassword(tokens, password);
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
+  const isValid = await isValidPassword(tokens, password, mockAlias);
   t.true(isValid);
 });
 
@@ -115,14 +141,21 @@ test('isValidPassword migrates pbkdf2 to argon2 on successful validation', async
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: false
     }
   ];
 
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
   // verify old hash works
-  const isValid = await isValidPassword(tokens, password);
+  const isValid = await isValidPassword(tokens, password, mockAlias);
   t.true(isValid);
 
   // check that migration occurred
@@ -130,7 +163,11 @@ test('isValidPassword migrates pbkdf2 to argon2 on successful validation', async
   t.true(tokens[0].hash.startsWith('$argon2'));
 
   // verify new hash works
-  const isValidAfterMigration = await isValidPassword(tokens, password);
+  const isValidAfterMigration = await isValidPassword(
+    tokens,
+    password,
+    mockAlias
+  );
   t.true(isValidAfterMigration);
 });
 
@@ -140,13 +177,20 @@ test('isValidPassword skips pbkdf2 check when has_pbkdf2_migration is true', asy
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: true
     }
   ];
 
-  const isValid = await isValidPassword(tokens, password);
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
+  const isValid = await isValidPassword(tokens, password, mockAlias);
   t.true(isValid);
 });
 
@@ -159,24 +203,36 @@ test('isValidPassword handles multiple tokens and finds correct one', async (t) 
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt: token1.salt,
       hash: token1.hash,
       has_pbkdf2_migration: false
     },
     {
+      _id: new mongoose.Types.ObjectId(),
       salt: token2.salt,
       hash: token2.hash,
       has_pbkdf2_migration: false
     }
   ];
 
-  const isValid1 = await isValidPassword(tokens, password1);
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
+  const isValid1 = await isValidPassword(tokens, password1, mockAlias);
   t.true(isValid1);
 
-  const isValid2 = await isValidPassword(tokens, password2);
+  const isValid2 = await isValidPassword(tokens, password2, mockAlias);
   t.true(isValid2);
 
-  const isInvalid = await isValidPassword(tokens, 'WrongPassword789&*()');
+  const isInvalid = await isValidPassword(
+    tokens,
+    'WrongPassword789&*()',
+    mockAlias
+  );
   t.false(isInvalid);
 });
 
@@ -202,31 +258,45 @@ test('isValidPassword handles mixed pbkdf2 and argon2 tokens', async (t) => {
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt: salt1,
       hash: hash1,
       has_pbkdf2_migration: false
     },
     {
+      _id: new mongoose.Types.ObjectId(),
       salt: token2.salt,
       hash: token2.hash,
       has_pbkdf2_migration: false
     }
   ];
 
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
   // verify both work
-  const isValid1 = await isValidPassword(tokens, password1);
+  const isValid1 = await isValidPassword(tokens, password1, mockAlias);
   t.true(isValid1);
   t.true(tokens[0].has_pbkdf2_migration);
   t.true(tokens[0].hash.startsWith('$argon2'));
 
-  const isValid2 = await isValidPassword(tokens, password2);
+  const isValid2 = await isValidPassword(tokens, password2, mockAlias);
   t.true(isValid2);
   t.true(tokens[1].has_pbkdf2_migration);
   t.true(tokens[1].hash.startsWith('$argon2'));
 });
 
 test('isValidPassword returns false for empty tokens array', async (t) => {
-  const isValid = await isValidPassword([], 'TestPassword123!@#');
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens: []
+  };
+
+  const isValid = await isValidPassword([], 'TestPassword123!@#', mockAlias);
   t.false(isValid);
 });
 
@@ -238,7 +308,17 @@ test('isValidPassword returns false for invalid token structure', async (t) => {
     }
   ];
 
-  const isValid = await isValidPassword(tokens, 'TestPassword123!@#');
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
+  const isValid = await isValidPassword(
+    tokens,
+    'TestPassword123!@#',
+    mockAlias
+  );
   t.false(isValid);
 });
 
@@ -247,13 +327,20 @@ test('isValidPassword returns false for non-string password', async (t) => {
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: false
     }
   ];
 
-  const isValid = await isValidPassword(tokens, 12345);
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
+  const isValid = await isValidPassword(tokens, 12345, mockAlias);
   t.false(isValid);
 });
 
@@ -275,14 +362,21 @@ test('backwards compatibility: existing pbkdf2 tokens continue to work', async (
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash
       // has_pbkdf2_migration not set (undefined), simulating old token
     }
   ];
 
+  const mockAlias = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
+    tokens
+  };
+
   // should still validate successfully
-  const isValid = await isValidPassword(tokens, password);
+  const isValid = await isValidPassword(tokens, password, mockAlias);
   t.true(isValid);
 
   // and should have migrated
@@ -327,6 +421,7 @@ test('isValidPassword handles save errors gracefully', async (t) => {
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: false
@@ -335,6 +430,8 @@ test('isValidPassword handles save errors gracefully', async (t) => {
 
   // create a mock model instance that throws on save
   const mockInstance = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
     tokens,
     async save() {
       throw new Error('Database error');
@@ -369,6 +466,7 @@ test('isValidPassword works without model instance (backward compatibility)', as
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: false
@@ -394,6 +492,7 @@ test('isValidPassword does not call save when no migration needed', async (t) =>
 
   const tokens = [
     {
+      _id: new mongoose.Types.ObjectId(),
       salt,
       hash,
       has_pbkdf2_migration: true // already migrated
@@ -402,6 +501,8 @@ test('isValidPassword does not call save when no migration needed', async (t) =>
 
   let saveCalled = false;
   const mockInstance = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'alias',
     tokens,
     async save() {
       saveCalled = true;
@@ -411,4 +512,44 @@ test('isValidPassword does not call save when no migration needed', async (t) =>
   const isValid = await isValidPassword(tokens, password, mockInstance);
   t.true(isValid);
   t.false(saveCalled, 'save() should not be called when already migrated');
+});
+
+test('isValidPassword works with domain model', async (t) => {
+  const password = 'TestPassword123!@#';
+
+  // create legacy pbkdf2 hash
+  const salt = 'c'.repeat(64);
+  const rawHash = await pbkdf2({
+    password,
+    salt,
+    iterations: config.passportLocalMongoose.iterations,
+    keylen: config.passportLocalMongoose.keylen,
+    digestAlgorithm: config.passportLocalMongoose.digestAlgorithm
+  });
+  const hash = Buffer.from(rawHash, 'binary').toString(
+    config.passportLocalMongoose.encoding
+  );
+
+  const tokens = [
+    {
+      _id: new mongoose.Types.ObjectId(),
+      salt,
+      hash,
+      has_pbkdf2_migration: false
+    }
+  ];
+
+  const mockDomain = {
+    _id: new mongoose.Types.ObjectId(),
+    object: 'domain',
+    tokens
+  };
+
+  // verify old hash works
+  const isValid = await isValidPassword(tokens, password, mockDomain);
+  t.true(isValid);
+
+  // check that migration occurred
+  t.true(tokens[0].has_pbkdf2_migration);
+  t.true(tokens[0].hash.startsWith('$argon2'));
 });
