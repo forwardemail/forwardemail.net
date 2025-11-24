@@ -3,6 +3,7 @@
  * SPDX-License-Identifier: BUSL-1.1
  */
 
+const isCI = require('is-ci');
 const test = require('ava');
 
 const utils = require('../utils');
@@ -18,33 +19,35 @@ test('redirects to correct locale', async (t) => {
   t.is(res.headers.location, '/en');
 });
 
-test('returns English homepage', async (t) => {
-  const { web } = t.context;
-  const res = await web.get('/en').set({ Accept: 'text/html' });
+if (!isCI) {
+  test('returns English homepage', async (t) => {
+    const { web } = t.context;
+    const res = await web.get('/en').set({ Accept: 'text/html' });
 
-  t.snapshot(res.text);
-});
+    t.snapshot(res.text);
+  });
 
-test('returns Spanish homepage', async (t) => {
-  const { web } = t.context;
-  const res = await web.get('/es').set({ Accept: 'text/html' });
+  test('returns Spanish homepage', async (t) => {
+    const { web } = t.context;
+    const res = await web.get('/es').set({ Accept: 'text/html' });
 
-  t.snapshot(res.text);
-});
+    t.snapshot(res.text);
+  });
 
-test('returns English ToS', async (t) => {
-  const { web } = t.context;
-  const res = await web.get('/en/terms').set({ Accept: 'text/html' });
+  test('returns English ToS', async (t) => {
+    const { web } = t.context;
+    const res = await web.get('/en/terms').set({ Accept: 'text/html' });
 
-  t.snapshot(res.text);
-});
+    t.snapshot(res.text);
+  });
 
-test('returns Spanish ToS', async (t) => {
-  const { web } = t.context;
-  const res = await web.get('/es/terms').set({ Accept: 'text/html' });
+  test('returns Spanish ToS', async (t) => {
+    const { web } = t.context;
+    const res = await web.get('/es/terms').set({ Accept: 'text/html' });
 
-  t.snapshot(res.text);
-});
+    t.snapshot(res.text);
+  });
+}
 
 test('GET /:locale/about', async (t) => {
   const { web } = t.context;

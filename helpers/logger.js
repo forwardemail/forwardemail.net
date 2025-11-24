@@ -185,6 +185,9 @@ async function hook(err, message, meta) {
   if (err && err.message === 'write ECONNRESET') return;
   if (err && err.message === 'read ECONNRESET') return;
 
+  // EPIPE
+  if (err && err.message === 'write EPIPE') return;
+
   // unique hash (already exists)
   if (err.message === 'Hash is not unique.') return;
 
