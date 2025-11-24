@@ -29,6 +29,102 @@
         name: mongod
         state: restarted
   tasks:
+    # MongoDB-specific sysctl optimizations
+    # Note: THP, ulimits, and base sysctl settings are inherited from security.yml
+    - name: Configure MongoDB-specific sysctl parameters
+      ansible.builtin.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: true
+        sysctl_file: /etc/sysctl.d/99-mongodb.conf
+      loop:
+        - { name: 'vm.dirty_background_ratio', value: '10' }
+        - { name: 'vm.dirty_ratio', value: '20' }
+        - { name: 'net.core.somaxconn', value: '4096' }
+        - { name: 'net.ipv4.tcp_max_syn_backlog', value: '4096' }
+        - { name: 'net.ipv4.tcp_fin_timeout', value: '30' }
+        - { name: 'net.ipv4.tcp_keepalive_intvl', value: '30' }
+        - { name: 'net.ipv4.tcp_keepalive_time', value: '120' }
+
+    # Configure swap for MongoDB stability
+    # MongoDB requires swap to prevent OOM crashes during high memory usage
+    # Best practice: swap file size = total system RAM
+    - name: Get total system memory in MB
+      shell: free -m | awk '/^Mem:/{print $2}'
+      register: total_memory_mb
+      changed_when: false
+
+    - name: Check if swap file exists
+      stat:
+        path: /swapfile
+      register: swapfile_stat
+
+    - name: Check current swap size
+      shell: swapon --show=SIZE --noheadings --bytes | head -1
+      register: current_swap_bytes
+      changed_when: false
+      failed_when: false
+
+    - name: Calculate required swap size in bytes
+      set_fact:
+        required_swap_mb: "{{ total_memory_mb.stdout | int }}"
+        required_swap_bytes: "{{ (total_memory_mb.stdout | int) * 1024 * 1024 }}"
+
+    - name: Disable existing swap if size doesn't match
+      command: swapoff /swapfile
+      when:
+        - swapfile_stat.stat.exists
+        - current_swap_bytes.stdout != ""
+        - current_swap_bytes.stdout | int != required_swap_bytes | int
+      ignore_errors: true
+
+    - name: Remove old swap file if size doesn't match
+      file:
+        path: /swapfile
+        state: absent
+      when:
+        - swapfile_stat.stat.exists
+        - current_swap_bytes.stdout != ""
+        - current_swap_bytes.stdout | int != required_swap_bytes | int
+
+    - name: Create swap file with size equal to RAM
+      command: fallocate -l {{ required_swap_mb }}M /swapfile
+      args:
+        creates: /swapfile
+
+    - name: Set swap file permissions
+      file:
+        path: /swapfile
+        mode: '0600'
+        owner: root
+        group: root
+
+    - name: Format swap file
+      command: mkswap /swapfile
+      when: not swapfile_stat.stat.exists or (current_swap_bytes.stdout | int != required_swap_bytes | int)
+      register: mkswap_result
+      changed_when: "'Setting up swapspace' in mkswap_result.stdout"
+
+    - name: Enable swap file
+      command: swapon /swapfile
+      when: mkswap_result is changed
+
+    - name: Add swap to /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        line: '/swapfile none swap sw 0 0'
+        state: present
+        regexp: '^/swapfile'
+
+    - name: Set swappiness for MongoDB (minimize swapping but allow it for safety)
+      ansible.builtin.sysctl:
+        name: vm.swappiness
+        value: '1'
+        state: present
+        reload: true
+        sysctl_file: /etc/sysctl.d/99-mongodb.conf
+
     # Install MongoDB using trfore.mongodb_install role
     - name: Install MongoDB v6
       include_role:

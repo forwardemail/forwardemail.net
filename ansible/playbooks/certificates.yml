@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2:redis
+- hosts: all
   name: Certificates
   vars_prompt:
     - name: input_key

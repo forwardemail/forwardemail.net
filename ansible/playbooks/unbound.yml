@@ -1,0 +1,193 @@
+---
+- name: Setup Unbound DNS Resolver
+  hosts: all
+  become: true
+
+  vars:
+    # Unbound configuration
+    unbound_interfaces:
+      - 127.0.0.1
+      - ::1
+
+    unbound_access_control:
+      - 127.0.0.0/8 allow
+      - ::1 allow
+
+    # Cache TTL settings optimized for database servers
+    # Short TTLs allow fast failover during outages
+    unbound_cache_min_ttl: 60      # 1 minute minimum
+    unbound_cache_max_ttl: 300     # 5 minutes maximum
+    unbound_neg_cache_ttl: 60      # 1 minute for negative responses
+
+    # Performance tuning
+    unbound_num_threads: 2
+    unbound_msg_cache_size: 50m
+    unbound_rrset_cache_size: 100m
+    unbound_cache_slabs: 4
+    unbound_infra_cache_slabs: 4
+    unbound_key_cache_slabs: 4
+
+    # Forward to Cloudflare DNS with DNS-over-TLS
+    unbound_forward_zone_active: true
+    unbound_forward_zone_configuration:
+      - forward-tls-upstream: "yes"
+    unbound_forward_zone:
+      - "1.1.1.1@853#cloudflare-dns.com"
+      - "1.0.0.1@853#cloudflare-dns.com"
+      - "2606:4700:4700::1111@853#cloudflare-dns.com"
+      - "2606:4700:4700::1001@853#cloudflare-dns.com"
+
+  tasks:
+    - name: Install Unbound DNS resolver
+      ansible.builtin.apt:
+        name: unbound
+        state: present
+        update_cache: true
+
+    - name: Install Unbound Ansible role dependencies
+      ansible.builtin.apt:
+        name:
+          - python3-pip
+          - dns-root-data
+        state: present
+
+    - name: Create custom Unbound configuration directory
+      ansible.builtin.file:
+        path: /etc/unbound/unbound.conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Configure Unbound cache settings
+      ansible.builtin.copy:
+        dest: /etc/unbound/unbound.conf.d/cache.conf
+        content: |
+          server:
+              # Cache TTL settings optimized for database servers
+              # Short TTLs (5 minutes) allow fast failover during outages
+              cache-min-ttl: {{ unbound_cache_min_ttl }}
+              cache-max-ttl: {{ unbound_cache_max_ttl }}
+
+              # Negative cache TTL (for NXDOMAIN responses)
+              cache-neg-ttl: {{ unbound_neg_cache_ttl }}
+
+              # Performance tuning
+              num-threads: {{ unbound_num_threads }}
+              msg-cache-size: {{ unbound_msg_cache_size }}
+              rrset-cache-size: {{ unbound_rrset_cache_size }}
+              cache-slabs: {{ unbound_cache_slabs }}
+              infra-cache-slabs: {{ unbound_infra_cache_slabs }}
+              key-cache-slabs: {{ unbound_key_cache_slabs }}
+
+              # Prefetch popular items before they expire
+              prefetch: yes
+              prefetch-key: yes
+
+              # Serve expired cache entries while fetching fresh data
+              serve-expired: yes
+              serve-expired-ttl: 60
+
+              # DNSSEC validation (required for DANE)
+              auto-trust-anchor-file: "/var/lib/unbound/root.key"
+              val-permissive-mode: no
+              val-clean-additional: yes
+              val-log-level: 1
+
+              # DANE/TLSA support
+              # Enables validation of TLSA records for TLS connections
+              module-config: "validator iterator"
+
+              # Harden against DNS rebinding and other attacks
+              harden-glue: yes
+              harden-dnssec-stripped: yes
+              harden-below-nxdomain: yes
+              harden-referral-path: yes
+              harden-algo-downgrade: yes
+
+              # Privacy and security
+              use-caps-for-id: yes
+              hide-identity: yes
+              hide-version: yes
+              qname-minimisation: yes
+              aggressive-nsec: yes
+
+              # Prevent DNS amplification attacks
+              ratelimit: 1000
+              ip-ratelimit: 100
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart Unbound
+
+    - name: Configure Unbound forwarding
+      ansible.builtin.copy:
+        dest: /etc/unbound/unbound.conf.d/forward.conf
+        content: |
+          forward-zone:
+              name: "."
+              forward-tls-upstream: yes
+              # Cloudflare DNS with DNS-over-TLS
+              forward-addr: 1.1.1.1@853#cloudflare-dns.com
+              forward-addr: 1.0.0.1@853#cloudflare-dns.com
+              forward-addr: 2606:4700:4700::1111@853#cloudflare-dns.com
+              forward-addr: 2606:4700:4700::1001@853#cloudflare-dns.com
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart Unbound
+
+    - name: Ensure Unbound is enabled and started
+      ansible.builtin.systemd:
+        name: unbound
+        enabled: true
+        state: started
+
+    - name: Configure systemd-resolved to use Unbound
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?DNS='
+        line: 'DNS=127.0.0.1'
+        state: present
+      notify: Restart systemd-resolved
+
+    - name: Disable systemd-resolved stub listener
+      ansible.builtin.lineinfile:
+        path: /etc/systemd/resolved.conf
+        regexp: '^#?DNSStubListener='
+        line: 'DNSStubListener=no'
+        state: present
+      notify: Restart systemd-resolved
+
+    - name: Update /etc/resolv.conf to use Unbound
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: |
+          # Local DNS caching with Unbound
+          nameserver 127.0.0.1
+          options edns0 trust-ad
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Verify DNS resolution
+      ansible.builtin.command:
+        cmd: dig +short @127.0.0.1 cloudflare.com
+      register: dns_test
+      changed_when: false
+      failed_when: dns_test.rc != 0
+
+    - name: Display DNS test result
+      ansible.builtin.debug:
+        msg: "DNS resolution working: {{ dns_test.stdout_lines }}"
+
+  handlers:
+    - name: Restart Unbound
+      ansible.builtin.systemd:
+        name: unbound
+        state: restarted
+
+    - name: Restart systemd-resolved
+      ansible.builtin.systemd:
+        name: systemd-resolved
+        state: restarted

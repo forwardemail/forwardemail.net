@@ -2,12 +2,13 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
+# mail mongo and redis don't need this
 - hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
   name: Node.js
   become: true
   become_user: root
   vars:
-    node_version: "18.20.4"
+    node_version: '18.20.4'
   tasks:
     # install n and node lts
     - name: Check that n exists
@@ -36,7 +37,7 @@
       register: node_version_installed
       when: n_result.stat.exists
       args:
-         executable: /bin/bash
+        executable: /bin/bash
 
     - name: Debug Node version installed
       debug:
@@ -51,7 +52,7 @@
       become_user: deploy
       shell: source /home/deploy/.bashrc && n install {{node_version}} && n prune
       args:
-         executable: /bin/bash
+        executable: /bin/bash
       when: n_result.stat.exists and node_version_installed and not node_version_installed.failed and node_version_installed.stdout is version(node_version, "ne", version_type="semver")
 
     # install pm2 and pnpm
@@ -64,16 +65,16 @@
       become_user: deploy
       shell: source /home/deploy/.bashrc && npm install -g pm2
       args:
-         executable: /bin/bash
+        executable: /bin/bash
       when: not pm2_result.stat.exists
     - name: Cleanup tmp
       become: true
       become_user: deploy
       cron:
-        name: "cleanup-tmp"
-        hour: "*"
-        minute: "0"
-        job: "NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/cleanup-tmp.js > /dev/null 2>&1"
+        name: 'cleanup-tmp'
+        hour: '*'
+        minute: '0'
+        job: 'NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/cleanup-tmp.js > /dev/null 2>&1'
     #
     # TODO: alert of any users with admin permission on website
     #
@@ -125,7 +126,7 @@
     #
     #       TODO: Also detect when we need to rotate SSH keys and alert admins if SSH keys need rotated
     #
-    #- name: Check recent access
+    # - name: Check recent access
     #  become: true
     #  become_user: root
     #  cron:
@@ -137,18 +138,18 @@
       become: true
       become_user: deploy
       cron:
-        name: "check-pm2"
-        hour: "*"
-        minute: "*/20"
-        job: "NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1"
+        name: 'check-pm2'
+        hour: '*'
+        minute: '*/20'
+        job: 'NODE_ENV=production /home/deploy/n/bin/node /var/www/production/current/jobs/check-pm2.js > /dev/null 2>&1'
     - name: Reload pm2 every 6 hours
       become: true
       become_user: deploy
       cron:
-        name: "reload"
-        hour: "*/6"
-        minute: "0"
-        job: "/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1"
+        name: 'reload'
+        hour: '*/6'
+        minute: '0'
+        job: '/home/deploy/n/bin/node /home/deploy/n/bin/pm2 reload all > /dev/null 2>&1'
     - name: Check if pnpm exists
       stat:
         path: /home/deploy/n/bin/pnpm
@@ -158,7 +159,7 @@
       become_user: deploy
       shell: source /home/deploy/.bashrc && npm install -g pnpm@9.15.9
       args:
-         executable: /bin/bash
+        executable: /bin/bash
       when: not pnpm_result.stat.exists
     # install fonts
     - name: Accept fonts license
@@ -216,14 +217,14 @@
         state: directory
         owner: deploy
         # https://chmodcommand.com/chmod-770/
-        mode: "0770"
+        mode: '0770'
         recurse: true
     - name: Install pm2-logrotate
       become: true
       become_user: deploy
       shell: source /home/deploy/.bashrc && pm2 install pm2-logrotate
       args:
-         executable: /bin/bash
+        executable: /bin/bash
     - name: Check that pm2 startup script exists
       stat:
         path: /etc/systemd/system/pm2-deploy.service

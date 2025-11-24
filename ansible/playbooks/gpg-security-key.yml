@@ -2,7 +2,8 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2:redis
+# mail mongo and redis don't need this
+- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
   name: GPG Security Key
   vars_prompt:
     - name: input_profile

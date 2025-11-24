@@ -2,27 +2,36 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- name: dns
-  src: oefenweb.dns
-  version: v1.1.36
-- name: ntp
-  src: oefenweb.ntp
-  version: v1.1.35
-- name: fail2ban
-  src: oefenweb.fail2ban
-  version: v4.0.2
-#- name: timezone
-#  src: oefenweb.timezone
-#  version: v1.0.50
-- name: unattended-upgrades
-  src: hifis.unattended_upgrades
-  version: v3.2.0
-- name: sysctl
-  src: oefenweb.sysctl
-  version: v1.0.43
-- name: mongodb_install
-  src: trfore.mongodb_install
-  version: v3.0.5
-- name: redis
-  src: geerlingguy.redis
-  version: 1.9.1
+# Ansible Collections
+collections:
+  - name: ansible.posix
+    version: ">=2.1.0"
+  - name: community.general
+    version: ">=12.0.0"
+
+# Ansible Roles
+roles:
+  - name: dns
+    src: oefenweb.dns
+    version: v1.1.36
+  - name: ntp
+    src: oefenweb.ntp
+    version: v1.1.35
+  - name: fail2ban
+    src: oefenweb.fail2ban
+    version: v4.0.2
+  #- name: timezone
+  #  src: oefenweb.timezone
+  #  version: v1.0.50
+  - name: unattended-upgrades
+    src: hifis.unattended_upgrades
+    version: v3.2.0
+  - name: sysctl
+    src: oefenweb.sysctl
+    version: v1.0.43
+  - name: mongodb_install
+    src: trfore.mongodb_install
+    version: v3.0.5
+  - name: redis
+    src: geerlingguy.redis
+    version: "1.9.1"

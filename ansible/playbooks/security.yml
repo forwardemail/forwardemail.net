@@ -2,7 +2,11 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2:redis
+# Commented out until we're sure Unbound works properly
+#- name: Import Unbound DNS caching playbook
+#  import_playbook: unbound.yml
+
+- hosts: all
   name: Security
   become: true
   become_user: root
@@ -58,7 +62,7 @@
         state: started
 
     - name: Ensure fs.suid_dumpable is set to 0 and added in sysctl
-      sysctl:
+      ansible.posix.sysctl:
         name: fs.suid_dumpable
         value: "0"
         sysctl_set: true
@@ -319,7 +323,7 @@
       become_user: deploy
       shell: git config --global --add safe.directory '*'
 
-- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
+- hosts: all
   name: Mongo Shell
   become: true
   become_user: root
@@ -334,7 +338,7 @@
           - mongodb-mongosh
         update_cache: true
 
-- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2
+- hosts: all
   name: Sysctl
   become: true
   become_user: root

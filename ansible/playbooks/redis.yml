@@ -29,6 +29,98 @@
         name: redis-server
         state: restarted
   tasks:
+    # Redis-specific sysctl optimizations
+    # Note: THP, ulimits, and base sysctl settings are inherited from security.yml
+    - name: Configure Redis-specific sysctl parameters
+      ansible.builtin.sysctl:
+        name: "{{ item.name }}"
+        value: "{{ item.value }}"
+        state: present
+        reload: true
+        sysctl_file: /etc/sysctl.d/99-redis.conf
+      loop:
+        - { name: 'vm.overcommit_memory', value: '1' }
+        - { name: 'net.core.somaxconn', value: '65536' }
+        - { name: 'net.ipv4.tcp_max_syn_backlog', value: '65536' }
+
+    # Configure swap for Redis stability
+    # Redis official docs: "swap file size is equal to amount of memory on your system"
+    # https://redis.io/docs/latest/operate/oss_and_stack/management/admin/
+    - name: Get total system memory in MB
+      shell: free -m | awk '/^Mem:/{print $2}'
+      register: total_memory_mb
+      changed_when: false
+
+    - name: Check if swap file exists
+      stat:
+        path: /swapfile
+      register: swapfile_stat
+
+    - name: Check current swap size
+      shell: swapon --show=SIZE --noheadings --bytes | head -1
+      register: current_swap_bytes
+      changed_when: false
+      failed_when: false
+
+    - name: Calculate required swap size in bytes
+      set_fact:
+        required_swap_mb: "{{ total_memory_mb.stdout | int }}"
+        required_swap_bytes: "{{ (total_memory_mb.stdout | int) * 1024 * 1024 }}"
+
+    - name: Disable existing swap if size doesn't match
+      command: swapoff /swapfile
+      when:
+        - swapfile_stat.stat.exists
+        - current_swap_bytes.stdout != ""
+        - current_swap_bytes.stdout | int != required_swap_bytes | int
+      ignore_errors: true
+
+    - name: Remove old swap file if size doesn't match
+      file:
+        path: /swapfile
+        state: absent
+      when:
+        - swapfile_stat.stat.exists
+        - current_swap_bytes.stdout != ""
+        - current_swap_bytes.stdout | int != required_swap_bytes | int
+
+    - name: Create swap file with size equal to RAM
+      command: fallocate -l {{ required_swap_mb }}M /swapfile
+      args:
+        creates: /swapfile
+
+    - name: Set swap file permissions
+      file:
+        path: /swapfile
+        mode: '0600'
+        owner: root
+        group: root
+
+    - name: Format swap file
+      command: mkswap /swapfile
+      when: not swapfile_stat.stat.exists or (current_swap_bytes.stdout | int != required_swap_bytes | int)
+      register: mkswap_result
+      changed_when: "'Setting up swapspace' in mkswap_result.stdout"
+
+    - name: Enable swap file
+      command: swapon /swapfile
+      when: mkswap_result is changed
+
+    - name: Add swap to /etc/fstab
+      lineinfile:
+        path: /etc/fstab
+        line: '/swapfile none swap sw 0 0'
+        state: present
+        regexp: '^/swapfile'
+
+    - name: Set swappiness for Redis (minimize swapping but allow it for safety)
+      ansible.builtin.sysctl:
+        name: vm.swappiness
+        value: '1'
+        state: present
+        reload: true
+        sysctl_file: /etc/sysctl.d/99-redis.conf
+
     # Install Redis using geerlingguy.redis role
     - name: Install Redis
       include_role:
@@ -51,6 +143,11 @@
           tls-key-file {{ lookup('env', 'SSL_KEY_PATH') }}
           tls-ca-cert-file {{ lookup('env', 'SSL_CA_PATH') }}
           tls-auth-clients no
+
+          # Performance Optimizations
+          tcp-backlog 65536
+          tcp-keepalive 0
+          maxclients 10000
 
     # UFW Configuration
     - name: Enable ufw

@@ -2,7 +2,7 @@
 # SPDX-License-Identifier: BUSL-1.1
 
 ---
-- hosts: imap:pop3:smtp:http:bree:sqlite:mx1:mx2:redis
+- hosts: all
   name: SSH Keys
   become: true
   become_user: root

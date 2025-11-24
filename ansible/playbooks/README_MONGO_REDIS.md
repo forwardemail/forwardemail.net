@@ -8,10 +8,57 @@ These playbooks provide complete automation for:
 
 - **MongoDB v6** installation and configuration
 - **Redis** installation and configuration
+- **Dynamic swap configuration** (swap file size = system RAM)
 - **TLS/SSL encryption** for both databases
 - **UFW firewall** with dynamic IP whitelist management
+- **DNS caching** with DNSSEC, DANE, and DNS-over-TLS support
+- **Kernel optimizations** for database performance
 - **Automated encrypted backups** to Cloudflare R2 every 6 hours
 - **Intelligent backup retention** (30-day retention with daily consolidation after 7 days)
+
+## Architecture
+
+### Inheritance Model
+
+Both MongoDB and Redis playbooks inherit base configurations from `security.yml`:
+
+```
+security.yml (imported by mongo.yml and redis.yml)
+├── Transparent Huge Pages (THP) disabled
+├── ulimits configured (nofile: 65536, nproc: 65536)
+├── Base sysctl settings (vm.swappiness: 0)
+├── devops and deploy user creation
+├── SSH hardening
+└── Unbound DNS caching (via unbound.yml)
+
+mongo.yml / redis.yml
+├── Database-specific sysctl optimizations
+├── TLS/SSL configuration
+├── UFW firewall with IP whitelist
+├── Automated encrypted backups to R2
+└── Database installation and configuration
+```
+
+**Key point:** THP, ulimits, and base sysctl settings are configured once in `security.yml` and inherited by all hosts including `mongo` and `redis`. This avoids duplication and ensures consistency.
+
+### User Model
+
+**Security best practice:** Database services run as dedicated unprivileged users:
+
+- **MongoDB** runs as `mongod` user (created by MongoDB package)
+- **Redis** runs as `redis` user (created by Redis package)
+- **deploy** user is for application code deployment
+- **devops** user has sudo access for administration
+
+This provides proper isolation and follows the principle of least privilege.
+
+## Files
+
+- **`mongo.yml`** - MongoDB deployment playbook
+- **`redis.yml`** - Redis deployment playbook
+- **`unbound.yml`** - DNS caching with DNSSEC/DANE support
+- **`security.yml`** - Security hardening (updated to include mongo/redis hosts)
+- **`requirements.yml`** - Ansible Galaxy role dependencies
 
 ## Prerequisites
 
@@ -20,9 +67,13 @@ These playbooks provide complete automation for:
 Install the required Ansible roles from Galaxy:
 
 ```bash
-ansible-galaxy install trfore.mongodb_install
-ansible-galaxy install geerlingguy.redis
+cd /path/to/forwardemail.net
+ansible-galaxy install -r ansible/requirements.yml
 ```
+
+This installs:
+- `trfore.mongodb_install` v3.0.5 - MongoDB installation
+- `geerlingguy.redis` v1.9.0 - Redis installation
 
 ### Environment Variables
 
@@ -163,7 +214,105 @@ This provides:
 - Daily recovery points for the past month
 - Automatic cleanup to control storage costs
 
-### 4. Restoring Encrypted Backups
+### 4. DNS Caching with DNSSEC and DANE
+
+**Unbound DNS resolver** is automatically configured on all hosts via `unbound.yml` (imported by `security.yml`).
+
+**Features:**
+- **DNSSEC validation** - Cryptographic verification of DNS responses
+- **DANE/TLSA support** - DNS-based authentication of TLS certificates
+- **DNS-over-TLS (DoT)** - Encrypted DNS queries to Cloudflare (1.1.1.1)
+- **Query minimization** - Enhanced privacy
+- **Aggressive NSEC** - Faster negative responses
+- **DNS rebinding protection** - Security hardening
+
+**Cache TTLs optimized for fast failover:**
+- Minimum TTL: 60 seconds
+- Maximum TTL: 300 seconds (5 minutes)
+- Negative cache TTL: 60 seconds
+
+**Verification:**
+```bash
+# Test DNS resolution
+dig @127.0.0.1 +short cloudflare.com
+
+# Verify DNSSEC
+dig @127.0.0.1 +dnssec cloudflare.com
+
+# Check DANE/TLSA records
+dig @127.0.0.1 +short TLSA _443._tcp.example.com
+
+# Check Unbound status
+sudo systemctl status unbound
+```
+
+### 5. Dynamic Swap Configuration
+
+Both MongoDB and Redis playbooks automatically configure swap space per official recommendations.
+
+**Redis Official Documentation:**
+> "Ensured that swap is enabled and that your swap file size is equal to amount of memory on your system. If Linux does not have swap set up, and your Redis instance accidentally consumes too much memory, Redis can crash when it is out of memory, or the Linux kernel OOM killer can kill the Redis process."
+
+Source: [Redis Administration - Memory](https://redis.io/docs/latest/operate/oss_and_stack/management/admin/)
+
+**Implementation:**
+- Automatically detects total system RAM using `free -m`
+- Creates `/swapfile` with size equal to RAM
+- Sets `vm.swappiness=1` (minimize swapping but allow for safety)
+- Overrides `vm.swappiness=0` from security.yml
+- Idempotent: only recreates swap if size doesn't match RAM
+- Persists across reboots via `/etc/fstab`
+
+**Verification:**
+```bash
+# Check swap status
+sudo swapon --show
+
+# Check swappiness setting
+sysctl vm.swappiness
+
+# View swap usage
+free -h
+```
+
+**Why this matters:**
+- **Without swap:** Database crashes or OOM killer terminates process
+- **With swap:** Latency spikes are detectable, allowing intervention before crash
+- **Swappiness=1:** Minimizes performance impact while providing safety net
+
+### 6. Performance Optimizations
+
+#### Kernel Parameters (Inherited from security.yml)
+
+**Base settings for all hosts:**
+- `vm.swappiness = 0` - Disable swapping (overridden to `1` for MongoDB/Redis)
+- `nofile = 65536` - File descriptor limit
+- `nproc = 65536` - Process limit
+- THP disabled via systemd service
+
+#### MongoDB-Specific Optimizations
+
+```
+vm.dirty_background_ratio = 10
+vm.dirty_ratio = 20
+net.core.somaxconn = 4096
+net.ipv4.tcp_max_syn_backlog = 4096
+net.ipv4.tcp_fin_timeout = 30
+net.ipv4.tcp_keepalive_intvl = 30
+net.ipv4.tcp_keepalive_time = 120
+```
+
+#### Redis-Specific Optimizations
+
+```
+vm.overcommit_memory = 1
+net.core.somaxconn = 65536
+net.ipv4.tcp_max_syn_backlog = 65536
+```
+
+**See:** `MONGODB_PERFORMANCE_TUNING.md` and `REDIS_PERFORMANCE_TUNING.md` for detailed explanations.
+
+### 6. Restoring Encrypted Backups
 
 #### MongoDB Restore
 
