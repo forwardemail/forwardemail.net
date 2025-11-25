@@ -4,6 +4,63 @@ import { Remote } from '../utils/remote';
 import { config } from '../config';
 import { sanitizeHtml } from '../utils/sanitize';
 
+function bufferToDataUrl(attachment) {
+  try {
+    const { content, contentType, mimeType, type } = attachment || {};
+    if (!content) return '';
+    const mime = contentType || mimeType || type || 'application/octet-stream';
+    // content can be Buffer-like (Uint8Array) or string
+    let base64;
+    if (typeof content === 'string') {
+      base64 = btoa(content);
+    } else if (content?.data) {
+      // Buffer serialized as { type: 'Buffer', data: [...] }
+      base64 = btoa(String.fromCharCode(...content.data));
+    } else if (Array.isArray(content)) {
+      base64 = btoa(String.fromCharCode(...content));
+    } else {
+      return '';
+    }
+    return `data:${mime};base64,${base64}`;
+  } catch (error) {
+    console.error('bufferToDataUrl failed', error);
+    return '';
+  }
+}
+
+function applyInlineAttachments(html, attachments) {
+  if (!html || !attachments || attachments.length === 0) return html;
+  let updated = html;
+
+  const byCid = new Map();
+  const byName = new Map();
+  attachments.forEach((att) => {
+    if (att.contentId) byCid.set(att.contentId, att.href);
+    if (att.name) byName.set(att.name, att.href);
+    if (att.filename) byName.set(att.filename, att.href);
+  });
+
+  // Replace cid references
+  updated = updated.replace(/src=["']cid:([^"']+)["']/gi, (match, cid) => {
+    const url = byCid.get(cid) || '';
+    return url ? `src="${url}"` : match;
+  });
+
+  // Add src for imgs missing it but with alt matching attachment name
+  updated = updated.replace(/<img([^>]*?)>/gi, (match, attrs) => {
+    const hasSrc = /src\s*=/.test(attrs);
+    if (hasSrc) return match;
+    const altMatch = attrs.match(/alt=["']([^"']+)["']/i);
+    if (!altMatch) return match;
+    const alt = altMatch[1];
+    const url = byName.get(alt);
+    if (!url) return match;
+    return `<img${attrs} src="${url}">`;
+  });
+
+  return updated;
+}
+
 const normalizeFlags = (flags) => {
   if (Array.isArray(flags)) return flags;
   if (typeof flags === 'string') {
@@ -32,6 +89,7 @@ export class MailboxView {
     this.messageLoading = ko.observable(false);
     this.error = ko.observable('');
     this.messageBody = ko.observable('');
+    this.attachments = ko.observableArray([]);
     this.page = ko.observable(1);
     this.limit = 20;
     this.hasNextPage = ko.observable(false);
@@ -91,6 +149,10 @@ export class MailboxView {
 
       await this.loadMessages();
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) {
+        window.location.href = '/';
+        return;
+      }
       this.error(error?.message || 'Unable to load mailbox.');
       this.setMockData();
     }
@@ -144,13 +206,18 @@ export class MailboxView {
               '',
             date: m.Date || m.date || m.header_date || m.internal_date || '',
             flags: normalizeFlags(m.flags),
-            is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen')
+            is_unread: m.is_unread ?? !normalizeFlags(m.flags).includes('\\Seen'),
+            has_attachment: m.has_attachment || m.hasAttachments || false
           }))
         );
         this.selectedMessage(this.messages()[0] || null);
         if (this.selectedMessage()) await this.loadMessage(this.selectedMessage());
       }
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) {
+        window.location.href = '/';
+        return;
+      }
       this.error(error?.message || 'Unable to load messages.');
     } finally {
       this.loading(false);
@@ -166,7 +233,8 @@ export class MailboxView {
     }
 
     this.messageLoading(true);
-    this.messageBody('');
+      this.messageBody('');
+      this.attachments([]);
 
     try {
       const detailRes = await Remote.request(
@@ -183,8 +251,19 @@ export class MailboxView {
       const isUnread = result?.is_unread ?? !detailFlags.includes('\\Seen');
       message.flags = detailFlags;
       message.is_unread = isUnread;
+      const detailAttachments = result?.nodemailer?.attachments || result?.attachments || [];
+      const attachments = (detailAttachments || []).map((att) => ({
+        name: att.name || att.filename,
+        filename: att.filename,
+        size: att.size,
+        contentId: att.cid || att.contentId,
+        // TODO: prefer API-provided download URL or cid mapping when available.
+        href: bufferToDataUrl(att),
+        contentType: att.contentType || att.mimeType || att.type
+      }));
+      this.attachments(attachments);
 
-      const body =
+      const rawBody =
         result?.html ||
         result?.Html ||
         result?.textAsHtml ||
@@ -197,10 +276,15 @@ export class MailboxView {
         result?.nodemailer?.text ||
         message.snippet ||
         '';
-      this.messageBody(sanitizeHtml(body));
+      const inlinedBody = applyInlineAttachments(rawBody, attachments);
+      this.messageBody(sanitizeHtml(inlinedBody));
       // sync the selected message observable with updated flags/unread state
       this.selectedMessage(Object.assign({}, message));
     } catch (error) {
+      if (error?.status === 401 || error?.status === 403) {
+        window.location.href = '/';
+        return;
+      }
       this.error(error?.message || 'Unable to load message.');
       this.messageBody(sanitizeHtml(message.snippet || ''));
     } finally {
@@ -244,6 +328,10 @@ export class MailboxView {
       message.is_unread = !newIsUnread;
       this.messages.valueHasMutated?.();
       this.selectedMessage(Object.assign({}, message));
+      if (error?.status === 401 || error?.status === 403) {
+        window.location.href = '/';
+        return;
+      }
       this.error(error?.message || 'Unable to update message flags.');
     }
   }

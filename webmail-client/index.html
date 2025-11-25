@@ -510,6 +510,208 @@
         gap: 10px;
       }
 
+      .fe-attachments {
+        margin-top: 12px;
+        border-top: 1px solid #1f2937;
+        padding-top: 10px;
+      }
+
+      .fe-attachment-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .fe-attachment {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #0c1424;
+        border: 1px solid #1f2937;
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      .fe-attachment-meta {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        color: #e5e7eb;
+      }
+
+      .fe-attachment-name {
+        font-weight: 700;
+      }
+
+      .fe-attachment-size {
+        color: #9ca3af;
+        font-size: 12px;
+      }
+
+      .fe-input,
+      .fe-textarea {
+        width: 100%;
+        padding: 12px 12px;
+        border-radius: 10px;
+        border: 1px solid #1f2937;
+        background: #0f172a;
+        color: #e5e7eb;
+        font-size: 15px;
+        margin-bottom: 10px;
+      }
+
+      .fe-textarea {
+        min-height: 160px;
+        resize: vertical;
+      }
+
+      .fe-rich {
+        min-height: 200px;
+        padding: 0;
+        border-radius: 10px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: #e5e7eb;
+      }
+
+      .fe-editor {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .fe-editor-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+
+      .fe-icon-btn {
+        padding: 6px 8px;
+        min-width: 36px;
+      }
+
+      .fe-recipient-row {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .fe-recipient-chips {
+        display: flex;
+        gap: 6px;
+      }
+
+      .fe-attachments-compose {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .fe-attachment-chips {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: wrap;
+      }
+
+      .fe-attachment-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .fe-attachment-chip-size {
+        color: #9ca3af;
+        font-size: 11px;
+      }
+
+      .tiptap.ProseMirror {
+        min-height: 200px;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #1f2937;
+        background: #0f172a;
+        color: #e5e7eb;
+        line-height: 1.5;
+        white-space: pre-wrap;
+        overflow-y: auto;
+        outline: none;
+      }
+
+      .tiptap.ProseMirror:focus {
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.2);
+      }
+
+      .tiptap.ProseMirror p {
+        margin: 0 0 8px;
+      }
+
+      .tiptap.ProseMirror ul,
+      .tiptap.ProseMirror ol {
+        padding-left: 18px;
+        margin: 0 0 8px;
+      }
+
+      .fe-rich:empty:before {
+        content: attr(data-placeholder);
+        color: #6b7280;
+      }
+
+      .fe-input:focus,
+      .fe-textarea:focus {
+        outline: none;
+        border-color: var(--brand-primary);
+        box-shadow: 0 0 0 3px rgba(0, 175, 248, 0.2);
+      }
+
+      .fe-modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+      }
+
+      .fe-modal {
+        background: #0b1220;
+        border: 1px solid #1f2937;
+        border-radius: 12px;
+        padding: 18px;
+        width: 96%;
+        max-width: 860px;
+        color: #e5e7eb;
+        box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+      }
+
+      .fe-modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+      }
+
+      .fe-modal-body {
+        color: #cbd5e1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .fe-modal-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 8px;
+      }
+
       .fe-signout {
         padding: 10px 14px;
         border-radius: 10px;
@@ -631,7 +833,9 @@
       <div class="fe-mailbox-shell">
         <aside class="fe-folders">
           <div class="fe-folder-actions">
-            <button class="fe-button fe-compose" type="button" disabled>Compose</button>
+            <button class="fe-button fe-compose" type="button" data-bind="click: $root.composeModal.open">
+              Compose
+            </button>
           </div>
           <ul data-bind="foreach: folders">
             <li
@@ -712,14 +916,34 @@
                     class="fe-button ghost"
                     data-bind="click: $parent.toggleRead.bind($parent, $data)"
                   >
-                    <span
-                      data-bind="text: $data.is_unread ? 'Mark Read' : 'Mark Unread'"
-                    ></span>
-                  </button>
-                </div>
+                  <span
+                    data-bind="text: $data.is_unread ? 'Mark Read' : 'Mark Unread'"
+                  ></span>
+                </button>
               </div>
+            </div>
             <div class="fe-reader-subject" data-bind="text: subject"></div>
             <div class="fe-reader-body" data-bind="html: $parent.messageBody"></div>
+            <div class="fe-attachments" data-bind="visible: $parent.attachments().length">
+              <div class="fe-section-header">
+                <span>Attachments</span>
+              </div>
+              <ul class="fe-attachment-list" data-bind="foreach: $parent.attachments">
+                <li class="fe-attachment">
+                  <div class="fe-attachment-meta">
+                    <div class="fe-attachment-name" data-bind="text: name || filename || 'Attachment'"></div>
+                    <div class="fe-attachment-size" data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"></div>
+                  </div>
+                  <a
+                    class="fe-button ghost"
+                    data-bind="attr: { href: href, download: name || filename || 'attachment' }"
+                    download
+                  >
+                    Download
+                  </a>
+                </li>
+              </ul>
+            </div>
           </div>
           <!-- /ko -->
 
@@ -735,6 +959,73 @@
         JavaScript is required to use ForwardEmail Webmail.
       </div>
     </noscript>
+
+    <div class="fe-modal-backdrop" data-bind="visible: composeModal.visible">
+      <div class="fe-modal" data-bind="with: composeModal">
+        <div class="fe-modal-header">
+          <h2>Compose</h2>
+          <button class="fe-button ghost" type="button" data-bind="click: close">Close</button>
+        </div>
+        <div class="fe-modal-body">
+          <div class="fe-recipient-row">
+            <input class="fe-input" type="email" placeholder="To" data-bind="textInput: to" />
+            <div class="fe-recipient-chips">
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add CC" title="Add CC" data-bind="click: showCc, visible: !ccVisible()">CC</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Add BCC" title="Add BCC" data-bind="click: showBcc, visible: !bccVisible()">BCC</button>
+            </div>
+          </div>
+          <div class="fe-recipient-row" data-bind="visible: ccVisible">
+            <input class="fe-input" type="email" placeholder="CC" data-bind="textInput: cc" />
+          </div>
+          <div class="fe-recipient-row" data-bind="visible: bccVisible">
+            <input class="fe-input" type="email" placeholder="BCC" data-bind="textInput: bcc" />
+          </div>
+          <input class="fe-input" type="text" placeholder="Subject" data-bind="textInput: subject" />
+
+            <div class="fe-editor">
+              <div class="fe-editor-toolbar">
+                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Bold" title="Bold" data-bind="click: toggleBold">B</button>
+                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Italic" title="Italic" data-bind="click: toggleItalic"><em>I</em></button>
+                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Underline" title="Underline" data-bind="click: toggleUnderline"><u>U</u></button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Strikethrough" title="Strikethrough" data-bind="click: toggleStrike"><s>S</s></button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Bulleted list" title="Bulleted list" data-bind="click: toggleBullet">•</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Numbered list" title="Numbered list" data-bind="click: toggleOrdered">1.</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Quote" title="Quote" data-bind="click: toggleQuote">❝</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Code block" title="Code block" data-bind="click: toggleCode">&lt;/&gt;</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Link" title="Link" data-bind="click: setLink">🔗</button>
+              <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Clear formatting" title="Clear formatting" data-bind="click: clearFormatting">✕</button>
+            </div>
+              <div class="fe-rich" data-placeholder="Message"></div>
+            </div>
+
+          <div class="fe-attachments-compose">
+            <input
+              type="file"
+              multiple
+              class="fe-attach-input"
+              style="display: none;"
+              data-bind="event: { change: onFilesSelected }"
+            />
+            <button class="fe-button ghost" type="button" data-bind="click: triggerFilePicker">Attach</button>
+            <div class="fe-attachment-chips" data-bind="foreach: attachments">
+              <div class="fe-chip ghost fe-attachment-chip">
+                <span data-bind="text: name"></span>
+                <span class="fe-attachment-chip-size" data-bind="text: size ? (Math.round(size / 1024) + ' KB') : ''"></span>
+                <button class="fe-button ghost fe-icon-btn" type="button" aria-label="Remove attachment" title="Remove" data-bind="click: $parent.removeAttachment">✕</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="fe-alert" data-bind="visible: error, text: error"></div>
+          <div class="fe-alert" style="border-color:#22c55e;color:#bbf7d0;background:rgba(34,197,94,0.1);" data-bind="visible: success, text: success"></div>
+
+          <div class="fe-modal-actions">
+            <button class="fe-button ghost" type="button" data-bind="click: close">Cancel</button>
+            <button class="fe-button" type="button" data-bind="click: send, disable: sending">Send</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <script type="module" src="/src/main.js"></script>
   </body>

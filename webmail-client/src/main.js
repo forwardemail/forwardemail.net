@@ -1,6 +1,7 @@
 import ko from 'knockout';
 import { LoginUserView } from './components/LoginUserView';
 import { MailboxView } from './components/MailboxView';
+import { ComposeModal } from './components/ComposeModal';
 import { createStarfield } from './utils/starfield';
 import { Local } from './utils/storage';
 import './styles/main.css';
@@ -12,7 +13,8 @@ function detectRoute() {
 const viewModel = {
   route: ko.observable(detectRoute()),
   loginUserView: new LoginUserView(),
-  mailboxView: new MailboxView()
+  mailboxView: new MailboxView(),
+  composeModal: new ComposeModal()
 };
 
 function initStarfield() {
@@ -45,6 +47,7 @@ function bootstrap() {
   document.body.classList.toggle('mailbox-mode', route === 'mailbox');
 
   ko.applyBindings(viewModel, root);
+  viewModel.composeModal.initEditor();
   if (route === 'mailbox') viewModel.mailboxView.load();
   initStarfield();
 

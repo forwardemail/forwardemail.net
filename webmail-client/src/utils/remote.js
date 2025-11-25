@@ -56,6 +56,7 @@ export const Remote = {
       return data;
     } catch (error) {
       console.error(`Remote.${action} failed:`, error);
+      // bubble up to allow UI redirect on 401/403
       throw error;
     }
   },

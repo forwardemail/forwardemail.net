@@ -17,6 +17,7 @@
 - ✅ Root NPM scripts: `webmail:dev`, `webmail:build`, `webmail:preview`
 - ✅ Generated placeholder PWA icons (192/512) in `webmail-client/public/icons`
 - ⏳ Pending assets: fonts (Nunito Sans, VC Honey) to place in `webmail-client/public/fonts`
+    - ✅ Added search (debounced), pagination, unread filter, mark read/unread, and attachment list; compose modal stub exists.
 
 ### ✅ Completed: Old Code Removal
 
@@ -743,3 +744,17 @@ For now, after successful login, redirect to a placeholder `/mailbox` route that
 
 **Status:** Ready to begin implementation
 **Next Action:** Create basic file structure and HTML/JS boilerplate
+
+---
+
+### Progress Notes / TODO
+
+- ✅ Mailbox UI skeleton, dark theme/branding, search (debounced), pagination, unread filter, mark read/unread, attachment list, and compose modal stub.
+- ⚠️ Attachments: current API returns Buffers without `cid`/URL mapping; inline images (e.g., `<img alt>` with no `src`) cannot be resolved. TODO: API should return `cid` and/or download URLs per attachment so inline images and downloads map cleanly. Attachment list currently uses data URLs when available and shows name/size.
+- ⏳ Assets: final fonts (Nunito Sans, VC Honey) and maskable icons still needed.
+- 🚧 Compose roadmap: add full-featured compose (Gmail-like) in phases:
+  - Recipients: To/CC/BCC chips, validation, multiple recipients, optional From selector (when aliases are available).
+  - Rich editor: TipTap editor in place (bold/italic/links/lists/quotes, underline/highlight); add plain-text toggle, auto-generate text for payloads.
+  - Attachments: file picker/drag-drop, show chips with name/size/progress, remove; support inline images with `cid` mapping; enforce size/type limits.
+  - Send flow: loading/disable, errors with retry, success toast/clear; optional drafts (localStorage + `Drafts` folder).
+  - Extras: reply/reply-all/forward entry points, keyboard shortcuts, recipient autocomplete (contacts), inline error handling.
